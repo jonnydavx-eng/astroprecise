@@ -146,10 +146,20 @@ const t_orb = (t, aspect) => t.orbsDeg[aspect];
  * @returns beats {anchor, contact, governs, question, close} each {mono?, serif?},
  *          plus {quiet, gateSale, share, legal, houseNote?, wordCount}
  */
+/* Eclipse craft (audit fix, 17 Jul): only HARD aspects — conjunction, opposition,
+ * square — in tight orb make an eclipse "yours" and open the sale. Soft aspects
+ * (sextile/trine) are background: they may appear as secondaries but never carry
+ * the night, and a chart with only soft touches is told the truth: quiet. */
+const HARD = { conjunction: 6, opposition: 5, square: 5 }; // per-aspect sale gates (deg)
+
 export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
   const t = templates;
   const signs = t.signs;
   const L = opts.local || {};
+  // Defensive receipt: a bare number for coverage gains its % sign.
+  if (L.coveragePct != null && /^[~≈\s]*\d+(\.\d+)?\s*$/.test(String(L.coveragePct))) {
+    L.coveragePct = String(L.coveragePct).trim() + '%';
+  }
   const gate = opts.quietGateDeg ?? 5;
 
   // BEAT 1 — the anchor (always renders; the receipt for the whole piece)
@@ -161,7 +171,10 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
     .replace('{eclipseDeg}', eclipseDeg).replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ');
 
   const contacts = allContacts(eclipseLon, natal, t);
-  const closest = contacts[0] || null;
+  // Primary = tightest HARD contact within its per-aspect sale gate.
+  const hardContacts = contacts.filter((c) => HARD[c.aspect] != null && c.orbDeg <= Math.min(HARD[c.aspect], gate + (c.aspect === 'conjunction' ? 1 : 0)));
+  const closest = hardContacts[0] || null;
+  const nearestAny = contacts[0] || null;
 
   // BEAT 5 — honest close (always renders)
   const closeMono = opts.dark
@@ -170,10 +183,14 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
     : t.close.computedNoPerseids;
   const close = { mono: closeMono, serif: t.close.serif };
 
-  // QUIET GATE — the empty state that GATES THE SALE (Skeptic rule)
-  if (!closest || closest.orbDeg > gate) {
-    const nearest = closest
-      ? ` The nearest touch is a wide ${fmtOrb(closest.orbDeg)} to your ${t.targets[closest.target].label}.`
+  // QUIET GATE — the empty state that GATES THE SALE (Skeptic rule).
+  // No hard aspect in tight orb = quiet, even if soft touches exist: in eclipse
+  // tradition a sextile or trine is background, and we say so rather than sell it.
+  if (!closest) {
+    const nearest = nearestAny
+      ? (HARD[nearestAny.aspect] == null && nearestAny.orbDeg <= 3
+          ? ` The nearest touch is a gentle ${t.aspects[nearestAny.aspect].label.toLowerCase()} to your ${t.targets[nearestAny.target].label} (${fmtOrb(nearestAny.orbDeg)}) — background light, not a headline, and we won't dress it up as one.`
+          : ` The nearest touch is a wide ${fmtOrb(nearestAny.orbDeg)} to your ${t.targets[nearestAny.target].label}.`)
       : '';
     const reading = {
       quiet: true, gateSale: true,
@@ -193,7 +210,7 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
   const house = wholeSignHouse(closest.lon, natal.asc);
   let contactMono = `This eclipse falls ${orbText} from your natal ${tg.label} (${fmtDeg(closest.lon, signs)}) — ${asp.label}.`;
   if (house) contactMono += ` ${tg.label} sits in your ${house}ℓ`.replace('ℓ', house === 1 ? 'st' : house === 2 ? 'nd' : house === 3 ? 'rd' : 'th') + ' house (whole-sign).';
-  const secondaries = contacts.slice(1).filter((c) => c.orbDeg <= 3).slice(0, 2);
+  const secondaries = contacts.filter((c) => c !== closest && c.orbDeg <= 3).slice(0, 2);
   const secondary = secondaries.length
     ? { mono: t.secondary.computed.replace('{list}', secondaries.map((c) =>
         t.secondary.item.replace('{aspectLabel}', t.aspects[c.aspect].label)

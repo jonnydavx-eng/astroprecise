@@ -1,71 +1,171 @@
 {
-  "_about": "Astro Precise — the £12 Deep Reading (seven chapters). Companion to reading-templates.json. Every chapter opens with mono receipts, then serif meaning the receipts earn. Whole-sign houses only when birth time known. Tradition framed for reflection, never prediction.",
-  "version": "AP-DEEP-1",
-  "signThemes": {
-    "Aries": "direct, first-moving, brave by reflex",
-    "Taurus": "steady, sensual, loyal to what lasts",
-    "Gemini": "quick, curious, fluent in almost everything",
-    "Cancer": "protective, tidal, memory-keeping",
-    "Leo": "warm, expressive, made to be seen",
-    "Virgo": "precise, useful, quietly devoted",
-    "Libra": "balancing, relational, allergic to ugliness",
-    "Scorpio": "deep, private, all-or-nothing",
-    "Sagittarius": "far-seeking, honest, hungry for meaning",
-    "Capricorn": "patient, structural, built for the long climb",
-    "Aquarius": "independent, systemic, loyal to ideas",
-    "Pisces": "porous, imaginative, tuned to the unseen"
+ "_about": "Astro Precise — the £12 Deep Reading (seven chapters). Companion to reading-templates.json. Every chapter opens with mono receipts, then serif meaning the receipts earn. Whole-sign houses only when birth time known. Tradition framed for reflection, never prediction.",
+ "version": "AP-DEEP-1",
+ "signThemes": {
+  "Aries": "direct, first-moving, brave by reflex",
+  "Taurus": "steady, sensual, loyal to what lasts",
+  "Gemini": "quick, curious, fluent in almost everything",
+  "Cancer": "protective, tidal, memory-keeping",
+  "Leo": "warm, expressive, made to be seen",
+  "Virgo": "precise, useful, quietly devoted",
+  "Libra": "balancing, relational, allergic to ugliness",
+  "Scorpio": "deep, private, all-or-nothing",
+  "Sagittarius": "far-seeking, honest, hungry for meaning",
+  "Capricorn": "patient, structural, built for the long climb",
+  "Aquarius": "independent, systemic, loyal to ideas",
+  "Pisces": "porous, imaginative, tuned to the unseen"
+ },
+ "elements": {
+  "fire": "Fire runs on ignition — you move when something lights.",
+  "earth": "Earth runs on substance — you trust what can be touched and kept.",
+  "air": "Air runs on connection — you think by talking and link by nature.",
+  "water": "Water runs on feeling — you know things before you can say them."
+ },
+ "modalities": {
+  "cardinal": "You are built to begin; starting is the muscle you trained.",
+  "fixed": "You are built to hold; finishing and keeping are your gifts.",
+  "mutable": "You are built to adapt; you bend where others break."
+ },
+ "chapters": {
+  "ch1": {
+   "title": "The sky at your first breath",
+   "serif": "Everything in this reading is built from the positions above — computed from raw astronomy for your exact moment, not looked up, not invented. Where the words go further than the numbers, they say so. That is the whole contract.",
+   "moonApproxNote": "(birth time unknown — Moon position approximate, ±7°)"
   },
-  "elements": {
-    "fire": "Fire runs on ignition — you move when something lights.",
-    "earth": "Earth runs on substance — you trust what can be touched and kept.",
-    "air": "Air runs on connection — you think by talking and link by nature.",
-    "water": "Water runs on feeling — you know things before you can say them."
+  "ch2": {
+   "title": "The three lights",
+   "sun": "Your Sun is the running engine — {theme}.",
+   "moon": "Your Moon is what you need before you can explain why — {theme}.",
+   "asc": "Your Ascendant is the door you meet the world through — {theme}.",
+   "noAsc": "Your rising sign needs a birth time we don't have — so this reading stays honestly with what can be fixed without one. If you ever find your birth time, the third light is waiting.",
+   "moonNoTime": "Your Moon is what you need before you can explain why — {theme}. One honest caveat: without a birth time the Moon can only be placed to within about seven degrees, so we hold it lightly{boundary}.",
+   "moonBoundary": " — and it may in fact sit in {otherSign}"
   },
-  "modalities": {
-    "cardinal": "You are built to begin; starting is the muscle you trained.",
-    "fixed": "You are built to hold; finishing and keeping are your gifts.",
-    "mutable": "You are built to adapt; you bend where others break."
+  "ch3": {
+   "title": "The shape of you"
   },
-  "chapters": {
-    "ch1": {
-      "title": "The sky at your first breath",
-      "serif": "Everything in this reading is built from the positions above — computed from raw astronomy for your exact moment, not looked up, not invented. Where the words go further than the numbers, they say so. That is the whole contract."
-    },
-    "ch2": {
-      "title": "The three lights",
-      "sun": "Your Sun is the running engine — {theme}.",
-      "moon": "Your Moon is what you need before you can explain why — {theme}.",
-      "asc": "Your Ascendant is the door you meet the world through — {theme}.",
-      "noAsc": "Your rising sign needs a birth time we don't have — so this reading stays honestly with the two lights we can fix exactly. If you ever find your birth time, the third light is waiting."
-    },
-    "ch3": { "title": "The shape of you" },
-    "ch4": {
-      "title": "Where the weight falls",
-      "intro": "Of every pair of planets in your chart, these sit closest — the contacts tradition reads as the standing conversations of a life:",
-      "pairFrame": "{a} and {b} in {aspect} ({orb}) — {aTheme} {verb} {bTheme}. Neither wins; the conversation is the point."
-    },
-    "ch5": {
-      "title": "The long arcs",
-      "saturn": "Saturn in {sign}{house} — your patience and your load: where you were given less for free, and built more that lasts.",
-      "uranus": "Uranus in {sign}{house} — where you refuse the given order and keep a window open.",
-      "neptune": "Neptune in {sign}{house} — where the edges soften: your longing, your imagination, your sea.",
-      "pluto": "Pluto in {sign}{house} — the slow engine room: what transforms across decades, not days."
-    },
-    "ch6": {
-      "title": "This season's sky",
-      "intro": "Where the sky right now touches the sky you were born under — the living, checkable part of this reading:",
-      "noTransits": "The live edition of this chapter is computed on the day you read it — open your chart on the site and this page fills with today's true contacts, dated to the minute."
-    },
-    "ch7": {
-      "title": "A letter to keep",
-      "body": "If you reread nothing else, reread this. The closest conversation in your chart — {tightPair} — is not a flaw to fix; it is the friction that makes you specific. Your {domElement} nature will keep doing what it does: {domElementLine} Let it. Nothing in your sky needs repairing. It needs living — openly, and in your own order. The sky above tonight is already different from the one on page one; you are allowed to be, too."
-    }
+  "ch4": {
+   "title": "Where the weight falls",
+   "intro": "Of every pair of planets in your chart, these sit closest — the contacts tradition reads as the standing conversations of a life:",
+   "pairFrame": "{a} and {b} in {aspect} ({orb}) — {aTheme} {verb} {bTheme}. Neither wins; the conversation is the point.",
+   "noMoonNote": "Because your birth time is unknown, contacts involving the Moon are left out here — its position isn't certain enough for tight-orb claims, and we'd rather skip a line than invent one."
   },
-  "aspectVerbs": {
-    "conjunction": "fused with",
-    "opposition": "facing",
-    "square": "pressing against",
-    "trine": "flowing with",
-    "sextile": "opening doors for"
+  "ch5": {
+   "title": "The long arcs",
+   "saturn": "Saturn in {sign}{house} — your patience and your load: where you were given less for free, and built more that lasts.",
+   "uranus": "Uranus in {sign}{house} — where you refuse the given order and keep a window open.",
+   "neptune": "Neptune in {sign}{house} — where the edges soften: your longing, your imagination, your sea.",
+   "pluto": "Pluto in {sign}{house} — the slow engine room: what transforms across decades, not days."
+  },
+  "ch6": {
+   "title": "This season's sky",
+   "intro": "Where the sky right now touches the sky you were born under — the living, checkable part of this reading:",
+   "noTransits": "The live edition of this chapter is computed on the day you read it — open your chart on the site and this page fills with today's true contacts, dated to the minute."
+  },
+  "ch7": {
+   "title": "A letter to keep",
+   "body": "If you reread nothing else, reread this. The closest conversation in your chart — {tightPair} — is not a flaw to fix; it is the friction that makes you specific. Your {domElement} nature will keep doing what it does: {domElementLine} Let it. Nothing in your sky needs repairing. It needs living — openly, and in your own order. The sky above tonight is already different from the one on page one; you are allowed to be, too."
   }
+ },
+ "aspectVerbs": {
+  "conjunction": "fused with",
+  "opposition": "facing",
+  "square": "pressing against",
+  "trine": "flowing with",
+  "sextile": "opening doors for"
+ },
+ "ch5Signs": {
+  "saturn": {
+   "aries": "Discipline landed on the impulse itself: decisive action never came free, so every clean start you make now is one you built. Tradition calls this the slow winning of your own nerve.",
+   "taurus": "You were asked to earn your sense of enough. Whatever security you hold, in money, comfort or self-worth, was laid down slowly, and it holds.",
+   "gemini": "Words were work before they were play. You learned to say exactly what you mean, and it shows in how readily people believe you.",
+   "cancer": "Belonging was never handed over lightly; you built your own shelter and you know precisely what it cost. That is why the people inside your walls are safe there.",
+   "leo": "Applause never came free, so you learned to make work that deserves it. Yours is the quieter shine that carries weight.",
+   "virgo": "Your standards are the load: rigour comes naturally, rest does not. The craft built under that discipline is proof it was worth carrying.",
+   "libra": "Tradition calls Saturn strong in Libra: fairness, for you, is not a mood but a structure you build and then live in. Your commitments, once made, are load-bearing.",
+   "scorpio": "Trust is your slow construction. You give it in layers, test it under weight, and what survives the testing you keep for life.",
+   "sagittarius": "You were not allowed easy answers; your beliefs had to pass inspection before you kept them. What you hold true now, you can defend from first principles.",
+   "capricorn": "Saturn stands in its own sign here: the long climb is not a phase of your life but its architecture. You measure years by what still stands at the end of them.",
+   "aquarius": "Your ideals arrive with engineering attached: you do not just want a better arrangement, you draft one. Tradition gives Saturn old dignity in this sign, the reformer who also does the paperwork.",
+   "pisces": "Your work has been building walls in water: giving shape to compassion and edges to imagination. When you manage it, what you make holds the tide."
+  },
+  "uranus": {
+   "aries": "Your cohort breaks first and explains afterwards. Your open window sits at the front of things, where nothing has been tried and nobody can tell you how it is done.",
+   "taurus": "Yours are years that rewire what security means: money, land, the body itself. Your refusal shows in what you will not be owned by.",
+   "gemini": "Your cohort rewires how people talk to each other. Your window opens in language: new words for things the old words misdescribed.",
+   "cancer": "You come from years that redrew what a household could be. Your freedom lives closest to home; you will not run a family by inherited rules alone.",
+   "leo": "Your era electrified self-expression. Your window stays open on the stage: you would sooner startle than be ignored, and sooner be honest than either.",
+   "virgo": "Yours are years that took method apart: work, health, the shape of a day. Your rebellion is practical, a better way of doing it, quietly installed.",
+   "libra": "Your cohort renegotiated partnership itself. Your open window is in how you pair: equal, elective, never assumed.",
+   "scorpio": "You were born into years that dragged the private into daylight. Your refusal lives in the depths; you will not pretend the hidden things are not there.",
+   "sagittarius": "Your era shook the belief systems. Your window opens outward: you would cross a border, actual or mental, before accepting a doctrine unread.",
+   "capricorn": "You arrived in years that cracked the institutions. Your rebellion works from inside structure; you know which wall is load-bearing before you move it.",
+   "aquarius": "Uranus stands in its own sign here: the future is a place your cohort is loyal to. The given order was only ever a draft to you, and your window does not close.",
+   "pisces": "Your years loosened the border between waking and dream. Your freedom is the subtle kind; you slip categories rather than fight them."
+  },
+  "neptune": {
+   "aries": "Yours is an era that dreams in beginnings: the longing to start something nobody has imagined yet. Your sea runs fast and forward.",
+   "taurus": "Your era longs for the tangible made holy: land, food, the true worth of things. Your sea is slow and fertile; you dream in textures, not abstractions.",
+   "gemini": "Yours is an era that dreams in language, the longing for the word that finally says it. Your imagination arrives as voices, questions and connections.",
+   "cancer": "Your era's longing is home itself: the remembered or imagined place where you were finally safe. Your sea is tidal, and family runs in it.",
+   "leo": "You come from years that dreamed in gold: romance, glamour, the beautiful gesture. Your longing is to make life feel like art, and sometimes you manage it.",
+   "virgo": "Your era's dream is care done properly, the longing to make healing exact. Your imagination works small and close, and mistrusts easy magic even while it hopes.",
+   "libra": "Yours are years that dreamed of harmony: the ideal partner, the just peace. Your longing is for a love that is also fair, and you notice when it is not.",
+   "scorpio": "Your era dreams in the dark: depth, intimacy, the truths under the floorboards. You long for what cannot be had halfway.",
+   "sagittarius": "You come from years that dreamed of far horizons: the true belief, the crossing that explains everything. Your sea has no far shore; the longing points at meaning itself.",
+   "capricorn": "Your era's unlikely dream is structure: the longing for institutions actually worth believing in. You imagine in blueprints, and doubt them beautifully.",
+   "aquarius": "Yours is an era that dreams collectively: the utopia, the network, nobody left out. Your longing is for a future large enough to hold everyone.",
+   "pisces": "Neptune stands in its own sign here: imagination, compassion and fog all run stronger through your years than most. Your task is keeping the dream without letting it drown the facts."
+  },
+  "pluto": {
+   "aries": "The slow engine of your era works on selfhood itself: who may act first, and by what right. Across decades you remake yourself by daring.",
+   "taurus": "Your era's deep work is ownership: what still holds value when everything else is stripped away. Your transformations are slow, stubborn and permanent once made.",
+   "gemini": "The engine of your years runs on information, on what happens when everyone can suddenly speak. Your deepest changes begin as a change of mind.",
+   "cancer": "Your era's engine worked on home and homeland: what family survives when history leans on it. Your deepest changes move through your roots.",
+   "leo": "Yours is the generation whose engine is the sovereign self, the right to shine examined all the way down. Your deep changes pass through pride and come out the other side.",
+   "virgo": "Your generation's engine turned on work and health: the systems of daily usefulness taken apart and remade. You change by fixing something real.",
+   "libra": "Yours is the generation whose deep work is relationship itself: marriage, fairness, the balance of power between two people. Your slow changes happen with, and through, others.",
+   "scorpio": "Pluto stands in its own sign here: your generation faces intimacy, mortality and shared power head on, without apology. When you change, you change completely, and you do not go back.",
+   "sagittarius": "Your generation's engine runs on belief: creeds, borders and big truths tested to destruction. Your deep changes begin the day a certainty fails, and end somewhere wiser.",
+   "capricorn": "Yours is the generation whose deep work is the institutions: watching structures fail and deciding what deserves rebuilding. Your transformations are structural, slow and lasting.",
+   "aquarius": "Your era's engine works on the collective: who holds power when everyone is connected. Your deep changes are shared ones; you transform in company.",
+   "pisces": "The engine of your era turns in the collective imagination: faith, art and the unseen remade from below. Your changes arrive like weather at sea, total and hard to date."
+  }
+ },
+ "ch6Transits": {
+  "planetArcs": {
+   "sun": "a single day's clear spotlight",
+   "moon": "a few hours' tide, gone by tomorrow",
+   "mercury": "a few days of traffic in words and news",
+   "venus": "about a week of warmth and appetite",
+   "mars": "roughly a week of spur and friction",
+   "jupiter": "some weeks of open door",
+   "saturn": "a months-long audit, slow and fair",
+   "uranus": "a long season of the unexpected",
+   "neptune": "a year or more of soft focus",
+   "pluto": "a years-long excavation, seen only in hindsight"
+  },
+  "frame": "Right now {planet} {aspectVerb} your natal {target}, the part of your sky that carries {targetTheme}. Tradition reads a visit like this as weather, not verdict: worth noticing while it lasts, never something to obey.",
+  "aspectVerbs": {
+   "conjunction": "stands on",
+   "sextile": "offers a small door to",
+   "square": "pushes against",
+   "trine": "moves easily with",
+   "opposition": "sits directly opposite"
+  }
+ },
+ "ch4Closers": {
+  "conjunction": "These two never take turns in you; they arrive together, and the blend is your signature, not a blur.",
+  "sextile": "This ease never insists; it simply works, whenever you remember to ask.",
+  "square": "Much of what you have built, you built because these two would not let each other rest; that is the compliment hidden in the friction.",
+  "trine": "An ease so native you may never have clocked it as a gift; name it, and use it on purpose.",
+  "opposition": "You will swing between these poles all your life; the task was never choosing a side, only holding the rope between them."
+ },
+ "elementAbsent": {
+  "fire": "No fire in a chart reads, traditionally, not as a missing spark but as ignition held under choice: you do not act on reflex, so when you move, it is decided. People learn that your yes means something.",
+  "earth": "A chart without earth travels light. Practicality is learned rather than instinctive for you, and in exchange you are rarely owned by your possessions; what others secure with things, you secure another way.",
+  "air": "No air traditionally reads as knowing before explaining: your understanding forms without conversation, and the words come afterwards. It can make your eventual sentences worth the wait.",
+  "water": "A chart without water is not a chart without feeling; tradition reads it as feeling that arrives through doing, making and thinking rather than tides. You can be the calm one in other people's storms because emotion never runs your instruments."
+ },
+ "stelliumNote": "{count} planets stand together in {sign}{houseClause} — a stellium, the old name for a defining signature: this sign's way of moving is not one note in your chart but its keynote."
 }

@@ -81,7 +81,12 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
   const S = base.signs;
   const orbs = base.orbsDeg;
   const B = opts.birth || {};
+  const timed = !!B.timeText; // no birth time -> the Moon (±7°/half-day) is held honestly loose
   const hasAsc = natal.asc != null && !Number.isNaN(natal.asc);
+  const fmtDegCoarse = (lon) => { // whole degrees only, for the untimed Moon
+    const norm = ((lon % 360) + 360) % 360, si = Math.floor(norm / 30);
+    return `${Math.round(norm - si * 30)}° ${S[si]}`;
+  };
   const houseOf = (lon) => hasAsc ? wholeSignHouse(lon, natal.asc) : null;
   const houseTxt = (lon) => {
     const h = houseOf(lon);
@@ -97,7 +102,9 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
     n: 1, title: deep.chapters.ch1.title,
     mono: [
       `Born ${B.dateText || '[date]'}${B.timeText ? ', ' + B.timeText : ' (time unknown)'}${B.place ? ', ' + B.place : ''}.`,
-      ...present.map((b) => `${label(b)} — ${fmtDeg(natal[b], S)}${houseTxt(natal[b])}`),
+      ...present.map((b) => (b === 'moon' && !timed)
+        ? `${label(b)} — near ${fmtDegCoarse(natal[b])} ${deep.chapters.ch1.moonApproxNote || '(approximate)'}`
+        : `${label(b)} — ${fmtDeg(natal[b], S)}${houseTxt(natal[b])}`),
     ],
     serif: [deep.chapters.ch1.serif],
   });
@@ -105,8 +112,19 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
   // CH2 — the three lights
   const lights = { mono: [], serif: [] };
   for (const l of ['sun', 'moon']) {
-    lights.mono.push(`${label(l)} — ${fmtDeg(natal[l], S)}${houseTxt(natal[l])}`);
-    lights.serif.push(deep.chapters.ch2[l].replace('{theme}', `${S[signIndex(natal[l])]}: ${deep.signThemes[S[signIndex(natal[l])]]}`));
+    const themeTxt = `${S[signIndex(natal[l])]}: ${deep.signThemes[S[signIndex(natal[l])]]}`;
+    if (l === 'moon' && !timed) {
+      lights.mono.push(`${label(l)} — near ${fmtDegCoarse(natal[l])} (approximate: birth time unknown)`);
+      const within = (((natal[l] % 360) + 360) % 360) % 30;
+      const si = signIndex(natal[l]);
+      const boundary = within < 7 ? (deep.chapters.ch2.moonBoundary || '').replace('{otherSign}', S[(si + 11) % 12])
+        : within > 23 ? (deep.chapters.ch2.moonBoundary || '').replace('{otherSign}', S[(si + 1) % 12]) : '';
+      lights.serif.push((deep.chapters.ch2.moonNoTime || deep.chapters.ch2.moon)
+        .replace('{theme}', themeTxt).replace('{boundary}', boundary));
+    } else {
+      lights.mono.push(`${label(l)} — ${fmtDeg(natal[l], S)}${houseTxt(natal[l])}`);
+      lights.serif.push(deep.chapters.ch2[l].replace('{theme}', themeTxt));
+    }
   }
   if (hasAsc) {
     lights.mono.push(`Ascendant — ${fmtDeg(natal.asc, S)}`);
@@ -118,51 +136,101 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
 
   // CH3 — the shape (computed counts, honestly quoted)
   const bal = chartBalance(natal);
+  const ch3Serif = [
+    `${bal.domElCount} of your ${bal.n} placements sit in ${bal.domEl}. ${deep.elements[bal.domEl]}`,
+    deep.modalities[bal.domMode],
+  ];
+  // A missing element is the most individual feature of a chart — read it first-class.
+  if (deep.elementAbsent) {
+    for (const el of ['fire', 'earth', 'air', 'water']) {
+      if (bal.el[el] === 0 && deep.elementAbsent[el]) { ch3Serif.push(deep.elementAbsent[el]); break; }
+    }
+  }
   chapters.push({
     n: 3, title: deep.chapters.ch3.title,
     mono: [
       `Elements — fire ${bal.el.fire} · earth ${bal.el.earth} · air ${bal.el.air} · water ${bal.el.water} (of ${bal.n} placements).`,
       `Modes — cardinal ${bal.mode.cardinal} · fixed ${bal.mode.fixed} · mutable ${bal.mode.mutable}.`,
     ],
-    serif: [
-      `${bal.domElCount} of your ${bal.n} placements sit in ${bal.domEl}. ${deep.elements[bal.domEl]}`,
-      deep.modalities[bal.domMode],
-    ],
+    serif: ch3Serif,
   });
 
-  // CH4 — where the weight falls (2-3 tightest natal aspects)
-  const aspects = natalAspects(natal, orbs).slice(0, 3);
+  // CH4 — where the weight falls (2-3 tightest natal aspects).
+  // Untimed birth: the Moon is excluded from tight-orb claims — and we say why.
+  const aspects = natalAspects(natal, orbs)
+    .filter((x) => timed || (x.a !== 'moon' && x.b !== 'moon')).slice(0, 3);
+  const ch4Closer = (x) => (deep.ch4Closers && deep.ch4Closers[x.aspect])
+    ? ' ' + deep.ch4Closers[x.aspect] : ' Neither wins; the conversation is the point.';
+  const ch4Serif = [deep.chapters.ch4.intro, ...aspects.map((x) =>
+    deep.chapters.ch4.pairFrame
+      .replace('{a}', label(x.a)).replace('{b}', label(x.b))
+      .replace('{aspect}', x.aspect).replace('{orb}', fmtOrb(x.orbDeg))
+      .replace('{aTheme}', theme(x.a)).replace('{verb}', deep.aspectVerbs[x.aspect]).replace('{bTheme}', theme(x.b))
+      .replace(' Neither wins; the conversation is the point.', ch4Closer(x)),
+  )];
+  if (!timed && deep.chapters.ch4.noMoonNote) ch4Serif.push(deep.chapters.ch4.noMoonNote);
   chapters.push({
     n: 4, title: deep.chapters.ch4.title,
     mono: aspects.map((x) => `${label(x.a)} ${x.aspect} ${label(x.b)} — orb ${fmtOrb(x.orbDeg)}.`),
-    serif: [deep.chapters.ch4.intro, ...aspects.map((x) =>
-      deep.chapters.ch4.pairFrame
-        .replace('{a}', label(x.a)).replace('{b}', label(x.b))
-        .replace('{aspect}', x.aspect).replace('{orb}', fmtOrb(x.orbDeg))
-        .replace('{aTheme}', theme(x.a)).replace('{verb}', deep.aspectVerbs[x.aspect]).replace('{bTheme}', theme(x.b)),
-    )],
+    serif: ch4Serif,
   });
 
   // CH5 — the long arcs
   const arcs = { mono: [], serif: [] };
   for (const p of ['saturn', 'uranus', 'neptune', 'pluto']) {
     if (natal[p] == null) continue;
+    const sName = S[signIndex(natal[p])];
+    const hClause = (() => { const h = houseOf(natal[p]); return h ? `, ${h}${houseSuffix(h)} house` : ''; })();
     arcs.mono.push(`${label(p)} — ${fmtDeg(natal[p], S)}${houseTxt(natal[p])}`);
-    arcs.serif.push(deep.chapters.ch5[p]
-      .replace('{sign}', S[signIndex(natal[p])])
-      .replace('{house}', (() => { const h = houseOf(natal[p]); return h ? `, ${h}${houseSuffix(h)} house` : ''; })()));
+    // Sign-specific line when the library has one (audit fix: no placement-blind boilerplate).
+    const signLine = deep.ch5Signs && deep.ch5Signs[p] && deep.ch5Signs[p][sName.toLowerCase()];
+    arcs.serif.push(signLine
+      ? signLine + (hClause ? ` In your chart it sits in the ${hClause.replace(', ', '')}.` : '')
+      : deep.chapters.ch5[p].replace('{sign}', sName).replace('{house}', hClause));
+  }
+  // Stellium check: 3+ of the 10 bodies stacked in one sign is a defining signature.
+  if (deep.stelliumNote) {
+    const perSign = {};
+    for (const b of ['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto']) {
+      if (natal[b] == null || Number.isNaN(natal[b])) continue;
+      const si = signIndex(natal[b]); (perSign[si] = perSign[si] || []).push(b);
+    }
+    const stack = Object.entries(perSign).sort((a, b2) => b2[1].length - a[1].length)[0];
+    if (stack && stack[1].length >= 3) {
+      const si = Number(stack[0]);
+      const h = houseOf(si * 30 + 15);
+      arcs.serif.push(deep.stelliumNote
+        .replace('{count}', String(stack[1].length))
+        .replace('{sign}', S[si])
+        .replace('{houseClause}', h ? ` in your ${h}${houseSuffix(h)} house` : ''));
+    }
   }
   chapters.push({ n: 5, title: deep.chapters.ch5.title, ...arcs });
 
   // CH6 — this season's sky (live part; honest when absent)
   if (opts.transits) {
-    const tc = transitContacts(opts.transits, natal, orbs).slice(0, 3);
+    const tc = transitContacts(opts.transits, natal, orbs)
+      .filter((x) => timed || x.natal !== 'moon').slice(0, 3);
+    // Per-transit meaning (audit fix: numbers must never end in silence).
+    const ch6Serif = [deep.chapters.ch6.intro];
+    if (deep.ch6Transits) {
+      const T6 = deep.ch6Transits;
+      for (const x of tc) {
+        const arc = T6.planetArcs && T6.planetArcs[x.transiting];
+        if (!arc || !T6.frame) continue;
+        ch6Serif.push(T6.frame
+          .replace('{planet}', label(x.transiting)).replace('{planetArc}', arc)
+          .replace('{aspectVerb}', (T6.aspectVerbs && T6.aspectVerbs[x.aspect]) || x.aspect)
+          .replace('{target}', label(x.natal))
+          .replace('{targetTheme}', theme(x.natal)));
+      }
+    }
     chapters.push({
       n: 6, title: deep.chapters.ch6.title,
       mono: tc.length
         ? tc.map((x) => `${opts.transitDateText || 'Today'}: transiting ${label(x.transiting)} ${x.aspect} your natal ${label(x.natal)} — within ${fmtOrb(x.orbDeg)}.`)
         : [`${opts.transitDateText || 'Today'}: no transiting body sits within 3° of your chart — a genuinely quiet sky.`],
-      serif: [deep.chapters.ch6.intro],
+      serif: ch6Serif,
     });
   } else {
     chapters.push({ n: 6, title: deep.chapters.ch6.title, mono: [], serif: [deep.chapters.ch6.noTransits] });
