@@ -168,7 +168,7 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
     ? t.anchor.computed.replace('{date}', L.date || '12 August 2026').replace('{peakLocal}', L.peakLocal || '')
         .replace('{place}', L.place).replace('{coveragePct}', L.coveragePct || '')
     : t.anchor.computedNoPlace.replace('{date}', L.date || '12 August 2026'))
-    .replace('{eclipseDeg}', eclipseDeg).replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ');
+    .replace('{eclipseDeg}', eclipseDeg).replace(/\s+,/g, ',').replace(/,\s*,/g, ',').replace(/\s{2,}/g, ' ');
 
   const contacts = allContacts(eclipseLon, natal, t);
   // Primary = tightest HARD contact within its per-aspect sale gate.
