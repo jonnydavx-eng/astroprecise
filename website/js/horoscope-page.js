@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-    var AV = String(window.AP_ASSET_V || '752');
+    var AV = String(window.AP_ASSET_V || '771');
 
     var SIGNS = (function () {
       var Z = window.AP_ZODIAC;

@@ -137,7 +137,7 @@ const FinishShader = {
       return window.__loadCanvasOrreryScript();
     }
     if (window.__apOrreryFallbackScriptPromise) return window.__apOrreryFallbackScriptPromise;
-    const version = String(window.AP_ASSET_V || '753');
+    const version = String(window.AP_ASSET_V || '771');
     const base = new URL('js/orrery3d.js', document.baseURI);
     base.searchParams.set('v', version);
     base.searchParams.set('fallback', 'canvas');

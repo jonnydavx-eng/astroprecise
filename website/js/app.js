@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '753');
+const AP_ASSET_V = String(window.AP_ASSET_V || '771');
 
 const AstroApp = (() => {
 
@@ -128,6 +128,70 @@ const AstroApp = (() => {
     document.head.appendChild(l);
   }
 
+  // ── Focus trap (modals + mobile nav) ─────────────────────────────────────
+  // Lightweight shop-style Tab cycle; one active trap at a time.
+  let _focusTrapRelease = null;
+  let _focusTrapReturn = null;
+
+  function focusableWithin(root) {
+    if (!root) return [];
+    const sel = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    return Array.prototype.filter.call(root.querySelectorAll(sel), function (el) {
+      return el.offsetParent !== null || el === document.activeElement;
+    });
+  }
+
+  function releaseFocusTrap() {
+    if (typeof _focusTrapRelease === 'function') {
+      try { _focusTrapRelease(); } catch (e) { /* ignore */ }
+    }
+    _focusTrapRelease = null;
+  }
+
+  function trapFocus(container, opts) {
+    opts = opts || {};
+    releaseFocusTrap();
+    if (!container) return function () {};
+    _focusTrapReturn = opts.returnTo || document.activeElement;
+    const initial = opts.initialFocus
+      || container.querySelector('input:not([type="hidden"]), button, [href], [tabindex]:not([tabindex="-1"])')
+      || focusableWithin(container)[0]
+      || container;
+    try {
+      if (initial && typeof initial.focus === 'function') {
+        setTimeout(function () { try { initial.focus(); } catch (e0) { /* ignore */ } }, 30);
+      }
+    } catch (e1) { /* ignore */ }
+
+    function onKeydown(e) {
+      if (e.key !== 'Tab') return;
+      const items = focusableWithin(container);
+      if (!items.length) { e.preventDefault(); return; }
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !container.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !container.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener('keydown', onKeydown, true);
+    _focusTrapRelease = function release() {
+      document.removeEventListener('keydown', onKeydown, true);
+      const ret = _focusTrapReturn;
+      _focusTrapReturn = null;
+      if (ret && typeof ret.focus === 'function') {
+        try { ret.focus(); } catch (e2) { /* ignore */ }
+      }
+    };
+    return _focusTrapRelease;
+  }
+
   // ── Navbar ────────────────────────────────────────────────────────────────
 
   function closeNavDrawer() {
@@ -141,6 +205,7 @@ const AstroApp = (() => {
     }
     mobile.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('nav-drawer-open');
+    releaseFocusTrap();
     if (!document.querySelector('.modal-backdrop.open')) {
       document.body.style.overflow = '';
     }
@@ -170,6 +235,12 @@ const AstroApp = (() => {
         mobile.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
         document.body.classList.toggle('nav-drawer-open', isOpen);
         document.body.style.overflow = isOpen ? 'hidden' : '';
+        if (isOpen) {
+          trapFocus(mobile, { returnTo: toggle, initialFocus: mobile.querySelector('a, button') });
+        } else {
+          releaseFocusTrap();
+          try { toggle.focus(); } catch (e) { /* ignore */ }
+        }
       });
 
       mobile.addEventListener('click', (e) => {
@@ -635,6 +706,11 @@ const AstroApp = (() => {
       modal.style.display = 'flex';
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      const panel = modal.querySelector('.modal, [role="document"]') || modal;
+      trapFocus(panel, {
+        returnTo: document.activeElement,
+        initialFocus: modal.querySelector('input:not([type="hidden"]), button.modal__close, [data-modal-close], button, a[href]')
+      });
     }
   }
 
@@ -644,6 +720,7 @@ const AstroApp = (() => {
       modal.classList.remove('open');
       modal.style.display = 'none';
       modal.setAttribute('aria-hidden', 'true');
+      releaseFocusTrap();
       const drawerOpen = document.querySelector('.navbar__mobile-menu.open');
       if (!drawerOpen) document.body.style.overflow = '';
     }
@@ -2329,7 +2406,19 @@ else AstroApp.init();
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
     }
+    // Focus first field so keyboard / SR users land in the capture (checkout notify path)
+    try {
+      var field = modal && modal.querySelector('input[type="email"], input[name="email"], input:not([type="hidden"])');
+      if (field && typeof field.focus === 'function') {
+        setTimeout(function () { try { field.focus(); } catch (eF) { /* ignore */ } }, 40);
+      }
+    } catch (eOpen) { /* ignore */ }
   }
+
+  // Alias for dormant checkout hardeners (ap-checkout-honest / ap-gumroad-bridge)
+  // that call AP_openEmailCapture — without this, Notify CTAs silently no-op.
+  window.AP_openEmailCapture = openEmailSignup;
+  if (window.AstroApp) window.AstroApp.openEmailCapture = openEmailSignup;
 
   function confirmHtml(res) {
     var c = window.AP_COPY;
@@ -2541,6 +2630,7 @@ else AstroApp.init();
     modal.classList.remove('open');
     modal.style.display = 'none';
     modal.setAttribute('aria-hidden', 'true');
+    releaseFocusTrap();
     document.body.style.overflow = '';
   }
 

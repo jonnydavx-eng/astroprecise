@@ -3,18 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Astro Precise — one sky, yours. A living solar system, computed in your browser</title>
-<meta name="description" content="Fly a live solar system computed on your device, then cast the chart of the minute you were born — free, private, to the arcminute. Nothing uploaded, ever.">
-<meta property="og:title" content="Astro Precise — one sky, yours">
-<meta property="og:description" content="A living orrery in your browser. Cast your birth chart free — computed here, never uploaded.">
+<title>Astro Precise — the real sky news · one sky, yours</title>
+<meta name="description" content="The real sky news: a living solar system and birth chart computed on your device — to the arcminute, private, never uploaded. Weather report of the sky, not prophecy.">
+<meta property="og:title" content="Astro Precise — the real sky news">
+<meta property="og:description" content="One sky. Yours. Live orrery + free birth chart, computed in your browser. Real astronomy, read in the old language.">
 <meta property="og:url" content="https://astroprecise.app/">
 <meta property="og:image" content="https://astroprecise.app/img/eclipse-og.png">
+<meta property="og:site_name" content="Astro Precise">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Astro Precise — the real sky news">
+<meta name="twitter:description" content="Live solar system. Free chart. Computed on your device — nothing uploaded.">
+<meta name="twitter:image" content="https://astroprecise.app/img/eclipse-og.png">
 <link rel="canonical" href="https://astroprecise.app/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/ap-sky-news.css?v=771">
 <script src="./js/ephemeris.js"></script>
 <script src="./js/orrery.js"></script>
+<script src="./js/ap-sky-news.js?v=771" defer></script>
+<script src="./js/ap-checkout-honest.js?v=771" defer></script>
+<script src="./js/ap-gumroad-bridge.js?v=771" defer></script>
 <style>
 :root{--ink:#e9edf2;--dim:rgba(233,237,242,.72);--faint:rgba(233,237,242,.5);--line:rgba(159,220,236,.18);--line2:rgba(159,220,236,.24);--acc:#9fdcec;--good:rgba(126,240,200,.85);--warn:#e6a15c;--card:rgba(220,240,248,.04)}
 *{box-sizing:border-box}
@@ -93,11 +102,11 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         </div>
       </div>
       <nav class="main">
-        <a href="#cast">CHART</a><a href="#tonight">TONIGHT</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--acc)">THE ECLIPSE ✦</a>
+        <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--acc)">THE ECLIPSE ✦</a>
       </nav>
     </div>
     <div class="hero-ui" style="text-align:center;margin-top:20px;padding:0 90px">
-      <div class="mono" style="font-size:9px;letter-spacing:.32em;color:var(--faint);margin-bottom:14px;animation-delay:.1s">EARTH → SYSTEM → STARS → GALAXY → COSMOS</div>
+      <div class="mono" style="font-size:9px;letter-spacing:.32em;color:var(--acc);margin-bottom:14px;animation-delay:.1s">THE REAL SKY NEWS</div>
       <h1 style="margin:0;font-size:clamp(46px,7.2vw,88px);line-height:1;font-weight:700;letter-spacing:-.02em;text-shadow:0 2px 40px rgba(0,0,0,.9);animation-delay:.25s">One sky. <em class="serif" style="color:var(--acc);font-weight:400">Yours.</em></h1>
       <p style="margin:14px auto 0;font-size:clamp(15px,1.6vw,19px);color:var(--dim);max-width:580px;text-shadow:0 1px 20px #000;animation-delay:.45s">A living universe, computed in your browser — drift from your street to the deep field, then land on the minute you were born.</p>
       <div class="mono" style="margin-top:13px;font-size:9.5px;letter-spacing:.24em;color:var(--faint);animation-delay:.65s"><span class="pulse" style="color:var(--good)">●</span>&nbsp;&nbsp;LIVE · COMPUTED HERE · NOTHING UPLOADED</div>
@@ -119,6 +128,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   <div id="ladder" role="group" aria-label="Scale ladder"><span class="mono" style="font-size:7.5px;letter-spacing:.24em;color:var(--faint)">SCALE</span></div>
   <div id="telemetry" aria-live="polite"></div>
   <div id="dock" role="group" aria-label="Fly to a world"><span class="mono" style="align-self:center;font-size:7.5px;letter-spacing:.22em;color:var(--faint)">FLY<br>TO</span></div>
+  <div id="ap-sky-news" class="ap-sky-news" style="position:absolute;left:0;right:0;bottom:88px;z-index:8;pointer-events:none"></div>
 </div>
 
 <!-- trust strip -->
@@ -170,26 +180,34 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 <!-- ═══ TONIGHT ═══ -->
 <section class="band" id="tonight">
   <div class="wrap">
-    <div class="lbl">02 · TONIGHT</div>
+    <div class="lbl">02 · THE REAL SKY NEWS</div>
     <h2>The sky is still moving.</h2>
-    <p class="sub">Computed this minute, on your device — weather report, not prophecy.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px">
-      <div class="card"><div class="lbl">☽ THE MOON TONIGHT</div>
-        <div style="display:flex;gap:18px;align-items:center;margin-bottom:8px">
-          <div style="width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#242c3e,#0e1420 72%);position:relative;overflow:hidden;flex:none;box-shadow:inset -5px -5px 12px rgba(0,0,0,.55)">
-            <div id="moonDisc" style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 42% 40%,#eef1f7,#b9c4d8 78%)"></div>
-          </div>
-          <div id="moonName" style="font-size:26px;font-weight:700">…</div>
+    <p class="sub">Tonight’s real sky news — computed this minute on your device. Weather report of the sky, not prophecy. Tap a card to fly the living model.</p>
+    <div id="ap-sky-news-band" class="ap-sky-news ap-sky-news--band" style="margin:0 0 20px"></div>
+    <!-- Compact receipt under the instrument (not a second news grid — band is primary) -->
+    <div class="card" id="tonight-receipt" style="padding:16px 20px;display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center" aria-live="polite">
+      <div style="display:flex;gap:12px;align-items:center;min-width:min(100%,220px)">
+        <div style="width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#242c3e,#0e1420 72%);position:relative;overflow:hidden;flex:none;box-shadow:inset -4px -4px 10px rgba(0,0,0,.55)" aria-hidden="true">
+          <div id="moonDisc" style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 42% 40%,#eef1f7,#b9c4d8 78%)"></div>
         </div>
-        <div id="moonLine" style="font-size:15.5px;color:var(--dim);margin-bottom:14px"></div>
-        <div class="mono" id="moonIllum" style="font-size:9.5px;letter-spacing:.14em;color:var(--faint)"></div></div>
-      <div class="card"><div class="lbl">✦ TIGHTEST PAIR</div>
-        <div id="pairNames" style="font-size:26px;font-weight:700;margin-bottom:10px">…</div>
-        <div style="font-size:15.5px;color:var(--dim);margin-bottom:14px">Two wanderers crossing paths in your evening sky.</div>
-        <div class="mono" id="pairSep" style="font-size:9.5px;letter-spacing:.14em;color:var(--faint)"></div></div>
-      <div class="card"><div class="lbl">℞ RETROGRADE BOARD</div><div id="retroRows"></div></div>
+        <div>
+          <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--acc)">MOON</div>
+          <div id="moonName" style="font-size:16px;font-weight:700">…</div>
+          <div id="moonLine" style="font-size:13px;color:var(--dim)"></div>
+          <div class="mono" id="moonIllum" style="font-size:9px;letter-spacing:.12em;color:var(--faint)"></div>
+        </div>
+      </div>
+      <div style="min-width:min(100%,180px)">
+        <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--acc)">TIGHTEST PAIR</div>
+        <div id="pairNames" style="font-size:16px;font-weight:700">…</div>
+        <div class="mono" id="pairSep" style="font-size:9px;letter-spacing:.12em;color:var(--faint)"></div>
+      </div>
+      <div style="flex:1;min-width:min(100%,200px)">
+        <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--acc);margin-bottom:6px">℞ BOARD</div>
+        <div id="retroRows" style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px"></div>
+      </div>
     </div>
-    <div class="receipt" id="transitHit" hidden style="margin-top:20px;border-color:rgba(126,240,200,.35)"></div>
+    <div class="receipt" id="transitHit" hidden style="margin-top:16px;border-color:rgba(126,240,200,.35)"></div>
   </div>
 </section>
 
@@ -256,12 +274,12 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         <div class="serif" style="font-size:17px;color:var(--faint)">Drag the sky. It was always yours to move.</div>
       </div>
       <div class="mono" style="display:flex;gap:48px;font-size:10px;letter-spacing:.18em;line-height:2.4">
-        <div style="display:flex;flex-direction:column"><span style="color:var(--faint)">SKY</span><a href="#cast">CHART</a><a href="#tonight">TONIGHT</a><a href="./deep-time.html">DEEP TIME</a><a href="./cosmic-calendar.html">COSMIC CALENDAR</a><a href="./journey.html">JOURNEY</a></div>
+        <div style="display:flex;flex-direction:column"><span style="color:var(--faint)">SKY</span><a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="./deep-time.html">DEEP TIME</a><a href="./cosmic-calendar.html">COSMIC CALENDAR</a><a href="./journey.html">JOURNEY</a></div>
         <div style="display:flex;flex-direction:column"><span style="color:var(--faint)">SHOP</span><a href="./eclipse.html">ECLIPSE</a><a href="./deep-reading.html">DEEP READING</a><a href="./natal-plate.html">THE PLATE</a><a href="./refunds.html">REFUNDS</a></div>
       </div>
     </div>
     <div class="foot" style="border-top:1px solid rgba(233,237,242,.1);padding-top:20px;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap">
-      <span>© MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED</span>
+      <span>© MMXXVI ASTRO PRECISE · THE REAL SKY NEWS · COMPUTED, NEVER FABRICATED</span>
       <span>YOUR BIRTH DATA NEVER LEAVES YOUR DEVICE · <a href="./verify.html">VERIFY A PLATE</a></span>
     </div>
   </div>
@@ -352,6 +370,46 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     }).join('');
     if (orr && orr.setNatal) orr.setNatal(chart.rows.map(function (r) { return { glyph: r.glyph, lon: r.lon, name: r.name }; }));
     if (orr && orr.setJD) { orr.setJD(jd); $('scrubLabel').textContent = lab; }
+    // Persist for Real Sky News "YOUR CHART TODAY" + deep-reading sample personalisation
+    try {
+      var positions = {};
+      chart.rows.forEach(function (r) {
+        var key = r.name;
+        var si = Math.floor((((r.lon % 360) + 360) % 360) / 30);
+        positions[key] = {
+          lon: r.lon,
+          sign: SIGNS[si],
+          degree: (((r.lon % 360) + 360) % 360) - si * 30,
+          retrograde: !!r.retro
+        };
+      });
+      var entry = {
+        id: 'home-' + dob,
+        name: 'Home cast',
+        birthDate: dob,
+        birthTime: $('tob').value || '',
+        city: '',
+        positions: positions,
+        savedAt: new Date().toISOString()
+      };
+      var list = [];
+      try { list = JSON.parse(localStorage.getItem('ap_charts') || '[]'); } catch (e1) { list = []; }
+      if (!Array.isArray(list)) list = [];
+      list = list.filter(function (c) { return c && c.id !== entry.id; });
+      list.unshift(entry);
+      if (list.length > 12) list = list.slice(0, 12);
+      localStorage.setItem('ap_charts', JSON.stringify(list));
+      localStorage.setItem('ap_active_chart', entry.id);
+    } catch (e2) { /* private mode */ }
+    // Refresh sky-news cards so personal transit can appear
+    try {
+      if (window.APSkyNews && typeof APSkyNews.mount === 'function') {
+        var band = document.getElementById('ap-sky-news-band');
+        var hero = document.getElementById('ap-sky-news');
+        if (band) APSkyNews.mount(band, { autoFly: false, autoCycle: true, cycleMs: 10000, limit: 6 });
+        if (hero) APSkyNews.mount(hero, { autoFly: false, autoCycle: true, cycleMs: 9000, limit: 5 });
+      }
+    } catch (e3) { /* optional */ }
     try { history.replaceState(null, '', '#b=' + encodeURIComponent(dob + '|' + $('tob').value + '|' + tz)); } catch (e) {}
     tonight();
   }
@@ -450,7 +508,15 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     Array.prototype.forEach.call($('ladder').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.lv === e.detail.level); });
   });
   $('flightBtn').addEventListener('click', function () { if (orr.flight) orr.flight(); });
-  $('flyMine').addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); if (orr.flyScale) orr.flyScale('SYSTEM'); });
+  $('flyMine').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (chart && chart.jd && orr.setJD) orr.setJD(chart.jd);
+    if (chart && chart.rows && orr.setNatal) {
+      orr.setNatal(chart.rows.map(function (r) { return { glyph: r.glyph, lon: r.lon, name: r.name }; }));
+    }
+    if (orr.flyScale) orr.flyScale('SYSTEM');
+    else if (orr.flyTo) orr.flyTo('earth');
+  });
   var VE = window.VoidEphem;
   $('scrub').addEventListener('input', function (e) {
     var year = 1800 + (+e.target.value) * 0.4, jd = 2451545.0 + (year - 2000) * 365.25;

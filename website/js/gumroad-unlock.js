@@ -33,14 +33,24 @@ export const GUMROAD_PRODUCTS = {
   'eclipse-reading': { permalink: 'REPLACE_ME', price: '£2.99' },
   'eclipse-set':     { permalink: 'REPLACE_ME', price: '£6' },
   'full-reading':    { permalink: 'REPLACE_ME', price: '£12' },
+  // Alias used by shop catalogue / pages (same Gumroad product when live)
+  'deep-reading':    { permalink: 'REPLACE_ME', price: '£12' },
   'plate':           { permalink: 'REPLACE_ME', price: '£14' },
   'sky-pass':        { permalink: 'REPLACE_ME', price: '£5' },
 };
 
+/** Resolve slug aliases (deep-reading ↔ full-reading share one product). */
+export function resolveProductSlug(slug) {
+  if (slug === 'deep-reading') return 'full-reading';
+  if (slug === 'full-reading') return 'full-reading';
+  return slug;
+}
+
 /** True when the owner has pasted a real Gumroad permalink (not REPLACE_ME). */
 export function isCheckoutReady(slug) {
-  const p = GUMROAD_PRODUCTS[slug];
-  return !!(p && p.permalink && p.permalink !== 'REPLACE_ME');
+  const key = resolveProductSlug(slug);
+  const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
+  return !!(p && p.permalink && p.permalink !== 'REPLACE_ME' && !String(p.permalink).includes('REPLACE'));
 }
 
 /**
@@ -50,7 +60,8 @@ export function isCheckoutReady(slug) {
  * the "success" URL you configure in Gumroad to point at your unlock handler.
  */
 export function openCheckout(slug) {
-  const p = GUMROAD_PRODUCTS[slug];
+  const key = resolveProductSlug(slug);
+  const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
   if (!isCheckoutReady(slug)) throw new Error(`Set the Gumroad permalink for "${slug}"`);
   // Gumroad overlay opens when navigating to the ?wanted=true product URL.
   const url = `https://gumroad.com/l/${p.permalink}?wanted=true`;
@@ -63,8 +74,10 @@ export function openCheckout(slug) {
  * Docs: POST https://api.gumroad.com/v2/licenses/verify
  */
 export async function verifyLicense(slug, licenseKey, { incrementUses = false } = {}) {
-  const p = GUMROAD_PRODUCTS[slug];
+  const key = resolveProductSlug(slug);
+  const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
   if (!p) throw new Error(`Unknown product "${slug}"`);
+  if (!isCheckoutReady(slug)) return { valid: false };
   const body = new URLSearchParams({
     product_permalink: p.permalink,
     license_key: licenseKey,

@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Natal Plate — an A3 star map of your birth minute | Astro Precise</title>
-<meta name="description" content="A print-grade A3 plate of the sky at your birth minute: arcminute positions, measured angles, a verify link that re-computes the chart live. Sample edition shown in full.">
+<title>The Natal Plate — the real sky news | Astro Precise</title>
+<meta name="description" content="Print-grade A3 plate of your birth minute — arcminute positions, sealed fingerprint, live verify. The real sky news: computed, never fabricated. Weather report of the sky, not prophecy.">
+<meta property="og:title" content="The Natal Plate — the real sky news | Astro Precise">
+<meta property="og:description" content="A3 star map of one birth minute. Sealed AP-FP-1 fingerprint. The real sky news.">
 <link rel="canonical" href="https://astroprecise.app/natal-plate.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,8 +44,13 @@ a:focus-visible,button:focus-visible{outline:2px solid #9fdcec;outline-offset:2p
   <span class="mono" style="font-size:10px;letter-spacing:.26em;color:#9fdcec">THE NATAL PLATE · £14 · SAMPLE EDITION SHOWN IN FULL</span>
   <span style="display:flex;gap:10px;flex-wrap:wrap">
     <button class="btn" onclick="window.print()" type="button">PRINT / SAVE PDF</button>
-    <a class="btn" style="background:none;border:1px solid rgba(233,237,242,.35);color:#e9edf2" href="https://gumroad.com/l/REPLACE_ME_PLATE?wanted=true">COMMISSION MINE — £14</a>
+    <a class="btn" style="background:none;border:1px solid rgba(233,237,242,.35);color:#e9edf2" href="./shop.html#plate">NOTIFY ME — £14 WHEN CHECKOUT OPENS</a>
   </span>
+</div>
+
+<div class="mono" style="max-width:1123px;margin:0 auto;padding:8px 22px 6px;color:#9fdcec;font-size:10px;letter-spacing:.22em">DESIGN MASTER · ENHANCED A3 PLATE (CLAUDE DESIGN LAB)</div>
+<div style="max-width:1123px;margin:0 auto 16px;padding:0 22px">
+  <img src="./img/plate-enhanced.svg" width="1240" height="1754" alt="Enhanced Natal Plate design master — print-grade A3 sample with sealed fingerprint and heliocentric band" style="width:100%;height:auto;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.55);background:#f8fbfc" loading="lazy" decoding="async" />
 </div>
 
 <div id="scaler">
@@ -210,5 +217,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #9fdcec;outline-offset:2p
   build();
 })();
 </script>
+<script src="./js/ap-checkout-honest.js?v=771" defer></script>
+<script src="./js/ap-gumroad-bridge.js?v=771" defer></script>
 </body>
 </html>

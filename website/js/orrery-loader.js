@@ -12,7 +12,7 @@
   var scheduleToken = 0;
   var booting = false;
   var scriptEl = document.currentScript;
-  var ASSET_V = String(window.AP_ASSET_V || '753');
+  var ASSET_V = String(window.AP_ASSET_V || '771');
   var fallbackScriptSeq = 0;
   var fallbackHandoffTimer = null;
   var fallbackHandoffToken = 0;

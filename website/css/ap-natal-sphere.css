@@ -1,0 +1,106 @@
+/* Natal Sphere — unique 3D ecliptic instrument */
+.ap-natal-sphere {
+  --ns-acc: #9fdcec;
+  --ns-ink: #e9edf2;
+  --ns-dim: rgba(233, 237, 242, 0.7);
+  --ns-line: rgba(159, 220, 236, 0.2);
+  margin: 1.25rem 0 1.75rem;
+  padding: 1.1rem 1.15rem 1.25rem;
+  border: 1px solid var(--ns-line);
+  border-radius: 16px;
+  background: linear-gradient(165deg, rgba(12, 20, 32, 0.95), rgba(4, 8, 14, 0.98));
+}
+.ap-natal-sphere__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: baseline;
+  margin-bottom: 12px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+.ap-natal-sphere__brand {
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  color: var(--ns-acc);
+}
+.ap-natal-sphere__sub {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: rgba(233, 237, 242, 0.45);
+}
+.ap-natal-sphere__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(180px, 0.8fr);
+  gap: 16px;
+  align-items: stretch;
+}
+@media (max-width: 720px) {
+  .ap-natal-sphere__grid { grid-template-columns: 1fr; }
+}
+.ap-natal-sphere__stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 280px;
+}
+.ap-natal-sphere__canvas {
+  display: block;
+  width: min(100%, 480px);
+  height: auto;
+  border-radius: 12px;
+  background: #030508;
+}
+.ap-natal-sphere__side {
+  border-left: 1px solid var(--ns-line);
+  padding-left: 14px;
+}
+@media (max-width: 720px) {
+  .ap-natal-sphere__side {
+    border-left: 0;
+    border-top: 1px solid var(--ns-line);
+    padding-left: 0;
+    padding-top: 12px;
+  }
+}
+.ap-natal-sphere__side-title {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--ns-acc);
+  margin-bottom: 10px;
+}
+.ap-natal-sphere__asp {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(233, 237, 242, 0.08);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--ns-dim);
+}
+.ap-natal-sphere__asp-orb {
+  color: rgba(159, 220, 236, 0.75);
+  white-space: nowrap;
+}
+.ap-natal-sphere__cta-row {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ap-natal-sphere__cta {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: #000;
+  background: var(--ns-ink);
+  border-radius: 999px;
+  padding: 12px 18px;
+  text-decoration: none;
+}
+.ap-natal-sphere__cta:hover {
+  filter: brightness(1.06);
+  color: #000;
+}

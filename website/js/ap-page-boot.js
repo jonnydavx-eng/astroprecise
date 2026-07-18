@@ -8,7 +8,7 @@
 
   document.documentElement.classList.add('ap-enchanted', 'ap-brand-nebula');
 
-if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '753';
+if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '771';
   var AV = window.AP_ASSET_V;
 
   // Client error beacon (session buffer; optional future Sentry DSN via meta)
@@ -172,4 +172,8 @@ if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '753';
     if (document.visibilityState === 'hidden') location.reload(); /* only refresh backgrounded tabs — never a visible reload flash while the visitor is looking */
   });
 })();
+
+
+
+
 

@@ -5,7 +5,7 @@
 'use strict';
 
 (function initArtThemeLibrary() {
-  const AP_ASSET_V = String(window.AP_ASSET_V || '752');
+  const AP_ASSET_V = String(window.AP_ASSET_V || '771');
   const STORAGE_KEY = 'ap_art_theme';
   const SIGN_TO_THEME = {
     Aries: 'sign-aries', Taurus: 'sign-taurus', Gemini: 'sign-gemini', Cancer: 'sign-cancer',

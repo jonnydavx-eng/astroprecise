@@ -5,12 +5,10 @@
  * personal section on transits.html. Everything runs in the browser.
  *
  *   - Auto-loads the visitor's most recent SAVED natal chart from localStorage
- *     (AstroProfile `ap_charts`, key/shape per the chart.html save path).
- *   - `ap_charts` entries hold only birth data + sign strings (NO planet
- *     longitudes), so a full natal chart is RE-DERIVED client-side via
- *     AstroProfile.buildChartData() (which replays AstroEphemeris and handles
- *     local->UT conversion). If only Sun/Moon/Asc are available we fall back to
- *     the lightweight `ap_natal_pins` store.
+ *     (AstroProfile `ap_charts`, key/shape per chart.html / home cast save path).
+ *   - Preference order: (1) re-derive via buildChartData when lat/lon exist;
+ *     (2) use stored `positions` longitudes (home cast + full chart saves);
+ *     (3) lightweight `ap_natal_pins` Sun/Moon/(Asc).
  *   - Computes TODAY's transit-to-natal aspects through the real VSOP87/ELP2000
  *     engine and produces a DETERMINISTIC reading via AstroOracle.getDailyInsight
  *     (seeded by date XOR chart — stable on reload, fresh each day). Output is
@@ -94,52 +92,84 @@
     return '';
   }
 
-  // ── chart loading (saved → re-derived natal positions) ─────────────────────
+  // ── chart loading (saved → re-derived or stored natal positions) ───────────
 
   // Returns { positions, label, mode, chartId } or null.
   //   positions: object usable directly by AstroOracle.getDailyInsight
-  //   mode: 'full' (all planets) | 'pins' (Sun/Moon/Asc only)
+  //   mode: 'full' | 'stored' | 'pins'
+  function loadChartsList() {
+    var P = window.AstroProfile;
+    if (P && typeof P.getCharts === 'function') {
+      try {
+        var fromProfile = P.getCharts();
+        if (fromProfile && fromProfile.length) return fromProfile;
+      } catch (e0) { /* fall through */ }
+    }
+    try {
+      var raw = JSON.parse(localStorage.getItem('ap_charts') || '[]');
+      return Array.isArray(raw) ? raw : [];
+    } catch (e1) {
+      return [];
+    }
+  }
+
+  function pickActiveChart(charts) {
+    if (!charts || !charts.length) return null;
+    var c = charts[0];
+    try {
+      var activeId = localStorage.getItem('ap_active_chart');
+      if (activeId) {
+        var found = charts.filter(function (x) { return x && String(x.id) === String(activeId); })[0];
+        if (!found && window.AstroProfile && typeof AstroProfile.getChart === 'function') {
+          found = AstroProfile.getChart(activeId);
+        }
+        if (found) c = found;
+      }
+    } catch (e) { /* ignore */ }
+    return c;
+  }
+
   function loadNatal() {
     var P = window.AstroProfile;
+    var charts = loadChartsList();
+    var c = pickActiveChart(charts);
 
-    // (A) Recompute a full natal chart from the most recent saved birth data.
-    if (P && typeof P.getCharts === 'function' && typeof P.buildChartData === 'function') {
-      var charts = P.getCharts();
-      if (charts && charts.length) {
-        var c = charts[0];
-        // Honor the dashboard's "Set as today's chart" (localStorage 'ap_active_chart' = chart id)
-        try {
-          var activeId = localStorage.getItem('ap_active_chart');
-          if (activeId) {
-            var found = charts.filter(function (x) { return String(x.id) === String(activeId); })[0]
-                        || (typeof P.getChart === 'function' ? P.getChart(activeId) : null);
-            if (found) c = found;
-          }
-        } catch (e) {}
-        if (c && c.birthDate && isFinite(parseFloat(c.lat)) && isFinite(parseFloat(c.lon))) {
-          var full = null;
-          try {
-            full = P.buildChartData({
-              name: c.name, date: c.birthDate, time: c.birthTime,
-              lat: c.lat, lon: c.lon, city: c.birthCity || c.city,
-              tz: c.tz, houseSystem: c.houseSystem
-            });
-          } catch (e) { full = null; }
-          if (full && full.positions) {
-            return {
-              positions: full.positions,
-              label: firstName(c.name),
-              mode: 'full',
-              chartId: c.id || c.birthDate
-            };
-          }
-        }
-        // Birth data incomplete but a chart row exists — degrade to its signs
-        // via the pins store below.
+    // (A) Recompute a full natal chart when birth place coords exist.
+    if (c && c.birthDate && isFinite(parseFloat(c.lat)) && isFinite(parseFloat(c.lon))
+        && P && typeof P.buildChartData === 'function') {
+      var full = null;
+      try {
+        full = P.buildChartData({
+          name: c.name, date: c.birthDate, time: c.birthTime,
+          lat: c.lat, lon: c.lon, city: c.birthCity || c.city,
+          tz: c.tz, houseSystem: c.houseSystem
+        });
+      } catch (e) { full = null; }
+      if (full && full.positions) {
+        return {
+          positions: full.positions,
+          label: firstName(c.name),
+          mode: 'full',
+          chartId: c.id || c.birthDate
+        };
       }
     }
 
-    // (B) Lightweight fallback — Sun/Moon/(Asc) longitudes only.
+    // (B) Stored longitudes from home cast or prior full save (no re-derive needed).
+    // Home cast writes { Sun: { lon, sign, ... }, ... } without lat/lon.
+    if (c && c.positions && typeof c.positions === 'object') {
+      var flat = flattenNatal(c.positions);
+      if (Object.keys(flat).length >= 2) {
+        return {
+          positions: c.positions,
+          label: firstName(c.name || 'Home cast'),
+          mode: 'stored',
+          chartId: c.id || c.birthDate || 'stored'
+        };
+      }
+    }
+
+    // (C) Lightweight fallback — Sun/Moon/(Asc) longitudes only.
     var pins = read('ap_natal_pins');
     if (pins && pins.points && (pins.points.sun != null || pins.points.moon != null)) {
       var pos = {};

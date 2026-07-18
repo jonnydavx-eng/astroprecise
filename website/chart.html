@@ -5,9 +5,9 @@
   <meta name="color-scheme" content="dark">
   <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Astro Precise Birth Chart Calculator — enter your birth date, time, and location for a precise natal chart accurate to within a few arcminutes (1800-2200 CE)." />
+  <meta name="description" content="Free natal chart on your device — Meeus/VSOP87 to the arcminute. The real sky news: weather report of the sky, not prophecy. Private; nothing uploaded (1800–2200 CE)." />
   <meta name="robots" content="index, follow" />
-  <title>Free Birth Chart Calculator — Natal Chart &amp; Rising Sign</title>
+  <title>Free Birth Chart — the real sky news | Astro Precise</title>
 <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
@@ -20,8 +20,8 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
-  <meta property="og:title" content="Birth Chart Calculator | Astro Precise" />
-  <meta property="og:description" content="Free natal chart calculator — enter your birth date, time and place for a precise birth chart with Sun, Moon, Rising, houses and aspects." />
+  <meta property="og:title" content="Birth Chart — the real sky news | Astro Precise" />
+  <meta property="og:description" content="Cast your natal chart on-device. The real sky news: precise positions, private — weather report of the sky, not prophecy." />
   <meta property="og:url" content="https://astroprecise.app/chart.html" />
   <link rel="canonical" href="https://astroprecise.app/chart.html" />
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
@@ -29,8 +29,8 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Birth Chart Calculator | Astro Precise" />
-  <meta name="twitter:description" content="Free natal chart calculator — enter your birth date, time and place for a precise birth chart with Sun, Moon, Rising, houses and aspects." />
+  <meta name="twitter:title" content="Birth Chart — the real sky news | Astro Precise" />
+  <meta name="twitter:description" content="Cast your natal chart on-device. The real sky news — weather report of the sky, not prophecy." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#07070A" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -68,15 +68,15 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="css/chart-critical.css?v=752" />
+  <link rel="stylesheet" href="css/chart-critical.css?v=771" />
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/ap-page-structure.css?v=752" id="ap-css-page-structure" />
-  <link rel="stylesheet" href="css/ap-model-stage.css?v=752" id="ap-css-model-stage" />
+  <link rel="stylesheet" href="css/ap-page-structure.css?v=771" id="ap-css-page-structure" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=771" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=752" />
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=752" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=771" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=771" />
   <style>
     /* LCP shell — system fonts paint before deferred webfonts (subtitle is LCP element) */
     .chart-hero__title {
@@ -218,12 +218,12 @@
       border-top-color: var(--ap-cta-ink, #0B1220);
     }
   </style>
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=771" id="ap-css-structure-clean" />
   <!-- Corrective wave: load the shared nav/precision layer after structure-clean
        so its non-overflow mobile grid is the final cascade on chart. -->
-  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=752" id="ap-css-overhaul-s8" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=752" id="ap-css-palette-2026" />
-  <link rel="stylesheet" href="css/ap-brand-nebula.css?v=752" id="ap-css-brand-nebula" />
+  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=771" id="ap-css-overhaul-s8" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=771" id="ap-css-palette-2026" />
+  <link rel="stylesheet" href="css/ap-brand-nebula.css?v=771" id="ap-css-brand-nebula" />
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferChartFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferChartFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/chart.css','ap-css-chart');deferPageCss('css/chart-page-deferred.css','ap-css-chart-deferred');deferPageCss('css/ap-reading.css','ap-css-reading');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
 </head>
@@ -567,7 +567,7 @@
 
         <aside class="chart-keepsake-band" aria-label="Keep this sky">
           <div class="chart-keepsake-band__art" aria-hidden="true">
-            <img src="img/marketing-masterpiece-plate-silver.jpg?v=752" width="96" height="96" alt="" loading="lazy" decoding="async" />
+            <img src="img/marketing-masterpiece-plate-silver.jpg?v=771" width="96" height="96" alt="" loading="lazy" decoding="async" />
           </div>
           <div class="chart-keepsake-band__copy">
             <p class="chart-keepsake-band__eyebrow">Your sky · keepsake path</p>
@@ -650,6 +650,8 @@
                     </svg>
                   </div>
                 </div>
+                <!-- Unique 3D ecliptic instrument (same longitudes as wheel) -->
+                <div id="ap-natal-sphere" class="ap-natal-sphere" hidden></div>
               </div>
             </div>
           </section>
@@ -1004,8 +1006,12 @@
   <script src="js/app.js" defer></script>
   <script src="js/ap-page-bridge.js" defer></script>
   <script src="js/ap-canvas-seals.js" defer></script>
-  <script src="js/ap-deep-link.js?v=752" defer></script>
-  <script src="js/ap-sky-bridge.js?v=752" defer></script>
+  <script src="js/ap-deep-link.js?v=771" defer></script>
+  <link rel="stylesheet" href="css/ap-natal-sphere.css?v=771" />
+  <script src="js/ap-natal-sphere.js?v=771" defer></script>
+  <script src="js/ap-sky-bridge.js?v=771" defer></script>
+  <script src="js/ap-checkout-honest.js?v=771" defer></script>
+  <script src="js/ap-gumroad-bridge.js?v=771" defer></script>
   <script src="js/chart-page.js" defer></script>
   <script>
   (function () {

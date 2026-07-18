@@ -5,8 +5,8 @@
   <meta name="color-scheme" content="dark">
   <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="My Cosmic Dashboard — track your astrological journey, save birth charts, and explore your life timeline. All data stored privately on your device." />
-  <title>My Cosmic Dashboard | Astro Precise</title>
+  <meta name="description" content="Your sky on this device — saved charts and timeline, private by default. The real sky news: weather report of the sky, not prophecy." />
+  <title>Profile — the real sky news | Astro Precise</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -15,8 +15,8 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
-  <meta property="og:title" content="My Cosmic Dashboard | Astro Precise" />
-  <meta property="og:description" content="Your personal cosmic journal — birth charts, life milestones, and astrological insights stored privately on your device." />
+  <meta property="og:title" content="Profile — the real sky news | Astro Precise" />
+  <meta property="og:description" content="Saved charts and timeline on this device. The real sky news — computed here, nothing uploaded." />
   <meta property="og:url" content="https://astroprecise.app/profile.html" />
   <link rel="canonical" href="https://astroprecise.app/profile.html" />
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
@@ -24,8 +24,8 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="My Cosmic Dashboard | Astro Precise" />
-  <meta name="twitter:description" content="Your personal cosmic journal — birth charts, life milestones, and astrological insights stored privately on your device." />
+  <meta name="twitter:title" content="Profile — the real sky news | Astro Precise" />
+  <meta name="twitter:description" content="Saved charts on this device. The real sky news — weather report of the sky, not prophecy." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
@@ -109,7 +109,7 @@
     <section class="hero hero--small" aria-labelledby="page-heading">
       <div class="container">
         <p class="hero__eyebrow">Your Cosmic Record</p>
-        <h1 id="page-heading">My Cosmic Dashboard</h1>
+        <h1 id="page-heading">Your sky on this device</h1>
         <p>Your personal astrological journal — stored privately on this device</p>
         <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Your record lives only on this device — no server, no account needed</span></a></p>
       </div>
@@ -175,7 +175,7 @@
             <div class="profile-hero__info">
               <p class="profile-hero__label">Cosmic Profile</p>
               <h2 id="dash-name-heading">Stargazer</h2>
-              <p class="profile-hero__tagline" id="profile-tagline">Your cosmic journey begins here</p>
+              <p class="profile-hero__tagline" id="profile-tagline">The real sky news — charts stay on this device</p>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--space-3);">
               <div class="completeness-ring" title="Profile completeness" aria-label="Profile completeness">
@@ -488,8 +488,8 @@
             <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
           </a>
           <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
+            <strong>The real sky news.</strong>
+            Weather report of the sky, not prophecy. Real astronomy, read in the old language.
           </p>
           <p>
             <span class="footer-brand__badge">
@@ -936,7 +936,7 @@
           : '<span class="eng-star-mark" style="color:#9fdcec;"></span>';
       }
 
-      let tagline = 'Your cosmic journey begins here';
+      let tagline = 'The real sky news — charts stay on this device';
       if (sunSign || moonSign || ascSign) {
         const parts = [];
         if (sunSign) parts.push('☉ ' + sunSign);

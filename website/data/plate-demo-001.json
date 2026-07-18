@@ -1,0 +1,20 @@
+{
+  "utcMinute": "2026-08-12T18:05Z",
+  "lat": 51.5074,
+  "lon": -0.1278,
+  "bodies": {
+    "sun": 140.051,
+    "moon": 140.303,
+    "mercury": 125.521,
+    "venus": 186.28,
+    "mars": 91.289,
+    "jupiter": 129.949,
+    "saturn": 14.867,
+    "uranus": 65.734,
+    "neptune": 4.447,
+    "pluto": 303.888
+  },
+  "series": "eclipse-2026-08-12",
+  "edition": 1,
+  "mintedAtISO": "2026-07-17T22:30:25.555Z"
+}

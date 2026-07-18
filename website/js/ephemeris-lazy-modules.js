@@ -53,7 +53,7 @@
       var request = (typeof window.__loadCanvasOrreryScript === 'function')
         ? window.__loadCanvasOrreryScript()
         : (function () {
-          var v = String(window.AP_ASSET_V || '753');
+          var v = String(window.AP_ASSET_V || '771');
           var token = 'ap-fallback-' + v + '-' + (++fallbackSeq) + '-' + Date.now();
           requestToken = token;
           var s = document.createElement('script');

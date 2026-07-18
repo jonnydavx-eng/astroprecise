@@ -1,0 +1,165 @@
+/* The Real Sky News — instrument briefing strip (Void Observatory) */
+.ap-sky-news {
+  --sn-ink: #e9edf2;
+  --sn-dim: rgba(233, 237, 242, 0.72);
+  --sn-faint: rgba(233, 237, 242, 0.48);
+  --sn-acc: #9fdcec;
+  --sn-line: rgba(159, 220, 236, 0.22);
+  --sn-card: rgba(8, 14, 22, 0.72);
+  position: relative;
+  width: min(1120px, calc(100% - 28px));
+  margin: 0 auto;
+  z-index: 6;
+  pointer-events: none;
+}
+.ap-sky-news__head,
+.ap-sky-news__track,
+.ap-sky-news__card {
+  pointer-events: auto;
+}
+.ap-sky-news__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 18px;
+  margin-bottom: 10px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+.ap-sky-news__live {
+  color: rgba(126, 240, 200, 0.9);
+  animation: ap-sn-pulse 2.2s ease-in-out infinite;
+  font-size: 10px;
+}
+.ap-sky-news__brand {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--sn-acc);
+}
+.ap-sky-news__sub {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--sn-faint);
+}
+.ap-sky-news__track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 2px 10px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.ap-sky-news__card {
+  flex: 0 0 min(280px, 78vw);
+  min-height: 44px;
+  scroll-snap-align: start;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--sn-line);
+  background: var(--sn-card);
+  backdrop-filter: blur(10px);
+  color: var(--sn-ink);
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.ap-sky-news__card:hover,
+.ap-sky-news__card:focus-visible,
+.ap-sky-news__card--on {
+  border-color: rgba(159, 220, 236, 0.55);
+  box-shadow: 0 0 0 1px rgba(159, 220, 236, 0.2), 0 12px 40px rgba(0, 0, 0, 0.35);
+  outline: 2px solid var(--sn-acc);
+  outline-offset: 2px;
+}
+.ap-sky-news__empty {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--sn-faint);
+  padding: 12px 4px;
+  margin: 0;
+}
+.ap-sky-news__card--on {
+  transform: translateY(-2px);
+}
+.ap-sky-news__kicker {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--sn-acc);
+}
+.ap-sky-news__title {
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.ap-sky-news__detail {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+  color: var(--sn-dim);
+  flex: 1;
+}
+.ap-sky-news__cta {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--sn-acc);
+  margin-top: 4px;
+}
+@keyframes ap-sn-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ap-sky-news__live { animation: none; }
+  .ap-sky-news__card--on { transform: none; }
+}
+/* In-flow band under Tonight (not floating on hero) */
+.ap-sky-news--band {
+  width: 100%;
+  margin: 0 0 1.25rem;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+}
+.ap-sky-news--band .ap-sky-news__card {
+  background: rgba(12, 20, 32, 0.85);
+}
+
+@media (max-width: 900px) {
+  /* Hide floating hero strip on small screens — band is the reliable surface */
+  #ap-sky-news.ap-sky-news:not(.ap-sky-news--band) {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .ap-sky-news { width: calc(100% - 16px); }
+  /* Keep honesty line for SR; hide visual clutter on small screens */
+  .ap-sky-news__sub {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .ap-sky-news--band {
+    width: 100%;
+    margin: 0 0 1.5rem;
+    padding: 0 2px;
+  }
+  .ap-sky-news--band .ap-sky-news__card {
+    min-width: min(260px, 82vw);
+  }
+}

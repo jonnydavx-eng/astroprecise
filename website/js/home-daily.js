@@ -15,7 +15,8 @@
 (function () {
   'use strict';
 
-  var V = '620';
+  // Keep in sync with website/sw.js tip / js/ap-asset-v.js AP_ASSET_V
+  var V = (typeof window !== 'undefined' && window.AP_ASSET_V) ? String(window.AP_ASSET_V) : '771';
   var root = document.getElementById('daily-tool-root');
   if (!root) return;
 

@@ -13,17 +13,25 @@
     'eclipse-reading': { permalink: 'REPLACE_ME', price: '£2.99' },
     'eclipse-set':     { permalink: 'REPLACE_ME', price: '£6' },
     'full-reading':    { permalink: 'REPLACE_ME', price: '£12' },
+    'deep-reading':    { permalink: 'REPLACE_ME', price: '£12' },
     'plate':           { permalink: 'REPLACE_ME', price: '£14' },
     'sky-pass':        { permalink: 'REPLACE_ME', price: '£5' },
   };
 
+  function resolveSlug(slug) {
+    if (slug === 'deep-reading') return 'full-reading';
+    return slug;
+  }
+
   function isReady(slug) {
-    var p = PRODUCTS[slug];
-    return !!(p && p.permalink && p.permalink !== 'REPLACE_ME');
+    var key = resolveSlug(slug);
+    var p = PRODUCTS[key] || PRODUCTS[slug];
+    return !!(p && p.permalink && p.permalink !== 'REPLACE_ME' && String(p.permalink).indexOf('REPLACE') < 0);
   }
 
   function openCheckout(slug) {
-    var p = PRODUCTS[slug];
+    var key = resolveSlug(slug);
+    var p = PRODUCTS[key] || PRODUCTS[slug];
     if (!isReady(slug)) {
       if (typeof w.AP_openEmailCapture === 'function') {
         w.AP_openEmailCapture('shop_gumroad_' + slug);

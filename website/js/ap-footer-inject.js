@@ -133,8 +133,9 @@
       + '<a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">'
       + '<span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>'
       + '<span class="footer-brand__logo-text">Astro Precise</span></a>'
-      + '<p class="footer-brand__tagline">A precision instrument wearing the skin of an astrology site. '
-      + 'Real astronomy, read in the old language.</p>'
+      + '<p class="footer-brand__tagline"><strong>The real sky news.</strong> '
+      + 'Weather report of the sky, not prophecy. Real astronomy, read in the old language. '
+      + 'Computed on your device.</p>'
       + '<p><span class="footer-brand__badge"><span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000</span></p>'
       + '<div class="footer-zodiac-strip" aria-hidden="true">' + seals + '</div>'
       + '</div>';

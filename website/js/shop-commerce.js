@@ -797,7 +797,7 @@ window.AstroShop = (() => {
   function cardArt(p) {
     const src = p.previewImage || PREVIEW_FALLBACK[p.type] || '';
     if (src) {
-      const bust = src.includes('?') ? src : `${src}?v=${String(window.AP_ASSET_V || '752')}`;
+      const bust = src.includes('?') ? src : `${src}?v=${String(window.AP_ASSET_V || '771')}`;
       return `<img class="shopc-card__preview" src="${esc(bust)}" alt="" width="1600" height="900" loading="lazy" decoding="async" />`;
     }
     return `<span class="shopc-card__glyph">${icon(p.icon)}</span>`;
@@ -952,6 +952,19 @@ window.AstroShop = (() => {
     document.body.classList.toggle('shop--dormant', n === 0);
     document.querySelectorAll('[data-when-live]').forEach(el => { el.hidden = n === 0; });
     document.querySelectorAll('[data-when-dormant]').forEach(el => { el.hidden = n !== 0; });
+    // Cart drawer CTA: never say "Checkout securely" while every SKU is dormant
+    const checkoutBtn = document.getElementById('shopc-checkout-btn');
+    if (checkoutBtn) {
+      const liveL = checkoutBtn.getAttribute('data-label-live') || 'Checkout securely';
+      const dormL = checkoutBtn.getAttribute('data-label-dormant') || 'Notify when checkout opens';
+      checkoutBtn.textContent = n === 0 ? dormL : liveL;
+    }
+    const cartNote = document.getElementById('shopc-cart-note');
+    if (cartNote) {
+      const liveN = cartNote.getAttribute('data-note-live') || cartNote.textContent;
+      const dormN = cartNote.getAttribute('data-note-dormant') || 'Basket saved on this device · checkout opens when products are connected.';
+      cartNote.textContent = n === 0 ? dormN : liveN;
+    }
     if (n === 0 && gridHydrated) renderGrid();
   }
 

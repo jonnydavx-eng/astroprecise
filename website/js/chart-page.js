@@ -696,6 +696,7 @@
     }
     renderBigThree(chart);
     renderWheel(chart);
+    renderNatalSphere(chart);
     renderTabs(chart);
     initTabs();
     renderWhatsNext(chart);
@@ -910,6 +911,28 @@
     paintWheelSky(chart);
     if (window.APSkyBridge && typeof APSkyBridge.mountChartPlanetDoorway === 'function') {
       APSkyBridge.mountChartPlanetDoorway(chart, el);
+    }
+  }
+
+  /** Unique 3D ecliptic natal sphere (APNatalSphere) — same engine longitudes as the wheel. */
+  function renderNatalSphere(chart) {
+    var host = document.getElementById('ap-natal-sphere');
+    if (!host) return;
+    if (!window.APNatalSphere || typeof window.APNatalSphere.mount !== 'function') {
+      host.hidden = true;
+      return;
+    }
+    if (!chart || !chart.positions || !chart.positions.Sun) {
+      host.hidden = true;
+      return;
+    }
+    host.hidden = false;
+    try {
+      if (host._apSphere && typeof host._apSphere.destroy === 'function') host._apSphere.destroy();
+      host._apSphere = window.APNatalSphere.mount(host, chart);
+    } catch (err) {
+      console.warn('[chart] natal sphere mount failed', err);
+      host.hidden = true;
     }
   }
 
@@ -1608,16 +1631,26 @@
     // Price renders ONLY if the owner sets it (honesty rule — never a fake number).
     const price = typeof M.deepReadingPrice === 'string' ? M.deepReadingPrice.trim() : '';
     const priceBit = price ? ` — <strong>${esc(price)}</strong>` : '';
+    // Prefer Gumroad-ready checkout; else honest shop notify (never a fake URL)
+    const gumReady = window.APGumroad && typeof APGumroad.isReady === 'function'
+      && (APGumroad.isReady('deep-reading') || APGumroad.isReady('full-reading'));
+    const shopDeep = 'shop.html#deep-reading';
     const ctaHtml = configured
       ? `<p class="deep-teaser__format">A personalised 13-page PDF — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, ten tightest aspects, and a full reference — drawn from the same engine as your free chart${priceBit}. One-time; yours to keep, no subscription.</p>
          <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener sponsored">
            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
          </a>
          <p class="deep-teaser__honest">Opens a secure checkout on our partner store. The chart you cast here never leaves your browser — your reading is hand-prepared from the birth details you enter at checkout.</p>`
-      : `<button type="button" class="btn--deep" id="deep-cta">
-           <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Full readings coming soon
-         </button>
-         <p class="deep-teaser__honest">Deep written readings aren't open for purchase yet. Drop your email below and you'll be the first to know — no spam.</p>`;
+      : gumReady
+      ? `<p class="deep-teaser__format">Seven computed chapters from the same engine as your free chart — £12 when checkout is live.</p>
+         <a class="btn--deep" id="deep-cta" href="${esc(shopDeep)}">
+           <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Unlock Deep Reading — £12
+         </a>
+         <p class="deep-teaser__honest">Computed on your device after purchase unlock. Birth data never leaves this browser.</p>`
+      : `<a class="btn--deep" id="deep-cta" href="${esc(shopDeep)}">
+           <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Notify me — Deep Reading £12
+         </a>
+         <p class="deep-teaser__honest">Checkout isn't live yet. Open the shop to join the notify list — no spam, no fake buy button. Sample: <a href="deep-reading.html">read a full sample →</a></p>`;
 
     host.innerHTML = `
       <div class="deep-teaser__head">
@@ -1629,14 +1662,15 @@
       <div class="deep-teaser__cta-wrap">
         ${ctaHtml}
         <p class="deep-teaser__sample" style="margin-top:var(--space-3);font-size:0.85rem;">
-          <a href="sample-reading.html" target="_blank" rel="noopener" style="color:var(--gold-light,#E8C872);">See a real sample reading →</a>
-          &nbsp;·&nbsp; A genuine example, generated from a sample chart.
+          <a href="deep-reading.html" rel="noopener" style="color:var(--gold-light,#E8C872);">See a full Deep Reading sample →</a>
+          &nbsp;·&nbsp; Computed sample (or your saved chart if one is on this device).
         </p>
       </div>`;
     host.hidden = false;
 
     const cta = document.getElementById('deep-cta');
-    if (cta && !configured) {
+    // Anchor CTAs navigate to shop; only plain buttons open email capture
+    if (cta && !configured && cta.tagName === 'BUTTON') {
       cta.addEventListener('click', () => {
         const ec = document.getElementById('email-capture');
         if (ec) {

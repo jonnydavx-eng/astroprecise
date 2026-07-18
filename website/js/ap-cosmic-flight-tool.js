@@ -3,7 +3,7 @@
 
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var AV = String(window.AP_ASSET_V || '752');
+  var AV = String(window.AP_ASSET_V || '771');
   var open = false;
   var booting = false;
   var homeParent = null;

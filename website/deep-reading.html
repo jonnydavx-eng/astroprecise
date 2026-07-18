@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Deep Reading — seven chapters, generated live | Astro Precise</title>
-<meta name="description" content="The £12 Deep Reading, proven not claimed: all seven chapters generated in front of you from a sample birth minute, by the same on-device engine that writes yours.">
-<meta property="og:title" content="The Deep Reading — watch all seven chapters generate live">
-<meta property="og:description" content="Mono receipts, serif meaning, a live chapter six. Computed on your device, never uploaded.">
+<title>The Deep Reading — the real sky news | Astro Precise</title>
+<meta name="description" content="The £12 Deep Reading — seven chapters from your sky or a published sample. The real sky news: on-device engine, never uploaded. Weather report of the sky, not prophecy.">
+<meta property="og:title" content="The Deep Reading — the real sky news | Astro Precise">
+<meta property="og:description" content="Seven chapters generated live on your device. The real sky news — weather report of the sky, not prophecy.">
 <meta property="og:url" content="https://astroprecise.app/deep-reading.html">
 <link rel="canonical" href="https://astroprecise.app/deep-reading.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,12 +77,12 @@ h1{margin:54px 0 6px;font-size:clamp(34px,6vw,46px);line-height:1.1;font-weight:
     <div style="font-size:19px;font-weight:700;margin-bottom:4px">Yours is written from your minute.</div>
     <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--faint)">£12 · KEEPSAKE PDF + LIVE CH6 · COMPUTED HERE, NEVER UPLOADED</div>
   </div>
-  <a class="btn" href="https://gumroad.com/l/REPLACE_ME_DEEP?wanted=true">COMMISSION MINE — £12</a>
+  <a class="btn" href="./shop.html#deep-reading">NOTIFY ME — £12 WHEN CHECKOUT OPENS</a>
 </div>
 
 <div class="foot" style="margin-top:30px">
   <a href="./eclipse.html">THE ECLIPSE — £2.99 READING</a> · <a href="./verify.html">VERIFY A PLATE</a> · <a href="./refunds.html">REFUNDS &amp; YOUR RIGHTS</a><br>
-  © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
+  © MMXXVI ASTRO PRECISE · THE REAL SKY NEWS · COMPUTED, NEVER FABRICATED
 </div>
 
 </div>
@@ -97,7 +97,44 @@ const natalOf = (jd) => {
   for (const [k, v] of Object.entries(P)) out[k.toLowerCase()] = v.lon;
   return out;
 };
-const natal = natalOf(E.julianDay(1994, 3, 14, 9, 12, 0));
+
+/** Prefer a saved chart on this device; else published sample (14 Mar 1994 Manchester). */
+function resolveNatal() {
+  const sample = {
+    natal: natalOf(E.julianDay(1994, 3, 14, 9, 12, 0)),
+    birth: { dateText: '14 March 1994', timeText: '09:12', place: 'Manchester' },
+    label: 'PUBLISHED SAMPLE CHART',
+  };
+  try {
+    const charts = JSON.parse(localStorage.getItem('ap_charts') || '[]');
+    if (!charts.length) return sample;
+    const activeId = localStorage.getItem('ap_active_chart');
+    const c = charts.find((x) => x && x.id === activeId) || charts[0];
+    if (!c || !c.positions) return sample;
+    const natal = {};
+    for (const [k, p] of Object.entries(c.positions)) {
+      if (!p) continue;
+      const lon = typeof p.lon === 'number' ? p.lon
+        : (typeof p.longitude === 'number' ? p.longitude
+          : (typeof p === 'number' ? p : null));
+      if (typeof lon === 'number' && isFinite(lon)) natal[k.toLowerCase()] = lon;
+    }
+    if (natal.sun == null) return sample;
+    return {
+      natal,
+      birth: {
+        dateText: c.birthDate || c.date || 'Saved chart',
+        timeText: c.birthTime || c.time || '',
+        place: c.city || c.place || 'on this device',
+      },
+      label: 'FROM YOUR SAVED CHART ON THIS DEVICE',
+    };
+  } catch (e) {
+    return sample;
+  }
+}
+
+const resolved = resolveNatal();
 const now = new Date();
 const transits = natalOf(E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 0));
 
@@ -105,12 +142,12 @@ Promise.all([
   fetch('./js/reading-templates.json').then((r) => r.json()),
   fetch('./js/deep-templates.json').then((r) => r.json())
 ]).then(([base, deep]) => {
-  const r = buildDeepReading(natal, base, deep, {
-    birth: { dateText: '14 March 1994', timeText: '09:12', place: 'Manchester' },
+  const r = buildDeepReading(resolved.natal, base, deep, {
+    birth: resolved.birth,
     transits,
     transitDateText: now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
   });
-  $('wordLine').textContent = `≈ ${r.wordCount} WORDS THIS MINUTE · CH6 RE-COMPUTES DAILY · EVERY NUMBER CHECKABLE ON THE MODEL`;
+  $('wordLine').textContent = `≈ ${r.wordCount} WORDS · ${resolved.label} · CH6 LIVE TRANSITS · CHECKABLE ON THE MODEL`;
   const today = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
   $('chapters').innerHTML = r.chapters.map((c) => `
     <div class="chapter">
@@ -120,10 +157,15 @@ Promise.all([
         ? `<div class="letter"><div class="mono" style="font-size:8.5px;letter-spacing:.24em;color:rgba(159,220,236,.7);margin-bottom:16px">KEPT FOR RE-READING · ${today}</div>${c.serif.map((s) => `<p class="serif" style="margin:0 0 14px">${s}</p>`).join('')}<div class="serif" style="font-size:17px;color:rgba(233,237,242,.65);margin:22px 0 0">— written from your sky alone</div></div>`
         : c.serif.map((s) => `<p class="serif">${s}</p>`).join('')}
     </div>`).join('');
-  $('notes').innerHTML = `${(r.houseNote || 'SAMPLE USES THE TEN BODIES; RISING/HOUSES APPEAR WHEN A BIRTH PLACE IS GIVEN AT COMMISSION.').toUpperCase()}<br>${r.legal.toUpperCase()}`;
+  const noteExtra = resolved.label.indexOf('SAVED') >= 0
+    ? 'BUILT FROM YOUR SAVED CHART ON THIS DEVICE — SAMPLE MODE UNTIL YOU COMMISSION.'
+    : (r.houseNote || 'SAMPLE USES THE TEN BODIES; RISING/HOUSES APPEAR WHEN A BIRTH PLACE IS GIVEN AT COMMISSION.');
+  $('notes').innerHTML = `${String(noteExtra).toUpperCase()}<br>${r.legal.toUpperCase()}`;
 }).catch((e) => {
   $('chapters').innerHTML = `<div class="mono" style="font-size:10px;letter-spacing:.2em;color:#e6a15c;padding:30px 0">ENGINE FAILED TO LOAD — ${String(e).slice(0, 80)}</div>`;
 });
 </script>
+<script src="./js/ap-checkout-honest.js?v=771" defer></script>
+<script src="./js/ap-gumroad-bridge.js?v=771" defer></script>
 </body>
 </html>

@@ -12,6 +12,8 @@
     "test:engine": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs",
     "test:ui": "node tools/_diag-click.mjs && node tools/visual-check/_wave2-deeplink.mjs && node tools/visual-check/_wave3-focus-settle.mjs",
     "test:focus": "node tools/visual-check/_wave3-focus-settle.mjs",
+    "test:launch": "node tools/_proof-massive-build.mjs && node tools/_proof-eclipse-wire.mjs && node tools/_proof-shop-cowork-wire.mjs && node tools/_proof-verify-plate.mjs && node tools/_proof-sky-news.mjs",
+    "check:plate": "node tools/mint-demo-plate-check.mjs",
     "build": "node tools/build.mjs",
     "serve:dist": "node tools/serve-dist.mjs",
     "check:syntax": "node tools/check-syntax.mjs",
@@ -28,3 +30,4 @@
     "prettier": "^3.3.3"
   }
 }
+

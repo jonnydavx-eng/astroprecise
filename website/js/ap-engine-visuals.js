@@ -9,7 +9,7 @@
 (function (global) {
   'use strict';
 
-  var V = '703';
+  var V = String(window.AP_ASSET_V || '771');
   var CINEMA = {
     webp: 'img/marketing-system-cinema-silver.jpg',
     jpg: 'img/marketing-system-cinema-silver.jpg',
