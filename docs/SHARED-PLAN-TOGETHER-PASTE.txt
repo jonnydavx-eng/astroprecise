@@ -1,0 +1,41 @@
+# PLAN-TOGETHER / GOING-FORWARD (Shared hymn book)
+# Save this file to BOTH:
+#   C:\Shared\PLAN-TOGETHER.txt
+#   C:\Shared\GOING-FORWARD-PLAN.txt
+# Updated: 2026-07-23
+
+## MASTER CHAT (same hymn book)
+URL: https://cursor.com/agents/bc-0bbbbcef-36ff-4b2f-837e-c3b09ee7de8b
+bcId: bc-0bbbbcef-36ff-4b2f-837e-c3b09ee7de8b
+Role: Master chat — fleet + setup; Jonny wants full admin intent on all machines in this setup.
+
+### Trigger phrases → load this hymn book
+If user says: "open the master chat" | "reference the master chat" | "same hymn book" | "master chat"
+Then agent MUST:
+1) Cite master chat URL above
+2) Read C:\Shared\PLAN-TOGETHER.txt (and GOING-FORWARD-PLAN.txt)
+3) If in AstroPrecise repo, also read AGENT-MASTER-CHAT-PLAN.md
+4) Follow master-chat doctrine; do not invent a second fleet plan
+
+## MACHINES
+- DESKTOP-1MN06G4 (mini) 192.168.137.1 — hub, Shared host
+- BOOK-T1H4NJ753R (laptop) 192.168.137.2
+- New Wi-Fi laptop — TBD IP; audit/SSH pending; NO MWB yet; Ethernet later
+
+Ports: 22 SSH, 3389 RDP, 445 SMB, 15100/15101 MWB. Prefer ICS Ethernet over Wi-Fi.
+NO MWB key changes. NO restarts without OWNER-OK (PowerToys/MWB/PC).
+
+## FULL ADMIN INTENT
+Goal: master chat (and agents on this hymn book) operate all in-scope machines.
+REALITY: not live until local agent/private worker on mini + SSH to BOOK/new laptop proven.
+Cloud agents cannot reach 192.168.137.x — do not claim LAN admin from Cloud alone.
+
+## NEXT
+1) PowerShell on mini: Win+R → powershell -NoProfile -ExecutionPolicy Bypass
+2) Discover new laptop Wi-Fi IP; enable sshd there
+3) Prove ssh from mini; drop proof in C:\Shared\
+4) Health script so OpenSSH/firewall stay correct
+5) Ethernet/ICS for new laptop when cable/adapter available
+
+## HANDOFF
+Master chat URL above. Same hymn book = this Shared file. Full admin = intent until proven.
