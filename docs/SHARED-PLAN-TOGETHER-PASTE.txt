@@ -31,11 +31,15 @@ REALITY: not live until local agent/private worker on mini + SSH to BOOK/new lap
 Cloud agents cannot reach 192.168.137.x — do not claim LAN admin from Cloud alone.
 
 ## NEXT
-1) PowerShell on mini: Win+R → powershell -NoProfile -ExecutionPolicy Bypass
-2) Discover new laptop Wi-Fi IP; enable sshd there
-3) Prove ssh from mini; drop proof in C:\Shared\
-4) Health script so OpenSSH/firewall stay correct
-5) Ethernet/ICS for new laptop when cable/adapter available
+1) MOUSE / MWB FIX (priority) — diagnose/repair Mouse Without Borders mini↔BOOK; NO MWB key changes; NO restarts without OWNER-OK; run docs/ops/mwb-triage-mini-readonly.ps1 on mini, paste CLAIMS vs REALITY here
+2) PowerShell on mini: Win+R → powershell -NoProfile -ExecutionPolicy Bypass
+3) Discover new laptop Wi-Fi IP; enable sshd there
+4) Prove ssh from mini; drop proof in C:\Shared\
+5) Health script so OpenSSH/firewall stay correct
+6) Ethernet/ICS for new laptop when cable/adapter available
+
+## CATCH-UP FROM MINI
+Cloud cannot see mini work until Jonny pastes C:\Shared reports into the master chat OR runs a local agent on mini. Do not invent mini status from Cloud alone.
 
 ## HANDOFF
-Master chat URL above. Same hymn book = this Shared file. Full admin = intent until proven.
+Master chat URL above. Same hymn book = this Shared file. Full admin = intent until proven. Mouse first.

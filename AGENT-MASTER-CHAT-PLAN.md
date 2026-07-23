@@ -82,12 +82,22 @@ Standing ports / services (mini + BOOK): SSH 22, RDP 3389, SMB 445, MWB 15100/15
 
 ## Immediate next actions (fleet)
 
-1. Jonny on mini: paste Shared block (below in PLAN-TOGETHER) so every local agent sees the hymn book
-2. Fix PowerShell launch on mini (`powershell -NoProfile -ExecutionPolicy Bypass`)
-3. Discover new laptop Wi‑Fi IP from mini scan; enable `sshd` on new laptop
-4. Prove `ssh` mini → new laptop; save proof under `C:\Shared\`
-5. Only then: Name2IP entry + optional Tailscale; Ethernet/ICS when cable exists
-6. Re-check health script so settings **stay** correct
+1. **MOUSE / MWB FIX** (priority) — diagnose/repair Mouse Without Borders between mini ↔ BOOK; **no MWB key changes**; **no restarts without OWNER-OK**. Script: `docs/ops/mwb-triage-mini-readonly.ps1`
+2. Jonny on mini: paste Shared block (below in PLAN-TOGETHER) so every local agent sees the hymn book
+3. Fix PowerShell launch on mini (`powershell -NoProfile -ExecutionPolicy Bypass`)
+4. Discover new laptop Wi‑Fi IP from mini scan; enable `sshd` on new laptop
+5. Prove `ssh` mini → new laptop; save proof under `C:\Shared\`
+6. Only then: Name2IP entry + optional Tailscale; Ethernet/ICS when cable exists
+7. Re-check health script so settings **stay** correct
+
+## Catch-up from mini
+
+Cloud agents **cannot** see work done on the mini until Jonny either:
+
+1. Pastes reports / logs from `C:\Shared\` into this chat (or attaches them), or
+2. Runs a **local** agent on the mini that can read Shared and report back
+
+Until then: treat mini-side progress as unknown; do not invent status from LAN. Multi-agent catch-up = Shared dumps + master chat paste, not Cloud LAN probes.
 
 ## Handoff line
 
