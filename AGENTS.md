@@ -60,6 +60,8 @@ npm run all   # after UI work
 Newest notes: `AGENT-HANDOFF.md` (archive older history if file is huge).  
 Sign rows with your agent name. Carry out flags for you before new work.
 
+**Master chat / same hymn book:** `AGENT-MASTER-CHAT-PLAN.md`. If Jonny says “master chat”, “open the master chat”, or “same hymn book”, load that plan and `C:\Shared\PLAN-TOGETHER.txt` (paste source: `docs/SHARED-PLAN-TOGETHER-PASTE.txt`). Master chat URL is in the plan. Fleet full-admin is **intent until SSH/local workers proven** — Cloud alone has no LAN admin.
+
 <!-- Coherence bind — paste into product AGENTS.md -->
 
 ## Coherence (multi-agent OS)
