@@ -1,83 +1,181 @@
 /**
- * _diag-click.mjs — REAL user-interaction test on the 3D model. Simulates actual
- * mouse drag + click + dblclick on the canvas (not engine API calls), and checks
- * what element is on TOP of the model (an overlay would eat the clicks). Screenshots
- * before/after so we can SEE if the model responds. Run: node tools/_diag-click.mjs
+ * Real mouse regression for the homepage <void-orrery>.
+ *
+ * Covers normal drag/wheel input and the release paths that previously left
+ * the model stuck in "grabbing" mode after pointer capture was cancelled.
+ *
+ * Usage: node tools/_diag-click.mjs [base-url]
  */
 import { chromium } from './visual-check/node_modules/playwright/index.mjs';
-const BASE = process.argv[2] || 'http://localhost:8790';
-const OUT = 'C:/Users/jonny/AppData/Local/Temp/claude/C--Users-jonny-OneDrive/8e98fd7c-94da-4047-aec7-463044930edb/scratchpad';
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const errs = [];
-const browser = await chromium.launch({ headless: true, args: ['--enable-unsafe-swiftshader'] });
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-page.on('pageerror', (e) => errs.push('PAGEERROR ' + (e && (e.message || e))));
-page.on('console', (m) => { if (m.type() === 'error') errs.push('ERR ' + m.text().slice(0, 200)); });
+
+const BASE = (process.argv[2] || 'http://127.0.0.1:8790').replace(/\/+$/, '');
+const errors = [];
+let browser;
+
+async function launchBrowser() {
+  try {
+    return await chromium.launch({
+      headless: true,
+      args: ['--enable-unsafe-swiftshader'],
+    });
+  } catch (error) {
+    if (!/Executable doesn't exist/i.test(String(error))) throw error;
+    return chromium.launch({
+      channel: 'chrome',
+      headless: true,
+      args: ['--enable-unsafe-swiftshader'],
+    });
+  }
+}
+
+function assert(condition, message) {
+  if (!condition) throw new Error(message);
+}
 
 try {
-  await page.goto(BASE + '/index.html?diag=click', { waitUntil: 'domcontentloaded', timeout: 60000 });
-  await page.waitForFunction(() => { const c = document.documentElement.classList; return c.contains('orrery-live') || c.contains('orrery-full'); }, { timeout: 35000 }).catch(() => {});
-  await sleep(8000);
+  browser = await launchBrowser();
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  page.on('pageerror', (error) => errors.push(`PAGEERROR ${error.message || error}`));
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(`CONSOLE ${message.text()}`);
+  });
 
-  // What is ON TOP of the model at several points over the Earth/canvas?
-  const probe = await page.evaluate(() => {
-    const cv = document.querySelector('#orrery-canvas') || document.querySelector('canvas');
-    const r = cv.getBoundingClientRect();
-    const desc = (el) => el ? (el.tagName + (el.id ? '#' + el.id : '') + (el.className && typeof el.className === 'string' ? '.' + el.className.split(' ')[0] : '')) : 'none';
-    const chain = (el) => { const a = []; while (el && a.length < 7) { a.push(desc(el)); el = el.parentElement; } return a.join(' > '); };
-    const pts = [
-      ['centre', r.left + r.width * 0.5, r.top + r.height * 0.42],
-      ['upper',  r.left + r.width * 0.5, r.top + r.height * 0.22],
-      ['right',  r.left + r.width * 0.72, r.top + r.height * 0.42],
-      ['lowerC', r.left + r.width * 0.5, r.top + r.height * 0.66],
-    ].map(([name, x, y]) => {
-      const el = document.elementFromPoint(Math.round(x), Math.round(y));
-      return { name, x: Math.round(x), y: Math.round(y), top: desc(el), isCanvas: el === cv, chain: chain(el) };
+  await page.goto(`${BASE}/index.html?nosw=1&diag=mouse`, {
+    waitUntil: 'domcontentloaded',
+    timeout: 60_000,
+  });
+  await page.waitForSelector('#orr canvas', { timeout: 30_000 });
+  await page.waitForFunction(() => {
+    const orrery = document.getElementById('orr');
+    return orrery && Number.isFinite(orrery._dTheta) && Number.isFinite(orrery._dRadius);
+  }, { timeout: 30_000 });
+
+  const canvas = page.locator('#orr canvas');
+  const rect = await canvas.boundingBox();
+  assert(rect && rect.width > 100 && rect.height > 100, 'Orrery canvas has no usable bounds');
+  const point = {
+    x: rect.x + rect.width * 0.5,
+    y: rect.y + rect.height * 0.42,
+  };
+
+  await page.evaluate(() => {
+    window.__mouseDiag = { pointerId: null, events: [] };
+    const target = document.querySelector('#orr canvas');
+    ['pointerdown', 'pointerup', 'pointercancel', 'lostpointercapture'].forEach((type) => {
+      target.addEventListener(type, (event) => {
+        if (type === 'pointerdown') window.__mouseDiag.pointerId = event.pointerId;
+        window.__mouseDiag.events.push({
+          type,
+          pointerId: event.pointerId,
+          buttons: event.buttons,
+        });
+      });
     });
+  });
+
+  // A normal held-button drag must still rotate the camera and release cleanly.
+  const normalBefore = await page.evaluate(() => document.getElementById('orr')._dTheta);
+  await page.mouse.move(point.x, point.y);
+  await page.mouse.down();
+  await page.mouse.move(point.x + 90, point.y + 24, { steps: 6 });
+  await page.mouse.up();
+  const normalAfter = await page.evaluate(() => ({
+    theta: document.getElementById('orr')._dTheta,
+    cursor: document.querySelector('#orr canvas').style.cursor,
+  }));
+  assert(normalAfter.theta !== normalBefore, 'Normal mouse drag did not rotate the model');
+  assert(normalAfter.cursor === 'grab', 'Normal mouse release did not restore the grab cursor');
+
+  // Regression: cancellation must reset drag state, and a later no-button move
+  // must not rotate the camera.
+  await page.mouse.move(point.x, point.y);
+  await page.mouse.down();
+  const cancelBefore = await page.evaluate(() => {
+    const target = document.querySelector('#orr canvas');
     return {
-      canvasRect: { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) },
-      canvasPointerEvents: getComputedStyle(cv).pointerEvents,
-      points: pts,
-      dayOffsetBefore: window.Orrery3D && window.Orrery3D.getDayOffset ? window.Orrery3D.getDayOffset() : 'n/a',
-      focusedBefore: window.Orrery3D && window.Orrery3D.getFocusedBody ? window.Orrery3D.getFocusedBody() : 'n/a',
+      theta: document.getElementById('orr')._dTheta,
+      pointerId: window.__mouseDiag.pointerId,
+      cursor: target.style.cursor,
     };
   });
+  await page.evaluate(({ x, y, pointerId }) => {
+    const target = document.querySelector('#orr canvas');
+    target.dispatchEvent(new PointerEvent('pointercancel', {
+      bubbles: true,
+      pointerId,
+      pointerType: 'mouse',
+      clientX: x,
+      clientY: y,
+      buttons: 0,
+    }));
+    target.dispatchEvent(new PointerEvent('pointermove', {
+      bubbles: true,
+      pointerId,
+      pointerType: 'mouse',
+      clientX: x + 120,
+      clientY: y + 40,
+      buttons: 0,
+    }));
+  }, { ...point, pointerId: cancelBefore.pointerId });
+  const cancelAfter = await page.evaluate(() => ({
+    theta: document.getElementById('orr')._dTheta,
+    cursor: document.querySelector('#orr canvas').style.cursor,
+  }));
+  await page.mouse.up();
+  assert(cancelBefore.cursor === 'grabbing', 'Pointer down did not enter grabbing mode');
+  assert(cancelAfter.cursor === 'grab', 'Pointer cancellation left the cursor stuck grabbing');
+  assert(cancelAfter.theta === cancelBefore.theta, 'Pointer move after cancellation rotated the model');
 
-  // pick a point that IS the canvas (first clear one), else centre
-  const clear = probe.points.find((p) => p.isCanvas) || probe.points[0];
-  const cx = clear.x, cy = clear.y;
+  // Defensive recovery: browsers can lose the release event while reporting
+  // buttons=0 on the next move. That move must end, not continue, the drag.
+  await page.mouse.move(point.x, point.y);
+  await page.mouse.down();
+  const lostButtonBefore = await page.evaluate(() => ({
+    theta: document.getElementById('orr')._dTheta,
+    pointerId: window.__mouseDiag.pointerId,
+  }));
+  await page.evaluate(({ x, y, pointerId }) => {
+    document.querySelector('#orr canvas').dispatchEvent(new PointerEvent('pointermove', {
+      bubbles: true,
+      pointerId,
+      pointerType: 'mouse',
+      clientX: x + 100,
+      clientY: y + 30,
+      buttons: 0,
+    }));
+  }, { ...point, pointerId: lostButtonBefore.pointerId });
+  const lostButtonAfter = await page.evaluate(() => ({
+    theta: document.getElementById('orr')._dTheta,
+    cursor: document.querySelector('#orr canvas').style.cursor,
+  }));
+  await page.mouse.up();
+  assert(lostButtonAfter.cursor === 'grab', 'Lost-button recovery left the cursor stuck grabbing');
+  assert(lostButtonAfter.theta === lostButtonBefore.theta, 'buttons=0 pointer move rotated the model');
 
-  // === REAL DRAG on the model ===
-  await page.mouse.move(cx, cy); await page.mouse.down();
-  for (let i = 1; i <= 12; i++) { await page.mouse.move(cx + i * 14, cy + Math.round(i * 1.5)); await sleep(25); }
-  await page.mouse.up(); await sleep(1500);
-  await page.screenshot({ path: OUT + '/click-1-after-drag.png' });
-  const afterDrag = await page.evaluate(() => ({ dayOffsetAfter: window.Orrery3D && window.Orrery3D.getDayOffset ? window.Orrery3D.getDayOffset() : 'n/a' }));
+  // The wheel path remains live after the recovery cases.
+  const radiusBefore = await page.evaluate(() => document.getElementById('orr')._dRadius);
+  await page.mouse.move(point.x, point.y);
+  await page.mouse.wheel(0, 180);
+  const radiusAfter = await page.evaluate(() => document.getElementById('orr')._dRadius);
+  assert(radiusAfter !== radiusBefore, 'Mouse wheel did not change the model zoom');
 
-  // === REAL SINGLE CLICK (tap) on the model ===
-  await page.mouse.click(cx, cy); await sleep(1800);
-  const afterClick = await page.evaluate(() => {
-    const p = document.getElementById('ap-planet-actions');
-    return { panelOpen: p ? p.classList.contains('is-open') : false, panelTitle: p ? (p.querySelector('#ap-pa-title') || {}).textContent : null, focused: window.Orrery3D && window.Orrery3D.getFocusedBody ? window.Orrery3D.getFocusedBody() : 'n/a' };
-  });
-  await page.screenshot({ path: OUT + '/click-2-after-click.png' });
-
-  // === REAL DOUBLE CLICK ===
-  await page.mouse.dblclick(cx, cy); await sleep(2500);
-  const afterDbl = await page.evaluate(() => ({ focused: window.Orrery3D && window.Orrery3D.getFocusedBody ? window.Orrery3D.getFocusedBody() : 'n/a' }));
-  await page.screenshot({ path: OUT + '/click-3-after-dblclick.png' });
-
-  await browser.close();
+  assert(errors.length === 0, `Browser errors: ${errors.slice(0, 3).join(' | ')}`);
   console.log(JSON.stringify({
-    probe,
-    clickedAt: { cx, cy, wasCanvas: clear.isCanvas, whatWasThere: clear.top },
-    DRAG_moved_model: probe.dayOffsetBefore !== afterDrag.dayOffsetAfter,
-    dayOffset: { before: probe.dayOffsetBefore, after: afterDrag.dayOffsetAfter },
-    CLICK_result: afterClick,
-    DBLCLICK_focused: afterDbl.focused,
-    errors: errs.slice(0, 20),
+    result: 'PASS',
+    browser: 'bundled Chromium or installed Chrome fallback',
+    normalDrag: { before: normalBefore, after: normalAfter.theta },
+    pointerCancel: { before: cancelBefore.theta, after: cancelAfter.theta, cursor: cancelAfter.cursor },
+    lostButton: { before: lostButtonBefore.theta, after: lostButtonAfter.theta, cursor: lostButtonAfter.cursor },
+    wheel: { before: radiusBefore, after: radiusAfter },
+    errors,
   }, null, 2));
-} catch (e) {
-  await browser.close().catch(() => {});
-  console.log(JSON.stringify({ FATAL: String(e), errs: errs.slice(0, 20) }, null, 2));
+} catch (error) {
+  console.error(JSON.stringify({
+    result: 'FAIL',
+    error: String(error && (error.stack || error)),
+    errors: errors.slice(0, 10),
+  }, null, 2));
+  process.exitCode = 1;
+} finally {
+  if (browser) await browser.close().catch(() => {});
 }

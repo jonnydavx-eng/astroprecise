@@ -593,16 +593,25 @@
       var webMat = new THREE.LineBasicMaterial({ color: 0x6f86c9, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
       scene.add(new THREE.LineSegments(webGeo, webMat));
       // interactions
-      var el = renderer.domElement, dragging = false, lx = 0, ly = 0, moved = 0, pinch = null;
+      var el = renderer.domElement, dragging = false, activePointer = null, lx = 0, ly = 0, moved = 0, pinch = null;
       el.style.cursor = "grab"; el.style.touchAction = "none";
-      el.addEventListener("pointerdown", function (e) { if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._intro = false; dragging = true; moved = 0; lx = e.clientX; ly = e.clientY; el.setPointerCapture(e.pointerId); el.style.cursor = "grabbing"; });
+      function endDrag(e) {
+        if (!dragging || e.pointerId !== activePointer) return false;
+        dragging = false; activePointer = null; el.style.cursor = "grab";
+        if (e.type !== "lostpointercapture" && el.hasPointerCapture && el.hasPointerCapture(e.pointerId)) {
+          try { el.releasePointerCapture(e.pointerId); } catch (ignore) {}
+        }
+        return true;
+      }
+      el.addEventListener("pointerdown", function (e) { if (dragging) return; if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._intro = false; dragging = true; activePointer = e.pointerId; moved = 0; lx = e.clientX; ly = e.clientY; try { el.setPointerCapture(e.pointerId); } catch (ignore) {} el.style.cursor = "grabbing"; });
       el.addEventListener("pointermove", function (e) {
-        if (!dragging) return;
+        if (!dragging || e.pointerId !== activePointer) return;
+        if (e.pointerType === "mouse" && e.buttons === 0) { endDrag(e); return; }
         var dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
         self._dTheta -= dx * 0.005; self._dPhi = Math.max(0.12, Math.min(1.45, self._dPhi - dy * 0.004));
       });
       el.addEventListener("pointerup", function (e) {
-        dragging = false; el.style.cursor = "grab";
+        if (!endDrag(e)) return;
         if (moved < 6) { // click → pick
           var rect = el.getBoundingClientRect();
           var v = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
@@ -615,6 +624,8 @@
           }
         }
       });
+      el.addEventListener("pointercancel", endDrag);
+      el.addEventListener("lostpointercapture", endDrag);
       el.addEventListener("wheel", function (e) { if (self.getAttribute("data-wheel") === "off") return; e.preventDefault(); if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._intro = false; self._lookUpMode = 0; self._lookUpPending = 0; self._dRadius = Math.max(7, Math.min(260000, self._dRadius * (1 + e.deltaY * 0.0012))); }, { passive: false });
       // resize
       var ro = new ResizeObserver(function () {
