@@ -138,8 +138,8 @@
         <p class="eyebrow" id="shop-personal-eyebrow">Keepsakes from your chart</p>
         <h1 class="shop-hero__title">Your sky, as a reading or plate</h1>
         <p class="shop-hero-lede shop-hero-lede--tight">
-          Deep Reading <strong>£12</strong> · natal poster PDF <strong>£6</strong> · Moment free card first.
-          Checkout opening soon — notify below. <a href="chart.html">Cast free first</a> if you haven&rsquo;t.
+          Eclipse Night Reading <strong>£2.99</strong> · Eclipse Set <strong>£6</strong> · Deep Reading <strong>£12</strong> · Numbered Plate <strong>£14</strong> · Sky Pass <strong>£5</strong>.
+          Checkout opening soon — notify below. <a href="eclipse.html">See where the eclipse lands in your chart — free</a>.
         </p>
         <p id="shop-personal-note" class="shop-hero-personal ap-rise-in" hidden aria-live="polite"></p>
         <div class="shop-hero-cta shop-hero-cta--single">
@@ -161,57 +161,10 @@
     <section class="shop-live-section" id="shopc-featured" aria-label="Featured pieces">
       <div class="container">
         <div class="shopc-featured__intro">
-          <!-- Dual copy: JS (updateLiveCounts) shows data-when-live when any SKU is buyable, data-when-dormant when none are. Static default = dormant (the truthful state until PayPal links are pasted — PAYPAL-SETUP.md). -->
+          <!-- Dual copy: JS (updateLiveCounts) shows data-when-live when any SKU is buyable, data-when-dormant when none are. Static default = dormant (the truthful state until Gumroad permalinks are pasted). Cards render from the catalogue via shop-commerce.js renderFeatured(). -->
           <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> <span data-when-live hidden>Available now — <span data-live-count>0</span> live PDFs</span><span data-when-dormant>Digital readings — checkout opening soon</span></h2>
-          <p class="shopc-featured__lede">Deep Reading is the paid story of your chart. Poster PDF for the wall. Moment free card first — freeze any night.<span data-when-live hidden> Secure checkout.</span><span data-when-dormant> Leave your email — we&rsquo;ll tell you the instant checkout opens.</span></p>
+          <p class="shopc-featured__lede">The Eclipse Night Reading for 12 August. The Deep Reading for the whole chart. A numbered plate for the wall. Moment free card first — freeze any night.<span data-when-live hidden> Secure checkout.</span><span data-when-dormant> Leave your email — we&rsquo;ll tell you the instant checkout opens.</span></p>
           <p class="shopc-featured__note" style="font-size:0.8rem;color:var(--silver);max-width:60ch;margin-top:0.5rem;">The astronomy is exact and checkable. The astrological meaning is tradition, offered for reflection and entertainment — not advice or prediction. If the sky is quiet for your chart, we tell you before you pay.</p>
-        </div>
-        <div class="shopc-featured__grid shopc-featured__grid--pdf shopc-featured__grid--paid">
-          <article class="shopc-featured__card shopc-featured__card--hero engraved-plate" id="deep-reading" data-product-id="deep-reading" style="scroll-margin-top:88px;">
-            <button type="button" class="shopc-featured__visual" data-quickview="deep-reading">
-              <span class="sr-only">Quick view Deep Natal Reading</span>
-              <picture>
-                <source type="image/webp" srcset="img/shop/product-deep-reading.webp?v=771" />
-                <img class="shopc-card__preview" src="img/shop/product-deep-reading.jpg?v=771" alt="Deep Natal Reading PDF preview — void and brass product hero" width="960" height="540" fetchpriority="high" loading="eager" decoding="async" />
-              </picture>
-              <span class="shopc-card__badge shopc-card__badge--quiet">Primary · Opening soon</span>
-            </button>
-            <div class="shopc-featured__copy">
-              <p class="shopc-featured__kicker">The Reading · £12</p>
-              <h3 class="shopc-featured__name">Deep Natal Reading — Digital</h3>
-              <p class="shopc-featured__hook">The words your chart has been waiting for — written for you alone.</p>
-              <p class="shopc-featured__blurb">A long-form written reading of your whole chart — every placement and the major aspects, interpreted in depth.</p>
-              <div class="shopc-featured__foot">
-                <span class="shopc-card__price">£12.00</span>
-                <div class="shopc-featured__actions">
-                  <button class="btn btn--primary shopc-featured__cart" data-ap-open-email="shop_featured" type="button">Notify me</button>
-                </div>
-              </div>
-              <a class="shopc-featured__sample" href="sample-reading.html" target="_blank" rel="noopener">See sample layout →</a>
-            </div>
-          </article>
-          <article class="shopc-featured__card shopc-featured__card--secondary" data-product-id="natal-poster-pdf">
-            <button type="button" class="shopc-featured__visual" data-quickview="natal-poster-pdf">
-              <span class="sr-only">Quick view Print-at-home Natal Poster PDF</span>
-              <picture>
-                <source type="image/webp" srcset="img/shop/product-poster-pdf.webp?v=771" />
-                <img class="shopc-card__preview" src="img/shop/product-poster-pdf.jpg?v=771" alt="Natal Sky Poster PDF — print-ready void and brass product hero" width="960" height="540" loading="lazy" decoding="async" />
-              </picture>
-              <span class="shopc-card__badge shopc-card__badge--quiet">Plate PDF</span>
-            </button>
-            <div class="shopc-featured__copy">
-              <p class="shopc-featured__kicker">On Your Wall · £6</p>
-              <h3 class="shopc-featured__name">Your Natal Sky — Print-at-Home PDF</h3>
-              <p class="shopc-featured__hook">Your exact sky, ready to print tonight.</p>
-              <p class="shopc-featured__blurb">Your full birth chart as a print-ready PDF — engraved gold on void black, any size at home.</p>
-              <div class="shopc-featured__foot">
-                <span class="shopc-card__price">£6.00</span>
-                <div class="shopc-featured__actions">
-                  <button class="btn btn--primary shopc-featured__cart" data-ap-open-email="shop_featured" type="button">Notify me</button>
-                </div>
-              </div>
-            </div>
-          </article>
         </div>
         <div class="shop-moment-rail" id="moment-pack" data-product-id="moment-pack" style="scroll-margin-top:88px;" role="region" aria-label="Free Moment keepsake">
           <div class="shop-moment-rail__art" aria-hidden="true">
@@ -231,7 +184,7 @@
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-book"/></svg> Seven computed chapters · unlocked instantly</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> VSOP87 + ELP2000 engine</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> One-time purchase · no subscription</li>
-          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-map"/></svg> Reading unlocks instantly · poster PDF yours to keep</li>
+          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-map"/></svg> Readings unlock instantly · plate yours to keep</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data never on this site</li>
         </ul>
         <p class="shop-live-note"><a href="why.html"><span class="ap-badge">Chart tools stay free — shop pieces keep the instrument lit</span></a></p>
@@ -241,42 +194,54 @@
     <section class="section shop-compare" id="shop-compare" aria-labelledby="shop-compare-title">
       <div class="container">
         <details class="shop-compare__fold">
-          <summary class="shop-compare__sum" id="shop-compare-title">Compare Deep Reading vs poster PDF</summary>
-          <p class="shop-compare__lede">Same chart, two formats — pick the depth you want today.</p>
+          <summary class="shop-compare__sum" id="shop-compare-title">Compare the pieces</summary>
+          <p class="shop-compare__lede">Every piece is computed from the same engine — pick the depth and format that fits the night.</p>
           <div class="shop-compare__table-wrap" role="region" aria-label="Product comparison" tabindex="0">
             <table class="shop-compare__table">
               <thead>
                 <tr>
                   <th scope="col"><span class="sr-only">Feature</span></th>
-                  <th scope="col">Deep Natal Reading</th>
-                  <th scope="col">Natal Sky Poster PDF</th>
+                  <th scope="col">Eclipse Night Reading</th>
+                  <th scope="col">Eclipse Set</th>
+                  <th scope="col">Deep Reading</th>
+                  <th scope="col">Numbered Plate</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <th scope="row">Price</th>
-                  <td>£12</td>
+                  <td>£2.99 <span style="color:var(--silver);font-size:0.85em">(£4 after 12 Aug)</span></td>
                   <td>£6</td>
+                  <td>£12</td>
+                  <td>£14 <span style="color:var(--silver);font-size:0.85em">(£19 later)</span></td>
                 </tr>
                 <tr>
                   <th scope="row">What you get</th>
-                  <td>Seven computed chapters — planets, houses, tightest aspects, and this season's live transits — generated in your browser, instantly</td>
-                  <td>Print-ready chart art — engraved gold on void</td>
+                  <td>Five chapters mapping the 12 Aug eclipse against your birth chart — where it lands, what it stirs</td>
+                  <td>The Night Reading plus a print-ready plate of the eclipse sky over you that night</td>
+                  <td>Seven chapters on your whole chart — planets, tightest aspects with orbs, this season's live sky</td>
+                  <td>A3 arcminute plate of your birth minute — numbered edition, self-verifiable fingerprint</td>
                 </tr>
                 <tr>
                   <th scope="row">Best for</th>
+                  <td>The eclipse-curious — where the night lands in your life</td>
+                  <td>The words and the keepsake, together</td>
                   <td>Understanding your chart in depth</td>
-                  <td>Wall art, gifts, visual keepsake</td>
+                  <td>Wall art, gifts, provenance</td>
                 </tr>
                 <tr>
                   <th scope="row">Delivery</th>
                   <td>Instant — unlocks in your browser at payment</td>
-                  <td>Email within 24–48 hours</td>
+                  <td>Instant reading + PDF plate</td>
+                  <td>Instant — unlocks in your browser at payment</td>
+                  <td>Digital delivery of your numbered edition</td>
                 </tr>
                 <tr>
                   <th scope="row">Preview</th>
-                  <td><a href="sample-reading.html" target="_blank" rel="noopener">Sample layout →</a></td>
-                  <td><a href="chart.html">Free chart wheel →</a></td>
+                  <td><a href="eclipse.html">Free teaser — your eclipse contact →</a></td>
+                  <td><a href="eclipse.html">Same free teaser →</a></td>
+                  <td><a href="sample-reading.html" target="_blank" rel="noopener">Full seven-chapter sample →</a></td>
+                  <td><a href="natal-plate.html">Full sample plate →</a></td>
                 </tr>
               </tbody>
             </table>

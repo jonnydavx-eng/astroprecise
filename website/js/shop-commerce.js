@@ -362,6 +362,10 @@ window.AstroShop = (() => {
   const PAYHIP_URLS = {
     'cosmic-story':         '',
     'deep-reading':         '',
+    'eclipse-reading':      '',
+    'eclipse-set':          '',
+    'plate':                '',
+    'sky-pass':             '',
     'reading-poster-bundle':'',
     'natal-poster-pdf':     '',
     'natal-poster':         '',
@@ -805,7 +809,9 @@ window.AstroShop = (() => {
 
   function priceHtml(p) {
     const live = isLive(p);
-    if (!live) return `<span class="shopc-card__price shopc-card__price--soon">Coming soon</span>`;
+    // Dormant: still show the price (it's published everywhere else on the site) —
+    // hiding it kills the notify-me conversion. Honest suffix, no strikethrough games.
+    if (!live) return `<span class="shopc-card__price">${formatPrice(p.price)}</span> <span class="shopc-card__price--soon">· opens soon</span>`;
     // No strikethrough — the bold current price + "Save £X" pill carry the value
     // story honestly (the editorial overhaul drops the crossed-out anchor).
     return `<span class="shopc-card__price">${formatPrice(p.price)}</span>`;
@@ -841,7 +847,7 @@ window.AstroShop = (() => {
       ? `<span class="shopc-featured__save">Save ${formatPrice(p.anchorWas - p.price)}</span>`
       : '';
     return `
-      <article class="shopc-featured__card ${hero ? 'shopc-featured__card--hero engraved-plate' : ''}" data-product-id="${p.id}">
+      <article class="shopc-featured__card ${hero ? 'shopc-featured__card--hero engraved-plate' : ''}" id="${esc(p.id)}" data-product-id="${p.id}" style="scroll-margin-top:88px;">
         <button type="button" class="shopc-featured__visual" data-quickview="${p.id}">
           <span class="sr-only">Quick view ${esc(p.name)}</span>
           ${cardArt(p)}
@@ -867,7 +873,7 @@ window.AstroShop = (() => {
 
   function featuredOrder() {
     return isPdfOnly()
-      ? ['eclipse-reading', 'deep-reading', 'eclipse-set', 'plate']
+      ? ['eclipse-reading', 'deep-reading', 'eclipse-set', 'plate', 'sky-pass']
       : ['eclipse-reading', 'deep-reading', 'reading-poster-bundle', 'natal-poster-pdf', 'plate'];
   }
 
@@ -898,13 +904,14 @@ window.AstroShop = (() => {
       ? 'shopc-featured__grid shopc-featured__grid--pdf'
       : 'shopc-featured__grid';
     const lede = pdfOnly
-      ? `Two personalised PDFs from <strong>your</strong> birth chart — a deep written reading and a print-at-home poster.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}`
+      ? `Five pieces from <strong>your</strong> birth chart — the eclipse readings, the deep reading, a numbered sky plate, and thirty dated days of your sky. Computed on this device; your birth minute never leaves it.${liveProductCount() > 0 ? ' Secure checkout.' : ' Leave your email — we\'ll tell you the instant checkout opens.'}`
       : `Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}`;
     const trust = pdfOnly
       ? `<ul class="shopc-trust">
-        <li class="shopc-trust__item">${icon('book')} 13-page reading · print-ready poster</li>
+        <li class="shopc-trust__item">${icon('book')} Seven computed chapters · instant unlock</li>
         <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
-        <li class="shopc-trust__item">${icon('map')} Delivered as PDF — yours to keep</li>
+        <li class="shopc-trust__item">${icon('orb')} One-time purchase · no subscription</li>
+        <li class="shopc-trust__item">${icon('map')} Readings &amp; plate yours to keep</li>
         <li class="shopc-trust__item">${icon('heart')} Birth data never on this site</li>
       </ul>`
       : `<ul class="shopc-trust">
@@ -914,6 +921,22 @@ window.AstroShop = (() => {
         <li class="shopc-trust__item">${icon('map')} PDFs in 24–48 hours</li>
         <li class="shopc-trust__item">${icon('heart')} Birth data never on this site</li>
       </ul>`;
+    const momentRail = pdfOnly
+      ? `<div class="shop-moment-rail" id="moment-pack" data-product-id="moment-pack" style="scroll-margin-top:88px;" role="region" aria-label="Free Moment keepsake">
+        <div class="shop-moment-rail__art" aria-hidden="true">
+          <picture>
+            <source type="image/webp" srcset="img/shop/product-moment-pack.webp" />
+            <img src="img/shop/product-moment-pack.jpg" alt="" width="160" height="90" loading="lazy" decoding="async" />
+          </picture>
+        </div>
+        <div class="shop-moment-rail__copy">
+          <p class="shop-moment-rail__kicker">Free first · keepsake</p>
+          <h3 class="shop-moment-rail__title">Moment</h3>
+          <p class="shop-moment-rail__lead">Freeze any night that mattered — zenith star, light-cone, engine plate. Free private card now; pack when checkout is live.</p>
+        </div>
+        <a class="btn btn--outline" href="moment.html">Freeze a Moment</a>
+      </div>`
+      : '';
     host.innerHTML = `<div class="container">
       <div class="shopc-featured__intro">
         <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> ${liveProductCount() > 0 ? `Available now — ${liveProductCount()} live pieces` : (pdfOnly ? 'Digital readings — checkout opening soon' : 'The collection — checkout opening soon')}</h2>
@@ -921,12 +944,12 @@ window.AstroShop = (() => {
       </div>
       <div class="${gridClass}">
         ${pdfOnly
-          ? `${featuredCard(others[0], { hero: true })}
-             ${others[1] ? featuredCard(others[1]) : ''}`
+          ? others.map((p, i) => featuredCard(p, { hero: i === 0 })).join('')
           : `${others[0] ? featuredCard(others[0]) : ''}
              ${bundle ? featuredCard(bundle, { hero: true }) : ''}
              ${others[1] ? featuredCard(others[1]) : ''}`}
       </div>
+      ${momentRail}
       ${trust}
     </div>`;
     bindFeatured(host);
