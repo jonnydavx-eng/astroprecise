@@ -120,7 +120,7 @@
       }
     }
     ctx.globalAlpha = 1;
-    var tx = new THREE.CanvasTexture(cv); tx.anisotropy = 4; return tx;
+    var tx = srgbTex(new THREE.CanvasTexture(cv)); tx.anisotropy = 4; return tx; // sRGB-authored
   }
   function ringTexture() {
     var cv = document.createElement("canvas"); cv.width = 512; cv.height = 4;
@@ -135,7 +135,7 @@
       ctx.fillStyle = "rgba(" + (warm | 0) + "," + ((warm * 0.92) | 0) + "," + ((warm * 0.76) | 0) + "," + (a * 0.9).toFixed(3) + ")";
       ctx.fillRect(x, 0, 1, 4);
     }
-    return new THREE.CanvasTexture(cv);
+    return srgbTex(new THREE.CanvasTexture(cv)); // sRGB ring gradient
   }
   function sunTexture() {
     var cv = document.createElement("canvas"); cv.width = 256; cv.height = 128;
@@ -147,7 +147,7 @@
       ctx.beginPath(); ctx.arc(Math.random() * 256, Math.random() * 128, 2 + Math.random() * 9, 0, 7); ctx.fill();
     }
     ctx.globalAlpha = 1;
-    return new THREE.CanvasTexture(cv);
+    return srgbTex(new THREE.CanvasTexture(cv)); // sRGB sun surface
   }
   function glowSprite(colorStops, size) {
     var cv = document.createElement("canvas"); cv.width = cv.height = 128;
@@ -155,19 +155,23 @@
     var g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
     colorStops.forEach(function (s) { g.addColorStop(s[0], s[1]); });
     ctx.fillStyle = g; ctx.fillRect(0, 0, 128, 128);
-    var m = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true });
+    var m = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cv)), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true });
     var sp = new THREE.Sprite(m); sp.scale.set(size, size, 1); return sp;
   }
   function atmoShell(r, color, power, intensity) {
     var mat = new THREE.ShaderMaterial({
-      uniforms: { c: { value: new THREE.Color(color) }, p: { value: power }, s: { value: intensity } },
+      uniforms: { c: { value: new THREE.Color(color).convertSRGBToLinear() }, p: { value: power }, s: { value: intensity } },
       vertexShader: "varying vec3 vN; varying vec3 vV; void main(){ vec4 wp = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-wp.xyz); gl_Position = projectionMatrix * wp; }",
-      fragmentShader: "uniform vec3 c; uniform float p; uniform float s; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), p); gl_FragColor = vec4(c, f * s); }",
+      fragmentShader: "uniform vec3 c; uniform float p; uniform float s; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), p); gl_FragColor = vec4(c, f * s);\n#include <tonemapping_fragment>\n#include <encodings_fragment>\n}", // r128 provides these chunks + sRGBToLinear to ShaderMaterial
       transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
     });
     return new THREE.Mesh(new THREE.SphereGeometry(r, 48, 32), mat);
   }
   function hexA2(hex, a) { var n = parseInt(hex.slice(1), 16); return "rgba(" + (n >> 16) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")"; }
+  // filmic-pipeline helpers: authored colors/textures are sRGB — mark/convert so ACES + sRGB output round-trips the existing look
+  function srgbTex(t) { t.encoding = THREE.sRGBEncoding; return t; }
+  function srgb2lin(x) { return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }
+  function linCols(a) { for (var li = 0; li < a.length; li++) a[li] = srgb2lin(a[li]); return a; }
 
   var VoidOrrery = /** @class */ (function () {
     function C() { return Reflect.construct(HTMLElement, [], C); }
@@ -203,6 +207,7 @@
           document.head.appendChild(s);
         });
         window.__threeLoad.then(function () {
+          if (!self.isConnected || self._renderer) return; // detached, or a second .then attached after reconnect
           if (window.THREE) self._boot(); else self.innerHTML = '<div style="color:#556;padding:40px;font:12px monospace">3D engine unavailable</div>';
         });
         return;
@@ -213,6 +218,7 @@
       var self = this;
       if (this._ph) { this._ph.remove(); this._ph = null; }
       this._live = true; this._jd = jd(new Date()); this._scrubJD = null;
+      this._disposed = false; this._contextLost = false; // fresh boot — clear teardown/context flags
       var sf = this.getAttribute("start-focus") || this.getAttribute("startfocus");
       var sr = parseFloat(this.getAttribute("start-radius") || this.getAttribute("startradius"));
       this._focus = sf || "earth";
@@ -228,7 +234,7 @@
         renderer = this._renderer = new THREE.WebGLRenderer({ antialias: window.devicePixelRatio < 2, alpha: false, powerPreference: "high-performance" });
       } catch (e) {
         // WebGL unavailable/blocked — static observatory poster keeps the hero alive; HUD + CTAs sit above.
-        this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(159,220,236,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(230,161,92,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;border:1px solid rgba(159,220,236,.28);box-shadow:0 0 60px rgba(159,220,236,.15),inset 0 0 60px rgba(159,220,236,.1)"></div>';
+        this._posterFallback();
         return;
       }
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 760 ? 1.5 : 2));
@@ -236,6 +242,25 @@
       this.appendChild(renderer.domElement);
       this._w = this.clientWidth || 1; this._h = this.clientHeight || 1;
       renderer.setSize(this._w, this._h);
+      // filmic output pipeline (constants verified present in the vendored r128 build)
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.1;
+      // GPU context loss: stop the loop and swap to the same poster used when WebGL is unavailable
+      this._onCtxLost = function (e) {
+        e.preventDefault(); // allow the browser to attempt a restore
+        if (self._contextLost) return;
+        self._contextLost = true;
+        if (self._raf) { cancelAnimationFrame(self._raf); self._raf = null; }
+        self._posterFallback();
+      };
+      this._onCtxOK = function () { // context restored — full teardown + normal reboot (reuses existing paths)
+        if (!self._contextLost || self._disposed || !self.isConnected) return;
+        self._teardown();
+        self._boot();
+      };
+      renderer.domElement.addEventListener("webglcontextlost", this._onCtxLost, false);
+      renderer.domElement.addEventListener("webglcontextrestored", this._onCtxOK, false);
       var scene = this._scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000);
       var cam = this._cam = new THREE.PerspectiveCamera(46, 1, 0.1, 600000);
       // stars
@@ -247,7 +272,7 @@
         cols.push(c * 0.92, c * 0.95, Math.min(1, c * blue));
       }
       starGeo.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
-      starGeo.setAttribute("color", new THREE.Float32BufferAttribute(cols, 3));
+      starGeo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(cols), 3)); // authored sRGB → linear
       var starMat = new THREE.PointsMaterial({ size: 1.5, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.9, depthWrite: false });
       scene.add(new THREE.Points(starGeo, starMat));
       var mwGeo = new THREE.BufferGeometry(), mwPts = [], mwCols = [];
@@ -263,11 +288,11 @@
         mwCols.push(b2 * (warm ? 1 : 0.8), b2 * 0.85, b2 * (warm ? 0.72 : 1.05));
       }
       mwGeo.setAttribute("position", new THREE.Float32BufferAttribute(mwPts, 3));
-      mwGeo.setAttribute("color", new THREE.Float32BufferAttribute(mwCols, 3));
+      mwGeo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(mwCols), 3)); // authored sRGB → linear
       var mwMat = new THREE.PointsMaterial({ size: 1.1, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false });
       scene.add(new THREE.Points(mwGeo, mwMat));
-      scene.add(new THREE.AmbientLight(0x36405c, 0.9));
-      var sunLight = new THREE.PointLight(0xfff0d8, 1.7, 0, 2); scene.add(sunLight);
+      var ambLight = new THREE.AmbientLight(0x36405c, 0.9); ambLight.color.convertSRGBToLinear(); scene.add(ambLight); // authored sRGB → linear
+      var sunLight = new THREE.PointLight(0xfff0d8, 1.7, 0, 2); sunLight.color.convertSRGBToLinear(); scene.add(sunLight); // authored sRGB → linear
       // sun
       var sun = new THREE.Mesh(new THREE.SphereGeometry(6, 48, 32), new THREE.MeshBasicMaterial({ map: sunTexture() }));
       sun.userData.key = "sun"; scene.add(sun);
@@ -284,13 +309,14 @@
         for (var k = 0; k <= 128; k++) { var an = k / 128 * Math.PI * 2; seg.push(rr * Math.cos(an), 0, -rr * Math.sin(an)); }
         var og = new THREE.BufferGeometry(); og.setAttribute("position", new THREE.Float32BufferAttribute(seg, 3));
         var line = new THREE.Line(og, new THREE.LineBasicMaterial({ color: 0x28324a, transparent: true, opacity: 0.85 }));
+        line.material.color.convertSRGBToLinear(); // authored sRGB → linear
         scene.add(line); self._orbitLines.push(line);
         var mat = p.tex === "earth"
           ? new THREE.MeshPhongMaterial({ map: planetTexture(p), specular: 0x223344, shininess: 14 })
           : new THREE.MeshStandardMaterial({ map: planetTexture(p), roughness: 0.92, metalness: 0 });
         var texFile = { mercury: "mercurymap.jpg", venus: "venusmap.jpg", mars: "marsmap1k.jpg", jupiter: "jupitermap.jpg", saturn: "saturnmap.jpg", uranus: "uranusmap.jpg", neptune: "neptunemap.jpg" }[p.key];
         if (texFile) loader.load("./img/textures/" + texFile,
-          function (t) { t.anisotropy = 8; mat.map = t; mat.needsUpdate = true; });
+          function (t) { t.anisotropy = 8; t.encoding = THREE.sRGBEncoding; mat.map = t; mat.needsUpdate = true; });
         var m = new THREE.Mesh(new THREE.SphereGeometry(SZ(p), 48, 32), mat);
         m.userData.key = p.key;
         var grp = new THREE.Group(); grp.userData.key = p.key;
@@ -303,6 +329,7 @@
         var atmoCfg = { earth: [0x6ea0ff, 3.6, 0.5], venus: [0xffe8c0, 2.6, 0.5], mars: [0xe08050, 3.4, 0.32], jupiter: [0xffd9a8, 3.0, 0.28], saturn: [0xf0e0b8, 3.0, 0.28], uranus: [0xaaf0f0, 3.0, 0.4], neptune: [0x88aaff, 3.0, 0.45] }[p.key];
         if (atmoCfg) grp.add(atmoShell(SZ(p) * 1.04, atmoCfg[0], atmoCfg[1], atmoCfg[2]));
         var cone = new THREE.Mesh(new THREE.ConeGeometry(SZ(p) * 0.26, SZ(p) * 0.78, 8), new THREE.MeshBasicMaterial({ color: 0x5a6f9e, transparent: true, opacity: 0 }));
+        cone.material.color.convertSRGBToLinear(); // authored sRGB → linear
         scene.add(cone); self._cones.push({ c: cone, p: p });
         if (p.tex === "earth") {
           var dayT = null, nightT = null;
@@ -311,17 +338,17 @@
             m.material = new THREE.ShaderMaterial({
               uniforms: { dayTex: { value: dayT }, nightTex: { value: nightT } },
               vertexShader: "varying vec2 vUv; varying vec3 vN; varying vec3 vP; void main(){ vUv = uv; vN = normalize(mat3(modelMatrix) * normal); vP = (modelMatrix * vec4(position,1.0)).xyz; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
-              fragmentShader: "uniform sampler2D dayTex; uniform sampler2D nightTex; varying vec2 vUv; varying vec3 vN; varying vec3 vP; void main(){ vec3 sunDir = normalize(-vP); float d = dot(normalize(vN), sunDir); float k = smoothstep(-0.12, 0.3, d); vec3 day = texture2D(dayTex, vUv).rgb; vec3 night = texture2D(nightTex, vUv).rgb * vec3(1.6, 1.35, 1.0); vec3 col = mix(night * 0.95, day, k); gl_FragColor = vec4(col, 1.0); }"
+              fragmentShader: "uniform sampler2D dayTex; uniform sampler2D nightTex; varying vec2 vUv; varying vec3 vN; varying vec3 vP; void main(){ vec3 sunDir = normalize(-vP); float d = dot(normalize(vN), sunDir); float k = smoothstep(-0.12, 0.3, d); vec3 day = sRGBToLinear(texture2D(dayTex, vUv)).rgb; vec3 night = sRGBToLinear(texture2D(nightTex, vUv)).rgb * vec3(1.6, 1.35, 1.0); vec3 col = mix(night * 0.95, day, k); gl_FragColor = vec4(col, 1.0);\n#include <tonemapping_fragment>\n#include <encodings_fragment>\n}" // r128 ShaderMaterial prefix provides sRGBToLinear + these chunks
             });
           };
           loader.load("./img/textures/earth_atmos_2048.jpg",
-            function (t) { t.anisotropy = 8; dayT = t; mat.map = t; mat.needsUpdate = true; trySwap(); });
+            function (t) { t.anisotropy = 8; t.encoding = THREE.sRGBEncoding; dayT = t; mat.map = t; mat.needsUpdate = true; trySwap(); });
           loader.load("./img/textures/earth_lights_2048.png",
-            function (t) { nightT = t; trySwap(); });
+            function (t) { t.encoding = THREE.sRGBEncoding; nightT = t; trySwap(); });
           var clouds = new THREE.Mesh(new THREE.SphereGeometry(SZ(p) * 1.02, 48, 32), new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.85, depthWrite: false }));
           clouds.visible = false;
           loader.load("./img/textures/earth_clouds_1024.png",
-            function (t) { clouds.material.map = t; clouds.material.needsUpdate = true; clouds.visible = true; });
+            function (t) { t.encoding = THREE.sRGBEncoding; clouds.material.map = t; clouds.material.needsUpdate = true; clouds.visible = true; });
           grp.add(clouds); self._spinners.push({ m: clouds, s: 0.0034 });
           grp.add(glowSprite([[0, "rgba(110,160,255,.16)"], [0.5, "rgba(110,160,255,.05)"], [1, "rgba(110,160,255,0)"]], SZ(p) * 2.9));
         }
@@ -345,7 +372,7 @@
         bcl.push(bb, bb * 0.9, bb * 0.78);
       }
       beltGeo.setAttribute("position", new THREE.Float32BufferAttribute(bp, 3));
-      beltGeo.setAttribute("color", new THREE.Float32BufferAttribute(bcl, 3));
+      beltGeo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(bcl), 3)); // authored sRGB → linear
       var beltMat = new THREE.PointsMaterial({ size: 1.1, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.5, depthWrite: false });
       var belt = new THREE.Points(beltGeo, beltMat); scene.add(belt);
       // comet with anti-sun tail
@@ -360,14 +387,15 @@
         var g2 = fx.createLinearGradient(0, 0, 256, 0);
         g2.addColorStop(0, "rgba(160,200,255,0)"); g2.addColorStop(0.5, "rgba(255,240,220,.9)"); g2.addColorStop(1, "rgba(160,200,255,0)");
         fx.fillStyle = g2; fx.fillRect(0, 6, 256, 12);
-        var m2 = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv2), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0 });
+        var m2 = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cv2)), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0 });
         var s2 = new THREE.Sprite(m2); s2.scale.set(150, 9, 1); return s2;
       })();
       scene.add(flare);
       var moon = new THREE.Mesh(new THREE.SphereGeometry(0.72, 28, 20), new THREE.MeshStandardMaterial({ color: 0xb8b8b8, roughness: 1 }));
+      moon.material.color.convertSRGBToLinear(); // authored sRGB → linear
       moon.userData.key = "moon"; scene.add(moon); this._meshes.moon = moon;
       loader.load("./img/textures/moon_1024.jpg",
-        function (t) { moon.material.map = t; moon.material.color.set(0xffffff); moon.material.needsUpdate = true; });
+        function (t) { t.encoding = THREE.sRGBEncoding; moon.material.map = t; moon.material.color.set(0xffffff); moon.material.needsUpdate = true; });
       function ringSprite() {
         var cv = document.createElement("canvas"); cv.width = cv.height = 256;
         var cx = cv.getContext("2d");
@@ -379,7 +407,7 @@
         g.addColorStop(0.82, "rgba(159,220,236,.12)");
         g.addColorStop(1, "rgba(159,220,236,0)");
         cx.fillStyle = g; cx.fillRect(0, 0, 256, 256);
-        var m = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+        var m = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cv)), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
         return new THREE.Sprite(m);
       }
       var focusRing = ringSprite(); focusRing.material.opacity = 0; scene.add(focusRing);
@@ -390,6 +418,7 @@
         for (var ri2 = 0; ri2 <= 96; ri2++) { var ra2 = ri2 / 96 * Math.PI * 2; rpts.push(rr * Math.cos(ra2), 0, rr * Math.sin(ra2)); }
         rg2.setAttribute("position", new THREE.Float32BufferAttribute(rpts, 3));
         var rm2 = new THREE.LineBasicMaterial({ color: 0x9fdcec, transparent: true, opacity: op });
+        rm2.color.convertSRGBToLinear(); // authored sRGB → linear
         retGroup.add(new THREE.Line(rg2, rm2)); return rm2;
       }
       var retM1 = ringLine(1, 0), retM2 = ringLine(1.18, 0);
@@ -397,6 +426,7 @@
       [0, Math.PI / 2, Math.PI, Math.PI * 1.5].forEach(function (ta) { tpts.push(Math.cos(ta) * 1.02, 0, Math.sin(ta) * 1.02, Math.cos(ta) * 1.3, 0, Math.sin(ta) * 1.3); });
       tickGeo.setAttribute("position", new THREE.Float32BufferAttribute(tpts, 3));
       var tickMat = new THREE.LineBasicMaterial({ color: 0x9fdcec, transparent: true, opacity: 0 });
+      tickMat.color.convertSRGBToLinear(); // authored sRGB → linear
       retGroup.add(new THREE.LineSegments(tickGeo, tickMat));
       // look-up mode: geocentric sky markers
       var skyDefs = [["sun", "☉ SUN", "#ffd9a0"], ["moon", "☽ MOON", "#e6eaf2"], ["mercury", "☿ MERCURY", "#c9c2b8"], ["venus", "♀ VENUS", "#ffe2b0"], ["mars", "♂ MARS", "#ff9a70"], ["jupiter", "♃ JUPITER", "#ffd9a8"], ["saturn", "♄ SATURN", "#eed9ac"]];
@@ -413,6 +443,7 @@
       for (var hz = 0; hz <= 120; hz++) { var ha = hz / 120 * Math.PI * 2; hzPts.push(Math.cos(ha), 0, Math.sin(ha)); }
       horizonGeo.setAttribute("position", new THREE.Float32BufferAttribute(hzPts, 3));
       var horizonMat = new THREE.LineBasicMaterial({ color: 0x9fdcec, transparent: true, opacity: 0 });
+      horizonMat.color.convertSRGBToLinear(); // authored sRGB → linear
       var horizonRing = new THREE.Line(horizonGeo, horizonMat);
       horizonRing.visible = false; scene.add(horizonRing);
       var cardSprites = [];
@@ -423,6 +454,7 @@
       var meteorGeo = new THREE.BufferGeometry();
       meteorGeo.setAttribute("position", new THREE.Float32BufferAttribute([0, 0, 0, 1, 0, 0], 3));
       var meteorMat = new THREE.LineBasicMaterial({ color: 0xcfe0ff, transparent: true, opacity: 0 });
+      meteorMat.color.convertSRGBToLinear(); // authored sRGB → linear
       scene.add(new THREE.Line(meteorGeo, meteorMat));
       var meteorT = -1, nextMeteor = performance.now() + 6000;
       var meteorPos = new THREE.Vector3(), meteorVel = new THREE.Vector3();
@@ -435,7 +467,7 @@
         cx.textAlign = "center"; cx.globalAlpha = 0.95;
         var sp2 = txt.split("").join("\u200a\u200a");
         cx.fillText(sp2, 256, 42);
-        var m = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthWrite: false });
+        var m = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cv)), transparent: true, depthWrite: false });
         return new THREE.Sprite(m);
       }
       var STARS = [["Sirius","#cfe0ff",1.6],["Alpha Centauri","#ffe9c4",1.2],["Vega","#d6e4ff",1.3],["Arcturus","#ffcf9e",1.4],["Capella","#fff0c9",1.2],["Rigel","#c9dcff",1.5],["Procyon","#f2f4ff",1.1],["Betelgeuse","#ffb08a",1.7],["Altair","#e8eeff",1.1],["Aldebaran","#ffc394",1.3],["Antares","#ff9e7d",1.6],["Spica","#cdd9ff",1.2],["Polaris","#eef2ff",1.1],["Deneb","#dfe9ff",1.3]];
@@ -467,7 +499,7 @@
         var czx = cvz.getContext("2d");
         czx.font = "84px 'Schibsted Grotesk', Arial, sans-serif"; czx.textAlign = "center"; czx.textBaseline = "middle";
         czx.fillStyle = "rgba(159,220,236,.9)"; czx.fillText(zg, 64, 68);
-        var zm = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cvz), transparent: true, depthWrite: false });
+        var zm = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cvz)), transparent: true, depthWrite: false });
         zm.opacity = 0;
         var zs = new THREE.Sprite(zm);
         var za = (zi * 30 + 15) * DEG;
@@ -479,6 +511,7 @@
       for (var ez = 0; ez <= 180; ez++) { var ea = ez / 180 * Math.PI * 2; eclPts.push(305 * Math.cos(ea), 0, -305 * Math.sin(ea)); }
       eclGeo.setAttribute("position", new THREE.Float32BufferAttribute(eclPts, 3));
       var eclMat = new THREE.LineBasicMaterial({ color: 0x9fdcec, transparent: true, opacity: 0 });
+      eclMat.color.convertSRGBToLinear(); // authored sRGB → linear
       scene.add(new THREE.Line(eclGeo, eclMat));
       // layered barred-spiral galaxy
       var gGalaxy = new THREE.Group();
@@ -513,7 +546,7 @@
           }
         }
         geo.setAttribute("position", new THREE.Float32BufferAttribute(ps, 3));
-        geo.setAttribute("color", new THREE.Float32BufferAttribute(cs, 3));
+        geo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(cs), 3)); // authored sRGB → linear
         var mm = new THREE.PointsMaterial({ size: size, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0, blending: dust ? THREE.NormalBlending : THREE.AdditiveBlending, depthWrite: false });
         gGalaxy.add(new THREE.Points(geo, mm));
         self._galMats.push({ m: mm, k: opacity });
@@ -542,7 +575,7 @@
           var cb3 = 0.2 + Math.random() * 0.3; cs.push(cb3, cb3 * 0.92, cb3 * 0.8);
         }
         geo.setAttribute("position", new THREE.Float32BufferAttribute(ps, 3));
-        geo.setAttribute("color", new THREE.Float32BufferAttribute(cs, 3));
+        geo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(cs), 3)); // authored sRGB → linear
         var mm = new THREE.PointsMaterial({ size: 1.3, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
         gGalaxy.add(new THREE.Points(geo, mm));
         self._galMats.push({ m: mm, k: 0.45 });
@@ -572,7 +605,7 @@
           g2.beginPath(); g2.arc(6, 0, 26, 0.3, 2.6); g2.stroke();
           g2.beginPath(); g2.arc(-6, 0, 26, Math.PI + 0.3, Math.PI + 2.6); g2.stroke();
         }
-        var m = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv2), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+        var m = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cv2)), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
         return new THREE.Sprite(m);
       }
       var cosMats = [], cosPos = [];
@@ -606,6 +639,7 @@
       var webGeo = new THREE.BufferGeometry();
       webGeo.setAttribute("position", new THREE.Float32BufferAttribute(webPts, 3));
       var webMat = new THREE.LineBasicMaterial({ color: 0x6f86c9, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+      webMat.color.convertSRGBToLinear(); // authored sRGB → linear
       scene.add(new THREE.LineSegments(webGeo, webMat));
       // interactions
       var el = renderer.domElement, dragging = false, activePointer = null, lx = 0, ly = 0, moved = 0, pinch = null;
@@ -668,7 +702,8 @@
       // resize
       var ro = new ResizeObserver(function () {
         var w = self.clientWidth || 1, h = self.clientHeight || 1;
-        renderer.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix();
+        renderer.setSize(w, h); if (self._composer) self._composer.setSize(w, h); // keep bloom targets in sync
+        cam.aspect = w / h; cam.updateProjectionMatrix();
       });
       ro.observe(this); this._ro = ro;
       self._vis = true;
@@ -680,7 +715,7 @@
       var loop = function () {
         self._raf = requestAnimationFrame(loop);
         if (!self._vis || document.hidden) return;        var lw = self.clientWidth || 1, lh = self.clientHeight || 1;
-        if (lw !== self._w || lh !== self._h) { self._w = lw; self._h = lh; renderer.setSize(lw, lh); cam.aspect = lw / lh; cam.updateProjectionMatrix(); }
+        if (lw !== self._w || lh !== self._h) { self._w = lw; self._h = lh; renderer.setSize(lw, lh); if (self._composer) self._composer.setSize(lw, lh); cam.aspect = lw / lh; cam.updateProjectionMatrix(); }
         starMat.opacity = (0.87 + 0.05 * Math.sin(performance.now() * 0.0011) + 0.04 * Math.sin(performance.now() * 0.0023 + 1.7)) * (1 - ss(9000, 30000, self._radius));
         var rad = self._radius;
         var starsF = ss(320, 1600, rad) * (1 - ss(9000, 30000, rad));
@@ -858,15 +893,102 @@
         tickMat.opacity += (retT * 0.75 - tickMat.opacity) * 0.08;
         corona.material.opacity = 0.3 + 0.09 * Math.sin(performance.now() * 0.0011);
         cam.lookAt(self._target);
-        renderer.render(scene, cam);
+        if (self._composer) self._composer.render(); else renderer.render(scene, cam); // bloom chain when available
       };
       self._loopFn = loop;
+      // pause the render loop while the tab is hidden; resume exactly one loop on return (never two)
+      this._onVis = function () {
+        if (document.visibilityState === "hidden") {
+          if (self._raf) { cancelAnimationFrame(self._raf); self._raf = null; }
+        } else if (!self._raf && !self._contextLost && !self._disposed && self._loopFn) {
+          self._raf = requestAnimationFrame(self._loopFn);
+        }
+      };
+      document.addEventListener("visibilitychange", this._onVis);
       loop();
+      // optional subtle bloom (r128 examples/js builds, self-hosted) — kill switch: ?nobloom=1
+      var noBloom = /[?&]nobloom=1\b/.test(window.location.search);
+      var pxr = renderer.getPixelRatio();
+      var fbPix = self._w * self._h * pxr * pxr; // effective framebuffer pixels
+      var bloomOK = !noBloom && (navigator.hardwareConcurrency || 8) > 4 && fbPix <= 5500000;
+      var buildBloom = function () {
+        if (self._composer || self._disposed || self._contextLost || self._renderer !== renderer) return; // stale async load
+        try {
+          var composer = new THREE.EffectComposer(renderer);
+          composer.addPass(new THREE.RenderPass(scene, cam));
+          composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(self._w, self._h), 0.35, 0.55, 0.8)); // subtle
+          // r128 applies tone mapping into render targets but outputEncoding only to screen — re-encode on the final pass
+          composer.addPass(new THREE.ShaderPass(THREE.GammaCorrectionShader));
+          self._composer = composer;
+        } catch (err) { self._composer = null; } // any failure → keep plain rendering
+      };
+      if (bloomOK) {
+        if (THREE.UnrealBloomPass && THREE.EffectComposer && THREE.GammaCorrectionShader) buildBloom();
+        else {
+          var bloomFiles = ["CopyShader", "LuminosityHighPassShader", "GammaCorrectionShader", "EffectComposer", "ShaderPass", "RenderPass", "UnrealBloomPass"];
+          var seq = Promise.resolve();
+          bloomFiles.forEach(function (bf) {
+            seq = seq.then(function () {
+              return new Promise(function (res, rej) {
+                var sc = document.createElement("script");
+                sc.src = "./js/vendor/three-r128-" + bf + ".js";
+                sc.onload = res; sc.onerror = rej;
+                document.head.appendChild(sc);
+              });
+            });
+          });
+          seq.then(buildBloom).catch(function () { /* bloom files unavailable — plain rendering continues */ });
+        }
+      }
     };
     C.prototype.attributeChangedCallback = function (n, o, v) {
       if (n === "orbits" && this._orbitLines) this._orbitLines.forEach(function (l) { l.visible = v !== "off"; });
     };
-    C.prototype.disconnectedCallback = function () { if (this._raf) cancelAnimationFrame(this._raf); if (this._ro) this._ro.disconnect(); if (this._vio) this._vio.disconnect(); };
+    C.prototype._posterFallback = function () {
+      // static observatory poster — shared by the no-WebGL path and the context-lost path
+      this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(159,220,236,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(230,161,92,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;border:1px solid rgba(159,220,236,.28);box-shadow:0 0 60px rgba(159,220,236,.15),inset 0 0 60px rgba(159,220,236,.1)"></div>';
+    };
+    C.prototype._teardown = function () { // full GPU cleanup so repeated mount/unmount can't leak
+      if (this._disposed) return;
+      this._disposed = true;
+      if (this._raf) { cancelAnimationFrame(this._raf); this._raf = null; }
+      if (this._onVis) { document.removeEventListener("visibilitychange", this._onVis); this._onVis = null; }
+      if (this._ro) { this._ro.disconnect(); this._ro = null; }
+      if (this._vio) { this._vio.disconnect(); this._vio = null; }
+      var r = this._renderer;
+      if (r) {
+        if (this._onCtxLost) { r.domElement.removeEventListener("webglcontextlost", this._onCtxLost); this._onCtxLost = null; }
+        if (this._onCtxOK) { r.domElement.removeEventListener("webglcontextrestored", this._onCtxOK); this._onCtxOK = null; }
+        if (this._composer) { // bloom: pass render targets + composer buffers
+          this._composer.passes.forEach(function (p) { if (typeof p.dispose === "function") p.dispose(); });
+          if (this._composer.renderTarget1) this._composer.renderTarget1.dispose();
+          if (this._composer.renderTarget2) this._composer.renderTarget2.dispose();
+          this._composer = null;
+        }
+        if (this._scene) this._scene.traverse(function (o) { // geometries, materials, textures
+          if (o.geometry) o.geometry.dispose();
+          var ms = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+          ms.forEach(function (m) {
+            for (var k in m) { var v = m[k]; if (v && v.isTexture) v.dispose(); }
+            if (m.uniforms) for (var u in m.uniforms) { var uv = m.uniforms[u] && m.uniforms[u].value; if (uv && uv.isTexture) uv.dispose(); }
+            if (typeof m.dispose === "function") m.dispose();
+          });
+        });
+        if (r.domElement.parentNode === this) this.removeChild(r.domElement);
+        r.dispose();
+        if (typeof r.forceContextLoss === "function") r.forceContextLoss(); // release the GL context slot across remounts
+        this._renderer = null;
+      }
+      this._scene = null; this._cam = null; this._loopFn = null; this._composer = null;
+      this._meshes = null; this._spinners = null; this._cones = null; this._orbitLines = null; this._sizes = null;
+      this._starFadeMats = null; this._nebMats = null; this._zodMats = null; this._galMats = null;
+      this._natalMats = null; this._natalGroup = null;
+      this._contextLost = false;
+      this._init = false; // next connect performs a full clean boot
+      this._ph = null;
+      this.innerHTML = ""; // canvas, poster and placeholder are all created by this element
+    };
+    C.prototype.disconnectedCallback = function () { this._teardown(); };
     C.prototype.flyTo = function (key) {
       this._flightMode = 0; this._intro = false; this._lookUpMode = 0; this._lookUpPending = 0;
       if (key !== this._focus) { this._dTheta += 0.85; this._dPhi = 0.92; }
@@ -913,7 +1035,7 @@
         cx.fillStyle = "rgba(230,238,255,.95)"; cx.fillText(it.glyph, 64, 56);
         cx.shadowBlur = 0; cx.font = "500 15px 'IBM Plex Mono', monospace"; cx.fillStyle = "rgba(159,220,236,.9)";
         cx.fillText("YOUR " + it.name.toUpperCase(), 64, 108);
-        var m = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthWrite: false });
+        var m = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cv)), transparent: true, depthWrite: false });
         m.opacity = 0;
         var s = new THREE.Sprite(m);
         var a = it.lon * Math.PI / 180;

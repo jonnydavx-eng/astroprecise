@@ -97,7 +97,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
       </select></label>
   </div>
   <button class="btn" id="castBtn" type="button">COMPUTE MY ECLIPSE CONTACT — FREE</button>
-  <div class="mono" style="font-size:8.5px;letter-spacing:.18em;color:var(--faint);margin-top:12px">NO ACCOUNT · YOUR BIRTH DATA NEVER LEAVES THIS PAGE · NO BIRTH PLACE = NO HOUSES, AND WE SAY SO</div>
+  <div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--faint);margin-top:12px">NO ACCOUNT · YOUR BIRTH DATA NEVER LEAVES THIS PAGE · NO BIRTH PLACE = NO HOUSES, AND WE SAY SO · DON'T KNOW YOUR TIME? LEAVE IT AT NOON — SIGNS STAY EXACT</div>
 </div>
 
 <div style="margin:22px 0 8px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#000">
@@ -117,7 +117,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
     <div class="lbl" style="color:var(--good)">A QUIET ONE FOR YOU — SAID BEFORE ANY PAYMENT</div>
     <div class="receipt"><div id="quietMono"></div></div>
     <p class="serif" id="quietSerif" style="margin:16px 0 0"></p>
-    <p style="font-size:14.5px;line-height:1.6;color:var(--dim);margin:16px 0 0">Because this eclipse makes no close contact with your chart, <b style="color:var(--ink)">we don't recommend the £2.99 Night Reading for you</b> — it would be honest but thin. The <a href="./deep-reading.html">£12 Deep Reading</a> reads your whole sky instead. Or browse the <a href="./shop.html#eclipse-set">£6 Eclipse Set</a> if you want the keepsake sky card without a thin personalised night reading.</p>
+    <p style="font-size:14.5px;line-height:1.6;color:var(--dim);margin:16px 0 0">Because this eclipse makes no close contact with your chart, <b style="color:var(--ink)">we don't recommend the £2.99 Night Reading for you</b> — it would be honest but thin. The <a href="./deep-reading.html">£12 Deep Reading</a> reads your whole sky instead. Or the <a href="./shop.html#sky-pass">£5 Sky Pass</a> — thirty dated days of your real sky, no thin eclipse chapter.</p>
   </div>
 
   <div id="saleBox" hidden>
@@ -127,8 +127,13 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
       <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:16px 0">That's the computed receipt — free, checkable, yours. The full reading adds the remaining four written beats: what this point governs in your chart (with whole-sign house when your place is given at unlock), the one question to sit with on eclipse night, and the honest close. ≈350 words, written from your orb alone.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
         <a class="btn" id="buyBtn" href="./shop.html#eclipse-reading">NOTIFY ME — £2.99 WHEN CHECKOUT OPENS</a>
-        <span class="mono" id="buyNote" style="font-size:9px;letter-spacing:.16em;color:var(--faint)">£4 AFTER 12 AUG · GUMROAD WHEN LIVE · NO FAKE CHECKOUT</span>
+        <form id="saleNotify" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0">
+          <input id="saleEmail" type="email" required placeholder="you@example.com" aria-label="Email for checkout-open alert" style="flex:1;min-width:200px">
+          <button class="btn" type="submit">NOTIFY ME — £2.99 WHEN CHECKOUT OPENS</button>
+        </form>
+        <span class="mono" id="buyNote" style="font-size:11px;letter-spacing:.14em;color:var(--faint)">£4 AFTER 12 AUG · GUMROAD WHEN LIVE · NO FAKE CHECKOUT</span>
       </div>
+      <div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--faint);margin-top:10px">OR <a href="./shop.html#eclipse-set" style="color:var(--acc)">THE ECLIPSE SET — READING + SKY CARD + PRINTABLE NIGHT PAGE, £6</a></div>
       <details style="margin-top:16px">
         <summary class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--faint);cursor:pointer">ALREADY BOUGHT? ENTER YOUR LICENSE KEY</summary>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
@@ -239,6 +244,7 @@ function render() {
     local: { date: '12 August 2026' }, timed: timeGiven
   });
   $('result').hidden = false;
+  $('result').scrollIntoView({ behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth', block: 'start' });
   $('anchorBox').innerHTML = `<div>${lastReading.anchor.mono}</div>`;
   $('anchorSerif').textContent = lastReading.anchor.serif;
   const unlocked = localStorage.getItem('ap-eclipse-unlocked') === '1';
