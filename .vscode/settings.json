@@ -1,0 +1,36 @@
+{
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.wordWrap": "on",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "files.eol": "\n",
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.git": true,
+    "**/out": true,
+    "**/_engine-render": true,
+    "**/launch-output": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.git": true,
+    "**/out": true
+  },
+  "emmet.includeLanguages": {
+    "html": "html"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact"
+  ],
+  "prettier.configPath": ".prettierrc.json",
+  "liveServer.settings.root": "/website",
+  "liveServer.settings.port": 8790,
+  "liveServer.settings.CustomBrowser": "chrome"
+}
