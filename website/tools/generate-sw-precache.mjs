@@ -223,6 +223,26 @@ function main() {
     }
   }
   sw = replacePrecache(sw, formatPrecache(entries));
+
+  // GUARD added 2026-07-31 (Claude @ BOOK-T1H4NJ753R). On 2026-07-20 this generator
+  // silently deleted CORE, OPTIONAL and canonicalAssetKey because they had been written
+  // INSIDE the PRECACHE markers, which replacePrecache() overwrites wholesale. The live
+  // service worker then referenced three identifiers that no longer existed: install()
+  // threw, the fetch handler crashed, offline mode died, and returning visitors were
+  // pinned to a July worker. Every test stayed green because nothing lints sw.js.
+  // Fail loudly rather than ship that again. Definitions now live BELOW the end marker.
+  const REQUIRED = ['CORE', 'OPTIONAL', 'canonicalAssetKey'];
+  const missing = REQUIRED.filter(
+    (id) => !new RegExp(`(?:^|\\n)\\s*(?:const|function)\\s+${id}\\b`).test(sw),
+  );
+  if (missing.length) {
+    throw new Error(
+      `sw.js would lose required definition(s): ${missing.join(', ')}. ` +
+        'They must be declared BELOW the PRECACHE_END marker — anything between the ' +
+        'markers is regenerated and destroyed. See git show be871d1^:website/sw.js.',
+    );
+  }
+
   writeFileSync(SW_PATH, sw, 'utf8');
 
   const versionLabel = sw.match(/const V = ["'](ap-v\d+)["']/)?.[1] ?? '?';
