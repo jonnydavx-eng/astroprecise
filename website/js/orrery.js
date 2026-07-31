@@ -193,8 +193,14 @@
       if (!window.THREE) {
         if (!window.__threeLoad) window.__threeLoad = new Promise(function (res) {
           var s = document.createElement("script");
-          s.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
-          s.onload = res; s.onerror = res; document.head.appendChild(s);
+          s.src = "./js/vendor/three.r128.min.js"; // self-hosted first — no CDN on the LCP path
+          s.onload = res;
+          s.onerror = function () {
+            var c = document.createElement("script");
+            c.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+            c.onload = res; c.onerror = res; document.head.appendChild(c);
+          };
+          document.head.appendChild(s);
         });
         window.__threeLoad.then(function () {
           if (window.THREE) self._boot(); else self.innerHTML = '<div style="color:#556;padding:40px;font:12px monospace">3D engine unavailable</div>';
@@ -212,10 +218,19 @@
       this._focus = sf || "earth";
       this._theta = -2.4; this._phi = 0.7;
       this._dTheta = -0.6; this._dPhi = 1.12;
+      var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (sf || sr) { this._radius = sr || 44; this._dRadius = sr || 44; this._intro = false; }
+      else if (reduced) { this._radius = this._dRadius = 44; this._intro = false; }
       else { this._radius = 210000; this._dRadius = 210000; this._intro = true; }
       this._target = new THREE.Vector3(); this._dTarget = new THREE.Vector3();
-      var renderer = this._renderer = new THREE.WebGLRenderer({ antialias: window.devicePixelRatio < 2, alpha: false, powerPreference: "high-performance" });
+      var renderer;
+      try {
+        renderer = this._renderer = new THREE.WebGLRenderer({ antialias: window.devicePixelRatio < 2, alpha: false, powerPreference: "high-performance" });
+      } catch (e) {
+        // WebGL unavailable/blocked — static observatory poster keeps the hero alive; HUD + CTAs sit above.
+        this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(159,220,236,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(230,161,92,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;border:1px solid rgba(159,220,236,.28);box-shadow:0 0 60px rgba(159,220,236,.15),inset 0 0 60px rgba(159,220,236,.1)"></div>';
+        return;
+      }
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 760 ? 1.5 : 2));
       renderer.domElement.style.display = "block";
       this.appendChild(renderer.domElement);
@@ -594,7 +609,9 @@
       scene.add(new THREE.LineSegments(webGeo, webMat));
       // interactions
       var el = renderer.domElement, dragging = false, activePointer = null, lx = 0, ly = 0, moved = 0, pinch = null;
-      el.style.cursor = "grab"; el.style.touchAction = "none";
+      el.style.cursor = "grab"; el.style.touchAction = "pan-y"; // vertical swipes scroll the page; horizontal drags orbit
+      var touchPts = {}, pinchDist = 0; // two-pointer pinch → zoom (the mobile scale ladder)
+      function dropPt(id) { delete touchPts[id]; if (Object.keys(touchPts).length < 2) pinchDist = 0; }
       function endDrag(e) {
         if (!dragging || e.pointerId !== activePointer) return false;
         dragging = false; activePointer = null; el.style.cursor = "grab";
@@ -603,14 +620,35 @@
         }
         return true;
       }
-      el.addEventListener("pointerdown", function (e) { if (dragging) return; if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._intro = false; dragging = true; activePointer = e.pointerId; moved = 0; lx = e.clientX; ly = e.clientY; try { el.setPointerCapture(e.pointerId); } catch (ignore) {} el.style.cursor = "grabbing"; });
+      el.addEventListener("pointerdown", function (e) {
+        touchPts[e.pointerId] = { x: e.clientX, y: e.clientY };
+        var ids = Object.keys(touchPts);
+        if (ids.length === 2) { // second finger → pinch mode, stop any orbit drag
+          var a = touchPts[ids[0]], b = touchPts[ids[1]];
+          pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+          if (dragging) { dragging = false; activePointer = null; el.style.cursor = "grab"; }
+          return;
+        }
+        if (dragging) return; if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._intro = false; dragging = true; activePointer = e.pointerId; moved = 0; lx = e.clientX; ly = e.clientY; try { el.setPointerCapture(e.pointerId); } catch (ignore) {} el.style.cursor = "grabbing"; });
       el.addEventListener("pointermove", function (e) {
+        if (touchPts[e.pointerId]) { touchPts[e.pointerId].x = e.clientX; touchPts[e.pointerId].y = e.clientY; }
+        var ids = Object.keys(touchPts);
+        if (ids.length === 2 && pinchDist > 0) { // pinch zoom
+          var a = touchPts[ids[0]], b = touchPts[ids[1]];
+          var d = Math.hypot(a.x - b.x, a.y - b.y);
+          self._intro = false;
+          self._dRadius = Math.max(7, Math.min(260000, self._dRadius * (1 - (d - pinchDist) / 300)));
+          pinchDist = d;
+          return;
+        }
         if (!dragging || e.pointerId !== activePointer) return;
         if (e.pointerType === "mouse" && e.buttons === 0) { endDrag(e); return; }
         var dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
         self._dTheta -= dx * 0.005; self._dPhi = Math.max(0.12, Math.min(1.45, self._dPhi - dy * 0.004));
       });
       el.addEventListener("pointerup", function (e) {
+        var wasPinch = pinchDist > 0; dropPt(e.pointerId);
+        if (wasPinch) { endDrag(e); return; } // pinch, not a click
         if (!endDrag(e)) return;
         if (moved < 6) { // click → pick
           var rect = el.getBoundingClientRect();
@@ -624,8 +662,8 @@
           }
         }
       });
-      el.addEventListener("pointercancel", endDrag);
-      el.addEventListener("lostpointercapture", endDrag);
+      el.addEventListener("pointercancel", function (e) { dropPt(e.pointerId); endDrag(e); });
+      el.addEventListener("lostpointercapture", function (e) { dropPt(e.pointerId); endDrag(e); });
       el.addEventListener("wheel", function (e) { if (self.getAttribute("data-wheel") === "off") return; e.preventDefault(); if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._intro = false; self._lookUpMode = 0; self._lookUpPending = 0; self._dRadius = Math.max(7, Math.min(260000, self._dRadius * (1 + e.deltaY * 0.0012))); }, { passive: false });
       // resize
       var ro = new ResizeObserver(function () {

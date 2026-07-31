@@ -75,6 +75,10 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 #ladder button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:rgba(233,237,242,.45)}
 #ladder button i{width:22px;height:1px;background:rgba(233,237,242,.2);display:block}
 #ladder button.on{color:var(--acc)}#ladder button.on i{background:var(--acc)}
+#mladder{display:none;position:absolute;left:50%;bottom:148px;transform:translateX(-50%);gap:7px;pointer-events:auto;z-index:9}
+#mladder button{background:rgba(2,4,10,.55);border:1px solid rgba(233,237,242,.22);color:rgba(233,237,242,.75);border-radius:100px;padding:10px 13px;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;cursor:pointer;backdrop-filter:blur(4px)}
+#mladder button.on{border-color:var(--acc);color:#fff}
+@media (pointer:coarse) and (max-width:1020px){#mladder{display:flex}}
 #telemetry{position:absolute;left:28px;bottom:118px;pointer-events:none;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;line-height:2;color:rgba(233,237,242,.75);max-width:320px}
 .wheelbox{width:340px;max-width:86vw;margin:0 auto}
 .prow{display:flex;align-items:baseline;gap:14px;padding:7px 2px;border-top:1px solid rgba(233,237,242,.08);font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.08em}
@@ -104,49 +108,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 </head>
 <body>
 
-<!-- ═══ HERO — THE LIVING MODEL ═══ -->
-<div id="hero">
-  <void-orrery id="orr"></void-orrery>
-  <div class="hud">
-    <div class="row">
-      <div style="display:flex;align-items:center;gap:12px">
-        <img src="./img/logo-mark.svg" alt="" width="34" height="34" style="display:block">
-        <div>
-          <div style="font-size:16px;font-weight:700;letter-spacing:.22em">ASTRO&nbsp;PRECISE</div>
-          <div class="mono" style="font-size:7.5px;letter-spacing:.4em;color:var(--faint);margin-top:2px">THE&nbsp;OBSERVATORY</div>
-        </div>
-      </div>
-      <nav class="main">
-        <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--acc)">THE ECLIPSE ✦</a>
-      </nav>
-    </div>
-    <div class="hero-ui" style="text-align:center;margin-top:20px;padding:0 90px">
-      <div class="mono" style="font-size:9px;letter-spacing:.32em;color:var(--acc);margin-bottom:14px;animation-delay:.1s">THE REAL SKY NEWS</div>
-      <h1 style="margin:0;font-size:clamp(46px,7.2vw,88px);line-height:1;font-weight:700;letter-spacing:-.02em;text-shadow:0 2px 40px rgba(0,0,0,.9);animation-delay:.25s">One sky. <em class="serif" style="color:var(--acc);font-weight:400">Yours.</em></h1>
-      <p style="margin:14px auto 0;font-size:clamp(15px,1.6vw,19px);color:var(--dim);max-width:580px;text-shadow:0 1px 20px #000;animation-delay:.45s">A living universe, computed in your browser — drift from your street to the deep field, then land on the minute you were born.</p>
-      <div class="mono" style="margin-top:13px;font-size:9.5px;letter-spacing:.24em;color:var(--faint);animation-delay:.65s"><span class="pulse" style="color:var(--good)">●</span>&nbsp;&nbsp;LIVE · COMPUTED HERE · NOTHING UPLOADED</div>
-    </div>
-    <div style="flex:1"></div>
-    <div class="hero-ui" style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;padding:0 22px 22px;pointer-events:auto;animation-delay:.85s">
-      <a class="btn" href="#cast">CAST MY CHART — FREE</a>
-      <button class="btn ghost" id="flightBtn" type="button">✦ COSMIC FLIGHT</button>
-      <a class="btn ghost" href="./deep-time.html">⧗ DEEP TIME — TO FIRST LIGHT</a>
-    </div>
-    <div class="scrubrow">
-      <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">1800</span>
-      <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
-      <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">2200</span>
-      <span class="mono" id="scrubLabel" style="font-size:10px;letter-spacing:.18em;color:var(--acc);min-width:110px;text-align:right">NOW</span>
-      <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(159,220,236,.4);color:var(--acc);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
-    </div>
-  </div>
-  <div id="ladder" role="group" aria-label="Scale ladder"><span class="mono" style="font-size:7.5px;letter-spacing:.24em;color:var(--faint)">SCALE</span></div>
-  <div id="telemetry" aria-live="polite"></div>
-  <div id="dock" role="group" aria-label="Fly to a world"><span class="mono" style="align-self:center;font-size:7.5px;letter-spacing:.22em;color:var(--faint)">FLY<br>TO</span></div>
-  <div id="ap-sky-news" class="ap-sky-news" style="position:absolute;left:0;right:0;bottom:88px;z-index:8;pointer-events:none"></div>
-</div>
-
-<!-- ═══ ECLIPSE RIBBON — 12 AUG 2026, deepest over Britain since 1999 ═══ -->
+<!-- ═══ ECLIPSE RIBBON — 12 AUG 2026, deepest over Britain since 1999 (hoisted above hero for the event window) ═══ -->
 <section id="eclipse-ribbon" aria-labelledby="erHead">
   <div class="er-wrap">
     <a class="er-left" href="./eclipse.html">
@@ -181,12 +143,53 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 })();
 </script>
 
+<!-- ═══ HERO — THE LIVING MODEL ═══ -->
+<div id="hero">
+  <void-orrery id="orr"></void-orrery>
+  <div class="hud">
+    <div class="row">
+      <div style="display:flex;align-items:center;gap:12px">
+        <img src="./img/logo-mark.svg" alt="" width="34" height="34" style="display:block">
+        <div>
+          <div style="font-size:16px;font-weight:700;letter-spacing:.22em">ASTRO&nbsp;PRECISE</div>
+          <div class="mono" style="font-size:7.5px;letter-spacing:.4em;color:var(--faint);margin-top:2px">THE&nbsp;OBSERVATORY</div>
+        </div>
+      </div>
+      <nav class="main">
+        <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--acc)">THE ECLIPSE ✦</a>
+      </nav>
+    </div>
+    <div class="hero-ui" style="text-align:center;margin-top:20px;padding:0 90px">
+      <div class="mono" style="font-size:9px;letter-spacing:.32em;color:var(--acc);margin-bottom:14px;animation-delay:.1s">THE REAL SKY NEWS</div>
+      <h1 style="margin:0;font-size:clamp(46px,7.2vw,88px);line-height:1;font-weight:700;letter-spacing:-.02em;text-shadow:0 2px 40px rgba(0,0,0,.9);animation-delay:.25s">One sky. <em class="serif" style="color:var(--acc);font-weight:400">Yours.</em></h1>
+      <p style="margin:14px auto 0;font-size:clamp(15px,1.6vw,19px);color:var(--dim);max-width:580px;text-shadow:0 1px 20px #000;animation-delay:.45s">A living universe, computed in your browser — drift from your street to the deep field, then land on the minute you were born.</p>
+      <div class="mono" style="margin-top:13px;font-size:9.5px;letter-spacing:.24em;color:var(--faint);animation-delay:.65s"><span class="pulse" style="color:var(--good)">●</span>&nbsp;&nbsp;LIVE · COMPUTED HERE · NOTHING UPLOADED</div>
+    </div>
+    <div style="flex:1"></div>
+    <div class="hero-ui" style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;padding:0 22px 22px;pointer-events:auto;animation-delay:.85s">
+      <a class="btn" href="#cast">CAST MY CHART — FREE</a>
+      <!-- Event window: single primary action per viewport. Cosmic Flight / Deep Time return after 12 Aug. -->
+    </div>
+    <div class="scrubrow">
+      <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">1800</span>
+      <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
+      <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">2200</span>
+      <span class="mono" id="scrubLabel" style="font-size:10px;letter-spacing:.18em;color:var(--acc);min-width:110px;text-align:right">NOW</span>
+      <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(159,220,236,.4);color:var(--acc);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
+    </div>
+  </div>
+  <div id="ladder" role="group" aria-label="Scale ladder"><span class="mono" style="font-size:7.5px;letter-spacing:.24em;color:var(--faint)">SCALE</span></div>
+  <div id="mladder" role="group" aria-label="Scale ladder"></div>
+  <div id="telemetry" aria-live="polite"></div>
+  <div id="dock" role="group" aria-label="Fly to a world"><span class="mono" style="align-self:center;font-size:7.5px;letter-spacing:.22em;color:var(--faint)">FLY<br>TO</span></div>
+</div>
+
 <!-- trust strip -->
 <div style="border-top:1px solid var(--line)">
   <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0">
     <div style="padding:26px 26px 26px 0"><div class="lbl" style="margin-bottom:5px">FREE · NO ACCOUNT</div><div style="font-size:15px;color:var(--dim)">The full chart. No email, no wall.</div></div>
     <div style="padding:26px"><div class="lbl" style="margin-bottom:5px">COMPUTED HERE</div><div style="font-size:15px;color:var(--dim)">Your birth minute never leaves this device. <a href="#privacy">Check it →</a></div></div>
-    <div style="padding:26px 0 26px 26px"><div class="lbl" style="margin-bottom:5px">MEEUS-GRADE</div><div style="font-size:15px;color:var(--dim)">Positions from the published series, 1800–2200.</div></div>
+    <div style="padding:26px 0 26px 26px"><div class="lbl" style="margin-bottom:5px">PLANETARIUM-GRADE</div><div style="font-size:15px;color:var(--dim)">The same maths as planetarium software, 1800–2200.</div></div>
   </div>
 </div>
 
@@ -539,6 +542,10 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     b.addEventListener('click', function () { if (orr.flyScale) orr.flyScale(lv); });
     b.dataset.lv = lv;
     $('ladder').appendChild(b);
+    var m = document.createElement('button');
+    m.type = 'button'; m.textContent = lv; m.dataset.lv = lv;
+    m.addEventListener('click', function () { if (orr.flyScale) orr.flyScale(lv); });
+    if ($('mladder')) $('mladder').appendChild(m);
   });
   var DOCK = [['☉','sun'],['☿','mercury'],['♀','venus'],['♁','earth'],['☽','moon'],['♂','mars'],['♃','jupiter'],['♄','saturn'],['♅','uranus'],['♆','neptune'],['✦',null]];
   DOCK.forEach(function (d) {
@@ -556,8 +563,9 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   });
   orr.addEventListener('scalechange', function (e) {
     Array.prototype.forEach.call($('ladder').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.lv === e.detail.level); });
+    if ($('mladder')) Array.prototype.forEach.call($('mladder').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.lv === e.detail.level); });
   });
-  $('flightBtn').addEventListener('click', function () { if (orr.flight) orr.flight(); });
+  var fb = $('flightBtn'); if (fb) fb.addEventListener('click', function () { if (orr.flight) orr.flight(); });
   $('flyMine').addEventListener('click', function () {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (chart && chart.jd && orr.setJD) orr.setJD(chart.jd);

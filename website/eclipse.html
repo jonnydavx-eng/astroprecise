@@ -74,10 +74,6 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   <span class="kicker">THE REAL SKY NEWS · 12 AUGUST 2026</span>
 </div>
 
-<div style="margin:22px 0 8px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#000">
-  <img src="./img/eclipse-geometry.svg" width="1200" height="630" alt="Computed geometry of the 12 August 2026 partial solar eclipse at magnitude 0.91 — Moon covering 91% of the Sun at 20°08′ Leo" style="display:block;width:100%;height:auto" loading="eager" decoding="async" />
-</div>
-
 <h1>The sky goes dark.<br>Where does it land in <em style="color:var(--acc);font-style:italic">your</em> chart?</h1>
 <p class="lede">On 12 August 2026 the Moon covers the Sun over Europe — the first total solar eclipse visible from mainland Europe since 1999. Enter your birth minute and this page computes, on your device, exactly where that darkness falls in your chart.</p>
 
@@ -93,7 +89,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
     <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" min="1900-01-01" max="2026-12-31"></label>
     <label class="field"><span>TIME (SHARPENS THE MOON)</span><input type="time" id="tob" value="12:00"></label>
-    <label class="field"><span>CLOCK OFFSET FROM UT</span>
+    <label class="field"><span>TIME ZONE WHEN BORN</span>
       <select id="tz">
         <option value="0">UT / GMT</option><option value="1" selected>UK SUMMER (BST, +1)</option>
         <option value="2">CENTRAL EU SUMMER (+2)</option><option value="-4">US EASTERN (−4)</option>
@@ -102,6 +98,10 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   </div>
   <button class="btn" id="castBtn" type="button">COMPUTE MY ECLIPSE CONTACT — FREE</button>
   <div class="mono" style="font-size:8.5px;letter-spacing:.18em;color:var(--faint);margin-top:12px">NO ACCOUNT · YOUR BIRTH DATA NEVER LEAVES THIS PAGE · NO BIRTH PLACE = NO HOUSES, AND WE SAY SO</div>
+</div>
+
+<div style="margin:22px 0 8px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#000">
+  <img src="./img/eclipse-geometry.svg" width="1200" height="630" alt="Computed geometry of the 12 August 2026 partial solar eclipse at magnitude 0.91 — Moon covering 91% of the Sun at 20°08′ Leo" style="display:block;width:100%;height:auto" loading="lazy" decoding="async" />
 </div>
 
 <!-- ——— RESULT ——— -->
@@ -148,6 +148,12 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
       <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint)" id="readingFoot"></div>
     </div>
   </div>
+<!-- ——— HOW YOU RECEIVE IT ——— -->
+  <div class="card">
+    <div class="lbl">HOW YOU RECEIVE IT</div>
+    <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0 0 10px"><b style="color:var(--ink)">Instantly, on this device.</b> Your reading is computed here and unlocks the moment payment clears — no email wait, no queue, nothing sent to be "prepared". It was ready before you paid.</p>
+    <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0"><b style="color:var(--ink)">Permanently re-accessible.</b> Your Gumroad receipt carries your license key — paste it above on any device, any time, and the reading recomputes and unlocks again. Losing the tab loses nothing.</p>
+  </div>
 </div>
 
 <!-- ——— LOOK SAFELY ——— -->
@@ -156,17 +162,10 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0">Even at ~91% coverage the remaining sliver of Sun is dangerously bright — the UK never reaches totality, so there is no moment it's safe to look directly. Use <b style="color:var(--ink)">ISO&nbsp;12312-2 certified eclipse glasses</b> (check the standard is printed on them), a pinhole projector, or simply watch the light change around you. Sunglasses, phone cameras and exposed film do <b style="color:var(--ink)">not</b> protect your eyes. We take no cut on glasses — we just want you to keep your sight.</p>
 </div>
 
-<!-- ——— HOW YOU RECEIVE IT ——— -->
-<div class="card">
-  <div class="lbl">HOW YOU RECEIVE IT</div>
-  <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0 0 10px"><b style="color:var(--ink)">Instantly, on this device.</b> Your reading is computed here and unlocks the moment payment clears — no email wait, no queue, nothing sent to be "prepared". It was ready before you paid.</p>
-  <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0"><b style="color:var(--ink)">Permanently re-accessible.</b> Your Gumroad receipt carries your license key — paste it above on any device, any time, and the reading recomputes and unlocks again. Losing the tab loses nothing.</p>
-</div>
-
 <!-- ——— THE HONEST SHOP · FIVE SKUS ——— -->
-<div class="card">
-  <div class="lbl">EVERYTHING WE SELL — EXACTLY WHAT EACH CONTAINS</div>
-  <table>
+<details class="card" style="padding:18px 22px">
+  <summary class="mono" style="font-size:10px;letter-spacing:.2em;color:var(--acc);cursor:pointer">EVERYTHING ELSE WE SELL — THE HONEST SHOP</summary>
+  <table style="margin-top:14px">
     <tr><th>EDITION</th><th>WHAT'S INSIDE</th><th style="text-align:right">PRICE</th></tr>
     <tr><td><b>Eclipse Night Reading</b></td><td>The five beats: anchor receipt · closest contact with orb + up to 2 secondaries · what it governs (whole-sign house when place given) · the question · honest close. ≈350 words.<div class="mono" style="margin-top:4px">QUIET CHARTS ARE TOLD SO BEFORE PAYING</div></td><td class="price">£2.99<br><span style="color:var(--faint)">£4 after 12 Aug</span></td></tr>
     <tr><td><b>Eclipse Set</b></td><td>The reading + your eclipse Sky Card (share image) + the printable eclipse-night page. The £6 slot is this set's alone — the old poster is retired.</td><td class="price">£6</td></tr>
@@ -175,7 +174,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
     <tr><td><b>Sky Pass</b></td><td>30 dated days of chart-aware daily sky notes — your transits, not sun-sign weather. <b>A dated edition, 12 Aug – 10 Sep, that simply ends.</b> No subscription, no auto-renew, nothing to cancel.</td><td class="price">£5</td></tr>
   </table>
   <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint);margin-top:14px">ALL DIGITAL · ALL COMPUTED ON YOUR DEVICE · <a href="./refunds.html">REFUNDS &amp; YOUR RIGHTS</a></div>
-</div>
+</details>
 
 <!-- ——— EMAIL ——— -->
 <div class="card">
