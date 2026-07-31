@@ -1,0 +1,7 @@
+﻿MWB GREEN LOCKED 2026-07-23T10:09:41.2000221+01:00
+HASH12=<held locally — see C:\Shared\MWB-SETTINGS-LOCKED.txt; redacted from this public repo 2026-07-31>
+ShareClipboard=False both
+Name2IP laptop->192.168.137.1 mini->192.168.137.2
+Restore: settings.json.LOCKED / GOOD-MOUSE-20260722
+Never New Key. Prove-HubHealth PASS.
+Detail: C:\Shared\MWB-SETTINGS-LOCKED.txt
