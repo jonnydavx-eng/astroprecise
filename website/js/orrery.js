@@ -314,7 +314,7 @@
         var mat = p.tex === "earth"
           ? new THREE.MeshPhongMaterial({ map: planetTexture(p), specular: 0x223344, shininess: 14 })
           : new THREE.MeshStandardMaterial({ map: planetTexture(p), roughness: 0.92, metalness: 0 });
-        var texFile = { mercury: "mercurymap.jpg", venus: "venusmap.jpg", mars: "marsmap1k.jpg", jupiter: "jupitermap.jpg", saturn: "saturnmap.jpg", uranus: "uranusmap.jpg", neptune: "neptunemap.jpg" }[p.key];
+        var texFile = { mercury: "mercurymap.webp", venus: "venusmap.webp", mars: "marsmap1k.webp", jupiter: "jupitermap.webp", saturn: "saturnmap.webp", uranus: "uranusmap.webp", neptune: "neptunemap.webp" }[p.key];
         if (texFile) loader.load("./img/textures/" + texFile,
           function (t) { t.anisotropy = 8; t.encoding = THREE.sRGBEncoding; mat.map = t; mat.needsUpdate = true; });
         var m = new THREE.Mesh(new THREE.SphereGeometry(SZ(p), 48, 32), mat);
@@ -341,13 +341,13 @@
               fragmentShader: "uniform sampler2D dayTex; uniform sampler2D nightTex; varying vec2 vUv; varying vec3 vN; varying vec3 vP; void main(){ vec3 sunDir = normalize(-vP); float d = dot(normalize(vN), sunDir); float k = smoothstep(-0.12, 0.3, d); vec3 day = sRGBToLinear(texture2D(dayTex, vUv)).rgb; vec3 night = sRGBToLinear(texture2D(nightTex, vUv)).rgb * vec3(1.6, 1.35, 1.0); vec3 col = mix(night * 0.95, day, k); gl_FragColor = vec4(col, 1.0);\n#include <tonemapping_fragment>\n#include <encodings_fragment>\n}" // r128 ShaderMaterial prefix provides sRGBToLinear + these chunks
             });
           };
-          loader.load("./img/textures/earth_atmos_2048.jpg",
+          loader.load("./img/textures/earth_atmos_2048.webp",
             function (t) { t.anisotropy = 8; t.encoding = THREE.sRGBEncoding; dayT = t; mat.map = t; mat.needsUpdate = true; trySwap(); });
-          loader.load("./img/textures/earth_lights_2048.png",
+          loader.load("./img/textures/earth_lights_2048.webp",
             function (t) { t.encoding = THREE.sRGBEncoding; nightT = t; trySwap(); });
           var clouds = new THREE.Mesh(new THREE.SphereGeometry(SZ(p) * 1.02, 48, 32), new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.85, depthWrite: false }));
           clouds.visible = false;
-          loader.load("./img/textures/earth_clouds_1024.png",
+          loader.load("./img/textures/earth_clouds_1024.webp",
             function (t) { t.encoding = THREE.sRGBEncoding; clouds.material.map = t; clouds.material.needsUpdate = true; clouds.visible = true; });
           grp.add(clouds); self._spinners.push({ m: clouds, s: 0.0034 });
           grp.add(glowSprite([[0, "rgba(110,160,255,.16)"], [0.5, "rgba(110,160,255,.05)"], [1, "rgba(110,160,255,0)"]], SZ(p) * 2.9));
@@ -394,7 +394,7 @@
       var moon = new THREE.Mesh(new THREE.SphereGeometry(0.72, 28, 20), new THREE.MeshStandardMaterial({ color: 0xb8b8b8, roughness: 1 }));
       moon.material.color.convertSRGBToLinear(); // authored sRGB → linear
       moon.userData.key = "moon"; scene.add(moon); this._meshes.moon = moon;
-      loader.load("./img/textures/moon_1024.jpg",
+      loader.load("./img/textures/moon_1024.webp",
         function (t) { t.encoding = THREE.sRGBEncoding; moon.material.map = t; moon.material.color.set(0xffffff); moon.material.needsUpdate = true; });
       function ringSprite() {
         var cv = document.createElement("canvas"); cv.width = cv.height = 256;

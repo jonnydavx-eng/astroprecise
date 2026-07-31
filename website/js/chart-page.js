@@ -694,6 +694,16 @@
       precisionLabel.textContent = (labels[level] || labels.unknown) +
         (chart.houses ? ` · ${houseName} houses` : ` · ${houseName} selected; angles withheld until time is known`);
     }
+    // Eclipse handoff: carry the just-cast birth data into the free eclipse
+    // teaser so the user never re-enters date/time/zone (IANA tz passed as
+    // tzname; eclipse.html resolves the historical offset itself).
+    const eclipseHref = 'eclipse.html?from=chart&dob=' + encodeURIComponent(chart.birthDate || '') +
+      (chart.birthTime ? '&tob=' + encodeURIComponent(chart.birthTime) : '') +
+      (chart.tz ? '&tzname=' + encodeURIComponent(chart.tz) : '');
+    ['eclipse-handoff', 'eclipse-cta'].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) el.href = eclipseHref;
+    });
     renderBigThree(chart);
     renderWheel(chart);
     renderNatalSphere(chart);
@@ -803,11 +813,13 @@
       cta: 'Get the bundle →',
       external: true,
     } : {
-      tag: 'Shop',
-      title: 'Deep Reading when ready',
-      desc: 'Paid PDF keepsakes from this chart — checkout opening soon.',
-      href: 'shop.html#deep-reading',
-      cta: 'Open Shop →',
+      tag: 'Eclipse · 12 Aug',
+      title: 'Where the eclipse lands in this chart',
+      desc: 'Free teaser — computed from the chart you just cast, birth data carried over.',
+      href: 'eclipse.html?from=chart&dob=' + encodeURIComponent(chart.birthDate || '') +
+        (chart.birthTime ? '&tob=' + encodeURIComponent(chart.birthTime) : '') +
+        (chart.tz ? '&tzname=' + encodeURIComponent(chart.tz) : ''),
+      cta: 'See the contact →',
     };
 
     host.innerHTML = `

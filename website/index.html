@@ -15,16 +15,16 @@
 <meta name="twitter:description" content="Live solar system. Free chart. Computed on your device — nothing uploaded.">
 <meta name="twitter:image" content="https://astroprecise.app/img/eclipse-og.png">
 <link rel="canonical" href="https://astroprecise.app/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="preload" href="./fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="./css/ap-sky-news.css?v=771">
 <script src="./js/ephemeris.js" defer></script>
-<script src="./js/orrery.js?v=779" defer></script>
+<script src="./js/orrery.js?v=780" defer></script>
 <script src="./js/ap-sky-news.js?v=771" defer></script>
 <script src="./js/ap-checkout-honest.js?v=771" defer></script>
 <script src="./js/ap-gumroad-bridge.js?v=771" defer></script>
 <style>
+@font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 :root{--ink:#e9edf2;--dim:rgba(233,237,242,.72);--faint:rgba(233,237,242,.5);--line:rgba(159,220,236,.18);--line2:rgba(159,220,236,.24);--acc:#9fdcec;--good:rgba(126,240,200,.85);--warn:#e6a15c;--card:rgba(220,240,248,.04)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -96,7 +96,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .er-left:hover .er-h{text-decoration:underline;text-decoration-color:rgba(230,161,92,.55);text-underline-offset:6px}
 .er-sub{margin-top:9px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:var(--faint);line-height:1.9}
 .er-right{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
-.er-count{font-family:'IBM Plex Mono',monospace;font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 24px rgba(230,161,92,.35);white-space:nowrap}
+.er-count{font-family:'IBM Plex Mono',monospace;font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 24px rgba(230,161,92,.35);white-space:nowrap;font-variant-numeric:tabular-nums}
 .er-count small{display:block;font-size:8.5px;letter-spacing:.22em;color:var(--faint);margin-top:6px;white-space:normal}
 @media (max-width:760px){.er-wrap{flex-direction:column;align-items:flex-start;gap:20px;padding:28px 22px}.er-right{width:100%;justify-content:space-between;gap:14px}.er-right .btn{width:100%;white-space:normal;text-align:center}input,select{padding:12px}nav.main{gap:14px}nav.main a{display:inline-block;padding:14px 6px}.hero-ui{padding-left:22px!important;padding-right:22px!important}}
 @media (pointer:coarse){input.scrub{height:44px}input.scrub::-webkit-slider-thumb{width:28px;height:28px;margin-top:-13px}input.scrub::-moz-range-thumb{width:28px;height:28px}#nowBtn{padding:12px 18px}}
@@ -161,7 +161,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     </div>
     <div class="hero-ui" style="text-align:center;margin-top:20px;padding:0 90px">
       <div class="mono" style="font-size:9px;letter-spacing:.32em;color:var(--acc);margin-bottom:14px;animation-delay:.1s">THE REAL SKY NEWS</div>
-      <h1 style="margin:0;font-size:clamp(46px,7.2vw,88px);line-height:1;font-weight:700;letter-spacing:-.02em;text-shadow:0 2px 40px rgba(0,0,0,.9);animation-delay:.25s">One sky. <em class="serif" style="color:var(--acc);font-weight:400">Yours.</em></h1>
+      <h1 style="margin:0;font-size:clamp(46px,7.2vw,88px);line-height:1;font-weight:700;letter-spacing:-.02em;text-shadow:0 2px 40px rgba(0,0,0,.9);animation-delay:0s">One sky. <em class="serif" style="color:var(--acc);font-weight:400">Yours.</em></h1>
       <p style="margin:14px auto 0;font-size:clamp(15px,1.6vw,19px);color:var(--dim);max-width:580px;text-shadow:0 1px 20px #000;animation-delay:.45s">A living universe, computed in your browser — drift from your street to the deep field, then land on the minute you were born.</p>
       <div class="mono" style="margin-top:13px;font-size:9.5px;letter-spacing:.24em;color:var(--faint);animation-delay:.65s"><span class="pulse" style="color:var(--good)">●</span>&nbsp;&nbsp;LIVE · COMPUTED HERE · NOTHING UPLOADED</div>
     </div>

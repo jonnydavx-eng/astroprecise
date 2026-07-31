@@ -1631,7 +1631,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        '12 Aug 2026',
         marketingLine:'Where the eclipse touches your chart — or we say it doesn’t, before you pay.',
-        previewImage: 'img/shop/product-solar-return.jpg',
+        previewImage: 'img/eclipse-og.png',
         sampleUrl:    'eclipse.html',
         blurb:        'On 12 August 2026 the Sun goes dark over Britain — the deepest eclipse since 1999. This short reading maps it against your actual birth chart: where it lands, what it touches, what tradition says it stirs. Five chapters, ≈350 words, computed from your birth minute on this device. If the eclipse barely touches your chart, we tell you before you pay.',
         icon:         'sunhigh',

@@ -801,8 +801,13 @@ window.AstroShop = (() => {
   function cardArt(p) {
     const src = p.previewImage || PREVIEW_FALLBACK[p.type] || '';
     if (src) {
-      const bust = src.includes('?') ? src : `${src}?v=${String(window.AP_ASSET_V || '771')}`;
-      return `<img class="shopc-card__preview" src="${esc(bust)}" alt="" width="1600" height="900" loading="lazy" decoding="async" />`;
+      const bust = (u) => (u.includes('?') ? u : `${u}?v=${String(window.AP_ASSET_V || '779')}`);
+      // Every shop JPG (and eclipse-og.png) now ships a WebP twin — serve it first.
+      const webp = src.replace(/\.(jpe?g|png)$/i, '.webp');
+      if (/\.(jpe?g|png)$/i.test(src) && /^(img\/shop\/|img\/eclipse-og)/.test(src)) {
+        return `<picture><source type="image/webp" srcset="${esc(bust(webp))}" /><img class="shopc-card__preview" src="${esc(bust(src))}" alt="" width="1600" height="900" loading="lazy" decoding="async" /></picture>`;
+      }
+      return `<img class="shopc-card__preview" src="${esc(bust(src))}" alt="" width="1600" height="900" loading="lazy" decoding="async" />`;
     }
     return `<span class="shopc-card__glyph">${icon(p.icon)}</span>`;
   }
@@ -839,7 +844,7 @@ window.AstroShop = (() => {
     // the basket (Payhip or graceful pending).
     const cta = live
       ? `<button class="btn btn--primary shopc-featured__cart" type="button" data-add-cart="${p.id}">Add to basket</button>`
-      : `<button class="btn btn--outline shopc-featured__cta" type="button" data-quickview="${p.id}">Preview piece</button>`;
+      : `<button class="btn btn--outline shopc-featured__cta" type="button" data-quickview="${p.id}">Notify me — ${formatPrice(p.price)}</button>`;
     const sample = p.sampleUrl
       ? `<a class="shopc-featured__sample" href="${esc(p.sampleUrl)}" target="_blank" rel="noopener">See sample layout →</a>`
       : '';
