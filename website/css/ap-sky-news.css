@@ -2,7 +2,7 @@
 .ap-sky-news {
   --sn-ink: #e9edf2;
   --sn-dim: rgba(233, 237, 242, 0.72);
-  --sn-faint: rgba(233, 237, 242, 0.48);
+  --sn-faint: rgba(233, 237, 242, 0.58);
   --sn-acc: #9fdcec;
   --sn-line: rgba(159, 220, 236, 0.22);
   --sn-card: rgba(8, 14, 22, 0.72);
@@ -95,7 +95,7 @@
 }
 .ap-sky-news__title {
   font-size: 15.5px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.01em;
 }

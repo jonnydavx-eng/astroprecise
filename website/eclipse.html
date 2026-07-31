@@ -127,7 +127,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
       <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:16px 0">That's the computed receipt — free, checkable, yours. The full reading adds the remaining four written beats: what this point governs in your chart (with whole-sign house when your place is given at unlock), the one question to sit with on eclipse night, and the honest close. ≈350 words, written from your orb alone.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
         <a class="btn" id="buyBtn" href="./shop.html#eclipse-reading">NOTIFY ME — £2.99 WHEN CHECKOUT OPENS</a>
-        <span class="mono" style="font-size:9px;letter-spacing:.16em;color:var(--faint)">£4 AFTER 12 AUG · GUMROAD WHEN LIVE · NO FAKE CHECKOUT</span>
+        <span class="mono" id="buyNote" style="font-size:9px;letter-spacing:.16em;color:var(--faint)">£4 AFTER 12 AUG · GUMROAD WHEN LIVE · NO FAKE CHECKOUT</span>
       </div>
       <details style="margin-top:16px">
         <summary class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--faint);cursor:pointer">ALREADY BOUGHT? ENTER YOUR LICENSE KEY</summary>
@@ -181,11 +181,11 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
 <div class="card">
   <div class="lbl">ECLIPSE MORNING, IN YOUR INBOX</div>
   <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0 0 14px">One email the morning of 12 August with your times, the weather windows, and your unlock link. Nothing else, ever — this list exists for one dawn.</p>
-  <form id="emailForm" action="./shop.html#eclipse-reading" method="get" style="display:flex;gap:10px;flex-wrap:wrap">
-    <input type="email" name="email" required placeholder="you@example.com" style="flex:1;min-width:200px" aria-label="Email address" autocomplete="email">
+  <form id="emailForm" style="display:flex;gap:10px;flex-wrap:wrap">
+    <input type="email" id="eclipseEmail" name="email" required placeholder="you@example.com" style="flex:1;min-width:200px" aria-label="Email address" autocomplete="email">
     <button class="btn" type="submit">NOTIFY ME FOR ECLIPSE DAWN</button>
   </form>
-  <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint);margin-top:10px">LIST OPENS WITH CHECKOUT · NO FAKE GUMROAD SELLER ID · BIRTH DATA NEVER ATTACHED</div>
+  <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint);margin-top:10px">THE LIST IS LIVE · ONE EMAIL ONLY · BIRTH DATA NEVER ATTACHED</div>
 </div>
 
 <div class="rule"></div>
@@ -199,7 +199,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
 
 <script type="module">
 import { buildEclipseReading5, fmtDeg } from './js/eclipse-reading.js';
-import { verifyLicense } from './js/gumroad-unlock.js';
+import { verifyLicense, isCheckoutReady, GUMROAD_PRODUCTS } from './js/gumroad-unlock.js';
 
 const E = window.AstroEphemeris;
 const $ = (id) => document.getElementById(id);
@@ -216,7 +216,7 @@ function tickCountdown() {
   const ms = Date.UTC(2026, 7, 12, 17, 46) - Date.now();
   if (ms <= 0) { $('countdown').textContent = 'THE ECLIPSE HAS PASSED — THE READING STILL HOLDS'; return; }
   const d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), m = Math.floor(ms % 3600000 / 60000);
-  $('countdown').textContent = `T−${d}D ${String(h).padStart(2,'0')}H ${String(m).padStart(2,'0')}M TO TOTALITY`;
+  $('countdown').textContent = `T−${d}D ${String(h).padStart(2,'0')}H ${String(m).padStart(2,'0')}M TO GREATEST ECLIPSE`;
 }
 tickCountdown(); setInterval(tickCountdown, 30000);
 
@@ -273,6 +273,35 @@ function showFull() {
 }
 
 $('castBtn').addEventListener('click', render);
+
+// Buy button: flips from notify-anchor to live Gumroad checkout the moment a real permalink exists
+(function upgradeBuyBtn() {
+  const b = $('buyBtn'); if (!b || !isCheckoutReady('eclipse-reading')) return;
+  const permalink = (GUMROAD_PRODUCTS['eclipse-reading'] || {}).permalink;
+  b.textContent = 'UNLOCK THE FULL READING — £2.99';
+  if (permalink) b.href = `https://gumroad.com/l/${permalink}?wanted=true`;
+  const note = $('buyNote');
+  if (note) note.textContent = '£4 AFTER 12 AUG · INSTANT UNLOCK · PAYMENT ON GUMROAD, READING COMPUTED HERE';
+})();
+
+// Eclipse-dawn list: POST to the live subscribe worker (+ same-device backstop)
+$('emailForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const em = $('eclipseEmail').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
+  try {
+    const body = new FormData();
+    body.append('email', em);
+    body.append('tags', 'eclipse-dawn');
+    fetch('https://list.astroprecise.app/subscribe', { method: 'POST', mode: 'no-cors', body });
+  } catch (err) {}
+  try {
+    const prev = JSON.parse(localStorage.getItem('ap_email_intent') || '[]');
+    prev.push({ email: em, savedAt: Date.now(), source: 'eclipse-dawn' });
+    localStorage.setItem('ap_email_intent', JSON.stringify(prev.slice(-50)));
+  } catch (err) {}
+  $('emailForm').innerHTML = '<div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--good);padding:12px 0">✦ ON THE DAWN LIST — ONE EMAIL, THE MORNING OF 12 AUGUST</div>';
+});
 $('licBtn')?.addEventListener('click', async () => {
   const key = $('licKey').value.trim();
   if (!key) return;
