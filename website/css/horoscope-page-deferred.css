@@ -479,15 +479,15 @@
     }
 
     /* Per-sign card images — idle/deferred (correct path from css/) */
-    .sign-card[data-sign="aries"]       { background-image: url('../assets/images/zodiac-cards/aries.jpg'); }
-    .sign-card[data-sign="taurus"]      { background-image: url('../assets/images/zodiac-cards/taurus.jpg'); }
-    .sign-card[data-sign="gemini"]      { background-image: url('../assets/images/zodiac-cards/gemini.jpg'); }
-    .sign-card[data-sign="cancer"]      { background-image: url('../assets/images/zodiac-cards/cancer.jpg'); }
-    .sign-card[data-sign="leo"]         { background-image: url('../assets/images/zodiac-cards/leo.jpg'); }
-    .sign-card[data-sign="virgo"]       { background-image: url('../assets/images/zodiac-cards/virgo.jpg'); }
-    .sign-card[data-sign="libra"]       { background-image: url('../assets/images/zodiac-cards/libra.jpg'); }
-    .sign-card[data-sign="scorpio"]     { background-image: url('../assets/images/zodiac-cards/scorpio.jpg'); }
-    .sign-card[data-sign="sagittarius"] { background-image: url('../assets/images/zodiac-cards/sagittarius.jpg'); }
-    .sign-card[data-sign="capricorn"]   { background-image: url('../assets/images/zodiac-cards/capricorn.jpg'); }
-    .sign-card[data-sign="aquarius"]    { background-image: url('../assets/images/zodiac-cards/aquarius.jpg'); }
-    .sign-card[data-sign="pisces"]      { background-image: url('../assets/images/zodiac-cards/pisces.jpg'); }
+    .sign-card[data-sign="aries"]       { background-image: url('../assets/images/zodiac-cards/aries.webp'); }
+    .sign-card[data-sign="taurus"]      { background-image: url('../assets/images/zodiac-cards/taurus.webp'); }
+    .sign-card[data-sign="gemini"]      { background-image: url('../assets/images/zodiac-cards/gemini.webp'); }
+    .sign-card[data-sign="cancer"]      { background-image: url('../assets/images/zodiac-cards/cancer.webp'); }
+    .sign-card[data-sign="leo"]         { background-image: url('../assets/images/zodiac-cards/leo.webp'); }
+    .sign-card[data-sign="virgo"]       { background-image: url('../assets/images/zodiac-cards/virgo.webp'); }
+    .sign-card[data-sign="libra"]       { background-image: url('../assets/images/zodiac-cards/libra.webp'); }
+    .sign-card[data-sign="scorpio"]     { background-image: url('../assets/images/zodiac-cards/scorpio.webp'); }
+    .sign-card[data-sign="sagittarius"] { background-image: url('../assets/images/zodiac-cards/sagittarius.webp'); }
+    .sign-card[data-sign="capricorn"]   { background-image: url('../assets/images/zodiac-cards/capricorn.webp'); }
+    .sign-card[data-sign="aquarius"]    { background-image: url('../assets/images/zodiac-cards/aquarius.webp'); }
+    .sign-card[data-sign="pisces"]      { background-image: url('../assets/images/zodiac-cards/pisces.webp'); }

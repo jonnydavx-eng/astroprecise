@@ -51,6 +51,13 @@ const JS_EXCLUDE = new Set([
   'ephemeris-lazy-modules.js',
   'interpretations.js',
   'ap-load-interpretations.js',
+  // Three.js builds (2026-07-31 perf diet): ~1.9 MB combined. three.min.js is the
+  // deprecated r150 build referenced by no page; three.module.min.js is used only
+  // by explore.html (ESM); three.r128.min.js is the orrery loader's self-hosted
+  // build, injected after the poster frame — all three runtime-cache on first use.
+  'three.min.js',
+  'three.module.min.js',
+  'three.r128.min.js',
 ]);
 
 /** Always include even if scan would miss them. */
@@ -113,11 +120,19 @@ function collectCanonical() {
   // Keep the precache install shell lean:
   //  - img/engine/* — large photoreal stills, only on the pages that show them
   //  - img/design-targets/* — design-reference mockups, referenced by no page
+  //  - img/shop/* — 7.5 MB of product imagery, only ever shown on shop/plate pages
+  //  - img/og-*, img/eclipse-og.* — social-scraper cards; browsers never fetch them
+  //  - img/icon-(maskable-)512.png — PWA install icons, fetched only on install
+  //  - img/marketing-*, hero-cosmic-ref, shop-product-cover, zodiac-glyphs-grid —
+  //    heavy CSS backgrounds / section art that lazy-load on first view anyway
   //  - assets/textures/*.{jpg,png} — the LEGACY raster maps, superseded by .webp
   //    (the engine loads .webp; the .jpg/.png stay on disk only as a runtime
   //    fallback). Precaching both formats would double the texture payload.
+  //  - assets/textures/*.webp EXCEPT *_sm.webp — full-size planet maps (~2.5 MB)
+  //    are loaded by the WebGL layer only when the 3D view opens; the _sm twins
+  //    cover the poster/first-paint path.
   // These lazy-cache at runtime instead.
-  const PRECACHE_EXCLUDE = /(^|\/)img\/(engine|design-targets)\/|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$|(^|\/)[^/]*\.bak(?:[-.][^/]*)?$/i;
+  const PRECACHE_EXCLUDE = /(^|\/)img\/(engine|design-targets|shop|og|textures)\/|(^|\/)img\/(?:og-|eclipse-og)[^/]*\.(jpe?g|png|webp)$|(^|\/)img\/moment\/og-[^/]*\.(jpe?g|png|webp)$|(^|\/)img\/icon-(?:maskable-)?(?:192|512)\.png$|(^|\/)img\/apple-touch-icon\.png$|(^|\/)img\/zodiac-glyphs-(?:all|row)\.jpg$|(^|\/)img\/(?:marketing-|hero-cosmic-ref|shop-product-cover|zodiac-glyphs-grid)[^/]*\.(jpe?g|png|webp)$|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$|(^|\/)assets\/textures\/[^/]*(?<!_sm)\.webp$|(^|\/)[^/]*\.bak(?:[-.][^/]*)?$/i;
 
   // Content-bank windowing (2026-07-10): the bank is now a rolling ~188-day
   // set (today−7 … today+180, refreshed weekly by
