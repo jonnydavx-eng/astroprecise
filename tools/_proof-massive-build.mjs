@@ -33,7 +33,7 @@ for (const f of mustExist) {
 const index = fs.readFileSync(path.join(web, 'index.html'), 'utf8');
 ok(/THE REAL SKY NEWS/i.test(index), 'index brand line');
 ok(/ap-sky-news\.js/.test(index), 'index loads sky news');
-ok(/id="ap-sky-news"/.test(index), 'index has sky news host');
+ok(/id="ap-sky-news-band"/.test(index), 'index has sky news band host (hero mount removed 2026-07-31 per expert audit)');
 
 const chart = fs.readFileSync(path.join(web, 'chart.html'), 'utf8');
 ok(/ap-natal-sphere/.test(chart), 'chart has natal sphere host');
