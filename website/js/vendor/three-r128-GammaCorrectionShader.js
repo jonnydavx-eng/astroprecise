@@ -34,7 +34,11 @@
 
 			vec4 tex = texture2D( tDiffuse, vUv );
 
-			gl_FragColor = LinearTosRGB( tex ); // optional: LinearToGamma( tex, float( GAMMA_FACTOR ) );
+			// exact sRGB transfer (LinearTosRGB equivalent) with no ShaderChunk deps —
+			// must compile standalone in a ShaderMaterial (ap-v780 black-screen fix)
+			vec3 apC = tex.rgb;
+			vec3 apS = mix( apC * 12.92, 1.055 * pow( apC, vec3( 1.0 / 2.4 ) ) - 0.055, step( vec3( 0.0031308 ), apC ) );
+			gl_FragColor = vec4( apS, tex.a );
 
 		}`
 	};

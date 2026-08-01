@@ -909,7 +909,9 @@
         tickMat.opacity += (retT * 0.75 - tickMat.opacity) * 0.08;
         corona.material.opacity = 0.3 + 0.09 * Math.sin(performance.now() * 0.0011);
         cam.lookAt(self._target);
-        if (self._composer) self._composer.render(); else renderer.render(scene, cam); // bloom chain when available
+        if (self._composer) { // bloom chain when available — a hard failure falls back to plain
+          try { self._composer.render(); } catch (eR) { self._composer = null; renderer.render(scene, cam); }
+        } else renderer.render(scene, cam);
       };
       self._loopFn = loop;
       // pause the render loop while the tab is hidden; resume exactly one loop on return (never two)
@@ -945,6 +947,30 @@
           // r128 applies tone mapping into render targets but outputEncoding only to screen — re-encode on the final pass
           composer.addPass(new THREE.ShaderPass(THREE.GammaCorrectionShader));
           self._composer = composer;
+          // black-output probe (ap-v780: a silently-broken final pass rendered the hero
+          // black on every device). Compare composer vs plain output at sample points —
+          // if the plain frame has lit pixels and the composer frame has none, drop the
+          // composer and keep plain rendering for this device.
+          setTimeout(function () {
+            if (!self._composer || self._disposed || self._contextLost) return;
+            try {
+              var gl = renderer.getContext();
+              var bw = gl.drawingBufferWidth, bh = gl.drawingBufferHeight;
+              var pts = [[0.5, 0.5], [0.25, 0.25], [0.75, 0.75], [0.1, 0.5], [0.9, 0.5], [0.5, 0.1], [0.5, 0.9], [0.33, 0.66], [0.66, 0.33], [0.2, 0.8], [0.8, 0.2], [0.5, 0.35], [0.35, 0.5], [0.65, 0.5], [0.5, 0.65], [0.15, 0.15], [0.85, 0.85]];
+              var buf = new Uint8Array(4);
+              var probe = function () {
+                var lit = 0;
+                for (var pi = 0; pi < pts.length; pi++) {
+                  gl.readPixels(Math.floor(pts[pi][0] * bw), Math.floor(pts[pi][1] * bh), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+                  if (buf[0] > 4 || buf[1] > 4 || buf[2] > 4) lit++;
+                }
+                return lit;
+              };
+              self._composer.render(); var litC = probe();
+              renderer.render(scene, cam); var litP = probe();
+              if (litP > 0 && litC === 0) { self._composer = null; console.warn("[orrery] bloom disabled: black-output probe failed"); }
+            } catch (eP) { self._composer = null; }
+          }, 600);
         } catch (err) { self._composer = null; } // any failure → keep plain rendering
       };
       if (bloomOK) {
