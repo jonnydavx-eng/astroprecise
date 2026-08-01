@@ -68,32 +68,38 @@
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <link rel="stylesheet" href="css/celestial-seals.css" />
   <link rel="stylesheet" href="css/ap-brand-nebula.css?v=752" id="ap-css-brand-nebula" />
+  <!-- v4 ATLAS override — final eager cascade (token remap + page plates) -->
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=787" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-atlas-horoscope.css?v=787" id="ap-css-atlas-horoscope" />
   <style>
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
     /* LCP shell — system fonts paint before deferred webfonts */
     .sphere-hero__header h1 {
       font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: clamp(1.9rem, 4.5vw, 3.2rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: 0.03em;
-      color: var(--ap-text-primary, #E8EBF0);
+      font-style: italic;
+      font-size: clamp(2.9rem, 7vw, 5.4rem);
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.01em;
+      color: #f2ecdf;
       margin-bottom: 0.6rem;
+      max-width: 14ch;
     }
     .sphere-selected-label {
       font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      font-style: italic;
     }
     /* Entertainment / tradition caveat — keeps the astrology "sky" legally
-       separate from the computed astronomy "sky". Glacial palette. */
+       separate from the computed astronomy "sky". Engraved brass. */
     .ap-entertainment-note{
       margin:var(--space-3,0.75rem) 0 0;
       padding:0.6rem 0.85rem;
-      border-left:2px solid #9fdcec;
-      background:rgba(159,220,236,0.06);
-      border-radius:6px;
+      border-left:2px solid #d8b46a;
+      background:rgba(216,180,106,0.07);
+      border-radius:4px;
       font-size:0.72rem;
       line-height:1.6;
-      color:var(--color-silver-dim,#A8B0BC);
+      color:rgba(242,236,223,0.62);
     }
   </style>
   <script>
@@ -300,7 +306,7 @@
                   <stop offset="100%" stop-color="rgba(168, 176, 188,0)"/>
                 </radialGradient>
                 <radialGradient id="sphere-poster-star" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#9fdcec"/>
+                  <stop offset="0%" stop-color="#d8b46a"/>
                   <stop offset="55%" stop-color="#A8B0BC"/>
                   <stop offset="100%" stop-color="#4A5462"/>
                 </radialGradient>
@@ -347,7 +353,7 @@
               </div>
               <div class="srp-moon-wrap">
                 <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
-                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:#9fdcec;border:1px solid rgba(168, 176, 188,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
+                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:#d8b46a;border:1px solid rgba(216, 180, 106,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
                 <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
                   <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
                   <span class="lunar-cycle-strip__phase" data-phase-idx="1" title="Waxing Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon1"/></svg></span>
@@ -589,7 +595,7 @@
             <span>Void of Course Moon</span>
             <span id="void-moon-sign" style="color:var(--silver-dim);"></span>
           </div>
-          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(168, 176, 188,0.08);border:1px solid rgba(168, 176, 188,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:#9fdcec;">
+          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(216, 180, 106,0.08);border:1px solid rgba(216, 180, 106,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:#d8b46a;">
             <span id="ph-glyph" style="font-size:1rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span>
             <span>Planetary Hour: </span><strong id="ph-name" style="color:#cdeef7;">loading…</strong>
           </div>
