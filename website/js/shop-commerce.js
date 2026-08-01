@@ -438,8 +438,8 @@ window.AstroShop = (() => {
     modal({
       title: 'One more step after payment',
       body: `
-        <p><strong>Step 1</strong> — complete your payment on PayPal (it opened in a new tab).</p>
-        <p><strong>Step 2</strong> — send the birth details for <strong>${esc(p.name)}</strong> so your piece is made from the right sky. Keep your PayPal receipt email or transaction ID handy.</p>
+        <p><strong>Step 1</strong> — complete your payment with our payment partner (it opened in a new tab).</p>
+        <p><strong>Step 2</strong> — send the birth details for <strong>${esc(p.name)}</strong> so your piece is made from the right sky. Keep your receipt email or transaction ID handy. Payment issues? Reply to your receipt email or write to contact@astroprecise.app.</p>
         <p class="shopc-modal__note">Your details go straight to the maker through a secure form — nothing is stored on this site.</p>`,
       actions: [
         { label: 'Send my birth details', primary: true, href: formUrl, external: true, onClick: clearPendingDetails },
@@ -683,7 +683,7 @@ window.AstroShop = (() => {
           <div class="shopc-checkout">${rows}
             <div class="shopc-checkout__row shopc-checkout__total"><span>Connected items</span><span>${formatPrice(connectedItems.reduce((s, i) => s + i.price * i.qty, 0))}</span></div>
           </div>
-          <p class="shopc-modal__note">Each piece checks out securely on PayPal. Right after paying you'll be asked for the birth details needed to make your piece — never on this site.</p>
+          <p class="shopc-modal__note">Secure checkout by our payment partner. Right after paying you'll be asked for the birth details needed to make your piece — never on this site.</p>
           ${pendingNote}`,
         actions: connectedItems.map(i => {
           const p = productById(i.id);
