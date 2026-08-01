@@ -1,58 +1,48 @@
-# AstroPrecise v3 Redesign Brief — "The Observatory"
+# AstroPrecise v3 Redesign Brief — "THE STAR ATLAS"
 
-Date: 2026-08-01 · Author: Kimi (with research panel) · Status: APPROVED BY OWNER (Jonny, "complete redesign, keep the 3D, improve it")
+Date: 2026-08-01 (v3.1 — owner-mandated full creative direction change) · Author: Kimi + research panel · Status: APPROVED BY OWNER — "I want to see a masterpiece and not recognise the site but know it's got the model and the main plumbing."
 
-## 1. The market gap we own
+## 1. Territory analysis (who owns what)
 
-Research teardown (Aug 2026): every successful astrology product is one of two things —
+| Player | Visual territory |
+|---|---|
+| Co-Star (30M users) | Monochrome brutalism, black/white, tiny red accent |
+| The Pattern / Sanctuary | Purple/lavender wellness |
+| Astro.com / Astro-Seek | Blue-link academia, 1998 UI |
+| Cafe Astrology | Dated blog beige |
+| ZodiScope (challenger) | Dark generic modern |
 
-- **"Ugly but Accurate"** — Astro.com (1998 UI, mobile nightmare, gold-standard math), Astro-Seek (free everything, cluttered).
-- **"Pretty but Vague"** — Co-Star (30M users, brutalist beauty, NASA JPL credibility — but critics call its content cryptic/vague), The Pattern, Sanctuary ($19.95/mo human chat).
+**Unowned territory: warm editorial cosmos — the museum star atlas.** Ink night, warm paper, ONE saturated ember signal. Ember is the 12 Aug eclipse colour: it fuses brand and campaign into one memory. Nobody in the category dares a warm serif-led system; the 2026 Awwwards data (bold saturated visual systems, typographic statements, cinematic 3D narrative, handmade warmth vs AI-flat sameness) says it is exactly where the frontier moved.
 
-**Nobody owns beautiful + honest + precise.** AstroPrecise's throne: *"The real sky, computed in front of you — to the arcminute — wearing museum-grade design."* Our moat no one can copy quickly: a live, computed 3D solar system (VSOP87/ELP2000) as the site's spine. ZodiScope is reaching for the same gap (mobile-first interactive chart, "no AI horoscopes") — we must out-execute them before 12 Aug.
+## 2. THE DIRECTION — "The Star Atlas"
 
-## 2. Audience (evidence-based)
+The site is a living star atlas: each chapter an engraved **PLATE** (roman numerals), each figure captioned like a museum etching, the orrery as the great moving plate at the frontispiece.
 
-1. **Primary — Gen Z/millennial astrology-fluent, skew female, 18–34.** 60%+ of astrology traffic is mobile; 62–83% belief/engagement; ~80% of Gen Z queries are relationship-driven; Gen Z is 4× more likely to try free before paying; sharing is the growth loop (Co-Star 7.5M→30M on social compare).
-2. **Secondary — gift buyers.** Birth-moment keepsakes for partners/parents/friends. Emotion-led, price-insensitive at £12–£40. This is the revenue.
-3. **Tertiary — astronomy-curious skeptics + UK eclipse watchers.** The 12 Aug 2026 eclipse is a once-in-27-years UK acquisition event (press/SEO/word-of-mouth). Our honest-astronomy voice is the trust wedge.
+- **Palette:** night ink `#08080b` ground · warm paper ink `#f2ecdf` · **signal ember `#ff5a1f`** (one saturated voice: countdown, primary CTA, focus states, the live pulse) · engraved brass `#d8b46a` hairlines and secondary labels · sage `#a8d6b0` only for "proof/verified" moments.
+- **Type:** **Cormorant Garamond italic leads** — giant editorial headlines (up to ~12vw), the emotional voice. **Cinzel** for engraved plate numerals, wordmarks, figure captions. **Schibsted Grotesk** for UI/body. **IBM Plex Mono** for data/instrument text.
+- **Composition:** editorial asymmetry; hairline brass rules; PLATE I/II/III chapter system; "FIG. n" figure captions; generous void around the living model; the countdown as a persistent ember event bar.
+- **Motion:** kinetic type reveals, ember pulse, hover lifts. Reduced-motion respected.
+- **Voice:** journal/atlas language — "The day's entry" (horoscope), "The editions" (shop), "The audit" (privacy proof), "Colophon" (footer).
 
-Spending correlates: higher education, higher income, unmarried, social ties in astrology, recent life disruption. Market: $12.8B (2021) → $22.8B (2031).
+## 3. What does NOT change (the plumbing)
 
-## 3. Design direction (2026 award-level, evidence-based)
+- The orrery engine, flight/scale/dock/telemetry/scrub behaviour, all element IDs and JS hooks.
+- Cast flow logic, ephemeris, sky-news band, horoscope engine, shop/editions data, gates (£2.99/£12), license verify, privacy-proof counter, honesty labels, ISO safety.
+- Static hosting, SW precache discipline, 17-suite gate before every push, version bumps per deploy.
 
-2026 Awwwards data: 61% of Site of the Day winners are immersive 3D scroll-driven narratives (up from 23% in 2024). **We already have that spine — the redesign executes it at award level.**
-
-- **Typography carries the design.** Fraunces (display serif, italic accents) at kinetic scale — hero lines up to 14vw, tight tracking; Space Grotesk for UI; mono caps for "instrument panel" labels. Oversized type + huge negative space + hairline rules + chapter numbers. Editorial, not app-y.
-- **Color:** the void stays near-black; ink white; brass as the single brand accent; one restrained signal hue per chapter (moon silver-blue, eclipse amber, horizon teal). No gradients-for-gradients'-sake.
-- **The orrery is the hero, type composes around it** — not text floating over a screensaver. Camera = narrative device; scroll = director.
-- **Motion:** kinetic type reveals on scroll, micro-delight on CTAs, living countdown. `prefers-reduced-motion` respected everywhere.
-- **Mobile-first, thumb-perfect.** >70% of the audience is on a phone. Cast flow, nav, and CTAs designed from 390px up. (Also addresses the reported "chart button" failure — suspected mobile nav.)
-- **Performance baseline holds:** sub-2.5s LCP, SW precache, self-hosted fonts, webp.
-
-## 4. Conversion architecture
-
-- **Free chart in <30s is THE hero action** — no email, no wall (Co-Star's funnel starts free; ours must feel faster and more magical).
-- **Eclipse countdown persistent** — T−11d and shrinking; the urgency engine to 12 Aug.
-- **Compatibility elevated** — relationship content is ~80% of Gen Z demand; compat gets first-class nav and homepage presence.
-- **Keepsake as emotional product** — "the exact sky the moment you were born, printed" — shop cards lead with feeling, not SKU codes.
-- **Share loops** — every cast produces a shareable artifact (already present: keepsake/share link) — surface it post-cast, mobile-first.
-- **Honesty as brand** — "computed here, never uploaded", entertainment labels stay. Trust converts skeptics and press.
-
-## 5. Stage plan
+## 4. Stage plan
 
 | Stage | Scope | Status |
 |---|---|---|
-| 1 | Design system tokens + homepage redesign (hero, countdown, chapters, CTAs, mobile nav) | in progress |
-| 2 | Chart flow: cast → wheel → reading → share/keepsake; re-test "chart button" report on mobile viewport | pending |
-| 3 | Eclipse, horoscope, deep-time pages | pending |
-| 4 | Shop, deep-reading, legal/contact polish | pending |
+| 1 | Star Atlas design system + homepage (plates I–V, ember event bar, serif-led hero) | building |
+| 2 | chart.html — same atlas language; re-test mobile cast path | pending |
+| 3 | eclipse.html, horoscope.html, deep-time.html | pending |
+| 4 | shop/deep-reading/legal/contact | pending |
 
-Every stage: node --check, 17-suite gate, precache bump, deploy, live verification, screenshot QA.
+Each stage: node --check, 17-suite gate, precache bump, deploy, live + screenshot verification (desktop + mobile viewport).
 
-## 6. Guardrails
+## 5. Research basis (cited in repo history)
 
-- Preserve JS hook IDs/classes (ap-home-bootstrap / ap-award-orrery wiring: #heroChapter, #apAwardOrreryWrap, .hero-copy, .hero-solar-stage, #instrumentsChapter, #skyChapter, #apFloatNav, cast form IDs).
-- No dependency additions; static site; GitHub Pages.
-- Honesty labels, ISO safety, gate logic, license verify — untouched in behavior.
-- Eclipse content accuracy (20° Leo point, 89–92% UK obscuration, 18:46 BST greatest / ~19:05 UK peak) — resolve 20°02′ vs 20°08′ wobble to one consistent number.
+- Competitor teardown: Co-Star/The Pattern/Sanctuary/Astro.com/Astro-Seek/Cafe Astrology/ZodiScope (Aug 2026 searches).
+- Audience: Gen Z/millennial 18–34 skew female; 60%+ mobile; ~80% relationship queries; free-first ×4; market $12.8B→$22.8B (2031); gift/keepsake secondary; UK eclipse tertiary.
+- Design evidence: Awwwards 2026 (61% immersive 3D scroll narratives; creativity 8.7 vs 6.4 flat); 2026 trend consensus (oversized kinetic type, saturated bold systems, dark cosmic UI, micro-interactions, cinematic heroes, handmade warmth).

@@ -29,42 +29,43 @@
 @font-face{font-family:'Cormorant Garamond';src:url('./fonts/cormorant-garamond-italic-500.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
 @font-face{font-family:'Cinzel';src:url('./fonts/cinzel-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 :root{
-  --ink:#eef1f6;--dim:rgba(238,241,246,.72);--faint:rgba(238,241,246,.48);
-  --line:rgba(232,200,114,.15);--line2:rgba(232,200,114,.26);
-  --acc:#e8c872;--good:rgba(126,240,200,.85);--warn:#e6a15c;--card:rgba(220,240,248,.035);
+  --ink:#f2ecdf;--dim:rgba(242,236,223,.68);--faint:rgba(242,236,223,.44);
+  --ember:#ff5a1f;--ember-hi:#ff7a45;--brass:#d8b46a;
+  --line:rgba(216,180,106,.15);--line2:rgba(216,180,106,.32);
+  --acc:#d8b46a;--good:#a8d6b0;--warn:#ff5a1f;--card:rgba(242,236,223,.03);
   --serif:'Cormorant Garamond',Georgia,serif;--mono:'IBM Plex Mono',monospace;--caps:'Cinzel',serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:#000;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:var(--acc);text-decoration:none;transition:color .25s}a:hover{color:#fff}
-a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+body{margin:0;background:#08080b;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--brass);text-decoration:none;transition:color .25s}a:hover{color:var(--ember-hi)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
 .mono{font-family:var(--mono)}
 .serif{font-family:var(--serif);font-style:italic;font-weight:500}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
-.btn{display:inline-block;background:var(--ink);color:#000;border:0;border-radius:100px;padding:17px 36px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;cursor:pointer;transition:transform .28s cubic-bezier(.2,.9,.3,1.4),box-shadow .28s,filter .2s}
-.btn:hover{filter:brightness(1.06);color:#000;transform:translateY(-2px);box-shadow:0 10px 34px rgba(232,200,114,.28)}
+.btn{display:inline-block;background:var(--ember);color:#1c0d05;border:0;border-radius:100px;padding:17px 36px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;cursor:pointer;transition:transform .28s cubic-bezier(.2,.9,.3,1.4),box-shadow .28s,filter .2s;box-shadow:0 0 0 rgba(255,90,31,0)}
+.btn:hover{filter:brightness(1.12);color:#000;transform:translateY(-2px);box-shadow:0 12px 38px rgba(255,90,31,.38)}
 .btn:active{transform:translateY(0)}
-.btn.ghost{background:none;border:1px solid rgba(238,241,246,.32);color:var(--ink)}
-.btn.ghost:hover{border-color:var(--acc);color:#fff;box-shadow:0 10px 30px rgba(232,200,114,.16)}
+.btn.ghost{background:none;border:1px solid rgba(242,236,223,.3);color:var(--ink);box-shadow:none}
+.btn.ghost:hover{border-color:var(--brass);color:#fff;box-shadow:0 10px 30px rgba(216,180,106,.18);filter:none}
 .card{border:1px solid var(--line2);border-radius:16px;background:var(--card);padding:26px 28px}
 .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;color:var(--acc);margin-bottom:14px}
-.receipt{border:1px solid var(--line);border-radius:12px;background:rgba(220,240,248,.03);padding:16px 20px;display:flex;flex-direction:column;gap:7px}
-.receipt div{font-family:var(--mono);font-size:12px;letter-spacing:.06em;line-height:1.75;color:rgba(238,241,246,.85)}
-input,select{background:rgba(220,240,248,.05);border:1px solid var(--line2);border-radius:10px;color:var(--ink);font-family:var(--mono);font-size:16px;padding:13px 14px;color-scheme:dark;width:100%;transition:border-color .25s,box-shadow .25s}
-input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(232,200,114,.14)}
+.receipt{border:1px solid var(--line);border-radius:12px;background:rgba(242,236,223,.025);padding:16px 20px;display:flex;flex-direction:column;gap:7px}
+.receipt div{font-family:var(--mono);font-size:12px;letter-spacing:.06em;line-height:1.75;color:rgba(242,236,223,.85)}
+input,select{background:rgba(242,236,223,.045);border:1px solid var(--line2);border-radius:10px;color:var(--ink);font-family:var(--mono);font-size:16px;padding:13px 14px;color-scheme:dark;width:100%;transition:border-color .25s,box-shadow .25s}
+input:focus,select:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(255,90,31,.16)}
 .field{display:flex;flex-direction:column;gap:8px;flex:1;min-width:130px}
-.field span{font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;color:rgba(238,241,246,.62)}
+.field span{font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;color:rgba(242,236,223,.62)}
 section.band{padding:130px 0}
-h2{margin:0 0 16px;font-size:clamp(38px,5.6vw,64px);line-height:1.02;font-weight:700;letter-spacing:-.025em}
-h2 em{font-weight:500}
+h2{margin:0 0 16px;font-size:clamp(38px,5.6vw,64px);line-height:1.04;font-weight:700;letter-spacing:-.02em}
+h2 em{font-family:var(--serif);font-style:italic;font-weight:500;letter-spacing:0}
 .sub{margin:0 0 44px;font-size:17.5px;line-height:1.65;color:var(--dim);max-width:580px}
 table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:16px 10px;border-top:1px solid var(--line);font-size:15px;line-height:1.55;vertical-align:top}
-tr{transition:background .25s}
-tbody tr:hover{background:rgba(232,200,114,.035)}
+tbody tr{transition:background .25s}
+tbody tr:hover{background:rgba(216,180,106,.04)}
 th{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--acc);font-weight:500}
-td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:right}
+td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:right;color:var(--brass)}
 .pulse{animation:pulse 2.4s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
@@ -76,68 +77,69 @@ void-orrery{position:absolute;inset:0}
 .hud{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column}
 .hud .row{display:flex;justify-content:space-between;align-items:center;padding:24px 30px;pointer-events:auto}
 nav.main{display:flex;gap:30px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.24em}
-nav.main a{color:rgba(238,241,246,.62);position:relative;padding-bottom:3px}
-nav.main a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--acc);transition:width .3s}
+nav.main a{color:rgba(242,236,223,.6);position:relative;padding-bottom:3px}
+nav.main a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ember);transition:width .3s}
 nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
 .scrubrow{display:flex;align-items:center;gap:14px;padding:0 30px 28px;pointer-events:auto}
 input.scrub{-webkit-appearance:none;appearance:none;background:transparent;height:14px;cursor:pointer;border:0;padding:0}
-input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(238,241,246,.1),rgba(232,200,114,.5) 50%,rgba(238,241,246,.1))}
-input.scrub::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--acc);box-shadow:0 0 14px var(--acc);margin-top:-4.5px}
-input.scrub::-moz-range-track{height:2px;background:rgba(232,200,114,.35)}
-input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--acc);box-shadow:0 0 14px var(--acc)}
+input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(242,236,223,.1),rgba(255,90,31,.55) 50%,rgba(242,236,223,.1))}
+input.scrub::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(255,90,31,.8);margin-top:-4.5px}
+input.scrub::-moz-range-track{height:2px;background:rgba(255,90,31,.4)}
+input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(255,90,31,.8)}
 #dock{position:absolute;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;pointer-events:auto}
-#dock button{width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(238,241,246,.2);color:rgba(238,241,246,.8);font-size:15px;cursor:pointer;backdrop-filter:blur(4px);transition:border-color .25s,box-shadow .25s,color .25s}
-#dock button:hover,#dock button.on{border-color:var(--acc);color:#fff;box-shadow:0 0 16px rgba(232,200,114,.4)}
+#dock button{width:46px;height:46px;border-radius:50%;background:rgba(8,8,11,.5);border:1px solid rgba(242,236,223,.2);color:rgba(242,236,223,.8);font-size:15px;cursor:pointer;backdrop-filter:blur(4px);transition:border-color .25s,box-shadow .25s,color .25s}
+#dock button:hover,#dock button.on{border-color:var(--ember);color:#fff;box-shadow:0 0 16px rgba(255,90,31,.45)}
 #ladder{position:absolute;left:30px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;pointer-events:auto}
-#ladder button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.26em;color:rgba(238,241,246,.45);transition:color .25s}
-#ladder button:hover{color:rgba(238,241,246,.85)}
-#ladder button i{width:24px;height:1px;background:rgba(238,241,246,.2);display:block;transition:background .25s,width .25s}
-#ladder button.on{color:var(--acc)}#ladder button.on i{background:var(--acc);width:34px}
+#ladder button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.26em;color:rgba(242,236,223,.45);transition:color .25s}
+#ladder button:hover{color:rgba(242,236,223,.85)}
+#ladder button i{width:24px;height:1px;background:rgba(242,236,223,.2);display:block;transition:background .25s,width .25s}
+#ladder button.on{color:var(--brass)}#ladder button.on i{background:var(--brass);width:34px}
 #mladder{display:none;position:absolute;left:50%;bottom:158px;transform:translateX(-50%);gap:7px;pointer-events:auto;z-index:9}
-#mladder button{background:rgba(2,4,10,.55);border:1px solid rgba(238,241,246,.22);color:rgba(238,241,246,.75);border-radius:100px;padding:11px 14px;font-family:var(--mono);font-size:8px;letter-spacing:.16em;cursor:pointer;backdrop-filter:blur(4px)}
-#mladder button.on{border-color:var(--acc);color:#fff}
+#mladder button{background:rgba(8,8,11,.6);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.75);border-radius:100px;padding:11px 14px;font-family:var(--mono);font-size:8px;letter-spacing:.16em;cursor:pointer;backdrop-filter:blur(4px)}
+#mladder button.on{border-color:var(--ember);color:#fff}
 @media (pointer:coarse) and (max-width:1020px){#mladder{display:flex}}
-#telemetry{position:absolute;left:30px;bottom:130px;pointer-events:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;line-height:2.1;color:rgba(238,241,246,.75);max-width:330px}
+#telemetry{position:absolute;left:30px;bottom:130px;pointer-events:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;line-height:2.1;color:rgba(242,236,223,.75);max-width:330px}
 .wheelbox{width:380px;max-width:88vw;margin:0 auto;position:relative}
 .wheelbox::before{content:"";position:absolute;inset:-26px;border:1px solid var(--line);border-radius:50%;pointer-events:none}
-.prow{display:flex;align-items:baseline;gap:14px;padding:8px 2px;border-top:1px solid rgba(238,241,246,.08);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em}
-.pill{display:inline-flex;align-items:center;gap:9px;background:rgba(2,4,10,.4);border:1px solid rgba(238,241,246,.22);color:rgba(238,241,246,.7);padding:12px 18px;border-radius:100px;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;cursor:pointer;transition:border-color .25s,color .25s,transform .25s,box-shadow .25s}
-.pill:hover{border-color:rgba(232,200,114,.85);color:#fff;transform:translateY(-1px)}
-.pill.on{border-color:var(--acc);color:#fff;background:rgba(232,200,114,.12);box-shadow:0 0 18px rgba(232,200,114,.28)}
-.foot{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:rgba(238,241,246,.56);line-height:2.2}
+.prow{display:flex;align-items:baseline;gap:14px;padding:8px 2px;border-top:1px solid rgba(242,236,223,.08);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em}
+.pill{display:inline-flex;align-items:center;gap:9px;background:rgba(8,8,11,.4);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.7);padding:12px 18px;border-radius:100px;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;cursor:pointer;transition:border-color .25s,color .25s,transform .25s,box-shadow .25s}
+.pill:hover{border-color:var(--brass);color:#fff;transform:translateY(-1px)}
+.pill.on{border-color:var(--ember);color:#fff;background:rgba(255,90,31,.13);box-shadow:0 0 18px rgba(255,90,31,.3)}
+.foot{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.56);line-height:2.2}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-/* ═══ v3 — THE OBSERVATORY ═══ */
+/* ═══ THE STAR ATLAS ═══ */
 .chap{border-top:1px solid var(--line)}
-.chap-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;padding-top:26px;margin-bottom:76px;flex-wrap:wrap}
-.chap-idx{display:flex;align-items:baseline;gap:24px}
-.chap-num{font-family:var(--caps);font-weight:600;font-size:clamp(56px,7.4vw,104px);line-height:.9;color:rgba(232,200,114,.14);letter-spacing:.02em;user-select:none}
-.chap-tag{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--acc)}
-.chap-note{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--faint);text-align:right;line-height:2}
+.chap-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;padding-top:24px;margin-bottom:76px;flex-wrap:wrap;border-top:0}
+.chap-idx{display:flex;align-items:baseline;gap:26px}
+.chap-num{font-family:var(--caps);font-weight:600;font-size:clamp(54px,7vw,100px);line-height:.92;color:rgba(216,180,106,.16);letter-spacing:.02em;user-select:none}
+.chap-tag{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--brass)}
+.chap-note{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--faint);text-align:right;line-height:2.1}
 
 /* eclipse event bar */
-#eclipse-ribbon{border-bottom:1px solid rgba(230,161,92,.3);background:linear-gradient(90deg,rgba(230,161,92,.1),rgba(230,161,92,.02) 45%,rgba(232,200,114,.05))}
+#eclipse-ribbon{border-bottom:1px solid rgba(255,90,31,.34);background:linear-gradient(90deg,rgba(255,90,31,.12),rgba(255,90,31,.03) 45%,rgba(216,180,106,.05))}
 #eclipse-ribbon a{color:inherit}
 .er-wrap{max-width:1180px;margin:0 auto;padding:26px 24px;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap}
 .er-left{min-width:260px;flex:1}
-.er-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--warn);margin-bottom:8px}
+.er-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--ember-hi);margin-bottom:8px}
 .er-h{margin:0;font-size:clamp(20px,2.5vw,29px);line-height:1.15;font-weight:700;letter-spacing:-.01em}
-.er-h em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--warn)}
-.er-left:hover .er-h{text-decoration:underline;text-decoration-color:rgba(230,161,92,.55);text-underline-offset:6px}
+.er-h em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ember-hi)}
+.er-left:hover .er-h{text-decoration:underline;text-decoration-color:rgba(255,90,31,.55);text-underline-offset:6px}
 .er-sub{margin-top:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--faint);line-height:1.9}
 .er-right{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.er-count{font-family:var(--mono);font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 26px rgba(230,161,92,.4);white-space:nowrap;font-variant-numeric:tabular-nums}
+.er-count{font-family:var(--mono);font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 28px rgba(255,90,31,.55);white-space:nowrap;font-variant-numeric:tabular-nums}
 .er-count small{display:block;font-size:8.5px;letter-spacing:.24em;color:var(--faint);margin-top:6px;white-space:normal}
 
 /* hero composition */
 .hero-brand{display:flex;align-items:center;gap:13px}
-.hero-wordmark{font-family:var(--caps);font-weight:600;font-size:15px;letter-spacing:.3em}
+.hero-wordmark{font-family:var(--caps);font-weight:600;font-size:15px;letter-spacing:.3em;color:var(--ink)}
 .hero-tagline{font-family:var(--mono);font-size:7.5px;letter-spacing:.42em;color:var(--faint);margin-top:3px}
 .hero-copy{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 30px 8px;pointer-events:none}
 .hero-copy>*{pointer-events:auto}
-.hero-kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.34em;color:var(--acc);margin-bottom:20px;animation-delay:.1s}
-.hero-h1{margin:0;font-size:clamp(60px,10.2vw,138px);line-height:.94;font-weight:700;letter-spacing:-.032em;text-shadow:0 4px 60px rgba(0,0,0,.9)}
-.hero-h1 .l2{display:block;font-family:var(--serif);font-style:italic;font-weight:500;color:var(--acc);letter-spacing:-.01em}
+.hero-kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.34em;color:var(--brass);margin-bottom:18px;animation-delay:.1s}
+.hero-h1{margin:0;font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(66px,11vw,148px);line-height:.92;letter-spacing:-.015em;text-shadow:0 4px 70px rgba(0,0,0,.92)}
+.hero-h1 .l1{display:block;color:var(--ink)}
+.hero-h1 .l2{display:block;color:var(--ember);text-shadow:0 0 60px rgba(255,90,31,.35),0 4px 70px rgba(0,0,0,.92)}
 .hero-sub{margin:22px 0 0;font-size:clamp(15px,1.6vw,19px);line-height:1.6;color:var(--dim);max-width:520px;text-shadow:0 1px 22px #000;animation-delay:.4s}
 .hero-live{font-family:var(--mono);margin-top:16px;font-size:9.5px;letter-spacing:.26em;color:var(--faint);animation-delay:.6s}
 .hero-cta{display:flex;justify-content:flex-start;gap:16px;flex-wrap:wrap;padding:22px 30px 10px;pointer-events:auto;animation-delay:.8s}
@@ -149,17 +151,18 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .trust-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .trust-cell{padding:34px 30px;border-left:1px solid var(--line)}
 .trust-cell:first-child{border-left:0;padding-left:24px}
-.trust-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.26em;color:var(--acc);margin-bottom:8px}
+.trust-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.26em;color:var(--brass);margin-bottom:8px}
 .trust-txt{font-size:15.5px;line-height:1.55;color:var(--dim)}
 
 /* cast instrument */
-.instrument{border:1px solid var(--line2);border-radius:18px;background:linear-gradient(180deg,rgba(220,240,248,.045),rgba(220,240,248,.015));padding:34px 32px}
-#castHint{display:none;margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--warn)}
+.instrument{border:1px solid var(--line2);border-radius:18px;background:linear-gradient(180deg,rgba(242,236,223,.04),rgba(242,236,223,.012));padding:34px 32px}
+#castHint{display:none;margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ember-hi)}
 #castHint.show{display:block}
-.headline-row{display:flex;gap:12px;padding:11px 2px;border-top:1px solid rgba(238,241,246,.08)}
-.horo-line{display:flex;gap:20px;padding:18px 4px;border-top:1px solid rgba(238,241,246,.08)}
-.horo-line .hl-lbl{width:84px;flex:none;font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--acc);padding-top:6px}
-.horo-line .hl-txt{font-family:var(--serif);font-style:italic;font-weight:500;font-size:20px;line-height:1.5;color:rgba(238,241,246,.82)}
+#wheelTitle::before{content:"FIG. 1 — "}
+.headline-row{display:flex;gap:12px;padding:11px 2px;border-top:1px solid rgba(242,236,223,.08)}
+.horo-line{display:flex;gap:20px;padding:18px 4px;border-top:1px solid rgba(242,236,223,.08)}
+.horo-line .hl-lbl{width:84px;flex:none;font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--brass);padding-top:6px}
+.horo-line .hl-txt{font-family:var(--serif);font-style:italic;font-weight:500;font-size:20px;line-height:1.5;color:rgba(242,236,223,.84)}
 
 /* footer */
 .site-foot{border-top:1px solid var(--line)}
@@ -171,7 +174,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 @media (max-width:900px){
   .chap-head{margin-bottom:56px}
   section.band{padding:96px 0}
-  .hero-h1{font-size:clamp(52px,14.5vw,96px)}
+  .hero-h1{font-size:clamp(56px,15.5vw,100px)}
   .hero-sub{max-width:430px}
 }
 @media (max-width:760px){
@@ -209,7 +212,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <div class="er-right">
       <div class="er-count" id="erCount" aria-hidden="true">COMPUTING…</div>
       <span class="sr-only">The partial solar eclipse peaks over Britain around 19:05 BST on 12 August 2026.</span>
-      <a class="btn" id="erCta" href="./eclipse.html" style="white-space:nowrap;color:#0a0e15">WHERE DOES IT LAND IN YOUR CHART →</a>
+      <a class="btn" id="erCta" href="./eclipse.html" style="white-space:nowrap">WHERE DOES IT LAND IN YOUR CHART →</a>
     </div>
   </div>
 </section>
@@ -233,7 +236,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 })();
 </script>
 
-<!-- ═══ HERO — THE LIVING MODEL ═══ -->
+<!-- ═══ FRONTISPIECE — THE LIVING MODEL ═══ -->
 <div id="hero">
   <void-orrery id="orr"></void-orrery>
   <div class="hud">
@@ -242,18 +245,18 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         <img src="./img/logo-mark.svg" alt="" width="36" height="36" style="display:block">
         <div>
           <div class="hero-wordmark">ASTRO&nbsp;PRECISE</div>
-          <div class="hero-tagline">THE&nbsp;OBSERVATORY</div>
+          <div class="hero-tagline">THE&nbsp;STAR&nbsp;ATLAS</div>
         </div>
       </div>
       <nav class="main">
-        <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--warn)">THE ECLIPSE ✦</a>
+        <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--ember-hi)">THE ECLIPSE ✦</a>
       </nav>
     </div>
     <div class="hero-copy">
-      <div class="hero-kicker hero-ui">THE REAL SKY NEWS</div>
-      <h1 class="hero-h1 hero-ui" style="animation-delay:0s">One sky.<span class="l2">Yours.</span></h1>
+      <div class="hero-kicker hero-ui">THE REAL SKY NEWS · COMPUTED LIVE ON THIS DEVICE</div>
+      <h1 class="hero-h1 hero-ui" style="animation-delay:0s"><span class="l1">One sky,</span><span class="l2">yours.</span></h1>
       <p class="hero-sub hero-ui">A living universe, computed in your browser — drift from your street to the deep field, then land on the minute you were born.</p>
-      <div class="hero-live hero-ui"><span class="pulse" style="color:var(--good)">●</span>&nbsp;&nbsp;LIVE · COMPUTED HERE · NOTHING UPLOADED</div>
+      <div class="hero-live hero-ui"><span class="pulse" style="color:var(--ember)">●</span>&nbsp;&nbsp;LIVE · COMPUTED HERE · NOTHING UPLOADED</div>
     </div>
     <div class="hero-cta hero-ui">
       <a class="btn" href="#cast">CAST MY CHART — FREE</a>
@@ -263,11 +266,11 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">1800</span>
       <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
       <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">2200</span>
-      <span class="mono" id="scrubLabel" style="font-size:10px;letter-spacing:.18em;color:var(--acc);min-width:110px;text-align:right">NOW</span>
-      <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(232,200,114,.4);color:var(--acc);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
+      <span class="mono" id="scrubLabel" style="font-size:10px;letter-spacing:.18em;color:var(--brass);min-width:110px;text-align:right">NOW</span>
+      <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(216,180,106,.45);color:var(--brass);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
     </div>
   </div>
-  <div class="hero-scrollcue">SCROLL · THE SKY IS MOVING ↓</div>
+  <div class="hero-scrollcue">SCROLL · THE ATLAS OPENS ↓</div>
   <div id="ladder" role="group" aria-label="Scale ladder"><span class="mono" style="font-size:7.5px;letter-spacing:.24em;color:var(--faint)">SCALE</span></div>
   <div id="mladder" role="group" aria-label="Scale ladder"></div>
   <div id="telemetry" aria-live="polite"></div>
@@ -283,16 +286,16 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   </div>
 </div>
 
-<!-- ═══ 01 · CAST ═══ -->
+<!-- ═══ PLATE I · THE CHART ═══ -->
 <section class="band chap" id="cast">
   <div class="wrap">
     <div class="chap-head">
-      <div class="chap-idx"><span class="chap-num">01</span><span class="chap-tag">THE CHART</span></div>
+      <div class="chap-idx"><span class="chap-num">I</span><span class="chap-tag">PLATE I · THE CHART</span></div>
       <div class="chap-note">MEEUS SERIES · TO THE ARCMINUTE<br>COMPUTED ON THIS DEVICE</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:70px;align-items:start">
       <div>
-        <h2>The sky at your <em class="serif" style="color:var(--acc)">first breath.</em></h2>
+        <h2>The sky at your <em style="color:var(--brass)">first breath.</em></h2>
         <p class="sub">Ten bodies placed to the arcminute of your birth by the Meeus series — the same maths behind planetarium software — then read back plainly.</p>
         <div class="instrument">
           <form id="castForm" action="#" method="get" onsubmit="document.getElementById('castBtn').click();return false" style="display:contents">
@@ -321,7 +324,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         </div>
       </div>
       <div>
-        <div class="mono" id="wheelTitle" style="font-size:10px;letter-spacing:.3em;color:var(--acc);text-align:center;margin-bottom:26px">THE SKY RIGHT NOW</div>
+        <div class="mono" id="wheelTitle" style="font-size:10px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-bottom:26px">THE SKY RIGHT NOW</div>
         <div class="wheelbox"><svg id="wheel" viewBox="0 0 380 380" role="img" aria-label="Chart wheel"></svg></div>
         <div style="max-width:400px;margin:26px auto 0" id="rows"></div>
       </div>
@@ -329,14 +332,14 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   </div>
 </section>
 
-<!-- ═══ 02 · TONIGHT ═══ -->
+<!-- ═══ PLATE II · THE REAL SKY NEWS ═══ -->
 <section class="band chap" id="tonight">
   <div class="wrap">
     <div class="chap-head">
-      <div class="chap-idx"><span class="chap-num">02</span><span class="chap-tag">THE REAL SKY NEWS</span></div>
+      <div class="chap-idx"><span class="chap-num">II</span><span class="chap-tag">PLATE II · THE REAL SKY NEWS</span></div>
       <div class="chap-note">COMPUTED THIS MINUTE<br>WEATHER REPORT OF THE SKY</div>
     </div>
-    <h2>The sky is <em class="serif" style="color:var(--acc)">still moving.</em></h2>
+    <h2>The sky is <em style="color:var(--brass)">still moving.</em></h2>
     <p class="sub">Tonight’s real sky news — computed this minute on your device. Weather report of the sky, not prophecy. Tap a card to fly the living model.</p>
     <div id="ap-sky-news-band" class="ap-sky-news ap-sky-news--band" style="margin:0 0 22px"></div>
     <div class="card" id="tonight-receipt" style="padding:18px 22px;display:flex;flex-wrap:wrap;gap:16px 30px;align-items:center" aria-live="polite">
@@ -345,55 +348,55 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
           <div id="moonDisc" style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 42% 40%,#eef1f7,#b9c4d8 78%)"></div>
         </div>
         <div>
-          <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--acc)">MOON</div>
+          <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--brass)">MOON</div>
           <div id="moonName" style="font-size:16px;font-weight:700">…</div>
           <div id="moonLine" style="font-size:13px;color:var(--dim)"></div>
           <div class="mono" id="moonIllum" style="font-size:9px;letter-spacing:.12em;color:var(--faint)"></div>
         </div>
       </div>
       <div style="min-width:min(100%,180px)">
-        <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--acc)">TIGHTEST PAIR</div>
+        <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--brass)">TIGHTEST PAIR</div>
         <div id="pairNames" style="font-size:16px;font-weight:700">…</div>
         <div class="mono" id="pairSep" style="font-size:9px;letter-spacing:.12em;color:var(--faint)"></div>
       </div>
       <div style="flex:1;min-width:min(100%,200px)">
-        <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--acc);margin-bottom:6px">℞ BOARD</div>
+        <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--brass);margin-bottom:6px">℞ BOARD</div>
         <div id="retroRows" style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px"></div>
       </div>
     </div>
-    <div class="receipt" id="transitHit" hidden style="margin-top:16px;border-color:rgba(126,240,200,.35)"></div>
+    <div class="receipt" id="transitHit" hidden style="margin-top:16px;border-color:rgba(168,214,176,.35)"></div>
   </div>
 </section>
 
-<!-- ═══ 03 · HOROSCOPE ═══ -->
+<!-- ═══ PLATE III · THE DAY'S ENTRY ═══ -->
 <section class="band chap" id="horoscope">
   <div class="wrap">
     <div class="chap-head">
-      <div class="chap-idx"><span class="chap-num">03</span><span class="chap-tag">TODAY’S HOROSCOPE</span></div>
+      <div class="chap-idx"><span class="chap-num">III</span><span class="chap-tag">PLATE III · THE DAY’S ENTRY</span></div>
       <div class="chap-note">REAL TRANSITS, WHOLE-SIGN HOUSES<br>A MIRROR, NOT A VERDICT</div>
     </div>
-    <h2>Written by the sky, <em class="serif" style="color:var(--acc)">this morning.</em></h2>
+    <h2>Written by the sky, <em style="color:var(--brass)">this morning.</em></h2>
     <p class="sub">Pick your Sun sign. Every line is computed from where the planets stand this minute.</p>
     <div id="pills" style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:34px"></div>
     <div id="horoBody" hidden>
-      <div class="mono" id="horoHead" style="font-size:10px;letter-spacing:.26em;color:var(--acc);margin-bottom:8px"></div>
+      <div class="mono" id="horoHead" style="font-size:10px;letter-spacing:.26em;color:var(--brass);margin-bottom:8px"></div>
       <div id="horoLines" style="max-width:780px"></div>
     </div>
-    <div class="card" style="margin-top:34px;border-color:rgba(238,241,246,.18)">
-      <div class="lbl" style="color:rgba(238,241,246,.6)">WHAT THIS IS — SAID PLAINLY</div>
+    <div class="card" style="margin-top:34px;border-color:rgba(242,236,223,.18)">
+      <div class="lbl" style="color:rgba(242,236,223,.6)">WHAT THIS IS — SAID PLAINLY</div>
       <p style="margin:0;font-size:15.5px;line-height:1.7;color:var(--dim)">A horoscope is <b style="color:var(--ink)">a mirror for reflection, not a verdict</b> — tradition offered for entertainment, not advice, prediction, or scientific fact. These lines are driven by today's real transits to your Sun sign as a whole; they are not personalised to your chart. Your actual sky is one step away: <a href="#cast">cast your free chart above</a> and the same engine reads the planets against <em>your</em> degrees, not your sign's.</p>
     </div>
   </div>
 </section>
 
-<!-- ═══ 04 · SHOP ═══ -->
+<!-- ═══ PLATE IV · THE EDITIONS ═══ -->
 <section class="band chap" id="shop">
   <div class="wrap">
     <div class="chap-head">
-      <div class="chap-idx"><span class="chap-num">04</span><span class="chap-tag">THE SHOP</span></div>
+      <div class="chap-idx"><span class="chap-num">IV</span><span class="chap-tag">PLATE IV · THE EDITIONS</span></div>
       <div class="chap-note">FIVE DIGITAL EDITIONS<br>EACH ONE SHOWS ITS CONTENTS FIRST</div>
     </div>
-    <h2>Keep the <em class="serif" style="color:var(--acc)">sky.</em></h2>
+    <h2>Keep the <em style="color:var(--brass)">sky.</em></h2>
     <p class="sub">Five editions, all digital, all computed from your chart alone — and each one tells you exactly what's inside.</p>
     <table>
       <thead>
@@ -415,13 +418,13 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   </div>
 </section>
 
-<!-- ═══ 05 · PRIVACY PROOF ═══ -->
+<!-- ═══ PLATE V · THE AUDIT ═══ -->
 <section class="band chap" id="privacy">
   <div class="wrap" style="max-width:820px">
     <div class="chap-head">
-      <div class="chap-idx"><span class="chap-num">05</span><span class="chap-tag">THE PROOF, NOT THE PROMISE</span></div>
+      <div class="chap-idx"><span class="chap-num">V</span><span class="chap-tag">PLATE V · THE AUDIT</span></div>
     </div>
-    <h2>Zero bytes uploaded. <em class="serif" style="color:var(--good)">Check us.</em></h2>
+    <h2>Zero bytes uploaded. <em style="color:var(--good)">Check us.</em></h2>
     <p class="sub">Every chart on this site is computed by JavaScript running on your machine. Don't take the claim — audit it:</p>
     <div class="receipt">
       <div>1. OPEN DEVTOOLS (F12) → NETWORK TAB → FILTER: FETCH/XHR</div>
@@ -440,11 +443,11 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         <div class="foot-tag">Drag the sky. It was always yours to move.</div>
       </div>
       <div class="foot-cols" style="display:flex;gap:52px">
-        <div style="display:flex;flex-direction:column"><span>SKY</span><a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="./deep-time.html">DEEP TIME</a><a href="./cosmic-calendar.html">COSMIC CALENDAR</a><a href="./journey.html">JOURNEY</a></div>
-        <div style="display:flex;flex-direction:column"><span>SHOP</span><a href="./eclipse.html">ECLIPSE</a><a href="./deep-reading.html">DEEP READING</a><a href="./natal-plate.html">THE PLATE</a><a href="./refunds.html">REFUNDS</a></div>
+        <div style="display:flex;flex-direction:column"><span>THE ATLAS</span><a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="./deep-time.html">DEEP TIME</a><a href="./cosmic-calendar.html">COSMIC CALENDAR</a><a href="./journey.html">JOURNEY</a></div>
+        <div style="display:flex;flex-direction:column"><span>THE EDITIONS</span><a href="./eclipse.html">ECLIPSE</a><a href="./deep-reading.html">DEEP READING</a><a href="./natal-plate.html">THE PLATE</a><a href="./refunds.html">REFUNDS</a></div>
       </div>
     </div>
-    <div class="foot" style="border-top:1px solid rgba(238,241,246,.1);padding-top:22px;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap">
+    <div class="foot" style="border-top:1px solid rgba(242,236,223,.1);padding-top:22px;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap">
       <span>© MMXXVI ASTRO PRECISE · THE REAL SKY NEWS · COMPUTED, NEVER FABRICATED</span>
       <span>YOUR BIRTH DATA NEVER LEAVES YOUR DEVICE · <a href="./verify.html">VERIFY A PLATE</a></span>
     </div>
@@ -482,22 +485,22 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   }
   function drawWheel(rows) {
     var s = '', cx = 190, cy = 190;
-    s += '<circle cx="190" cy="190" r="186" fill="none" stroke="rgba(238,241,246,.3)" stroke-width="1"/>';
-    s += '<circle cx="190" cy="190" r="154" fill="none" stroke="rgba(238,241,246,.14)" stroke-width="1" stroke-dasharray="3 5"/>';
-    s += '<circle cx="190" cy="190" r="60" fill="none" stroke="rgba(238,241,246,.1)" stroke-width="1"/>';
+    s += '<circle cx="190" cy="190" r="186" fill="none" stroke="rgba(242,236,223,.3)" stroke-width="1"/>';
+    s += '<circle cx="190" cy="190" r="154" fill="none" stroke="rgba(242,236,223,.14)" stroke-width="1" stroke-dasharray="3 5"/>';
+    s += '<circle cx="190" cy="190" r="60" fill="none" stroke="rgba(242,236,223,.1)" stroke-width="1"/>';
     var i, a, x1, y1, x2, y2;
     for (i = 0; i < 360; i += 5) {
       a = (180 - i) * Math.PI / 180;
       var len = i % 30 === 0 ? 12 : 5, op = i % 30 === 0 ? 0.4 : 0.22;
       x1 = cx + 186 * Math.cos(a); y1 = cy - 186 * Math.sin(a);
       x2 = cx + (186 - len) * Math.cos(a); y2 = cy - (186 - len) * Math.sin(a);
-      s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="rgba(232,200,114,' + op + ')" stroke-width="1"/>';
+      s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="rgba(216,180,106,' + op + ')" stroke-width="1"/>';
     }
     for (i = 0; i < 12; i++) {
       a = (180 - (i * 30 + 15)) * Math.PI / 180;
-      s += '<text x="' + (cx + 168 * Math.cos(a)) + '" y="' + (cy - 168 * Math.sin(a) + 5) + '" text-anchor="middle" font-size="15" fill="rgba(232,200,114,.75)">' + SGLYPH[i] + '</text>';
+      s += '<text x="' + (cx + 168 * Math.cos(a)) + '" y="' + (cy - 168 * Math.sin(a) + 5) + '" text-anchor="middle" font-size="15" fill="rgba(216,180,106,.78)">' + SGLYPH[i] + '</text>';
     }
-    var ASP = [[60, 'rgba(126,240,200,.55)'], [90, 'rgba(230,161,92,.55)'], [120, 'rgba(126,240,200,.55)'], [180, 'rgba(230,161,92,.55)']];
+    var ASP = [[60, 'rgba(168,214,176,.55)'], [90, 'rgba(255,90,31,.5)'], [120, 'rgba(168,214,176,.55)'], [180, 'rgba(255,90,31,.5)']];
     for (i = 0; i < rows.length; i++) for (var k = i + 1; k < rows.length; k++) {
       var sep = Math.abs(((rows[i].lon - rows[k].lon + 540) % 360) - 180);
       for (var q = 0; q < ASP.length; q++) if (Math.abs(sep - ASP[q][0]) <= 5) {
@@ -510,11 +513,11 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     sorted.forEach(function (r, idx) {
       a = (180 - r.lon) * Math.PI / 180;
       var R = idx % 2 ? 104 : 132;
-      s += '<text x="' + (cx + R * Math.cos(a)) + '" y="' + (cy - R * Math.sin(a) + 6) + '" text-anchor="middle" font-size="16" fill="#fff" style="text-shadow:0 0 8px #e8c872">' + r.glyph + '</text>';
+      s += '<text x="' + (cx + R * Math.cos(a)) + '" y="' + (cy - R * Math.sin(a) + 6) + '" text-anchor="middle" font-size="16" fill="#f2ecdf" style="text-shadow:0 0 8px #d8b46a">' + r.glyph + '</text>';
     });
     $('wheel').innerHTML = s;
     $('rows').innerHTML = rows.map(function (r) {
-      return '<div class="prow"><span style="width:18px;color:var(--acc)">' + r.glyph + '</span><span style="width:80px;color:rgba(238,241,246,.85)">' + r.name + '</span><span style="flex:1;text-align:right;color:rgba(238,241,246,.6)">' + fmt(r.lon) + '</span><span style="width:16px;text-align:right;color:var(--warn)">' + (r.retro ? '℞' : '') + '</span></div>';
+      return '<div class="prow"><span style="width:18px;color:var(--brass)">' + r.glyph + '</span><span style="width:80px;color:rgba(242,236,223,.85)">' + r.name + '</span><span style="flex:1;text-align:right;color:rgba(242,236,223,.6)">' + fmt(r.lon) + '</span><span style="width:16px;text-align:right;color:var(--ember-hi)">' + (r.retro ? '℞' : '') + '</span></div>';
     }).join('');
   }
   function cast(silent) {
@@ -540,7 +543,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       ['☽', 'MOON IN ' + fmt(moon.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(moon.lon / 30) % 12]],
       ['↑', 'RISING — NEEDS A PLACE', 'Your rising sign and houses unlock with a birth place at commission.']
     ].map(function (h) {
-      return '<div class="headline-row"><span style="width:18px;color:var(--acc)">' + h[0] + '</span><div><div class="mono" style="font-size:10px;letter-spacing:.14em">' + h[1] + '</div><div style="font-size:14.5px;color:var(--dim)">' + h[2] + '</div></div></div>';
+      return '<div class="headline-row"><span style="width:18px;color:var(--brass)">' + h[0] + '</span><div><div class="mono" style="font-size:10px;letter-spacing:.14em">' + h[1] + '</div><div style="font-size:14.5px;color:var(--dim)">' + h[2] + '</div></div></div>';
     }).join('');
     if (orr && orr.setNatal) orr.setNatal(chart.rows.map(function (r) { return { glyph: r.glyph, lon: r.lon, name: r.name }; }));
     if (orr && orr.setJD) { orr.setJD(jd); $('scrubLabel').textContent = lab; }
@@ -614,7 +617,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       $('pairSep').textContent = Math.floor(best.d) + '°' + String(Math.round(best.d % 1 * 60)).padStart(2, '0') + '′ APART, AS SEEN FROM EARTH';
     }
     $('retroRows').innerHTML = cand.map(function (r) {
-      return '<div class="prow"><span style="width:18px;color:var(--acc)">' + r.glyph + '</span><span style="flex:1">' + r.name.toUpperCase() + '</span><span class="mono" style="font-size:10px;color:' + (r.retro ? 'var(--warn)' : 'var(--good)') + '">' + (r.retro ? '℞ RETROGRADE' : 'DIRECT →') + '</span></div>';
+      return '<div class="prow"><span style="width:18px;color:var(--brass)">' + r.glyph + '</span><span style="flex:1">' + r.name.toUpperCase() + '</span><span class="mono" style="font-size:10px;color:' + (r.retro ? 'var(--ember-hi)' : 'var(--good)') + '">' + (r.retro ? '℞ RETROGRADE' : 'DIRECT →') + '</span></div>';
     }).join('');
     if (chart) {
       var ASP = [[0, 'CONJUNCT'], [60, 'SEXTILE'], [90, 'SQUARES'], [120, 'TRINES'], [180, 'OPPOSES']];
@@ -679,7 +682,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   var FACTS = { sun: ["99.86% OF THE SYSTEM'S MASS", 'Helios saw everything; Apollo drove the light.'], mercury: ['A YEAR IS 88 DAYS · A DAY IS 176', 'The messenger — quicksilver mind.'], venus: ['SPINS BACKWARDS · SUN RISES WEST', 'Morning star and evening star — the same goddess, twice.'], earth: ['THE ONLY WORLD WHERE ANYONE LOOKS UP', 'Home. Every chart ever cast began here.'], moon: ['DRIFTING 3.8 CM AWAY EVERY YEAR', 'Selene drives the silver chariot.'], mars: ['OLYMPUS MONS IS 2.5× EVEREST', 'The will to begin.'], jupiter: ['ROOM FOR 1,300 EARTHS', 'The king — luck, growth, appetite.'], saturn: ['RINGS 282,000 KM WIDE · ~1 KM THIN', 'The timekeeper — patience earned.'], uranus: ['ROLLS ON ITS SIDE', 'Sudden turns, strange genius.'], neptune: ['2,000 KM/H WINDS, SUNLESS BLUE', 'Fog, faith, the unseen ocean.'] };
   orr.addEventListener('planetfocus', function (e) {
     var d = e.detail, f = d.key ? FACTS[d.key] : null;
-    $('telemetry').innerHTML = '<div style="font-size:15px;color:#fff">' + (d.glyph || '') + '&nbsp;&nbsp;' + (d.name || '').toUpperCase() + '</div>' + (f ? '<div style="color:rgba(238,241,246,.6)">' + f[0] + '</div><div class="serif" style="font-size:16px;color:rgba(232,200,114,.85);letter-spacing:.01em">' + f[1] + '</div>' : '') + '<div style="color:rgba(238,241,246,.35)">DRAG TO ORBIT · CLICK A WORLD TO FLY</div>';
+    $('telemetry').innerHTML = '<div style="font-size:15px;color:#fff">' + (d.glyph || '') + '&nbsp;&nbsp;' + (d.name || '').toUpperCase() + '</div>' + (f ? '<div style="color:rgba(242,236,223,.6)">' + f[0] + '</div><div class="serif" style="font-size:16px;color:rgba(216,180,106,.9);letter-spacing:.01em">' + f[1] + '</div>' : '') + '<div style="color:rgba(242,236,223,.35)">DRAG TO ORBIT · CLICK A WORLD TO FLY</div>';
     Array.prototype.forEach.call($('dock').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.key === (d.key || '')); });
   });
   orr.addEventListener('scalechange', function (e) {
@@ -711,7 +714,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     if (netBase === null) { netBase = post; }
     var delta = Math.max(0, post - netBase);
     $('netCount').textContent = delta + ' NEW REQUEST' + (delta === 1 ? '' : 'S');
-    $('netCount').style.color = delta === 0 ? 'var(--good)' : 'var(--warn)';
+    $('netCount').style.color = delta === 0 ? 'var(--good)' : 'var(--ember-hi)';
   }
   window.addEventListener('load', function () { setTimeout(function () { netBase = null; nets(); }, 1500); });
   nets(); setInterval(nets, 4000);
