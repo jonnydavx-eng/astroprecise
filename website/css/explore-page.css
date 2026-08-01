@@ -240,7 +240,7 @@ html.orrery-full .explore-hint { opacity: 0.5; }
 }
 .explore-return a.explore-return__primary {
   color: #0B0906;
-  background: linear-gradient(160deg, #E8C872, #C9A227);
+  background: linear-gradient(160deg, #d8b46a, #C9A227);
   border-color: transparent;
   font-weight: 600;
 }

@@ -1,9 +1,9 @@
 /* The Real Sky News — instrument briefing strip (Void Observatory) */
 .ap-sky-news {
-  --sn-ink: #e9edf2;
+  --sn-ink: #f2ecdf;
   --sn-dim: rgba(233, 237, 242, 0.72);
   --sn-faint: rgba(233, 237, 242, 0.58);
-  --sn-acc: #9fdcec;
+  --sn-acc: #d8b46a;
   --sn-line: rgba(159, 220, 236, 0.22);
   --sn-card: rgba(8, 14, 22, 0.72);
   position: relative;

@@ -15,11 +15,11 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#0a0e12;font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
-a{color:#9fdcec;text-decoration:none}a:hover{color:#fff}
-a:focus-visible,button:focus-visible{outline:2px solid #9fdcec;outline-offset:2px}
+a{color:#d8b46a;text-decoration:none}a:hover{color:#ff7a45}
+a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
-.screenbar{max-width:1123px;margin:0 auto;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:#e9edf2}
-.btn{display:inline-block;background:#e9edf2;color:#000;border:0;border-radius:100px;padding:13px 26px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;cursor:pointer}
+.screenbar{max-width:1123px;margin:0 auto;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:#f2ecdf}
+.btn{display:inline-block;background:#f2ecdf;color:#000;border:0;border-radius:100px;padding:13px 26px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;cursor:pointer}
 .btn:hover{filter:brightness(1.08);color:#000}
 #scaler{transform-origin:top center}
 .sheet{width:297mm;height:420mm;background:#f8fbfc;color:#10202c;margin:0 auto 26px;box-shadow:0 8px 40px rgba(0,0,0,.6);padding:14mm 16mm 10mm;display:flex;flex-direction:column;position:relative}
@@ -40,15 +40,15 @@ a:focus-visible,button:focus-visible{outline:2px solid #9fdcec;outline-offset:2p
 <body>
 
 <div class="screenbar">
-  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(233,237,242,.65)" href="./index.html">← THE OBSERVATORY</a>
-  <h1 class="mono" style="margin:0;font-weight:400;font-size:10px;letter-spacing:.26em;color:#9fdcec">THE NATAL PLATE · £14 · SAMPLE EDITION SHOWN IN FULL</h1>
+  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)" href="./index.html">← THE OBSERVATORY</a>
+  <h1 class="mono" style="margin:0;font-weight:400;font-size:10px;letter-spacing:.26em;color:#d8b46a">THE NATAL PLATE · £14 · SAMPLE EDITION SHOWN IN FULL</h1>
   <span style="display:flex;gap:10px;flex-wrap:wrap">
     <button class="btn" onclick="window.print()" type="button">PRINT / SAVE PDF</button>
-    <a class="btn" style="background:none;border:1px solid rgba(233,237,242,.35);color:#e9edf2" href="./shop.html#plate">NOTIFY ME — £14 WHEN CHECKOUT OPENS</a>
+    <a class="btn" style="background:none;border:1px solid rgba(242,236,223,.35);color:#f2ecdf" href="./shop.html#plate">NOTIFY ME — £14 WHEN CHECKOUT OPENS</a>
   </span>
 </div>
 
-<div class="mono" style="max-width:1123px;margin:0 auto;padding:8px 22px 6px;color:#9fdcec;font-size:10px;letter-spacing:.22em">DESIGN MASTER · ENHANCED A3 PLATE (CLAUDE DESIGN LAB) · NATAL SERIES No. 001 — EDITION NUMBERING IS PER SERIES; THE VERIFY PAGE SHOWS THE ECLIPSE-MINUTE SERIES</div>
+<div class="mono" style="max-width:1123px;margin:0 auto;padding:8px 22px 6px;color:#d8b46a;font-size:10px;letter-spacing:.22em">DESIGN MASTER · ENHANCED A3 PLATE (CLAUDE DESIGN LAB) · NATAL SERIES No. 001 — EDITION NUMBERING IS PER SERIES; THE VERIFY PAGE SHOWS THE ECLIPSE-MINUTE SERIES</div>
 <div style="max-width:1123px;margin:0 auto 16px;padding:0 22px">
   <img src="./img/plate-enhanced.svg" width="1240" height="1754" alt="Enhanced Natal Plate design master — print-grade A3 sample with sealed fingerprint and heliocentric band" style="width:100%;height:auto;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.55);background:#f8fbfc" loading="lazy" decoding="async" />
 </div>
@@ -148,12 +148,12 @@ a:focus-visible,button:focus-visible{outline:2px solid #9fdcec;outline-offset:2p
       s += '<circle cx="' + (cx + rr * Math.cos(t)).toFixed(1) + '" cy="' + (cy + rr * Math.sin(t)).toFixed(1) + '" r="' + (0.6 + rand() * 1.7).toFixed(1) + '" fill="#e9f2f6" opacity="' + (0.25 + rand() * 0.7).toFixed(2) + '"/>';
     }
     s += '<circle cx="500" cy="500" r="470" fill="none" stroke="#10202c" stroke-width="3"/>';
-    s += '<circle cx="500" cy="500" r="434" fill="none" stroke="#9fdcec" stroke-width="1" opacity="0.5"/>';
-    s += '<circle cx="500" cy="500" r="250" fill="none" stroke="#9fdcec" stroke-width="1" opacity="0.25"/>';
+    s += '<circle cx="500" cy="500" r="434" fill="none" stroke="#d8b46a" stroke-width="1" opacity="0.5"/>';
+    s += '<circle cx="500" cy="500" r="250" fill="none" stroke="#d8b46a" stroke-width="1" opacity="0.25"/>';
     for (i = 0; i < 72; i++) {
       var major = i % 6 === 0, lon = i * 5;
       var p1 = pt(lon, major ? 404 : 418, cx, cy), p2 = pt(lon, 434, cx, cy);
-      s += '<line x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '" stroke="#9fdcec" stroke-width="' + (major ? 2 : 1) + '" opacity="' + (major ? 0.85 : 0.4) + '"/>';
+      s += '<line x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '" stroke="#d8b46a" stroke-width="' + (major ? 2 : 1) + '" opacity="' + (major ? 0.85 : 0.4) + '"/>';
     }
     var GATE = [[0, 'CONJUNCT', 1], [60, 'SEXTILE', 1], [90, 'SQUARE', 0], [120, 'TRINE', 1], [180, 'OPPOSITE', 0]];
     function hits(ra, rb, gate, crossMode) {
@@ -174,7 +174,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #9fdcec;outline-offset:2p
     });
     E.SIGNS.forEach(function (sg, i2) {
       var p = pt(i2 * 30 + 15, 452, cx, cy);
-      s += '<text x="' + p[0] + '" y="' + p[1] + '" text-anchor="middle" dominant-baseline="middle" fill="#9fdcec" font-size="30" opacity="0.9">' + sg[1] + '</text>';
+      s += '<text x="' + p[0] + '" y="' + p[1] + '" text-anchor="middle" dominant-baseline="middle" fill="#d8b46a" font-size="30" opacity="0.9">' + sg[1] + '</text>';
     });
     rowsA.slice().sort(function (a2, b2) { return a2.lon - b2.lon; }).forEach(function (r, i2) {
       var rg = i2 % 2 ? 296 : 362;
@@ -182,7 +182,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #9fdcec;outline-offset:2p
       s += '<line x1="' + d[0] + '" y1="' + d[1] + '" x2="' + g[0] + '" y2="' + (g[1] - 24) + '" stroke="#5b7684" stroke-width="1" opacity="0.6"/>';
       s += '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="5" fill="#e9f2f6"/>';
       s += '<text x="' + g[0] + '" y="' + g[1] + '" text-anchor="middle" dominant-baseline="middle" fill="#ffffff" font-size="40">' + r.glyph + '</text>';
-      s += '<text x="' + g[0] + '" y="' + (g[1] + 32) + '" text-anchor="middle" fill="#9fdcec" font-size="15" font-family="IBM Plex Mono, monospace" letter-spacing="1">' + r.sign.deg + '°' + r.sign.glyph + '</text>';
+      s += '<text x="' + g[0] + '" y="' + (g[1] + 32) + '" text-anchor="middle" fill="#d8b46a" font-size="15" font-family="IBM Plex Mono, monospace" letter-spacing="1">' + r.sign.deg + '°' + r.sign.glyph + '</text>';
     });
     s += '<text x="500" y="268" text-anchor="middle" fill="#147a99" font-size="30">✶</text>';
     $('plate').innerHTML = s;

@@ -14,27 +14,27 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#e9edf2;--dim:rgba(233,237,242,.72);--faint:rgba(233,237,242,.5);--line:rgba(159,220,236,.18);--line2:rgba(159,220,236,.26);--acc:#9fdcec;--good:#7ef0c8;--warn:#e8b57d;--card:rgba(220,240,248,.04)}
+:root{--ink:#f2ecdf;--dim:rgba(242,236,223,.72);--faint:rgba(242,236,223,.5);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.26);--acc:#d8b46a;--good:#7ef0c8;--warn:#e8b57d;--card:rgba(242,236,223,.04)}
 *{box-sizing:border-box}
-body{margin:0;background:#000;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--acc);text-decoration:none}a:hover{color:#fff}
+body{margin:0;background:#08080b;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
 .wrap{max-width:760px;margin:0 auto;padding:0 22px 90px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0}
 .kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.26em;color:var(--acc)}
-.navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(233,237,242,.65)}
+.navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)}
 h1{margin:52px 0 12px;font-size:clamp(34px,7vw,52px);line-height:1.06;font-weight:700;letter-spacing:-.015em}
 .lede{margin:0 0 24px;font-size:18px;line-height:1.65;color:var(--dim)}
 .card{border:1px solid var(--line2);border-radius:14px;background:var(--card);padding:24px 26px;margin:22px 0}
 .lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
-.receipt{border:1px solid var(--line);border-radius:10px;background:rgba(220,240,248,.03);padding:13px 16px}
-.receipt div{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.05em;line-height:1.8;color:rgba(233,237,242,.85)}
+.receipt{border:1px solid var(--line);border-radius:10px;background:rgba(242,236,223,.03);padding:13px 16px}
+.receipt div{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.05em;line-height:1.8;color:rgba(242,236,223,.85)}
 /* the calendar strip */
 .year{position:relative;height:56px;border-radius:10px;overflow:hidden;border:1px solid var(--line2);margin:8px 0 6px;
   background:linear-gradient(90deg,#0a0f18 0%,#0d1420 26%,#101a28 50%,#152234 82%,#1a2b40 100%)}
-.mtick{position:absolute;top:0;bottom:0;width:1px;background:rgba(159,220,236,.16)}
-.mlab{position:absolute;bottom:3px;font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.1em;color:rgba(233,237,242,.4);transform:translateX(-50%)}
+.mtick{position:absolute;top:0;bottom:0;width:1px;background:rgba(216,180,106,.16)}
+.mlab{position:absolute;bottom:3px;font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.1em;color:rgba(242,236,223,.4);transform:translateX(-50%)}
 .ev{position:absolute;top:0;width:2px;background:var(--acc);height:100%}
 .evdot{position:absolute;top:-3px;left:-3px;width:8px;height:8px;border-radius:50%;background:var(--acc)}
 .evwrap{position:relative;height:34px;margin-top:2px}
@@ -49,12 +49,12 @@ td.src{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.06e
 .field{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .field label{display:flex;flex-direction:column;gap:6px}
 .field span{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.2em;color:var(--faint)}
-input{background:rgba(220,240,248,.05);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark}
+input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark}
 .btn{background:var(--ink);color:#000;border:0;border-radius:100px;padding:13px 26px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;cursor:pointer}
 .big{font-size:clamp(26px,5vw,38px);font-weight:700;line-height:1.15;letter-spacing:-.01em;margin:2px 0}
 .big .acc{color:var(--acc)}.big .good{color:var(--good)}
 .rule{border-top:1px solid var(--line);margin:32px 0}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:rgba(233,237,242,.4);line-height:2.1}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:rgba(242,236,223,.4);line-height:2.1}
 .pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;padding:2px 7px;border-radius:100px;border:1px solid currentColor;vertical-align:middle}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -97,7 +97,7 @@ input{background:rgba(220,240,248,.05);border:1px solid var(--line2);border-radi
 </div>
 
 <!-- YOU are here -->
-<div class="card" style="border-color:rgba(126,240,200,.35)">
+<div class="card" style="border-color:rgba(168,214,176,.35)">
   <div class="lbl" style="color:var(--good)">WHERE YOU FALL</div>
   <p style="font-size:15px;line-height:1.6;color:var(--dim);margin:0 0 14px">Enter your date of birth. Nothing is uploaded — this is arithmetic in your browser.</p>
   <div class="field">
@@ -279,7 +279,7 @@ EVENTS.forEach((e,i)=>{
     {f:1.0,   t:'NOW — 31 December, midnight. You are here.'}
   ];
   function eraFor(f){ let e=ERAS[0]; for(const x of ERAS){ if(f>=x.f) e=x; } return e.t; }
-  function ensureMarker(){ if(!marker){ marker=document.createElement('div'); marker.style.cssText='position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 10px #9fdcec;z-index:3'; strip.appendChild(marker);} }
+  function ensureMarker(){ if(!marker){ marker=document.createElement('div'); marker.style.cssText='position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 10px #d8b46a;z-index:3'; strip.appendChild(marker);} }
   btn.addEventListener('click', ()=>{
     if(raf){ cancelAnimationFrame(raf); raf=null; btn.textContent='▶ PLAY 13.8 BILLION YEARS'; return; }
     ensureMarker(); btn.textContent='⏸ PAUSE';

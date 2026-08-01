@@ -45,6 +45,7 @@
   <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=788" id="ap-css-atlas-tokens" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
   <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
   <link rel="stylesheet" href="css/main-lite.css" />
@@ -55,10 +56,10 @@
        Remap any legacy gold custom properties to the frost/cyan palette so
        nothing on this numerology page renders warm, regardless of load order. */
     :root{
-      --gold:#9fdcec!important;--gold-pale:#cfeef7!important;--gold-dim:#7f9aa6!important;
+      --gold:#d8b46a!important;--gold-pale:#cfeef7!important;--gold-dim:#7f9aa6!important;
       --gold-bright:#bfeef8!important;--gold-deep:#6f8b96!important;
-      --lp-gold:#9fdcec!important;--lp-gold-pale:#cfeef7!important;
-      --ap-gold:#9fdcec!important;--ap-gold-pale:#cfeef7!important;--ap-gold-dim:#7f9aa6!important;
+      --lp-gold:#d8b46a!important;--lp-gold-pale:#cfeef7!important;
+      --ap-gold:#d8b46a!important;--ap-gold-pale:#cfeef7!important;--ap-gold-dim:#7f9aa6!important;
     }
   </style>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
@@ -335,13 +336,13 @@
         </div>
 
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);margin-top:var(--space-8);">
-          <p style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:#9fdcec;margin-bottom:var(--space-3);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Example Calculation</p>
+          <p style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:#d8b46a;margin-bottom:var(--space-3);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Example Calculation</p>
           <p style="font-family:'Courier New',monospace;font-size:var(--text-sm);color:var(--silver);line-height:2;">
             Birth date: <strong style="color:var(--white);">14 April 1992</strong><br>
-            Month: <strong style="color:#9fdcec;">4</strong><br>
-            Day: 1+4 = <strong style="color:#9fdcec;">5</strong><br>
-            Year: 1+9+9+2 = 21 → 2+1 = <strong style="color:#9fdcec;">3</strong><br>
-            Life Path: 4 + 5 + 3 = 12 → 1+2 = <strong style="color:#9fdcec;">3</strong><br>
+            Month: <strong style="color:#d8b46a;">4</strong><br>
+            Day: 1+4 = <strong style="color:#d8b46a;">5</strong><br>
+            Year: 1+9+9+2 = 21 → 2+1 = <strong style="color:#d8b46a;">3</strong><br>
+            Life Path: 4 + 5 + 3 = 12 → 1+2 = <strong style="color:#d8b46a;">3</strong><br>
             <strong style="color:var(--white);">Life Path 3 — The Creator</strong>
           </p>
         </div>
@@ -641,7 +642,7 @@
       strengths: ['Profound intuition that operates ahead of logic','Inspirational, charismatic presence','Visionary capacity that others follow instinctively','Spiritual sensitivity as a genuine instrument','Creative and artistic genius'],
       challenges: ['Overwhelming sensitivity to environment and others','Anxiety and self-doubt that undermines the gift','Tendency toward extremes with no middle ground','Difficulty grounding high-frequency awareness in daily life'],
       compatibles: [2,6,22], keywords: ['Intuition','Inspiration','Enlightenment','Vision','Sensitivity'],
-      color: '#9fdcec',
+      color: '#d8b46a',
     },
     22: {
       title: 'The Master Builder', glyph: '⊕', element: 'earth', master: true,
@@ -1025,7 +1026,7 @@
       nameGrid.innerHTML = nameCards.map(c => `
         <div class="lp-secondary-card">
           <p class="lp-secondary-card__label">${c.label}</p>
-          <div class="lp-secondary-card__number" style="background:linear-gradient(135deg,#cfeef7,#9fdcec);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${c.number}</div>
+          <div class="lp-secondary-card__number" style="background:linear-gradient(135deg,#cfeef7,#d8b46a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${c.number}</div>
           <p class="lp-secondary-card__desc">${c.desc}</p>
         </div>
       `).join('');
@@ -1184,10 +1185,10 @@
 
     // Big number
     ctx.font = `900 ${lp >= 10 ? '280' : '340'}px Cinzel, serif`;
-    ctx.fillStyle = 'rgba(159,220,236,0.95)';
+    ctx.fillStyle = 'rgba(216,180,106,0.95)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.shadowColor = 'rgba(159,220,236,0.4)';
+    ctx.shadowColor = 'rgba(216,180,106,0.4)';
     ctx.shadowBlur = 60;
     ctx.fillText(String(lp), W/2, 390);
     ctx.shadowBlur = 0;
@@ -1309,7 +1310,7 @@
           style="--lp-card-element-color:${ec.border};--lp-card-glow-color:${ec.glow};">
           <div style="display:flex;align-items:center;gap:var(--space-3);">
             <div class="lp-number-card__num">${n}</div>
-            ${d.master ? '<span style="font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#9fdcec;border:1px solid rgba(168,176,188,0.3);border-radius:99px;padding:2px 7px;">Master</span>' : ''}
+            ${d.master ? '<span style="font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#d8b46a;border:1px solid rgba(168,176,188,0.3);border-radius:99px;padding:2px 7px;">Master</span>' : ''}
           </div>
           <div class="lp-number-card__title">${d.title}</div>
           <div class="lp-number-card__tagline">${d.tagline}</div>

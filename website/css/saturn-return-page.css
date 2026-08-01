@@ -131,7 +131,7 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-unlock__eyebrow { font-family: 'Cinzel', serif; }
     .sat-reading__title { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.3rem; color: var(--white); margin-bottom: 1rem; text-align: center; }
     .sat-reading p, .sat-unlock p { color: #e6ddc8; line-height: 1.75; margin-bottom: .85rem; font-family: 'Cormorant Garamond', serif; font-size: 1.08rem; }
-    .sat-reading strong { color: var(--gold-light, #E8C872); font-weight: 600; }
+    .sat-reading strong { color: var(--gold-light, #d8b46a); font-weight: 600; }
     .sat-reading em { color: var(--sat-gold); font-style: normal; }
     .sat-lead { font-size: 1.15rem; }
     .sat-orn { display: flex; align-items: center; gap: .7rem; color: var(--sat-gold); margin: 1.3rem 0 .9rem; }

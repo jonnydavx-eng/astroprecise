@@ -1,7 +1,7 @@
 /* Natal Sphere — unique 3D ecliptic instrument */
 .ap-natal-sphere {
-  --ns-acc: #9fdcec;
-  --ns-ink: #e9edf2;
+  --ns-acc: #d8b46a;
+  --ns-ink: #f2ecdf;
   --ns-dim: rgba(233, 237, 242, 0.7);
   --ns-line: rgba(159, 220, 236, 0.2);
   margin: 1.25rem 0 1.75rem;

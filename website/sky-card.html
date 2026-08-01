@@ -11,23 +11,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="./js/orrery.js?v=782"></script>
 <style>
-:root{--ink:#e9edf2;--dim:rgba(233,237,242,.72);--faint:rgba(233,237,242,.5);--line2:rgba(159,220,236,.24);--acc:#9fdcec}
+:root{--ink:#f2ecdf;--dim:rgba(242,236,223,.72);--faint:rgba(242,236,223,.5);--line2:rgba(216,180,106,.24);--acc:#d8b46a}
 *{box-sizing:border-box}
-body{margin:0;background:#000;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--acc);text-decoration:none}a:hover{color:#fff}
+body{margin:0;background:#08080b;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
 .wrap{max-width:900px;margin:0 auto;padding:0 22px 90px}
 h1{margin:54px 0 12px;font-size:clamp(32px,6vw,44px);line-height:1.1;font-weight:700;letter-spacing:-.015em}
-.card{border:1px solid var(--line2);border-radius:14px;background:rgba(220,240,248,.04);padding:24px 26px;margin:22px 0}
+.card{border:1px solid var(--line2);border-radius:14px;background:rgba(242,236,223,.04);padding:24px 26px;margin:22px 0}
 .lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
-input{background:rgba(220,240,248,.05);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark;width:100%}
+input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark;width:100%}
 .field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:130px}
 .field span{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.22em;color:var(--faint)}
 .btn{display:inline-block;background:var(--ink);color:#000;border:0;border-radius:100px;padding:14px 30px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em;cursor:pointer;transition:filter .2s}
 .btn:hover{filter:brightness(1.08)}
 canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border-radius:12px}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:rgba(233,237,242,.4);line-height:2.1}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.4);line-height:2.1}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:430px){.card{padding:20px 18px}}
 </style>
@@ -38,7 +38,7 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border
 <div class="wrap" style="position:relative;z-index:1">
 
 <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0">
-  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(233,237,242,.65)" href="./index.html">← THE OBSERVATORY</a>
+  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)" href="./index.html">← THE OBSERVATORY</a>
   <span class="mono" style="font-size:10px;letter-spacing:.26em;color:var(--acc)">THE SKY CARD · FREE · 1200×630</span>
 </div>
 
@@ -54,7 +54,7 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border
   </div>
   <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
     <button class="btn" id="drawBtn" type="button">DRAW MY CARD</button>
-    <button class="btn" id="dlBtn" type="button" style="background:none;border:1px solid rgba(233,237,242,.35);color:var(--ink)">DOWNLOAD PNG</button>
+    <button class="btn" id="dlBtn" type="button" style="background:none;border:1px solid rgba(242,236,223,.35);color:var(--ink)">DOWNLOAD PNG</button>
     <span class="mono" style="font-size:9px;letter-spacing:.16em;color:var(--faint)">NOTHING UPLOADED · THE PNG IS MADE ON YOUR DEVICE</span>
   </div>
 </div>
@@ -88,31 +88,31 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border
       ctx.beginPath(); ctx.arc(rand() * 1200, rand() * 630, 0.5 + rand() * 1.6, 0, 7); ctx.fill();
     }
     ctx.globalAlpha = 1;
-    ctx.fillStyle = '#9fdcec'; ctx.font = '500 13px ' + MONO;
+    ctx.fillStyle = '#d8b46a'; ctx.font = '500 13px ' + MONO;
     ctx.fillText('T H E   S K Y   W H E N   I   A R R I V E D', 64, 78);
-    ctx.fillStyle = '#e9edf2'; ctx.font = '700 52px ' + GRO;
+    ctx.fillStyle = '#f2ecdf'; ctx.font = '700 52px ' + GRO;
     var dateLine = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
     ctx.fillText(dateLine, 64, 150);
-    ctx.fillStyle = 'rgba(233,237,242,.65)'; ctx.font = '400 15px ' + MONO;
+    ctx.fillStyle = 'rgba(242,236,223,.65)'; ctx.font = '400 15px ' + MONO;
     ctx.fillText((place ? place + ' · ' : '') + ($('tob').value || '12:00') + ' UTC', 64, 186);
     var posText = function (r) { return r.sign.deg + '°' + String(r.sign.min).padStart(2, '0') + '′ ' + r.sign.name.toUpperCase() + (r.retro ? ' ℞' : ''); };
     ['sun', 'moon', 'venus'].forEach(function (k, idx) {
       var r = rows.find(function (q) { return q.key === k; }), y = 258 + idx * 40;
-      ctx.fillStyle = '#9fdcec'; ctx.font = '400 22px ' + GRO; ctx.fillText(r.glyph, 64, y);
-      ctx.fillStyle = 'rgba(233,237,242,.6)'; ctx.font = '400 17px ' + MONO; ctx.fillText(r.name.toUpperCase(), 104, y);
-      ctx.fillStyle = '#e9edf2'; ctx.fillText(posText(r), 240, y);
+      ctx.fillStyle = '#d8b46a'; ctx.font = '400 22px ' + GRO; ctx.fillText(r.glyph, 64, y);
+      ctx.fillStyle = 'rgba(242,236,223,.6)'; ctx.font = '400 17px ' + MONO; ctx.fillText(r.name.toUpperCase(), 104, y);
+      ctx.fillStyle = '#f2ecdf'; ctx.fillText(posText(r), 240, y);
     });
     var cx = 824 + 130, cy = 315, pt = function (lon, R) { var a = (180 - lon) * Math.PI / 180; return [cx + R * Math.cos(a), cy - R * Math.sin(a)]; };
-    ctx.strokeStyle = 'rgba(159,220,236,.7)'; ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(216,180,106,.7)'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.arc(cx, cy, 238, 0, 7); ctx.stroke();
-    ctx.strokeStyle = 'rgba(159,220,236,.3)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(216,180,106,.3)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(cx, cy, 214, 0, 7); ctx.stroke();
-    ctx.strokeStyle = 'rgba(159,220,236,.18)';
+    ctx.strokeStyle = 'rgba(216,180,106,.18)';
     ctx.beginPath(); ctx.arc(cx, cy, 120, 0, 7); ctx.stroke();
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     E.SIGNS.forEach(function (s, i) {
       var p = pt(i * 30 + 15, 226);
-      ctx.fillStyle = 'rgba(159,220,236,.75)'; ctx.font = '400 17px ' + GRO;
+      ctx.fillStyle = 'rgba(216,180,106,.75)'; ctx.font = '400 17px ' + GRO;
       ctx.fillText(s[1], p[0], p[1]);
     });
     rows.slice().sort(function (a, b) { return a.lon - b.lon; }).forEach(function (r, i) {
@@ -121,11 +121,11 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border
       ctx.fillStyle = '#fff'; ctx.font = '400 24px ' + GRO; ctx.fillText(r.glyph, g[0], g[1]);
     });
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-    ctx.strokeStyle = 'rgba(159,220,236,.3)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(216,180,106,.3)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(64, 568); ctx.lineTo(1136, 568); ctx.stroke();
-    ctx.fillStyle = '#e9edf2'; ctx.font = '700 22px ' + GRO; ctx.fillText('ASTROPRECISE', 64, 602);
-    ctx.fillStyle = '#9fdcec'; ctx.fillText('.APP', 64 + ctx.measureText('ASTROPRECISE').width, 602);
-    ctx.fillStyle = 'rgba(233,237,242,.55)'; ctx.font = '400 12px ' + MONO;
+    ctx.fillStyle = '#f2ecdf'; ctx.font = '700 22px ' + GRO; ctx.fillText('ASTROPRECISE', 64, 602);
+    ctx.fillStyle = '#d8b46a'; ctx.fillText('.APP', 64 + ctx.measureText('ASTROPRECISE').width, 602);
+    ctx.fillStyle = 'rgba(242,236,223,.55)'; ctx.font = '400 12px ' + MONO;
     ctx.textAlign = 'right';
     ctx.fillText("WHAT'S YOURS? · FREE · NO ACCOUNT · COMPUTED, NEVER FABRICATED", 1136, 600);
     ctx.textAlign = 'left';

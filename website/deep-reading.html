@@ -177,7 +177,7 @@ function renderUnlocked() {
       <div class="head"><span class="num">CH ${String(c.n).padStart(2, '0')}</span><span class="title">${c.title}</span></div>
       ${c.mono.length ? `<div class="receipt">${c.mono.map((m) => `<div>${m}</div>`).join('')}</div>` : ''}
       ${c.n === 7
-        ? `<div class="letter"><div class="mono" style="font-size:8.5px;letter-spacing:.24em;color:rgba(159,220,236,.7);margin-bottom:16px">KEPT FOR RE-READING · ${today}</div>${c.serif.map((s) => `<p class="serif" style="margin:0 0 14px">${s}</p>`).join('')}<div class="serif" style="font-size:17px;color:rgba(233,237,242,.65);margin:22px 0 0">— written from your sky alone</div></div>`
+        ? `<div class="letter"><div class="mono" style="font-size:8.5px;letter-spacing:.24em;color:rgba(216,180,106,.7);margin-bottom:16px">KEPT FOR RE-READING · ${today}</div>${c.serif.map((s) => `<p class="serif" style="margin:0 0 14px">${s}</p>`).join('')}<div class="serif" style="font-size:17px;color:rgba(242,236,223,.65);margin:22px 0 0">— written from your sky alone</div></div>`
         : c.serif.map((s) => `<p class="serif">${s}</p>`).join('')}
     </div>`).join('');
   $('unlockBox').innerHTML = '';

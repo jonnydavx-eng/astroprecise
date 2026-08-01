@@ -250,6 +250,6 @@
       max-width: 52ch;
     }
     .mc-reading-path__links { font-size: 0.88rem; margin: 0; }
-    .mc-reading-path__links a { color: var(--gold-light, #E8C872); }
+    .mc-reading-path__links a { color: var(--gold-light, #d8b46a); }
     a.mc-card__active { text-decoration: none; }
     a.mc-card__active:hover, a.mc-card__active:focus-visible { border-color: var(--gold); }

@@ -15,7 +15,7 @@
  * Scope: body.ap-observatory-home (co-exists with ap-award-511 — every
  * existing sheet/boot keys off ap-award-511 and must keep working).
  * Palette: jet interior, silver hairlines rgba(200,205,214,x), parchment ink,
- * brass CTA = dark ink #0B0906 on linear-gradient(160deg,#E8C872,#C9A227)
+ * brass CTA = dark ink #0B0906 on linear-gradient(160deg,#d8b46a,#C9A227)
  * (the verified 8.2:1 treatment). NO cyan/aurora on anything in this sheet.
  * The .ap-mw-dot aurora LIVE lamp is owner-owned; flip via --ap-live-dot in
  * ap-palette-2026.css (hook below) — do not swap unilaterally.
@@ -867,7 +867,7 @@ html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle 
 html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle.is-open,
 html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle[aria-expanded="true"] {
   border-color: rgba(200, 174, 106, 0.55);
-  color: #E8C872;
+  color: #d8b46a;
 }
 html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-panel[hidden] {
   display: none !important;
