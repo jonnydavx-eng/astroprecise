@@ -79,18 +79,20 @@
     /* LCP shell — system fonts paint before deferred webfonts (subtitle is LCP element) */
     .chart-hero__title {
       font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: clamp(2.4rem, 5vw, 4rem);
-      font-weight: 700;
-      color: var(--gold-hero-light, #E8EBF0);
-      line-height: 1.1;
-      margin: 0 auto 1.25rem;
+      font-style: italic;
+      font-size: clamp(2.9rem, 7vw, 5.6rem);
+      font-weight: 500;
+      color: #f2ecdf;
+      line-height: 1.02;
+      margin: 0.35em auto 0.3em;
+      max-width: 14ch;
     }
     .chart-hero__subtitle {
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      font-size: 0.875rem;
-      color: var(--silver, #B0A48C);
-      line-height: 1.75;
-      max-width: 580px;
+      font-family: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: clamp(0.92rem, 1.4vw, 1.05rem);
+      color: rgba(242, 236, 223, 0.66);
+      line-height: 1.7;
+      max-width: 52ch;
       margin: 0 auto;
     }
     .form-glass__sub {
@@ -198,22 +200,22 @@
       max-height: 2200px !important;
     }
 
-    /* ── Calculate CTA — clear primary (cool blue CTA ink on light fill) ── */
+    /* ── Calculate CTA — clear primary (ember plate, dark ink) ── */
     .page-chart .btn--calculate {
-      background: var(--ap-cta, #6AB0FF);
-      color: var(--ap-cta-ink, #0B1220);
-      box-shadow: 0 8px 28px rgba(106, 176, 255, 0.28), 0 0 0 1px rgba(106, 176, 255, 0.45);
+      background: var(--ap-cta, #ff5a1f);
+      color: var(--ap-cta-ink, #1a0d05);
+      box-shadow: 0 8px 28px rgba(255, 90, 31, 0.28), 0 0 0 1px rgba(255, 90, 31, 0.45);
       width: 100%;
       min-height: 52px;
       font-weight: 600;
     }
     .page-chart .btn--calculate:hover {
-      background: var(--ap-cta-hover, #8BC4FF);
-      box-shadow: 0 12px 36px rgba(106, 176, 255, 0.36), 0 0 0 1px rgba(106, 176, 255, 0.55);
+      background: var(--ap-cta-hover, #ff7a45);
+      box-shadow: 0 12px 36px rgba(255, 90, 31, 0.36), 0 0 0 1px rgba(255, 90, 31, 0.55);
     }
     .page-chart .btn--calculate .btn-spinner {
-      border-color: rgba(11, 18, 32, 0.3);
-      border-top-color: var(--ap-cta-ink, #0B1220);
+      border-color: rgba(26, 13, 5, 0.3);
+      border-top-color: var(--ap-cta-ink, #1a0d05);
     }
   </style>
   <link rel="stylesheet" href="css/ap-structure-clean.css?v=771" id="ap-css-structure-clean" />
@@ -222,6 +224,9 @@
   <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=771" id="ap-css-overhaul-s8" />
   <link rel="stylesheet" href="css/ap-palette-2026.css?v=771" id="ap-css-palette-2026" />
   <link rel="stylesheet" href="css/ap-brand-nebula.css?v=771" id="ap-css-brand-nebula" />
+  <!-- v4 ATLAS override — final eager cascade: remaps the token vocabulary to
+       night ink / warm paper / signal ember / engraved brass (flight-film language) -->
+  <link rel="stylesheet" href="css/ap-atlas-chart.css?v=786" id="ap-css-atlas-chart" />
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferChartFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferChartFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferPageCss('css/ap-micro-delight.css?v=779','ap-css-micro-delight');deferPageCss('css/ap-ai-panel.css?v=779','ap-css-ai-panel');deferPageCss('css/ap-natal-sphere.css?v=779','ap-css-natal-sphere');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/chart.css','ap-css-chart');deferPageCss('css/chart-page-deferred.css','ap-css-chart-deferred');deferPageCss('css/ap-reading.css','ap-css-reading');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
 </head>
@@ -291,14 +296,15 @@
         <p class="chart-hero__subtitle">
           The living sky, wound back to your birth minute &mdash; computed privately in your browser.
         </p>
+        <p class="chart-hero__timecode" aria-hidden="true">VSOP87 + ELP2000 &middot; 1800&ndash;2200 CE &middot; <b>computed on-device</b> &middot; nothing uploaded</p>
       </div>
     </section>
 
     <!-- ECLIPSE STRIP — route the funnel's SEO entry into the event -->
     <section class="container" aria-label="The 12 August eclipse" style="margin:1.2rem auto 0;">
-      <a href="eclipse.html" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border:1px solid rgba(230,161,92,.35);border-radius:14px;padding:14px 20px;background:linear-gradient(90deg,rgba(230,161,92,.09),rgba(230,161,92,.02));text-decoration:none;color:inherit">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;color:#E8C872">&#9679; THE ECLIPSE — 12 AUG 2026 &middot; DEEPEST OVER BRITAIN SINCE 1999</span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.14em;color:#E8C872;white-space:nowrap">WHERE DOES IT LAND IN YOUR CHART &rarr;</span>
+      <a href="eclipse.html" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border:1px solid rgba(255,90,31,.4);border-radius:6px;padding:14px 20px;background:linear-gradient(90deg,rgba(255,90,31,.1),rgba(255,90,31,.02));text-decoration:none;color:inherit">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;color:#ff5a1f">&#9679; THE ECLIPSE — 12 AUG 2026 &middot; DEEPEST OVER BRITAIN SINCE 1999</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.14em;color:#d8b46a;white-space:nowrap">WHERE DOES IT LAND IN YOUR CHART &rarr;</span>
       </a>
     </section>
 
@@ -425,7 +431,7 @@
           <div class="form-divider" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
 
           <div class="form-cta">
-            <div id="spacetime-summary" hidden style="margin:0 0 18px;padding:14px 20px;border:1px solid rgba(168, 176, 188,0.3);border-radius:12px;background:linear-gradient(135deg,rgba(168, 176, 188,0.07),transparent);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.02rem;color:var(--white,#f0e8d8);letter-spacing:0.03em;">
+            <div id="spacetime-summary" hidden style="margin:0 0 18px;padding:14px 20px;border:1px solid rgba(216,180,106,.3);border-radius:6px;background:linear-gradient(135deg,rgba(216,180,106,.08),transparent);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-style:italic;font-size:1.1rem;color:var(--white,#f2ecdf);letter-spacing:0.02em;">
               <span style="display:block;font-family:var(--font-body,Inter);font-size:0.58rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Your event in spacetime</span>
               <span id="spacetime-summary-txt"></span>
             </div>
@@ -545,7 +551,7 @@
               <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
               <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
               <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Rising, MC and houses — signs stay precise without it</span>
-              <a href="eclipse.html" id="eclipse-handoff" style="display:inline-block;margin-top:0.55rem;font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.16em;color:#E8C872;text-decoration:none">&rarr; SEE WHERE THE 12 AUG ECLIPSE LANDS IN THIS CHART</a>
+              <a href="eclipse.html" id="eclipse-handoff" style="display:inline-block;margin-top:0.55rem;font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.16em;color:#ff5a1f;text-decoration:none">&rarr; SEE WHERE THE 12 AUG ECLIPSE LANDS IN THIS CHART</a>
             </div>
             <div class="result-actions" id="result-actions-row">
               <a id="eclipse-cta" href="eclipse.html" class="action-btn action-btn--gold" aria-label="See where the 12 August eclipse lands in this chart — free teaser, prefilled from this chart">
