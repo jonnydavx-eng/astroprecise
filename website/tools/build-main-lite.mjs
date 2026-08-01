@@ -219,13 +219,10 @@ if (opens !== closes) {
   process.exit(1);
 }
 
-// Enchanted Observatory layer — loads after palette tokens; scoped via .ap-enchanted
-if (!out.includes("ap-observatory-enchanted.css")) {
-  out = out.replace(
-    "@import url('/css/ap-palette-2026.css');",
-    "@import url('/css/ap-palette-2026.css');\n@import url('/css/ap-observatory-enchanted.css');"
-  );
-}
+// Enchanted Observatory layer — since 2026-08-01 every page links
+// ap-palette-2026.css + ap-observatory-enchanted.css directly (perf migration:
+// no @import chains inside the render-blocking shell), so nothing is injected
+// here anymore. Kept as a guard note so the extraction ranges stay stable.
 
 writeFileSync(join(root, 'css', 'main-lite.css'), out, 'utf8');
 const kb = (Buffer.byteLength(out, 'utf8') / 1024).toFixed(1);
