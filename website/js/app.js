@@ -1675,7 +1675,7 @@ window.AP_MON = Object.assign({
         icon:         'book',
         fulfilUrl:    '',   // Gumroad slug full-reading in gumroad-unlock.js; '' = dormant
         gumroadSlug:  'full-reading',
-        detailsForm:  'JVU3Atfm',
+        detailsForm:  '',   // 'JVU3Atfm' was a dead Typeform link — removed; runbook will supply the replacement
       },
       {
         id:           'plate',

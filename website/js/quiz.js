@@ -398,6 +398,9 @@ const AstroQuiz = (() => {
           const inp = document.createElement('input');
           inp.type = 'hidden'; inp.name = 'email'; inp.value = val;
           f.appendChild(inp);
+          const tagInp = document.createElement('input');
+          tagInp.type = 'hidden'; tagInp.name = 'tags'; tagInp.value = 'quiz-cosmic-blueprint';
+          f.appendChild(tagInp);
           document.body.appendChild(f);
           f.submit();
           f.remove();

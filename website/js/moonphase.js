@@ -260,7 +260,7 @@
     var out = $('moonphase-result');
     if (!out) return;
     if (!phase) {
-      out.innerHTML = '<p class="mp-error">The astronomy engine is still loading — please try again in a moment.</p>';
+      out.innerHTML = '<p class="mp-error">Check the date — use DD/MM/YYYY, between 1900 and 2100.</p>';
       out.classList.remove('hidden');
       return;
     }
@@ -403,7 +403,7 @@
     var out = $('moonphase-compat-result');
     if (!out) return;
     if (!pa || !pb) {
-      out.innerHTML = '<p class="mp-error">The astronomy engine is still loading — please try again in a moment.</p>';
+      out.innerHTML = '<p class="mp-error">Check the date — use DD/MM/YYYY, between 1900 and 2100.</p>';
       out.classList.remove('hidden');
       return;
     }

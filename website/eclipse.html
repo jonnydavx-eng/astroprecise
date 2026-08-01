@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The 12 August Eclipse — your sky, computed | Astro Precise</title>
 <meta name="description" content="A total solar eclipse crosses Europe on 12 August 2026. Enter your birth minute and see — computed on your device, never uploaded — exactly where it lands in your chart.">
-<meta property="og:title" content="12 August eclipse — the real sky news | Astro Precise">
-<meta property="og:description" content="Where the eclipse lands in your chart — computed to the arcminute on your device. Free teaser, honest orbs, no account.">
+<meta property="og:title" content="Your eclipse, computed — 12 August 2026">
+<meta property="og:description" content="Where does the August 2026 eclipse land in your birth chart? Compute your eclipse contact free, on-device. Quiet charts told so before you pay.">
 <meta name="twitter:title" content="12 August eclipse — the real sky news">
 <meta name="twitter:description" content="Your eclipse contact, computed here. Weather report of the sky, not prophecy.">
 <meta property="og:url" content="https://astroprecise.app/eclipse.html">
@@ -86,6 +86,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
 <!-- ——— FREE TEASER ——— -->
 <div class="card" id="cast">
   <div class="lbl">STEP 1 · FREE — SEE THE CONTACT</div>
+  <form id="castForm" action="#" method="get" onsubmit="document.getElementById('castBtn').click();return false">
   <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
     <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" min="1900-01-01" max="2026-12-31"></label>
     <label class="field"><span>TIME (SHARPENS THE MOON)</span><input type="time" id="tob" value="12:00"></label>
@@ -97,6 +98,8 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
       </select></label>
   </div>
   <button class="btn" id="castBtn" type="button">COMPUTE MY ECLIPSE CONTACT — FREE</button>
+  <input type="submit" style="position:absolute;left:-9999px;width:0;height:0;opacity:0" tabindex="-1" aria-hidden="true">
+  </form>
   <div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--faint);margin-top:12px">NO ACCOUNT · YOUR BIRTH DATA NEVER LEAVES THIS PAGE · NO BIRTH PLACE = NO HOUSES, AND WE SAY SO · DON'T KNOW YOUR TIME? LEAVE IT AT NOON — SIGNS STAY EXACT</div>
 </div>
 

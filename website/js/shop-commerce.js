@@ -1252,7 +1252,7 @@ window.AstroShop = (() => {
             { label: 'Keep browsing', primary: true },
             { label: 'Notify me', onClick: () => modal({
               title: 'Tell me when it launches',
-              body: `<p class="shopc-modal__note">We'll email you when <strong>${esc(p.name)}</strong> goes live. No checkout spam.</p>${emailInviteHtml()}`,
+              body: `<p class="shopc-modal__note">We'll email you when <strong>${esc(p.name)}</strong> goes live. No checkout spam.</p>${emailInviteHtml(NOTIFY_TAGS[p.id])}`,
               actions: [{ label: 'Done', primary: true }],
               onMount: bindEmailInvite,
             }) },
@@ -1351,10 +1351,20 @@ window.AstroShop = (() => {
   // endpoint; when empty, stores intent in localStorage only (no data leaves
   // the device). Only a volunteered email ever travels — never birth data.
   // ═══════════════════════════════════════════════════════════════════════
-  function emailInviteHtml() {
+  // Per-product list tags so the notify list is segmentable. Sent as the 'tags'
+  // field the subscribe worker already understands (same convention as the
+  // eclipse-dawn form in eclipse.html).
+  const NOTIFY_TAGS = {
+    'plate':       'shop-natal-plate',
+    'eclipse-set': 'shop-eclipse-set',
+    'sky-pass':    'shop-sky-pass',
+  };
+
+  function emailInviteHtml(tag) {
     return `
       <form id="shopc-email-form" class="shopc-email">
         <input type="email" name="email" required placeholder="you@example.com" aria-label="Email address" class="shopc-email__input">
+        ${tag ? `<input type="hidden" name="tags" value="${esc(tag)}">` : ''}
         <button type="submit" class="btn btn--primary shopc-email__btn">Notify me</button>
       </form>
       <p class="shopc-email__priv">Only your email is stored${isUrl((window.AP_MON || {}).emailUrl) ? '' : ' — on this device, until the shop opens'}. Never your birth data.</p>`;

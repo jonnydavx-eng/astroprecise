@@ -512,12 +512,12 @@ self.addEventListener('fetch', e => {
       if (isNav) {
         // HTML: prefer network, fall back to cache → offline page → home
         return networkFetch.then(res =>
-          res || cached || caches.match('./offline.html') || caches.match('./index.html')
+          (res && res.ok) ? res : (cached || caches.match('./offline.html') || caches.match('./index.html'))
         );
       }
       if (isCritical) {
         // app.js + main.css: network-first so email/intro fixes reach users promptly
-        return networkFetch.then(res => res || cached);
+        return networkFetch.then(res => (res && res.ok) ? res : cached);
       }
       // Other assets: cache-first, revalidate in background
       return cached || networkFetch;

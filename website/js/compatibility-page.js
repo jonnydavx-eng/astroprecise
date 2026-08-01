@@ -864,14 +864,30 @@
       var form = document.getElementById('compat-form');
       if (!form) return;
 
+      // Inline error display (replaces alert()) via #compatError[role="alert"].
+      function showCompatError(msg) {
+        var el = document.getElementById('compatError');
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.remove('hidden');
+      }
+      function clearCompatError() {
+        var el = document.getElementById('compatError');
+        if (!el) return;
+        el.textContent = '';
+        el.classList.add('hidden');
+      }
+
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        clearCompatError();
 
         var p1 = readPerson('person1');
         var p2 = readPerson('person2');
 
-        if (!p1) { alert('Please enter complete birth data for Person A (including selecting a city from the dropdown).'); return; }
-        if (!p2) { alert('Please enter complete birth data for Person B (including selecting a city from the dropdown).'); return; }
+        if (!p1) { showCompatError('Please enter complete birth data for Person A (including selecting a city from the dropdown).'); return; }
+        if (!p2) { showCompatError('Please enter complete birth data for Person B (including selecting a city from the dropdown).'); return; }
 
         var loadEl = document.getElementById('compat-loading');
         var resEl  = document.getElementById('compat-result');
@@ -895,7 +911,7 @@
           showResult(result, p1.name, p2.name, chart1, chart2);
         } catch(err) {
           if (loadEl) loadEl.classList.add('hidden');
-          alert('Calculation error: ' + err);
+          showCompatError('Calculation error: ' + err);
         } finally {
           if (submitBtn) submitBtn.disabled = false;
         }

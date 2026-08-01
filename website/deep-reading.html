@@ -234,7 +234,7 @@ async function attemptUnlock(key) {
 }
 
 function bindUnlockForms() {
-  $('licBtn')?.addEventListener('click', () => { attemptUnlock(($('licKey') || {}).value.trim()); });
+  $('licBtn')?.addEventListener('click', () => { const k = $('licKey'); attemptUnlock(k ? k.value.trim() : ''); });
   // Dormant-checkout capture: notify form → subscribe worker (+ same-device backstop)
   $('notifyForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
