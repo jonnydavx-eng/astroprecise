@@ -459,6 +459,7 @@
       var meteorT = -1, nextMeteor = performance.now() + 6000;
       var meteorPos = new THREE.Vector3(), meteorVel = new THREE.Vector3();
       // ---- cosmic scale ladder ----
+      self._fontWatch = []; // canvas-baked text is redrawn once real fonts arrive (fonts.ready)
       function hexA(hex, a) { var n = parseInt(hex.slice(1), 16); return "rgba(" + (n >> 16) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")"; }
       function textSprite(txt, color) {
         var cv = document.createElement("canvas"); cv.width = 512; cv.height = 64;
@@ -481,6 +482,14 @@
         var lbl = textSprite(s[0].toUpperCase(), "#9fdcec");
         lbl.scale.set(300, 37, 1); lbl.position.set(x, y - 70 * s[2] - 50, z);
         lbl.material.opacity = 0; gStars.add(lbl); self._starFadeMats.push(lbl.material);
+        self._fontWatch.push(function () {
+          var cv2 = lbl.material.map.image, cx2 = cv2.getContext("2d");
+          cx2.clearRect(0, 0, cv2.width, cv2.height);
+          cx2.font = "500 26px 'IBM Plex Mono', monospace"; cx2.fillStyle = "#9fdcec";
+          cx2.textAlign = "center"; cx2.globalAlpha = 0.95;
+          cx2.fillText(s[0].toUpperCase().split("").join("\u200a\u200a"), 256, 42);
+          lbl.material.map.needsUpdate = true;
+        });
       });
       // nebulae among the stars
       self._nebMats = [];
@@ -506,6 +515,13 @@
         zs.position.set(330 * Math.cos(za), 0, -330 * Math.sin(za));
         zs.scale.set(26, 26, 1);
         scene.add(zs); self._zodMats.push(zm);
+        self._fontWatch.push(function () {
+          var cv3 = zm.map.image, cz2 = cv3.getContext("2d");
+          cz2.clearRect(0, 0, 128, 128);
+          cz2.font = "84px 'Schibsted Grotesk', Arial, sans-serif"; cz2.textAlign = "center"; cz2.textBaseline = "middle";
+          cz2.fillStyle = "rgba(159,220,236,.9)"; cz2.fillText(zg, 64, 68);
+          zm.map.needsUpdate = true;
+        });
       });
       var eclGeo = new THREE.BufferGeometry(), eclPts = [];
       for (var ez = 0; ez <= 180; ez++) { var ea = ez / 180 * Math.PI * 2; eclPts.push(305 * Math.cos(ea), 0, -305 * Math.sin(ea)); }
@@ -906,6 +922,15 @@
       };
       document.addEventListener("visibilitychange", this._onVis);
       loop();
+      // Canvas-baked text sprites are drawn before webfonts finish loading on a
+      // cold visit; redraw them in place once the real faces are available.
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
+          if (self._disposed || self._contextLost || !self._fontWatch) return;
+          self._fontWatch.forEach(function (fn) { try { fn(); } catch (e0) {} });
+          if (self._natalList) self.setNatal(self._natalList);
+        });
+      }
       // optional subtle bloom (r128 examples/js builds, self-hosted) — kill switch: ?nobloom=1
       var noBloom = /[?&]nobloom=1\b/.test(window.location.search);
       var pxr = renderer.getPixelRatio();
@@ -1026,6 +1051,7 @@
       var g = this._natalGroup;
       while (g.children.length) g.remove(g.children[0]);
       this._natalMats = [];
+      this._natalList = list || null;
       if (!list) return;
       list.forEach(function (it) {
         var cv = document.createElement("canvas"); cv.width = cv.height = 128;
