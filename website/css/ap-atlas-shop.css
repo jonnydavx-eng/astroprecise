@@ -1,0 +1,153 @@
+/* ============================================================
+   AP v4 ATLAS — shop.html plate layer
+   Requires css/ap-atlas-tokens.css linked before this file.
+   The honest shop in the flight-film language: engraved plates,
+   mono receipts, ember CTAs, brass hairlines.
+   ============================================================ */
+
+body.page-shop{ background:#08080b; color:#f2ecdf; }
+body.page-shop ::selection{ background:#ff5a1f; color:#140b06; }
+body.page-shop .aurora-orb{ display:none !important; }
+
+/* ── HERO ── */
+body.page-shop .shop-hero__title{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-style:italic; font-weight:500 !important;
+  font-size:clamp(2.7rem, 6.4vw, 5rem) !important;
+  line-height:1.02; letter-spacing:-.01em;
+  color:#f2ecdf !important;
+  max-width:16ch;
+}
+body.page-shop .shop-hero .eyebrow,
+body.page-shop .eyebrow{
+  font-family:'IBM Plex Mono', ui-monospace, monospace !important;
+  font-size:.64rem; letter-spacing:.28em; text-transform:uppercase;
+  color:#d8b46a !important;
+}
+body.page-shop .shop-hero-lede{
+  font-family:'Schibsted Grotesk', system-ui, sans-serif;
+  color:rgba(242,236,223,.68); line-height:1.7; max-width:56ch;
+}
+body.page-shop .shop-hero-lede strong{ color:#ff5a1f; }
+body.page-shop .shop-hero-personal{ color:rgba(242,236,223,.6); }
+
+/* ── FEATURED PLATES (the five editions) ── */
+body.page-shop .shopc-featured__card.shopc-featured__card,
+body.page-shop .shopc-card.shopc-card{
+  background:linear-gradient(168deg, rgba(242,236,223,.04), rgba(242,236,223,.015));
+  border:1px solid rgba(216,180,106,.22);
+  border-radius:6px;
+  box-shadow:inset 0 1px 0 rgba(242,236,223,.05), 0 24px 60px rgba(0,0,0,.4);
+}
+body.page-shop .shopc-featured__card--hero.shopc-featured__card--hero{
+  border-color:rgba(255,90,31,.45);
+  box-shadow:inset 0 1px 0 rgba(242,236,223,.05), 0 24px 70px rgba(255,90,31,.08);
+}
+body.page-shop .shopc-card__kicker{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#d8b46a;
+}
+body.page-shop .shopc-card__name{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+body.page-shop .shopc-card__hook,
+body.page-shop .shopc-card__blurb{ color:rgba(242,236,223,.66); }
+body.page-shop .shopc-card__price{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  color:#f2ecdf; letter-spacing:.06em;
+}
+body.page-shop .shopc-card__price--soon{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(242,236,223,.45);
+}
+body.page-shop .shopc-card__badge{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.56rem; letter-spacing:.18em; text-transform:uppercase;
+  color:#d8b46a; border:1px solid rgba(216,180,106,.35); border-radius:3px;
+}
+body.page-shop .shopc-card__badge--quiet{
+  color:#a8d6b0; border-color:rgba(168,214,176,.4);
+}
+
+/* ── CTAs ── */
+body.page-shop .btn--primary.btn--primary,
+body.page-shop .shopc-card__cta.shopc-card__cta{
+  background:#ff5a1f; color:#1a0d05; border-radius:4px;
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+}
+body.page-shop .btn--primary:hover,
+body.page-shop .shopc-card__cta:hover{ background:#ff7a45; }
+body.page-shop .btn--outline.btn--outline{
+  border:1px solid rgba(216,180,106,.3); color:#ddd3bf; border-radius:4px;
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+}
+body.page-shop .btn--outline:hover{ border-color:#ff5a1f; color:#ff7a45; }
+
+/* ── CATALOGUE GRID (affiliate / companion goods) ── */
+body.page-shop .shop-card.shop-card{
+  background:rgba(242,236,223,.02);
+  border:1px solid rgba(216,180,106,.16); border-radius:6px;
+}
+body.page-shop .shop-card:hover{ border-color:rgba(216,180,106,.4); }
+body.page-shop .shop-card__name{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+body.page-shop .shop-card__desc{ color:rgba(242,236,223,.6); }
+body.page-shop .shop-card__price{
+  font-family:'IBM Plex Mono', ui-monospace, monospace; color:#f2ecdf;
+}
+body.page-shop .shop-card__tag{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.54rem; letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(242,236,223,.5); border:1px solid rgba(216,180,106,.25); border-radius:3px;
+}
+body.page-shop .shop-card__affiliate{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.56rem; letter-spacing:.12em; color:rgba(242,236,223,.4);
+}
+body.page-shop .shopc-filters__eyebrow{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#d8b46a;
+}
+
+/* ── WALLPAPER BAND ── */
+body.page-shop .shop-wallpaper-lead__eyebrow{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#d8b46a;
+}
+
+/* ── SECTION HEADERS ── */
+body.page-shop .section-header__label,
+body.page-shop .section__label{
+  font-family:'IBM Plex Mono', ui-monospace, monospace !important;
+  font-size:.62rem; letter-spacing:.26em; text-transform:uppercase;
+  color:#d8b46a !important;
+}
+body.page-shop .section-header__title,
+body.page-shop .section__title{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+
+/* ── CHROME ── */
+body.page-shop .site-header .navbar__inner{ border-bottom:1px solid rgba(216,180,106,.14); }
+body.page-shop .navbar__link{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+}
+body.page-shop .footer{ border-top:1px solid rgba(216,180,106,.16); }
+body.page-shop .footer-nav-col__title{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#d8b46a;
+}
+body.page-shop .footer-brand__tagline{ color:rgba(242,236,223,.55); }
+body.page-shop .footer-legal{ color:rgba(242,236,223,.42); }
+
+@media (max-width: 720px){
+  body.page-shop .shop-hero__title{ font-size:clamp(2.3rem, 10.5vw, 3.3rem) !important; }
+}
