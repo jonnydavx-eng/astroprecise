@@ -19,8 +19,8 @@ html:root{
   /* silver → warm paper */
   --ap-silver-bright:#f2ecdf;
   --ap-silver:#ddd3bf;
-  --ap-silver-dim:rgba(242,236,223,.62);
-  --ap-silver-faint:rgba(242,236,223,.42);
+  --ap-silver-dim:rgba(242,236,223,.74);
+  --ap-silver-faint:rgba(242,236,223,.56);
   --ap-chrome:#d8b46a;
   --ap-silver-a08:rgba(242,236,223,.08); --ap-silver-a12:rgba(242,236,223,.12);
   --ap-silver-a18:rgba(242,236,223,.18); --ap-silver-a28:rgba(242,236,223,.28);
@@ -71,9 +71,9 @@ html:root{
 
   /* text + type */
   --white:#f2ecdf;
-  --silver:#ddd3bf; --silver-dim:rgba(242,236,223,.62);
-  --silver-dark:rgba(242,236,223,.42);
-  --ap-text-primary:#f2ecdf; --ap-text-secondary:rgba(242,236,223,.66);
+  --silver:#ddd3bf; --silver-dim:rgba(242,236,223,.74);
+  --silver-dark:rgba(242,236,223,.56);
+  --ap-text-primary:#f2ecdf; --ap-text-secondary:rgba(242,236,223,.78);
   --font-body:'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-mono:'IBM Plex Mono', ui-monospace, monospace;

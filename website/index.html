@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Astro Precise — the real sky news · one sky, yours</title>
-<meta name="description" content="The real sky news: a living solar system and birth chart computed on your device — to the arcminute, private, never uploaded. Weather report of the sky, not prophecy.">
-<meta property="og:title" content="Astro Precise — the weather report of the sky">
-<meta property="og:description" content="Real astronomy computed on your device (VSOP87/ELP2000). Astrology readings written from your actual chart. Computed, never fabricated.">
+<title>Astro Precise — your birth chart, computed from the real sky</title>
+<meta name="description" content="Free birth chart computed privately on your device with planetarium-grade astronomy (VSOP87/ELP2000). No account, nothing uploaded. Plus today's real sky news and the 12 August 2026 eclipse.">
+<meta property="og:title" content="Astro Precise — your birth chart from the real sky">
+<meta property="og:description" content="Real astronomy computed on your device (VSOP87/ELP2000). Free chart, no account, nothing uploaded. Computed, never fabricated.">
 <meta property="og:url" content="https://astroprecise.app/">
 <meta property="og:image" content="https://astroprecise.app/img/eclipse-og.png">
 <meta property="og:site_name" content="Astro Precise">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Astro Precise — the weather report of the sky">
+<meta name="twitter:title" content="Astro Precise — your birth chart from the real sky">
 <meta name="twitter:description" content="Real astronomy computed on your device (VSOP87/ELP2000). Astrology readings written from your actual chart. Computed, never fabricated.">
 <meta name="twitter:image" content="https://astroprecise.app/img/eclipse-og.png">
 <link rel="canonical" href="https://astroprecise.app/">
@@ -29,7 +29,7 @@
 @font-face{font-family:'Cormorant Garamond';src:url('./fonts/cormorant-garamond-italic-500.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
 @font-face{font-family:'Cinzel';src:url('./fonts/cinzel-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 :root{
-  --ink:#f2ecdf;--dim:rgba(242,236,223,.68);--faint:rgba(242,236,223,.44);
+  --ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);
   --ember:#ff5a1f;--ember-hi:#ff7a45;--brass:#d8b46a;
   --line:rgba(216,180,106,.15);--line2:rgba(216,180,106,.32);
   --acc:#d8b46a;--good:#a8d6b0;--warn:#ff5a1f;--card:rgba(242,236,223,.03);
@@ -87,62 +87,59 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 .er-count{font-family:var(--mono);font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 28px rgba(255,90,31,.55);white-space:nowrap;font-variant-numeric:tabular-nums}
 .er-count small{display:block;font-size:8.5px;letter-spacing:.24em;color:var(--faint);margin-top:6px;white-space:normal}
 
-/* ═══ THE FLIGHT — scroll-directed film ═══ */
-#flight{position:relative;height:600vh}
-#flight .scene{position:absolute;left:0;right:0;z-index:2}
-#flightStage{position:sticky;top:0;height:100vh;min-height:600px;overflow:hidden}
-void-orrery{position:absolute;inset:0}
-.flight-ui{position:absolute;inset:0;pointer-events:none}
-.flight-top{display:flex;justify-content:space-between;align-items:center;padding:24px 30px;pointer-events:auto;position:absolute;top:0;left:0;right:0;z-index:5}
-.hero-brand{display:flex;align-items:center;gap:13px}
+/* ═══ TOP BAR ═══ */
+.topbar{border-bottom:1px solid var(--line);background:rgba(8,8,11,.6)}
+.topbar-in{max-width:1180px;margin:0 auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:22px;flex-wrap:wrap}
+.hero-brand{display:flex;align-items:center;gap:13px;color:inherit}
+.hero-brand:hover{color:inherit}
 .hero-wordmark{font-family:var(--caps);font-weight:600;font-size:15px;letter-spacing:.3em;color:var(--ink)}
 .hero-tagline{font-family:var(--mono);font-size:7.5px;letter-spacing:.42em;color:var(--faint);margin-top:3px}
 nav.main{display:flex;gap:30px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.24em}
-nav.main a{color:rgba(242,236,223,.6);position:relative;padding-bottom:3px}
+nav.main a{color:rgba(242,236,223,.72);position:relative;padding-bottom:3px}
 nav.main a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ember);transition:width .3s}
 nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
 
-.scene{position:absolute;left:0;right:0;height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 8vw;pointer-events:none;opacity:0;transition:opacity .55s ease}
-.scene.on{opacity:1}
-.scene .sc-kick{font-family:var(--mono);font-size:10px;letter-spacing:.34em;color:var(--brass);margin-bottom:20px}
-.scene .sc-line{margin:0;font-weight:700;letter-spacing:-.03em;line-height:.98;font-size:clamp(46px,8.6vw,124px);color:var(--ink);text-shadow:0 4px 60px rgba(0,0,0,.85);max-width:14ch}
-.scene .sc-line em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ember);letter-spacing:-.01em}
-.scene .sc-sub{margin-top:22px;font-size:clamp(15px,1.5vw,19px);line-height:1.6;color:var(--dim);max-width:480px;text-shadow:0 1px 22px #000}
-.scene .sc-act{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap;pointer-events:none}
-.scene.on .sc-act{pointer-events:auto}
-.scene.right{align-items:flex-end;text-align:right}
-.scene.right .sc-sub{max-width:440px}
-.scene.center{align-items:center;text-align:center}
-.scene .sc-timecode{margin-top:26px;font-family:var(--mono);font-size:9px;letter-spacing:.26em;color:var(--faint)}
-#sceneTitle .sc-line{font-size:clamp(58px,11vw,150px)}
-.flight-progress{position:absolute;left:30px;bottom:26px;display:flex;gap:7px;z-index:5;pointer-events:none}
-.flight-progress i{width:26px;height:1px;background:rgba(242,236,223,.22);transition:background .3s,width .3s}
-.flight-progress i.on{background:var(--ember);width:40px}
-.flight-count{position:absolute;right:30px;bottom:22px;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--faint);z-index:5;pointer-events:none}
+/* ═══ HERO — what this is, what to do, in ten seconds ═══ */
+.hero{border-bottom:1px solid var(--line);padding:clamp(48px,7vh,84px) 0 clamp(56px,8vh,96px)}
+.hero-grid{max-width:1180px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(36px,4.5vw,64px);align-items:center}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--brass);margin:0 0 22px}
+.hero-eyebrow .pulse{color:var(--ember);margin-right:10px}
+.hero h1{margin:0;font-size:clamp(40px,5.2vw,66px);line-height:1.04;font-weight:700;letter-spacing:-.025em}
+.hero h1 em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ember-hi);letter-spacing:-.01em}
+.hero-sub{margin:24px 0 0;font-size:18px;line-height:1.62;color:var(--dim);max-width:500px}
+.hero-sub b{color:var(--ink);font-weight:600}
+.hero-ctas{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap}
+.hero-trust{margin:28px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:10px 22px;font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--faint)}
+.hero-trust li{display:flex;align-items:center;gap:9px}
+.hero-trust i{width:3px;height:3px;border-radius:50%;background:var(--brass);display:block;flex:none}
 
-/* control deck */
-#deck{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .6s ease}
-#flightStage.deck-on #deck{opacity:1}
-#flightStage.deck-on .flight-progress,#flightStage.deck-on .flight-count{opacity:0}
-#deck .scrubrow{display:flex;align-items:center;gap:14px;padding:0 30px 28px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0}
+/* the sky instrument — live, touchable, framed */
+.sky-panel{position:relative;height:min(560px,74vh);min-height:430px;border:1px solid var(--line2);border-radius:22px;overflow:hidden;background:radial-gradient(120% 95% at 50% 42%,#0d0d13,#08080b 72%);box-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(242,236,223,.05)}
+.sky-panel void-orrery{position:absolute;inset:0}
+.sky-chip{position:absolute;left:16px;top:14px;z-index:4;font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--ink);background:rgba(8,8,11,.62);border:1px solid var(--line2);border-radius:100px;padding:9px 15px;backdrop-filter:blur(4px);pointer-events:none;line-height:1.5}
+.sky-chip .pulse{color:var(--ember)}
+
+/* control deck — the instrument's own chrome, always on inside the panel */
+#deck{position:absolute;inset:0;pointer-events:none}
+#deck .scrubrow{display:flex;align-items:center;gap:14px;padding:0 18px 18px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0}
 input.scrub{-webkit-appearance:none;appearance:none;background:transparent;height:14px;cursor:pointer;border:0;padding:0}
 input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(242,236,223,.1),rgba(255,90,31,.55) 50%,rgba(242,236,223,.1))}
 input.scrub::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(255,90,31,.8);margin-top:-4.5px}
 input.scrub::-moz-range-track{height:2px;background:rgba(255,90,31,.4)}
 input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(255,90,31,.8)}
-#dock{position:absolute;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;pointer-events:auto}
-#dock button{width:46px;height:46px;border-radius:50%;background:rgba(8,8,11,.5);border:1px solid rgba(242,236,223,.2);color:rgba(242,236,223,.8);font-size:15px;cursor:pointer;backdrop-filter:blur(4px);transition:border-color .25s,box-shadow .25s,color .25s}
+#dock{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;pointer-events:auto}
+#dock button{width:42px;height:42px;border-radius:50%;background:rgba(8,8,11,.5);border:1px solid rgba(242,236,223,.2);color:rgba(242,236,223,.85);font-size:14px;cursor:pointer;backdrop-filter:blur(4px);transition:border-color .25s,box-shadow .25s,color .25s}
 #dock button:hover,#dock button.on{border-color:var(--ember);color:#fff;box-shadow:0 0 16px rgba(255,90,31,.45)}
-#ladder{position:absolute;left:30px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;pointer-events:auto}
-#ladder button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.26em;color:rgba(242,236,223,.45);transition:color .25s}
-#ladder button:hover{color:rgba(242,236,223,.85)}
-#ladder button i{width:24px;height:1px;background:rgba(242,236,223,.2);display:block;transition:background .25s,width .25s}
-#ladder button.on{color:var(--brass)}#ladder button.on i{background:var(--brass);width:34px}
-#mladder{display:none;position:absolute;left:50%;bottom:120px;transform:translateX(-50%);gap:7px;pointer-events:auto;z-index:9}
+#ladder{position:absolute;left:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;pointer-events:auto}
+#ladder button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;color:rgba(242,236,223,.55);transition:color .25s}
+#ladder button:hover{color:rgba(242,236,223,.9)}
+#ladder button i{width:22px;height:1px;background:rgba(242,236,223,.2);display:block;transition:background .25s,width .25s}
+#ladder button.on{color:var(--brass)}#ladder button.on i{background:var(--brass);width:32px}
+#mladder{display:none;position:absolute;left:50%;bottom:64px;transform:translateX(-50%);gap:7px;pointer-events:auto;z-index:9}
 #mladder button{background:rgba(8,8,11,.6);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.75);border-radius:100px;padding:11px 14px;font-family:var(--mono);font-size:8px;letter-spacing:.16em;cursor:pointer;backdrop-filter:blur(4px)}
 #mladder button.on{border-color:var(--ember);color:#fff}
-@media (pointer:coarse) and (max-width:1020px){#flightStage.deck-on #mladder{display:flex}}
-#telemetry{position:absolute;left:30px;bottom:130px;pointer-events:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;line-height:2.1;color:rgba(242,236,223,.75);max-width:330px}
+@media (pointer:coarse) and (max-width:1020px){.sky-panel #mladder{display:flex}}
+#telemetry{position:absolute;left:18px;bottom:64px;pointer-events:none;font-family:var(--mono);font-size:10px;letter-spacing:.14em;line-height:2;color:rgba(242,236,223,.8);max-width:290px}
 
 /* ═══ ATLAS CHAPTERS ═══ */
 .chap{border-top:1px solid var(--line)}
@@ -178,11 +175,13 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .foot-cols span{color:var(--faint)}
 .foot{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.56);line-height:2.2}
 
+@media (max-width:1020px){
+  .hero-grid{grid-template-columns:1fr;gap:44px}
+  .sky-panel{height:min(520px,120vw);min-height:360px}
+}
 @media (max-width:900px){
   .chap-head{margin-bottom:56px}
   section.band{padding:96px 0}
-  .scene .sc-line{font-size:clamp(42px,12.5vw,84px)}
-  #sceneTitle .sc-line{font-size:clamp(50px,15vw,96px)}
 }
 @media (max-width:760px){
   .er-wrap{flex-direction:column;align-items:flex-start;gap:18px;padding:22px 24px}
@@ -191,17 +190,17 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   input,select{padding:13px}
   nav.main{gap:16px}
   nav.main a{display:inline-block;padding:12px 4px}
-  .scene{padding:0 7vw}
-  .scene .sc-act .btn{width:100%;text-align:center;padding:18px 24px}
+  .hero-ctas .btn{width:100%;text-align:center;padding:18px 24px}
+  .hero-sub{font-size:16.5px}
   .trust-cell{border-left:0;border-top:1px solid var(--line);padding:24px}
   .trust-cell:first-child{border-top:0}
   .instrument{padding:26px 20px}
 }
 @media (pointer:coarse){input.scrub{height:44px}input.scrub::-webkit-slider-thumb{width:28px;height:28px;margin-top:-13px}input.scrub::-moz-range-thumb{width:28px;height:28px}#nowBtn{padding:12px 18px}}
 @media (max-width:1020px){#ladder{display:none}}
-@media (max-width:820px){#dock{display:none}#telemetry{display:none}}
-@media (max-width:430px){.card{padding:20px 18px}section.band{padding:72px 0}.chap-num{font-size:52px}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.scene{opacity:1;position:absolute}}
+@media (max-width:860px){#dock{display:none}#telemetry{display:none}}
+@media (max-width:430px){.card{padding:20px 18px}section.band{padding:72px 0}.chap-num{font-size:52px}.sky-chip{right:16px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
@@ -241,32 +240,48 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 })();
 </script>
 
-<!-- ═══ THE FLIGHT — a scroll-directed film through the living model ═══ -->
-<div id="flight">
-  <div id="flightStage">
-    <void-orrery id="orr"></void-orrery>
-    <div class="flight-ui">
-      <div class="flight-top">
-        <div class="hero-brand">
-          <img src="./img/logo-mark.svg" alt="" width="36" height="36" style="display:block">
-          <div>
-            <div class="hero-wordmark">ASTRO&nbsp;PRECISE</div>
-            <div class="hero-tagline">THE&nbsp;REAL&nbsp;SKY&nbsp;NEWS</div>
-          </div>
-        </div>
-        <nav class="main">
-          <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--ember-hi)">THE ECLIPSE ✦</a>
-        </nav>
+<!-- ═══ TOP BAR ═══ -->
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="hero-brand" href="./">
+      <img src="./img/logo-mark.svg" alt="" width="36" height="36" style="display:block">
+      <div>
+        <div class="hero-wordmark">ASTRO&nbsp;PRECISE</div>
+        <div class="hero-tagline">THE&nbsp;REAL&nbsp;SKY&nbsp;NEWS</div>
       </div>
+    </a>
+    <nav class="main" aria-label="Main">
+      <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--ember-hi)">THE ECLIPSE ✦</a>
+    </nav>
+  </div>
+</header>
 
-      <div class="flight-progress" id="flightProgress"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="flight-count" id="flightCount">I / VI</div>
-
+<!-- ═══ HERO — what this is, what to do, in ten seconds ═══ -->
+<section class="hero" aria-labelledby="heroHead">
+  <div class="hero-grid">
+    <div>
+      <p class="hero-eyebrow"><span class="pulse">●</span>FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
+      <h1 id="heroHead">Your birth chart,<br><em>read from the real sky.</em></h1>
+      <p class="hero-sub">Type your birth date and Astro Precise places the Sun, Moon and planets <b>to the arcminute</b> — the same mathematics that drives planetarium software — then reads your sky back in plain words. <b>Nothing is uploaded, ever.</b></p>
+      <div class="hero-ctas">
+        <a class="btn" href="#cast">CAST MY CHART — FREE</a>
+        <a class="btn ghost" href="#horoscope">TODAY'S HOROSCOPE</a>
+      </div>
+      <ul class="hero-trust">
+        <li><i></i>FREE FOREVER</li>
+        <li><i></i>NO EMAIL · NO SIGN-UP</li>
+        <li><i></i>PRIVATE BY DESIGN</li>
+        <li><i></i>ACCURATE 1800–2200</li>
+      </ul>
+    </div>
+    <div class="sky-panel">
+      <void-orrery id="orr"></void-orrery>
+      <div class="sky-chip"><span class="pulse">●</span>&nbsp;&nbsp;THE SKY RIGHT NOW · DRAG TO ORBIT · CLICK A WORLD TO FLY</div>
       <div id="deck">
-        <div id="ladder" role="group" aria-label="Scale ladder"><span class="mono" style="font-size:7.5px;letter-spacing:.24em;color:var(--faint)">SCALE</span></div>
+        <div id="ladder" role="group" aria-label="Scale ladder"></div>
         <div id="mladder" role="group" aria-label="Scale ladder"></div>
         <div id="telemetry" aria-live="polite"></div>
-        <div id="dock" role="group" aria-label="Fly to a world"><span class="mono" style="align-self:center;font-size:7.5px;letter-spacing:.22em;color:var(--faint)">FLY<br>TO</span></div>
+        <div id="dock" role="group" aria-label="Fly to a world"></div>
         <div class="scrubrow">
           <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">1800</span>
           <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
@@ -277,50 +292,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       </div>
     </div>
   </div>
-
-  <div class="scene on" id="sceneTitle" data-cam="moon" style="top:0">
-    <div class="sc-kick">COMPUTED LIVE ON THIS DEVICE · VSOP87 + ELP2000</div>
-    <h1 class="sc-line">One sky,<br><em>yours.</em></h1>
-    <p class="sc-sub">A living universe in your browser — drift from your street to the deep field, then land on the minute you were born. <span class="mono" style="font-size:.72em;letter-spacing:.22em;color:var(--faint)"><span class="pulse" style="color:var(--ember)">●</span> LIVE · NOTHING UPLOADED</span></p>
-    <div class="sc-act"><a class="btn" href="#cast">CAST MY CHART — FREE</a></div>
-    <div class="sc-timecode">SCROLL TO FLY ↓</div>
-  </div>
-
-  <div class="scene right" data-cam="EARTH" style="top:100vh">
-    <div class="sc-kick">SCENE II · LEAVING HOME</div>
-    <div class="sc-line">Eight light-<br>minutes <em>away.</em></div>
-    <p class="sc-sub">Every world you will ever meet lives between you and that fire. The model you are flying is not a video — it is the sky, recomputed every frame.</p>
-    <div class="sc-timecode">DEPTH · 1 AU</div>
-  </div>
-
-  <div class="scene" data-cam="SYSTEM" style="top:200vh">
-    <div class="sc-kick">SCENE III · THE WHOLE SYSTEM</div>
-    <div class="sc-line">Ten bodies,<br><em>one clockwork.</em></div>
-    <p class="sc-sub">Sun to Pluto, placed by the same series that drives planetarium software — 1800 to 2200, to the arcminute.</p>
-    <div class="sc-timecode">DEPTH · 40 AU</div>
-  </div>
-
-  <div class="scene right" data-cam="STARS" style="top:300vh">
-    <div class="sc-kick">SCENE IV · THE NEIGHBORHOOD</div>
-    <div class="sc-line">Every star<br><em>a sun.</em></div>
-    <p class="sc-sub">Sirius' light left 8.6 years ago. You are not looking at a picture of space — you are looking at time.</p>
-    <div class="sc-timecode">DEPTH · LIGHT-YEARS</div>
-  </div>
-
-  <div class="scene center" data-cam="COSMOS" style="top:400vh">
-    <div class="sc-kick">SCENE V · THE DEEP FIELD</div>
-    <div class="sc-line">Then come home<br><em>to your minute.</em></div>
-    <p class="sc-sub">A hundred billion suns — and one of them was rising over your street the moment you arrived. That minute is the whole point of this place.</p>
-    <div class="sc-act" style="justify-content:center"><a class="btn" href="#cast">LAND ON YOUR MINUTE — FREE</a></div>
-    <div class="sc-timecode">DEPTH · BEFORE EARTH HAD TREES</div>
-  </div>
-
-  <div class="scene center" data-cam="deck" style="top:500vh">
-    <div class="sc-kick">THE CONTROL DECK</div>
-    <div class="sc-line" style="font-size:clamp(34px,5.5vw,72px)">Take the <em>controls.</em></div>
-    <p class="sc-sub" style="text-align:center">Drag the sky to orbit. Click a world to fly to it. Scrub four centuries. It was always yours to move.</p>
-  </div>
-</div>
+</section>
 
 <!-- trust strip -->
 <div class="trust">
@@ -500,44 +472,20 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 </footer>
 
 <script>
-/* ═══ THE FLIGHT — scene director: scroll position flies the camera ═══ */
+/* ═══ HERO — open the instrument on the whole living system, live ═══ */
 (function () {
   'use strict';
-  var stage = document.getElementById('flightStage');
-  var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
-  var ticks = Array.prototype.slice.call(document.querySelectorAll('#flightProgress i'));
-  var count = document.getElementById('flightCount');
-  var ROMAN = ['I','II','III','IV','V','VI'];
   var orr = document.getElementById('orr');
-  var current = -1;
-  function activate(i) {
-    if (i === current) return;
-    current = i;
-    scenes.forEach(function (s, k) { s.classList.toggle('on', k === i); });
-    ticks.forEach(function (t, k) { t.classList.toggle('on', k <= i); });
-    if (count) count.textContent = ROMAN[i] + ' / VI';
-    var cam = scenes[i].getAttribute('data-cam');
-    var isDeck = cam === 'deck';
-    stage.classList.toggle('deck-on', isDeck);
-    if (!orr) return;
-    if (cam === 'moon') { if (orr.flyTo) orr.flyTo('moon'); }
-    else if (cam === 'EARTH' || cam === 'SYSTEM' || cam === 'STARS' || cam === 'GALAXY' || cam === 'COSMOS') { if (orr.flyScale) orr.flyScale(cam); }
-    else if (isDeck) { if (orr.flyScale) orr.flyScale('EARTH'); }
-  }
-  function onScroll() {
-    var flight = document.getElementById('flight');
-    var r = flight.getBoundingClientRect();
-    var total = r.height - window.innerHeight;
-    var p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
-    var i = Math.min(scenes.length - 1, Math.floor(p * scenes.length));
-    activate(i);
-  }
-  var ticking = false;
-  window.addEventListener('scroll', function () {
-    if (!ticking) { ticking = true; requestAnimationFrame(function () { onScroll(); ticking = false; }); }
-  }, { passive: true });
-  window.addEventListener('resize', onScroll);
-  setTimeout(function () { onScroll(); activate(0); }, 600);
+  if (!orr) return;
+  var tries = 0;
+  var t = setInterval(function () {
+    tries++;
+    if (orr.flyScale) {
+      orr.flyScale('SYSTEM');
+      if (orr.setLive) orr.setLive();
+      clearInterval(t);
+    } else if (tries > 60) { clearInterval(t); }
+  }, 250);
 })();
 </script>
 
@@ -776,7 +724,6 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     Array.prototype.forEach.call($('ladder').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.lv === e.detail.level); });
     if ($('mladder')) Array.prototype.forEach.call($('mladder').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.lv === e.detail.level); });
   });
-  var fb = $('flightBtn'); if (fb) fb.addEventListener('click', function () { if (orr.flight) orr.flight(); });
   $('flyMine').addEventListener('click', function () {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (chart && chart.jd && orr.setJD) orr.setJD(chart.jd);
