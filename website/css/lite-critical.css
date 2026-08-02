@@ -1,8 +1,8 @@
 /* Lite hero LCP shell — layout-stable; system fonts until optional full stack loads */
 :root {
-  --void: #07070A;
-  --void-base: #07070A;
-  --bg: #07070A;
+  --void: #08080b;
+  --void-base: #08080b;
+  --bg: #08080b;
   --white: #E8EBF0;
   --silver: #C8CDD6;
   --silver-dim: #8B919C;
@@ -46,7 +46,7 @@
 
 html {
   font-size: 16px;
-  background: #07070A;
+  background: #08080b;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }

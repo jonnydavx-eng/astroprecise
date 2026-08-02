@@ -1,5 +1,5 @@
 /* explore.html — full-viewport galaxy explorer.
-   Cool void (#07070A) + engraved brass (#A8B0BC), eye-comfort: no flicker,
+   Cool void (#08080b) + engraved brass (#A8B0BC), eye-comfort: no flicker,
    lifted deep-navy wells, body ink ~90%. Deck + engine styling is inherited
    from ap-horizon-2026.css + orrery-visual.css; this file only lays the page
    out full-screen and skins the explore-only chrome (legend, return nav). */
@@ -7,7 +7,7 @@
 :root { color-scheme: dark; }
 
 html, body.page-explore {
-  background: var(--ap-void-deep, #07070A);
+  background: var(--ap-void-deep, #08080b);
   min-height: 100%;
 }
 

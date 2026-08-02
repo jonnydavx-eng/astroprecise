@@ -14,15 +14,15 @@
   </defs>
   <path d="M48 6 L86 28 L86 84 L48 106 L10 84 L10 28 Z" fill="url(#plate)"/>
   <path d="M48 6 L86 28 L86 84 L48 106 L10 84 L10 28 Z" fill="url(#sheen)"/>
-  <path d="M48 6 L86 28 L86 84 L48 106 L10 84 L10 28 Z" fill="none" stroke="#A8B0BC" stroke-width="1.4" opacity="0.9"/>
-  <path d="M48 14 L78 32 L78 80 L48 98 L18 80 L18 32 Z" fill="none" stroke="#A8B0BC" stroke-width="0.8" opacity="0.38"/>
-  <g stroke="#A8B0BC" stroke-width="0.9" opacity="0.55" stroke-linecap="round">
+  <path d="M48 6 L86 28 L86 84 L48 106 L10 84 L10 28 Z" fill="none" stroke="#d8b46a" stroke-width="1.4" opacity="0.9"/>
+  <path d="M48 14 L78 32 L78 80 L48 98 L18 80 L18 32 Z" fill="none" stroke="#d8b46a" stroke-width="0.8" opacity="0.38"/>
+  <g stroke="#d8b46a" stroke-width="0.9" opacity="0.55" stroke-linecap="round">
     <line x1="48" y1="6" x2="48" y2="14"/><line x1="86" y1="28" x2="78" y2="32"/>
     <line x1="86" y1="84" x2="78" y2="80"/><line x1="48" y1="106" x2="48" y2="98"/>
     <line x1="10" y1="84" x2="18" y2="80"/><line x1="10" y1="28" x2="18" y2="32"/>
   </g>
   <g fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
-    <g stroke="#A8B0BC" stroke-width="2">
+    <g stroke="#d8b46a" stroke-width="2">
     <circle cx="48" cy="52" r="12" fill="#0a0a10" fill-opacity="0.32"/>
     <line x1="48" y1="36" x2="48" y2="28" stroke-width="1.8"/>
     <path d="M42 28h12" stroke-width="1.6"/>

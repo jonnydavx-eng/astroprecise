@@ -460,7 +460,7 @@ body.preloader-intro-playing #preloader.has-real:not(.preloader--system-view):no
 }
 
 #preloader.preloader--cosmic .landing-gate-scrim {
-  background: #07070A;
+  background: #08080b;
   opacity: 0.72;
 }
 

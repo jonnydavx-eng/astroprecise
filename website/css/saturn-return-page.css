@@ -167,7 +167,7 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
         pointer-events: none;
         background:
           radial-gradient(ellipse 92% 62% at 50% 34%,
-            #07070A 0%,
+            #08080b 0%,
             rgba(12, 16, 22, 0.94) 38%,
             rgba(12, 16, 22, 0.72) 62%,
             transparent 84%);

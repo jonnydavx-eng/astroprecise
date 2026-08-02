@@ -1,6 +1,6 @@
 /* Ephemeris / Instrument page — extracted from ephemeris.html */
 /* ── Deep Time aesthetic — darker, slower ── */
-    body { background: var(--ap-void-deep, #07070A); }
+    body { background: var(--ap-void-deep, #08080b); }
 
     /* ── Instrument shell ── */
     .instrument-wrap {
@@ -532,7 +532,7 @@
     .cw-aurora__src { font-size: 0.6rem; }
     .cw-pop {
       position: absolute; z-index: 40; max-width: 300px; padding: 1rem 1.1rem 0.9rem;
-      background: var(--void, #07070A); border: 1px solid rgba(168, 176, 188,0.35);
+      background: var(--void, #08080b); border: 1px solid rgba(168, 176, 188,0.35);
       border-radius: var(--radius-xl, 20px); box-shadow: 0 12px 40px rgba(0,0,0,0.55);
       -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
     }

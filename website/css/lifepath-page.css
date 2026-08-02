@@ -65,7 +65,7 @@ html.ap-audit-path .lp-result-skel-panel {
 }
 /* ── CSS Variables ── */
     :root {
-      --lp-bg: #07070A;
+      --lp-bg: #08080b;
       --lp-gold: var(--gold, #A8B0BC);
       --lp-gold-pale: #e8c96a;
       --lp-white: #f0e8d8;
@@ -274,7 +274,7 @@ html.ap-audit-path .lp-result-skel-panel {
       gap: 10px;
       background: linear-gradient(135deg, #A8B0BC 0%, #e8c96a 50%, #A8B0BC 100%);
       background-size: 200% 100%;
-      color: #07070A;
+      color: #08080b;
       font-family: var(--font-display);
       font-size: 1.05rem;
       font-weight: 700;
@@ -718,7 +718,7 @@ html.ap-audit-path .lp-result-skel-panel {
       font-family: var(--font-display);
       font-size: 1.1rem;
       font-weight: 700;
-      color: #07070A;
+      color: #08080b;
       box-shadow: 0 0 20px rgba(196,146,10,0.35), 0 2px 8px rgba(0,0,0,0.4);
       position: relative;
       z-index: 1;

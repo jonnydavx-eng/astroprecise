@@ -1,7 +1,7 @@
 /* AstroPrecise — shared instrument-panel tokens (ephemeris, transits, moon, tonight) */
 
 :root {
-  --ip-void: var(--ap-ip-void, #07070A);
+  --ip-void: var(--ap-ip-void, #08080b);
   --ip-surface: var(--ap-ip-surface, rgba(22, 28, 42, 0.58));
   --ip-surface-deep: var(--ap-ip-surface-deep, rgba(16, 21, 32, 0.72));
   --ip-border: var(--ap-ip-border, rgba(168, 176, 188, 0.12));

@@ -5,7 +5,7 @@
     /* ── Color overrides / extensions for this page ── */
     :root {
       /* Warm ancient gold/black from preloader for consistency */
-      --void: #07070A;
+      --void: #08080b;
       --gold-hero: #A8B0BC;
       --gold-hero-light: #E8EBF0;
       --glass-bg: rgba(22, 28, 42, 0.72);

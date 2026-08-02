@@ -9,7 +9,7 @@
   z-index: 10001;
   padding: 0.65rem 1.1rem;
   background: var(--gold, #A8B0BC);
-  color: var(--void, #07070A);
+  color: var(--void, #08080b);
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
@@ -1205,7 +1205,7 @@ body.shop--pdf-only .shop-sticky-nav a[href="#shop-curated"] {
   font-size: 0.5rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--void, #07070A);
+  color: var(--void, #08080b);
   background: var(--gold);
   border-radius: 99px;
   padding: 3px 8px;
@@ -1417,7 +1417,7 @@ body.shop--pdf-only .shop-sticky-nav a[href="#shop-curated"] {
 .ap-art-card__badge--sel {
   background: var(--gold);
   border-color: var(--gold);
-  color: var(--void, #07070A);
+  color: var(--void, #08080b);
 }
 .ap-art-library__foot {
   text-align: center;

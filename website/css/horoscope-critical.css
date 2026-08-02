@@ -156,7 +156,7 @@
       max-width: 500px; margin: 0 auto; line-height: 1.6;
     }
     /* On-system cool-void backdrop — engine/engraved only, no photographic sky.
-       Deep base #07070A well lifting to mid #121826 at the dial centre; the
+       Deep base #08080b well lifting to mid #121826 at the dial centre; the
        canvas starfield paints over this once zodiac-sphere.js hydrates. */
     .sphere-space-bg {
       position: absolute;
@@ -165,7 +165,7 @@
       pointer-events: none;
       border-radius: inherit;
       background:
-        radial-gradient(ellipse 82% 66% at 50% 44%, #121826 0%, #0E141E 52%, #07070A 100%);
+        radial-gradient(ellipse 82% 66% at 50% 44%, #121826 0%, #0E141E 52%, #08080b 100%);
       opacity: 1;
       transform: translate3d(var(--space-pan-x, 0px), var(--space-pan-y, 0px), 0) scale(1.08);
       transform-origin: center center;
@@ -800,7 +800,7 @@
     .srp-chart-cta__btn {
       display: inline-block; padding: 0.6rem 1.6rem;
       background: linear-gradient(135deg, #A8B0BC 0%, #E8EBF0 100%);
-      color: #07070A; font-weight: 700; font-size: 0.85rem;
+      color: #08080b; font-weight: 700; font-size: 0.85rem;
       letter-spacing: 0.04em; border-radius: 999px;
       text-decoration: none; transition: box-shadow .15s, transform .15s;
       box-shadow: 0 0 16px rgba(168, 176, 188,0.2);
@@ -986,7 +986,7 @@
       font: inherit;
       width: 100%;
       margin: 0;
-      background-color: #07070A;
+      background-color: #08080b;
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center 18%;
@@ -1114,7 +1114,7 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       background: #A8B0BC;
-      color: #07070A;
+      color: #08080b;
       padding: 2px 10px;
       border-radius: 999px;
       font-weight: 700;

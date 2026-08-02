@@ -83,7 +83,7 @@
   border-radius: 8px;
   border: 1px solid rgba(168, 176, 188, 0.28);
   display: block;
-  background: #07070A;
+  background: #08080b;
 }
 .shop-moment-rail__kicker {
   margin: 0 0 0.2rem;
@@ -879,7 +879,7 @@ button.ap-art-card {
   font-size: 0.7rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--void, #07070A);
+  color: var(--void, #08080b);
   background: var(--gold);
   font-weight: 700;
   border-radius: 99px;
@@ -1251,7 +1251,7 @@ button.ap-art-card {
   right: var(--space-6);
   z-index: 9010;
   background: var(--gold);
-  color: var(--void, #07070A);
+  color: var(--void, #08080b);
   border: none;
   cursor: pointer;
   width: 54px;
@@ -1641,7 +1641,7 @@ button.ap-art-card {
   [data-add-cart].is-added,
   .shopc-featured__cart.is-added,
   .shopc-card__addcart.is-added {
-    color: var(--void, #07070A);
+    color: var(--void, #08080b);
     border-color: var(--gold);
     background: var(--gold);
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
@@ -1658,7 +1658,7 @@ button.ap-art-card {
 [data-add-cart].is-added,
 .shopc-featured__cart.is-added,
 .shopc-card__addcart.is-added {
-  color: var(--void, #07070A);
+  color: var(--void, #08080b);
   background: var(--gold);
   border-color: var(--gold);
 }
@@ -1862,7 +1862,7 @@ button.ap-art-card {
   text-align: center;
   font-size: 12px;
   font-weight: var(--weight-bold, 700);
-  color: var(--ap-void-deep, #07070A);
+  color: var(--ap-void-deep, #08080b);
   z-index: 4;
   pointer-events: none;
 }
