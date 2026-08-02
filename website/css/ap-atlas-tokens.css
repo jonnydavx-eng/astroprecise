@@ -12,9 +12,9 @@
 @font-face{font-family:'Cinzel';src:url('../fonts/cinzel-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 
 html:root{
-  /* jet void → v4 night ink */
-  --ap-jet-soft:#08080b; --ap-jet-base:#0a0a0e; --ap-jet-mid:#0f0f14;
-  --ap-jet-raised:#14141a; --ap-jet-elevated:#1a1a21;
+  /* jet void → v4 night ink, warmed (dawn, not terminal) */
+  --ap-jet-soft:#0a0908; --ap-jet-base:#0c0b09; --ap-jet-mid:#100f0c;
+  --ap-jet-raised:#151310; --ap-jet-elevated:#1b1915;
 
   /* silver → warm paper */
   --ap-silver-bright:#f2ecdf;
