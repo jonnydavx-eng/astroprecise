@@ -142,14 +142,13 @@
     NorthNode:'☊︎', SouthNode:'☋︎', Ascendant:'AC', Midheaven:'MC'
   };
 
-  // Planet marker tints — brass-default per ART-DIRECTION, kept distinguishable
-  // but pulled off the retired hot-gold/electric-violet family. Sun = brass;
-  // outers (Uranus/Neptune/Pluto/Lilith) recede to silver-cool / element accents.
+  // Planet marker tints — atlas family: warm brass/parchment with ember node
+  // accents; Neptune keeps a deep sea-teal (planet realism, not brand ice).
   const PLANET_COLORS = {
-    Sun:'#ddd3bf',      Moon:'#C6BCA4',    Mercury:'#BFB39A', Venus:'#C89BA2',
-    Mars:'#B85A42',     Jupiter:'#d8b46a', Saturn:'#C8A86B',  Uranus:'#A6AEB8',
-    Neptune:'#4A7580',  Pluto:'#8A7A6A',   Chiron:'#8E9E78',  Lilith:'#8E86A0',
-    NorthNode:'#ff5a1f', SouthNode:'#9a8f7a', Ascendant:'#f2ecdf', Midheaven:'#f2ecdf'
+    Sun:'#e8d3a0',      Moon:'#C6BCA4',    Mercury:'#BFB39A', Venus:'#C89BA2',
+    Mars:'#B85A42',     Jupiter:'#d8b46a', Saturn:'#C8A86B',  Uranus:'#A6B8A6',
+    Neptune:'#527a72',  Pluto:'#8A7A6A',   Chiron:'#8E9E78',  Lilith:'#8E86A0',
+    NorthNode:'#ff7a45', SouthNode:'#a08a52', Ascendant:'#f2ecdf', Midheaven:'#f2ecdf'
   };
 
   const PLANET_ORDER = [

@@ -25,7 +25,7 @@ const { chromium } = require('playwright');
 const { PNG } = require('pngjs');
 
 const SITE = path.join(__dirname, '..', 'website');
-const VOID = '#0C1016';
+const VOID = '#08080b';
 
 const faviconSvg = readFileSync(path.join(SITE, 'favicon.svg'), 'utf8');
 const masterSvg = readFileSync(path.join(SITE, 'img', 'logo-mark.svg'), 'utf8');
