@@ -346,7 +346,7 @@
 
     // ── text ──
     x.textAlign = 'center';
-    x.fillStyle = '#A8B0BC';
+    x.fillStyle = '#d8b46a';
     x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText('T H E   L I G H T - C O N E', BASE / 2, 130);
 
@@ -362,7 +362,7 @@
     x.font = '28px "AstroGlyph", Georgia, serif';
     x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, BASE / 2, 975);
 
-    x.fillStyle = '#A8B0BC';
+    x.fillStyle = '#d8b46a';
     x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', BASE / 2, 1010);
 
@@ -407,25 +407,25 @@
       x.fill();
     }
 
-    // Observatory 2026 brass (core #A8B0BC) — not retired warm gold
-    x.strokeStyle = 'rgba(168, 176, 188,0.55)';
+    // Observatory 2026 brass (core #d8b46a) — not retired warm gold
+    x.strokeStyle = 'rgba(216, 180, 106,0.55)';
     x.lineWidth = 2;
     x.strokeRect(46, 46, CARD_BASE - 92, CARD_BASE - 92);
-    x.strokeStyle = 'rgba(168, 176, 188,0.22)';
+    x.strokeStyle = 'rgba(216, 180, 106,0.22)';
     x.strokeRect(58, 58, CARD_BASE - 116, CARD_BASE - 116);
     return { cv, x, S, CARD_W };
   }
 
   function cardHeader(x, text, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#A8B0BC';
+    x.fillStyle = '#d8b46a';
     x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText(text, CARD_BASE / 2, y == null ? 130 : y);
   }
 
   function cardFooter(x, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#A8B0BC';
+    x.fillStyle = '#d8b46a';
     x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', CARD_BASE / 2, y == null ? 1010 : y);
   }
@@ -443,15 +443,15 @@
     x.fillStyle = 'rgba(20, 16, 10,0.55)';
     x.fill();
     x.lineWidth = 1;
-    x.strokeStyle = measured ? 'rgba(168, 176, 188,0.55)' : 'rgba(168,158,136,0.45)';
+    x.strokeStyle = measured ? 'rgba(216, 180, 106,0.55)' : 'rgba(168,158,136,0.45)';
     x.stroke();
     const dotX = left + padX;
     x.beginPath();
     x.arc(dotX, y, dotR, 0, Math.PI * 2);
-    x.fillStyle = measured ? '#A8B0BC' : '#A89E88';
+    x.fillStyle = measured ? '#d8b46a' : '#A89E88';
     x.fill();
     x.textAlign = 'left';
-    x.fillStyle = measured ? '#E8EBF0' : '#A89E88';
+    x.fillStyle = measured ? '#f2ecdf' : '#A89E88';
     x.fillText(label, dotX + dotGap, y + 7);
     x.textAlign = 'center';
   }
@@ -516,7 +516,7 @@
       nameSize -= 4; x.font = `bold ${nameSize}px "AstroGlyph", Georgia, serif`;
     }
     x.textAlign = 'center';
-    x.shadowColor = 'rgba(168, 176, 188,0.55)';
+    x.shadowColor = 'rgba(216, 180, 106,0.55)';
     x.shadowBlur = 24;
     x.fillText(s.name.toUpperCase(), CARD_BASE / 2, 296);
     x.shadowBlur = 0;
@@ -534,9 +534,9 @@
     }
     x.beginPath();
     x.arc(CARD_BASE / 2, panelCy, half, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(168, 176, 188,0.14)';
+    x.strokeStyle = 'rgba(216, 180, 106,0.14)';
     x.lineWidth = 1; x.stroke();
-    x.strokeStyle = 'rgba(168, 176, 188,0.30)';
+    x.strokeStyle = 'rgba(216, 180, 106,0.30)';
     x.beginPath();
     x.moveTo(CARD_BASE / 2 - 16, panelCy); x.lineTo(CARD_BASE / 2 + 16, panelCy);
     x.moveTo(CARD_BASE / 2, panelCy - 16); x.lineTo(CARD_BASE / 2, panelCy + 16);
@@ -546,12 +546,12 @@
       const r = Math.max(1.4, 4.2 - p.st.mag * 0.7);
       x.beginPath();
       x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
-      if (isHero) { x.fillStyle = 'rgba(216,185,120,0.98)'; x.shadowColor = 'rgba(168, 176, 188,0.9)'; x.shadowBlur = 16; }
+      if (isHero) { x.fillStyle = 'rgba(216,185,120,0.98)'; x.shadowColor = 'rgba(216, 180, 106,0.9)'; x.shadowBlur = 16; }
       else { x.fillStyle = 'rgba(190,178,152,0.55)'; x.shadowBlur = 0; }
       x.fill(); x.shadowBlur = 0;
     }
 
-    x.fillStyle = '#E8EBF0';
+    x.fillStyle = '#f2ecdf';
     x.font = '30px "AstroGlyph", Georgia, serif';
     const parts = [];
     if (s.con) parts.push(s.con);
@@ -609,7 +609,7 @@
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 54px "AstroGlyph", Georgia, serif';
     x.fillText(lunar.phaseName, CARD_BASE / 2, 622);
-    x.fillStyle = '#E8EBF0';
+    x.fillStyle = '#f2ecdf';
     x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_BASE / 2, 668);
 
@@ -632,7 +632,7 @@
       swLine = 'Live space-weather feed unreachable — not faked';
       measured = false;
     }
-    x.fillStyle = measured ? '#E8EBF0' : '#A89E88';
+    x.fillStyle = measured ? '#f2ecdf' : '#A89E88';
     x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText(swLine, CARD_BASE / 2, 858);
 

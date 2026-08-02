@@ -202,7 +202,7 @@
           markers.push({ lon: pos.moon.longitude, label: '☽ Natal', col: '#C8D0E8' });
         }
         if (c.ascendant != null && isFinite(c.ascendant)) {
-          markers.push({ lon: c.ascendant, label: 'ASC', col: '#A8B0BC' });
+          markers.push({ lon: c.ascendant, label: 'ASC', col: '#d8b46a' });
         }
         var sunSign = (c.sunSign || (pos.sun && pos.sun.sign) || '').toLowerCase();
         return { markers: markers, sunSign: sunSign || null };
@@ -1437,7 +1437,7 @@
       function drawHoroscopeCard(signKey, callback) {
         var info = SIGNS[signKey];
         var data = Interpretations.getDailyHoroscope(info.name, new Date());
-        var tint = ELEMENT_CARD_TINTS[info.element] || ['#A8B0BC', 'rgba(168,176,188,0.13)', '#1A2230'];
+        var tint = ELEMENT_CARD_TINTS[info.element] || ['#d8b46a', 'rgba(216,180,106,0.13)', '#1A2230'];
         var signIdx = SIGN_KEYS.indexOf(signKey);
         var stone = SIGN_STONES[signIdx] || 'Crystal';
 
@@ -1515,7 +1515,7 @@
           ctx.font = '700 80px Georgia, serif';
           ctx.fillText(info.name.toUpperCase(), 540, 450);
 
-          ctx.fillStyle = '#A8B0BC';
+          ctx.fillStyle = '#d8b46a';
           ctx.font = '300 22px Georgia, serif';
           ctx.letterSpacing = '0.18em';
           ctx.fillText('D A I L Y   R E A D I N G', 540, 494);
@@ -1542,7 +1542,7 @@
           var elemLabel = info.element.charAt(0).toUpperCase() + info.element.slice(1) + ' Sign  ·  Ruled by ' + (PLANETARY_RULERS[signKey] || '');
           ctx.fillText(elemLabel, 540, 922);
 
-          ctx.fillStyle = '#A8B0BC';
+          ctx.fillStyle = '#d8b46a';
           ctx.font = '600 22px Georgia, serif';
           ctx.fillText('ASTROPRECISE · computed from the real sky', 540, 1038);
 

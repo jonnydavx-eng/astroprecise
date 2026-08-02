@@ -80,7 +80,7 @@ window.APDailyBridge = (function () {
         '<div class="ap-sky-bridge ap-reveal-smooth">' +
           '<p class="ap-sky-bridge__eyebrow">Personal layer</p>' +
           '<h2 class="ap-sky-bridge__title">Today\'s collective sky — yours is deeper</h2>' +
-          '<p style="font-size:0.88rem;color:var(--ap-text-secondary,#C8CDD6);margin:0;line-height:1.6;">' +
+          '<p style="font-size:0.88rem;color:var(--ap-text-secondary,#ddd3bf);margin:0;line-height:1.6;">' +
             'The reading below uses today\'s real transits. Save your birth chart to see which contacts hit <em>your</em> Sun, Moon, and Rising — not a generic sign column.' +
           '</p>' +
           '<div class="ap-sky-bridge__actions">' +
@@ -105,7 +105,7 @@ window.APDailyBridge = (function () {
           '<div class="ap-sky-bridge__arrow" aria-hidden="true">↔</div>' +
           '<div class="ap-sky-bridge__col"><span>Your natal chart</span>☉ ' + esc(sun) + ' · ☽ ' + esc(moon) + ' · ↑ ' + esc(rising) + '</div>' +
         '</div>' +
-        '<p style="font-size:0.84rem;color:var(--ap-text-secondary,#C8CDD6);margin:0;line-height:1.55;">' +
+        '<p style="font-size:0.84rem;color:var(--ap-text-secondary,#ddd3bf);margin:0;line-height:1.55;">' +
           'Transit chords on the dial highlight contacts between today\'s planets and your saved placements. Open Transits for the full personal forecast.' +
         '</p>' +
         '<div class="ap-sky-bridge__actions">' +
@@ -144,7 +144,7 @@ window.APDailyBridge = (function () {
 
     var footer = document.createElement('div');
     footer.className = 'dt-bridge-footer';
-    footer.style.cssText = 'margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(168,176,188,0.12);display:flex;flex-wrap:wrap;gap:0.5rem;';
+    footer.style.cssText = 'margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(216,180,106,0.12);display:flex;flex-wrap:wrap;gap:0.5rem;';
     footer.innerHTML =
       '<a href="horoscope.html" class="btn btn--outline btn--sm">Daily dial</a>' +
       '<a href="ephemeris.html" class="btn btn--outline btn--sm">Live sky</a>' +

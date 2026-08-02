@@ -1,6 +1,6 @@
 /**
  * Astro Precise — Moment share-card painter
- * Observatory 2026 tokens only (void #07070A + brass #A8B0BC).
+ * Observatory 2026 tokens only (void #07070A + brass #d8b46a).
  * Builds square PNG keepsakes: zenith + light-cone story for any civil date.
  * Requires: LightCone, StarCatalog, AstroEphemeris (for JD helpers via caller).
  */
@@ -8,15 +8,15 @@
   'use strict';
 
   var CARD_BASE = 1080;
-  var BRASS = '#A8B0BC';
-  var BRASS_A55 = 'rgba(168, 176, 188, 0.55)';
-  var BRASS_A22 = 'rgba(168, 176, 188, 0.22)';
-  var BRASS_A30 = 'rgba(168, 176, 188, 0.30)';
-  var PARCH = '#E8EBF0';
-  var PARCH_DIM = '#C8CDD6';
-  var PARCH_MUTED = '#8B919C';
+  var BRASS = '#d8b46a';
+  var BRASS_A55 = 'rgba(216, 180, 106, 0.55)';
+  var BRASS_A22 = 'rgba(216, 180, 106, 0.22)';
+  var BRASS_A30 = 'rgba(216, 180, 106, 0.30)';
+  var PARCH = '#f2ecdf';
+  var PARCH_DIM = '#ddd3bf';
+  var PARCH_MUTED = '#9a8f7a';
   var VOID = '#07070A';
-  var GOLD_GLOW = 'rgba(168, 176, 188, 0.55)';
+  var GOLD_GLOW = 'rgba(216, 180, 106, 0.55)';
 
   function cardExportPx() {
     return (global.RafCore && global.RafCore.cardExportSize)
@@ -88,7 +88,7 @@
     x.fillStyle = BRASS;
     x.fill();
     x.textAlign = 'left';
-    x.fillStyle = '#E8EBF0';
+    x.fillStyle = '#f2ecdf';
     x.fillText(label, dotX + dotGap, y + 7);
     x.textAlign = 'center';
   }
@@ -164,18 +164,18 @@
     // Engraved porthole rings (matches chart export + marketing masterpiece plate)
     x.beginPath();
     x.arc(cx, cy, r, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(200, 205, 214, 0.48)';
+    x.strokeStyle = 'rgba(242, 236, 223, 0.48)';
     x.lineWidth = 2.2;
     x.stroke();
     x.beginPath();
     x.arc(cx, cy, r + 6, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(168, 176, 188, 0.22)';
+    x.strokeStyle = 'rgba(216, 180, 106, 0.22)';
     x.lineWidth = 1.4;
     x.stroke();
     // Aurora limb whisper (outer hairline)
     x.beginPath();
     x.arc(cx, cy, r + 11, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(126, 200, 232, 0.16)';
+    x.strokeStyle = 'rgba(255, 90, 31, 0.16)';
     x.lineWidth = 1;
     x.stroke();
     // Corner registration ticks (4) on the outer ring — museum plate language
@@ -191,7 +191,7 @@
       x.lineTo(x0 + cos * tickLen * 0.15 - sin * tickLen, y0 + sin * tickLen * 0.15 + cos * tickLen);
       x.moveTo(x0, y0);
       x.lineTo(x0 + cos * tickLen * 0.15 + sin * tickLen, y0 + sin * tickLen * 0.15 - cos * tickLen);
-      x.strokeStyle = 'rgba(232, 235, 240, 0.42)';
+      x.strokeStyle = 'rgba(242, 236, 223, 0.42)';
       x.lineWidth = 1.2;
       x.stroke();
     });
@@ -290,7 +290,7 @@
       }
       x.beginPath();
       x.arc(cx, panelCy, half, 0, Math.PI * 2);
-      x.strokeStyle = 'rgba(168, 176, 188, 0.28)';
+      x.strokeStyle = 'rgba(216, 180, 106, 0.28)';
       x.lineWidth = 2;
       x.stroke();
       x.strokeStyle = BRASS_A30;
@@ -318,7 +318,7 @@
     }
 
     // Meta line
-    x.fillStyle = '#E8EBF0';
+    x.fillStyle = '#f2ecdf';
     x.font = '26px Georgia, "Times New Roman", serif';
     var parts = [];
     if (s.con) parts.push(s.con);

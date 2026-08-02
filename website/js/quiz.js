@@ -414,7 +414,7 @@ const AstroQuiz = (() => {
         } catch (_) { /* ignore storage failures */ }
       }
       note.textContent = 'Saved — you\'re on the list. Thank you.';
-      note.style.color = 'var(--color-gold, #A8B0BC)';
+      note.style.color = 'var(--color-gold, #d8b46a)';
       input.disabled = true;
       form.querySelector('button[type="submit"]').disabled = true;
     });

@@ -160,7 +160,7 @@
 
       function finishCard() {
         drawCompatSeal(sign1, W/2 - 220, 340, '#b87850');
-        drawCompatSeal(sign2, W/2 + 220, 340, '#A8B0BC');
+        drawCompatSeal(sign2, W/2 + 220, 340, '#d8b46a');
 
       // Names
       ctx.font = 'italic 400 42px Cormorant Garamond,serif';

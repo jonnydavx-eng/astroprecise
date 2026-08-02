@@ -1955,7 +1955,7 @@ window.AP_MON = Object.assign({
         a.href = M.tipUrl; a.target = '_blank'; a.rel = 'noopener';
         a.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Support the free chart';
         a.style.cssText = 'display:inline-block;margin-top:8px;font-family:Inter,system-ui,sans-serif;'
-          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#A8B0BC);text-decoration:none;';
+          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#d8b46a);text-decoration:none;';
         host.appendChild(document.createElement('br'));
         host.appendChild(a);
       }
@@ -2467,7 +2467,7 @@ else AstroApp.init();
     st.id = 'ap-email-sticky-critical';
     st.textContent =
       '.ap-email-cta--sticky{position:fixed;left:0;right:0;bottom:0;z-index:9000;padding:12px 16px;' +
-      'background:var(--ap-void-deep,#07070A);border-top:1px solid rgba(168,176,188,0.35);' +
+      'background:var(--ap-void-deep,#07070A);border-top:1px solid rgba(216,180,106,0.35);' +
       'transform:translateY(110%);visibility:hidden;' +
       'transition:transform .45s cubic-bezier(.22,1,.36,1),visibility 0s .45s;}' +
       '.ap-email-cta--sticky.is-visible{transform:translateY(0);visibility:visible;' +
@@ -2505,8 +2505,8 @@ else AstroApp.init();
       '.ap-email-cta__sub{font-size:0.875rem;color:var(--silver,var(--ap-text-secondary,#B8C4D8));margin:0;line-height:1.65;}' +
       '.ap-email-cta__form{display:flex;flex-direction:column;gap:8px;}' +
       '.ap-email-cta__fields{display:flex;gap:12px;flex-wrap:wrap;}' +
-      '.ap-email-cta__input{flex:1;min-width:200px;padding:12px 16px;border-radius:12px;border:1px solid rgba(168,176,188,0.28);background:rgba(12,16,22,0.75);color:var(--white,#fff);font-size:0.88rem;outline:none;-webkit-appearance:none;appearance:none;}' +
-      '.ap-email-cta__btn{padding:12px 22px;border-radius:12px;border:1px solid var(--gold,#A8B0BC);background:linear-gradient(180deg,rgba(168,176,188,0.28) 0%,rgba(168,176,188,0.12) 100%);color:var(--gold-pale,#E8EBF0);font-size:0.82rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;white-space:nowrap;-webkit-appearance:none;appearance:none;}' +
+      '.ap-email-cta__input{flex:1;min-width:200px;padding:12px 16px;border-radius:12px;border:1px solid rgba(216,180,106,0.28);background:rgba(12,16,22,0.75);color:var(--white,#fff);font-size:0.88rem;outline:none;-webkit-appearance:none;appearance:none;}' +
+      '.ap-email-cta__btn{padding:12px 22px;border-radius:12px;border:1px solid var(--gold,#d8b46a);background:linear-gradient(180deg,rgba(216,180,106,0.28) 0%,rgba(216,180,106,0.12) 100%);color:var(--gold-pale,#f2ecdf);font-size:0.82rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;white-space:nowrap;-webkit-appearance:none;appearance:none;}' +
       '.ap-email-cta__hint{font-size:0.62rem;color:var(--silver-dim,var(--ap-text-muted,#8891AA));margin:0;line-height:1.5;}' +
       '.ap-email-cta__msg{font-size:0.78rem;color:var(--silver,var(--ap-text-secondary,#C8D0E8));margin:0;min-height:1.2em;}';
     document.head.appendChild(st);
@@ -2747,7 +2747,7 @@ else AstroApp.init();
     wrap.className = 'ap-footer-signup ap-footer-signup--compact';
     if (hasBanner) {
       wrap.innerHTML = '<p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">'
-        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#A8B0BC);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
+        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#d8b46a);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
         + ' \u2014 cosmic weather & new features coming soon.</p>';
       wrap.querySelector('a').addEventListener('click', scrollToEmailCTA);
     } else {

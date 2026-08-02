@@ -21,7 +21,7 @@
     { name: 'opposition', angle: 180, orb: 7, color: 'rgba(242,138,106,0.7)' },
     { name: 'trine', angle: 120, orb: 6, color: 'rgba(126,240,200,0.65)' },
     { name: 'square', angle: 90, orb: 6, color: 'rgba(242,138,106,0.55)' },
-    { name: 'sextile', angle: 60, orb: 4, color: 'rgba(159,220,236,0.55)' }
+    { name: 'sextile', angle: 60, orb: 4, color: 'rgba(216,180,106,0.55)' }
   ];
 
   function lonOf(pos) {
@@ -142,11 +142,11 @@
         ctx.lineTo(p.x, p.y);
       }
       ctx.closePath();
-      ctx.fillStyle = s % 2 === 0 ? 'rgba(159,220,236,0.05)' : 'rgba(159,220,236,0.02)';
+      ctx.fillStyle = s % 2 === 0 ? 'rgba(216,180,106,0.05)' : 'rgba(216,180,106,0.02)';
       ctx.fill();
       var mid = project(a0 + 15 + t * 40, 14, R * 0.88, cx, cy, tilt);
       if (mid.z > -0.2) {
-        ctx.fillStyle = 'rgba(159,220,236,0.55)';
+        ctx.fillStyle = 'rgba(216,180,106,0.55)';
         ctx.font = '500 11px "IBM Plex Mono", monospace';
         ctx.textAlign = 'center';
         ctx.fillText(SIGNS[s], mid.x, mid.y);
@@ -160,14 +160,14 @@
       if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(159,220,236,0.55)';
+    ctx.strokeStyle = 'rgba(216,180,106,0.55)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
     // outer bezel
     ctx.beginPath();
     ctx.arc(cx, cy, R * 1.22, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(159,220,236,0.25)';
+    ctx.strokeStyle = 'rgba(216,180,106,0.25)';
     ctx.lineWidth = 1;
     ctx.stroke();
 
@@ -198,7 +198,7 @@
       var r = 11 + Math.max(0, p.z) * 4;
       ctx.beginPath();
       ctx.arc(p.x, p.y, r + 4, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(159,220,236,0.12)';
+      ctx.fillStyle = 'rgba(216,180,106,0.12)';
       ctx.fill();
       ctx.beginPath();
       ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
@@ -212,13 +212,13 @@
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(b.glyph, p.x, p.y + 1);
-      ctx.fillStyle = 'rgba(159,220,236,0.85)';
+      ctx.fillStyle = 'rgba(216,180,106,0.85)';
       ctx.font = '500 9px "IBM Plex Mono", monospace';
       ctx.fillText(b.name.slice(0, 3).toUpperCase() + (b.retro ? ' ℞' : ''), p.x, p.y + r + 11);
     });
 
     // centre seal
-    ctx.fillStyle = 'rgba(159,220,236,0.35)';
+    ctx.fillStyle = 'rgba(216,180,106,0.35)';
     ctx.font = '18px serif';
     ctx.textAlign = 'center';
     ctx.fillText('✶', cx, cy + 2);

@@ -384,7 +384,7 @@ var __apFallbackApi = (() => {
       ctx.globalAlpha = opacity;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = p.gold ? '#A8B0BC' : '#d8dce8';
+      ctx.fillStyle = p.gold ? '#d8b46a' : '#d8dce8';
       ctx.fill();
     });
     ctx.globalAlpha = 1;
@@ -961,7 +961,7 @@ var __apFallbackApi = (() => {
       ctx.globalAlpha = glyphAlpha;
       const drewSeal = window.APCanvasSeals && (
         (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, signName, g.x, g.y, sealSize)) ||
-        (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, signName, g.x, g.y, sealSize * 0.42, '#A8B0BC'))
+        (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, signName, g.x, g.y, sealSize * 0.42, '#d8b46a'))
       );
       if (!drewSeal) {
         ctx.font = `${Math.max(8, 10 * g.f)}px Inter, system-ui, sans-serif`;

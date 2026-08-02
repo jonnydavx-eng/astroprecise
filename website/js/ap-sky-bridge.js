@@ -182,7 +182,7 @@
       '<div class="ap-sky-bridge ap-reveal-smooth ap-glow-hover">' +
         '<p class="ap-sky-bridge__eyebrow">01 · Model</p>' +
         '<h2 class="ap-sky-bridge__title">See ' + esc(name) + '\'s sky in the 3D model</h2>' +
-        '<p style="font-size:0.88rem;color:var(--ap-text-secondary,#C8CDD6);margin:0;line-height:1.6;">' +
+        '<p style="font-size:0.88rem;color:var(--ap-text-secondary,#ddd3bf);margin:0;line-height:1.6;">' +
           esc(when) + ' · VSOP87 positions in the full orrery — Earth rest frame, honest caption.' +
         '</p>' +
         '<div class="ap-sky-bridge__actions">' +

@@ -4,17 +4,17 @@
 (function () {
   const TIPS_KEY = "ap_guide_tips_done";
   const THEME_GRADS = {
-    gold: "radial-gradient(ellipse 120% 80% at 18% 22%, rgba(236,230,216,0.22) 0%, transparent 55%), linear-gradient(135deg, #E8D4A0 0%, #A8B0BC 22%, #6AB0FF 48%, #4A7EB8 82%, #07070A 100%)",
-    meridian: "radial-gradient(ellipse 100% 70% at 82% 18%, rgba(111,160,216,0.28) 0%, transparent 50%), linear-gradient(135deg, #5B9BD5 0%, #6FA0D8 32%, #A8B0BC 58%, #121826 100%)",
-    silver: "radial-gradient(ellipse 90% 65% at 12% 78%, rgba(236,230,216,0.18) 0%, transparent 48%), linear-gradient(135deg, #D8D0C0 0%, #E8EBF0 34%, #8BAED4 68%, #121826 100%)",
-    violet: "radial-gradient(ellipse 110% 75% at 70% 30%, rgba(155,143,212,0.32) 0%, transparent 52%), linear-gradient(135deg, #9B8FD4 0%, #8B7EC8 38%, #A8B0BC 64%, #1A2230 100%)",
-    rose: "radial-gradient(ellipse 95% 68% at 24% 72%, rgba(232,196,160,0.26) 0%, transparent 50%), linear-gradient(135deg, #E8C4A0 0%, #D4A882 32%, #A8B0BC 55%, #5B8EC8 100%)",
-    indigo: "radial-gradient(ellipse 100% 72% at 88% 42%, rgba(90,122,158,0.3) 0%, transparent 48%), linear-gradient(135deg, #3D4F68 0%, #5A7A9E 40%, #A8B0BC 68%, #07070A 100%)",
-    coral: "radial-gradient(ellipse 105% 70% at 16% 38%, rgba(232,148,114,0.28) 0%, transparent 50%), linear-gradient(135deg, #E89472 0%, #6AB0FF 38%, #A8B0BC 62%, #F0E9DA 100%)",
-    dusk: "radial-gradient(ellipse 120% 80% at 50% 12%, rgba(168,176,188,0.2) 0%, transparent 55%), linear-gradient(135deg, #1A2840 0%, #2E3F5C 36%, #A8B0BC 60%, #2A1E0E 100%)",
-    sage: "radial-gradient(ellipse 90% 65% at 78% 68%, rgba(127,168,90,0.26) 0%, transparent 48%), linear-gradient(135deg, #7FA85A 0%, #8FB36B 36%, #A8B0BC 62%, #07070A 100%)",
-    slate: "radial-gradient(ellipse 100% 72% at 22% 28%, rgba(138,155,176,0.24) 0%, transparent 50%), linear-gradient(135deg, #5A6A7E 0%, #8A9BB0 38%, #A8B0BC 65%, #07070A 100%)",
-    air: "radial-gradient(ellipse 110% 75% at 62% 22%, rgba(168,212,255,0.3) 0%, transparent 52%), linear-gradient(135deg, #A8D4FF 0%, #93c5fd 40%, #A8B0BC 66%, #E8EBF0 100%)",
+    gold: "radial-gradient(ellipse 120% 80% at 18% 22%, rgba(236,230,216,0.22) 0%, transparent 55%), linear-gradient(135deg, #E8D4A0 0%, #d8b46a 22%, #6AB0FF 48%, #4A7EB8 82%, #07070A 100%)",
+    meridian: "radial-gradient(ellipse 100% 70% at 82% 18%, rgba(111,160,216,0.28) 0%, transparent 50%), linear-gradient(135deg, #5B9BD5 0%, #6FA0D8 32%, #d8b46a 58%, #121826 100%)",
+    silver: "radial-gradient(ellipse 90% 65% at 12% 78%, rgba(236,230,216,0.18) 0%, transparent 48%), linear-gradient(135deg, #D8D0C0 0%, #f2ecdf 34%, #8BAED4 68%, #121826 100%)",
+    violet: "radial-gradient(ellipse 110% 75% at 70% 30%, rgba(155,143,212,0.32) 0%, transparent 52%), linear-gradient(135deg, #9B8FD4 0%, #8B7EC8 38%, #d8b46a 64%, #1A2230 100%)",
+    rose: "radial-gradient(ellipse 95% 68% at 24% 72%, rgba(232,196,160,0.26) 0%, transparent 50%), linear-gradient(135deg, #E8C4A0 0%, #D4A882 32%, #d8b46a 55%, #5B8EC8 100%)",
+    indigo: "radial-gradient(ellipse 100% 72% at 88% 42%, rgba(90,122,158,0.3) 0%, transparent 48%), linear-gradient(135deg, #3D4F68 0%, #5A7A9E 40%, #d8b46a 68%, #07070A 100%)",
+    coral: "radial-gradient(ellipse 105% 70% at 16% 38%, rgba(232,148,114,0.28) 0%, transparent 50%), linear-gradient(135deg, #E89472 0%, #6AB0FF 38%, #d8b46a 62%, #F0E9DA 100%)",
+    dusk: "radial-gradient(ellipse 120% 80% at 50% 12%, rgba(216,180,106,0.2) 0%, transparent 55%), linear-gradient(135deg, #1A2840 0%, #2E3F5C 36%, #d8b46a 60%, #2A1E0E 100%)",
+    sage: "radial-gradient(ellipse 90% 65% at 78% 68%, rgba(127,168,90,0.26) 0%, transparent 48%), linear-gradient(135deg, #7FA85A 0%, #8FB36B 36%, #d8b46a 62%, #07070A 100%)",
+    slate: "radial-gradient(ellipse 100% 72% at 22% 28%, rgba(138,155,176,0.24) 0%, transparent 50%), linear-gradient(135deg, #5A6A7E 0%, #8A9BB0 38%, #d8b46a 65%, #07070A 100%)",
+    air: "radial-gradient(ellipse 110% 75% at 62% 22%, rgba(168,212,255,0.3) 0%, transparent 52%), linear-gradient(135deg, #A8D4FF 0%, #93c5fd 40%, #d8b46a 66%, #f2ecdf 100%)",
   };
 
   let catalog = null;

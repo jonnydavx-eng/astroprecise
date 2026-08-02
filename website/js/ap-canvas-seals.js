@@ -120,7 +120,7 @@
     var a = String(hexAlpha || 'ff');
     var alpha = (parseInt(a, 16) / 255);
     if (!isFinite(alpha)) alpha = 1;
-    var base = col || '#A8B0BC';
+    var base = col || '#d8b46a';
     if (/^#[0-9a-f]{3,8}$/i.test(base)) {
       var h = base.slice(1);
       if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
@@ -145,7 +145,7 @@
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(168,176,188,0.55)';
+    ctx.strokeStyle = 'rgba(216,180,106,0.55)';
     ctx.lineWidth = Math.max(1, r * 0.06);
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);

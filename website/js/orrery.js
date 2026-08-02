@@ -190,7 +190,7 @@
       if (!this._ph) {
         var ph = this._ph = document.createElement("div");
         ph.style.cssText = "position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;pointer-events:none";
-        ph.innerHTML = '<div style="width:180px;height:180px;border-radius:50%;border:1px solid rgba(159,220,236,.28);box-shadow:inset 0 0 60px rgba(159,220,236,.1)"></div><div style="font:10px/1 IBM Plex Mono,monospace;letter-spacing:.3em;color:rgba(230,234,242,.4)">WAKING THE ENGINE…</div>';
+        ph.innerHTML = '<div style="width:180px;height:180px;border-radius:50%;border:1px solid rgba(216,180,106,.28);box-shadow:inset 0 0 60px rgba(216,180,106,.1)"></div><div style="font:10px/1 IBM Plex Mono,monospace;letter-spacing:.3em;color:rgba(230,234,242,.4)">WAKING THE ENGINE…</div>';
         this.appendChild(ph);
       }
       var self = this;
@@ -404,8 +404,8 @@
         g.addColorStop(0.42, "rgba(0,0,0,0)");
         g.addColorStop(0.55, "rgba(139,124,246,.3)");
         g.addColorStop(0.68, "rgba(111,214,208,.22)");
-        g.addColorStop(0.82, "rgba(159,220,236,.12)");
-        g.addColorStop(1, "rgba(159,220,236,0)");
+        g.addColorStop(0.82, "rgba(216,180,106,.12)");
+        g.addColorStop(1, "rgba(216,180,106,0)");
         cx.fillStyle = g; cx.fillRect(0, 0, 256, 256);
         var m = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cv)), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
         return new THREE.Sprite(m);
@@ -448,7 +448,7 @@
       horizonRing.visible = false; scene.add(horizonRing);
       var cardSprites = [];
       [["N", 0], ["E", 90], ["S", 180], ["W", 270]].forEach(function (cd) {
-        var lbl2 = textSprite(cd[0], "#9fdcec"); lbl2.scale.set(90, 11.25, 1); lbl2.material.opacity = 0;
+        var lbl2 = textSprite(cd[0], "#d8b46a"); lbl2.scale.set(90, 11.25, 1); lbl2.material.opacity = 0;
         scene.add(lbl2); cardSprites.push({ s: lbl2, az: cd[1] * DEG });
       });
       var meteorGeo = new THREE.BufferGeometry();
@@ -479,13 +479,13 @@
         var x = rr * Math.sin(ph2) * Math.cos(th), y = rr * Math.cos(ph2) * 0.6, z = rr * Math.sin(ph2) * Math.sin(th);
         var spr = glowSprite([[0, "rgba(255,255,255,.95)"], [0.22, hexA(s[1], 0.55)], [1, hexA(s[1], 0)]], 90 * s[2]);
         spr.position.set(x, y, z); spr.material.opacity = 0; gStars.add(spr); self._starFadeMats.push(spr.material);
-        var lbl = textSprite(s[0].toUpperCase(), "#9fdcec");
+        var lbl = textSprite(s[0].toUpperCase(), "#d8b46a");
         lbl.scale.set(300, 37, 1); lbl.position.set(x, y - 70 * s[2] - 50, z);
         lbl.material.opacity = 0; gStars.add(lbl); self._starFadeMats.push(lbl.material);
         self._fontWatch.push(function () {
           var cv2 = lbl.material.map.image, cx2 = cv2.getContext("2d");
           cx2.clearRect(0, 0, cv2.width, cv2.height);
-          cx2.font = "500 26px 'IBM Plex Mono', monospace"; cx2.fillStyle = "#9fdcec";
+          cx2.font = "500 26px 'IBM Plex Mono', monospace"; cx2.fillStyle = "#d8b46a";
           cx2.textAlign = "center"; cx2.globalAlpha = 0.95;
           cx2.fillText(s[0].toUpperCase().split("").join("\u200a\u200a"), 256, 42);
           lbl.material.map.needsUpdate = true;
@@ -507,7 +507,7 @@
         var cvz = document.createElement("canvas"); cvz.width = cvz.height = 128;
         var czx = cvz.getContext("2d");
         czx.font = "84px 'Schibsted Grotesk', Arial, sans-serif"; czx.textAlign = "center"; czx.textBaseline = "middle";
-        czx.fillStyle = "rgba(159,220,236,.9)"; czx.fillText(zg, 64, 68);
+        czx.fillStyle = "rgba(216,180,106,.9)"; czx.fillText(zg, 64, 68);
         var zm = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cvz)), transparent: true, depthWrite: false });
         zm.opacity = 0;
         var zs = new THREE.Sprite(zm);
@@ -519,7 +519,7 @@
           var cv3 = zm.map.image, cz2 = cv3.getContext("2d");
           cz2.clearRect(0, 0, 128, 128);
           cz2.font = "84px 'Schibsted Grotesk', Arial, sans-serif"; cz2.textAlign = "center"; cz2.textBaseline = "middle";
-          cz2.fillStyle = "rgba(159,220,236,.9)"; cz2.fillText(zg, 64, 68);
+          cz2.fillStyle = "rgba(216,180,106,.9)"; cz2.fillText(zg, 64, 68);
           zm.map.needsUpdate = true;
         });
       });
@@ -638,7 +638,7 @@
       }
       var andro = galaxySprite("#cfe0ff"); andro.scale.set(15000, 5600, 1); andro.material.rotation = 0.6;
       andro.position.set(135000, 34000, -88000); andro.material.opacity = 0; scene.add(andro); cosMats.push(andro.material);
-      var androLbl = textSprite("ANDROMEDA · 2.5 MILLION LIGHT-YEARS", "#9fdcec");
+      var androLbl = textSprite("ANDROMEDA · 2.5 MILLION LIGHT-YEARS", "#d8b46a");
       androLbl.scale.set(30000, 3750, 1); androLbl.position.set(135000, 22000, -88000);
       androLbl.material.opacity = 0; scene.add(androLbl); cosMats.push(androLbl.material);
       [[-16000, -6400, 14500, 2800], [-19000, -8200, 11500, 1900]].forEach(function (mg) {
@@ -997,7 +997,7 @@
     };
     C.prototype._posterFallback = function () {
       // static observatory poster — shared by the no-WebGL path and the context-lost path
-      this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(159,220,236,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(230,161,92,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;border:1px solid rgba(159,220,236,.28);box-shadow:0 0 60px rgba(159,220,236,.15),inset 0 0 60px rgba(159,220,236,.1)"></div>';
+      this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(216,180,106,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(255,90,31,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;border:1px solid rgba(216,180,106,.28);box-shadow:0 0 60px rgba(216,180,106,.15),inset 0 0 60px rgba(216,180,106,.1)"></div>';
     };
     C.prototype._teardown = function () { // full GPU cleanup so repeated mount/unmount can't leak
       if (this._disposed) return;
@@ -1083,9 +1083,9 @@
         var cv = document.createElement("canvas"); cv.width = cv.height = 128;
         var cx = cv.getContext("2d");
         cx.font = "70px 'Schibsted Grotesk', Arial, sans-serif"; cx.textAlign = "center"; cx.textBaseline = "middle";
-        cx.shadowColor = "rgba(159,220,236,.9)"; cx.shadowBlur = 18;
+        cx.shadowColor = "rgba(216,180,106,.9)"; cx.shadowBlur = 18;
         cx.fillStyle = "rgba(230,238,255,.95)"; cx.fillText(it.glyph, 64, 56);
-        cx.shadowBlur = 0; cx.font = "500 15px 'IBM Plex Mono', monospace"; cx.fillStyle = "rgba(159,220,236,.9)";
+        cx.shadowBlur = 0; cx.font = "500 15px 'IBM Plex Mono', monospace"; cx.fillStyle = "rgba(216,180,106,.9)";
         cx.fillText("YOUR " + it.name.toUpperCase(), 64, 108);
         var m = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(cv)), transparent: true, depthWrite: false });
         m.opacity = 0;
