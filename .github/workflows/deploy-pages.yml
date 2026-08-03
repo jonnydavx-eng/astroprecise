@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-engine-solar-lunar.mjs, test-engine-planets.mjs, test-engine-houses.mjs, test-engine-edge.mjs, test-horoscope.mjs, test-compat.mjs, test-content-bank.mjs, test-art-themes.mjs, test-weekly-sky.mjs, test-ap-sky-bridge.mjs, tools/e2e-profile-save-audit.mjs]
+    paths: [website/**, .github/workflows/deploy-pages.yml, .github/workflows/refresh-content-bank.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-engine-solar-lunar.mjs, test-engine-planets.mjs, test-engine-houses.mjs, test-engine-edge.mjs, test-horoscope.mjs, test-compat.mjs, test-content-bank.mjs, test-art-themes.mjs, test-weekly-sky.mjs, test-ap-sky-bridge.mjs, tools/e2e-profile-save-audit.mjs]
   workflow_dispatch:
 
 # 2026-07-04: migrated OFF the legacy gh-pages branch builder onto the official
