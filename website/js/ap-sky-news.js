@@ -329,6 +329,7 @@
   // homepage band, fly to the sun and sink the engine into eclipse mode (91%);
   // any other active card restores normal lighting. Guarded — the mounted
   // <void-orrery> may be an older build without setEclipse.
+  var autoEclipse = 0;
   function driveEclipse(item) {
     var o = orrery();
     if (!o || typeof o.setEclipse !== 'function') return;
@@ -438,7 +439,7 @@
       el.classList.add('ap-sky-news__card--on');
       el.setAttribute('aria-current', 'true');
       // Do not scrollIntoView on auto-cycle — disturbs keyboard/scroll position
-      if (host.id === 'ap-sky-news-band') driveEclipse(items[idx]); // eclipse mode follows the active band card
+      if (host.id === 'ap-sky-news-band') { var eit = items[idx]; if (autoEclipse === 0 && eit && eit.id === 'eclipse') { driveEclipse(eit); autoEclipse = 1; } else if (autoEclipse === 1) { driveEclipse(eit); if (!eit || eit.id !== 'eclipse') autoEclipse = 2; } } // one auto-reveal per session; clicks always drive
       if (opts.autoFly === true && items[idx] && !items[idx].href) {
         driveModel(items[idx]);
       }

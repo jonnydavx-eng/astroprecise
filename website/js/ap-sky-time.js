@@ -54,6 +54,7 @@
 
   function paintChip(cfg) {
     /* homepage hero sky-panel caption only — elsewhere the host is absent */
+    if (window.matchMedia && window.matchMedia('(max-width:860px)').matches) return;
     var host = document.querySelector('.sky-panel .sky-chip');
     if (!host || !host.parentNode) return;
     var chip = document.getElementById('ap-skytime-chip');

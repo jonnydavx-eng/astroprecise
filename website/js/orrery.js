@@ -814,7 +814,7 @@
         if (!self._vis || document.hidden) return;        var lw = self.clientWidth || 1, lh = self.clientHeight || 1;
         if (lw !== self._w || lh !== self._h) { self._w = lw; self._h = lh; renderer.setSize(lw, lh); if (self._composer) self._composer.setSize(lw, lh); cam.aspect = lw / lh; cam.updateProjectionMatrix(); }
         var ekT = self._eclipseTarget || 0, ek = self._eclipseK || 0; // eclipse mode — eased toward target (~1.2s)
-        ek += (ekT - ek) * lf(0.05, dtF);
+        ek += (ekT - ek) * lf(0.028, dtF);
         if (Math.abs(ekT - ek) < 0.002) ek = ekT; // snap — k=0 restores everything exactly
         self._eclipseK = ek;
         starMat.opacity = (0.87 + 0.05 * Math.sin(performance.now() * 0.0011) + 0.04 * Math.sin(performance.now() * 0.0023 + 1.7)) * (1 - ss(9000, 30000, self._radius)) * (1 + 0.85 * ek); // stars come out as the shadow covers the sun (base fade × eclipse boost)
