@@ -24,6 +24,7 @@
 </script>
 <link rel="preload" href="./fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <script src="./js/ephemeris.js" defer></script>
+<script src="./js/orrery.js" defer></script>
 <style>
 @font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
 @font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
@@ -88,6 +89,34 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   <div id="eclipsePoint">ECLIPSE POINT: COMPUTING FROM THE MEEUS SERIES…</div>
   <div style="color:var(--faint)">COMPUTED HERE, IN YOUR BROWSER · NOTHING UPLOADED · <a href="./verify.html">VERIFY THE MATHS</a></div>
 </div>
+
+<!-- ——— LIVE SHADOW SIMULATION ——— -->
+<div style="position:relative;border:1px solid var(--line2);border-radius:6px;background:#040406;margin:22px 0;overflow:hidden;height:min(440px,60vh);box-shadow:0 10px 30px rgba(0,0,0,.26),inset 0 1px 0 rgba(242,236,223,.05)">
+  <void-orrery id="ecOrr" start-focus="earth" start-radius="30" data-wheel="off"></void-orrery>
+  <div class="mono" style="position:absolute;left:12px;bottom:12px;font-size:8.5px;letter-spacing:.2em;color:var(--acc);background:rgba(4,4,6,.72);border:1px solid var(--line);border-radius:3px;padding:7px 11px;pointer-events:none">LIVE SIMULATION · THE SHADOW AT 91% · DRAG TO ORBIT</div>
+</div>
+<script>
+// Live shadow panel: the engine script is deferred — poll (up to ~15s) for the
+// upgraded <void-orrery>, then hold the eclipse at 91%. No ephemeris dependency.
+(function () {
+  var prm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var tries = 0;
+  function boot() {
+    var o = document.getElementById('ecOrr');
+    if (o && typeof o.flyTo === 'function' && typeof o.setEclipse === 'function') {
+      try { o.flyTo('earth'); } catch (e0) {}
+      if (prm) { try { o.setEclipse(0.91, true); } catch (e1) {} } // reduced motion — skip the ramp, set final state
+      else setTimeout(function () { try { o.setEclipse(0.91); } catch (e2) {} }, 1200); // ramp in after the fly begins
+      setInterval(function () { // a context-restore reboots the engine dark — re-apply idempotently
+        try { if (typeof o.getEclipse === 'function' && o.getEclipse() < 0.5) o.setEclipse(0.91, prm); } catch (e3) {}
+      }, 4000);
+      return;
+    }
+    if (tries++ < 75) setTimeout(boot, 200);
+  }
+  boot();
+})();
+</script>
 
 <!-- ——— FREE TEASER ——— -->
 <div class="card" id="cast">

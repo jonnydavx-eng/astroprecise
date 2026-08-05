@@ -159,10 +159,10 @@
   // Q4 — real sun: limb-darkened disc with animated 2-octave value-noise granulation (cheap, r128 GLSL)
   function sunSurfaceMaterial() {
     return new THREE.ShaderMaterial({
-      uniforms: { uTime: { value: 0 } },
+      uniforms: { uTime: { value: 0 }, uGain: { value: 1 } }, // uGain: eclipse mode dims the covered disc
       vertexShader: "varying vec3 vN; varying vec3 vV; varying vec3 vS;\nvoid main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); vS = normalize(position); gl_Position = projectionMatrix * mv; }",
       fragmentShader: [
-        "uniform float uTime; varying vec3 vN; varying vec3 vV; varying vec3 vS;",
+        "uniform float uTime; uniform float uGain; varying vec3 vN; varying vec3 vV; varying vec3 vS;",
         "float hash3(vec3 p){ p = fract(p * 0.3183099 + vec3(0.1, 0.17, 0.13)); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }",
         "float vnoise(vec3 x){ vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f); float n000 = hash3(i); float n100 = hash3(i + vec3(1.0, 0.0, 0.0)); float n010 = hash3(i + vec3(0.0, 1.0, 0.0)); float n110 = hash3(i + vec3(1.0, 1.0, 0.0)); float n001 = hash3(i + vec3(0.0, 0.0, 1.0)); float n101 = hash3(i + vec3(1.0, 0.0, 1.0)); float n011 = hash3(i + vec3(0.0, 1.0, 1.0)); float n111 = hash3(i + vec3(1.0, 1.0, 1.0)); float nx00 = mix(n000, n100, f.x); float nx10 = mix(n010, n110, f.x); float nx01 = mix(n001, n101, f.x); float nx11 = mix(n011, n111, f.x); return mix(mix(nx00, nx10, f.y), mix(nx01, nx11, f.y), f.z); }",
         "void main(){",
@@ -182,7 +182,7 @@
         " col *= gran;",
         " col *= 1.0 - 0.3 * spot * (0.35 + 0.65 * mu);",
         " col += vec3(1.0, 0.5, 0.12) * pow(1.0 - mu, 2.6) * 0.5;", // warm chromosphere rim
-        " col *= ld * 1.62;", // hot enough to feed UnrealBloom through ACES
+        " col *= ld * 1.62 * uGain;", // hot enough to feed UnrealBloom through ACES (uGain: eclipse cover)
         " gl_FragColor = vec4(col, 1.0);",
         "#include <tonemapping_fragment>",
         "#include <encodings_fragment>",
@@ -270,6 +270,8 @@
       if (this._ph) { this._ph.remove(); this._ph = null; }
       this._live = true; this._jd = jd(new Date()); this._scrubJD = null;
       this._disposed = false; this._contextLost = false; // fresh boot — clear teardown/context flags
+      if (this._eclipseTarget == null) this._eclipseTarget = 0;
+      this._eclipseK = this._eclipseTarget; // a pre-boot setEclipse() applies instantly once the loop runs
       var sf = this.getAttribute("start-focus") || this.getAttribute("startfocus");
       var sr = parseFloat(this.getAttribute("start-radius") || this.getAttribute("startradius"));
       this._focus = sf || "earth";
@@ -450,6 +452,26 @@
       moon.userData.key = "moon"; scene.add(moon); this._meshes.moon = moon;
       loader.load("./img/textures/moon_1024.webp",
         function (t) { t.encoding = THREE.sRGBEncoding; moon.material.map = t; moon.material.color.set(0xffffff); moon.material.needsUpdate = true; });
+      // eclipse mode — stylized shadow disc sliding across the sun (setEclipse(k)).
+      // Texture generated once; per-frame work is uniforms/props only. Screen-stable:
+      // offset along camera-right, pulled toward the camera so it covers the sun disc.
+      var _ecRight = new THREE.Vector3(), _ecDir = new THREE.Vector3();
+      var moonShadow = (function () {
+        var scv = document.createElement("canvas"); scv.width = scv.height = 256;
+        var sx = scv.getContext("2d");
+        var sg = sx.createRadialGradient(128, 128, 0, 128, 128, 128);
+        sg.addColorStop(0, "rgba(3,4,9,0.99)");
+        sg.addColorStop(0.58, "rgba(3,4,9,0.96)");
+        sg.addColorStop(0.78, "rgba(3,4,9,0.5)");
+        sg.addColorStop(1, "rgba(3,4,9,0)");
+        sx.fillStyle = sg; sx.fillRect(0, 0, 256, 256);
+        var sm = new THREE.SpriteMaterial({ map: srgbTex(new THREE.CanvasTexture(scv)), transparent: true, depthWrite: false, opacity: 0 });
+        var ssp = new THREE.Sprite(sm);
+        ssp.scale.set(13.8, 13.8, 1); // sun radius 6 — the disc just covers it
+        ssp.visible = false;
+        return ssp;
+      })();
+      scene.add(moonShadow);
       function ringSprite() {
         var cv = document.createElement("canvas"); cv.width = cv.height = 256;
         var cx = cv.getContext("2d");
@@ -791,7 +813,11 @@
         var dtF = dt * 60; // 1.0 at 60fps — scales every per-frame increment below
         if (!self._vis || document.hidden) return;        var lw = self.clientWidth || 1, lh = self.clientHeight || 1;
         if (lw !== self._w || lh !== self._h) { self._w = lw; self._h = lh; renderer.setSize(lw, lh); if (self._composer) self._composer.setSize(lw, lh); cam.aspect = lw / lh; cam.updateProjectionMatrix(); }
-        starMat.opacity = (0.87 + 0.05 * Math.sin(performance.now() * 0.0011) + 0.04 * Math.sin(performance.now() * 0.0023 + 1.7)) * (1 - ss(9000, 30000, self._radius));
+        var ekT = self._eclipseTarget || 0, ek = self._eclipseK || 0; // eclipse mode — eased toward target (~1.2s)
+        ek += (ekT - ek) * lf(0.05, dtF);
+        if (Math.abs(ekT - ek) < 0.002) ek = ekT; // snap — k=0 restores everything exactly
+        self._eclipseK = ek;
+        starMat.opacity = (0.87 + 0.05 * Math.sin(performance.now() * 0.0011) + 0.04 * Math.sin(performance.now() * 0.0023 + 1.7)) * (1 - ss(9000, 30000, self._radius)) * (1 + 0.85 * ek); // stars come out as the shadow covers the sun (base fade × eclipse boost)
         var rad = self._radius;
         // moved up: belt/comet/cones below all consume j — previously var j was assigned
         // ~80 lines later, so they computed with undefined → NaN every frame (latent bug)
@@ -800,7 +826,7 @@
         var j = self._jd;
         var starsF = ss(320, 1600, rad) * (1 - ss(9000, 30000, rad));
         for (var fi = 0; fi < self._starFadeMats.length; fi++) self._starFadeMats[fi].opacity = starsF;
-        mwMat.opacity = 0.55 * (1 - ss(5000, 18000, rad));
+        mwMat.opacity = 0.55 * (1 - ss(5000, 18000, rad)) * (1 + 0.8 * ek); // milky way brightens under eclipse cover
         for (var gm = 0; gm < self._galMats.length; gm++) self._galMats[gm].m.opacity = self._galMats[gm].k * ss(4000, 22000, rad);
         gGalaxy.rotation.y += 0.00004 * dtF;
         for (var nm = 0; nm < self._nebMats.length; nm++) self._nebMats[nm].opacity = starsF * 0.5;
@@ -980,10 +1006,29 @@
         retM1.opacity += (retT * 0.95 - retM1.opacity) * lf(0.08, dtF);
         retM2.opacity += (retT * 0.4 - retM2.opacity) * lf(0.08, dtF);
         tickMat.opacity += (retT * 0.75 - tickMat.opacity) * lf(0.08, dtF);
-        corona.material.opacity = 0.3 + 0.09 * Math.sin(performance.now() * 0.0011);
+        if (ek > 0) { // eclipse mode — lights, exposure, surface gain, shadow disc (props/uniforms only, zero allocs)
+          sunLight.intensity = 1.7 * (1 - 0.92 * ek);
+          ambLight.intensity = 0.9 * (1 - 0.6 * ek);
+          renderer.toneMappingExposure = 1.1 * (1 - 0.5 * ek); // 1.1 → 0.55 — drama without crushing the UI
+          sunMat.uniforms.uGain.value = 1 - 0.85 * ek; // the disc is covered — the corona is the show
+          cam.getWorldDirection(_ecDir); // view axis (writes into a preallocated vector)
+          _ecRight.setFromMatrixColumn(cam.matrixWorld, 0); // camera-right — screen-stable slide
+          var ecOff = 13 * (1 - ek); // approaches from the limb, settles just off-centre (~91% coverage look)
+          moonShadow.position.set(_ecRight.x * ecOff - _ecDir.x * 7.4, _ecRight.y * ecOff - _ecDir.y * 7.4, _ecRight.z * ecOff - _ecDir.z * 7.4);
+          moonShadow.material.opacity = Math.min(0.97, ek * 1.15);
+          moonShadow.visible = true;
+        } else if (moonShadow.visible) { // shadow fully withdrawn — restore base state exactly
+          moonShadow.visible = false;
+          moonShadow.material.opacity = 0;
+          sunLight.intensity = 1.7; ambLight.intensity = 0.9;
+          renderer.toneMappingExposure = 1.1;
+          sunMat.uniforms.uGain.value = 1;
+        }
+        corona.material.opacity = (0.3 + 0.09 * Math.sin(performance.now() * 0.0011)) * (1 + 1.6 * ek); // corona spectacle
         sunMat.uniforms.uTime.value = nowMs * 0.001; // Q4 — animate granulation
         corShellMat.uniforms.t.value = nowMs * 0.001; // Q4 — corona flicker
-        corShell.scale.setScalar(1 + 0.025 * Math.sin(nowMs * 0.0008)); // Q4 — corona breathe
+        corShellMat.uniforms.s.value = 0.85 * (1 + 2.5 * ek); // corona brightens as the sun is covered
+        corShell.scale.setScalar((1 + 0.025 * Math.sin(nowMs * 0.0008)) * (1 + 0.55 * ek)); // Q4 breathe + eclipse swell
         cam.lookAt(self._target);
         if (self._composer) { // bloom chain when available — a hard failure falls back to plain
           try { self._composer.render(); } catch (eR) { self._composer = null; renderer.render(scene, cam); }
@@ -1112,6 +1157,7 @@
       this._starFadeMats = null; this._nebMats = null; this._zodMats = null; this._galMats = null;
       this._natalMats = null; this._natalGroup = null;
       this._contextLost = false;
+      this._eclipseTarget = 0; this._eclipseK = 0; // eclipse mode state never survives a teardown
       this._init = false; // next connect performs a full clean boot
       this._ph = null;
       this.innerHTML = ""; // canvas, poster and placeholder are all created by this element
@@ -1188,6 +1234,14 @@
     };
     C.prototype.setLive = function () { this._live = true; this._scrubJD = null; };
     C.prototype.getJD = function () { return this._jd; };
+    // Eclipse mode — k = coverage 0..1: the moon's shadow sweeps the sun, lights and
+    // exposure fall, the corona blooms, stars come out. setEclipse(0) restores all.
+    // Pass instant=true to skip the ~1.2s ramp (prefers-reduced-motion path).
+    C.prototype.setEclipse = function (k, instant) {
+      this._eclipseTarget = Math.max(0, Math.min(1, +k || 0));
+      if (instant) this._eclipseK = this._eclipseTarget;
+    };
+    C.prototype.getEclipse = function () { return this._eclipseK || 0; };
     return C;
   })();
   customElements.define("void-orrery", VoidOrrery);

@@ -325,6 +325,21 @@
     }
   }
 
+  // Eclipse campaign: when the 12 Aug eclipse card is the active card on the
+  // homepage band, fly to the sun and sink the engine into eclipse mode (91%);
+  // any other active card restores normal lighting. Guarded — the mounted
+  // <void-orrery> may be an older build without setEclipse.
+  function driveEclipse(item) {
+    var o = orrery();
+    if (!o || typeof o.setEclipse !== 'function') return;
+    if (item && item.id === 'eclipse' && item.fly === 'sun') {
+      try { if (typeof o.flyTo === 'function') o.flyTo('sun'); } catch (e0) { /* optional */ }
+      setTimeout(function () { try { o.setEclipse(0.91); } catch (e1) { /* optional */ } }, 700); // after the fly begins
+    } else {
+      try { o.setEclipse(0); } catch (e2) { /* optional */ }
+    }
+  }
+
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -380,6 +395,7 @@
       card.addEventListener('click', function (ev) {
         if (!it.href) ev.preventDefault();
         driveModel(it);
+        if (host.id === 'ap-sky-news-band') driveEclipse(it); // keep eclipse mode in sync with the tapped card
         host.dispatchEvent(new CustomEvent('ap-sky-news-select', { detail: it, bubbles: true }));
       });
       card.addEventListener('keydown', function (ev) {
@@ -422,6 +438,7 @@
       el.classList.add('ap-sky-news__card--on');
       el.setAttribute('aria-current', 'true');
       // Do not scrollIntoView on auto-cycle — disturbs keyboard/scroll position
+      if (host.id === 'ap-sky-news-band') driveEclipse(items[idx]); // eclipse mode follows the active band card
       if (opts.autoFly === true && items[idx] && !items[idx].href) {
         driveModel(items[idx]);
       }
@@ -432,6 +449,11 @@
     }
     if (opts.autoFly === true && items[0]) {
       flyTimer = setTimeout(function () { driveModel(items[0]); }, opts.flyDelayMs || 1200);
+    }
+    // Band: the initially highlighted card may be the eclipse card (auto-cycle's first
+    // tick is seconds away) — settle the eclipse state shortly after the settle fly.
+    if (!prm && host.id === 'ap-sky-news-band' && items[0]) {
+      setTimeout(function () { driveEclipse(items[0]); }, (opts.flyDelayMs || 1200) + 500);
     }
 
     var ctl = {
