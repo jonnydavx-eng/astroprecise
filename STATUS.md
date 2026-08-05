@@ -1,4 +1,5 @@
 ﻿# STATUS — AstroPrecise
+**State:** Live at https://astroprecise.app (serving ap-v794, verified 5 Aug) - eclipse launch build for 12 Aug shipped incl. full rebrand + clarity pass; checkout links still empty, awaiting owner's Gumroad products.
 Updated: 2026-07-23
 
 ## CLAIMS vs REALITY
