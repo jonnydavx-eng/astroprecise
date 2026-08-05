@@ -115,11 +115,11 @@
     }
     if (p.kind === "venus") {
       for (var v2 = 0; v2 < 26; v2++) {
-        ctx.globalAlpha = 0.05 + Math.random() * 0.05; ctx.strokeStyle = Math.random() > 0.5 ? "#fff8ea" : "#a8845a";
-        ctx.lineWidth = 4 + Math.random() * 9;
-        var vy = Math.random() * H;
+        ctx.globalAlpha = 0.05 + rnd() * 0.05; ctx.strokeStyle = rnd() > 0.5 ? "#fff8ea" : "#a8845a";
+        ctx.lineWidth = 4 + rnd() * 9;
+        var vy = rnd() * H;
         ctx.beginPath(); ctx.moveTo(0, vy);
-        ctx.bezierCurveTo(W * 0.3, vy + 30 * (Math.random() - 0.5), W * 0.7, vy - 30 * (Math.random() - 0.5), W, vy + 16 * (Math.random() - 0.5));
+        ctx.bezierCurveTo(W * 0.3, vy + 30 * (rnd() - 0.5), W * 0.7, vy - 30 * (rnd() - 0.5), W, vy + 16 * (rnd() - 0.5));
         ctx.stroke();
       }
     }
@@ -141,17 +141,64 @@
     }
     return srgbTex(new THREE.CanvasTexture(cv)); // sRGB ring gradient
   }
-  function sunTexture() {
-    var cv = document.createElement("canvas"); cv.width = 256; cv.height = 128;
-    var ctx = cv.getContext("2d");
-    ctx.fillStyle = "#ffcf8f"; ctx.fillRect(0, 0, 256, 128);
-    for (var i = 0; i < 420; i++) {
-      ctx.globalAlpha = 0.05 + Math.random() * 0.06;
-      ctx.fillStyle = Math.random() > 0.5 ? "#fff3d8" : "#f0a45a";
-      ctx.beginPath(); ctx.arc(Math.random() * 256, Math.random() * 128, 2 + Math.random() * 9, 0, 7); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-    return srgbTex(new THREE.CanvasTexture(cv)); // sRGB sun surface
+  // Q1 — soft-disc star points (ported from orrery-webgl makeStarPointsMaterial, adapted to
+  // this engine's fixed-pixel look: gl_PointSize = uSize * devicePixelRatio, no attenuation).
+  // .opacity/.size are shimmed onto the uniforms so all existing per-frame fade code keeps working.
+  function softPointsMaterial(o) {
+    o = o || {};
+    var mat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 }, uFade: { value: o.opacity != null ? o.opacity : 1 }, uSize: { value: o.size || 1 }, uPx: { value: o.pixelRatio || 1 }, uTwk: { value: o.twinkle || 0 } },
+      vertexShader: "uniform float uTime; uniform float uSize; uniform float uPx; uniform float uTwk; varying vec3 vC;\nvoid main(){ vC = color; vec4 mv = modelViewMatrix * vec4(position, 1.0); float tw = mix(1.0, 0.85 + 0.15 * sin(uTime * 1.5 + position.x * 0.37 + position.y * 0.21), uTwk); gl_PointSize = uSize * uPx * tw; gl_Position = projectionMatrix * mv; }",
+      fragmentShader: "uniform float uFade; varying vec3 vC;\nvoid main(){ vec2 uv = gl_PointCoord - 0.5; float d = length(uv); if (d > 0.5) discard; float a = smoothstep(0.5, 0.08, d); float hot = 0.72 + 0.55 * smoothstep(0.32, 0.0, d); float spike = max(0.0, 1.0 - abs(uv.x) * 6.0) * max(0.0, 1.0 - abs(uv.y) * 6.0) * 0.05 * smoothstep(0.25, 0.0, d); gl_FragColor = vec4(vC * (hot + spike), a * uFade);\n#include <tonemapping_fragment>\n#include <encodings_fragment>\n}", // r128 provides these chunks to ShaderMaterial
+      transparent: true, depthWrite: false, vertexColors: true, blending: o.blending || THREE.NormalBlending
+    });
+    Object.defineProperty(mat, "opacity", { get: function () { return mat.uniforms.uFade.value; }, set: function (v) { mat.uniforms.uFade.value = v; } });
+    Object.defineProperty(mat, "size", { get: function () { return mat.uniforms.uSize.value; }, set: function (v) { mat.uniforms.uSize.value = v; } });
+    return mat;
+  }
+  // Q4 — real sun: limb-darkened disc with animated 2-octave value-noise granulation (cheap, r128 GLSL)
+  function sunSurfaceMaterial() {
+    return new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: "varying vec3 vN; varying vec3 vV; varying vec3 vS;\nvoid main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); vS = normalize(position); gl_Position = projectionMatrix * mv; }",
+      fragmentShader: [
+        "uniform float uTime; varying vec3 vN; varying vec3 vV; varying vec3 vS;",
+        "float hash3(vec3 p){ p = fract(p * 0.3183099 + vec3(0.1, 0.17, 0.13)); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }",
+        "float vnoise(vec3 x){ vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f); float n000 = hash3(i); float n100 = hash3(i + vec3(1.0, 0.0, 0.0)); float n010 = hash3(i + vec3(0.0, 1.0, 0.0)); float n110 = hash3(i + vec3(1.0, 1.0, 0.0)); float n001 = hash3(i + vec3(0.0, 0.0, 1.0)); float n101 = hash3(i + vec3(1.0, 0.0, 1.0)); float n011 = hash3(i + vec3(0.0, 1.0, 1.0)); float n111 = hash3(i + vec3(1.0, 1.0, 1.0)); float nx00 = mix(n000, n100, f.x); float nx10 = mix(n010, n110, f.x); float nx01 = mix(n001, n101, f.x); float nx11 = mix(n011, n111, f.x); return mix(mix(nx00, nx10, f.y), mix(nx01, nx11, f.y), f.z); }",
+        "void main(){",
+        " vec3 n = normalize(vN); vec3 v = normalize(vV);",
+        " float mu = clamp(dot(n, v), 0.0, 1.0);",
+        " float ld = 0.42 + 0.58 * pow(mu, 0.55);", // physical limb darkening — hot centre, dim limb
+        " vec3 drift = vec3(uTime * 0.045, uTime * 0.032, -uTime * 0.038);",
+        " float g1 = vnoise(vS * 9.0 + drift);",
+        " float g2 = vnoise(vS * 21.0 - drift * 1.7);",
+        " float gran = 0.9 + 0.18 * (g1 * 0.65 + g2 * 0.35 - 0.5);", // granulation mottle
+        " float spot = smoothstep(0.74, 0.88, vnoise(vS * 3.1 + vec3(4.7, 1.3, 2.9) + drift * 0.35));",
+        " vec3 core = vec3(1.0, 0.93, 0.74);",
+        " vec3 mid = vec3(1.0, 0.72, 0.26);",
+        " vec3 edge = vec3(0.98, 0.44, 0.08);",
+        " vec3 col = mix(edge, mid, pow(mu, 0.5));",
+        " col = mix(col, core, pow(mu, 2.2));",
+        " col *= gran;",
+        " col *= 1.0 - 0.3 * spot * (0.35 + 0.65 * mu);",
+        " col += vec3(1.0, 0.5, 0.12) * pow(1.0 - mu, 2.6) * 0.5;", // warm chromosphere rim
+        " col *= ld * 1.62;", // hot enough to feed UnrealBloom through ACES
+        " gl_FragColor = vec4(col, 1.0);",
+        "#include <tonemapping_fragment>",
+        "#include <encodings_fragment>",
+        "}"
+      ].join("\n")
+    });
+  }
+  // Q4 — fresnel corona shell (adapted from atmoShell): sun-gold, additive, gently breathing
+  function coronaShell(r) {
+    var mat = new THREE.ShaderMaterial({
+      uniforms: { c: { value: new THREE.Color(0xffb768).convertSRGBToLinear() }, p: { value: 2.5 }, s: { value: 0.85 }, t: { value: 0 } },
+      vertexShader: "varying vec3 vN; varying vec3 vV;\nvoid main(){ vec4 wp = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-wp.xyz); gl_Position = projectionMatrix * wp; }",
+      fragmentShader: "uniform vec3 c; uniform float p; uniform float s; uniform float t; varying vec3 vN; varying vec3 vV;\nvoid main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), p); float fl = 0.82 + 0.18 * sin(t * 0.9 + vN.y * 6.0 + vN.x * 4.0); gl_FragColor = vec4(c, f * s * fl);\n#include <tonemapping_fragment>\n#include <encodings_fragment>\n}",
+      transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
+    });
+    return new THREE.Mesh(new THREE.SphereGeometry(r, 48, 32), mat);
   }
   function glowSprite(colorStops, size) {
     var cv = document.createElement("canvas"); cv.width = cv.height = 128;
@@ -277,7 +324,8 @@
       }
       starGeo.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
       starGeo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(cols), 3)); // authored sRGB → linear
-      var starMat = new THREE.PointsMaterial({ size: 1.5, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.9, depthWrite: false });
+      var pxRatio = renderer.getPixelRatio(); // PointsMaterial equivalence: gl_PointSize = size * pixelRatio
+      var starMat = softPointsMaterial({ size: 1.5, opacity: 0.9, pixelRatio: pxRatio }); // Q1 soft discs
       scene.add(new THREE.Points(starGeo, starMat));
       var mwGeo = new THREE.BufferGeometry(), mwPts = [], mwCols = [];
       for (var q = 0; q < 4200; q++) {
@@ -293,16 +341,18 @@
       }
       mwGeo.setAttribute("position", new THREE.Float32BufferAttribute(mwPts, 3));
       mwGeo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(mwCols), 3)); // authored sRGB → linear
-      var mwMat = new THREE.PointsMaterial({ size: 1.1, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false });
+      var mwMat = softPointsMaterial({ size: 1.1, opacity: 0.55, blending: THREE.AdditiveBlending, pixelRatio: pxRatio }); // Q1 soft discs
       scene.add(new THREE.Points(mwGeo, mwMat));
       var ambLight = new THREE.AmbientLight(0x36405c, 0.9); ambLight.color.convertSRGBToLinear(); scene.add(ambLight); // authored sRGB → linear
       var sunLight = new THREE.PointLight(0xfff0d8, 1.7, 0, 2); sunLight.color.convertSRGBToLinear(); scene.add(sunLight); // authored sRGB → linear
-      // sun
-      var sun = new THREE.Mesh(new THREE.SphereGeometry(6, 48, 32), new THREE.MeshBasicMaterial({ map: sunTexture() }));
+      // sun — Q4: limb-darkened granulating shader disc + fresnel corona shell (sprites kept as inner glow)
+      var sunMat = sunSurfaceMaterial();
+      var sun = new THREE.Mesh(new THREE.SphereGeometry(6, 48, 32), sunMat);
       sun.userData.key = "sun"; scene.add(sun);
       sun.add(glowSprite([[0, "rgba(255,220,160,.9)"], [0.25, "rgba(255,190,110,.35)"], [1, "rgba(255,170,80,0)"]], 52));
       var corona = glowSprite([[0, "rgba(255,200,130,.5)"], [0.4, "rgba(255,170,90,.18)"], [1, "rgba(255,150,70,0)"]], 110);
       sun.add(corona);
+      var corShell = coronaShell(6 * 1.45); sun.add(corShell); var corShellMat = corShell.material;
       this._meshes = { sun: sun }; this._spinners = []; this._cones = []; this._sizes = { sun: 6, moon: 0.72 };
       this._spinners.push({ m: sun, s: 0.00012 });
       // orbits + planets
@@ -377,7 +427,7 @@
       }
       beltGeo.setAttribute("position", new THREE.Float32BufferAttribute(bp, 3));
       beltGeo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(bcl), 3)); // authored sRGB → linear
-      var beltMat = new THREE.PointsMaterial({ size: 1.1, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.5, depthWrite: false });
+      var beltMat = softPointsMaterial({ size: 1.1, opacity: 0.5, pixelRatio: pxRatio }); // Q1 soft discs
       var belt = new THREE.Points(beltGeo, beltMat); scene.add(belt);
       // comet with anti-sun tail
       var cometHead = glowSprite([[0, "rgba(210,235,255,.95)"], [0.3, "rgba(140,190,255,.4)"], [1, "rgba(140,190,255,0)"]], 7);
@@ -567,7 +617,7 @@
         }
         geo.setAttribute("position", new THREE.Float32BufferAttribute(ps, 3));
         geo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(cs), 3)); // authored sRGB → linear
-        var mm = new THREE.PointsMaterial({ size: size, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0, blending: dust ? THREE.NormalBlending : THREE.AdditiveBlending, depthWrite: false });
+        var mm = softPointsMaterial({ size: size, opacity: 0, blending: dust ? THREE.NormalBlending : THREE.AdditiveBlending, pixelRatio: pxRatio }); // Q1 soft discs
         gGalaxy.add(new THREE.Points(geo, mm));
         self._galMats.push({ m: mm, k: opacity });
         return mm;
@@ -596,7 +646,7 @@
         }
         geo.setAttribute("position", new THREE.Float32BufferAttribute(ps, 3));
         geo.setAttribute("color", new THREE.Float32BufferAttribute(linCols(cs), 3)); // authored sRGB → linear
-        var mm = new THREE.PointsMaterial({ size: 1.3, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+        var mm = softPointsMaterial({ size: 1.3, opacity: 0, blending: THREE.AdditiveBlending, pixelRatio: pxRatio }); // Q1 soft discs
         gGalaxy.add(new THREE.Points(geo, mm));
         self._galMats.push({ m: mm, k: 0.45 });
       })();
@@ -683,7 +733,7 @@
           if (dragging) { dragging = false; activePointer = null; el.style.cursor = "grab"; }
           return;
         }
-        if (dragging) return; if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._intro = false; dragging = true; activePointer = e.pointerId; moved = 0; lx = e.clientX; ly = e.clientY; try { el.setPointerCapture(e.pointerId); } catch (ignore) {} el.style.cursor = "grabbing"; });
+        if (dragging) return; if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._cancelFlightAnim(); self._intro = false; dragging = true; activePointer = e.pointerId; moved = 0; lx = e.clientX; ly = e.clientY; try { el.setPointerCapture(e.pointerId); } catch (ignore) {} el.style.cursor = "grabbing"; });
       el.addEventListener("pointermove", function (e) {
         if (touchPts[e.pointerId]) { touchPts[e.pointerId].x = e.clientX; touchPts[e.pointerId].y = e.clientY; }
         var ids = Object.keys(touchPts);
@@ -691,6 +741,7 @@
           var a = touchPts[ids[0]], b = touchPts[ids[1]];
           var d = Math.hypot(a.x - b.x, a.y - b.y);
           self._intro = false;
+          self._cancelFlightAnim();
           self._dRadius = Math.max(7, Math.min(260000, self._dRadius * (1 - (d - pinchDist) / 300)));
           pinchDist = d;
           return;
@@ -718,7 +769,7 @@
       });
       el.addEventListener("pointercancel", function (e) { dropPt(e.pointerId); endDrag(e); });
       el.addEventListener("lostpointercapture", function (e) { dropPt(e.pointerId); endDrag(e); });
-      el.addEventListener("wheel", function (e) { if (self.getAttribute("data-wheel") === "off") return; e.preventDefault(); if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._intro = false; self._lookUpMode = 0; self._lookUpPending = 0; self._dRadius = Math.max(7, Math.min(260000, self._dRadius * (1 + e.deltaY * 0.0012))); }, { passive: false });
+      el.addEventListener("wheel", function (e) { if (self.getAttribute("data-wheel") === "off") return; e.preventDefault(); if (self._flightMode) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); } self._cancelFlightAnim(); self._intro = false; self._lookUpMode = 0; self._lookUpPending = 0; self._dRadius = Math.max(7, Math.min(260000, self._dRadius * (1 + e.deltaY * 0.0012))); }, { passive: false });
       // resize
       var ro = new ResizeObserver(function () {
         var w = self.clientWidth || 1, h = self.clientHeight || 1;
@@ -731,18 +782,27 @@
       vio.observe(this); this._vio = vio;
       var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       function ss(a, b, x) { var u = Math.max(0, Math.min(1, (x - a) / (b - a))); return u * u * (3 - 2 * u); }
+      function lf(f, k) { return k === 1 ? f : 1 - Math.pow(1 - f, k); } // Q2 — frame-rate-corrected lerp factor
       // loop
+      var lastT = performance.now();
       var loop = function () {
         self._raf = requestAnimationFrame(loop);
+        var nowT = performance.now(), dt = Math.min((nowT - lastT) / 1000, 0.05); lastT = nowT; // Q2 — real delta time (was fixed per-frame)
+        var dtF = dt * 60; // 1.0 at 60fps — scales every per-frame increment below
         if (!self._vis || document.hidden) return;        var lw = self.clientWidth || 1, lh = self.clientHeight || 1;
         if (lw !== self._w || lh !== self._h) { self._w = lw; self._h = lh; renderer.setSize(lw, lh); if (self._composer) self._composer.setSize(lw, lh); cam.aspect = lw / lh; cam.updateProjectionMatrix(); }
         starMat.opacity = (0.87 + 0.05 * Math.sin(performance.now() * 0.0011) + 0.04 * Math.sin(performance.now() * 0.0023 + 1.7)) * (1 - ss(9000, 30000, self._radius));
         var rad = self._radius;
+        // moved up: belt/comet/cones below all consume j — previously var j was assigned
+        // ~80 lines later, so they computed with undefined → NaN every frame (latent bug)
+        if (self._live) self._jd = jd(new Date());
+        else if (self._scrubJD != null) self._jd += (self._scrubJD - self._jd) * lf(0.14, dtF);
+        var j = self._jd;
         var starsF = ss(320, 1600, rad) * (1 - ss(9000, 30000, rad));
         for (var fi = 0; fi < self._starFadeMats.length; fi++) self._starFadeMats[fi].opacity = starsF;
         mwMat.opacity = 0.55 * (1 - ss(5000, 18000, rad));
         for (var gm = 0; gm < self._galMats.length; gm++) self._galMats[gm].m.opacity = self._galMats[gm].k * ss(4000, 22000, rad);
-        gGalaxy.rotation.y += 0.00004;
+        gGalaxy.rotation.y += 0.00004 * dtF;
         for (var nm = 0; nm < self._nebMats.length; nm++) self._nebMats[nm].opacity = starsF * 0.5;
         var zf = ss(130, 320, rad) * (1 - ss(1400, 3000, rad));
         for (var zm2 = 0; zm2 < self._zodMats.length; zm2++) self._zodMats[zm2].opacity = zf * 0.85;
@@ -780,8 +840,8 @@
           meteorVel.set(Math.random() - 0.5, -0.55, Math.random() - 0.5).normalize().multiplyScalar(rad * 0.035);
         }
         if (meteorT >= 0) {
-          meteorT += 0.016;
-          meteorPos.add(meteorVel);
+          meteorT += dt;
+          meteorPos.addScaledVector(meteorVel, dtF);
           var pa2 = meteorGeo.attributes.position;
           pa2.setXYZ(0, meteorPos.x, meteorPos.y, meteorPos.z);
           pa2.setXYZ(1, meteorPos.x - meteorVel.x * 6, meteorPos.y - meteorVel.y * 6, meteorPos.z - meteorVel.z * 6);
@@ -795,17 +855,17 @@
         for (var ci2 = 0; ci2 < cosMats.length; ci2++) cosMats[ci2].opacity = cosF;
         webMat.opacity = cosF * 0.22;
         if (self._intro) {
-          self._introT = (self._introT || 0) + 0.0166;
+          self._introT = (self._introT || 0) + dt;
           var kt = Math.min(1, self._introT / 7);
           kt = kt * kt * (3 - 2 * kt);
           var lr = Math.exp(Math.log(210000) * (1 - kt) + Math.log(26) * kt);
           self._dRadius = lr; self._radius = lr;
           self._dPhi = 0.7 + 0.42 * kt;
-          self._dTheta += 0.0018 * (1 - kt * 0.5);
+          self._dTheta += 0.0018 * (1 - kt * 0.5) * dtF;
           if (kt >= 1) self._intro = false;
         }
         if (self._flightMode) {
-          self._flightT += 0.0166;
+          self._flightT += dt;
           var FS = [
             { until: 6, r: 240, phi: 0.9, spin: 0.004, label: "LEAVING HOME", sub: "Eight light-minutes between you and the Sun." },
             { until: 13, r: 950, phi: 0.72, spin: 0.0022, label: "THE WHOLE SYSTEM", sub: "Every world you will ever meet, in one frame." },
@@ -819,37 +879,46 @@
             self._flightStage = stF;
             self.dispatchEvent(new CustomEvent("flightstage", { detail: { idx: stF, total: FS.length, label: curF.label, sub: curF.sub }, bubbles: true }));
           }
-          self._dRadius += (curF.r - self._dRadius) * 0.02;
-          self._dPhi += (curF.phi - self._dPhi) * 0.015;
-          self._dTheta += curF.spin;
+          self._dRadius += (curF.r - self._dRadius) * lf(0.02, dtF);
+          self._dPhi += (curF.phi - self._dPhi) * lf(0.015, dtF);
+          self._dTheta += curF.spin * dtF;
           if (self._flightT > 46) { self._flightMode = 0; self.dispatchEvent(new CustomEvent("flightstage", { detail: null, bubbles: true })); }
         }
-        starMat.size += ((self._flightMode && self._flightStage >= 2 ? 2.7 : 1.5) - starMat.size) * 0.04;
+        starMat.size += ((self._flightMode && self._flightStage >= 2 ? 2.7 : 1.5) - starMat.size) * lf(0.04, dtF);
         if (self._lookUpPending && rad < 42) { self._lookUpPending = 0; self._lookUpMode = 1; self._dPhi = 1.32; }
         var lvl = rad < 70 ? "EARTH" : rad < 900 ? "SYSTEM" : rad < 15000 ? "STARS" : rad < 90000 ? "GALAXY" : "COSMOS";
         if (lvl !== self._lvl) { self._lvl = lvl; self.dispatchEvent(new CustomEvent("scalechange", { detail: { level: lvl }, bubbles: true })); }
-        if (self._live) self._jd = jd(new Date());
-        else if (self._scrubJD != null) self._jd += (self._scrubJD - self._jd) * 0.14;
-        var j = self._jd;
         P.forEach(function (p) {
           var l = helioLon(p, j) * DEG, rr = R(p.a), m = self._meshes[p.key];
           m.position.set(rr * Math.cos(l), 0, -rr * Math.sin(l));
         });
-        for (var si = 0; si < self._spinners.length; si++) self._spinners[si].m.rotation.y += self._spinners[si].s;
+        for (var si = 0; si < self._spinners.length; si++) self._spinners[si].m.rotation.y += self._spinners[si].s * dtF;
         var em = self._meshes.earth.position, ml = moonLon(j) * DEG;
         self._meshes.moon.position.set(em.x + 5 * Math.cos(ml), 0.4, em.z - 5 * Math.sin(ml));
         self._meshes.moon.rotation.y = ml + Math.PI; // tidally locked — same face to Earth
         var motion = self.getAttribute("motion");
-        if (!dragging && motion !== "off" && !reduced) self._dTheta += 0.00045;
+        if (!dragging && motion !== "off" && !reduced) self._dTheta += 0.00045 * dtF;
         // focus target
         var f = self._focus, tgt = self._dTarget;
         if (f && self._meshes[f]) tgt.copy(self._meshes[f].position); else tgt.set(0, 0, 0);
-        self._target.lerp(tgt, 0.08);
-        self._theta += (self._dTheta - self._theta) * 0.09;
-        self._phi += (self._dPhi - self._phi) * 0.09;
-        self._radius += (self._dRadius - self._radius) * 0.07;
+        self._target.lerp(tgt, lf(0.08, dtF));
+        if (self._camAnim) { // Q3 — scripted cinematic flight overrides the damped idle path
+          var ca = self._camAnim;
+          ca.t += dt;
+          var caU = Math.min(1, ca.t / ca.dur);
+          var caE = caU < 0.5 ? 4 * caU * caU * caU : 1 - Math.pow(-2 * caU + 2, 3) / 2; // easeInOutCubic
+          self._theta = ca.fT + (ca.tT - ca.fT) * caE;
+          self._phi = ca.fP + (ca.tP - ca.fP) * caE;
+          self._radius = Math.exp(Math.log(ca.fR) + (Math.log(ca.tR) - Math.log(ca.fR)) * caE); // log-space zoom
+          if (!reduced) { cam.fov = 46 + 6 * Math.sin(Math.PI * caU); cam.updateProjectionMatrix(); } // FOV punch
+          if (caU >= 1) { self._camAnim = null; if (!reduced) { cam.fov = 46; cam.updateProjectionMatrix(); } }
+        } else {
+          self._theta += (self._dTheta - self._theta) * lf(0.09, dtF);
+          self._phi += (self._dPhi - self._phi) * lf(0.09, dtF);
+          self._radius += (self._dRadius - self._radius) * lf(0.07, dtF);
+        }
         var lum = self._lookUpMode ? 1 : 0;
-        self._skyLum = (self._skyLum || 0) + (lum - (self._skyLum || 0)) * 0.07;
+        self._skyLum = (self._skyLum || 0) + (lum - (self._skyLum || 0)) * lf(0.07, dtF);
         if (self._skyLum > 0.01) {
           var epS = self._meshes.earth.position;
           var geoMode = self._obsLat != null;
@@ -904,14 +973,17 @@
           focusRing.scale.set(fs, fs, 1);
           var rs2 = (self._sizes[fk2] || 2) * 2.3 * (1 + 0.03 * Math.sin(performance.now() * 0.0013));
           retGroup.scale.set(rs2, rs2, rs2);
-          retGroup.rotation.y += 0.0035;
+          retGroup.rotation.y += 0.0035 * dtF;
           retT = Math.pow(Math.max(0, settle), 2) * (1 - ss(80, 380, rad));
         }
-        focusRing.material.opacity += (retT * 0.26 - focusRing.material.opacity) * 0.08;
-        retM1.opacity += (retT * 0.95 - retM1.opacity) * 0.08;
-        retM2.opacity += (retT * 0.4 - retM2.opacity) * 0.08;
-        tickMat.opacity += (retT * 0.75 - tickMat.opacity) * 0.08;
+        focusRing.material.opacity += (retT * 0.26 - focusRing.material.opacity) * lf(0.08, dtF);
+        retM1.opacity += (retT * 0.95 - retM1.opacity) * lf(0.08, dtF);
+        retM2.opacity += (retT * 0.4 - retM2.opacity) * lf(0.08, dtF);
+        tickMat.opacity += (retT * 0.75 - tickMat.opacity) * lf(0.08, dtF);
         corona.material.opacity = 0.3 + 0.09 * Math.sin(performance.now() * 0.0011);
+        sunMat.uniforms.uTime.value = nowMs * 0.001; // Q4 — animate granulation
+        corShellMat.uniforms.t.value = nowMs * 0.001; // Q4 — corona flicker
+        corShell.scale.setScalar(1 + 0.025 * Math.sin(nowMs * 0.0008)); // Q4 — corona breathe
         cam.lookAt(self._target);
         if (self._composer) { // bloom chain when available — a hard failure falls back to plain
           try { self._composer.render(); } catch (eR) { self._composer = null; renderer.render(scene, cam); }
@@ -1035,6 +1107,7 @@
         this._renderer = null;
       }
       this._scene = null; this._cam = null; this._loopFn = null; this._composer = null;
+      this._camAnim = null; // Q3 — never carry a scripted flight across a reboot
       this._meshes = null; this._spinners = null; this._cones = null; this._orbitLines = null; this._sizes = null;
       this._starFadeMats = null; this._nebMats = null; this._zodMats = null; this._galMats = null;
       this._natalMats = null; this._natalGroup = null;
@@ -1044,6 +1117,16 @@
       this.innerHTML = ""; // canvas, poster and placeholder are all created by this element
     };
     C.prototype.disconnectedCallback = function () { this._teardown(); };
+    // Q3 — cinematic scripted flight: easeInOutCubic from the CURRENT interpolated camera
+    // state to the new targets (chains cleanly when a flyTo interrupts mid-flight).
+    C.prototype._beginFlight = function () {
+      this._camAnim = { t: 0, dur: 1.8, fT: this._theta, fP: this._phi, fR: this._radius, tT: this._dTheta, tP: this._dPhi, tR: this._dRadius };
+    };
+    C.prototype._cancelFlightAnim = function () { // manual drag/wheel/pinch takes the camera back
+      if (!this._camAnim) return;
+      this._camAnim = null;
+      if (this._cam) { this._cam.fov = 46; this._cam.updateProjectionMatrix(); }
+    };
     C.prototype.flyTo = function (key) {
       this._flightMode = 0; this._intro = false; this._lookUpMode = 0; this._lookUpPending = 0;
       if (key !== this._focus) { this._dTheta += 0.85; this._dPhi = 0.92; }
@@ -1053,6 +1136,7 @@
       else if (key === "moon") { this._dRadius = 7.5; info.name = "Moon"; info.glyph = "☽\uFE0E"; }
       else if (!key) { this._dRadius = 210; this._dPhi = 0.9; info.name = "The System"; info.glyph = "✦"; }
       else { var p = P.find(function (q) { return q.key === key; }); if (p) { this._dRadius = SZ(p) * 7 + 5; info.name = p.name; info.glyph = p.glyph; } }
+      if (this._renderer) this._beginFlight();
       this.dispatchEvent(new CustomEvent("planetfocus", { detail: info, bubbles: true }));
     };
     C.prototype.setJD = function (j) { this._live = false; this._scrubJD = j; };
@@ -1063,14 +1147,16 @@
       var names = { SYSTEM: "The System", STARS: "The Neighborhood", GALAXY: "The Galaxy", COSMOS: "The Deep Field" };
       this._dRadius = { SYSTEM: 210, STARS: 2600, GALAXY: 45000, COSMOS: 185000 }[level] || 210;
       if (level !== "SYSTEM") this._dPhi = 0.95;
+      if (this._renderer) this._beginFlight();
       this.dispatchEvent(new CustomEvent("planetfocus", { detail: { key: null, name: names[level] || level, glyph: "✦" }, bubbles: true }));
     };
-    C.prototype.flight = function () { this._focus = null; this._intro = false; this._lookUpMode = 0; this._lookUpPending = 0; this._flightMode = 1; this._flightT = 0; this._flightStage = -1; };
+    C.prototype.flight = function () { this._cancelFlightAnim(); this._focus = null; this._intro = false; this._lookUpMode = 0; this._lookUpPending = 0; this._flightMode = 1; this._flightT = 0; this._flightStage = -1; };
     C.prototype.setObserver = function (lat, lon) { this._obsLat = lat; this._obsLon = lon; };
     C.prototype.lookUp = function () {
       this._intro = false; this._flightMode = 0; this._focus = "earth";
       this._lookUpMode = 0; this._lookUpPending = 1;
       this._dRadius = 26; this._dPhi = 1.05;
+      if (this._renderer) this._beginFlight();
       var nm3 = this._obsLat != null ? "Your Local Sky" : "The Night Sky";
       this.dispatchEvent(new CustomEvent("planetfocus", { detail: { key: null, name: nm3, glyph: "✷" }, bubbles: true }));
     };
