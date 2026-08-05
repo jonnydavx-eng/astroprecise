@@ -63,12 +63,16 @@
   var SZ = function (p) { return p.size * 1.15 + 1.5; };
 
   function hex2rgb(h) { var n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; }
+  // deterministic PRNG so fallback planet textures are stable across visits
+  function mulberry32(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function seedOf(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h | 0; }
   function planetTexture(p) {
     var W = 512, H = 256, cv = document.createElement("canvas");
     cv.width = W; cv.height = H;
     var ctx = cv.getContext("2d");
     var base = hex2rgb("#" + p.color.toString(16).padStart(6, "0")), dark = hex2rgb(p.c2);
-    var ph1 = Math.random() * 9, ph2 = Math.random() * 9;
+    var rnd = mulberry32(seedOf("planet:" + p.key)); // same planet → same texture every boot
+    var ph1 = rnd() * 9, ph2 = rnd() * 9;
     for (var y = 0; y < H; y++) {
       var t = y / H;
       var b = p.kind === "gas" ? (Math.sin(t * 34 + ph1) * 0.5 + Math.sin(t * 13 + ph2) * 0.35 + Math.sin(t * 71) * 0.15) :
@@ -80,9 +84,9 @@
     }
     if (p.kind === "gas" || p.kind === "ice") {
       for (var s = 0; s < 46; s++) {
-        ctx.globalAlpha = 0.05 + Math.random() * 0.07;
-        ctx.fillStyle = Math.random() > 0.5 ? "#fff" : "rgb(" + dark.join(",") + ")";
-        ctx.beginPath(); ctx.ellipse(Math.random() * W, Math.random() * H, 60 + Math.random() * 260, 2 + Math.random() * 5, 0, 0, 7); ctx.fill();
+        ctx.globalAlpha = 0.05 + rnd() * 0.07;
+        ctx.fillStyle = rnd() > 0.5 ? "#fff" : "rgb(" + dark.join(",") + ")";
+        ctx.beginPath(); ctx.ellipse(rnd() * W, rnd() * H, 60 + rnd() * 260, 2 + rnd() * 5, 0, 0, 7); ctx.fill();
       }
     }
     if (p.key === "jupiter") {
@@ -93,8 +97,8 @@
     }
     if (p.kind === "mars") {
       for (var m2 = 0; m2 < 9; m2++) {
-        ctx.globalAlpha = 0.14 + Math.random() * 0.1; ctx.fillStyle = "#5c3120";
-        ctx.beginPath(); ctx.ellipse(Math.random() * W, H * (0.3 + Math.random() * 0.4), 40 + Math.random() * 90, 14 + Math.random() * 26, Math.random(), 0, 7); ctx.fill();
+        ctx.globalAlpha = 0.14 + rnd() * 0.1; ctx.fillStyle = "#5c3120";
+        ctx.beginPath(); ctx.ellipse(rnd() * W, H * (0.3 + rnd() * 0.4), 40 + rnd() * 90, 14 + rnd() * 26, rnd(), 0, 7); ctx.fill();
       }
       ctx.globalAlpha = 0.9; ctx.fillStyle = "#f4ece2";
       ctx.beginPath(); ctx.ellipse(W * 0.5, 4, 150, 14, 0, 0, 7); ctx.fill();
@@ -102,8 +106,8 @@
     }
     if (p.kind === "cratered") {
       for (var c2 = 0; c2 < 110; c2++) {
-        var cx2 = Math.random() * W, cy2 = Math.random() * H, cr = 1.5 + Math.random() * 7;
-        ctx.globalAlpha = 0.16 + Math.random() * 0.14; ctx.fillStyle = "rgb(" + dark.join(",") + ")";
+        var cx2 = rnd() * W, cy2 = rnd() * H, cr = 1.5 + rnd() * 7;
+        ctx.globalAlpha = 0.16 + rnd() * 0.14; ctx.fillStyle = "rgb(" + dark.join(",") + ")";
         ctx.beginPath(); ctx.arc(cx2, cy2, cr, 0, 7); ctx.fill();
         ctx.globalAlpha = 0.12; ctx.strokeStyle = "#fff"; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.arc(cx2, cy2 - 0.8, cr, 0, 7); ctx.stroke();
