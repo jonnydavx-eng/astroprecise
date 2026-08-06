@@ -87,40 +87,59 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 .er-count{font-family:var(--mono);font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 28px rgba(47,107,255,.55);white-space:nowrap;font-variant-numeric:tabular-nums}
 .er-count small{display:block;font-size:8.5px;letter-spacing:.24em;color:var(--faint);margin-top:6px;white-space:normal}
 
-/* ═══ TOP BAR ═══ */
-.topbar{border-bottom:1px solid var(--line);background:rgba(8,8,11,.6)}
-.topbar-in{max-width:1180px;margin:0 auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:22px;flex-wrap:wrap}
+/* ═══ THE STAGE — full-viewport living sky; product floats ON the model ═══ */
+.stage{position:relative;height:100vh;min-height:680px;overflow:hidden;background:radial-gradient(120% 95% at 50% 42%,#0e0c0b,#090807 72%)}
+.stage void-orrery{position:absolute;inset:0}
+.stagebar{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:14px 22px;flex-wrap:wrap;padding:18px 24px;text-shadow:0 1px 14px rgba(0,0,10,.75)}
 .hero-brand{display:flex;align-items:center;gap:13px;color:inherit}
 .hero-brand:hover{color:inherit}
 .hero-wordmark{font-family:var(--caps);font-weight:600;font-size:15px;letter-spacing:.3em;color:var(--ink)}
 .hero-tagline{font-family:var(--mono);font-size:7.5px;letter-spacing:.42em;color:var(--faint);margin-top:3px}
+.stagebar .hero-brand img{filter:drop-shadow(0 1px 8px rgba(0,0,10,.65))}
 nav.main{display:flex;gap:30px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.24em}
-nav.main a{color:rgba(242,236,223,.72);position:relative;padding-bottom:3px}
+nav.main a{color:rgba(242,236,223,.82);position:relative;padding-bottom:3px}
 nav.main a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ember);transition:width .3s}
 nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
 
-/* ═══ HERO — what this is, what to do, in ten seconds ═══ */
-.hero{border-bottom:1px solid var(--line);padding:clamp(56px,8vh,96px) 0 clamp(64px,9vh,110px);background:radial-gradient(720px 420px at 30% 42%,rgba(99,149,255,.07),transparent 65%)}
-.hero-grid{max-width:1180px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(36px,4.5vw,64px);align-items:center}
-.hero-eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;color:var(--brass);margin:0 0 22px}
-.hero-eyebrow .pulse{color:var(--ember);margin-right:10px}
-.hero h1{margin:0;font-size:clamp(42px,5.4vw,70px);line-height:1.04;font-weight:700;letter-spacing:-.025em}
-.hero h1 em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ember-hi);letter-spacing:-.01em;text-shadow:0 0 44px rgba(99,149,255,.35)}
-.hero-sub{margin:26px 0 0;font-size:19px;line-height:1.62;color:var(--dim);max-width:500px}
-.hero-sub b{color:var(--ink);font-weight:600}
-.hero-ctas{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
-.hero-trust{margin:30px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:10px 22px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--faint)}
-.hero-trust li{display:flex;align-items:center;gap:9px}
-.hero-trust i{width:3px;height:3px;border-radius:50%;background:var(--brass);display:block;flex:none}
+/* floating glass-paper cards on the sky — daybreak variable scope so JS-injected var() colors read on paper */
+.console,.reading{--ink:#191309;--dim:rgba(25,19,9,.78);--faint:rgba(25,19,9,.6);--brass:#0e7a6f;--acc:#0e7a6f;--line:rgba(140,110,60,.25);--line2:rgba(25,19,9,.3);--ember-hi:#2456d6;--good:#1e7a46;position:absolute;z-index:6;background:rgba(246,241,230,.94);backdrop-filter:blur(10px);color:#191309;border:1px solid rgba(31,182,166,.4);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(0,0,10,.45)}
+.console{left:24px;top:96px;width:min(400px,92vw);max-height:calc(100vh - 120px);overflow:auto}
+.reading{right:24px;top:96px;width:min(360px,92vw);max-height:calc(100vh - 120px);overflow:auto}
+.console-eyebrow{font-family:var(--mono);font-size:8.5px;letter-spacing:.26em;color:#0e7a6f;margin:0 0 10px}
+.console-eyebrow .pulse{color:var(--ember);margin-right:8px}
+.console-title{margin:0 0 16px;font-size:26px;line-height:1.12;font-weight:700;letter-spacing:-.015em;color:#191309}
+.console-title em{font-family:var(--serif);font-style:italic;font-weight:500;color:#2456d6}
+.console .field span{color:rgba(25,19,9,.64)}
+.console input,.console select{background:rgba(255,255,255,.7);border:1px solid rgba(25,19,9,.3);color:#191309;color-scheme:light}
+.console input:focus,.console select:focus{border-color:#2456d6;box-shadow:0 0 0 3px rgba(47,107,255,.18)}
+.console #castBtn{width:100%;margin-top:14px;padding:16px 20px}
+.console-note{margin-top:10px;font-size:8.5px;letter-spacing:.18em;color:rgba(25,19,9,.55);text-align:center}
+.console .headline-row{border-top-color:rgba(25,19,9,.12)}
+.console .pill{background:rgba(25,19,9,.05);border:1px solid rgba(25,19,9,.3);color:#191309}
+.console .pill:hover{border-color:#0e7a6f;color:#000;transform:translateY(-1px)}
+.console .pill.on{border-color:#2456d6;color:#000;background:rgba(47,107,255,.12);box-shadow:0 0 14px rgba(47,107,255,.22)}
+.console .wheelbox{background:radial-gradient(circle at 50% 46%,#17140f 0%,#0c0a09 68%,transparent 71%);border-radius:50%}
+.console-link{display:block;margin-top:14px;font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;color:#0e7a6f;text-align:center}
+.console-link:hover{color:#2456d6}
+.reading-tag{font-family:var(--mono);font-size:9px;letter-spacing:.26em;color:#0e7a6f;margin-bottom:10px}
+.reading .horo-line{border-top-color:rgba(25,19,9,.14);padding:14px 2px;gap:14px}
+.reading .horo-line .hl-lbl{color:#0e7a6f}
+.reading .horo-line .hl-txt{font-size:17px;color:rgba(25,19,9,.88)}
 
-/* the sky instrument — live, touchable, framed */
-.sky-panel{position:relative;height:min(760px,88vh);min-height:520px;border:1px solid rgba(31,182,166,.4);border-radius:22px;overflow:hidden;background:radial-gradient(120% 95% at 50% 42%,#0e0c0b,#090807 72%);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 100px rgba(47,107,255,.12),inset 0 1px 0 rgba(242,236,223,.07)}
-.sky-panel void-orrery{position:absolute;inset:0}
-.sky-chip{position:absolute;left:16px;top:14px;z-index:4;font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--ink);background:rgba(8,8,11,.62);border:1px solid var(--line2);border-radius:100px;padding:9px 15px;backdrop-filter:blur(4px);pointer-events:none;line-height:1.5}
+/* sign picker floating over the sky, above the scrubrow */
+.signbar{position:absolute;left:50%;bottom:84px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:6px;max-width:96vw;overflow-x:auto;padding:6px}
+.signbar-chip{flex:none;font-family:var(--mono);font-size:8px;letter-spacing:.22em;color:rgba(234,240,255,.8);background:rgba(10,12,24,.55);border:1px solid rgba(140,180,255,.28);border-radius:100px;padding:12px 14px;backdrop-filter:blur(6px)}
+.signbar .pill{flex:none;background:rgba(10,12,24,.55);border:1px solid rgba(140,180,255,.28);color:#eaf0ff;padding:11px 15px;font-size:8.5px;backdrop-filter:blur(6px)}
+.signbar .pill:hover{border-color:rgba(140,180,255,.65);color:#fff;transform:translateY(-1px)}
+.signbar .pill.on{border-color:var(--ember);color:#fff;background:rgba(47,107,255,.28);box-shadow:0 0 16px rgba(47,107,255,.45)}
+.stage-cue{position:absolute;left:50%;bottom:56px;transform:translateX(-50%);z-index:4;pointer-events:none;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:rgba(255,255,255,.5);white-space:nowrap}
+
+/* sky caption chip, floating on the stage */
+.sky-chip{position:absolute;left:50%;top:76px;transform:translateX(-50%);z-index:4;font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--ink);background:rgba(8,8,11,.62);border:1px solid var(--line2);border-radius:100px;padding:9px 15px;backdrop-filter:blur(4px);pointer-events:none;line-height:1.5;white-space:nowrap}
 .sky-chip .pulse{color:var(--ember)}
 
 /* control deck — the instrument's own chrome, always on inside the panel */
-#deck{position:absolute;inset:0;pointer-events:none}
+#deck{position:absolute;inset:0;pointer-events:none;z-index:2}
 #deck .scrubrow{display:flex;align-items:center;gap:14px;padding:0 18px 18px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0}
 input.scrub{-webkit-appearance:none;appearance:none;background:transparent;height:14px;cursor:pointer;border:0;padding:0}
 input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(242,236,223,.1),rgba(47,107,255,.55) 50%,rgba(242,236,223,.1))}
@@ -138,7 +157,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 #mladder{display:none;position:absolute;left:50%;bottom:64px;transform:translateX(-50%);gap:7px;pointer-events:auto;z-index:9}
 #mladder button{background:rgba(8,8,11,.6);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.75);border-radius:100px;padding:11px 14px;font-family:var(--mono);font-size:8px;letter-spacing:.16em;cursor:pointer;backdrop-filter:blur(4px)}
 #mladder button.on{border-color:var(--ember);color:#fff}
-@media (pointer:coarse) and (max-width:1020px){.sky-panel #mladder{display:flex}}
+@media (pointer:coarse) and (max-width:1020px){.stage #mladder{display:flex;bottom:140px}}
 #telemetry{position:absolute;left:18px;bottom:64px;pointer-events:none;font-family:var(--mono);font-size:10px;letter-spacing:.14em;line-height:2;color:rgba(242,236,223,.8);max-width:290px}
 
 /* ═══ ATLAS CHAPTERS ═══ */
@@ -175,10 +194,6 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .foot-cols span{color:var(--faint)}
 .foot{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.56);line-height:2.2}
 
-@media (max-width:1020px){
-  .hero-grid{grid-template-columns:1fr;gap:44px}
-  .sky-panel{height:min(520px,120vw);min-height:360px}
-}
 @media (max-width:900px){
   .chap-head{margin-bottom:56px}
   section.band{padding:96px 0}
@@ -190,11 +205,16 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   input,select{padding:13px}
   nav.main{gap:16px}
   nav.main a{display:inline-block;padding:12px 4px}
-  .hero-ctas .btn{width:100%;text-align:center;padding:18px 24px}
-  .hero-sub{font-size:16.5px}
   .trust-cell{border-left:0;border-top:1px solid var(--line);padding:24px}
   .trust-cell:first-child{border-top:0}
-  .instrument{padding:26px 20px}
+  .stage{min-height:640px}
+  .stagebar{padding:14px 16px;gap:10px 16px}
+  .sky-chip{display:none}
+  .stage-cue{display:none}
+  .stage #mladder{display:none!important}
+  .console{left:12px;right:12px;width:auto;top:auto;bottom:118px;max-height:48vh;overflow:auto}
+  .reading{left:12px;right:12px;width:auto;top:80px;max-height:40vh;overflow:auto}
+  .signbar{bottom:64px}
 }
 @media (pointer:coarse){input.scrub{height:44px}input.scrub::-webkit-slider-thumb{width:28px;height:28px;margin-top:-13px}input.scrub::-moz-range-thumb{width:28px;height:28px}#nowBtn{padding:12px 18px}}
 @media (max-width:1020px){#ladder{display:none}}
@@ -205,18 +225,8 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 /* ═══ DAYBREAK — morning on top, night atlas below ═══ */
 .daybreak{--ink:#191309;--dim:rgba(25,19,9,.74);--faint:rgba(25,19,9,.56);--line:rgba(140,110,60,.20);--line2:rgba(140,110,60,.34);--brass:#0e7a6f;--acc:#0e7a6f;background:#f6f1e6;color:#191309}
 #eclipse-ribbon.daybreak{background:linear-gradient(90deg,rgba(47,107,255,.14),rgba(255,170,80,.09) 45%,rgba(31,182,166,.12));border-bottom:1px solid rgba(200,80,20,.32)}
-.topbar.daybreak{border-bottom-color:rgba(140,110,60,.22)}
-.hero.daybreak{border-bottom-color:rgba(140,110,60,.22);background:#f6f1e6 radial-gradient(720px 420px at 30% 42%,rgba(255,150,60,.12),transparent 65%)}
 .trust.daybreak{border-top:0;border-bottom:1px solid rgba(140,110,60,.22)}
-.daybreak nav.main a{color:rgba(25,19,9,.64)}.daybreak nav.main a:hover{color:#000}
-.daybreak .btn.ghost{background:none;border:1px solid rgba(25,19,9,.32);color:#191309}
-.daybreak .btn.ghost:hover{border-color:#0e7a6f;color:#000;box-shadow:0 10px 30px rgba(154,117,46,.25)}
 .daybreak .er-count{color:#0e4fb8;text-shadow:0 0 26px rgba(255,110,31,.35)}
-.daybreak .hero-eyebrow{color:#0e7a6f}
-.daybreak h1 em{color:#2456d6;text-shadow:none}
-.daybreak .hero-sub b{color:#000}
-.daybreak .hero-trust i{background:#0e7a6f}
-.daybreak .sky-panel{border:1px solid rgba(14,122,111,.55);box-shadow:0 34px 90px rgba(10,24,60,.4),0 0 120px rgba(47,107,255,.28),inset 0 1px 0 rgba(242,236,223,.08)}
 .daybreak-horizon{height:150px;background:linear-gradient(#f6f1e6,rgba(246,241,230,0) 30%,#0a0908 72%);margin-bottom:-1px}
 </style>
 </head>
@@ -257,9 +267,11 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 })();
 </script>
 
-<!-- ═══ TOP BAR ═══ -->
-<header class="topbar daybreak">
-  <div class="topbar-in">
+<!-- ═══ THE STAGE — full-viewport living sky; brand, chart console, sign picker and reading float ON the model ═══ -->
+<section class="stage" aria-label="The living sky — drag to orbit, cast your chart on it">
+  <void-orrery id="orr"></void-orrery>
+  <div class="sky-chip"><span class="pulse">●</span>&nbsp;&nbsp;THE SKY RIGHT NOW · DRAG TO ORBIT · CLICK A WORLD TO FLY</div>
+  <header class="stagebar">
     <a class="hero-brand" href="./">
       <img src="./img/logo-mark.svg" alt="" width="36" height="36" style="display:block">
       <div>
@@ -270,45 +282,60 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <nav class="main" aria-label="Main">
       <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--ember-hi)">THE ECLIPSE ✦</a>
     </nav>
-  </div>
-</header>
-
-<!-- ═══ HERO — what this is, what to do, in ten seconds ═══ -->
-<section class="hero daybreak" aria-labelledby="heroHead">
-  <div class="hero-grid">
-    <div>
-      <p class="hero-eyebrow"><span class="pulse">●</span>FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
-      <h1 id="heroHead">Your birth chart,<br><em>read from the real sky.</em></h1>
-      <p class="hero-sub">Type your birth date and Astro Precise places the Sun, Moon and planets <b>to the arcminute</b> — the same mathematics that drives planetarium software — then reads your sky back in plain words. <b>Nothing is uploaded, ever.</b></p>
-      <div class="hero-ctas">
-        <a class="btn" href="#cast">CAST MY CHART — FREE</a>
-        <a class="btn ghost" href="#horoscope">TODAY'S HOROSCOPE</a>
-      </div>
-      <ul class="hero-trust">
-        <li><i></i>FREE FOREVER</li>
-        <li><i></i>NO EMAIL · NO SIGN-UP</li>
-        <li><i></i>PRIVATE BY DESIGN</li>
-        <li><i></i>ACCURATE 1800–2200</li>
-      </ul>
+  </header>
+  <div class="console">
+    <p class="console-eyebrow"><span class="pulse">●</span>FREE BIRTH CHART · NO ACCOUNT · ON-DEVICE</p>
+    <h1 class="console-title">Your birth chart, <em>read from the real sky.</em></h1>
+    <form id="castForm" action="#" method="get" onsubmit="document.getElementById('castBtn').click();return false" style="display:contents">
+    <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" min="1800-01-01" max="2200-12-31"></label>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <label class="field"><span>TIME — SHARPENS THE MOON</span><input type="time" id="tob" value="12:00"></label>
+      <label class="field"><span>CLOCK OFFSET FROM UT</span>
+        <select id="tz"><option value="0">UT / GMT</option><option value="1">UK SUMMER (+1)</option><option value="2">CENTRAL EU SUMMER (+2)</option><option value="-4">US EASTERN (−4)</option><option value="-5">US CENTRAL (−5)</option><option value="-7">US PACIFIC (−7)</option><option value="5.5">INDIA (+5.5)</option><option value="8">CHINA (+8)</option><option value="10">SYDNEY (+10)</option></select></label>
     </div>
-    <div class="sky-panel">
-      <void-orrery id="orr"></void-orrery>
-      <div class="sky-chip"><span class="pulse">●</span>&nbsp;&nbsp;THE SKY RIGHT NOW · DRAG TO ORBIT · CLICK A WORLD TO FLY</div>
-      <div id="deck">
-        <div id="ladder" role="group" aria-label="Scale ladder"></div>
-        <div id="mladder" role="group" aria-label="Scale ladder"></div>
-        <div id="telemetry" aria-live="polite"></div>
-        <div id="dock" role="group" aria-label="Fly to a world"></div>
-        <div class="scrubrow">
-          <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">1800</span>
-          <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
-          <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">2200</span>
-          <span class="mono" id="scrubLabel" style="font-size:10px;letter-spacing:.18em;color:var(--brass);min-width:110px;text-align:right">NOW</span>
-          <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(31,182,166,.45);color:var(--brass);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
-        </div>
+    <button class="btn" id="castBtn" type="button">CAST THE SKY — FREE</button>
+    <div class="console-note mono">COMPUTED HERE · NEVER UPLOADED</div>
+    <div id="castHint" role="alert">▲ PICK YOUR BIRTH DATE FIRST — THE SKY NEEDS A DAY TO READ</div>
+    <input type="submit" style="position:absolute;left:-9999px;width:0;height:0;opacity:0" tabindex="-1" aria-hidden="true">
+    </form>
+    <div id="headlines" hidden style="margin-top:18px">
+      <div class="lbl" style="color:var(--good)">YOUR HEADLINES</div>
+      <div id="headlineRows"></div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="pill" id="flyMine" type="button">✦ FLY MY SKY</button>
+        <a class="pill" href="./deep-reading.html">KEEP IT — THE £12 READING</a>
+        <a class="pill" href="./natal-plate.html">THE £14 PLATE</a>
       </div>
     </div>
+    <div id="wheelWrap" hidden>
+      <div class="mono" id="wheelTitle" style="font-size:9.5px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-top:20px">THE SKY RIGHT NOW</div>
+      <div class="wheelbox" style="width:100%;max-width:290px;margin:14px auto 0"><svg id="wheel" viewBox="0 0 380 380" role="img" aria-label="Chart wheel"></svg></div>
+    </div>
+    <a class="console-link" href="#rows">FULL POSITION READOUT ↓</a>
   </div>
+  <div class="signbar">
+    <span class="signbar-chip">DAILY SKY →</span>
+    <div id="pills" style="display:flex;flex-wrap:nowrap;gap:6px"></div>
+  </div>
+  <aside class="reading" id="horoBody" hidden>
+    <div class="reading-tag">TODAY'S SKY BY SIGN</div>
+    <div class="mono" id="horoHead" style="font-size:10px;letter-spacing:.26em;color:var(--brass);margin-bottom:8px"></div>
+    <div id="horoLines"></div>
+  </aside>
+  <div id="deck">
+    <div id="ladder" role="group" aria-label="Scale ladder"></div>
+    <div id="mladder" role="group" aria-label="Scale ladder"></div>
+    <div id="telemetry" aria-live="polite"></div>
+    <div id="dock" role="group" aria-label="Fly to a world"></div>
+    <div class="scrubrow">
+      <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">1800</span>
+      <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
+      <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">2200</span>
+      <span class="mono" id="scrubLabel" style="font-size:10px;letter-spacing:.18em;color:var(--brass);min-width:110px;text-align:right">NOW</span>
+      <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(31,182,166,.45);color:var(--brass);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
+    </div>
+  </div>
+  <div class="stage-cue">THE ATLAS BELOW ↓</div>
 </section>
 
 <!-- trust strip -->
@@ -321,49 +348,16 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 </div>
 <div class="daybreak-horizon" aria-hidden="true"></div>
 
-<!-- ═══ PLATE I · THE CHART ═══ -->
+<!-- ═══ PLATE I · THE READOUT ═══ -->
 <section class="band chap" id="cast">
   <div class="wrap">
     <div class="chap-head">
-      <div class="chap-idx"><span class="chap-num">I</span><span class="chap-tag">PLATE I · THE CHART</span></div>
+      <div class="chap-idx"><span class="chap-num">I</span><span class="chap-tag">THE READOUT — YOUR POSITIONS TO THE ARCMINUTE</span></div>
       <div class="chap-note">MEEUS SERIES · TO THE ARCMINUTE<br>COMPUTED ON THIS DEVICE</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:70px;align-items:start">
-      <div>
-        <h2>The sky at your <em style="color:var(--brass)">first breath.</em></h2>
-        <p class="sub">Ten bodies placed to the arcminute of your birth by the Meeus series — the same maths behind planetarium software — then read back plainly.</p>
-        <div class="instrument">
-          <form id="castForm" action="#" method="get" onsubmit="document.getElementById('castBtn').click();return false" style="display:contents">
-          <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" min="1800-01-01" max="2200-12-31"></label>
-          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:16px">
-            <label class="field"><span>TIME — SHARPENS THE MOON</span><input type="time" id="tob" value="12:00"></label>
-            <label class="field"><span>CLOCK OFFSET FROM UT</span>
-              <select id="tz"><option value="0">UT / GMT</option><option value="1">UK SUMMER (+1)</option><option value="2">CENTRAL EU SUMMER (+2)</option><option value="-4">US EASTERN (−4)</option><option value="-5">US CENTRAL (−5)</option><option value="-7">US PACIFIC (−7)</option><option value="5.5">INDIA (+5.5)</option><option value="8">CHINA (+8)</option><option value="10">SYDNEY (+10)</option></select></label>
-          </div>
-          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:22px">
-            <button class="btn" id="castBtn" type="button">CAST THE SKY</button>
-            <span class="mono" style="font-size:9px;letter-spacing:.16em;color:var(--faint)">COMPUTED HERE · NEVER UPLOADED</span>
-          </div>
-          <div id="castHint" role="alert">▲ PICK YOUR BIRTH DATE FIRST — THE SKY NEEDS A DAY TO READ</div>
-          <input type="submit" style="position:absolute;left:-9999px;width:0;height:0;opacity:0" tabindex="-1" aria-hidden="true">
-          </form>
-          <div id="headlines" hidden style="margin-top:22px">
-            <div class="lbl" style="color:var(--good)">YOUR HEADLINES</div>
-            <div id="headlineRows"></div>
-            <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
-              <button class="pill" id="flyMine" type="button">✦ FLY MY SKY</button>
-              <a class="pill" href="./deep-reading.html">KEEP IT — THE £12 READING</a>
-              <a class="pill" href="./natal-plate.html">THE £14 PLATE</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="mono" id="wheelTitle" style="font-size:10px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-bottom:26px">THE SKY RIGHT NOW</div>
-        <div class="wheelbox"><svg id="wheel" viewBox="0 0 380 380" role="img" aria-label="Chart wheel"></svg></div>
-        <div style="max-width:400px;margin:26px auto 0" id="rows"></div>
-      </div>
-    </div>
+    <h2>The sky at your <em style="color:var(--brass)">first breath.</em></h2>
+    <p class="sub">Ten bodies placed to the arcminute of your birth by the Meeus series — the same maths behind planetarium software. Cast on the stage above; the full position readout lands here.</p>
+    <div style="max-width:460px;margin:0 auto" id="rows"></div>
   </div>
 </section>
 
@@ -411,12 +405,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       <div class="chap-note">REAL TRANSITS, WHOLE-SIGN HOUSES<br>A MIRROR, NOT A VERDICT</div>
     </div>
     <h2>Written by the sky, <em style="color:var(--brass)">this morning.</em></h2>
-    <p class="sub">Pick your Sun sign. Every line is computed from where the planets stand this minute.</p>
-    <div id="pills" style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:34px"></div>
-    <div id="horoBody" hidden>
-      <div class="mono" id="horoHead" style="font-size:10px;letter-spacing:.26em;color:var(--brass);margin-bottom:8px"></div>
-      <div id="horoLines" style="max-width:780px"></div>
-    </div>
+    <p class="sub">Every line is computed from where the planets stand this minute. <b style="color:var(--ink)">Pick your sign on the stage above ↑</b></p>
     <div class="card" style="margin-top:34px;border-color:rgba(242,236,223,.18)">
       <div class="lbl" style="color:rgba(242,236,223,.6)">WHAT THIS IS — SAID PLAINLY</div>
       <p style="margin:0;font-size:15.5px;line-height:1.7;color:var(--dim)">A horoscope is <b style="color:var(--ink)">a mirror for reflection, not a verdict</b> — tradition offered for entertainment, not advice, prediction, or scientific fact. These lines are driven by today's real transits to your Sun sign as a whole; they are not personalised to your chart. Your actual sky is one step away: <a href="#cast">cast your free chart above</a> and the same engine reads the planets against <em>your</em> degrees, not your sign's.</p>
@@ -592,6 +581,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     $('wheelTitle').textContent = 'YOUR SKY · ' + lab;
     var sun = chart.rows[0], moon = chart.rows[1];
     $('headlines').hidden = false;
+    $('wheelWrap').hidden = false;
     $('headlineRows').innerHTML = [
       ['☉', 'SUN IN ' + fmt(sun.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(sun.lon / 30) % 12]],
       ['☽', 'MOON IN ' + fmt(moon.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(moon.lon / 30) % 12]],
