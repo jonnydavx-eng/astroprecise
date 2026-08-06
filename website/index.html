@@ -37,7 +37,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1100px 620px at 50% -8%,rgba(255,122,69,.10),transparent 62%),radial-gradient(800px 500px at 88% 6%,rgba(216,180,106,.06),transparent 60%),radial-gradient(700px 480px at 8% 14%,rgba(255,90,31,.04),transparent 60%);background-attachment:fixed}
+body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1100px 620px at 50% -8%,rgba(255,122,69,.12),transparent 62%),radial-gradient(900px 700px at 78% 28%,rgba(46,72,150,.14),transparent 62%),radial-gradient(760px 620px at 12% 58%,rgba(26,96,110,.12),transparent 60%),radial-gradient(800px 500px at 88% 6%,rgba(216,180,106,.07),transparent 60%);background-attachment:fixed}
 a{color:var(--brass);text-decoration:none;transition:color .25s}a:hover{color:var(--ember-hi)}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
 .mono{font-family:var(--mono)}
@@ -114,7 +114,7 @@ nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
 .hero-trust i{width:3px;height:3px;border-radius:50%;background:var(--brass);display:block;flex:none}
 
 /* the sky instrument — live, touchable, framed */
-.sky-panel{position:relative;height:min(560px,74vh);min-height:430px;border:1px solid rgba(216,180,106,.4);border-radius:22px;overflow:hidden;background:radial-gradient(120% 95% at 50% 42%,#0e0c0b,#090807 72%);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 100px rgba(255,90,31,.12),inset 0 1px 0 rgba(242,236,223,.07)}
+.sky-panel{position:relative;height:min(760px,88vh);min-height:520px;border:1px solid rgba(216,180,106,.4);border-radius:22px;overflow:hidden;background:radial-gradient(120% 95% at 50% 42%,#0e0c0b,#090807 72%);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 100px rgba(255,90,31,.12),inset 0 1px 0 rgba(242,236,223,.07)}
 .sky-panel void-orrery{position:absolute;inset:0}
 .sky-chip{position:absolute;left:16px;top:14px;z-index:4;font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--ink);background:rgba(8,8,11,.62);border:1px solid var(--line2);border-radius:100px;padding:9px 15px;backdrop-filter:blur(4px);pointer-events:none;line-height:1.5}
 .sky-chip .pulse{color:var(--ember)}
@@ -480,8 +480,8 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   var tries = 0;
   var t = setInterval(function () {
     tries++;
-    if (orr.flyScale) {
-      orr.flyScale('SYSTEM');
+    if (orr.flyTo) {
+      orr.flyTo('earth');
       if (orr.setLive) orr.setLive();
       clearInterval(t);
     } else if (tries > 60) { clearInterval(t); }
@@ -707,12 +707,15 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     m.addEventListener('click', function () { if (orr.flyScale) orr.flyScale(lv); });
     if ($('mladder')) $('mladder').appendChild(m);
   });
-  var DOCK = [['☉','sun'],['☿','mercury'],['♀','venus'],['♁','earth'],['☽','moon'],['♂','mars'],['♃','jupiter'],['♄','saturn'],['♅','uranus'],['♆','neptune'],['✦',null]];
+  var DOCK = [['#ffd76a','sun'],['#b0a89e','mercury'],['#f2d8a0','venus'],['#4d8fd1','earth'],['#c8cdd6','moon'],['#d1653a','mars'],['#d8a45e','jupiter'],['#e3c98f','saturn'],['#8fd4d8','uranus'],['#4d6fd1','neptune'],['','']];
   DOCK.forEach(function (d) {
     var b = document.createElement('button');
-    b.type = 'button'; b.textContent = d[0]; b.title = d[1] ? d[1][0].toUpperCase() + d[1].slice(1) : 'Whole system';
+    b.type = 'button';
+    b.title = d[1] ? d[1][0].toUpperCase() + d[1].slice(1) : 'Whole system';
+    b.setAttribute('aria-label', b.title);
+    b.innerHTML = d[1] ? '<i style="display:block;width:11px;height:11px;border-radius:50%;margin:0 auto;background:' + d[0] + ';box-shadow:0 0 9px ' + d[0] + '"></i>' : '<i style="display:block;width:11px;height:11px;border-radius:50%;margin:0 auto;border:2px solid #d8b46a;box-shadow:0 0 8px rgba(216,180,106,.7)"></i>';
     b.addEventListener('click', function () { if (orr.flyTo) orr.flyTo(d[1]); });
-    b.dataset.key = d[1] || '';
+    b.dataset.key = d[1];
     $('dock').appendChild(b);
   });
   var FACTS = { sun: ["99.86% OF THE SYSTEM'S MASS", 'Helios saw everything; Apollo drove the light.'], mercury: ['A YEAR IS 88 DAYS · A DAY IS 176', 'The messenger — quicksilver mind.'], venus: ['SPINS BACKWARDS · SUN RISES WEST', 'Morning star and evening star — the same goddess, twice.'], earth: ['THE ONLY WORLD WHERE ANYONE LOOKS UP', 'Home. Every chart ever cast began here.'], moon: ['DRIFTING 3.8 CM AWAY EVERY YEAR', 'Selene drives the silver chariot.'], mars: ['OLYMPUS MONS IS 2.5× EVEREST', 'The will to begin.'], jupiter: ['ROOM FOR 1,300 EARTHS', 'The king — luck, growth, appetite.'], saturn: ['RINGS 282,000 KM WIDE · ~1 KM THIN', 'The timekeeper — patience earned.'], uranus: ['ROLLS ON ITS SIDE', 'Sudden turns, strange genius.'], neptune: ['2,000 KM/H WINDS, SUNLESS BLUE', 'Fog, faith, the unseen ocean.'] };
