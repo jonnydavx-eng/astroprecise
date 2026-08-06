@@ -350,6 +350,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       <div class="mono" id="castCaption" hidden>THE MODEL NOW HOLDS YOUR BIRTH MINUTE — SCRUB TIME BELOW</div>
       <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
         <button class="pill" id="flyMine" type="button">✦ FLY MY SKY</button>
+        <a class="pill" id="openExplorer" href="./explore.html">OPEN IN THE FULL EXPLORER →</a>
         <a class="pill" href="./deep-reading.html">KEEP IT — THE £12 READING</a>
         <a class="pill" href="./natal-plate.html">THE £14 PLATE</a>
       </div>
@@ -382,6 +383,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <a href="./" aria-current="page">THE OBSERVATORY</a>
     <a href="./chart.html">CAST A CHART<small>— THE FULL INSTRUMENT</small></a>
     <a href="./ephemeris.html">THE SKY<small>— EPHEMERIS</small></a>
+    <a href="./explore.html">THE EXPLORER<small>— FLY THE REAL SKY</small></a>
     <a href="./horoscope.html">DAILY<small>— ALL 12 SIGNS</small></a>
     <a href="./mysky.html">MY SKY<small>— YOUR HUB</small></a>
     <a href="./moment.html">MOMENT<small>— KEEP A SKY</small></a>
@@ -756,6 +758,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     drawWheel(chart.rows);
     var lab = new Date((jd - 2440587.5) * 86400000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase();
     $('wheelTitle').textContent = 'YOUR SKY · ' + lab;
+    try { $('openExplorer').href = './explore.html#m=' + encodeURIComponent(new Date((jd - 2440587.5) * 86400000).toISOString()) + '&focus=earth'; } catch (e0) {}
     var sun = chart.rows[0], moon = chart.rows[1];
     $('headlines').hidden = false;
     $('wheelWrap').hidden = false;

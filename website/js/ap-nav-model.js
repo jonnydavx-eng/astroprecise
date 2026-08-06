@@ -53,6 +53,7 @@
   var NAV_EXTRAS = [
     ['tonight.html', 'Tonight'], ['this-weeks-sky.html', 'This Week'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
+    ['explore.html', 'The Explorer'],
     ['catalogue.html', 'Lookbook'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
