@@ -774,11 +774,11 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     if (orr && orr.setJD) { orr.setJD(jd); $('scrubLabel').textContent = lab; }
     // Persist for Real Sky News "YOUR CHART TODAY" + deep-reading sample personalisation
     try {
-      var positions = {};
+      var posMap = {};
       chart.rows.forEach(function (r) {
         var key = r.name;
         var si = Math.floor((((r.lon % 360) + 360) % 360) / 30);
-        positions[key] = {
+        posMap[key] = {
           lon: r.lon,
           sign: SIGNS[si],
           degree: (((r.lon % 360) + 360) % 360) - si * 30,
@@ -791,7 +791,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         birthDate: dob,
         birthTime: $('tob').value || '',
         city: '',
-        positions: positions,
+        positions: posMap,
         savedAt: new Date().toISOString()
       };
       var list = [];
