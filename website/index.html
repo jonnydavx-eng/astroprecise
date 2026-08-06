@@ -245,7 +245,17 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   .stage #mladder{display:none!important}
   .console{left:12px;right:12px;width:auto;top:auto;bottom:118px;max-height:48vh;overflow:auto}
   .reading{left:12px;right:12px;width:auto;top:80px;max-height:40vh;overflow:auto}
-  .signbar{bottom:64px}
+  .signbar{bottom:64px;mask-image:linear-gradient(90deg,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);scrollbar-width:none}
+  .signbar::-webkit-scrollbar{display:none}
+  .signbar .signbar-chip{position:sticky;left:0}
+  nav.main{display:none}
+  .stagebar{flex-wrap:nowrap}
+  #sbMenu{display:inline-block}
+  .sb-panel{top:60px;left:0;right:0;max-width:none;border-left:0;border-right:0;border-radius:0 0 16px 16px}
+  .sb-panel a{padding:14px 16px}
+  .sb-panel-onpage{display:block}
+  #hint1{display:none}
+  #hint2{left:12px;bottom:110px}
 }
 @media (pointer:coarse){input.scrub{height:44px}input.scrub::-webkit-slider-thumb{width:28px;height:28px;margin-top:-13px}input.scrub::-moz-range-thumb{width:28px;height:28px}#nowBtn{padding:12px 18px}}
 @media (max-width:1020px){#ladder{display:none}}
@@ -255,9 +265,9 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 
 /* ═══ DAYBREAK — morning on top, night atlas below ═══ */
 .daybreak{--ink:#191309;--dim:rgba(25,19,9,.74);--faint:rgba(25,19,9,.56);--line:rgba(140,110,60,.20);--line2:rgba(140,110,60,.34);--brass:#0e7a6f;--acc:#0e7a6f;background:#f6f1e6;color:#191309}
-#eclipse-ribbon.daybreak{background:linear-gradient(90deg,rgba(47,107,255,.14),rgba(255,170,80,.09) 45%,rgba(31,182,166,.12));border-bottom:1px solid rgba(200,80,20,.32)}
+#eclipse-ribbon.daybreak{background:linear-gradient(90deg,rgba(47,107,255,.14),rgba(99,149,255,.10) 45%,rgba(31,182,166,.12));border-bottom:1px solid rgba(47,107,255,.35)}
 .trust.daybreak{border-top:0;border-bottom:1px solid rgba(140,110,60,.22)}
-.daybreak .er-count{color:#0e4fb8;text-shadow:0 0 26px rgba(255,110,31,.35)}
+.daybreak .er-count{color:#0e4fb8;text-shadow:0 0 26px rgba(47,107,255,.3)}
 .daybreak-horizon{height:150px;background:linear-gradient(#f6f1e6,rgba(246,241,230,0) 30%,#0a0908 72%);margin-bottom:-1px}
 </style>
 </head>
@@ -311,8 +321,13 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       </div>
     </a>
     <nav class="main" aria-label="Main">
-      <a href="#cast">CHART</a><a href="#tonight">SKY NEWS</a><a href="#horoscope">HOROSCOPE</a><a href="#shop">SHOP</a><a href="./eclipse.html" style="color:var(--ember-hi)">THE ECLIPSE ✦</a>
+      <button type="button" id="sbCast">CAST</button>
+      <button type="button" id="sbToday">TODAY</button>
+      <a href="#tonight">SKY NEWS ↓</a>
+      <a href="#shop">EDITIONS ↓</a>
+      <button type="button" id="sbExplore" aria-expanded="false" aria-controls="sbPanel">EXPLORE ▾</button>
     </nav>
+    <button type="button" id="sbMenu" aria-expanded="false" aria-controls="sbPanel">MENU ▾</button>
   </header>
   <div class="console">
     <p class="console-eyebrow"><span class="pulse">●</span>FREE BIRTH CHART · NO ACCOUNT · ON-DEVICE</p>
@@ -332,6 +347,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <div id="headlines" hidden style="margin-top:18px">
       <div class="lbl" style="color:var(--good)">YOUR HEADLINES</div>
       <div id="headlineRows"></div>
+      <div class="mono" id="castCaption" hidden>THE MODEL NOW HOLDS YOUR BIRTH MINUTE — SCRUB TIME BELOW</div>
       <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
         <button class="pill" id="flyMine" type="button">✦ FLY MY SKY</button>
         <a class="pill" href="./deep-reading.html">KEEP IT — THE £12 READING</a>
@@ -345,6 +361,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <a class="console-link" href="#rows">FULL POSITION READOUT ↓</a>
   </div>
   <div class="signbar">
+    <span class="hint-chip" id="hint3" role="note" hidden><button type="button" class="hint-go">03 — <b>RETURN</b> · THE SKY MOVES EVERY DAY</button><button type="button" class="hint-x" aria-label="Dismiss hint">×</button></span>
     <span class="signbar-chip">DAILY SKY →</span>
     <div id="pills" style="display:flex;flex-wrap:nowrap;gap:6px"></div>
   </div>
@@ -353,6 +370,28 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <div class="mono" id="horoHead" style="font-size:10px;letter-spacing:.26em;color:var(--brass);margin-bottom:8px"></div>
     <div id="horoLines"></div>
   </aside>
+  <div class="sb-panel" id="sbPanel" hidden>
+    <div class="sb-panel-onpage">
+      <div class="sb-panel-lbl">ON THIS PAGE ↓</div>
+      <a href="#tonight">SKY NEWS</a>
+      <a href="#shop">EDITIONS</a>
+      <a href="#privacy">THE AUDIT</a>
+      <div class="sb-panel-div"></div>
+    </div>
+    <div class="sb-panel-lbl">EXPLORE</div>
+    <a href="./" aria-current="page">THE OBSERVATORY</a>
+    <a href="./chart.html">CAST A CHART<small>— THE FULL INSTRUMENT</small></a>
+    <a href="./ephemeris.html">THE SKY<small>— EPHEMERIS</small></a>
+    <a href="./horoscope.html">DAILY<small>— ALL 12 SIGNS</small></a>
+    <a href="./mysky.html">MY SKY<small>— YOUR HUB</small></a>
+    <a href="./moment.html">MOMENT<small>— KEEP A SKY</small></a>
+    <div class="sb-panel-div"></div>
+    <a href="./eclipse.html">THE ECLIPSE<small>· 12 AUG</small></a>
+    <a href="./shop.html">SHOP<small>— ALL EDITIONS</small></a>
+    <a href="./guides.html">THE LIBRARY<small>— ALL 25+ TOOLS</small></a>
+  </div>
+  <span class="hint-chip" id="hint1" role="note" hidden><button type="button" class="hint-go">01 — <b>CAST</b> · GIVE THE SKY YOUR FIRST BREATH</button><button type="button" class="hint-x" aria-label="Dismiss hint">×</button></span>
+  <span class="hint-chip" id="hint2" role="note" hidden>02 — <b>FLY</b> · DRAG TO ORBIT · SCRUB 1800–2200</span>
   <div id="deck">
     <div id="ladder" role="group" aria-label="Scale ladder"></div>
     <div id="mladder" role="group" aria-label="Scale ladder"></div>
@@ -529,6 +568,113 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 
 <script src="./js/ephemeris.js"></script>
 <script>
+/* ═══ STAGE NAV — cast/today context actions, explore panel, first-use hints ═══ */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  function reducedMotion() { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+  /* CAST — focus the first of the three numbers, flash the console edge once */
+  function castAction() {
+    var dob = $('dob'); if (dob) dob.focus();
+    var con = document.querySelector('.console');
+    if (con && !reducedMotion()) {
+      con.classList.remove('console-flash');
+      void con.offsetWidth;
+      con.classList.add('console-flash');
+      setTimeout(function () { con.classList.remove('console-flash'); }, 1250);
+    }
+  }
+  /* TODAY — open the saved sign's reading, or point at the first sign */
+  function todayAction() {
+    var pills = $('pills');
+    if (!pills || !pills.children.length) return;
+    var saved = null;
+    try { saved = localStorage.getItem('ap-horoscope-sign'); } catch (e) {}
+    var i = (saved !== null && saved !== '') ? +saved : -1;
+    if (i >= 0 && i < pills.children.length) pills.children[i].click();
+    else pills.children[0].focus();
+  }
+  var b;
+  if ((b = $('sbCast'))) b.addEventListener('click', castAction);
+  if ((b = $('sbToday'))) b.addEventListener('click', todayAction);
+  /* EXPLORE (desktop) / MENU (mobile) — one panel, two toggles */
+  var panel = $('sbPanel'), exploreBtn = $('sbExplore'), menuBtn = $('sbMenu'), opener = null;
+  function syncExpanded(v) {
+    if (exploreBtn) exploreBtn.setAttribute('aria-expanded', v);
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', v);
+  }
+  function closePanel(refocus) {
+    if (!panel || panel.hidden) return;
+    panel.hidden = true;
+    syncExpanded('false');
+    document.removeEventListener('keydown', onKey, true);
+    document.removeEventListener('click', onDocClick, true);
+    if (refocus && opener) opener.focus();
+    opener = null;
+  }
+  function openPanel(btn) {
+    if (!panel) return;
+    panel.hidden = false;
+    syncExpanded('true');
+    opener = btn;
+    document.addEventListener('keydown', onKey, true);
+    document.addEventListener('click', onDocClick, true);
+  }
+  function onKey(e) { if (e.key === 'Escape') closePanel(true); }
+  function onDocClick(e) {
+    if (!panel || panel.hidden) return;
+    var t = e.target;
+    if (panel.contains(t)) return;
+    if (exploreBtn && exploreBtn.contains(t)) return;
+    if (menuBtn && menuBtn.contains(t)) return;
+    closePanel(false);
+  }
+  if (exploreBtn) exploreBtn.addEventListener('click', function () { if (panel && panel.hidden) openPanel(exploreBtn); else closePanel(true); });
+  if (menuBtn) menuBtn.addEventListener('click', function () { if (panel && panel.hidden) openPanel(menuBtn); else closePanel(true); });
+  if (panel) panel.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a') : null;
+    if (a) closePanel(false);
+  });
+  /* first-use hints — "three numbers, once": ap_stage_seen unset, ap_stage_hint_n caps at 2 visits */
+  var seen = true, n = 99;
+  try { seen = !!localStorage.getItem('ap_stage_seen'); } catch (e) {}
+  try { n = parseInt(localStorage.getItem('ap_stage_hint_n') || '0', 10); if (isNaN(n)) n = 0; } catch (e) {}
+  var h1 = $('hint1'), h2 = $('hint2'), h3 = $('hint3');
+  function hideHints() { [h1, h2, h3].forEach(function (h) { if (h) h.hidden = true; }); }
+  function dismissHints(perm) {
+    hideHints();
+    if (perm) { seen = true; try { localStorage.setItem('ap_stage_seen', '1'); } catch (e) {} }
+  }
+  window.apStageHints = {
+    dismiss: dismissHints,
+    isFresh: function () { return !seen; },
+    castDone: function () {
+      if (seen) return;
+      var cap = $('castCaption'); if (cap) cap.hidden = false;
+      dismissHints(true);
+    }
+  };
+  if (!seen && n < 2 && (h1 || h2 || h3)) {
+    [h1, h2, h3].forEach(function (h) { if (h) h.hidden = false; });
+    try { localStorage.setItem('ap_stage_hint_n', String(Math.min(n + 1, 2))); } catch (e) {}
+    if (!reducedMotion()) {
+      setTimeout(function () {
+        [h1, h2, h3].forEach(function (h) { if (h) h.classList.add('hint-fade'); });
+        setTimeout(hideHints, 800);
+      }, 14000);
+    }
+    if (h1) {
+      h1.querySelector('.hint-go').addEventListener('click', function () { castAction(); dismissHints(true); });
+      h1.querySelector('.hint-x').addEventListener('click', function () { dismissHints(true); });
+    }
+    if (h3) {
+      h3.querySelector('.hint-go').addEventListener('click', function () { todayAction(); dismissHints(true); });
+      h3.querySelector('.hint-x').addEventListener('click', function () { dismissHints(true); });
+    }
+  }
+})();
+</script>
+<script>
 (function () {
   'use strict';
   var E = window.AstroEphemeris, $ = function (id) { return document.getElementById(id); };
@@ -613,6 +759,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     var sun = chart.rows[0], moon = chart.rows[1];
     $('headlines').hidden = false;
     $('wheelWrap').hidden = false;
+    try { if (window.apStageHints && window.apStageHints.castDone) window.apStageHints.castDone(); } catch (eS) {}
     $('headlineRows').innerHTML = [
       ['☉', 'SUN IN ' + fmt(sun.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(sun.lon / 30) % 12]],
       ['☽', 'MOON IN ' + fmt(moon.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(moon.lon / 30) % 12]],

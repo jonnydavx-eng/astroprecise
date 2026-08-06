@@ -51,9 +51,9 @@
   ];
 
   var NAV_EXTRAS = [
-    ['catalogue.html', 'Lookbook'],
+    ['tonight.html', 'Tonight'], ['this-weeks-sky.html', 'This Week'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
-    ['this-weeks-sky.html', 'This Week'], ['tonight.html', 'Tonight'],
+    ['catalogue.html', 'Lookbook'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
