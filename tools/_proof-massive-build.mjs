@@ -54,7 +54,7 @@ ok(/deep-reading/.test(gum) && /resolveProductSlug/.test(gum), 'deep-reading slu
 
 const sw = fs.readFileSync(path.join(web, 'sw.js'), 'utf8');
 const m = sw.match(/const V\s*=\s*"([^"]+)"/);
-ok(m && m[1] && /ap-v(7[6-9]|8d{2})/.test(m[1]), `SW tip ${m && m[1]}`);
+ok(m && m[1] && /ap-v(7[6-9]|8\d{2})/.test(m[1]), `SW tip ${m && m[1]}`);
 
 const pages = ['eclipse.html', 'deep-reading.html', 'natal-plate.html'];
 for (const p of pages) {

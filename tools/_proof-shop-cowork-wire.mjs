@@ -26,7 +26,7 @@ if (!app.includes('catalogueSkus') && !app.includes("'eclipse-reading'")) {
 if (!/Notify me|NOTIFY ME|notify|dormant|Coming soon|opening soon/i.test(shop + app)) {
   fails.push('shop/app missing dormant/notify language')
 }
-if (!/ap-v(7[6-9][0-9]|8d{2})/.test(sw)) fails.push('SW tip not in 76x–8xx')
+if (!/ap-v(7[6-9][0-9]|8\d{2})/.test(sw)) fails.push('SW tip not in 76x–8xx')
 if (!bridge.includes('REPLACE_ME')) fails.push('bridge missing REPLACE_ME dormant map')
 if (!bridge.includes('deep-reading')) fails.push('bridge missing deep-reading alias')
 if (!honest.includes('hardenAllDeadGumroad')) fails.push('honest checkout missing')
