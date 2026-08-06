@@ -115,6 +115,12 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
     if (tries++ < 75) setTimeout(boot, 200);
   }
   boot();
+  // Late-engine fallback: if the 3D load beat the 15s poll (slow first visit),
+  // engage the eclipse whenever the API appears — idempotent, 4s cadence.
+  setInterval(function () {
+    var oo = document.getElementById('ecOrr');
+    try { if (oo && typeof oo.setEclipse === 'function' && typeof oo.getEclipse === 'function' && oo.getEclipse() < 0.5) oo.setEclipse(0.91, prm); } catch (e4) {}
+  }, 4000);
 })();
 </script>
 
