@@ -115,7 +115,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
     var o = document.getElementById('ecOrr');
     if (o && typeof o.setEclipse === 'function') {
       try { if (typeof o.flyTo === 'function' && !applied) o.flyTo('earth'); } catch (e0) {}
-      try { o.setEclipse(0.91, prm); applied = true; } catch (e1) {}
+      try { o.setEclipse(0.91, true); applied = true; } catch (e1) {}
       return applied;
     }
     return false;
@@ -124,7 +124,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   var iv = setInterval(function () { if (engage()) clearInterval(iv); }, 1000);
   setTimeout(function () { clearInterval(iv); }, 45000); // stop after 45s regardless
   setInterval(function () { // re-hold after any engine reboot
-    try { var o = document.getElementById('ecOrr'); if (applied && o && typeof o.getEclipse === 'function' && o.getEclipse() < 0.5) o.setEclipse(0.91, prm); } catch (e2) {}
+    try { var o = document.getElementById('ecOrr'); if (applied && o && typeof o.getEclipse === 'function' && o.getEclipse() < 0.5) o.setEclipse(0.91, true); } catch (e2) {}
   }, 4000);
 })();
 </script>

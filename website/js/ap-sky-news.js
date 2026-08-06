@@ -335,7 +335,7 @@
     if (!o || typeof o.setEclipse !== 'function') return;
     if (item && item.id === 'eclipse' && item.fly === 'sun') {
       try { if (typeof o.flyTo === 'function') o.flyTo('sun'); } catch (e0) { /* optional */ }
-      setTimeout(function () { try { o.setEclipse(0.91); } catch (e1) { /* optional */ } }, 700); // after the fly begins
+      setTimeout(function () { try { o.setEclipse(0.91, true); } catch (e1) { /* optional */ } }, 700); // after the fly begins
     } else {
       try { o.setEclipse(0); } catch (e2) { /* optional */ }
     }
