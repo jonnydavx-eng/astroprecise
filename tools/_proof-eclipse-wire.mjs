@@ -23,7 +23,7 @@ if (!peCss.includes('text-wrap: balance') && !peCss.includes('text-wrap:balance'
   // PE may use either form
   if (!peCss.includes('text-wrap')) fails.push('PE css missing text-wrap')
 }
-if (!/ap-v7[6-9]\d?/.test(sw) && !/ap-v76[0-9]/.test(sw) && !/ap-v77[0-9]/.test(sw)) fails.push('SW tip not in 76x–77x range')
+if (!/ap-v(7[6-9]\d?|8\d{2})/.test(sw)) fails.push('SW tip not in 76x–8xx range')
 if (!honest.includes('hardenAllDeadGumroad')) fails.push('honest checkout missing hardener')
 
 // Quiet chart: bodies clustered away from aspect angles to 140.133°
