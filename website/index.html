@@ -30,30 +30,30 @@
 @font-face{font-family:'Cinzel';src:url('./fonts/cinzel-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 :root{
   --ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);
-  --ember:#ff5a1f;--ember-hi:#ff7a45;--brass:#d8b46a;
-  --line:rgba(216,180,106,.15);--line2:rgba(216,180,106,.32);
-  --acc:#d8b46a;--good:#a8d6b0;--warn:#ff5a1f;--card:rgba(242,236,223,.03);
+  --ember:#2f6bff;--ember-hi:#6b9bff;--brass:#1fb6a6;
+  --line:rgba(31,182,166,.15);--line2:rgba(31,182,166,.32);
+  --acc:#1fb6a6;--good:#a8d6b0;--warn:#2f6bff;--card:rgba(242,236,223,.03);
   --serif:'Cormorant Garamond',Georgia,serif;--mono:'IBM Plex Mono',monospace;--caps:'Cinzel',serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1100px 620px at 50% -8%,rgba(255,122,69,.12),transparent 62%),radial-gradient(900px 700px at 78% 28%,rgba(46,72,150,.14),transparent 62%),radial-gradient(760px 620px at 12% 58%,rgba(26,96,110,.12),transparent 60%),radial-gradient(800px 500px at 88% 6%,rgba(216,180,106,.07),transparent 60%);background-attachment:fixed}
+body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1100px 620px at 50% -8%,rgba(99,149,255,.12),transparent 62%),radial-gradient(900px 700px at 78% 28%,rgba(46,72,150,.14),transparent 62%),radial-gradient(760px 620px at 12% 58%,rgba(26,96,110,.12),transparent 60%),radial-gradient(800px 500px at 88% 6%,rgba(31,182,166,.07),transparent 60%);background-attachment:fixed}
 a{color:var(--brass);text-decoration:none;transition:color .25s}a:hover{color:var(--ember-hi)}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
 .mono{font-family:var(--mono)}
 .serif{font-family:var(--serif);font-style:italic;font-weight:500}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
-.btn{display:inline-block;background:var(--ember);color:#1c0d05;border:0;border-radius:100px;padding:18px 38px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;cursor:pointer;box-shadow:0 6px 26px rgba(255,90,31,.28),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .28s cubic-bezier(.2,.9,.3,1.4),box-shadow .28s,filter .2s}
-.btn:hover{filter:brightness(1.12);color:#000;transform:translateY(-2px);box-shadow:0 14px 44px rgba(255,90,31,.45)}
+.btn{display:inline-block;background:var(--ember);color:#ffffff;border:0;border-radius:100px;padding:18px 38px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;cursor:pointer;box-shadow:0 6px 26px rgba(47,107,255,.28),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .28s cubic-bezier(.2,.9,.3,1.4),box-shadow .28s,filter .2s}
+.btn:hover{filter:brightness(1.12);color:#000;transform:translateY(-2px);box-shadow:0 14px 44px rgba(47,107,255,.45)}
 .btn:active{transform:translateY(0)}
 .btn.ghost{background:none;border:1px solid rgba(242,236,223,.3);color:var(--ink)}
-.btn.ghost:hover{border-color:var(--brass);color:#fff;box-shadow:0 10px 30px rgba(216,180,106,.18)}
+.btn.ghost:hover{border-color:var(--brass);color:#fff;box-shadow:0 10px 30px rgba(31,182,166,.18)}
 .card{border:1px solid var(--line2);border-radius:16px;background:rgba(242,236,223,.05);padding:26px 28px;box-shadow:0 10px 34px rgba(0,0,0,.28),inset 0 1px 0 rgba(242,236,223,.05)}
 .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;color:var(--acc);margin-bottom:14px}
 .receipt{border:1px solid var(--line);border-radius:12px;background:rgba(242,236,223,.025);padding:16px 20px;display:flex;flex-direction:column;gap:7px}
 .receipt div{font-family:var(--mono);font-size:12px;letter-spacing:.06em;line-height:1.75;color:rgba(242,236,223,.85)}
 input,select{background:rgba(242,236,223,.045);border:1px solid var(--line2);border-radius:10px;color:var(--ink);font-family:var(--mono);font-size:16px;padding:13px 14px;color-scheme:dark;width:100%;transition:border-color .25s,box-shadow .25s}
-input:focus,select:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(255,90,31,.16)}
+input:focus,select:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(47,107,255,.16)}
 .field{display:flex;flex-direction:column;gap:8px;flex:1;min-width:130px}
 .field span{font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;color:rgba(242,236,223,.62)}
 section.band{padding:130px 0}
@@ -63,7 +63,7 @@ h2 em{font-family:var(--serif);font-style:italic;font-weight:500;letter-spacing:
 table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:16px 10px;border-top:1px solid var(--line);font-size:15px;line-height:1.55;vertical-align:top}
 tbody tr{transition:background .25s}
-tbody tr:hover{background:rgba(216,180,106,.04)}
+tbody tr:hover{background:rgba(31,182,166,.04)}
 th{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--acc);font-weight:500}
 td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:right;color:var(--brass)}
 .pulse{animation:pulse 2.4s infinite}
@@ -74,17 +74,17 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ═══ ECLIPSE EVENT BAR ═══ */
-#eclipse-ribbon{border-bottom:1px solid rgba(255,90,31,.34);background:linear-gradient(90deg,rgba(255,90,31,.12),rgba(255,90,31,.03) 45%,rgba(216,180,106,.05))}
+#eclipse-ribbon{border-bottom:1px solid rgba(47,107,255,.34);background:linear-gradient(90deg,rgba(47,107,255,.12),rgba(47,107,255,.03) 45%,rgba(31,182,166,.05))}
 #eclipse-ribbon a{color:inherit}
 .er-wrap{max-width:1180px;margin:0 auto;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap}
 .er-left{min-width:260px;flex:1}
 .er-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--ember-hi);margin-bottom:8px}
 .er-h{margin:0;font-size:clamp(20px,2.5vw,29px);line-height:1.15;font-weight:700;letter-spacing:-.01em}
 .er-h em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ember-hi)}
-.er-left:hover .er-h{text-decoration:underline;text-decoration-color:rgba(255,90,31,.55);text-underline-offset:6px}
+.er-left:hover .er-h{text-decoration:underline;text-decoration-color:rgba(47,107,255,.55);text-underline-offset:6px}
 .er-sub{margin-top:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--faint);line-height:1.9}
 .er-right{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.er-count{font-family:var(--mono);font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 28px rgba(255,90,31,.55);white-space:nowrap;font-variant-numeric:tabular-nums}
+.er-count{font-family:var(--mono);font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 28px rgba(47,107,255,.55);white-space:nowrap;font-variant-numeric:tabular-nums}
 .er-count small{display:block;font-size:8.5px;letter-spacing:.24em;color:var(--faint);margin-top:6px;white-space:normal}
 
 /* ═══ TOP BAR ═══ */
@@ -100,12 +100,12 @@ nav.main a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1p
 nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
 
 /* ═══ HERO — what this is, what to do, in ten seconds ═══ */
-.hero{border-bottom:1px solid var(--line);padding:clamp(56px,8vh,96px) 0 clamp(64px,9vh,110px);background:radial-gradient(720px 420px at 30% 42%,rgba(255,122,69,.07),transparent 65%)}
+.hero{border-bottom:1px solid var(--line);padding:clamp(56px,8vh,96px) 0 clamp(64px,9vh,110px);background:radial-gradient(720px 420px at 30% 42%,rgba(99,149,255,.07),transparent 65%)}
 .hero-grid{max-width:1180px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(36px,4.5vw,64px);align-items:center}
 .hero-eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.3em;color:var(--brass);margin:0 0 22px}
 .hero-eyebrow .pulse{color:var(--ember);margin-right:10px}
 .hero h1{margin:0;font-size:clamp(42px,5.4vw,70px);line-height:1.04;font-weight:700;letter-spacing:-.025em}
-.hero h1 em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ember-hi);letter-spacing:-.01em;text-shadow:0 0 44px rgba(255,122,69,.35)}
+.hero h1 em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ember-hi);letter-spacing:-.01em;text-shadow:0 0 44px rgba(99,149,255,.35)}
 .hero-sub{margin:26px 0 0;font-size:19px;line-height:1.62;color:var(--dim);max-width:500px}
 .hero-sub b{color:var(--ink);font-weight:600}
 .hero-ctas{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
@@ -114,7 +114,7 @@ nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
 .hero-trust i{width:3px;height:3px;border-radius:50%;background:var(--brass);display:block;flex:none}
 
 /* the sky instrument — live, touchable, framed */
-.sky-panel{position:relative;height:min(760px,88vh);min-height:520px;border:1px solid rgba(216,180,106,.4);border-radius:22px;overflow:hidden;background:radial-gradient(120% 95% at 50% 42%,#0e0c0b,#090807 72%);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 100px rgba(255,90,31,.12),inset 0 1px 0 rgba(242,236,223,.07)}
+.sky-panel{position:relative;height:min(760px,88vh);min-height:520px;border:1px solid rgba(31,182,166,.4);border-radius:22px;overflow:hidden;background:radial-gradient(120% 95% at 50% 42%,#0e0c0b,#090807 72%);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 100px rgba(47,107,255,.12),inset 0 1px 0 rgba(242,236,223,.07)}
 .sky-panel void-orrery{position:absolute;inset:0}
 .sky-chip{position:absolute;left:16px;top:14px;z-index:4;font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--ink);background:rgba(8,8,11,.62);border:1px solid var(--line2);border-radius:100px;padding:9px 15px;backdrop-filter:blur(4px);pointer-events:none;line-height:1.5}
 .sky-chip .pulse{color:var(--ember)}
@@ -123,13 +123,13 @@ nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
 #deck{position:absolute;inset:0;pointer-events:none}
 #deck .scrubrow{display:flex;align-items:center;gap:14px;padding:0 18px 18px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0}
 input.scrub{-webkit-appearance:none;appearance:none;background:transparent;height:14px;cursor:pointer;border:0;padding:0}
-input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(242,236,223,.1),rgba(255,90,31,.55) 50%,rgba(242,236,223,.1))}
-input.scrub::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(255,90,31,.8);margin-top:-4.5px}
-input.scrub::-moz-range-track{height:2px;background:rgba(255,90,31,.4)}
-input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(255,90,31,.8)}
+input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(242,236,223,.1),rgba(47,107,255,.55) 50%,rgba(242,236,223,.1))}
+input.scrub::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(47,107,255,.8);margin-top:-4.5px}
+input.scrub::-moz-range-track{height:2px;background:rgba(47,107,255,.4)}
+input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(47,107,255,.8)}
 #dock{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;pointer-events:auto}
 #dock button{width:42px;height:42px;border-radius:50%;background:rgba(8,8,11,.5);border:1px solid rgba(242,236,223,.2);color:rgba(242,236,223,.85);font-size:14px;cursor:pointer;backdrop-filter:blur(4px);transition:border-color .25s,box-shadow .25s,color .25s}
-#dock button:hover,#dock button.on{border-color:var(--ember);color:#fff;box-shadow:0 0 16px rgba(255,90,31,.45)}
+#dock button:hover,#dock button.on{border-color:var(--ember);color:#fff;box-shadow:0 0 16px rgba(47,107,255,.45)}
 #ladder{position:absolute;left:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;pointer-events:auto}
 #ladder button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;color:rgba(242,236,223,.55);transition:color .25s}
 #ladder button:hover{color:rgba(242,236,223,.9)}
@@ -145,7 +145,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .chap{border-top:1px solid var(--line)}
 .chap-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;padding-top:24px;margin-bottom:76px;flex-wrap:wrap}
 .chap-idx{display:flex;align-items:baseline;gap:26px}
-.chap-num{font-family:var(--caps);font-weight:600;font-size:clamp(54px,7vw,100px);line-height:.92;color:rgba(216,180,106,.16);letter-spacing:.02em;user-select:none}
+.chap-num{font-family:var(--caps);font-weight:600;font-size:clamp(54px,7vw,100px);line-height:.92;color:rgba(31,182,166,.16);letter-spacing:.02em;user-select:none}
 .chap-tag{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--brass)}
 .chap-note{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--faint);text-align:right;line-height:2.1}
 .wheelbox{width:380px;max-width:88vw;margin:0 auto;position:relative}
@@ -153,7 +153,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .prow{display:flex;align-items:baseline;gap:14px;padding:8px 2px;border-top:1px solid rgba(242,236,223,.08);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em}
 .pill{display:inline-flex;align-items:center;gap:9px;background:rgba(8,8,11,.4);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.7);padding:12px 18px;border-radius:100px;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;cursor:pointer;transition:border-color .25s,color .25s,transform .25s,box-shadow .25s}
 .pill:hover{border-color:var(--brass);color:#fff;transform:translateY(-1px)}
-.pill.on{border-color:var(--ember);color:#fff;background:rgba(255,90,31,.13);box-shadow:0 0 18px rgba(255,90,31,.3)}
+.pill.on{border-color:var(--ember);color:#fff;background:rgba(47,107,255,.13);box-shadow:0 0 18px rgba(47,107,255,.3)}
 .instrument{border:1px solid var(--line2);border-radius:18px;background:linear-gradient(180deg,rgba(242,236,223,.04),rgba(242,236,223,.012));padding:34px 32px}
 #castHint{display:none;margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ember-hi)}
 #castHint.show{display:block}
@@ -201,12 +201,29 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 @media (max-width:860px){#dock{display:none}#telemetry{display:none}}
 @media (max-width:430px){.card{padding:20px 18px}section.band{padding:72px 0}.chap-num{font-size:52px}.sky-chip{right:16px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+/* ═══ DAYBREAK — morning on top, night atlas below ═══ */
+.daybreak{--ink:#191309;--dim:rgba(25,19,9,.74);--faint:rgba(25,19,9,.56);--line:rgba(140,110,60,.20);--line2:rgba(140,110,60,.34);--brass:#0e7a6f;--acc:#0e7a6f;background:#f6f1e6;color:#191309}
+#eclipse-ribbon.daybreak{background:linear-gradient(90deg,rgba(47,107,255,.14),rgba(255,170,80,.09) 45%,rgba(31,182,166,.12));border-bottom:1px solid rgba(200,80,20,.32)}
+.topbar.daybreak{border-bottom-color:rgba(140,110,60,.22)}
+.hero.daybreak{border-bottom-color:rgba(140,110,60,.22);background:#f6f1e6 radial-gradient(720px 420px at 30% 42%,rgba(255,150,60,.12),transparent 65%)}
+.trust.daybreak{border-top:0;border-bottom:1px solid rgba(140,110,60,.22)}
+.daybreak nav.main a{color:rgba(25,19,9,.64)}.daybreak nav.main a:hover{color:#000}
+.daybreak .btn.ghost{background:none;border:1px solid rgba(25,19,9,.32);color:#191309}
+.daybreak .btn.ghost:hover{border-color:#0e7a6f;color:#000;box-shadow:0 10px 30px rgba(154,117,46,.25)}
+.daybreak .er-count{color:#0e4fb8;text-shadow:0 0 26px rgba(255,110,31,.35)}
+.daybreak .hero-eyebrow{color:#0e7a6f}
+.daybreak h1 em{color:#2456d6;text-shadow:none}
+.daybreak .hero-sub b{color:#000}
+.daybreak .hero-trust i{background:#0e7a6f}
+.daybreak .sky-panel{border:1px solid rgba(14,122,111,.55);box-shadow:0 34px 90px rgba(10,24,60,.4),0 0 120px rgba(47,107,255,.28),inset 0 1px 0 rgba(242,236,223,.08)}
+.daybreak-horizon{height:150px;background:linear-gradient(#f6f1e6,rgba(246,241,230,0) 30%,#0a0908 72%);margin-bottom:-1px}
 </style>
 </head>
 <body>
 
 <!-- ═══ ECLIPSE EVENT BAR — 12 AUG 2026, deepest over Britain since 1999 ═══ -->
-<section id="eclipse-ribbon" aria-labelledby="erHead">
+<section id="eclipse-ribbon" class="daybreak" aria-labelledby="erHead">
   <div class="er-wrap">
     <a class="er-left" href="./eclipse.html">
       <div class="er-lbl"><span class="pulse">●</span>&nbsp;&nbsp;THE ECLIPSE — 12 AUG 2026</div>
@@ -241,7 +258,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 </script>
 
 <!-- ═══ TOP BAR ═══ -->
-<header class="topbar">
+<header class="topbar daybreak">
   <div class="topbar-in">
     <a class="hero-brand" href="./">
       <img src="./img/logo-mark.svg" alt="" width="36" height="36" style="display:block">
@@ -257,7 +274,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 </header>
 
 <!-- ═══ HERO — what this is, what to do, in ten seconds ═══ -->
-<section class="hero" aria-labelledby="heroHead">
+<section class="hero daybreak" aria-labelledby="heroHead">
   <div class="hero-grid">
     <div>
       <p class="hero-eyebrow"><span class="pulse">●</span>FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
@@ -287,7 +304,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
           <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
           <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">2200</span>
           <span class="mono" id="scrubLabel" style="font-size:10px;letter-spacing:.18em;color:var(--brass);min-width:110px;text-align:right">NOW</span>
-          <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(216,180,106,.45);color:var(--brass);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
+          <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(31,182,166,.45);color:var(--brass);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
         </div>
       </div>
     </div>
@@ -295,13 +312,14 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 </section>
 
 <!-- trust strip -->
-<div class="trust">
+<div class="trust daybreak">
   <div class="trust-grid">
     <div class="trust-cell"><div class="trust-lbl">FREE · NO ACCOUNT</div><div class="trust-txt">The full chart. No email, no wall.</div></div>
     <div class="trust-cell"><div class="trust-lbl">COMPUTED HERE</div><div class="trust-txt">Your birth minute never leaves this device. <a href="#privacy">Check it →</a></div></div>
     <div class="trust-cell"><div class="trust-lbl">PLANETARIUM-GRADE</div><div class="trust-txt">The same maths as planetarium software, 1800–2200.</div></div>
   </div>
 </div>
+<div class="daybreak-horizon" aria-hidden="true"></div>
 
 <!-- ═══ PLATE I · THE CHART ═══ -->
 <section class="band chap" id="cast">
@@ -530,13 +548,13 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       var len = i % 30 === 0 ? 12 : 5, op = i % 30 === 0 ? 0.4 : 0.22;
       x1 = cx + 186 * Math.cos(a); y1 = cy - 186 * Math.sin(a);
       x2 = cx + (186 - len) * Math.cos(a); y2 = cy - (186 - len) * Math.sin(a);
-      s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="rgba(216,180,106,' + op + ')" stroke-width="1"/>';
+      s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="rgba(31,182,166,' + op + ')" stroke-width="1"/>';
     }
     for (i = 0; i < 12; i++) {
       a = (180 - (i * 30 + 15)) * Math.PI / 180;
-      s += '<text x="' + (cx + 168 * Math.cos(a)) + '" y="' + (cy - 168 * Math.sin(a) + 5) + '" text-anchor="middle" font-size="15" fill="rgba(216,180,106,.78)">' + SGLYPH[i] + '</text>';
+      s += '<text x="' + (cx + 168 * Math.cos(a)) + '" y="' + (cy - 168 * Math.sin(a) + 5) + '" text-anchor="middle" font-size="15" fill="rgba(31,182,166,.78)">' + SGLYPH[i] + '</text>';
     }
-    var ASP = [[60, 'rgba(168,214,176,.55)'], [90, 'rgba(255,90,31,.5)'], [120, 'rgba(168,214,176,.55)'], [180, 'rgba(255,90,31,.5)']];
+    var ASP = [[60, 'rgba(168,214,176,.55)'], [90, 'rgba(47,107,255,.5)'], [120, 'rgba(168,214,176,.55)'], [180, 'rgba(47,107,255,.5)']];
     for (i = 0; i < rows.length; i++) for (var k = i + 1; k < rows.length; k++) {
       var sep = Math.abs(((rows[i].lon - rows[k].lon + 540) % 360) - 180);
       for (var q = 0; q < ASP.length; q++) if (Math.abs(sep - ASP[q][0]) <= 5) {
@@ -549,7 +567,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     sorted.forEach(function (r, idx) {
       a = (180 - r.lon) * Math.PI / 180;
       var R = idx % 2 ? 104 : 132;
-      s += '<text x="' + (cx + R * Math.cos(a)) + '" y="' + (cy - R * Math.sin(a) + 6) + '" text-anchor="middle" font-size="16" fill="#f2ecdf" style="text-shadow:0 0 8px #d8b46a">' + r.glyph + '</text>';
+      s += '<text x="' + (cx + R * Math.cos(a)) + '" y="' + (cy - R * Math.sin(a) + 6) + '" text-anchor="middle" font-size="16" fill="#f2ecdf" style="text-shadow:0 0 8px #1fb6a6">' + r.glyph + '</text>';
     });
     $('wheel').innerHTML = s;
     $('rows').innerHTML = rows.map(function (r) {
@@ -713,7 +731,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     b.type = 'button';
     b.title = d[1] ? d[1][0].toUpperCase() + d[1].slice(1) : 'Whole system';
     b.setAttribute('aria-label', b.title);
-    b.innerHTML = d[1] ? '<i style="display:block;width:11px;height:11px;border-radius:50%;margin:0 auto;background:' + d[0] + ';box-shadow:0 0 9px ' + d[0] + '"></i>' : '<i style="display:block;width:11px;height:11px;border-radius:50%;margin:0 auto;border:2px solid #d8b46a;box-shadow:0 0 8px rgba(216,180,106,.7)"></i>';
+    b.innerHTML = d[1] ? '<i style="display:block;width:11px;height:11px;border-radius:50%;margin:0 auto;background:' + d[0] + ';box-shadow:0 0 9px ' + d[0] + '"></i>' : '<i style="display:block;width:11px;height:11px;border-radius:50%;margin:0 auto;border:2px solid #1fb6a6;box-shadow:0 0 8px rgba(31,182,166,.7)"></i>';
     b.addEventListener('click', function () { if (orr.flyTo) orr.flyTo(d[1]); });
     b.dataset.key = d[1];
     $('dock').appendChild(b);
@@ -721,7 +739,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   var FACTS = { sun: ["99.86% OF THE SYSTEM'S MASS", 'Helios saw everything; Apollo drove the light.'], mercury: ['A YEAR IS 88 DAYS · A DAY IS 176', 'The messenger — quicksilver mind.'], venus: ['SPINS BACKWARDS · SUN RISES WEST', 'Morning star and evening star — the same goddess, twice.'], earth: ['THE ONLY WORLD WHERE ANYONE LOOKS UP', 'Home. Every chart ever cast began here.'], moon: ['DRIFTING 3.8 CM AWAY EVERY YEAR', 'Selene drives the silver chariot.'], mars: ['OLYMPUS MONS IS 2.5× EVEREST', 'The will to begin.'], jupiter: ['ROOM FOR 1,300 EARTHS', 'The king — luck, growth, appetite.'], saturn: ['RINGS 282,000 KM WIDE · ~1 KM THIN', 'The timekeeper — patience earned.'], uranus: ['ROLLS ON ITS SIDE', 'Sudden turns, strange genius.'], neptune: ['2,000 KM/H WINDS, SUNLESS BLUE', 'Fog, faith, the unseen ocean.'] };
   orr.addEventListener('planetfocus', function (e) {
     var d = e.detail, f = d.key ? FACTS[d.key] : null;
-    $('telemetry').innerHTML = '<div style="font-size:15px;color:#fff">' + (d.glyph || '') + '&nbsp;&nbsp;' + (d.name || '').toUpperCase() + '</div>' + (f ? '<div style="color:rgba(242,236,223,.6)">' + f[0] + '</div><div class="serif" style="font-size:16px;color:rgba(216,180,106,.9);letter-spacing:.01em">' + f[1] + '</div>' : '') + '<div style="color:rgba(242,236,223,.35)">DRAG TO ORBIT · CLICK A WORLD TO FLY</div>';
+    $('telemetry').innerHTML = '<div style="font-size:15px;color:#fff">' + (d.glyph || '') + '&nbsp;&nbsp;' + (d.name || '').toUpperCase() + '</div>' + (f ? '<div style="color:rgba(242,236,223,.6)">' + f[0] + '</div><div class="serif" style="font-size:16px;color:rgba(31,182,166,.9);letter-spacing:.01em">' + f[1] + '</div>' : '') + '<div style="color:rgba(242,236,223,.35)">DRAG TO ORBIT · CLICK A WORLD TO FLY</div>';
     Array.prototype.forEach.call($('dock').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.key === (d.key || '')); });
   });
   orr.addEventListener('scalechange', function (e) {
