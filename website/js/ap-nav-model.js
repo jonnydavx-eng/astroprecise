@@ -31,6 +31,7 @@
 
   // Hub + keep + story + library first in More
   var NAV_MORE_EXPLORE = [
+    ['eclipse.html', 'The Eclipse', { badge: '12 Aug' }],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
     ['cosmic-story.html', 'Cosmic Story'],

@@ -100,6 +100,36 @@ nav.main{display:flex;gap:30px;flex-wrap:wrap;font-family:var(--mono);font-size:
 nav.main a{color:rgba(242,236,223,.82);position:relative;padding-bottom:3px}
 nav.main a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ember);transition:width .3s}
 nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
+nav.main button{background:none;border:0;padding:0 0 3px;cursor:pointer;font:inherit;letter-spacing:inherit;color:rgba(242,236,223,.82);position:relative}
+nav.main button::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ember);transition:width .3s}
+nav.main button:hover{color:#fff}nav.main button:hover::after{width:100%}
+nav.main button[aria-expanded="true"]{color:#fff}nav.main button[aria-expanded="true"]::after{width:100%}
+#sbMenu{display:none;background:rgba(10,12,24,.55);border:1px solid rgba(140,180,255,.28);color:#eaf0ff;border-radius:100px;padding:12px 18px;font-family:var(--mono);font-size:9px;letter-spacing:.22em;cursor:pointer;backdrop-filter:blur(6px)}
+#sbMenu:hover{border-color:rgba(140,180,255,.65);color:#fff}
+.sb-panel{position:absolute;top:74px;right:24px;z-index:7;min-width:300px;max-width:min(360px,94vw);display:flex;flex-direction:column;gap:2px;padding:10px;background:rgba(10,12,24,.82);border:1px solid rgba(140,180,255,.28);border-radius:14px;backdrop-filter:blur(10px);box-shadow:0 18px 50px rgba(0,0,10,.55);text-shadow:0 1px 14px rgba(0,0,10,.75)}
+.sb-panel[hidden]{display:none}
+.sb-panel-lbl{padding:10px 14px 4px;font-family:var(--mono);font-size:7px;letter-spacing:.3em;color:rgba(234,240,255,.5)}
+.sb-panel a{display:block;padding:11px 14px;border-radius:9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:#eaf0ff}
+.sb-panel a small{display:block;margin-top:5px;font-size:7.5px;letter-spacing:.2em;color:rgba(234,240,255,.55)}
+.sb-panel a:hover{background:rgba(140,180,255,.14);color:#fff}
+.sb-panel a[aria-current="page"]{color:var(--ember-hi)}
+.sb-panel-div{height:1px;margin:7px 10px;background:rgba(140,180,255,.22)}
+.sb-panel-onpage{display:none}
+.console.console-flash{animation:consoleFlash 1.2s ease-out}
+@keyframes consoleFlash{0%{border-color:rgba(47,107,255,.95);box-shadow:0 0 0 6px rgba(47,107,255,.3),0 24px 70px rgba(0,0,10,.45)}100%{border-color:rgba(31,182,166,.4);box-shadow:0 24px 70px rgba(0,0,10,.45)}}
+.hint-chip{position:absolute;z-index:6;display:flex;align-items:center;gap:2px;font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:rgba(234,240,255,.88);background:rgba(10,12,24,.6);border:1px solid rgba(140,180,255,.34);border-radius:100px;padding:5px 6px 5px 14px;backdrop-filter:blur(6px);box-shadow:0 8px 24px rgba(0,0,10,.35);text-shadow:0 1px 10px rgba(0,0,10,.6);transition:opacity .6s}
+.hint-chip[hidden]{display:none}
+.hint-chip.hint-fade{opacity:0}
+.hint-chip b{color:var(--ember-hi);font-weight:400}
+.hint-go{background:none;border:0;padding:6px 4px;cursor:pointer;font:inherit;letter-spacing:inherit;color:inherit}
+.hint-go:hover{color:#fff}
+.hint-x{background:none;border:0;padding:6px 8px;cursor:pointer;font:inherit;font-size:11px;line-height:1;color:rgba(234,240,255,.55)}
+.hint-x:hover{color:#fff}
+#hint1{left:36px;top:82px}
+#hint2{left:18px;bottom:36px;padding:5px 14px}
+.signbar .hint-chip{position:static;flex:none}
+#castCaption{margin-top:14px;font-size:8.5px;letter-spacing:.2em;color:#0e7a6f}
+@media (prefers-reduced-motion:reduce){.console.console-flash{animation:none}.hint-chip{transition:none}}
 
 /* floating glass-paper cards on the sky — daybreak variable scope so JS-injected var() colors read on paper */
 .console,.reading{--ink:#191309;--dim:rgba(25,19,9,.78);--faint:rgba(25,19,9,.6);--brass:#0e7a6f;--acc:#0e7a6f;--line:rgba(140,110,60,.25);--line2:rgba(25,19,9,.3);--ember-hi:#2456d6;--good:#1e7a46;position:absolute;z-index:6;background:rgba(246,241,230,.94);backdrop-filter:blur(10px);color:#191309;border:1px solid rgba(31,182,166,.4);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(0,0,10,.45)}
