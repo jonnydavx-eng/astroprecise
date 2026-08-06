@@ -106,28 +106,25 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
 <script>
 // Live shadow panel: the engine script is deferred — poll (up to ~15s) for the
 // upgraded <void-orrery>, then hold the eclipse at 91%. No ephemeris dependency.
+// Event-driven engage: hooks the engine's own ready event; 1s safety cadence
+// until applied; re-holds idempotently if the engine reboots (context restore).
 (function () {
   var prm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var tries = 0;
-  function boot() {
+  var applied = false;
+  function engage() {
     var o = document.getElementById('ecOrr');
-    if (o && typeof o.flyTo === 'function' && typeof o.setEclipse === 'function') {
-      try { o.flyTo('earth'); } catch (e0) {}
-      if (prm) { try { o.setEclipse(0.91, true); } catch (e1) {} } // reduced motion — skip the ramp, set final state
-      else setTimeout(function () { try { o.setEclipse(0.91); } catch (e2) {} }, 1200); // ramp in after the fly begins
-      setInterval(function () { // a context-restore reboots the engine dark — re-apply idempotently
-        try { if (typeof o.getEclipse === 'function' && o.getEclipse() < 0.5) o.setEclipse(0.91, prm); } catch (e3) {}
-      }, 4000);
-      return;
+    if (o && typeof o.setEclipse === 'function') {
+      try { if (typeof o.flyTo === 'function' && !applied) o.flyTo('earth'); } catch (e0) {}
+      try { o.setEclipse(0.91, prm); applied = true; } catch (e1) {}
+      return applied;
     }
-    if (tries++ < 75) setTimeout(boot, 200);
+    return false;
   }
-  boot();
-  // Late-engine fallback: if the 3D load beat the 15s poll (slow first visit),
-  // engage the eclipse whenever the API appears — idempotent, 4s cadence.
-  setInterval(function () {
-    var oo = document.getElementById('ecOrr');
-    try { if (oo && typeof oo.setEclipse === 'function' && typeof oo.getEclipse === 'function' && oo.getEclipse() < 0.5) oo.setEclipse(0.91, prm); } catch (e4) {}
+  document.addEventListener('ap-orrery-ready', function () { setTimeout(engage, 600); });
+  var iv = setInterval(function () { if (engage()) clearInterval(iv); }, 1000);
+  setTimeout(function () { clearInterval(iv); }, 45000); // stop after 45s regardless
+  setInterval(function () { // re-hold after any engine reboot
+    try { var o = document.getElementById('ecOrr'); if (applied && o && typeof o.getEclipse === 'function' && o.getEclipse() < 0.5) o.setEclipse(0.91, prm); } catch (e2) {}
   }, 4000);
 })();
 </script>
