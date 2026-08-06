@@ -23,8 +23,16 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What time is the solar eclipse on 12 August 2026 in the UK?","acceptedAnswer":{"@type":"Answer","text":"Over Britain the partial eclipse runs from roughly 18:00 to 20:10 BST, with the deepest coverage around 19:00–19:15 BST (about 19:05 BST for much of England and Wales)."}},{"@type":"Question","name":"How much of the Sun will be covered in the UK?","acceptedAnswer":{"@type":"Answer","text":"Roughly 89–92% of the Sun across the UK — the deepest eclipse over Britain since 1999. Totality is visible only along a track crossing Iceland and northern Spain."}},{"@type":"Question","name":"Is it safe to look at the eclipse?","acceptedAnswer":{"@type":"Answer","text":"Never look at the Sun directly, even at 91% coverage — the remaining sliver is still dangerously bright. Use ISO 12312-2 certified eclipse glasses, a pinhole projector, or watch the changing light around you."}},{"@type":"Question","name":"What else happens that night?","acceptedAnswer":{"@type":"Answer","text":"The Perseid meteor shower peaks the same night of 12–13 August 2026 under dark skies after the eclipse — up to around 100 meteors an hour after midnight."}}]}
 </script>
 <link rel="preload" href="./fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- ── Three.js import map — REQUIRED for js/orrery-webgl.js (bare `import 'three'`).
+     COPIED VERBATIM from explore.html; keep in sync. Must sit in <head> — this page
+     has an inline module script, so a late-injected map would be ignored. ── -->
+<script type="importmap">
+{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+</script>
 <script src="./js/ephemeris.js" defer></script>
-<script src="./js/orrery.js" defer></script>
+<!-- M2: the live shadow sim runs the superior Orrery3D engine through the adapter
+     (same <void-orrery> surface incl. setEclipse; fails open to js/orrery.js). -->
+<script src="./js/void-orrery-adapter.js?v=782" defer></script>
 <style>
 @font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
 @font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}

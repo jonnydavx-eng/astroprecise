@@ -14,7 +14,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="./js/orrery.js?v=782"></script>
+<!-- ── Three.js import map — REQUIRED for js/orrery-webgl.js (bare `import 'three'`).
+     COPIED VERBATIM from explore.html; keep in sync. ── -->
+<script type="importmap">
+{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+</script>
+<!-- M2: adapter keeps window.VoidEphem + the <void-orrery> surface, backed by the
+     superior Orrery3D engine; fails open to js/orrery.js (?engine=legacy to force). -->
+<script src="./js/void-orrery-adapter.js?v=782"></script>
 <style>
 :root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.28);--acc:#d8b46a;--good:#a8d6b0;--warn:#ff5a1f}
 *{box-sizing:border-box}

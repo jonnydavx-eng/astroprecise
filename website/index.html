@@ -19,7 +19,17 @@
 <link rel="preload" href="./fonts/cormorant-garamond-italic-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="./css/ap-sky-news.css?v=771">
 
-<script src="./js/orrery.js?v=782" defer></script>
+<!-- ── Three.js import map — REQUIRED for js/orrery-webgl.js (bare `import 'three'`).
+     Without it the dynamic import silently rejects and every visitor gets the
+     2D dot fallback instead of the photoreal engine. COPIED VERBATIM from
+     explore.html; keep in sync. ── -->
+<script type="importmap">
+{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+</script>
+
+<!-- M2: the stage runs the superior Orrery3D engine through the adapter (same
+     <void-orrery> surface; ?engine=legacy or any failure fails open to js/orrery.js). -->
+<script src="./js/void-orrery-adapter.js?v=782" defer></script>
 <script src="./js/ap-sky-news.js?v=771" defer></script>
 <script src="./js/ap-checkout-honest.js?v=771" defer></script>
 <script src="./js/ap-gumroad-bridge.js?v=771" defer></script>

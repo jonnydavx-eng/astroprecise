@@ -4,7 +4,7 @@
  * the reference is undefined at parse time — the class of bug that killed
  * the homepage cast button (AstroEphemeris captured before ephemeris.js ran).
  *   window.AstroEphemeris ← js/ephemeris.js
- *   window.VoidEphem      ← js/orrery.js
+ *   window.VoidEphem      ← js/orrery.js (legacy) or js/void-orrery-adapter.js (M2)
  * Fail if a classic inline script touches either global before the defining
  * file was loaded NON-deferred earlier in the document. External and module
  * scripts are deferred by nature and run in document order — safe.
@@ -28,7 +28,7 @@ for (const f of files) {
     const isJson = /application\/ld\+json/.test(attrs);
     const isDeferred = /\bdefer\b/.test(attrs) || isModule;
     if (src && /ephemeris\.js/.test(src) && !isDeferred) ephReady = true;
-    if (src && /(^|\/)orrery\.js/.test(src) && !isDeferred) voidReady = true;
+    if (src && /(^|\/)(orrery|void-orrery-adapter)\.js/.test(src) && !isDeferred) voidReady = true;
     if (!src && !isJson && !isModule) {
       if (/AstroEphemeris/.test(body) && !ephReady) {
         console.log(`FAIL ${f}: inline script touches AstroEphemeris before sync ephemeris.js (char ${pos + m.index})`);

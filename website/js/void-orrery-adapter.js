@@ -780,12 +780,32 @@
     customElements.define('void-orrery', VoidOrreryAdapter);
   }
 
-  /* ── go ── */
-  bootPipeline().then(function () {
-    defineElement();
-    log('engine pipeline up (' + (engineKind || '?') + ') — <void-orrery> registered');
-  }).catch(function (err) {
-    warn('all modern engines unavailable — falling back to legacy', err);
-    loadLegacy('webgl+canvas failed');
-  });
+  /* ── go — engine boot is lazy: only when a <void-orrery> actually exists.
+   * Pages that load this file only for window.VoidEphem (sky-card, sky-events,
+   * natal-plate) never pay for Three.js — same laziness as legacy orrery.js. ── */
+  var bootStarted = false;
+  function maybeBoot() {
+    if (bootStarted) return;
+    if (!document.querySelector('void-orrery')) return;
+    bootStarted = true;
+    if (mo) { try { mo.disconnect(); } catch (e) {} mo = null; }
+    bootPipeline().then(function () {
+      defineElement();
+      log('engine pipeline up (' + (engineKind || '?') + ') — <void-orrery> registered');
+    }).catch(function (err) {
+      warn('all modern engines unavailable — falling back to legacy', err);
+      loadLegacy('webgl+canvas failed');
+    });
+  }
+  var mo = null;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', maybeBoot);
+    if (window.MutationObserver && document.documentElement) {
+      mo = new MutationObserver(maybeBoot);
+      mo.observe(document.documentElement, { childList: true, subtree: true });
+      setTimeout(function () { if (mo) { try { mo.disconnect(); } catch (e) {} mo = null; } }, 60000);
+    }
+  } else {
+    maybeBoot();
+  }
 })();
