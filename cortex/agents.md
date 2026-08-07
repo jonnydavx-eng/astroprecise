@@ -61,17 +61,8 @@ who's blocked on whom, project health, this registry, and recent activity. If th
 board looks stale, the fix is always to update `state.js`, never the HTML.
 
 
-## Coherence FAIL-CLOSED (auto · 2026-07-13)
+## Coherence — v2.1 (pointer)
 
-**No product edits** until Coherence seats are spawned for **this tip / vertical**.
-
-- Kit: `C:\Users\jonny\dev\coherence` · Skill: `coherence` · Site: http://localhost:8785/website/
-- Min: S8 implement · S12 verify (**different run**) · S5 honesty · S4 if CSS/perf · S6 if layout · S9 if visual
-- Non-trivial by default (UI/CSS/polish/colour/features/multi-file/`?v=`)
-- Banned: solo implement · path obvious · just CSS · prior fleet free-pass · multi-hat AGREE-SHIP
-- Handoff: `C:\Users\jonny\dev\coherence\docs\ALL-AGENTS-HANDOFF.md`
-
-```text
-Load Coherence. PROJECT-FIRST this project. Mode: IMPLEMENT. Vertical: <surface>.
-Spawn seats. No product edits until fleet returns.
-```
+Retired v1 doctrine removed 2026-08-07 (owner-authorized sweep; archive: `control-panel\RETIRED-DOCTRINE-ARCHIVE.md`).
+Current law: `C:\Users\jonny\dev\coherence\policy\coherence-policy.json` (kit `C:\Users\jonny\dev\coherence`, skill `coherence`).
+Lanes No-wave/Fast/Standard/Full; builder never verifies; only the validator emits `CODE-ONLY | BLOCK-SHIP | VERIFIED-LOCAL | READY-SHIP | LIVE`.
