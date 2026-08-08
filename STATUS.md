@@ -40,11 +40,23 @@ separately and does not count them as mismatches.
 
 ## Higgsfield / Seedance connector — measured 2026-08-08
 
-**Reachable from one session only.** The Higgsfield MCP connector was attached to a
-Claude Code **web/remote** session (branch `claude/higgsfield-see-dance-offer-ing6r2`).
-MCP connectors attach per session at start and are configured per surface, so the
-BOOK-T1H4NJ753R session cannot see it — restart that session (with the connector
-enabled for that surface) to pick it up. Not a repo or credential problem.
+**The account connection is permanent; the per-chat toggle is not.** Measured via
+`ListConnectors` 2026-08-08: Higgsfield reads `installState: "connected"`,
+`connected: true`, `enabledInChat: false`. So the claude.ai account-level OAuth link
+is installed and valid — there is nothing to reconnect — but the connector is
+**toggled off for the chat**, which is why its tools appeared mid-session and then
+vanished, and why BOOK-T1H4NJ753R never saw them.
+
+**Fix: enable Higgsfield in that chat's connector settings.** Restarting the session
+alone does not do it; connectors are enabled per chat, independently of the account
+connection. No agent tool can flip this — `ListConnectors` / `SuggestConnectors` only
+read and recommend — so it is an owner action in the UI.
+
+**Not wireable from the repo.** Higgsfield is a claude.ai connector, not a
+project-scoped MCP server: there is no `.mcp.json` here and no `mcpServers` key in
+`~/.claude.json`, and `SuggestConnectors` returns no URL for an already-installed
+connector. So a checked-in config cannot make it available to every session. Do not
+invent a server URL to try.
 
 | Check | Result | How |
 |-------|--------|-----|
