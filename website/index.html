@@ -149,7 +149,9 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 /* ── The front page — the lead story and its plate ── */
 .frontpage{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(28px,4vw,60px);align-items:start;padding-block:clamp(22px,3.2vh,46px) clamp(28px,4vh,52px)}
 .kicker{margin-bottom:12px;color:var(--e-ink-2)}
-.kicker__dot{color:var(--e-accent);font-size:9px;vertical-align:.2em;margin-right:8px}
+/* Drawn, not typed. A ● glyph had to be set at 9px to look right, which put a
+   9px rule in a region with a 12px type floor; a 5px box has no type size. */
+.kicker__dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--e-accent);margin-right:9px;vertical-align:.16em}
 /* The promise. Biggest thing on the screen by a factor of four over body copy. */
 .headline{font-family:var(--serif);font-style:normal;font-weight:600;font-size:var(--t-headline);line-height:1.03;letter-spacing:-.012em;margin-bottom:12px;text-wrap:balance;color:var(--e-ink)}
 .standfirst{font-size:var(--t-standfirst);line-height:1.52;color:var(--e-ink-2);max-width:33em;margin-bottom:20px;text-wrap:pretty}
@@ -219,7 +221,7 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 .fig2-moon{fill:#16140f;stroke:var(--e-rule-2);stroke-width:1}
 .fig2-hair{stroke:var(--e-rule-2);stroke-width:1;fill:none}
 .fig2-meteor{stroke:var(--e-ink-3);stroke-width:1;opacity:.55}
-.fig2-label{font-family:var(--mono);font-size:11px;fill:var(--e-ink-3)}
+.fig2-label{font-family:var(--mono);font-size:12px;fill:var(--e-ink-3)}
 
 /* ── The "more" panel: the full IA, on paper, in sentence case ── */
 .sb-panel{position:absolute;top:58px;right:clamp(20px,4vw,44px);z-index:12;min-width:290px;max-width:min(360px,94vw);display:flex;flex-direction:column;gap:1px;padding:10px;background:var(--paper-2);border:1px solid var(--e-rule-2);box-shadow:0 18px 50px rgba(22,20,15,.18)}
@@ -274,7 +276,10 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 
 /* control deck — the instrument's own chrome, inside the plate */
 #deck{position:absolute;inset:0;pointer-events:none;z-index:2}
-#deck .scrubrow{display:flex;align-items:center;gap:10px;padding:0 12px 12px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0}
+/* The row sits over live render, so it carries its own scrim — without it the
+   readout and the Live button fall on the bright limb of the Earth and stop
+   being legible the moment the model turns. */
+#deck .scrubrow{display:flex;align-items:center;gap:10px;padding:26px 12px 12px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0;background:linear-gradient(to top,rgba(6,6,9,.82),rgba(6,6,9,.55) 55%,rgba(6,6,9,0))}
 #deck .scrubrow .mono{font-size:12px;letter-spacing:.14em;color:rgba(242,236,223,.62)}
 #deck .scrubrow #scrubLabel{min-width:96px;text-align:right;color:var(--brass)}
 #nowBtn{background:none;border:1px solid rgba(31,182,166,.45);color:var(--brass);border-radius:100px;padding:6px 14px;cursor:pointer}
@@ -376,6 +381,9 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   .edition__grid{grid-template-columns:1fr;gap:32px}
   .margin-note{max-width:560px}
   .deck-h{max-width:24ch}
+  /* The dateline is the first thing to go: measured at 768px it pushed the
+     masthead from one row to two and cost 60px of fold for a nicety. */
+  .masthead__meta{display:none}
 }
 
 @media (max-width:760px){
@@ -391,10 +399,16 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 /* Phone. Three moves buy the fold: the nav collapses to one link plus "more",
    the standfirst drops its closing sentence, and the fields go two-up. */
 @media (max-width:639px){
-  .masthead__inner{padding-block:10px 8px;gap:10px}
-  .masthead__meta{display:none}
-  .masthead__nav{gap:16px}
+  /* Measured at 375px: at 30px/19px the brand and the nav together came to
+     377px against 335px of content width, so the masthead wrapped to two rows
+     and ate 33px of the fold. 22px/13px brings the row to 310px. */
+  .masthead__inner{padding-block:10px 8px;gap:10px;flex-wrap:nowrap}
+  .masthead__brand{gap:9px;flex-wrap:nowrap}
+  .masthead__brand img{width:22px;height:22px}
+  .wordmark{font-size:13px;letter-spacing:.16em;white-space:nowrap}
+  .masthead__nav{gap:14px;flex:none}
   .masthead__nav a:not(.nav-primary){display:none}
+  .masthead__nav .nav-primary,.masthead__more{white-space:nowrap}
   .frontpage{padding-block:8px 26px;gap:26px}
   .kicker{margin-bottom:9px}
   .headline{margin-bottom:9px}
@@ -417,6 +431,13 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   .item{grid-template-columns:auto 1fr;gap:4px 14px;padding:15px 0}
   .item__price{grid-column:2;text-align:left;margin-top:8px}
   .item__price span{display:inline;margin-left:6px}
+}
+/* Below 360px the brand mark and the two nav items measured 320.8px against a
+   320px viewport — 0.8px of document overflow. The mark goes; the wordmark is
+   the identity anyway. */
+@media (max-width:359px){
+  .masthead__brand img{display:none}
+  .wordmark{font-size:12px}
 }
 @media (pointer:coarse){input.scrub{height:44px}input.scrub::-webkit-slider-thumb{width:28px;height:28px;margin-top:-13px}input.scrub::-moz-range-thumb{width:28px;height:28px}#nowBtn{padding:11px 16px}}
 @media (max-width:430px){.card{padding:20px 18px}section.band{padding:72px 0}.chap-num{font-size:52px}}
@@ -495,7 +516,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <article class="frontpage" id="lead">
 
       <div class="lead">
-        <p class="eyebrow kicker"><span class="kicker__dot" aria-hidden="true">●</span>Free birth chart · no account</p>
+        <p class="eyebrow kicker"><span class="kicker__dot" aria-hidden="true"></span>Free birth chart · no account</p>
 
         <h1 class="headline">The real sky at the minute you were born.</h1>
 
@@ -571,12 +592,17 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
           <void-orrery id="orr"></void-orrery>
           <div id="deck">
             <div id="ladder" role="group" aria-label="Scale ladder"></div>
+            <!-- The 1800/2200 end labels were dropped: at plate width the row
+                 measured 286px of fixed content in 440px and the readout collided
+                 with the button. The range is stated in the slider's own label,
+                 in the caption, and by the readout itself. The button says
+                 "Live" rather than "Now" so it does not repeat the readout. -->
             <div class="scrubrow">
-              <span class="mono scrub-end">1800</span>
-              <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
-              <span class="mono scrub-end">2200</span>
-              <span class="mono" id="scrubLabel">Now</span>
-              <button class="mono" id="nowBtn" type="button">Now</button>
+              <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub the model between the years 1800 and 2200">
+              <!-- Uppercase because the script writes uppercase into it
+                   ("19 MAR 1984"); this is instrument data, not prose. -->
+              <span class="mono" id="scrubLabel">NOW</span>
+              <button class="mono" id="nowBtn" type="button">Live</button>
             </div>
           </div>
         </div>
@@ -591,8 +617,10 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         <p id="telemetry" aria-live="polite">Drag to orbit · click a world to fly · scrub any date from 1800 to 2200.</p>
         <figcaption class="plate__caption">
           <b>Fig. 1 — the sky, live</b>
-          The real solar system at this minute, drawn on your device by the same
-          series that places your chart. <a href="./explore.html">Open the full explorer →</a>
+          Where these worlds actually are, this minute, drawn on your device by
+          the same series that places your chart. It opens on Earth; change the
+          scale to pull back to the whole system.
+          <a href="./explore.html">Open the full explorer →</a>
         </figcaption>
       </figure>
 
