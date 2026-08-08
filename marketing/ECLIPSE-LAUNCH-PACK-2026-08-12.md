@@ -185,6 +185,36 @@ Keep the free line — **→ Your free eclipse contact: https://astroprecise.app
 `outreach-exports/x-posts/x-eclipse-10.txt` … `x-eclipse-13.txt` alongside the nine
 dated captions from the eclipse launch kit.
 
+### Send schedule for the exported posts
+
+The exported `.txt` files carry post copy only — no headers — matching the repo's
+existing `x-posts/` convention. The schedule lives here:
+
+| File | Send | Source |
+|---|---|---|
+| `x-eclipse-01.txt` | D-6 · Thu 6 Aug | launch kit caption |
+| `x-eclipse-02.txt` | D-5 · Fri 7 Aug | launch kit caption |
+| `x-eclipse-03.txt` | D-4 · Sat 8 Aug | launch kit caption |
+| `x-eclipse-04.txt` | D-3 · Sun 9 Aug | launch kit caption |
+| `x-eclipse-05.txt` | D-2 · Mon 10 Aug | launch kit caption |
+| `x-eclipse-06.txt` | D-1 · Tue 11 Aug, evening | launch kit caption |
+| `x-eclipse-07.txt` | Eclipse day · **Wed 12 Aug**, 09:00 | launch kit caption |
+| `x-eclipse-08.txt` | Eclipse day · **Wed 12 Aug**, 18:30 | launch kit caption |
+| `x-eclipse-09.txt` | D+1 · **Thu 13 Aug** | launch kit caption |
+| `x-eclipse-10.txt` | Wed 5 Aug, morning | pack Post 1 |
+| `x-eclipse-11.txt` | Fri 7 Aug, morning | pack Post 3 |
+| `x-eclipse-12.txt` | Mon 10 Aug, evening | pack Post 5 |
+| `x-eclipse-13.txt` | **Wed 12 Aug**, ~10:30 | pack Post 7 |
+
+> **⚠️ Weekday correction.** Kimi's launch kit labelled eclipse day "Tue 12" and
+> D+1 "Wed 13", and one caption's body read "Eclipse Tuesday". **12 August 2026 is
+> a Wednesday** and 13 August is a Thursday — verified 2026-08-08. The schedule
+> above is corrected, and the two captions whose *body copy* named the wrong day
+> were fixed on export: `x-eclipse-04.txt` now reads "Eclipse Wednesday" and
+> `x-eclipse-05.txt` reads "~91% dark at 19:05 Wednesday". Every other word in
+> all nine captions is Kimi's, unchanged. The marketing pack had the day right
+> throughout.
+
 **Posts 2, 4, 6 and 8 are BLOCKED — REQUIRES GUMROAD and were deliberately not
 exported.** Each one sells a price or points at a shop link that does not exist:
 
