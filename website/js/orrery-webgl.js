@@ -181,6 +181,34 @@ const FinishShader = {
 
   const PRM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TEX = 'assets/textures/';
+  // ── Orrery Elevate assets (feat/orrery-elevate) ─────────────────────────────
+  // Higher-fidelity surface maps + a cool-void nebula IBL, generated under
+  // website/img/orrery/ as {name}_2k.webp / {name}_sm.webp. Loaded here IN
+  // ADDITION to the existing assets/textures/ set; every use fails open to the
+  // current look on a missing asset or unsupported GPU (never a black hero).
+  const ORRERY_TEX = 'img/orrery/';
+  // Per-feature flags. All default sensibly; each is overridable per-request for
+  // QA: ?elevate=off kills them all, ?ibl/msaa/hdtex/sun=on|off toggle one.
+  // The procedural sun is the crown jewel, so its texture detail is OPT-IN
+  // (?sun=on) — the default hero shader is byte-identical to before this branch.
+  const ELEVATE = (function () {
+    let q = {};
+    try { q = Object.fromEntries(new URLSearchParams((window.location && window.location.search) || '')); } catch (e) { q = {}; }
+    const pick = (k, def) => {
+      if (q.elevate === 'off') return false;
+      if (q.elevate === 'on') return true;
+      const v = q[k];
+      if (v === 'on' || v === '1') return true;
+      if (v === 'off' || v === '0') return false;
+      return def;
+    };
+    return {
+      ibl:   pick('ibl',   true),   // PMREM nebula → scene.environment (non-low tier)
+      msaa:  pick('msaa',  true),   // MSAA on the EffectComposer targets (WebGL2)
+      hdTex: pick('hdtex', true),   // HD planet albedo maps (mercury/venus/mars/earth-fallback)
+      sun:   pick('sun',   false),  // sun_surface detail into the procedural photosphere (opt-in)
+    };
+  })();
   const D2R = Math.PI / 180;
 
   function isAwardMode() {
@@ -191,6 +219,7 @@ const FinishShader = {
 
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
+  let envRT = null; // PMREM render target backing scene.environment (elevate IBL); disposed on destroy
   let raf = null, destroyed = false, running = true, inView = true;
   let lifecycleListeners = [];
   let lifecycleObservers = [];
@@ -1833,6 +1862,18 @@ const FinishShader = {
     if (composer || PRM || perfTier === 'low' || !renderer || !scene || !camera) return;
     try {
       composer = new EffectComposer(renderer);
+      // v816 (elevate): restore hardware MSAA under the post chain. The default
+      // EffectComposer render targets are single-sampled, so planet limbs, orbit
+      // rings and star spikes alias despite renderer antialias once the bloom
+      // pass owns the frame. WebGL2 only; identical look + no-op where
+      // unsupported, and fully reversible (?msaa=off).
+      if (ELEVATE.msaa && renderer.capabilities && renderer.capabilities.isWebGL2) {
+        const _samples = perfTier === 'high' ? 4 : 2;
+        try {
+          if (composer.renderTarget1) composer.renderTarget1.samples = _samples;
+          if (composer.renderTarget2) composer.renderTarget2.samples = _samples;
+        } catch (e) { /* keep single-sampled targets on any error */ }
+      }
       composer.addPass(new RenderPass(scene, camera));
       const bloomStrength = perfTier === 'mid' ? 0.30 : 0.44;
       const bloomRadius = perfTier === 'mid' ? 0.42 : 0.55;
@@ -1895,6 +1936,7 @@ const FinishShader = {
 
   function settleHeavyWork() {
     if (destroyed) return;
+    initEnvironmentIBL(); // idempotent — covers the preloader→interactive handoff
     buildRemainingPlanets();
     upgradeSunVisuals();
     ensureGalaxyLayers();
@@ -4385,6 +4427,9 @@ const FinishShader = {
         uGran: { value: 1.0 },  // granulation-contrast gamma. Portrait raises it so the
                                 // photosphere mottle stays crisp after the gain drop
                                 // (a flat gain cut alone washes the granulation flat).
+        // v816 (elevate, opt-in ?sun=on): optional sun_surface detail. Only added
+        // when the flag is on, so the DEFAULT hero shader is byte-identical.
+        ...(ELEVATE.sun ? { uSurf: { value: null }, uSurfAmt: { value: 0 } } : {}),
       },
       vertexShader: `
         varying vec3 vNormal;
@@ -4409,6 +4454,7 @@ const FinishShader = {
         uniform float uQuality;
         uniform float uGain;
         uniform float uGran;
+        ${ELEVATE.sun ? 'uniform sampler2D uSurf;\n        uniform float uSurfAmt;' : ''}
         ${SUN_NOISE_GLSL}
         void main() {
           vec3 n = normalize(vNormal);
@@ -4530,6 +4576,17 @@ const FinishShader = {
           float netDarkFace = netDark * granFace;
           col = mix(col, col * vec3(1.05, 0.97, 0.72), netDarkFace * 0.9);   // lanes → warm/deep
           col += vec3(0.10, 0.06, 0.015) * (1.0 - smoothstep(0.10, 0.42, f1)) * granFace; // core gold glow
+          ${ELEVATE.sun ? `
+          // Optional photosphere DETAIL from sun_surface (luminance only, so the
+          // procedural granulation/limb energy is preserved — this adds mottle,
+          // it does not replace the shader). Confined to the disc face (granFace)
+          // and no-op while uSurfAmt is 0 (texture not yet loaded / not wanted).
+          if (uSurfAmt > 0.0) {
+            vec2 _suv = vec2(atan(vSphere.z, vSphere.x) * 0.15915494 + 0.5,
+                             asin(clamp(vSphere.y, -1.0, 1.0)) * 0.31830989 + 0.5);
+            float _sl = dot(texture2D(uSurf, _suv).rgb, vec3(0.299, 0.587, 0.114));
+            col *= mix(1.0, 0.78 + 0.55 * _sl, uSurfAmt * granFace);
+          }` : ''}
           // Physical limb darkening (centre-hot / limb-dim). Applied AFTER the thin
           // chromosphere/corona rim tints so the very edge keeps a faint warm halo,
           // but the disc body no longer reads brighter at the rim than at centre.
@@ -4826,6 +4883,68 @@ const FinishShader = {
       };
       tryNext();
     });
+  }
+
+  // ── Elevate: HD surface maps from img/orrery/ ───────────────────────────────
+  // Loads {base}_2k.webp (or {base}_sm.webp on constrained/phone clients, exactly
+  // like the assets/textures mobile diet), tries the other size as a fallback,
+  // and resolves null on failure so callers keep the current texture (fail-open).
+  function loadOrreryHdTex(base, srgb) {
+    const small = wantsSmallTextures() || IS_PHONE || onPreloaderStage();
+    const candidates = small
+      ? [base + '_sm.webp', base + '_2k.webp']
+      : [base + '_2k.webp', base + '_sm.webp'];
+    return new Promise((res) => {
+      let idx = 0;
+      const tryNext = () => {
+        if (idx >= candidates.length) return res(null);
+        const f = candidates[idx++];
+        texLoader.load(ORRERY_TEX + f, (t) => {
+          if (srgb !== false) t.colorSpace = THREE.SRGBColorSpace;
+          tuneTexture(t);
+          res(t);
+        }, undefined, tryNext);
+      };
+      tryNext();
+    });
+  }
+
+  // ── Elevate: image-based lighting from the cool-void nebula ──────────────────
+  // Builds a PMREM environment from env_nebula_cool and assigns it to
+  // scene.environment ONLY — never scene.background, so the procedural starfield
+  // and the transparent clear are untouched. This activates the (already-tuned,
+  // currently inert) envMapIntensity on every planet/moon material: grounded
+  // ambient fill + faint cool specular limbs. Gated to non-low tier + WebGL2,
+  // idempotent, and silently a no-op on a missing asset or PMREM failure.
+  function initEnvironmentIBL() {
+    if (!ELEVATE.ibl || perfTier === 'low' || !renderer || !scene || !texLoader) return;
+    if (scene.environment || envRT) return; // already initialised
+    if (renderer.capabilities && renderer.capabilities.isWebGL2 === false) return; // PMREM needs float RT
+    let started = false;
+    try {
+      const small = wantsSmallTextures() || IS_PHONE;
+      const file = small ? 'env_nebula_cool_sm.webp' : 'env_nebula_cool.webp';
+      started = true;
+      texLoader.load(ORRERY_TEX + file, (tex) => {
+        try {
+          if (destroyed || !renderer || !scene) { try { tex.dispose(); } catch (e) {} return; }
+          tex.mapping = THREE.EquirectangularReflectionMapping;
+          tex.colorSpace = THREE.SRGBColorSpace;
+          const pmrem = new THREE.PMREMGenerator(renderer);
+          pmrem.compileEquirectangularShader();
+          const rt = pmrem.fromEquirectangular(tex);
+          envRT = rt;
+          scene.environment = rt.texture; // IBL only — NOT scene.background
+          try { window.__apOrreryIBL = true; } catch (e) {} // QA canary (cf. __apOrreryCanvasFallback)
+          pmrem.dispose();
+          try { tex.dispose(); } catch (e) {}
+        } catch (e) {
+          // fail-open: no environment bound → materials keep their inert
+          // envMapIntensity, i.e. the exact pre-elevate look.
+          try { tex && tex.dispose(); } catch (e2) {}
+        }
+      }, undefined, function () { /* env asset missing — keep current look */ });
+    } catch (e) { if (!started) { /* never throws into caller */ } }
   }
 
   function ensureFocusRing(group, scaleMul) {
@@ -5395,6 +5514,19 @@ const FinishShader = {
   function buildSun(minimal) {
     const sunQ = perfTier === 'high' ? 2.0 : perfTier === 'mid' ? 1.55 : 0.0;
     sunMaterial = makeSunShaderMaterial(sunQ);
+    // v816 (elevate, opt-in ?sun=on): stream sun_surface into the procedural
+    // photosphere as a subtle luminance detail. Fully guarded — no-op unless the
+    // uniform slot exists (flag on) AND the texture loads; failure keeps the
+    // untouched procedural sun.
+    if (ELEVATE.sun && perfTier !== 'low' && sunMaterial.uniforms && sunMaterial.uniforms.uSurf) {
+      loadOrreryHdTex('sun_surface', true).then((t) => {
+        if (t && sunMaterial && sunMaterial.uniforms && sunMaterial.uniforms.uSurf) {
+          sunMaterial.uniforms.uSurf.value = t;
+          sunMaterial.uniforms.uSurfAmt.value = perfTier === 'high' ? 0.20 : 0.14;
+          sunMaterial.needsUpdate = true;
+        }
+      });
+    }
     const sunSegs = minimal
       ? (perfTier === 'high' ? 56 : 36)
       : (perfTier === 'high' ? 112 : perfTier === 'mid' ? 84 : 56);
@@ -5832,7 +5964,19 @@ const FinishShader = {
 
       // textures load async; swap in when ready (no blank-hero blocking)
       // (hero Earth has its own priority-ordered HD swap-in in the b.hero block below)
-      if (!b.hero) loadTex(b.tex).then((t) => { if (t) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
+      if (!b.hero) {
+        const applyMap = (t) => { if (t && mat) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } };
+        // v816 (elevate): prefer the new HD albedo (img/orrery) for the rocky
+        // inner worlds; on a miss fall back to the existing assets/textures map so
+        // the planet is never left untextured. Gas/ice giants keep their maps.
+        const HD_ALBEDO = { mercury: 'mercury', venus: 'venus', mars: 'mars' };
+        const hd = ELEVATE.hdTex ? HD_ALBEDO[b.id] : null;
+        if (hd) {
+          loadOrreryHdTex(hd, true).then((t) => { if (t) applyMap(t); else loadTex(b.tex).then(applyMap); });
+        } else {
+          loadTex(b.tex).then(applyMap);
+        }
+      }
 
       if (vis.atmo) {
         let atmoMat;
@@ -5863,13 +6007,29 @@ const FinishShader = {
 
       if (b.hero) {
         // ── HD Earth texture swap-in: perceived-quality order, each guarded ──
+        // The real photographic day map (earth.jpg) is the hero and always wins.
+        // The generated blue-marble (img/orrery/earth) is a FALLBACK ONLY — used
+        // solely if earth.jpg is missing, so the hero is never left untextured.
         loadTex('earth.jpg').then((t) => {
           if (t && earthMat) {
             earthMat.map = t;
             earthMat.color.set(0xffffff);
             earthMat.needsUpdate = true;
+            markEarthMapReady();
+            return;
           }
-          markEarthMapReady();
+          if (ELEVATE.hdTex) {
+            loadOrreryHdTex('earth', true).then((ft) => {
+              if (ft && earthMat) {
+                earthMat.map = ft;
+                earthMat.color.set(0xffffff);
+                earthMat.needsUpdate = true;
+              }
+              markEarthMapReady();
+            });
+          } else {
+            markEarthMapReady();
+          }
         });
         loadTex('earth_lights.png').then((t) => {
           if (t && earthMat) {
@@ -7892,6 +8052,11 @@ const FinishShader = {
     scene.fog = new THREE.FogExp2(isAwardMode() ? 0x0c1016 : 0x050406, 0.00045);
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
+    // v816 (elevate): bind the cool-void nebula IBL to scene.environment (only —
+    // background stays the procedural starfield). Skipped during the lightweight
+    // preloader so the fly-in stays cheap; re-tried on settle. Internally gated
+    // to non-low tier + WebGL2 and idempotent.
+    if (!preloaderMode) initEnvironmentIBL();
 
     // Bloom composer — defer during preloader to cut GPU memory; built in settleFromIntro.
     if (!preloaderMode && !PRM && perfTier !== 'low') {
@@ -9313,6 +9478,8 @@ const FinishShader = {
     try { disposeHelioAspectLines(); } catch (e) {}
     try { disposePreloaderComets(); } catch (e) {}
     try { disposeSceneResources(scene); } catch (e) {}
+    try { if (scene) scene.environment = null; } catch (e) {}
+    try { if (envRT) { envRT.dispose(); envRT = null; } } catch (e) { envRT = null; }
     if (composer) {
       try { composer.passes && composer.passes.forEach((pass) => pass && pass.dispose && pass.dispose()); } catch (e) {}
       try { composer.dispose && composer.dispose(); } catch (e) {}
