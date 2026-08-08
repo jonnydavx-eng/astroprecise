@@ -1,13 +1,50 @@
-﻿# STATUS — AstroPrecise
-**State:** Live at https://astroprecise.app (serving ap-v794, verified 5 Aug) - eclipse launch build for 12 Aug shipped incl. full rebrand + clarity pass; checkout links still empty, awaiting owner's Gumroad products.
-Updated: 2026-07-23
+# STATUS — AstroPrecise
 
-## CLAIMS vs REALITY
-| Claim | Reality |
-|-------|---------|
-| Pack installed | YES — AGENTS/HANDOFF/STATUS present |
-| Canon path | `C:\Users\jonny\OneDrive\astroprecise` |
-| Ready for tip work | UNKNOWN — verify live before claiming |
+**State:** Live at https://astroprecise.app, serving **ap-v813**. Commerce is dormant by design — all 12 Gumroad permalink slots read `REPLACE_ME`, so every buy control renders "Notify me — £x" and nothing can take money.
+Updated: 2026-08-08 (Claude @ BOOK-T1H4NJ753R)
 
-## Last verify
-Pack bootstrap only — no product audit this stamp.
+## Measured 2026-08-08
+
+Everything in this section was measured on this machine on this date. Nothing is inherited.
+
+| Check | Result | How |
+|-------|--------|-----|
+| Live service-worker version | `ap-v813` | `GET https://astroprecise.app/sw.js?cb=<ts>` → 200 |
+| Local HEAD version | `ap-v813` | `website/sw.js` line 7, `const V = "ap-v813"` — matches live |
+| Home page | HTTP 200 | direct fetch |
+| `/eclipse.html` | HTTP 200 | direct fetch |
+| Whole deployed tree reachable | 842/842 paths HTTP 200, 0 bad | `node tools/sweep.mjs` |
+| Live bytes vs a local build of HEAD | 842 paths, **0 mismatches** | `npm run build && node tools/byte-audit.mjs` |
+| Eclipse countdown target | 12 Aug 2026 **17:46 UT** | `website/eclipse.html` line 269, `Date.UTC(2026, 7, 12, 17, 46)` |
+| Test suites | **19** | 13 root `test-*.mjs` + 5 `tools/_proof-*.mjs` + `ephemeris-package/test/smoke.test.mjs` |
+
+On the byte comparison: 120 of the 842 files are served a few bytes shorter than
+the local build. Every one of those deltas equals that file's CRLF count exactly —
+`core.autocrlf=true` on this Windows checkout, LF on the Ubuntu CI runner that
+builds and deploys. Content is identical. `tools/byte-audit.mjs` classifies these
+separately and does not count them as mismatches.
+
+## Not measured — do not claim
+
+- Real-phone orrery pass (bloom/ACES pipeline is code-reviewed and gated, never device-verified).
+- End-to-end purchase. Impossible until Gumroad products exist.
+- Test suite pass/fail. The 19 suites were **counted**, not run, in this stamp.
+
+## Open owner blockers
+
+1. **6 Gumroad permalinks** — 12 `REPLACE_ME` slots across `website/js/gumroad-unlock.js` (lines 33–39) and `website/js/ap-gumroad-bridge.js` (lines 13–18). Nothing can be sold until these are pasted. See `ECLIPSE-RUNBOOK.md` §1b.
+2. **Legal name and postal address** — `[FULL LEGAL NAME]` / `[POSTAL ADDRESS]` placeholders are live on the public site at `website/privacy.html` lines 129 and 131 and `website/terms.html` lines 131 and 132. (`contact.html` has none, despite what the old runbook said.)
+3. **Fixed-offset timezone dropdowns with no DST history** — `website/index.html` line 351 (nine options) and `website/eclipse.html` lines 141–143 (seven options). A UK summer birth entered as "UT / GMT" is cast an hour out, which can move the Ascendant by a whole sign. Accuracy issue, not cosmetic.
+4. **Four design decisions** awaiting a yes/no — `docs/DESIGN-PLAN-2026-08-05.md` §7.
+
+## Reference
+
+- `ECLIPSE-RUNBOOK.md` — flip-day checklist, deploy discipline, ops, QA.
+- `marketing/ECLIPSE-LAUNCH-PACK-2026-08-12.md` — email/social pack, commerce-gated; eclipse-day timeline.
+- `docs/DECISION-LOG.md` — no React rewrite; no Swiss Ephemeris (AGPL).
+- `tools/byte-audit.mjs` / `tools/sweep.mjs` — deploy verifiers; re-measure before quoting this file.
+
+⚠️ **Deploy warning:** pushing to `origin/main` auto-deploys production via
+`.github/workflows/deploy-pages.yml` on any change under `website/**` (plus a
+named list including `tools/build.mjs` and most root test suites). Do not push
+without the owner's say-so.
