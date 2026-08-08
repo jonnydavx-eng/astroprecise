@@ -91,19 +91,31 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
 </style>
 </head>
 <body>
+<a class="skip" href="#story">SKIP TO THE ECLIPSE</a>
 <div class="wrap">
 
-<div class="top">
-  <a class="navlink" href="./index.html">← ASTRO PRECISE</a>
-  <span class="kicker">THE REAL SKY NEWS · 12 AUGUST 2026</span>
-</div>
+<header>
+  <div class="top">
+    <a class="navlink" href="./index.html">← ASTRO PRECISE</a>
+    <span class="kicker">THE REAL SKY NEWS · 12 AUGUST 2026</span>
+  </div>
+  <nav class="sitenav" aria-label="Primary">
+    <a href="./index.html">OBSERVATORY</a>
+    <a href="./chart.html">CHART</a>
+    <a href="./ephemeris.html">THE SKY</a>
+    <a href="./horoscope.html">DAILY</a>
+    <a href="./shop.html">SHOP</a>
+    <span aria-current="page">THE ECLIPSE</span>
+  </nav>
+</header>
 
-<p class="kicker" style="margin:52px 0 16px;color:var(--warn)"><span class="pulse">●</span>&nbsp; PARTIAL SOLAR ECLIPSE · ~91% OF THE SUN COVERED OVER BRITAIN · PEAK ≈19:05 BST</p>
+<main id="story" tabindex="-1">
+<p class="kicker" style="margin:44px 0 16px;color:var(--warn)"><span class="pulse">●</span>&nbsp; PARTIAL SOLAR ECLIPSE · ~91% OF THE SUN COVERED OVER BRITAIN · PEAK ≈19:05 BST</p>
 <h1 style="margin-top:0">On 12 August, the Moon covers the Sun.<br>See where it lands in <em style="color:#ff5a1f">your</em> chart.</h1>
 <p class="lede">The deepest eclipse over Britain since 1999 — and the Perseids the same night. Enter your birth date and this page computes, free and on your device, the exact point in your chart the eclipse touches. <b style="color:var(--ink)">If it touches nothing, we tell you before you pay.</b></p>
-<div style="display:flex;gap:12px;flex-wrap:wrap;margin:0 0 26px">
+<div style="margin:0 0 26px">
   <a class="btn" href="#cast" style="text-decoration:none">COMPUTE MY ECLIPSE CONTACT — FREE</a>
-  <a class="btn ghost" href="./shop.html#eclipse-reading" style="text-decoration:none">THE £2.99 ECLIPSE READING</a>
+  <div><a class="quietlink" href="./shop.html#eclipse-reading">Or read what the £2.99 eclipse reading contains, in the shop →</a></div>
 </div>
 
 <div class="receipt" role="status">
@@ -188,13 +200,17 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
       <div class="lbl">STEP 2 · THE FULL READING — £2.99</div>
       <div class="receipt" id="contactTeaser"></div>
       <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:16px 0">That's the computed receipt — free, checkable, yours. The full reading adds the remaining four written beats: what this point governs in your chart (with whole-sign house when your place is given at unlock), the one question to sit with on eclipse night, and the honest close. ≈350 words, written from your orb alone.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-        <a class="btn" id="buyBtn" href="./shop.html#eclipse-reading">NOTIFY ME — £2.99 WHEN CHECKOUT OPENS</a>
-        <form id="saleNotify" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0">
+      <!-- ONE primary here. The email capture is it while checkout is dormant; the shop
+           link is a demoted, plainly-labelled exit. upgradeBuyBtn() below promotes #buyBtn
+           to the primary (and hides this form) only once a real Gumroad permalink exists. -->
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+        <form id="saleNotify" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0;width:100%">
           <input id="saleEmail" type="email" required placeholder="you@example.com" aria-label="Email for checkout-open alert" style="flex:1;min-width:200px">
-          <button class="btn" type="submit">NOTIFY ME — £2.99 WHEN CHECKOUT OPENS</button>
+          <button class="btn" id="saleNotifyBtn" type="submit">NOTIFY ME WHEN THE £2.99 UNLOCK OPENS</button>
         </form>
+        <div class="mono formnote" id="saleNotifyMsg" role="status" aria-live="polite" style="display:none"></div>
         <span class="mono" id="buyNote" style="font-size:11px;letter-spacing:.14em;color:var(--faint)">£4 AFTER 12 AUG · GUMROAD WHEN LIVE · NO FAKE CHECKOUT</span>
+        <a class="quietlink" id="buyBtn" href="./shop.html#eclipse-reading">Or see this edition alongside the others in the shop →</a>
       </div>
       <div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--faint);margin-top:10px">OR <a href="./shop.html#eclipse-set" style="color:var(--acc)">THE ECLIPSE SET — READING + SKY CARD + PRINTABLE NIGHT PAGE, £6</a></div>
       <details style="margin-top:16px">
@@ -250,17 +266,23 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0 0 14px">One email the morning of 12 August with your times, the weather windows, and your unlock link. Nothing else, ever — this list exists for one dawn.</p>
   <form id="emailForm" style="display:flex;gap:10px;flex-wrap:wrap">
     <input type="email" id="eclipseEmail" name="email" required placeholder="you@example.com" style="flex:1;min-width:200px" aria-label="Email address" autocomplete="email">
-    <button class="btn" type="submit">NOTIFY ME FOR ECLIPSE DAWN</button>
+    <button class="btn" id="emailFormBtn" type="submit">NOTIFY ME FOR ECLIPSE DAWN</button>
   </form>
-  <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint);margin-top:10px">THE LIST IS LIVE · ONE EMAIL ONLY · BIRTH DATA NEVER ATTACHED</div>
+  <div class="mono formnote" id="emailMsg" role="status" aria-live="polite" style="display:none"></div>
+  <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint);margin-top:10px">ONE EMAIL ONLY · BIRTH DATA NEVER ATTACHED</div>
 </div>
 
+</main>
+
+<footer>
 <div class="rule"></div>
 <div class="foot">
   ASTRONOMY FIRST: EVERY POSITION ABOVE IS COMPUTED FROM THE MEEUS SERIES ON YOUR DEVICE. THE MEANINGS ARE TRADITIONAL ASTROLOGY, OFFERED FOR REFLECTION — NOT ADVICE, NOT PREDICTION.<br>
-  <a href="./index.html">THE OBSERVATORY</a> · <a href="./deep-reading.html">DEEP READING SAMPLE</a> · <a href="./verify.html">VERIFY A PLATE</a> · <a href="./refunds.html">REFUNDS &amp; YOUR RIGHTS</a><br>
+  <a href="./index.html">THE OBSERVATORY</a> · <a href="./chart.html">CAST A CHART</a> · <a href="./ephemeris.html">THE SKY</a> · <a href="./horoscope.html">DAILY</a> · <a href="./shop.html">SHOP</a><br>
+  <a href="./deep-reading.html">DEEP READING SAMPLE</a> · <a href="./verify.html">VERIFY A PLATE</a> · <a href="./refunds.html">REFUNDS &amp; YOUR RIGHTS</a> · <a href="./privacy.html">PRIVACY</a><br>
   © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
+</footer>
 
 </div>
 
@@ -342,14 +364,18 @@ function showFull() {
 
 $('castBtn').addEventListener('click', render);
 
-// Buy button: flips from inline notify-form to live Gumroad checkout the moment a real permalink exists
+// Buy button: flips from inline notify-form to live Gumroad checkout the moment a real permalink exists.
+// Exactly one primary CTA exists in either state — dormant: the email capture; live: #buyBtn.
 (function upgradeBuyBtn() {
   const b = $('buyBtn'), f = $('saleNotify');
-  if (!isCheckoutReady('eclipse-reading')) { if (b) b.style.display = 'none'; return; }
+  // Dormant: leave #buyBtn as the demoted .quietlink shop exit; the form stays the primary.
+  if (!isCheckoutReady('eclipse-reading')) return;
   const permalink = (GUMROAD_PRODUCTS['eclipse-reading'] || {}).permalink;
   if (f) f.style.display = 'none';
+  const stale = $('saleNotifyMsg');
+  if (stale) stale.style.display = 'none';
   if (b) {
-    b.style.display = '';
+    b.className = 'btn';   // promoted: checkout is live, so this becomes the single primary
     b.textContent = 'UNLOCK THE FULL READING — £2.99';
     if (permalink) b.href = `https://gumroad.com/l/${permalink}?wanted=true`;
   }
@@ -357,42 +383,80 @@ $('castBtn').addEventListener('click', render);
   if (note) note.textContent = '£4 AFTER 12 AUG · INSTANT UNLOCK · PAYMENT ON GUMROAD, READING COMPUTED HERE';
 })();
 
+/* ——— Email capture: say only what we can actually observe ———
+ * The subscribe Worker is cross-origin and does not send CORS headers, so the request
+ * goes out with mode:'no-cors' and the response comes back OPAQUE — we cannot read its
+ * status. What we CAN observe is whether the request left the browser at all: on a
+ * network failure fetch() rejects. So we await it, and:
+ *   rejected  → say plainly that it did not go, and let the visitor retry.
+ *   resolved  → say the request was SENT. We must not claim "you are on the list",
+ *               because a 500 from the Worker is indistinguishable from a 200 here.
+ * (Previously this fired the fetch without awaiting and printed success unconditionally,
+ *  so an offline visitor was told they were subscribed when nothing had been sent.)
+ * To let this page confirm properly, the Worker needs to answer preflight and send
+ * Access-Control-Allow-Origin for https://astroprecise.app; then drop mode:'no-cors'
+ * and read res.ok.
+ */
+const OK_STYLE  = 'font-size:11px;letter-spacing:.14em;color:var(--good);padding:12px 0';
+const MAILTO    = 'contact@astroprecise.app';
+
+function rememberIntent(email, source) {
+  try {
+    const prev = JSON.parse(localStorage.getItem('ap_email_intent') || '[]');
+    prev.push({ email, savedAt: Date.now(), source });
+    localStorage.setItem('ap_email_intent', JSON.stringify(prev.slice(-50)));
+  } catch (err) { /* private mode or quota — the network request is what counts */ }
+}
+
+async function postSubscribe(email, tag) {
+  const body = new FormData();
+  body.append('email', email);
+  body.append('tags', tag);
+  await fetch('https://list.astroprecise.app/subscribe', { method: 'POST', mode: 'no-cors', body });
+}
+
+function showFormError(msgEl, btn, label) {
+  if (btn) { btn.disabled = false; btn.textContent = label; }
+  if (!msgEl) return;
+  msgEl.className = 'mono formnote formnote--bad';
+  msgEl.style.display = '';
+  msgEl.textContent = `THAT DID NOT SEND — YOU ARE NOT ON THE LIST. CHECK YOUR CONNECTION AND TRY AGAIN, OR EMAIL ${MAILTO.toUpperCase()}`;
+}
+
 // Dormant-checkout capture: sale-box notify form → subscribe worker (+ same-device backstop)
-$('saleNotify')?.addEventListener('submit', (e) => {
+$('saleNotify')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const em = $('saleEmail').value.trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
+  const btn = $('saleNotifyBtn'), msg = $('saleNotifyMsg');
+  if (btn) { btn.disabled = true; btn.textContent = 'SENDING…'; }
+  if (msg) msg.style.display = 'none';
+  rememberIntent(em, 'checkout-eclipse-reading');
   try {
-    const body = new FormData();
-    body.append('email', em);
-    body.append('tags', 'checkout-eclipse-reading');
-    fetch('https://list.astroprecise.app/subscribe', { method: 'POST', mode: 'no-cors', body });
-  } catch (err) {}
-  try {
-    const prev = JSON.parse(localStorage.getItem('ap_email_intent') || '[]');
-    prev.push({ email: em, savedAt: Date.now(), source: 'checkout-eclipse-reading' });
-    localStorage.setItem('ap_email_intent', JSON.stringify(prev.slice(-50)));
-  } catch (err) {}
-  $('saleNotify').innerHTML = '<div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--good);padding:12px 0">✦ WE\'LL EMAIL YOU THE INSTANT £2.99 UNLOCK GOES LIVE</div>';
+    await postSubscribe(em, 'checkout-eclipse-reading');
+  } catch (err) {
+    showFormError(msg, btn, 'NOTIFY ME WHEN THE £2.99 UNLOCK OPENS');
+    return;
+  }
+  $('saleNotify').innerHTML = `<div class="mono" style="${OK_STYLE}">✦ SENT — WE&rsquo;LL EMAIL YOU WHEN THE £2.99 UNLOCK GOES LIVE. NOTHING AFTER A FEW DAYS? WRITE TO ${MAILTO.toUpperCase()}</div>`;
 });
 
 // Eclipse-dawn list: POST to the live subscribe worker (+ same-device backstop)
-$('emailForm')?.addEventListener('submit', (e) => {
+$('emailForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const em = $('eclipseEmail').value.trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
+  const btn = $('emailFormBtn'), msg = $('emailMsg');
+  if (btn) { btn.disabled = true; btn.textContent = 'SENDING…'; }
+  if (msg) msg.style.display = 'none';
+  rememberIntent(em, 'eclipse-dawn');
   try {
-    const body = new FormData();
-    body.append('email', em);
-    body.append('tags', 'eclipse-dawn');
-    fetch('https://list.astroprecise.app/subscribe', { method: 'POST', mode: 'no-cors', body });
-  } catch (err) {}
-  try {
-    const prev = JSON.parse(localStorage.getItem('ap_email_intent') || '[]');
-    prev.push({ email: em, savedAt: Date.now(), source: 'eclipse-dawn' });
-    localStorage.setItem('ap_email_intent', JSON.stringify(prev.slice(-50)));
-  } catch (err) {}
-  $('emailForm').innerHTML = '<div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--good);padding:12px 0">✦ ON THE DAWN LIST — ONE EMAIL, THE MORNING OF 12 AUGUST</div>';
+    await postSubscribe(em, 'eclipse-dawn');
+  } catch (err) {
+    showFormError(msg, btn, 'NOTIFY ME FOR ECLIPSE DAWN');
+    return;
+  }
+  $('emailForm').innerHTML = `<div class="mono" style="${OK_STYLE}">✦ SENT — ONE EMAIL, THE MORNING OF 12 AUGUST. NOTHING BY THEN? WRITE TO ${MAILTO.toUpperCase()}</div>`;
 });
 $('licBtn')?.addEventListener('click', async () => {
   const key = $('licKey').value.trim();
