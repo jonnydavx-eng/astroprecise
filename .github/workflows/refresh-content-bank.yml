@@ -9,9 +9,14 @@ name: Refresh content bank
 # window (today−7 … today+180 daily, 12 monthlies), prunes stale files, and
 # is idempotent — unchanged days stay byte-identical, so a typical weekly run
 # adds ~7 new files and prunes ~7 old ones. If anything changed, the SW
-# precache window is regenerated (bumps cache V) and the result is committed
-# straight to main. That push intentionally triggers deploy-pages.yml — the
+# precache window is regenerated (bumps cache V), the result is committed
+# straight to main, and deploy-pages.yml is dispatched explicitly so the
 # fresh bank auto-ships weekly with zero human involvement.
+#
+# IMPORTANT: commits made with the default GITHUB_TOKEN do NOT fire other
+# workflows' `on.push` hooks (GitHub platform rule). After the bank push we
+# therefore explicitly `gh workflow run deploy-pages.yml` — do not rely on
+# the push alone to ship.
 #
 # NO SECRETS by design: the builder is pure VSOP87 engine text (no API
 # calls). The quarterly LLM voice pass is a separate, local-only process —
@@ -33,6 +38,7 @@ on:
 
 permissions:
   contents: write # commits the refreshed bank + sw.js back to main
+  actions: write  # dispatches deploy-pages.yml after the bot push
 
 concurrency:
   group: refresh-content-bank
@@ -76,8 +82,9 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         run: node website/tools/generate-sw-precache.mjs
 
-      - name: Commit and push (triggers Pages deploy)
+      - name: Commit and push
         if: steps.diff.outputs.changed == 'true'
+        id: push
         run: |
           git config user.name "astroprecise-bank-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -85,6 +92,7 @@ jobs:
           git commit -m "chore(content): weekly bank refresh $(date -u +%F) — engine-generated, idempotent [bot]"
           for attempt in 1 2 3; do
             if git push origin HEAD:main; then
+              echo "pushed=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             echo "Push rejected (attempt $attempt) — rebasing onto latest main…"
@@ -93,3 +101,13 @@ jobs:
             sleep 5
           done
           exit 1
+
+      # GITHUB_TOKEN pushes never cascade into on.push workflows. Dispatch
+      # deploy explicitly so ap-v### + the new bank actually reach live.
+      - name: Dispatch Pages deploy
+        if: steps.diff.outputs.changed == 'true' && steps.push.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run deploy-pages.yml --ref main
+          echo "Dispatched deploy-pages.yml for main (bank tip $(git rev-parse --short HEAD))"
