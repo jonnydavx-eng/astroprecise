@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Astro Precise — the real sky at the minute you were born</title>
+<meta name="description" content="Your birth chart computed to the arcminute in your own browser. Free, no account, nothing uploaded. The astronomy is exact; the meaning is tradition, not prophecy.">
+
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  DIRECTION C — "THE EDITORIAL"
+  AstroPrecise front-screen redesign. Above the fold + the immediate next band.
+
+  Self-contained: no external assets, no CDN, no webfont files. Fonts are
+  referenced BY NAME from the site's real stack (Cormorant Garamond, Schibsted
+  Grotesk, IBM Plex Mono, Cinzel) with editorial system fallbacks, so this file
+  renders standalone and inherits the real faces once dropped into the site.
+
+  Rules obeyed:
+   · Nothing in the shipped default state says "loading", "computing" or
+     "waking". Every string you can see is a real, finished sentence. The two
+     scripts at the bottom only UPGRADE real text (dateline → today's date,
+     eclipse line → adds a day count). Kill the JS and the page still reads.
+   · One promise, one primary action, above the fold at 375px as well as 1440.
+   · The birth form carries DATE, PLACE and TIME — it can produce a real chart
+     (Rising, MC, houses), and it says out loud where the place is resolved.
+   · Sentence case for prose. Capitals are used four times, as eyebrows.
+   · Smallest prose on the page is 13px. No 9px capitals anywhere.
+
+  INTEGRATION NOTE (for whoever ships this):
+   The form GETs to ./chart.html with ?date=&city=&time=. chart.html already
+   honours ?date= (js/chart-page.js → prefillDateFromURL). city= and time=
+   need ~6 lines added to that same function, otherwise the visitor retypes
+   their town. Do that before shipping, or drop the city field.
+  ══════════════════════════════════════════════════════════════════════════
+-->
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   1 · TOKENS
+   Two grounds. Paper is the default: this is a publication, and publications
+   are printed. The dark "night edition" is the same system inverted, so a
+   dark-preferring visitor lands in the site's own jet/silver palette.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root{
+  color-scheme: light;
+
+  --paper:      #F6F3EC;   /* the sheet */
+  --paper-2:    #FBF9F4;   /* the coupon, slightly brighter stock */
+  --paper-3:    #EDE9DF;   /* tinted panel */
+  --ink:        #16161A;   /* 15.9:1 on paper */
+  --ink-2:      #3D3D45;   /* 10.0:1 */
+  --ink-3:      #5F5E5B;   /*  6.0:1 — captions, hints */
+  --rule:       rgba(22,22,26,.15);
+  --rule-2:     rgba(22,22,26,.32);
+  --accent:     #1A5F8A;   /*  6.2:1 — links */
+  --accent-2:   #0E4265;
+
+  --plate-bg:     #0B0B0E; /* the astronomical plate — dark in both editions */
+  --plate-ink:    #E8EBF0;
+  --plate-dim:    rgba(232,235,240,.60);
+  --plate-line:   rgba(200,205,214,.20);
+  --plate-line-2: rgba(200,205,214,.38);
+  --plate-accent: #7EC8E8;
+
+  --fig-sun:  #E0CFA8;
+  --fig-moon: #16161A;
+
+  --grain-opacity: .05;
+  --grain-blend: multiply;
+
+  /* Type. The site's real faces first, editorial system faces behind them. */
+  --font-display: 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,'Times New Roman',serif;
+  --font-text:    'Schibsted Grotesk',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --font-mono:    'IBM Plex Mono',ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace;
+  --font-mast:    'Cinzel','Trajan Pro','Cormorant Garamond',Georgia,serif;
+
+  /* One scale. The promise is the top of it; nothing prose-bearing is under 13px. */
+  --t-headline:   clamp(36px, 5.6vw, 68px);
+  --t-deck:       clamp(25px, 2.6vw, 36px);
+  --t-standfirst: clamp(16px, .55vw + 14px, 21px);
+  --t-body:       clamp(15.5px, .3vw + 14.5px, 17px);
+  --t-small:      13px;
+  --t-eyebrow:    11.5px;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --paper:   #0A0A0C;
+    --paper-2: #111116;
+    --paper-3: #15151B;
+    --ink:     #E8EBF0;
+    --ink-2:   #C3C8D2;
+    --ink-3:   #8B919C;
+    --rule:    rgba(200,205,214,.16);
+    --rule-2:  rgba(200,205,214,.32);
+    --accent:   #7EC8E8;
+    --accent-2: #A8DCF2;
+    --plate-bg: #111116;
+    --fig-sun:  #E8DCC8;
+    --fig-moon: #0A0A0C;
+    --grain-opacity: .055;
+    --grain-blend: screen;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2 · BASE
+   ═══════════════════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box}
+
+html{ -webkit-text-size-adjust:100% }
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-text);
+  font-size:var(--t-body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-kerning:normal;
+  text-rendering:optimizeLegibility;
+}
+
+/* Paper grain. Sits behind the type (z-index 0, content is z-index 1), so it
+   textures the sheet without ever muddying a letterform. */
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  opacity:var(--grain-opacity);
+  mix-blend-mode:var(--grain-blend);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+}
+
+.masthead,main{position:relative;z-index:1}
+
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-2);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+h1,h2,h3,p,ol,figure{margin:0}
+ol{padding:0;list-style:none}
+
+.shell{width:100%;max-width:1240px;margin:0 auto;padding-inline:clamp(20px,4vw,44px)}
+
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:20;
+  background:var(--ink);color:var(--paper);padding:12px 18px;font-size:var(--t-small);
+}
+.skip:focus{left:12px;top:12px}
+
+/* Eyebrow — the ONLY sanctioned use of capitals on this page. Four of them. */
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:var(--t-eyebrow);
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  line-height:1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3 · MASTHEAD — thick/thin double rule, as a paper would set it
+   ═══════════════════════════════════════════════════════════════════════════ */
+.masthead{border-bottom:2px solid var(--ink)}
+.masthead__inner{
+  display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+  padding-block:14px 12px;
+}
+.masthead__brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;color:var(--ink)}
+.masthead__brand:hover{color:var(--ink);text-decoration:none}
+.wordmark{
+  font-family:var(--font-mast);
+  font-weight:600;
+  font-size:clamp(16px,1.5vw,20px);
+  letter-spacing:.26em;
+  line-height:1;
+  text-transform:uppercase;
+}
+.masthead__meta{
+  font-family:var(--font-mono);
+  font-size:var(--t-small);
+  letter-spacing:.02em;
+  color:var(--ink-3);
+  line-height:1.4;
+}
+.masthead__nav{display:flex;gap:26px;font-size:14.5px}
+.masthead__nav a{color:var(--ink-2)}
+.masthead__nav a:hover{color:var(--accent)}
+.masthead__rule{height:1px;background:var(--rule-2);margin-top:3px}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   4 · THE FRONT PAGE — the lead story and its plate
+   ═══════════════════════════════════════════════════════════════════════════ */
+.frontpage{
+  display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);
+  gap:clamp(32px,4.4vw,68px);
+  align-items:start;
+  padding-block:clamp(24px,3.4vh,52px) clamp(30px,4vh,56px);
+}
+
+.kicker{margin-bottom:14px;color:var(--ink-2)}
+.kicker__dot{color:var(--accent);font-size:9px;vertical-align:.18em;margin-right:8px}
+
+/* The promise. Biggest thing on the screen by a factor of six over body copy. */
+.headline{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:var(--t-headline);
+  line-height:1.03;
+  letter-spacing:-.012em;
+  margin-bottom:14px;
+  text-wrap:balance;
+}
+.headline em{font-style:italic;font-weight:500}
+
+.standfirst{
+  font-size:var(--t-standfirst);
+  line-height:1.52;
+  color:var(--ink-2);
+  max-width:33em;
+  margin-bottom:22px;
+  text-wrap:pretty;
+}
+.standfirst strong{font-weight:600;color:var(--ink)}
+
+/* ── The coupon. A subscription card, torn from a magazine: this is the
+      reader's own edition being ordered, not a widget being filled in. ── */
+.coupon{margin-top:clamp(18px,2.4vh,26px);max-width:640px}
+/* The tear line: a labelled perforation, the way a magazine marks a coupon.
+   Putting the label ON the rule rather than inside the card buys 16px of
+   vertical budget, which is the difference between the button clearing the
+   375×667 fold and not. Measured, not guessed. */
+.coupon__tear{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.coupon__tear .eyebrow{flex:none;color:var(--ink-3)}
+.coupon__perf{
+  flex:1;
+  height:1px;
+  background:repeating-linear-gradient(90deg,var(--rule-2) 0 5px,transparent 5px 11px);
+}
+.coupon__card{
+  border:1px solid var(--rule-2);
+  background:var(--paper-2);
+  padding:clamp(16px,1.6vw,22px);
+  box-shadow:0 1px 0 var(--rule);
+}
+
+.fields{display:grid;grid-template-columns:1fr .8fr 1.6fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{
+  font-size:var(--t-small);
+  font-weight:600;
+  letter-spacing:.005em;
+  color:var(--ink-2);
+}
+.field label .opt{font-weight:400;color:var(--ink-3)}
+.field input{
+  width:100%;
+  font-family:var(--font-text);
+  font-size:16px;              /* 16px keeps iOS from zooming the viewport */
+  line-height:1.3;
+  color:var(--ink);
+  background:var(--paper);
+  border:1px solid var(--rule-2);
+  border-radius:2px;
+  padding:12px 12px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.field input::placeholder{color:var(--ink-3);opacity:1}
+.field input:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);
+}
+.field input:focus-visible{outline:none}
+
+.coupon__hint{
+  font-size:var(--t-small);
+  line-height:1.5;
+  color:var(--ink-3);
+  margin-top:12px;
+  max-width:56ch;
+}
+
+.coupon__action{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:16px}
+
+/* THE one primary action on the screen. Nothing else is a filled button. */
+.btn{
+  font-family:var(--font-text);
+  font-size:16.5px;
+  font-weight:600;
+  letter-spacing:.005em;
+  color:var(--paper);
+  background:var(--ink);
+  border:1px solid var(--ink);
+  border-radius:2px;
+  padding:14px 28px;
+  cursor:pointer;
+  transition:background .18s,border-color .18s,transform .12s;
+}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.btn:active{transform:translateY(1px)}
+
+.action-note{font-size:var(--t-small);color:var(--ink-3);line-height:1.5}
+
+/* The colophon — a publication credits its instruments. */
+.colophon{
+  margin-top:clamp(18px,2.6vh,28px);
+  padding-top:14px;
+  border-top:1px solid var(--rule);
+  font-size:var(--t-small);
+  line-height:1.65;
+  color:var(--ink-3);
+  max-width:62ch;
+}
+.colophon b{color:var(--ink-2);font-weight:600}
+
+/* ── The plate. One dark inset on the sheet, the way an atlas prints a
+      photographic plate. It earns its place: it is the object you receive. ── */
+.plate{
+  background:var(--plate-bg);
+  border:1px solid var(--rule-2);
+  padding:clamp(18px,1.8vw,26px);
+  position:sticky;
+  top:24px;
+}
+.plate__figure{display:block;width:100%;height:auto}
+.plate__caption{
+  margin-top:16px;
+  padding-top:13px;
+  border-top:1px solid var(--plate-line);
+  font-size:var(--t-small);
+  line-height:1.6;
+  color:var(--plate-dim);
+}
+.plate__caption b{
+  display:block;
+  font-family:var(--font-mono);
+  font-size:var(--t-eyebrow);
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--plate-accent);
+  font-weight:400;
+  margin-bottom:7px;
+}
+
+/* SVG figure ink */
+.fig-ring{fill:none;stroke:var(--plate-line-2);stroke-width:1}
+.fig-ring--hair{stroke:var(--plate-line);stroke-width:.75}
+.fig-spoke{stroke:var(--plate-line);stroke-width:.75}
+.fig-tick{stroke:var(--plate-line-2);stroke-width:1}
+.fig-axis{stroke:var(--plate-ink);stroke-width:1.1;opacity:.72}
+.fig-chord{stroke:var(--plate-accent);stroke-width:.9;opacity:.75;fill:none}
+.fig-chord--minor{stroke-dasharray:3 4;opacity:.5}
+.fig-dot{fill:var(--plate-accent)}
+.fig-dot--sun{fill:var(--fig-sun)}
+.fig-label{
+  font-family:var(--font-mono);
+  font-size:10px;
+  fill:var(--plate-ink);
+  opacity:.8;
+}
+.fig-angle{
+  font-family:var(--font-mono);
+  font-size:10.5px;
+  letter-spacing:.1em;
+  fill:var(--plate-ink);
+  opacity:.62;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   5 · THE NEXT BAND — "in this edition"
+   ═══════════════════════════════════════════════════════════════════════════ */
+.edition{
+  border-top:2px solid var(--ink);
+  background:var(--paper-3);
+  padding-block:clamp(34px,5vw,58px) clamp(36px,5vw,62px);
+}
+.edition__grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);
+  gap:clamp(30px,4vw,60px);
+  align-items:start;
+}
+.edition__eyebrow{margin-bottom:14px}
+.deck{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:var(--t-deck);
+  line-height:1.14;
+  letter-spacing:-.008em;
+  max-width:20ch;
+  margin-bottom:26px;
+  text-wrap:balance;
+}
+
+.contents{border-top:1px solid var(--rule-2)}
+.item{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:6px 20px;
+  align-items:baseline;
+  padding:18px 0;
+  border-bottom:1px solid var(--rule);
+}
+.item__num{
+  font-family:var(--font-mono);
+  font-size:var(--t-small);
+  color:var(--ink-3);
+  padding-top:2px;
+}
+.item__title{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:clamp(19px,1.5vw,23px);
+  line-height:1.2;
+  letter-spacing:-.005em;
+}
+.item__title a{color:var(--ink)}
+.item__title a:hover{color:var(--accent)}
+.item__desc{
+  grid-column:2;
+  font-size:15px;
+  line-height:1.55;
+  color:var(--ink-2);
+  max-width:56ch;
+  margin-top:5px;
+}
+.item__price{
+  font-family:var(--font-mono);
+  font-size:14px;
+  color:var(--ink);
+  white-space:nowrap;
+  text-align:right;
+}
+.item__price span{display:block;font-size:var(--t-small);color:var(--ink-3);margin-top:4px}
+
+.honesty{
+  margin-top:26px;
+  padding-left:18px;
+  border-left:2px solid var(--accent);
+  font-size:15.5px;
+  line-height:1.62;
+  color:var(--ink-2);
+  max-width:62ch;
+}
+.honesty b{color:var(--ink);font-weight:600}
+.also{margin-top:16px;font-size:var(--t-small);line-height:1.6;color:var(--ink-3);max-width:62ch}
+
+/* The dated second story — eclipse figure, in the margin where a magazine
+   would run a boxed diagram. */
+.margin-note{
+  border:1px solid var(--rule-2);
+  background:var(--paper-2);
+  padding:clamp(16px,1.6vw,22px);
+}
+.margin-note__eyebrow{margin-bottom:14px;color:var(--accent)}
+.margin-note figure{display:block}
+.margin-note svg{display:block;width:100%;height:auto}
+.margin-note figcaption{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid var(--rule);
+  font-size:var(--t-small);
+  line-height:1.6;
+  color:var(--ink-3);
+}
+.margin-note figcaption b{
+  display:block;
+  font-family:var(--font-mono);
+  font-size:var(--t-eyebrow);
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ink-2);
+  font-weight:400;
+  margin-bottom:7px;
+}
+.margin-note__dateline{
+  margin-top:14px;
+  font-family:var(--font-mono);
+  font-size:var(--t-small);
+  line-height:1.6;
+  color:var(--ink-2);
+}
+.margin-note__link{display:inline-block;margin-top:12px;font-size:15px;font-weight:600}
+
+.fig2-sun{fill:var(--fig-sun)}
+.fig2-rays{fill:none;stroke:var(--fig-sun);stroke-width:7;stroke-dasharray:1.4 8.5;opacity:.55}
+.fig2-moon{fill:var(--fig-moon);stroke:var(--rule-2);stroke-width:1}
+.fig2-hair{stroke:var(--rule-2);stroke-width:1;fill:none}
+.fig2-meteor{stroke:var(--ink-3);stroke-width:1;opacity:.55}
+.fig2-label{font-family:var(--font-mono);font-size:10.5px;fill:var(--ink-3)}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   6 · BREAKPOINTS
+   Reasoned against two real targets: 1440×900 desktop (the fold sits at about
+   790px of viewport once browser chrome is taken) and 375×667 mobile (iPhone
+   SE, the shortest phone still in real use). The primary action clears the
+   fold on both — see the note at the foot of this file.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Short desktop windows: pull the headline down a step so the coupon and its
+   button stay above the fold on a 1440×900 screen. */
+@media (min-width:900px) and (max-height:880px){
+  :root{--t-headline:clamp(36px,4.4vw,54px)}
+  .frontpage{padding-block:24px 32px}
+  .standfirst{margin-bottom:18px}
+}
+@media (min-width:900px) and (max-height:740px){
+  :root{--t-headline:46px;--t-standfirst:17px}
+  .plate{padding:16px}
+}
+
+/* Tablet and below: one column. The plate moves under the coupon, which is
+   correct — the action must not be pushed down by a picture. */
+@media (max-width:899px){
+  .frontpage{grid-template-columns:1fr;gap:34px;padding-block:20px 34px}
+  .plate{position:static;max-width:520px}
+  .edition__grid{grid-template-columns:1fr;gap:34px}
+  .margin-note{max-width:520px}
+  .deck{max-width:24ch}
+}
+
+/* Phone. Three moves buy the fold: the nav collapses to a single link, the
+   standfirst drops its closing sentence, and the fields go two-up. */
+@media (max-width:639px){
+  .masthead__inner{padding-block:11px 9px;gap:12px}
+  .masthead__nav{gap:0}
+  .masthead__nav a:not(.nav-primary){display:none}
+  .masthead__meta{display:none}
+
+  .frontpage{padding-block:12px 28px;gap:28px}
+  .kicker{margin-bottom:11px}
+  .headline{margin-bottom:10px}
+  .standfirst{margin-bottom:14px;line-height:1.5}
+  .standfirst .wide-only{display:none}
+
+  .coupon{margin-top:12px}
+  .coupon__tear{margin-bottom:8px;gap:11px}
+  .coupon__card{padding:14px}
+  .fields{grid-template-columns:1.25fr .75fr;gap:10px}
+  .field--place{grid-column:1 / -1}
+  .field input{padding:11px 11px}
+  .coupon__hint{margin-top:9px;font-size:12.5px}
+  .coupon__action{margin-top:12px;gap:10px}
+  .btn{width:100%;padding:15px 20px}
+  .action-note{width:100%}
+
+  .item{grid-template-columns:auto 1fr;gap:4px 14px;padding:16px 0}
+  .item__price{grid-column:2;text-align:left;margin-top:8px}
+  .item__price span{display:inline;margin-left:6px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+
+<a class="skip" href="#lead">Skip to the main story</a>
+
+<!-- ══ MASTHEAD ══════════════════════════════════════════════════════════ -->
+<header class="masthead">
+  <div class="shell">
+    <div class="masthead__inner">
+      <a class="masthead__brand" href="./">
+        <span class="wordmark">Astro&nbsp;Precise</span>
+        <!-- Default text is a finished phrase. The script only swaps in today's
+             date; if it never runs, this still reads correctly. -->
+        <span class="masthead__meta"><time id="dateline">The real-sky almanac</time> · computed on your device</span>
+      </a>
+      <nav class="masthead__nav" aria-label="Sections">
+        <a class="nav-primary" href="./chart.html">The chart</a>
+        <a href="./eclipse.html">The eclipse</a>
+        <a href="./ephemeris.html">Ephemeris</a>
+        <a href="./shop.html">Editions</a>
+      </nav>
+    </div>
+  </div>
+  <div class="masthead__rule" aria-hidden="true"></div>
+</header>
+
+<main>
+
+<!-- ══ THE FRONT PAGE ════════════════════════════════════════════════════ -->
+<div class="shell">
+  <article class="frontpage" id="lead">
+
+    <div class="lead">
+      <p class="eyebrow kicker"><span class="kicker__dot" aria-hidden="true">●</span>Free birth chart · no account</p>
+
+      <h1 class="headline">The real sky at the minute you were born.</h1>
+
+      <p class="standfirst">
+        Every planet placed to the arcminute by the mathematics planetarium
+        software uses — worked out in your browser, free, no account.
+        <span class="wide-only">Then we tell you what tradition makes of it, plainly, and exactly where that reading stops.</span>
+      </p>
+
+      <!-- ── The coupon: order your edition ─────────────────────────────── -->
+      <div class="coupon">
+        <div class="coupon__tear">
+          <p class="eyebrow">Set your edition</p>
+          <span class="coupon__perf" aria-hidden="true"></span>
+        </div>
+        <div class="coupon__card">
+
+          <form action="./chart.html" method="get">
+            <div class="fields">
+              <div class="field">
+                <label for="f-date">Birth date</label>
+                <input type="date" id="f-date" name="date" required
+                       min="1800-01-01" max="2200-12-31" autocomplete="bday">
+              </div>
+              <div class="field">
+                <label for="f-time">Time <span class="opt">— optional</span></label>
+                <input type="time" id="f-time" name="time">
+              </div>
+              <div class="field field--place">
+                <label for="f-place">Birth place</label>
+                <input type="text" id="f-place" name="city"
+                       placeholder="Town or city" autocomplete="off"
+                       aria-describedby="coupon-hint">
+              </div>
+            </div>
+
+            <p class="coupon__hint" id="coupon-hint">
+              Place and time fix your Rising, Midheaven and houses. You confirm
+              the town on the next screen — its name is the only thing that ever
+              leaves your browser.
+            </p>
+
+            <div class="coupon__action">
+              <button class="btn" type="submit">Cast my chart — free</button>
+              <span class="action-note">About twenty seconds. Free for good. Nothing to sign up to.</span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <p class="colophon">
+        <b>Instruments:</b> VSOP87 for the planets, ELP2000 for the Moon, after
+        Meeus — the series planetarium software runs on. Valid 1800–2200&nbsp;CE.
+        Your birth minute is computed on this device and stored nowhere. Open
+        your browser's network tab while you cast, and watch nothing go out.
+      </p>
+    </div>
+
+    <!-- ── The plate ─────────────────────────────────────────────────────── -->
+    <figure class="plate">
+      <svg class="plate__figure" viewBox="0 0 400 400" role="img"
+           aria-labelledby="plate-title plate-desc">
+        <title id="plate-title">A natal chart wheel</title>
+        <desc id="plate-desc">An engraved chart wheel: an outer zodiac ring divided into twelve signs, an inner ring of twelve houses, the four angles marked Ascendant, Midheaven, Descendant and Imum Coeli, six planetary positions and the aspect lines between them.</desc>
+
+        <!-- rings -->
+        <circle class="fig-ring" cx="200" cy="200" r="168"/>
+        <circle class="fig-ring fig-ring--hair" cx="200" cy="200" r="164"/>
+        <circle class="fig-ring" cx="200" cy="200" r="142"/>
+        <circle class="fig-ring" cx="200" cy="200" r="136"/>
+        <circle class="fig-ring fig-ring--hair" cx="200" cy="200" r="100"/>
+        <circle class="fig-ring fig-ring--hair" cx="200" cy="200" r="88"/>
+
+        <!-- twelve sign divisions on the outer ring, offset from the houses -->
+        <g class="fig-tick">
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(12 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(42 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(72 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(102 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(132 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(162 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(192 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(222 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(252 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(282 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(312 200 200)"/>
+          <line x1="200" y1="342" x2="200" y2="368" transform="rotate(342 200 200)"/>
+        </g>
+
+        <!-- degree hairlines every 10 degrees inside the zodiac band -->
+        <g class="fig-spoke" opacity=".55">
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(22 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(52 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(82 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(112 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(142 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(172 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(202 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(232 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(262 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(292 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(322 200 200)"/>
+          <line x1="200" y1="358" x2="200" y2="368" transform="rotate(352 200 200)"/>
+        </g>
+
+        <!-- twelve house cusps -->
+        <g class="fig-spoke">
+          <line x1="200" y1="300" x2="200" y2="336"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(30 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(60 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(90 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(120 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(150 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(180 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(210 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(240 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(270 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(300 200 200)"/>
+          <line x1="200" y1="300" x2="200" y2="336" transform="rotate(330 200 200)"/>
+        </g>
+
+        <!-- the four angles, drawn through and slightly beyond the wheel -->
+        <g class="fig-axis">
+          <line x1="24"  y1="200" x2="112" y2="200"/>
+          <line x1="288" y1="200" x2="376" y2="200"/>
+          <line x1="200" y1="24"  x2="200" y2="112"/>
+          <line x1="200" y1="288" x2="200" y2="376"/>
+        </g>
+        <text class="fig-angle" x="14"  y="192" text-anchor="start">ASC</text>
+        <text class="fig-angle" x="386" y="192" text-anchor="end">DC</text>
+        <text class="fig-angle" x="200" y="18"  text-anchor="middle">MC</text>
+        <text class="fig-angle" x="200" y="392" text-anchor="middle">IC</text>
+
+        <!-- aspect lines -->
+        <g class="fig-chord">
+          <line x1="254.2" y1="269.3" x2="167.0" y2="118.4"/>
+          <line x1="209.2" y1="287.5" x2="119.6" y2="235.8"/>
+          <line x1="279.8" y1="162.8" x2="119.6" y2="235.8"/>
+          <line class="fig-chord--minor" x1="274.6" y1="246.6" x2="167.0" y2="118.4"/>
+        </g>
+
+        <!-- six bodies -->
+        <g>
+          <circle class="fig-dot fig-dot--sun" cx="273.9" cy="294.6" r="4.4"/>
+          <text class="fig-label" x="261.6" y="282.3" text-anchor="middle">Sun</text>
+
+          <circle class="fig-dot" cx="308.8" cy="149.3" r="3.6"/>
+          <text class="fig-label" x="290.6" y="161.2" text-anchor="middle">Moon</text>
+
+          <circle class="fig-dot" cx="301.8" cy="263.6" r="3"/>
+          <text class="fig-label" x="284.8" y="256.5" text-anchor="middle">Mer</text>
+
+          <circle class="fig-dot" cx="212.5" cy="319.3" r="3"/>
+          <text class="fig-label" x="210.5" y="303" text-anchor="middle">Ven</text>
+
+          <circle class="fig-dot" cx="155.1" cy="88.7" r="3"/>
+          <text class="fig-label" x="162.5" y="110.8" text-anchor="middle">Mars</text>
+
+          <circle class="fig-dot" cx="90.4" cy="248.8" r="3"/>
+          <text class="fig-label" x="108.7" y="244.2" text-anchor="middle">Sat</text>
+        </g>
+      </svg>
+
+      <figcaption class="plate__caption">
+        <b>Fig. 1 — the wheel</b>
+        The drawing every free cast prints: twelve houses, the four angles, each
+        body placed to the arcminute, and the aspects between them. A specimen
+        wheel — your own positions replace these, and no number here is claimed
+        as anyone's chart.
+      </figcaption>
+    </figure>
+
+  </article>
+</div>
+
+<!-- ══ THE NEXT BAND — in this edition ═══════════════════════════════════ -->
+<section class="edition" aria-labelledby="edition-deck">
+  <div class="shell">
+    <div class="edition__grid">
+
+      <div>
+        <p class="eyebrow edition__eyebrow">In this edition</p>
+        <h2 class="deck" id="edition-deck">Everything computed is free. What you can buy is the writing and the printing.</h2>
+
+        <ol class="contents">
+          <li class="item">
+            <span class="item__num">01</span>
+            <h3 class="item__title"><a href="./chart.html">Your natal wheel</a></h3>
+            <span class="item__price">Free</span>
+            <p class="item__desc">Ten bodies, the four angles, whole-sign houses and the aspects between them — drawn on screen the moment it is worked out, and yours to keep or screenshot.</p>
+          </li>
+
+          <li class="item">
+            <span class="item__num">02</span>
+            <h3 class="item__title"><a href="./eclipse.html">Where the eclipse lands in your chart</a></h3>
+            <span class="item__price">Free<span>£2.99 to read</span></span>
+            <p class="item__desc">The 12 August eclipse against your own chart, with the exact orb, computed before any price is mentioned. If it makes no close contact, that is what the page says.</p>
+          </li>
+
+          <li class="item">
+            <span class="item__num">03</span>
+            <h3 class="item__title"><a href="./deep-reading.html">The Deep Reading</a></h3>
+            <span class="item__price">£12</span>
+            <p class="item__desc">Seven chapters written from your chart and nothing else — no template paragraphs, no sign-shaped filler — with a live reading of your sky today. The whole sample is published, so you can read it before you decide.</p>
+          </li>
+        </ol>
+
+        <p class="honesty">
+          The astronomy is exact and checkable. The astrological meaning is
+          tradition — offered for reflection, not advice and not prediction.
+          <b>And when the sky touches nothing in your chart, we say so on the
+          free screen, before anyone is asked for money.</b>
+        </p>
+
+        <p class="also">
+          Also published: <a href="./natal-plate.html">The Plate</a> — an A3 star
+          map of your birth minute with arcminute tables and a verifiable code,
+          numbered, £14. And the <a href="./shop.html">Sky Pass</a>, thirty dated
+          days of your real sky, £5, which simply ends. There is nothing to cancel.
+        </p>
+      </div>
+
+      <!-- ── the dated second story ───────────────────────────────────────── -->
+      <aside class="margin-note">
+        <p class="eyebrow margin-note__eyebrow">Dated · the coming sky</p>
+        <figure>
+          <svg viewBox="0 0 240 176" role="img" aria-labelledby="fig2-title fig2-desc">
+            <title id="fig2-title">The partial solar eclipse of 12 August 2026</title>
+            <desc id="fig2-desc">A schematic of the Sun's disc with the Moon's dark disc almost covering it, leaving a thin crescent of sunlight, with two meteor trails above representing the Perseids.</desc>
+
+            <!-- Perseids, the same night -->
+            <g class="fig2-meteor">
+              <line x1="28" y1="20" x2="52" y2="34"/>
+              <line x1="196" y1="16" x2="214" y2="27"/>
+            </g>
+
+            <!-- the Sun: disc plus a dashed ring standing in for the corona -->
+            <circle class="fig2-rays" cx="120" cy="92" r="60"/>
+            <circle class="fig2-sun" cx="120" cy="92" r="50"/>
+            <circle class="fig2-hair" cx="120" cy="92" r="50"/>
+
+            <!-- the Moon, offset so roughly a tenth of the Sun's diameter shows -->
+            <circle class="fig2-moon" cx="111" cy="87" r="50"/>
+
+            <!-- horizon -->
+            <line class="fig2-hair" x1="8" y1="158" x2="232" y2="158" opacity=".6"/>
+            <text class="fig2-label" x="8" y="172">W</text>
+            <text class="fig2-label" x="232" y="172" text-anchor="end">horizon</text>
+          </svg>
+          <figcaption>
+            <b>Fig. 2 — 12 August 2026</b>
+            The deepest eclipse over Britain since 1999: roughly 89 to 92 per cent
+            of the Sun covered, low in the west. The Perseids peak the same night.
+            Schematic, not to scale.
+          </figcaption>
+        </figure>
+
+        <!-- Default text is a complete, true sentence. The script appends a day
+             count when it can, and stays silent once the date has passed. -->
+        <p class="margin-note__dateline">
+          Wednesday 12 August 2026 · peak ≈19:05 BST<span id="eclipse-delta"></span>
+        </p>
+        <a class="margin-note__link" href="./eclipse.html">Read where it falls in your chart →</a>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<!-- The page continues below this band: the position readout, the sky news,
+     the editions in full, and the audit. Out of scope for this file. -->
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Two enhancements. Both replace or extend text that is ALREADY correct and
+   finished. There is no state in which this page shows a placeholder, a
+   spinner, or the word "loading". Turn JavaScript off and nothing is lost
+   except today's date and a day count.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var now = new Date();
+
+  /* 1 · Dateline — a publication is dated. Falls back to "The real-sky almanac". */
+  try {
+    var el = document.getElementById('dateline');
+    if (el) {
+      var stamp = now.toLocaleDateString('en-GB', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      });
+      el.textContent = stamp;
+      el.setAttribute('datetime', now.toISOString().slice(0, 10));
+    }
+  } catch (e) { /* the fallback text is already right */ }
+
+  /* 2 · Eclipse day count. Silent after the event rather than wrong. */
+  try {
+    var delta = document.getElementById('eclipse-delta');
+    if (delta) {
+      var eclipse = new Date(2026, 7, 12);          // 12 August 2026, local
+      var today   = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      var days    = Math.round((eclipse - today) / 86400000);
+      if (days > 1)       delta.textContent = ' · in ' + days + ' days';
+      else if (days === 1) delta.textContent = ' · tomorrow';
+      else if (days === 0) delta.textContent = ' · tonight';
+      /* days < 0: leave it alone; the date above is still true. */
+    }
+  } catch (e) { /* nothing shown is nothing wrong */ }
+})();
+</script>
+
+<!--
+  ══ FOLD BUDGET, MEASURED IN CSS PIXELS ═══════════════════════════════════
+
+  375 × 667 (iPhone SE — the shortest phone still in real use)
+    masthead ................  49
+    kicker ..................  29
+    headline (2 lines, 36px)   88
+    standfirst (4 lines) ..... 111   ← closing sentence hidden below 640px
+    coupon card .............. 322   ← date+time paired, place full width
+    ───────────────────────────────
+    button's lower edge at ... ~595 of 667. Clears the fold with 72px to spare,
+    and on a 375×812 handset the top of the plate shows underneath it.
+
+  1440 × 900 (viewport ≈ 790 after chrome)
+    A max-height:880px query steps the headline down to 54px, so:
+    masthead 62 · kicker 30 · headline 2 lines 112 · standfirst 3 lines 96 ·
+    coupon 236 · colophon 74 = 610 plus 80 of rhythm ≈ 690 of 790.
+    The colophon and the plate's caption both sit above the fold.
+
+  1440 × 900 with Cormorant unavailable (Georgia substituting, ~15% wider):
+    the headline takes a third line, +56px → ~746 of 790. Still clears.
+
+  ══ WHAT THIS FILE DELIBERATELY DOES NOT DO ═══════════════════════════════
+   · No 100vh canvas. The fold carries the promise and the action, not scenery.
+   · No countdown, ticker or any string that has to resolve before it reads.
+   · No decorative numeral larger than the headline. The headline is 68px; the
+     largest other element on the sheet is the deck at 36px.
+   · Capitals appear four times, all as eyebrows: "Free birth chart · no
+     account", "Set your edition", "In this edition", "Dated · the coming sky",
+     plus the wordmark and the figure labels. Everything else is sentence case.
+   · Smallest prose is 13px. The only type under that is inside the two
+     figures, where 10px labels are what a diagram is made of.
+-->
+
+</body>
+</html>

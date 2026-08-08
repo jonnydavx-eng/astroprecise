@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Astro Precise — where every planet actually was, the minute you were born</title>
+<meta name="description" content="Your birth chart computed in your own browser by planetarium-grade astronomy. Free, no account. A weather report of the sky, not prophecy.">
+<meta name="colour-scheme" content="light dark">
+<meta name="color-scheme" content="light dark">
+
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  DIRECTION A — "THE INSTRUMENT"                       front screen redesign
+  ══════════════════════════════════════════════════════════════════════════
+  Self-contained. No external assets, no CDNs, no network calls.
+  Fonts referenced by the real site's family names with system fallbacks
+  (astroprecise/website/fonts/ holds the self-hosted woff2 files).
+
+  Rules held to, deliberately:
+   · No loading text in the shipped default state. Anything JS supplies
+     ships `hidden` and empty, and simply never appears without JS.
+   · One promise, and it is the largest text on the screen.
+   · One primary action. Above the fold at 375px as well as 1440px.
+   · No crippled birth form. The form lives on chart.html where it can ask
+     for birth place and therefore produce Rising, MC and houses. The
+     handoff is stated out loud, with the reason.
+   · Sentence case for prose. Capitals only as deliberate eyebrows/labels.
+   · Smallest type on the page is 12px. Nothing smaller exists.
+   · One accent colour (aurora, from css/ap-palette-2026.css).
+  ══════════════════════════════════════════════════════════════════════════
+-->
+
+<style>
+/* ─────────────────────────────────────────────────────────────────────────
+   1. TOKENS
+   Light is the default: an instrument spec sheet, paper white, generous.
+   Dark honours the shipped jet/silver/aurora palette in ap-palette-2026.css.
+   One accent in both. No second hue anywhere on this screen.
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --paper:        #F7F7F5;
+  --paper-raised: #FFFFFF;
+  --ink:          #101317;   /* 18.0:1 on paper */
+  --ink-2:        #40474F;   /*  8.5:1 on paper */
+  --ink-3:        #666D76;   /*  4.9:1 on paper */
+  --rule:         #E1E1DC;
+  --rule-strong:  #C9C9C2;
+  --accent:       #0E6E9E;   /*  5.2:1 on paper — deepened --ap-aurora-deep */
+  --accent-hover: #0A5679;   /*  white label on this: 8.0:1              */
+  --accent-ink:   #FFFFFF;
+  --accent-wash:  rgba(14, 110, 158, 0.07);
+
+  /* The instrument window is dark in both schemes. It shows space. */
+  --scope-bg:     #0A0A0C;   /* --ap-jet-base   */
+  --scope-line:   rgba(200, 205, 214, 0.20);
+  --scope-line-2: rgba(200, 205, 214, 0.34);
+  --scope-body:   #C8CDD6;   /* --ap-silver     */
+  --scope-accent: #7EC8E8;   /* --ap-aurora     — 10.6:1 on jet */
+
+  --sans:    'Schibsted Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --serif:   'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --display: 'Cinzel', Georgia, serif;
+
+  --gutter:  clamp(1.25rem, 0.6rem + 2.6vw, 3rem);
+  --measure: 1200px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:        #0A0A0C;
+    --paper-raised: #101014;
+    --ink:          #E8EBF0;
+    --ink-2:        #C8CDD6;
+    --ink-3:        #8B919C;
+    --rule:         rgba(200, 205, 214, 0.14);
+    --rule-strong:  rgba(200, 205, 214, 0.26);
+    --accent:       #7EC8E8;   /* --ap-aurora        — 10.6:1 on jet */
+    --accent-hover: #A8DCF2;   /* --ap-aurora-bright — 13.7:1 on jet */
+    --accent-ink:   #050508;
+    --accent-wash:  rgba(126, 200, 232, 0.09);
+    --scope-bg:     #08080B;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   2. BASE
+   ───────────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+a:hover { text-decoration-thickness: 2px; }
+
+:where(a, button):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.shell { max-width: var(--measure); margin-inline: auto; padding-inline: var(--gutter); }
+
+.skip {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--accent); color: var(--accent-ink);
+  padding: 0.75rem 1.25rem; font-size: 0.875rem; z-index: 20;
+}
+.skip:focus { left: 0.5rem; top: 0.5rem; }
+
+/* Eyebrow — the ONLY sanctioned use of capitals, plus data labels below. */
+.eyebrow {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.75rem;          /* 12px — the floor for this page */
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   3. MASTHEAD
+   ───────────────────────────────────────────────────────────────────────── */
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+.masthead__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 4.25rem;
+  padding-block: 0.75rem;
+}
+.brand {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  color: var(--ink); text-decoration: none;
+}
+.brand__reticle { display: block; flex: none; color: var(--accent); }
+.brand__name {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.9375rem;        /* 15px */
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.masthead nav { display: flex; align-items: center; gap: clamp(1rem, 2.4vw, 2rem); }
+.masthead nav a {
+  font-size: 0.875rem;         /* 14px, sentence case — not a caps wall */
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.masthead nav a:hover { color: var(--accent); text-decoration: underline; }
+@media (max-width: 560px) { .masthead nav a.is-tertiary { display: none; } }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   4. HERO — the fold
+   Desktop: promise left, instrument window right.
+   Mobile:  promise, action, then the instrument. The CTA never sits under
+            a full-height canvas, because there isn't one.
+   ───────────────────────────────────────────────────────────────────────── */
+.hero { padding-block: clamp(2.25rem, 1.1rem + 3.4vw, 3.9rem) clamp(2.5rem, 1rem + 5vw, 5.5rem); }
+
+.hero__grid {
+  display: grid;
+  gap: clamp(2.5rem, 1rem + 5vw, 4rem);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+@media (min-width: 940px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.9fr);
+    gap: clamp(3rem, 4.4vw, 4.5rem);
+  }
+}
+
+.promise {
+  margin: 1.1rem 0 0;
+  font-size: clamp(2.35rem, 1.42rem + 3.72vw, 4.6rem);   /* 37.6px → 73.6px */
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  text-wrap: balance;
+  max-width: 15ch;
+}
+@media (max-width: 480px) { .promise { max-width: none; } }
+
+.promise__turn { color: var(--accent); }
+
+.hero__sub {
+  margin: clamp(1.1rem, 0.8rem + 0.9vw, 1.6rem) 0 0;
+  font-size: clamp(1.0625rem, 1rem + 0.42vw, 1.3125rem);  /* 17px → 21px */
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+
+/* ── The one primary action ──────────────────────────────────────────── */
+.action { margin-top: clamp(1.6rem, 1rem + 1.6vw, 2.25rem); }
+
+.cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.7rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  padding: 1.05rem 2.1rem;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  /* Deliberately NO colour transition. Transitioning background-color across a
+     prefers-color-scheme flip latches the button to the outgoing scheme's
+     accent — measured at 3.63:1 on the label before this was removed. An
+     instrument switches state instantly anyway. */
+  transition: transform .16s ease;
+}
+.cta:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.cta:active { transform: translateY(1px); }
+.cta__arrow { font-family: var(--mono); font-size: 0.95em; }
+@media (max-width: 620px) { .cta { display: flex; width: 100%; } }
+
+.action__note {
+  margin: 0.95rem 0 0;
+  font-size: 0.875rem;         /* 14px */
+  line-height: 1.55;
+  color: var(--ink-3);
+  max-width: 42ch;
+}
+
+/* Subordinate, by an unmistakable margin: a text link, no button chrome. */
+.aside-link {
+  margin: clamp(1.5rem, 1rem + 1.4vw, 2.1rem) 0 0;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--ink-3);
+  max-width: 44ch;
+}
+.aside-link a { font-weight: 500; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   5. THE INSTRUMENT WINDOW
+   Small, framed, controlled. Data is the ornament. It is a diagram and
+   says so — the live model lives on the chart and explorer pages.
+   ───────────────────────────────────────────────────────────────────────── */
+.scope {
+  margin: 0;
+  max-width: 25.5rem;          /* 408px — deliberately not full-bleed */
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-raised);
+}
+@media (max-width: 939px) { .scope { max-width: 27.5rem; margin-inline: auto; } }
+
+.scope__window {
+  position: relative;
+  background: var(--scope-bg);
+  padding: 1.15rem;
+}
+/* Registration marks — the frame of an instrument, not decoration for its own sake */
+.scope__window::before,
+.scope__window::after {
+  content: ""; position: absolute; width: 14px; height: 14px; pointer-events: none;
+  border-color: var(--scope-line-2); border-style: solid;
+}
+.scope__window::before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+.scope__window::after  { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+
+.orrery { display: block; width: 100%; height: auto; }
+
+.orrery .ring   { fill: none; stroke: var(--scope-line); stroke-width: 0.6; }
+.orrery .rim    { fill: none; stroke: var(--scope-line-2); stroke-width: 0.9; }
+.orrery .tick   { stroke: var(--scope-line-2); stroke-width: 0.9; }
+.orrery .tick--cardinal { stroke: var(--scope-accent); stroke-width: 1.1; }
+.orrery .cross  { stroke: var(--scope-line); stroke-width: 0.5; stroke-dasharray: 2 6; }
+.orrery .body   { fill: var(--scope-body); }
+.orrery .sun    { fill: var(--scope-accent); }
+.orrery .halo   { fill: var(--scope-accent); opacity: 0.12; }
+
+.arm {
+  transform-box: view-box;
+  transform-origin: 160px 160px;
+  animation: orbit linear infinite;
+  will-change: transform;
+}
+@keyframes orbit { to { transform: rotate(360deg); } }
+
+/* True period ratios, time-compressed at 1 year = 60 seconds. */
+.arm--mercury { animation-duration:   14.4s; animation-delay:   -3.2s; }
+.arm--venus   { animation-duration:   36.8s; animation-delay:  -14.0s; }
+.arm--earth   { animation-duration:   60.0s; animation-delay:  -22.5s; }
+.arm--mars    { animation-duration:  112.8s; animation-delay:  -70.0s; }
+.arm--jupiter { animation-duration:  711.6s; animation-delay: -300.0s; }
+.arm--saturn  { animation-duration: 1767.6s; animation-delay: -900.0s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .arm { animation: none; }
+}
+
+/* ── Nameplate: the hero fact, given room to be a fact ────────────────── */
+.nameplate {
+  display: flex; align-items: baseline; gap: 1.15rem;
+  padding: 1.15rem 1.35rem;
+  border-top: 1px solid var(--rule-strong);
+}
+.nameplate__value {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.nameplate__text {
+  margin: 0;
+  font-size: 0.9375rem;        /* 15px */
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* ── Caption strip: real, fixed truths only. Nothing that could ever read
+      "COMPUTING…". The clock row ships hidden and empty. ─────────────── */
+.readout {
+  border-top: 1px solid var(--rule);
+  padding: 0.9rem 1.35rem 1.05rem;
+  display: grid;
+  gap: 0.4rem;
+}
+.readout__row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.readout__k {
+  font-family: var(--mono);
+  font-size: 0.75rem;          /* 12px */
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.readout__v {
+  font-family: var(--mono);
+  font-size: 0.8125rem;        /* 13px */
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.readout__note {
+  margin: 0.35rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.75rem;          /* 12px */
+  line-height: 1.65;
+  color: var(--ink-3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   6. THE NEXT BAND — the specification
+   Each idea stated exactly once.
+   ───────────────────────────────────────────────────────────────────────── */
+.spec {
+  border-top: 1px solid var(--rule);
+  padding-block: clamp(3rem, 1.5rem + 5vw, 5.5rem);
+}
+.spec__head { max-width: 34ch; }
+.spec__title {
+  margin: 1rem 0 0;
+  font-size: clamp(1.55rem, 1.2rem + 1.5vw, 2.3rem);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.spec__list {
+  margin: clamp(2rem, 1.2rem + 2vw, 3rem) 0 0;
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1fr;
+  border-top: 1px solid var(--rule);
+}
+@media (min-width: 780px) {
+  .spec__list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(2rem, 4vw, 4rem); }
+}
+
+.spec__item { border-bottom: 1px solid var(--rule); padding-block: 1.35rem; }
+.spec__item dt {
+  font-family: var(--mono);
+  font-size: 0.75rem;          /* 12px */
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.spec__item dd {
+  margin: 0.6rem 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 44ch;
+}
+
+/* ── The honest note that replaces the crippled form ─────────────────── */
+.handoff {
+  margin-top: clamp(2rem, 1.2rem + 2vw, 3rem);
+  border-left: 2px solid var(--accent);
+  background: var(--accent-wash);
+  padding: 1.4rem clamp(1.25rem, 2.5vw, 1.9rem);
+  max-width: 60ch;
+}
+.handoff p { margin: 0.7rem 0 0; font-size: 1rem; line-height: 1.62; color: var(--ink-2); }
+.handoff p:first-of-type { margin-top: 0.65rem; }
+.handoff strong { color: var(--ink); font-weight: 600; }
+
+/* ── The closing statement: the brand's whole differentiator ─────────── */
+.creed {
+  margin: clamp(2.75rem, 1.5rem + 3vw, 4.5rem) 0 0;
+  padding-top: clamp(2rem, 1.2rem + 2vw, 3rem);
+  border-top: 1px solid var(--rule);
+  display: grid;
+  gap: clamp(1.25rem, 1rem + 2vw, 3.5rem);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+@media (min-width: 880px) {
+  .creed { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+.creed__line {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 1.15rem + 1.7vw, 2.35rem);
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.creed__body { margin: 0; font-size: 1.0625rem; line-height: 1.65; color: var(--ink-2); max-width: 46ch; }
+.creed__body + .creed__body { margin-top: 1rem; }
+
+.ledger {
+  margin: clamp(2.25rem, 1.5rem + 2vw, 3.25rem) 0 0;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--rule);
+  display: flex; flex-wrap: wrap; gap: 0.6rem 2rem;
+  align-items: baseline; justify-content: space-between;
+}
+.ledger p { margin: 0; font-size: 0.9375rem; line-height: 1.6; color: var(--ink-3); max-width: 60ch; }
+.ledger a { white-space: nowrap; font-size: 0.9375rem; }
+</style>
+</head>
+
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ══ MASTHEAD ═══════════════════════════════════════════════════════════ -->
+<header class="masthead">
+  <div class="shell masthead__inner">
+    <a class="brand" href="./index.html" aria-label="Astro Precise — home">
+      <!-- Instrument reticle. Inline SVG: no asset request, sharp at any size. -->
+      <svg class="brand__reticle" width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" focusable="false">
+        <circle cx="13" cy="13" r="10.5" fill="none" stroke="currentColor" stroke-width="1"/>
+        <circle cx="13" cy="13" r="2.6" fill="currentColor"/>
+        <path d="M13 0.5v5M13 20.5v5M0.5 13h5M20.5 13h5" stroke="currentColor" stroke-width="1"/>
+      </svg>
+      <span class="brand__name">Astro Precise</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="./chart.html">Birth chart</a>
+      <a href="./eclipse.html">Eclipse</a>
+      <a class="is-tertiary" href="./accuracy.html">Accuracy</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ══ THE FOLD ═════════════════════════════════════════════════════════ -->
+  <section class="hero" aria-labelledby="promise">
+    <div class="shell hero__grid">
+
+      <div class="hero__text">
+        <p class="eyebrow">Arcminute precision &middot; 1800&ndash;2200 CE</p>
+
+        <h1 class="promise" id="promise">
+          Where every planet <span class="promise__turn">actually was</span>, the minute you were born.
+        </h1>
+
+        <p class="hero__sub">
+          Astro Precise computes the real positions of the Sun, Moon and planets for your birth
+          date, time and place &mdash; here, in this browser, by planetarium-grade astronomy.
+        </p>
+
+        <div class="action">
+          <a class="cta" href="./chart.html">
+            Cast my chart &mdash; free
+            <span class="cta__arrow" aria-hidden="true">&rarr;</span>
+          </a>
+          <p class="action__note">
+            No account, nothing to install. Date, place and time on the next screen &mdash;
+            about twenty seconds.
+          </p>
+        </div>
+
+        <p class="aside-link">
+          On 12 August 2026 Britain sees its deepest eclipse since 1999.
+          <a href="./eclipse.html">Work out where it falls in your chart &rarr;</a>
+        </p>
+      </div>
+
+      <!-- ── The instrument window: small, framed, and honest about itself ── -->
+      <figure class="scope">
+        <div class="scope__window">
+          <svg class="orrery" viewBox="0 0 320 320" role="img"
+               aria-label="Diagram of the inner and outer solar system: six orbit rings around a central Sun, with a graduated outer ring divided every thirty degrees.">
+            <!-- graduated rim, divided every 30° as the zodiac is -->
+            <circle class="rim" cx="160" cy="160" r="150"/>
+            <g class="tick">
+              <path d="M235 29.9l-4 6.9"/>       <path d="M85 290.1l4-6.9"/>
+              <path d="M290.1 85l-6.9 4"/>       <path d="M29.9 235l6.9-4"/>
+              <path d="M290.1 235l-6.9-4"/>      <path d="M29.9 85l6.9 4"/>
+              <path d="M235 290.1l-4-6.9"/>      <path d="M85 29.9l4 6.9"/>
+            </g>
+            <g class="tick tick--cardinal">
+              <path d="M160 4v14"/>  <path d="M160 302v14"/>
+              <path d="M4 160h14"/>  <path d="M302 160h14"/>
+            </g>
+
+            <!-- ecliptic crosshair -->
+            <path class="cross" d="M160 22v276M22 160h276"/>
+
+            <!-- orbits -->
+            <circle class="ring" cx="160" cy="160" r="30"/>
+            <circle class="ring" cx="160" cy="160" r="48"/>
+            <circle class="ring" cx="160" cy="160" r="67"/>
+            <circle class="ring" cx="160" cy="160" r="87"/>
+            <circle class="ring" cx="160" cy="160" r="113"/>
+            <circle class="ring" cx="160" cy="160" r="136"/>
+
+            <!-- Sun -->
+            <circle class="halo" cx="160" cy="160" r="15"/>
+            <circle class="sun"  cx="160" cy="160" r="5"/>
+
+            <!-- bodies, on true period ratios -->
+            <g class="arm arm--mercury"><circle class="body" cx="190" cy="160" r="2.2"/></g>
+            <g class="arm arm--venus"><circle class="body" cx="208" cy="160" r="2.9"/></g>
+            <g class="arm arm--earth"><circle class="body" cx="227" cy="160" r="3.1"/></g>
+            <g class="arm arm--mars"><circle class="body" cx="247" cy="160" r="2.4"/></g>
+            <g class="arm arm--jupiter"><circle class="body" cx="273" cy="160" r="4.4"/></g>
+            <g class="arm arm--saturn"><circle class="body" cx="296" cy="160" r="3.8"/></g>
+          </svg>
+        </div>
+
+        <div class="nameplate">
+          <span class="nameplate__value" aria-hidden="true">1&prime;</span>
+          <p class="nameplate__text">
+            One arcminute is a sixtieth of a degree. The full Moon is about thirty-one of them
+            across. That is the scale this instrument works at.
+          </p>
+        </div>
+
+        <figcaption class="readout">
+          <div class="readout__row">
+            <span class="readout__k">Theory</span>
+            <span class="readout__v">VSOP87 &middot; ELP2000</span>
+          </div>
+          <div class="readout__row">
+            <span class="readout__k">Epoch</span>
+            <span class="readout__v">J2000.0</span>
+          </div>
+          <div class="readout__row">
+            <span class="readout__k">Zodiac</span>
+            <span class="readout__v">Tropical, geocentric</span>
+          </div>
+          <!-- Ships hidden and empty. No JS, no row. Never a placeholder. -->
+          <div class="readout__row" id="utc-row" hidden>
+            <span class="readout__k">UTC now</span>
+            <span class="readout__v" id="utc-value"></span>
+          </div>
+          <p class="readout__note">
+            Diagram &mdash; orbital periods in true ratio, distances compressed to fit.
+            The live model runs on the <a href="./explore.html">explorer</a>.
+          </p>
+        </figcaption>
+      </figure>
+
+    </div>
+  </section>
+
+  <!-- ══ THE NEXT BAND ════════════════════════════════════════════════════ -->
+  <section class="spec" aria-labelledby="spec-title">
+    <div class="shell">
+
+      <div class="spec__head">
+        <p class="eyebrow">The instrument</p>
+        <h2 class="spec__title" id="spec-title">What it computes, and what it needs from you</h2>
+      </div>
+
+      <dl class="spec__list">
+        <div class="spec__item">
+          <dt>Positions</dt>
+          <dd>
+            Ten placements &mdash; the Sun, the Moon, and Mercury through Pluto &mdash; as
+            geocentric ecliptic longitude, placed to the arcminute. Aspects and orbs are
+            computed from those positions, not rounded to a sign.
+          </dd>
+        </div>
+        <div class="spec__item">
+          <dt>Angles and houses</dt>
+          <dd>
+            Ascendant, Midheaven and house cusps, derived from local sidereal time at your
+            exact latitude and longitude. Equal, Placidus or whole sign.
+          </dd>
+        </div>
+        <div class="spec__item">
+          <dt>Accuracy</dt>
+          <dd>
+            Typically within a few arcminutes for dates between 1800 and 2200 CE. The date
+            field will not go outside that range: better no chart than a quietly wrong one.
+          </dd>
+        </div>
+        <div class="spec__item">
+          <dt>Where it runs</dt>
+          <dd>
+            In this browser, on your device. The only thing that leaves it is the place name
+            you type, sent to look up its coordinates. Your chart is never uploaded.
+          </dd>
+        </div>
+      </dl>
+
+      <div class="handoff">
+        <p class="eyebrow">Why the form is on the next page</p>
+        <p>
+          <strong>A chart needs a place, not just a date.</strong> Without coordinates there is no
+          Rising sign, no Midheaven and no houses &mdash; only the signs the planets sat in.
+        </p>
+        <p>
+          So there is no cut-down form here pretending otherwise. The real one lives on the
+          chart page, where it can ask for your birth city, find its coordinates, and give you
+          the whole chart. <a href="./chart.html">It takes about twenty seconds.</a>
+        </p>
+      </div>
+
+      <div class="creed">
+        <p class="creed__line">A weather report of the sky, not prophecy.</p>
+        <div>
+          <p class="creed__body">
+            We compute where things were and where they are going. We do not claim to know what
+            will happen to you. The method is published and the numbers are checkable.
+          </p>
+          <p class="creed__body">
+            That cuts both ways. When the August eclipse makes no close contact with your chart,
+            the eclipse page says so plainly &mdash; before it quotes a price, and it recommends
+            you skip the &pound;2.99 reading. A quiet chart is told it is quiet.
+          </p>
+        </div>
+      </div>
+
+      <div class="ledger">
+        <p>
+          The chart itself is free, and stays free. Written readings run &pound;2.99 to &pound;14
+          if you ever want one: a single payment, no subscription, nothing to cancel.
+        </p>
+        <a href="./accuracy.html">How accurate, precisely &rarr;</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* The only script on the fold. It reveals a row that ships empty and hidden,
+   so the default state can never display a loading string. No JS: no row. */
+(function () {
+  var row = document.getElementById('utc-row'),
+      val = document.getElementById('utc-value');
+  if (!row || !val) return;
+  function p(n) { return n < 10 ? '0' + n : '' + n; }
+  function tick() {
+    var d = new Date();
+    val.textContent = d.getUTCFullYear() + '-' + p(d.getUTCMonth() + 1) + '-' + p(d.getUTCDate())
+                    + '  ' + p(d.getUTCHours()) + ':' + p(d.getUTCMinutes()) + ':' + p(d.getUTCSeconds());
+  }
+  tick();
+  row.hidden = false;
+  setInterval(tick, 1000);
+})();
+</script>
+
+</body>
+</html>

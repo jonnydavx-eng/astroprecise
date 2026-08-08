@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Where does the eclipse fall in your chart? — Astro Precise</title>
+<meta name="description" content="A solar eclipse crosses Europe on 12 August 2026. Enter your birth date and this page computes the exact degree it touches in your chart — free, in your browser, nothing uploaded. Quiet charts are told so before any price.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0908">
+<!--
+  ═══════════════════════════════════════════════════════════════════════════
+  ASTRO PRECISE — front screen redesign, DIRECTION B: "THE MOMENT"
+  Design prototype. Lives in design-lab/. Nothing under website/ was touched.
+
+  Self-contained by requirement: no external CSS, JS, fonts or images.
+
+  ── About the astronomy in this file ──────────────────────────────────────
+  Lines between the ENGINE markers below are copied VERBATIM from the live
+  engine at website/js/ephemeris.js (mod360/toRad/toDeg/julianDay ·
+  sunPosition · moonPosition · the truncated-VSOP87 planet block). They are
+  copied, not rewritten, so this prototype computes with the real shipped
+  maths rather than a stand-in — every degree on this page is genuinely
+  computed, which is the one thing this brand cannot fake.
+
+  DO NOT edit the engine here. website/js/ephemeris.js is the source of truth.
+  When this screen ships, delete the inlined copy and load the real file:
+      <script src="./js/ephemeris.js" defer></script>
+  and drop the contact logic in favour of js/eclipse-reading.js, which this
+  file's scoring mirrors (same orbs, same hard-aspect sale gate, same copy).
+
+  Fonts are named, not loaded: the shipped page already self-hosts Cormorant
+  Garamond, Schibsted Grotesk and IBM Plex Mono in website/fonts/. Here they
+  fall back to Georgia / system-ui / ui-monospace, which is close enough to
+  judge the design by.
+  ═══════════════════════════════════════════════════════════════════════════
+-->
+<style>
+/* ══ TOKENS — the Atlas palette from css/ap-atlas-tokens.css (warm ink, paper,
+      signal ember, engraved brass). chart.html and eclipse.html already speak
+      this language; the old homepage's blue/teal reskin is retired here. ══ */
+:root{
+  --ink:#0a0908;
+  --ink-deep:#060505;
+  --paper:#f2ecdf;
+  --dim:rgba(242,236,223,.74);
+  --faint:rgba(242,236,223,.54);
+  --ember:#ff5a1f;
+  --ember-hi:#ff8a55;
+  --brass:#d8b46a;
+  --sage:#a8d6b0;
+  --line:rgba(216,180,106,.18);
+  --line-2:rgba(216,180,106,.34);
+  --plate:rgba(242,236,223,.035);
+
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  /* Type scale. Nothing on this page is smaller than 12.5px, and the promise
+     is the largest thing on screen — both deliberate corrections. */
+  --t-eyebrow:12.5px;
+  --t-micro:13px;
+  --t-small:13.5px;
+  --t-label:14.5px;
+  --t-body:17px;
+  --t-lede:clamp(16.5px,1.15vw,19.5px);
+  --t-answer:clamp(1.7rem,3.1vw,2.85rem);
+  --t-promise:clamp(2.15rem,5.5vw,4.55rem);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ink);color:var(--paper);
+  font-family:var(--sans);font-size:var(--t-body);line-height:1.62;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+a{color:var(--brass);text-decoration:none;transition:color .2s}
+a:hover{color:var(--ember-hi)}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.eyebrow{
+  font-family:var(--mono);font-size:var(--t-eyebrow);letter-spacing:.22em;
+  text-transform:uppercase;color:var(--brass);margin:0;
+}
+.mono{font-family:var(--mono)}
+
+/* ══ THE STAGE ══════════════════════════════════════════════════════════════
+   Full-bleed backdrop: the eclipse itself, drawn in CSS. It is the subject of
+   the question, not decoration — and because it is CSS it is simply THERE on
+   first paint. There is no loading state anywhere on this page. */
+.stage{
+  position:relative;isolation:isolate;
+  min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;
+  padding-bottom:clamp(28px,4vh,56px);
+  background:
+    radial-gradient(1200px 720px at 74% 42%,rgba(255,122,69,.13),transparent 62%),
+    radial-gradient(900px 640px at 12% 8%,rgba(216,180,106,.06),transparent 60%),
+    radial-gradient(1100px 500px at 50% 118%,rgba(255,90,31,.10),transparent 66%),
+    linear-gradient(180deg,#0b0a09 0%,#0a0908 58%,#080706 100%);
+  overflow:hidden;
+}
+.stars{position:absolute;inset:0;z-index:0;opacity:.62;pointer-events:none}
+.stars circle{fill:#f2ecdf}
+
+/* the eclipse — ~91% of the Sun covered, so the Moon is offset by 9% of the
+   solar diameter and what is left is a thin crescent on the lower-left limb */
+.eclipse{
+  position:absolute;z-index:0;pointer-events:none;
+  width:clamp(360px,42vw,620px);aspect-ratio:1;
+  right:clamp(-90px,-3vw,-20px);
+  /* min() keeps the disc inside the first viewport even when the answer makes
+     the stage taller than the screen — it must never drift behind the text. */
+  top:min(50%,44vh);transform:translateY(-52%);
+}
+.eclipse__corona{
+  position:absolute;inset:-46%;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(255,170,110,.20) 0%,rgba(255,120,60,.10) 32%,rgba(216,180,106,.05) 48%,transparent 68%);
+  animation:breathe 26s ease-in-out infinite;
+}
+.eclipse__sun{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 42% 58%,#fff6e6 0%,#ffd7a0 34%,#ff9a4a 66%,#ff5a1f 100%);
+  box-shadow:0 0 90px rgba(255,120,60,.42),0 0 200px rgba(255,90,31,.20);
+}
+.eclipse__moon{
+  position:absolute;inset:0;border-radius:50%;
+  /* 9% of the diameter, offset up-and-right → crescent survives lower-left */
+  transform:translate(6.4%,-6.4%);
+  background:radial-gradient(circle at 62% 34%,#151310 0%,#0b0a09 62%,#080706 100%);
+  box-shadow:0 0 60px 8px rgba(8,7,6,.9);
+}
+.eclipse__rim{
+  position:absolute;inset:-1.5%;border-radius:50%;
+  border:1px solid rgba(216,180,106,.16);
+}
+@keyframes breathe{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.045)}}
+
+/* seat the scene: warm horizon at the foot, vignette at the edges */
+.stage::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(120% 78% at 50% 50%,transparent 52%,rgba(6,5,5,.55) 100%),
+    linear-gradient(180deg,transparent 62%,rgba(8,7,6,.72) 100%);
+}
+.stage > *{position:relative;z-index:2}
+
+/* ══ TOP BAR ══ */
+.bar{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:clamp(16px,2.4vh,26px) clamp(20px,4vw,56px);
+}
+.wordmark{
+  font-family:var(--mono);font-size:var(--t-label);letter-spacing:.3em;
+  text-transform:uppercase;color:var(--paper);white-space:nowrap;
+}
+.bar nav{display:flex;gap:clamp(16px,2vw,30px);align-items:center}
+.bar nav a{font-size:var(--t-label);color:var(--dim);letter-spacing:.005em}
+.bar nav a:hover{color:var(--paper)}
+
+/* ══ HERO ══ */
+.hero{
+  flex:1;display:flex;align-items:center;
+  padding:clamp(12px,2vh,24px) clamp(20px,4vw,56px) 0;
+}
+.hero__inner{width:100%;max-width:1240px;margin:0 auto}
+.hero__col{max-width:660px}
+
+.when{display:flex;align-items:center;gap:11px;margin-bottom:clamp(18px,2.6vh,30px)}
+.when__dot{
+  width:7px;height:7px;border-radius:50%;background:var(--ember);flex:none;
+  box-shadow:0 0 12px rgba(255,90,31,.9);animation:pulse 3s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.32}}
+
+.promise{
+  font-family:var(--serif);font-style:italic;font-weight:500;
+  font-size:var(--t-promise);line-height:1.03;letter-spacing:-.012em;
+  margin:0 0 clamp(16px,2.2vh,26px);color:var(--paper);
+  text-wrap:balance;
+}
+.promise em{font-style:italic;color:var(--ember);font-weight:500}
+
+.lede{
+  margin:0 0 clamp(22px,3vh,34px);font-size:var(--t-lede);line-height:1.6;
+  color:var(--dim);max-width:52ch;
+}
+.lede b{color:var(--paper);font-weight:500}
+
+/* ══ THE ONE INPUT ══ */
+.ask{max-width:520px}
+.ask__label{
+  display:block;font-size:var(--t-label);color:var(--dim);
+  margin:0 0 9px;letter-spacing:.005em;
+}
+.field{
+  width:100%;background:rgba(8,7,6,.62);color:var(--paper);
+  border:1px solid var(--line-2);border-radius:5px;
+  font-family:var(--mono);font-size:17px;letter-spacing:.03em;
+  padding:16px 16px;color-scheme:dark;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.field:hover{border-color:rgba(216,180,106,.5)}
+.field:focus{outline:none;border-color:var(--ember);box-shadow:0 0 0 3px rgba(255,90,31,.2);background:rgba(8,7,6,.85)}
+.field::-webkit-calendar-picker-indicator{filter:invert(.82) sepia(.3);cursor:pointer}
+
+.go{
+  display:block;width:100%;margin-top:14px;
+  background:var(--ember);color:#1a0d05;border:0;border-radius:5px;
+  font-family:var(--sans);font-size:17px;font-weight:600;letter-spacing:.005em;
+  padding:17px 30px;cursor:pointer;
+  box-shadow:0 6px 26px rgba(255,90,31,.26),inset 0 1px 0 rgba(255,255,255,.2);
+  transition:filter .2s,box-shadow .25s,transform .15s;
+}
+.go:hover{filter:brightness(1.08);box-shadow:0 10px 34px rgba(255,90,31,.4)}
+.go:active{transform:translateY(1px)}
+
+.hint{
+  display:none;margin-top:11px;font-size:var(--t-small);color:var(--ember-hi);
+}
+.hint.show{display:block}
+
+.more{margin-top:16px}
+.more > summary{
+  list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:9px;
+  font-size:var(--t-small);color:var(--brass);
+}
+.more > summary::-webkit-details-marker{display:none}
+.more > summary::before{content:"+";font-family:var(--mono);font-size:15px;line-height:1;opacity:.8}
+.more[open] > summary::before{content:"–"}
+.more > summary:hover{color:var(--ember-hi)}
+.more__body{
+  margin-top:16px;padding:18px 18px 20px;border:1px solid var(--line);border-radius:5px;
+  background:var(--plate);display:grid;gap:16px;
+}
+.more__row{display:grid;gap:9px}
+.more__note{font-size:var(--t-small);color:var(--faint);line-height:1.55;margin:0}
+.more__note b{color:var(--dim);font-weight:500}
+select.field{padding:15px 14px;font-size:15.5px}
+
+.trust{margin:16px 0 0;font-size:var(--t-small);color:var(--faint)}
+
+/* ══ THE ANSWER — same panel, cinematic swap. Never rendered by default. ══ */
+.answer{max-width:640px}
+.answer:focus{outline:none}
+.reveal{animation:rise .5s cubic-bezier(.16,.84,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.receipt{
+  border:1px solid var(--line);border-left:2px solid var(--brass);
+  border-radius:4px;background:rgba(8,7,6,.5);
+  padding:13px 16px;margin:0 0 clamp(18px,2.4vh,26px);
+  font-family:var(--mono);font-size:var(--t-micro);line-height:1.72;
+  color:rgba(242,236,223,.86);letter-spacing:.01em;
+}
+.receipt b{color:var(--brass);font-weight:400}
+
+.answer__head{
+  font-family:var(--serif);font-style:italic;font-weight:500;
+  font-size:var(--t-answer);line-height:1.14;letter-spacing:-.008em;
+  margin:0 0 16px;color:var(--paper);text-wrap:balance;
+}
+.answer__head strong{font-weight:500;color:var(--ember)}
+.answer__orb{
+  font-family:var(--mono);font-size:15px;letter-spacing:.04em;
+  color:var(--brass);margin:0 0 18px;
+}
+.answer__body{margin:0 0 18px;font-size:16.5px;line-height:1.62;color:var(--dim);max-width:54ch}
+.answer__body b{color:var(--paper);font-weight:500}
+
+.also{
+  font-family:var(--mono);font-size:var(--t-micro);line-height:1.75;
+  color:var(--faint);margin:0 0 18px;
+}
+.also b{color:rgba(242,236,223,.8);font-weight:400}
+
+.quiet-mark{
+  display:inline-flex;align-items:center;gap:9px;margin-bottom:14px;
+  font-family:var(--mono);font-size:var(--t-eyebrow);letter-spacing:.2em;
+  text-transform:uppercase;color:var(--sage);
+}
+.quiet-mark::before{content:"";width:22px;height:1px;background:var(--sage)}
+
+.handoff{
+  border-top:1px solid var(--line);padding-top:20px;margin-top:6px;
+  display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center;
+}
+.handoff__cta{
+  background:var(--ember);color:#1a0d05;border:0;border-radius:5px;
+  font-family:var(--sans);font-size:16px;font-weight:600;
+  padding:15px 26px;cursor:pointer;display:inline-block;
+  box-shadow:0 6px 24px rgba(255,90,31,.24),inset 0 1px 0 rgba(255,255,255,.2);
+  transition:filter .2s,box-shadow .25s;
+}
+.handoff__cta:hover{filter:brightness(1.08);color:#1a0d05;box-shadow:0 10px 32px rgba(255,90,31,.38)}
+.handoff__why{font-size:var(--t-small);color:var(--faint);max-width:34ch;line-height:1.55;margin:0}
+.restart{
+  background:none;border:0;padding:0;cursor:pointer;
+  font-family:var(--sans);font-size:var(--t-small);color:var(--faint);
+  text-decoration:underline;text-underline-offset:4px;
+}
+.restart:hover{color:var(--paper)}
+.legal{
+  margin:20px 0 0;font-size:var(--t-small);line-height:1.6;color:var(--faint);max-width:56ch;
+}
+.legal a{color:var(--faint);text-decoration:underline;text-underline-offset:3px}
+.legal a:hover{color:var(--brass)}
+
+/* ══ BAND TWO — the eclipse itself. Each fact stated once. ══ */
+.band{
+  border-top:1px solid var(--line);
+  background:linear-gradient(180deg,#080706,#0a0908);
+  padding:clamp(48px,7vh,86px) clamp(20px,4vw,56px) clamp(44px,6vh,72px);
+}
+.band__inner{max-width:1240px;margin:0 auto}
+.band__eyebrow{margin-bottom:clamp(24px,3vh,36px)}
+.band__grid{
+  display:grid;gap:clamp(26px,3.4vw,52px);
+  grid-template-columns:repeat(3,1fr);
+}
+.fact h2{
+  font-family:var(--serif);font-style:italic;font-weight:500;
+  font-size:23px;line-height:1.2;margin:0 0 12px;color:var(--paper);
+}
+.fact p{margin:0;font-size:16.5px;line-height:1.62;color:var(--dim)}
+.fact p b{color:var(--paper);font-weight:500}
+.fact--care h2{color:var(--ember)}
+.band__coda{
+  margin:clamp(30px,4vh,48px) 0 0;padding-top:22px;border-top:1px solid var(--line);
+  font-family:var(--serif);font-style:italic;font-size:20px;line-height:1.5;
+  color:var(--faint);max-width:62ch;
+}
+
+/* ══ NARROW DESKTOP — keep the bright limb clear of the text column ══ */
+@media (max-width:1180px){
+  .hero__col{max-width:560px}
+  .eclipse{width:clamp(320px,38vw,520px);right:-9vw}
+}
+
+/* ══ 375px — the primary action stays above the fold ══════════════════════ */
+@media (max-width:900px){
+  .band__grid{grid-template-columns:1fr;gap:30px}
+}
+@media (max-width:820px){
+  :root{--t-body:16.5px}
+  /* The disc becomes an ember glow behind the words rather than an object in
+     front of them: dimmed to .38 so the bright limb can never eat the text. */
+  .eclipse{
+    width:min(320px,84vw);right:-108px;top:-64px;transform:none;
+    opacity:.38;
+  }
+  .when,.promise{text-shadow:0 2px 20px rgba(8,7,6,.9)}
+  .eclipse__sun{box-shadow:0 0 60px rgba(255,120,60,.3)}
+  .eclipse__corona{inset:-40%}
+  .stage::after{
+    background:
+      linear-gradient(180deg,rgba(10,9,8,.10) 0%,rgba(10,9,8,.62) 34%,rgba(10,9,8,.9) 62%,#0a0908 100%),
+      radial-gradient(120% 70% at 50% 50%,transparent 56%,rgba(6,5,5,.5) 100%);
+  }
+  .bar{padding:14px 20px}
+  .bar nav{gap:16px}
+  .bar nav a.is-extra{display:none}
+  .hero{padding:6px 20px 0;align-items:flex-start}
+  .hero__col,.ask,.answer{max-width:none}
+  .when{margin-bottom:16px}
+  .promise{font-size:clamp(2.05rem,8.8vw,2.7rem);margin-bottom:14px}
+  .lede{margin-bottom:20px;font-size:16.5px}
+  .go{padding:16px 24px}
+  .handoff__cta{width:100%;text-align:center}
+  .handoff__why{max-width:none}
+}
+@media (max-width:380px){
+  .promise{font-size:2rem}
+  .wordmark{font-size:13.5px;letter-spacing:.24em}
+}
+@media (max-height:660px) and (max-width:820px){
+  .when{margin-bottom:12px}
+  .promise{font-size:1.85rem;margin-bottom:12px}
+  .lede{margin-bottom:16px;font-size:16px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<main class="stage">
+
+  <header class="bar">
+    <a class="wordmark" href="./index.html">Astro&nbsp;Precise</a>
+    <nav aria-label="Main">
+      <a href="./chart.html">Full birth chart</a>
+      <a href="./ephemeris.html" class="is-extra">Today's sky</a>
+      <a href="./shop.html" class="is-extra">Editions</a>
+    </nav>
+  </header>
+
+  <!-- ══ THE ECLIPSE, drawn — present at first paint, no loading state ══ -->
+  <svg class="stars" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <g opacity=".55">
+      <circle cx="88"  cy="132" r="1.1"/><circle cx="214" cy="76"  r=".8"/>
+      <circle cx="331" cy="196" r="1.3" opacity=".7"/><circle cx="152" cy="288" r=".9"/>
+      <circle cx="426" cy="98"  r=".8"/><circle cx="61"  cy="404" r="1.1"/>
+      <circle cx="288" cy="452" r=".8" opacity=".6"/><circle cx="520" cy="228" r="1"/>
+      <circle cx="118" cy="618" r=".9"/><circle cx="372" cy="640" r="1.2" opacity=".65"/>
+      <circle cx="248" cy="756" r=".8"/><circle cx="556" cy="536" r=".9"/>
+      <circle cx="676" cy="132" r="1.1" opacity=".7"/><circle cx="742" cy="366" r=".8"/>
+      <circle cx="628" cy="702" r="1"/><circle cx="812" cy="792" r=".9" opacity=".6"/>
+      <circle cx="964" cy="86"  r="1.2"/><circle cx="1092" cy="228" r=".8"/>
+      <circle cx="1238" cy="122" r="1"/><circle cx="1356" cy="304" r=".9" opacity=".7"/>
+      <circle cx="1408" cy="612" r="1.1"/><circle cx="1180" cy="748" r=".8"/>
+      <circle cx="1002" cy="820" r="1"/><circle cx="884"  cy="472" r=".7" opacity=".5"/>
+      <circle cx="1298" cy="838" r=".9"/><circle cx="46"   cy="792" r="1"/>
+      <circle cx="466"  cy="822" r=".8" opacity=".6"/><circle cx="700"  cy="46"  r=".9"/>
+    </g>
+  </svg>
+
+  <div class="eclipse" aria-hidden="true">
+    <div class="eclipse__corona"></div>
+    <div class="eclipse__sun"></div>
+    <div class="eclipse__moon"></div>
+    <div class="eclipse__rim"></div>
+  </div>
+
+  <section class="hero">
+    <div class="hero__inner">
+      <div class="hero__col">
+
+        <p class="when eyebrow">
+          <span class="when__dot" aria-hidden="true"></span>
+          <span id="when-text">The eclipse &middot; Wednesday 12 August 2026</span>
+        </p>
+
+        <!-- ONE promise, the largest thing on the screen -->
+        <h1 class="promise">Where does the eclipse fall in <em>your</em> chart?</h1>
+
+        <p class="lede" id="lede">
+          Give it your birth date and this page computes the exact degree the eclipse
+          touches in your chart — free, in your browser, nothing uploaded.
+          <b>If it touches nothing, you are told that before any price is mentioned.</b>
+        </p>
+
+        <!-- ── ASK ─────────────────────────────────────────────────────── -->
+        <form class="ask" id="ask" novalidate>
+          <label class="ask__label" for="dob">Your date of birth</label>
+          <input class="field" type="date" id="dob" name="dob"
+                 min="1900-01-01" max="2026-12-31" autocomplete="bday"
+                 aria-describedby="hint trust">
+
+          <!-- ONE primary action -->
+          <button class="go" type="submit">Show me where it lands</button>
+
+          <p class="hint" id="hint" role="alert">Pick your birth date first — the sky needs a day to read.</p>
+          <p class="trust" id="trust">Free, no account. About ten seconds.</p>
+
+          <details class="more">
+            <summary>Add your birth time — it sharpens the Moon</summary>
+            <div class="more__body">
+              <div class="more__row">
+                <label class="ask__label" for="tob" style="margin:0">Time of birth</label>
+                <input class="field" type="time" id="tob" name="tob">
+              </div>
+              <div class="more__row">
+                <label class="ask__label" for="tz" style="margin:0">The clock you were born under</label>
+                <select class="field" id="tz" name="tz"></select>
+                <p class="more__note" id="tz-note"></p>
+              </div>
+              <p class="more__note">
+                <b>Why it matters.</b> The Moon moves about half a degree an hour, so
+                without a time it can only be placed to roughly &plusmn;7&deg;. Leave this
+                blank and the Moon is left out of your answer rather than quoted falsely.
+              </p>
+            </div>
+          </details>
+        </form>
+
+        <!-- ── ANSWER — hidden until there is one. Never shows a loading state. -->
+        <div class="answer" id="answer" hidden tabindex="-1" aria-live="polite"></div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ══ BAND TWO — the eclipse itself, computed. Every fact said once. ══ -->
+<section class="band">
+  <div class="band__inner">
+    <p class="eyebrow band__eyebrow">The eclipse itself</p>
+    <div class="band__grid">
+
+      <article class="fact">
+        <h2>What actually happens</h2>
+        <p>
+          The Moon's shadow crosses Iceland and northern Spain, where the Sun goes out
+          completely. Over Britain about <b>91% of it is covered</b> — the deepest
+          eclipse here since 1999. Greatest eclipse is 17:46&nbsp;UT; the UK peak falls
+          around 19:05&nbsp;BST.
+        </p>
+      </article>
+
+      <article class="fact">
+        <h2>The one degree this page turns on</h2>
+        <p>
+          At greatest eclipse the Sun and Moon meet at <b id="fact-point">20&deg;02&prime; Leo</b>,
+          computed from the Meeus series. That single degree is what your chart is
+          measured against — nothing else about the event changes your answer.
+        </p>
+      </article>
+
+      <article class="fact fact--care">
+        <h2>Look safely</h2>
+        <p>
+          Britain never reaches totality, and at 91% the remaining sliver is still
+          dangerously bright. Use <b>ISO&nbsp;12312-2 eclipse glasses</b> or a pinhole
+          projector. We sell no glasses and take no cut on them — we would just like
+          you to keep your sight.
+        </p>
+      </article>
+
+    </div>
+    <p class="band__coda">The Perseids peak the same night, after the shadow has gone.</p>
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+/* ════════════ ENGINE — BEGIN verbatim copy of website/js/ephemeris.js ══════
+   Do not edit here. See the note at the top of this file. */
+function mod360(x) {
+  return ((x % 360) + 360) % 360;
+}
+
+function toRad(deg) {
+  return deg * Math.PI / 180;
+}
+
+function toDeg(rad) {
+  return rad * 180 / Math.PI;
+}
+
+// ---------------------------------------------------------------------------
+// 1. Julian Day Number  (Meeus Ch 7)
+// ---------------------------------------------------------------------------
+
+function julianDay(year, month, day, hour, min, sec) {
+  // Coerce — a string "12" would otherwise concatenate in the hour math below
+  // and silently throw the date off by ~50 days.
+  year = +year; month = +month; day = +day;
+  hour = (+hour || 0) + (+min || 0) / 60 + (+sec || 0) / 3600;
+  if (month <= 2) { year -= 1; month += 12; }
+  const A = Math.floor(year / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (year + 4716)) +
+         Math.floor(30.6001 * (month + 1)) +
+         day + hour / 24 + B - 1524.5;
+}
+
+function sunPosition(jd) {
+  const T = (jd - 2451545.0) / 36525;
+
+  // Geometric mean longitude & mean anomaly
+  const L0 = mod360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+  const M  = mod360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+  const Mr = toRad(M);
+  const e  = 0.016708634 - 0.000042037 * T - 0.0000001267 * T * T;
+
+  // Equation of centre
+  const C = (1.914602 - 0.004817*T - 0.000014*T*T) * Math.sin(Mr)
+          + (0.019993 - 0.000101*T) * Math.sin(2*Mr)
+          +  0.000289 * Math.sin(3*Mr);
+
+  const sunLon = mod360(L0 + C);
+  const v      = mod360(M + C);
+  const R      = 1.000001018 * (1 - e*e) / (1 + e * Math.cos(toRad(v)));
+
+  // Apparent longitude (nutation + aberration)
+  const Om = mod360(125.04 - 1934.136 * T);
+  const lam = mod360(sunLon - 0.00569 - 0.00478 * Math.sin(toRad(Om)));
+
+  return { lon: lam, lat: 0, distance: R }; // R in AU
+}
+
+function moonPosition(jd) {
+  const T  = (jd - 2451545.0) / 36525;
+  const T2 = T * T;
+  const T3 = T2 * T;
+  const T4 = T3 * T;
+
+  // Fundamental arguments (degrees) — Meeus (47.1)
+  const Lp = mod360(218.3164477 + 481267.88123421*T - 0.0015786*T2 + T3/538841    - T4/65194000);
+  const D  = mod360(297.8501921 + 445267.1114034 *T - 0.0018819*T2 + T3/545868    - T4/113065000);
+  const M  = mod360(357.5291092 +  35999.0502909 *T - 0.0001536*T2 + T3/24490000);
+  const Mp = mod360(134.9633964 + 477198.8675055 *T + 0.0087414*T2 + T3/69699     - T4/14712000);
+  const F  = mod360( 93.2720950 + 483202.0175233 *T - 0.0036539*T2 - T3/3526000   + T4/863310000);
+
+  // Venus and Jupiter perturbation arguments (degrees)
+  const A1 = mod360(119.75 +    131.849 * T);
+  const A2 = mod360( 53.09 + 479264.290 * T);
+  const A3 = mod360(313.45 + 481266.484 * T);
+
+  // Eccentricity correction for terms involving M (sun mean anomaly)
+  const E  = 1 - 0.002516*T - 0.0000074*T2;
+  const E2 = E * E;
+
+  // Pre-convert fundamental arguments to radians for the summation loops
+  const Dr  = toRad(D);
+  const Mr  = toRad(M);
+  const Mpr = toRad(Mp);
+  const Fr  = toRad(F);
+
+  // Table 47.A — 60 largest periodic terms for longitude (Σl, ×10⁻⁶ °)
+  //              and distance            (Σr, ×10⁻³ km)
+  // Columns: [nD, nM, nMp, nF, coeff_l, coeff_r]
+  const lunarLR = [
+    [ 0, 0, 1, 0,  6288774, -20905355],
+    [ 2, 0,-1, 0,  1274027,  -3699111],
+    [ 2, 0, 0, 0,   658314,  -2955968],
+    [ 0, 0, 2, 0,   213618,   -569925],
+    [ 0, 1, 0, 0,  -185116,     48888],
+    [ 0, 0, 0, 2,  -114332,     -3149],
+    [ 2, 0,-2, 0,    58793,    246158],
+    [ 2,-1,-1, 0,    57066,   -152138],
+    [ 2, 0, 1, 0,    53322,   -170733],
+    [ 2,-1, 0, 0,    45758,   -204586],
+    [ 0, 1,-1, 0,   -40923,   -129620],
+    [ 1, 0, 0, 0,   -34720,    108743],
+    [ 0, 1, 1, 0,   -30383,    104755],
+    [ 2, 0, 0,-2,    15327,     10321],
+    [ 0, 0, 1, 2,   -12528,         0],
+    [ 0, 0, 1,-2,    10980,     79661],
+    [ 4, 0,-1, 0,    10675,    -34782],
+    [ 0, 0, 3, 0,    10034,    -23210],
+    [ 4, 0,-2, 0,     8548,    -21636],
+    [ 2, 1,-1, 0,    -7888,     24208],
+    [ 2, 1, 0, 0,    -6766,     30824],
+    [ 1, 0,-1, 0,    -5163,     -8379],
+    [ 1, 1, 0, 0,     4987,    -16675],
+    [ 2,-1, 1, 0,     4036,    -12831],
+    [ 2, 0, 2, 0,     3994,    -10445],
+    [ 4, 0, 0, 0,     3861,    -11650],
+    [ 2, 0,-3, 0,     3665,     14403],
+    [ 0, 1,-2, 0,    -2689,     -7003],
+    [ 2, 0,-1, 2,    -2602,         0],
+    [ 2,-1,-2, 0,     2390,     10056],
+    [ 1, 0, 1, 0,    -2348,      6322],
+    [ 2,-2, 0, 0,     2236,     -9884],
+    [ 0, 1, 2, 0,    -2120,      5751],
+    [ 0, 2, 0, 0,    -2069,         0],
+    [ 2,-2,-1, 0,     2048,     -4950],
+    [ 2, 0, 1,-2,    -1773,      4130],
+    [ 2, 0, 0, 2,    -1595,         0],
+    [ 4,-1,-1, 0,     1215,     -3958],
+    [ 0, 0, 2, 2,    -1110,         0],
+    [ 3, 0,-1, 0,     -892,      3258],
+    [ 2, 1, 1, 0,     -810,      2616],
+    [ 4,-1,-2, 0,      759,     -1897],
+    [ 0, 2,-1, 0,     -713,     -2117],
+    [ 2, 2,-1, 0,     -700,      2354],
+    [ 2, 1,-2, 0,      691,         0],
+    [ 2,-1, 0,-2,      596,         0],
+    [ 4, 0, 1, 0,      549,     -1423],
+    [ 0, 0, 4, 0,      537,     -1117],
+    [ 4,-1, 0, 0,      520,     -1571],
+    [ 1, 0,-2, 0,     -487,     -1739],
+    [ 2, 1, 0,-2,     -399,         0],
+    [ 0, 0, 2,-2,     -381,     -4421],
+    [ 1, 1, 1, 0,      351,         0],
+    [ 3, 0,-2, 0,     -340,         0],
+    [ 4, 0,-3, 0,      330,         0],
+    [ 2,-1, 2, 0,      327,         0],
+    [ 0, 2, 1, 0,     -323,      1165],
+    [ 1, 1,-1, 0,      299,         0],
+    [ 2, 0, 3, 0,      294,         0],
+    [ 2, 0,-1,-2,        0,      8752],
+  ];
+
+  // Table 47.B — 30 largest periodic terms for latitude (Σb, ×10⁻⁶ °)
+  // Columns: [nD, nM, nMp, nF, coeff_b]
+  const lunarB = [
+    [ 0, 0, 0, 1,  5128122],
+    [ 0, 0, 1, 1,   280602],
+    [ 0, 0, 1,-1,   277693],
+    [ 2, 0, 0,-1,   173237],
+    [ 2, 0,-1, 1,    55413],
+    [ 2, 0,-1,-1,    46271],
+    [ 2, 0, 0, 1,    32573],
+    [ 0, 0, 2, 1,    17198],
+    [ 2, 0, 1,-1,     9266],
+    [ 0, 0, 2,-1,     8822],
+    [ 2,-1, 0,-1,     8216],
+    [ 2, 0,-2,-1,     4324],
+    [ 2, 0, 1, 1,     4200],
+    [ 2, 1, 0,-1,    -3359],
+    [ 2,-1,-1, 1,     2463],
+    [ 2,-1, 0, 1,     2211],
+    [ 2,-1,-1,-1,     2065],
+    [ 0, 1,-1,-1,    -1870],
+    [ 4, 0,-1,-1,     1828],
+    [ 0, 1, 0, 1,    -1794],
+    [ 0, 0, 0, 3,    -1749],
+    [ 0, 1,-1, 1,    -1565],
+    [ 1, 0, 0, 1,    -1491],
+    [ 0, 1, 1, 1,    -1475],
+    [ 0, 1, 1,-1,    -1410],
+    [ 0, 1, 0,-1,    -1344],
+    [ 1, 0, 0,-1,    -1335],
+    [ 0, 0, 3, 1,     1107],
+    [ 4, 0, 0,-1,     1021],
+    [ 4, 0,-1, 1,      833],
+  ];
+
+  let sumL = 0, sumR = 0, sumB = 0;
+
+  for (const [nD, nM, nMp, nF, cl, cr] of lunarLR) {
+    const eFactor = Math.abs(nM) === 1 ? E : Math.abs(nM) === 2 ? E2 : 1;
+    const arg = nD*Dr + nM*Mr + nMp*Mpr + nF*Fr;
+    sumL += eFactor * cl * Math.sin(arg);
+    sumR += eFactor * cr * Math.cos(arg);
+  }
+
+  for (const [nD, nM, nMp, nF, cb] of lunarB) {
+    const eFactor = Math.abs(nM) === 1 ? E : Math.abs(nM) === 2 ? E2 : 1;
+    const arg = nD*Dr + nM*Mr + nMp*Mpr + nF*Fr;
+    sumB += eFactor * cb * Math.sin(arg);
+  }
+
+  // Additive corrections (Meeus 47.6) — Venus, Jupiter, flat-Earth terms
+  const Lpr = toRad(Lp);
+  const A1r = toRad(A1);
+  const A2r = toRad(A2);
+  const A3r = toRad(A3);
+  const Mpr2 = toRad(Mp); // already computed above but kept explicit for clarity
+
+  sumL += 3958*Math.sin(A1r) + 1962*Math.sin(Lpr - Fr) + 318*Math.sin(A2r);
+  sumB += -2235*Math.sin(Lpr) + 382*Math.sin(A3r)
+        +   175*Math.sin(A1r - Fr) + 175*Math.sin(A1r + Fr)
+        +   127*Math.sin(Lpr - Mpr2) - 115*Math.sin(Lpr + Mpr2);
+
+  // Final geocentric ecliptic coordinates
+  const lon      = mod360(Lp + sumL / 1e6);          // degrees
+  const lat      = sumB / 1e6;                         // degrees
+  const distance = 385000.56 + sumR / 1e3;             // km
+
+  return { lon, lat, distance };
+}
+
+// VSOP87 truncated series helper
+function vsop87(terms, tau) {
+    return terms.reduce((sum, [A, B, C]) => sum + A * Math.cos(B + C * tau), 0);
+}
+
+const normalizeAngle = mod360;
+
+// Convert heliocentric to geocentric ecliptic longitude
+// General precession in ecliptic longitude, J2000 → ecliptic of date (degrees).
+// IAU 2006: p = 5028.796195"·T + 1.1054348"·T² (T = Julian centuries from J2000).
+// The planet series here are in the J2000 ecliptic; the Sun and Moon are already
+// referred to the equinox of date, so adding this to the planets makes the whole
+// chart tropical/of-date and internally consistent (fixes the ~0.35°/2024 offset).
+function precessionToDate(jd) {
+    const T = (jd - 2451545.0) / 36525.0;
+    return (5028.796195 * T + 1.1054348 * T * T) / 3600.0;
+}
+
+function helioToGeo(lon_h, lat_h, r, sun_lon, sun_lat, sun_r, jd) {
+    // Rectangular heliocentric
+    const x = r * Math.cos(toRad(lat_h)) * Math.cos(toRad(lon_h));
+    const y = r * Math.cos(toRad(lat_h)) * Math.sin(toRad(lon_h));
+    const z = r * Math.sin(toRad(lat_h));
+    // Sun rectangular
+    const xs = sun_r * Math.cos(toRad(sun_lat)) * Math.cos(toRad(sun_lon));
+    const ys = sun_r * Math.cos(toRad(sun_lat)) * Math.sin(toRad(sun_lon));
+    const zs = sun_r * Math.sin(toRad(sun_lat));
+    // Geocentric (J2000 ecliptic)
+    const xg = x + xs; const yg = y + ys; const zg = z + zs;
+    // Rotate J2000 → ecliptic of date so planets match the of-date Sun/Moon.
+    const prec = (jd === undefined) ? 0 : precessionToDate(jd);
+    return {
+        lon: normalizeAngle(toDeg(Math.atan2(yg, xg)) + prec),
+        lat: toDeg(Math.atan2(zg, Math.sqrt(xg*xg + yg*yg))),
+        distance: Math.sqrt(xg*xg + yg*yg + zg*zg)
+    };
+}
+
+// ---------------------------------------------------------------------------
+// Mercury
+// ---------------------------------------------------------------------------
+function mercuryPosition(jd) {
+    const tau = (jd - 2451545.0) / 365250.0;
+
+    const L0 = vsop87([
+        [440250710, 0,          0            ],
+        [ 40989415, 1.48302034, 26087.9031416],
+        [  5046294, 4.47785492, 52175.8062831],
+        [   855347, 1.165069,   78263.7094247],
+        [   165590, 4.119877,  104351.6125663],
+        [    34675, 0.35468,   130439.5157079],
+        [     7213, 3.17274,   156527.4188495],
+        [     6490, 0.5027,    182615.3219911],
+        [     3116, 3.4914,    208703.2251327],
+    ], tau);
+
+    const L1 = vsop87([
+        [2608814706223, 0,        0            ],
+        [      1126008, 6.2170397, 26087.9031416],
+        [       303471, 3.055655,  52175.806283 ],
+        [        80538, 6.10455,   78263.70942  ],
+        [        21245, 2.83532,  104351.61257  ],
+        [         5592, 5.82878,  130439.51571  ],
+    ], tau);
+
+    const L2 = vsop87([
+        [53050, 0, 0],
+    ], tau);
+
+    const B0 = vsop87([
+        [11737528, 1.98357499, 26087.9031416],
+        [ 2388077, 5.03738959, 52175.8062831],
+        [ 1222840, 3.14159265,     0        ],
+        [  543252, 1.79644363, 78263.7094247],
+        [  129779, 4.83232503,104351.6125663],
+    ], tau);
+
+    const R0 = vsop87([
+        [39528272, 0,        0            ],
+        [ 7834132, 6.19233,  26087.9031416],
+        [  795526, 2.95989,  52175.80628  ],
+        [  121282, 6.01064,  78263.70942  ],
+        [   21922, 2.77820, 104351.61257  ],
+        [    4354, 5.82681, 130439.51571  ],
+    ], tau);
+
+    const R1 = vsop87([
+        [217348, 4.65617, 26087.9031416],
+        [ 44142, 1.42386, 52175.8062831],
+        [ 10094, 4.47466, 78263.7094247],
+    ], tau);
+
+    const L   = toDeg((L0 + L1 * tau + L2 * tau * tau) / 1e8);
+    const B   = toDeg(B0 / 1e8);
+    const R   = (R0 + R1 * tau) / 1e8;
+
+    const sun = sunPosition(jd);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
+}
+
+// ---------------------------------------------------------------------------
+// Venus
+// ---------------------------------------------------------------------------
+function venusPosition(jd) {
+    const tau = (jd - 2451545.0) / 365250.0;
+
+    const L0 = vsop87([
+        [317614667, 0,          0           ],
+        [  1353968, 5.5931332,  10213.2855462],
+        [    89892, 5.30650,    20426.5710924],
+        [     5477, 4.4163,      7860.4193924],
+        [     3456, 2.6996,     11790.6290887],
+        [     2372, 2.9938,      3930.2096962],
+        [     1664, 4.2502,      1577.3435424],
+        [     1438, 4.1575,      9153.9038610],
+        [     1317, 5.1867,        26.2983198],
+    ], tau);
+
+    const L1 = vsop87([
+        [1021352943053, 0,       0           ],
+        [        95708, 2.46424, 10213.28555 ],
+        [        14445, 0.51625, 20426.57109 ],
+        [          213, 1.795,   30639.857   ],
+        [          174, 2.655,      26.298   ],
+        [          152, 6.106,    1577.344   ],
+    ], tau);
+
+    const L2 = vsop87([
+        [54127, 0, 0],
+    ], tau);
+
+    const B0 = vsop87([
+        [5923638, 0.26702775, 10213.2855462],
+        [  40108, 1.14737878, 20426.5710924],
+        [  32815, 3.14159265,     0        ],
+        [   1011, 1.0895,     30639.8566   ],
+        [    149, 6.254,      18073.705    ],
+    ], tau);
+
+    const R0 = vsop87([
+        [72334821, 0,        0           ],
+        [  489824, 4.021518, 10213.285546],
+        [    1658, 4.9021,   20426.5711  ],
+        [    1632, 2.8455,    7860.4194  ],
+        [    1378, 1.1285,   11790.6291  ],
+        [     498, 5.209,     9153.904   ],
+    ], tau);
+
+    const R1 = vsop87([
+        [34551, 0.89199, 10213.28555],
+        [ 2365, 4.35367, 20426.57109],
+    ], tau);
+
+    const L   = toDeg((L0 + L1 * tau + L2 * tau * tau) / 1e8);
+    const B   = toDeg(B0 / 1e8);
+    const R   = (R0 + R1 * tau) / 1e8;
+
+    const sun = sunPosition(jd);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
+}
+
+// ---------------------------------------------------------------------------
+// Mars
+// ---------------------------------------------------------------------------
+function marsPosition(jd) {
+    const tau = (jd - 2451545.0) / 365250.0;
+
+    const L0 = vsop87([
+        [620347712, 0,         0           ],
+        [ 18656368, 5.05037100, 3340.6124267],
+        [  1108217, 5.4009984,  6681.2248534],
+        [    91798, 5.75479,   10021.8372801],
+        [    27745, 5.97050,    2281.2304965],
+        [    12316, 0.84956,    2810.9214624],
+        [    10610, 2.93959,   13362.4497068],
+        [     8927, 4.15778,    3154.6870849],
+        [     8716, 6.11000,    1059.3819301],
+        [     7775, 3.33882,    5621.8429232],
+        [     3575, 1.66186,    2544.3144198],
+        [     2488, 3.16670,   16703.0621335],
+    ], tau);
+
+    const L1 = vsop87([
+        [334085627474, 0,       0           ],
+        [     1458228, 3.60426, 3340.6124267],
+        [      164901, 3.9984,  6681.2249   ],
+        [       19963, 4.1850, 10021.8373   ],
+        [        3452, 4.7321,  3154.6871   ],
+        [        2485, 4.6555, 13362.4497   ],
+    ], tau);
+
+    const L2 = vsop87([
+        [58016, 2.04979, 3340.61243],
+        [54188, 0,       0         ],
+    ], tau);
+
+    const B0 = vsop87([
+        [3197135, 3.7683204, 3340.6124267],
+        [ 298033, 4.1065403, 6681.2248534],
+        [ 289105, 0,            0        ],
+        [  31366, 4.4465,    10021.8373  ],
+        [   3484, 4.7881,    13362.4497  ],
+    ], tau);
+
+    const R0 = vsop87([
+        [153033488, 0,         0           ],
+        [ 14184953, 3.47971284, 3340.6124267],
+        [   660776, 3.81783,    6681.22485  ],
+        [    46179, 4.15595,   10021.83728  ],
+        [     8109, 5.55195,    2810.92146  ],
+        [     7485, 1.77239,    5621.84292  ],
+        [     5765, 0.23572,    2281.23050  ],
+        [     3575, 1.66186,    2544.31442  ],
+        [     2484, 4.92545,    2942.46342  ],
+    ], tau);
+
+    const R1 = vsop87([
+        [1107433, 2.03250, 3340.61243],
+        [  103176, 2.37071, 6681.22485],
+        [   12877, 0,       0         ],
+    ], tau);
+
+    const L   = toDeg((L0 + L1 * tau + L2 * tau * tau) / 1e8);
+    const B   = toDeg(B0 / 1e8);
+    const R   = (R0 + R1 * tau) / 1e8;
+
+    const sun = sunPosition(jd);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
+}
+
+// ---------------------------------------------------------------------------
+// Jupiter
+// ---------------------------------------------------------------------------
+function jupiterPosition(jd) {
+    const tau = (jd - 2451545.0) / 365250.0;
+
+    const L0 = vsop87([
+        [59954691, 0,         0          ],
+        [ 9695899, 5.0619179, 529.6909651],
+        [  573610, 1.444062,    7.1135470],
+        [  306389, 5.417347, 1059.3819301],
+        [   97178, 4.14027,   632.7837753],
+        [   72903, 3.64042,   522.5774180],
+        [   64264, 3.41145,   103.0927742],
+        [   39806, 2.29377,   419.4846438],
+        [   38857, 1.27232,   316.3918722],
+    ], tau);
+
+    const L1 = vsop87([
+        [52993480757, 0,       0          ],
+        [     489741, 4.22066, 529.69097  ],
+        [     228919, 6.02647,   7.11355  ],
+        [      27655, 4.31147, 1059.38193 ],
+        [      20721, 5.45939,  522.57742 ],
+        [      12106, 0.16985,  536.80451 ],
+    ], tau);
+
+    const L2 = vsop87([
+        [177352, 5.70166, 529.69097],
+        [ 30699, 1.76215,   7.11355],
+    ], tau);
+
+    const B0 = vsop87([
+        [2268616, 3.5585026, 529.6909651],
+        [ 110090, 0,           0        ],
+        [ 109922, 3.90700,  1059.38193  ],
+        [   8101, 3.6051,    522.5774   ],
+        [   4335, 8.291,     536.8045   ],
+        [   4230, 5.6147,      7.1135   ],
+    ], tau);
+
+    const R0 = vsop87([
+        [520887429, 0,         0          ],
+        [ 25209327, 3.49108640, 529.6909651],
+        [   610600, 3.84115,  1059.38193  ],
+        [   282029, 2.57487,   632.78378  ],
+        [   187647, 2.07574,   522.57742  ],
+        [    86793, 0.71001,   419.48464  ],
+        [    72063, 0.21466,   536.80451  ],
+        [    65517, 5.97996,   316.39187  ],
+        [    29134, 1.67759,   103.09277  ],
+    ], tau);
+
+    const R1 = vsop87([
+        [1271802, 2.64937, 529.69097],
+        [   61662, 3.00990,   7.11355],
+        [   53444, 3.89718, 1059.38193],
+    ], tau);
+
+    const L   = toDeg((L0 + L1 * tau + L2 * tau * tau) / 1e8);
+    const B   = toDeg(B0 / 1e8);
+    const R   = (R0 + R1 * tau) / 1e8;
+
+    const sun = sunPosition(jd);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
+}
+
+// ---------------------------------------------------------------------------
+// Saturn
+// ---------------------------------------------------------------------------
+function saturnPosition(jd) {
+    const tau = (jd - 2451545.0) / 365250.0;
+
+    const L0 = vsop87([
+        [87401354, 0,         0          ],
+        [11107660, 3.9620509, 213.2990954],
+        [ 1414151, 4.5858152,   7.1135470],
+        [  398379, 0.52112,   206.1855484],
+        [  350769, 3.30330,   426.5981908],
+        [  206816, 0.24658,   103.0927742],
+        [   79271, 3.84007,   220.4126424],
+        [   23990, 4.66977,   110.2063212],
+        [   16574, 0.43719,   419.4846438],
+    ], tau);
+
+    const L1 = vsop87([
+        [21354295596, 0,       0          ],
+        [    1296855, 1.82820, 213.2990954],
+        [     564348, 2.88500,   7.11355  ],
+        [     107679, 2.27699, 206.18555  ],
+        [      98323, 1.08070, 426.59819  ],
+        [      40255, 2.04128, 220.41264  ],
+    ], tau);
+
+    const L2 = vsop87([
+        [116441, 2.92330, 213.29910],
+        [ 91921, 0.07426,   7.11355],
+        [ 90592, 0,         0      ],
+    ], tau);
+
+    const B0 = vsop87([
+        [4330678, 3.60284428, 213.2990954],
+        [ 240348, 2.8523,     426.5982   ],
+        [  84746, 0,            0        ],
+        [  34116, 0.57297,    206.18555  ],
+        [  30863, 3.48442,    220.41264  ],
+        [  14734, 2.11847,    639.89729  ],
+    ], tau);
+
+    const R0 = vsop87([
+        [955758136, 0,          0          ],
+        [ 52921382, 2.39226220, 213.2990954],
+        [  1873680, 5.22468,    206.18555  ],
+        [  1464664, 1.64762,    426.59819  ],
+        [   821891, 5.93520,    316.39187  ],
+        [   547507, 5.01539,    103.09277  ],
+        [   371684, 2.27150,    220.41264  ],
+        [   361778, 3.13904,      7.11355  ],
+        [   140618, 5.70517,    632.78378  ],
+    ], tau);
+
+    const R1 = vsop87([
+        [6182981, 0.25843, 213.29910],
+        [ 506578, 0.71108, 206.18555],
+        [ 341394, 5.79635, 426.59819],
+        [  188491, 0.47200,   7.11355],
+    ], tau);
+
+    const L   = toDeg((L0 + L1 * tau + L2 * tau * tau) / 1e8);
+    const B   = toDeg(B0 / 1e8);
+    const R   = (R0 + R1 * tau) / 1e8;
+
+    const sun = sunPosition(jd);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
+}
+
+// ---------------------------------------------------------------------------
+// Uranus
+// ---------------------------------------------------------------------------
+function uranusPosition(jd) {
+    const tau = (jd - 2451545.0) / 365250.0;
+
+    const L0 = vsop87([
+        [548129294, 0,         0          ],
+        [  9260408, 0.8910642, 74.7815986 ],
+        [  1504248, 3.6271926,  1.4844727 ],
+        [   365982, 1.899462,  73.2970999 ],
+        [   272328, 3.358237, 149.5631971 ],
+        [    70328, 5.39254,   63.7358799 ],
+        [    68892, 6.09292,   76.2660953 ],
+        [    61951, 2.27923,    2.9689454 ],
+        [    53804, 0.01452,   11.0457002 ],
+    ], tau);
+
+    const L1 = vsop87([
+        [7502543122, 0,       0          ],
+        [    154458, 5.24266, 74.78160   ],
+        [     24456, 1.07120,  1.48447   ],
+        [      9258, 0.4284,  56.6224    ],
+        [      8266, 0.8560,  76.2661    ],
+        [      7354, 2.5823, 149.5632    ],
+    ], tau);
+
+    const L2 = vsop87([
+        [53033, 0, 0],
+        [ 1479, 3.67437, 74.78160],
+    ], tau);
+
+    const B0 = vsop87([
+        [1346278, 2.6187781, 74.7815986 ],
+        [  62341, 5.08111,  149.5631971 ],
+        [  61601, 3.14159,    0         ],
+        [   9964, 1.6160,   76.2661     ],
+        [   9926, 0.5763,   73.2971     ],
+        [   3259, 1.2612,  224.3448     ],
+    ], tau);
+
+    const R0 = vsop87([
+        [1912492952, 0,        0         ],
+        [ 103858812, 3.44122,  74.78160  ],
+        [  45815891, 0.14765, 149.56320  ],
+        [   9385069, 5.58121,  11.04570  ],
+        [   5498460, 1.97250, 130.87992  ],
+        [   3791474, 6.14558,   7.11355  ],
+    ], tau);
+
+    const R1 = vsop87([
+        [1479896, 3.67437, 74.78160],
+        [  71212, 6.22174,149.56320],
+        [  68627, 6.13411,  1.48447],
+    ], tau);
+
+    const L   = toDeg((L0 + L1 * tau + L2 * tau * tau) / 1e8);
+    const B   = toDeg(B0 / 1e8);
+    const R   = (R0 + R1 * tau) / 1e8;
+
+    const sun = sunPosition(jd);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
+}
+
+// ---------------------------------------------------------------------------
+// Neptune
+// ---------------------------------------------------------------------------
+function neptunePosition(jd) {
+    const tau = (jd - 2451545.0) / 365250.0;
+
+    const L0 = vsop87([
+        [531188633, 0,         0          ],
+        [  1798476, 2.9010127, 38.1330356 ],
+        [  1019728, 0.4858092,  1.4844727 ],
+        [   124532, 4.82068,   36.6485817 ],
+        [    42064, 5.41055,    2.9689454 ],
+        [    37715, 6.09222,   35.1641278 ],
+        [    33785, 1.24488,   76.2660953 ],
+        [    16483, 0.00008,  491.5579294 ],
+        [     9199, 4.9375,    39.6175084 ],
+    ], tau);
+
+    const L1 = vsop87([
+        [3837687717, 0,       0         ],
+        [     16604, 4.86319,  1.48447  ],
+        [     15807, 2.27923, 38.13304  ],
+        [      3335, 3.6820,  76.2661   ],
+        [      1162, 5.6319,   2.9689   ],
+        [      1004, 2.4699, 491.5579   ],
+    ], tau);
+
+    const L2 = vsop87([
+        [53893, 0, 0],
+        [ 1455, 0.23840, 38.13304],
+    ], tau);
+
+    const B0 = vsop87([
+        [3088623, 1.4410437, 38.1330356],
+        [  27780, 5.91272,   76.2661   ],
+        [  27624, 0,          0        ],
+        [  15448, 3.50877,   39.6175   ],
+        [  15355, 2.52124,   36.6486   ],
+        [   1372, 0.1681,   491.5579   ],
+    ], tau);
+
+    const R0 = vsop87([
+        [3007013206, 0,        0        ],
+        [  27062259, 1.32999,  38.13304 ],
+        [   1691764, 3.25456,  36.64858 ],
+        [    807831, 5.18503,   1.48447 ],
+        [    537761, 4.52289,  35.16413 ],
+        [    495726, 1.57540, 491.55793 ],
+    ], tau);
+
+    const R1 = vsop87([
+        [236338, 0.70498, 38.13304],
+        [ 13220, 3.32015, 76.26610],
+        [  8622, 6.2171,   1.48447],
+    ], tau);
+
+    const L   = toDeg((L0 + L1 * tau + L2 * tau * tau) / 1e8);
+    const B   = toDeg(B0 / 1e8);
+    const R   = (R0 + R1 * tau) / 1e8;
+
+    const sun = sunPosition(jd);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
+}
+
+// ---------------------------------------------------------------------------
+// Based on Simon et al. 1994 / Meeus Ch. 37
+// ---------------------------------------------------------------------------
+// Pluto via JPL Keplerian elements (Standish, "Keplerian Elements for
+// Approximate Positions of the Major Planets", J2000 set valid 1800–2050).
+// Pluto has no VSOP87 series; a full Keplerian orbit (with the equation of
+// centre solved through Kepler) is the standard approach and is accurate to
+// ~1°, vs the previous bare linear mean-longitude which carried NO equation
+// of centre and was up to ~28° (a full sign) wrong for most years.
+// Element[value@J2000, rate/century]: a(AU) e I(deg) L(deg) ϖ(deg) Ω(deg)
+const PLUTO_ELEM = {
+  a:  [39.48211675, -0.00031596],
+  e:  [ 0.24882730,  0.00005170],
+  I:  [17.14001206,  0.00004818],
+  L:  [238.92903833, 145.20780515],
+  wbar: [224.06891629, -0.04062942],
+  Om: [110.30393684, -0.01183482],
+};
+// Keplerian-element Pluto (JPL 1800–2050 elements) — fallback outside the
+// 1885–2099 range where the Meeus periodic series below is valid.
+function plutoPositionKepler(jd) {
+  const T  = (jd - 2451545.0) / 36525.0;
+  const el = k => PLUTO_ELEM[k][0] + PLUTO_ELEM[k][1] * T;
+  const a = el('a'), e = el('e'), I = el('I'), L = el('L'), wbar = el('wbar'), Om = el('Om');
+  const w = wbar - Om;                                  // argument of perihelion
+  let M = mod360(L - wbar); if (M > 180) M -= 360;      // mean anomaly, [-180,180]
+  // Kepler solve (degrees), e* = e in degrees
+  const eDeg = toDeg(e);
+  let E = M + eDeg * Math.sin(toRad(M));
+  for (let i = 0; i < 100; i++) {
+    const dE = (M - (E - eDeg * Math.sin(toRad(E)))) / (1 - e * Math.cos(toRad(E)));
+    E += dE;
+    if (Math.abs(dE) < 1e-9) break;
+  }
+  const Er = toRad(E);
+  const xp = a * (Math.cos(Er) - e);
+  const yp = a * Math.sqrt(1 - e * e) * Math.sin(Er);
+  // orbital plane → J2000 ecliptic
+  const wr = toRad(w), Omr = toRad(Om), Ir = toRad(I);
+  const cw = Math.cos(wr), sw = Math.sin(wr), cO = Math.cos(Omr), sO = Math.sin(Omr), cI = Math.cos(Ir), sI = Math.sin(Ir);
+  const x = (cw * cO - sw * sO * cI) * xp + (-sw * cO - cw * sO * cI) * yp;
+  const y = (cw * sO + sw * cO * cI) * xp + (-sw * sO + cw * cO * cI) * yp;
+  const z = (sw * sI) * xp + (cw * sI) * yp;
+  const lon = mod360(toDeg(Math.atan2(y, x)));
+  const lat = toDeg(Math.atan2(z, Math.sqrt(x * x + y * y)));
+  const r   = Math.sqrt(x * x + y * y + z * z);
+  const sun = sunPosition(jd);
+  return helioToGeo(lon, lat, r, sun.lon, 0, sun.distance, jd);
+}
+
+// Pluto periodic series — Meeus Ch.37 (Table 37.A), valid 1885–2099 to ~0.07°.
+// Coefficients verified to reproduce Meeus's worked example exactly
+// (1992-10-13.0 → heliocentric L 232.74071°, B 14.58782°, r 29.711111 AU).
+const PLUTO_ARG = [[0,0,1],[0,0,2],[0,0,3],[0,0,4],[0,0,5],[0,0,6],[0,1,-1],[0,1,0],[0,1,1],[0,1,2],[0,1,3],[0,2,-2],[0,2,-1],[0,2,0],[1,-1,0],[1,-1,1],[1,0,-3],[1,0,-2],[1,0,-1],[1,0,0],[1,0,1],[1,0,2],[1,0,3],[1,0,4],[1,1,-3],[1,1,-2],[1,1,-1],[1,1,0],[1,1,1],[1,1,3],[2,0,-6],[2,0,-5],[2,0,-4],[2,0,-3],[2,0,-2],[2,0,-1],[2,0,0],[2,0,1],[2,0,2],[2,0,3],[3,0,-2],[3,0,-1],[3,0,0]];
+const PLUTO_LON = [[-19799805,19850055],[897144,-4954829],[611149,1211027],[-341243,-189585],[129287,-34992],[-38164,30893],[20442,-9987],[-4063,-5071],[-6016,-3336],[-3956,3039],[-667,3572],[1276,501],[1152,-917],[630,-1277],[2571,-459],[899,-1449],[-1016,1043],[-2343,-1012],[7042,788],[1199,-338],[418,-67],[120,-274],[-60,-159],[-82,-29],[-36,-29],[-40,7],[-14,22],[4,13],[5,2],[-1,0],[2,0],[-4,5],[4,-7],[14,24],[-49,-34],[163,-48],[9,-24],[-4,1],[-3,1],[1,3],[-3,-1],[5,-3],[0,0]];
+const PLUTO_LAT = [[-5452852,-14974862],[3527812,1672790],[-1050748,327647],[178690,-292153],[18650,100340],[-30697,-25823],[4878,11248],[226,-64],[2030,-836],[69,-604],[-247,-567],[-57,1],[-122,175],[-49,-164],[-197,199],[-25,217],[589,-248],[-269,711],[185,193],[315,807],[-130,-43],[5,3],[2,17],[2,5],[2,3],[3,1],[2,-1],[1,-1],[0,-1],[0,0],[0,-2],[2,2],[-7,0],[10,-8],[-3,20],[6,5],[14,17],[-2,0],[0,0],[0,0],[0,1],[0,0],[1,0]];
+const PLUTO_RAD = [[66865439,68951812],[-11827535,-332538],[1593179,-1438890],[-18444,483220],[-65977,-85431],[31174,-6032],[-5794,22161],[4601,4032],[-1729,234],[-415,702],[239,723],[67,-67],[1034,-451],[-129,504],[480,-231],[2,-441],[-3359,265],[7856,-7832],[36,45763],[8663,8547],[-809,-769],[263,-144],[-126,32],[-35,-16],[-19,-4],[-15,8],[-4,12],[5,6],[3,1],[6,-2],[2,2],[-2,-2],[14,13],[-63,13],[136,-236],[273,1065],[251,149],[-25,-9],[9,-2],[-8,7],[2,-10],[19,35],[10,3]];
+
+function plutoHelioMeeus(T) {
+  const J = 34.35 + 3034.9057 * T, S = 50.08 + 1222.1138 * T, P = 238.96 + 144.96 * T;
+  let cl = 0, cb = 0, cr = 0;
+  for (let n = 0; n < PLUTO_ARG.length; n++) {
+    const a = PLUTO_ARG[n], al = toRad(mod360(a[0] * J + a[1] * S + a[2] * P));
+    const sa = Math.sin(al), ca = Math.cos(al);
+    cl += PLUTO_LON[n][0] * sa + PLUTO_LON[n][1] * ca;
+    cb += PLUTO_LAT[n][0] * sa + PLUTO_LAT[n][1] * ca;
+    cr += PLUTO_RAD[n][0] * sa + PLUTO_RAD[n][1] * ca;
+  }
+  return { lon: 238.958116 + 144.96 * T + cl / 1e6, lat: -3.908239 + cb / 1e6, r: 40.7241346 + cr / 1e7 };
+}
+
+function plutoPosition(jd) {
+  const yr = 2000 + (jd - 2451545.0) / 365.25;
+  if (yr < 1885 || yr > 2099) return plutoPositionKepler(jd);
+  const h = plutoHelioMeeus((jd - 2451545.0) / 36525.0);
+  const sun = sunPosition(jd);
+  return helioToGeo(h.lon, h.lat, h.r, sun.lon, 0, sun.distance, jd);
+}
+
+// ---------------------------------------------------------------------------
+// Convenience — all ten bodies at once
+// ---------------------------------------------------------------------------
+function allPlanetPositions(jd) {
+    return {
+        Sun:     sunPosition(jd),
+        Moon:    moonPosition(jd),
+        Mercury: mercuryPosition(jd),
+        Venus:   venusPosition(jd),
+        Mars:    marsPosition(jd),
+        Jupiter: jupiterPosition(jd),
+        Saturn:  saturnPosition(jd),
+        Uranus:  uranusPosition(jd),
+        Neptune: neptunePosition(jd),
+        Pluto:   plutoPosition(jd)
+    };
+}
+
+/* ════════════ ENGINE — END verbatim copy ════════════════════════════════ */
+
+  /* ── The eclipse point ──────────────────────────────────────────────────
+     Greatest eclipse: 12 August 2026, 17:46 UT (matches website/eclipse.html
+     line 269). Computed live, exactly as the shipped page computes it. */
+  var ECLIPSE_JD  = julianDay(2026, 8, 12, 17, 46, 0);
+  var ECLIPSE_LON = sunPosition(ECLIPSE_JD).lon;
+  var ECLIPSE_MS  = Date.UTC(2026, 7, 12, 17, 46);
+
+  var SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio',
+               'Sagittarius','Capricorn','Aquarius','Pisces'];
+
+  /* ── Contact scoring. Mirrors website/js/eclipse-reading.js exactly:
+        the same orbs, the same hard-aspect gate, the same untimed-Moon rule. */
+  var ORBS  = { conjunction:6, opposition:6, square:5, trine:5, sextile:4 };
+  var ANGLE = { conjunction:0, sextile:60, square:90, trine:120, opposition:180 };
+  var HARD  = { conjunction:6, opposition:5, square:5 };
+
+  var TARGETS = {
+    sun:     { label:'Sun',     theme:'your core sense of self and vitality' },
+    moon:    { label:'Moon',    theme:'your inner life — moods, memory, and what makes you feel safe' },
+    mercury: { label:'Mercury', theme:'how you think, talk and make sense of things' },
+    venus:   { label:'Venus',   theme:'what you love, value and find beautiful' },
+    mars:    { label:'Mars',    theme:'your drive, courage and how you act' },
+    jupiter: { label:'Jupiter', theme:'where you look for growth, meaning and room to expand' },
+    saturn:  { label:'Saturn',  theme:'your responsibilities, limits and long patience' },
+    uranus:  { label:'Uranus',  theme:'where you want freedom and the unexpected' },
+    neptune: { label:'Neptune', theme:'your dreams, imagination and what you long for' },
+    pluto:   { label:'Pluto',   theme:'what in you is quietly transforming' }
+  };
+  var VERB = {
+    conjunction:'falls right on',
+    opposition: 'sits directly opposite',
+    square:     'presses on',
+    trine:      'flows easily with',
+    sextile:    'gently opens'
+  };
+  var FRAME = {
+    conjunction:'This eclipse falls right on {theme}. Eclipses have long been read as endings that clear a little space for a beginning — so this is a moment to notice what here feels ready to turn over.',
+    opposition: 'This eclipse sits directly opposite {theme}. Tradition reads a facing like this as a call for balance — a nudge to see this part of you from the other side.',
+    square:     'This eclipse presses on {theme}. A square is old shorthand for useful friction — the kind of tension that, handled gently, tends to move something that was stuck.',
+    trine:      'This eclipse flows easily with {theme}. A trine is the kind, unforced contact — a good moment to lean on this strength rather than force anything.',
+    sextile:    'This eclipse gently opens {theme}. A sextile is a small door, not a shove — an invitation you can take or leave.'
+  };
+  var LEGAL = 'Astronomy is exact; the meaning is tradition, offered for reflection and entertainment — not advice or prediction.';
+
+  function sep(a, b) { var d = Math.abs(((a - b) % 360 + 360) % 360); return d > 180 ? 360 - d : d; }
+  function fmtOrb(deg) {
+    var total = Math.round(deg * 60), d = Math.trunc(total / 60), m = Math.abs(total % 60);
+    return d + '°' + String(m).padStart(2, '0') + '′';
+  }
+  function fmtDeg(lon) {
+    var n = ((lon % 360) + 360) % 360, si = Math.floor(n / 30), w = n - si * 30;
+    var d = Math.floor(w), m = Math.round((w - d) * 60);
+    if (m === 60) { d += 1; m = 0; }
+    return d + '°' + String(m).padStart(2, '0') + '′ ' + SIGNS[si];
+  }
+  function contactsFor(natal, timed) {
+    var out = [];
+    Object.keys(TARGETS).forEach(function (key) {
+      if (!timed && key === 'moon') return;      // untimed Moon: excluded, not guessed
+      var lon = natal[key];
+      if (lon == null || isNaN(lon)) return;
+      var s = sep(ECLIPSE_LON, lon);
+      Object.keys(ANGLE).forEach(function (aspect) {
+        var orb = Math.abs(s - ANGLE[aspect]);
+        if (orb <= ORBS[aspect]) out.push({ target:key, aspect:aspect, orbDeg:orb, lon:lon });
+      });
+    });
+    return out.sort(function (a, b) { return a.orbDeg - b.orbDeg; });
+  }
+
+  /* ── The birth clock. IANA zones with real DST history, not a fixed offset —
+        a UK summer birth entered as "UT" lands the chart an hour out, which can
+        move a placement across a sign boundary. */
+  var ZONES = ['Europe/London','Europe/Dublin','Europe/Paris','Europe/Berlin','Europe/Madrid',
+    'Europe/Rome','Europe/Amsterdam','Europe/Lisbon','Europe/Warsaw','Europe/Athens',
+    'Europe/Moscow','Africa/Lagos','Africa/Johannesburg','Africa/Cairo','Africa/Nairobi',
+    'America/New_York','America/Chicago','America/Denver','America/Los_Angeles',
+    'America/Toronto','America/Mexico_City','America/Sao_Paulo','America/Bogota',
+    'Asia/Dubai','Asia/Karachi','Asia/Kolkata','Asia/Dhaka','Asia/Bangkok','Asia/Singapore',
+    'Asia/Hong_Kong','Asia/Shanghai','Asia/Tokyo','Asia/Seoul','Asia/Jakarta','Asia/Manila',
+    'Australia/Perth','Australia/Sydney','Australia/Brisbane','Pacific/Auckland','UTC'];
+
+  function zoneOffsetHours(zone, y, mo, d, hh, mm) {
+    try {
+      var fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: zone, year:'numeric', month:'2-digit', day:'2-digit',
+        hour:'2-digit', minute:'2-digit', hour12:false
+      });
+      var guess = Date.UTC(y, mo - 1, d, hh, mm), p = {};
+      fmt.formatToParts(new Date(guess)).forEach(function (x) { p[x.type] = x.value; });
+      var asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, (+p.hour) % 24, +p.minute);
+      return (asUTC - guess) / 3600000;
+    } catch (e) { return 0; }
+  }
+  function zoneName(zone, y, mo, d, hh, mm) {
+    try {
+      var parts = new Intl.DateTimeFormat('en-GB', { timeZone: zone, timeZoneName: 'long' })
+        .formatToParts(new Date(Date.UTC(y, mo - 1, d, hh, mm)));
+      for (var i = 0; i < parts.length; i++) if (parts[i].type === 'timeZoneName') return parts[i].value;
+    } catch (e) {}
+    return zone.replace(/_/g, ' ');
+  }
+  function offsetLabel(h) {
+    if (h === 0) return 'UTC';
+    var sign = h < 0 ? '−' : '+', a = Math.abs(h);
+    var hh = Math.floor(a), mm = Math.round((a - hh) * 60);
+    return 'UTC' + sign + hh + (mm ? ':' + String(mm).padStart(2, '0') : '');
+  }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var dob = $('dob'), tob = $('tob'), tzSel = $('tz'), tzNote = $('tz-note');
+  var form = $('ask'), hint = $('hint'), answer = $('answer'), lede = $('lede');
+
+  function hhmm(v) {
+    var m = /^(\d{1,2}):(\d{2})/.exec(v || '');
+    return m ? [+m[1], +m[2]] : [12, 0];   // no time given → noon, stated as such
+  }
+
+  /* Populate the zone list, defaulting to this device's zone. */
+  (function buildZones() {
+    var local = 'Europe/London';
+    try { local = Intl.DateTimeFormat().resolvedOptions().timeZone || local; } catch (e) {}
+    var list = ZONES.slice();
+    if (list.indexOf(local) === -1) list.unshift(local);
+    list.forEach(function (z) {
+      var o = document.createElement('option');
+      o.value = z;
+      o.textContent = z.replace(/_/g, ' ').replace('/', ' — ') + (z === local ? '  (this device)' : '');
+      if (z === local) o.selected = true;
+      tzSel.appendChild(o);
+    });
+    describeZone();
+  })();
+
+  function describeZone() {
+    var v = dob.value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) { tzNote.textContent = 'Pick a birth date and this will name the exact clock, daylight saving included.'; return; }
+    var p = v.split('-').map(Number);
+    var t = hhmm(tob.value);
+    var off = zoneOffsetHours(tzSel.value, p[0], p[1], p[2], t[0], t[1]);
+    tzNote.innerHTML = 'On that date this clock read <b>' + zoneName(tzSel.value, p[0], p[1], p[2], t[0], t[1]) +
+                       ', ' + offsetLabel(off) + '</b> — historical daylight saving applied, not assumed.';
+  }
+  dob.addEventListener('change', describeZone);
+  tob.addEventListener('change', describeZone);
+  tzSel.addEventListener('change', describeZone);
+
+  /* Nobody was born tomorrow. */
+  (function capDate() {
+    var n = new Date();
+    dob.max = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0');
+  })();
+
+  /* Countdown. The default text in the HTML is already true without JS —
+     this only adds the distance, and never says "computing". */
+  (function countdown() {
+    var el = $('when-text');
+    var ms = ECLIPSE_MS - Date.now();
+    if (ms <= 0) { el.textContent = 'The eclipse of 12 August 2026 · the shadow has crossed'; return; }
+    var days = Math.floor(ms / 86400000);
+    var when = days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days';
+    el.textContent = 'The eclipse · Wednesday 12 August 2026 · ' + when;
+  })();
+
+  /* Live-confirm the static degree printed in band two. */
+  $('fact-point').textContent = fmtDeg(ECLIPSE_LON);
+
+  /* ── Compute and answer ─────────────────────────────────────────────── */
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = dob.value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+      hint.textContent = 'Pick your birth date first — the sky needs a day to read.';
+      hint.classList.add('show');
+      dob.setAttribute('aria-invalid', 'true');
+      dob.focus();
+      return;
+    }
+    hint.classList.remove('show');
+    dob.removeAttribute('aria-invalid');
+
+    var p = v.split('-').map(Number);
+    var timed = /^\d{1,2}:\d{2}/.test(tob.value || '');
+    var t = hhmm(tob.value);
+    var off = zoneOffsetHours(tzSel.value, p[0], p[1], p[2], t[0], t[1]);
+    var jd = julianDay(p[0], p[1], p[2], t[0] - off, t[1], 0);
+
+    var P = allPlanetPositions(jd);
+    var natal = {
+      sun:P.Sun.lon, moon:P.Moon.lon, mercury:P.Mercury.lon, venus:P.Venus.lon,
+      mars:P.Mars.lon, jupiter:P.Jupiter.lon, saturn:P.Saturn.lon,
+      uranus:P.Uranus.lon, neptune:P.Neptune.lon, pluto:P.Pluto.lon
+    };
+
+    render(natal, timed, v, tob.value, tzSel.value);
+  });
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+
+  function render(natal, timed, dobValue, tobValue, zone) {
+    var all = contactsFor(natal, timed);
+    var hard = all.filter(function (c) { return HARD[c.aspect] != null && c.orbDeg <= HARD[c.aspect]; });
+    var lead = hard[0] || null;
+    var nearest = all[0] || null;
+
+    var receipt =
+      '<div class="receipt">' +
+        'Eclipse point <b>' + fmtDeg(ECLIPSE_LON) + '</b> &middot; greatest eclipse 12 Aug 2026, 17:46 UT<br>' +
+        'Your sky <b>' + esc(dobValue) + (timed ? ', ' + esc(tobValue) : ', time not given') + '</b> &middot; ' + esc(zone.replace(/_/g, ' ')) + '<br>' +
+        'Ten bodies, Meeus series, computed in this browser. Nothing was uploaded.' +
+      '</div>';
+
+    var chartHref = './chart.html?date=' + encodeURIComponent(dobValue);
+    var handoff =
+      '<div class="handoff">' +
+        '<a class="handoff__cta" href="' + chartHref + '">Cast the full chart — free</a>' +
+        '<p class="handoff__why">Your Rising, your Midheaven and the house this lands in need your birth <em>place</em> — so the full instrument asks for it, and your date carries over. Fair warning: there, the place name is the one thing that leaves your browser, to look up its coordinates.</p>' +
+      '</div>';
+
+    var moonNote = (!timed && contactsFor(natal, true).some(function (c) { return c.target === 'moon'; }))
+      ? '<p class="also">Your Moon would have been in range, but without a birth time it can only be placed to about &plusmn;7&deg; — so it is left out rather than quoted falsely. Add a time and it comes back in.</p>'
+      : '';
+
+    var html;
+
+    if (!lead) {
+      /* THE QUIET ANSWER — said plainly, and said before any price exists. */
+      var near = '';
+      if (nearest) {
+        near = nearest.orbDeg <= 3 && HARD[nearest.aspect] == null
+          ? 'The nearest touch is a gentle ' + nearest.aspect + ' to your ' + TARGETS[nearest.target].label +
+            ' (' + fmtOrb(nearest.orbDeg) + ') — background light, not a headline, and we will not dress it up as one.'
+          : 'The nearest touch is a wide ' + fmtOrb(nearest.orbDeg) + ' to your ' + TARGETS[nearest.target].label + '.';
+      } else {
+        near = 'Every placement in your chart sits more than 5&deg; from that degree.';
+      }
+      html = receipt +
+        '<p class="quiet-mark">A quiet one</p>' +
+        '<h2 class="answer__head">This eclipse does not touch your chart.</h2>' +
+        '<p class="answer__orb">' + near + '</p>' +
+        '<p class="answer__body">For you this is a quiet one — and that is an honest answer, not a smaller one. ' +
+        'The sky does not touch everyone the same way on the same night. You still get the eclipse over your own town, ' +
+        'and the Perseids after dark; sometimes the kindest thing a real chart can do is tell you to simply watch.</p>' +
+        '<p class="answer__body"><b>So there is nothing here for us to sell you.</b> The £2.99 eclipse reading is written from a ' +
+        'contact you do not have, and it would be thin. If you want your whole sky read instead, the ' +
+        '<a href="./deep-reading.html">£12 Deep Reading is published in full as a sample</a> — read it before deciding.</p>' +
+        moonNote + handoff;
+    } else {
+      /* THE LOUD ANSWER — the contact, its orb, then the honest close. */
+      var tg = TARGETS[lead.target];
+      var secondaries = all.filter(function (c) { return c !== lead && c.orbDeg <= 3; }).slice(0, 2);
+      var alsoLine = secondaries.length
+        ? '<p class="also">Also in range: ' + secondaries.map(function (c) {
+            return '<b>' + c.aspect + ' to your ' + TARGETS[c.target].label + '</b> (' + fmtOrb(c.orbDeg) + ')';
+          }).join(' &middot; ') + '</p>'
+        : '';
+
+      html = receipt +
+        '<h2 class="answer__head">It ' + VERB[lead.aspect] + ' your <strong>' + tg.label + '</strong>.</h2>' +
+        '<p class="answer__orb">' + fmtOrb(lead.orbDeg) + ' away &middot; your ' + tg.label + ' at ' + fmtDeg(lead.lon) + '</p>' +
+        '<p class="answer__body">' + FRAME[lead.aspect].replace('{theme}', tg.theme) + '</p>' +
+        alsoLine + moonNote +
+        '<p class="answer__body">There is a written reading for this contact — five beats, about 350 words, from your orb alone, £2.99. ' +
+        '<b>Checkout is not open yet</b>, so nothing on this page can take your money today; ' +
+        '<a href="./shop.html#eclipse-reading">ask to be told when it opens</a>.</p>' +
+        handoff;
+    }
+
+    html += '<p class="legal">' + LEGAL + ' Every degree above was computed here, in this browser — ' +
+            '<a href="./verify.html">check the maths yourself</a>. ' +
+            '<button class="restart" type="button" id="restart">Use a different date</button></p>';
+
+    answer.innerHTML = html;
+    answer.hidden = false;
+    answer.classList.remove('reveal');
+    void answer.offsetWidth;
+    answer.classList.add('reveal');
+    form.hidden = true;
+    lede.hidden = true;          /* the invitation has been taken; the question stays */
+    answer.focus({ preventScroll: true });
+
+    var r = answer.getBoundingClientRect();
+    if (r.bottom > window.innerHeight) {
+      answer.scrollIntoView({ block: 'nearest',
+        behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth' });
+    }
+
+    $('restart').addEventListener('click', function () {
+      answer.hidden = true;
+      answer.innerHTML = '';
+      form.hidden = false;
+      lede.hidden = false;
+      dob.focus();
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
