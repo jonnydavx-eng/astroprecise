@@ -463,6 +463,18 @@ self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys.filter(k => k !== V).map(k => caches.delete(k))))
+      /* Evict any entry whose KEY carries a query string. Until 2026-08-08 the
+         fetch handler below cached navigations under the full request URL, so a
+         visitor who reached chart.html?date=…&time=…&city=… ended up with their
+         own birth details written into Cache Storage as the *name* of an entry —
+         visible in devtools and sitting on disk. Nothing here legitimately keys
+         on a query (every asset goes through canonicalAssetKey, which strips
+         it), so anything with one is either that leak or dead weight. */
+      .then(() => caches.open(V))
+      .then(c => c.keys().then(reqs => Promise.all(
+        reqs.filter(r => { try { return !!new URL(r.url).search; } catch (_) { return false; } })
+            .map(r => c.delete(r))
+      )))
       .then(() => self.clients.claim())
   );
   /* OPTIONAL backfill, deferred to 4s after activation: best-effort warm of the
@@ -497,7 +509,16 @@ self.addEventListener('fetch', e => {
   // (the v453-v463 deploy-mismatch that broke the loading sequence / 3D model / layout).
   const isCritical = /\/(js\/app\.js|js\/horoscope-page\.js|js\/cosmos\.js|js\/orrery\.js|js\/orrery-loader\.js|js\/orrery-webgl\.js|js\/ambience\.js|js\/eclipse-reading\.js|js\/deep-reading\.js|js\/plate-fingerprint\.js|js\/ap-sky-news\.js|js\/ap-natal-sphere\.js|js\/ap-checkout-honest\.js|js\/ap-gumroad-bridge\.js|js\/gumroad-unlock\.js|js\/ap-award-orrery\.js|js\/ap-home-bootstrap\.js|js\/hero-instrument\.js|js\/effects\.js|js\/ephemeris\.js|js\/lite-orrery\.js|js\/lite-shell-boot\.js|css\/main\.css|css\/ap-observatory-home\.css|css\/ap-brand-nebula\.css|css\/ap-sky-news\.css|css\/ap-natal-sphere\.css)$/.test(path);
 
-  const cacheKey = isNav ? e.request : canonicalAssetKey(e.request);
+  /* Cache key: NEVER the raw request, not even for a navigation. A navigation
+     URL can carry a visitor's birth details in its query — the homepage no
+     longer mints such links, but legacy ?date= / ?d= links from lifepath,
+     profile and the saved-charts dashboard still exist — and c.put(e.request)
+     would write those details into Cache Storage as the entry's *name*. On a
+     static host the HTML is byte-identical whatever the query says (the query
+     is read by JS after load), so dropping it costs nothing and makes the
+     "stored nowhere" promise on the homepage true. It also makes the offline
+     fallback work for query-bearing URLs, which previously always missed. */
+  const cacheKey = canonicalAssetKey(e.request);
   e.respondWith(
     caches.match(cacheKey).then(cached => {
       /* Navigations + critical assets revalidate past the HTTP cache: GitHub
@@ -512,7 +533,7 @@ self.addEventListener('fetch', e => {
       ).then(res => {
         if (res && res.status === 200 && res.type === 'basic') {
           const clone = res.clone();
-          caches.open(V).then(c => c.put(isNav ? e.request : canonicalAssetKey(e.request), clone));
+          caches.open(V).then(c => c.put(cacheKey, clone));
         }
         return res;
       }).catch(() => null);

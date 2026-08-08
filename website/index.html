@@ -572,28 +572,34 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         <!-- ── The coupon. It carries date, place and time, and it hands off to
              the full instrument at chart.html, which can resolve the town to
              coordinates and therefore produce a real Rising, Midheaven and
-             houses. chart.html reads all three from the URL (js/chart-page.js
-             → prefillFromURL); nobody retypes anything. ── -->
+             houses. The handoff travels in sessionStorage, NOT in the URL —
+             see the note on the script below the card, which explains why the
+             inputs deliberately have no `name`. chart.html picks it up in
+             js/chart-page.js → prefillFromHandoff; nobody retypes anything. ── -->
         <div class="coupon">
           <div class="coupon__tear">
             <p class="eyebrow">Set your edition</p>
             <span class="coupon__perf" aria-hidden="true"></span>
           </div>
           <div class="coupon__card">
-            <form action="./chart.html" method="get">
+            <!-- No control below carries a `name`, and that is load-bearing:
+                 a browser can only serialise NAMED controls into a query
+                 string, so this form cannot put a birth date, time or town
+                 into a URL even if the script below never runs. -->
+            <form id="coupon-form" action="./chart.html" method="get">
               <div class="fields">
                 <div class="field-e">
                   <label for="f-date">Birth date</label>
-                  <input type="date" id="f-date" name="date" required
+                  <input type="date" id="f-date" required
                          min="1800-01-01" max="2200-12-31" autocomplete="bday">
                 </div>
                 <div class="field-e">
                   <label for="f-time">Time <span class="opt">— optional</span></label>
-                  <input type="time" id="f-time" name="time">
+                  <input type="time" id="f-time">
                 </div>
                 <div class="field-e field--place">
                   <label for="f-place">Birth place</label>
-                  <input type="text" id="f-place" name="city"
+                  <input type="text" id="f-place"
                          placeholder="Town or city" autocomplete="off"
                          aria-describedby="coupon-hint">
                 </div>
@@ -612,15 +618,68 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
                 <span class="action-note">About twenty seconds. Free for good. Nothing to sign up to.</span>
               </div>
             </form>
+
+            <!-- ── The handoff. It must not touch the network. ──────────────
+                 Until 2026-08-08 this was a plain GET to chart.html, so
+                 pressing the button put the visitor's birth details straight
+                 into the request line —
+
+                   GET /chart.html?date=1901-02-03&time=04%3A05&city=Testtown
+
+                 — which is exactly what GitHub Pages and Cloudflare write into
+                 their access logs, and what the service worker then stored as
+                 a Cache Storage key. The colophon below this card promises the
+                 opposite, so the form is what had to change, not the wording.
+
+                 Two independent things now make that leak impossible:
+
+                   1. No control in the form has a `name` (see the note above
+                      it), so the browser has nothing to serialise. If this
+                      script throws, is blocked by an extension, or never
+                      arrives, the native submit still carries nothing.
+                   2. The values travel in sessionStorage — same tab, same
+                      origin, never transmitted. Where sessionStorage is
+                      unavailable (Safari with all storage blocked, some
+                      embedded webviews) we fall back to a URL fragment, which
+                      browsers never put in the request line and never send in
+                      a Referer header.
+
+                 chart.html reads both, in that order: js/chart-page.js →
+                 prefillFromHandoff. ── -->
+            <script>
+            (function () {
+              var form = document.getElementById('coupon-form');
+              if (!form) return;
+              form.addEventListener('submit', function (ev) {
+                ev.preventDefault();
+                function val(id) {
+                  var el = document.getElementById(id);
+                  return el && el.value ? el.value : '';
+                }
+                var payload = { date: val('f-date'), time: val('f-time'), city: val('f-place').trim() };
+                var target = './chart.html';
+                try {
+                  sessionStorage.setItem('ap-chart-handoff', JSON.stringify(payload));
+                } catch (err) {
+                  // Fragment, not query: never sent to the server. See above.
+                  target += '#' + new URLSearchParams(payload).toString();
+                }
+                // Assign rather than replace, so Back returns to this page.
+                location.href = target;
+              });
+            })();
+            </script>
           </div>
         </div>
 
         <p class="colophon">
           <b>Instruments:</b> VSOP87 for the planets, ELP2000 for the Moon,
           after Meeus — the series planetarium software runs on. Valid
-          1800–2200&nbsp;CE. Your birth minute is computed on this device and
-          stored nowhere. Open your browser's network tab while you cast, and
-          watch nothing go out.
+          1800–2200&nbsp;CE. Your birth minute is computed on this device and is
+          never put in a web address: pressing the button above asks the server
+          for the next page and tells it nothing else about you. Open your
+          browser's network tab while you cast — not one request carries your
+          date, your time or your town.
         </p>
       </div>
 

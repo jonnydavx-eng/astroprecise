@@ -584,7 +584,56 @@
     form.requestSubmit();
   }
 
-  /* Handoff from the homepage coupon (chart.html?date=&time=&city=).
+  /* Where the homepage handoff comes from, in priority order. The first two
+     never touch the network; the third is only there so links minted before
+     2026-08-08 keep working.
+
+       1. sessionStorage['ap-chart-handoff'] — what index.html writes. Same
+          tab, same origin, never transmitted. Read once and deleted, so the
+          details do not sit in the tab after they have been used.
+       2. location.hash (#date=&time=&city=) — the fallback index.html uses
+          when sessionStorage is blocked. A fragment is not part of the request
+          line and is not sent in a Referer, so it never reaches a server log.
+          It is stripped from the address bar as soon as it is read.
+       3. location.search (?date=&time=&city=) — LEGACY ONLY. Nothing on this
+          site mints these any more, but lifepath.html, profile.html and
+          js/charts-dashboard.js still link with a query, and a visitor may
+          have one bookmarked. Reading it is safe; the harm was in *creating*
+          it, because a query string is written into the origin's and the
+          CDN's access logs. Do not reintroduce a query-string handoff. */
+  function readHandoff() {
+    let src = null;
+
+    try {
+      const raw = sessionStorage.getItem('ap-chart-handoff');
+      if (raw) {
+        sessionStorage.removeItem('ap-chart-handoff');
+        const o = JSON.parse(raw);
+        if (o && typeof o === 'object') src = o;
+      }
+    } catch { /* storage blocked or malformed — fall through */ }
+
+    if (!src && location.hash && location.hash.length > 1) {
+      try {
+        const h = new URLSearchParams(location.hash.slice(1));
+        if (h.get('date') || h.get('time') || h.get('city')) {
+          src = { date: h.get('date'), time: h.get('time'), city: h.get('city') };
+          // Take it out of the address bar: it is used, and a fragment left
+          // lying there gets copied, screenshotted and shared.
+          history.replaceState(null, '', location.pathname + location.search);
+        }
+      } catch { /* malformed fragment — ignore */ }
+    }
+
+    if (!src) {
+      const q = new URLSearchParams(location.search);
+      src = { date: q.get('date'), time: q.get('time'), city: q.get('city') };
+    }
+
+    return src;
+  }
+
+  /* Handoff from the homepage coupon.
      Distinct from restoreFromURL(), which restores a complete shared chart
      (?d=&lat=…) and submits it.
 
@@ -607,12 +656,12 @@
 
      Nothing already filled is overwritten: a restored draft or a shared-chart
      URL always wins over the handoff. */
-  function prefillFromURL() {
+  function prefillFromHandoff() {
     try {
-      const q = new URLSearchParams(location.search);
-      const d = q.get('date');
-      const t = q.get('time');
-      const c = q.get('city');
+      const handoff = readHandoff();
+      const d = handoff.date;
+      const t = handoff.time;
+      const c = handoff.city;
 
       const dateEl = document.getElementById('date-input');
       const timeEl = document.getElementById('time-input');
@@ -3189,7 +3238,7 @@ host.classList.add('is-done');
     initPersonalMemory();
     mountChartAI(null);
     restoreFromURL();
-    prefillFromURL();
+    prefillFromHandoff();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot, { once: true });
