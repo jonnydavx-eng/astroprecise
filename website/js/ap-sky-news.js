@@ -72,9 +72,42 @@
     if (mn === 60) { mn = 0; dg += 1; }
     return dg + '°' + String(mn).padStart(2, '0') + '′ ' + SIGNS[si];
   }
+  /**
+   * Unsigned angular separation, folded into [0, 180].
+   * Correct for ASPECTS and pair proximity: an aspect is symmetric, so which
+   * body leads carries no meaning there.
+   * NEVER use this for Moon phase. Folding destroys the waxing/waning sign —
+   * a true 303.6° elongation reads back as 56.4°, which named a waning
+   * crescent "waxing crescent" and made every waning branch unreachable.
+   * Use elongation() for anything phase-shaped.
+   */
   function sep(a, b) {
     var d = Math.abs(a - b) % 360;
     return d > 180 ? 360 - d : d;
+  }
+  /**
+   * Sun→Moon elongation measured eastward along the ecliptic, in [0, 360):
+   * 0 new · 90 first quarter · 180 full · 270 last quarter.
+   * Below 180 the Moon is waxing; at or above 180 it is waning.
+   */
+  function elongation(moonLon, sunLon) {
+    return (((moonLon - sunLon) % 360) + 360) % 360;
+  }
+  /**
+   * The eight principal phases as 45° bins centred on the cardinal points.
+   * Deliberately the same ladder index.html's tonight() panel and js/tonight.js
+   * use, so the band and the panel on the same page cannot name different
+   * phases at the same minute.
+   */
+  var PHASES = ['New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous',
+    'Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent'];
+  function phaseName(elong) {
+    var e = ((((elong % 360) + 360) % 360) + 22.5) % 360;
+    return PHASES[Math.floor(e / 45)];
+  }
+  /** Illuminated fraction as a whole percent, from the same elongation. */
+  function illumPct(elong) {
+    return Math.round((1 - Math.cos(elong * Math.PI / 180)) / 2 * 100);
   }
   function daysToJD(days) { return nowJD() + days; }
 
@@ -117,28 +150,23 @@
     opts = opts || {};
     var eng = E();
     if (!eng) return [];
-    var jd = nowJD();
+    // opts.jd is a test/proof seam only — the page never passes it.
+    var jd = (opts.jd != null && isFinite(opts.jd)) ? Number(opts.jd) : nowJD();
     var L = allLons(jd);
     var items = [];
     var moon = L.Moon, sun = L.Sun;
 
     // Moon phase + sign
     if (moon != null && sun != null) {
-      var elong = sep(moon, sun);
-      var phase =
-        elong < 10 ? 'New Moon window' :
-        elong < 80 ? 'Waxing crescent / first quarter approach' :
-        elong < 100 ? 'Near first quarter' :
-        elong < 170 ? 'Waxing gibbous' :
-        elong < 190 ? 'Full Moon window' :
-        elong < 260 ? 'Waning gibbous' :
-        elong < 280 ? 'Near last quarter' : 'Waning crescent';
-      var illum = Math.round((1 - Math.cos(elong * Math.PI / 180)) / 2 * 100);
+      var elong = elongation(moon, sun);
+      var phase = phaseName(elong);
+      var illum = illumPct(elong);
       items.push({
         id: 'moon',
         kicker: 'MOON',
         title: GLYPH.Moon + ' ' + phase,
-        detail: fmtDeg(moon) + ' · ~' + illum + '% illuminated · elongation ' + elong.toFixed(1) + '° from Sun',
+        detail: fmtDeg(moon) + ' · ~' + illum + '% illuminated · ' + (elong < 180 ? 'waxing' : 'waning') +
+          ' · elongation ' + elong.toFixed(1) + '° east of Sun',
         fly: 'moon',
         score: 100
       });
@@ -497,7 +525,11 @@
     }
   }
 
-  w.APSkyNews = { buildNews: buildNews, mount: mount, driveModel: driveModel };
+  w.APSkyNews = {
+    buildNews: buildNews, mount: mount, driveModel: driveModel,
+    // Pure helpers, exported so the phase maths is testable without a DOM.
+    elongation: elongation, phaseName: phaseName, illumPct: illumPct, separation: sep
+  };
 
   // Browser only — keep buildNews usable under Node proofs
   if (typeof document !== 'undefined') {
