@@ -134,12 +134,14 @@ function collectCanonical() {
   //  - img/engine/* — large photoreal stills, only on the pages that show them
   //  - img/design-targets/* — design-reference mockups, referenced by no page
   //  - img/orrery/* — planet and environment maps for the WebGL orrery, added
-  //    2026-08-08. Same class as assets/textures/* below and excluded for the
-  //    same reason: the engine pulls them only when the 3D view opens, so they
-  //    runtime-cache on first use. As of this commit nothing on the site
-  //    references them yet and they are ~3.6 MB, which is a large install-shell
-  //    cost — and a precache entry for a file that is not deployed is a install
-  //    fetch that always fails. Revisit when a page actually loads them.
+  //    2026-08-08 (14 files, 3.6 MB). Same class as assets/textures/* below and
+  //    excluded for the same reason: the engine pulls them only when the 3D view
+  //    opens, so they runtime-cache on first use via the fetch handler's
+  //    cache-first path. Measured 2026-08-08: no HTML, JS, CSS or JSON in
+  //    website/ references any of them yet, so precaching would put 3.6 MB into
+  //    every visitor's install shell for files nothing asks for. Revisit when a
+  //    page actually loads them — then the _sm twins are the ones to add, not
+  //    the _2k, exactly as the assets/textures rule below already does.
   //  - img/shop/* — 7.5 MB of product imagery, only ever shown on shop/plate pages
   //  - img/og-*, img/eclipse-og.* — social-scraper cards; browsers never fetch them
   //  - img/icon-(maskable-)512.png — PWA install icons, fetched only on install
