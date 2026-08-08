@@ -44,6 +44,13 @@ These are not style preferences. Breaking any of them damages the thing that mak
 
 There is no card-level safe zone on this page. Frame on named elements in tight crops, never on whole cards, and **do not scroll** — every scroll on this page crosses a price.
 
+**Line numbers below are pinned to `website/eclipse.html` blob `c2e7834`** (branch
+`redesign/editorial-front-screen`, 2026-08-08). Another agent is editing that file in this repo
+today, so treat the numbers as a convenience and the **element IDs and the visible strings as the
+durable anchors** — `#cast`, `#anchorBox`, `#quietBox`, `#quietMono`, `#quietSerif`, `#saleBox`,
+the nav `SHOP` link, the footer. Re-check before you film: find-in-page for `£`, `shop`, `pay`,
+`bought`, `unlock` and confirm every hit is outside your crop.
+
 **Never in frame.** Line numbers are `website/eclipse.html`.
 
 | Line | On screen | Note |
