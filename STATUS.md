@@ -36,7 +36,7 @@ separately and does not count them as mismatches.
 2. **Legal name and postal address** — `[FULL LEGAL NAME]` / `[POSTAL ADDRESS]` placeholders are live on the public site at `website/privacy.html` lines 129 and 131 and `website/terms.html` lines 131 and 132. (`contact.html` has none, despite what the old runbook said.)
 3. **Fixed-offset timezone dropdowns with no DST history** — `website/index.html` line 351 (nine options) and `website/eclipse.html` lines 141–143 (seven options). A UK summer birth entered as "UT / GMT" is cast an hour out, which can move the Ascendant by a whole sign. Accuracy issue, not cosmetic.
 4. **Four design decisions** awaiting a yes/no — `docs/DESIGN-PLAN-2026-08-05.md` §7.
-5. **Higgsfield unlimited promo not applying** — see below.
+5. **Higgsfield: does MCP generation consume the unlimited allowance or bill credits?** — unresolved, see below. Unlimited *is* active (web app); the API just doesn't report it.
 
 ## Higgsfield / Seedance connector — measured 2026-08-08
 
@@ -52,29 +52,50 @@ enabled for that surface) to pick it up. Not a repo or credential problem.
 | Plan | `plus` | `balance` |
 | Credit balance | 912.5 | `balance` |
 | Monthly grant | +1000 at 2026-08-08 11:48 UT | `transactions` |
-| Unlimited entitlement | **`unlim.available: false`** | `models_explore` — account-level and on `seedance_2_5` |
+| Unlimited entitlement **over MCP** | **`unlim.available: false`** — but see below, this is wrong | `models_explore` — account-level and on `seedance_2_5` |
 | Models carrying `supports_unlim` | `kling3_0` only, of the 10 video models on page 1 | `models_explore` search |
 | Seedance 2.5 max resolution | **720p** (`480p`/`720p` only) | `models_explore` get |
 | Observed Seedance cost | 97.5 credits for 15s @ 720p, audio on = **6.5 credits/sec** | `transactions` + `show_generations` |
 
+### The unlimited entitlement IS active — the MCP surface does not show it
+
+Owner's Higgsfield web app (screenshot, 2026-08-08 13:19 local) shows **8 models
+currently unlimited**, including:
+
+| Model | Window | Quality | Starts | Expires | Status |
+|-------|--------|---------|--------|---------|--------|
+| Seedance 2.5 Unlimited | 33-day | 720p | Aug 8 2026 | **Sep 10 2026** | Active |
+| Nano Banana 2 Unlimited | 7-day | 2K | Aug 8 2026 | **Aug 15 2026** | Active |
+| FLUX.2 Pro | 365 Unlimited | 1K | auto-renewing | auto-renewing | Active |
+
+So `unlim.available: false` from `models_explore` is a **reporting gap in the MCP/API
+surface**, not a billing or signup problem. Do not conclude from the API alone that
+there is no unlimited allowance — check the web app.
+
+**Open question, unresolved:** does generating *through the MCP connector* consume the
+unlimited allowance, or bill credits regardless? Generation
+`d5ea68be-9f47-4e51-a65c-ec6bf0d28e99` (Seedance 2.5, 15s, 720p, audio on) was
+**charged 97.5 credits** at 2026-08-08 11:53 UT, and the web app's counters read
+"0 free generations in total / +$0 saved in total" at 13:19 — consistent with either
+(a) that clip predating promo activation, or (b) the API path not honouring unlimited.
+Cheap way to settle it: run one short generation over MCP, then re-check `balance` and
+the web app's free-generation counter. **Until settled, prefer the web app for bulk
+generation** — if (b) is true, the connector is the expensive path.
+
 ### Not measured — do not claim
 
-- Whether the Higgsfield **web app** shows an active unlimited window. Only the
-  MCP/API surface was checked.
-- Any credit cost other than the single 15s Seedance generation below.
+- Which of (a) or (b) above is true.
+- Any credit cost other than the single 15s Seedance generation above.
 - Cost of `generate_image` / image models — never called.
+- Whether `generate_image` over MCP maps to Nano Banana 2 or FLUX.2 Pro (the two
+  unlimited image models) or to some other default.
 
-### The promo discrepancy
+### Time-boxed: Nano Banana 2 expires 15 Aug
 
-Owner signed up for a Seedance unlimited promotion; the API does not reflect it.
-Hard evidence for a support ticket: generation `d5ea68be-9f47-4e51-a65c-ec6bf0d28e99`
-(Seedance 2.5, 15s, 720p, audio on) was **charged 97.5 credits** at 2026-08-08
-11:53 UT — after signup. So credits are being billed normally, not merely displayed
-wrong. Candidate causes, **none verified**: the offers name specific variants
-("Seedance 2.0 Enhanced Fast", particular 2.5 windows) that may differ from the
-`seedance_2_5` model the connector exposes; the promo may attach to a *new*
-Plus/Ultra purchase or paid add-on rather than a running plan; it may need claiming
-in the web app; or it may exist but not be exposed over MCP.
+The 2K image allowance is the **shortest** window and covers two unbuilt assets:
+the 1024×500 Play Store feature graphic (`PLAY-STORE-PACK.md` §6 / line 181) and
+Pinterest pin variations (`CONTENT-CALENDAR.md` wants 3–4/week). Use it before
+15 Aug or lose it. Seedance video has until 10 Sep, so it is not the urgent one.
 
 ### If a hero clip does get generated
 
