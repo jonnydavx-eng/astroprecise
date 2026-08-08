@@ -49,8 +49,21 @@
   --line:rgba(31,182,166,.15);--line2:rgba(31,182,166,.32);
   --acc:#1fb6a6;--good:#a8d6b0;--warn:#2f6bff;--card:rgba(242,236,223,.03);
   --serif:'Cormorant Garamond',Georgia,serif;--mono:'IBM Plex Mono',monospace;--caps:'Cinzel',serif;
+  /* The size of the promise. It lives on :root — not inside .frontmatter, where
+     it used to sit — so the atlas h2 rule below can be derived from it. While it
+     was local to .frontmatter the short-window overrides could step the headline
+     down past the plate headings and no rule was able to see that happen.
+     Measured 2026-08-08 on a real 1440x900 desktop: headline 54px, h2s 64px. */
+  --t-headline:clamp(36px,5.6vw,68px);
 }
 *{box-sizing:border-box}
+/* The hidden attribute has to actually hide. The UA sheet's [hidden]{display:none}
+   loses to ANY author display rule, so #transitHit — .receipt sets display:flex —
+   rendered as an empty bordered box on every visit while carrying hidden. A local
+   workaround for the same trap already existed further down (.sb-panel[hidden]).
+   Everything on this page toggles visibility through .hidden, never style.display,
+   so making the attribute authoritative is safe. */
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1100px 620px at 50% -8%,rgba(99,149,255,.12),transparent 62%),radial-gradient(900px 700px at 78% 28%,rgba(46,72,150,.14),transparent 62%),radial-gradient(760px 620px at 12% 58%,rgba(26,96,110,.12),transparent 60%),radial-gradient(800px 500px at 88% 6%,rgba(31,182,166,.07),transparent 60%);background-attachment:fixed}
 a{color:var(--brass);text-decoration:none;transition:color .25s}a:hover{color:var(--ember-hi)}
@@ -73,6 +86,15 @@ input:focus,select:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(47,
 .field span{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:rgba(242,236,223,.62)}
 section.band{padding:130px 0}
 h2{margin:0 0 16px;font-size:clamp(38px,5.6vw,64px);line-height:1.04;font-weight:700;letter-spacing:-.02em}
+/* Desktop: a plate heading is derived from the promise and can never outgrow it.
+   4px is the lead the design already gave the headline at 1440 (68 vs 64), so at
+   a tall desktop this computes to exactly the same 64px it always did, and it
+   holds the same 4px lead at every narrower or shorter desktop window instead of
+   inverting. Below 900px the front page is one column and the two never share a
+   screen, so the base clamp stands unchanged there. */
+@media (min-width:900px){
+  h2{font-size:min(clamp(38px,5.6vw,64px),calc(var(--t-headline) - 4px))}
+}
 h2 em{font-family:var(--serif);font-style:italic;font-weight:500;letter-spacing:0}
 .sub{margin:0 0 44px;font-size:17.5px;line-height:1.65;color:var(--dim);max-width:580px}
 table{width:100%;border-collapse:collapse}
@@ -110,7 +132,7 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
   --e-rule:rgba(22,20,15,.15);--e-rule-2:rgba(22,20,15,.30);
   --e-accent:#0d5f56;      /*  6.8:1 — the site's teal, taken down to read on paper */
   --e-accent-2:#08423c;
-  --t-headline:clamp(36px,5.6vw,68px);
+  /* --t-headline is declared on :root, not here — see the note there. */
   --t-deck:clamp(25px,2.6vw,36px);
   --t-standfirst:clamp(16px,.55vw + 14px,21px);
   --t-body:clamp(15.5px,.3vw + 14.5px,17px);
@@ -354,16 +376,29 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
    1440×900 desktop and 375×667 mobile. Numbers at the foot of this file.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Short desktop windows: step the headline down so the coupon and its button
-   stay above the fold on a 1440×900 screen. */
+/* Short desktop windows: compact the frame so the coupon and its button stay
+   above the fold on a 1440×900 screen.
+
+   These two blocks used to step the HEADLINE down as well — to 54px at ≤880px
+   of viewport height and 46px at ≤740px. A 1440×900 screen gives a ~780px
+   viewport once browser chrome is taken off, so on the actual machine the rule
+   was written for the promise rendered at 54px underneath 64px plate headings:
+   the largest words on the page were a section label, not the offer. Measured
+   2026-08-08, before and after, at 1440×780 / 1440×740 / 1366×650 / 1280×680.
+
+   The step-down was also not buying what its comment claimed. The headline sets
+   on two lines at 68px and on two lines at 54px, so the whole saving was 29px —
+   against 198px of fold still spare below the button at 1440×780. The frame
+   compaction below (page padding, standfirst margin, plate height) is what
+   actually keeps the coupon up, and it is kept. The headline no longer shrinks
+   with window height at all; h2 is derived from it, so the two cannot invert. */
 @media (min-width:900px) and (max-height:880px){
-  .frontmatter{--t-headline:clamp(36px,4.4vw,54px)}
   .frontpage{padding-block:22px 30px}
   .standfirst{margin-bottom:16px}
   .plate__stage{height:min(46vh,380px)}
 }
 @media (min-width:900px) and (max-height:740px){
-  .frontmatter{--t-headline:46px;--t-standfirst:17px}
+  .frontmatter{--t-standfirst:17px}
   .plate{padding:14px}
   .plate__stage{height:290px}
 }
@@ -787,21 +822,35 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <h2>The sky is <em style="color:var(--brass)">still moving.</em></h2>
     <p class="sub">Tonight’s real sky news — computed this minute on your device. Weather report of the sky, not prophecy. Tap a card to fly the living model.</p>
     <div id="ap-sky-news-band" class="ap-sky-news ap-sky-news--band" style="margin:0 0 22px"></div>
-    <div class="card" id="tonight-receipt" style="padding:18px 22px;display:flex;flex-wrap:wrap;gap:16px 30px;align-items:center" aria-live="polite">
+    <noscript>
+      <p class="sub" style="margin:0">This readout is computed in your browser, so with JavaScript
+      switched off there is nothing to show — the Moon phase, the tightest planetary pair and the
+      retrograde board below would all be guesses. Nothing is loaded from a server to fill them in.</p>
+    </noscript>
+    <!-- Ships hidden and is revealed by tonight() only once every field in it
+         holds a computed value. It used to ship with a literal "…" in #moonName
+         and #pairNames: with JavaScript off, or if tonight() threw, those two
+         ellipses were the finished page. There is no honest static value for a
+         Moon phase or a planetary pair — both change by the hour — so the only
+         truthful default state is no state. Same reason as #resNote below. -->
+    <div class="card" id="tonight-receipt" hidden style="padding:18px 22px;display:flex;flex-wrap:wrap;gap:16px 30px;align-items:center" aria-live="polite">
       <div style="display:flex;gap:12px;align-items:center;min-width:min(100%,220px)">
         <div style="width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#242c3e,#0e1420 72%);position:relative;overflow:hidden;flex:none;box-shadow:inset -4px -4px 10px rgba(0,0,0,.55)" aria-hidden="true">
           <div id="moonDisc" style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 42% 40%,#eef1f7,#b9c4d8 78%)"></div>
         </div>
         <div>
           <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--brass)">MOON</div>
-          <div id="moonName" style="font-size:16px;font-weight:700">…</div>
+          <div id="moonName" style="font-size:16px;font-weight:700"></div>
           <div id="moonLine" style="font-size:13px;color:var(--dim)"></div>
           <div class="mono" id="moonIllum" style="font-size:9px;letter-spacing:.12em;color:var(--faint)"></div>
         </div>
       </div>
-      <div style="min-width:min(100%,180px)">
+      <!-- Hidden separately from the card: tonight() only fills this cell when a
+           tightest pair was actually found, so it must not appear on the strength
+           of the card being shown. -->
+      <div id="pairCell" style="min-width:min(100%,180px)" hidden>
         <div class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--brass)">TIGHTEST PAIR</div>
-        <div id="pairNames" style="font-size:16px;font-weight:700">…</div>
+        <div id="pairNames" style="font-size:16px;font-weight:700"></div>
         <div class="mono" id="pairSep" style="font-size:9px;letter-spacing:.12em;color:var(--faint)"></div>
       </div>
       <div style="flex:1;min-width:min(100%,200px)">
@@ -884,7 +933,12 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       <div>2. CAST A CHART ABOVE</div>
       <div>3. WATCH: <b id="netCount" style="color:var(--good)">0 NEW REQUESTS</b> FIRE AFTER YOUR CAST — YOUR BIRTH DATA GOES NOWHERE</div>
     </div>
-    <p class="mono" style="font-size:9px;letter-spacing:.16em;color:var(--faint);margin-top:16px">THIS PAGE LOADED <span id="resCount">…</span> STATIC FILES AT STARTUP (FONTS, TEXTURES, CODE) — THE COUNTER ABOVE TRACKS ONLY REQUESTS MADE SINCE, AND UPDATES LIVE</p>
+    <!-- Hidden until nets() has a real resource count. The number comes from the
+         Performance API on this device; there is no static value that is true of
+         anyone's visit, and the sentence reads as a measurement, so shipping it
+         with a literal "…" published an unfinished measurement to every visitor
+         without JavaScript. -->
+    <p class="mono" id="resNote" hidden style="font-size:9px;letter-spacing:.16em;color:var(--faint);margin-top:16px">THIS PAGE LOADED <span id="resCount"></span> STATIC FILES AT STARTUP (FONTS, TEXTURES, CODE) — THE COUNTER ABOVE TRACKS ONLY REQUESTS MADE SINCE, AND UPDATES LIVE</p>
   </div>
 </section>
 
@@ -1239,6 +1293,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     if (best) {
       $('pairNames').textContent = best.a.name + ' · ' + best.b.name;
       $('pairSep').textContent = Math.floor(best.d) + '°' + String(Math.round(best.d % 1 * 60)).padStart(2, '0') + '′ APART, AS SEEN FROM EARTH';
+      $('pairCell').hidden = false;
     }
     $('retroRows').innerHTML = cand.map(function (r) {
       return '<div class="prow"><span style="width:18px;color:var(--brass)">' + r.glyph + '</span><span style="flex:1">' + r.name.toUpperCase() + '</span><span class="mono" style="font-size:10px;color:' + (r.retro ? 'var(--ember-hi)' : 'var(--good)') + '">' + (r.retro ? '℞ RETROGRADE' : 'DIRECT →') + '</span></div>';
@@ -1252,6 +1307,10 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       }
       if (hit) { $('transitHit').hidden = false; $('transitHit').innerHTML = '<div><span style="color:var(--good)">YOUR SKY TODAY</span> · ' + hit + '</div>'; }
     }
+    // Last statement before the return, deliberately: the card is revealed only
+    // once every field above it has been computed. If anything here throws, the
+    // card stays hidden rather than publishing half a readout.
+    $('tonight-receipt').hidden = false;
     return rows;
   }
   var nowRows = tonight();
@@ -1335,6 +1394,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   function nets() {
     var res = performance.getEntriesByType('resource');
     $('resCount').textContent = res.length;
+    $('resNote').hidden = false;
     var post = res.filter(function (r) { return r.initiatorType === 'fetch' || r.initiatorType === 'xmlhttprequest'; }).length;
     if (netBase === null) { netBase = post; }
     var delta = Math.max(0, post - netBase);

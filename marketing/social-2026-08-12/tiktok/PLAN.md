@@ -6,6 +6,12 @@ On-screen text, shot lists, sound and cover frames are here.
 
 Written 2026-08-08 by Claude @ BOOK-T1H4NJ753R. Weekdays verified: 12 Aug 2026 is a **Wednesday**.
 
+**Revised the same day after a social-director review.** Three things in the first version would have
+shipped a defect: the "safe capture zone" was not safe, `tt-05` said the Sun sets still eclipsed
+(it does not), and three storyboard beats scrolled into a price. Each correction is marked ⚠️ where
+it applies. If you read the earlier version, re-read *Read this before filming anything* and posts
+1, 2, 5 and 8.
+
 ---
 
 ## Read this before filming anything
@@ -30,14 +36,69 @@ These are not style preferences. Breaking any of them damages the thing that mak
 
 **1. Never say Britain sees totality.** It does not. Totality runs Arctic → Greenland → Iceland → northern Spain. Britain gets a deep partial, ~91% in the south of England, peak ≈19:05 BST. Deepest over Britain since 1999. Post 3 exists specifically to correct this, because the misinformation will be everywhere by Monday.
 
-**2. No price, no shop, no purchase.** Checkout is closed — the Gumroad products do not exist. Drive to the free cast and the email capture only.
+**2. No price, no shop, no purchase.** Checkout is closed — the Gumroad products do not exist, all twelve permalink slots still read `REPLACE_ME`, and nothing has ever been sold. Drive to the free cast and the email capture only.
 
-⚠️ **This is a screen-recording trap.** The live `eclipse.html` shows "£2.99" in three places:
-- line 118, a quiet link directly under the hero CTA
-- the `#saleBox` heading, "STEP 2 · THE FULL READING — £2.99"
-- the notify button, "NOTIFY ME WHEN THE £2.99 UNLOCK OPENS"
+### ⚠️ THE SCREEN-RECORDING TRAP — read this before you record anything
 
-So: **stop every recording at the receipt.** Safe capture zone is the hero headline, the live countdown/eclipse-point receipt, the orrery, the form, and the result cards (`#anchorBox`, `#quietBox`). The moment `#saleBox` enters frame, you have quoted a price for a thing nobody can buy. Cut before it, or crop it out.
+**The safe-capture zone in the first version of this plan was wrong, and filming to it would have put a price on screen.** It said the trap was three instances of "£2.99" and that the hero, the receipt, the orrery, the form and the result cards were safe. I read `website/eclipse.html` line by line on 2026-08-08 and counted **twenty-one commerce surfaces visible on screen** — one of them a five-row price table — plus three more that appear only once you interact and three in the page source. **Four of the five cards that were called "safe" contain one.**
+
+There is no card-level safe zone on this page. Frame on named elements in tight crops, never on whole cards, and **do not scroll** — every scroll on this page crosses a price.
+
+**Never in frame.** Line numbers are `website/eclipse.html`.
+
+| Line | On screen | Note |
+|---|---|---|
+| **107** | primary nav — `SHOP` | in every frame that includes the top of the page |
+| **115** | hero lede — "If it touches nothing, **we tell you before you pay**" | the sentence the hero shot was supposed to be safe for |
+| **118** | "Or read what the **£2.99** eclipse reading contains, **in the shop** →" | sits directly under the hero CTA button |
+| **192** | `#quietBox` green label — "A QUIET ONE FOR YOU — **SAID BEFORE ANY PAYMENT**" | **post 2 was scripted to hold on this for six seconds** |
+| **195** | `#quietBox` paragraph — **£2.99** Night Reading, **£12** Deep Reading, **£5** Sky Pass, plus two product links | |
+| **200** | `#saleBox` heading — "STEP 2 · THE FULL READING — **£2.99**" | |
+| **202** | "…whole-sign house when your place is given **at unlock**" | |
+| **209** | button — "NOTIFY ME WHEN THE **£2.99** UNLOCK OPENS" | |
+| **212** | "**£4 AFTER 12 AUG** · GUMROAD WHEN LIVE · NO FAKE CHECKOUT" | |
+| **213** | "Or see this edition alongside the others **in the shop** →" | |
+| **215** | "THE ECLIPSE SET — READING + SKY CARD + PRINTABLE NIGHT PAGE, **£6**" | |
+| **217** | "**ALREADY BOUGHT?** ENTER YOUR LICENSE KEY" | |
+| **220** | `UNLOCK` button | |
+| **238** | "unlocks the moment **payment clears** … It was ready **before you paid**" | **inside `#result` and never hidden — it renders under the quiet box too** |
+| **239** | "Your **Gumroad receipt** carries your license key" | same card |
+| **251** | "EVERYTHING ELSE **WE SELL** — THE HONEST SHOP" | a `<details>` summary — visible even while collapsed |
+| **254–258** | the price table — **£2.99 / £4 / £6 / £12 / £14 / £19 / £5** | only when expanded. Never expand it on camera. |
+| **260** | "REFUNDS & YOUR RIGHTS" | |
+| **266** | email card — "your times, the weather windows, and **your unlock link**" | the card this campaign drives to |
+| **281** | footer — `SHOP` | in every frame that includes the bottom of the page |
+| **282** | footer — "REFUNDS & YOUR RIGHTS" | |
+
+**Three that only appear once you interact** — so they will not be there in a static preview, and will be there in a demo:
+
+| Line | Trigger | On screen |
+|---|---|---|
+| **441** | submitting the notify form | "SENT — WE'LL EMAIL YOU WHEN THE **£2.99** UNLOCK GOES LIVE" — do not demo the email capture on camera |
+| **468** | pressing UNLOCK on a license key | "**CHECKOUT NOT LIVE YET** — LICENSE VERIFY WAITS FOR GUMROAD PERMALINKS" |
+| **379, 383** | a real Gumroad permalink existing | the notify form is replaced by "UNLOCK THE FULL READING — **£2.99**" as the page's primary button |
+
+That last row is the one to watch: **if the owner pastes the permalinks before you film, the page changes shape and this whole table must be re-checked.** Today it is dormant, so it cannot fire.
+
+**Three in the page source, not on screen** — they matter only for a link-preview card or a view-source shot: lines **9** and **11** (`og:` and `twitter:` description, "Quiet charts told so before you pay") and line **20** (JSON-LD `offers` block).
+
+### The five regions that are genuinely clean
+
+| Line | Element | What you can hold on |
+|---|---|---|
+| **113–114** | kicker + `<h1>` | "PARTIAL SOLAR ECLIPSE · ~91% OF THE SUN COVERED OVER BRITAIN · PEAK ≈19:05 BST" and the headline. **Stop above line 115**, and keep the nav at 107 out of the top of frame. |
+| **121–125** | the countdown receipt | the live countdown, `ECLIPSE POINT … GREATEST ECLIPSE 17:46 UT · MEEUS CH.25`, and "COMPUTED HERE, IN YOUR BROWSER · NOTHING UPLOADED". The best clean frame on the page — self-contained, and the only one that is also the product's whole argument. |
+| **128–131** | the orrery panel | "LIVE SIMULATION · THE SHADOW AT 91% · DRAG TO ORBIT". Boxed, with nothing bleeding in above or below. |
+| **159–176** | the cast card `#cast` | "STEP 1 · FREE — SEE THE CONTACT", the three fields, `COMPUTE MY ECLIPSE CONTACT — FREE`, and the privacy line. Clean top to bottom — the only whole card on the page that is. |
+| **184–188** | `#anchorBox` | "YOUR ECLIPSE RECEIPT", the computed receipt, the serif line under it. **It ends at line 188 and the next thing down the page is a price** — so this is a fixed crop, not a scroll. The geometry image at 178–180 is clean too. |
+
+Inside `#quietBox`, two elements are clean on their own: **`#quietMono`** (line 193, the computed "more than 5° from every placement" line) and **`#quietSerif`** (line 194, "For you, this is a quiet one — and that's an honest answer, not a smaller one"). Both sit between the label at 192 and the paragraph at 195, so they need a crop on **both** edges.
+
+One borderline: the LOOK SAFELY card (**244–247**) is clean except its closing clause, "We take no cut on glasses". No price, no link, and it is true — but it does tell the viewer a shop exists. Fine in frame; know it is there.
+
+### Before you press record
+
+Open the page on the phone you are filming on, at the width you are filming at, and use the browser's find-in-page for **`£`**, **`shop`**, **`pay`**, **`bought`** and **`unlock`**. Confirm every hit is outside your crop. Text reflows at different widths, so a crop checked on a laptop is not a crop checked on the phone.
 
 **3. Safety copy, every eclipse-day-adjacent post.** ISO 12312-2 glasses, pinhole projection, or watch the light change. Never tell anyone to look at the Sun. Sunglasses are not protection — say so explicitly, people genuinely try it.
 
@@ -123,11 +184,15 @@ The unfair advantage is that the product computes something true about the viewe
 | 0.8–1.5s | Hard cut back to the empty form | `20 seconds. On your phone. Nothing uploaded.` |
 | 1.5–8s | Real typing: date of birth, time, timezone. Don't speed-ramp — the honest pace is the point | `DATE OF BIRTH` / `TIME (SHARPENS THE MOON)` — let the site's own labels read |
 | 8–10s | Thumb hits `COMPUTE MY ECLIPSE CONTACT — FREE` | — |
-| 10–16s | Result scrolls in. Hold on `#anchorBox` — the degrees, the orb, the aspect | `Computed on the device. Not fetched. Not guessed.` |
-| 16–22s | Slow scroll of the receipt lines. **STOP BEFORE `#saleBox`** | `VSOP87 · ELP2000 · Meeus Ch.25` |
+| 10–16s | Result lands. Fixed crop on `#anchorBox` (184–188) — the degrees, the orb, the aspect | `Computed on the device. Not fetched. Not guessed.` |
+| 16–22s | **Cut, do not scroll**, to a fixed crop of the countdown receipt at the top of the page (121–125) | `VSOP87 · ELP2000 · Meeus Ch.25` |
 | 22–26s | Cut to `eclipse-sextant-02.png`, slow push in | `astroprecise.app/eclipse` |
 
+**There is nothing to scroll into after `#anchorBox`.** This post uses a chart the eclipse *does* touch, so `#saleBox` renders directly beneath it and its first line is "STEP 2 · THE FULL READING — £2.99" (line 200). The old 16–22s beat was a slow scroll of the receipt and it would have pulled that heading into frame. Two fixed crops, cut between them.
+
 **Use a real birth date that produces a real hit** — a chart the eclipse actually touches. Cast a few first and pick one with a tight orb. Never fake the output; the whole brand is that the numbers are checkable.
+
+**Set both crops before you start recording,** with the result already on screen from an off-camera cast. Composing a crop live is how the card below ends up in the frame.
 
 **Sound:** near-silence. Room tone, key taps, one soft tone at the reveal.
 **Cover:** the receipt frame at ~12s with the hook text.
@@ -150,12 +215,18 @@ The site's actual words, which you should show rather than paraphrase:
 | 0.0–1.0s | `gen-07-eclipse-quiet-nothing.png`, cropped 9:16 — the grey field, the bare tree, the puddles | `I built an astrology site that tells you when the eclipse does nothing to you.` |
 | 1.0–2.0s | Hold on that nothing | — |
 | 2.0–9s | Cut to screen: cast a birth date that triggers the quiet gate, land on `#quietBox` | `This is the actual result screen.` |
-| 9–15s | Hold on the green `A QUIET ONE FOR YOU — SAID BEFORE ANY PAYMENT` label and the 5° line | let the site's copy read — do not overlay it |
+| 9–15s | Hold on `#quietMono` and `#quietSerif` (193–194) — the computed 5° line and the sentence under it | let the site's copy read — do not overlay it |
 | 15–20s | Back to the grey field | `Quiet charts are real.` then `astroprecise.app/eclipse` |
 
-**You will need to hunt for a birth date that trips the gate** — it fires when the eclipse point is >5° from every placement. Cast a handful and keep the one that comes back quiet. Screenshot it now so you're not searching on camera.
+**You will need to hunt for a birth date that trips the gate** — it fires when the eclipse point is >5° from every placement (`eclipse-reading.js:163`, `quietGateDeg ?? 5`). Cast a handful and keep the one that comes back quiet. Screenshot it now so you're not searching on camera.
 
-⚠️ The paragraph at the bottom of `#quietBox` names **three** prices — £2.99, £12 and £5 — and links to two dead products. It sits just below the receipt. Frame tight on the green label and the 5° line and do not scroll into it. This is the easiest mistake to make in the whole plan, because the quiet box otherwise looks completely safe.
+⚠️ **`#quietBox` is fenced on both sides, and the six-second hold in the old version of this beat was on the wrong element.**
+
+- **Above, line 192** — the green label reads "A QUIET ONE FOR YOU — **SAID BEFORE ANY PAYMENT**". The old beat held on it for six seconds. It quotes no price, but it tells three thousand people that a payment exists, and none does. Crop it out.
+- **Below, line 195** — the paragraph names **three** prices (£2.99, £12, £5) and links to two products that cannot take money.
+- **Below that, lines 236–240** — the "HOW YOU RECEIVE IT" card sits *inside* `#result` and is never hidden, so it renders under the quiet box as well: "unlocks the moment payment clears", "It was ready before you paid", "Your Gumroad receipt carries your license key". Anyone who scrolls a little further to "get more of the quiet result" lands straight on it.
+
+So the hold is on **`#quietMono` + `#quietSerif` only** — the computed line and the reflection under it. That is the actual payload of the post and it is completely clean. If you want "A QUIET ONE FOR YOU" on screen, set it as your own type in the edit; it is the site's own phrase and re-setting it costs nothing.
 
 **Sound:** silence, or wind from the mp4's audio track laid under. No music. The quiet is the joke.
 **Cover:** the grey field with the hook text.
@@ -211,12 +282,24 @@ Morning utility. People screenshot this. Built for saving, not for watching.
 | Time | Screen | On-screen text |
 |---|---|---|
 | 0.0–0.8s | `eclipse-still-01.png`, very slow push | `It's today.` |
-| 0.8–8s | same, text builds line by line | `FIRST BITE ≈18:00 BST` → `MAXIMUM ≈19:05 · ~91%` → `SUNSET, STILL ECLIPSED ≈20:10` |
+| 0.8–8s | same, text builds line by line | `FIRST BITE ≈18:00 BST` → `MAXIMUM ≈19:05 · ~91%` → `LAST CONTACT ≈20:10` → `SUNSET AFTER THAT · 20:22–20:46` |
 | 8–13s | — | `Greatest eclipse 17:46 UT, over the Arctic.` / `Totality: Iceland, N. Spain. Not here.` |
 | 13–17s | — | `Then the Perseids peak the same night.` |
 | 17–20s | — | `ISO 12312-2 or pinhole. Never bare eyes.` / `astroprecise.app/eclipse` |
 
 Set the times block in monospace, gold on void, left-aligned, like a departure board. That is the house look and it is genuinely the clearest way to present it.
+
+⚠️ **`SUNSET, STILL ECLIPSED ≈20:10` was wrong, and it shipped — in this plan and in the caption.** 20:10 BST is **last contact**, not sunset, and the Sun is still well up at that moment.
+
+Computed for 12 August 2026 with the NOAA solar-position algorithm and cross-checked against an independent apparent-RA/Dec calculation: solar altitude at 20:10 BST is **+1.9° in London, +0.9° in Dover, +4.6° in Penzance** — above the horizon everywhere in the country. Sunset comes after it, everywhere:
+
+```
+20:22 Dover      20:29 London     20:41 Cardiff    20:46 Penzance
+20:27 Brighton   20:39 Bristol    20:42 Plymouth   20:56 Edinburgh
+20:27 Norwich    20:39 Birmingham 20:44 Manchester 21:19 Stornoway
+```
+
+The tightest margin in the UK is the south-east corner and it is still about **twelve minutes**. So the eclipse ends before sunset across the whole country, and the times card must read `LAST CONTACT`. Instagram (`ig-02`, `ig-05`) and X both say "last contact ≈20:10" and are correct as written; the X plan caught this in its own pre-flight and avoided the claim. This plan published it. **The Sun setting still eclipsed is the single most quotable error available to a hostile reply, on the account whose masthead is "computed, never fabricated".**
 
 **Sound:** voice reading the times, or Commercial Library ambient at low volume.
 **Cover:** the frame showing all three times at once — that's the screenshot people want.
@@ -245,7 +328,7 @@ If it's raining where you are, say so in the first comment — "cloudy here, tel
 ## 7 — D-DAY · Wednesday 12 August, 21:30 · NOW THE PERSEIDS
 **File:** `posts/tt-07-perseids-tonight.txt` · **Format:** requested meteor asset, 15–20s
 
-The second act, and the reason this campaign doesn't die at 20:10. Everyone else's eclipse content ends at sunset. Yours carries the audience into the night with a second real event.
+The second act, and the reason this campaign doesn't die at 20:10. Everyone else's eclipse content ends when the eclipse does. Yours carries the audience into the night with a second real event.
 
 Uses `asset: perseid-night` (requested). No existing asset shows a night sky — every one of them is a dusk crescent, and using one here would be a visual lie.
 
@@ -271,11 +354,13 @@ Catches the day-after search surge, when people who half-noticed the light go od
 |---|---|---|
 | 0.0–1.0s | `eclipse-still-01.png` | `You saw it. Here's what it actually was.` |
 | 1–6s | hold | `20°02′ Leo. ~91% covered. 19:05 BST.` / `Deepest over Britain since 1999.` |
-| 6–14s | cut to screen — cast a chart live, land on the receipt. **Stop before `#saleBox`** | `That point sits somewhere in your chart.` |
-| 14–19s | cut to the quiet-chart result | `For plenty of people it lands on nothing — and it says so.` |
+| 6–14s | cut to screen — cast a chart live, land on `#anchorBox` (184–188) in a fixed crop. **No scroll:** `#saleBox` begins on the next line with a price | `That point sits somewhere in your chart.` |
+| 14–19s | cut to a second fixed crop — `#quietMono` + `#quietSerif` (193–194) from a quiet cast, framed exactly as in post 2 | `For plenty of people it lands on nothing — and it says so.` |
 | 19–24s | `eclipse-sextant-02.png` | `astroprecise.app/eclipse` |
 
-The countdown on the live page flips after the event to `THE ECLIPSE HAS PASSED — THE READING STILL HOLDS`. That's a good frame to catch — it shows the site is computed and live rather than a static page someone forgot to update.
+Same crop discipline as posts 1 and 2, for the same reasons — the two screen beats here are the same two elements. Cast both charts off camera first.
+
+The countdown on the live page flips after the event to `THE ECLIPSE HAS PASSED — THE READING STILL HOLDS` (line 306). That's a good frame to catch — it shows the site is computed and live rather than a static page someone forgot to update, and the countdown receipt is one of the five clean regions, so it needs no crop beyond keeping the nav at line 107 out of the top of frame.
 
 **Sound:** voice, or ambient.
 **Cover:** the sextant still.

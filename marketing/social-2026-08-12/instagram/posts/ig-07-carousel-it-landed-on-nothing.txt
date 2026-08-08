@@ -2,7 +2,7 @@ For a lot of you, yesterday's eclipse did nothing to your chart. We would like t
 
 Here is the honest mechanism. An eclipse is a point — yesterday's was 20°02′ Leo. Whether the astrological tradition has anything to say about it for you depends on whether that point lands close to something in your own chart. Most of a chart is empty space. So for most people, most eclipses: nothing within orb. A quiet one.
 
-Our free page has always been built to say so. If the eclipse makes no close contact with your chart, that is the first thing it tells you, before anything else, and it tells you not to buy the eclipse reading. That has cost us sales. We would rather have the reputation.
+Our free page has always been built to say so. If the eclipse makes no close contact with your chart, the page says so plainly, before it recommends anything to you. We wrote that gate in before there was anything to sell, and it stays in when there is — it will cost us the easiest sale on the site. We would rather have the reputation.
 
 The sky is not a message service. It is a set of moving bodies whose positions can be computed to the arcminute, centuries in either direction. That is quite enough romance for us.
 
@@ -36,11 +36,23 @@ SLIDE BUILD
         That is not a disappointing result. It is the result.
 
   3 · THE GATE — screenshot + CTA
-      Screenshot the quiet-chart state on astroprecise.app/eclipse.html — the green
-      label reading "A QUIET ONE FOR YOU — SAID BEFORE ANY PAYMENT" plus the computed
-      receipt block directly beneath it.
-      ⚠ CROP ABOVE THE PARAGRAPH THAT FOLLOWS IT. That paragraph carries three prices
-      and links to a shop that cannot take money. It must not appear in this post.
+      Screenshot the quiet-chart state on astroprecise.app/eclipse.html. Capture the
+      two elements INSIDE #quietBox that carry the payload and nothing else:
+        · the computed line — "The eclipse point sits more than 5° from every
+          placement in your chart — no close contact tonight." (#quietMono)
+        · the sentence under it — "For you, this is a quiet one — and that's an
+          honest answer, not a smaller one." (#quietSerif)
+      ⚠ TWO CROPS, NOT ONE. Both of these are commerce and neither may appear:
+        · ABOVE — the green label reads "A QUIET ONE FOR YOU — SAID BEFORE ANY
+          PAYMENT" (eclipse.html line 192). Nothing can be paid for, so the words
+          "BEFORE ANY PAYMENT" imply a checkout that has never opened. Crop the
+          label out entirely, or crop the line so it ends at "A QUIET ONE FOR YOU"
+          — and check the result at full size, because the label wraps on narrow
+          phone widths and the tail can land on a second line you did not expect.
+        · BELOW — the paragraph at line 195 carries three prices (£2.99, £12, £5)
+          and two product links.
+      Set "A QUIET ONE FOR YOU" as your own type above the screenshot instead. It
+      is the site's own phrase, it is true, and it costs you nothing to re-set.
       Footer, mono: FREE · COMPUTED ON YOUR DEVICE · astroprecise.app/eclipse.html
 
 ALT TEXT
@@ -48,14 +60,23 @@ ALT TEXT
      tree, mud and tractor ruts filled with rainwater. Nothing is happening.
   2  Text slide: an eclipse is one point in the zodiac, a birth chart is mostly empty
      space, so for many people the eclipse makes no close contact at all.
-  3  Screenshot of the AstroPrecise eclipse page showing its quiet-chart result — a
-     green label reading "a quiet one for you, said before any payment" above the
-     computed contact receipt.
+  3  Screenshot of the AstroPrecise eclipse page showing its quiet-chart result: a
+     computed line saying the eclipse point sits more than five degrees from every
+     placement in the chart, with no close contact, and a sentence beneath it saying
+     that for you this is a quiet one and that is an honest answer, not a smaller one.
 
 FIRST COMMENT (hashtags — SET D, HONEST ASTROLOGY)
 #birthchart #natalchart #astrology #eclipseinleo #transits #astrologycommunity
 #eclipse2026 #computednotfabricated #astroprecise #skyatnight
 
-COMMERCE CHECK   no price in caption · slide 3 crop instruction exists specifically to
-                 keep prices out of the image ✓
+COMMERCE CHECK   no price in caption · slide 3 crop instruction keeps prices AND the
+                 word "payment" out of the image ✓
+TRUTH CHECK      Fixed 2026-08-08. The caption previously read "it tells you not to
+                 buy the eclipse reading. That has cost us sales." Both halves were
+                 false: checkout has never opened, all twelve Gumroad slots still read
+                 REPLACE_ME, and nothing has ever been sold, so no sale can have been
+                 lost. Rewritten to the claim that is actually true — the gate was
+                 built before there was anything to sell and will cost the easiest
+                 sale once there is. Same fix the X specialist made in AP-X-02 when
+                 retiring x-eclipse-03; the two are now consistent. ✓
 VOICE CHECK      no prophecy, no "the universe", the anticlimax is the message ✓

@@ -4,11 +4,14 @@ FORMAT: Standalone
 MEDIA: gen-07-eclipse-quiet-nothing.png (16:9) — the empty grey field. The image IS the joke. Do not caption the image.
 CTA: eclipse.html
 NOTE: rewrite of x-eclipse-11. This is the single best post in the set — it is the whole differentiator in four lines.
+FIX 2026-08-08: last line read "how astrology got its NAME". Meaningless — the name is from Greek
+      astrologia, "the study of the stars", and has nothing to do with overclaiming. The TikTok twin
+      (tt-02) had it right with "reputation". Corrected here; the two now match.
 
 Most astrology sites can't tell you nothing is happening. The business model won't allow it.
 
 If Wednesday's eclipse makes no contact with your chart, ours says so, free.
 
-Quiet charts are real. Pretending otherwise is how astrology got its name.
+Quiet charts are real. Pretending otherwise is how astrology got its reputation.
 
 https://astroprecise.app/eclipse.html

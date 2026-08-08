@@ -41,6 +41,11 @@ Lower severity, same folder:
 - `x-eclipse-09` — "that chapter runs all year" is prophecy, not geometry. Off-voice. Rewritten as **AP-X-08**.
 - `x-eclipse-02` — "to the arcminute" is firmer than the house rule ("to roughly an arcminute, 1800–2200 CE").
 
+**Fixed in the new set after review, 2026-08-08:**
+- `AP-X-03` closed on "how astrology got its **name**". Meaningless — the name is Greek *astrologia*,
+  "the study of the stars", and long predates any overclaiming. The TikTok twin `tt-02` had the right
+  word all along: **reputation**. Corrected; the two now match. 271 → 277 weighted, inside the cap.
+
 ---
 
 ## Two mechanical problems nobody has caught
@@ -48,7 +53,9 @@ Lower severity, same folder:
 **Three posts are too long to send.** X-weighted (URLs count 23), on a free account:
 `x-eclipse-10` = 298 · `x-eclipse-12` = 289 · `x-eclipse-13` = 309. All exceed 280. They will be
 rejected at the compose box unless the account has Premium. Every caption in `posts/` here is
-measured and fits — longest is 277.
+measured and fits — **longest is 278 (`AP-X-06`)**, re-measured 2026-08-08 across all 17 nodes.
+Method: one per character, URLs weighted 23, header blocks and `[WRITE LIVE]` brackets excluded.
+`AP-X-03` moved from 271 to 277 with the wording fix below; still inside the cap.
 
 **Four posts have already missed their slot.** The pack schedules `x-eclipse-01` (6 Aug),
 `x-eclipse-02` (7 Aug), `x-eclipse-10` (5 Aug) and `x-eclipse-11` (7 Aug). Today is the 8th.
@@ -171,10 +178,15 @@ The page has merged global greatest eclipse (17:46 UT, over the Arctic) with the
 publicly**, so the page will contradict the thread until an engineer fixes it. Not mine to touch —
 flagging it.
 
-**3. "The Sun sets still eclipsed" may not be true in the south.** The repo says both that and
-"last contact ≈20:10 BST". Sunset in southern England on the 12th is later than that, so for much of
-England the eclipse ends *before* sunset. I have avoided the claim entirely — my captions say only
-"low in the west". Resolve before anyone ad-libs it in a reply.
+**3. ~~"The Sun sets still eclipsed" may not be true in the south.~~ RESOLVED 2026-08-08 — it is
+false everywhere in Britain, not just the south.** Computed with the NOAA solar-position algorithm
+and cross-checked against an independent apparent-RA/Dec calculation: at last contact (≈20:10 BST)
+the Sun is still above the horizon nationwide — **+1.9° London, +0.9° Dover, +4.6° Penzance**.
+Sunset follows: 20:22 Dover · 20:27 Brighton and Norwich · 20:29 London · 20:39 Bristol and
+Birmingham · 20:42 Plymouth · 20:46 Penzance and Newcastle · 20:56 Edinburgh · 21:19 Stornoway.
+Tightest margin in the country is the south-east corner, ~12 minutes. **The eclipse ends before
+sunset everywhere.** Captions here were right to say only "low in the west" and need no change.
+TikTok had published the claim in `tt-05`; fixed there the same day.
 
 **4. Confirm whether the account has X Premium.** Everything here fits 280 either way. It decides
 whether the retired long posts could be revived, and whether the reference thread could run as one
@@ -193,6 +205,10 @@ ever buy. Two standing answers worth having ready:
   with the standard printed on it, a pinhole, or watch the light.
 - *Why isn't it going dark?* Because your eye is very good. 91% covered is roughly one stop of light
   loss to the eye. Look at the shadows and the colour instead.
+- *Does the Sun set while it's still eclipsed?* No — not anywhere in Britain. Last contact is about
+  20:10 BST with the Sun still up (+1.9° over London, +0.9° over Dover, +4.6° over Penzance), and
+  sunset follows at 20:22 Dover, 20:29 London, 20:46 Penzance. It finishes, then it sets. Expect this
+  one: the claim is circulating, and correcting it with numbers is the account's whole personality.
 
 ---
 

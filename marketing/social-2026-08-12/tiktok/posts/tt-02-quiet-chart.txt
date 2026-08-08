@@ -1,6 +1,6 @@
 I built an astrology site that tells you when the eclipse does nothing to you.
 
-If Wednesday's eclipse point sits more than 5° from every placement in your chart, the page says so, in those words, before it mentions a reading at all. That's the real on-screen result — not a line I wrote for this video.
+If Wednesday's eclipse point sits more than 5° from every placement in your chart, the page says so, in those words, before it recommends anything to you. That's the real on-screen result — not a line I wrote for this video.
 
 "For you, this is a quiet one — and that's an honest answer, not a smaller one."
 
