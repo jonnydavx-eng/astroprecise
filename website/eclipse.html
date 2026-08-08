@@ -48,6 +48,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0}
 .kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.26em;color:var(--acc)}
 .navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)}
+/* Primary site nav — destinations and labels mirror js/ap-nav-model.js (NAV_PRIMARY).
+   Rendered inline because this page carries its own stylesheet and does not load the
+   shared navbar CSS. Keep in sync with the model; do not invent a second IA here. */
+.skip{position:absolute;left:-9999px;top:0;background:var(--warn);color:#1a0d05;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;padding:12px 18px;border-radius:0 0 4px 0;z-index:20}
+.skip:focus{left:0;color:#1a0d05}
+.sitenav{display:flex;flex-wrap:wrap;gap:2px;margin:14px 0 0;padding:9px 0 0;border-top:1px solid var(--line)}
+.sitenav a,.sitenav span{display:inline-flex;align-items:center;min-height:40px;padding:0 13px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.17em;line-height:1.2;color:rgba(242,236,223,.7)}
+.sitenav a:hover{color:var(--ink);background:rgba(242,236,223,.055)}
+.sitenav [aria-current="page"]{color:var(--acc);background:rgba(216,180,106,.1)}
+/* Demoted, honestly-labelled funnel exit — never dressed as a co-equal primary button. */
+.quietlink{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:rgba(242,236,223,.66);text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:4px;padding:9px 0}
+.quietlink:hover{color:var(--acc);text-decoration-color:var(--acc)}
+.formnote{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;line-height:1.6;margin-top:10px}
+.formnote--bad{color:#ffb59a}
 h1{margin:54px 0 14px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(40px,8vw,64px);line-height:1.04;letter-spacing:-.01em}
 .lede{margin:0 0 26px;font-size:18px;line-height:1.65;color:var(--dim)}
 .card{border:1px solid var(--line2);border-radius:6px;background:rgba(242,236,223,.05);padding:24px 26px;margin:22px 0;box-shadow:0 10px 30px rgba(0,0,0,.26),inset 0 1px 0 rgba(242,236,223,.05)}

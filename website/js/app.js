@@ -1633,7 +1633,7 @@ window.AP_MON = Object.assign({
         marketingLine:'Where the eclipse touches your chart — or we say it doesn’t, before you pay.',
         previewImage: 'img/eclipse-og.png',
         sampleUrl:    'eclipse.html',
-        blurb:        'On 12 August 2026 the Sun goes dark over Britain — the deepest eclipse since 1999. This short reading maps it against your actual birth chart: where it lands, what it touches, what tradition says it stirs. Five chapters, ≈350 words, computed from your birth minute on this device. If the eclipse barely touches your chart, we tell you before you pay.',
+        blurb:        'On 12 August 2026 the Moon covers about 91% of the Sun over Britain — a deep partial, the deepest eclipse here since 1999. Totality itself falls on Iceland and northern Spain; Britain never gets it. This short reading maps the eclipse against your actual birth chart: where it lands, what it touches, what tradition says it stirs. Five chapters, ≈350 words, computed from your birth minute on this device. If the eclipse barely touches your chart, we tell you before you pay.',
         icon:         'sunhigh',
         fulfilUrl:    '',   // Gumroad permalink via js/gumroad-unlock.js (eclipse-reading); '' = dormant
         gumroadSlug:  'eclipse-reading',
