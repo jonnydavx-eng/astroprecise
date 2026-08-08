@@ -1358,6 +1358,11 @@ window.AstroShop = (() => {
     'plate':       'shop-natal-plate',
     'eclipse-set': 'shop-eclipse-set',
     'sky-pass':    'shop-sky-pass',
+    // The two headline readings were captured UNTAGGED until 2026-08-08, so a
+    // flip-day segment send would have missed the highest-intent subscribers.
+    // Tags match what eclipse.html / deep-reading.html already send.
+    'eclipse-reading': 'checkout-eclipse-reading',
+    'deep-reading':    'checkout-full-reading',
   };
 
   function emailInviteHtml(tag) {
