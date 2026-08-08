@@ -147,7 +147,10 @@ a:hover{color:var(--ember-hi)}
     radial-gradient(120% 78% at 50% 50%,transparent 52%,rgba(6,5,5,.55) 100%),
     linear-gradient(180deg,transparent 62%,rgba(8,7,6,.72) 100%);
 }
-.stage > *{position:relative;z-index:2}
+/* Lift only the CONTENT above the backdrop. Do not use `.stage > *` here — it
+   out-specifies .stars/.eclipse and drags the backdrop back into the flow. */
+.stage > .bar,
+.stage > .hero{position:relative;z-index:2}
 
 /* ══ TOP BAR ══ */
 .bar{
@@ -353,7 +356,10 @@ select.field{padding:15px 14px;font-size:15.5px}
     width:min(320px,84vw);right:-108px;top:-64px;transform:none;
     opacity:.38;
   }
-  .when,.promise{text-shadow:0 2px 20px rgba(8,7,6,.9)}
+  .when,.promise,.lede{text-shadow:0 2px 20px rgba(8,7,6,.9)}
+  /* the eyebrow takes two lines here — keep the pulse on the first one */
+  .when{align-items:flex-start}
+  .when__dot{margin-top:7px}
   .eclipse__sun{box-shadow:0 0 60px rgba(255,120,60,.3)}
   .eclipse__corona{inset:-40%}
   .stage::after{
@@ -447,9 +453,12 @@ select.field{padding:15px 14px;font-size:15.5px}
         </p>
 
         <!-- ── ASK ─────────────────────────────────────────────────────── -->
-        <form class="ask" id="ask" novalidate>
+        <!-- With JavaScript off this form still works: it posts the date to
+             chart.html, the full instrument. The script cancels that and
+             answers here instead. Nothing on this screen is a dead control. -->
+        <form class="ask" id="ask" action="./chart.html" method="get" novalidate>
           <label class="ask__label" for="dob">Your date of birth</label>
-          <input class="field" type="date" id="dob" name="dob"
+          <input class="field" type="date" id="dob" name="date"
                  min="1900-01-01" max="2026-12-31" autocomplete="bday"
                  aria-describedby="hint trust">
 

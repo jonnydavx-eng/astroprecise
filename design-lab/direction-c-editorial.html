@@ -251,7 +251,10 @@ ol{padding:0;list-style:none}
   box-shadow:0 1px 0 var(--rule);
 }
 
-.fields{display:grid;grid-template-columns:1fr .8fr 1.6fr;gap:12px}
+/* align-items:end keeps the three inputs on one baseline even if a label wraps
+   at a narrow width — measured at 320px, where "Time — optional" wraps and was
+   pushing its input 21px out of line with the date. */
+.fields{display:grid;grid-template-columns:1fr .95fr 1.5fr;gap:12px;align-items:end}
 .field{display:flex;flex-direction:column;gap:5px;min-width:0}
 .field label{
   font-size:var(--t-small);
@@ -517,6 +520,14 @@ ol{padding:0;list-style:none}
   .plate{padding:16px}
 }
 
+/* Two-column layout on a narrower desktop leaves the lead column around 494px,
+   which squeezes the three fields to 128/102/205. Fine for a 24-hour input,
+   too tight for a US 12-hour one with its AM/PM segment. Drop to two rows. */
+@media (min-width:900px) and (max-width:1149px){
+  .fields{grid-template-columns:1.2fr .8fr}
+  .field--place{grid-column:1 / -1}
+}
+
 /* Tablet and below: one column. The plate moves under the coupon, which is
    correct — the action must not be pushed down by a picture. */
 @media (max-width:899px){
@@ -535,8 +546,8 @@ ol{padding:0;list-style:none}
   .masthead__nav a:not(.nav-primary){display:none}
   .masthead__meta{display:none}
 
-  .frontpage{padding-block:12px 28px;gap:28px}
-  .kicker{margin-bottom:11px}
+  .frontpage{padding-block:10px 28px;gap:28px}
+  .kicker{margin-bottom:10px}
   .headline{margin-bottom:10px}
   .standfirst{margin-bottom:14px;line-height:1.5}
   .standfirst .wide-only{display:none}
@@ -544,11 +555,13 @@ ol{padding:0;list-style:none}
   .coupon{margin-top:12px}
   .coupon__tear{margin-bottom:8px;gap:11px}
   .coupon__card{padding:14px}
-  .fields{grid-template-columns:1.25fr .75fr;gap:10px}
+  .fields{grid-template-columns:1.1fr .9fr;gap:10px}   /* 163 / 132 at 375px:
+       both wide enough for a 12-hour time input with its AM/PM segment */
   .field--place{grid-column:1 / -1}
+  .field label .opt{display:none}   /* "Time" alone; the label must not wrap */
   .field input{padding:11px 11px}
-  .coupon__hint{margin-top:9px;font-size:12.5px}
-  .coupon__action{margin-top:12px;gap:10px}
+  .coupon__hint{margin-top:9px;line-height:1.45}   /* stays 13px — the floor holds */
+  .coupon__action{margin-top:10px;gap:10px}
   .btn{width:100%;padding:15px 20px}
   .action-note{width:100%}
 
@@ -632,10 +645,13 @@ ol{padding:0;list-style:none}
               </div>
             </div>
 
+            <!-- Carries the "optional" fact in prose, because the inline
+                 "— optional" on the Time label is suppressed below 640px to
+                 stop the label wrapping. -->
             <p class="coupon__hint" id="coupon-hint">
-              Place and time fix your Rising, Midheaven and houses. You confirm
-              the town on the next screen — its name is the only thing that ever
-              leaves your browser.
+              Time and place — both optional — fix your Rising, Midheaven and
+              houses. You confirm the town on the next screen; its name is all
+              that ever leaves your browser.
             </p>
 
             <div class="coupon__action">
@@ -911,26 +927,43 @@ ol{padding:0;list-style:none}
 </script>
 
 <!--
-  ══ FOLD BUDGET, MEASURED IN CSS PIXELS ═══════════════════════════════════
+  ══ FOLD BUDGET — MEASURED IN A BROWSER, NOT ESTIMATED ════════════════════
 
-  375 × 667 (iPhone SE — the shortest phone still in real use)
-    masthead ................  49
-    kicker ..................  29
-    headline (2 lines, 36px)   88
-    standfirst (4 lines) ..... 111   ← closing sentence hidden below 640px
-    coupon card .............. 322   ← date+time paired, place full width
-    ───────────────────────────────
-    button's lower edge at ... ~595 of 667. Clears the fold with 72px to spare,
-    and on a 375×812 handset the top of the plate shows underneath it.
+  An earlier draft of this file carried HAND-ESTIMATED figures here. They were
+  wrong, and the error mattered: the estimate said the button cleared the
+  375×667 fold by 72px, and the browser said it MISSED it by 72px. Two guesses
+  caused it — the headline wraps to three lines at 36px, not two, and the
+  original privacy hint ran to 113px rather than the 39px assumed. The layout
+  below was then tuned against measurements. Every number here is observed.
 
-  1440 × 900 (viewport ≈ 790 after chrome)
-    A max-height:880px query steps the headline down to 54px, so:
-    masthead 62 · kicker 30 · headline 2 lines 112 · standfirst 3 lines 96 ·
-    coupon 236 · colophon 74 = 610 plus 80 of rhythm ≈ 690 of 790.
-    The colophon and the plate's caption both sit above the fold.
+  375 × 667 — iPhone SE, the shortest phone still in common use
+    masthead 49 · kicker 26 · headline 111 (3 lines @36px) · standfirst 72
+    (3 lines; the closing sentence is hidden below 640px) · coupon 246
+    button occupies 579–633. CLEARS THE FOLD BY 34px.
+    Above the fold: kicker, headline, standfirst, all three fields, button.
+    Forcing Georgia in place of Cormorant does not change the line count here.
 
-  1440 × 900 with Cormorant unavailable (Georgia substituting, ~15% wider):
-    the headline takes a third line, +56px → ~746 of 790. Still clears.
+  1024 × 768 — the tightest two-column case
+    Fields drop to two rows in the 900–1149px band. Clears by 43px.
+
+  1440 × 790 — a maximised window on a 1440×900 display
+    The max-height:880px query steps the headline to 54px (2 lines).
+    Button clears by 147px; the plate and its caption are fully above the
+    fold; the colophon's last line falls just under it, which is correct for
+    a credit line. The next band starts at 857.
+
+  Narrowest field measured: 133px (time, at 375px) — wide enough for a
+  12-hour input with its AM/PM segment. No horizontal overflow at 320, 375,
+  768, 1024 or 1440.
+
+  Contrast, measured in both editions, worst case per role:
+    body 16.3 · button 16.3 · standfirst 9.7 · hint 5.9 · colophon 5.9 ·
+    link 6.6 · plate caption 15.8. All pass WCAG AA; most pass AAA.
+
+  Known limit, stated rather than hidden: at 320×568 (iPhone SE 1st gen, now
+  largely retired and outside this brief's targets) the promise, standfirst
+  and all three fields are above the fold but the button is not. Fixing that
+  would cost the headline its authority on every other screen.
 
   ══ WHAT THIS FILE DELIBERATELY DOES NOT DO ═══════════════════════════════
    · No 100vh canvas. The fold carries the promise and the action, not scenery.
