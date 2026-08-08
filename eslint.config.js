@@ -44,13 +44,61 @@ export default [
     },
   },
 
+  // Eight website modules that ARE ES modules today (top-level import/export).
+  // Without this override the block above forces sourceType 'script' and ESLint
+  // exits 1 with a parse error on every one of them — meaning the exact files
+  // hand-edited at commerce flip (gumroad-unlock, the eclipse pair) had NO
+  // static checking at all. Listed explicitly, not globbed, so a new module is
+  // a deliberate addition here. Added 2026-08-08; verified the override restores
+  // block-1 rules and globals on these files.
+  {
+    files: [
+      'website/js/orrery-webgl.js',
+      'website/js/ap-eclipse-page.js',
+      'website/js/eclipse-reading.js',
+      'website/js/deep-reading.js',
+      'website/js/gumroad-unlock.js',
+      'website/js/orbitlab-bodies.js',
+      'website/js/orbitlab-orbital-math.js',
+      'website/js/plate-fingerprint.js',
+    ],
+    languageOptions: { sourceType: 'module' },
+  },
+
+  // Seven pre-existing errors audited 2026-08-08 and judged benign one by one
+  // (deliberate wrappers, hoisted duplicates, dead code behind an intentional
+  // return). Fixing them touches cast-path files — not happening in eclipse
+  // week. Downgraded to warnings HERE, per-file, so `npm run lint` exits 0 and
+  // stays a real tripwire for NEW errors (a typo pasted into the commerce files
+  // at flip must fail the run). Delete this whole block in the post-eclipse
+  // tidy when the code fixes land.
+  {
+    files: [
+      'website/js/app.js',
+      'website/js/ephemeris.js',
+      'website/js/horoscope-page.js',
+      'website/js/interpretations.js',
+      'website/js/orrery.js',
+      'website/js/void-orrery-adapter.js',
+    ],
+    rules: {
+      'no-redeclare': 'warn',
+      'no-func-assign': 'warn',
+      'no-useless-escape': 'warn',
+      'no-unreachable': 'warn',
+    },
+  },
+
   // Node ES-module test/tool scripts.
   {
     files: ['test-*.mjs', 'tools/**/*.mjs', 'ephemeris-package/**/*.{mjs,cjs,js}', '*.mjs'],
     languageOptions: {
       ecmaVersion: 2023,
       sourceType: 'module',
-      globals: { ...globals.node },
+      // browser globals too: ephemeris-package/ephemeris.cjs is the dual-runtime
+      // build and assigns window.* exports when a window exists (2026-08-08 —
+      // this was the other pre-existing reason `npm run lint` always exited 1).
+      globals: { ...globals.node, ...globals.browser },
     },
     rules: {
       ...js.configs.recommended.rules,

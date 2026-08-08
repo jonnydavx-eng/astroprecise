@@ -9550,7 +9550,6 @@ const FinishShader = {
     setMasterclassZoom,
     setMasterclassMode,
     startMasterclassIntro,
-    startSpaceFlight,
     pauseMasterclassIntro,
     isSpaceFlightMode: () => spaceFlightMode || spaceFlightToolActive,
     setChapterExposure,
