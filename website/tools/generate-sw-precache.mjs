@@ -133,6 +133,13 @@ function collectCanonical() {
   // Keep the precache install shell lean:
   //  - img/engine/* — large photoreal stills, only on the pages that show them
   //  - img/design-targets/* — design-reference mockups, referenced by no page
+  //  - img/orrery/* — planet and environment maps for the WebGL orrery, added
+  //    2026-08-08. Same class as assets/textures/* below and excluded for the
+  //    same reason: the engine pulls them only when the 3D view opens, so they
+  //    runtime-cache on first use. As of this commit nothing on the site
+  //    references them yet and they are ~3.6 MB, which is a large install-shell
+  //    cost — and a precache entry for a file that is not deployed is a install
+  //    fetch that always fails. Revisit when a page actually loads them.
   //  - img/shop/* — 7.5 MB of product imagery, only ever shown on shop/plate pages
   //  - img/og-*, img/eclipse-og.* — social-scraper cards; browsers never fetch them
   //  - img/icon-(maskable-)512.png — PWA install icons, fetched only on install
@@ -145,7 +152,7 @@ function collectCanonical() {
   //    are loaded by the WebGL layer only when the 3D view opens; the _sm twins
   //    cover the poster/first-paint path.
   // These lazy-cache at runtime instead.
-  const PRECACHE_EXCLUDE = /(^|\/)img\/(engine|design-targets|shop|og|textures)\/|(^|\/)img\/(?:og-|eclipse-og)[^/]*\.(jpe?g|png|webp)$|(^|\/)img\/moment\/og-[^/]*\.(jpe?g|png|webp)$|(^|\/)img\/icon-(?:maskable-)?(?:192|512)\.png$|(^|\/)img\/apple-touch-icon\.png$|(^|\/)img\/zodiac-glyphs-(?:all|row)\.jpg$|(^|\/)img\/(?:marketing-|hero-cosmic-ref|shop-product-cover|zodiac-glyphs-grid)[^/]*\.(jpe?g|png|webp)$|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$|(^|\/)assets\/textures\/[^/]*(?<!_sm)\.webp$|(^|\/)[^/]*\.bak(?:[-.][^/]*)?$/i;
+  const PRECACHE_EXCLUDE = /(^|\/)img\/(engine|design-targets|shop|og|orrery|textures)\/|(^|\/)img\/(?:og-|eclipse-og)[^/]*\.(jpe?g|png|webp)$|(^|\/)img\/moment\/og-[^/]*\.(jpe?g|png|webp)$|(^|\/)img\/icon-(?:maskable-)?(?:192|512)\.png$|(^|\/)img\/apple-touch-icon\.png$|(^|\/)img\/zodiac-glyphs-(?:all|row)\.jpg$|(^|\/)img\/(?:marketing-|hero-cosmic-ref|shop-product-cover|zodiac-glyphs-grid)[^/]*\.(jpe?g|png|webp)$|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$|(^|\/)assets\/textures\/[^/]*(?<!_sm)\.webp$|(^|\/)[^/]*\.bak(?:[-.][^/]*)?$/i;
 
   // Content-bank windowing (2026-07-10): the bank is now a rolling ~188-day
   // set (today−7 … today+180, refreshed weekly by

@@ -33,7 +33,7 @@
 
 <!-- M2: the stage runs the superior Orrery3D engine through the adapter (same
      <void-orrery> surface; ?engine=legacy or any failure fails open to js/orrery.js). -->
-<script src="./js/void-orrery-adapter.js?v=782" defer></script>
+<script src="./js/void-orrery-adapter.js?v=815" defer></script>
 <script src="./js/ap-sky-news.js?v=771" defer></script>
 <script src="./js/ap-checkout-honest.js?v=771" defer></script>
 <script src="./js/ap-gumroad-bridge.js?v=771" defer></script>
@@ -401,6 +401,19 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   .frontmatter{--t-standfirst:17px}
   .plate{padding:14px}
   .plate__stage{height:290px}
+}
+/* The narrow desktop lane is the one place where the fold really is tight: at
+   1024 the two-column grid leaves the lead column ~505px, so the promise sets
+   on three lines instead of two and the button lands ~672px down. Sweeping 110
+   viewports (900–1920 × 560–1000) against the previous build, dropping the
+   height step cost the fold in exactly five cells, all of them ≤1100px wide:
+   900×680, 1000×650, 1024×650, 1100×650, 1100×680. 46px is the value that lane
+   already used, so the button returns to precisely where it was. Stepping down
+   here is safe now in a way it was not before: h2 is derived from --t-headline,
+   so the promise stays the largest text (46 against 42) instead of inverting.
+   Same 1149px edge as the .fields rule above — one narrow-desktop lane. */
+@media (min-width:900px) and (max-width:1149px) and (max-height:740px){
+  :root{--t-headline:46px}
 }
 /* Two columns on a narrow desktop leaves the lead column near 490px, which
    squeezes three fields to 128/102/205 — fine for a 24-hour time input, too
