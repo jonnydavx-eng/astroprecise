@@ -26,8 +26,14 @@ const HTML_INCLUDE = new Set([
     'index.html', 'index-full.html', 'index-lite.html', '404.html',
     'chart.html', 'chart-view.html', 'horoscope.html', 'compatibility.html', 'transits.html',
     'cosmic-story.html',
+    // eclipse.html + deep-reading.html added 2026-08-08: they were the only two
+    // revenue pages NOT precached while their own JS was — an offline visitor on
+    // eclipse night got offline.html. outreach.html removed the same day: it is
+    // the internal marketing toolkit (noindex), 34 KB installed into every
+    // visitor's cache for no user benefit; it stays deployed, just not precached.
+    'eclipse.html', 'deep-reading.html',
     'ephemeris.html', 'lifepath.html', 'shop.html', 'accuracy.html', 'why.html',
-    'links.html', 'outreach.html', 'charts.html', 'retrograde.html', 'moonphase.html',
+    'links.html', 'charts.html', 'retrograde.html', 'moonphase.html',
     'what-is-my-rising-sign.html', 'synastry.html', 'solar-return.html', 'saturn-return.html',
     'quiz.html', 'angel-numbers.html', 'tonight.html', 'this-weeks-sky.html', 'name-numerology.html',
     'guides.html', 'catalogue.html', 'explore.html', 'moment.html', 'mysky.html',
@@ -40,6 +46,9 @@ const HTML_INCLUDE = new Set([
 
 /** JS omitted from precache (runtime import / optional heavy). */
 const JS_EXCLUDE = new Set([
+  // Internal outreach toolkit data (2026-08-08) — pairs with outreach.html's
+  // removal from HTML_INCLUDE above; team-only content, not visitor content.
+  'outreach-content.js',
   'orrery-webgl.js',
   // Engine-only deps of orrery-webgl.js (OrbitLab sync, Phase 1.6) — the engine
   // itself is deliberately NOT precached, so its deps lazy-cache at runtime too.
@@ -62,6 +71,10 @@ const JS_EXCLUDE = new Set([
 
 /** Always include even if scan would miss them. */
 const REQUIRED = [
+  // eclipse.html fetches this at runtime (line ~260); it is .json so the js/
+  // scan (which filters on .js) never picks it up. Without it a precached
+  // eclipse.html still fails offline at the reading step. Added 2026-08-08.
+  './js/reading-templates.json',
   './css/sign-page.css',
   './js/ap-canvas-seals.js',
   './js/ap-zodiac-constants.js',
