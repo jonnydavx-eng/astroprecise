@@ -36,6 +36,63 @@ separately and does not count them as mismatches.
 2. **Legal name and postal address** — `[FULL LEGAL NAME]` / `[POSTAL ADDRESS]` placeholders are live on the public site at `website/privacy.html` lines 129 and 131 and `website/terms.html` lines 131 and 132. (`contact.html` has none, despite what the old runbook said.)
 3. **Fixed-offset timezone dropdowns with no DST history** — `website/index.html` line 351 (nine options) and `website/eclipse.html` lines 141–143 (seven options). A UK summer birth entered as "UT / GMT" is cast an hour out, which can move the Ascendant by a whole sign. Accuracy issue, not cosmetic.
 4. **Four design decisions** awaiting a yes/no — `docs/DESIGN-PLAN-2026-08-05.md` §7.
+5. **Higgsfield unlimited promo not applying** — see below.
+
+## Higgsfield / Seedance connector — measured 2026-08-08
+
+**Reachable from one session only.** The Higgsfield MCP connector was attached to a
+Claude Code **web/remote** session (branch `claude/higgsfield-see-dance-offer-ing6r2`).
+MCP connectors attach per session at start and are configured per surface, so the
+BOOK-T1H4NJ753R session cannot see it — restart that session (with the connector
+enabled for that surface) to pick it up. Not a repo or credential problem.
+
+| Check | Result | How |
+|-------|--------|-----|
+| Connector auth | OK | `balance` returned live account data |
+| Plan | `plus` | `balance` |
+| Credit balance | 912.5 | `balance` |
+| Monthly grant | +1000 at 2026-08-08 11:48 UT | `transactions` |
+| Unlimited entitlement | **`unlim.available: false`** | `models_explore` — account-level and on `seedance_2_5` |
+| Models carrying `supports_unlim` | `kling3_0` only, of the 10 video models on page 1 | `models_explore` search |
+| Seedance 2.5 max resolution | **720p** (`480p`/`720p` only) | `models_explore` get |
+| Observed Seedance cost | 97.5 credits for 15s @ 720p, audio on = **6.5 credits/sec** | `transactions` + `show_generations` |
+
+### Not measured — do not claim
+
+- Whether the Higgsfield **web app** shows an active unlimited window. Only the
+  MCP/API surface was checked.
+- Any credit cost other than the single 15s Seedance generation below.
+- Cost of `generate_image` / image models — never called.
+
+### The promo discrepancy
+
+Owner signed up for a Seedance unlimited promotion; the API does not reflect it.
+Hard evidence for a support ticket: generation `d5ea68be-9f47-4e51-a65c-ec6bf0d28e99`
+(Seedance 2.5, 15s, 720p, audio on) was **charged 97.5 credits** at 2026-08-08
+11:53 UT — after signup. So credits are being billed normally, not merely displayed
+wrong. Candidate causes, **none verified**: the offers name specific variants
+("Seedance 2.0 Enhanced Fast", particular 2.5 windows) that may differ from the
+`seedance_2_5` model the connector exposes; the promo may attach to a *new*
+Plus/Ultra purchase or paid add-on rather than a running plan; it may need claiming
+in the web app; or it may exist but not be exposed over MCP.
+
+### If a hero clip does get generated
+
+`website/js/ap-seedance.js` and the inert `<video id="orrery-seedance">` in
+`index-classic.html` are already built and waiting on
+`website/assets/video/orrery-loop.mp4`. Two corrections to make **before** spending
+credits:
+
+- The prompt in `website/assets/video/README.md` still specifies the **retired**
+  warm palette (`#040305` void, `#C9A227` gold). Live tokens are cool void `#0C1016`
+  + brass `#C2A05E` (CLAUDE.md). Generating from it as written produces off-brand
+  footage.
+- Seedance defaults `generate_audio: true`. The hero `<video>` is muted and the
+  README strips audio on encode — generate with audio **off**.
+
+Activating the clip edits `index.html` and bumps the service worker, so it must ride
+the one pre-eclipse deploy or wait until after 12 Aug (freeze starts 11 Aug 20:00 UT,
+`SHIP-PLAN-2026-08-08.md` §1.5).
 
 ## Reference
 
