@@ -1,0 +1,14 @@
+POST: AP-X-03
+WHEN: Sun 9 Aug (D-3), 11:00 BST
+FORMAT: Standalone
+MEDIA: gen-07-eclipse-quiet-nothing.png (16:9) — the empty grey field. The image IS the joke. Do not caption the image.
+CTA: eclipse.html
+NOTE: rewrite of x-eclipse-11. This is the single best post in the set — it is the whole differentiator in four lines.
+
+Most astrology sites can't tell you nothing is happening. The business model won't allow it.
+
+If Wednesday's eclipse makes no contact with your chart, ours says so, free.
+
+Quiet charts are real. Pretending otherwise is how astrology got its name.
+
+https://astroprecise.app/eclipse.html

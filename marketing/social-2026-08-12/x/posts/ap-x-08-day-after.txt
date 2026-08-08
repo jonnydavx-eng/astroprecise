@@ -1,0 +1,14 @@
+POST: AP-X-08
+WHEN: Thu 13 Aug (D+1), 09:00 BST
+FORMAT: Standalone
+MEDIA: NEW ASSET x-perseids-after (16:9) if not already used on AP-X-07 node 6; otherwise gen-05-og-banner-plate.png
+CTA: eclipse.html
+NOTE: replaces x-eclipse-09, which claimed "that chapter runs all year" — prophecy, not geometry. Cut.
+
+Nine-tenths of the Sun went out over Britain last night. The Perseids took over after.
+
+Missed it? The tool still computes where 20°02′ Leo fell in your chart, and still says if it's nowhere.
+
+It ran exactly on schedule, as it was always going to.
+
+https://astroprecise.app/eclipse.html

@@ -1,0 +1,40 @@
+That's the day shift done.
+
+If you saw it: the deepest eclipse over Britain since 1999, about 91% of the Sun gone around 19:05, and an evening that arrived with a bite taken out of it.
+
+If you missed it — cloud, work, Britain — then you missed it, and we would rather say so than pretend the internet can give it back to you.
+
+Either way, don't go inside. The night shift starts now.
+
+The Perseids peak tonight, and tonight is a new moon, because a new moon is the only kind of night a solar eclipse can happen on. No moonlight, no washout. The best Perseid conditions in years, on the same date, by geometry rather than luck.
+
+How to actually see them: get away from a security light, give your eyes twenty minutes to adapt, and then do not look at your phone, because that resets them. Lie back so you take in as much sky as possible. Don't stare straight at the radiant in Perseus, low in the north-east — the long ones show up off to the side. Rates climb after midnight.
+
+Take a blanket. It is free and it is directly overhead.
+
+Where tonight's eclipse point landed in your chart, computed on your own device: link in bio.
+
+════════════════ END OF CAPTION — nothing below goes in the post ════════════════
+
+POST        ig-06 · feed-night-shift-perseids
+WHEN        ECLIPSE DAY · Wednesday 12 August 2026, 20:15 BST
+            (posted while the Sun is still setting — the "just happened" window)
+FORMAT      Feed · single image · 4:5 · 1080×1350
+ASSET       ** NEEDS GENERATING ** — asset request "perseid-night-handover" in PLAN.md
+FALLBACK    If the asset is not generated in time, export a still from
+            assets/ig-01-reel-1080x1920.mp4 at ~00:11.5 (deep dusk crescent over the
+            fields) and crop to 4:5. Command in PLAN.md §6. It is a weaker picture for
+            a Perseid post but it is honest and it is free.
+
+TREATMENT   None, or one mono line bottom-left: NIGHT SHIFT · PERSEIDS PEAK TONIGHT.
+
+ALT TEXT
+Late dusk on open British moorland. A dry-stone wall runs into the foreground and a
+single meteor streaks through the deep blue sky above the hills. No Moon.
+
+FIRST COMMENT (hashtags — SET E, PERSEIDS)
+#perseids #perseids2026 #perseidmeteorshower #meteorshower #newmoon #darkskies
+#stargazinguk #astronomyuk #nightsky #eclipse2026
+
+COMMERCE CHECK   no price · no shop link · no Sky Pass mention (blocked) ✓
+CLAIM CHECK      "new moon therefore dark sky" is real geometry, not a sales line ✓

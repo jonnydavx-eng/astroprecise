@@ -1,0 +1,13 @@
+I built an astrology site that tells you when the eclipse does nothing to you.
+
+If Wednesday's eclipse point sits more than 5° from every placement in your chart, the page says so, in those words, before it mentions a reading at all. That's the real on-screen result — not a line I wrote for this video.
+
+"For you, this is a quiet one — and that's an honest answer, not a smaller one."
+
+Quiet charts are real. Pretending otherwise is how astrology got its reputation.
+
+Free, computed on your own device: astroprecise.app/eclipse
+
+For entertainment. Astronomy computed in-browser; birth data never leaves your device.
+
+#astrology #birthchart #astrotok #eclipse2026 #honestastrology

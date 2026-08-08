@@ -1,0 +1,13 @@
+POST: AP-X-04
+WHEN: Mon 10 Aug (D-2), 18:00 BST
+FORMAT: Standalone
+MEDIA: REUSE ../../instagram/assets/ig-04-projection-1x1.jpg (1080x1080, already cropped from gen-02).
+        Telescope + projection card. X takes 1:1. No new asset needed for this post.
+CTA: eclipse.html
+NOTE: replaces x-eclipse-05, which said "Britain goes ~91% dark" — that is wrong and must not ship.
+
+Two days. Want eclipse glasses for Wednesday? Order today — ISO 12312-2, and check the standard is printed on them.
+
+We sell none and take no cut on any. We'd rather you kept your sight.
+
+No glasses? A pinhole onto pale ground costs nothing and is the better photograph anyway.

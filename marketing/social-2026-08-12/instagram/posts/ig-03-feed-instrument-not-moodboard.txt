@@ -1,0 +1,37 @@
+This is an instrument, not a mood board.
+
+A sextant measures the angle between a body and the horizon. That is all it does. It does not interpret, it does not flatter, and it will happily tell you that you are three hundred miles from where you thought you were.
+
+We build the same way. Every position AstroPrecise shows you comes out of the standard astronomy — VSOP87 for the planets, ELP2000 for the Moon, Meeus for the eclipse geometry — computed in your browser at the moment you ask, to roughly an arcminute. Nothing is generated, guessed, or written in advance by somebody who has never looked at the sky.
+
+Then, separately and clearly labelled, we tell you what the astrological tradition has said about a configuration like yours. Interpretation that is honest about being interpretation.
+
+On Wednesday the eclipse point sits at 20°02′ Leo. Where that falls in your chart is a question with an actual answer. It is free, it runs on your own device, and if the answer is "nowhere much", you get told that first.
+
+Link in bio.
+
+════════════════ END OF CAPTION — nothing below goes in the post ════════════════
+
+POST        ig-03 · feed-instrument-not-moodboard
+WHEN        D-2 · Monday 10 August 2026, 18:30 BST
+FORMAT      Feed · single image · 4:5 · 1080×1350
+ASSET       assets/ig-03-sextant-4x5.jpg
+            (cropped from design-lab/eclipse-sextant-02.png — no new credits spent)
+WHY         The strongest asset in the library and the whole positioning in one
+            object. Post it clean: no overlay type at all. Let the caption carry it.
+            This is the post to send to anyone asking "what is this account".
+
+TREATMENT   None. Do not add text, a logo, or a border. The picture is the argument.
+
+ALT TEXT
+A brass sextant resting on a mossy, lichened dry-stone wall at dusk. Beyond it,
+hedged British farmland fades into haze, and a crescent-shaped partially eclipsed Sun
+sits low in a dim orange sky.
+
+FIRST COMMENT (hashtags — SET C, CRAFT / INSTRUMENT)
+#sextant #brassinstruments #antiquescientificinstruments #celestialnavigation
+#observationalastronomy #drystonewall #britishlandscape #eclipse2026 #astronomyuk
+#computednotfabricated
+
+COMMERCE CHECK   no price · no shop link · CTA = eclipse.html via bio only ✓
+VOICE CHECK      anti-woo, precision-as-romance, no prophecy language ✓

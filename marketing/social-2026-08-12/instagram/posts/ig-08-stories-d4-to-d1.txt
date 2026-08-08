@@ -1,0 +1,114 @@
+STORIES · RUN-UP · D-4 to D-1 (Sat 8 → Tue 11 August 2026)
+
+All frames 9:16, 1080×1920. Text in IBM Plex Mono (labels) and the serif (sentences),
+gold #D4B84A on the dark parts of the photo. Keep type out of the safe zones: 250px
+clear at the top, 320px clear at the bottom, or the sticker tray eats it.
+
+Every frame in this run goes into a Highlight called ECLIPSE · 12 AUG, cover = a dark
+crop of the sextant. Keep the Highlight up afterwards; it is the account's proof.
+
+────────────────────────────────────────────────────────────────────────────────
+SAT 8 AUG · 19:15 BST — three frames, posted together, right after the D-4 Reel
+────────────────────────────────────────────────────────────────────────────────
+
+FRAME 1 — THE COUNTDOWN.  This is the most important sticker of the whole campaign.
+  Background: design-lab/eclipse-sextant-02.png (native 9:16, use full frame)
+  Text, upper third:   Wednesday. About 91% of the Sun,
+                       gone over Britain, at 19:05.
+  STICKER: ⏳ COUNTDOWN — name it "UK MAXIMUM", end 12 Aug 2026, 19:05 BST.
+  Why: taps on a countdown opt the viewer into an automatic reminder notification at
+  19:05 on the day. It is the only sticker that books someone's attention in advance.
+  Re-share this same countdown every day until Wednesday.
+
+FRAME 2 — THE POLL.
+  Background: assets/ig-05-standingstone-4x5.jpg blown up to fill, heavily darkened
+  Text: The last one this deep over Britain was August 1999.
+  STICKER: 📊 POLL — "Do you remember the '99 eclipse?"
+           Option A: "I was outside for it"   Option B: "Not born yet"
+  Why: it is a genuine memory, it splits the audience cleanly, and poll taps are the
+  cheapest reply-rate signal there is.
+
+FRAME 3 — THE LINK.
+  Background: plain void #0D0A07, one thin gold rule
+  Text, mono:  ECLIPSE POINT · 20°02′ LEO
+  Text, serif: Where does that land in your chart?
+               Computed in your browser. Nothing uploaded.
+               If it touches nothing, it says so.
+  STICKER: 🔗 LINK — https://astroprecise.app/eclipse.html, custom text "COMPUTE IT FREE"
+
+────────────────────────────────────────────────────────────────────────────────
+SUN 9 AUG · 11:30 BST — two frames, straight after the carousel goes up
+────────────────────────────────────────────────────────────────────────────────
+
+FRAME 4 — THE QUIZ.
+  Background: assets/ig-02-cover-4x5.jpg filled to 9:16, darkened
+  Text: One question before Wednesday.
+  STICKER: ❓ QUIZ — "How much of the Sun disappears over Britain?"
+           50%  ·  74%  ·  91%  ·  100%      → correct answer: 91%
+  Why: quiz stickers get tapped harder than polls because people want to be right,
+  and this one teaches the exact fact the whole campaign depends on.
+
+FRAME 5 — THE HAND-OFF TO THE CAROUSEL.
+  Re-share the ig-02 carousel to Stories.
+  Text: The times are on slide 3. The safety bit is slide 5.
+  STICKER: none — the post shim is the tap target. Do not crowd it.
+
+────────────────────────────────────────────────────────────────────────────────
+MON 10 AUG · 18:45 BST — the question box
+────────────────────────────────────────────────────────────────────────────────
+
+FRAME 6 — ASK.
+  Background: assets/ig-03-sextant-4x5.jpg filled to 9:16
+  Text: Two days out. Ask me anything about Wednesday —
+        times, safety, what it will actually look like,
+        or where it lands in your chart.
+  STICKER: 💬 QUESTIONS — prompt "Ask about the eclipse"
+  Why: this is the honest-expert position doing the work. Answer them in follow-up
+  frames the same evening and the following morning — screenshot each question, type a
+  real answer over the sextant photo, sign it off. Six good answers is a Story set of
+  its own and costs nothing.
+
+FRAME 7+ — THE ANSWERS. One frame per question, same background family.
+  Rules: never answer with a price. Never answer with "the universe". If you do not
+  know, say so and say what you would need to know it.
+  Re-share the COUNTDOWN sticker on the last answer frame.
+
+────────────────────────────────────────────────────────────────────────────────
+TUE 11 AUG · 08:15 BST — the safety set (three frames)
+────────────────────────────────────────────────────────────────────────────────
+
+FRAME 8  Background: assets/ig-04-projection-1x1.jpg, filled and blurred at the edges
+         Text: 01 · ISO 12312-2 glasses. The standard has to be printed on them.
+               Buy today, not Wednesday afternoon.
+
+FRAME 9  Background: same family
+         Text: 02 · Projection. Pinhole in a card, held over a second card.
+               You watch the card. Never the Sun.
+
+FRAME 10 Background: dark landscape crop
+         Text: 03 · Or just watch the light change. Around 19:05 the shadows
+               go razor-sharp and the ground under a tree fills with crescents.
+         Then, in smaller type: Britain never reaches totality. There is no safe
+               moment to look directly. Sunglasses are not protection.
+         STICKER: 🔗 LINK — astroprecise.app/eclipse.html, text "TIMES + FREE CHART"
+
+────────────────────────────────────────────────────────────────────────────────
+TUE 11 AUG · 20:30 BST — the last-night frame
+────────────────────────────────────────────────────────────────────────────────
+
+FRAME 11 Background: assets/ig-optional-reel-tail-6s.mp4 (6s dusk crescent clip)
+         Text: Tomorrow. Set an alarm for 18:45 and find a clear western horizon.
+         STICKER: ⏳ COUNTDOWN (the same "UK MAXIMUM" one, final re-share)
+         Optional second sticker: 🎚 EMOJI SLIDER — "How hopeful are you about the
+         cloud?" with 🌥 — light, British, and it drives taps without saying anything
+         untrue.
+
+────────────────────────────────────────────────────────────────────────────────
+STANDING RULES FOR EVERY STORY FRAME THIS WEEK
+────────────────────────────────────────────────────────────────────────────────
+· One idea per frame. If it needs two sentences of explanation, it is a feed post.
+· One sticker per frame, two at the absolute most. Stacked stickers kill taps.
+· Every link sticker goes to astroprecise.app/eclipse.html. Never to the shop.
+· No price, ever. Checkout is closed and a link sticker to a dead buy button is the
+  fastest way to lose the trust the whole account is built on.
+· Never tell anyone to look at the Sun, not even as a joke, not even in a sticker.

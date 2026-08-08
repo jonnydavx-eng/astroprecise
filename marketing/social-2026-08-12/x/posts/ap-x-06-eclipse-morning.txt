@@ -1,0 +1,16 @@
+POST: AP-X-06
+WHEN: Wed 12 Aug (D-DAY), 09:30 BST
+FORMAT: Standalone. PIN THIS (replaces AP-X-01 as the pinned post for the day).
+MEDIA: gen-01-eclipse-og-plate.png (16:9)
+CTA: eclipse.html
+NOTE: merges x-eclipse-07 and x-eclipse-13, which duplicated each other 90 minutes apart on the same morning.
+
+Today. UK times:
+
+First bite just after 18:00 BST.
+Maximum ~19:05 — around 89–92% of the Sun gone, deepest over Britain since 1999.
+Low in the west throughout.
+
+No safe moment: Britain never reaches totality. Glasses, pinhole, or watch the light change.
+
+https://astroprecise.app/eclipse.html

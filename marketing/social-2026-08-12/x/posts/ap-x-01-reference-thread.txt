@@ -1,0 +1,49 @@
+POST: AP-X-01
+WHEN: Sat 8 Aug (D-4), 10:00 BST
+FORMAT: Thread, 5 nodes. PIN THIS.
+MEDIA: node 1 = gen-01-eclipse-og-plate.png (16:9). node 5 = gen-05-og-banner-plate.png (16:9).
+CTA: eclipse.html (free cast + eclipse-dawn email list live on the same page)
+
+═══ 1/5 ═══
+
+Britain does not see totality on Wednesday. The Moon's shadow crosses Iceland and northern Spain — not us.
+
+What Britain gets is a deep partial, the deepest since 1999, and it is stranger than that sounds.
+
+The real numbers, and what to actually expect:
+
+═══ 2/5 ═══
+
+Computed, not copied:
+
+Across the UK, roughly 89–92% of the Sun goes. The spread from Cornwall to Shetland is small — almost everyone gets a deep one.
+
+First bite shortly after 18:00 BST.
+Maximum around 19:05 BST.
+All of it low in the west.
+
+═══ 3/5 ═══
+
+The mistake everyone makes: 91% covered is not 91% dark.
+
+Your eye rebalances nearly the whole way. It won't look like dusk. It looks like the wrong kind of afternoon — flat, metallic, colour drained, shadows gone strange.
+
+Watch the land. That's where it shows.
+
+═══ 4/5 ═══
+
+Two times get muddled every eclipse.
+
+Greatest eclipse — the deepest point anywhere on Earth — is 17:46 UT. That's 18:46 BST, and it happens over the Arctic.
+
+Britain's own maximum is later: about 19:05 BST.
+
+Different moment, different place. Both real.
+
+═══ 5/5 ═══
+
+Practical bit: find a clear western horizon today, not at 19:00 on Wednesday.
+
+And the eclipse lands at 20°02′ Leo. Where that falls in your chart is computed free, in your browser, nothing uploaded:
+
+https://astroprecise.app/eclipse.html

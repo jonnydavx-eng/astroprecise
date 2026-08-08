@@ -1,0 +1,61 @@
+For a lot of you, yesterday's eclipse did nothing to your chart. We would like to say that out loud, the morning after, when saying it costs us something.
+
+Here is the honest mechanism. An eclipse is a point — yesterday's was 20°02′ Leo. Whether the astrological tradition has anything to say about it for you depends on whether that point lands close to something in your own chart. Most of a chart is empty space. So for most people, most eclipses: nothing within orb. A quiet one.
+
+Our free page has always been built to say so. If the eclipse makes no close contact with your chart, that is the first thing it tells you, before anything else, and it tells you not to buy the eclipse reading. That has cost us sales. We would rather have the reputation.
+
+The sky is not a message service. It is a set of moving bodies whose positions can be computed to the arcminute, centuries in either direction. That is quite enough romance for us.
+
+Yesterday's contact, still free, still computed on your device: link in bio.
+
+════════════════ END OF CAPTION — nothing below goes in the post ════════════════
+
+POST        ig-07 · carousel-it-landed-on-nothing
+WHEN        D+1 · Thursday 13 August 2026, 10:00 BST
+FORMAT      Carousel · 3 slides · 4:5 · 1080×1350
+WHY         The single most on-brand post of the week and the one most likely to be
+            screenshotted by people who dislike astrology. Publishing the anticlimax
+            the morning after, unprompted, is the proof the voice is real. It also
+            catches everyone who cast a chart yesterday and got a quiet result.
+
+SLIDE BUILD
+  1 · COVER — photo, deliberately boring
+      Image: assets/ig-07-quietfield-4x5.jpg
+      (flat grey overcast, a bare tree, mud, tractor ruts, puddles — nothing happening)
+      Overlay, serif, lower third: "Sometimes it lands on nothing."
+      Kicker, mono, top: 13 AUGUST 2026 · THE MORNING AFTER
+      Do not brighten or warm this image. The flatness is the point.
+
+  2 · THE MECHANISM — type only on void
+      Mono label: ECLIPSE POINT · 20°02′ LEO
+      Serif, short lines:
+        An eclipse is one point in the zodiac.
+        A birth chart is mostly empty space.
+        If nothing of yours sits near that point,
+        the tradition has nothing to say about it for you.
+        That is not a disappointing result. It is the result.
+
+  3 · THE GATE — screenshot + CTA
+      Screenshot the quiet-chart state on astroprecise.app/eclipse.html — the green
+      label reading "A QUIET ONE FOR YOU — SAID BEFORE ANY PAYMENT" plus the computed
+      receipt block directly beneath it.
+      ⚠ CROP ABOVE THE PARAGRAPH THAT FOLLOWS IT. That paragraph carries three prices
+      and links to a shop that cannot take money. It must not appear in this post.
+      Footer, mono: FREE · COMPUTED ON YOUR DEVICE · astroprecise.app/eclipse.html
+
+ALT TEXT
+  1  A flat grey overcast day over an empty British field: bare hedgerow, one leafless
+     tree, mud and tractor ruts filled with rainwater. Nothing is happening.
+  2  Text slide: an eclipse is one point in the zodiac, a birth chart is mostly empty
+     space, so for many people the eclipse makes no close contact at all.
+  3  Screenshot of the AstroPrecise eclipse page showing its quiet-chart result — a
+     green label reading "a quiet one for you, said before any payment" above the
+     computed contact receipt.
+
+FIRST COMMENT (hashtags — SET D, HONEST ASTROLOGY)
+#birthchart #natalchart #astrology #eclipseinleo #transits #astrologycommunity
+#eclipse2026 #computednotfabricated #astroprecise #skyatnight
+
+COMMERCE CHECK   no price in caption · slide 3 crop instruction exists specifically to
+                 keep prices out of the image ✓
+VOICE CHECK      no prophecy, no "the universe", the anticlimax is the message ✓

@@ -1,0 +1,46 @@
+Three safe ways to watch on Wednesday. Squinting is not one of them.
+
+1 — ISO 12312-2 eclipse glasses. Check the standard is actually printed on them. Buy today, not on Wednesday afternoon. We sell none of these and take no cut on them; we would simply like you to keep your sight.
+
+2 — Projection. Binoculars or a small telescope aimed at a white card, as in the picture, and you look at the card. The free version works just as well: a pinhole in one sheet of card, held above a second sheet.
+
+3 — Watch the light instead. Underrated, and the only method that costs nothing and risks nothing. Around 19:05 the whole landscape changes character. Look at how sharp the shadows go. Look under a tree — every gap between the leaves is its own pinhole camera, and the ground fills up with little crescents.
+
+Once, plainly: never look at the Sun directly. At 91% the remaining sliver is still bright enough to burn your retina permanently, and Britain never reaches totality, so there is no safe moment at all on Wednesday. Sunglasses, phone cameras, smoked glass and exposed film are not protection.
+
+Your free eclipse contact is in the bio.
+
+════════════════ END OF CAPTION — nothing below goes in the post ════════════════
+
+POST        ig-04 · feed-three-safe-ways
+WHEN        D-1 · Tuesday 11 August 2026, 08:00 BST
+FORMAT      Feed · single image · 1:1 · 1080×1080
+ASSET       assets/ig-04-projection-1x1.jpg
+            (cropped from design-lab/gen-02-eclipse-hero-band.png — no new credits)
+WHY         Morning of D-1 is the last useful moment to tell people to buy glasses.
+            Genuinely useful safety posts get shared into family group chats, which
+            is reach you cannot buy. It also earns the right to the rest of the week.
+
+TREATMENT   Optional, and only if it stays quiet: a single mono line bottom-left,
+            THREE SAFE WAYS · 12 AUG, gold on the dark grass. Nothing else. If in
+            doubt, post it clean.
+
+OPTIONAL UPGRADE
+            If the crescent-dapples image gets generated (see PLAN.md, asset request
+            "crescent-dapples-under-tree"), run this as a 2-slide carousel: this
+            picture first, the dapples second. Method 3 then has a picture of its own
+            and the post becomes far more saveable.
+
+ALT TEXT
+A brass refracting telescope on a wooden tripod on a frosty British hilltop, angled
+so that it projects an image of the partially eclipsed Sun as a bright crescent onto
+a white card clipped below the eyepiece. The real crescent Sun hangs in the pale sky
+to the left, above a patchwork of fields.
+
+FIRST COMMENT (hashtags — SET B, EDUCATIONAL)
+#eclipsesafety #eclipseglasses #eclipse2026 #solareclipse2026 #pinholeprojection
+#astronomyuk #skyatnight #stargazinguk #sciencecommunication #12august2026
+
+COMMERCE CHECK   no price · no shop link · explicitly states we sell no glasses ✓
+SAFETY CHECK     ISO 12312-2 named, standard-printed check named, "no safe moment
+                 in Britain" stated, sunglasses ruled out ✓

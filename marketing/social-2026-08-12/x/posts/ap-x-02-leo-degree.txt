@@ -1,0 +1,14 @@
+POST: AP-X-02
+WHEN: Sat 8 Aug (D-4), 19:00 BST
+FORMAT: Standalone
+MEDIA: eclipse-sextant-02.png — CROP TO 1:1 CENTRE (source is 9:16, do not post uncropped)
+CTA: eclipse.html
+NOTE: rewrite of x-eclipse-03. Removes "we tell you not to buy the reading" (implies a live checkout).
+
+In four days the Moon covers the Sun at 20°02′ Leo.
+
+That's the whole question: where is 20°02′ Leo in your chart?
+
+Computed free in your browser, twenty seconds, nothing uploaded. And if it touches nothing of yours, the page says so plainly.
+
+https://astroprecise.app/eclipse.html

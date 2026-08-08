@@ -1,0 +1,48 @@
+Four days.
+
+Wednesday evening the Moon moves in front of the Sun and stays there for about two hours. From Britain it never quite covers it — about 91% at maximum in the south, a little less further north. Totality runs through Iceland and northern Spain. Not here.
+
+So it won't go dark. It goes strange, which is better: the light drains out of an ordinary August evening while the sky still looks like day. Shadows sharpen. Colours flatten. It gets cold. The birds stop.
+
+Maximum is around 19:05 BST, low in the west. Pick your horizon now.
+
+The free page computes where the eclipse point — 20°02′ Leo — falls in your own chart. It runs on your device. Nothing uploaded, nothing stored. If it touches nothing in your chart, the page says so.
+
+The weather report of the sky, not prophecy.
+
+Link in bio.
+
+Never look at the Sun without ISO 12312-2 eclipse glasses. Pinhole projection works. Sunglasses are not protection.
+
+════════════════ END OF CAPTION — nothing below goes in the post ════════════════
+
+POST        ig-01 · reel-light-goes-strange
+WHEN        D-4 · Saturday 8 August 2026, 19:00 BST
+FORMAT      Reel · 9:16 · 12s · sound ON · share to feed = YES
+ASSET       assets/ig-01-reel-1080x1920.mp4
+            (upscaled from design-lab/promo-eclipse-vertical.mp4 — no new credits spent)
+COVER FRAME Pick ~00:09 (the dusk crescent over the fields). Do not use the opening
+            armillary frame as the cover — the grid wants the crescent.
+
+ON-SCREEN TEXT (add in the editor, never baked into the footage)
+  0.0–2.0s   In four days the light over Britain goes strange
+  4.0–6.5s   ~91% of the Sun · 19:05 BST · Wed 12 August
+  9.0–12.0s  Free eclipse chart · computed on your device · link in bio
+  Style: IBM Plex Mono, gold #D4B84A, lower third, no box, no drop shadow.
+  Keep it off the crescent.
+
+AUDIO       Use the film's own audio. Do NOT add a trending sound — the whole
+            positioning is documentary. Add captions/subtitles if you add a VO.
+
+ALT TEXT
+Twelve-second film. A brass armillary sphere stands on a mossy dry-stone wall in warm
+evening light above green British farmland. The camera drifts past it as the daylight
+drains to deep blue and a thin crescent Sun hangs low over the fields.
+
+FIRST COMMENT (hashtags — SET A, EVENT)
+#eclipse2026 #solareclipse2026 #partialeclipse #eclipseuk #12august2026 #ukastronomy
+#skyatnight #stargazinguk #britishcountryside #eclipsewatching
+
+COMMERCE CHECK   no price · no shop link · CTA = eclipse.html via bio only ✓
+SAFETY CHECK     ISO 12312-2 named · "sunglasses are not protection" present ✓
+CLAIM CHECK      does not claim Britain sees totality ✓

@@ -1,0 +1,47 @@
+It's today.
+
+Times for Britain, all BST, all low in the west:
+First contact ≈18:00 — the first bite out of the Sun's edge.
+Maximum ≈19:05 — about 91% covered in the south, a little less further north.
+Last contact ≈20:10.
+
+All of it happens low over the western horizon, so a hill, a rooftop or a line of trees will simply take it from you. Choose your spot before six.
+
+Safety, once: ISO 12312-2 eclipse glasses, or pinhole projection onto card, or just watch the light change around you. Never bare eyes. Britain never reaches totality, so there is no moment this evening when it is safe to look directly.
+
+Then don't go inside. The Perseids peak tonight, and because a solar eclipse can only happen at new moon, there is no moonlight to wash them out. The best conditions in years, handed to us on the same night.
+
+Your free eclipse contact — where 20°02′ Leo lands in your own chart, computed on your device, nothing uploaded — is in the bio.
+
+Clear skies. Or, this being Britain, clear-ish.
+
+════════════════ END OF CAPTION — nothing below goes in the post ════════════════
+
+POST        ig-05 · feed-its-today-times
+WHEN        ECLIPSE DAY · Wednesday 12 August 2026, 09:30 BST
+FORMAT      Feed · single image · 4:5 · 1080×1350
+ASSET       assets/ig-05-standingstone-4x5.jpg
+            (cropped from design-lab/eclipse-still-01.png — no new credits spent)
+PIN THIS    Pin to the top of the grid for the day. It is the post everyone will be
+            sent to when they ask "what time is it".
+
+TREATMENT   Add the times as a quiet mono block in the clean upper sky, gold on the
+            dusk gradient, left-aligned, generous leading:
+                12 AUGUST 2026 · BST
+                FIRST CONTACT   ≈ 18:00
+                MAXIMUM         ≈ 19:05
+                LAST CONTACT    ≈ 20:10
+            Nothing else. Do not put it over the crescent or the stone.
+
+ALT TEXT
+A standing stone alone in a wide, dim field at dusk, throwing long shadows across the
+grass. Low over the hills behind it hangs a thin crescent Sun in a deep orange and
+violet sky.
+
+FIRST COMMENT (hashtags — SET A, EVENT)
+#eclipse2026 #solareclipse2026 #partialeclipse #eclipseuk #12august2026 #ukastronomy
+#skyatnight #stargazinguk #eclipsewatching #perseids
+
+COMMERCE CHECK   no price · no shop link · CTA = eclipse.html via bio only ✓
+SAFETY CHECK     three safe methods named, "no safe moment" stated ✓
+CLAIM CHECK      does not claim totality; "about 91% in the south" hedged north ✓
