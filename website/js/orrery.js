@@ -241,7 +241,9 @@
       if (!this._ph) {
         var ph = this._ph = document.createElement("div");
         ph.style.cssText = "position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;pointer-events:none";
-        ph.innerHTML = '<div style="width:180px;height:180px;border-radius:50%;border:1px solid rgba(216,180,106,.28);box-shadow:inset 0 0 60px rgba(216,180,106,.1)"></div><div style="font:10px/1 IBM Plex Mono,monospace;letter-spacing:.3em;color:rgba(230,234,242,.4)">WAKING THE ENGINE…</div>';
+        // Ring only — no loading text. See the matching note in
+        // js/void-orrery-adapter.js for why the string was removed.
+        ph.innerHTML = '<div style="width:180px;height:180px;border-radius:50%;border:1px solid rgba(216,180,106,.28);box-shadow:inset 0 0 60px rgba(216,180,106,.1)"></div>';
         this.appendChild(ph);
       }
       var self = this;

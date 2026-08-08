@@ -17,7 +17,10 @@
 <meta name="twitter:image" content="https://astroprecise.app/img/eclipse-og.png">
 <link rel="canonical" href="https://astroprecise.app/">
 <link rel="preload" href="./fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="./fonts/cormorant-garamond-italic-500.woff2" as="font" type="font/woff2" crossorigin>
+<!-- The headline is the LCP element and it is set in Cormorant roman 600, so
+     that face is preloaded alongside the text face. The italic 500 used by the
+     atlas below the fold is not in the critical path and loads normally. -->
+<link rel="preload" href="./fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="./css/ap-sky-news.css?v=771">
 
 <!-- ── Three.js import map — REQUIRED for js/orrery-webgl.js (bare `import 'three'`).
@@ -38,6 +41,7 @@
 @font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
 @font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'Cormorant Garamond';src:url('./fonts/cormorant-garamond-italic-500.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
+@font-face{font-family:'Cormorant Garamond';src:url('./fonts/cormorant-garamond-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 @font-face{font-family:'Cinzel';src:url('./fonts/cinzel-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 :root{
   --ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);
@@ -84,69 +88,163 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 .shake{animation:shake .45s}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-/* ═══ ECLIPSE EVENT BAR ═══ */
-#eclipse-ribbon{border-bottom:1px solid rgba(47,107,255,.34);background:linear-gradient(90deg,rgba(47,107,255,.12),rgba(47,107,255,.03) 45%,rgba(31,182,166,.05))}
-#eclipse-ribbon a{color:inherit}
-.er-wrap{max-width:1180px;margin:0 auto;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap}
-.er-left{min-width:260px;flex:1}
-.er-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--ember-hi);margin-bottom:8px}
-.er-h{margin:0;font-size:clamp(20px,2.5vw,29px);line-height:1.15;font-weight:700;letter-spacing:-.01em}
-.er-h em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ember-hi)}
-.er-left:hover .er-h{text-decoration:underline;text-decoration-color:rgba(47,107,255,.55);text-underline-offset:6px}
-.er-sub{margin-top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--faint);line-height:1.9}
-.er-right{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.er-count{font-family:var(--mono);font-size:clamp(19px,2.2vw,26px);letter-spacing:.12em;color:#fff;text-shadow:0 0 28px rgba(47,107,255,.55);white-space:nowrap;font-variant-numeric:tabular-nums}
-.er-count small{display:block;font-size:10px;letter-spacing:.24em;color:var(--faint);margin-top:6px;white-space:normal}
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE FRONT MATTER — the editorial fold and the edition band that follows it.
+   Paper on top, night atlas below: the site's own daybreak device, set the way
+   a publication sets a front page. Every token here is scoped to .frontmatter
+   so the dark atlas (Plates I–V) is untouched.
 
-/* ═══ THE STAGE — full-viewport living sky; product floats ON the model ═══ */
-.stage{position:relative;height:100vh;min-height:680px;overflow:hidden;background:radial-gradient(120% 95% at 50% 42%,#0e0c0b,#090807 72%)}
-.stage void-orrery{position:absolute;inset:0}
-.stagebar{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:14px 22px;flex-wrap:wrap;padding:18px 24px;text-shadow:0 1px 14px rgba(0,0,10,.75)}
-.hero-brand{display:flex;align-items:center;gap:13px;color:inherit}
-.hero-brand:hover{color:inherit}
-.hero-wordmark{font-family:var(--caps);font-weight:600;font-size:15px;letter-spacing:.3em;color:var(--ink)}
-.hero-tagline{font-family:var(--mono);font-size:7.5px;letter-spacing:.42em;color:var(--faint);margin-top:3px}
-.stagebar .hero-brand img{filter:drop-shadow(0 1px 8px rgba(0,0,10,.65))}
-nav.main{display:flex;gap:30px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.24em}
-nav.main a{color:rgba(242,236,223,.82);position:relative;padding-bottom:3px}
-nav.main a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ember);transition:width .3s}
-nav.main a:hover{color:#fff}nav.main a:hover::after{width:100%}
-nav.main button{background:none;border:0;padding:0 0 3px;cursor:pointer;font:inherit;letter-spacing:inherit;color:rgba(242,236,223,.82);position:relative}
-nav.main button::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ember);transition:width .3s}
-nav.main button:hover{color:#fff}nav.main button:hover::after{width:100%}
-nav.main button[aria-expanded="true"]{color:#fff}nav.main button[aria-expanded="true"]::after{width:100%}
-#sbMenu{display:none;background:rgba(10,12,24,.55);border:1px solid rgba(140,180,255,.28);color:#eaf0ff;border-radius:100px;padding:12px 18px;font-family:var(--mono);font-size:9px;letter-spacing:.22em;cursor:pointer;backdrop-filter:blur(6px)}
-#sbMenu:hover{border-color:rgba(140,180,255,.65);color:#fff}
-.sb-panel{position:absolute;top:74px;right:24px;z-index:7;min-width:300px;max-width:min(360px,94vw);display:flex;flex-direction:column;gap:2px;padding:10px;background:rgba(10,12,24,.82);border:1px solid rgba(140,180,255,.28);border-radius:14px;backdrop-filter:blur(10px);box-shadow:0 18px 50px rgba(0,0,10,.55);text-shadow:0 1px 14px rgba(0,0,10,.75)}
+   Rules this region obeys, and the reason for each:
+    · Nothing in the default state says "loading", "computing" or "waking".
+      Every visible string is a finished sentence; the two scripts at the foot
+      of the page only UPGRADE text that is already correct.
+    · One promise, one primary action, above the fold at 375×667 and 1440×900.
+    · Sentence case for prose. Capitals appear only as eyebrows.
+    · 12px type floor — no prose, label or control under 12px.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.frontmatter{
+  --paper:#f6f1e6;--paper-2:#fbf8f1;--paper-3:#efe9dc;
+  --e-ink:#16140f;         /* 16.6:1 on paper */
+  --e-ink-2:#3d3a33;       /* 10.0:1 */
+  --e-ink-3:#5f5b52;       /*  6.1:1 — captions, hints */
+  --e-rule:rgba(22,20,15,.15);--e-rule-2:rgba(22,20,15,.30);
+  --e-accent:#0d5f56;      /*  6.8:1 — the site's teal, taken down to read on paper */
+  --e-accent-2:#08423c;
+  --t-headline:clamp(36px,5.6vw,68px);
+  --t-deck:clamp(25px,2.6vw,36px);
+  --t-standfirst:clamp(16px,.55vw + 14px,21px);
+  --t-body:clamp(15.5px,.3vw + 14.5px,17px);
+  --t-small:13px;
+  --t-eyebrow:12px;
+  position:relative;z-index:1;
+  background:var(--paper);color:var(--e-ink);
+  font-size:var(--t-body);line-height:1.6;
+}
+.frontmatter h1,.frontmatter h2,.frontmatter h3,.frontmatter p,.frontmatter ol,.frontmatter figure{margin:0}
+.frontmatter ol{padding:0;list-style:none}
+.frontmatter a{color:var(--e-accent);text-decoration:none}
+.frontmatter a:hover{color:var(--e-accent-2);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.frontmatter a:focus-visible,.frontmatter button:focus-visible,.frontmatter input:focus-visible{outline:2px solid var(--e-accent);outline-offset:3px}
+.shell{width:100%;max-width:1240px;margin:0 auto;padding-inline:clamp(20px,4vw,44px)}
+.skip{position:absolute;left:-9999px;top:0;z-index:30;background:#16140f;color:#f6f1e6;padding:12px 18px;font-size:13px}
+.skip:focus{left:12px;top:12px}
+/* The ONLY sanctioned use of capitals in this region. */
+.eyebrow{font-family:var(--mono);font-size:var(--t-eyebrow);letter-spacing:.16em;text-transform:uppercase;color:var(--e-ink-3);line-height:1.4}
+
+/* ── Masthead — thick/thin double rule, as a paper would set it ── */
+.masthead{border-bottom:2px solid var(--e-ink)}
+.masthead__inner{display:flex;align-items:center;justify-content:space-between;gap:12px 22px;padding-block:13px 11px}
+.masthead__brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--e-ink)}
+.masthead__brand:hover{color:var(--e-ink);text-decoration:none}
+.masthead__brand img{display:block;flex:none}
+.wordmark{font-family:var(--caps);font-weight:600;font-size:clamp(15px,1.4vw,19px);letter-spacing:.26em;line-height:1;text-transform:uppercase}
+.masthead__meta{font-family:var(--mono);font-size:13px;letter-spacing:.01em;color:var(--e-ink-3);line-height:1.4}
+.masthead__nav{display:flex;align-items:center;gap:22px;font-size:14.5px}
+.masthead__nav a{color:var(--e-ink-2)}
+.masthead__nav a:hover{color:var(--e-accent)}
+.masthead__more{background:none;border:0;padding:0;cursor:pointer;font-family:inherit;font-size:14.5px;color:var(--e-ink-2)}
+.masthead__more:hover,.masthead__more[aria-expanded="true"]{color:var(--e-accent)}
+.masthead__rule{height:1px;background:var(--e-rule-2);margin-top:3px}
+
+/* ── The front page — the lead story and its plate ── */
+.frontpage{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(28px,4vw,60px);align-items:start;padding-block:clamp(22px,3.2vh,46px) clamp(28px,4vh,52px)}
+.kicker{margin-bottom:12px;color:var(--e-ink-2)}
+.kicker__dot{color:var(--e-accent);font-size:9px;vertical-align:.2em;margin-right:8px}
+/* The promise. Biggest thing on the screen by a factor of four over body copy. */
+.headline{font-family:var(--serif);font-style:normal;font-weight:600;font-size:var(--t-headline);line-height:1.03;letter-spacing:-.012em;margin-bottom:12px;text-wrap:balance;color:var(--e-ink)}
+.standfirst{font-size:var(--t-standfirst);line-height:1.52;color:var(--e-ink-2);max-width:33em;margin-bottom:20px;text-wrap:pretty}
+
+/* ── The coupon. A subscription card torn from a magazine: the reader is
+      ordering their own edition, not filling in a widget. ── */
+.coupon{margin-top:clamp(16px,2.2vh,24px);max-width:640px}
+.coupon__tear{display:flex;align-items:center;gap:14px;margin-bottom:9px}
+.coupon__tear .eyebrow{flex:none}
+.coupon__perf{flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--e-rule-2) 0 5px,transparent 5px 11px)}
+.coupon__card{border:1px solid var(--e-rule-2);background:var(--paper-2);padding:clamp(15px,1.5vw,21px);box-shadow:0 1px 0 var(--e-rule)}
+.fields{display:grid;grid-template-columns:1fr .95fr 1.5fr;gap:12px;align-items:end}
+.field-e{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field-e label{font-size:var(--t-small);font-weight:600;color:var(--e-ink-2)}
+.field-e .opt{font-weight:400;color:var(--e-ink-3)}
+.field-e input{width:100%;font-family:'Schibsted Grotesk',sans-serif;font-size:16px;line-height:1.3;color:var(--e-ink);background:#fff;border:1px solid var(--e-rule-2);border-radius:2px;padding:12px;color-scheme:light;transition:border-color .18s,box-shadow .18s}
+.field-e input::placeholder{color:var(--e-ink-3);opacity:1}
+.field-e input:focus{outline:none;border-color:var(--e-accent);box-shadow:0 0 0 3px rgba(13,95,86,.20)}
+.field-e input:focus-visible{outline:none}
+.coupon__hint{font-size:var(--t-small);line-height:1.5;color:var(--e-ink-3);margin-top:11px;max-width:58ch}
+.coupon__action{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:15px}
+/* THE one primary action on the screen. Nothing else here is a filled button. */
+.btn-primary{font-family:'Schibsted Grotesk',sans-serif;font-size:16.5px;font-weight:600;color:var(--paper);background:var(--e-ink);border:1px solid var(--e-ink);border-radius:2px;padding:14px 28px;cursor:pointer;transition:background .18s,border-color .18s,transform .12s}
+.btn-primary:hover{background:var(--e-accent);border-color:var(--e-accent);color:#fff}
+.btn-primary:active{transform:translateY(1px)}
+.action-note{font-size:var(--t-small);color:var(--e-ink-3);line-height:1.5}
+.colophon{margin-top:clamp(16px,2.4vh,26px);padding-top:13px;border-top:1px solid var(--e-rule);font-size:var(--t-small);line-height:1.65;color:var(--e-ink-3);max-width:64ch}
+.colophon b{color:var(--e-ink-2);font-weight:600}
+
+/* ── The plate. One dark inset on the sheet, the way an atlas prints a
+      photographic plate — except this one is the live model, still running. ── */
+.plate{background:#0a0908;border:1px solid var(--e-rule-2);padding:clamp(14px,1.4vw,20px);color:var(--ink)}
+.plate__stage{position:relative;height:min(52vh,430px);min-height:290px;overflow:hidden;background:radial-gradient(120% 95% at 50% 45%,#0e0c0b,#090807 72%)}
+.plate__stage void-orrery{position:absolute;inset:0}
+.plate__chrome{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:11px}
+.plate__chrome-lbl{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(242,236,223,.5)}
+.plate__caption{margin-top:12px;padding-top:12px;border-top:1px solid rgba(242,236,223,.16);font-size:13px;line-height:1.6;color:rgba(242,236,223,.66)}
+.plate__caption b{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:400;margin-bottom:7px}
+.plate__caption a{color:#6fd8cb}
+.plate__caption a:hover{color:#a5ece2}
+
+/* ── The next band — "in this edition" ── */
+.edition{border-top:2px solid var(--e-ink);background:var(--paper-3);padding-block:clamp(32px,4.6vw,54px) clamp(34px,4.8vw,58px)}
+.edition__grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:clamp(28px,4vw,56px);align-items:start}
+.deck-h{font-family:var(--serif);font-style:normal;font-weight:600;font-size:var(--t-deck);line-height:1.14;letter-spacing:-.008em;max-width:20ch;margin:13px 0 24px;text-wrap:balance;color:var(--e-ink)}
+.contents{border-top:1px solid var(--e-rule-2)}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:6px 20px;align-items:baseline;padding:17px 0;border-bottom:1px solid var(--e-rule)}
+.item__num{font-family:var(--mono);font-size:13px;color:var(--e-ink-3);padding-top:2px}
+.item__title{font-family:var(--serif);font-style:normal;font-weight:600;font-size:clamp(19px,1.5vw,23px);line-height:1.2;letter-spacing:-.005em}
+.item__title a{color:var(--e-ink)}
+.item__title a:hover{color:var(--e-accent)}
+.item__desc{grid-column:2;font-size:15px;line-height:1.55;color:var(--e-ink-2);max-width:56ch;margin-top:5px}
+.item__price{font-family:var(--mono);font-size:14px;color:var(--e-ink);white-space:nowrap;text-align:right}
+.item__price span{display:block;font-size:13px;color:var(--e-ink-3);margin-top:4px}
+.honesty{margin-top:24px;padding-left:18px;border-left:2px solid var(--e-accent);font-size:15.5px;line-height:1.62;color:var(--e-ink-2);max-width:62ch}
+.honesty b{color:var(--e-ink);font-weight:600}
+.also{margin-top:15px;font-size:13px;line-height:1.6;color:var(--e-ink-3);max-width:62ch}
+.margin-note{border:1px solid var(--e-rule-2);background:var(--paper-2);padding:clamp(15px,1.5vw,21px)}
+.margin-note__eyebrow{margin-bottom:13px;color:var(--e-accent)}
+.margin-note svg{display:block;width:100%;height:auto}
+.margin-note figcaption{margin-top:13px;padding-top:12px;border-top:1px solid var(--e-rule);font-size:13px;line-height:1.6;color:var(--e-ink-3)}
+.margin-note figcaption b{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--e-ink-2);font-weight:400;margin-bottom:7px}
+.margin-note__dateline{margin-top:13px;font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--e-ink-2)}
+.margin-note__link{display:inline-block;margin-top:11px;font-size:15px;font-weight:600}
+.fig2-sun{fill:#e0cfa8}
+.fig2-rays{fill:none;stroke:#e0cfa8;stroke-width:7;stroke-dasharray:1.4 8.5;opacity:.6}
+.fig2-moon{fill:#16140f;stroke:var(--e-rule-2);stroke-width:1}
+.fig2-hair{stroke:var(--e-rule-2);stroke-width:1;fill:none}
+.fig2-meteor{stroke:var(--e-ink-3);stroke-width:1;opacity:.55}
+.fig2-label{font-family:var(--mono);font-size:11px;fill:var(--e-ink-3)}
+
+/* ── The "more" panel: the full IA, on paper, in sentence case ── */
+.sb-panel{position:absolute;top:58px;right:clamp(20px,4vw,44px);z-index:12;min-width:290px;max-width:min(360px,94vw);display:flex;flex-direction:column;gap:1px;padding:10px;background:var(--paper-2);border:1px solid var(--e-rule-2);box-shadow:0 18px 50px rgba(22,20,15,.18)}
 .sb-panel[hidden]{display:none}
-.sb-panel-lbl{padding:10px 14px 4px;font-family:var(--mono);font-size:7px;letter-spacing:.3em;color:rgba(234,240,255,.5)}
-.sb-panel a{display:block;padding:11px 14px;border-radius:9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:#eaf0ff}
-.sb-panel a small{display:block;margin-top:5px;font-size:7.5px;letter-spacing:.2em;color:rgba(234,240,255,.55)}
-.sb-panel a:hover{background:rgba(140,180,255,.14);color:#fff}
-.sb-panel a[aria-current="page"]{color:var(--ember-hi)}
-.sb-panel-div{height:1px;margin:7px 10px;background:rgba(140,180,255,.22)}
+.sb-panel-lbl{padding:10px 12px 5px;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--e-ink-3)}
+.sb-panel a{display:block;padding:9px 12px;font-size:15px;color:var(--e-ink)}
+.sb-panel a small{display:block;margin-top:2px;font-size:13px;color:var(--e-ink-3)}
+.sb-panel a:hover{background:var(--paper-3);color:var(--e-accent);text-decoration:none}
+.sb-panel a[aria-current="page"]{color:var(--e-accent)}
+.sb-panel-div{height:1px;margin:7px 10px;background:var(--e-rule)}
 .sb-panel-onpage{display:none}
+
+/* The cast console keeps its one-off flash when the atlas points at it. */
 .console.console-flash{animation:consoleFlash 1.2s ease-out}
 @keyframes consoleFlash{0%{border-color:rgba(47,107,255,.95);box-shadow:0 0 0 6px rgba(47,107,255,.3),0 24px 70px rgba(0,0,10,.45)}100%{border-color:rgba(31,182,166,.4);box-shadow:0 24px 70px rgba(0,0,10,.45)}}
-.hint-chip{position:absolute;z-index:6;display:flex;align-items:center;gap:2px;font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:rgba(234,240,255,.88);background:rgba(10,12,24,.6);border:1px solid rgba(140,180,255,.34);border-radius:100px;padding:5px 6px 5px 14px;backdrop-filter:blur(6px);box-shadow:0 8px 24px rgba(0,0,10,.35);text-shadow:0 1px 10px rgba(0,0,10,.6);transition:opacity .6s}
-.hint-chip[hidden]{display:none}
-.hint-chip.hint-fade{opacity:0}
-.hint-chip b{color:var(--ember-hi);font-weight:400}
-.hint-go{background:none;border:0;padding:6px 4px;cursor:pointer;font:inherit;letter-spacing:inherit;color:inherit}
-.hint-go:hover{color:#fff}
-.hint-x{background:none;border:0;padding:6px 8px;cursor:pointer;font:inherit;font-size:11px;line-height:1;color:rgba(234,240,255,.55)}
-.hint-x:hover{color:#fff}
-#hint1{left:36px;top:82px}
-#hint2{left:18px;bottom:36px;padding:5px 14px}
-.signbar .hint-chip{position:static;flex:none}
-#castCaption{margin-top:14px;font-size:10px;letter-spacing:.2em;color:#0e7a6f}
-@media (prefers-reduced-motion:reduce){.console.console-flash{animation:none}.hint-chip{transition:none}}
+#castCaption{margin-top:14px;font-size:13px;letter-spacing:.06em;color:#0e7a6f}
+@media (prefers-reduced-motion:reduce){.console.console-flash{animation:none}}
 
-/* floating glass-paper cards on the sky — daybreak variable scope so JS-injected var() colors read on paper */
-.console,.reading{--ink:#191309;--dim:rgba(25,19,9,.78);--faint:rgba(25,19,9,.6);--brass:#0e7a6f;--acc:#0e7a6f;--line:rgba(140,110,60,.25);--line2:rgba(25,19,9,.3);--ember-hi:#2456d6;--good:#1e7a46;position:absolute;z-index:6;background:rgba(246,241,230,.94);backdrop-filter:blur(10px);color:#191309;border:1px solid rgba(31,182,166,.4);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(0,0,10,.45)}
-.console{left:24px;top:96px;width:min(400px,92vw);max-height:calc(100vh - 120px);overflow:auto}
-.reading{right:24px;top:96px;width:min(360px,92vw);max-height:calc(100vh - 120px);overflow:auto}
-.console-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.26em;color:#0e7a6f;margin:0 0 10px}
+/* Glass-paper instrument cards. They used to float over the hero; they now sit
+   inside the plates they belong to (the readout, and the day's entry), which is
+   where their own copy always said they were. Same card, same tokens. */
+.console,.reading{--ink:#191309;--dim:rgba(25,19,9,.78);--faint:rgba(25,19,9,.6);--brass:#0e7a6f;--acc:#0e7a6f;--line:rgba(140,110,60,.25);--line2:rgba(25,19,9,.3);--ember-hi:#2456d6;--good:#1e7a46;position:relative;z-index:1;background:rgba(246,241,230,.96);color:#191309;border:1px solid rgba(31,182,166,.4);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(0,0,10,.45)}
+.console{width:min(420px,100%)}
+.reading{width:min(420px,100%)}
+.console-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:#0e7a6f;margin:0 0 10px}
 .console-eyebrow .pulse{color:var(--ember);margin-right:8px}
 .console-title{margin:0 0 16px;font-size:26px;line-height:1.12;font-weight:700;letter-spacing:-.015em;color:#191309}
 .console-title em{font-family:var(--serif);font-style:italic;font-weight:500;color:#2456d6}
@@ -154,7 +252,9 @@ nav.main button[aria-expanded="true"]{color:#fff}nav.main button[aria-expanded="
 .console input,.console select{background:rgba(255,255,255,.7);border:1px solid rgba(25,19,9,.3);color:#191309;color-scheme:light}
 .console input:focus,.console select:focus{border-color:#2456d6;box-shadow:0 0 0 3px rgba(47,107,255,.18)}
 .console #castBtn{width:100%;margin-top:14px;padding:16px 20px}
-.console-note{margin-top:10px;font-size:10px;letter-spacing:.18em;color:rgba(25,19,9,.55);text-align:center}
+.console-note{margin-top:10px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:rgba(25,19,9,.62);text-align:center}
+.console .lbl{font-size:12px;letter-spacing:.18em}
+.console .field span{font-size:12px;letter-spacing:.18em}
 .console .headline-row{border-top-color:rgba(25,19,9,.12)}
 .console .pill{background:rgba(25,19,9,.05);border:1px solid rgba(25,19,9,.3);color:#191309}
 .console .pill:hover{border-color:#0e7a6f;color:#000;transform:translateY(-1px)}
@@ -162,44 +262,43 @@ nav.main button[aria-expanded="true"]{color:#fff}nav.main button[aria-expanded="
 .console .wheelbox{background:radial-gradient(circle at 50% 46%,#17140f 0%,#0c0a09 68%,transparent 71%);border-radius:50%}
 .console-link{display:block;margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:#0e7a6f;text-align:center}
 .console-link:hover{color:#2456d6}
-.reading-tag{font-family:var(--mono);font-size:9px;letter-spacing:.26em;color:#0e7a6f;margin-bottom:10px}
+.reading-tag{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:#0e7a6f;margin-bottom:10px}
 .reading .horo-line{border-top-color:rgba(25,19,9,.14);padding:14px 2px;gap:14px}
 .reading .horo-line .hl-lbl{color:#0e7a6f}
 .reading .horo-line .hl-txt{font-size:17px;color:rgba(25,19,9,.88)}
 
-/* sign picker floating over the sky, above the scrubrow */
-.signbar{position:absolute;left:50%;bottom:84px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:6px;max-width:96vw;overflow-x:auto;padding:6px}
-.signbar-chip{flex:none;font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:rgba(234,240,255,.8);background:rgba(10,12,24,.55);border:1px solid rgba(140,180,255,.28);border-radius:100px;padding:12px 14px;backdrop-filter:blur(6px)}
-.signbar .pill{flex:none;background:rgba(10,12,24,.55);border:1px solid rgba(140,180,255,.28);color:#eaf0ff;padding:11px 15px;font-size:10px;backdrop-filter:blur(6px)}
-.signbar .pill:hover{border-color:rgba(140,180,255,.65);color:#fff;transform:translateY(-1px)}
-.signbar .pill.on{border-color:var(--ember);color:#fff;background:rgba(47,107,255,.28);box-shadow:0 0 16px rgba(47,107,255,.45)}
-.stage-cue{position:absolute;left:50%;bottom:56px;transform:translateX(-50%);z-index:4;pointer-events:none;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.5);white-space:nowrap}
+/* sign picker — now a row inside Plate III, where its reading lands */
+.signbar{display:flex;align-items:center;gap:6px;max-width:100%;overflow-x:auto;padding:6px 0;margin-bottom:24px}
+.signbar-chip{flex:none;font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--brass);padding:12px 14px 12px 0}
+.signbar .pill{flex:none;padding:11px 15px;font-size:12px}
 
-/* sky caption chip, floating on the stage */
-.sky-chip{position:absolute;left:50%;top:76px;transform:translateX(-50%);z-index:4;font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--ink);background:rgba(8,8,11,.62);border:1px solid var(--line2);border-radius:100px;padding:9px 15px;backdrop-filter:blur(4px);pointer-events:none;line-height:1.5;white-space:nowrap}
-.sky-chip .pulse{color:var(--ember)}
-
-/* control deck — the instrument's own chrome, always on inside the panel */
+/* control deck — the instrument's own chrome, inside the plate */
 #deck{position:absolute;inset:0;pointer-events:none;z-index:2}
-#deck .scrubrow{display:flex;align-items:center;gap:14px;padding:0 18px 18px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0}
+#deck .scrubrow{display:flex;align-items:center;gap:10px;padding:0 12px 12px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0}
+#deck .scrubrow .mono{font-size:12px;letter-spacing:.14em;color:rgba(242,236,223,.62)}
+#deck .scrubrow #scrubLabel{min-width:96px;text-align:right;color:var(--brass)}
+#nowBtn{background:none;border:1px solid rgba(31,182,166,.45);color:var(--brass);border-radius:100px;padding:6px 14px;cursor:pointer}
+#nowBtn:hover{border-color:var(--brass);color:#fff}
 input.scrub{-webkit-appearance:none;appearance:none;background:transparent;height:14px;cursor:pointer;border:0;padding:0}
 input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(242,236,223,.1),rgba(47,107,255,.55) 50%,rgba(242,236,223,.1))}
 input.scrub::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(47,107,255,.8);margin-top:-4.5px}
 input.scrub::-moz-range-track{height:2px;background:rgba(47,107,255,.4)}
 input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(47,107,255,.8)}
-#dock{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;pointer-events:auto}
-#dock button{width:42px;height:42px;border-radius:50%;background:rgba(8,8,11,.5);border:1px solid rgba(242,236,223,.2);color:rgba(242,236,223,.85);font-size:14px;cursor:pointer;backdrop-filter:blur(4px);transition:border-color .25s,box-shadow .25s,color .25s}
+/* Fly-to dock and scale ladder: the same buttons the tall hero carried, laid
+   out as two quiet rows beneath the plate instead of floating over the model.
+   Nothing is removed — #ladder is the vertical duplicate of #mladder and is the
+   only element hidden, because two copies of one control is one too many. */
+#dock{display:flex;flex-wrap:wrap;gap:6px;pointer-events:auto}
+#dock button{width:30px;height:30px;padding:0;border-radius:50%;background:rgba(8,8,11,.5);border:1px solid rgba(242,236,223,.2);color:rgba(242,236,223,.85);font-size:14px;cursor:pointer;transition:border-color .25s,box-shadow .25s,color .25s}
 #dock button:hover,#dock button.on{border-color:var(--ember);color:#fff;box-shadow:0 0 16px rgba(47,107,255,.45)}
-#ladder{position:absolute;left:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;pointer-events:auto}
-#ladder button{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:rgba(242,236,223,.55);transition:color .25s}
-#ladder button:hover{color:rgba(242,236,223,.9)}
-#ladder button i{width:22px;height:1px;background:rgba(242,236,223,.2);display:block;transition:background .25s,width .25s}
-#ladder button.on{color:var(--brass)}#ladder button.on i{background:var(--brass);width:32px}
-#mladder{display:none;position:absolute;left:50%;bottom:64px;transform:translateX(-50%);gap:7px;pointer-events:auto;z-index:9}
-#mladder button{background:rgba(8,8,11,.6);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.75);border-radius:100px;padding:11px 14px;font-family:var(--mono);font-size:9px;letter-spacing:.16em;cursor:pointer;backdrop-filter:blur(4px)}
-#mladder button.on{border-color:var(--ember);color:#fff}
-@media (pointer:coarse) and (max-width:1020px){.stage #mladder{display:flex;bottom:140px}}
-#telemetry{position:absolute;left:18px;bottom:64px;pointer-events:none;font-family:var(--mono);font-size:10px;letter-spacing:.14em;line-height:2;color:rgba(242,236,223,.8);max-width:290px}
+#ladder{display:none}
+#mladder{display:flex;flex-wrap:wrap;gap:6px;pointer-events:auto}
+#mladder button{background:rgba(8,8,11,.6);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.78);border-radius:100px;padding:8px 13px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;cursor:pointer}
+#mladder button:hover{border-color:var(--brass);color:#fff}
+#mladder button.on{border-color:var(--ember);color:#fff;background:rgba(47,107,255,.2)}
+/* The telemetry line is the plate's live caption: a finished sentence by
+   default, replaced with real facts the moment a world is focused. */
+#telemetry{font-family:var(--mono);font-size:12px;letter-spacing:.06em;line-height:1.85;color:rgba(242,236,223,.72);margin-top:12px}
 
 /* ═══ ATLAS CHAPTERS ═══ */
 .chap{border-top:1px solid var(--line)}
@@ -215,9 +314,12 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .pill:hover{border-color:var(--brass);color:#fff;transform:translateY(-1px)}
 .pill.on{border-color:var(--ember);color:#fff;background:rgba(47,107,255,.13);box-shadow:0 0 18px rgba(47,107,255,.3)}
 .instrument{border:1px solid var(--line2);border-radius:18px;background:linear-gradient(180deg,rgba(242,236,223,.04),rgba(242,236,223,.012));padding:34px 32px}
-#castHint{display:none;margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ember-hi)}
+#castHint{display:none;margin-top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ember-hi)}
+/* The readout plate: instrument card on the left, arcminute rows on the right */
+.readout-grid{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:34px;align-items:start}
+@media (max-width:899px){.readout-grid{grid-template-columns:1fr;gap:26px}}
 #castHint.show{display:block}
-#wheelTitle::before{content:"FIG. 1 — "}
+#wheelTitle::before{content:"FIG. 3 — "}   /* Fig. 1 is the live plate, Fig. 2 the eclipse */
 .headline-row{display:flex;gap:12px;padding:11px 2px;border-top:1px solid rgba(242,236,223,.08)}
 .horo-line{display:flex;gap:20px;padding:18px 4px;border-top:1px solid rgba(242,236,223,.08)}
 .horo-line .hl-lbl{width:84px;flex:none;font-family:var(--mono);font-size:9px;letter-spacing:.24em;color:var(--brass);padding-top:6px}
@@ -235,200 +337,355 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .foot-cols span{color:var(--faint)}
 .foot{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:rgba(242,236,223,.56);line-height:2.2}
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   BREAKPOINTS — reasoned against two real targets, then measured in a browser:
+   1440×900 desktop and 375×667 mobile. Numbers at the foot of this file.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Short desktop windows: step the headline down so the coupon and its button
+   stay above the fold on a 1440×900 screen. */
+@media (min-width:900px) and (max-height:880px){
+  .frontmatter{--t-headline:clamp(36px,4.4vw,54px)}
+  .frontpage{padding-block:22px 30px}
+  .standfirst{margin-bottom:16px}
+  .plate__stage{height:min(46vh,380px)}
+}
+@media (min-width:900px) and (max-height:740px){
+  .frontmatter{--t-headline:46px;--t-standfirst:17px}
+  .plate{padding:14px}
+  .plate__stage{height:290px}
+}
+/* Two columns on a narrow desktop leaves the lead column near 490px, which
+   squeezes three fields to 128/102/205 — fine for a 24-hour time input, too
+   tight for a US 12-hour one with its AM/PM segment. Drop to two rows. */
+@media (min-width:900px) and (max-width:1149px){
+  .fields{grid-template-columns:1.2fr .8fr}
+  .field--place{grid-column:1 / -1}
+}
+
 @media (max-width:900px){
   .chap-head{margin-bottom:56px}
   section.band{padding:96px 0}
-  .sky-chip{display:none}
 }
+
+/* Tablet and below: one column. The plate moves under the coupon, which is
+   correct — the action must never be pushed down the page by a picture. */
+@media (max-width:899px){
+  .frontpage{grid-template-columns:1fr;gap:30px;padding-block:18px 30px}
+  .plate{max-width:560px}
+  .edition__grid{grid-template-columns:1fr;gap:32px}
+  .margin-note{max-width:560px}
+  .deck-h{max-width:24ch}
+}
+
 @media (max-width:760px){
-  .er-wrap{flex-direction:column;align-items:flex-start;gap:18px;padding:22px 24px}
-  .er-right{width:100%;justify-content:space-between;gap:14px}
-  .er-right .btn{width:100%;white-space:normal;text-align:center;padding:16px 20px}
   input,select{padding:13px}
-  nav.main{gap:16px}
-  nav.main a{display:inline-block;padding:12px 4px}
-  .trust-cell{border-left:0;border-top:1px solid var(--line);padding:24px}
-  .trust-cell:first-child{border-top:0}
-  .stage{min-height:640px}
-  .stagebar{padding:14px 16px;gap:10px 16px}
-  .sky-chip{display:none}
-  .stage-cue{display:none}
-  .stage #mladder{display:none!important}
-  .console{left:12px;right:12px;width:auto;top:auto;bottom:118px;max-height:48vh;overflow:auto}
-  .reading{left:12px;right:12px;width:auto;top:80px;max-height:40vh;overflow:auto}
-  .signbar{bottom:64px;mask-image:linear-gradient(90deg,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);scrollbar-width:none}
-  .signbar::-webkit-scrollbar{display:none}
-  .signbar .signbar-chip{position:sticky;left:0}
-  nav.main{display:none}
-  .stagebar{flex-wrap:nowrap}
-  #sbMenu{display:inline-block}
-  .sb-panel{top:60px;left:0;right:0;max-width:none;border-left:0;border-right:0;border-radius:0 0 16px 16px}
-  .sb-panel a{padding:14px 16px}
+  .sb-panel{top:52px;left:0;right:0;max-width:none;border-left:0;border-right:0}
+  .sb-panel a{padding:12px 16px}
   .sb-panel-onpage{display:block}
-  #hint1{display:none}
-  #hint2{left:12px;bottom:110px}
+  .signbar{mask-image:linear-gradient(90deg,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);scrollbar-width:none}
+  .signbar::-webkit-scrollbar{display:none}
+  .signbar .signbar-chip{position:sticky;left:0;background:#0a0908}
 }
-@media (pointer:coarse){input.scrub{height:44px}input.scrub::-webkit-slider-thumb{width:28px;height:28px;margin-top:-13px}input.scrub::-moz-range-thumb{width:28px;height:28px}#nowBtn{padding:12px 18px}}
-@media (max-width:1020px){#ladder{display:none}}
-@media (max-width:860px){#dock{display:none}#telemetry{display:none}}
-@media (max-width:430px){.card{padding:20px 18px}section.band{padding:72px 0}.chap-num{font-size:52px}.sky-chip{right:16px}}
+
+/* Phone. Three moves buy the fold: the nav collapses to one link plus "more",
+   the standfirst drops its closing sentence, and the fields go two-up. */
+@media (max-width:639px){
+  .masthead__inner{padding-block:10px 8px;gap:10px}
+  .masthead__meta{display:none}
+  .masthead__nav{gap:16px}
+  .masthead__nav a:not(.nav-primary){display:none}
+  .frontpage{padding-block:8px 26px;gap:26px}
+  .kicker{margin-bottom:9px}
+  .headline{margin-bottom:9px}
+  .standfirst{margin-bottom:13px;line-height:1.5}
+  .standfirst .wide-only{display:none}
+  .coupon{margin-top:11px}
+  .coupon__tear{margin-bottom:8px;gap:11px}
+  .coupon__card{padding:13px}
+  .fields{grid-template-columns:1.1fr .9fr;gap:10px}   /* 160 / 131 at 375px:
+       both wide enough for a 12-hour time input with its AM/PM segment */
+  .field--place{grid-column:1 / -1}
+  .field-e .opt{display:none}      /* "Time" alone; the label must not wrap */
+  .field-e input{padding:11px}
+  .coupon__hint{margin-top:9px;line-height:1.45}       /* stays 13px */
+  .coupon__action{margin-top:10px;gap:10px}
+  .btn-primary{width:100%;padding:15px 20px}
+  .action-note{width:100%}
+  .plate__stage{height:min(48vh,320px)}
+  .scrub-end{display:none}
+  .item{grid-template-columns:auto 1fr;gap:4px 14px;padding:15px 0}
+  .item__price{grid-column:2;text-align:left;margin-top:8px}
+  .item__price span{display:inline;margin-left:6px}
+}
+@media (pointer:coarse){input.scrub{height:44px}input.scrub::-webkit-slider-thumb{width:28px;height:28px;margin-top:-13px}input.scrub::-moz-range-thumb{width:28px;height:28px}#nowBtn{padding:11px 16px}}
+@media (max-width:430px){.card{padding:20px 18px}section.band{padding:72px 0}.chap-num{font-size:52px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 
 /* ═══ DAYBREAK — morning on top, night atlas below ═══ */
 .daybreak{--ink:#191309;--dim:rgba(25,19,9,.74);--faint:rgba(25,19,9,.56);--line:rgba(140,110,60,.20);--line2:rgba(140,110,60,.34);--brass:#0e7a6f;--acc:#0e7a6f;background:#f6f1e6;color:#191309}
-#eclipse-ribbon.daybreak{background:linear-gradient(90deg,rgba(47,107,255,.14),rgba(99,149,255,.10) 45%,rgba(31,182,166,.12));border-bottom:1px solid rgba(47,107,255,.35)}
-.trust.daybreak{border-top:0;border-bottom:1px solid rgba(140,110,60,.22)}
-.daybreak .er-count{color:#0e4fb8;text-shadow:0 0 26px rgba(47,107,255,.3)}
-.daybreak-horizon{height:150px;background:linear-gradient(#f6f1e6,rgba(246,241,230,0) 30%,#0a0908 72%);margin-bottom:-1px}
+/* The horizon now runs out of the edition band's tinted stock, not the plain
+   sheet, so the join is seamless. */
+.daybreak-horizon{height:150px;background:linear-gradient(#efe9dc,rgba(239,233,220,0) 30%,#0a0908 72%);margin-bottom:-1px}
 </style>
 </head>
 <body>
 
-<!-- ═══ ECLIPSE EVENT BAR — 12 AUG 2026, deepest over Britain since 1999 ═══ -->
-<section id="eclipse-ribbon" class="daybreak" aria-labelledby="erHead">
-  <div class="er-wrap">
-    <a class="er-left" href="./eclipse.html">
-      <div class="er-lbl"><span class="pulse">●</span>&nbsp;&nbsp;THE ECLIPSE — 12 AUG 2026</div>
-      <h2 class="er-h" id="erHead">The deepest <em>shadow</em> over Britain since 1999.</h2>
-      <div class="er-sub">~89–92% OF THE SUN COVERED · PEAK ≈19:05 BST · PERSEIDS THE SAME NIGHT</div>
-    </a>
-    <div class="er-right">
-      <div class="er-count" id="erCount" aria-hidden="true">COMPUTING…</div>
-      <span class="sr-only">The partial solar eclipse peaks over Britain around 19:05 BST on 12 August 2026.</span>
-      <a class="btn" id="erCta" href="./eclipse.html" style="white-space:nowrap">WHERE DOES IT LAND IN YOUR CHART →</a>
-    </div>
-  </div>
-</section>
-<script>
-(function () {
-  var T = Date.UTC(2026, 7, 12, 17, 46); /* greatest eclipse 17:46 UT — matches eclipse.html */
-  var el = document.getElementById('erCount'), cta = document.getElementById('erCta');
-  if (!el) return;
-  function pad(n) { return String(n).padStart(2, '0'); }
-  function tick() {
-    var ms = T - Date.now();
-    if (ms <= 0) {
-      el.innerHTML = 'THE SHADOW HAS CROSSED<small>YOUR ECLIPSE CHART STILL HOLDS</small>';
-      if (cta) cta.textContent = 'SEE WHERE IT LANDED IN YOUR CHART →';
-      return;
-    }
-    var d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4), s = Math.floor(ms % 6e4 / 1e3);
-    el.innerHTML = 'T−' + d + 'D ' + pad(h) + ':' + pad(m) + ':' + pad(s) + '<small>TO GREATEST ECLIPSE · 18:46 BST · UK PEAK ≈19:05</small>';
-  }
-  tick(); setInterval(tick, 1000);
-})();
-</script>
+<a class="skip" href="#lead">Skip to the main story</a>
 
-<!-- ═══ THE STAGE — full-viewport living sky; brand, chart console, sign picker and reading float ON the model ═══ -->
-<section class="stage" aria-label="The living sky — drag to orbit, cast your chart on it">
-  <void-orrery id="orr"></void-orrery>
-  <div class="sky-chip"><span class="pulse">●</span>&nbsp;&nbsp;THE SKY RIGHT NOW · DRAG TO ORBIT · CLICK A WORLD TO FLY</div>
-  <header class="stagebar">
-    <a class="hero-brand" href="./">
-      <img src="./img/logo-mark.svg" alt="" width="36" height="36" style="display:block">
-      <div>
-        <div class="hero-wordmark">ASTRO&nbsp;PRECISE</div>
-        <div class="hero-tagline">THE&nbsp;REAL&nbsp;SKY&nbsp;NEWS</div>
+<!-- ══ MASTHEAD ════════════════════════════════════════════════════════════
+     A publication is dated and it credits its instruments. The dateline below
+     is a finished phrase — "The real-sky almanac" — that the script at the foot
+     of the page upgrades to today's date. Kill the JavaScript and it still
+     reads correctly. Nothing here waits on anything.
+     ════════════════════════════════════════════════════════════════════════ -->
+<div class="frontmatter frontmatter--head">
+  <header class="masthead">
+    <div class="shell">
+      <div class="masthead__inner">
+        <a class="masthead__brand" href="./">
+          <img src="./img/logo-mark.svg" alt="" width="30" height="30">
+          <span class="wordmark">Astro&nbsp;Precise</span>
+          <span class="masthead__meta"><time id="dateline">The real-sky almanac</time> · computed on your device</span>
+        </a>
+        <nav class="masthead__nav" aria-label="Sections">
+          <a class="nav-primary" href="./chart.html">The chart</a>
+          <a href="./eclipse.html">The eclipse</a>
+          <a href="./ephemeris.html">Ephemeris</a>
+          <a href="./shop.html">Editions</a>
+          <button type="button" class="masthead__more" id="sbMenu" aria-expanded="false" aria-controls="sbPanel">More ▾</button>
+        </nav>
       </div>
-    </a>
-    <nav class="main" aria-label="Main">
-      <button type="button" id="sbCast">CAST</button>
-      <button type="button" id="sbToday">TODAY</button>
-      <a href="#tonight">SKY NEWS ↓</a>
-      <a href="#shop">EDITIONS ↓</a>
-      <button type="button" id="sbExplore" aria-expanded="false" aria-controls="sbPanel">EXPLORE ▾</button>
-    </nav>
-    <button type="button" id="sbMenu" aria-expanded="false" aria-controls="sbPanel">MENU ▾</button>
+    </div>
+    <div class="masthead__rule" aria-hidden="true"></div>
   </header>
-  <div class="console">
-    <p class="console-eyebrow"><span class="pulse">●</span>FREE BIRTH CHART · NO ACCOUNT · ON-DEVICE</p>
-    <h1 class="console-title">Your birth chart, <em>read from the real sky.</em></h1>
-    <form id="castForm" action="#" method="get" onsubmit="document.getElementById('castBtn').click();return false" style="display:contents">
-    <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" min="1800-01-01" max="2200-12-31"></label>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-      <label class="field"><span>TIME — SHARPENS THE MOON</span><input type="time" id="tob" value="12:00"></label>
-      <label class="field"><span>CLOCK OFFSET FROM UT</span>
-        <select id="tz"><option value="0">UT / GMT</option><option value="1">UK SUMMER (+1)</option><option value="2">CENTRAL EU SUMMER (+2)</option><option value="-4">US EASTERN (−4)</option><option value="-5">US CENTRAL (−5)</option><option value="-7">US PACIFIC (−7)</option><option value="5.5">INDIA (+5.5)</option><option value="8">CHINA (+8)</option><option value="10">SYDNEY (+10)</option></select></label>
-    </div>
-    <button class="btn" id="castBtn" type="button">CAST THE SKY — FREE</button>
-    <div class="console-note mono">COMPUTED HERE · NEVER UPLOADED</div>
-    <div id="castHint" role="alert">▲ PICK YOUR BIRTH DATE FIRST — THE SKY NEEDS A DAY TO READ</div>
-    <input type="submit" style="position:absolute;left:-9999px;width:0;height:0;opacity:0" tabindex="-1" aria-hidden="true">
-    </form>
-    <div id="headlines" hidden style="margin-top:18px">
-      <div class="lbl" style="color:var(--good)">YOUR HEADLINES</div>
-      <div id="headlineRows"></div>
-      <div class="mono" id="castCaption" hidden>THE MODEL NOW HOLDS YOUR BIRTH MINUTE — SCRUB TIME BELOW</div>
-      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-        <button class="pill" id="flyMine" type="button">✦ FLY MY SKY</button>
-        <a class="pill" id="openExplorer" href="./explore.html">OPEN IN THE FULL EXPLORER →</a>
-        <a class="pill" href="./deep-reading.html">KEEP IT — THE £12 READING</a>
-        <a class="pill" href="./natal-plate.html">THE £14 PLATE</a>
-      </div>
-    </div>
-    <div id="wheelWrap" hidden>
-      <div class="mono" id="wheelTitle" style="font-size:9.5px;letter-spacing:.3em;color:var(--brass);text-align:center;margin-top:20px">THE SKY RIGHT NOW</div>
-      <div class="wheelbox" style="width:100%;max-width:290px;margin:14px auto 0"><svg id="wheel" viewBox="0 0 380 380" role="img" aria-label="Chart wheel"></svg></div>
-    </div>
-    <a class="console-link" href="#rows">FULL POSITION READOUT ↓</a>
-  </div>
-  <div class="signbar">
-    <span class="hint-chip" id="hint3" role="note" hidden><button type="button" class="hint-go">03 — <b>RETURN</b> · THE SKY MOVES EVERY DAY</button><button type="button" class="hint-x" aria-label="Dismiss hint">×</button></span>
-    <span class="signbar-chip">DAILY SKY →</span>
-    <div id="pills" style="display:flex;flex-wrap:nowrap;gap:6px"></div>
-  </div>
-  <aside class="reading" id="horoBody" hidden>
-    <div class="reading-tag">TODAY'S SKY BY SIGN</div>
-    <div class="mono" id="horoHead" style="font-size:10px;letter-spacing:.26em;color:var(--brass);margin-bottom:8px"></div>
-    <div id="horoLines"></div>
-  </aside>
+
   <div class="sb-panel" id="sbPanel" hidden>
     <div class="sb-panel-onpage">
-      <div class="sb-panel-lbl">ON THIS PAGE ↓</div>
-      <a href="#tonight">SKY NEWS</a>
-      <a href="#shop">EDITIONS</a>
-      <a href="#privacy">THE AUDIT</a>
+      <div class="sb-panel-lbl">On this page</div>
+      <a href="#cast">The readout</a>
+      <a href="#tonight">Sky news</a>
+      <a href="#shop">Editions</a>
+      <a href="#privacy">The audit</a>
       <div class="sb-panel-div"></div>
     </div>
-    <div class="sb-panel-lbl">EXPLORE</div>
-    <a href="./" aria-current="page">THE OBSERVATORY</a>
-    <a href="./chart.html">CAST A CHART<small>— THE FULL INSTRUMENT</small></a>
-    <a href="./ephemeris.html">THE SKY<small>— EPHEMERIS</small></a>
-    <a href="./explore.html">THE EXPLORER<small>— FLY THE REAL SKY</small></a>
-    <a href="./horoscope.html">DAILY<small>— ALL 12 SIGNS</small></a>
-    <a href="./mysky.html">MY SKY<small>— YOUR HUB</small></a>
-    <a href="./moment.html">MOMENT<small>— KEEP A SKY</small></a>
+    <div class="sb-panel-lbl">Explore</div>
+    <a href="./" aria-current="page">The observatory</a>
+    <a href="./chart.html">Cast a chart<small>The full instrument — birth place, Rising, houses</small></a>
+    <a href="./ephemeris.html">The sky<small>Ephemeris</small></a>
+    <a href="./explore.html">The explorer<small>Fly the real sky</small></a>
+    <a href="./horoscope.html">Daily<small>All twelve signs</small></a>
+    <a href="./mysky.html">My sky<small>Your hub</small></a>
+    <a href="./moment.html">Moment<small>Keep a sky</small></a>
     <div class="sb-panel-div"></div>
-    <a href="./eclipse.html">THE ECLIPSE<small>· 12 AUG</small></a>
-    <a href="./shop.html">SHOP<small>— ALL EDITIONS</small></a>
-    <a href="./guides.html">THE LIBRARY<small>— ALL 25+ TOOLS</small></a>
-  </div>
-  <span class="hint-chip" id="hint1" role="note" hidden><button type="button" class="hint-go">01 — <b>CAST</b> · GIVE THE SKY YOUR FIRST BREATH</button><button type="button" class="hint-x" aria-label="Dismiss hint">×</button></span>
-  <span class="hint-chip" id="hint2" role="note" hidden>02 — <b>FLY</b> · DRAG TO ORBIT · SCRUB 1800–2200</span>
-  <div id="deck">
-    <div id="ladder" role="group" aria-label="Scale ladder"></div>
-    <div id="mladder" role="group" aria-label="Scale ladder"></div>
-    <div id="telemetry" aria-live="polite"></div>
-    <div id="dock" role="group" aria-label="Fly to a world"></div>
-    <div class="scrubrow">
-      <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">1800</span>
-      <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
-      <span class="mono" style="font-size:9.5px;letter-spacing:.2em;color:var(--faint)">2200</span>
-      <span class="mono" id="scrubLabel" style="font-size:10px;letter-spacing:.18em;color:var(--brass);min-width:110px;text-align:right">NOW</span>
-      <button class="mono" id="nowBtn" type="button" style="background:none;border:1px solid rgba(31,182,166,.45);color:var(--brass);border-radius:100px;padding:7px 16px;font-size:9.5px;letter-spacing:.2em;cursor:pointer">NOW</button>
-    </div>
-  </div>
-  <div class="stage-cue">THE ATLAS BELOW ↓</div>
-</section>
-
-<!-- trust strip -->
-<div class="trust daybreak">
-  <div class="trust-grid">
-    <div class="trust-cell"><div class="trust-lbl">FREE · NO ACCOUNT</div><div class="trust-txt">The full chart. No email, no wall.</div></div>
-    <div class="trust-cell"><div class="trust-lbl">COMPUTED HERE</div><div class="trust-txt">Your birth minute never leaves this device. <a href="#privacy">Check it →</a></div></div>
-    <div class="trust-cell"><div class="trust-lbl">PLANETARIUM-GRADE</div><div class="trust-txt">The same maths as planetarium software, 1800–2200.</div></div>
+    <a href="./eclipse.html">The eclipse<small>12 August 2026</small></a>
+    <a href="./shop.html">Shop<small>All editions</small></a>
+    <a href="./guides.html">The library<small>Every tool</small></a>
   </div>
 </div>
+
+<main>
+
+<!-- ══ THE FRONT PAGE ══════════════════════════════════════════════════════
+     The lead story, the coupon, and the plate. One promise; one primary
+     action; no string on this screen has to resolve before it reads.
+     ════════════════════════════════════════════════════════════════════════ -->
+<div class="frontmatter">
+  <div class="shell">
+    <article class="frontpage" id="lead">
+
+      <div class="lead">
+        <p class="eyebrow kicker"><span class="kicker__dot" aria-hidden="true">●</span>Free birth chart · no account</p>
+
+        <h1 class="headline">The real sky at the minute you were born.</h1>
+
+        <p class="standfirst">
+          Every planet placed to the arcminute by the mathematics planetarium
+          software uses — worked out in your browser, free.<span class="wide-only">
+          Then we tell you what tradition makes of it, plainly, and exactly
+          where that reading stops.</span>
+        </p>
+
+        <!-- ── The coupon. It carries date, place and time, and it hands off to
+             the full instrument at chart.html, which can resolve the town to
+             coordinates and therefore produce a real Rising, Midheaven and
+             houses. chart.html reads all three from the URL (js/chart-page.js
+             → prefillFromURL); nobody retypes anything. ── -->
+        <div class="coupon">
+          <div class="coupon__tear">
+            <p class="eyebrow">Set your edition</p>
+            <span class="coupon__perf" aria-hidden="true"></span>
+          </div>
+          <div class="coupon__card">
+            <form action="./chart.html" method="get">
+              <div class="fields">
+                <div class="field-e">
+                  <label for="f-date">Birth date</label>
+                  <input type="date" id="f-date" name="date" required
+                         min="1800-01-01" max="2200-12-31" autocomplete="bday">
+                </div>
+                <div class="field-e">
+                  <label for="f-time">Time <span class="opt">— optional</span></label>
+                  <input type="time" id="f-time" name="time">
+                </div>
+                <div class="field-e field--place">
+                  <label for="f-place">Birth place</label>
+                  <input type="text" id="f-place" name="city"
+                         placeholder="Town or city" autocomplete="off"
+                         aria-describedby="coupon-hint">
+                </div>
+              </div>
+
+              <!-- Carries the "optional" fact in prose, because the inline
+                   "— optional" on the Time label is suppressed below 640px to
+                   stop the label wrapping. -->
+              <p class="coupon__hint" id="coupon-hint">
+                Place and time are optional, and they are what fix your Rising,
+                Midheaven and houses. You confirm the town on the next screen.
+              </p>
+
+              <div class="coupon__action">
+                <button class="btn-primary" type="submit">Cast my chart — free</button>
+                <span class="action-note">About twenty seconds. Free for good. Nothing to sign up to.</span>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <p class="colophon">
+          <b>Instruments:</b> VSOP87 for the planets, ELP2000 for the Moon,
+          after Meeus — the series planetarium software runs on. Valid
+          1800–2200&nbsp;CE. Your birth minute is computed on this device and
+          stored nowhere. Open your browser's network tab while you cast, and
+          watch nothing go out.
+        </p>
+      </div>
+
+      <!-- ── The plate. Where an atlas prints a photographic plate, this one
+           runs: the same live orrery the hero used to fill the screen with,
+           kept whole — engine, scrub, scale ladder, fly-to dock and telemetry
+           — and set at plate size so the promise stays the largest thing on
+           the page. ── -->
+      <figure class="plate">
+        <div class="plate__stage" role="group" aria-label="The living sky — drag to orbit, click a world to fly">
+          <void-orrery id="orr"></void-orrery>
+          <div id="deck">
+            <div id="ladder" role="group" aria-label="Scale ladder"></div>
+            <div class="scrubrow">
+              <span class="mono scrub-end">1800</span>
+              <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub time between 1800 and 2200">
+              <span class="mono scrub-end">2200</span>
+              <span class="mono" id="scrubLabel">Now</span>
+              <button class="mono" id="nowBtn" type="button">Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="plate__chrome">
+          <span class="plate__chrome-lbl">Scale</span>
+          <div id="mladder" role="group" aria-label="Scale ladder"></div>
+        </div>
+        <div class="plate__chrome">
+          <span class="plate__chrome-lbl">Fly to</span>
+          <div id="dock" role="group" aria-label="Fly to a world"></div>
+        </div>
+        <p id="telemetry" aria-live="polite">Drag to orbit · click a world to fly · scrub any date from 1800 to 2200.</p>
+        <figcaption class="plate__caption">
+          <b>Fig. 1 — the sky, live</b>
+          The real solar system at this minute, drawn on your device by the same
+          series that places your chart. <a href="./explore.html">Open the full explorer →</a>
+        </figcaption>
+      </figure>
+
+    </article>
+  </div>
+
+  <!-- ══ THE NEXT BAND — in this edition ═══════════════════════════════════ -->
+  <section class="edition" aria-labelledby="edition-deck">
+    <div class="shell">
+      <div class="edition__grid">
+
+        <div>
+          <p class="eyebrow">In this edition</p>
+          <h2 class="deck-h" id="edition-deck">Everything computed is free. What you can buy is the writing and the printing.</h2>
+
+          <ol class="contents">
+            <li class="item">
+              <span class="item__num">01</span>
+              <h3 class="item__title"><a href="./chart.html">Your natal wheel</a></h3>
+              <span class="item__price">Free</span>
+              <p class="item__desc">Ten bodies, the four angles, whole-sign houses and the aspects between them — drawn the moment it is worked out, and yours to keep or screenshot.</p>
+            </li>
+
+            <li class="item">
+              <span class="item__num">02</span>
+              <h3 class="item__title"><a href="./eclipse.html">Where the eclipse lands in your chart</a></h3>
+              <span class="item__price">Free<span>£2.99 to read</span></span>
+              <p class="item__desc">The 12 August eclipse against your own chart, with the exact orb, computed before any price is mentioned. If it makes no close contact, that is what the page says.</p>
+            </li>
+
+            <li class="item">
+              <span class="item__num">03</span>
+              <h3 class="item__title"><a href="./deep-reading.html">The Deep Reading</a></h3>
+              <span class="item__price">£12</span>
+              <p class="item__desc">Seven chapters written from your chart and nothing else — no template paragraphs, no sign-shaped filler — with a live reading of your sky today. The whole sample is published, so you can read it before you decide.</p>
+            </li>
+          </ol>
+
+          <p class="honesty">
+            The astronomy is exact and checkable. The astrological meaning is
+            tradition — offered for reflection, not advice and not prediction.
+            <b>And when the sky touches nothing in your chart, we say so on the
+            free screen, before anyone is asked for money.</b>
+          </p>
+
+          <p class="also">
+            Also published: <a href="./natal-plate.html">The Plate</a> — an A3 star
+            map of your birth minute with arcminute tables and a verifiable code,
+            numbered, £14. And the <a href="./shop.html">Sky Pass</a>, thirty dated
+            days of your real sky, £5, which simply ends. There is nothing to cancel.
+          </p>
+        </div>
+
+        <!-- ── the dated second story ─────────────────────────────────────── -->
+        <aside class="margin-note">
+          <p class="eyebrow margin-note__eyebrow">Dated · the coming sky</p>
+          <figure>
+            <svg viewBox="0 0 240 176" role="img" aria-labelledby="fig2-title fig2-desc">
+              <title id="fig2-title">The partial solar eclipse of 12 August 2026</title>
+              <desc id="fig2-desc">A schematic of the Sun's disc with the Moon's dark disc almost covering it, leaving a thin crescent of sunlight, with two meteor trails above representing the Perseids.</desc>
+              <g class="fig2-meteor">
+                <line x1="28" y1="20" x2="52" y2="34"/>
+                <line x1="196" y1="16" x2="214" y2="27"/>
+              </g>
+              <circle class="fig2-rays" cx="120" cy="92" r="60"/>
+              <circle class="fig2-sun" cx="120" cy="92" r="50"/>
+              <circle class="fig2-hair" cx="120" cy="92" r="50"/>
+              <circle class="fig2-moon" cx="111" cy="87" r="50"/>
+              <line class="fig2-hair" x1="8" y1="158" x2="232" y2="158" opacity=".6"/>
+              <text class="fig2-label" x="8" y="172">W</text>
+              <text class="fig2-label" x="232" y="172" text-anchor="end">horizon</text>
+            </svg>
+            <figcaption>
+              <b>Fig. 2 — 12 August 2026</b>
+              The deepest eclipse over Britain since 1999: roughly 89 to 92 per cent
+              of the Sun covered, low in the west. The Perseids peak the same night.
+              Schematic, not to scale.
+            </figcaption>
+          </figure>
+
+          <!-- A complete, true sentence by default. The script appends a day
+               count when it can, and stays silent once the date has passed. -->
+          <p class="margin-note__dateline">
+            Wednesday 12 August 2026 · peak ≈19:05 BST<span id="eclipse-delta"></span>
+          </p>
+          <a class="margin-note__link" href="./eclipse.html">Read where it falls in your chart →</a>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</div>
+
 <div class="daybreak-horizon" aria-hidden="true"></div>
 
 <!-- ═══ PLATE I · THE READOUT ═══ -->
@@ -439,8 +696,45 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       <div class="chap-note">MEEUS SERIES · TO THE ARCMINUTE<br>COMPUTED ON THIS DEVICE</div>
     </div>
     <h2>The sky at your <em style="color:var(--brass)">first breath.</em></h2>
-    <p class="sub">Ten bodies placed to the arcminute of your birth by the Meeus series — the same maths behind planetarium software. Cast on the stage above; the full position readout lands here.</p>
-    <div style="max-width:460px;margin:0 auto" id="rows"></div>
+    <p class="sub">Ten bodies placed to the arcminute of your birth by the Meeus series — the same maths behind planetarium software. Put a date in and it lands on the live model at the top of the page, and in the readout beside it. For your Rising, Midheaven and houses — which need a birth place — use <a href="./chart.html">the full instrument</a>.</p>
+
+    <!-- The cast console. It used to float over a full-height hero; it now sits
+         in the plate its own copy always pointed at. Same element ids, same
+         engine, same on-device computation — only the position changed. -->
+    <div class="instrument readout-grid">
+      <div class="console">
+        <p class="console-eyebrow">Free · no account · computed on this device</p>
+        <h3 class="console-title">Put your birth minute <em>on the model.</em></h3>
+        <form id="castForm" action="#" method="get" onsubmit="document.getElementById('castBtn').click();return false" style="display:contents">
+        <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" min="1800-01-01" max="2200-12-31"></label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <label class="field"><span>TIME — SHARPENS THE MOON</span><input type="time" id="tob" value="12:00"></label>
+          <label class="field"><span>CLOCK OFFSET FROM UT</span>
+            <select id="tz"><option value="0">UT / GMT</option><option value="1">UK SUMMER (+1)</option><option value="2">CENTRAL EU SUMMER (+2)</option><option value="-4">US EASTERN (−4)</option><option value="-5">US CENTRAL (−5)</option><option value="-7">US PACIFIC (−7)</option><option value="5.5">INDIA (+5.5)</option><option value="8">CHINA (+8)</option><option value="10">SYDNEY (+10)</option></select></label>
+        </div>
+        <button class="btn ghost" id="castBtn" type="button">Cast it onto the model</button>
+        <div class="console-note">Computed here · never uploaded</div>
+        <div id="castHint" role="alert">▲ Pick your birth date first — the sky needs a day to read</div>
+        <input type="submit" style="position:absolute;left:-9999px;width:0;height:0;opacity:0" tabindex="-1" aria-hidden="true">
+        </form>
+        <div id="headlines" hidden style="margin-top:18px">
+          <div class="lbl" style="color:var(--good)">YOUR HEADLINES</div>
+          <div id="headlineRows"></div>
+          <div class="mono" id="castCaption" hidden>The model now holds your birth minute — scrub time at the top of the page</div>
+          <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+            <button class="pill" id="flyMine" type="button">✦ Fly my sky</button>
+            <a class="pill" id="openExplorer" href="./explore.html">Open in the full explorer →</a>
+            <a class="pill" href="./deep-reading.html">Keep it — the £12 reading</a>
+            <a class="pill" href="./natal-plate.html">The £14 plate</a>
+          </div>
+        </div>
+        <div id="wheelWrap" hidden>
+          <div class="mono" id="wheelTitle" style="font-size:12px;letter-spacing:.2em;color:var(--brass);text-align:center;margin-top:20px">THE SKY RIGHT NOW</div>
+          <div class="wheelbox" style="width:100%;max-width:290px;margin:14px auto 0"><svg id="wheel" viewBox="0 0 380 380" role="img" aria-label="Chart wheel"></svg></div>
+        </div>
+      </div>
+      <div id="rows"></div>
+    </div>
   </div>
 </section>
 
@@ -488,7 +782,20 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       <div class="chap-note">REAL TRANSITS, WHOLE-SIGN HOUSES<br>A MIRROR, NOT A VERDICT</div>
     </div>
     <h2>Written by the sky, <em style="color:var(--brass)">this morning.</em></h2>
-    <p class="sub">Every line is computed from where the planets stand this minute. <b style="color:var(--ink)">Pick your sign on the stage above ↑</b></p>
+    <p class="sub">Every line is computed from where the planets stand this minute. <b style="color:var(--ink)">Pick your sign:</b></p>
+
+    <!-- The sign picker and its reading. Both used to float over the hero; they
+         now sit in the plate they write into. Same ids, same handlers. -->
+    <div class="signbar">
+      <span class="signbar-chip">DAILY SKY →</span>
+      <div id="pills" style="display:flex;flex-wrap:nowrap;gap:6px"></div>
+    </div>
+    <aside class="reading" id="horoBody" hidden>
+      <div class="reading-tag">TODAY'S SKY BY SIGN</div>
+      <div class="mono" id="horoHead" style="font-size:12px;letter-spacing:.2em;color:var(--brass);margin-bottom:8px"></div>
+      <div id="horoLines"></div>
+    </aside>
+
     <div class="card" style="margin-top:34px;border-color:rgba(242,236,223,.18)">
       <div class="lbl" style="color:rgba(242,236,223,.6)">WHAT THIS IS — SAID PLAINLY</div>
       <p style="margin:0;font-size:15.5px;line-height:1.7;color:var(--dim)">A horoscope is <b style="color:var(--ink)">a mirror for reflection, not a verdict</b> — tradition offered for entertainment, not advice, prediction, or scientific fact. These lines are driven by today's real transits to your Sun sign as a whole; they are not personalised to your chart. Your actual sky is one step away: <a href="#cast">cast your free chart above</a> and the same engine reads the planets against <em>your</em> degrees, not your sign's.</p>
@@ -542,6 +849,8 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   </div>
 </section>
 
+</main>
+
 <footer class="site-foot">
   <div class="wrap" style="padding:70px 24px 48px">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap;margin-bottom:40px">
@@ -560,6 +869,46 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     </div>
   </div>
 </footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FRONT MATTER — two text upgrades, and nothing else.
+
+   Both REPLACE or EXTEND text that is already correct and finished. There is
+   no state in which the front screen shows a placeholder, a spinner, or the
+   word "loading". Turn JavaScript off and nothing is lost except today's date
+   and a day count.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var now = new Date();
+
+  /* 1 · Dateline — a publication is dated. Falls back to "The real-sky almanac". */
+  try {
+    var el = document.getElementById('dateline');
+    if (el) {
+      el.textContent = now.toLocaleDateString('en-GB', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      });
+      el.setAttribute('datetime', now.toISOString().slice(0, 10));
+    }
+  } catch (e) { /* the fallback text is already right */ }
+
+  /* 2 · Eclipse day count. Silent after the event rather than wrong — the date
+     printed above it stays true either way. */
+  try {
+    var delta = document.getElementById('eclipse-delta');
+    if (delta) {
+      var eclipse = new Date(2026, 7, 12);
+      var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      var days = Math.round((eclipse - today) / 86400000);
+      if (days > 1) delta.textContent = ' · in ' + days + ' days';
+      else if (days === 1) delta.textContent = ' · tomorrow';
+      else if (days === 0) delta.textContent = ' · tonight';
+    }
+  } catch (e) { /* nothing shown is nothing wrong */ }
+})();
+</script>
 
 <script>
 /* ═══ HERO — open the instrument on the whole living system, live ═══ */

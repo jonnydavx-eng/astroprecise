@@ -584,34 +584,86 @@
     form.requestSubmit();
   }
 
-  /* Lightweight handoff from the homepage quick-cast form (chart.html?date=
-     YYYY-MM-DD): pre-fill ONLY the birth date so a first-timer continues their
-     "3 easy steps" — they entered the date on the home, it's already here, and
-     they just add time + place. Distinct from restoreFromURL(), which restores
-     a complete shared chart (?d=&lat=...). */
-  function prefillDateFromURL() {
-    try {
-      const d = new URLSearchParams(location.search).get('date');
-      if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
-      const el = document.getElementById('date-input');
-      if (!el || el.value) return;
-      el.value = d;
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-      const dateGroup = document.getElementById('group-date-first');
-      if (dateGroup) dateGroup.classList.add('is-valid');
+  /* Handoff from the homepage coupon (chart.html?date=&time=&city=).
+     Distinct from restoreFromURL(), which restores a complete shared chart
+     (?d=&lat=…) and submits it.
 
-      // Honour the homepage promise ("time and place sharpen it on the next
-      // step"): acknowledge the carried-over date inline, bring the form into
-      // view, and move focus to the next thing the visitor actually needs — the
-      // birth place (or time, if a place is already set). No silent handoff.
+     Until 2026-08-08 this function read ONLY `date`, so a homepage form that
+     collected a town and a time threw both away and made the visitor type them
+     again. It now carries all three, with one deliberate limit stated out loud:
+
+       · date — filled and validated; the form group is marked valid.
+       · time — filled, then an `input` event is dispatched so chart.html's own
+         listener flips the time-accuracy status to "Exact time · Rising, MC and
+         houses will be calculated". Setting the value without that event would
+         leave the page saying the time was unknown while quietly using it.
+       · city — filled as TEXT ONLY, and the `input` event fires the gazetteer
+         search so the dropdown opens on the carried-over name. Coordinates are
+         deliberately NOT set: a typed town name is not a location, and this
+         page refuses to compute angles from one (readForm() rejects a chart
+         with no lat/lon). Focus therefore lands on the city field so the
+         visitor confirms the exact place — which is what the homepage coupon
+         promises in so many words.
+
+     Nothing already filled is overwritten: a restored draft or a shared-chart
+     URL always wins over the handoff. */
+  function prefillFromURL() {
+    try {
+      const q = new URLSearchParams(location.search);
+      const d = q.get('date');
+      const t = q.get('time');
+      const c = q.get('city');
+
+      const dateEl = document.getElementById('date-input');
+      const timeEl = document.getElementById('time-input');
+      const cityEl = document.getElementById('city-input');
+
+      const gotDate = !!(d && /^\d{4}-\d{2}-\d{2}$/.test(d) && dateEl && !dateEl.value);
+      const gotTime = !!(t && /^([01]\d|2[0-3]):[0-5]\d$/.test(t) && timeEl && !timeEl.value);
+      // A place is only worth carrying if it is plausibly a place name.
+      const cityName = (c || '').trim().slice(0, 120);
+      const gotCity = !!(cityName.length >= 2 && cityEl && !cityEl.value);
+
+      if (!gotDate && !gotTime && !gotCity) return;
+
+      if (gotDate) {
+        dateEl.value = d;
+        dateEl.dispatchEvent(new Event('input', { bubbles: true }));
+        const dateGroup = document.getElementById('group-date-first');
+        if (dateGroup) dateGroup.classList.add('is-valid');
+      }
+
+      if (gotTime) {
+        timeEl.value = t;
+        // The `input` listener in chart.html owns the accuracy status line.
+        timeEl.dispatchEvent(new Event('input', { bubbles: true }));
+        timeEl.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      if (gotCity) {
+        cityEl.value = cityName;
+        // Fires the gazetteer lookup and, importantly, clears any stale
+        // lat/lon: a carried-over name is never treated as confirmed.
+        cityEl.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+
+      // Say what carried over and what is still needed. No silent handoff.
       const wrap = document.getElementById('chart-form-wrapper');
       if (wrap && !document.getElementById('chart-handoff-note')) {
+        const carried = [gotDate && 'birth date', gotTime && 'time', gotCity && 'place']
+          .filter(Boolean);
+        const listed = carried.length > 1
+          ? carried.slice(0, -1).join(', ') + ' and ' + carried[carried.length - 1]
+          : carried[0];
+        const asks = gotCity
+          ? 'Pick your town from the list to lock its coordinates — that is what gives you Rising, Midheaven and houses.'
+          : 'Add your birth place below — that is what gives you Rising, Midheaven and houses.';
         const note = document.createElement('p');
         note.id = 'chart-handoff-note';
         note.className = 'chart-handoff-note';
         note.setAttribute('role', 'status');
         note.innerHTML = '<span class="chart-handoff-note__mark" aria-hidden="true">✦</span> ' +
-          'Your birth date carried over from the homepage — add your birth place and time below to sharpen the chart.';
+          'Your ' + esc(listed) + ' carried over from the homepage. ' + asks;
         const header = wrap.querySelector('.form-glass__header');
         if (header && header.parentNode) header.parentNode.insertBefore(note, header.nextSibling);
         else wrap.insertBefore(note, wrap.firstChild);
@@ -621,8 +673,11 @@
       if (form && typeof form.scrollIntoView === 'function') {
         form.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-      const cityEl = document.getElementById('city-input');
-      const nextField = (cityEl && !cityEl.value) ? cityEl : document.getElementById('time-input');
+      // The place always needs confirming, so it wins focus whenever it is the
+      // outstanding field — including when we just pre-filled its text.
+      const nextField = (cityEl && cityEl.dataset.coordinatesLocked !== 'true')
+        ? cityEl
+        : (timeEl && !timeEl.value ? timeEl : null);
       if (nextField) {
         // Focus after the smooth scroll settles; preventScroll so we don't fight it.
         setTimeout(function () {
@@ -3134,7 +3189,7 @@ host.classList.add('is-done');
     initPersonalMemory();
     mountChartAI(null);
     restoreFromURL();
-    prefillDateFromURL();
+    prefillFromURL();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot, { once: true });
