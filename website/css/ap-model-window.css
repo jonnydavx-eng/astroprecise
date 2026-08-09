@@ -197,7 +197,12 @@ html.ap-model-revealed .page-explore .ap-mw-plate {
     gap: 0.5em !important;
   }
   .ap-mw-dot { width: 5px !important; height: 5px !important; }
-  body.page-explore .ap-mw-plate { transform: none; }
+  body.page-explore .ap-mw-plate {
+    left: 10px !important;
+    right: auto !important;
+    top: 42px !important;
+    transform: none;
+  }
   html.ap-model-revealed .page-explore .ap-mw-plate { animation-name: apMwPlateIn; }
 
   /* HOME phone — DESIGN LAW: controls/caption NEVER overlap the disc.

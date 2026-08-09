@@ -555,10 +555,15 @@
             window.Orrery3D.setTimelineDays(window.LiteOrrery.getDayOffset());
           }
         }
-        if (typeof window.Orrery3D.forceResize === 'function') {
+        if (window.Orrery3D && typeof window.Orrery3D.forceResize === 'function') {
           requestAnimationFrame(function () {
-            window.Orrery3D.forceResize();
-            setTimeout(function () { window.Orrery3D.forceResize(); }, 200);
+            var engine = window.Orrery3D;
+            if (!engine || typeof engine.forceResize !== 'function') return;
+            engine.forceResize();
+            setTimeout(function () {
+              var currentEngine = window.Orrery3D;
+              if (currentEngine && typeof currentEngine.forceResize === 'function') currentEngine.forceResize();
+            }, 200);
           });
         }
         document.dispatchEvent(new Event('ap-orrery-ready'));
