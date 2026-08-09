@@ -6,9 +6,13 @@
 <title>The real sky news — sky events | Astro Precise</title>
 <meta name="description" content="The real sky news: upcoming conjunctions, moons and stations computed in your browser.">
 <link rel="canonical" href="https://astroprecise.app/sky-events.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
+     IBM Plex Mono from Google Fonts, which handed Google a request from every
+     reader while privacy.html said the site's fonts were its own. Both files
+     were already in this repo and already precached by the service worker —
+     this page had simply never been cut over. The variable Schibsted file has
+     no true italic, so italics here are synthesised; that is the whole cost. -->
+<link rel="stylesheet" href="./css/fonts.css">
 <script src="./js/void-orrery-adapter.js?v=815"></script>
 <style>
 :root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.24);--acc:#d8b46a;--good:rgba(168,214,176,.85)}

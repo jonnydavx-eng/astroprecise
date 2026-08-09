@@ -191,20 +191,34 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
 
   // QUIET GATE — the empty state that GATES THE SALE (Skeptic rule).
   // No hard aspect in tight orb = quiet, even if soft touches exist: in eclipse
-  // tradition a sextile or trine is background, and we say so rather than sell it.
+  // tradition a soft contact is background, and we say so rather than sell it.
+  //
+  // The receipt line used to open with emptyState.computed — "sits more than 5°
+  // from EVERY placement in your chart" — and then, in the very next sentence,
+  // named a contact 0°25′ away. Both statements were printed together and one of
+  // them had to be false. The gate is about HARD contacts only (see HARD above),
+  // so soft ones legitimately sit inside it; the sentence now says exactly that,
+  // and the soft touch that follows no longer contradicts the line above it.
   if (!closest) {
+    const es = t.emptyState;
     const nearest = nearestAny
-      ? (HARD[nearestAny.aspect] == null && nearestAny.orbDeg <= 3
-          ? ` The nearest touch is a gentle ${t.aspects[nearestAny.aspect].label.toLowerCase()} to your ${t.targets[nearestAny.target].label} (${fmtOrb(nearestAny.orbDeg)}) — background light, not a headline, and we won't dress it up as one.`
-          : ` The nearest touch is a wide ${fmtOrb(nearestAny.orbDeg)} to your ${t.targets[nearestAny.target].label}.`)
+      ? ((HARD[nearestAny.aspect] == null && nearestAny.orbDeg <= 3)
+          ? es.nearestSoft
+              .replace('{frame}', t.aspects[nearestAny.aspect].frame)
+              .replace('{targetLabel}', t.targets[nearestAny.target].label)
+              .replace('{orbText}', fmtOrb(nearestAny.orbDeg))
+          : es.nearestWide
+              .replace('{targetLabel}', t.targets[nearestAny.target].label)
+              .replace('{orbText}', fmtOrb(nearestAny.orbDeg)))
       : '';
     const moonNote = moonExcluded
       ? ' (Your Moon needs a birth time we don’t have to place exactly, so we’ve left it out rather than quote it falsely.)'
       : '';
+    const headline = (es.computedNoHard || es.computed).replace('{maxOrb}', String(gate));
     const reading = {
       quiet: true, gateSale: true,
       anchor: { mono: anchorMono, serif: t.anchor.serif },
-      contact: { mono: t.emptyState.computed.replace('{maxOrb}', String(gate)) + nearest + moonNote, serif: t.emptyState.reflection },
+      contact: { mono: headline + nearest + moonNote, serif: es.reflection },
       governs: null, question: null, close,
       legal: t.legalLine,
     };

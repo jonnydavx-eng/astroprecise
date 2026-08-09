@@ -2163,11 +2163,20 @@
         window.AstroApp.captureEmail(email, { source: 'intro_entry', tag: 'tag_intro_entry' });
         return;
       }
+      // mode:'no-cors' dropped 2026-08-09 — the Worker does answer CORS preflight
+      // and echoes the requesting Origin (measured), so the response is readable
+      // and a failure can be reported instead of swallowed.
       try {
         var body = new FormData();
         body.append('email', email);
         body.append('tags', 'tag_intro_entry');
-        fetch('https://list.astroprecise.app/subscribe', { method: 'POST', mode: 'no-cors', body: body });
+        fetch('https://list.astroprecise.app/subscribe', { method: 'POST', body: body })
+          .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); })
+          .catch(function () {
+            if (window.AstroApp && typeof AstroApp.showToast === 'function') {
+              AstroApp.showToast('That did not send', 'You are not on the list — check your connection and try again.', 'warning');
+            }
+          });
       } catch (e) {}
     }
 

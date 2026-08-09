@@ -174,14 +174,17 @@
     if (!chart) { host.hidden = true; return; }
 
     var link = buildLinkFromChart(chart, { focus: 'earth' });
-    // Naming the chart is optional, so most visitors arrive here with no name
-    // at all. The old default was the literal string "Your", which the
-    // possessive below turned into "See Your's sky in the 3D model". When
-    // there is no name the sentence simply does not need one.
-    // "Home cast" is the label index.html gives its own quick cast, not
-    // something anybody typed — it must not be read out as a person either.
-    var first = String(chart.name || '').trim().split(/\s+/)[0] || '';
-    if (/^(your|home)$/i.test(first)) first = '';
+    // Naming a chart is optional, and most people skip it — so most of the time
+    // the name here was never typed by anybody. It is a label the app filled in:
+    // chart.html's readForm() uses "Birth Chart", index.html's quick cast uses
+    // "Home cast", and this function's own old default was the literal string
+    // "Your". The possessive below turned those into "See Birth's sky",
+    // "See Home's sky" and "See Your's sky in the 3D model". None of them is a
+    // person, so none of them gets to be one. Match the WHOLE label, not the
+    // first word, or a real "Birth" (it is a surname) would be swallowed too.
+    var raw = String(chart.name || '').replace(/^\s*sample:\s*/i, '').trim();
+    var GENERATED = /^(your|birth chart|home cast|untitled|my chart|new chart)$/i;
+    var first = GENERATED.test(raw) ? '' : (raw.split(/\s+/)[0] || '');
     var title = first
       ? 'See ' + esc(first) + '’s sky in the 3D model'
       : 'See your sky in the 3D model';

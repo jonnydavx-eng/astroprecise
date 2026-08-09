@@ -612,7 +612,15 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
                 </div>
                 <div class="field-e field--place">
                   <label for="f-place">Birth place</label>
-                  <input type="text" id="f-place"
+                  <!-- required, because chart.html requires it. This card used
+                       to call birth place optional while the very next screen
+                       marked Birth City with a red asterisk and refused to
+                       cast without coordinates — the visitor found that out
+                       after committing. The two screens now ask for the same
+                       thing. Free text here is only a head start: the next
+                       screen still needs the town picked from its list, which
+                       is what carries the coordinates. -->
+                  <input type="text" id="f-place" required aria-required="true"
                          placeholder="Town or city" autocomplete="off"
                          aria-describedby="coupon-hint">
                 </div>
@@ -622,8 +630,9 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
                    "— optional" on the Time label is suppressed below 640px to
                    stop the label wrapping. -->
               <p class="coupon__hint" id="coupon-hint">
-                Place and time are optional, and they are what fix your Rising,
-                Midheaven and houses. You confirm the town on the next screen.
+                Time is optional — it sharpens your moon sign. Your birth place
+                is not: it is what fixes your rising and your houses, and you
+                pick the town from a list on the next screen.
               </p>
 
               <div class="coupon__action">
@@ -905,7 +914,14 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     </div>
     <h2>The sky is <em style="color:var(--brass)">still moving.</em></h2>
     <p class="sub">Tonight’s real sky news — computed this minute on your device. Weather report of the sky, not prophecy. Tap a card to fly the living model.</p>
-    <div id="ap-sky-news-band" class="ap-sky-news ap-sky-news--band" style="margin:0 0 22px"></div>
+    <!-- data-ap-exclude: the receipt card directly below prints the Moon, the
+         tightest pair and the retrograde board itself, in more detail (it lists
+         the direct planets too). Rendering both put the same Moon on screen
+         twice, a few centimetres apart. The attribute lives here rather than in
+         a mount() call because this band is mounted twice — once on load, once
+         after a cast — and the markup is the one place both agree on. -->
+    <div id="ap-sky-news-band" class="ap-sky-news ap-sky-news--band"
+         data-ap-exclude="moon pair rx" style="margin:0 0 22px"></div>
     <noscript>
       <p class="sub" style="margin:0">This readout is computed in your browser, so with JavaScript
       switched off there is nothing to show — the Moon phase, the tightest planetary pair and the
@@ -1439,7 +1455,9 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       return '<div class="prow"><span style="width:18px;color:var(--brass)">' + r.glyph + '</span><span style="flex:1">' + r.name.toUpperCase() + '</span><span class="mono" style="font-size:10px;color:' + (r.retro ? 'var(--ember-hi)' : 'var(--good)') + '">' + (r.retro ? '℞ RETROGRADE' : 'DIRECT →') + '</span></div>';
     }).join('');
     if (chart) {
-      var ASP = [[0, 'CONJUNCT'], [60, 'SEXTILE'], [90, 'SQUARES'], [120, 'TRINES'], [180, 'OPPOSES']];
+      // "SEXTILE" is out on purpose: the 2026-08-08 audience read measured it as
+      // vocabulary readers do not have. The angle is unchanged, only the label.
+      var ASP = [[0, 'CONJUNCT'], [60, 'AT AN EASY ANGLE TO'], [90, 'SQUARES'], [120, 'TRINES'], [180, 'OPPOSES']];
       var natal = chart.rows.slice(0, 5), moving = rows.slice(1, 7), hit = null;
       outer: for (var t = 0; t < moving.length; t++) for (var n = 0; n < natal.length; n++) {
         var sep = Math.abs(((moving[t].lon - natal[n].lon + 540) % 360) - 180);

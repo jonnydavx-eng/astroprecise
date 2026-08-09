@@ -5,7 +5,10 @@
  */
 import { buildEclipseReading5 } from './eclipse-reading.js';
 
-const ECLIPSE_LON = 140.133; // 20°08′ Leo — greatest eclipse 12 Aug 2026
+// 20°02′ Leo — greatest eclipse 12 Aug 2026, 17:46 TD (18:46 BST). Matches what
+// eclipse.html computes live from js/ephemeris.js at that instant (140.0387);
+// the old 140.133 read 20°08′ and disagreed with our own engine by six minutes of arc.
+const ECLIPSE_LON = 140.039;
 const BODIES = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 
 function esc(s) {
@@ -110,8 +113,10 @@ function renderReading(host, reading, meta) {
   html += `<p class="ecl-reading__meta mono">${esc(meta.label || '')}${meta.timeKnown === false ? ' · birth time unknown (no houses)' : ''}</p>`;
   if (quiet) {
     html += `<div class="ecl-reading__gate warn" role="status">`;
-    html += `<strong>Quiet chart — we won&rsquo;t sell you the £2.99 Night Reading as primary.</strong>`;
-    html += `<p>The eclipse doesn&rsquo;t touch your chart within the honest orb gate. That&rsquo;s a real answer. Prefer the <a href="shop.html#eclipse-set">£6 Eclipse Set</a> path, or just keep the free tools.</p>`;
+    // "within the honest orb gate" was both jargon and, alongside a receipt that
+    // may name a contact 0°25′ away, untrue. The gate is about DIRECT contacts.
+    html += `<strong>A quiet one — so we won&rsquo;t push the £2.99 Night Reading at you.</strong>`;
+    html += `<p>This eclipse makes no direct contact with your placements. That&rsquo;s a real answer, not a smaller one — and your chart is no less yours for it. The <a href="shop.html#eclipse-set">£6 Eclipse Set</a> is a better fit if you want something for the night, or just keep the free tools. Nothing is on sale yet either way.</p>`;
     html += `</div>`;
   }
   html += beatHtml('1 · Anchor', reading.anchor);
@@ -203,8 +208,8 @@ async function run() {
         local: {
           date: '12 August 2026',
           place: form.place.value || (saved && (saved.birthCity || saved.city)) || 'your sky',
-          coveragePct: '~91%',
-          peakLocal: '≈ 19:05 BST (UK typical)',
+          coveragePct: '88–96%',
+          peakLocal: 'UK maximum ≈ 19:12 BST in London (19:05 Edinburgh, 19:16 Truro)',
         },
         dark: { start: 'after midnight', end: 'dawn', rate: 100 },
         quietGateDeg: 5,

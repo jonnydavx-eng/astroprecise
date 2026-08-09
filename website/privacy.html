@@ -118,12 +118,14 @@
     </div>
 
     <h1>Privacy Policy</h1>
-    <p class="legal-sub">Last updated: 8 August 2026</p>
+    <p class="legal-sub">Last updated: 9 August 2026</p>
 
-    <p class="lede">Astro Precise is built privacy-first. Your birth details, charts, and readings are
-      computed and stored <strong>on your own device</strong> — we never see them. This policy explains, in
-      plain English, the little we do collect, the lawful basis for each use, and the rights you have under
-      the UK GDPR.</p>
+    <p class="lede">Astro Precise is built privacy-first. Everything you can do here for free &mdash; casting a
+      chart, reading the sky, the 3D model &mdash; is computed and stored <strong>on your own device</strong>,
+      and we never see any of it. There is exactly one exception, and it only happens if you buy something we
+      have to make by hand: then you type your birth details into a form and send them to us on purpose. It is
+      described in full below. This policy explains, in plain English, the little we do collect, the lawful
+      basis for each use, and the rights you have under the UK GDPR.</p>
 
     <h2>Who we are</h2>
     <p>The data controller is <strong>Jonathan Davenport</strong>, trading as
@@ -134,8 +136,12 @@
     <h2>What we collect</h2>
     <p><strong>Birth details you type.</strong> Your birth date, time, and place are used to compute charts and
       readings <strong>in your browser</strong>, and are saved in your browser&rsquo;s <strong>localStorage</strong>
-      so the site remembers your sky between visits. They are never sent to us — and an order never includes
-      them.</p>
+      so the site remembers your sky between visits. Nothing you type into the site is transmitted, and a
+      purchase never carries them either &mdash; Gumroad tells us what you bought, not who you are
+      astrologically. The one time your birth details do reach us is when you send them yourself: for a
+      made-to-order item we cannot compute without them, the follow-up form after checkout asks for them
+      directly. That form is hosted by Typeform (see the processor list below), we use what you enter only to
+      make the thing you bought, and it is kept with the order record.</p>
     <p><strong>Contact form.</strong> If you write to us through the contact form, your <strong>name, email
       address, and message</strong> are delivered to us via our form processor, Formspree. We use them only to
       reply.</p>
@@ -144,9 +150,15 @@
       your order. Your payment card and billing details are collected by Gumroad on its own secure pages and are
       never seen or stored by us. We never receive your birth data with an order.</p>
     <p><strong>Email signups.</strong> If you join the newsletter or a &ldquo;notify me&rdquo; list (such as the
-      eclipse-launch list), we store the <strong>email address</strong> you submit together with a
-      <strong>topic tag</strong> recording which list you joined. Signups are handled by our own Cloudflare
-      Worker with encrypted storage.</p>
+      eclipse-launch list), our own Cloudflare Worker stores, in Cloudflare&rsquo;s encrypted key-value storage,
+      the <strong>email address</strong> you submit, a <strong>topic tag</strong> recording which list you
+      joined, the <strong>time</strong>, and <strong>the address of the page you signed up from</strong> (your
+      browser&rsquo;s <code>Referer</code> header &mdash; for example
+      <code>https://astroprecise.app/eclipse.html</code>). Your <strong>IP address</strong> is stored separately
+      as a counter, on its own, for <strong>one hour</strong>, purely to stop one machine flooding the list; it
+      is never stored alongside your email address and it expires by itself. The same Worker sends one
+      notification email to us through <strong>MailChannels</strong>, containing your email address, the tag and
+      that page address.</p>
     <p><strong>Usage analytics — we run none.</strong> This site loads <strong>no analytics of any kind</strong>:
       no Google Analytics, no Umami, no Plausible, no tag manager, no tracking pixels, and no advertising or
       cross-site tracking scripts. We do not measure your visit, and we set <strong>no analytics or advertising
@@ -172,13 +184,27 @@
       them completely.</p>
 
     <h2>Third parties &amp; international transfers</h2>
-    <p>We use a small number of processors: <strong>Gumroad</strong> (US — checkout and seller of record),
-      <strong>Formspree</strong> (contact form), <strong>GitHub</strong> (site hosting), and
-      <strong>Cloudflare</strong> (content delivery, security, and our email-capture Worker). That is the whole
-      list — <strong>no analytics, advertising or data-broker company receives anything from this site</strong>.
-      Some of these processors operate outside the UK; where they do, transfers are safeguarded by the
-      UK&ndash;US data bridge, the UK International Data Transfer Agreement, or standard contractual clauses,
-      as applicable.</p>
+    <p>Six companies are involved in running this site. This is all of them, and what each one gets:</p>
+    <ul>
+      <li><strong>Gumroad</strong> (US) &mdash; checkout and seller of record. Your email address, your order,
+        and the card details you give it on its own pages.</li>
+      <li><strong>Typeform</strong> (EU/US) &mdash; if you buy something made to order, the form you send us
+        your birth details on is hosted by Typeform, so Typeform sees them. Reading or casting on the free site
+        never touches it; that form is only reached after a purchase.</li>
+      <li><strong>Formspree</strong> (US) &mdash; the contact form. Your name, email address and message.</li>
+      <li><strong>GitHub</strong> (US) &mdash; hosting. The ordinary server log of your request.</li>
+      <li><strong>Cloudflare</strong> (US/global) &mdash; content delivery and security in front of that host,
+        plus our email-signup Worker and the encrypted storage behind it. If the 3D model&rsquo;s graphics
+        library fails to load from this site, the page falls back to a copy on Cloudflare&rsquo;s public
+        <strong>cdnjs</strong> service, which then sees a request from your browser. Nothing about you is
+        attached to it.</li>
+      <li><strong>MailChannels</strong> (US) &mdash; sends the one notification email to us when somebody joins
+        a list, so it handles that email address and the page it was submitted from.</li>
+    </ul>
+    <p>That is the whole list. <strong>No analytics, advertising or data-broker company receives anything from
+      this site</strong>, because we do not use any. Some of these processors operate outside the UK; where they
+      do, transfers are safeguarded by the UK&ndash;US data bridge, the UK International Data Transfer Agreement,
+      or standard contractual clauses, as applicable.</p>
 
     <h2>Features that talk to other services</h2>
     <p>To provide certain features, your browser contacts third-party services directly. For the items below we
@@ -194,19 +220,26 @@
         <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA SWPC</a> and, for the
         &ldquo;quantum draw&rdquo;, a random number from the <a href="https://qrng.anu.edu.au/" target="_blank" rel="noopener">ANU Quantum RNG</a>.
         These requests carry no personal information.</li>
-      <li><strong>Fonts &amp; (optional) map tiles</strong> — on the main pages (home, chart, the eclipse page,
-        the daily sky, the shop) typefaces are self-hosted and bundled with the site, so your browser makes no
-        third-party font request. A handful of secondary pages still load their typefaces from
-        <strong>Google Fonts</strong>, which therefore sees a request from your browser. If you open the optional
-        &ldquo;refine on map&rdquo; pin, map tiles load from OpenStreetMap/Carto. As with any web request, these
-        providers receive your IP address and standard request headers — never your birth data.</li>
+      <li><strong>Fonts &mdash; none, on any page.</strong> Every typeface on this site is served from this
+        site. Until 9 August 2026 eight secondary pages still fetched theirs from <strong>Google Fonts</strong>,
+        which meant Google saw a request from your browser on those pages; they were cut over to the font files
+        already bundled here, and no page loads type from anywhere else.</li>
+      <li><strong>Map tiles &mdash; only if you ask for them.</strong> If you open the optional
+        &ldquo;refine on map&rdquo; pin, map tiles load from OpenStreetMap/Carto, which then receives your IP
+        address and standard request headers &mdash; never your birth data. Nothing loads a map unless you open
+        that pin.</li>
     </ul>
 
     <h2>How long we keep things</h2>
     <ul>
       <li><strong>Contact enquiries</strong> — 12 months, then deleted.</li>
       <li><strong>Purchase and order records</strong> — 6 years, to meet UK tax and accounting requirements.</li>
-      <li><strong>Marketing list</strong> — until you unsubscribe.</li>
+      <li><strong>Marketing list</strong> — your email address, tag and the page you signed up from, until you
+        unsubscribe.</li>
+      <li><strong>Signup rate-limit counter</strong> — your IP address, on its own, for <strong>one hour</strong>.
+        It expires by itself and nothing renews it.</li>
+      <li><strong>Birth details sent for a made-to-order item</strong> — only as long as we need them to make
+        and support that order, and deleted sooner if you ask.</li>
       <li><strong>Eclipse-launch list</strong> — deleted, or re-consented for ongoing news, after the
         12 August 2026 eclipse.</li>
       <li><strong>localStorage</strong> — until you clear your browser data; we hold no copy.</li>

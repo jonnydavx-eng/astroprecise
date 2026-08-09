@@ -9,9 +9,13 @@
 <meta property="og:description" content="Seven chapters generated live on your device. The real sky news — weather report of the sky, not prophecy.">
 <meta property="og:url" content="https://astroprecise.app/deep-reading.html">
 <link rel="canonical" href="https://astroprecise.app/deep-reading.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
+     IBM Plex Mono from Google Fonts, which handed Google a request from every
+     reader while privacy.html said the site's fonts were its own. Both files
+     were already in this repo and already precached by the service worker —
+     this page had simply never been cut over. The variable Schibsted file has
+     no true italic, so italics here are synthesised; that is the whole cost. -->
+<link rel="stylesheet" href="./css/fonts.css">
 <script src="./js/ephemeris.js"></script>
 <style>
 @font-face{font-family:'Cormorant Garamond';src:url('./fonts/cormorant-garamond-italic-500.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
@@ -77,9 +81,9 @@ input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radi
 <div class="foot" id="notes" style="border-top:1px solid var(--line);padding-top:16px"></div>
 
 <div class="card">
-  <div class="lbl">HOW YOU RECEIVE YOURS</div>
-  <p style="margin:0 0 10px;font-size:15.5px;line-height:1.65;color:var(--dim)"><b style="color:var(--ink)">Instantly, on your device.</b> Your seven chapters compute the moment payment clears — no email wait, nothing "prepared" by hand. The engine you just watched is the one that writes it.</p>
-  <p style="margin:0 0 10px;font-size:15.5px;line-height:1.65;color:var(--dim)"><b style="color:var(--ink)">Permanently re-accessible.</b> Your Gumroad license key re-unlocks it on any device, any time — plus a keepsake PDF the day you buy.</p>
+  <div class="lbl">HOW YOU'LL RECEIVE YOURS — ONCE CHECKOUT OPENS</div>
+  <p style="margin:0 0 10px;font-size:15.5px;line-height:1.65;color:var(--dim)"><b style="color:var(--ink)">Instantly, on your device.</b> Your seven chapters compute here, so when payment clears there is no email wait and nothing "prepared" by hand. The engine you just watched is the one that writes it.</p>
+  <p style="margin:0 0 10px;font-size:15.5px;line-height:1.65;color:var(--dim)"><b style="color:var(--ink)">Permanently re-accessible.</b> Your licence key will re-unlock it on any device, any time — plus a keepsake PDF the day you buy. None of that is live yet: checkout isn't open, so there is nothing to pay today.</p>
   <p style="margin:0;font-size:13.5px;line-height:1.6;color:var(--faint)">The astronomy is exact and checkable. The astrological meaning is tradition, offered for reflection and entertainment — not advice or prediction.</p>
 </div>
 
@@ -240,23 +244,48 @@ async function attemptUnlock(key) {
 
 function bindUnlockForms() {
   $('licBtn')?.addEventListener('click', () => { const k = $('licKey'); attemptUnlock(k ? k.value.trim() : ''); });
-  // Dormant-checkout capture: notify form → subscribe worker (+ same-device backstop)
-  $('notifyForm')?.addEventListener('submit', (e) => {
+  // Dormant-checkout capture: notify form → subscribe worker.
+  // This used to fire mode:'no-cors' without awaiting it and then print success
+  // unconditionally — an offline visitor was told they were on the list when
+  // nothing had left the browser. The Worker answers CORS preflight and echoes
+  // the requesting Origin (measured 2026-08-09), so the response is readable:
+  // res.ok is now the only thing that earns the success line.
+  $('notifyForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const em = $('notifyEmail').value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
-    try {
-      const body = new FormData();
-      body.append('email', em);
-      body.append('tags', 'checkout-full-reading');
-      fetch('https://list.astroprecise.app/subscribe', { method: 'POST', mode: 'no-cors', body });
-    } catch (err) {}
+    const btn = $('notifyForm').querySelector('button[type="submit"]');
+    const label = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'SENDING…'; }
     try {
       const prev = JSON.parse(localStorage.getItem('ap_email_intent') || '[]');
       prev.push({ email: em, savedAt: Date.now(), source: 'checkout-full-reading' });
       localStorage.setItem('ap_email_intent', JSON.stringify(prev.slice(-50)));
-    } catch (err) {}
-    $('notifyForm').innerHTML = '<div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--good);padding:12px 0">✦ WE\'LL EMAIL YOU THE INSTANT £12 UNLOCK GOES LIVE</div>';
+    } catch (err) { /* same-device note only — it is the POST that puts anyone on the list */ }
+    let ok = false;
+    try {
+      const body = new FormData();
+      body.append('email', em);
+      body.append('tags', 'checkout-full-reading');
+      const res = await fetch('https://list.astroprecise.app/subscribe', { method: 'POST', body });
+      ok = res.ok;
+    } catch (err) { ok = false; }
+    if (!ok) {
+      if (btn) { btn.disabled = false; btn.textContent = label; }
+      let err = document.getElementById('notifyErr');
+      if (!err) {
+        err = document.createElement('div');
+        err.id = 'notifyErr';
+        err.className = 'mono';
+        err.setAttribute('role', 'status');
+        err.style.cssText = 'font-size:10px;letter-spacing:.14em;color:var(--warn);margin-top:10px;line-height:1.6';
+        $('notifyForm').after(err);
+      }
+      err.textContent = 'THAT DID NOT SEND — YOU ARE NOT ON THE LIST. CHECK YOUR CONNECTION AND TRY AGAIN, OR EMAIL CONTACT@ASTROPRECISE.APP';
+      return;
+    }
+    document.getElementById('notifyErr')?.remove();
+    $('notifyForm').innerHTML = '<div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--good);padding:12px 0">✦ YOU\'RE ON THE LIST — ONE EMAIL WHEN THE £12 UNLOCK GOES LIVE</div>';
   });
 }
 

@@ -1633,7 +1633,7 @@ window.AP_MON = Object.assign({
         marketingLine:'Where the eclipse touches your chart — or we say it doesn’t, before you pay.',
         previewImage: 'img/eclipse-og.png',
         sampleUrl:    'eclipse.html',
-        blurb:        'On 12 August 2026 the Moon covers about 91% of the Sun over Britain — a deep partial, the deepest eclipse here since 1999. Totality itself falls on Iceland and northern Spain; Britain never gets it. This short reading maps the eclipse against your actual birth chart: where it lands, what it touches, what tradition says it stirs. Five chapters, ≈350 words, computed from your birth minute on this device. If the eclipse barely touches your chart, we tell you before you pay.',
+        blurb:        'On 12 August 2026 the Moon covers 88–96% of the Sun over Britain — a deep partial, and the deepest over southern Britain since 1999. Totality itself falls on Iceland and northern Spain; Britain never gets it. This short reading maps the eclipse against your actual birth chart: where it lands, what it touches, what tradition says it stirs. Five chapters, ≈350 words, computed from your birth minute on this device. If the eclipse barely touches your chart, we tell you before you pay.',
         icon:         'sunhigh',
         fulfilUrl:    '',   // Gumroad permalink via js/gumroad-unlock.js (eclipse-reading); '' = dormant
         gumroadSlug:  'eclipse-reading',
@@ -1690,7 +1690,9 @@ window.AP_MON = Object.assign({
         marketingLine:'One sky, one numbered edition — sealed with a fingerprint you can check yourself.',
         previewImage: 'img/shop/product-natal-poster.jpg',
         sampleUrl:    'verify.html',
-        blurb:        'An A3 plate of the exact sky at your birth minute — positions to the arcminute, sealed with a fingerprint you can recompute and match on the verify page. Never printed for anyone else. Launch price £14, rising to £19 by dated edition. See the full sample plate before you buy.',
+        // "rising to £19 by dated edition" deleted 2026-08-09: checkout has never
+        // opened, so nobody has ever paid £19 and £14 was never a saving off it.
+        blurb:        'An A3 plate of the exact sky at your birth minute — every position printed to the minute you were born, sealed with a fingerprint you can recompute and match on the verify page. Never printed for anyone else. £14 when checkout opens. See the full sample plate first.',
         icon:         'map',
         fulfilUrl:    '',
         gumroadSlug:  'plate',
@@ -2300,10 +2302,27 @@ else AstroApp.init();
   var isUrl = function (u) { return typeof u === 'string' && /^https?:\/\//i.test((u || '').trim()); };
   var isEmail = function (e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || ''); };
 
-  // Honest 3-tier capture: configured provider POST → owner mailto relay → localStorage.
+  /* Honest 3-tier capture: configured provider POST → owner mailto relay → localStorage.
+   *
+   * mode:'no-cors' was dropped here on 2026-08-09. The reason it was ever set —
+   * "the subscribe Worker sends no CORS headers" — is false: OPTIONS against
+   * https://list.astroprecise.app/subscribe answers 204 with
+   * Access-Control-Allow-Methods: POST, OPTIONS, GET and echoes the requesting
+   * Origin (measured against the live origin and http://localhost:8790). An
+   * opaque response meant a 500 and a 200 looked identical, so `sent:'provider'`
+   * claimed delivery it had no way to know about, and every call site printed
+   * "you're on the list" for a POST that may never have landed.
+   *
+   * The return shape is unchanged so existing callers keep working, but it now
+   * carries `confirmed` — a promise of the truth. Callers that can wait should
+   * (see wireEmailForm / wireWaitlist below); for the ones that have already
+   * painted an optimistic line, a failed POST raises a visible correction here
+   * rather than passing silently.
+   */
   function captureEmail(email, opts) {
     opts = opts || {};
     var Mn = window.AP_MON || {};
+    var confirmed = null;
     var endpoint = (opts.list === 'waitlist' && isUrl(Mn.waitlistUrl)) ? Mn.waitlistUrl.trim()
                  : (isUrl(Mn.newsletterUrl) ? Mn.newsletterUrl.trim() : '');
     if (endpoint) {
@@ -2311,8 +2330,24 @@ else AstroApp.init();
         var body = new FormData();
         body.append('email', email);
         if (opts.tag) body.append('tags', opts.tag);
-        fetch(endpoint, { method: 'POST', mode: 'no-cors', body: body });
-      } catch (e) {}
+        confirmed = fetch(endpoint, { method: 'POST', body: body })
+          .then(function (r) { return !!r.ok; })
+          .catch(function () { return false; });
+      } catch (e) { confirmed = Promise.resolve(false); }
+      confirmed.then(function (ok) {
+        if (ok || opts.quiet) return;
+        // Nothing reached the list. Say so out loud — the caller has already
+        // told this person they were subscribed.
+        try {
+          if (window.AstroApp && typeof AstroApp.showToast === 'function') {
+            AstroApp.showToast(
+              'That did not send',
+              'You are not on the list — check your connection and try again, or email contact@astroprecise.app.',
+              'warning'
+            );
+          }
+        } catch (e2) {}
+      });
     } else if (Mn.ownerEmail && isEmail(Mn.ownerEmail)) {
       try {
         var subj = encodeURIComponent('Astro Precise sign-up' + (opts.list ? ' — ' + opts.list : ''));
@@ -2329,7 +2364,12 @@ else AstroApp.init();
       prev.push(Object.assign({ email: email, savedAt: Date.now(), source: opts.source || null }, opts.meta || {}));
       localStorage.setItem(key, JSON.stringify(prev.slice(-50)));
     } catch (e) {}
-    return { sent: endpoint ? 'provider' : (Mn.ownerEmail ? 'mailto' : 'local') };
+    return {
+      sent: endpoint ? 'provider' : (Mn.ownerEmail ? 'mailto' : 'local'),
+      // Resolves true only when the list answered 2xx. No endpoint configured =
+      // nothing was ever sent anywhere, so that resolves false too.
+      confirmed: confirmed || Promise.resolve(false)
+    };
   }
 
   // Owner utility: download captured local intents as CSV (run AstroApp.exportIntents() or visit #export-intents).
@@ -2442,15 +2482,39 @@ else AstroApp.init();
       var res = captureEmail(email, {
         source: opts.source || 'email_cta',
         tag: opts.tag || 'tag_email_cta',
-        meta: opts.meta || null
+        meta: opts.meta || null,
+        quiet: true            // this form reports the outcome itself, inline
       });
-      if (msg) msg.innerHTML = confirmHtml(res);
-      form.classList.add('is-done');
-      if (form.classList.contains('ap-email-cta__form--sticky')) {
-        var sticky = form.closest('.ap-email-cta--sticky');
-        if (sticky) setTimeout(function () { sticky.classList.remove('is-visible'); document.body.classList.remove('has-email-sticky'); }, 3200);
+
+      function finish() {
+        form.classList.add('is-done');
+        if (form.classList.contains('ap-email-cta__form--sticky')) {
+          var sticky = form.closest('.ap-email-cta--sticky');
+          if (sticky) setTimeout(function () { sticky.classList.remove('is-visible'); document.body.classList.remove('has-email-sticky'); }, 3200);
+        }
       }
-      if (window.AstroApp) AstroApp.showToast('You\u2019re on the list', 'We\u2019ll email when there\u2019s something new.', 'success');
+
+      // No list endpoint configured: nothing was posted anywhere and the dormant
+      // copy already says exactly that, so there is nothing to wait for.
+      if (res.sent !== 'provider') {
+        if (msg) msg.innerHTML = confirmHtml(res);
+        finish();
+        return;
+      }
+
+      // A list IS configured \u2014 so "you're on the list" is a claim about a network
+      // call, and it waits for that call to succeed before it gets made.
+      if (msg) msg.innerHTML = '<strong>Sending\u2026</strong>';
+      res.confirmed.then(function (ok) {
+        if (!ok) {
+          if (msg) msg.innerHTML = '<strong>That didn\u2019t send.</strong> You are not on the list \u2014 check your connection and try again, or email contact@astroprecise.app.';
+          if (window.AstroApp) AstroApp.showToast('That did not send', 'You are not on the list \u2014 please try again.', 'warning');
+          return;
+        }
+        if (msg) msg.innerHTML = confirmHtml(res);
+        finish();
+        if (window.AstroApp) AstroApp.showToast('You\u2019re on the list', 'We\u2019ll email when there\u2019s something new.', 'success');
+      });
     });
   }
 
@@ -2772,11 +2836,23 @@ else AstroApp.init();
         e.preventDefault();
         var email = f.email.value.trim();
         if (!isEmail(email)) { if (window.AstroApp) AstroApp.showToast('Check your email', 'That looks off.', 'warning'); return; }
-        var res = captureEmail(email, { list: 'waitlist', source: 'waitlist', tag: 'tag_waitlist' });
+        var res = captureEmail(email, { list: 'waitlist', source: 'waitlist', tag: 'tag_waitlist', quiet: true });
         var box = f.closest('.cw-waitlist');
-        if (box) box.innerHTML = '<p class="cw-waitlist__eyebrow" style="font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver-dim,#8891AA);margin:0 0 0.3rem;">You’re on the waitlist.</p><p style="font-family:\'Cormorant Garamond\',serif;font-size:0.98rem;color:var(--silver,#C8D0E8);margin:0;">'
-          + (res.sent === 'provider' ? 'Check your inbox to confirm. We’ll only ever email you if this becomes real.'
-                                     : 'Saved — nothing was sent or charged. If enough of you want it, we’ll build it.') + '</p>';
+        var eyebrow = function (t) { return '<p class="cw-waitlist__eyebrow" style="font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver-dim,#8891AA);margin:0 0 0.3rem;">' + t + '</p>'; };
+        var line = function (t) { return '<p style="font-family:\'Cormorant Garamond\',serif;font-size:0.98rem;color:var(--silver,#C8D0E8);margin:0;">' + t + '</p>'; };
+        // Dormant (no list configured): nothing was posted, and the copy says so.
+        if (res.sent !== 'provider') {
+          if (box) box.innerHTML = eyebrow('You’re on the waitlist.') + line('Saved — nothing was sent or charged. If enough of you want it, we’ll build it.');
+          return;
+        }
+        // A list exists, so "you're on the waitlist" waits for the list to agree.
+        if (box) box.innerHTML = eyebrow('Sending…') + line('Adding you to the waitlist.');
+        res.confirmed.then(function (ok) {
+          if (!box) return;
+          box.innerHTML = ok
+            ? eyebrow('You’re on the waitlist.') + line('Check your inbox to confirm. We’ll only ever email you if this becomes real.')
+            : eyebrow('That didn’t send.') + line('You are not on the waitlist — check your connection and try again, or email contact@astroprecise.app.');
+        });
       });
     });
   }

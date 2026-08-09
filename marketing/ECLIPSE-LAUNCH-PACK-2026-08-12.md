@@ -5,7 +5,7 @@
 > 2026-08-08 by Claude @ BOOK-T1H4NJ753R, gated as described in
 > **§0 Commerce gate** below.
 
-**Event:** Total solar eclipse, **Wednesday 12 August 2026** (UK: deep partial, ~91% in the south, peak ≈19:05 BST; totality: Arctic / Greenland / Iceland / northern Spain; Perseids peak the same night)
+**Event:** Total solar eclipse, **Wednesday 12 August 2026** (UK: deep partial, 88–96% covered, maximum 19:05 BST Edinburgh / 19:12 London / 19:16 Truro; totality: Iceland and northern Spain only — never Britain; Perseids peak the same night)
 **Brand voice:** honest, precise, quietly poetic. The weather report of the sky, not prophecy. Computed, never fabricated. No fake urgency.
 **Tone rules applied:** ≤1 exclamation mark per email; minimal emoji (✦ / ☾ only); British English; prices in £; quiet-chart guarantee mentioned wherever it sells.
 
@@ -62,7 +62,7 @@ Natal Plate £14 (→£19), Sky Pass £5.
 
 On Wednesday 12 August, in the early evening, the Moon will move in front of the Sun and stay there.
 
-From Britain this is a deep partial eclipse — around 91% of the Sun covered in the south of England at maximum, at roughly 19:05 BST. The line of totality runs through the Arctic, Greenland, Iceland and northern Spain, but from UK soil this is the deepest eclipse since August 1999. Most of us remember where we were for that one.
+From Britain this is a deep partial eclipse — between 88% and 96% of the Sun covered, depending where you stand, deepest at about 19:05 BST in Edinburgh, 19:12 in London and 19:16 in Truro. The line of totality runs through the Arctic, Greenland, Iceland and northern Spain; Britain never reaches it. From southern soil this is the deepest eclipse since August 1999 — though March 2015 was deeper in Scotland. Most of us remember where we were for that one.
 
 Then, the same night, the Perseid meteor shower peaks. A dimmed evening sky followed by the year's best meteor display. The sky is rather showing off.
 
@@ -139,7 +139,7 @@ when nothing can be bought. Nothing here is salvageable without checkout.
 
 **Body (held):**
 
-Tomorrow evening, around 19:05 BST, roughly 91% of the Sun will be covered over the south of England. This is your last note from us before it happens.
+Tomorrow evening, around 19:12 BST in London, roughly 90% of the Sun will be covered — nearer 95% in Cornwall, and 19:05 is the moment in Edinburgh. This is your last note from us before it happens.
 
 First, the honest small print on pricing. The Eclipse Night Reading is £2.99 until the end of 12 August, then £4. The Numbered Natal Plate is £14 now, £19 later. No countdown timers, no invented scarcity — the early price simply ends when the event does, because afterwards it's an archive, not an occasion.
 
@@ -159,7 +159,7 @@ Tomorrow morning we'll send exact UK viewing times and the one safety rule that 
 
 ### Email 4 — Eclipse day · ⚠️ PARTIAL — safety block exported, commerce block held
 
-**Subject:** Tonight: 91% of the Sun, then the Perseids
+**Subject:** Tonight: nine-tenths of the Sun, then the Perseids
 **Preview text:** UK viewing times, the one safety rule, and your sky notes for the month after. → drop the "sky notes" clause while blocked.
 
 **✅ The safe part** (times, safety, Perseids) has been exported verbatim to
@@ -230,7 +230,7 @@ the permalinks land.
 
 **Post 1 — X/Twitter · Wed 5 Aug, morning · ✅ SAFE (exported)**
 
-> In 7 days, ~91% of the Sun disappears over southern England at teatime — the deepest eclipse over Britain since 1999. Totality runs through Iceland and northern Spain.
+> In 7 days, up to 96% of the Sun disappears over Britain at teatime — the deepest eclipse over southern Britain since 1999. Totality runs through Iceland and northern Spain.
 >
 > Where does it land in your chart? Compute it free, on your own device. Nothing uploaded, nothing stored.
 >
@@ -242,7 +242,7 @@ the permalinks land.
 
 **Post 2 — Instagram · Thu 6 Aug, evening · 🚫 BLOCKED (shop bio link)**
 
-> Every AstroPrecise reading ships with the numbers it was built from — positions to the arcminute, computed on your own device with the same ephemeris mathematics astronomers use. Computed, never fabricated. On 12 August, 91% of the Sun goes out over the south of England. Find out where the eclipse lands in your chart — free, in your browser, nothing stored. Link in bio. ✦
+> Every AstroPrecise reading ships with the numbers it was built from — positions to the arcminute, computed on your own device with the same ephemeris mathematics astronomers use. Computed, never fabricated. On 12 August, nine-tenths of the Sun goes out over Britain. Find out where the eclipse lands in your chart — free, in your browser, nothing stored. Link in bio. ✦
 >
 > #eclipse2026 #solareclipse #astrology #birthchart #ukastronomy #perseids
 
@@ -274,7 +274,7 @@ the permalinks land.
 
 **Post 5 — X/Twitter · Mon 10 Aug, evening · ✅ SAFE (exported)**
 
-> 12 August is a double bill: deep partial eclipse at ~19:05 BST over the south of England, then the Perseid meteor shower peaks the same night.
+> 12 August is a double bill: deep partial eclipse, deepest about 19:12 BST in London and 19:05 in Edinburgh, then the Perseid meteor shower peaks the same night.
 >
 > Eclipse first. Meteors for afters. Both computed, both free to watch.
 >
@@ -298,9 +298,9 @@ the permalinks land.
 
 > It's today. UK times:
 >
-> Moon first touches the Sun shortly after 18:00 BST in the south. Maximum — ~91% covered — around 19:05 BST. The Sun sets still eclipsed.
+> Moon first touches the Sun between 18:08 and 18:17 BST. Maximum — 88–96% covered — is 19:05 in Edinburgh, 19:12 in London, 19:16 in Truro. Last contact about 20:10 BST, so the eclipse is over before sunset everywhere in Britain.
 >
-> Never look at it without proper eclipse glasses (or a pinhole). Sunglasses are not protection.
+> Never look at it without ISO 12312-2 eclipse glasses (or a pinhole). Britain never reaches totality, so they stay on the whole way through — there is no safe moment to take them off. Sunglasses are not protection.
 >
 > Perseids peak tonight after. https://astroprecise.app/eclipse.html
 
@@ -310,7 +310,7 @@ the permalinks land.
 
 **Post 8 — Instagram · Wed 12 Aug, ~19:30 · 🚫 BLOCKED (Sky Pass sell + shop)**
 
-> It just happened — ~91% of the Sun covered over the south of England, the deepest eclipse over Britain since 1999. Now the night shift: the Perseids peak this evening. Stay out after dark. And if you want the next thirty nights mapped against your own chart — what to look for, when, and why it matters to your sky — the Sky Pass (£5) starts tonight and runs to 10 September. Link in bio.
+> It just happened — up to 96% of the Sun covered over Britain, the deepest eclipse over southern Britain since 1999. Now the night shift: the Perseids peak this evening. Stay out after dark. And if you want the next thirty nights mapped against your own chart — what to look for, when, and why it matters to your sky — the Sky Pass (£5) starts tonight and runs to 10 September. Link in bio.
 >
 > #eclipse2026 #solareclipse #perseids #meteorshower #stargazing #ukastronomy
 
@@ -331,13 +331,13 @@ nowhere else in the repo. Kept in full.** Rows that depend on checkout are marke
 | **09:00** | Final read of the eclipse-day email (times, safety line, links). Confirm it's scheduled for 10:00. |
 | **10:00** | **Eclipse-day email lands.** Watch open/delivery rates for the first hour; check the dawn list and checkout-notify list both receive it. |
 | **10:30** | **Post 7 (X):** UK times + safety rule + eclipse.html link. Pin it. |
-| **12:30** | Instagram story: countdown sticker to 19:05, link sticker to eclipse.html. |
+| **12:30** | Instagram story: countdown sticker to 19:12 (London maximum), link sticker to eclipse.html. |
 | **14:00** | 🚫 Sales checkpoint: Gumroad dashboard — order count, revenue, any failed checkouts. Reply to all email/DM replies so far. *(Blocked — do the replies, skip the dashboard.)* |
 | **15:30** | Site check again under load. Confirm notify signups are still being captured. |
-| **17:00** | Post a short X reminder: "One hour to first contact in the south. Glasses or pinhole — never bare eyes." Reply to any time/safety questions; this is the hour they'll come. |
-| **17:46 UT = 18:46 BST** | Global greatest eclipse (over the Arctic). Optional single X post marking it for the astronomy-pedant segment; keep it light. |
-| **~18:00–19:10** | Partial phase over the UK. Do nothing technical — be outside with the audience. Phone in pocket for site-down alerts only. |
-| **19:05** | Maximum over the south of England. |
+| **17:00** | Post a short X reminder: "One hour to first contact. Glasses or pinhole — never bare eyes, and they stay on throughout: Britain never reaches totality." Reply to any time/safety questions; this is the hour they'll come. |
+| **17:46 TD = 18:46 BST** | Global greatest eclipse, 45 km off western Iceland — not a UK time, and not the UK maximum. Optional single X post marking it for the astronomy-pedant segment; keep it light. |
+| **~18:08–20:10** | Partial phase over the UK — first contact to last, all of it before sunset. Do nothing technical — be outside with the audience. Phone in pocket for site-down alerts only. |
+| **19:05 / 19:12 / 19:16** | Maximum: Edinburgh / London / Truro. |
 | **19:30** | 🚫 **Post 8 (Instagram):** "It just happened" + Perseids + Sky Pass. *(Blocked as written — a Perseids-only version with the eclipse.html link is safe and worth posting.)* |
 | **21:00** | Short X post: Perseids peak tonight — "eclipse first, meteors for afters". Link eclipse.html rather than Sky Pass while blocked. |
 | **22:30** | Final checkpoint. Answer remaining support messages. |

@@ -326,8 +326,8 @@
     var a = ev.target.closest ? ev.target.closest('a[data-ap-restore]') : null;
     if (!a) return;
     try { sessionStorage.setItem('ap-chart-restore', a.getAttribute('data-ap-restore') || ''); }
-    catch (e) { /* storage blocked — chart.html opens on an empty form, which is
-                   the honest failure: no birth data goes in the URL instead. */ }
+    catch { /* storage blocked — chart.html opens on an empty form, which is
+               the honest failure: no birth data goes in the URL instead. */ }
   }
 
   function onClick(ev) {

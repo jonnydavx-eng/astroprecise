@@ -102,7 +102,10 @@
   },
   "emptyState": {
     "computed": "The eclipse point sits more than {maxOrb}° from every placement in your chart — no close contact tonight.",
-    "reflection": "For you, this is a quiet one — and that's an honest answer, not a smaller one. The sky doesn't touch everyone the same way on the same night. You still get the eclipse over your own town, and the Perseids after dark; sometimes the kindest thing a real chart can do is tell you to simply watch."
+    "computedNoHard": "No placement in your chart takes a direct hit from this eclipse: nothing of yours sits within {maxOrb}° of the eclipse point, or directly opposite it, or square to it.",
+    "nearestSoft": " There is a softer touch nearby — the eclipse point {frame} your {targetLabel}, {orbText} away. That contact is real; it is just a gentle one, and we would rather name it than build a night on it.",
+    "nearestWide": " The nearest contact of any kind is {orbText} from your {targetLabel} — real, and too wide to carry a night.",
+    "reflection": "So this one is quiet for you, and quiet is a real reading. Charts are not scored out of ten; the sky simply doesn't reach everybody on the same night, and plenty of places would happily sell you a reading anyway. You still get the eclipse over your own town and the Perseids after dark — and your chart is no less yours for sitting this one out."
   },
   "perseid": {
     "computed": "After the eclipse, the Perseids peak overnight — your darkest window is roughly {darkStart}–{darkEnd}, radiant climbing in the north-east.",
@@ -139,8 +142,8 @@
     "12": "the house of rest, retreat and the unseen"
   },
   "anchor": {
-    "computed": "{date}, {peakLocal}, from {place} — the Moon covers {coveragePct} of the Sun at {eclipseDeg}.",
-    "computedNoPlace": "{date} — a total solar eclipse; the Moon crosses the Sun at {eclipseDeg}.",
+    "computed": "{date} — the Moon covers {coveragePct} of the Sun across Britain, {peakLocal}. Read from {place}, the eclipse falls at {eclipseDeg}.",
+    "computedNoPlace": "{date} — a total solar eclipse over Iceland and northern Spain, and a deep partial from Britain; the Moon crosses the Sun at {eclipseDeg}.",
     "serif": "Everything below is computed from that exact moment against the sky you were born under — nothing is invented, and you can check every number."
   },
   "governsHouse": " It sits in your {houseNum}th house — {houseMeaning} (houses counted whole-sign from your rising).",
