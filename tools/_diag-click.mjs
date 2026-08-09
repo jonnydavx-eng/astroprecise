@@ -47,7 +47,9 @@ try {
   await page.waitForSelector('#orr canvas', { timeout: 30_000 });
   await page.waitForFunction(() => {
     const orrery = document.getElementById('orr');
-    return orrery && Number.isFinite(orrery._dTheta) && Number.isFinite(orrery._dRadius);
+    return orrery && orrery.getAttribute('data-engine') === 'webgl' &&
+      orrery._ready === true && typeof orrery.getJD === 'function' &&
+      window.Orrery3D && typeof window.Orrery3D.getCamRadius === 'function';
   }, { timeout: 30_000 });
 
   const canvas = page.locator('#orr canvas');
@@ -74,16 +76,16 @@ try {
   });
 
   // A normal held-button drag must still rotate the camera and release cleanly.
-  const normalBefore = await page.evaluate(() => document.getElementById('orr')._dTheta);
+  const normalBefore = await page.evaluate(() => document.getElementById('orr').getJD());
   await page.mouse.move(point.x, point.y);
   await page.mouse.down();
   await page.mouse.move(point.x + 90, point.y + 24, { steps: 6 });
   await page.mouse.up();
   const normalAfter = await page.evaluate(() => ({
-    theta: document.getElementById('orr')._dTheta,
+    jd: document.getElementById('orr').getJD(),
     cursor: document.querySelector('#orr canvas').style.cursor,
   }));
-  assert(normalAfter.theta !== normalBefore, 'Normal mouse drag did not rotate the model');
+  assert(normalAfter.jd !== normalBefore, 'Normal mouse drag did not scrub the model time');
   assert(normalAfter.cursor === 'grab', 'Normal mouse release did not restore the grab cursor');
 
   // Regression: cancellation must reset drag state, and a later no-button move
@@ -93,7 +95,7 @@ try {
   const cancelBefore = await page.evaluate(() => {
     const target = document.querySelector('#orr canvas');
     return {
-      theta: document.getElementById('orr')._dTheta,
+      jd: document.getElementById('orr').getJD(),
       pointerId: window.__mouseDiag.pointerId,
       cursor: target.style.cursor,
     };
@@ -118,20 +120,20 @@ try {
     }));
   }, { ...point, pointerId: cancelBefore.pointerId });
   const cancelAfter = await page.evaluate(() => ({
-    theta: document.getElementById('orr')._dTheta,
+    jd: document.getElementById('orr').getJD(),
     cursor: document.querySelector('#orr canvas').style.cursor,
   }));
   await page.mouse.up();
   assert(cancelBefore.cursor === 'grabbing', 'Pointer down did not enter grabbing mode');
   assert(cancelAfter.cursor === 'grab', 'Pointer cancellation left the cursor stuck grabbing');
-  assert(cancelAfter.theta === cancelBefore.theta, 'Pointer move after cancellation rotated the model');
+  assert(cancelAfter.jd === cancelBefore.jd, 'Pointer move after cancellation scrubbed the model time');
 
   // Defensive recovery: browsers can lose the release event while reporting
   // buttons=0 on the next move. That move must end, not continue, the drag.
   await page.mouse.move(point.x, point.y);
   await page.mouse.down();
   const lostButtonBefore = await page.evaluate(() => ({
-    theta: document.getElementById('orr')._dTheta,
+    jd: document.getElementById('orr').getJD(),
     pointerId: window.__mouseDiag.pointerId,
   }));
   await page.evaluate(({ x, y, pointerId }) => {
@@ -145,27 +147,29 @@ try {
     }));
   }, { ...point, pointerId: lostButtonBefore.pointerId });
   const lostButtonAfter = await page.evaluate(() => ({
-    theta: document.getElementById('orr')._dTheta,
+    jd: document.getElementById('orr').getJD(),
     cursor: document.querySelector('#orr canvas').style.cursor,
   }));
   await page.mouse.up();
   assert(lostButtonAfter.cursor === 'grab', 'Lost-button recovery left the cursor stuck grabbing');
-  assert(lostButtonAfter.theta === lostButtonBefore.theta, 'buttons=0 pointer move rotated the model');
+  assert(lostButtonAfter.jd === lostButtonBefore.jd, 'buttons=0 pointer move scrubbed the model time');
 
   // The wheel path remains live after the recovery cases.
-  const radiusBefore = await page.evaluate(() => document.getElementById('orr')._dRadius);
+  const radiusBefore = await page.evaluate(() => window.Orrery3D.getCamRadius());
   await page.mouse.move(point.x, point.y);
+  await page.keyboard.down('Control');
   await page.mouse.wheel(0, 180);
-  const radiusAfter = await page.evaluate(() => document.getElementById('orr')._dRadius);
+  await page.keyboard.up('Control');
+  const radiusAfter = await page.evaluate(() => window.Orrery3D.getCamRadius());
   assert(radiusAfter !== radiusBefore, 'Mouse wheel did not change the model zoom');
 
   assert(errors.length === 0, `Browser errors: ${errors.slice(0, 3).join(' | ')}`);
   console.log(JSON.stringify({
     result: 'PASS',
     browser: 'bundled Chromium or installed Chrome fallback',
-    normalDrag: { before: normalBefore, after: normalAfter.theta },
-    pointerCancel: { before: cancelBefore.theta, after: cancelAfter.theta, cursor: cancelAfter.cursor },
-    lostButton: { before: lostButtonBefore.theta, after: lostButtonAfter.theta, cursor: lostButtonAfter.cursor },
+    normalDrag: { before: normalBefore, after: normalAfter.jd },
+    pointerCancel: { before: cancelBefore.jd, after: cancelAfter.jd, cursor: cancelAfter.cursor },
+    lostButton: { before: lostButtonBefore.jd, after: lostButtonAfter.jd, cursor: lostButtonAfter.cursor },
     wheel: { before: radiusBefore, after: radiusAfter },
     errors,
   }, null, 2));

@@ -40,6 +40,15 @@ try {
   /* use import */
 }
 
+async function launchBrowser(options) {
+  try {
+    return await chromiumBrowser.launch(options);
+  } catch (error) {
+    if (!/Executable doesn't exist/i.test(String(error))) throw error;
+    return chromiumBrowser.launch({ ...options, channel: 'chrome' });
+  }
+}
+
 const BASE = process.env.AP_BASE || 'http://127.0.0.1:8790';
 const SETTLE_MS = Number(process.env.AP_FOCUS_SETTLE_MS || 2500);
 /** Re-sample window after URL re-assert (must stay ≤1s per Phase 0 residual). */
@@ -163,7 +172,7 @@ async function main() {
   console.log(`[wave3-focus-settle] base=${BASE} settleMs=${SETTLE_MS} reassertSampleMs=${REASSERT_SAMPLE_MS}`);
   console.log('[wave3-focus-settle] MUST-FIX-ORBITLAB: getFocusedBody should return focusFrameId||focusPlanetId (GENERATED — edit OrbitLab only)');
   console.log('[wave3-focus-settle] anti-false-green: wrong-body clobber fails hard; reassert only on null+attrOk');
-  const browser = await chromiumBrowser.launch({
+  const browser = await launchBrowser({
     headless: true,
     args: ['--use-gl=angle', '--use-angle=swiftshader-webgl', '--enable-webgl'],
   });

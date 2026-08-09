@@ -32,7 +32,12 @@
   var ADAPTER_URL = (ADAPTER_SCRIPT && ADAPTER_SCRIPT.src)
     ? ADAPTER_SCRIPT.src
     : new URL('js/void-orrery-adapter.js', document.baseURI).href;
-  var ASSET_V = String(window.AP_ASSET_V || '782');
+  // The page's adapter query is the delivery identity for the whole engine
+  // chain. Publish it before loading orrery-loader.js so that loader imports
+  // orrery-webgl.js with the same cache-safe version instead of its old fallback.
+  var ADAPTER_V = new URL(ADAPTER_URL, document.baseURI).searchParams.get('v');
+  var ASSET_V = String(ADAPTER_V || window.AP_ASSET_V || '817');
+  window.AP_ASSET_V = ASSET_V;
 
   function assetUrl(name, extra) {
     var u = new URL(name, ADAPTER_URL);

@@ -7,7 +7,15 @@
 import { chromium } from 'playwright';
 
 const BASE = process.argv[2] || 'http://127.0.0.1:8790';
-const b = await chromium.launch();
+async function launchBrowser() {
+  try {
+    return await chromium.launch();
+  } catch (error) {
+    if (!/Executable doesn't exist/i.test(String(error))) throw error;
+    return chromium.launch({ channel: 'chrome' });
+  }
+}
+const b = await launchBrowser();
 const failures = [];
 function gate(name, ok, detail) {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? ' — ' + detail : ''}`);
@@ -91,12 +99,12 @@ function gate(name, ok, detail) {
   await page.close();
 }
 
-// 3d — quiz feeder on homepage
+// 3d — redesigned homepage keeps a direct route into the live explorer
 {
   const page = await b.newPage();
   await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  const quiz = await page.locator('a[href="quiz.html"]').count();
-  gate('index quiz feeder', quiz >= 1, `count=${quiz}`);
+  const explorer = await page.locator('a[href*="explore.html"]').count();
+  gate('index explorer feeder', explorer >= 1, `count=${explorer}`);
   await page.close();
 }
 
