@@ -450,7 +450,7 @@
     if (!items.length) {
       var empty = document.createElement('p');
       empty.className = 'ap-sky-news__empty';
-      empty.textContent = 'Ephemeris warm… sky news will appear when the engine is ready.';
+      empty.textContent = 'Warming up… tonight’s sky appears as soon as the engine has it.';
       track.appendChild(empty);
     }
 
