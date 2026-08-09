@@ -20,7 +20,7 @@
  */
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var V = '825';
+  var V = '826';
   try {
     var ownScript = document.currentScript;
     var ownVersion = ownScript && new URL(ownScript.src, document.baseURI).searchParams.get('v');

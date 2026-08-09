@@ -218,6 +218,7 @@ html.explore-threshold-entering .explore-threshold__copy { opacity: 0; transform
   border: 1px solid rgba(237, 200, 119, 0.68);
   border-radius: 999px;
   background: linear-gradient(150deg, #e2bd70, #bb8f39);
+  --ap-vc-accent: #140d05;
   color: #140d05;
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 0.76rem;

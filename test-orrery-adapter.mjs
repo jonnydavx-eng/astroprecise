@@ -125,7 +125,7 @@ for (const probe of [
 ]) {
   if (!exploreBoot.includes(probe)) fail('Explore boot contract missing: ' + probe);
 }
-for (const probe of ['.explore-stage .lite-vp-glyph', 'var(--explore-deck-h', 'explore-threshold-entering', 'html.orrery-full .explore-hint { display: none; }']) {
+for (const probe of ['.explore-stage .lite-vp-glyph', 'var(--explore-deck-h', 'explore-threshold-entering', 'html.orrery-full .explore-hint { display: none; }', '--ap-vc-accent: #140d05']) {
   if (!exploreCss.includes(probe)) fail('Explore CSS contract missing: ' + probe);
 }
 if (!loader.includes("b.setAttribute('aria-pressed', active ? 'true' : 'false')")) {
