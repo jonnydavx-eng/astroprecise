@@ -2787,9 +2787,38 @@ if (window.Interpretations) {
 
   // ── Chart Pattern Detection ──────────────────────────────────────────────
 
+  const POSITION_ALIASES = {
+    ac: 'ascendant',
+    asc: 'ascendant',
+    ascendant: 'ascendant',
+    mc: 'midheaven',
+    midheaven: 'midheaven',
+    nnode: 'northnode',
+    northnode: 'northnode',
+    snode: 'southnode',
+    southnode: 'southnode',
+  };
+
+  function uniquePatternPoints(positions) {
+    const points = [];
+    const seen = new Set();
+    Object.keys(positions || {}).forEach(name => {
+      const position = positions[name];
+      if (!position || position.lon == null) return;
+      const normalized = String(name).toLowerCase();
+      const canonical = POSITION_ALIASES[normalized] || normalized;
+      if (canonical === 'ascendant' || canonical === 'midheaven' || seen.has(canonical)) return;
+      seen.add(canonical);
+      points.push(name);
+    });
+    return points;
+  }
+
   function detectChartPatterns(positions, aspects) {
     const patterns = [];
-    const planetNames = Object.keys(positions || {}).filter(p => positions[p] && positions[p].lon != null);
+    // Angles may be described elsewhere, but they are not planets and must
+    // never create a pattern or be counted twice through an alias key.
+    const planetNames = uniquePatternPoints(positions);
 
     // Stellium — 3+ planets within same 30° sign
     const bySigns = {};
