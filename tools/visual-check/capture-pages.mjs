@@ -11,6 +11,15 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const BASE = process.argv[2] || 'http://localhost:8790';
 const OUT = join(__dirname, 'out', 'pages');
 
+async function launchBrowser(options) {
+  try {
+    return await chromium.launch(options);
+  } catch (error) {
+    if (!/Executable doesn't exist/i.test(String(error))) throw error;
+    return chromium.launch({ ...options, channel: 'chrome' });
+  }
+}
+
 const PAGES = [
   { id: 'index', path: '/?lite=1', wait: 'h1.hero__h1, .hero__h1', note: 'Home lite shell LCP', requireStarfield: false },
   { id: 'chart', path: '/chart.html', wait: '#chart-form, .chart-form, form', note: 'Birth chart form + wheel mount' },
@@ -44,7 +53,7 @@ async function readPageState(page) {
 
 async function main() {
   await mkdir(OUT, { recursive: true });
-  const browser = await chromium.launch({ headless: true });
+  const browser = await launchBrowser({ headless: true });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
     colorScheme: 'dark',
