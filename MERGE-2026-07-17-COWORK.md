@@ -16,7 +16,7 @@
 
 ## Canonical facts (cross-checked)
 - **Eclipse:** 12 Aug 2026, exact **17:47 UT**, Sun·Moon at **20°08′ Leo** (ecl. lon. **140.133°**) — verified vs astro-seek + NASA path. UK ~91% partial, local peak ~19:05 BST. Perseids peak the same night.
-- **Pricing ladder (locked by owner):** free chart/daily → **£2.99** Eclipse Night Reading (→ £4 archive after 12 Aug) → £6 Eclipse Set → **£12** Deep Reading → **£14→£19** numbered Plate → £5 Sky Pass. **Prices only rise via dated editions — never a sale.**
+- **Published prices (current policy):** free chart/daily → **£2.99** Eclipse Night Reading → £6 Eclipse Set → **£12** Deep Reading → **£14** numbered Plate → £5 Sky Pass. These prices are stable; no post-eclipse rise is scheduled.
 - **House rules:** computed, never fabricated · never charge for anything invented · quiet charts told honestly *before* payment · astrology = tradition for reflection (legal line ships everywhere) · **no brass/gold** in the new identity work.
 
 ## Wiring notes (for the next local agent)

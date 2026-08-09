@@ -15,13 +15,27 @@ for (const path of ['./website/index-full.html', './website/deep-time.html', './
   assert.equal(/arcminute/i.test(read(path)), false, `${path} must not make an arcminute claim`);
 }
 assert.ok(read('./website/index-full.html').includes('Sky model warming in your browser.'));
+const deepTime = read('./website/deep-time.html');
+assert.ok(deepTime.includes('FOR THE MOMENT SHOWN'));
+assert.equal(/minute you were born/i.test(deepTime), false);
 
 for (const path of ['./website/transits.html', './website/this-weeks-sky.html']) {
   assert.equal(count(read(path), /js\/ephemeris\.js/g), 1, `${path} must load the ephemeris once`);
 }
 
 const privacy = read('./website/privacy.html');
-assert.equal(/refine on map|OpenStreetMap\/Carto/i.test(privacy), false);
+assert.equal(/refine on map|if you use the map|OpenStreetMap\/Carto/i.test(privacy), false);
+assert.equal(/optional map tiles/i.test(read('./website/terms.html')), false);
+
+const serviceWorker = read('./website/sw.js');
+assert.ok(serviceWorker.includes('js\\/chart-page\\.js'), 'chart-page.js must be network-first');
+
+const runbook = read('./ECLIPSE-RUNBOOK.md');
+assert.ok(runbook.includes('23 suites, must be 23/23'));
+assert.equal(/19 suites|19\/19/.test(runbook), false);
+
+const mergeNote = read('./MERGE-2026-07-17-COWORK.md');
+assert.equal(/£2\.99[^\n]*£4 archive|£14→£19|prices only rise/i.test(mergeNote), false);
 
 for (const path of [
   './website/js/gumroad-unlock.js',
