@@ -2304,7 +2304,7 @@ else AstroApp.init();
 
   /* Honest 3-tier capture: configured provider POST → owner mailto relay → localStorage.
    *
-   * mode:'no-cors' was dropped here on 2026-08-09. The reason it was ever set —
+   * The opaque no-cors mode was dropped here on 2026-08-09. The reason it was ever set —
    * "the subscribe Worker sends no CORS headers" — is false: OPTIONS against
    * https://list.astroprecise.app/subscribe answers 204 with
    * Access-Control-Allow-Methods: POST, OPTIONS, GET and echoes the requesting

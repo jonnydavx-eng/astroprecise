@@ -204,7 +204,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
     <div class="card">
       <div class="lbl">STEP 2 · THE FULL READING — £2.99</div>
       <div class="receipt" id="contactTeaser"></div>
-      <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:16px 0">That's the computed receipt — free, checkable, yours. The full reading adds the remaining four written beats: what this point governs in your chart (with whole-sign house when your place is given at unlock), the one question to sit with on eclipse night, and the honest close. ≈350 words, written from your orb alone.</p>
+      <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:16px 0">That's the computed receipt — free, checkable, yours. The full reading adds the remaining four written beats: what this point governs in your chart (with whole-sign house when your place is given at unlock), the one question to sit with on eclipse night, and the honest close. ≈350 words, written from your own placements and nothing else.</p>
       <!-- ONE primary here. The email capture is it while checkout is dormant; the shop
            link is a demoted, plainly-labelled exit. upgradeBuyBtn() below promotes #buyBtn
            to the primary (and hides this form) only once a real Gumroad permalink exists. -->
@@ -214,10 +214,10 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
           <button class="btn" id="saleNotifyBtn" type="submit">NOTIFY ME WHEN THE £2.99 UNLOCK OPENS</button>
         </form>
         <div class="mono formnote" id="saleNotifyMsg" role="status" aria-live="polite" style="display:none"></div>
-        <!-- "£4 AFTER 12 AUG" was deleted here on 2026-08-09: nothing can be bought
-             at £2.99, so there was never a higher price to be saved from. A discount
-             off a price nobody has ever paid is not a discount. "NO FAKE CHECKOUT"
-             stays — it is true, and it is the whole point. -->
+        <!-- The post-eclipse price-rise tag was deleted here on 2026-08-09: nothing
+             can be bought at £2.99, so there was never a higher price to be saved
+             from. A discount off a price nobody has ever paid is not a discount.
+             "NO FAKE CHECKOUT" stays — it is true, and it is the whole point. -->
         <span class="mono" id="buyNote" style="font-size:11px;letter-spacing:.14em;color:var(--faint)">GUMROAD WHEN LIVE · NO FAKE CHECKOUT</span>
         <a class="quietlink" id="buyBtn" href="./shop.html#eclipse-reading">Or see this edition alongside the others in the shop →</a>
       </div>
@@ -399,7 +399,7 @@ $('castBtn').addEventListener('click', render);
  * was wrong. Measured 2026-08-09: OPTIONS https://list.astroprecise.app/subscribe
  * answers 204 with Access-Control-Allow-Methods: POST, OPTIONS, GET and echoes the
  * requesting Origin (checked against both https://astroprecise.app and
- * http://localhost:8790). So mode:'no-cors' was throwing away a perfectly readable
+ * http://localhost:8790). So the opaque no-cors mode was throwing away a perfectly readable
  * response and forcing this page to say the weaker "SENT" when it could say "on the
  * list" — or, worse, to call a 500 a send.
  * Now: a normal cors fetch, and res.ok is the only thing that earns a success line.

@@ -64,10 +64,11 @@ input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radi
 <h1 style="margin-top:52px">The Deep Reading — seven chapters written from <em>your</em> birth minute.</h1>
 <div class="sub">£12 · ≈1,800 words · computed on your device, never fabricated. Below, the seven chapters compute live from a sample birth minute — you watch the receipts appear, and the chapters themselves stay locked on this page. If you want to read one all the way through before deciding anything, <a href="./sample-reading.html">a complete reading is published in full, free</a>.</div>
 
-<!-- This card used to say "PUBLISHED IN FULL — THE PROOF, NOT A CLAIM" above
-     seven LOCKED chapter stubs, which is the opposite of proof. The full text
-     genuinely is published — at sample-reading.html — so the claim now points
-     at the page that keeps it, and this card describes what it actually does. -->
+<!-- This card used to promise the sample was published here in full, as proof
+     rather than claim — directly above seven LOCKED chapter stubs, which is the
+     opposite of proof. The full text genuinely is published, at
+     sample-reading.html, so the promise now points at the page that keeps it and
+     this card describes what it actually does. -->
 <div class="card" style="margin-top:30px">
   <div class="lbl">SAMPLE COMMISSION · COMPUTED LIVE HERE · READ IN FULL NEXT DOOR</div>
   <div style="font-size:15.5px;line-height:1.6;color:var(--dim)">Seven chapters, computed in front of you by the same engine that writes the £12 edition — for a person born <b style="color:var(--ink)">14 March 1994, 09:12, Manchester</b>. Mono lines are computed receipts; serif lines are what the receipts earn. Chapter six is live: it re-computes against today's actual sky every time this page opens. The chapter text stays locked here — <a href="./sample-reading.html">the complete published sample</a> is the one to read end to end.</div>
@@ -245,7 +246,7 @@ async function attemptUnlock(key) {
 function bindUnlockForms() {
   $('licBtn')?.addEventListener('click', () => { const k = $('licKey'); attemptUnlock(k ? k.value.trim() : ''); });
   // Dormant-checkout capture: notify form → subscribe worker.
-  // This used to fire mode:'no-cors' without awaiting it and then print success
+  // This used to fire an opaque no-cors POST without awaiting it and then print success
   // unconditionally — an offline visitor was told they were on the list when
   // nothing had left the browser. The Worker answers CORS preflight and echoes
   // the requesting Origin (measured 2026-08-09), so the response is readable:
