@@ -328,6 +328,28 @@
           <p class="chart-form__progress" id="chart-form-progress">Date, place, then time — about 20 seconds</p>
         </div>
 
+        <!--
+          NO birth-data control below carries a `name`, and that is load-bearing.
+          This form has no `action`, so a native submit is a GET to this same
+          page and every named control lands in the request line — the access
+          log, the Referer header, and the Cache Storage key. Measured before
+          this fix: a native submit returned 200 for
+            ?birth-date=…&birth-time=…&name=…&latitude=…&longitude=…
+          which is the buyer's birth minute, full name and home coordinates, on
+          a page whose own copy says "Nothing is uploaded, ever."
+
+          preventDefault() in js/chart-page.js is NOT the guarantee. That file
+          is 154 KB, loaded `defer`, and its <script> sits ~28,000 characters
+          after this tag, so the form is interactive before the listener
+          exists and the leak is unconditional if the script is blocked, slow
+          or throws. Dropping the names makes the guarantee structural: with
+          JS off there is nothing to put in the URL.
+
+          chart-page.js reads every field by getElementById, never by name, so
+          nothing depends on these. The node-mode radios keep their name because
+          radios need one to group — they carry no personal data.
+          Same pattern as the homepage coupon form, index.html:598-601.
+        -->
         <form id="chart-form" novalidate aria-label="Birth chart calculation form">
 
           <div class="chart-form__essentials">
@@ -343,7 +365,6 @@
             <input
               type="date"
               id="date-input"
-              name="birth-date"
               class="form-input"
               required
               aria-required="true"
@@ -363,7 +384,6 @@
               <input
                 type="text"
                 id="city-input"
-                name="birth-city"
                 class="form-input"
                 placeholder="Start typing your birth city or town"
                 autocomplete="off"
@@ -396,11 +416,10 @@
             <input
               type="time"
               id="time-input"
-              name="birth-time"
               class="form-input"
               aria-describedby="time-hint"
             />
-            <input type="hidden" id="time-accuracy-input" name="time-accuracy" value="unknown" />
+            <input type="hidden" id="time-accuracy-input" value="unknown" />
             <p class="form-hint" id="time-hint">Exact time unlocks Rising, MC and houses. Leave blank if unknown — planetary signs remain precise.
               <button type="button" id="time-unknown-btn" aria-pressed="true" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 2px;">Keep time unknown</button>
             </p>
@@ -415,7 +434,6 @@
               <input
                 type="text"
                 id="name-input"
-                name="name"
                 class="form-input"
                 placeholder="e.g. Jane Doe"
                 autocomplete="name"
@@ -428,9 +446,9 @@
           </div><!-- /.chart-form__essentials -->
 
           <!-- Hidden coordinate / tz fields -->
-          <input type="hidden" id="lat-input" name="latitude" />
-          <input type="hidden" id="lon-input" name="longitude" />
-          <input type="hidden" id="tz-input" name="timezone" />
+          <input type="hidden" id="lat-input" />
+          <input type="hidden" id="lon-input" />
+          <input type="hidden" id="tz-input" />
 
           <!-- Submit CTA FIRST (structure clean) — advanced options never push Calculate below the fold -->
           <div class="form-divider" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
@@ -508,7 +526,7 @@
                       <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
                     </div>
                   </div>
-                  <input type="hidden" id="house-system" name="house-system" value="equal" />
+                  <input type="hidden" id="house-system" value="equal" />
 
                   <div class="form-section-label" style="margin-top:var(--space-6);">
                     <div class="form-section-label__num" aria-hidden="true">☊</div>
