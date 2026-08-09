@@ -314,7 +314,7 @@
         id: 'eclipse',
         kicker: 'WEDNESDAY 12 AUGUST 2026',
         title: days < 0 ? '☉ The eclipse Britain just watched' : '☉ The Sun goes deep partial over Britain',
-        detail: 'First bite 18:08–18:17 BST · deepest about 19:12 in London, 19:05 Edinburgh, 19:16 in Cornwall · 88–96% of the Sun covered' +
+        detail: 'First bite 18:08–18:17 BST · deepest about 19:12 in London, 19:05 in Edinburgh, 19:16 in Truro · 88–96% of the Sun covered' +
           (eclLon != null ? ' · it lands at ' + fmtDeg(eclLon) : '') +
           ' · Britain never reaches totality, so eclipse glasses stay on the whole way through.',
         href: './eclipse.html',

@@ -1,7 +1,9 @@
 /**
- * Remit-4 proof — run from repo root with a static server on website/:
- *   node tools/serve-website.mjs &   (or any static server)
+ * Remit-4 proof. Needs any static server rooted at website/, then:
  *   node tools/visual-check/_remit4-check.mjs http://127.0.0.1:8791
+ * (Run it from tools/visual-check, or from the repo root — playwright resolves
+ * out of tools/visual-check/node_modules either way.) Not wired into `npm test`
+ * on purpose: it needs a server and a browser, and `npm test` must stay offline.
  *
  * Checks, in a real browser, the four things that are only true at runtime:
  *   1. the homepage sky-news band no longer repeats the Moon / tightest-pair /
