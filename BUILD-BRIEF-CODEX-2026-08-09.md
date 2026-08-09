@@ -6,6 +6,9 @@ Everything here was measured at **08:51 on 2026-08-09** against
 Re-measure before you trust any line number — a repo-guard autosnapshot commits every
 15 minutes and other agents have been editing these files.
 
+**Branch is on origin as of 09:38** at `eeb3b18` (this brief added two commits after the
+measurement above). Pull before you start. `main` and `origin/main` are untouched.
+
 ---
 
 ## THE JOB
@@ -27,7 +30,8 @@ powershell -NoProfile -File "C:\Users\jonny\OneDrive\control-panel\project_first
 ```
 
 - Work only on `redesign/editorial-front-screen`. Never commit to `main`.
-- **Never push to origin.** Pushing `main` deploys astroprecise.app. That is the owner's call and he has not made it.
+- **Never push `main`.** A push to `main` deploys astroprecise.app — the workflow's trigger is `branches: [main]` at `.github/workflows/deploy-pages.yml:5`. That is the owner's call and he has not made it.
+- **Pushing this feature branch to origin is fine and encouraged.** It cannot trigger a deploy, and it is how the work stops being single-copy on one laptop. I pushed it at 09:38 today; `origin/redesign/editorial-front-screen` = `eeb3b18`. Push again when you have something worth keeping.
 - Commit by explicit path. Never `git add -A`.
 - A 15-minute repo-guard autosnapshot will commit your work before you do, under the message `autosnapshot ...`. Do not fight it and do not revert it. Verify your content is at HEAD, then record your reasoning with `git commit --allow-empty`.
 - Gates must hold, measured at 08:51: `npm run lint` exit 0 (0 errors, 1193 warnings) · `npm test` exit 0 · `npm run check:syntax` 126/126 · `npm run test:launch` all pass.
