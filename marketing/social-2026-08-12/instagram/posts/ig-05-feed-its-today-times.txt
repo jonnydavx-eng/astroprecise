@@ -1,9 +1,9 @@
 It's today.
 
 Times for Britain, all BST, all low in the west:
-First contact ≈18:00 — the first bite out of the Sun's edge.
-Maximum ≈19:05 — about 91% covered in the south, a little less further north.
-Last contact ≈20:10.
+First contact 18:08–18:17 — the first bite out of the Sun's edge.
+Maximum 19:05 in Edinburgh, 19:12 in London, 19:16 in Truro — 88 to 96% covered, deepest in the far south-west.
+Last contact ≈20:10, before sunset everywhere in Britain.
 
 All of it happens low over the western horizon, so a hill, a rooftop or a line of trees will simply take it from you. Choose your spot before six.
 
@@ -28,8 +28,8 @@ PIN THIS    Pin to the top of the grid for the day. It is the post everyone will
 TREATMENT   Add the times as a quiet mono block in the clean upper sky, gold on the
             dusk gradient, left-aligned, generous leading:
                 12 AUGUST 2026 · BST
-                FIRST CONTACT   ≈ 18:00
-                MAXIMUM         ≈ 19:05
+                FIRST CONTACT   18:08 – 18:17
+                MAXIMUM         19:05 EDI · 19:12 LDN · 19:16 TRURO
                 LAST CONTACT    ≈ 20:10
             Nothing else. Do not put it over the crescent or the stone.
 
@@ -44,4 +44,5 @@ FIRST COMMENT (hashtags — SET A, EVENT)
 
 COMMERCE CHECK   no price · no shop link · CTA = eclipse.html via bio only ✓
 SAFETY CHECK     three safe methods named, "no safe moment" stated ✓
-CLAIM CHECK      does not claim totality; "about 91% in the south" hedged north ✓
+CLAIM CHECK      does not claim totality; coverage given as the 88–96% range, not a
+                 single national figure; maximum given per city, not as one UK time ✓

@@ -27,12 +27,19 @@
     Sagittarius: 'Jupiter', Capricorn: 'Saturn', Aquarius: 'Saturn', Pisces: 'Jupiter',
   };
 
+  // `name` is the machine key (stable — other modules and the content bank key off
+  // it). `verb`, `label` and `phrase` are the READER-FACING wordings and are the
+  // only forms that may reach the page. The 60° contact is never called by its
+  // trade name: readers get "a helpful angle", which is what it actually means.
+  //   verb   — mid-sentence: "Transiting Venus <verb> your Leo Sun"
+  //   label  — short tag beside the planet: "venus <label>"
+  //   phrase — joins two bodies: "Venus <phrase> your Sun"
   var ASPECTS = [
-    { name: 'conjunction', angle: 0, verb: 'conjoins', quality: 'blend' },
-    { name: 'sextile', angle: 60, verb: 'sextiles', quality: 'support' },
-    { name: 'square', angle: 90, verb: 'squares', quality: 'friction' },
-    { name: 'trine', angle: 120, verb: 'trines', quality: 'flow' },
-    { name: 'opposition', angle: 180, verb: 'opposes', quality: 'polarity' },
+    { name: 'conjunction', angle: 0, verb: 'meets', label: 'meeting', phrase: 'meeting', quality: 'blend' },
+    { name: 'sextile', angle: 60, verb: 'sits at a helpful angle to', label: 'helpful angle', phrase: 'at a helpful angle to', quality: 'support' },
+    { name: 'square', angle: 90, verb: 'squares', label: 'square', phrase: 'square', quality: 'friction' },
+    { name: 'trine', angle: 120, verb: 'trines', label: 'trine', phrase: 'trine', quality: 'flow' },
+    { name: 'opposition', angle: 180, verb: 'opposes', label: 'opposition', phrase: 'opposite', quality: 'polarity' },
   ];
 
   var ORB = 3;
@@ -310,11 +317,18 @@
       bestDay: days[(day.getDay() + (hits.length ? hits[0].planet.length : 3)) % 7],
       moodScore: mood,
       skyFacts: buildSkyFacts(pos, sunIdx, phase),
-      methodNote: 'Solar-chart horoscope: whole-sign houses from your Sun sign, computed from VSOP87 ephemeris at local noon. For your full natal chart see transits.html.',
+      // Reader-facing method line. Two corrections, 2026-08-09: "local noon" was
+      // false — jdAtLocalNoon takes the LOCAL calendar date and anchors hour 12 of
+      // the Julian day, which is 12:00 UT — and the trade word for the position
+      // tables is out of the visitor's vocabulary. Both fixed at source, so the
+      // content bank no longer has to patch the string after the fact.
+      methodNote: 'Solar-chart reading: houses counted whole-sign from your Sun sign, with planet positions computed from the VSOP87 model for 12:00 UT. For your full birth chart, see transits.html.',
       transits: hits.slice(0, 3).map(function (h) {
         return {
           planet: h.planet,
-          aspect: h.hit.aspect.name,
+          aspect: h.hit.aspect.name,          // machine key — never printed raw
+          aspectLabel: h.hit.aspect.label,    // short tag for the page
+          aspectPhrase: h.hit.aspect.phrase,  // joins two bodies in a sentence
           orb: h.hit.orb,
           text: aspectSentence(h.planet, h.hit, sign + ' Sun'),
         };
@@ -409,7 +423,7 @@
       luckyColor: ['Amethyst Purple', 'Celestial Gold', 'Midnight Blue', 'Emerald Green',
         'Ruby Red', 'Pearl White', 'Sapphire', 'Rose Gold', 'Obsidian Black'][seed % 9],
       skyFacts: buildSkyFacts(pos, sunIdx, moonPhase(jd)),
-      methodNote: 'Month scaffold from mid-month ephemeris + solar houses; daily email uses getDailyHoroscope per send date.',
+      methodNote: 'Month outlook: planet positions computed for the middle of the month, with houses counted from your Sun sign. The daily reading is recomputed for its own date.',
     };
   }
 

@@ -134,14 +134,14 @@
 
     <!-- ═══ ACCURACY ═══ -->
     <section class="why-section" id="accuracy">
-      <h2>Real Ephemeris Accuracy</h2>
+      <h2>Positions You Can Actually Check</h2>
       <p>The planetary engine is a real implementation of <strong>VSOP87</strong> for
         the planets and <strong>ELP2000</strong> for the Moon — the analytical
         theories that underpin modern almanacs — following Meeus' <em>Astronomical
-        Algorithms</em>. Positions are computed to roughly an arcminute across the
-        supported era (1800–2200 CE), not rounded sun-sign approximations. Your
-        ascendant is derived from true local sidereal time at your exact birthplace
-        and minute, not a lookup table.</p>
+        Algorithms</em>. Positions are computed to within roughly a sixtieth of a
+        degree across the supported era (1800–2200 CE) — we do not round them to a
+        sun-sign approximation. Your rising sign comes from true local sidereal time
+        at your exact birthplace and minute, not a lookup table.</p>
       <p>We publish the validation separately, so you can see exactly how the numbers
         hold up.</p>
       <a class="why-btn why-btn--ghost" href="accuracy.html">See the accuracy page →</a>
@@ -195,7 +195,7 @@
       <p>We'd rather be checked than believed. So:</p>
       <ul class="verify-list">
         <li><strong>Read the source.</strong> The whole site is static and open in your browser — open developer tools and watch the math run.</li>
-        <li><strong>Compare the numbers.</strong> Take any planetary position we give and check it against a reference ephemeris; they'll agree to about an arcminute across the supported era.</li>
+        <li><strong>Compare the numbers.</strong> Take any planetary position we give and check it against any published astronomical table; they will agree to about a sixtieth of a degree across the supported era.</li>
         <li><strong>Watch the network.</strong> Open the network tab and confirm what we said: public feeds and place-name lookups only. Your birth moment is never in a request.</li>
         <li><strong>Test determinism.</strong> Enter the same details twice. Same chart, same words, every time.</li>
       </ul>

@@ -1,10 +1,10 @@
 Four days.
 
-Wednesday evening the Moon moves in front of the Sun and stays there for about two hours. From Britain it never quite covers it — about 91% at maximum in the south, a little less further north. Totality runs through Iceland and northern Spain. Not here.
+Wednesday evening the Moon moves in front of the Sun and stays there for about two hours. From Britain it never quite covers it — 88 to 96% at maximum, deepest in the far south-west, shallower the further north you go. Totality runs through Iceland and northern Spain. Not here.
 
 So it won't go dark. It goes strange, which is better: the light drains out of an ordinary August evening while the sky still looks like day. Shadows sharpen. Colours flatten. It gets cold. The birds stop.
 
-Maximum is around 19:05 BST, low in the west. Pick your horizon now.
+Maximum is 19:12 BST in London — 19:05 in Edinburgh, 19:16 in Truro — low in the west. Pick your horizon now.
 
 The free page computes where the eclipse point — 20°02′ Leo — falls in your own chart. It runs on your device. Nothing uploaded, nothing stored. If it touches nothing in your chart, the page says so.
 
@@ -26,7 +26,7 @@ COVER FRAME Pick ~00:09 (the dusk crescent over the fields). Do not use the open
 
 ON-SCREEN TEXT (add in the editor, never baked into the footage)
   0.0–2.0s   In four days the light over Britain goes strange
-  4.0–6.5s   ~91% of the Sun · 19:05 BST · Wed 12 August
+  4.0–6.5s   88–96% of the Sun · 19:12 BST London · Wed 12 August
   9.0–12.0s  Free eclipse chart · computed on your device · link in bio
   Style: IBM Plex Mono, gold #D4B84A, lower third, no box, no drop shadow.
   Keep it off the crescent.

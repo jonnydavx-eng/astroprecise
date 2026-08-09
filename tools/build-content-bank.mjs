@@ -93,21 +93,50 @@ function ensureDir(p) {
 
 function fixMethodNote(note) {
   if (typeof note !== 'string') return note;
-  const fixed = note.replace(
-    'computed from VSOP87 ephemeris at local noon',
-    'computed from VSOP87 ephemeris at 12:00 UT',
-  );
-  if (/local noon/i.test(fixed)) {
+  // The engine used to claim "local noon"; it anchors at 12:00 UT and now says so
+  // (horoscope-engine.js, 2026-08-09). The guard stays: if the mislabel ever comes
+  // back, the build fails rather than shipping it.
+  if (/local noon/i.test(note)) {
     throw new Error(
-      'methodNote still claims "local noon" after correction — the engine wording changed; update fixMethodNote() in tools/build-content-bank.mjs',
+      'methodNote claims "local noon" — the engine anchors at 12:00 UT. Fix the wording in website/js/horoscope-engine.js.',
     );
   }
-  return fixed;
+  return note;
+}
+
+/* ---------- reader-vocabulary guard ----------
+ * Words the audience does not use and that this brand does not put in front of a
+ * visitor. Every string the bank emits is prose that gets rendered, so the guard
+ * runs over the whole reading. Machine keys (transits[].aspect) are exempt by
+ * name — they are never printed raw; the page prints aspectLabel / aspectPhrase.
+ * If this throws, fix the WORDING IN THE ENGINE, never the 200 output files.
+ */
+const BANNED_WORDS = /\b(sextiles?|ephemeri(?:s|des)|orbs?|midheavens?|arcminutes?)\b/i;
+const MACHINE_KEYS = new Set(['aspect', 'planet', 'sign', 'orb']);
+
+function assertReaderSafe(value, where) {
+  if (typeof value === 'string') {
+    const hit = value.match(BANNED_WORDS);
+    if (hit) {
+      throw new Error(
+        `Banned reader vocabulary "${hit[0]}" in ${where}: ${JSON.stringify(value.slice(0, 160))}\n` +
+        '  → fix the wording in website/js/horoscope-engine.js or website/js/interpretations.js, then rebuild.',
+      );
+    }
+    return;
+  }
+  if (Array.isArray(value)) { value.forEach((v, i) => assertReaderSafe(v, `${where}[${i}]`)); return; }
+  if (value && typeof value === 'object') {
+    for (const k of Object.keys(value)) {
+      if (MACHINE_KEYS.has(k)) continue;
+      assertReaderSafe(value[k], `${where}.${k}`);
+    }
+  }
 }
 
 function stripReading(r) {
   if (!r) return null;
-  return {
+  const out = {
     sign: r.sign,
     date: r.date,
     overview: r.overview,
@@ -123,6 +152,8 @@ function stripReading(r) {
     methodNote: fixMethodNote(r.methodNote),
     transits: r.transits,
   };
+  assertReaderSafe(out, `daily/${r.sign}`);
+  return out;
 }
 
 /* ---------- idempotent writers ---------- */
@@ -208,9 +239,15 @@ for (let i = -args.keepDays; i < args.days; i++) {
 
 pruneDir(join(OUT, 'daily'), /^(\d{4}-\d{2}-\d{2})\.json$/, isoOfUTC(utcDay(-args.keepDays)));
 
-console.log(`Building ${args.months} monthly files × 12 signs…`);
+console.log(`Building ${args.months} monthly files × 12 signs (plus the retained previous month)…`);
 
-for (let m = 0; m < args.months; m++) {
+// Starts at m = −1, not 0. The previous month is deliberately KEPT on disk (visitors
+// west of UTC straddle the boundary) but the old loop never rewrote it, so it froze
+// with whatever wording shipped when it was first written — that is how a month file
+// was still serving retired wording six weeks later. Regenerating it is free: the
+// content is a pure function of the mid-month date, so only the wording can differ.
+// On-disk count is unchanged (prune keeps exactly one past month either way).
+for (let m = -1; m < args.months; m++) {
   const y = NOW.getUTCFullYear();
   const mo = NOW.getUTCMonth() + m;
   const key = monthKeyOf(new Date(Date.UTC(y, mo, 1)).getUTCFullYear(), new Date(Date.UTC(y, mo, 1)).getUTCMonth());
@@ -218,6 +255,7 @@ for (let m = 0; m < args.months; m++) {
   const readings = {};
   for (const sign of SIGNS) {
     const raw = H.getMonthlyHoroscope(sign, engineDateFor(dU, 15));
+    if (raw) assertReaderSafe(raw, `monthly/${sign}`);
     readings[sign] = raw ? {
       sign: raw.sign,
       month: raw.month,
@@ -246,19 +284,24 @@ for (const planet of PLANETS) {
     planetInSign[planet][sign] = I.getPlanetInterpretation(planet, sign);
   }
 }
+assertReaderSafe(planetInSign, 'core/planet-in-sign');
 writeIfChanged(join(OUT, 'core', 'planet-in-sign.json'), JSON.stringify(planetInSign));
 
 const houses = [];
 for (let n = 1; n <= 12; n++) {
   houses.push(I.getHouseMeaning(n));
 }
+assertReaderSafe(houses, 'core/houses');
 writeIfChanged(join(OUT, 'core', 'houses.json'), JSON.stringify(houses));
 
+// Object keys here are the machine aspect names; only the interpretation text is
+// read by a visitor, and assertReaderSafe checks values, not keys.
 const aspectTypes = ['Conjunction', 'Trine', 'Sextile', 'Square', 'Opposition'];
 const aspects = {};
 for (const type of aspectTypes) {
   aspects[type] = I.getAspectMeaning(type, 'Sun', 'Moon');
 }
+assertReaderSafe(aspects, 'core/aspects');
 writeIfChanged(join(OUT, 'core', 'aspects.json'), JSON.stringify(aspects));
 
 const risingBlurbs = {};
@@ -282,10 +325,11 @@ writeIfChanged(join(OUT, 'core', 'rising-by-sign.json'), JSON.stringify(risingBl
 const deepSections = {
   bigThree: 'Your Sun, Moon, and Rising are the three signatures most people feel first — identity, inner weather, and the face you show the world.',
   love: 'Venus and the 7th house describe how you give and receive affection; Mars adds desire, pace, and the courage to pursue.',
-  career: 'The Midheaven, Saturn, and the 10th house frame public reputation — what you build slowly and what the world remembers.',
+  career: 'Saturn, the 10th house, and the very top of your chart frame public reputation — what you build slowly and what the world remembers.',
   challenges: 'Saturn, squares, and oppositions mark the curriculum — friction that becomes craft when met honestly.',
   purpose: 'The North Node and stelliums point toward growth edges — unfamiliar qualities that feel strangely like home when practiced.',
 };
+assertReaderSafe(deepSections, 'core/deep-reading-sections');
 writeIfChanged(join(OUT, 'core', 'deep-reading-sections.json'), JSON.stringify(deepSections));
 
 /* ---------- manifest reflects on-disk truth after generate + prune ---------- */

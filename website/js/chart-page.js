@@ -824,12 +824,7 @@
       precisionLabel.textContent = (labels[level] || labels.unknown) +
         (chart.houses ? ` · ${houseName} houses` : ` · ${houseName} selected; angles withheld until time is known`);
     }
-    // Eclipse handoff: carry the just-cast birth data into the free eclipse
-    // teaser so the user never re-enters date/time/zone (IANA tz passed as
-    // tzname; eclipse.html resolves the historical offset itself).
-    const eclipseHref = 'eclipse.html?from=chart&dob=' + encodeURIComponent(chart.birthDate || '') +
-      (chart.birthTime ? '&tob=' + encodeURIComponent(chart.birthTime) : '') +
-      (chart.tz ? '&tzname=' + encodeURIComponent(chart.tz) : '');
+    const eclipseHref = eclipseHandoffHref(chart);
     ['eclipse-handoff', 'eclipse-cta'].forEach(function (id) {
       const el = document.getElementById(id);
       if (el) el.href = eclipseHref;
@@ -861,6 +856,39 @@
         }
       });
     });
+  }
+
+  /* ── Chart → eclipse handoff. Carries the just-cast birth data so nobody
+     re-types it, WITHOUT putting it in the link.
+
+     Until 2026-08-09 both eclipse CTAs on this page were
+
+       eclipse.html?from=chart&dob=1994-03-14&tob=09%3A12&tzname=Europe/London
+
+     so clicking through sent a birth date, a birth time and a home timezone in
+     the request line — the access log, the Referer of everything eclipse.html
+     loaded next, the service worker's cache key, and the visitor's own synced
+     history. Eclipse week is the busiest this link will ever be.
+
+     sessionStorage is same tab, same origin, never transmitted, and gone when
+     the tab closes. `from=chart` stays in the query: it names the route, not a
+     person. Where storage is blocked, the old query is the fallback — a working
+     handoff beats a broken one, and eclipse.html still reads it. */
+  function eclipseHandoffHref(chart) {
+    const legacy = 'eclipse.html?from=chart&dob=' + encodeURIComponent(chart.birthDate || '') +
+      (chart.birthTime ? '&tob=' + encodeURIComponent(chart.birthTime) : '') +
+      (chart.tz ? '&tzname=' + encodeURIComponent(chart.tz) : '');
+    try {
+      sessionStorage.setItem('ap-eclipse-handoff', JSON.stringify({
+        dob: chart.birthDate || '',
+        tob: chart.birthTime || '',
+        tzname: chart.tz || '',
+        ts: Date.now(),
+      }));
+    } catch (e) {
+      return legacy;
+    }
+    return 'eclipse.html?from=chart';
   }
 
   function bundleUpsellProduct() {
@@ -946,9 +974,7 @@
       tag: 'Eclipse · 12 Aug',
       title: 'Where the eclipse lands in this chart',
       desc: 'Free teaser — computed from the chart you just cast, birth data carried over.',
-      href: 'eclipse.html?from=chart&dob=' + encodeURIComponent(chart.birthDate || '') +
-        (chart.birthTime ? '&tob=' + encodeURIComponent(chart.birthTime) : '') +
-        (chart.tz ? '&tzname=' + encodeURIComponent(chart.tz) : ''),
+      href: eclipseHandoffHref(chart),
       cta: 'See the contact →',
     };
 
@@ -1869,7 +1895,7 @@
       if (host) {
         host.hidden = false;
         host.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        document.querySelector('#wallpaper-email-form [name="email"]')?.focus();
+        document.getElementById('wallpaper-lead-email')?.focus();
       }
       if (window.AstroApp) AstroApp.showToast('Email unlock', 'Enter your email once to download your wallpaper.', 'info');
       return;
@@ -1887,7 +1913,12 @@
     wallpaperLeadWired = true;
 
     const form = document.getElementById('wallpaper-email-form');
-    const dateInput = form?.querySelector('[name="birthDate"]');
+    // By id, not by name. The two controls lost their `name` on 2026-08-09 so
+    // that a native submit cannot serialise an email address and a birth date
+    // into chart.html's own query string — form.email / [name="birthDate"] both
+    // stop resolving when a control is unnamed, which is exactly the point.
+    const emailInput = document.getElementById('wallpaper-lead-email');
+    const dateInput = document.getElementById('wallpaper-lead-birthdate');
     try {
       const hint = localStorage.getItem(WALLPAPER_DATE_KEY);
       if (hint && dateInput && !dateInput.value) dateInput.value = hint;
@@ -1895,11 +1926,11 @@
 
     form?.addEventListener('submit', ev => {
       ev.preventDefault();
-      const email = (form.email?.value || '').trim();
+      const email = (emailInput?.value || '').trim();
       const birthDate = (dateInput?.value || '').trim();
       if (!isValidEmail(email)) {
         if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning');
-        else form.email?.focus();
+        else emailInput?.focus();
         return;
       }
       let res = { sent: 'local' };

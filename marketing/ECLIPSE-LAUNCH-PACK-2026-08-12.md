@@ -334,8 +334,8 @@ nowhere else in the repo. Kept in full.** Rows that depend on checkout are marke
 | **12:30** | Instagram story: countdown sticker to 19:12 (London maximum), link sticker to eclipse.html. |
 | **14:00** | 🚫 Sales checkpoint: Gumroad dashboard — order count, revenue, any failed checkouts. Reply to all email/DM replies so far. *(Blocked — do the replies, skip the dashboard.)* |
 | **15:30** | Site check again under load. Confirm notify signups are still being captured. |
-| **17:00** | Post a short X reminder: "One hour to first contact. Glasses or pinhole — never bare eyes, and they stay on throughout: Britain never reaches totality." Reply to any time/safety questions; this is the hour they'll come. |
-| **17:46 TD = 18:46 BST** | Global greatest eclipse, 45 km off western Iceland — not a UK time, and not the UK maximum. Optional single X post marking it for the astronomy-pedant segment; keep it light. |
+| **17:00** | Post a short X reminder: "Just over an hour to first contact — 18:08 to 18:17 depending where you are. Glasses or pinhole — never bare eyes, and they stay on throughout: Britain never reaches totality." Reply to any time/safety questions; this is the hour they'll come. |
+| **18:46 BST = 17:46 UT** | Global greatest eclipse, 45 km off western Iceland — not a UK time, and not the UK maximum. Optional single X post marking it for the astronomy-pedant segment; keep it light. |
 | **~18:08–20:10** | Partial phase over the UK — first contact to last, all of it before sunset. Do nothing technical — be outside with the audience. Phone in pocket for site-down alerts only. |
 | **19:05 / 19:12 / 19:16** | Maximum: Edinburgh / London / Truro. |
 | **19:30** | 🚫 **Post 8 (Instagram):** "It just happened" + Perseids + Sky Pass. *(Blocked as written — a Perseids-only version with the eclipse.html link is safe and worth posting.)* |

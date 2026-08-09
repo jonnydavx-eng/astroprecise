@@ -8,6 +8,10 @@ Nothing in this plan quotes a price, links to a shop, or implies anything can be
 bought. Every call to action is the free cast at `astroprecise.app/eclipse.html`,
 which is also where the email capture lives — one link does both jobs.
 
+**Facts live in one place: [`../ECLIPSE-FACTS.md`](../ECLIPSE-FACTS.md).** Times,
+coverage and the banned-word list are there, not here. Check any number against it
+before it goes into a caption or onto a slide.
+
 ---
 
 ## Do these two things first, or none of it works
@@ -34,7 +38,7 @@ Postiz. Link stickers in Stories work on all account types now.
 | When | Post | Format | Asset |
 |---|---|---|---|
 | Sat 8 Aug, 19:00 | The light goes strange | Reel 9:16, 12s | ready |
-| Sun 9 Aug, 11:00 | 91% is not 100% | Carousel, 7 slides, 4:5 | cover ready, 6 to design |
+| Sun 9 Aug, 11:00 | 96% is not 100% | Carousel, 7 slides, 4:5 | cover ready, 6 to design |
 | Mon 10 Aug, 18:30 | An instrument, not a mood board | Feed 4:5 | ready |
 | Tue 11 Aug, 08:00 | Three safe ways to watch | Feed 1:1 | ready |
 | **Wed 12 Aug, 09:30** | It's today — the times | Feed 4:5 · **pin this** | ready |
@@ -67,10 +71,11 @@ object people will screenshot.
 named stickers in `posts/ig-08-stories-d4-to-d1.txt` and
 `posts/ig-09-stories-eclipse-day.txt`. The four stickers that matter:
 
-- **Countdown** to 12 Aug 19:05 BST, named UK MAXIMUM. Set it on Saturday and
+- **Countdown** to 12 Aug 19:12 BST, named MAXIMUM · LONDON. Set it on Saturday and
   re-share it daily. It is the only sticker that books a reminder notification in
-  advance, and this campaign is entirely about one moment.
-- **Quiz** on Sunday: "How much of the Sun disappears over Britain?" (answer 91%).
+  advance, and this campaign is entirely about one moment. Name the city: there is no
+  single UK maximum (19:05 Edinburgh, 19:12 London, 19:16 Truro).
+- **Quiz** on Sunday: "How much of the Sun disappears over Britain?" (answer 88–96%).
   Teaches the load-bearing fact and out-taps a poll.
 - **Question box** on Monday: "Ask me anything about Wednesday." The honest-expert
   position doing the work. Answer six of them in follow-up frames.
@@ -91,7 +96,7 @@ real things nobody else is saying clearly:
 
 1. **Britain does not get totality.** The umbra crosses Greenland, Iceland and
    northern Spain. We are beside the band, not under it.
-2. **What 91% actually looks like.** It does not go dark. Daylight drops, shadows go
+2. **What nine-tenths actually looks like.** It does not go dark. Daylight drops, shadows go
    razor-sharp, colours flatten, the temperature falls, the birds stop. Managing that
    expectation honestly is more useful than hype, and it is the voice.
 3. **The Perseids get a moonless sky by geometry.** A solar eclipse can only happen at
@@ -223,18 +228,19 @@ do not start with "image of", and do not use it as a hashtag dump.
 
 ---
 
-## Two accuracy notes for the owner
+## Two accuracy notes — both now closed
 
-**The 17:46 UT / 19:05 BST thing.** `eclipse.html` currently reads "the eclipse peaks
-on 12 August 2026 at 17:46 UT — around 19:05 UK summer time". Those are two different
-events: 17:46 UT is greatest eclipse *globally*, over the Arctic, which is 18:46 BST;
-UK local maximum is about 19:05 BST. On an accuracy brand that conflation is worth
-fixing, and it is exactly the kind of thing an astronomy account will quote-post. All
-Instagram copy here keeps them separate. I have not touched the site.
+**The 17:46 / 19:05 thing — fixed on the site, and then fixed again here.** The page
+used to merge two different events into one sentence. It no longer does: greatest
+eclipse is global, **18:46 BST (17:46 UT)**, 45 km off western Iceland; Britain's own
+maximum is **19:05 Edinburgh / 19:12 London / 19:16 Truro**. Two further corrections
+landed 2026-08-09 — greatest eclipse is off Iceland, *not* "over the Arctic", and 17:46
+is **UT, not TD** (TD is 17:47). Working in `../ECLIPSE-FACTS.md`.
 
-**Coverage figure.** The site's own FAQ says roughly 89–92% across the UK, deepest in
-the southwest. Captions here say "about 91% in the south, a little less further north"
-rather than a flat 91% everywhere, which would be wrong for Scotland.
+**Coverage figure — corrected 2026-08-09.** "Roughly 89–92%" was wrong and so was the
+"about 91% in the south" hedge, which was wrong in a second way: the south is both the
+*deepest* part of Britain and the *latest*. The honest figure is **88–96%, deepest in
+the far south-west**. Where one number is unavoidable, "nine-tenths" is true everywhere.
 
 ---
 

@@ -152,7 +152,7 @@
         <p class="hero__eyebrow">Synastry Analysis</p>
         <h1 id="page-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cosmic Compatibility</h1>
         <p>Discover the astrological dynamics between two charts</p>
-        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Full synastry — inter-chart aspects with measured orbs, not Sun-sign matching</span></a></p>
+        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Full synastry — every angle between your two charts, measured, not Sun-sign matching</span></a></p>
 
         <!-- Two luminous orb avatars with connecting arc -->
         <div class="compat-orbs" style="display:flex;align-items:center;justify-content:center;margin:0 auto 2.5rem;max-width:560px;min-height:200px" aria-hidden="true">
@@ -291,7 +291,7 @@
           </div>
           <p class="form-hint" style="text-align:center;margin-top:var(--space-3);">
             All calculations run in your browser. No birth data is sent to any server.<br/>
-            <span style="opacity:0.8;">"Invite Someone" copies a link with your half pre-filled — they add theirs.</span>
+            <span style="opacity:0.8;">"Invite Someone" copies a link with your half pre-filled — they add theirs. Your half rides in the part of the link after the <span class="mono">#</span>, which browsers never send to a server.</span>
           </p>
         </form>
 
@@ -671,19 +671,21 @@
             <p style="color:var(--color-silver-dim);line-height:1.8;margin-bottom:var(--space-5);">
               Synastry is the branch of astrology that compares two birth charts to analyse the
               relational dynamics between two people. By overlaying Person A's chart onto Person B's,
-              we reveal every cross-chart planetary aspect — Venus conjunct Mars, Sun trine Moon,
-              Saturn square Mercury — each read in the astrological tradition as a signature of attraction, challenge, or harmony.
+              we reveal every angle one person's planets make to the other's — Venus meeting Mars,
+              an easy angle between Sun and Moon, Saturn grinding against Mercury — each read in the
+              astrological tradition as a signature of attraction, challenge, or harmony.
             </p>
             <p style="color:var(--color-silver-dim);line-height:1.8;margin-bottom:var(--space-5);">
-              In the astrological tradition, harmonious aspects such as trines (120°) and sextiles (60°)
-              are read as areas of natural flow and mutual support — where each person is said to bring
-              out the best in the other. Dynamic aspects like squares (90°) and oppositions (180°) are
-              read as points of tension that, when understood, can become engines of growth. Conjunctions
-              (0°) are traditionally read as merging the energies of the planets involved.
+              In the astrological tradition, the easy angles — 120° and 60° apart — are read as areas of
+              natural flow and mutual support, where each person is said to bring out the best in the
+              other. The tense angles — 90° and 180° apart — are read as points of friction that, once
+              understood, can become engines of growth. Planets sitting on top of each other, 0° apart,
+              are traditionally read as merging their two natures into one.
             </p>
             <p style="color:var(--color-silver-dim);line-height:1.8;">
-              Astro Precise calculates all Ptolemaic aspects with standard orbs — 8° for major aspects,
-              4° for minor ones — the real measured contacts between your two charts. The overall
+              Astro Precise measures every classical angle, counting a contact when it falls within 8°
+              of exact for the major angles and 4° for the minor ones — the real measured contacts
+              between your two charts. The overall
               character above is read from the balance of those aspects — how many bring ease versus
               friction — rather than a single number pretending to score a relationship. The area bars
               show the elemental resonance between your key placements.
@@ -697,7 +699,7 @@
                 <thead>
                   <tr>
                     <th scope="col" aria-label="Aspect symbol">Symbol</th>
-                    <th scope="col">Aspect</th>
+                    <th scope="col">What it does</th>
                     <th scope="col">Angle</th>
                     <th scope="col">Nature</th>
                     <th scope="col">Meaning</th>
@@ -705,36 +707,36 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="sat-glyph sat-glyph--conjunction" aria-hidden="true">☌</span><span class="sr-only">Conjunction</span></td>
-                    <td style="color:var(--white);font-weight:500;">Conjunction</td>
+                    <td><span class="sat-glyph sat-glyph--conjunction" aria-hidden="true">☌</span><span class="sr-only">Planets fused, nothing between them</span></td>
+                    <td style="color:var(--white);font-weight:500;">Fused</td>
                     <td>0°</td>
                     <td><span class="sat-nature sat-nature--intense">Intense</span></td>
                     <td>Deep merger of energies</td>
                   </tr>
                   <tr>
-                    <td><span class="sat-glyph sat-glyph--trine" aria-hidden="true">△</span><span class="sr-only">Trine</span></td>
-                    <td style="color:var(--white);font-weight:500;">Trine</td>
+                    <td><span class="sat-glyph sat-glyph--trine" aria-hidden="true">△</span><span class="sr-only">An easy angle</span></td>
+                    <td style="color:var(--white);font-weight:500;">Easy flow</td>
                     <td>120°</td>
                     <td><span class="sat-nature sat-nature--harmonic">Harmonic</span></td>
                     <td>Natural flow &amp; ease</td>
                   </tr>
                   <tr>
-                    <td><span class="sat-glyph sat-glyph--sextile" aria-hidden="true">✶</span><span class="sr-only">Sextile</span></td>
-                    <td style="color:var(--white);font-weight:500;">Sextile</td>
+                    <td><span class="sat-glyph sat-glyph--sextile" aria-hidden="true">✶</span><span class="sr-only">A quietly supportive angle</span></td>
+                    <td style="color:var(--white);font-weight:500;">Quietly supportive</td>
                     <td>60°</td>
                     <td><span class="sat-nature sat-nature--harmonic">Supportive</span></td>
                     <td>Opportunity &amp; cooperation</td>
                   </tr>
                   <tr>
                     <td><span class="sat-glyph sat-glyph--square" aria-hidden="true">□</span><span class="sr-only">Square</span></td>
-                    <td style="color:var(--white);font-weight:500;">Square</td>
+                    <td style="color:var(--white);font-weight:500;">Under friction</td>
                     <td>90°</td>
                     <td><span class="sat-nature sat-nature--dynamic">Dynamic</span></td>
                     <td>Tension that drives growth</td>
                   </tr>
                   <tr>
                     <td><span class="sat-glyph sat-glyph--opposition" aria-hidden="true">☍</span><span class="sr-only">Opposition</span></td>
-                    <td style="color:var(--white);font-weight:500;">Opposition</td>
+                    <td style="color:var(--white);font-weight:500;">Pulling apart</td>
                     <td>180°</td>
                     <td><span class="sat-nature sat-nature--polarity">Polarising</span></td>
                     <td>Attraction &amp; friction</td>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Natal Plate — the real sky news | Astro Precise</title>
-<meta name="description" content="Print-grade A3 plate of your birth minute — arcminute positions, sealed fingerprint, live verify. The real sky news: computed, never fabricated. Weather report of the sky, not prophecy.">
+<meta name="description" content="Print-grade A3 plate of your birth minute — positions to a sixtieth of a degree, sealed fingerprint, live verify. The real sky news: computed, never fabricated. Weather report of the sky, not prophecy.">
 <meta property="og:title" content="The Natal Plate — the real sky news | Astro Precise">
 <meta property="og:description" content="A3 star map of one birth minute. Sealed AP-FP-1 fingerprint. The real sky news.">
 <link rel="canonical" href="https://astroprecise.app/natal-plate.html">
@@ -53,7 +53,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
 </div>
 
 <div class="mono" style="max-width:1123px;margin:0 auto;padding:8px 22px 6px;color:#d8b46a;font-size:10px;letter-spacing:.22em">DESIGN MASTER · ENHANCED A3 PLATE (CLAUDE DESIGN LAB) · NATAL SERIES No. 001 — EDITION NUMBERING IS PER SERIES; THE VERIFY PAGE SHOWS THE ECLIPSE-MINUTE SERIES</div>
-<div style="max-width:1123px;margin:0 auto;padding:0 22px 14px;color:rgba(242,236,223,.8);font-size:15px;line-height:1.6">What this is: a print-grade A3 star map of your exact birth minute — every planet to the arcminute, aspect wheel, sealed fingerprint, and a QR that re-computes the plate live for any doubter. <b style="color:#f2ecdf">£14, numbered, never reprinted for another person.</b> The full sample is shown below, in full — what you see is what arrives.</div>
+<div style="max-width:1123px;margin:0 auto;padding:0 22px 14px;color:rgba(242,236,223,.8);font-size:15px;line-height:1.6">What this is: a print-grade A3 star map of your exact birth minute — every planet placed to a sixtieth of a degree, the wheel of angles between them, a sealed fingerprint, and a QR that re-computes the whole plate live for any doubter. <b style="color:#f2ecdf">£14, numbered, never reprinted for another person.</b> The full sample is shown below, in full — what you see is what arrives.</div>
 <div style="max-width:1123px;margin:0 auto 16px;padding:0 22px">
   <img src="./img/plate-enhanced.svg" width="1240" height="1754" alt="Enhanced Natal Plate design master — print-grade A3 sample with sealed fingerprint and heliocentric band" style="width:100%;height:auto;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.55);background:#f8fbfc" loading="lazy" decoding="async" />
 </div>
@@ -66,7 +66,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
       <div style="font-size:26px;font-weight:700;letter-spacing:.12em">ASTROPRECISE</div>
       <div class="mono" style="font-size:10px;letter-spacing:.3em;color:#147a99;margin-top:4px">THE NATAL PLATE · COMPUTED, NEVER FABRICATED</div>
     </div>
-    <div class="mono" style="text-align:right;font-size:10px;letter-spacing:.18em;line-height:2;color:#33454f">EDITION No. 001 · SAMPLE COMMISSION<br>MEEUS SERIES · PRECISION ±1 ARCMINUTE</div>
+    <div class="mono" style="text-align:right;font-size:10px;letter-spacing:.18em;line-height:2;color:#33454f">EDITION No. 001 · SAMPLE COMMISSION<br>MEEUS SERIES · TO A SIXTIETH OF A DEGREE</div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:baseline;padding:6mm 0 4mm;flex-wrap:wrap;gap:10px">
     <div style="font-size:21px;font-weight:700">The sky over Manchester · 14 March 1994 · 09:12 UTC</div>
@@ -76,19 +76,29 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
     <svg id="plate" viewBox="0 0 1000 1000" style="width:236mm;height:236mm;display:block" role="img" aria-label="Star plate of the birth minute"></svg>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 10mm;padding:4mm 0 0">
-    <div><div class="tealbl">POSITIONS · TO THE ARCMINUTE</div><div id="tableL"></div></div>
+    <div><div class="tealbl">POSITIONS · NEVER ROUNDED</div><div id="tableL"></div></div>
     <div><div class="tealbl">&nbsp;</div><div id="tableR"></div></div>
   </div>
   <div style="padding:4mm 0 0">
-    <div class="tealbl">MEASURED ANGLES · ORB ≤ 5°</div>
+    <div class="tealbl">MEASURED ANGLES · WITHIN 5° OF EXACT</div>
     <div id="aspectRows" style="display:flex;flex-wrap:wrap;gap:2mm 8mm"></div>
   </div>
   <div style="flex:1"></div>
   <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8mm;border-top:2px solid #10202c;padding-top:4mm">
     <div class="mono" style="font-size:9.5px;letter-spacing:.14em;line-height:2;color:#33454f">
-      <span style="color:#10202c;font-weight:500">VERIFY THIS PLATE</span> — the sky re-computes live:<br>
-      <span style="color:#147a99">astroprecise.app/#b=1994-03-14|09:12|0</span><br>
-      Nothing about you was uploaded to print this. It was computed where it was read.
+      <!-- This block used to read "astroprecise.app/#b=1994-03-14|09:12|0" — the
+           printed plate instructing its owner to type their own birth date and
+           time into an address bar. An address bar is the one field on a
+           computer that is not private: it goes into history, into autocomplete,
+           onto every device that account is signed in to, and on most setups it
+           is a search box that sends what is being typed away as it is typed.
+           The plate carries its own sealed figures, so nothing about the owner
+           needs typing anywhere to check it. The #b= reader still exists for
+           anyone holding an old plate; this stops us minting new ones. -->
+      <span style="color:#10202c;font-weight:500">VERIFY THIS PLATE</span> — the figures above are sealed, and the seal re-computes:<br>
+      <span style="color:#147a99">astroprecise.app/verify.html</span><br>
+      It reads the plate's own numbers, in your browser, and checks them against the public register.<br>
+      Nothing about you is typed in, and nothing about you was uploaded to print this. It was computed where it was read.
     </div>
     <svg viewBox="0 0 120 120" style="width:24mm;height:24mm;flex:none" aria-hidden="true">
       <circle cx="60" cy="60" r="56" style="fill:none;stroke:#147a99;stroke-width:2"></circle>
@@ -106,7 +116,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
       <div style="font-size:26px;font-weight:700;letter-spacing:.12em">TWO SKIES</div>
       <div class="mono" style="font-size:10px;letter-spacing:.3em;color:#147a99;margin-top:4px">THE COUPLES PLATE · MEASURED, NOT SCORED</div>
     </div>
-    <div class="mono" style="text-align:right;font-size:10px;letter-spacing:.18em;line-height:2;color:#33454f">EDITION No. 001 · SAMPLE COMMISSION<br>28 CROSS-ANGLES · ORB ≤ 4°</div>
+    <div class="mono" style="text-align:right;font-size:10px;letter-spacing:.18em;line-height:2;color:#33454f">EDITION No. 001 · SAMPLE COMMISSION<br>28 CROSS-ANGLES · WITHIN 4° OF EXACT</div>
   </div>
   <div style="padding:6mm 0 2mm">
     <div style="font-size:19px;font-weight:700">Manchester, 14 March 1994 · 09:12 — and Leeds, 2 November 1995 · 20:40</div>
@@ -117,7 +127,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
   <div style="padding:2mm 0 0">
     <div class="tealbl">THE ANGLES BETWEEN YOU · TIGHTEST FIRST</div>
     <div id="crossRows"></div>
-    <div class="mono" style="font-size:9px;letter-spacing:.14em;color:#33454f;padding-top:3mm;line-height:1.9">● TEAL = FLOWING (TRINE · SEXTILE · CONJUNCT) · ● CLAY = CHARGED (SQUARE · OPPOSITE). GEOMETRY, NOT A VERDICT — THE WRITTEN READING TELLS THE STORY.</div>
+    <div class="mono" style="font-size:9px;letter-spacing:.14em;color:#33454f;padding-top:3mm;line-height:1.9">● TEAL = FLOWING · THESE TWO SUPPORT EACH OTHER · ● CLAY = CHARGED · THESE TWO PULL. GEOMETRY, NOT A VERDICT — THE WRITTEN READING TELLS THE STORY.</div>
   </div>
   <div style="flex:1"></div>
   <div class="mono" style="display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid #10202c;padding-top:4mm;font-size:9.5px;letter-spacing:.14em;color:#33454f">

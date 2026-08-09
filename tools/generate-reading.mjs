@@ -195,7 +195,7 @@ const sunSign=pos.sun.sign, moonSign=pos.moon.sign, ascSign=A.sign;
 const lifeAreasCtx = {
   pos, ascSign, mcSign: M.sign, I, analyzePayload, hMeaning, pInterp, sentsFn: sents,
 };
-const domLine = `You are a <strong>${domEl[0]}-dominant</strong> chart (${domEl[1]} of the seven classical bodies in ${domEl[0].toLowerCase()} signs): ${ELEM_BLURB[domEl[0]]}. The chart leans <strong>${domMode[0].toLowerCase()}</strong> in mode, and your ${M.sign} Midheaven shows the public shape it wants to take.`;
+const domLine = `You are a <strong>${domEl[0]}-dominant</strong> chart (${domEl[1]} of the seven classical bodies in ${domEl[0].toLowerCase()} signs): ${ELEM_BLURB[domEl[0]]}. The chart leans <strong>${domMode[0].toLowerCase()}</strong> in mode, and ${M.sign} sits at the very top of it — the public shape all of this wants to take.`;
 // element balance mini-chart (the 7 classical bodies across fire/earth/air/water)
 const balanceBars = () => `<div class="balance">${['Fire','Earth','Air','Water'].map(el =>
   `<div class="row"><span class="el">${el}</span><span class="track"><span class="fill" style="width:${Math.round(eC[el] / 7 * 100)}%"></span></span><span class="n">${eC[el]}</span></div>`).join('')}</div>`;

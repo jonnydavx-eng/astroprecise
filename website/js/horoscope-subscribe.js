@@ -190,13 +190,20 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var email = (form.email && form.email.value || '').trim();
+      // By id/type, not by name: the controls lost their `name` on 2026-08-09 so
+      // that a native submit cannot put an email address (and the reader's star
+      // sign) into horoscope.html's own query string, and from there into the
+      // access log and every Referer the page sends afterwards.
+      var emailField = form.querySelector('input[type="email"]') || form.email;
+      var email = (emailField && emailField.value || '').trim();
       if (!isEmail(email)) {
         if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning');
         return;
       }
-      var dailyOn = form.cadence_daily && form.cadence_daily.checked;
-      var monthlyOn = form.cadence_monthly && form.cadence_monthly.checked;
+      var dailyEl = document.getElementById('hs-daily') || form.cadence_daily;
+      var monthlyEl = document.getElementById('hs-monthly') || form.cadence_monthly;
+      var dailyOn = dailyEl && dailyEl.checked;
+      var monthlyOn = monthlyEl && monthlyEl.checked;
       if (!dailyOn && !monthlyOn) {
         if (window.AstroApp) AstroApp.showToast('Pick a cadence', 'Choose daily, monthly, or both.', 'warning');
         return;

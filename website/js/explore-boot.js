@@ -12,7 +12,8 @@
  *      engine and wires the deck (scale strip, planet pills, journey button)
  *   4. load ap-cosmic-flight-tool.js                  → #ap-cosmic-flight-launch
  *   5. request the full WebGL engine on capable devices
- *   6. apply #m=<ISO|now>&focus=<body> deep links (model-moment mounts sitewide)
+ *   6. apply the moment: sessionStorage['ap-explore-moment'] for personal
+ *      (birth) moments, #m=<ISO|now>&focus=<body> for public ones
  *
  * Everything feature-detects: a device that can't run WebGL degrades to the 2D
  * canvas engine, and the scale strip / journey button simply stay hidden.
@@ -71,6 +72,35 @@
   function hideFallback() {
     if (fallback) fallback.classList.add("explore-fallback--hidden");
   }
+
+  // ── Personal-moment receiver: sessionStorage['ap-explore-moment'] ────────
+  // Public links (an eclipse, "now", a calendar day) carry their moment in the
+  // fragment and stay shareable. A moment that is somebody's BIRTH minute is
+  // handed over here instead — APDeepLink.stashSkyLink writes it, this reads it
+  // once and deletes it — so explore.html never sits with a birth instant in
+  // its address bar, where it would be screenshotted, bookmarked and synced.
+  // Read at boot, kept in memory, because applyModelDeepLink runs several times
+  // as the engines come up.
+  var STASH_KEY = 'ap-explore-moment';
+  var STASH_MAX_AGE_MS = 30 * 60 * 1000;
+  var stashed = null;
+  (function readStash() {
+    var raw = null;
+    try {
+      raw = sessionStorage.getItem(STASH_KEY);
+      if (raw) sessionStorage.removeItem(STASH_KEY);
+    } catch (e) { return; }
+    if (!raw) return;
+    try {
+      var o = JSON.parse(raw);
+      if (!o || (o.m == null && !o.focus)) return;
+      if (o.ts && Date.now() - o.ts > STASH_MAX_AGE_MS) return;
+      stashed = {
+        m: o.m != null ? String(o.m) : null,
+        focus: o.focus ? String(o.focus).toLowerCase() : null
+      };
+    } catch (e2) { stashed = null; }
+  }());
 
   // ── Model deep-link receiver: #m=<ISO|now>&focus=<body> ─────────────────
   // Sitewide stills + links point here. Invalid hash → silent no-op.
@@ -161,9 +191,23 @@
     } catch (e3) { /* optional */ }
   }
 
+  /* The fragment still wins where it says something: a link somebody pasted is
+     an explicit instruction. The stash fills in whatever the fragment left out
+     — which for a personal link is the moment itself, the fragment carrying
+     only the focus body. */
+  function resolveIntent() {
+    var parsed = parseModelHash();
+    if (!stashed) return parsed;
+    if (!parsed) return { m: stashed.m, focus: stashed.focus };
+    return {
+      m: parsed.m != null ? parsed.m : stashed.m,
+      focus: parsed.focus || stashed.focus
+    };
+  }
+
   var lastAppliedKey = "";
   function applyModelDeepLink(force) {
-    var parsed = parseModelHash();
+    var parsed = resolveIntent();
     if (!parsed) return false;
     var key = (parsed.m || "") + "|" + (parsed.focus || "");
     if (!force && key === lastAppliedKey) return true;
@@ -203,7 +247,8 @@
   wrap.hidden = false;
 
   var loaderQueued = false;
-  var webglIntent = /(?:^|[#&])m=/.test(location.hash || '');
+  var webglIntent = /(?:^|[#&])m=/.test(location.hash || '') ||
+    !!(stashed && stashed.m != null);
   function armWebglIntent() {
     if (webglIntent) return;
     webglIntent = true;
@@ -274,6 +319,8 @@
   });
   document.addEventListener("orrery-scale-change", hideFallback, { once: true });
   window.addEventListener("hashchange", function () {
+    // A new hash is a new instruction; the one-hop handoff has had its turn.
+    stashed = null;
     lastAppliedKey = "";
     scheduleDeepLink();
   });

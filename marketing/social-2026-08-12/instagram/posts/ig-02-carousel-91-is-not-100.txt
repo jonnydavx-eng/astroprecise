@@ -1,11 +1,11 @@
 Save this one — it has the times in it.
 
-Wednesday 12 August is the deepest solar eclipse over Britain since August 1999. It is not a total eclipse here, and anyone telling you otherwise is selling something. The Moon's dark shadow crosses Greenland, Iceland and northern Spain. Britain sits outside that band and gets a deep partial instead — roughly 89–92% of the Sun covered depending where you stand, deepest in the southwest.
+Wednesday 12 August is the deepest solar eclipse over Britain since August 1999. It is not a total eclipse here, and anyone telling you otherwise is selling something. The Moon's dark shadow crosses Greenland, Iceland and northern Spain. Britain sits outside that band and gets a deep partial instead — 88 to 96% of the Sun covered depending where you stand, deepest in the far south-west.
 
 Times, all BST, all low in the west:
-first contact ≈18:00 · maximum ≈19:05 · last contact ≈20:10
+first contact 18:08–18:17 · maximum 19:05 Edinburgh, 19:12 London, 19:16 Truro · last contact ≈20:10, before sunset everywhere
 
-Greatest eclipse globally is 17:46 UT, which is 18:46 here. That's the Arctic's moment, not ours.
+Greatest eclipse globally is 18:46 here, 17:46 UT. That moment belongs to a patch of sea 45 km off western Iceland, not to us.
 
 One thing almost nobody mentions. A solar eclipse can only happen at new moon — so the Moon is out of the way all night, and the Perseids peak into a properly dark sky the same night. Eclipse first, meteors after.
 
@@ -30,8 +30,10 @@ Labels in IBM Plex Mono, uppercase, letter-spaced. Sentences in the serif.
       Image: assets/ig-02-cover-4x5.jpg (brass sextant, dry-stone wall, eclipsed Sun)
       Darken the sky 20% top-down so the type holds.
       Kicker (mono, small, top): WEDNESDAY 12 AUGUST 2026 · COMPUTED
-      Headline (serif, large, lower third): 91% is not 100%.
+      Headline (serif, large, lower third): 96% is not 100%.
                                             Here is what Britain actually gets.
+      (96% is the deepest anywhere in Britain — the far south-west. Do not set a
+      single national percentage: the honest figure is a range, 88–96%.)
       Corner mark, bottom right, mono, tiny: SWIPE →
 
   2 · WHY BRITAIN MISSES TOTALITY — diagram, drawn as vector
@@ -43,14 +45,15 @@ Labels in IBM Plex Mono, uppercase, letter-spaced. Sentences in the serif.
       and northern Spain. We are beside it, not under it."
 
   3 · THE TIMES — type only, mono table, generous space
-      FIRST CONTACT      ≈ 18:00 BST
-      MAXIMUM            ≈ 19:05 BST      ~91% covered (south)
-      LAST CONTACT       ≈ 20:10 BST
-      GREATEST ECLIPSE   17:46 UT = 18:46 BST   (global — over the Arctic)
+      FIRST CONTACT      18:08 – 18:17 BST
+      MAXIMUM            19:05 EDINBURGH · 19:12 LONDON · 19:16 TRURO
+                         88–96% COVERED · DEEPEST IN THE FAR SOUTH-WEST
+      LAST CONTACT       ≈ 20:10 BST · BEFORE SUNSET EVERYWHERE
+      GREATEST ECLIPSE   18:46 BST (17:46 UT)   (global — off western Iceland)
       Footer line, serif: "All of it low in the west. A hill or a rooftop will take
       it from you. Choose your horizon before six."
 
-  4 · WHAT 91% ACTUALLY LOOKS LIKE — type on a dimmed photo edge
+  4 · WHAT NINE-TENTHS ACTUALLY LOOKS LIKE — type on a dimmed photo edge
       Serif body, four short lines:
         It does not go dark. It goes wrong.
         Daylight drops but the sky still reads as day.
@@ -84,9 +87,10 @@ ALT TEXT (set per slide in Advanced Settings)
      eclipsed Sun low in a dim orange sky over British farmland.
   2  Diagram: the Moon's narrow dark shadow crossing Greenland, Iceland and northern
      Spain, with Britain lying outside the band of totality in the wider partial shadow.
-  3  Timetable: first contact about 18:00 BST, maximum about 19:05 BST, last contact
-     about 20:10 BST, greatest eclipse globally at 17:46 UT.
-  4  Text slide describing what a 91% eclipse looks like: daylight drops, shadows
+  3  Timetable: first contact between 18:08 and 18:17 BST, maximum 19:05 in Edinburgh,
+     19:12 in London and 19:16 in Truro with 88 to 96 per cent of the Sun covered, last
+     contact about 20:10 BST, greatest eclipse globally at 18:46 BST off western Iceland.
+  4  Text slide describing what a nine-tenths eclipse looks like: daylight drops, shadows
      sharpen, colours flatten, temperature falls, birds go quiet.
   5  Safety slide: use ISO 12312-2 eclipse glasses, pinhole projection, or watch the
      changing light. Never look at the Sun directly. Sunglasses are not protection.

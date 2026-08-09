@@ -527,7 +527,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         <nav class="masthead__nav" aria-label="Sections">
           <a class="nav-primary" href="./chart.html">The chart</a>
           <a href="./eclipse.html">The eclipse</a>
-          <a href="./ephemeris.html">Ephemeris</a>
+          <a href="./ephemeris.html">The sky</a>
           <a href="./shop.html">Editions</a>
           <button type="button" class="masthead__more" id="sbMenu" aria-expanded="false" aria-controls="sbPanel">More ▾</button>
         </nav>
@@ -548,7 +548,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     <div class="sb-panel-lbl">Explore</div>
     <a href="./" aria-current="page">The observatory</a>
     <a href="./chart.html">Cast a chart<small>The full instrument — birth place, Rising, houses</small></a>
-    <a href="./ephemeris.html">The sky<small>Ephemeris</small></a>
+    <a href="./ephemeris.html">The sky<small>Where every planet is, right now</small></a>
     <a href="./explore.html">The explorer<small>Fly the real sky</small></a>
     <a href="./horoscope.html">Daily<small>All twelve signs</small></a>
     <a href="./mysky.html">My sky<small>Your hub</small></a>
@@ -576,8 +576,8 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         <h1 class="headline">The real sky at the minute you were born.</h1>
 
         <p class="standfirst">
-          Every planet placed to the arcminute by the mathematics planetarium
-          software uses — worked out in your browser, free.<span class="wide-only">
+          Every planet placed to a sixtieth of a degree by the same mathematics
+          planetarium software uses — worked out in your browser, free.<span class="wide-only">
           Then we tell you what tradition makes of it, plainly, and exactly
           where that reading stops.</span>
         </p>
@@ -774,7 +774,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
               <span class="item__num">02</span>
               <h3 class="item__title"><a href="./eclipse.html">Where the eclipse lands in your chart</a></h3>
               <span class="item__price">Free<span>£2.99 to read</span></span>
-              <p class="item__desc">The 12 August eclipse against your own chart, with the exact orb, computed before any price is mentioned. If it makes no close contact, that is what the page says.</p>
+              <p class="item__desc">The 12 August eclipse against your own chart, showing exactly how close it comes to your placements, computed before any price is mentioned. If it makes no close contact, that is what the page says.</p>
             </li>
 
             <li class="item">
@@ -794,8 +794,8 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 
           <p class="also">
             Also published: <a href="./natal-plate.html">The Plate</a> — an A3 star
-            map of your birth minute with arcminute tables and a verifiable code,
-            numbered, £14. And the <a href="./shop.html">Sky Pass</a>, thirty dated
+            map of your birth minute, with the positions printed to a sixtieth of
+            a degree and a code you can check them against, numbered, £14. And the <a href="./shop.html">Sky Pass</a>, thirty dated
             days of your real sky, £5, which simply ends. There is nothing to cancel.
           </p>
         </div>
@@ -855,11 +855,11 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 <section class="band chap" id="cast">
   <div class="wrap">
     <div class="chap-head">
-      <div class="chap-idx"><span class="chap-num">I</span><span class="chap-tag">THE READOUT — YOUR POSITIONS TO THE ARCMINUTE</span></div>
-      <div class="chap-note">MEEUS SERIES · TO THE ARCMINUTE<br>COMPUTED ON THIS DEVICE</div>
+      <div class="chap-idx"><span class="chap-num">I</span><span class="chap-tag">THE READOUT — YOUR POSITIONS, NEVER ROUNDED</span></div>
+      <div class="chap-note">MEEUS SERIES · TO A SIXTIETH OF A DEGREE<br>COMPUTED ON THIS DEVICE</div>
     </div>
     <h2>The sky at your <em style="color:var(--brass)">first breath.</em></h2>
-    <p class="sub">Ten bodies placed to the arcminute of your birth by the Meeus series — the same maths behind planetarium software. Put a date in and it lands on the live model at the top of the page, and in the readout beside it. For your Rising, Midheaven and houses — which need a birth place — use <a href="./chart.html">the full instrument</a>.</p>
+    <p class="sub">Ten bodies placed to a sixtieth of a degree by the Meeus series — the same maths behind planetarium software. Put a date in and it lands on the live model at the top of the page, and in the readout beside it. For your Rising sign, the top of your chart and your houses — all three need a birth place — use <a href="./chart.html">the full instrument</a>.</p>
 
     <!-- The cast console. It used to float over a full-height hero; it now sits
          in the plate its own copy always pointed at. Same element ids, same
@@ -878,7 +878,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
           <label class="field"><span>OFFSET FROM UT</span>
             <select id="tz"><option value="0">UT / GMT</option><option value="1">UK SUMMER (+1)</option><option value="2">CENTRAL EU SUMMER (+2)</option><option value="-4">US EASTERN (−4)</option><option value="-5">US CENTRAL (−5)</option><option value="-7">US PACIFIC (−7)</option><option value="5.5">INDIA (+5.5)</option><option value="8">CHINA (+8)</option><option value="10">SYDNEY (+10)</option></select></label>
         </div>
-        <p class="console-hint">A time sharpens the Moon; without a birth place there is still no Rising or Midheaven, and this card will say so.</p>
+        <p class="console-hint">A time sharpens the Moon. Your Rising sign and the top of your chart need a birth place too — without one, this card will say so.</p>
         <button class="btn ghost" id="castBtn" type="button">Cast it onto the model</button>
         <div class="console-note">Computed here · never uploaded</div>
         <div id="castHint" role="alert">▲ Pick your birth date first — the sky needs a day to read</div>
@@ -1011,7 +1011,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       <p style="margin:0 0 16px;font-size:15.5px;line-height:1.7;color:var(--dim)">Until then the whole engine is free and yours: cast your chart, read today's sky, run the eclipse teaser. If you'd like one email when checkout opens, leave your address — that's the only thing this form does.</p>
       <form id="shopNotify" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0">
         <label for="shopNotifyEmail" class="mono" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Email address for one notice when checkout opens</label>
-        <input id="shopNotifyEmail" type="email" name="email" required autocomplete="email" placeholder="you@example.com" style="flex:1;min-width:210px;width:auto">
+        <input id="shopNotifyEmail" type="email" required autocomplete="email" placeholder="you@example.com" style="flex:1;min-width:210px;width:auto">
         <button class="btn" id="shopNotifyBtn" type="submit">EMAIL ME WHEN CHECKOUT OPENS</button>
       </form>
       <div class="mono" id="shopNotifyMsg" role="status" aria-live="polite" style="display:none;font-size:11px;letter-spacing:.14em;margin-top:12px"></div>
@@ -1329,7 +1329,28 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     drawWheel(chart.rows);
     var lab = new Date((jd - 2440587.5) * 86400000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase();
     $('wheelTitle').textContent = 'YOUR SKY · ' + lab;
-    try { $('openExplorer').href = './explore.html#m=' + encodeURIComponent(new Date((jd - 2440587.5) * 86400000).toISOString()) + '&focus=earth'; } catch (e0) {}
+    // ── Handoff to the full explorer. The birth minute does NOT ride in the link.
+    // Until 2026-08-09 this set href to
+    //   ./explore.html#m=<birth instant ISO>&focus=earth
+    // so clicking through parked the visitor's birth date AND time in the next
+    // page's address bar — copied, screenshotted, bookmarked, kept in history and
+    // synced to their other devices — for a page that only needed to know which
+    // instant to draw. explore-boot.js reads sessionStorage['ap-explore-moment']
+    // first and deletes it on read; the fragment reader is still there, so every
+    // public link (an eclipse, a calendar day, #m=now) is unaffected. Only
+    // focus=earth — a rest frame, not a person — stays in the link.
+    try {
+      var expIso = new Date((jd - 2440587.5) * 86400000).toISOString();
+      var expHref = './explore.html#focus=earth';
+      try {
+        sessionStorage.setItem('ap-explore-moment', JSON.stringify({ m: expIso, focus: 'earth', scale: null, ts: Date.now() }));
+      } catch (eS) {
+        // Storage blocked: fall back to the fragment. Not the request line, not
+        // the Referer — the weaker of the two, never the worse of the three.
+        expHref = './explore.html#m=' + encodeURIComponent(expIso) + '&focus=earth';
+      }
+      $('openExplorer').href = expHref;
+    } catch (e0) {}
     var sun = chart.rows[0], moon = chart.rows[1];
     $('headlines').hidden = false;
     $('wheelWrap').hidden = false;

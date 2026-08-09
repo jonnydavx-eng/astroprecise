@@ -6,7 +6,7 @@
 > **§0 Corrections on import** below.
 
 **Site:** https://astroprecise.app (GitHub Pages behind Cloudflare; deploy = push to `main`, which fires `.github/workflows/deploy-pages.yml` on any change under `website/**`)
-**Eclipse:** Wednesday 12 August 2026 · greatest eclipse 17:46 UT · UK peak ≈19:05 BST
+**Eclipse:** Wednesday 12 August 2026 · greatest eclipse 18:46 BST (17:46 UT), off western Iceland · UK maximum 19:05 Edinburgh / 19:12 London / 19:16 Truro (there is no single UK time) · full fact set: `marketing/social-2026-08-12/ECLIPSE-FACTS.md`
 **Deploy at time of import:** ap-v813 (measured live 2026-08-08; the source doc said ap-v781)
 **Companion doc:** `marketing/ECLIPSE-LAUNCH-PACK-2026-08-12.md` (email sequence, social posts, launch-day timeline)
 
@@ -165,7 +165,7 @@ Done already (1 Aug): full UK-GDPR privacy policy (lawful bases, retention table
 - [ ] **Contact form**: submit once via Formspree, confirm it lands in the inbox.
 - [ ] **OG previews**: paste /, /eclipse.html, /chart.html, /shop.html into a social-preview validator.
 - [ ] **Compatibility + moonphase**: enter a bad date — inline error appears (no alert popup), message says "Check the date — use DD/MM/YYYY, between 1900 and 2100."
-- [ ] **Eclipse countdown**: eclipse.html counts down to 12 Aug 2026 17:46 UT (`eclipse.html` line 269, `Date.UTC(2026, 7, 12, 17, 46)`).
+- [ ] **Eclipse countdown**: eclipse.html counts down to 12 Aug 2026 **17:45:57 UT** = 18:46 BST (`Date.UTC(2026, 7, 12, 17, 45, 57)` in the inline module). That is 17:47:06 TT minus ΔT 69.1 s; the ΔT working is in the comment directly above the constant.
 
 ---
 

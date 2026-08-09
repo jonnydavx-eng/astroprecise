@@ -57,7 +57,7 @@
       "dek": "The moon changes sign every 2–3 days and phase every 29.5 days. Tracking both beats generic 'new moon manifestation' posts.",
       "body": [
         "Moon sign colours the emotional weather; moon phase colours momentum. A waxing moon in earth signs favours building; a waning moon in water signs favours release — but your natal moon always filters the story.",
-        "Astro Precise computes tonight's moon from the same ephemeris as your natal chart, so daily sky and personal chart speak the same language.",
+        "Astro Precise works out tonight's moon from the same calculations as your birth chart, so the daily sky and your own chart speak the same language.",
         "Pair moon phase with transits to your natal moon for timing that is actually about your chart, not a collective meme."
       ],
       "tips": [
@@ -81,7 +81,7 @@
       "dek": "A transit is a planet in today's sky aspecting a planet in your natal chart. Generic forecasts ignore which houses they hit — yours don't.",
       "body": [
         "Saturn squaring your natal Venus means something different at 22 than at 52 because your chart's house structure differs. Transit reports must know your chart.",
-        "Astro Precise dates major transits to your saved chart using real ephemeris positions — not approximations from sun-sign columns.",
+        "Astro Precise dates major transits against your saved chart from real, calculated planet positions — not rounded-off guesses from a sun-sign column.",
         "Outer-planet transits are slow; inner-planet transits are the weekly weather. Both matter, on different clocks."
       ],
       "tips": [
@@ -129,7 +129,7 @@
       "dek": "When a planet appears to move backward, astrologers track review, delay, and revision themes. The astronomy is real; the meaning is chart-specific.",
       "body": [
         "Mercury retrograde is the famous one, but Mars, Venus, and the outer planets retrograde too — each on its own schedule. The key is which natal houses and planets they touch in your chart.",
-        "Astro Precise lists station dates from the ephemeris and flags when retrograde planets aspect your saved chart — not a one-size-fits-all warning.",
+        "Astro Precise lists the turning dates from calculated positions and flags when a retrograde planet touches your saved chart — not a one-size-fits-all warning.",
         "Retrograde is not 'don't do anything.' It is 'double-check, revisit, and finish what you started.'"
       ],
       "tips": [
@@ -200,7 +200,7 @@
       "title": "Privacy-first astrology is possible",
       "dek": "Your birth data is intimate. Astro Precise keeps charts in local storage — no account, no cloud upload, no data sale.",
       "body": [
-        "Many astrology apps ship birth data to servers for 'personalisation.' Here the ephemeris runs client-side; saved charts stay in your browser's storage.",
+        "Many astrology apps ship birth data to servers for 'personalisation.' Here the whole calculation runs in your browser; saved charts stay in your browser's storage.",
         "Clearing site data removes saved charts — export or screenshot what you want to keep. We do not have a copy to restore.",
         "That trade-off is deliberate: your sky, your device, your choice."
       ],
@@ -226,7 +226,7 @@
       "body": [
         "Saturn return is not a punishment — it is a structural audit. Career, boundaries, and what you are building long-term surface for review.",
         "Exact dates depend on your natal Saturn degree and whether Saturn retrogrades over it three times.",
-        "Astro Precise computes your Saturn placement and transit hits from the ephemeris — check your chart's Saturn sign and house first."
+        "Astro Precise works out your Saturn placement and its transit hits from the real positions — check your chart's Saturn sign and house first."
       ],
       "tips": [
         "Note exact hit dates in transits — the process can span months.",
@@ -255,7 +255,7 @@
       "tips": [
         "Mercury aspects to Moon affect feeling-thought balance.",
         "Keep a retrograde re-read list — emails, drafts, old projects.",
-        "Mercury speed varies; ephemeris shows exact station times."
+        "Mercury speed varies; the calculated positions give exact turning times."
       ],
       "category": "chart",
       "theme": "air",

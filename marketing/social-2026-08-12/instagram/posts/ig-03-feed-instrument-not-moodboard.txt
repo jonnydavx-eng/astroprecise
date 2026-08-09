@@ -2,7 +2,7 @@ This is an instrument, not a mood board.
 
 A sextant measures the angle between a body and the horizon. That is all it does. It does not interpret, it does not flatter, and it will happily tell you that you are three hundred miles from where you thought you were.
 
-We build the same way. Every position AstroPrecise shows you comes out of the standard astronomy — VSOP87 for the planets, ELP2000 for the Moon, Meeus for the eclipse geometry — computed in your browser at the moment you ask, to roughly an arcminute. Nothing is generated, guessed, or written in advance by somebody who has never looked at the sky.
+We build the same way. Every position AstroPrecise shows you comes out of the standard astronomy — VSOP87 for the planets, ELP2000 for the Moon, Meeus for the eclipse geometry — computed in your browser at the moment you ask, to the minute you were born, and we do not round. Nothing is generated, guessed, or written in advance by somebody who has never looked at the sky.
 
 Then, separately and clearly labelled, we tell you what the astrological tradition has said about a configuration like yours. Interpretation that is honest about being interpretation.
 

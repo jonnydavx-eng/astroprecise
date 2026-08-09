@@ -133,14 +133,37 @@
     return { sign: sign, overview: 'Today’s reading is computed from the live sky — open the Daily page for the full transit-based reading.', transits: [], skyFacts: [], moodScore: null };
   }
 
+  // `aspect` is the machine key and must never be printed — the 60° contact's
+  // trade name is not a word our readers use. The engine and the content bank
+  // both carry reader-facing wordings alongside it (aspectLabel = short tag,
+  // aspectPhrase = joins two bodies in a sentence). Fall back only for older
+  // cached bank files that predate those fields.
+  var ASPECT_LABEL_FALLBACK = {
+    conjunction: 'meeting', sextile: 'helpful angle', square: 'square',
+    trine: 'trine', opposition: 'opposition',
+  };
+  var ASPECT_PHRASE_FALLBACK = {
+    conjunction: 'meeting', sextile: 'at a helpful angle to', square: 'square',
+    trine: 'trine', opposition: 'opposite',
+  };
+  function aspectLabelOf(t) {
+    if (!t) return '';
+    return t.aspectLabel || ASPECT_LABEL_FALLBACK[String(t.aspect || '').toLowerCase()] || '';
+  }
+  function aspectPhraseOf(t) {
+    if (!t) return '';
+    return t.aspectPhrase || ASPECT_PHRASE_FALLBACK[String(t.aspect || '').toLowerCase()] || '';
+  }
+
   function transitLine(t) {
     if (!t) return '';
+    var label = aspectLabelOf(t);
     if (t.text) {
       // "Moon square your Sun" style prefix if planet/aspect present
-      if (t.planet && t.aspect) return '<b>' + esc(t.planet) + ' ' + esc(t.aspect) + '</b> ' + esc(t.text);
+      if (t.planet && label) return '<b>' + esc(t.planet) + ' ' + esc(label) + '</b> ' + esc(t.text);
       return esc(t.text);
     }
-    if (t.planet && t.aspect) return '<b>' + esc(t.planet) + ' ' + esc(t.aspect) + '</b>' + (t.orb != null ? ' <span style="opacity:.6">' + esc(t.orb) + '°</span>' : '');
+    if (t.planet && label) return '<b>' + esc(t.planet) + ' ' + esc(label) + '</b>' + (t.orb != null ? ' <span style="opacity:.6">' + esc(t.orb) + '°</span>' : '');
     return '';
   }
 
@@ -158,7 +181,8 @@
     // transiting planet ↔ the solar-chart Sun point (honest for a Sun-sign preview).
     var top = (r && r.transits && r.transits[0]) ? r.transits[0] : null;
     var skyBody = top && top.planet ? String(top.planet).toLowerCase() : null;
-    var skyAspect = top && top.aspect ? String(top.aspect).toLowerCase() : '';
+    var skyAspect = top && top.aspect ? String(top.aspect).toLowerCase() : '';  // machine key → data attribute only
+    var skyAspectWords = aspectPhraseOf(top);                                    // reader wording → button label
     var skyName = skyBody ? skyBody.charAt(0).toUpperCase() + skyBody.slice(1) : '';
     // Solar-chart "your Sun" point = the sign midpoint (15° of the sign). This is
     // the assumed Sun the daily reading aspects; focusAspect places it as an
@@ -168,7 +192,7 @@
     var bLon = signIdx >= 0 ? (signIdx * 30 + 15) : '';
     var skyBtn = (skyBody && BODY_IDS[skyBody] && skyBody !== 'sun' && bLon !== '')
       ? '<button type="button" class="home-daily__sky-btn" data-sky-planet="' + esc(skyBody) + '" data-sky-aspect="' + esc(skyAspect) + '" data-sky-blon="' + bLon + '">' +
-          '<span aria-hidden="true">✦</span> Show ' + esc(skyName) + ' ' + esc(skyAspect) + ' your Sun in the sky' +
+          '<span aria-hidden="true">✦</span> Show ' + esc(skyName) + ' ' + esc(skyAspectWords) + ' your Sun in the sky' +
         '</button>'
       : '';
 
@@ -237,7 +261,7 @@
       if (top && top.planet && top.aspect) {
         // Solar-chart transits aspect the sign's Sun point, so "your Sun" is accurate.
         var p = String(top.planet); p = p.charAt(0).toUpperCase() + p.slice(1);
-        el.textContent = 'Tomorrow: ' + p + ' ' + top.aspect + ' your Sun — the reading recomputes at midnight. Check back.';
+        el.textContent = 'Tomorrow: ' + p + ' ' + aspectPhraseOf(top) + ' your Sun — the reading recomputes at midnight. Check back.';
       }
     } catch (e) {}
   }

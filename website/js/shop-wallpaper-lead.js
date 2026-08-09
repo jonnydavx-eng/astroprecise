@@ -55,7 +55,14 @@
     revealReadyBanner();
 
     var doneEl = document.getElementById('shop-wallpaper-done');
-    var dateInput = form.birthDate;
+    // By id, not by name. Both controls lost their `name` on 2026-08-09: a named
+    // control is the only kind a browser serialises, and until then a native
+    // submit turned "birth data stays on this device" into
+    // GET /shop.html?email=…&birthDate=…  — in the log, in the Referer, in the
+    // service worker's cache key. form.birthDate / form.email stop resolving
+    // once a control is unnamed, which is the whole point.
+    var emailInput = document.getElementById('shop-wallpaper-email');
+    var dateInput = document.getElementById('shop-wallpaper-birthdate');
 
     try {
       var hint = localStorage.getItem(DATE_HINT_KEY);
@@ -64,12 +71,12 @@
 
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
-      var email = (form.email && form.email.value || '').trim();
+      var email = (emailInput && emailInput.value || '').trim();
       var birthDate = (dateInput && dateInput.value || '').trim();
 
       if (!isEmail(email)) {
         if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning');
-        else form.email && form.email.focus();
+        else if (emailInput) emailInput.focus();
         return;
       }
 

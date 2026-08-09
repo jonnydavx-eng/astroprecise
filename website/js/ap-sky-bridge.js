@@ -86,6 +86,18 @@
   function buildLinkFromChart(chart, opts) {
     opts = opts || {};
     var m = chartMomentIso(chart) || 'now';
+    // stashSkyLink, not buildSkyLink: this moment is a birth minute. It goes to
+    // explore.html in sessionStorage, so the link the visitor can see, copy and
+    // paste carries only the focus body. Falls back to the fragment builder on
+    // an old cached ap-deep-link.js or where storage is blocked.
+    if (window.APDeepLink && window.APDeepLink.stashSkyLink) {
+      return window.APDeepLink.stashSkyLink({
+        m: m,
+        focus: opts.focus || 'earth',
+        scale: opts.scale,
+        base: opts.base
+      });
+    }
     if (window.APDeepLink && window.APDeepLink.buildSkyLink) {
       return window.APDeepLink.buildSkyLink({
         m: m,
@@ -105,6 +117,10 @@
   function buildLinkFromDate(dateVal, opts) {
     opts = opts || {};
     var m = dateOnlyMomentIso(dateVal) || 'now';
+    // Date-only, but it is still a BIRTH date — same channel as the full chart.
+    if (window.APDeepLink && window.APDeepLink.stashSkyLink) {
+      return window.APDeepLink.stashSkyLink({ m: m, focus: opts.focus || 'earth' });
+    }
     if (window.APDeepLink && window.APDeepLink.buildSkyLink) {
       return window.APDeepLink.buildSkyLink({ m: m, focus: opts.focus || 'earth' });
     }

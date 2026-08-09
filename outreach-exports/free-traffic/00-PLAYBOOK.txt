@@ -65,7 +65,7 @@ Submit https://astroprecise.app/ with description from llms.txt:
 
 DISCLAIMER (append to reading posts)
 ----------------------------------
-For entertainment. Astronomy computed in-browser to roughly an arcminute (1800–2200 CE).
+For entertainment. Astronomy computed in-browser, to the minute you were born, for any date from 1800 to 2200.
 Your birth data never leaves your device.
 
 HASHTAGS

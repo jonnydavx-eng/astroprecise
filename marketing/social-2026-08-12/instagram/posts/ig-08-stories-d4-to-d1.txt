@@ -13,11 +13,13 @@ SAT 8 AUG · 19:15 BST — three frames, posted together, right after the D-4 Re
 
 FRAME 1 — THE COUNTDOWN.  This is the most important sticker of the whole campaign.
   Background: design-lab/eclipse-sextant-02.png (native 9:16, use full frame)
-  Text, upper third:   Wednesday. About 91% of the Sun,
-                       gone over Britain, at 19:05.
-  STICKER: ⏳ COUNTDOWN — name it "UK MAXIMUM", end 12 Aug 2026, 19:05 BST.
+  Text, upper third:   Wednesday. 88 to 96% of the Sun,
+                       gone over Britain. Deepest 19:12 in London.
+  STICKER: ⏳ COUNTDOWN — name it "MAXIMUM · LONDON", end 12 Aug 2026, 19:12 BST.
+  ⚠ There is no single "UK maximum" and the sticker must not claim one: it is 19:05 in
+  Edinburgh, 19:12 in London, 19:16 in Truro. Name the city on the sticker.
   Why: taps on a countdown opt the viewer into an automatic reminder notification at
-  19:05 on the day. It is the only sticker that books someone's attention in advance.
+  19:12 on the day. It is the only sticker that books someone's attention in advance.
   Re-share this same countdown every day until Wednesday.
 
 FRAME 2 — THE POLL.
@@ -44,7 +46,7 @@ FRAME 4 — THE QUIZ.
   Background: assets/ig-02-cover-4x5.jpg filled to 9:16, darkened
   Text: One question before Wednesday.
   STICKER: ❓ QUIZ — "How much of the Sun disappears over Britain?"
-           50%  ·  74%  ·  91%  ·  100%      → correct answer: 91%
+           50%  ·  74%  ·  88–96%  ·  100%      → correct answer: 88–96%
   Why: quiz stickers get tapped harder than polls because people want to be right,
   and this one teaches the exact fact the whole campaign depends on.
 
@@ -86,8 +88,9 @@ FRAME 9  Background: same family
                You watch the card. Never the Sun.
 
 FRAME 10 Background: dark landscape crop
-         Text: 03 · Or just watch the light change. Around 19:05 the shadows
-               go razor-sharp and the ground under a tree fills with crescents.
+         Text: 03 · Or just watch the light change. Around maximum — 19:12 in
+               London, 19:05 Edinburgh, 19:16 Truro — the shadows go razor-sharp
+               and the ground under a tree fills with crescents.
          Then, in smaller type: Britain never reaches totality. There is no safe
                moment to look directly. Sunglasses are not protection.
          STICKER: 🔗 LINK — astroprecise.app/eclipse.html, text "TIMES + FREE CHART"
@@ -97,8 +100,9 @@ TUE 11 AUG · 20:30 BST — the last-night frame
 ────────────────────────────────────────────────────────────────────────────────
 
 FRAME 11 Background: assets/ig-optional-reel-tail-6s.mp4 (6s dusk crescent clip)
-         Text: Tomorrow. Set an alarm for 18:45 and find a clear western horizon.
-         STICKER: ⏳ COUNTDOWN (the same "UK MAXIMUM" one, final re-share)
+         Text: Tomorrow. Set an alarm for 18:00 — first contact is 18:08 to 18:17 —
+               and find a clear western horizon.
+         STICKER: ⏳ COUNTDOWN (the same "MAXIMUM · LONDON" one, final re-share)
          Optional second sticker: 🎚 EMOJI SLIDER — "How hopeful are you about the
          cloud?" with 🌥 — light, British, and it drives taps without saying anything
          untrue.

@@ -4,13 +4,16 @@
 **Captions:** `posts/*.txt` in this folder · **Checkout is closed** — every CTA goes to the free cast at
 `eclipse.html` or the eclipse-dawn email form that lives on the same page. No prices, no shop, nothing buyable.
 
+**Facts live in one place: [`../ECLIPSE-FACTS.md`](../ECLIPSE-FACTS.md).** Times, coverage and the
+banned-word list are there, not here. Check any number against it before it goes into a post.
+
 ---
 
 ## The call, in one paragraph
 
 Eight new posts, three of the existing thirteen kept word-for-word, five retired. The spine is a
 **reference thread on Saturday** that corrects the thing everyone gets wrong about this eclipse —
-91% covered is not 91% dark, and Britain is not on the totality track — and a **live thread on
+nine-tenths covered is not nine-tenths dark, and Britain is not on the totality track — and a **live thread on
 Wednesday evening** narrated in real time. Everything else feeds those two. Three of the existing
 thirteen must not be posted at all: two contain factual errors, one implies a checkout that
 does not exist.
@@ -23,7 +26,9 @@ does not exist.
 91% of the Sun's *disc covered* is not 91% *darkness*. The eye rebalances almost the whole way; at
 maximum it looks like an odd flat afternoon, not dusk. Post this and the first reply is a physics
 correction, on the account whose entire pitch is that it does the maths properly. Also "Britain"
-overstates — the site's own structured data says 89–92% across the UK, ~91% in the south.
+overstates — the honest figure is a range, **88–96%**, deepest in the far south-west. (The
+"89–92% / ~91% in the south" reading of the site's structured data was itself wrong, and was
+corrected across this tree on 2026-08-09.)
 → Replaced by **AP-X-04**, and directly debunked in **AP-X-01 node 3**.
 
 **2. `x-eclipse-07` — "The shadow crosses Britain at ≈19:05 tonight." Reads as a totality claim.**
@@ -39,7 +44,8 @@ transaction.
 
 Lower severity, same folder:
 - `x-eclipse-09` — "that chapter runs all year" is prophecy, not geometry. Off-voice. Rewritten as **AP-X-08**.
-- `x-eclipse-02` — "to the arcminute" is firmer than the house rule ("to roughly an arcminute, 1800–2200 CE").
+- `x-eclipse-02` — "to the arcminute" is both firmer than the maths supports **and** a banned word.
+  Rewritten in place 2026-08-09 to "to the minute you were born, and we do not round".
 
 **Fixed in the new set after review, 2026-08-08:**
 - `AP-X-03` closed on "how astrology got its **name**". Meaningless — the name is Greek *astrologia*,
@@ -71,7 +77,7 @@ thing 90 minutes apart; `x-eclipse-05` and `x-eclipse-12` both land Monday.
 | File | Verdict | Why |
 |---|---|---|
 | `x-eclipse-01` | **Retire (for X)** | "POV:" is TikTok voice; three hashtags breach the campaign doc's own "no hashtag spam" rule for X. Copy is fine elsewhere. |
-| `x-eclipse-02` | **Park** | Generic brand post, not eclipse. Soften "to the arcminute" and run it the week after. |
+| `x-eclipse-02` | **Park** | Generic brand post, not eclipse. "To the arcminute" is now rewritten (banned word); run it the week after. |
 | `x-eclipse-03` | **Rewrite** → AP-X-02 | Implies a live checkout. |
 | `x-eclipse-04` | **KEEP VERBATIM** | "This is your sign to go outside" is exactly the right dryness. 155 chars. Sun 9 Aug, 18:00. |
 | `x-eclipse-05` | **Kill** | The 91%-dark error. |
@@ -171,12 +177,12 @@ repo. GitHub Pages usually serves `/eclipse` → `/eclipse.html`, but I have not
 live host. Open it in a private window. If it 404s, every short-form caption must change. **All
 captions in `posts/` use the full `eclipse.html` path,** so this only affects the older files.
 
-**2. The site contradicts the plan on one number.** `eclipse.html` reads: *"The eclipse peaks on
-12 August 2026 at 17:46 UT — around 19:05 UK summer time."* 17:46 UT is **18:46** BST, not 19:05.
-The page has merged global greatest eclipse (17:46 UT, over the Arctic) with the UK's own maximum
-(~19:05 BST). They are different moments in different places. **AP-X-01 node 4 corrects this
-publicly**, so the page will contradict the thread until an engineer fixes it. Not mine to touch —
-flagging it.
+**2. ~~The site contradicts the plan on one number.~~ RESOLVED — and then the resolution was
+itself wrong twice.** The page no longer merges the two events: greatest eclipse is global,
+**18:46 BST (17:46 UT)**, 45 km off western Iceland, and Britain's own maximum is **19:05
+Edinburgh / 19:12 London / 19:16 Truro**. Two further corrections landed 2026-08-09: greatest
+eclipse is off Iceland, **not "over the Arctic"** (about 65°N — south of the Arctic Circle), and
+17:46 is **UT, not TD** (TD is 17:47:06; ΔT is 69.1 s). AP-X-01 node 4 now matches the page.
 
 **3. ~~"The Sun sets still eclipsed" may not be true in the south.~~ RESOLVED 2026-08-08 — it is
 false everywhere in Britain, not just the south.** Computed with the NOAA solar-position algorithm
@@ -203,8 +209,8 @@ ever buy. Two standing answers worth having ready:
 
 - *Sunglasses?* No. Not stacked, not welding glass unless shade 12+, not exposed film. ISO 12312-2
   with the standard printed on it, a pinhole, or watch the light.
-- *Why isn't it going dark?* Because your eye is very good. 91% covered is roughly one stop of light
-  loss to the eye. Look at the shadows and the colour instead.
+- *Why isn't it going dark?* Because your eye is very good. Nine-tenths covered is roughly one stop
+  of light loss to the eye. Look at the shadows and the colour instead.
 - *Does the Sun set while it's still eclipsed?* No — not anywhere in Britain. Last contact is about
   20:10 BST with the Sun still up (+1.9° over London, +0.9° over Dover, +4.6° over Penzance), and
   sunset follows at 20:22 Dover, 20:29 London, 20:46 Penzance. It finishes, then it sets. Expect this
@@ -214,12 +220,13 @@ ever buy. Two standing answers worth having ready:
 
 ## What I did not do
 
-**I did not publish per-city UK times.** The brief suggested a city-by-city reference post and it
-would earn bookmarks — but I have no verified per-city circumstances, and inventing them for an
-account whose masthead reads *computed, never fabricated* would be the worst possible unforced
-error. `eclipse.html` has no city table either. AP-X-01 gives only what the repo verifies: the
-89–92% national range, first contact after 18:00, maximum ~19:05, 17:46 UT greatest over the Arctic.
-If someone computes a real city table before Wednesday, it slots straight in as node 6 and becomes
-the strongest post in the campaign.
+**~~I did not publish per-city UK times.~~ SUPERSEDED 2026-08-09.** This section used to say there
+were no verified per-city circumstances, so AP-X-01 gave "the 89–92% national range, first contact
+after 18:00, maximum ~19:05, 17:46 UT greatest over the Arctic". Every one of those four was wrong,
+and refusing to name cities is what made them wrong: a national maximum does not exist, so quoting
+one meant quoting Edinburgh's and calling it Britain's. The verified per-city set is now in
+`../ECLIPSE-FACTS.md` and AP-X-01 carries it — first contact 18:08–18:17, maximum 19:05 Edinburgh /
+19:12 London / 19:16 Truro, coverage 88–96%, greatest eclipse 18:46 BST off western Iceland.
+The lesson generalises: *a range you can defend beats a single number you cannot.*
 
 Nothing outside this folder was touched. No git commands were run.

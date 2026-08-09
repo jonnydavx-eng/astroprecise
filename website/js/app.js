@@ -2467,6 +2467,18 @@ else AstroApp.init();
       : '<strong>Noted.</strong> ' + c.dormantSaved;
   }
 
+  /* Resolve the email box WITHOUT relying on name="email".
+     A named control is the only kind a browser can serialise into a URL, so the
+     capture forms had their names removed on 2026-08-09 — otherwise a native
+     submit (JS off, or before this file has loaded) turns a signup into
+     GET /profile.html?email=someone@example.com in the access log. form.email
+     stops resolving the moment a control is unnamed, so look it up by type and
+     keep the named lookup only as a fallback for any form not yet cut over. */
+  function emailFieldOf(form) {
+    if (!form) return null;
+    return form.querySelector('input[type="email"]') || form.email || null;
+  }
+
   function wireEmailForm(form, opts) {
     if (!form || form._apWired) return;
     form._apWired = true;
@@ -2474,7 +2486,8 @@ else AstroApp.init();
     var msg = form.querySelector('.ap-email-cta__msg, .ap-footer-signup__msg');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var email = (form.email && form.email.value || '').trim();
+      var emailField = emailFieldOf(form);
+      var email = (emailField && emailField.value || '').trim();
       if (!isEmail(email)) {
         if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning');
         return;
@@ -2834,7 +2847,8 @@ else AstroApp.init();
       if (f._wired) return; f._wired = true;
       f.addEventListener('submit', function (e) {
         e.preventDefault();
-        var email = f.email.value.trim();
+        var wlField = emailFieldOf(f);
+        var email = (wlField && wlField.value || '').trim();
         if (!isEmail(email)) { if (window.AstroApp) AstroApp.showToast('Check your email', 'That looks off.', 'warning'); return; }
         var res = captureEmail(email, { list: 'waitlist', source: 'waitlist', tag: 'tag_waitlist', quiet: true });
         var box = f.closest('.cw-waitlist');

@@ -274,7 +274,7 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   <div class="lbl">ECLIPSE MORNING, IN YOUR INBOX</div>
   <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0 0 14px">One email the morning of 12 August with your times, the weather windows, and your unlock link. Nothing else, ever — this list exists for one dawn.</p>
   <form id="emailForm" style="display:flex;gap:10px;flex-wrap:wrap">
-    <input type="email" id="eclipseEmail" name="email" required placeholder="you@example.com" style="flex:1;min-width:200px" aria-label="Email address" autocomplete="email">
+    <input type="email" id="eclipseEmail" required placeholder="you@example.com" style="flex:1;min-width:200px" aria-label="Email address" autocomplete="email">
     <button class="btn" id="emailFormBtn" type="submit">NOTIFY ME FOR ECLIPSE DAWN</button>
   </form>
   <div class="mono formnote" id="emailMsg" role="status" aria-live="polite" style="display:none"></div>
@@ -522,7 +522,40 @@ function ianaOffsetHours(name, y, mo, d, hh, mm) {
     return (asUTC - guess) / 3600000;
   } catch (e) { return 0; }
 }
+// Where the handoff can legitimately come from, best first:
+//   1. sessionStorage['ap-eclipse-handoff'] — what chart.html writes since
+//      2026-08-09. Same tab, same origin, never transmitted. Read once, then
+//      deleted.
+//   2. LEGACY ONLY: ?dob=&tob=&tzname= — a link minted before that, or a page
+//      opened where storage was blocked. Honoured, then taken out of the
+//      address bar so a birth date is not left sitting in it.
+// Reading a query was never the harm; creating one was.
 const qp2 = new URLSearchParams(location.search);
+let handoffFromQuery = !!qp2.get('dob');
+if (!handoffFromQuery) {
+  try {
+    const rawHandoff = sessionStorage.getItem('ap-eclipse-handoff');
+    if (rawHandoff) {
+      sessionStorage.removeItem('ap-eclipse-handoff');
+      const h = JSON.parse(rawHandoff);
+      if (h && h.dob && (!h.ts || Date.now() - h.ts < 30 * 60 * 1000)) {
+        qp2.set('dob', h.dob);
+        if (h.tob) qp2.set('tob', h.tob);
+        if (h.tzname) qp2.set('tzname', h.tzname);
+      }
+    }
+  } catch (eH) { /* private mode — the visitor re-enters their date, nothing breaks */ }
+}
+if (handoffFromQuery) {
+  // Strip only the birth fields; ?license= and ?from= are not personal and the
+  // licence flow above has already read its value.
+  try {
+    const keep = new URLSearchParams(location.search);
+    ['dob', 'tob', 'tzname', 'tz'].forEach((k) => keep.delete(k));
+    const q = keep.toString();
+    history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
+  } catch (eStrip) { /* pre-history browser */ }
+}
 if (qp2.get('dob')) {
   $('dob').value = qp2.get('dob');
   if (qp2.get('tob')) $('tob').value = qp2.get('tob');

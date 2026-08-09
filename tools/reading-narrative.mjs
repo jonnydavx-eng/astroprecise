@@ -73,11 +73,11 @@ export function aspectProse(I, type, p1, p2, orb) {
     if (type === 'Conjunction') {
       text = `Here ${a} (${p1}) and ${b} (${p2}) speak as one voice — ${gap}, close enough that their themes merge and separating them in lived experience is almost impossible. What one wants, the other reinforces.`;
     } else if (soft) {
-      text = `The easy angle between ${p1} and ${p2} (${gap}) is ${tight}: an open channel between ${a} and ${b} — a current you can lean on when you choose to engage it. Gifts like this grow when named and used, not left on autopilot.`;
+      text = `The easy angle between ${p1} and ${p2} (${gap}) is ${tight}: ${a} — and ${b} — have an open channel between them, a current you can lean on whenever you choose to engage it. Gifts like this grow when they are named and used, not left on autopilot.`;
     } else if (type === 'Opposition') {
-      text = `${p1} opposite ${p2} (${gap}) is ${tight}: ${a} and ${b} sit at opposite ends of one axis, and each keeps pulling the other way. The work is holding both at once rather than swinging between them — or casting one pole onto other people.`;
+      text = `${p1} opposite ${p2} (${gap}) is ${tight}: ${a} — and ${b} — sit at opposite ends of one axis, each of them pulling the other way. The work is holding both at once rather than swinging between them, or casting one pole onto other people.`;
     } else if (hard) {
-      text = `${p1} square ${p2} (${gap}) is ${tight}: ${a} and ${b} keep crossing each other at an angle, generating friction that both demand you resolve. The pressure is not punishment — it is where this chart builds muscle.`;
+      text = `${p1} square ${p2} (${gap}) is ${tight}: ${a} — and ${b} — keep crossing each other at an angle, and the friction is something both of them demand you resolve. The pressure is not punishment. It is where this chart builds muscle.`;
     } else {
       text = `${p1} and ${p2} sit ${gap} from a ${type.toLowerCase()} — an ongoing conversation between ${a} and ${b}.`;
     }
@@ -291,7 +291,7 @@ export function methodologyPage(PERSON, order) {
   <h1 style="font-size:22pt;">Measured sky,<br>not invented copy.</h1>
   <p class="lede">Every longitude in this document is computed from planetary theory (VSOP87 for the planets, ELP2000 for the Moon) for ${PERSON.date} at ${PERSON.time} above ${PERSON.place}. Interpretations are drawn from AstroPrecise's curated corpus — the same <code>interpretations.js</code> engine behind chart analysis, compatibility, and horoscope copy — stitched to <em>your</em> placements, not a generic sign column.</p>
   <h3>Your free instruments</h3>
-  <p>This reading deepens what you can explore free on the site: your <strong>birth chart wheel</strong> (chart.html), your <strong>daily horoscope</strong> read against your Sun sign (horoscope.html), the <strong>live sky</strong> moving over your birth chart (transits.html), <strong>compatibility</strong> between two charts (compatibility.html), and the <strong>raw sky tables</strong> if you want the numbers themselves (ephemeris.html). The PDF is the keepsake; the site stays your living observatory.</p>
+  <p>This reading deepens what you can explore free on the site: your <strong>birth chart wheel</strong>, your <strong>daily horoscope</strong> read against your Sun sign, the <strong>live sky</strong> moving over your birth chart, <strong>compatibility</strong> between two charts, and the <strong>raw sky tables</strong> if you would rather see the numbers themselves. They are all in the menu at astroprecise.app. The PDF is the keepsake; the site stays your living observatory.</p>
   ${timeNote}
   <h3>What astrology is — here</h3>
   <p>This is symbolic pattern recognition, not fortune-telling. The chart describes qualities of time at your first breath: temperament, motivation, recurring themes. It does not diagnose, prescribe, or guarantee outcomes.</p>

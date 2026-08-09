@@ -32,7 +32,7 @@
       "note": "an ease — the eclipse supports this point"
     },
     "sextile": {
-      "label": "sextile",
+      "label": "a helpful angle",
       "frame": "gently opens",
       "note": "an opening — a small door offered to this point"
     }
@@ -83,7 +83,7 @@
       "theme": "how you meet the world and begin things"
     },
     "mc": {
-      "label": "Midheaven",
+      "label": "career point",
       "theme": "your direction, work and public path"
     }
   },
@@ -92,7 +92,7 @@
     "opposition": "This eclipse sits directly opposite {theme}. Tradition reads a facing like this as a call for balance — a nudge to see this part of you from the other side.",
     "square": "This eclipse presses on {theme}. A square is old shorthand for useful friction — the kind of tension that, handled gently, tends to move something that was stuck.",
     "trine": "This eclipse flows easily with {theme}. A trine is the kind, unforced contact — a good moment to lean on this strength rather than force anything.",
-    "sextile": "This eclipse gently opens {theme}. A sextile is a small door, not a shove — an invitation you can take or leave."
+    "sextile": "This eclipse gently opens {theme}. A helpful angle is a small door, not a shove — an invitation you can take or leave."
   },
   "overrides": {
     "sun|conjunction": "This eclipse falls right on your Sun — your core sense of who you are. Of all the contacts, this is the personal one: a traditional marker of a chapter quietly closing so a truer one can begin. Held lightly, it's an invitation to ask what you've outgrown.",

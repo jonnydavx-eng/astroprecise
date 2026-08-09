@@ -15,7 +15,7 @@ Everything in this section was measured on this machine on this date. Nothing is
 | `/eclipse.html` | HTTP 200 | direct fetch |
 | Whole deployed tree reachable | 842/842 paths HTTP 200, 0 bad | `node tools/sweep.mjs` |
 | Live bytes vs a local build of HEAD | 842 paths, **0 mismatches** | `npm run build && node tools/byte-audit.mjs` |
-| Eclipse countdown target | 12 Aug 2026 **17:46 UT** | `website/eclipse.html` line 269, `Date.UTC(2026, 7, 12, 17, 46)` |
+| Eclipse countdown target | 12 Aug 2026 **17:45:57 UT** (= 18:46 BST) | `website/eclipse.html`, `Date.UTC(2026, 7, 12, 17, 45, 57)` — corrected 2026-08-09 from a flat 17:46; the ΔT working is in the comment above it |
 | Test suites | **19** | 13 root `test-*.mjs` + 5 `tools/_proof-*.mjs` + `ephemeris-package/test/smoke.test.mjs` |
 
 On the byte comparison: 120 of the 842 files are served a few bytes shorter than

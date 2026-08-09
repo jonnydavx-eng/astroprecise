@@ -6,6 +6,9 @@ On-screen text, shot lists, sound and cover frames are here.
 
 Written 2026-08-08 by Claude @ BOOK-T1H4NJ753R. Weekdays verified: 12 Aug 2026 is a **Wednesday**.
 
+**Facts live in one place: [`../ECLIPSE-FACTS.md`](../ECLIPSE-FACTS.md).** Times, coverage and the
+banned-word list are there, not here. Check every number against it before it goes on screen.
+
 **Revised the same day after a social-director review.** Three things in the first version would have
 shipped a defect: the "safe capture zone" was not safe, `tt-05` said the Sun sets still eclipsed
 (it does not), and three storyboard beats scrolled into a price. Each correction is marked ⚠️ where
@@ -34,7 +37,7 @@ A brand-new account will get low reach on its first posts regardless of the work
 
 These are not style preferences. Breaking any of them damages the thing that makes this product different.
 
-**1. Never say Britain sees totality.** It does not. Totality runs Arctic → Greenland → Iceland → northern Spain. Britain gets a deep partial, ~91% in the south of England, peak ≈19:05 BST. Deepest over Britain since 1999. Post 3 exists specifically to correct this, because the misinformation will be everywhere by Monday.
+**1. Never say Britain sees totality.** It does not. Totality runs Arctic → Greenland → Iceland → northern Spain. Britain gets a deep partial, 88–96% of the Sun covered, deepest in the far south-west. Maximum is 19:05 Edinburgh, 19:12 London, 19:16 Truro — there is no single UK time and this plan used to print one. Deepest over Britain since 1999. Post 3 exists specifically to correct the totality myth, because the misinformation will be everywhere by Monday.
 
 **2. No price, no shop, no purchase.** Checkout is closed — the Gumroad products do not exist, all twelve permalink slots still read `REPLACE_ME`, and nothing has ever been sold. Drive to the free cast and the email capture only.
 
@@ -93,9 +96,9 @@ That last row is the one to watch: **if the owner pastes the permalinks before y
 
 | Line | Element | What you can hold on |
 |---|---|---|
-| **113–114** | kicker + `<h1>` | "PARTIAL SOLAR ECLIPSE · ~91% OF THE SUN COVERED OVER BRITAIN · PEAK ≈19:05 BST" and the headline. **Stop above line 115**, and keep the nav at 107 out of the top of frame. |
-| **121–125** | the countdown receipt | the live countdown, `ECLIPSE POINT … GREATEST ECLIPSE 17:46 UT · MEEUS CH.25`, and "COMPUTED HERE, IN YOUR BROWSER · NOTHING UPLOADED". The best clean frame on the page — self-contained, and the only one that is also the product's whole argument. |
-| **128–131** | the orrery panel | "LIVE SIMULATION · THE SHADOW AT 91% · DRAG TO ORBIT". Boxed, with nothing bleeding in above or below. |
+| **113–114** | kicker + `<h1>` | "DEEP PARTIAL SOLAR ECLIPSE · 88–96% OF THE SUN COVERED ACROSS BRITAIN · UK MAXIMUM ≈19:12 BST IN LONDON" and the headline. **Stop above line 115**, and keep the nav at 107 out of the top of frame. |
+| **121–125** | the countdown receipt | the live countdown, `ECLIPSE POINT … GREATEST ECLIPSE 18:46 BST (17:46 UT) · MEEUS CH.25`, and "COMPUTED HERE, IN YOUR BROWSER · NOTHING UPLOADED". The best clean frame on the page — self-contained, and the only one that is also the product's whole argument. |
+| **128–131** | the orrery panel | "LIVE SIMULATION · THE SHADOW NEAR UK MAXIMUM · DRAG TO ORBIT". Boxed, with nothing bleeding in above or below. |
 | **159–176** | the cast card `#cast` | "STEP 1 · FREE — SEE THE CONTACT", the three fields, `COMPUTE MY ECLIPSE CONTACT — FREE`, and the privacy line. Clean top to bottom — the only whole card on the page that is. |
 | **184–188** | `#anchorBox` | "YOUR ECLIPSE RECEIPT", the computed receipt, the serif line under it. **It ends at line 188 and the next thing down the page is a price** — so this is a fixed crop, not a scroll. The geometry image at 178–180 is clean too. |
 
@@ -150,7 +153,7 @@ Cut from these. Frames verified.
 
 **Safe zones (1080×1920).** Keep text inside roughly x 60–900, y 220–1450. The right rail eats ~180px, the caption and handle eat the bottom ~380px, the top bar ~120px. Text outside that gets covered on some devices and you will not see it in the editor preview.
 
-**Captions on.** Turn on TikTok's auto-captions for anything with voice, then fix the astronomy words by hand — it will mangle "Perseids", "arcminute", "ISO 12312-2" and "ephemeris" every time.
+**Captions on.** Turn on TikTok's auto-captions for anything with voice, then fix the astronomy words by hand — it will mangle "Perseids" and "ISO 12312-2" every time. It will never have to mangle "arcminute" or "ephemeris", because neither is allowed to be said out loud: see the banned-word list in `../ECLIPSE-FACTS.md`.
 
 **Pick the cover frame deliberately.** It becomes the profile grid tile. Default is usually frame one, which is often mid-transition. Choose the sharpest crescent frame with the hook text visible.
 
@@ -191,13 +194,13 @@ The unfair advantage is that the product computes something true about the viewe
 | 0.8–1.5s | Hard cut back to the empty form | `20 seconds. On your phone. Nothing uploaded.` |
 | 1.5–8s | Real typing: date of birth, time, timezone. Don't speed-ramp — the honest pace is the point | `DATE OF BIRTH` / `TIME (SHARPENS THE MOON)` — let the site's own labels read |
 | 8–10s | Thumb hits `COMPUTE MY ECLIPSE CONTACT — FREE` | — |
-| 10–16s | Result lands. Fixed crop on `#anchorBox` (184–188) — the degrees, the orb, the aspect | `Computed on the device. Not fetched. Not guessed.` |
+| 10–16s | Result lands. Fixed crop on `#anchorBox` (184–188) — the degrees and how close the contact is | `Computed on the device. Not fetched. Not guessed.` |
 | 16–22s | **Cut, do not scroll**, to a fixed crop of the countdown receipt at the top of the page (121–125) | `VSOP87 · ELP2000 · Meeus Ch.25` |
 | 22–26s | Cut to `eclipse-sextant-02.png`, slow push in | `astroprecise.app/eclipse` |
 
 **There is nothing to scroll into after `#anchorBox`.** This post uses a chart the eclipse *does* touch, so `#saleBox` renders directly beneath it and its first line is "STEP 2 · THE FULL READING — £2.99" (line 200). The old 16–22s beat was a slow scroll of the receipt and it would have pulled that heading into frame. Two fixed crops, cut between them.
 
-**Use a real birth date that produces a real hit** — a chart the eclipse actually touches. Cast a few first and pick one with a tight orb. Never fake the output; the whole brand is that the numbers are checkable.
+**Use a real birth date that produces a real hit** — a chart the eclipse actually touches. Cast a few first and pick one where the contact is close. Never fake the output; the whole brand is that the numbers are checkable.
 
 **Set both crops before you start recording,** with the result already on screen from an off-camera cast. Composing a crop live is how the card below ends up in the frame.
 
@@ -249,8 +252,8 @@ A public-service correction, which is reliably good TikTok: people argue in the 
 |---|---|---|
 | 0.0–1.0s | mp4 **from 6.5s** — the dimmed, uncanny blue-grey stretch | `Britain does not go dark on Wednesday.` |
 | 1.0–4s | continue | `Totality: Iceland and northern Spain.` |
-| 4–8s | mp4 9–12s, the wide crescent | `Here: ~91% covered. Peak 19:05 BST, south of England.` |
-| 8–13s | hold | `91% is not darkness. It's the light going wrong — flat, silver, shadows too sharp.` |
+| 4–8s | mp4 9–12s, the wide crescent | `Here: 88–96% covered. Peak 19:12 London, 19:05 Edinburgh, 19:16 Truro.` |
+| 8–13s | hold | `Nine-tenths gone is not darkness. It's the light going wrong — flat, silver, shadows too sharp.` |
 | 13–17s | final frame | `Deepest over Britain since 1999.` then `Glasses or pinhole. Never bare eyes.` |
 
 **Sound:** the mp4's own audio. Let the wind carry it.
@@ -271,7 +274,7 @@ Uses `asset: pinhole-projection` (requested) as the hero, with `eclipse-sextant-
 | 1–6s | hold / slow push | `ISO 12312-2 — printed on the frame. Not printed = don't trust it.` |
 | 6–12s | pinhole image | `No glasses? Pinhole in card. Projects onto the pavement. Free, and you're looking DOWN.` |
 | 12–17s | — | `Sunglasses are not protection. Not two pairs. Not a phone screen.` |
-| 17–23s | `eclipse-sextant-02.png` | `Or just watch the light. At 91% the colour drains and shadows go razor-sharp.` |
+| 17–23s | `eclipse-sextant-02.png` | `Or just watch the light. Nine-tenths gone and the colour drains, shadows go razor-sharp.` |
 | 23–25s | — | `astroprecise.app/eclipse` |
 
 **Say the ISO number out loud.** It's the single most useful thing in the whole campaign and the search term people will use.
@@ -289,8 +292,8 @@ Morning utility. People screenshot this. Built for saving, not for watching.
 | Time | Screen | On-screen text |
 |---|---|---|
 | 0.0–0.8s | `eclipse-still-01.png`, very slow push | `It's today.` |
-| 0.8–8s | same, text builds line by line | `FIRST BITE ≈18:00 BST` → `MAXIMUM ≈19:05 · ~91%` → `LAST CONTACT ≈20:10` → `SUNSET AFTER THAT · 20:22–20:46` |
-| 8–13s | — | `Greatest eclipse 17:46 UT, over the Arctic.` / `Totality: Iceland, N. Spain. Not here.` |
+| 0.8–8s | same, text builds line by line | `FIRST BITE 18:08–18:17 BST` → `MAXIMUM 19:05 EDI · 19:12 LDN · 19:16 TRURO · 88–96%` → `LAST CONTACT ≈20:10` → `SUNSET AFTER THAT · 20:22–20:46` |
+| 8–13s | — | `Greatest eclipse 18:46 BST, off western Iceland.` / `Totality: Iceland, N. Spain. Not here.` |
 | 13–17s | — | `Then the Perseids peak the same night.` |
 | 17–20s | — | `ISO 12312-2 or pinhole. Never bare eyes.` / `astroprecise.app/eclipse` |
 
@@ -360,7 +363,7 @@ Catches the day-after search surge, when people who half-noticed the light go od
 | Time | Screen | On-screen text |
 |---|---|---|
 | 0.0–1.0s | `eclipse-still-01.png` | `You saw it. Here's what it actually was.` |
-| 1–6s | hold | `20°02′ Leo. ~91% covered. 19:05 BST.` / `Deepest over Britain since 1999.` |
+| 1–6s | hold | `20°02′ Leo. 88–96% covered. 19:05 Edinburgh to 19:16 Truro.` / `Deepest over Britain since 1999.` |
 | 6–14s | cut to screen — cast a chart live, land on `#anchorBox` (184–188) in a fixed crop. **No scroll:** `#saleBox` begins on the next line with a price | `That point sits somewhere in your chart.` |
 | 14–19s | cut to a second fixed crop — `#quietMono` + `#quietSerif` (193–194) from a quiet cast, framed exactly as in post 2 | `For plenty of people it lands on nothing — and it says so.` |
 | 19–24s | `eclipse-sextant-02.png` | `astroprecise.app/eclipse` |

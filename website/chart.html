@@ -5,7 +5,7 @@
   <meta name="color-scheme" content="dark">
   <style>html{background:#08080b}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free natal chart on your device — Meeus/VSOP87 to the arcminute. The real sky news: weather report of the sky, not prophecy. Private; nothing uploaded (1800–2200 CE)." />
+  <meta name="description" content="Free natal chart on your device — Meeus/VSOP87, computed to a sixtieth of a degree. The real sky news: weather report of the sky, not prophecy. Private; nothing uploaded (1800–2200 CE)." />
   <meta name="robots" content="index, follow" />
   <title>Free Birth Chart — the real sky news | Astro Precise</title>
 <link rel="preload" href="css/main-lite.css" as="style" />
@@ -295,7 +295,7 @@
         <p class="chart-hero__eyebrow" aria-hidden="true">FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
         <h1 class="chart-hero__title" id="page-title">Your natal chart, to the minute</h1>
         <p class="chart-hero__subtitle">
-          Enter your birth date, place and time — every planet placed to the arcminute by planetarium-grade mathematics, privately in your browser. Nothing is uploaded, ever.
+          Enter your birth date, place and time — every planet placed to a sixtieth of a degree by planetarium-grade mathematics, privately in your browser. Nothing is uploaded, ever.
         </p>
         <p class="chart-hero__timecode" aria-hidden="true">VSOP87 + ELP2000 &middot; 1800&ndash;2200 CE &middot; <b>computed on-device</b> &middot; nothing uploaded</p>
         <p style="margin:1.1rem 0 0;display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center">
@@ -783,15 +783,19 @@
           <p class="wallpaper-lead__eyebrow">Wear your sky</p>
           <h3 class="wallpaper-lead__title">Free phone wallpaper of <em>your</em> chart</h3>
           <p class="wallpaper-lead__sub">Your natal wheel, centred for lock screen — generated from the chart you just cast. Enter your email once to unlock the download; optional birth date stays on this device.</p>
+          <!-- No `name` on either control: a browser serialises only named ones,
+               so a native submit (JS off, or before chart-page.js has bound)
+               cannot turn "optional birth date stays on this device" into
+               GET /chart.html?email=…&birthDate=…  Read by id instead. -->
           <form id="wallpaper-email-form" class="wallpaper-lead__form" novalidate>
             <div class="wallpaper-lead__fields">
               <label class="wallpaper-lead__field">
                 <span class="wallpaper-lead__label">Email</span>
-                <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" class="wallpaper-lead__input" aria-describedby="wallpaper-lead-disclosure">
+                <input type="email" id="wallpaper-lead-email" required placeholder="you@example.com" autocomplete="email" class="wallpaper-lead__input" aria-describedby="wallpaper-lead-disclosure">
               </label>
               <label class="wallpaper-lead__field wallpaper-lead__field--optional">
                 <span class="wallpaper-lead__label">Birth date <span class="wallpaper-lead__opt">(optional)</span></span>
-                <input type="date" name="birthDate" class="wallpaper-lead__input" aria-label="Birth date optional — stays on your device">
+                <input type="date" id="wallpaper-lead-birthdate" class="wallpaper-lead__input" aria-label="Birth date optional — stays on your device">
               </label>
             </div>
             <button type="submit" class="wallpaper-lead__download" aria-label="Unlock free phone wallpaper">
@@ -841,7 +845,6 @@
               type="email"
               id="email-capture-input"
               class="email-capture__input"
-              name="email"
               placeholder="you@example.com"
               autocomplete="email"
               aria-label="Your email address (optional)"

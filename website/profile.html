@@ -130,13 +130,13 @@
           <form id="setup-form" class="setup-form" novalidate aria-label="Create profile">
             <div class="form-group">
               <label for="setup-name" class="form-label">Your Name <span aria-hidden="true" style="color:#d8b46a">*</span></label>
-              <input type="text" id="setup-name" name="setup-name" class="form-input"
+              <input type="text" id="setup-name" class="form-input"
                      placeholder="How shall the cosmos address you?"
                      required aria-required="true" autocomplete="name" />
             </div>
             <div class="form-group">
               <label for="setup-email" class="form-label">Email <span style="color:var(--silver-dim);font-weight:400">(optional)</span></label>
-              <input type="email" id="setup-email" name="setup-email" class="form-input"
+              <input type="email" id="setup-email" class="form-input"
                      placeholder="Stored only on this device"
                      autocomplete="email" />
             </div>
@@ -413,7 +413,7 @@
                 <p class="form-hint" id="pref-house-desc">Equal: widely used. Placidus: traditional Western. Whole Sign: ancient method.</p>
               </div>
               <div class="form-group">
-                <label for="pref-orbs" class="form-label">Aspect Orbs</label>
+                <label for="pref-orbs" class="form-label">How close an angle has to be to count</label>
                 <select id="pref-orbs" class="form-select">
                   <option value="standard">Standard (8° / 4°)</option>
                   <option value="tight">Tight (6° / 3°)</option>
@@ -460,7 +460,7 @@
       </div>
       <form class="ap-email-cta__form" novalidate aria-label="Join the Astro Precise update list">
         <div class="ap-email-cta__fields">
-          <input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address" />
+          <input class="ap-email-cta__input" type="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address" />
           <button type="submit" class="ap-email-cta__btn">&#10022; Get updates</button>
         </div>
         <p class="ap-email-cta__msg" role="status" aria-live="polite"></p>
