@@ -88,6 +88,7 @@ for (const p of pages) {
 const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
 const deliveredCssName = 'explore-page-v' + assetVersion + '.css';
 const deliveredBootName = 'explore-boot-v' + assetVersion + '.js';
+const deliveredNavName = 'ap-nav-model-v' + assetVersion + '.js';
 if (assetVersion && !exploreHtml.includes('js/' + deliveredBootName + '?v=' + assetVersion)) {
   fail('explore.html boot query does not match service-worker ' + assetVersion);
 }
@@ -96,16 +97,21 @@ const exploreBoot = readFileSync(join(root, 'js', 'explore-boot.js'), 'utf8');
 const deliveredCss = readFileSync(join(root, 'css', deliveredCssName), 'utf8');
 const deliveredBoot = readFileSync(join(root, 'js', deliveredBootName), 'utf8');
 const navModel = readFileSync(join(root, 'js', 'ap-nav-model.js'), 'utf8');
+const deliveredNav = readFileSync(join(root, 'js', deliveredNavName), 'utf8');
 const loader = readFileSync(join(root, 'js', 'orrery-loader.js'), 'utf8');
 if (assetVersion && !exploreHtml.includes('css/' + deliveredCssName + '?v=' + assetVersion)) {
   fail('explore.html CSS query does not match service-worker ' + assetVersion);
 }
 if (deliveredCss !== exploreCss) fail('versioned Explore CSS is not byte-identical to its canonical source');
 if (deliveredBoot !== exploreBoot) fail('versioned Explore boot is not byte-identical to its canonical source');
-for (const deliveredPath of ['./css/' + deliveredCssName, './js/' + deliveredBootName]) {
+if (deliveredNav !== navModel) fail('versioned nav model is not byte-identical to its canonical source');
+if (assetVersion && !exploreHtml.includes('js/' + deliveredNavName + '?v=' + assetVersion)) {
+  fail('explore.html nav query does not match service-worker ' + assetVersion);
+}
+for (const deliveredPath of ['./css/' + deliveredCssName, './js/' + deliveredBootName, './js/' + deliveredNavName]) {
   if (!sw.includes("'" + deliveredPath + "'")) fail('service-worker precache missing ' + deliveredPath);
 }
-for (const criticalProbe of ['explore-page(?:-v\\d+)?\\.css', 'explore-boot(?:-v\\d+)?\\.js']) {
+for (const criticalProbe of ['explore-page(?:-v\\d+)?\\.css', 'explore-boot(?:-v\\d+)?\\.js', 'ap-nav-model(?:-v\\d+)?\\.js']) {
   if (!sw.includes(criticalProbe)) fail('service-worker critical routing missing ' + criticalProbe);
 }
 for (const probe of [

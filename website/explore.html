@@ -392,7 +392,9 @@
        ============================================================ -->
   <script src="js/ephemeris.js" defer></script>
   <script src="js/raf-core.js" defer></script>
-  <script src="js/ap-nav-model.js" defer></script>
+  <!-- Old workers cache this model by pathname, so the release identity must
+       live in the filename to keep the pre-entry honesty label current. -->
+  <script src="js/ap-nav-model-v826.js?v=826" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>
   <!-- The path, not only the query, carries the release identity so an old
