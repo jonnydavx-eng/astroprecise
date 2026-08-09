@@ -5,9 +5,12 @@
  */
 import { buildEclipseReading5 } from './eclipse-reading.js';
 
-// 20°02′ Leo — greatest eclipse 12 Aug 2026, 17:46 TD (18:46 BST). Matches what
-// eclipse.html computes live from js/ephemeris.js at that instant (140.0387);
-// the old 140.133 read 20°08′ and disagreed with our own engine by six minutes of arc.
+// 20°02′ Leo — greatest eclipse 12 Aug 2026: 17:47:06 TT = 17:45:57 UT = 18:46 BST
+// (ΔT = 69.1 s, USNO/IERS 2026 prediction). An earlier comment here said "17:46 TD",
+// which was the UT figure under the wrong label — see the long note in eclipse.html.
+// The constant itself is unaffected: 69 s of solar motion is about 3 seconds of arc.
+// Matches what eclipse.html computes live from js/ephemeris.js at that instant
+// (140.0387); the old 140.133 read 20°08′ and disagreed with our own engine.
 const ECLIPSE_LON = 140.039;
 const BODIES = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 

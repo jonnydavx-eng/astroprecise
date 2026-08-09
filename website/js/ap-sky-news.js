@@ -303,9 +303,13 @@
     // dateline, and two counters on one page is how a page looks unfinished.
     // This card carries what that line cannot: when it starts, when it is
     // deepest where you are, and the one safety rule.
-    // 17:46 is TD, not UT, and greatest eclipse is 45 km off western Iceland —
-    // so it is not a UK time and is not printed as one. Britain never reaches
-    // totality: totality is Iceland and northern Spain.
+    // 17:46 here is UT (17:47:06 TT minus ΔT 69.1 s = 17:45:57 UT = 18:46 BST).
+    // An earlier version of this comment claimed 17:46 was TD; it is not, and the
+    // correction is written out in full in eclipse.html. Either reading moves the
+    // Sun about 3 seconds of arc, so the longitude below is unaffected.
+    // It is greatest eclipse 45 km off western Iceland, so it is not a UK time and
+    // is not printed as one. Britain never reaches totality: that is Iceland and
+    // northern Spain.
     var eclJD = eng.julianDay(2026, 8, 12, 17, 46, 0);
     var days = eclJD - jd;
     if (days > -2 && days < 120) {

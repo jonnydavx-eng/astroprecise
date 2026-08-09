@@ -163,7 +163,7 @@ export function detectChartPatterns(aspects, pos, PNAME) {
       patterns.push({
         type: 'grandTrine',
         planets: [...bodies].map((k) => PNAME[k]),
-        note: 'Three or more flowing trines link planets in a closed circuit — talent that must be deliberately spent or it becomes complacency.',
+        note: 'three or more of them sit at easy angles to each other, closing into a loop (astrologers call this a grand trine). Talent that arrives without being asked for, and goes slack unless you deliberately spend it.',
       });
     }
   }
@@ -223,7 +223,7 @@ export function synthesizeLifeAreas({ pos, ascSign, mcSign, I, analyzePayload, h
   }
 
   if (!career) {
-    career = `${CAREER_NATAL[mcH] || CAREER_NATAL[10]} Midheaven in ${mcSign} directs public reputation. Saturn in ${pos.saturn.sign} (${ord(saturnH)} house) describes the long apprenticeship: ${sentsFn(pInterp('Saturn', pos.saturn.sign), 2)}`;
+    career = `${CAREER_NATAL[mcH] || CAREER_NATAL[10]} The top of your chart falls in ${mcSign}, which is the flavour your public reputation takes. Saturn in ${pos.saturn.sign} (${ord(saturnH)} house) describes the long apprenticeship: ${sentsFn(pInterp('Saturn', pos.saturn.sign), 2)}`;
   }
 
   const health = `${HEALTH_NATAL[pos.mars.house] || HEALTH_NATAL[6]} Moon in ${pos.moon.sign} (${ord(moonH)} house) links emotion to the body — ${HOUSE_THEME[moonH]}. Mars in ${pos.mars.sign}${pos.mars.retro ? ' retrograde' : ''} sets your energy signature: ${pos.mars.retro ? 'drive turns inward; pace yourself deliberately' : 'direct action restores equilibrium when feelings stagnate'}.`;

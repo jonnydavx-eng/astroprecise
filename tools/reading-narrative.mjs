@@ -67,16 +67,19 @@ export function aspectProse(I, type, p1, p2, orb) {
     const soft = type === 'Trine' || type === 'Sextile';
     const a = principleOf(p1);
     const b = principleOf(p2);
+    // How far the angle sits from exact. Said in plain words, because "orb" is
+    // trade jargon that tells a first-time reader nothing.
+    const gap = `${orb.toFixed(1)}° off exact`;
     if (type === 'Conjunction') {
-      text = `Here ${a} (${p1}) and ${b} (${p2}) speak as one voice (orb ${orb.toFixed(1)}°) — their themes merge so completely that separating them in lived experience is almost impossible. What one wants, the other reinforces.`;
+      text = `Here ${a} (${p1}) and ${b} (${p2}) speak as one voice — ${gap}, close enough that their themes merge and separating them in lived experience is almost impossible. What one wants, the other reinforces.`;
     } else if (soft) {
-      text = `${p1} ${type.toLowerCase()} ${p2} (orb ${orb.toFixed(1)}°) is ${tight}: ${a} and ${b} cooperate — a current you can lean on when you choose to engage it. Gifts like this grow when named and used, not left on autopilot.`;
+      text = `The easy angle between ${p1} and ${p2} (${gap}) is ${tight}: an open channel between ${a} and ${b} — a current you can lean on when you choose to engage it. Gifts like this grow when named and used, not left on autopilot.`;
     } else if (type === 'Opposition') {
-      text = `${p1} opposite ${p2} (orb ${orb.toFixed(1)}°) is ${tight}: ${a} and ${b} sit at opposite ends of one axis and each keeps pulling for the other's opposite. The work is holding both at once rather than swinging between them — or casting one pole onto other people.`;
+      text = `${p1} opposite ${p2} (${gap}) is ${tight}: ${a} and ${b} sit at opposite ends of one axis, and each keeps pulling the other way. The work is holding both at once rather than swinging between them — or casting one pole onto other people.`;
     } else if (hard) {
-      text = `${p1} square ${p2} (orb ${orb.toFixed(1)}°) is ${tight}: ${a} and ${b} keep crossing each other at an angle, generating friction that both demand you resolve. The pressure is not punishment — it is where this chart builds muscle.`;
+      text = `${p1} square ${p2} (${gap}) is ${tight}: ${a} and ${b} keep crossing each other at an angle, generating friction that both demand you resolve. The pressure is not punishment — it is where this chart builds muscle.`;
     } else {
-      text = `${p1} and ${p2} form a ${type.toLowerCase()} (orb ${orb.toFixed(1)}°) — an ongoing conversation between ${a} and ${b}.`;
+      text = `${p1} and ${p2} sit ${gap} from a ${type.toLowerCase()} — an ongoing conversation between ${a} and ${b}.`;
     }
   }
   return sents(text, hardAspect(type) ? 3 : 2);
@@ -104,8 +107,8 @@ export function chartRulerNarrative(ruler, pos, rulerName, pInterp, hMeaning) {
 export function mcCareerBlock(M, mcLon, sunSign, pInterp, hMeaning, sentsFn) {
   const hm = hMeaning(10);
   return `
-  <h3>MC · Midheaven in ${M.sign} — ${hm.keyword}</h3>
-  <p>Your Midheaven at ${fmt(mcLon)} is the chart's public apex — the direction your life is seen to climb. Your <strong>Sun in ${sunSign}</strong> fuels that climb — ${sentsFn(pInterp('Sun', sunSign), 2)} ${sentsFn(hm.meaning, 1)}</p>`;
+  <h3>The top of your chart — ${M.sign} (${hm.keyword})</h3>
+  <p>The very top of your chart sits at ${fmt(mcLon)} in ${M.sign}. This is your public face: the direction your life is seen to climb, and what people think you are for. Your <strong>Sun in ${sunSign}</strong> fuels that climb — ${sentsFn(pInterp('Sun', sunSign), 2)} ${sentsFn(hm.meaning, 1)}</p>`;
 }
 
 export function loveValuesBlock(pos, pInterp, hMeaning, sentsFn, PGL) {
@@ -128,7 +131,7 @@ export function saturnChapter(pos, pInterp, hMeaning, sentsFn, PGL) {
 
 export function skyFactsBlock(pos, asc, mc, fmtFn, PGL, PNAME, BODIES) {
   const facts = buildBirthSkyFacts(pos, asc, mc, fmtFn, PGL, PNAME, BODIES);
-  return `<p class="note" style="font-size:10pt;line-height:1.75;">Your birth sky at a glance — the same ephemeris data behind <em>horoscope.html</em>, <em>transits.html</em>, and <em>chart.html</em>:<br>${facts.join(' · ')}</p>`;
+  return `<p class="note" style="font-size:10pt;line-height:1.75;">Your birth sky at a glance — the same computed positions behind <em>horoscope.html</em>, <em>transits.html</em>, and <em>chart.html</em>:<br>${facts.join(' · ')}</p>`;
 }
 
 export function lifeAreasChapter(ctx) {
@@ -205,7 +208,7 @@ export function chartPatternsChapter(patterns, ctx = null) {
   if (!patterns.length) {
     return `<h1 style="font-size:20pt;">Chart patterns.</h1>
       <p class="lede">Some charts fire a single loud configuration; others spread their weight evenly. Yours is the second kind.</p>
-      <p>No major stellium, grand trine, or T-square dominates your chart — no three-plus planets pile into one sign, no closed circuit of trines, no locked engine of squares. That is not a lack. It means your story is told across several placements of roughly equal voice, rather than routed through one overriding theme. Read the planet-by-planet and aspect chapters as a chorus rather than a single lead line.</p>
+      <p>No one shape dominates your chart: no three-or-more planets piled into a single sign, no closed loop of easy angles, no locked engine of tension. That is not a lack. It means your story is told across several placements of roughly equal voice, rather than routed through one overriding theme. Read the planet-by-planet and angle chapters as a chorus rather than a single lead line.</p>
       ${closing}`;
   }
   const enrich = ctx && ctx.pos && ctx.hMeaning;
@@ -227,7 +230,7 @@ export function chartPatternsChapter(patterns, ctx = null) {
         }
       }
     } else if (p.type === 'grandTrine') {
-      body += `<h3>Grand trine</h3><p>${p.planets.join(', ')} — ${p.note}</p>`;
+      body += `<h3>A closed loop of ease</h3><p>${p.planets.join(', ')} — ${p.note}</p>`;
     } else if (p.type === 'tSquare') {
       body += `<h3>T-square</h3><p>${p.note}</p>`;
     } else if (p.type === 'mutualReception') {
@@ -238,18 +241,30 @@ export function chartPatternsChapter(patterns, ctx = null) {
   return body;
 }
 
+/** What each angle DOES, in the reader's words. The trade names (sextile, trine)
+ *  tell a first-time reader nothing, so they never appear in a heading, a table
+ *  cell or a link — only the behaviour does. */
+const ASPECT_PLAIN = {
+  Conjunction: 'Fused',
+  Opposition: 'Pulling apart',
+  Square: 'Under friction',
+  Trine: 'Easy flow',
+  Sextile: 'Quietly supportive',
+};
+export const plainAspect = (type) => ASPECT_PLAIN[type] || type;
+
 export function aspectsChapter(aspects, I, PNAME, PGL, limit = 10) {
   const top = aspects.slice(0, limit);
   let body = `
-  <p>Aspects are the angles planets make to one another — the wiring beneath temperament. Yours, listed by exactness:</p>
-  <table><tr><th>Bodies</th><th>Aspect</th><th>Orb</th></tr>
-  ${top.map((a) => `<tr><td><span class="glyph">${PGL[a.a]}</span> ${PNAME[a.a]} &nbsp;${a.gl}&nbsp; <span class="glyph">${PGL[a.b]}</span> ${PNAME[a.b]}</td><td>${a.type}</td><td>${a.orb.toFixed(1)}°</td></tr>`).join('')}
+  <p>These are the angles your planets make to one another — the wiring beneath temperament. Closest first: the smaller the gap from an exact angle, the louder it tends to run.</p>
+  <table><tr><th>Bodies</th><th>What it does</th><th>Off exact</th></tr>
+  ${top.map((a) => `<tr><td><span class="glyph">${PGL[a.a]}</span> ${PNAME[a.a]} &nbsp;${a.gl}&nbsp; <span class="glyph">${PGL[a.b]}</span> ${PNAME[a.b]}</td><td>${plainAspect(a.type)}</td><td>${a.orb.toFixed(1)}°</td></tr>`).join('')}
   </table>`;
   top.forEach((a, i) => {
     const prose = aspectProse(I, a.type, PNAME[a.a], PNAME[a.b], a.orb);
-    body += `<h3>${i + 1}. ${PNAME[a.a]} ${a.type.toLowerCase()} ${PNAME[a.b]}</h3><p>${prose}</p>`;
+    body += `<h3>${i + 1}. ${PNAME[a.a]} and ${PNAME[a.b]} — ${plainAspect(a.type).toLowerCase()}</h3><p>${prose}</p>`;
   });
-  body += `<p class="note">A flowing aspect (trine, sextile) is a gift to spend consciously. A hard one (square, opposition) is an engine — pressure applied where strength is meant to grow.</p>`;
+  body += `<p class="note">An easy angle is a gift to spend on purpose — it will never force itself on you. A tense one is an engine: pressure applied exactly where this chart is built to grow muscle. Neither is good or bad luck; they are different kinds of work.</p>`;
   return body;
 }
 
@@ -263,20 +278,20 @@ export function placementTable(BODIES, pos, PGL, PNAME, fmtFn, asc, mc) {
     <tr><th>Body</th><th>Position</th><th>House</th><th>Sign</th></tr>
     ${rows}
     <tr><td><span class="glyph">↑</span> Ascendant</td><td>${fmtFn(asc)}</td><td>1</td><td>—</td></tr>
-    <tr><td><span class="glyph">MC</span> Midheaven</td><td>${fmtFn(mc)}</td><td>10</td><td>—</td></tr>
+    <tr><td><span class="glyph">MC</span> Top of the chart</td><td>${fmtFn(mc)}</td><td>10</td><td>—</td></tr>
   </table>`;
 }
 
 export function methodologyPage(PERSON, order) {
   const timeNote = order.timeUnknown
-    ? `<p class="note"><strong>Birth time note:</strong> Your time was approximate or unknown. We cast a solar chart (noon local) for sign placements; houses, Ascendant, and Midheaven are illustrative only. For a full angular chart, a birth certificate time transforms this reading.</p>`
-    : `<p>House cusps use <strong>Placidus</strong> for the latitude of ${PERSON.place}. Ascendant and Midheaven are computed for the exact minute supplied.</p>`;
+    ? `<p class="note"><strong>Birth time note:</strong> Your time was approximate or unknown. We cast a solar chart (noon local) for sign placements; the houses, your rising sign and the top of your chart are illustrative only. Those three need a real birth time, so a time from your birth certificate would transform this reading.</p>`
+    : `<p>House cusps use <strong>Placidus</strong> for the latitude of ${PERSON.place}. Your rising sign and the top of your chart are worked out for the exact minute you gave us — we do not round it to the nearest hour.</p>`;
   return `
   <p class="eyebrow">How This Reading Was Made</p>
   <h1 style="font-size:22pt;">Measured sky,<br>not invented copy.</h1>
   <p class="lede">Every longitude in this document is computed from planetary theory (VSOP87 for the planets, ELP2000 for the Moon) for ${PERSON.date} at ${PERSON.time} above ${PERSON.place}. Interpretations are drawn from AstroPrecise's curated corpus — the same <code>interpretations.js</code> engine behind chart analysis, compatibility, and horoscope copy — stitched to <em>your</em> placements, not a generic sign column.</p>
   <h3>Your free instruments</h3>
-  <p>This reading deepens what you can explore free on the site: <strong>chart.html</strong> (your wheel), <strong>horoscope.html</strong> (daily sky against your Sun sign), <strong>transits.html</strong> (live weather on your natal map), <strong>compatibility.html</strong> (synastry), and <strong>ephemeris.html</strong> (raw positions). The PDF is the keepsake; the site stays your living observatory.</p>
+  <p>This reading deepens what you can explore free on the site: your <strong>birth chart wheel</strong> (chart.html), your <strong>daily horoscope</strong> read against your Sun sign (horoscope.html), the <strong>live sky</strong> moving over your birth chart (transits.html), <strong>compatibility</strong> between two charts (compatibility.html), and the <strong>raw sky tables</strong> if you want the numbers themselves (ephemeris.html). The PDF is the keepsake; the site stays your living observatory.</p>
   ${timeNote}
   <h3>What astrology is — here</h3>
   <p>This is symbolic pattern recognition, not fortune-telling. The chart describes qualities of time at your first breath: temperament, motivation, recurring themes. It does not diagnose, prescribe, or guarantee outcomes.</p>

@@ -186,12 +186,25 @@
     ============================================================ -->
     <section class="section" style="padding-top:var(--space-8);" aria-labelledby="form-heading">
       <div class="container">
+        <!-- ── No control in this form carries a `name`, and that is load-bearing.
+             A browser can only serialise NAMED controls, so this form cannot put
+             two people's birth dates, times and towns into a URL even if the
+             script never runs. Until 2026-08-09 all fourteen were named and the
+             submit button is type="submit", so with JavaScript off — or before
+             compatibility-page.js had finished loading — pressing it sent
+
+               GET /compatibility.html?person1-name=…&person1-date=…&person1-lat=…
+
+             for BOTH people, into the access log, the Referer of everything the
+             page loaded next, and the service worker's cache key. Every read is
+             by id (readPerson, fillPerson, initCompatAutocomplete), so nothing
+             depended on the names. ── -->
         <form id="compat-form" class="compat-form" style="min-height:1680px" novalidate aria-label="Compatibility calculation form">
           <h2 class="chart-form-panel__title" id="form-heading" style="text-align:center;margin-bottom:var(--space-8);">
             <div class="chart-form-panel__title-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-infinity"/></svg></div>
             Enter Both Birth Details
           </h2>
-          <p style="text-align:center;font-size:0.68rem;letter-spacing:0.04em;color:#8891AA;margin-bottom:var(--space-4);">Both people's birth data is processed only in your browser — nothing is uploaded.</p>
+          <p style="text-align:center;font-size:0.68rem;letter-spacing:0.04em;color:#8891AA;margin-bottom:var(--space-4);">Both people's birth details are worked out here in your browser — no request carries either birth date, time or town.</p>
 
           <div class="compat-form__grid">
             <!-- Person One card -->
@@ -203,27 +216,27 @@
               </h3>
               <div class="form-group">
                 <label for="person1-name" class="form-label">Name</label>
-                <input type="text" id="person1-name" name="person1-name" class="form-input" placeholder="Name (optional)" autocomplete="name" />
+                <input type="text" id="person1-name" class="form-input" placeholder="Name (optional)" autocomplete="name" />
               </div>
               <div class="form-group">
                 <label for="person1-date" class="form-label">Birth Date <span class="required" aria-hidden="true">*</span></label>
-                <input type="date" id="person1-date" name="person1-date" class="form-input" required aria-required="true" />
+                <input type="date" id="person1-date" class="form-input" required aria-required="true" />
               </div>
               <div class="form-group">
                 <label for="person1-time" class="form-label">Birth Time</label>
-                <input type="time" id="person1-time" name="person1-time" class="form-input" value="12:00" aria-describedby="p1-time-hint" />
+                <input type="time" id="person1-time" class="form-input" value="12:00" aria-describedby="p1-time-hint" />
                 <p class="form-hint" id="p1-time-hint">Affects rising sign accuracy.</p>
               </div>
               <div class="form-group" style="position:relative;">
                 <label for="person1-city" class="form-label">Birth City <span class="required" aria-hidden="true">*</span></label>
                 <div class="input-with-icon">
                   <span class="input-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span>
-                  <input type="text" id="person1-city" name="person1-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p1-city-dropdown" />
+                  <input type="text" id="person1-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p1-city-dropdown" />
                 </div>
                 <div class="autocomplete-dropdown" id="p1-city-dropdown" role="listbox" aria-label="City suggestions for person A"></div>
-                <input type="hidden" id="person1-lat" name="person1-lat" />
-                <input type="hidden" id="person1-lon" name="person1-lon" />
-                <input type="hidden" id="person1-tz"  name="person1-tz" />
+                <input type="hidden" id="person1-lat" />
+                <input type="hidden" id="person1-lon" />
+                <input type="hidden" id="person1-tz" />
               </div>
             </fieldset>
 
@@ -243,27 +256,27 @@
               </h3>
               <div class="form-group">
                 <label for="person2-name" class="form-label">Name</label>
-                <input type="text" id="person2-name" name="person2-name" class="form-input" placeholder="Name (optional)" autocomplete="name" />
+                <input type="text" id="person2-name" class="form-input" placeholder="Name (optional)" autocomplete="name" />
               </div>
               <div class="form-group">
                 <label for="person2-date" class="form-label">Birth Date <span class="required" aria-hidden="true">*</span></label>
-                <input type="date" id="person2-date" name="person2-date" class="form-input" required aria-required="true" />
+                <input type="date" id="person2-date" class="form-input" required aria-required="true" />
               </div>
               <div class="form-group">
                 <label for="person2-time" class="form-label">Birth Time</label>
-                <input type="time" id="person2-time" name="person2-time" class="form-input" value="12:00" aria-describedby="p2-time-hint" />
+                <input type="time" id="person2-time" class="form-input" value="12:00" aria-describedby="p2-time-hint" />
                 <p class="form-hint" id="p2-time-hint">Affects rising sign accuracy.</p>
               </div>
               <div class="form-group" style="position:relative;">
                 <label for="person2-city" class="form-label">Birth City <span class="required" aria-hidden="true">*</span></label>
                 <div class="input-with-icon">
                   <span class="input-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span>
-                  <input type="text" id="person2-city" name="person2-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p2-city-dropdown" />
+                  <input type="text" id="person2-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p2-city-dropdown" />
                 </div>
                 <div class="autocomplete-dropdown" id="p2-city-dropdown" role="listbox" aria-label="City suggestions for person B"></div>
-                <input type="hidden" id="person2-lat" name="person2-lat" />
-                <input type="hidden" id="person2-lon" name="person2-lon" />
-                <input type="hidden" id="person2-tz"  name="person2-tz" />
+                <input type="hidden" id="person2-lat" />
+                <input type="hidden" id="person2-lon" />
+                <input type="hidden" id="person2-tz" />
               </div>
             </fieldset>
           </div><!-- /.compat-form__grid -->

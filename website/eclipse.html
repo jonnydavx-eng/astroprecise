@@ -17,7 +17,7 @@
 <meta name="twitter:image" content="https://astroprecise.app/img/eclipse-og.png">
 <link rel="canonical" href="https://astroprecise.app/eclipse.html">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Event","name":"Total Solar Eclipse of 12 August 2026 (UK: deep partial, 88–96%)","description":"Total solar eclipse crossing Iceland and northern Spain. Britain never reaches totality — it sees a deep partial of 88–96%, the deepest over southern Britain since 1999 (March 2015 was deeper in Scotland). The Moon first touches the Sun between 18:08 and 18:17 BST; maximum is about 19:05 BST in Edinburgh, 19:12 in London and 19:16 in Truro; the Sun is clear again by about 20:10 BST, well before sunset. Greatest eclipse worldwide is 17:46 TD (18:46 BST), 45 km off western Iceland — a different moment from the UK maximum. The Perseid meteor shower peaks the same night.","image":["https://astroprecise.app/img/eclipse-og.png"],"startDate":"2026-08-12T18:08:00+01:00","endDate":"2026-08-12T20:10:00+01:00","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/MixedEventAttendanceMode","location":{"@type":"Place","name":"United Kingdom (visible nationwide, weather permitting)","address":{"@type":"PostalAddress","addressCountry":"GB"}},"organizer":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"},"offers":{"@type":"Offer","url":"https://astroprecise.app/eclipse.html","price":"0","priceCurrency":"GBP","availability":"https://schema.org/InStock","description":"Free: compute your exact eclipse contact in your browser."}}
+{"@context":"https://schema.org","@type":"Event","name":"Total Solar Eclipse of 12 August 2026 (UK: deep partial, 88–96%)","description":"Total solar eclipse crossing Iceland and northern Spain. Britain never reaches totality — it sees a deep partial of 88–96%, the deepest over southern Britain since 1999 (March 2015 was deeper in Scotland). The Moon first touches the Sun between 18:08 and 18:17 BST; maximum is about 19:05 BST in Edinburgh, 19:12 in London and 19:16 in Truro; the Sun is clear again by about 20:10 BST, well before sunset. Greatest eclipse worldwide is 18:46 BST (17:46 UT), 45 km off western Iceland — a different moment from the UK maximum. The Perseid meteor shower peaks the same night.","image":["https://astroprecise.app/img/eclipse-og.png"],"startDate":"2026-08-12T18:08:00+01:00","endDate":"2026-08-12T20:10:00+01:00","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/MixedEventAttendanceMode","location":{"@type":"Place","name":"United Kingdom (visible nationwide, weather permitting)","address":{"@type":"PostalAddress","addressCountry":"GB"}},"organizer":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"},"offers":{"@type":"Offer","url":"https://astroprecise.app/eclipse.html","price":"0","priceCurrency":"GBP","availability":"https://schema.org/InStock","description":"Free: compute your exact eclipse contact in your browser."}}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What time is the solar eclipse on 12 August 2026 in the UK?","acceptedAnswer":{"@type":"Answer","text":"The Moon first touches the Sun between 18:08 and 18:17 BST depending where you are. Maximum is about 19:05 BST in Edinburgh, 19:12 BST in London and 19:16 BST in Truro. Last contact is around 20:10 BST — the eclipse is over before the Sun sets anywhere in Britain (sunset is about 20:22 in Dover, 20:29 in London and 20:46 in Penzance)."}},{"@type":"Question","name":"How much of the Sun will be covered in the UK?","acceptedAnswer":{"@type":"Answer","text":"Between 88% and 96%, depending where you stand — about 90% in London and roughly 95% in the far south-west. That makes it the deepest eclipse over southern Britain since 1999, though March 2015 was deeper in Scotland. Britain never reaches totality: that falls only along a track crossing Iceland and northern Spain."}},{"@type":"Question","name":"Is it safe to look at the eclipse?","acceptedAnswer":{"@type":"Answer","text":"Not at any point, anywhere in Britain. Even at 96% coverage the remaining sliver of Sun is dangerously bright, and because Britain never reaches totality there is no moment when it is safe to take your glasses off. Wear ISO 12312-2 certified eclipse glasses for the whole eclipse, or use a pinhole projector, or simply watch the light change around you."}},{"@type":"Question","name":"What else happens that night?","acceptedAnswer":{"@type":"Answer","text":"The Perseid meteor shower peaks the same night of 12–13 August 2026 under dark skies after the eclipse — up to around 100 meteors an hour after midnight."}}]}
@@ -304,16 +304,36 @@ const $ = (id) => document.getElementById(id);
 let templates = null, lastNatal = null, lastReading = null;
 fetch('./js/reading-templates.json').then((r) => r.json()).then((t) => { templates = t; });
 
-// Eclipse point: greatest eclipse 12 Aug 2026 ≈ 17:46 TD (= 18:46 BST), 45 km off
-// western Iceland. TD−UT is ~69 s in 2026, which moves the Sun ~3″ — below the
-// arcminute we quote, so 17:46 is used directly as UT here. Longitude computed live.
+// Greatest eclipse, 12 Aug 2026, 45 km off western Iceland. The same instant is
+// used for two different things here and they need different care — hence the
+// length of this note.
+//
+// 1. AS A CLOCK TIME (printed to the minute, so the 69 s matters).
+//    17:47:06 TT is the instant of greatest eclipse — NASA/GSFC Besselian
+//    elements for 2026 Aug 12. ΔT (TT−UT1) in mid-2026 is 69.1 s, from the
+//    USNO/IERS long-term prediction file (2026.50 = 69.11 s, 2026.75 = 69.09 s).
+//    So UT = 17:47:06 − 69.1 s = 17:45:57, which is 18:45:57 BST → 18:46 BST.
+//    This page used to print "17:46 TD". That was the UT figure wearing the
+//    wrong label: 17:46 is UT, 17:47 is TT. The BST minute was right by luck.
+//    (NASA's own page says 17:45:51 UT because it still carries ΔT = 75.4 s,
+//    predicted in 2006 — the Earth then sped up instead of slowing. 17:45:51
+//    and 17:45:57 both round to 18:46 BST, so the printed minute is safe
+//    against that whole disagreement.)
+//
+// 2. AS AN INPUT TO THE SERIES (printed to the minute of arc, so it does not).
+//    69 s moves the Sun about 3 seconds of arc — far below the precision we
+//    print. 17:46 flat is fed in below and the answer is 20°02′ Leo either way.
+//    Do not "correct" this argument to match the clock time above: they are
+//    answering different questions, and the two only look like one number.
 const jdEcl = E.julianDay(2026, 8, 12, 17, 46, 0);
 const eclipseLon = E.sunPosition(jdEcl).lon;
 const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-$('eclipsePoint').textContent = `ECLIPSE POINT: ${fmtDeg(eclipseLon, SIGNS).toUpperCase()} · GREATEST ECLIPSE 17:46 TD ≈ 18:46 BST · MEEUS CH.25`;
+$('eclipsePoint').textContent = `ECLIPSE POINT: ${fmtDeg(eclipseLon, SIGNS).toUpperCase()} · GREATEST ECLIPSE 18:46 BST (17:46 UT) · MEEUS CH.25`;
 
 function tickCountdown() {
-  const ms = Date.UTC(2026, 7, 12, 17, 46) - Date.now();
+  // 17:45:57 UT — see the ΔT note above. Seconds are carried so the target is
+  // the moment we print, not a rounded stand-in for it.
+  const ms = Date.UTC(2026, 7, 12, 17, 45, 57) - Date.now();
   if (ms <= 0) { $('countdown').textContent = 'THE ECLIPSE HAS PASSED — THE READING STILL HOLDS'; return; }
   const d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), m = Math.floor(ms % 3600000 / 60000);
   $('countdown').textContent = `T−${d}D ${String(h).padStart(2,'0')}H ${String(m).padStart(2,'0')}M TO GREATEST ECLIPSE (18:46 BST, OFF ICELAND)`;
