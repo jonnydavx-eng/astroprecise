@@ -36,7 +36,7 @@
   // chain. Publish it before loading orrery-loader.js so that loader imports
   // orrery-webgl.js with the same cache-safe version instead of its old fallback.
   var ADAPTER_V = new URL(ADAPTER_URL, document.baseURI).searchParams.get('v');
-  var ASSET_V = String(ADAPTER_V || window.AP_ASSET_V || '817');
+  var ASSET_V = String(ADAPTER_V || window.AP_ASSET_V || '823');
   window.AP_ASSET_V = ASSET_V;
 
   function assetUrl(name, extra) {
@@ -644,9 +644,9 @@
       };
 
       /* ── eclipse: setEclipse / getEclipse ──
-       * The engine's eclipseDim is internal and date-driven (Sun–Moon separation
-       * < 2.2°); it is not reachable from outside. Approximation, by design:
-       * toneMappingExposure via setChapterExposure + an adapter-owned veil. */
+       * Orrery3D owns the lunar silhouette and corona-forward treatment. The
+       * adapter supplies the eased public contract and a restrained atmosphere
+       * veil; canvas fallback keeps the exposure-only approximation. */
       C.prototype.setEclipse = function (k, instant) {
         this._eclipseTarget = Math.max(0, Math.min(1, +k || 0));
         var self = this;
@@ -685,20 +685,33 @@
             'background:radial-gradient(ellipse at 50% 58%,rgba(1,2,6,0) 26%,rgba(1,2,6,.55) 78%,rgba(0,1,4,.8) 100%),linear-gradient(rgba(2,3,9,.38),rgba(2,3,9,.38))';
           this.appendChild(v);
         }
-        this._veil.style.opacity = String(k);
         var O = this._engine;
-        if (this._ready && O && typeof O.setChapterExposure === 'function' && O.isWebGL !== false) {
+        var nativeDriven = false;
+        if (this._ready && O && typeof O.setEclipse === 'function' && O.isWebGL !== false) {
+          try { O.setEclipse(k, true); nativeDriven = true; } catch (e0) {}
+        }
+        this._veil.style.opacity = String(k * (nativeDriven ? 0.38 : 0.72));
+        if (!nativeDriven && this._ready && O && typeof O.setChapterExposure === 'function' && O.isWebGL !== false) {
           try {
             if (k > 0) { O.setChapterExposure(1.10 * (1 - k * 0.72)); this._exposureDriven = true; }
             else if (this._exposureDriven) { O.setChapterExposure(1.10); this._exposureDriven = false; }
-          } catch (e) {}
+          } catch (e1) {}
+        } else if (nativeDriven && this._exposureDriven) {
+          try { O.setChapterExposure(1.10); } catch (e2) {}
+          this._exposureDriven = false;
         }
       };
-      C.prototype.getEclipse = function () { return this._eclipseK || 0; };
+      C.prototype.getEclipse = function () {
+        var O = this._engine;
+        if (this._ready && O && typeof O.getEclipse === 'function' && O.isWebGL !== false) {
+          try { return O.getEclipse(); } catch (e) {}
+        }
+        return this._eclipseK || 0;
+      };
 
       /* ── natal markers — minimal zodiac-ring DOM overlay ──
-       * The engine has no natal-marker API (verified: eclipseDim/uEclipse are
-       * internal; no marker support). The adapter draws the ring itself. */
+       * The engine has no natal-marker API (the native eclipse API is separate;
+       * no marker support exists). The adapter draws the ring itself. */
       C.prototype.setNatal = function (list) {
         this._natalList = list || null;
         this._renderNatal();

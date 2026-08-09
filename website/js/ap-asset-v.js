@@ -1,6 +1,6 @@
 /** Single cache-bust tip for injectors — keep in sync with website/sw.js `const V`. */
 (function (g) {
-g.AP_ASSET_V = '818';
+g.AP_ASSET_V = '823';
 })(typeof window !== 'undefined' ? window : globalThis);
 
 

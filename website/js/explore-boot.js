@@ -20,7 +20,13 @@
  */
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var V = String(window.AP_ASSET_V || '771');
+  var V = '823';
+  try {
+    var ownScript = document.currentScript;
+    var ownVersion = ownScript && new URL(ownScript.src, document.baseURI).searchParams.get('v');
+    V = String(ownVersion || window.AP_ASSET_V || V);
+  } catch (e) { V = String(window.AP_ASSET_V || V); }
+  window.AP_ASSET_V = V;
 
   var wrap = document.getElementById("apAwardOrreryWrap");
   var fallback = document.getElementById("apHeroWheelFallback");

@@ -658,7 +658,13 @@ const FinishShader = {
   let preloaderComets = null;
   let saturnRingMesh = null, saturnShadowBand = null;
   let retroTick = 0;
-  let eclipseDim = 0; // 0 = none, 1 = full eclipse dimming
+  let eclipseDim = 0; // effective 0..1 eclipse treatment
+  let eclipseAutoDim = 0; // date-driven Sun/Moon conjunction signal
+  let eclipseOverride = 0; // campaign/API override, combined with auto geometry
+  let sunEclipseOcculter = null;
+  const eclipseSunPos = new THREE.Vector3();
+  const eclipseToCamera = new THREE.Vector3();
+  const eclipseCameraRight = new THREE.Vector3();
 
   // Phase 3 galaxy layers (L3–L6)
   let galaxyGroup = null, milkyWayGroup = null;
@@ -4243,6 +4249,27 @@ const FinishShader = {
     updateScaleVisualsContinuous(level | 0);
   }
 
+  function commitEclipseDim(source) {
+    const next = Math.max(eclipseAutoDim, eclipseOverride);
+    if (Math.abs(next - eclipseDim) < 0.0001) return eclipseDim;
+    eclipseDim = next;
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-eclipse-change', {
+        detail: { intensity: eclipseDim, source: source || 'geometry' },
+      }));
+    } catch (e) { /* optional */ }
+    return eclipseDim;
+  }
+
+  function setEclipse(k) {
+    eclipseOverride = Math.max(0, Math.min(1, Number(k) || 0));
+    commitEclipseDim('api');
+    applyEclipseVisuals();
+    return eclipseDim;
+  }
+
+  function getEclipse() { return eclipseDim; }
+
   function updateEclipseDim(jd) {
     try {
       const E = window.AstroEphemeris;
@@ -4251,8 +4278,9 @@ const FinishShader = {
       let sep = Math.abs(((moonLon - sunLon + 540) % 360) - 180);
       if (sep > 180) sep = 360 - sep;
       // dim when Sun–Moon alignment is tight (solar eclipse geometry)
-      eclipseDim = sep < 2.2 ? Math.pow(1 - sep / 2.2, 1.6) : 0;
-    } catch (e) { eclipseDim = 0; }
+      eclipseAutoDim = sep < 2.2 ? Math.pow(1 - sep / 2.2, 1.6) : 0;
+    } catch (e) { eclipseAutoDim = 0; }
+    commitEclipseDim('geometry');
   }
 
   function applyEclipseVisuals() {
@@ -4274,6 +4302,24 @@ const FinishShader = {
     }
     if (sunCoronaMat && sunCoronaMat.uniforms) {
       sunCoronaMat.uniforms.uEclipse.value = eclipseDim;
+    }
+    if (sunEclipseOcculter && sunMesh && camera) {
+      const visible = eclipseDim > 0.01 && sunMesh.visible !== false;
+      sunEclipseOcculter.visible = visible;
+      if (visible) {
+        sunMesh.getWorldPosition(eclipseSunPos);
+        eclipseToCamera.copy(camera.position).sub(eclipseSunPos).normalize();
+        camera.updateMatrixWorld();
+        eclipseCameraRight.setFromMatrixColumn(camera.matrixWorld, 0).normalize();
+        const offset = SUN_SIZE * (0.95 * (1 - eclipseDim) + 0.04);
+        sunEclipseOcculter.position.copy(eclipseSunPos)
+          .addScaledVector(eclipseCameraRight, offset)
+          .addScaledVector(eclipseToCamera, SUN_SIZE * 0.035);
+        sunEclipseOcculter.quaternion.copy(camera.quaternion);
+        const radius = SUN_SIZE * (0.94 + eclipseDim * 0.06);
+        sunEclipseOcculter.scale.set(radius, radius, 1);
+        sunEclipseOcculter.material.opacity = Math.min(1, eclipseDim * 1.12);
+      }
     }
   }
 
@@ -4655,12 +4701,13 @@ const FinishShader = {
           float structure = streamers * 1.2 + lobes + turb * 0.30;
           // Corona ALPHA (opacity) — raised so the golden crown has real PRESENCE against
           // the transparent void (it had faded to almost nothing). Higher floor + structure.
-          float a = fresnel * (0.85 + structure * 1.25) * (1.0 - uEclipse * 0.75);
+          float eclipseCrown = mix(1.0, 2.35, uEclipse);
+          float a = fresnel * (0.85 + structure * 1.25) * eclipseCrown;
           // Prominences live in the VISIBLE outer annulus (the inner shell is occluded by
           // the opaque disc), distinguished from the golden streamers by high local alpha,
           // narrow angle, and H-alpha pink-red — discrete eruptions arcing off the limb.
           float promBand = pow(rim, 0.9) * fade;
-          float promA = prom * promBand * (1.0 - uEclipse * 0.75);
+          float promA = prom * promBand * mix(1.0, 2.8, uEclipse);
           a += promA * 3.0;                                  // arcs stand off the limb
           a = clamp(a, 0.0, 0.96);
           // COLOUR — keep it SATURATED gold (do not over-drive to white). A colour-
@@ -4668,6 +4715,7 @@ const FinishShader = {
           // hue AND a brightness lift so they read as warm arcs, not just tinted haze.
           vec3 col = mix(vec3(1.0, 0.58, 0.16), vec3(1.0, 0.82, 0.46), turb);
           col = mix(col, vec3(1.0, 0.88, 0.66), clamp(streamers * 0.8, 0.0, 1.0));
+          col = mix(col, vec3(0.98, 0.96, 0.90), uEclipse * 0.58);
           // Prominences WIN locally: where an arc sits (promDom high) the gold streamer
           // colour is replaced by warm H-alpha pink-red AND brightened, so the additive
           // gold no longer swallows them. Dominance keys off the arc strength directly.
@@ -5400,6 +5448,22 @@ const FinishShader = {
       : (perfTier === 'high' ? 112 : perfTier === 'mid' ? 84 : 56);
     sunMesh = new THREE.Mesh(new THREE.SphereGeometry(SUN_SIZE, sunSegs, sunSegs), sunMaterial);
     scene.add(sunMesh);
+    if (!sunEclipseOcculter) {
+      sunEclipseOcculter = new THREE.Mesh(
+        new THREE.CircleGeometry(1, perfTier === 'low' ? 48 : 72),
+        new THREE.MeshBasicMaterial({
+          color: 0x010207,
+          transparent: true,
+          opacity: 0,
+          depthTest: false,
+          depthWrite: false,
+          side: THREE.DoubleSide,
+        }),
+      );
+      sunEclipseOcculter.visible = false;
+      sunEclipseOcculter.renderOrder = 20;
+      scene.add(sunEclipseOcculter);
+    }
     sunVisualsMinimal = !!minimal;
     if (!minimal) {
       buildSunCoronaShell();
@@ -9356,6 +9420,10 @@ const FinishShader = {
     renderer = null;
     canvas = null;
     wrap = null;
+    sunEclipseOcculter = null;
+    eclipseDim = 0;
+    eclipseAutoDim = 0;
+    eclipseOverride = 0;
     webglBooted = false;
     running = false;
     inView = false;
@@ -9364,6 +9432,7 @@ const FinishShader = {
 
   window.Orrery3D = {
     init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays, getDayOffset, setTimelineDays, snapToNow,
+    setEclipse, getEclipse,
     goTo: setDate,
     get onScrub() { return onScrub; },
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },

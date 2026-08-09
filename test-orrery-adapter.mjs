@@ -24,6 +24,8 @@ const ok = (m) => console.log('  ok ' + m);
 const adapterPath = join(root, 'js', 'void-orrery-adapter.js');
 if (!existsSync(adapterPath)) { fail('js/void-orrery-adapter.js missing'); process.exit(1); }
 const A = readFileSync(adapterPath, 'utf8');
+const enginePath = join(root, 'js', 'orrery-webgl.js');
+const W = readFileSync(enginePath, 'utf8');
 
 /* ── 1. element registration + public surface ── */
 if (!/customElements\.define\(['"]void-orrery['"]/.test(A)) fail('adapter never registers <void-orrery>');
@@ -34,6 +36,19 @@ for (const name of ['flyTo', 'flyScale', 'setNatal', 'setJD', 'setLive', 'getJD'
   if (!re.test(A)) fail(`adapter missing prototype.${name}`);
 }
 ok('all 11 consumer call-names present on the element prototype');
+
+for (const probe of [
+  'function setEclipse(k)',
+  'function getEclipse()',
+  'sunEclipseOcculter',
+  'float eclipseCrown = mix(1.0, 2.35, uEclipse)',
+  'setEclipse, getEclipse',
+]) {
+  if (!W.includes(probe)) fail('native Orrery3D eclipse probe missing: ' + probe);
+}
+if (!A.includes('O.setEclipse(k, true)')) fail('adapter does not forward eclipse intensity to native Orrery3D');
+if (W.includes('(1.0 - uEclipse * 0.75)')) fail('native corona still dims during eclipse instead of strengthening');
+ok('native eclipse API, lunar silhouette and corona-forward shader present');
 
 /* ── 2. events + scale names ── */
 for (const ev of ['planetfocus', 'scalechange']) {
@@ -60,6 +75,32 @@ for (const p of pages) {
   if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(html)) fail(`${p} still loads js/orrery.js directly`);
 }
 ok('all six former orrery.js pages load the adapter');
+
+const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+const assetVersion = (sw.match(/const V = ["']ap-v(\d+)["']/) || [])[1];
+if (!assetVersion) fail('service-worker asset version missing');
+for (const p of pages) {
+  const html = readFileSync(join(root, p), 'utf8');
+  if (assetVersion && !html.includes('js/void-orrery-adapter.js?v=' + assetVersion)) {
+    fail(p + ' adapter query does not match service-worker ' + assetVersion);
+  }
+}
+const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
+if (assetVersion && !exploreHtml.includes('js/explore-boot.js?v=' + assetVersion)) {
+  fail('explore.html boot query does not match service-worker ' + assetVersion);
+}
+const eclipseHtml = readFileSync(join(root, 'eclipse.html'), 'utf8');
+for (const probe of [
+  'start-focus="sun"',
+  'ECLIPSE_JD = 2461265.2402430554',
+  "o.flyTo('sun')",
+  'o.setEclipse(0.91, prm)',
+  '91% CORONA STUDY',
+]) {
+  if (!eclipseHtml.includes(probe)) fail('eclipse campaign wiring missing: ' + probe);
+}
+ok('all six former orrery.js pages and Explore use the current delivery identity');
+ok('eclipse panel fixes the exact instant, Sun focus and 91% dramatic treatment');
 for (const p of ['index.html', 'deep-time.html', 'eclipse.html']) {
   const html = readFileSync(join(root, p), 'utf8');
   if (!/type=["']importmap["']/.test(html)) fail(`${p} missing the three import map`);
