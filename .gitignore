@@ -1,6 +1,15 @@
-# Local agent coordination — machine-specific, stays out of the public repo
+# Local agent coordination — machine-specific, stays out of the public repo.
+# THIS REPO IS PUBLIC (verified 2026-08-09: anonymous api.github.com returns 200).
+# Session docs carry internal paths, unfixed-defect lists and owner to-dos. They
+# stay on disk for the agents and reach the mini via OneDrive; they do not belong
+# on github.com. Five were tracked and pushed before this was noticed - see the
+# handoff for what is still in history.
 AGENT-HANDOFF.md
 OVERHAUL-PLAN.md
+HANDOFF-2026-*.md
+BUILD-BRIEF-*.md
+REVIEW-2026-*.md
+SHIP-PLAN-2026-*.md
 
 # Secrets (Cloudflare API token, etc.)
 secrets/.env.local
