@@ -454,10 +454,21 @@
     if (form) {
       form.addEventListener('submit', function (e) {
         e.preventDefault();
+        // Until 2026-08-09 this navigated to chart.html?date=<birth date>, so
+        // the visitor's birth date went out in the request line and into the
+        // host's access logs. chart.html prefers a sessionStorage handoff —
+        // same tab, same origin, never transmitted — and falls back to a
+        // fragment, which is not part of the request line either.
         var dateInput = document.getElementById('hero-birthdate');
         var dateVal = dateInput ? dateInput.value : '';
         var url = 'chart.html';
-        if (dateVal) url += '?date=' + encodeURIComponent(dateVal);
+        if (dateVal) {
+          try {
+            sessionStorage.setItem('ap-chart-handoff', JSON.stringify({ date: dateVal, time: '', city: '' }));
+          } catch (eS) {
+            url += '#date=' + encodeURIComponent(dateVal);
+          }
+        }
         window.location.href = url;
       });
     }

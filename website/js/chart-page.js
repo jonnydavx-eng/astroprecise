@@ -553,7 +553,11 @@
        1. sessionStorage['ap-chart-restore'] — what the saved-chart galleries
           (charts.html, profile.html) now hand over. Same tab, same origin,
           never transmitted. Read once and deleted.
-       2. location.search — LEGACY. A query string reaches the origin and the
+       2. location.hash — a chart somebody deliberately SHARED with this person
+          (APChartShare.buildShareUrl). Sharing a chart is the feature; sending
+          it to a server on the way is not, and a fragment is never part of the
+          request line or the Referer. Stripped from the address bar on use.
+       3. location.search — LEGACY. A query string reaches the origin and the
           CDN access logs and becomes a Cache Storage key, which is why nothing
           mints one now. Reading a link the visitor already holds is harmless;
           creating it was the harm. Do not reintroduce a query-string handoff. */
@@ -565,6 +569,14 @@
         return { q: new URLSearchParams(raw), fromUrl: false };
       }
     } catch { /* storage blocked or malformed — fall through */ }
+
+    if (location.hash && location.hash.length > 1) {
+      try {
+        const h = new URLSearchParams(location.hash.slice(1));
+        if (h.get('d') && h.get('lat')) return { q: h, fromUrl: true };
+      } catch { /* malformed fragment — fall through */ }
+    }
+
     return { q: new URLSearchParams(location.search), fromUrl: true };
   }
 

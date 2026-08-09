@@ -51,9 +51,16 @@ window.APChartShare = (function () {
       if (p[k] !== '' && p[k] != null) q.set(k, p[k]);
     });
     var base = opts.interactive !== false ? 'chart.html' : 'chart-view.html';
-    var path = (location.pathname || '').replace(/[^/]+$/, base);
-    if (!/\/chart/.test(path)) path = base;
-    return location.origin + location.pathname.replace(/[^/]+$/, '') + base + '?' + q.toString();
+    /* After the '#', not the '?'. This link is meant to be shared — that is the
+       whole feature — but until 2026-08-09 it was a query, so the moment the
+       recipient opened it their friend's birth date, time, town and coordinates
+       went out in the request line and into the origin's and the CDN's access
+       logs, into the Referer of everything that page then loaded, and into the
+       service worker's cache key. A fragment is never sent to a server. Same
+       fields, same readers (chart-view.html and chart-page.js restoreFromURL
+       both read the fragment first and the query as legacy), one character
+       different. */
+    return location.origin + location.pathname.replace(/[^/]+$/, '') + base + '#' + q.toString();
   }
 
   function planetSign(chart, name) {

@@ -1485,8 +1485,32 @@
 
     const link = document.getElementById('natal-lifepath-link');
     if (link) {
-      link.href = 'lifepath.html?date=' + event_.dt.split('T')[0];
+      /* Until 2026-08-09 this was href="lifepath.html?date=<birth date>", so
+         following it sent the visitor's birth date in the request line, into
+         the host's access logs and into the Referer of everything lifepath.html
+         loaded next. The date now travels in sessionStorage — same tab, same
+         origin, never transmitted — stashed on the click so it is always the
+         current one, with a fragment fallback where storage is blocked (a
+         fragment is not part of the request line either). */
+      const lpDate = event_.dt.split('T')[0];
+      link.href = 'lifepath.html';
       link.textContent = 'Life Path ' + lp + ' — ' + title + ' →';
+      if (!link.dataset.apLpBound) {
+        link.dataset.apLpBound = '1';
+        const stashLp = () => {
+          try {
+            sessionStorage.setItem('ap-lifepath-handoff', JSON.stringify({
+              date: link.dataset.apLpDate || '', ts: Date.now(),
+            }));
+            link.href = 'lifepath.html';
+          } catch (e) {
+            link.href = 'lifepath.html#date=' + encodeURIComponent(link.dataset.apLpDate || '');
+          }
+        };
+        link.addEventListener('click', stashLp);
+        link.addEventListener('auxclick', stashLp);
+      }
+      link.dataset.apLpDate = lpDate;
     }
 
     const items = [];

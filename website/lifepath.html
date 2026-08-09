@@ -769,7 +769,13 @@
         + encodeURIComponent(opts.birthDate) + '">Birth chart for this date</a>');
     }
     if (opts.name) {
-      links.push(`<a class="lp-crosslink" href="name-numerology.html?name=${encodeURIComponent(opts.name)}">Name numerology breakdown</a>`);
+      // The ?name= is gone as of 2026-08-09. name-numerology.html has no query
+      // reader — grep it: no location.search, no URLSearchParams — so the name
+      // never prefilled anything. All it ever did was put the visitor's full
+      // name in the request line, in the host's access log, and in the Referer
+      // of every asset that page then loaded, on a page whose own form says
+      // "Your name never leaves your browser". Nothing is lost by dropping it.
+      links.push('<a class="lp-crosslink" href="name-numerology.html">Name numerology breakdown</a>');
     }
     links.push('<a class="lp-crosslink" href="ephemeris.html">Sky on your birth day</a>');
     links.push('<a class="lp-crosslink" href="compatibility.html">Compare with a partner</a>');
@@ -1309,7 +1315,36 @@
       }
     }
 
+    /* Where a carried-over birth date can come from, best first:
+         1. sessionStorage['ap-lifepath-handoff'] — what ephemeris.html's natal
+            signature link writes since 2026-08-09. Same tab, same origin, never
+            transmitted; read once and deleted.
+         2. The fragment — the fallback used when storage is blocked. Not part
+            of the request line, not sent in a Referer.
+         3. LEGACY ONLY: ?date=&name= — links minted before 2026-08-09. Honoured,
+            then taken out of the address bar. Reading a query is safe; creating
+            one put a birth date in the host's access log. */
     const params = new URLSearchParams(location.search);
+    let lpFromUrl = params.has('date') || params.has('name');
+    if (!lpFromUrl && location.hash && location.hash.length > 1) {
+      try {
+        const lpHash = new URLSearchParams(location.hash.slice(1));
+        if (lpHash.get('date')) { params.set('date', lpHash.get('date')); lpFromUrl = true; }
+      } catch (eLH) { /* malformed fragment */ }
+    }
+    if (!params.get('date')) {
+      try {
+        const lpRaw = sessionStorage.getItem('ap-lifepath-handoff');
+        if (lpRaw) {
+          sessionStorage.removeItem('ap-lifepath-handoff');
+          const lpH = JSON.parse(lpRaw);
+          if (lpH && lpH.date && (!lpH.ts || Date.now() - lpH.ts < 30 * 60 * 1000)) params.set('date', lpH.date);
+        }
+      } catch (eLS) { /* private mode — the visitor types the date */ }
+    }
+    if (lpFromUrl) {
+      try { history.replaceState(null, '', location.pathname); } catch (eLR) {}
+    }
     const pd = params.get('date');
     const pn = params.get('name');
 

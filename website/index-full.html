@@ -278,7 +278,7 @@
           </p>
 
           <p class="hero__trust hero__entrance hero__entrance--5" style="margin-bottom:var(--space-6);">
-            <a href="accuracy.html" style="color:inherit;text-decoration:none;">Arcminute precision</a>
+            <a href="accuracy.html" style="color:inherit;text-decoration:none;">Never rounded</a>
             <span class="hero__trust-dot" aria-hidden="true"></span>
             <span>Private · no account</span>
           </p>
@@ -517,7 +517,7 @@
             <h3 class="step-card__title">VSOP87 Computes Precise Positions</h3>
             <p class="step-card__text">
               Our VSOP87-derived astronomical engine computes every planet's position,
-              the Ascendant, Midheaven, and all twelve house cusps for the precise moment
+              your rising sign, the top of your chart, and all twelve house cusps for the precise moment
               and coordinates of your birth — instantly, entirely in your browser.
             </p>
           </div>
@@ -528,7 +528,7 @@
             <h3 class="step-card__title">Explore Your Complete Blueprint</h3>
             <p class="step-card__text">
               Navigate the full chart wheel, read interpretations for every placement,
-              examine house rulerships, measure aspect orbs, discover dominant elements,
+              examine house rulerships, see how close each angle runs to exact, discover dominant elements,
               and share or download your chart poster. Your cosmic map, complete.
             </p>
           </div>
@@ -559,7 +559,7 @@
             <span class="tool-card__icon" aria-hidden="true"></span>
             <p class="tool-card__label">Core Tool</p>
             <h3 class="tool-card__title">Birth Chart</h3>
-            <p class="tool-card__desc">Full natal chart with VSOP87 planetary positions, house cusps, all Ptolemaic aspects with orbs, and deep interpretations. Includes a downloadable poster at print resolution.</p>
+            <p class="tool-card__desc">Full natal chart with VSOP87 planetary positions, house cusps, every classical angle and how close it runs to exact, and deep interpretations. Includes a downloadable poster at print resolution.</p>
             <span class="tool-card__arrow" aria-hidden="true">Open chart calculator &rarr;</span>
           </a>
 
@@ -586,7 +586,7 @@
             <span class="tool-card__icon" aria-hidden="true"></span>
             <p class="tool-card__label">Synastry</p>
             <h3 class="tool-card__title">Compatibility</h3>
-            <p class="tool-card__desc">Two charts overlaid in synastry — inter-chart aspects with precise orbs, compatibility score, and shareable invite links so partners can calculate together.</p>
+            <p class="tool-card__desc">Two charts overlaid in synastry — every angle between them measured exactly, a compatibility score, and shareable invite links so partners can calculate together.</p>
             <span class="tool-card__arrow" aria-hidden="true">Compare charts &rarr;</span>
           </a>
 
@@ -1201,10 +1201,21 @@
       if (!form) return;
       form.addEventListener('submit', function (e) {
         e.preventDefault();
+        // Until 2026-08-09 this navigated to chart.html?date=<birth date>, so
+        // the visitor's birth date went out in the request line and into the
+        // host's access logs. chart.html prefers a sessionStorage handoff —
+        // same tab, same origin, never transmitted — and falls back to a
+        // fragment, which is not part of the request line either.
         var dateInput = document.getElementById('hero-birthdate');
         var dateVal   = dateInput ? dateInput.value : '';
         var url       = 'chart.html';
-        if (dateVal) url += '?date=' + encodeURIComponent(dateVal);
+        if (dateVal) {
+          try {
+            sessionStorage.setItem('ap-chart-handoff', JSON.stringify({ date: dateVal, time: '', city: '' }));
+          } catch (eS) {
+            url += '#date=' + encodeURIComponent(dateVal);
+          }
+        }
         window.location.href = url;
       });
     })();

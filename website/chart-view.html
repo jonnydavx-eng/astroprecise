@@ -91,10 +91,30 @@
 <script>
   (function () {
     'use strict';
-    var q = new URLSearchParams(location.search);
+    /* This page IS a shared chart — it has nothing without one. Since
+       2026-08-09 the share builder puts the record after the '#' instead of the
+       '?', so opening a shared chart no longer sends somebody's birth date,
+       time, town and coordinates to a server in the request line, into the
+       access log, or into the Referer of every asset this page loads next. The
+       query is still read, because links minted before that date are out there.
+       Read from the fragment first, fall back to the query. */
+    var q = null;
+    if (location.hash && location.hash.length > 1) {
+      try {
+        var h = new URLSearchParams(location.hash.slice(1));
+        if (h.get('d') && h.get('lat')) q = h;
+      } catch (eH) { /* malformed fragment */ }
+    }
+    var fromQuery = false;
+    if (!q) { q = new URLSearchParams(location.search); fromQuery = !!(q.get('d') && q.get('lat')); }
     if (!q.get('d') || !q.get('lat')) {
       document.getElementById('view-loading').textContent = 'No chart data in this link.';
       return;
+    }
+    if (fromQuery) {
+      // A legacy link has done its job. Do not leave someone else's birth
+      // record in the address bar to be screenshotted or passed on again.
+      try { history.replaceState(null, '', location.pathname + '#' + q.toString()); } catch (eS) {}
     }
 
     var name = q.get('n') || 'Birth Chart';
@@ -108,7 +128,9 @@
     meta += ' · ' + (q.get('hs') || 'equal') + ' house system';
     document.getElementById('view-meta').textContent = meta;
 
-    var fullLink = 'chart.html?' + q.toString();
+    // Fragment, not query — chart-page.js restoreFromURL reads it. Handing the
+    // record on in a query here would undo the fix one click later.
+    var fullLink = 'chart.html#' + q.toString();
     document.getElementById('view-full-link').href = fullLink;
 
     function civilToUT(y, m, d, hh, mm, zone) {

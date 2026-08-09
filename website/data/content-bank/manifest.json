@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "generated": "2026-08-09T03:34:16.387Z",
+  "generated": "2026-08-09T03:50:44.415Z",
   "engine": "VSOP87 solar-chart horoscope + interpretations.js corpus",
   "anchor": "Daily readings computed at 12:00 UT of each calendar date",
   "counts": {
-    "dailyReadings": 2256,
+    "dailyReadings": 2184,
     "monthlyReadings": 156,
     "planetInSign": 132,
     "houses": 12
   },
   "daily": {
-    "start": "2026-07-27",
+    "start": "2026-08-02",
     "end": "2027-01-30"
   },
   "monthly": {
