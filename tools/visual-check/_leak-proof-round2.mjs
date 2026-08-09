@@ -543,6 +543,208 @@ console.log('\n─── PART 2 · JavaScript ON · the features still work ─�
   await ctx.close();
 }
 
+/* ══ PART 3 — the stripped forms must still WORK with JavaScript on. ══════
+   Removing a `name` is only safe if nothing read the field by name. Three
+   shared readers did (app.js wireEmailForm/wireWaitlist via form.email,
+   horoscope-subscribe.js, shop-wallpaper-lead.js) and were changed to resolve
+   by type/id. This part proves each handler still receives what was typed. */
+console.log('\n─── PART 3 · JavaScript ON · the stripped forms still work ────');
+{
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  page.on('pageerror', e => console.log('    [pageerror] ' + e.message));
+
+  /* Submit an email form and assert the address reached captureEmail.
+     Probe the OUTCOME, not the function: app.js calls its module-local
+     captureEmail (wrapping the AstroApp export would observe nothing), and
+     every path through it appends to localStorage['ap_email_intent']. */
+  async function emailForm(label, url, fieldSel, formSel, bootScript) {
+    await page.goto(ORIGIN + url, { waitUntil: 'load' });
+    await page.waitForTimeout(2000);
+    if (bootScript) {
+      // Some capture panels are behind an accordion whose opening lazy-loads
+      // the handler. Load it directly — the reader is what is under test.
+      await page.evaluate(src => new Promise(res => {
+        if ([...document.scripts].some(x => (x.src || '').includes(src))) return res();
+        const el = document.createElement('script');
+        el.src = src; el.onload = res; el.onerror = res;
+        document.body.appendChild(el);
+      }), bootScript);
+      await page.waitForTimeout(1200);
+    }
+    await page.evaluate(() => { try { localStorage.removeItem('ap_email_intent'); } catch (e) {} });
+    const set = await page.evaluate(([sel, email]) => {
+      const el = document.querySelector(sel);
+      if (!el) return false;
+      el.value = email;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      return el.value === email;
+    }, [fieldSel, N.email]);
+    ok(`${label} · the email field took the value`, set === true);
+    await page.evaluate(sel => {
+      const f = document.querySelector(sel);
+      if (!f) return;
+      if (typeof f.requestSubmit === 'function') f.requestSubmit();
+      else f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }, formSel);
+    await page.waitForTimeout(1200);
+    const stored = await page.evaluate(() => {
+      try { return localStorage.getItem('ap_email_intent') || ''; } catch (e) { return '<blocked>'; }
+    });
+    ok(`${label} · the handler still reads the address after the name came off`,
+      typeof stored === 'string' && stored.includes(N.email), `ap_email_intent=${String(stored).slice(0, 160)}`);
+  }
+
+  const EMAIL_FORMS = [
+    ['horoscope subscribe', '/horoscope.html', '#hs-email', '#hs-form', 'js/horoscope-subscribe.js'],
+    ['eclipse notify', '/eclipse.html', '#eclipseEmail', '#emailForm', null],
+    ['links waitlist', '/links.html', '.cw-waitlist__form input[type=email]', '.cw-waitlist__form', null],
+    ['saturn-return email cta', '/saturn-return.html', '.ap-email-cta__form input[type=email]', '.ap-email-cta__form', null],
+    ['profile email cta', '/profile.html', '.ap-email-cta__form input[type=email]', '.ap-email-cta__form', null],
+    ['shop wallpaper lead', '/shop.html', '#shop-wallpaper-email', '#shop-wallpaper-form', null],
+  ];
+  for (const [label, url, fieldSel, formSel, boot] of EMAIL_FORMS) {
+    try { await emailForm(label, url, fieldSel, formSel, boot); }
+    catch (e) { ok(`${label} · drive completed`, false, String(e.message).slice(0, 120)); }
+  }
+
+  /* index.html #shopNotify and chart.html's wallpaper lead never touch
+     captureEmail, so ap_email_intent is the wrong probe for them. Each has its
+     own outcome to look at. */
+  {
+    // #shopNotify POSTs directly and reports on the page. Reading the field by
+    // id was always how it worked; the only change was removing name="email".
+    await page.goto(ORIGIN + '/index.html', { waitUntil: 'load' });
+    await page.waitForTimeout(1500);
+    await page.evaluate(email => {
+      const el = document.getElementById('shopNotifyEmail');
+      el.value = email;
+      const f = document.getElementById('shopNotify');
+      f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }, N.email);
+    await page.waitForTimeout(1500);
+    const msg = await page.locator('#shopNotifyMsg').innerText().catch(() => '');
+    ok('index shop notify · the address was accepted, not rejected as malformed',
+      msg.trim().length > 0 && !/DOESN.T LOOK LIKE AN EMAIL/i.test(msg), `msg="${msg.trim()}"`);
+  }
+  {
+    // chart.html's wallpaper form is only wired after a chart exists — cast one.
+    await page.goto(ORIGIN + '/chart.html', { waitUntil: 'load' });
+    await page.waitForTimeout(1500);
+    await page.evaluate(([n]) => {
+      const set = (id, v) => { const e = document.getElementById(id); if (e) { e.value = v; e.dispatchEvent(new Event('input', { bubbles: true })); } };
+      set('name-input', n.name); set('date-input', n.date); set('time-input', n.time);
+      set('city-input', n.town); set('lat-input', '53.5900'); set('lon-input', '-2.2200');
+      set('tz-input', 'Europe/London');
+      const acc = document.getElementById('time-accuracy-input'); if (acc) acc.value = 'exact';
+      document.getElementById('chart-form').requestSubmit();
+    }, [N]);
+    await page.waitForTimeout(6000);
+    await page.evaluate(() => { try { localStorage.removeItem('ap_email_intent'); } catch (e) {} });
+    await page.evaluate(email => {
+      const el = document.getElementById('wallpaper-lead-email');
+      if (el) el.value = email;
+      const f = document.getElementById('wallpaper-email-form');
+      if (f) f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }, N.email);
+    await page.waitForTimeout(1500);
+    const stored = await page.evaluate(() => {
+      try { return localStorage.getItem('ap_email_intent') || ''; } catch (e) { return ''; }
+    });
+    ok('chart wallpaper lead · the handler still reads the address after the name came off',
+      stored.includes(N.email), `ap_email_intent=${stored.slice(0, 160)}`);
+  }
+
+  // transits: the whole forecast must still compute from id-read fields
+  {
+    await page.goto(ORIGIN + '/transits.html', { waitUntil: 'load' });
+    await page.waitForTimeout(1500);
+    await page.evaluate(([n]) => {
+      const set = (id, v) => { const e = document.getElementById(id); if (e) e.value = v; };
+      set('natal-date-transit', n.date); set('natal-time-transit', n.time);
+      set('transit-city', n.town); set('transit-lat', '53.5900');
+      set('transit-lon', '-2.2200'); set('transit-tz', 'Europe/London');
+      const c = document.getElementById('transit-city'); if (c) c.dataset.tz = 'Europe/London';
+    }, [N]);
+    await page.evaluate(() => document.getElementById('transit-form').requestSubmit());
+    await page.waitForTimeout(6000);
+    const shown = await page.evaluate(() => {
+      const r = document.getElementById('transit-results') || document.querySelector('.transit-results');
+      return !!r && !r.hidden && !r.classList.contains('hidden');
+    });
+    ok('transits · still computes after the six names came off', shown);
+  }
+
+  // moonphase: both forms
+  {
+    await page.goto(ORIGIN + '/moonphase.html', { waitUntil: 'load' });
+    await page.waitForTimeout(1500);
+    await page.evaluate(d => { const e = document.getElementById('moonphase-date'); e.value = d; e.dispatchEvent(new Event('input', { bubbles: true })); }, N.date);
+    await page.evaluate(() => document.getElementById('moonphase-form').requestSubmit());
+    await page.waitForTimeout(1500);
+    const txt = await page.locator('body').innerText();
+    ok('moonphase · the date form still answers', /1901|Feb|February/i.test(txt));
+
+    await page.evaluate(() => {
+      const set = (id, v) => { const e = document.getElementById(id); if (e) e.value = v; };
+      set('mp-compat-name-a', 'Wibblenaut'); set('mp-compat-date-a', '1901-02-03');
+      set('mp-compat-name-b', 'Frobnicator'); set('mp-compat-date-b', '1911-12-13');
+    });
+    await page.evaluate(() => document.getElementById('moonphase-compat-form').requestSubmit());
+    await page.waitForTimeout(2000);
+    const txt2 = await page.locator('body').innerText();
+    const mpDiag = await page.evaluate(() => {
+      const r = document.getElementById('mp-compat-share-card') || document.querySelector('.mp-card--compat');
+      return { present: !!r, hidden: r ? (r.hidden || r.classList.contains('hidden')) : null,
+               text: r ? r.innerText.slice(0, 120) : '' };
+    });
+    ok('moonphase · the pair form still answers',
+      /Wibblenaut/.test(txt2) || (mpDiag.present && !mpDiag.hidden && mpDiag.text.length > 0),
+      JSON.stringify(mpDiag));
+  }
+
+  // moment.html — the freeze still runs from id-read fields
+  {
+    await page.goto(ORIGIN + '/moment.html', { waitUntil: 'load' });
+    await page.waitForTimeout(1800);
+    await page.evaluate(([n]) => {
+      const set = (id, v) => { const e = document.getElementById(id); if (e) { e.value = v; e.dispatchEvent(new Event('input', { bubbles: true })); } };
+      set('mom-date', n.date); set('mom-time', n.time); set('mom-place', n.town); set('mom-title', 'A night');
+    }, [N]);
+    await page.evaluate(() => document.getElementById('mom-form').requestSubmit());
+    await page.waitForTimeout(2500);
+    const status = await page.locator('#mom-status').innerText().catch(() => '');
+    ok('moment · the freeze button still reaches its handler (a status was written)',
+      status.trim().length > 0, `status="${status}"`);
+  }
+
+  // profile.html setup form
+  {
+    await page.goto(ORIGIN + '/profile.html', { waitUntil: 'load' });
+    await page.waitForTimeout(1800);
+    await page.evaluate(() => { try { localStorage.clear(); } catch (e) {} });
+    await page.reload({ waitUntil: 'load' });
+    await page.waitForTimeout(1800);
+    await page.evaluate(([n, e]) => {
+      const a = document.getElementById('setup-name'); if (a) a.value = n;
+      const b = document.getElementById('setup-email'); if (b) b.value = e;
+      const f = document.getElementById('setup-form');
+      if (f) f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }, [N.name, N.email]);
+    await page.waitForTimeout(1200);
+    const savedDiag = await page.evaluate(() => {
+      let dump = '';
+      try { dump = JSON.stringify(localStorage); } catch (e) { dump = '<blocked>'; }
+      return { hit: dump.includes('Wibblenaut'), keys: Object.keys(localStorage || {}).join(','),
+               setupHidden: (() => { const f = document.getElementById('setup-form'); return f ? f.offsetParent === null : null; })() };
+    });
+    ok('profile · setup still saves the name it read by id', savedDiag.hit, JSON.stringify(savedDiag));
+  }
+
+  await ctx.close();
+}
+
 await browser.close();
 server.close();
 
