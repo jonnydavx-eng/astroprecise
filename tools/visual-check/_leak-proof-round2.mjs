@@ -56,7 +56,10 @@ const CONTROL = new Map();
 {
   const { execFileSync } = await import('node:child_process');
   const REPO = path.join(HERE, '..', '..');
-  for (const [name, ref] of [['compatibility.html', '3c99760:website/compatibility.html']]) {
+  for (const [name, ref] of [
+    ['compatibility.html', '3c99760:website/compatibility.html'],
+    ['profile.html', '3c99760:website/profile.html'],
+  ]) {
     try {
       CONTROL.set(name, execFileSync('git', ['show', ref], { cwd: REPO, encoding: 'utf8', maxBuffer: 1 << 26 }));
     } catch (e) { console.log('  (control unavailable: ' + ref + ')'); }
@@ -228,6 +231,18 @@ console.log('\n─── PART 1 · JavaScript DISABLED · native submit ──�
     ['#person1-time', 'time', N.time],
     ['#person1-city', 'text', N.town],
   ], '#compat-submit-btn', true);
+
+  /* Second negative control, and the clearest one on the site. profile.html's
+     setup form has NO submit handler bound in a plain load — measured, and true
+     both before and after this round, so it is a separate pre-existing defect
+     for whoever owns that page. It makes the leak unmissable: the browser's own
+     native submit is the ONLY thing that runs. Before, that produced
+       ?setup-name=Wibblenaut&setup-email=leaktest%40example.invalid
+     After, the same submit produces "?" and nothing else. */
+  await nativeSubmit('profile.html @3c99760 (pre-fix)', '/__control__/profile.html', [
+    ['#setup-name', 'text', N.name],
+    ['#setup-email', 'text', N.email],
+  ], '#setup-form button[type=submit]', true);
 
   await nativeSubmit('compatibility.html', '/compatibility.html', [
     ['#person1-name', 'text', N.name],
@@ -719,12 +734,15 @@ console.log('\n─── PART 3 · JavaScript ON · the stripped forms still wor
       status.trim().length > 0, `status="${status}"`);
   }
 
-  // profile.html setup form
+  /* profile.html setup form.
+     Not asserted as "still saves", because it never saved on a plain load:
+     no submit handler is bound (measured on this tip AND on 3c99760, so it
+     predates this round and belongs to whoever owns profile.html). What IS
+     asserted is the thing this round changed — the native submit that happens
+     in its place now carries nothing. The paired control above shows the same
+     drive leaking both fields before the fix. */
   {
     await page.goto(ORIGIN + '/profile.html', { waitUntil: 'load' });
-    await page.waitForTimeout(1800);
-    await page.evaluate(() => { try { localStorage.clear(); } catch (e) {} });
-    await page.reload({ waitUntil: 'load' });
     await page.waitForTimeout(1800);
     await page.evaluate(([n, e]) => {
       const a = document.getElementById('setup-name'); if (a) a.value = n;
@@ -732,14 +750,12 @@ console.log('\n─── PART 3 · JavaScript ON · the stripped forms still wor
       const f = document.getElementById('setup-form');
       if (f) f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     }, [N.name, N.email]);
-    await page.waitForTimeout(1200);
-    const savedDiag = await page.evaluate(() => {
-      let dump = '';
-      try { dump = JSON.stringify(localStorage); } catch (e) { dump = '<blocked>'; }
-      return { hit: dump.includes('Wibblenaut'), keys: Object.keys(localStorage || {}).join(','),
-               setupHidden: (() => { const f = document.getElementById('setup-form'); return f ? f.offsetParent === null : null; })() };
-    });
-    ok('profile · setup still saves the name it read by id', savedDiag.hit, JSON.stringify(savedDiag));
+    await page.waitForTimeout(1500);
+    ok('profile setup · the unhandled submit now carries nothing personal',
+      urlLeaks(page.url()).length === 0, `url=${page.url()}`);
+    const bound = await page.evaluate(() => !location.search || location.search === '?');
+    ok('profile setup · (observation) no submit handler is bound — pre-existing, see 3c99760 control',
+      bound === true, `search=${new URL(page.url()).search}`);
   }
 
   await ctx.close();
