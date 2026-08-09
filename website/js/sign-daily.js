@@ -13,13 +13,13 @@
     Taurus: 'Your Taurus outlook updates daily from the actual Moon and planet positions. Open the full horoscope for today\'s transit-based reading.',
     Gemini: 'Gemini\'s daily note is computed from the real sky. See the complete reading with love, career, and wellness sections on horoscope.html.',
     Cancer: 'Cancer\'s reading follows the Moon\'s true sign and phase today. The full transit-based forecast is on our horoscope page.',
-    Leo: 'Leo\'s daily outlook is generated from live ephemeris data. Open horoscope.html for the professional solar-chart reading.',
+    Leo: 'Leo\'s daily outlook is generated from the live sky. Open horoscope.html for the professional solar-chart reading.',
     Virgo: 'Virgo\'s forecast reflects today\'s actual planetary weather. Visit the horoscope page for the complete computed reading.',
     Libra: 'Libra\'s daily reading is built from real transits — whole-sign solar chart from VSOP87 positions.',
     Scorpio: 'Scorpio\'s outlook uses the live sky today. See horoscope.html for Moon house, aspects, and sector guidance.',
     Sagittarius: 'Sagittarius\'s reading is transit-based, not generic filler. Open the horoscope page for today\'s full forecast.',
     Capricorn: 'Capricorn\'s daily note comes from computed planetary positions. The complete reading is on horoscope.html.',
-    Aquarius: 'Aquarius\'s forecast uses the real sky at local noon. Full love, career, and wellness sections on our horoscope page.',
+    Aquarius: 'Aquarius\'s forecast uses the real sky. Full love, career, and wellness sections on our horoscope page.',
     Pisces: 'Pisces\'s reading follows actual lunar and planetary transits. Open horoscope.html for the professional daily forecast.',
   };
 
@@ -46,7 +46,7 @@
       weekly: 'Weekly outlook available on horoscope.html — computed from the Moon\'s sign changes this week.',
       luckyNumber: (seed % 9) + 1,
       luckyColor: 'Celestial Gold',
-      methodNote: 'Load ephemeris + horoscope-engine for live-sky readings on this page.',
+      methodNote: 'The live-sky engine has not loaded on this page — open horoscope.html for the computed reading.',
     };
   }
 

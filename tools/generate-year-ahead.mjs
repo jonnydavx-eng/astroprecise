@@ -9,6 +9,15 @@ import {
   scanYearTransits, fmt, esc, slug, sents, PRINT_CSS, htmlDoc, MONTHS,
   paidMetaBlock, isPaidOrder,
 } from './fulfil-shared.mjs';
+// One source of truth for what an angle is CALLED in front of a customer:
+// the trade name ("sextile") never reaches the page — only what it does.
+import { plainAspect } from './reading-narrative.mjs';
+
+const ANGLE_VERB = {
+  Conjunction: 'sits on', Opposition: 'sits opposite', Square: 'presses against',
+  Trine: 'flows with', Sextile: 'sits at a helpful angle to',
+};
+const angleVerb = (t) => ANGLE_VERB[t] || 'contacts';
 
 const A = parseArgs(process.argv.slice(2));
 let order = {};
@@ -50,10 +59,10 @@ function monthNarrative(hits, natalHouseOf) {
   if (!hits.length) return '<p>A quieter month for slow-planet contacts — check transits.html for fast-moving daily weather.</p>';
   const lead = hits[0];
   const prose = sents(aInterp(lead.aspect, lead.transit, lead.natal), 2)
-    || `${lead.transit} ${lead.aspect.toLowerCase()} your natal ${lead.natal} — read this as ${lead.aspect === 'Square' || lead.aspect === 'Opposition' ? 'homework' : 'support'} in the life area that planet rules for you.`;
+    || `${lead.transit} ${angleVerb(lead.aspect)} your natal ${lead.natal} — read this as ${lead.aspect === 'Square' || lead.aspect === 'Opposition' ? 'homework' : 'support'} in the life area that planet rules for you.`;
   const extras = hits.slice(1, 4).map((h) => {
     const nh = natalHouseOf(h.natal);
-    return `${h.transit} ${h.aspect.toLowerCase()} natal ${h.natal}${nh ? ` (${HOUSE_THEME[nh] || 'natal theme'})` : ''} (orb ${h.orb.toFixed(1)}°)`;
+    return `${h.transit} ${angleVerb(h.aspect)} natal ${h.natal}${nh ? ` (${HOUSE_THEME[nh] || 'natal theme'})` : ''} (${h.orb.toFixed(1)}° off exact)`;
   });
   return `<p class="lede">${esc(prose)}</p>${extras.length ? `<p>Also this month: ${esc(extras.join('; '))}.</p>` : ''}<p class="note">Mirror this month on <strong>horoscope.html</strong> (daily themes) and <strong>transits.html</strong> (live sky on your saved chart).</p>`;
 }
@@ -69,8 +78,8 @@ const natalHouseOf = (planetName) => {
 const monthBlocks = Object.entries(byMonth).map(([month, hits]) => `
   <h3>${esc(month)}</h3>
   <table>
-    <tr><th>Transit</th><th>Aspect</th><th>Natal</th><th>Orb</th></tr>
-    ${hits.map((h) => `<tr><td>${esc(h.transit)}</td><td>${esc(h.glyph)} ${esc(h.aspect)}</td><td>${esc(h.natal)}</td><td>${h.orb.toFixed(1)}°</td></tr>`).join('')}
+    <tr><th>Transit</th><th>What it does</th><th>Natal</th><th>Off exact</th></tr>
+    ${hits.map((h) => `<tr><td>${esc(h.transit)}</td><td>${esc(h.glyph)} ${esc(plainAspect(h.aspect))}</td><td>${esc(h.natal)}</td><td>${h.orb.toFixed(1)}°</td></tr>`).join('')}
   </table>
   ${monthNarrative(hits, natalHouseOf)}
 `).join('');
@@ -84,7 +93,7 @@ const body = `
   <h2>Your natal anchors</h2>
   <p>These transits are measured against your birth chart: Sun ${fmt(pos.sun.lon)} · Moon ${fmt(pos.moon.lon)} · Ascendant ${fmt(built.asc)}. Return to astroprecise.app/transits.html anytime for the live sky against this same map.</p>
   <h2>How to read the months</h2>
-  <p>Hard aspects (square, opposition) mark seasons of friction worth planning around — not punishment, but homework. Flowing aspects (trine, sextile) mark support you can lean into if you show up for them. Conjunctions fuse themes: something in that life area gets loud.</p>
+  <p>Hard angles (square, opposition) mark seasons of friction worth planning around — not punishment, but homework. Easy angles mark support you can lean into if you show up for them. Conjunctions fuse themes: something in that life area gets loud.</p>
   <h2>Month by month</h2>
   ${monthBlocks || '<p>No major slow-planet transits detected in this window — a relatively open year. Outer planets may still contact angles or personal planets; check the live transit tool for daily detail.</p>'}
   <p style="margin-top:16pt;">This is a weather map, not a script. You still choose the journey. Entertainment only — not medical, financial, or legal advice.</p>

@@ -62,7 +62,7 @@ window.APPersonalMemory = (function () {
       exact: {
         label: 'Birth time known',
         pct: 100,
-        note: 'Houses, Ascendant, and Midheaven are calculated from your stated birth time and place.',
+        note: 'Houses, your Rising, and the top of your chart are calculated from your stated birth time and place.',
       },
       approximate: {
         label: 'Approximate time',

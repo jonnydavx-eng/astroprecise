@@ -743,7 +743,25 @@
     svg.querySelectorAll('.planet-glyph').forEach(g => g.classList.remove('is-active', 'is-dimmed'));
   }
 
-  // Lightweight styled popover (aspect name + orb + one-line plain meaning).
+  // What the reader is shown for each angle. The trade names stay as the data
+  // keys (they are what the engine emits); these are the words that reach the
+  // page. Same house voice as the labels on compatibility.html.
+  const ASPECT_LABEL = {
+    conjunction:   'sitting together',
+    opposition:    'facing each other',
+    trine:         'an easy angle',
+    square:        'a hard angle',
+    sextile:       'a quietly supportive angle',
+    quincunx:      'an awkward angle',
+    semisquare:    'a slight hard angle',
+    sesquiquadrate:'a slight hard angle',
+    semisextile:   'a slight supportive angle',
+    quintile:      'a creative angle',
+    biquintile:    'a slight creative angle'
+  };
+  const aspectLabel = (n) => ASPECT_LABEL[String(n || '').toLowerCase()] || String(n || '');
+
+  // Lightweight styled popover (the two planets, how close, one-line meaning).
   // The native <title> stays in the DOM as the no-JS / screen-reader fallback;
   // this is additive chrome only.
   const ASPECT_MEANING = {
@@ -778,17 +796,16 @@
     const name = line.getAttribute('data-aspect-name') || '';
     const orb = line.getAttribute('data-aspect-orb') || '';
     const meaning = ASPECT_MEANING[name] || '';
-    const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
     // Built with textContent nodes (no innerHTML) — names come from chart data.
     p.replaceChildren();
     const h = document.createElement('span');
     h.className = 'ap-aspect-popover__title';
-    h.textContent = `${p1} ${cap(name)} ${p2}`;
+    h.textContent = `${p1} & ${p2} — ${aspectLabel(name)}`;
     p.appendChild(h);
     if (orb) {
       const o = document.createElement('span');
       o.className = 'ap-aspect-popover__orb';
-      o.textContent = `${orb}° orb`;
+      o.textContent = `${orb}° off exact`;
       p.appendChild(o);
     }
     if (meaning) {
@@ -870,9 +887,9 @@
       const orbStr = asp.orb !== undefined
         ? (typeof asp.orb === 'number' ? asp.orb.toFixed(1) : String(asp.orb))
         : '';
-      const orbTxt = orbStr ? ` (${orbStr}°)` : '';
+      const orbTxt = orbStr ? ` (${orbStr}° off exact)` : '';
       const title = el('title');
-      title.textContent = `${p1name} ${aspectName} ${p2name}${orbTxt}`;
+      title.textContent = `${p1name} & ${p2name} — ${aspectLabel(aspectName)}${orbTxt}`;
 
       const isMajor = ['Conjunction', 'Opposition', 'Trine', 'Square', 'Sextile'].includes(styleKey);
       const attrs = {
@@ -1245,9 +1262,11 @@
     aDiv.className = 'ap-chart-legend__block';
     aDiv.innerHTML = '<div class="ap-chart-legend__title">Aspects</div>';
     [
-      ['Conjunction','☌','#f2ecdf'],['Opposition','☍','#C25A4E'],
-      ['Trine','△','#4A7580'],['Square','□','#B0703E'],
-      ['Sextile','⚹','#5A7A48'],['Minor','- -','#6B7280']
+      // Labelled by what the line means, not by the trade name. The glyphs are
+      // kept for anyone who already reads them; hovering a line spells it out.
+      ['Together','☌','#f2ecdf'],['Facing','☍','#C25A4E'],
+      ['Easy','△','#4A7580'],['Hard','□','#B0703E'],
+      ['Supportive','⚹','#5A7A48'],['Minor','- -','#6B7280']
     ].forEach(([n, s, c]) => {
       const row = document.createElement('div');
       row.className = 'ap-chart-legend__row';

@@ -193,7 +193,7 @@
           }, 3000);
         } catch (e) { /* glyph fallback */ }
       } catch (err) {
-        strip.innerHTML = '<span class="sky-dock-fallback">Ephemeris unavailable</span>';
+        strip.innerHTML = '<span class="sky-dock-fallback">Live sky unavailable</span>';
         return;
       }
 

@@ -35,7 +35,11 @@ const GENERIC_DEFAULTS = [
   GENERIC_ASPECT,
   'These two planetary principles operate with unusual intensity',
   'This harmonious trine (120°) indicates',
+  // interpretations.js reworded the 60° default on 2026-08-09 ("A helpful angle (60°)").
+  // Both spellings stay listed: miss the match and every uncovered 60° pair in a paid
+  // reading falls back to the same corpus paragraph, which is the bug this guards.
   'This sextile (60°) represents an opportunity aspect',
+  'A helpful angle (60°)',
   'This square (90°) creates productive tension',
   'This opposition (180°) represents a polarity',
 ];
@@ -79,7 +83,7 @@ export function aspectProse(I, type, p1, p2, orb) {
     } else if (hard) {
       text = `${p1} square ${p2} (${gap}) is ${tight}: ${a} — and ${b} — keep crossing each other at an angle, and the friction is something both of them demand you resolve. The pressure is not punishment. It is where this chart builds muscle.`;
     } else {
-      text = `${p1} and ${p2} sit ${gap} from a ${type.toLowerCase()} — an ongoing conversation between ${a} and ${b}.`;
+      text = `${p1} and ${p2} sit ${gap} from ${plainAspect(type).toLowerCase()} — an ongoing conversation between ${a} and ${b}.`;
     }
   }
   return sents(text, hardAspect(type) ? 3 : 2);

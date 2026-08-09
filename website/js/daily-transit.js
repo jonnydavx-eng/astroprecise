@@ -37,12 +37,14 @@
   var SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
     'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
 
+  // `name` is the machine key other modules match on (horoscope-page.js PT_WORD)
+  // and is never printed. `label` and `verb` are what a reader sees.
   var ASPECTS = [
-    { name: 'Conjunction', angle: 0,   orb: 6, glyph: '☌', quality: 'c' },
-    { name: 'Sextile',     angle: 60,  orb: 4, glyph: '⚹', quality: 'h' },
-    { name: 'Square',      angle: 90,  orb: 5, glyph: '□', quality: 'x' },
-    { name: 'Trine',       angle: 120, orb: 5, glyph: '△', quality: 'h' },
-    { name: 'Opposition',  angle: 180, orb: 6, glyph: '☍', quality: 'x' }
+    { name: 'Conjunction', angle: 0,   orb: 6, glyph: '☌', quality: 'c', label: 'Together',      verb: 'meets' },
+    { name: 'Sextile',     angle: 60,  orb: 4, glyph: '⚹', quality: 'h', label: 'Helpful angle', verb: 'sits at a helpful angle to' },
+    { name: 'Square',      angle: 90,  orb: 5, glyph: '□', quality: 'x', label: 'Friction',      verb: 'presses against' },
+    { name: 'Trine',       angle: 120, orb: 5, glyph: '△', quality: 'h', label: 'Easy flow',     verb: 'flows with' },
+    { name: 'Opposition',  angle: 180, orb: 6, glyph: '☍', quality: 'x', label: 'Face to face',  verb: 'sits opposite' }
   ];
 
   var TRANSIT_PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars',
@@ -267,6 +269,7 @@
             hits.push({
               transit: tName, natal: nName,
               aspect: a.name, glyph: a.glyph, quality: a.quality,
+              label: a.label, verb: a.verb,
               orb: orb, score: (a.orb - orb + 0.01) * weight
             });
             break;
@@ -484,16 +487,18 @@
   function renderAspectRow(a, transits) {
     var tLon = transits ? transits[a.transit] : null;
     var posText = tLon != null ? signOf(tLon) + ' ' + degInSign(tLon) : '';
+    // a.aspect is the machine key and stays out of the sentence — the reader gets
+    // what the angle does (a.verb / a.label), not the trade name for it.
     var detail = 'Transiting ' + a.transit + (posText ? ' in ' + posText : '') +
-      ' ' + a.aspect.toLowerCase() + ' your natal ' + a.natal + '.';
+      ' ' + (a.verb || 'contacts') + ' your natal ' + a.natal + '.';
     return '<div class="dt-aspect">' +
       '<span class="dt-aspect__orbs" aria-hidden="true">' +
         planetOrb(a.transit, { sm: true }) + planetOrb(a.natal, { sm: true }) +
       '</span>' +
       '<span class="dt-aspect__rel" aria-hidden="true">' + a.glyph + '</span>' +
       '<span class="dt-aspect__text">' +
-        '<p class="dt-aspect__name">' + esc(a.transit) + ' ' + esc(a.aspect) +
-          ' ' + esc(a.natal) + '</p>' +
+        '<p class="dt-aspect__name">' + esc(a.transit) + ' · ' + esc(a.natal) +
+          ' — ' + esc(String(a.label || 'in contact').toLowerCase()) + '</p>' +
         '<p class="dt-aspect__detail">' + esc(detail) + '</p>' +
       '</span>' +
       '<span class="dt-aspect__orb">' + a.orb.toFixed(1) + '°</span>' +
@@ -526,7 +531,7 @@
     var tomorrow = new Date(date.getTime() + 86400000);
     var ta = topAspectOn(tomorrow, natalFlat);
     var tText = ta
-      ? esc(ta.transit) + ' ' + esc(ta.aspect.toLowerCase()) + ' your ' + esc(ta.natal)
+      ? esc(ta.transit) + ' ' + esc(ta.verb || 'in contact with') + ' your ' + esc(ta.natal)
       : 'open sky — no exact transits to your chart';
     rows.push('<li class="dt-rhythm__row"><span class="dt-rhythm__when">Tomorrow</span>' +
       '<span class="dt-rhythm__what">' + tText + '</span></li>');
@@ -578,7 +583,7 @@
         'data-sky-blon="' + natLon + '" ' +
         'data-sky-blabel="' + esc(natLabel) + '">' +
         '<span aria-hidden="true">✦</span> Show ' + esc(topA.transit) + ' ' +
-        esc(topA.aspect.toLowerCase()) + ' your ' + esc(topA.natal) + ' in the sky' +
+        esc(topA.verb || 'in contact with') + ' your ' + esc(topA.natal) + ' in the sky' +
       '</button>';
     }
 

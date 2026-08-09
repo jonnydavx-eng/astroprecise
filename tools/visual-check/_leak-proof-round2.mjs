@@ -80,9 +80,25 @@ const server = http.createServer((req, res) => {
       return;
     }
   }
+  // /__unhidden__/x.html serves x.html with [hidden] / .hidden neutralised, so a
+  // panel that a script would normally reveal can still be submitted with the
+  // script switched off. Pure CSS — nothing here re-enables JavaScript.
+  let unhide = false;
+  if (rel.startsWith('/__unhidden__/')) { unhide = true; rel = '/' + rel.slice('/__unhidden__/'.length); }
+
   const file = path.join(ROOT, path.normalize(rel).replace(/^[\\/]+/, ''));
   if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
     res.writeHead(404, { 'content-type': 'text/plain' }); res.end('404'); return;
+  }
+  if (unhide) {
+    const html = fs.readFileSync(file, 'utf8').replace(
+      '</head>',
+      '<style>[hidden]{display:revert !important}.hidden{display:revert !important}' +
+      '*{visibility:visible !important}</style></head>'
+    );
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+    res.end(html);
+    return;
   }
   res.writeHead(200, { 'content-type': MIME[path.extname(file).toLowerCase()] || 'application/octet-stream' });
   res.end(fs.readFileSync(file));
@@ -152,11 +168,19 @@ console.log('\n─── PART 1 · JavaScript DISABLED · native submit ──�
     const before = log.length;
     await page.goto(ORIGIN + url, { waitUntil: 'domcontentloaded' });
     for (const [sel, kind, val] of fills) {
-      try {
-        if (kind === 'date') await typeDate(page, sel, val);
-        else if (kind === 'time') await typeTime(page, sel, val);
-        else await typeInto(page, sel, val);
-      } catch (e) { /* control absent on this page — the readback below will say so */ }
+      const el = page.locator(sel).first();
+      // fill() first — it works with script execution disabled and handles the
+      // date/time widgets properly. Fall back to real keystrokes.
+      let done = false;
+      try { await el.fill(val, { timeout: 4000, force: true }); done = true; }
+      catch (e) { console.log(`      (fill failed ${sel}: ${String(e.message).split('\n')[0]})`); }
+      if (!done) {
+        try {
+          if (kind === 'date') await typeDate(page, sel, val);
+          else if (kind === 'time') await typeTime(page, sel, val);
+          else await typeInto(page, sel, val);
+        } catch (e) { console.log(`      (type failed ${sel}: ${String(e.message).split('\n')[0]})`); }
+      }
     }
     // Readback: proof the typing landed. A clean URL from an empty form proves
     // nothing at all, and that is exactly the false pass to guard against.
@@ -165,11 +189,18 @@ console.log('\n─── PART 1 · JavaScript DISABLED · native submit ──�
       const got = await page.locator(sel).first().inputValue().catch(() => '');
       if (got && (got === val || val.includes(got) || got.includes(val.slice(0, 4)))) filled++;
     }
-    ok(`${label} · the form really was filled (${filled}/${fills.length} fields readback)`, filled > 0);
+    ok(`${label} · the form really was filled (${filled}/${fills.length} fields readback)`,
+      filled === fills.length);
 
     const navBefore = page.url();
-    await page.locator(submitSel).first().click({ timeout: 5000 }).catch(() => {});
-    await page.waitForTimeout(600);
+    // force: some of these panels sit under a sticky bar or start collapsed with
+    // JS off; a native submit still fires, which is the thing under test.
+    await page.locator(submitSel).first().click({ timeout: 6000, force: true })
+      .catch(async () => {
+        console.log(`      (submit click failed on ${submitSel}; pressing Enter instead)`);
+        await page.locator(fills[0][0]).first().press('Enter').catch(() => {});
+      });
+    await page.waitForTimeout(700);
     const after = page.url();
     const inUrl = urlLeaks(after);
     const onWire = leaks(before);
@@ -226,7 +257,7 @@ console.log('\n─── PART 1 · JavaScript DISABLED · native submit ──�
     ['#moonphase-date', 'date', N.date],
   ], '#moonphase-form button[type=submit]');
 
-  await nativeSubmit('moonphase.html (compat)', '/moonphase.html', [
+  await nativeSubmit('moonphase.html (compat)', '/__unhidden__/moonphase.html', [
     ['#mp-compat-name-a', 'text', N.name],
     ['#mp-compat-date-a', 'date', N.date],
     ['#mp-compat-name-b', 'text', N.name2],
@@ -238,19 +269,57 @@ console.log('\n─── PART 1 · JavaScript DISABLED · native submit ──�
     ['#setup-email', 'text', N.email],
   ], '#setup-form button[type=submit]');
 
-  await nativeSubmit('chart.html (wallpaper lead)', '/chart.html', [
+  await nativeSubmit('chart.html (wallpaper lead)', '/__unhidden__/chart.html', [
     ['#wallpaper-lead-email', 'text', N.email],
     ['#wallpaper-lead-birthdate', 'date', N.date],
   ], '#wallpaper-email-form button[type=submit]');
 
-  await nativeSubmit('shop.html (wallpaper lead)', '/shop.html', [
+  await nativeSubmit('shop.html (wallpaper lead)', '/__unhidden__/shop.html', [
     ['#shop-wallpaper-email', 'text', N.email],
     ['#shop-wallpaper-birthdate', 'date', N.date],
   ], '#shop-wallpaper-form button[type=submit]');
 
-  await nativeSubmit('horoscope.html (subscribe)', '/horoscope.html', [
-    ['#hs-email', 'text', N.email],
-  ], '#hs-form button[type=submit]');
+  /* ── Structural check ────────────────────────────────────────────────────
+     The behavioural test above can only reach a panel the page actually shows
+     with the script off. The guarantee itself is structural and does not depend
+     on that: a browser serialises ONLY named controls, so a form with no `name`
+     anywhere in it cannot put anything into a URL, visible or not, script or no
+     script. Assert that directly on every form that holds personal data —
+     including #hs-form, which horoscope.html keeps hidden until its script
+     runs and which the click test therefore cannot reach. */
+  {
+    const FORMS = [
+      ['compatibility.html', '/compatibility.html', '#compat-form'],
+      ['transits.html', '/transits.html', '#transit-form'],
+      ['moment.html', '/moment.html', '#mom-form'],
+      ['moonphase.html (date)', '/moonphase.html', '#moonphase-form'],
+      ['moonphase.html (compat)', '/moonphase.html', '#moonphase-compat-form'],
+      ['profile.html (setup)', '/profile.html', '#setup-form'],
+      ['profile.html (email cta)', '/profile.html', '.ap-email-cta__form'],
+      ['chart.html (wallpaper)', '/chart.html', '#wallpaper-email-form'],
+      ['chart.html (email capture)', '/chart.html', '#email-capture-form'],
+      ['shop.html (wallpaper)', '/shop.html', '#shop-wallpaper-form'],
+      ['horoscope.html (subscribe)', '/horoscope.html', '#hs-form'],
+      ['index.html (coupon)', '/index.html', '#coupon-form'],
+      ['index.html (shop notify)', '/index.html', '#shopNotify'],
+      ['eclipse.html (notify)', '/eclipse.html', '#emailForm'],
+      ['links.html (waitlist)', '/links.html', '.cw-waitlist__form'],
+      ['saturn-return.html (email cta)', '/saturn-return.html', '.ap-email-cta__form'],
+    ];
+    for (const [label, url, sel] of FORMS) {
+      await page.goto(ORIGIN + url, { waitUntil: 'domcontentloaded' });
+      const present = await page.locator(sel).count();
+      // count()/getAttribute() run in Playwright's own world, so they still work
+      // with page scripts switched off — evaluate() would not.
+      const named = page.locator(`${sel} input[name], ${sel} select[name], ${sel} textarea[name]`);
+      const n = await named.count();
+      const names = [];
+      for (let i = 0; i < n; i++) names.push(await named.nth(i).getAttribute('name'));
+      ok(`STRUCTURE ${label} ${sel} · form is present`, present > 0);
+      ok(`STRUCTURE ${label} ${sel} · zero named controls (nothing can be serialised)`,
+        n === 0, `still named: ${names.join(', ')}`);
+    }
+  }
 
   await nativeSubmit('index.html (coupon)', '/index.html', [
     ['#f-date', 'date', N.date],
@@ -408,6 +477,56 @@ console.log('\n─── PART 2 · JavaScript ON · the features still work ─�
       (await page.locator('#dob').inputValue()) === N.date,
       `dob=${await page.locator('#dob').inputValue()}`);
     ok('eclipse · nothing personal on the wire', leaks(before).length === 0, leaks(before).join('\n          '));
+  }
+
+  // ── chart.html: the share link and the model CTA ──────────────────────
+  {
+    await page.goto(ORIGIN + '/chart.html', { waitUntil: 'load' });
+    await page.waitForTimeout(1200);
+    await page.evaluate(([n]) => {
+      const set = (id, v) => { const e = document.getElementById(id); if (e) { e.value = v; e.dispatchEvent(new Event('input', { bubbles: true })); } };
+      set('name-input', n.name); set('date-input', n.date); set('time-input', n.time);
+      set('city-input', n.town); set('lat-input', '53.5900'); set('lon-input', '-2.2200');
+      set('tz-input', 'Europe/London');
+      const acc = document.getElementById('time-accuracy-input'); if (acc) acc.value = 'exact';
+      document.getElementById('chart-form').requestSubmit();
+    }, [N]);
+    await page.waitForTimeout(6000);
+
+    const share = await page.evaluate(() =>
+      window.APChartShare ? APChartShare.buildShareUrl(window.__apLastChart || null, null, { interactive: false }) : null);
+    const shareFromUi = await page.evaluate(() => {
+      const a = document.querySelector('#chart-share-strip a[href], #chart-share-strip input[value]');
+      return a ? (a.getAttribute('href') || a.value) : null;
+    });
+    const link = share || shareFromUi;
+    ok('chart · a shared-chart link exists to inspect', !!link, `share=${share} strip=${shareFromUi}`);
+    ok('chart · a shared-chart link puts the record after the # , never the ?',
+      !!link && link.includes('#' + 'n=') && !/\?(n|d|lat|lon|t|c|tz|hs|a)=/.test(link),
+      `link=${link}`);
+
+    const modelHref = await page.locator('#ap-chart-sky-bridge a[data-ap-model-link], .chart-whats-next a[href*="explore"]')
+      .first().getAttribute('href').catch(() => null);
+    ok('chart · a model link exists to inspect', !!modelHref, `href=${modelHref}`);
+    ok('chart · the "see your sky in the model" link has no birth instant',
+      !!modelHref && !/m=\d{4}/.test(modelHref), `href=${modelHref}`);
+    const skyStash = await page.evaluate(() => sessionStorage.getItem('ap-explore-moment'));
+    ok('chart · the birth moment is stashed for explore instead',
+      !!skyStash && skyStash.includes('1901-02-03'), `stash=${skyStash}`);
+  }
+
+  // ── chart-view.html renders a chart handed over in a fragment ─────────
+  {
+    const frag = `n=${N.name}&d=${N.date}&t=${N.time}&c=${N.town}&lat=53.5900&lon=-2.2200&tz=Europe%2FLondon&hs=equal&a=exact`;
+    const before = log.length;
+    await page.goto(`${ORIGIN}/chart-view.html#${frag}`, { waitUntil: 'load' });
+    await page.waitForTimeout(3000);
+    const nameText = await page.locator('#view-name').textContent();
+    ok('chart-view · renders a chart carried in the fragment', (nameText || '').includes(N.name), `name=${nameText}`);
+    ok('chart-view · nothing personal reached the server', leaks(before).length === 0, leaks(before).join('\n          '));
+    const full = await page.locator('#view-full-link').getAttribute('href');
+    ok('chart-view · its "open in full" link is a fragment too',
+      !!full && full.includes('#') && !full.includes('?'), `href=${full}`);
   }
 
   // ── legacy eclipse query link still works, then leaves the address bar ──

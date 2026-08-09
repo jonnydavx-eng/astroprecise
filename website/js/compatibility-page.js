@@ -267,8 +267,8 @@
       var angEl = document.getElementById('davison-angles');
       if (angEl) {
         var bits = [];
-        if (ascP) bits.push('<span class="midchart-angle">Ascendant <strong>' + ascP.sign + '</strong></span>');
-        if (mcP)  bits.push('<span class="midchart-angle">Midheaven <strong>' + mcP.sign + '</strong></span>');
+        if (ascP) bits.push('<span class="midchart-angle">Rising <strong>' + ascP.sign + '</strong></span>');
+        if (mcP)  bits.push('<span class="midchart-angle">Career point <strong>' + mcP.sign + '</strong></span>');
         angEl.innerHTML = bits.join('');
       }
 

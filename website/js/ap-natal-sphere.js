@@ -16,12 +16,13 @@
   var SIGNS_FULL = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
   var ORDER = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
   var GLYPH = { Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃', Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇' };
+  // `name` is the machine key; `label` is the only one that reaches the reader.
   var ASPECTS = [
-    { name: 'conjunction', angle: 0, orb: 8, color: 'rgba(233,237,242,0.55)' },
-    { name: 'opposition', angle: 180, orb: 7, color: 'rgba(242,138,106,0.7)' },
-    { name: 'trine', angle: 120, orb: 6, color: 'rgba(126,240,200,0.65)' },
-    { name: 'square', angle: 90, orb: 6, color: 'rgba(242,138,106,0.55)' },
-    { name: 'sextile', angle: 60, orb: 4, color: 'rgba(216,180,106,0.55)' }
+    { name: 'conjunction', angle: 0, orb: 8, label: 'together', color: 'rgba(233,237,242,0.55)' },
+    { name: 'opposition', angle: 180, orb: 7, label: 'opposite', color: 'rgba(242,138,106,0.7)' },
+    { name: 'trine', angle: 120, orb: 6, label: 'easy flow', color: 'rgba(126,240,200,0.65)' },
+    { name: 'square', angle: 90, orb: 6, label: 'friction', color: 'rgba(242,138,106,0.55)' },
+    { name: 'sextile', angle: 60, orb: 4, label: 'helpful angle', color: 'rgba(216,180,106,0.55)' }
   ];
 
   function lonOf(pos) {
@@ -84,7 +85,7 @@
           var A = ASPECTS[k];
           var orb = Math.abs(s - A.angle);
           if (orb <= A.orb) {
-            list.push({ a: bodies[i], b: bodies[j], name: A.name, orb: orb, color: A.color, exact: s });
+            list.push({ a: bodies[i], b: bodies[j], name: A.name, label: A.label, orb: orb, color: A.color, exact: s });
             break;
           }
         }
@@ -319,14 +320,14 @@
           row.className = 'ap-natal-sphere__asp';
           row.innerHTML =
             '<span class="ap-natal-sphere__asp-pair">' + A.a.glyph + ' ' + A.a.name.slice(0, 3) +
-            ' · ' + A.name + ' · ' + A.b.glyph + ' ' + A.b.name.slice(0, 3) + '</span>' +
-            '<span class="ap-natal-sphere__asp-orb">orb ' + A.orb.toFixed(2) + '°</span>';
+            ' · ' + (A.label || A.name) + ' · ' + A.b.glyph + ' ' + A.b.name.slice(0, 3) + '</span>' +
+            '<span class="ap-natal-sphere__asp-orb">' + A.orb.toFixed(2) + '° off exact</span>';
           aspList.appendChild(row);
         });
         if (!meta.aspects.length) {
           var emptyLi = document.createElement('li');
           emptyLi.className = 'ap-natal-sphere__asp';
-          emptyLi.textContent = 'No major aspects within standard orbs in this sample.';
+          emptyLi.textContent = 'No major angles close enough to count in this sample.';
           aspList.appendChild(emptyLi);
         }
       }

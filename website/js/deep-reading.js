@@ -161,17 +161,20 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
     .filter((x) => timed || (x.a !== 'moon' && x.b !== 'moon')).slice(0, 3);
   const ch4Closer = (x) => (deep.ch4Closers && deep.ch4Closers[x.aspect])
     ? ' ' + deep.ch4Closers[x.aspect] : ' Neither wins; the conversation is the point.';
+  // x.aspect is the machine key ('sextile', 'trine', …). It is never printed:
+  // the reader gets what the angle DOES, from deep-templates.json aspectNames.
+  const aspectPlain = (key) => (deep.aspectNames && deep.aspectNames[key]) || 'in contact';
   const ch4Serif = [deep.chapters.ch4.intro, ...aspects.map((x) =>
     deep.chapters.ch4.pairFrame
       .replace('{a}', label(x.a)).replace('{b}', label(x.b))
-      .replace('{aspect}', x.aspect).replace('{orb}', fmtOrb(x.orbDeg))
+      .replace('{aspect}', aspectPlain(x.aspect)).replace('{orb}', fmtOrb(x.orbDeg))
       .replace('{aTheme}', theme(x.a)).replace('{verb}', deep.aspectVerbs[x.aspect]).replace('{bTheme}', theme(x.b))
       .replace(' Neither wins; the conversation is the point.', ch4Closer(x)),
   )];
   if (!timed && deep.chapters.ch4.noMoonNote) ch4Serif.push(deep.chapters.ch4.noMoonNote);
   chapters.push({
     n: 4, title: deep.chapters.ch4.title,
-    mono: aspects.map((x) => `${label(x.a)} ${x.aspect} ${label(x.b)} — orb ${fmtOrb(x.orbDeg)}.`),
+    mono: aspects.map((x) => `${label(x.a)} — ${label(x.b)} · ${aspectPlain(x.aspect)} · ${fmtOrb(x.orbDeg)} off exact.`),
     serif: ch4Serif,
   });
 

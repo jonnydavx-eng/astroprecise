@@ -47,8 +47,8 @@
   "ch4": {
    "title": "Where the weight falls",
    "intro": "Of every pair of planets in your chart, these sit closest — the contacts tradition reads as the standing conversations of a life:",
-   "pairFrame": "{a} and {b} in {aspect} ({orb}) — {aTheme} {verb} {bTheme}. Neither wins; the conversation is the point.",
-   "noMoonNote": "Because your birth time is unknown, contacts involving the Moon are left out here — its position isn't certain enough for tight-orb claims, and we'd rather skip a line than invent one."
+   "pairFrame": "{a} and {b}, {aspect} ({orb} off exact) — {aTheme} {verb} {bTheme}. Neither wins; the conversation is the point.",
+   "noMoonNote": "Because your birth time is unknown, contacts involving the Moon are left out here — its position isn't certain enough to claim an angle this close, and we'd rather skip a line than invent one."
   },
   "ch5": {
    "title": "The long arcs",
@@ -73,6 +73,13 @@
   "square": "pressing against",
   "trine": "flowing with",
   "sextile": "opening doors for"
+ },
+ "aspectNames": {
+  "conjunction": "sitting together",
+  "opposition": "facing each other",
+  "square": "at odds",
+  "trine": "in easy flow",
+  "sextile": "at a helpful angle"
  },
  "ch5Signs": {
   "saturn": {

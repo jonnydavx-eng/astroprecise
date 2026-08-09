@@ -2280,7 +2280,9 @@ function calculateCompatibility(chart1, chart2) {
             aspect: name,
             orb: orbActual.toFixed(1),
             harmony: name === 'trine' || name === 'sextile' || name === 'conjunction' ? 'harmonious' : 'dynamic',
-            interpretation: `${p1name} ${name} ${p2name}: ${meaning}`
+            // `name` is the machine key and stays in the `aspect` field above;
+            // the printed sentence uses the reader's words for the same angle.
+            interpretation: `${p1name} ${apAspectPhrase(name)} ${p2name}: ${meaning}`
           });
           break;
         }

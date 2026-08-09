@@ -54,7 +54,7 @@ const body = `
   </table>
   <h2>Natal reference</h2>
   <p>Sun ${fmt(pos.sun.lon)} · Moon ${fmt(pos.moon.lon)} · Rising ${fmt(asc)} · MC ${fmt(mc)} (${Asc.sign} / ${M.sign}).</p>
-  <p style="margin-top:12pt;">Pair this return with your natal Deep Reading for context — the return chart colours the year; the natal chart is the instrument. Computed from VSOP87 ephemeris. Entertainment only — not medical, financial, or legal advice.</p>
+  <p style="margin-top:12pt;">Pair this return with your natal Deep Reading for context — the return chart colours the year; the natal chart is the instrument. Positions computed from the VSOP87 model. Entertainment only — not medical, financial, or legal advice.</p>
   <div class="foot"><span>AstroPrecise · Solar Return</span><span>${esc(O.name)}</span><span>1</span></div>
 </div>`;
 

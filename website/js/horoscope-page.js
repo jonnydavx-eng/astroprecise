@@ -1871,6 +1871,8 @@
       Ascendant: 'how you show up', Midheaven: 'your work and direction'
     };
     var PT_WORD = { conjunction: 'meets', opposition: 'opposes', square: 'challenges', trine: 'flows with', sextile: 'supports' };
+    // The two chart angles are stored under their trade names; these are printed instead.
+    var PT_POINT = { Midheaven: 'the top of your chart', Ascendant: 'your Rising' };
 
     function ptEsc(s) {
       return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
@@ -1880,14 +1882,14 @@
 
     function ptAspectSentence(a) {
       var asp = String(a.aspect || '').toLowerCase();
-      var word = PT_WORD[asp] || ('forms a ' + asp + ' to');
+      var word = PT_WORD[asp] || 'is in contact with';
       var area = PT_AREA[a.natal] || 'your inner world';
       var lead;
       if (asp === 'trine' || asp === 'sextile') lead = 'a flowing day for';
       else if (asp === 'square' || asp === 'opposition') lead = 'a day that asks something of';
       else lead = 'a day that draws focus to';
       return 'Transiting <strong>' + ptEsc(a.transit) + '</strong> ' + word +
-        ' your <strong>' + ptEsc(a.natal) + '</strong> — <em>' + lead + ' ' + area + '</em>.';
+        ' <strong>' + ptEsc(PT_POINT[a.natal] || ('your ' + a.natal)) + '</strong> — <em>' + lead + ' ' + area + '</em>.';
     }
 
     function ptInjectAfterHero(el) {

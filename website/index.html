@@ -1358,7 +1358,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     $('headlineRows').innerHTML = [
       ['☉', 'SUN IN ' + fmt(sun.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(sun.lon / 30) % 12]],
       ['☽', 'MOON IN ' + fmt(moon.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(moon.lon / 30) % 12]],
-      ['↑', 'RISING — NEEDS A PLACE', 'This card cannot give you a Rising or a Midheaven: they need the town you were born in. <a href="./chart.html" style="color:#2456d6">Add one in the full instrument →</a>']
+      ['↑', 'RISING — NEEDS A PLACE', 'This card cannot give you a Rising, or the top of your chart: both need the town you were born in. <a href="./chart.html" style="color:#2456d6">Add one in the full instrument →</a>']
     ].map(function (h) {
       return '<div class="headline-row"><span style="width:18px;color:var(--brass)">' + h[0] + '</span><div><div class="mono" style="font-size:12px;letter-spacing:.12em">' + h[1] + '</div><div style="font-size:14.5px;color:var(--dim)">' + h[2] + '</div></div></div>';
     }).join('');

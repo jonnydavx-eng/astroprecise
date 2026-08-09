@@ -25,7 +25,9 @@
 
   var SIGN_KEYS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
   var GLYPH = { Sun: '☉', Moon: '☽', Mercury: '☿', Venus: '♀', Mars: '♂', Jupiter: '♃', Saturn: '♄' };
-  var ASPECTS = [[0, 'CONJUNCT'], [60, 'SEXTILE'], [90, 'SQUARES'], [120, 'TRINES'], [180, 'OPPOSES']];
+  // These strings are printed straight into the card, so they are the reader's
+  // words, not the trade's: 60° is "at a helpful angle to", never "SEXTILE".
+  var ASPECTS = [[0, 'CONJUNCT'], [60, 'AT A HELPFUL ANGLE TO'], [90, 'SQUARES'], [120, 'TRINES'], [180, 'OPPOSES']];
   var MOVING = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'];
   var NATAL = ['Sun', 'Moon', 'Mercury', 'Venus'];
   var ORB = 2.5;

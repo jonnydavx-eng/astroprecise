@@ -170,7 +170,10 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
       var p1 = pt(lon, major ? 404 : 418, cx, cy), p2 = pt(lon, 434, cx, cy);
       s += '<line x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '" stroke="#d8b46a" stroke-width="' + (major ? 2 : 1) + '" opacity="' + (major ? 0.85 : 0.4) + '"/>';
     }
-    var GATE = [[0, 'CONJUNCT', 1], [60, 'SEXTILE', 1], [90, 'SQUARE', 0], [120, 'TRINE', 1], [180, 'OPPOSITE', 0]];
+    // Printed labels say what the angle DOES and give its size, rather than
+    // naming it in trade jargon. "EASY 60°" is both plainer than "SEXTILE" and
+    // strictly more informative — the reader can see which angle was measured.
+    var GATE = [[0, 'TOGETHER', 1], [60, 'EASY 60°', 1], [90, 'TENSE 90°', 0], [120, 'EASY 120°', 1], [180, 'FACING 180°', 0]];
     function hits(ra, rb, gate, crossMode) {
       var out = [];
       for (var a2 = 0; a2 < ra.length; a2++) for (var k = crossMode ? 0 : a2 + 1; k < rb.length; k++) {
@@ -205,7 +208,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
     $('tableL').innerHTML = rowsA.slice(0, 5).map(trow).join('');
     $('tableR').innerHTML = rowsA.slice(5).map(trow).join('');
     $('aspectRows').innerHTML = own.map(function (h) {
-      return '<span class="mono" style="font-size:10.5px;letter-spacing:.06em;padding:1.6mm 0"><span style="color:' + (h.ang === 0 ? '#33454f' : h.easy ? '#1a9e8f' : '#d4573a') + '">●</span> ' + h.a.name.toUpperCase() + ' ' + h.verb + ' ' + h.b.name.toUpperCase() + ' · ' + h.orb.toFixed(1) + '° ORB</span>';
+      return '<span class="mono" style="font-size:10.5px;letter-spacing:.06em;padding:1.6mm 0"><span style="color:' + (h.ang === 0 ? '#33454f' : h.easy ? '#1a9e8f' : '#d4573a') + '">●</span> ' + h.a.name.toUpperCase() + ' ' + h.verb + ' ' + h.b.name.toUpperCase() + ' · ' + h.orb.toFixed(1) + '° OFF EXACT</span>';
     }).join('');
     var s2 = '';
     [[260, rowsA, 'YOU · 1994'], [740, rowsB, 'THEM · 1995']].forEach(function (side) {
@@ -225,7 +228,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
     var KEYS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'];
     var flt = function (rows) { return rows.filter(function (r) { return KEYS.indexOf(r.key) >= 0; }); };
     $('crossRows').innerHTML = hits(flt(rowsA), flt(rowsB), 4, true).slice(0, 9).map(function (h) {
-      return '<div class="crow"><span style="width:34mm">' + h.a.glyph + ' YOUR ' + h.a.name.toUpperCase() + '</span><span style="width:24mm;text-align:center;color:' + (h.easy ? '#1a9e8f' : '#d4573a') + '">' + h.verb + '</span><span style="width:34mm">' + h.b.glyph + ' THEIR ' + h.b.name.toUpperCase() + '</span><span style="flex:1;text-align:right;color:#33454f">' + h.orb.toFixed(1) + '° ORB</span></div>';
+      return '<div class="crow"><span style="width:34mm">' + h.a.glyph + ' YOUR ' + h.a.name.toUpperCase() + '</span><span style="width:24mm;text-align:center;color:' + (h.easy ? '#1a9e8f' : '#d4573a') + '">' + h.verb + '</span><span style="width:34mm">' + h.b.glyph + ' THEIR ' + h.b.name.toUpperCase() + '</span><span style="flex:1;text-align:right;color:#33454f">' + h.orb.toFixed(1) + '° OFF EXACT</span></div>';
     }).join('');
     fit();
   }

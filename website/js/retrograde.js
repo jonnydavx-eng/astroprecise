@@ -322,13 +322,13 @@
     if (answerEl) answerEl.textContent = 'The astronomy engine could not load.';
     if (subEl) {
       subEl.textContent = 'We compute this answer live in your browser and will not show ' +
-        'a guessed result. Please refresh the page — if it persists, the ephemeris ' +
+        'a guessed result. Please refresh the page — if it persists, the astronomy ' +
         'script failed to load.';
     }
     var grid = $('status-grid');
     if (grid) {
       grid.innerHTML = '<p class="status-grid__error">Planetary statuses are unavailable ' +
-        'until the ephemeris engine loads. Refresh to try again.</p>';
+        'until the astronomy engine loads. Refresh to try again.</p>';
     }
     var listEl = $('windows-list');
     if (listEl) {

@@ -19,6 +19,8 @@
 // With NO args it falls back to two built-in sample people (watermark "SAMPLE").
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { paidMetaBlock, isPaidOrder } from './fulfil-shared.mjs';
+// One source of truth for what an angle is CALLED in front of a customer.
+import { plainAspect } from './reading-narrative.mjs';
 
 // ── load the real engines into a shared sandbox ──
 const win = {};
@@ -72,6 +74,9 @@ const sd = l => { const s = norm(l); return { sign: SIGNS[Math.floor(s / 30)], i
 const fmt = l => { const x = sd(l); return `${x.d}°${String(x.m).padStart(2, '0')}′ ${x.sign}`; };
 const sents = (t, n = 2) => { if (!t) return ''; const m = String(t).match(/[^.!?]+[.!?]+/g); return (m ? m.slice(0, n).join(' ') : String(t)).trim(); };
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+// The engine emits lower-case machine keys ('sextile'); plainAspect is keyed
+// Capitalised. This bridges the two so the customer only ever sees plain words.
+const angleName = a => plainAspect(String(a || '').charAt(0).toUpperCase() + String(a || '').slice(1).toLowerCase());
 const ASP = [['Conjunction',0,7,'☌'],['Opposition',180,7,'☍'],['Trine',120,6,'△'],['Square',90,6,'□'],['Sextile',60,4,'⚹']];
 const BODIES = ['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto','chiron','northNode'];
 
@@ -235,11 +240,12 @@ const reading = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style
 <div class="page">
   <p class="eyebrow">III · The Conversations Between Your Charts</p>
   <h1 style="font-size:20pt;">Cross-chart aspects.</h1>
-  <p>These are the angles your planets make to <em>each other</em> — the real wiring of the connection. Harmony aspects flow; tension aspects are where the relationship does its growing.</p>
-  <table><tr><th>Between</th><th>Aspect</th><th>Orb</th></tr>
-  ${synAspects.slice(0, 12).map(x => `<tr><td>${esc(a.name.split(' ')[0])}'s ${esc(x.p1)} &nbsp;·&nbsp; ${esc(b.name.split(' ')[0])}'s ${esc(x.p2)}</td><td>${esc(x.aspect)}</td><td>${x.orb !== undefined ? Number(x.orb).toFixed(1) + '°' : '—'}</td></tr>`).join('')}
+  <p>These are the angles your planets make to <em>each other</em> — the real wiring of the connection. Easy angles flow; tense ones are where the relationship does its growing.</p>
+  <table><tr><th>Between</th><th>What it does</th></tr>
+  ${synAspects.slice(0, 12).map(x => `<tr><td>${esc(a.name.split(' ')[0])}'s ${esc(x.p1)} &nbsp;·&nbsp; ${esc(b.name.split(' ')[0])}'s ${esc(x.p2)}</td><td>${esc(angleName(x.aspect))}</td></tr>`).join('')}
   </table>
-  ${synAspects[0] && synAspects[0].interpretation ? `<p style="margin-top:12pt;"><strong>${esc(synAspects[0].p1)} ${esc(String(synAspects[0].aspect).toLowerCase())} ${esc(synAspects[0].p2)}</strong> — ${esc(sents(synAspects[0].interpretation, 2))}</p>` : ''}
+  <p class="note">Read sign to sign: this table compares the signs each planet occupies, so it does not carry a gap in degrees. Every row above is computed, none invented — and the two-chart calculator on astroprecise.app measures the same contacts to a tenth of a degree.</p>
+  ${synAspects[0] && synAspects[0].interpretation ? `<p style="margin-top:12pt;"><strong>${esc(synAspects[0].p1)} and ${esc(synAspects[0].p2)} — ${esc(angleName(synAspects[0].aspect).toLowerCase())}</strong> — ${esc(sents(synAspects[0].interpretation, 2))}</p>` : ''}
   ${foot('3')}
 </div>
 

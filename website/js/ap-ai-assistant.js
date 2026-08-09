@@ -93,6 +93,15 @@ window.APAIAssistant = (function () {
     square: 'create a productive tension that pushes you to grow', trine: 'work together with natural ease',
     opposition: 'pull in opposite directions, asking you for balance', quincunx: 'ask for constant small adjustments',
   };
+  // What gets PRINTED where the machine key would otherwise land. The keys are
+  // matched against engine data; the values are the only part a reader sees.
+  var ASPECT_PLAIN = {
+    conjunction: 'meets', sextile: 'sits at a helpful angle to',
+    square: 'squares', trine: 'trines',
+    opposition: 'opposes', quincunx: 'sits awkwardly to',
+  };
+  // The two chart angles, in the reader's words rather than the trade's.
+  var POINT_DISPLAY = { Midheaven: 'the top of your chart', Ascendant: 'your Rising' };
   // Short labels keep the aspect lines crisp (the long PLANET_THEME reads run-on).
   var PLANET_SHORT = {
     Sun: 'your identity', Moon: 'your emotions', Mercury: 'your mind', Venus: 'your love nature',
@@ -104,7 +113,7 @@ window.APAIAssistant = (function () {
     var p1 = titleCase(a.planet1 || a.p1), p2 = titleCase(a.planet2 || a.p2);
     var asp = String(a.aspect || '').toLowerCase();
     var s1 = PLANET_SHORT[p1], s2 = PLANET_SHORT[p2], q = ASPECT_QUALITY[asp];
-    var head = p1 + ' ' + asp + ' ' + p2;
+    var head = (POINT_DISPLAY[p1] || p1) + ' ' + (ASPECT_PLAIN[asp] || 'contacts') + ' ' + (POINT_DISPLAY[p2] || p2);
     if (s1 && s2 && q) return head + ' — ' + s1 + ' and ' + s2 + ' ' + q + '.';
     if (s1 && s2) return head + ' — ' + s1 + ' and ' + s2 + ' are closely linked in your chart.';
     return head + '.';
@@ -161,7 +170,7 @@ window.APAIAssistant = (function () {
     var sun = signOf(chart, 'Sun');
     var moon = signOf(chart, 'Moon');
     if (/sun|identity|ego|purpose|who am i|core/.test(q) && sun) {
-      return planetAnswer(chart, 'Sun', 'This is the sign the Sun occupied at your birth, accurate to roughly an arcminute (1800–2200 CE).');
+      return planetAnswer(chart, 'Sun', 'This is the sign the Sun occupied at your birth, placed to within about a sixtieth of a degree (1800–2200 CE).');
     }
     if (/moon|emotion|feel|inner|mood|secure/.test(q) && moon) {
       return planetAnswer(chart, 'Moon', 'The Moon moves quickly, so this placement is very personal to your birth moment.');
@@ -184,7 +193,7 @@ window.APAIAssistant = (function () {
     if (/strength|good at|gift|best/.test(q)) {
       var flow = (chart.aspects || []).filter(function (a) { return /trine|sextile/.test(String(a.aspect).toLowerCase()); }).slice(0, 2);
       if (flow.length) return 'Your natural gifts show in the easy aspects: ' + flow.map(function (a) { return aspectLine(a); }).join(' ');
-      return 'Your ' + (sun || '?') + ' Sun and ' + (moon || '?') + ' Moon are the anchors of your strengths — cast a timed chart to surface the flowing (trine/sextile) aspects that name them precisely.';
+      return 'Your ' + (sun || '?') + ' Sun and ' + (moon || '?') + ' Moon are the anchors of your strengths — cast a timed chart to surface the easy angles that name them precisely.';
     }
     if (/challenge|weakness|work on|difficult|tension/.test(q)) {
       var hard = (chart.aspects || []).filter(function (a) { return /square|opposition/.test(String(a.aspect).toLowerCase()); }).slice(0, 2);
@@ -198,18 +207,19 @@ window.APAIAssistant = (function () {
       return 'Rising in ' + chart.risingSign + ' shapes how you meet the world — first impressions and the lens others see first. It depends on birth time and latitude, so if your time is approximate, treat this as a working hypothesis.';
     }
     if (/career|work|vocation|job|purpose/.test(q)) {
-      return 'Career signatures involve the Midheaven, Saturn, and the 10th house — check the Houses tab on the Chart page for your computed cusps. A reliable birth time makes these accurate.';
+      return 'Career signatures involve the top of your chart, Saturn, and the 10th house — check the Houses tab on the Chart page for your computed cusps. A reliable birth time makes these accurate.';
     }
     if (/synastry|compat|relationship|partner|venus|mars/.test(q)) {
       if (chart.synastryAspects && chart.synastryAspects.length) {
         var top = chart.synastryAspects[0];
-        var orb = top.orb != null ? ' (orb ' + Number(top.orb).toFixed(1) + '°)' : '';
+        var orb = top.orb != null ? ' (' + Number(top.orb).toFixed(1) + '° off exact)' : '';
+        var topAsp = ASPECT_PLAIN[String(top.aspect || '').toLowerCase()] || 'is in contact with';
         return 'Your synastry report shows ' + chart.synastryAspects.length + ' measured inter-chart aspects. Strongest contact: ' +
-          (top.p1 || '?') + ' ' + (top.aspect || 'aspect') + ' ' + (top.p2 || '?') + orb + '. ' +
+          (top.p1 || '?') + ' ' + topAsp + ' ' + (top.p2 || '?') + orb + '. ' +
           'Partner sky: ' + (chart.partnerSun || '?') + ' Sun, ' + (chart.partnerMoon || '?') + ' Moon. ' +
           'Venus–Mars and Moon–Moon contacts often colour chemistry and emotional rhythm.';
       }
-      return 'Relationship chemistry in synastry often shows through Sun–Moon, Venus–Mars, and Moon–Moon contacts. Run the full two-chart calculator for inter-aspects with real orbs — your saved chart (' + (sun || '?') + ' Sun, ' + (moon || '?') + ' Moon) is the starting point.';
+      return 'Relationship chemistry in synastry often shows through Sun–Moon, Venus–Mars, and Moon–Moon contacts. Run the full two-chart calculator for the inter-chart angles, each measured to a tenth of a degree — your saved chart (' + (sun || '?') + ' Sun, ' + (moon || '?') + ' Moon) is the starting point.';
     }
     return 'Based on your saved chart (' + (sun || '?') + ' Sun, ' + (moon || '?') + ' Moon, ' + (chart.risingSign || '?') + ' Rising): ask about a specific placement (Sun, Moon, Rising, Venus, etc.) for a focused answer. Enable optional AI for open-ended questions.';
   }
@@ -326,7 +336,7 @@ window.APAIAssistant = (function () {
     },
     'ephemeris-ai-panel': {
       title: 'Tonight\u2019s sky, explained',
-      subtitle: 'Connect the live ephemeris to your natal chart — computed on your device, private.',
+      subtitle: 'Connect tonight’s live sky to your birth chart — computed on your device, private.',
       empty: 'Save a chart to compare tonight\u2019s planetary positions with your birth sky.',
       askPlaceholder: 'e.g. What does tonight\u2019s Moon phase mean for my chart?',
     },

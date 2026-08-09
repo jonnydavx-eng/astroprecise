@@ -44,8 +44,10 @@ window.AstroOracle = (() => {
 
   const ORB = 3;
 
+  // Reader-facing verbs. No caller today, but it is one `join` away from print,
+  // so it carries the wording the audience uses — never the trade name.
   const ASPECT_VERBS = {
-    conjunction: 'conjoins', sextile: 'sextiles', square: 'squares',
+    conjunction: 'conjoins', sextile: 'sits at a helpful angle to', square: 'squares',
     trine: 'trines', opposition: 'opposes',
   };
 

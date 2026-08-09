@@ -369,7 +369,7 @@ const poster=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${
   <div class="placements">
     ${BODIES.map(k=>`<div class="pl"><span class="g">${PGL[k]}</span><span class="n">${PNAME[k]}</span><span class="v">${fmt(pos[k].lon)}</span> ${pos[k].retro?'<span class="r">℞</span>':''}</div>`).join('')}
     <div class="pl"><span class="g">↑</span><span class="n">Ascendant</span><span class="v">${fmt(asc)}</span></div>
-    <div class="pl"><span class="g">MC</span><span class="n">Midheaven</span><span class="v">${fmt(mc)}</span></div>
+    <div class="pl"><span class="g">MC</span><span class="n">Top of chart</span><span class="v">${fmt(mc)}</span></div>
   </div>
   <p style="margin-top:6mm;font-size:11pt;color:#A89E88;font-style:italic;">The sky at your first breath — every position computed, never invented.</p>
   <p style="margin-top:4mm;font-family:'Cinzel',serif;font-size:8pt;letter-spacing:.28em;color:#5E5748;">✦ ASTROPRECISE ✦ &nbsp; VSOP87 · ELP2000 · PLACIDUS HOUSES</p>
@@ -392,7 +392,7 @@ if (usingSample && DELIVER.reading && !FINAL) {
   const samplePath = join(ROOT, 'website', 'sample-reading.html');
   const sampleHead = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Sample Deep Natal Reading from AstroPrecise — 13 pages: every planet, all twelve houses, life areas, patterns, and aspects. VSOP87 ephemeris." />
+<meta name="description" content="Sample Deep Natal Reading from AstroPrecise — 13 pages: every planet, all twelve houses, life areas, patterns, and aspects. Positions computed from the VSOP87 and ELP2000 models, never invented." />
 <meta name="robots" content="noindex, follow" />
 <link rel="canonical" href="https://astroprecise.app/sample-reading.html" />
 <title>Sample Deep Natal Reading | AstroPrecise</title>
