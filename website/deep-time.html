@@ -151,7 +151,7 @@ input.tl::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;bac
       if (orr.setJD) { if (y < 1) { orr.setLive && orr.setLive(); } else orr.setJD(jd); }
       var d = new Date((jd - 2440587.5) * 86400000);
       r1 = y < 1 ? 'TONIGHT · THE REAL SKY' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase() + (d.getFullYear() < 1 ? ' (ASTRONOMICAL)' : '');
-      r2 = 'EVERY POSITION COMPUTED · MEEUS/VSOP87-CLASS SERIES · ±ARCMINUTES';
+      r2 = 'EVERY POSITION COMPUTED · MEEUS/VSOP87-CLASS SERIES · TO THE MINUTE YOU WERE BORN';
       r3 = 'THIS IS THE SAME ENGINE THAT CASTS YOUR CHART.';
     } else if (y < 1e6) {
       zone = ['DEGRADING — UNCERTAINTY BAND', 'var(--warn)'];

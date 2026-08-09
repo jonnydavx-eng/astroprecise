@@ -743,8 +743,8 @@
           ? carried.slice(0, -1).join(', ') + ' and ' + carried[carried.length - 1]
           : carried[0];
         const asks = gotCity
-          ? 'Pick your town from the list to lock its coordinates — that is what gives you Rising, Midheaven and houses.'
-          : 'Add your birth place below — that is what gives you Rising, Midheaven and houses.';
+          ? 'Pick your town from the list to lock its coordinates — that is what gives you your rising sign, career point and houses.'
+          : 'Add your birth place below — that is what gives you your rising sign, career point and houses.';
         const note = document.createElement('p');
         note.id = 'chart-handoff-note';
         note.className = 'chart-handoff-note';
@@ -1421,7 +1421,7 @@
       tocItems.push({ title: 'Dominant Energy' });
       if (!chart.risingSign) {
         blocks.push(analysisSection('Time-dependent angles withheld',
-          'Birth time is unknown. Rising, Ascendant, Midheaven, houses and angle interpretations are intentionally omitted; add a time and recast when you want that layer.',
+          'Birth time is unknown. Your rising sign, career point, houses and angle interpretations are intentionally omitted; add a time and recast when you want that layer.',
           { eyebrow: 'Honest precision' }));
         tocItems.push({ title: 'Time-dependent angles withheld' });
       }
@@ -1490,8 +1490,8 @@
           <div class="pattern-card pattern-card--star">
             <div class="pattern-card__head">
               <span class="eng-star-mark" style="color:#c9a88a;"></span>
-              <strong class="pattern-card__name pattern-card__name--star">${esc(fs.point)} conjunct ${esc(fs.star)}</strong>
-              <span class="pattern-card__meta">${esc(fs.orb.toFixed(1))}° orb · ${esc(fs.constellation)}</span>
+              <strong class="pattern-card__name pattern-card__name--star">${esc(fs.point === 'Midheaven' ? 'Career point' : fs.point === 'Ascendant' ? 'Rising sign' : fs.point)} conjunct ${esc(fs.star)}</strong>
+              <span class="pattern-card__meta">${esc(fs.orb.toFixed(1))}° from exact · ${esc(fs.constellation)}</span>
               ${fs.royal ? `<span class="pattern-card__badge" style="color:var(--gold);">★ Royal Star — ${esc(fs.royal)}</span>` : ''}
             </div>
             <p class="pattern-card__body">${esc(fs.meaning)}</p>
@@ -1642,7 +1642,7 @@
             interpretation: aspectInterpretation(I, x),
           });
         }).join('')
-        : '<p class="ap-reading-empty">No major aspects within orb for this chart.</p>';
+        : '<p class="ap-reading-empty">No major aspects close enough to count for this chart.</p>';
 
       // Tag each rendered aspect card with the SAME key the wheel uses
       // (`${p1}-${p2}-${type.toLowerCase()}`), so the bidirectional highlight can

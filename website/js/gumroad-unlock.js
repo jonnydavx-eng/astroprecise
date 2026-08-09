@@ -13,10 +13,10 @@
  *      if valid, unlock the already-computed reading in place. No account, no wait.
  *
  * PRODUCTS (create these in Gumroad, enable "Generate license keys"):
- *   eclipse-reading  £2.99  (founding; you raise it to £4 after 12 Aug)
+ *   eclipse-reading  £2.99
  *   eclipse-set      £6      (order-bump)
  *   full-reading     £12
- *   plate            £14  (launch)  ->  £19
+ *   plate            £14
  *   sky-pass         £5   (optional credit pack)
  *
  * SECURITY NOTE: verifying a license needs only product_id + license_key (no secret),

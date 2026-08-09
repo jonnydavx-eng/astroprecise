@@ -80,7 +80,7 @@
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
-    "description": "See how current planetary transits aspect your natal chart — dated, orb-aware, and computed privately in your browser.",
+    "description": "See how current planetary transits meet your natal chart — dated, aspect-aware, and computed privately in your browser.",
     "isPartOf": {
       "@type": "WebSite",
       "name": "Astro Precise",
@@ -819,7 +819,6 @@
     if (audit()) {
       injectSeq([
         'js/profile.js',
-        'js/ephemeris.js',
         'js/oracle.js',
         'js/daily-transit.js',
         'js/ap-daily-bridge.js',
@@ -830,7 +829,6 @@
     injectSeq([
       'js/profile.js',
       'js/raf-core.js',
-      'js/ephemeris.js',
       'js/oracle.js',
       'js/ap-zodiac-constants.js',
       'js/icons.js',

@@ -45,8 +45,8 @@ a live buy link automatically the moment a permalink is not `REPLACE_ME`. Then,
 and only then, restore the blocked assets below.
 
 Prices quoted in this pack **are correct** and match the site: Eclipse Night
-Reading £2.99 (→£4 after 12 Aug), Eclipse Set £6, Deep Reading £12, Numbered
-Natal Plate £14 (→£19), Sky Pass £5.
+Reading £2.99, Eclipse Set £6, Deep Reading £12, Numbered Natal Plate £14,
+Sky Pass £5.
 
 ---
 
@@ -102,7 +102,7 @@ Here is our honest version of that. We don't claim the eclipse will change your 
 
 🚫 ~~Checkout is now open.~~ Three ways to mark the night:
 
-**Eclipse Night Reading — £2.99** (rises to £4 after 12 August)
+**Eclipse Night Reading — £2.99**
 Five chapters mapping the eclipse against your birth chart: where it lands, what it touches, and what the tradition makes of it.
 
 **Eclipse Set — £6**
@@ -117,7 +117,7 @@ And for afterwards: **Sky Pass — £5**. Thirty dated days of chart-aware sky n
 
 Not sure where the eclipse lands for you? The free teaser computes it on-device in seconds, and stores nothing: https://astroprecise.app/eclipse.html
 
-Three days to go. The geometry doesn't hurry — but the £2.99 price does end.
+Three days to go. The geometry doesn't hurry — and neither does the price.
 
 — AstroPrecise
 
@@ -130,26 +130,26 @@ Three days to go. The geometry doesn't hurry — but the £2.99 price does end.
 
 ### Email 3 — T-1 · 🚫 BLOCKED — REQUIRES GUMROAD
 
-**Why blocked:** the entire email is a last-day-at-this-price pitch ending in a
-`[Gumroad link]`. There is no honest way to send "last day at pre-eclipse prices"
-when nothing can be bought. Nothing here is salvageable without checkout.
+**Why blocked:** the CTA is a `[Gumroad link]` placeholder. Sending it drives
+people to a page whose buttons say "Notify me", so it cannot go out until the
+permalinks are pasted.
 
-**Subject:** Tomorrow: the eclipse, the Perseids — and the last of the £2.99 pricing
+**Subject:** Tomorrow: the eclipse and the Perseids
 **CTA target:** 🚫 Gumroad shop — does not exist yet
 
 **Body (held):**
 
 Tomorrow evening, around 19:12 BST in London, roughly 90% of the Sun will be covered — nearer 95% in Cornwall, and 19:05 is the moment in Edinburgh. This is your last note from us before it happens.
 
-First, the honest small print on pricing. The Eclipse Night Reading is £2.99 until the end of 12 August, then £4. The Numbered Natal Plate is £14 now, £19 later. No countdown timers, no invented scarcity — the early price simply ends when the event does, because afterwards it's an archive, not an occasion.
+Pricing is simple: Eclipse Night Reading £2.99; Eclipse Set £6; Deep Reading £12; Numbered Natal Plate £14; and Sky Pass £5. No countdown timers, no invented scarcity, and no future price written into the offer.
 
 **If you're buying for yourself:** the Eclipse Night Reading (£2.99) maps the eclipse against your birth chart in five chapters. The Eclipse Set (£6) adds the print-ready sky plate. If the teaser showed you a quiet chart, you already know — we told you before you spent anything.
 
-**If you're buying for someone else:** the Numbered Natal Plate (£14) is an A3 print of someone's exact birth sky, positions given to the arcminute, each plate numbered and carrying a fingerprint they can verify themselves against the ephemeris. It is the rare gift that is both beautiful and checkable. The Deep Reading (£12) pairs well if they're the sort who reads the whole menu.
+**If you're buying for someone else:** the Numbered Natal Plate (£14) is an A3 print of someone's exact birth sky, with every position printed to the minute you were born. Each plate is numbered and carries a fingerprint they can verify against the public register. It is the rare gift that is both beautiful and checkable. The Deep Reading (£12) pairs well if they're the sort who reads the whole menu.
 
 **Then, the free bonus neither of us has to pay for:** the Perseid meteor shower peaks the same night. When the eclipse ends, stay outside. The year's most reliable meteor display takes over where the Moon leaves off.
 
-🚫 **→ Last day at pre-eclipse prices:** `[Gumroad link]` — BLOCKED
+🚫 **→ Browse the eclipse shop:** `[Gumroad link]` — BLOCKED
 
 Tomorrow morning we'll send exact UK viewing times and the one safety rule that matters.
 
@@ -168,7 +168,7 @@ contains no price, no product and no shop link.
 
 **🚫 The held part** is the final section:
 
-> **For the month after tonight:** the Sky Pass (£5) is thirty dated days of chart-aware sky notes, running 12 August to 10 September — what to look for each night, computed against your own chart. It starts this evening. The Eclipse Night Reading (£2.99 today, £4 from tomorrow) is still available if you want tonight mapped against your birth chart before you step outside.
+> **For the month after tonight:** the Sky Pass (£5) is thirty dated days of chart-aware sky notes, running 12 August to 10 September — what to look for each night, computed against your own chart. It starts this evening. The Eclipse Night Reading (£2.99) is still available if you want tonight mapped against your birth chart before you step outside.
 >
 > 🚫 **→ Sky Pass — £5:** `[Gumroad link]` — BLOCKED
 > 🚫 **→ Eclipse shop:** `[Gumroad link]` — BLOCKED
@@ -219,8 +219,8 @@ existing `x-posts/` convention. The schedule lives here:
 exported.** Each one sells a price or points at a shop link that does not exist:
 
 - **Post 2** (Instagram, Thu 6 Aug) — its own copy is commerce-free, but the CTA is "Link in bio" pointing at the shop, and it sits in a sequence that assumes checkout. Safe to run **only** if the bio link is changed to eclipse.html.
-- **Post 4** (Instagram, Sun 9 Aug) — "£14 now, £19 later", CTA "Shop (Gumroad) — link in bio". No shop exists.
-- **Post 6** (Instagram, Tue 11 Aug) — "Last day at pre-eclipse prices", four prices listed, CTA to shop.
+- **Post 4** (Instagram, Sun 9 Aug) — price and a "Shop (Gumroad) — link in bio" CTA. No shop exists.
+- **Post 6** (Instagram, Tue 11 Aug) — prices listed and a CTA to the shop. No shop exists.
 - **Post 8** (Instagram, Wed 12 Aug, 19:30) — "the Sky Pass (£5) starts tonight", CTA to shop.
 
 Held copy for all four is preserved below so it can be restored in one edit once
@@ -242,7 +242,7 @@ the permalinks land.
 
 **Post 2 — Instagram · Thu 6 Aug, evening · 🚫 BLOCKED (shop bio link)**
 
-> Every AstroPrecise reading ships with the numbers it was built from — positions to the arcminute, computed on your own device with the same ephemeris mathematics astronomers use. Computed, never fabricated. On 12 August, nine-tenths of the Sun goes out over Britain. Find out where the eclipse lands in your chart — free, in your browser, nothing stored. Link in bio. ✦
+> Every AstroPrecise reading ships with the numbers it was built from — positions to the minute you were born, computed on your own device with the same astronomy engine every time. Computed, never fabricated. On 12 August, nine-tenths of the Sun goes out over Britain. Find out where the eclipse lands in your chart — free, in your browser, nothing stored. Link in bio. ✦
 >
 > #eclipse2026 #solareclipse #astrology #birthchart #ukastronomy #perseids
 
@@ -264,7 +264,7 @@ the permalinks land.
 
 **Post 4 — Instagram · Sun 9 Aug, afternoon · 🚫 BLOCKED (price + shop)**
 
-> A gift you can check. The Numbered Natal Plate is an A3 print of someone's exact birth sky — every position given to the arcminute, each plate numbered, each one carrying a fingerprint you can verify yourself against the ephemeris. £14 now, £19 later. For the person who has everything except their own sky, drawn properly. Link in bio.
+> A gift you can check. The Numbered Natal Plate is an A3 print of someone's exact birth sky — every position printed to the minute you were born, each plate numbered, each one carrying a fingerprint you can verify yourself against the public register. £14 when checkout opens. For the person who has everything except their own sky, drawn properly. Link in bio.
 >
 > #natalchart #birthchart #astrologygift #eclipse2026 #astroprint
 
@@ -286,7 +286,7 @@ the permalinks land.
 
 **Post 6 — Instagram · Tue 11 Aug, morning · 🚫 BLOCKED (four prices + shop)**
 
-> Last day at pre-eclipse prices — the honest kind, where the early price simply ends when the event does. Eclipse Night Reading £2.99 (then £4). Eclipse Set £6, with the print-ready sky plate. Numbered Natal Plate £14 (then £19). Sky Pass £5: thirty dated nights of chart-aware sky notes starting tomorrow, eclipse night. Quiet chart? We already told you — before you paid anything. Link in bio. ☾
+> The sky does not do sales. Eclipse Night Reading £2.99. Eclipse Set £6, with the print-ready sky plate. Numbered Natal Plate £14. Sky Pass £5: thirty dated nights of chart-aware sky notes starting tomorrow, eclipse night. Quiet chart? We already told you — before you paid anything. Link in bio. ☾
 >
 > #eclipse2026 #solareclipse #astrology #birthchart #stargazing #perseids
 
@@ -341,8 +341,8 @@ nowhere else in the repo. Kept in full.** Rows that depend on checkout are marke
 | **19:30** | 🚫 **Post 8 (Instagram):** "It just happened" + Perseids + Sky Pass. *(Blocked as written — a Perseids-only version with the eclipse.html link is safe and worth posting.)* |
 | **21:00** | Short X post: Perseids peak tonight — "eclipse first, meteors for afters". Link eclipse.html rather than Sky Pass while blocked. |
 | **22:30** | Final checkpoint. Answer remaining support messages. |
-| **23:30** | 🚫 Export the day's Gumroad sales and the email list state. Flip pricing: Eclipse Night Reading £2.99 → £4. *(Blocked. Still do: export the notify-list state, and log everything that broke for the retro.)* |
-| **Tomorrow (13 Aug)** | 🚫 Confirm plate price £14 → £19 timing. Draft the follow-up. *(Do the follow-up draft; the price flip is blocked.)* |
+| **23:30** | 🚫 Export the day's Gumroad sales and the email list state. *(Blocked. Still do: export the notify-list state, and log everything that broke for the retro.)* |
+| **Tomorrow (13 Aug)** | Draft the follow-up. *(Any future price change needs an owner decision and a matching code update.)* |
 
 **Watch list all day:** site up · notify signups capturing · email deliverability · replies answered within the hour during 17:00–20:00. *(Add "checkout converting" and "download/unlock delivery" once Gumroad is live.)*
 
@@ -354,12 +354,12 @@ nowhere else in the repo. Kept in full.** Rows that depend on checkout are marke
 
 | Page | og:title | og:description | og:image (suggested) |
 |---|---|---|---|
-| **index** (astroprecise.app/) | AstroPrecise — the weather report of the sky | Real astronomy computed on your device (VSOP87/ELP2000). Astrology readings written from your actual chart. Computed, never fabricated. | Orrery hero screenshot, mid-animation frame |
+| **index** (astroprecise.app/) | AstroPrecise — the weather report of the sky | Real astronomy computed on your device. Astrology readings written from your actual chart. Computed, never fabricated. | Orrery hero screenshot, mid-animation frame |
 | **eclipse** (…/eclipse.html) | Your eclipse, computed — 12 August 2026 | Where does the August 2026 eclipse land in your birth chart? Compute your eclipse contact free, on-device. Quiet charts told so before you pay. | Eclipse receipt screenshot showing the contact table |
 | **chart** (…/chart.html) | Free birth chart, computed on-device | Your natal chart calculated in your browser with professional-grade astronomy. Nothing uploaded, nothing stored. Free. | Rendered chart wheel screenshot |
 | **shop** (…/shop.html) | Eclipse Night Reading £2.99 — AstroPrecise eclipse shop | Five chapters mapping the 12 August 2026 eclipse against your birth chart. Sets, deep readings, numbered natal plates, Sky Pass. | Product grid screenshot with prices visible |
 
-**Notes for the engineer:** keep `og:url` canonical per page; add `og:type` = `website` (shop may use `product`); mirror the same text into `twitter:title` / `twitter:description` and set `twitter:card` = `summary_large_image`; update the shop's price-bearing description the day £2.99 → £4 flips. The shop already carries the £2.99 og:title (`shop.html` lines 27 and 36) — verify before rewriting.
+**Notes for the engineer:** keep `og:url` canonical per page; add `og:type` = `website` (shop may use `product`); mirror the same text into `twitter:title` / `twitter:description` and set `twitter:card` = `summary_large_image`; keep the shop's price-bearing description aligned with the published £2.99 price. The shop already carries the £2.99 og:title (`shop.html` lines 27 and 36) — verify before rewriting.
 
 ---
 
@@ -370,7 +370,7 @@ DM 10 UK astro/space TikTokers: *"Free for your followers: the only eclipse char
 ---
 
 *All non-commerce claims in this pack are checkable against the live site:
-on-device VSOP87/ELP2000 computation, the free teaser and chart tools, the
+on-device astronomical computation, the free teaser and chart tools, the
 quiet-chart guarantee, product names and prices, Sky Pass dates (12 Aug–10 Sep),
 and the eclipse facts as stated. The commerce claims are not checkable, because
 commerce is dormant — see §0.*

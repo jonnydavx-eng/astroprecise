@@ -23,7 +23,7 @@ numbers would have mispriced every one of them:
 
 | Product | Source doc said | The site actually says | Error |
 |---|---|---|---|
-| Natal Plate | £29 | **£14** launch, £19 later | overstated by £15 |
+| Natal Plate | £29 | **£14** | overstated by £15 |
 | Eclipse Set | £21 | **£6** | overstated by £15 |
 | Sky Pass | £33 | **£5** | overstated by £28 |
 
@@ -62,10 +62,10 @@ a card. That is the correct state, not a bug.
 ### 1a. Gumroad dashboard (one-time setup)
 
 1. Create the products at the site's prices:
-   - **Eclipse Night Reading £2.99** (rises to £4 after 12 Aug)
+   - **Eclipse Night Reading £2.99**
    - **Eclipse Set £6**
    - **Full / Deep Reading £12**
-   - **Numbered Natal Plate £14** (launch price; £19 later)
+   - **Numbered Natal Plate £14**
    - **Sky Pass £5**
 2. **License keys: ON** for `eclipse-reading` (and `full-reading` if you gate it the same way — the deep-reading page already verifies `full-reading` keys).
 3. **Post-purchase redirect** → `https://astroprecise.app/eclipse.html` (the site picks up the `?license=` return param and unlocks automatically).
@@ -108,9 +108,9 @@ node tools/byte-audit.mjs     # served bytes == local dist/ for every deployable
 > `<void-orrery>` surface and falls back to `orrery.js` on `?engine=legacy`.
 > Bump the adapter tag.
 
-### 1d. Price flip (£2.99 → £4) at eclipse midnight
+### 1d. Keep published prices stable
 
-Update: `shop.html` price copy + `og:title`/`twitter:title` ("Eclipse Night Reading £2.99 — …"), the `eclipse.html` price mentions, the `price` fields in both Gumroad tables, and the Gumroad price itself. If you'd rather not touch code at midnight, leave £2.99 running — just don't leave pages promising "£4 after the eclipse" if you don't flip.
+The site has no pre-scheduled price increase. Keep Gumroad and all public copy at the published £2.99 / £6 / £12 / £14 / £5 prices until the owner deliberately changes the product and code together. Never describe a price as a saving unless someone has actually paid the higher price.
 
 ---
 

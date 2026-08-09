@@ -66,7 +66,7 @@ the nav `SHOP` link, the footer. Re-check before you film: find-in-page for `£`
 | **200** | `#saleBox` heading — "STEP 2 · THE FULL READING — **£2.99**" | |
 | **202** | "…whole-sign house when your place is given **at unlock**" | |
 | **209** | button — "NOTIFY ME WHEN THE **£2.99** UNLOCK OPENS" | |
-| **212** | "**£4 AFTER 12 AUG** · GUMROAD WHEN LIVE · NO FAKE CHECKOUT" | |
+| **212** | "GUMROAD WHEN LIVE · NO FAKE CHECKOUT" | |
 | **213** | "Or see this edition alongside the others **in the shop** →" | |
 | **215** | "THE ECLIPSE SET — READING + SKY CARD + PRINTABLE NIGHT PAGE, **£6**" | |
 | **217** | "**ALREADY BOUGHT?** ENTER YOUR LICENSE KEY" | |
@@ -74,7 +74,7 @@ the nav `SHOP` link, the footer. Re-check before you film: find-in-page for `£`
 | **238** | "unlocks the moment **payment clears** … It was ready **before you paid**" | **inside `#result` and never hidden — it renders under the quiet box too** |
 | **239** | "Your **Gumroad receipt** carries your license key" | same card |
 | **251** | "EVERYTHING ELSE **WE SELL** — THE HONEST SHOP" | a `<details>` summary — visible even while collapsed |
-| **254–258** | the price table — **£2.99 / £4 / £6 / £12 / £14 / £19 / £5** | only when expanded. Never expand it on camera. |
+| **254–258** | the price table — **£2.99 / £6 / £12 / £14 / £5** | only when expanded. Never expand it on camera. |
 | **260** | "REFUNDS & YOUR RIGHTS" | |
 | **266** | email card — "your times, the weather windows, and **your unlock link**" | the card this campaign drives to |
 | **281** | footer — `SHOP` | in every frame that includes the bottom of the page |
