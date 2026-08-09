@@ -35,7 +35,7 @@ const PAGES = [
 
 async function snap(page, name) {
   const path = join(OUT, `${name}.png`);
-  await page.screenshot({ path, fullPage: false });
+  await page.screenshot({ path, fullPage: false, timeout: 15000 });
   return path;
 }
 
@@ -67,7 +67,9 @@ async function main() {
   const report = { base: BASE, capturedAt: new Date().toISOString(), pages: [], issues: [] };
 
   for (const p of PAGES) {
+    console.log('[capture-pages] ' + p.id + ': ' + p.path);
     const page = await context.newPage();
+    page.setDefaultTimeout(15000);
     const entry = { id: p.id, path: p.path, note: p.note, ok: true };
     try {
       await page.goto(`${BASE}${p.path}?v=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -95,15 +97,17 @@ async function main() {
   }
 
   // Hero (post-intro) — index with intro skipped
+  console.log('[capture-pages] hero-entered: /?lite=1');
   const heroPage = await context.newPage();
+  heroPage.setDefaultTimeout(15000);
   const hero = { id: 'hero-entered', path: '/?lite=1', note: 'Lite home shell with orrery mount' };
   try {
     await heroPage.goto(`${BASE}/?lite=1&v=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await heroPage.waitForSelector('#orrery-canvas', { state: 'attached', timeout: 20000 });
+    await heroPage.waitForSelector('#orr canvas, #orrery-canvas', { state: 'attached', timeout: 20000 });
     await heroPage.waitForTimeout(1500);
     hero.state = await readPageState(heroPage);
     hero.state.orreryCanvas = await heroPage.evaluate(() => {
-      const c = document.getElementById('orrery-canvas');
+      const c = document.querySelector('#orr canvas, #orrery-canvas');
       return c ? { w: c.width, h: c.height, inDom: true } : null;
     });
     hero.shot = await snap(heroPage, 'hero-entered');
