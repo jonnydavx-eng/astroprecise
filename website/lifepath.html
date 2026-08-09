@@ -760,7 +760,13 @@
     }
     const links = [];
     if (opts.birthDate) {
-      links.push(`<a class="lp-crosslink" href="chart.html?date=${encodeURIComponent(opts.birthDate)}${opts.name ? '&name=' + encodeURIComponent(opts.name) : ''}">Birth chart for this date</a>`);
+      // Until 2026-08-09 this read href="chart.html?date=…&name=…", which put
+      // the visitor's birth date in the request line and into the host's access
+      // logs. chart.html has always preferred a sessionStorage handoff, so the
+      // date now travels that way instead — same tab, same origin, never sent.
+      // (The name was never read by chart.html at all: pure leak, now dropped.)
+      links.push('<a class="lp-crosslink" href="chart.html" data-lp-handoff="'
+        + encodeURIComponent(opts.birthDate) + '">Birth chart for this date</a>');
     }
     if (opts.name) {
       links.push(`<a class="lp-crosslink" href="name-numerology.html?name=${encodeURIComponent(opts.name)}">Name numerology breakdown</a>`);
@@ -769,6 +775,25 @@
     links.push('<a class="lp-crosslink" href="compatibility.html">Compare with a partner</a>');
     wrap.innerHTML = links.join('');
     wrap.classList.add('is-visible');
+
+    // Bound once — renderCrosslinks() re-runs on every recalculation while the
+    // wrapper element itself survives.
+    if (!wrap.dataset.lpHandoffBound) {
+      wrap.dataset.lpHandoffBound = '1';
+      const stashHandoff = ev => {
+        const a = ev.target.closest('a[data-lp-handoff]');
+        if (!a) return;
+        try {
+          sessionStorage.setItem('ap-chart-handoff', JSON.stringify({
+            date: decodeURIComponent(a.getAttribute('data-lp-handoff') || ''),
+            time: '',
+            city: '',
+          }));
+        } catch (e) { /* storage blocked — chart.html opens on an empty form */ }
+      };
+      wrap.addEventListener('click', stashHandoff);
+      wrap.addEventListener('auxclick', stashHandoff);
+    }
   }
 
   /* ── Mandala drawing ─────────────────────────────────────────────────────── */

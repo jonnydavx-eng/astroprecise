@@ -174,16 +174,26 @@
     if (!chart) { host.hidden = true; return; }
 
     var link = buildLinkFromChart(chart, { focus: 'earth' });
-    var name = (chart.name || 'Your').split(/\s+/)[0] || 'Your';
+    // Naming the chart is optional, so most visitors arrive here with no name
+    // at all. The old default was the literal string "Your", which the
+    // possessive below turned into "See Your's sky in the 3D model". When
+    // there is no name the sentence simply does not need one.
+    // "Home cast" is the label index.html gives its own quick cast, not
+    // something anybody typed — it must not be read out as a person either.
+    var first = String(chart.name || '').trim().split(/\s+/)[0] || '';
+    if (/^(your|home)$/i.test(first)) first = '';
+    var title = first
+      ? 'See ' + esc(first) + '’s sky in the 3D model'
+      : 'See your sky in the 3D model';
     var when = chart.birthDate +
       (chart.birthTime ? ' · ' + chart.birthTime : ' · UTC noon (time unknown)');
 
     host.innerHTML =
       '<div class="ap-sky-bridge ap-reveal-smooth ap-glow-hover">' +
         '<p class="ap-sky-bridge__eyebrow">01 · Model</p>' +
-        '<h2 class="ap-sky-bridge__title">See ' + esc(name) + '\'s sky in the 3D model</h2>' +
+        '<h2 class="ap-sky-bridge__title">' + title + '</h2>' +
         '<p style="font-size:0.88rem;color:var(--ap-text-secondary,#ddd3bf);margin:0;line-height:1.6;">' +
-          esc(when) + ' · VSOP87 positions in the full orrery — Earth rest frame, honest caption.' +
+          esc(when) + ' · the planets where they actually stood that minute, in the full 3D model, with Earth held still at the centre.' +
         '</p>' +
         '<div class="ap-sky-bridge__actions">' +
           '<a href="' + esc(link) + '" class="btn btn--primary btn--sm" data-ap-model-link="chart-cast">See your sky in the model</a>' +

@@ -58,11 +58,15 @@ input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radi
 </div>
 
 <h1 style="margin-top:52px">The Deep Reading — seven chapters written from <em>your</em> birth minute.</h1>
-<div class="sub">£12 · ≈1,800 words · computed on your device, never fabricated. Below is a complete published sample — the proof, not a claim — generated live in front of you by the same engine that writes yours.</div>
+<div class="sub">£12 · ≈1,800 words · computed on your device, never fabricated. Below, the seven chapters compute live from a sample birth minute — you watch the receipts appear, and the chapters themselves stay locked on this page. If you want to read one all the way through before deciding anything, <a href="./sample-reading.html">a complete reading is published in full, free</a>.</div>
 
+<!-- This card used to say "PUBLISHED IN FULL — THE PROOF, NOT A CLAIM" above
+     seven LOCKED chapter stubs, which is the opposite of proof. The full text
+     genuinely is published — at sample-reading.html — so the claim now points
+     at the page that keeps it, and this card describes what it actually does. -->
 <div class="card" style="margin-top:30px">
-  <div class="lbl">SAMPLE COMMISSION · PUBLISHED IN FULL — THE PROOF, NOT A CLAIM</div>
-  <div style="font-size:15.5px;line-height:1.6;color:var(--dim)">Seven chapters, generated in front of you by the same engine that sells for £12 — for a person born <b style="color:var(--ink)">14 March 1994, 09:12, Manchester</b>. Mono lines are computed receipts; serif lines are what the receipts earn. Chapter six is live: it re-computes against today's actual sky every time this page opens.</div>
+  <div class="lbl">SAMPLE COMMISSION · COMPUTED LIVE HERE · READ IN FULL NEXT DOOR</div>
+  <div style="font-size:15.5px;line-height:1.6;color:var(--dim)">Seven chapters, computed in front of you by the same engine that writes the £12 edition — for a person born <b style="color:var(--ink)">14 March 1994, 09:12, Manchester</b>. Mono lines are computed receipts; serif lines are what the receipts earn. Chapter six is live: it re-computes against today's actual sky every time this page opens. The chapter text stays locked here — <a href="./sample-reading.html">the complete published sample</a> is the one to read end to end.</div>
   <div class="mono" id="wordLine" style="font-size:8.5px;letter-spacing:.18em;color:var(--good);margin-top:12px">COMPUTING SEVEN CHAPTERS…</div>
 </div>
 
@@ -195,7 +199,7 @@ function renderLockedShell() {
   $('unlockBox').innerHTML = `
     <div class="card">
       <div class="lbl">THE FULL READING — £12 · UNLOCK THE SEVEN CHAPTERS ABOVE</div>
-      <p style="margin:0 0 16px;font-size:15.5px;line-height:1.65;color:var(--dim)">The titles are real — the chapters under them are already computed on this device, never uploaded. Payment on Gumroad issues your license key; paste it below and the reading unlocks in place, on any device, any time.</p>
+      <p style="margin:0 0 16px;font-size:15.5px;line-height:1.65;color:var(--dim)">The titles are real — the chapters under them are already computed on this device, never uploaded. Checkout is not open yet, so there is nothing to pay today; when it opens, payment on Gumroad will issue a licence key that unlocks the reading in place, on any device, any time. In the meantime <a href="./sample-reading.html">a complete reading is published in full, free</a> — read that before you decide anything.</p>
       <a class="btn" id="buyBtn" href="./shop.html#deep-reading" style="display:none">UNLOCK THE FULL READING — £12</a>
       <form id="notifyForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0">
         <input id="notifyEmail" type="email" required placeholder="you@example.com" aria-label="Email for checkout-open alert" style="flex:1;min-width:200px">

@@ -685,11 +685,14 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
           </div>
         </div>
 
+        <!-- Every clause here is checkable from the browser, and people do
+             check. Nothing goes in that the code does not already do. -->
         <p class="colophon">
           <b>Instruments:</b> VSOP87 for the planets, ELP2000 for the Moon,
-          after Meeus — the series planetarium software runs on. Valid
-          1800–2200&nbsp;CE. Your birth minute is computed on this device and is
-          never put in a web address: pressing the button above asks the server
+          after Meeus — the series planetarium software runs on, held to the
+          minute you were born. Valid 1800–2200&nbsp;CE. Your birth details are
+          read and computed on this device. Casting puts nothing in the address
+          bar and sends nothing to us; pressing the button above asks the server
           for the next page and tells it nothing else about you. Open your
           browser's network tab while you cast — not one request carries your
           date, your time or your town.
@@ -809,16 +812,25 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
             </svg>
             <figcaption>
               <b>Fig. 2 — 12 August 2026</b>
-              The deepest eclipse over Britain since 1999: roughly 89 to 92 per cent
-              of the Sun covered, low in the west. The Perseids peak the same night.
-              Schematic, not to scale.
+              The deepest eclipse over southern Britain since 1999: 88 to 96 per cent
+              of the Sun covered, low in the west, and over before sunset everywhere in
+              Britain. The Perseids peak the same night. Schematic, not to scale.
             </figcaption>
           </figure>
 
           <!-- A complete, true sentence by default. The script appends a day
                count when it can, and stays silent once the date has passed. -->
           <p class="margin-note__dateline">
-            Wednesday 12 August 2026 · peak ≈19:05 BST<span id="eclipse-delta"></span>
+            Wednesday 12 August 2026 · UK maximum ≈19:12 BST in London<span id="eclipse-delta"></span>
+          </p>
+          <!-- The bridging sentence. 18:46 BST (greatest eclipse, out at sea off
+               Iceland) and ~19:12 BST (Britain's own maximum) are two different
+               moments; saying only one of them is how readers end up looking up
+               at the wrong time. Keep both, in one plain sentence. -->
+          <p class="margin-note__dateline">
+            The eclipse is deepest of all at 18:46 BST, out at sea off Iceland;
+            Britain’s own maximum comes later — about 19:05 in Edinburgh, 19:12 in
+            London, 19:16 in Truro.
           </p>
           <a class="margin-note__link" href="./eclipse.html">Read where it falls in your chart →</a>
         </aside>
@@ -968,25 +980,43 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   <div class="wrap">
     <div class="chap-head">
       <div class="chap-idx"><span class="chap-num">IV</span><span class="chap-tag">PLATE IV · THE EDITIONS</span></div>
-      <div class="chap-note">FIVE DIGITAL EDITIONS<br>EACH ONE SHOWS ITS CONTENTS FIRST</div>
+      <div class="chap-note">FIVE DIGITAL EDITIONS<br>CHECKOUT IS NOT OPEN YET</div>
     </div>
     <h2>Keep the <em style="color:var(--brass)">sky.</em></h2>
-    <p class="sub">Five editions, all digital, all computed from your chart alone — and each one tells you exactly what's inside.</p>
+    <p class="sub">Five editions, all digital, all computed from your chart alone. <b style="color:var(--ink)">None of them can be bought today</b> — checkout isn't open yet. Here is exactly what each one will be, and what it will cost, so you can decide before there's anything to click.</p>
+
+    <!-- Checkout is dormant. Every price below is a published intention, not an
+         offer: there is no cart, no payment link and no way to pay us today. The
+         page said none of that before — it showed five prices and promised an
+         unlock "the moment payment clears", which reads as a live shop. -->
+    <div class="card" id="checkoutClosed" style="margin:0 0 26px;border-color:rgba(31,182,166,.4)">
+      <div class="lbl" style="color:var(--good)">CHECKOUT IS NOT OPEN YET — SAID BEFORE THE PRICES, NOT AFTER</div>
+      <p style="margin:0 0 14px;font-size:15.5px;line-height:1.7;color:var(--dim)">We're not taking money yet. There's no cart on this site, no payment link behind any price, and nothing you can accidentally buy. When checkout opens it will be through Gumroad, and everything below unlocks on your own device the moment it does.</p>
+      <p style="margin:0 0 16px;font-size:15.5px;line-height:1.7;color:var(--dim)">Until then the whole engine is free and yours: cast your chart, read today's sky, run the eclipse teaser. If you'd like one email when checkout opens, leave your address — that's the only thing this form does.</p>
+      <form id="shopNotify" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0">
+        <label for="shopNotifyEmail" class="mono" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Email address for one notice when checkout opens</label>
+        <input id="shopNotifyEmail" type="email" name="email" required autocomplete="email" placeholder="you@example.com" style="flex:1;min-width:210px;width:auto">
+        <button class="btn" id="shopNotifyBtn" type="submit">EMAIL ME WHEN CHECKOUT OPENS</button>
+      </form>
+      <div class="mono" id="shopNotifyMsg" role="status" aria-live="polite" style="display:none;font-size:11px;letter-spacing:.14em;margin-top:12px"></div>
+      <p class="mono" style="margin:12px 0 0;font-size:10px;letter-spacing:.16em;color:var(--faint)">ONE EMAIL · NO CART · NO FAKE CHECKOUT · YOUR BIRTH DATA IS NEVER SENT WITH IT</p>
+    </div>
+
     <table>
       <thead>
-      <tr><th>EDITION</th><th>WHAT'S INSIDE</th><th style="text-align:right">PRICE</th></tr>
+      <tr><th>EDITION</th><th>WHAT'S INSIDE</th><th style="text-align:right">PRICE WHEN IT OPENS</th></tr>
       </thead>
       <tbody>
-      <tr><td><b>Eclipse Night Reading</b></td><td>Five beats from the 12 Aug eclipse to your chart, exact orbs. Quiet charts are told so before paying. <a href="./eclipse.html">Free teaser →</a></td><td class="price">£2.99</td></tr>
-      <tr><td><b>Eclipse Set</b></td><td>The reading + eclipse Sky Card + printable eclipse-night page.</td><td class="price">£6</td></tr>
-      <tr><td><b>Deep Reading</b></td><td>Seven computed chapters with a live "your sky today". <a href="./deep-reading.html">Sample published in full →</a></td><td class="price">£12</td></tr>
-      <tr><td><b>The Plate</b></td><td>A3 star map of your birth minute — arcminute tables, aspect wheel, verifiable QR, numbered edition. <a href="./natal-plate.html">See it →</a></td><td class="price">£14</td></tr>
-      <tr><td><b>Sky Pass</b></td><td>30 dated days of chart-aware sky notes, 12 Aug – 10 Sep. A dated edition that simply ends — no subscription, nothing to cancel.</td><td class="price">£5</td></tr>
+      <tr><td><b>Eclipse Night Reading</b></td><td>Five beats from the 12 Aug eclipse to your own chart, with the exact distance to each contact. If the eclipse barely touches your placements we say so first and tell you to keep your money. <a href="./eclipse.html">Free teaser →</a></td><td class="price">£2.99<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
+      <tr><td><b>Eclipse Set</b></td><td>The reading + eclipse Sky Card + printable eclipse-night page.</td><td class="price">£6<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
+      <tr><td><b>Deep Reading</b></td><td>Seven computed chapters with a live "your sky today". <a href="./sample-reading.html">Read a complete sample, free →</a></td><td class="price">£12<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
+      <tr><td><b>The Plate</b></td><td>A3 star map of your birth minute — every position printed to the minute you were born, aspect wheel, verifiable QR, numbered edition. <a href="./natal-plate.html">See it →</a></td><td class="price">£14<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
+      <tr><td><b>Sky Pass</b></td><td>30 dated days of chart-aware sky notes, 12 Aug – 10 Sep. A dated edition that simply ends — no subscription, nothing to cancel.</td><td class="price">£5<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
       </tbody>
     </table>
     <div class="card" style="margin-top:28px">
-      <div class="lbl">HOW YOU RECEIVE EVERYTHING</div>
-      <p style="margin:0 0 10px;font-size:15.5px;line-height:1.7;color:var(--dim)"><b style="color:var(--ink)">Instantly, on your device</b> — readings compute here and unlock the moment payment clears; no email wait. <b style="color:var(--ink)">Permanently re-accessible</b> — your Gumroad license key re-unlocks on any device, any time. <a href="./refunds.html">Refunds &amp; your rights →</a></p>
+      <div class="lbl">HOW YOU'LL RECEIVE EVERYTHING — ONCE CHECKOUT OPENS</div>
+      <p style="margin:0 0 10px;font-size:15.5px;line-height:1.7;color:var(--dim)"><b style="color:var(--ink)">Instantly, on your device</b> — readings compute here, so when payment clears there is no email wait and nothing to prepare. <b style="color:var(--ink)">Permanently re-accessible</b> — your licence key will re-unlock them on any device, any time. None of that is live yet; it's how it will work on day one. <a href="./refunds.html">Refunds &amp; your rights →</a></p>
       <p style="margin:0;font-size:14px;line-height:1.65;color:var(--faint)">The astronomy is exact and checkable. The astrological meaning is tradition, offered for reflection and entertainment — not advice or prediction.</p>
     </div>
   </div>
@@ -1337,14 +1367,52 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
         if (hero) APSkyNews.mount(hero, { autoFly: false, autoCycle: true, cycleMs: 9000, limit: 5 });
       }
     } catch (e3) { /* optional */ }
-    try { history.replaceState(null, '', '#b=' + encodeURIComponent(dob + '|' + $('tob').value + '|' + tz)); } catch (e) {}
+    // ── Reload restore. Deliberately NOT the address bar. ──────────────────
+    // Until 2026-08-09 this line was:
+    //
+    //   history.replaceState(null, '', '#b=' + encodeURIComponent(dob + '|' + time + '|' + tz))
+    //
+    // so every cast wrote the visitor's birth date, time and timezone into the
+    // address bar — where it is copied, screenshotted, bookmarked, carried into
+    // browser history and, for anyone signed in, synced to their other devices.
+    // The colophon under this console promises the opposite and invites the
+    // reader to check, so the code is what had to change, not the wording.
+    //
+    // sessionStorage gives back exactly what the fragment was actually doing —
+    // survive a reload in this tab — and nothing it should not: same tab, same
+    // origin, never transmitted, gone when the tab closes. It is the same
+    // channel the coupon handoff above already uses.
+    try { sessionStorage.setItem('ap-home-cast', JSON.stringify({ d: dob, t: $('tob').value, z: tz })); } catch (e) {}
     tonight();
   }
   $('castBtn').addEventListener('click', function () { cast(false); });
-  try {
-    var m = location.hash.match(/b=([^&]+)/);
-    if (m) { var p = decodeURIComponent(m[1]).split('|'); $('dob').value = p[0]; if (p[1]) $('tob').value = p[1]; if (p[2]) $('tz').value = p[2]; setTimeout(function () { cast(true); }, 400); }
-  } catch (e) {}
+  (function restoreCast() {
+    function fill(d, t, z) {
+      if (!d) return false;
+      $('dob').value = d;
+      if (t) $('tob').value = t;
+      if (z !== '' && z != null) $('tz').value = z;
+      setTimeout(function () { cast(true); }, 400);
+      return true;
+    }
+    // 1. This tab's own last cast.
+    try {
+      var raw = sessionStorage.getItem('ap-home-cast');
+      if (raw) { var o = JSON.parse(raw); if (o && fill(o.d, o.t, o.z)) return; }
+    } catch (e) { /* storage blocked or malformed — fall through */ }
+    // 2. LEGACY ONLY: a #b= link minted before 2026-08-09, or printed on a
+    //    natal plate. Nothing on this site creates these any more. Honour it so
+    //    a link somebody already holds still works, then take it straight out
+    //    of the address bar — this page does not leave birth data sitting there.
+    try {
+      var m = location.hash.match(/b=([^&]+)/);
+      if (m) {
+        var p = decodeURIComponent(m[1]).split('|');
+        history.replaceState(null, '', location.pathname + location.search);
+        fill(p[0], p[1], p[2]);
+      }
+    } catch (e2) {}
+  })();
   function tonight() {
     var now = new Date(), jd = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 0);
     var rows = positions(jd), sun = rows[0], moon = rows[1];
@@ -1475,6 +1543,59 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   }
   window.addEventListener('load', function () { setTimeout(function () { netBase = null; nets(); }, 1500); });
   nets(); setInterval(nets, 4000);
+})();
+</script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   CHECKOUT-CLOSED NOTICE — the email capture that stands in for a cart.
+
+   The subscribe Worker at list.astroprecise.app answers the CORS preflight and
+   echoes the requesting Origin (measured 2026-08-09 against both the live
+   origin and http://localhost:8790). So this is a NORMAL cors fetch: the
+   response is readable, and the visitor is only told they are on the list when
+   the list actually said 200. A failed POST says so, plainly, and lets them
+   retry. Nothing is stored, and no birth data is anywhere near this request.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var form = document.getElementById('shopNotify');
+  if (!form) return;
+  var input = document.getElementById('shopNotifyEmail');
+  var btn = document.getElementById('shopNotifyBtn');
+  var msg = document.getElementById('shopNotifyMsg');
+  var LABEL = btn ? btn.textContent : '';
+  var MAILTO = 'CONTACT@ASTROPRECISE.APP';
+
+  function say(text, good) {
+    if (!msg) return;
+    msg.style.display = '';
+    msg.style.color = good ? 'var(--good)' : 'var(--ember-hi)';
+    msg.textContent = text;
+  }
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var email = ((input && input.value) || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      say('THAT DOESN’T LOOK LIKE AN EMAIL ADDRESS — CHECK IT AND TRY AGAIN', false);
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.textContent = 'SENDING…'; }
+    say('SENDING…', true);
+    var body = new FormData();
+    body.append('email', email);
+    body.append('tags', 'checkout-open');
+    fetch('https://list.astroprecise.app/subscribe', { method: 'POST', body: body })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        form.innerHTML = '';
+        say('✦ YOU’RE ON THE LIST — ONE EMAIL WHEN CHECKOUT OPENS, NOTHING ELSE', true);
+      })
+      .catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = LABEL; }
+        say('THAT DID NOT SEND — YOU ARE NOT ON THE LIST. CHECK YOUR CONNECTION AND TRY AGAIN, OR EMAIL ' + MAILTO, false);
+      });
+  });
 })();
 </script>
 <script src="./js/ap-sky-time.js" defer></script>

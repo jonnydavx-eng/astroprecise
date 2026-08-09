@@ -93,9 +93,17 @@
     return line;
   }
 
-  // ── View action — build a chart.html link from stored birth data ───────────
+  // ── View action — hand the stored birth data to chart.html ─────────────────
   // chart.html restoreFromURL() reads: n, d, t, c, lat, lon, tz (NOT an id).
-  function viewUrl(c) {
+  //
+  // Until 2026-08-09 this returned 'chart.html?n=…&d=…&lat=…', so opening one of
+  // your own saved charts sent your name, birth date, birth time, town and
+  // coordinates to the origin in the request line — into GitHub Pages' and
+  // Cloudflare's access logs, and into the service worker's Cache Storage as
+  // part of the key. The View button now navigates to a bare chart.html and
+  // hands the record over in sessionStorage: same tab, same origin, never
+  // transmitted, read once and deleted.
+  function viewParams(c) {
     var q = new URLSearchParams();
     q.set('n', c.name || 'Saved Chart');
     q.set('d', c.birthDate || '');
@@ -104,7 +112,7 @@
     if (c.lat != null && c.lat !== '') q.set('lat', c.lat);
     if (c.lon != null && c.lon !== '') q.set('lon', c.lon);
     if (c.tz) q.set('tz', c.tz);
-    return 'chart.html?' + q.toString();
+    return q.toString();
   }
 
   // ── card rendering ─────────────────────────────────────────────────────────
@@ -145,7 +153,7 @@
         '</div>' +
 
         '<div class="mc-card__actions">' +
-          '<a class="btn btn--gold btn--sm" href="' + esc(viewUrl(c)) + '">View</a>' +
+          '<a class="btn btn--gold btn--sm" href="chart.html" data-ap-restore="' + esc(viewParams(c)) + '">View</a>' +
           '<button type="button" class="btn btn--outline btn--sm" data-act="rename">Rename</button>' +
           '<button type="button" class="btn btn--ghost btn--sm" data-act="active"' +
             (isActive ? ' disabled aria-disabled="true"' : '') + '>' +
@@ -311,7 +319,19 @@
     render();
   }
 
+  // Stash the birth record for chart.html and let the plain <a href="chart.html">
+  // navigate normally. auxclick is covered too, so a middle-click still lands on
+  // a filled form (browsers clone sessionStorage into a tab opened from a link).
+  function onRestoreActivate(ev) {
+    var a = ev.target.closest ? ev.target.closest('a[data-ap-restore]') : null;
+    if (!a) return;
+    try { sessionStorage.setItem('ap-chart-restore', a.getAttribute('data-ap-restore') || ''); }
+    catch (e) { /* storage blocked — chart.html opens on an empty form, which is
+                   the honest failure: no birth data goes in the URL instead. */ }
+  }
+
   function onClick(ev) {
+    onRestoreActivate(ev);
     var btn = ev.target.closest ? ev.target.closest('[data-act]') : null;
     if (!btn) return;
     var card = findCard(btn);
@@ -328,7 +348,10 @@
 
   function init() {
     var grid = $('charts-grid');
-    if (grid) grid.addEventListener('click', onClick);
+    if (grid) {
+      grid.addEventListener('click', onClick);
+      grid.addEventListener('auxclick', onRestoreActivate);
+    }
     render();
   }
 

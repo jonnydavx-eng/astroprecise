@@ -439,7 +439,13 @@
           window.APCanvasSeals.preload(sealSigns);
         }
         renderResults(currentChart);
-        updateShareURL(input);
+        // No updateShareURL() here any more. It used to replaceState() the
+        // whole birth record — name, date, time, town, lat, lon, tz — into the
+        // address bar on every calculation. Sharing never needed it: the Share
+        // and Copy-link buttons build their URL on demand from the chart object
+        // (APChartShare.buildShareUrl), so the only thing the address-bar write
+        // achieved was putting birth data somewhere the visitor did not ask for
+        // it — history, bookmarks, browser sync, and the next Referer header.
         // Pin this sky onto the home orrery (Celestia's payoff, ported):
         // the hero instrument stops being "the sky today" and becomes yours.
         try {
@@ -537,21 +543,40 @@
     }, () => window.AstroApp?.showToast('Declined', 'Location permission declined — search by name instead.', 'warning'));
   });
 
-  // ── Shareable URL state ───────────────────────────────────────────────────
+  // ── Restoring a complete chart ────────────────────────────────────────────
 
-  function updateShareURL(input) {
-    const q = new URLSearchParams({
-      n: input.name, d: `${input.y}-${input.m}-${input.d}`,
-      t: input.timeKnown ? `${input.hh}:${input.mm}` : '',
-      a: input.timeAccuracy || (input.timeKnown ? 'exact' : 'unknown'),
-      c: input.city, lat: input.lat, lon: input.lon, tz: input.tz,
-    });
-    history.replaceState(null, '', '?' + q.toString());
+  /* Where a full chart restore (n, d, t, c, lat, lon, tz, a, hs) comes from,
+     in priority order. Nothing on this site writes birth data into a URL any
+     more; both remaining paths exist so links minted before 2026-08-09 keep
+     working.
+
+       1. sessionStorage['ap-chart-restore'] — what the saved-chart galleries
+          (charts.html, profile.html) now hand over. Same tab, same origin,
+          never transmitted. Read once and deleted.
+       2. location.search — LEGACY. A query string reaches the origin and the
+          CDN access logs and becomes a Cache Storage key, which is why nothing
+          mints one now. Reading a link the visitor already holds is harmless;
+          creating it was the harm. Do not reintroduce a query-string handoff. */
+  function readRestoreParams() {
+    try {
+      const raw = sessionStorage.getItem('ap-chart-restore');
+      if (raw) {
+        sessionStorage.removeItem('ap-chart-restore');
+        return { q: new URLSearchParams(raw), fromUrl: false };
+      }
+    } catch { /* storage blocked or malformed — fall through */ }
+    return { q: new URLSearchParams(location.search), fromUrl: true };
   }
 
   function restoreFromURL() {
-    const q = new URLSearchParams(location.search);
+    const { q, fromUrl } = readRestoreParams();
     if (!q.get('d') || !q.get('lat')) return;
+    // A legacy link has served its purpose the moment it is read. Take it out
+    // of the address bar rather than leave someone's birth record on screen to
+    // be screenshotted, bookmarked or handed on with the next link they click.
+    if (fromUrl) {
+      try { history.replaceState(null, '', location.pathname); } catch { /* pre-history browser */ }
+    }
     document.getElementById('name-input').value = q.get('n') || 'Shared Chart';
     openOptionalName();
     const [y, m, d] = q.get('d').split('-').map(Number);
@@ -595,12 +620,13 @@
           when sessionStorage is blocked. A fragment is not part of the request
           line and is not sent in a Referer, so it never reaches a server log.
           It is stripped from the address bar as soon as it is read.
-       3. location.search (?date=&time=&city=) — LEGACY ONLY. Nothing on this
-          site mints these any more, but lifepath.html, profile.html and
-          js/charts-dashboard.js still link with a query, and a visitor may
-          have one bookmarked. Reading it is safe; the harm was in *creating*
-          it, because a query string is written into the origin's and the
-          CDN's access logs. Do not reintroduce a query-string handoff. */
+       3. location.search (?date=&time=&city=) — LEGACY ONLY. As of 2026-08-09
+          nothing on this site mints one: lifepath.html, profile.html and
+          js/charts-dashboard.js were the last three and now hand over in
+          sessionStorage. A visitor may still have an old link bookmarked.
+          Reading it is safe; the harm was in *creating* it, because a query
+          string is written into the origin's and the CDN's access logs and
+          becomes a Cache Storage key. Do not reintroduce a query handoff. */
   function readHandoff() {
     let src = null;
 

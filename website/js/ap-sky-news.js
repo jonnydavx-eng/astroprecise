@@ -165,8 +165,12 @@
         id: 'moon',
         kicker: 'MOON',
         title: GLYPH.Moon + ' ' + phase,
-        detail: fmtDeg(moon) + ' · ~' + illum + '% illuminated · ' + (elong < 180 ? 'waxing' : 'waning') +
-          ' · elongation ' + elong.toFixed(1) + '° east of Sun',
+        // The unfolded 0–360° figure stays printed to one decimal: it is the
+        // number test-sky-news-moon-phase.mjs reads back to prove the waxing /
+        // waning branch was not folded. Only the label changed — "elongation"
+        // is a word nobody outside the trade uses.
+        detail: fmtDeg(moon) + ' · about ' + illum + '% lit · ' + (elong < 180 ? 'waxing' : 'waning') +
+          ' · ' + elong.toFixed(1) + '° round the sky from the Sun',
         fly: 'moon',
         score: 100
       });
@@ -187,7 +191,8 @@
         id: 'pair',
         kicker: 'TIGHTEST PAIR',
         title: GLYPH[pairBest.a] + ' ' + pairBest.a + ' · ' + GLYPH[pairBest.b] + ' ' + pairBest.b,
-        detail: pairBest.s.toFixed(2) + '° separation (geocentric) · ' + fmtDeg(L[pairBest.a]) + ' / ' + fmtDeg(L[pairBest.b]),
+        detail: pairBest.s.toFixed(2) + '° separation as we see them from Earth · ' +
+          fmtDeg(L[pairBest.a]) + ' and ' + fmtDeg(L[pairBest.b]),
         fly: KEY[pairBest.a],
         flyB: KEY[pairBest.b],
         score: 95 - pairBest.s
@@ -208,7 +213,8 @@
         id: 'rx',
         kicker: 'RETROGRADE',
         title: retro.map(function (n) { return GLYPH[n] + ' ' + n; }).join(' · '),
-        detail: retro.length + ' body(ies) currently retrograde (longitude decreasing over 3d sample) · tradition only — not advice',
+        detail: (retro.length === 1 ? 'One planet is' : retro.length + ' planets are') +
+          ' moving backwards against the stars right now, seen from here · measured over the next three days, not predicted · tradition, not advice',
         fly: KEY[retro[0]],
         score: 70
       });
@@ -230,7 +236,11 @@
             var o = Math.abs(s - a);
             if (o < nearest) {
               nearest = o;
-              kind = a === 0 ? 'conjunct' : a === 60 ? 'sextile' : a === 90 ? 'square' : a === 120 ? 'trine' : 'opposite';
+              // Plain verb phrases, not the trade's nouns. Audience research
+              // (2026-08-08) measured "sextile" as vocabulary readers do not
+              // have; "at an easy angle to" says the same thing and reads.
+              kind = a === 0 ? 'sitting on' : a === 60 ? 'at an easy angle to'
+                : a === 90 ? 'squaring' : a === 120 ? 'in a flowing trine to' : 'facing';
             }
           });
           if (nearest <= 3 && (!bestT || nearest < bestT.orb)) {
@@ -245,17 +255,17 @@
         items.push({
           id: 'transit-natal',
           kicker: 'YOUR CHART TODAY',
-          title: (GLYPH[bestT.tr] || '') + ' ' + bestT.tr + ' ' + bestT.kind + ' natal ' + (GLYPH[bestT.na] || '') + ' ' + bestT.na,
-          detail: 'Orb ' + bestT.orb.toFixed(2) + '° · from your saved chart on this device · computed transit, not a sun-sign blurb',
+          title: (GLYPH[bestT.tr] || '') + ' ' + bestT.tr + ' ' + bestT.kind + ' your ' + (GLYPH[bestT.na] || '') + ' ' + bestT.na,
+          detail: 'Within ' + bestT.orb.toFixed(2) + '° of exact · read off the chart saved on this device · your own placements, not a sun-sign blurb',
           fly: KEY[bestT.tr] || 'sun',
           score: 92 - bestT.orb
         });
       } else if (bestWide) {
         items.push({
           id: 'transit-natal-wide',
-          kicker: 'YOUR CHART · WIDE',
-          title: (GLYPH[bestWide.tr] || '') + ' ' + bestWide.tr + ' ' + bestWide.kind + ' natal ' + (GLYPH[bestWide.na] || '') + ' ' + bestWide.na,
-          detail: 'Orb ' + bestWide.orb.toFixed(2) + '° (wide · under 8°) · still your chart on this device · not a sun-sign blurb',
+          kicker: 'YOUR CHART · LOOSE',
+          title: (GLYPH[bestWide.tr] || '') + ' ' + bestWide.tr + ' ' + bestWide.kind + ' your ' + (GLYPH[bestWide.na] || '') + ' ' + bestWide.na,
+          detail: 'Within ' + bestWide.orb.toFixed(2) + '° of exact — a loose one · still your own chart, on this device · not a sun-sign blurb',
           fly: KEY[bestWide.tr] || 'sun',
           score: 78 - bestWide.orb
         });
@@ -265,11 +275,11 @@
           id: 'chart-quiet',
           kicker: 'YOUR CHART',
           title: hasAsc
-            ? 'No tight major transit-to-natal within 8° right now'
-            : 'Chart loaded · cast with place for rising hits',
+            ? 'A quiet day in your chart'
+            : 'Your chart is here · add your birth place for your rising',
           detail: hasAsc
-            ? 'Quiet is honest — the sky is not always loud. Your longitudes stay on this device.'
-            : 'Home cast has planets; add birth place on the full chart for Ascendant contacts.',
+            ? 'Nothing is close to your placements right now, and that is a real reading — quiet charts are real, the sky is not always loud. Your chart stays on this device.'
+            : 'This cast has your planets. Add your birth place on the full chart and this strip can name what today is touching in your rising too.',
           href: hasAsc ? './transits.html' : './chart.html',
           fly: 'earth',
           score: 74
@@ -280,26 +290,33 @@
       items.push({
         id: 'cast-cta',
         kicker: 'PERSONALISE',
-        title: 'Cast your free chart · personal sky news',
-        detail: 'When a chart is saved on this device, this strip can name real transit-to-natal hits — never a sun-sign blurb.',
+        title: 'Cast your free birth chart · your own sky news',
+        detail: 'Save a chart on this device and this strip names what today’s sky is actually touching in your placements — never a sun-sign blurb.',
         href: './index.html#cast',
         fly: 'earth',
         score: 55
       });
     }
 
-    // Eclipse 12 Aug 2026 countdown
+    // Eclipse, Wednesday 12 August 2026.
+    // No day count here on purpose. index.html already prints one in its own
+    // dateline, and two counters on one page is how a page looks unfinished.
+    // This card carries what that line cannot: when it starts, when it is
+    // deepest where you are, and the one safety rule.
+    // 17:46 is TD, not UT, and greatest eclipse is 45 km off western Iceland —
+    // so it is not a UK time and is not printed as one. Britain never reaches
+    // totality: totality is Iceland and northern Spain.
     var eclJD = eng.julianDay(2026, 8, 12, 17, 46, 0);
     var days = eclJD - jd;
     if (days > -2 && days < 120) {
       var eclLon = lonOf('Sun', eclJD);
       items.push({
         id: 'eclipse',
-        kicker: '12 AUG 2026',
-        title: 'Solar eclipse · greatest ~17:46 UT',
-        detail: (days > 0 ? ('T−' + Math.floor(days) + 'd') : 'Passed / archive') +
-          (eclLon != null ? ' · eclipse point ' + fmtDeg(eclLon) : '') +
-          ' · UK deep partial ~91% · real sky news',
+        kicker: 'WEDNESDAY 12 AUGUST 2026',
+        title: days < 0 ? '☉ The eclipse Britain just watched' : '☉ The Sun goes deep partial over Britain',
+        detail: 'First bite 18:08–18:17 BST · deepest about 19:12 in London, 19:05 Edinburgh, 19:16 in Cornwall · 88–96% of the Sun covered' +
+          (eclLon != null ? ' · it lands at ' + fmtDeg(eclLon) : '') +
+          ' · Britain never reaches totality, so eclipse glasses stay on the whole way through.',
         href: './eclipse.html',
         fly: 'sun',
         score: 90
@@ -320,7 +337,8 @@
             id: 'ingress-' + n,
             kicker: 'INGRESS',
             title: GLYPH[n] + ' ' + n + ' → ' + SIGNS[sd],
-            detail: 'Within ~' + d + ' day(s) · now ' + fmtDeg(L0) + ' · Meeus series on-device',
+            detail: (d === 1 ? 'Tomorrow' : 'In about ' + d + ' days') +
+              ' · now at ' + fmtDeg(L0) + ' · worked out on this device',
             fly: KEY[n],
             score: 60 - d
           });
@@ -328,6 +346,15 @@
         }
       }
     });
+
+    // Drop anything the host page already prints for itself. index.html has a
+    // full Moon / tightest-pair / retrograde readout of its own directly under
+    // this strip, and rendering both put the same Moon on screen twice.
+    // Declared in the markup (data-ap-exclude) so every mount of that host —
+    // including the re-mount after a cast — honours it without repeating a list.
+    if (opts.exclude && opts.exclude.length) {
+      items = items.filter(function (it) { return opts.exclude.indexOf(it.id) === -1; });
+    }
 
     items.sort(function (a, b) { return b.score - a.score; });
     return items.slice(0, opts.limit || 8);
@@ -354,16 +381,19 @@
   }
 
   // Eclipse campaign: when the 12 Aug eclipse card is the active card on the
-  // homepage band, fly to the sun and sink the engine into eclipse mode (91%);
-  // any other active card restores normal lighting. Guarded — the mounted
+  // homepage band, fly to the sun and sink the engine into eclipse mode; any
+  // other active card restores normal lighting. Guarded — the mounted
   // <void-orrery> may be an older build without setEclipse.
+  // 0.90 is London's maximum. The UK spread is 88–96% (Truro deepest, Edinburgh
+  // shallowest of the three cities we name), so the model shows the middle of
+  // the country rather than the best seat in it.
   var autoEclipse = 0;
   function driveEclipse(item) {
     var o = orrery();
     if (!o || typeof o.setEclipse !== 'function') return;
     if (item && item.id === 'eclipse' && item.fly === 'sun') {
       try { if (typeof o.flyTo === 'function') o.flyTo('sun'); } catch (e0) { /* optional */ }
-      setTimeout(function () { try { o.setEclipse(0.91, true); } catch (e1) { /* optional */ } }, 700); // after the fly begins
+      setTimeout(function () { try { o.setEclipse(0.90, true); } catch (e1) { /* optional */ } }, 700); // after the fly begins
     } else {
       try { o.setEclipse(0); } catch (e2) { /* optional */ }
     }
@@ -374,9 +404,26 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  /**
+   * `data-ap-exclude="moon pair rx"` on the host → card ids this page already
+   * prints for itself. Merged into opts.exclude, de-duplicated because mount()
+   * re-enters itself through ctl.refresh() with the merged opts.
+   */
+  function mergeHostExclude(host, opts) {
+    var raw = host && host.getAttribute && host.getAttribute('data-ap-exclude');
+    if (!raw) return opts;
+    var seen = {}, out = [];
+    (opts.exclude || []).concat(String(raw).split(/[\s,]+/)).forEach(function (id) {
+      if (id && !seen[id]) { seen[id] = 1; out.push(id); }
+    });
+    opts.exclude = out;
+    return opts;
+  }
+
   function mount(host, opts) {
     opts = opts || {};
     if (!host || !E()) return null;
+    opts = mergeHostExclude(host, opts);
     // Stop prior controller if remounting same host
     if (host._apSkyNewsCtl && typeof host._apSkyNewsCtl.stop === 'function') {
       host._apSkyNewsCtl.stop();

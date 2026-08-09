@@ -351,19 +351,14 @@ window.AstroProfile = (() => {
   }
 
   // ── Shareable URL ─────────────────────────────────────────────────────────
-
-  function generateShareUrl(chartId) {
-    const chart = getChart(chartId);
-    if (!chart) return null;
-    const params = new URLSearchParams({
-      name: chart.name,
-      date: chart.birthDate,
-      time: chart.birthTime || '',
-      lat:  chart.lat,
-      lon:  chart.lon,
-    });
-    return `${location.origin}${location.pathname.replace(/[^/]*$/, '')}chart.html?${params}`;
-  }
+  //
+  // generateShareUrl() was removed on 2026-08-09. It minted
+  // 'chart.html?name=&date=&time=&lat=&lon=' — a saved chart's whole birth
+  // record in a query string — and had no caller anywhere on the site: it was
+  // exported and never used. A dead function that builds a birth-data URL is a
+  // trap for the next person, so it is gone rather than left. The one supported
+  // way to build a share link is APChartShare.buildShareUrl(), which runs only
+  // when the visitor presses Share or Copy link.
 
   // Load chart data from URL params
   function loadChartFromUrl() {
@@ -478,7 +473,7 @@ window.AstroProfile = (() => {
     getComparisons, saveComparison, deleteComparison,
     getPrefs, savePrefs,
     exportData, importData,
-    generateShareUrl, loadChartFromUrl,
+    loadChartFromUrl,
     generateAppSyncData,
   };
 })();
