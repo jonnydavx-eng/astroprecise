@@ -160,14 +160,19 @@
   }
   var FORCE_LEGACY = engineParam === 'legacy';
   var FORCE_WEBGL = engineParam === 'webgl';
-  var CAN_WEBGL = !FORCE_LEGACY && !!window.customElements &&
-    (FORCE_WEBGL || (importMapOK() && webgl2OK()));
+  var CAN_WEBGL = null;
 
-  if (!CAN_WEBGL) { loadLegacy(FORCE_LEGACY ? '?engine=legacy' : 'capability probe'); return; }
-
-  /* WebGL path — VoidEphem now (consumers poll it), the element once the engine
-   * module is known loadable so the legacy door stays open on total failure. */
+  /* VoidEphem is useful on pages without a model. Defer the WebGL capability
+   * probe and legacy engine injection until a <void-orrery> actually exists. */
   defineVoidEphem();
+
+  function selectEnginePath() {
+    if (CAN_WEBGL !== null) return CAN_WEBGL;
+    CAN_WEBGL = !FORCE_LEGACY && !!window.customElements &&
+      (FORCE_WEBGL || (importMapOK() && webgl2OK()));
+    if (!CAN_WEBGL) loadLegacy(FORCE_LEGACY ? '?engine=legacy' : 'capability probe');
+    return CAN_WEBGL;
+  }
 
   function ensureImportMap() {
     try {
@@ -369,7 +374,7 @@
           .then(function () {
             if (!self.isConnected) throw new Error('detached during boot');
             var cv = document.createElement('canvas');
-            cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block';
+            cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none';
             self._canvas = cv;
             self.insertBefore(cv, self._ph || null);
             var api = (self._engineKind === 'canvas' ? runningEngine : window.Orrery3D) || runningEngine;
@@ -801,6 +806,7 @@
     if (!document.querySelector('void-orrery')) return;
     bootStarted = true;
     if (mo) { try { mo.disconnect(); } catch (e) {} mo = null; }
+    if (!selectEnginePath()) return;
     bootPipeline().then(function () {
       defineElement();
       log('engine pipeline up (' + (engineKind || '?') + ') — <void-orrery> registered');

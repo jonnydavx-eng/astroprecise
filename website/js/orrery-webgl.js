@@ -7517,18 +7517,22 @@ const FinishShader = {
           : dragMode === 'pan' ? 'all-scroll' : 'grabbing';
       } catch (_) {}
     };
+    const cancelPointerInteraction = (e) => {
+      if (!activePointers.has(e.pointerId)) return;
+      activePointers.delete(e.pointerId);
+      try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      pinchStartDist = 0;
+      dragging = false;
+      scrubVel = 0;
+      try { canvas.style.cursor = 'grab'; } catch (_) {}
+    };
     const onMove = (e) => {
       if (!activePointers.has(e.pointerId)) return;
       // A mouse release can be lost when the pointer leaves the window or the
       // browser cancels capture. The next move reports buttons=0; treat that as
       // the missing release instead of continuing a stale drag.
       if (e.pointerType === 'mouse' && e.buttons === 0 && activePointers.size === 1) {
-        activePointers.delete(e.pointerId);
-        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
-        pinchStartDist = 0;
-        dragging = false;
-        scrubVel = 0;
-        try { canvas.style.cursor = 'grab'; } catch (_) {}
+        cancelPointerInteraction(e);
         return;
       }
       activePointers.set(e.pointerId, pointerClientXY(e));
@@ -7661,7 +7665,8 @@ const FinishShader = {
     listen(canvas, 'pointerdown', onDown);
     listen(window, 'pointermove', onMove);
     listen(window, 'pointerup', onUp);
-    listen(canvas, 'pointercancel', onUp);
+    listen(canvas, 'pointercancel', cancelPointerInteraction);
+    listen(canvas, 'lostpointercapture', cancelPointerInteraction);
     listen(canvas, 'dblclick', onDbl);
     listen(canvas, 'wheel', onWheel, { passive: false });
     listen(canvas, 'contextmenu', onCtx);

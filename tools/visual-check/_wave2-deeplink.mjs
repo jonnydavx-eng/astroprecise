@@ -103,8 +103,15 @@ function gate(name, ok, detail) {
 {
   const page = await b.newPage();
   await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-  const explorer = await page.locator('a[href*="explore.html"]').count();
-  gate('index explorer feeder', explorer >= 1, `count=${explorer}`);
+  const explorer = page.locator('a[href*="explore.html"]:visible');
+  const explorerCount = await explorer.count();
+  const explorerHref = explorerCount >= 1 ? await explorer.first().getAttribute('href') : '';
+  const explorerName = explorerCount >= 1 ? (await explorer.first().innerText()).trim() : '';
+  gate(
+    'index explorer feeder',
+    explorerCount >= 1 && explorerHref.includes('explore.html') && explorerName.length > 0,
+    `visible=${explorerCount} href=${explorerHref} name=${JSON.stringify(explorerName)}`
+  );
   await page.close();
 }
 

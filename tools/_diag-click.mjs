@@ -59,6 +59,8 @@ try {
     x: rect.x + rect.width * 0.5,
     y: rect.y + rect.height * 0.42,
   };
+  assert(await canvas.evaluate((el) => getComputedStyle(el).touchAction === 'none'),
+    'Orrery canvas does not own touch/pinch gestures');
 
   await page.evaluate(() => {
     window.__mouseDiag = { pointerId: null, events: [] };
@@ -128,6 +130,41 @@ try {
   assert(cancelAfter.cursor === 'grab', 'Pointer cancellation left the cursor stuck grabbing');
   assert(cancelAfter.jd === cancelBefore.jd, 'Pointer move after cancellation scrubbed the model time');
 
+  // Losing pointer capture without a subsequent no-button move must also end
+  // the interaction immediately.
+  await page.mouse.move(point.x, point.y);
+  await page.mouse.down();
+  const lostCaptureBefore = await page.evaluate(() => ({
+    jd: document.getElementById('orr').getJD(),
+    pointerId: window.__mouseDiag.pointerId,
+  }));
+  await page.evaluate(({ x, y, pointerId }) => {
+    const target = document.querySelector('#orr canvas');
+    target.dispatchEvent(new PointerEvent('lostpointercapture', {
+      bubbles: true,
+      pointerId,
+      pointerType: 'mouse',
+      clientX: x,
+      clientY: y,
+      buttons: 1,
+    }));
+    target.dispatchEvent(new PointerEvent('pointermove', {
+      bubbles: true,
+      pointerId,
+      pointerType: 'mouse',
+      clientX: x + 100,
+      clientY: y + 30,
+      buttons: 1,
+    }));
+  }, { ...point, pointerId: lostCaptureBefore.pointerId });
+  const lostCaptureAfter = await page.evaluate(() => ({
+    jd: document.getElementById('orr').getJD(),
+    cursor: document.querySelector('#orr canvas').style.cursor,
+  }));
+  await page.mouse.up();
+  assert(lostCaptureAfter.cursor === 'grab', 'Lost capture left the cursor stuck grabbing');
+  assert(lostCaptureAfter.jd === lostCaptureBefore.jd, 'Move after lost capture scrubbed the model time');
+
   // Defensive recovery: browsers can lose the release event while reporting
   // buttons=0 on the next move. That move must end, not continue, the drag.
   await page.mouse.move(point.x, point.y);
@@ -169,6 +206,7 @@ try {
     browser: 'bundled Chromium or installed Chrome fallback',
     normalDrag: { before: normalBefore, after: normalAfter.jd },
     pointerCancel: { before: cancelBefore.jd, after: cancelAfter.jd, cursor: cancelAfter.cursor },
+    lostCapture: { before: lostCaptureBefore.jd, after: lostCaptureAfter.jd, cursor: lostCaptureAfter.cursor },
     lostButton: { before: lostButtonBefore.jd, after: lostButtonAfter.jd, cursor: lostButtonAfter.cursor },
     wheel: { before: radiusBefore, after: radiusAfter },
     errors,
