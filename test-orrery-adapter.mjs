@@ -86,15 +86,27 @@ for (const p of pages) {
   }
 }
 const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
-if (assetVersion && !exploreHtml.includes('js/explore-boot.js?v=' + assetVersion)) {
+const deliveredCssName = 'explore-page-v' + assetVersion + '.css';
+const deliveredBootName = 'explore-boot-v' + assetVersion + '.js';
+if (assetVersion && !exploreHtml.includes('js/' + deliveredBootName + '?v=' + assetVersion)) {
   fail('explore.html boot query does not match service-worker ' + assetVersion);
 }
 const exploreCss = readFileSync(join(root, 'css', 'explore-page.css'), 'utf8');
 const exploreBoot = readFileSync(join(root, 'js', 'explore-boot.js'), 'utf8');
+const deliveredCss = readFileSync(join(root, 'css', deliveredCssName), 'utf8');
+const deliveredBoot = readFileSync(join(root, 'js', deliveredBootName), 'utf8');
 const navModel = readFileSync(join(root, 'js', 'ap-nav-model.js'), 'utf8');
 const loader = readFileSync(join(root, 'js', 'orrery-loader.js'), 'utf8');
-if (assetVersion && !exploreHtml.includes('css/explore-page.css?v=' + assetVersion)) {
+if (assetVersion && !exploreHtml.includes('css/' + deliveredCssName + '?v=' + assetVersion)) {
   fail('explore.html CSS query does not match service-worker ' + assetVersion);
+}
+if (deliveredCss !== exploreCss) fail('versioned Explore CSS is not byte-identical to its canonical source');
+if (deliveredBoot !== exploreBoot) fail('versioned Explore boot is not byte-identical to its canonical source');
+for (const deliveredPath of ['./css/' + deliveredCssName, './js/' + deliveredBootName]) {
+  if (!sw.includes("'" + deliveredPath + "'")) fail('service-worker precache missing ' + deliveredPath);
+}
+for (const criticalProbe of ['explore-page(?:-v\\d+)?\\.css', 'explore-boot(?:-v\\d+)?\\.js']) {
+  if (!sw.includes(criticalProbe)) fail('service-worker critical routing missing ' + criticalProbe);
 }
 for (const probe of [
   'id="explore-threshold"',
@@ -105,6 +117,11 @@ for (const probe of [
 ]) {
   if (!exploreHtml.includes(probe)) fail('flagship Explore threshold missing: ' + probe);
 }
+if (!exploreHtml.includes('The real sky waits beyond.') ||
+    !exploreHtml.includes('REAL POSITIONS ON ENTRY')) {
+  fail('Explore threshold does not keep the poster/live honesty boundary');
+}
+
 const thresholdStart = exploreHtml.indexOf('id="explore-threshold"');
 const modelStart = exploreHtml.indexOf('id="apAwardOrreryWrap"');
 if (thresholdStart < 0 || modelStart <= thresholdStart) fail('threshold/model order is invalid');
@@ -136,6 +153,9 @@ const navExplorer = navModel.indexOf("['explore.html', 'Sky Explorer'");
 const navMySky = navModel.indexOf("['mysky.html', 'My Sky'");
 if (!(navEclipse >= 0 && navExplorer > navEclipse && navMySky > navExplorer)) {
   fail('Sky Explorer is not promoted directly after the eclipse campaign in More');
+}
+if (/\['explore\.html', 'Sky Explorer', \{ badge: 'Live' \}\]/.test(navModel)) {
+  fail('Sky Explorer nav claims LIVE before the model is revealed');
 }
 ok('flagship Explore threshold, direct-link bypass, one-context gate and accessible controls present');
 

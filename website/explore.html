@@ -85,7 +85,9 @@
   <link rel="stylesheet" href="css/ap-horizon-2026.css?v=752" />
   <link rel="stylesheet" href="css/orrery-visual.css?v=752" />
   <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=752" />
-  <link rel="stylesheet" href="css/explore-page.css?v=826" />
+  <!-- Filename versioning bypasses the final cache-first response from an old
+       worker; query strings alone are canonicalized away by that worker. -->
+  <link rel="stylesheet" href="css/explore-page-v826.css?v=826" />
   <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
   <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css. -->
   <link rel="stylesheet" href="css/ap-model-window.css?v=826" id="ap-css-model-window" />
@@ -200,10 +202,10 @@
           </div>
           <div class="explore-threshold__copy">
             <p class="explore-threshold__eyebrow">THE OBSERVATORY · SKY EXPLORER</p>
-            <h2 id="explore-threshold-title">Step through the lens.<br><em>The real sky is already moving.</em></h2>
-            <p>Roam from Earth to the Milky Way, focus any world, and move time beneath your hands. The positions are computed on this device; every illustrative distance is labelled.</p>
+            <h2 id="explore-threshold-title">Step through the lens.<br><em>The real sky waits beyond.</em></h2>
+            <p>Roam from Earth to the Milky Way, focus any world, and move time beneath your hands. Beyond the lens, positions are computed on this device.</p>
             <a class="explore-threshold__enter" id="explore-threshold-enter" href="#explore-stage">Enter the living sky <span aria-hidden="true">→</span></a>
-            <p class="explore-threshold__proof">REAL POSITIONS · DISTANCES LABELLED · NO ACCOUNT</p>
+            <p class="explore-threshold__proof">REAL POSITIONS ON ENTRY · DISTANCES LABELLED · NO ACCOUNT</p>
           </div>
         </div>
       </div>
@@ -393,7 +395,9 @@
   <script src="js/ap-nav-model.js" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>
-  <script src="js/explore-boot.js?v=826" defer></script>
+  <!-- The path, not only the query, carries the release identity so an old
+       cache-first worker cannot pair this new threshold with a stale boot. -->
+  <script src="js/explore-boot-v826.js?v=826" defer></script>
   <!-- WOW slice 1 · Model Window live caption + curtain-raise trigger — twin of
        the index.html snippet (piggybacks orrery-scale-change; reveal gated on
        html.orrery-full so the fallback/2D path never shows the frame). -->

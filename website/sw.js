@@ -142,6 +142,7 @@ const PRECACHE = [
   './css/ephemeris-critical.css',
   './css/ephemeris-page.css',
   './css/ephemeris.css',
+  './css/explore-page-v826.css',
   './css/explore-page.css',
   './css/fonts.css',
   './css/horoscope-critical.css',
@@ -305,6 +306,7 @@ const PRECACHE = [
   './js/effects.js',
   './js/element-seals.js',
   './js/ephemeris.js',
+  './js/explore-boot-v826.js',
   './js/explore-boot.js',
   './js/fieldweather.js',
   './js/footer-chrome.js',
@@ -507,7 +509,7 @@ self.addEventListener('fetch', e => {
   // Network-first for the scripts/styles that drive the home cinematic + orrery, so a
   // freshly-deployed HTML never runs against stale cache-first JS from a prior version
   // (the v453-v463 deploy-mismatch that broke the loading sequence / 3D model / layout).
-  const isCritical = /\/(js\/app\.js|js\/chart-page\.js|js\/horoscope-page\.js|js\/cosmos\.js|js\/orrery\.js|js\/orrery-loader\.js|js\/orrery-webgl\.js|js\/void-orrery-adapter\.js|js\/ambience\.js|js\/eclipse-reading\.js|js\/deep-reading\.js|js\/plate-fingerprint\.js|js\/ap-sky-news\.js|js\/ap-natal-sphere\.js|js\/ap-checkout-honest\.js|js\/ap-gumroad-bridge\.js|js\/gumroad-unlock\.js|js\/ap-award-orrery\.js|js\/ap-home-bootstrap\.js|js\/hero-instrument\.js|js\/effects\.js|js\/ephemeris\.js|js\/lite-orrery\.js|js\/lite-shell-boot\.js|css\/main\.css|css\/ap-observatory-home\.css|css\/ap-brand-nebula\.css|css\/ap-sky-news\.css|css\/ap-natal-sphere\.css)$/.test(path);
+  const isCritical = /\/(js\/app\.js|js\/chart-page\.js|js\/horoscope-page\.js|js\/cosmos\.js|js\/orrery\.js|js\/orrery-loader\.js|js\/orrery-webgl\.js|js\/void-orrery-adapter\.js|js\/explore-boot(?:-v\d+)?\.js|js\/ambience\.js|js\/eclipse-reading\.js|js\/deep-reading\.js|js\/plate-fingerprint\.js|js\/ap-sky-news\.js|js\/ap-natal-sphere\.js|js\/ap-checkout-honest\.js|js\/ap-gumroad-bridge\.js|js\/gumroad-unlock\.js|js\/ap-award-orrery\.js|js\/ap-home-bootstrap\.js|js\/hero-instrument\.js|js\/effects\.js|js\/ephemeris\.js|js\/lite-orrery\.js|js\/lite-shell-boot\.js|css\/main\.css|css\/explore-page(?:-v\d+)?\.css|css\/ap-model-window\.css|css\/ap-observatory-home\.css|css\/ap-brand-nebula\.css|css\/ap-sky-news\.css|css\/ap-natal-sphere\.css)$/.test(path);
 
   /* Cache key: NEVER the raw request, not even for a navigation. A navigation
      URL can carry a visitor's birth details in its query — the homepage no
