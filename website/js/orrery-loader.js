@@ -644,7 +644,9 @@
 
     function markActive(target) {
       document.querySelectorAll('.lite-vp-btn[data-lite-planet]').forEach(function (b) {
-        b.classList.toggle('active', b === target);
+        var active = b === target;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
     }
 

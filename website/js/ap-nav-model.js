@@ -16,7 +16,7 @@
  * More: My Sky hub, Moment, Cosmic Story, Library, Match, tools…
  *
  * Site spine: Observatory (see) → Chart (cast) → The Sky (instrument) → Keep → Daily → Shop
- * explore.html stays live only as the #m= deep-link receiver room (no nav row).
+ * explore.html is the flagship Sky Explorer: direct model links bypass its Observatory threshold.
  */
 'use strict';
 
@@ -32,6 +32,7 @@
   // Hub + keep + story + library first in More
   var NAV_MORE_EXPLORE = [
     ['eclipse.html', 'The Eclipse', { badge: '12 Aug' }],
+    ['explore.html', 'Sky Explorer', { badge: 'Live' }],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
     ['cosmic-story.html', 'Cosmic Story'],
@@ -53,7 +54,6 @@
   var NAV_EXTRAS = [
     ['tonight.html', 'Tonight'], ['this-weeks-sky.html', 'This Week'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
-    ['explore.html', 'The Explorer'],
     ['catalogue.html', 'Lookbook'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],

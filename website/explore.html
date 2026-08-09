@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="Roam from Earth to the Milky Way in a live 3D model — real planetary positions (VSOP87), a Gaia-style barred-spiral galaxy, cosmic flight, and time you can scrub. Free, computed on your device." />
   <meta name="robots" content="index, follow" />
-  <title>Explore the Living Sky — Earth to the Galaxy | Astro Precise</title>
+  <title>Sky Explorer — Earth to the Galaxy | Astro Precise</title>
 
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -16,7 +16,7 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
-  <meta property="og:title" content="Explore the Living Sky — Earth to the Galaxy" />
+  <meta property="og:title" content="Sky Explorer — Earth to the Galaxy" />
   <meta property="og:description" content="A full-screen, explorable 3D model: real planetary positions live in your browser, out to a Gaia-style barred-spiral galaxy. Focus any planet, run the Cosmic Flight, scrub time." />
   <meta property="og:url" content="https://astroprecise.app/explore.html" />
   <link rel="canonical" href="https://astroprecise.app/explore.html" />
@@ -25,7 +25,7 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model, opening out to the Milky Way." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Explore the Living Sky — Earth to the Galaxy" />
+  <meta name="twitter:title" content="Sky Explorer — Earth to the Galaxy" />
   <meta name="twitter:description" content="Roam from Earth to the Milky Way in a live 3D model. Real positions, honest distances, cosmic flight, time you can scrub." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#08080b" />
@@ -37,7 +37,7 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Astro Precise — Explore the Living Sky",
+    "name": "Astro Precise — Sky Explorer",
     "url": "https://astroprecise.app/explore.html",
     "applicationCategory": "EducationApplication",
     "operatingSystem": "Any (web browser)",
@@ -56,6 +56,19 @@
   { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
 
+  <script>
+  (function () {
+    var hashIntent = /(?:^|[#&;])(?:m|focus)=/i.test(location.hash || "");
+    var bypass = hashIntent;
+    try {
+      bypass = bypass ||
+        sessionStorage.getItem("ap-explore-threshold-seen") === "1" ||
+        !!sessionStorage.getItem("ap-explore-moment");
+    } catch (e) { /* storage is optional */ }
+    document.documentElement.classList.add(bypass ? "explore-threshold-bypass" : "explore-threshold-pending");
+  })();
+  </script>
+
   <!-- Base site shell (nav, footer, buttons, palette tokens, forms) -->
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
@@ -72,7 +85,7 @@
   <link rel="stylesheet" href="css/ap-horizon-2026.css?v=752" />
   <link rel="stylesheet" href="css/orrery-visual.css?v=752" />
   <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=752" />
-  <link rel="stylesheet" href="css/explore-page.css?v=822" />
+  <link rel="stylesheet" href="css/explore-page.css?v=825" />
   <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
   <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css. -->
   <link rel="stylesheet" href="css/ap-model-window.css?v=752" id="ap-css-model-window" />
@@ -127,9 +140,60 @@
          #orrery-viewport > #orrery-canvas + #orrery-dom-labels) so
          orrery-loader.js + ap-cosmic-flight-tool.js wire it unchanged.
          ============================================================ -->
-    <section class="explore-stage" id="explore-stage" aria-label="Living-sky 3D model — drag to explore">
+    <section class="explore-stage" id="explore-stage" tabindex="-1" aria-label="Living-sky 3D model — drag to explore">
 
       <h1 class="sr-only">Explore the living sky — from Earth to the Milky Way</h1>
+
+      <!-- Observatory + Explore are one flagship room. This CSS-only threshold
+           reuses the existing poster/WebGL surface beneath it: no second canvas,
+           no second context. Model deep links and returning sessions bypass it. -->
+      <div class="explore-threshold" id="explore-threshold" aria-labelledby="explore-threshold-title">
+        <svg class="explore-threshold__vista" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="exploreThresholdSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#11101f"/>
+              <stop offset=".46" stop-color="#2c2035"/>
+              <stop offset=".76" stop-color="#704238"/>
+              <stop offset="1" stop-color="#b67245"/>
+            </linearGradient>
+            <radialGradient id="exploreThresholdGlow" cx=".54" cy=".78" r=".62">
+              <stop offset="0" stop-color="#f0b16d" stop-opacity=".52"/>
+              <stop offset=".48" stop-color="#c17a4b" stop-opacity=".16"/>
+              <stop offset="1" stop-color="#08070c" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="1440" height="900" fill="url(#exploreThresholdSky)"/>
+          <rect width="1440" height="900" fill="url(#exploreThresholdGlow)"/>
+          <path d="M0 650L190 566l170 70 190-128 180 126 184-148 196 152 164-104 166 86v280H0Z" fill="#17101a" opacity=".82"/>
+          <path d="M0 746l248-102 232 128 286-154 276 158 240-114 158 90v148H0Z" fill="#09070c"/>
+          <g transform="translate(930 535)" fill="#0b080e">
+            <path d="M0 0a34 34 0 0 1 68 0Z"/>
+            <rect x="-9" y="-2" width="86" height="7" rx="2"/>
+            <rect x="30" y="-35" width="8" height="28" rx="3" fill="#1d1521"/>
+            <rect x="31.5" y="-32" width="5" height="22" rx="2" fill="#e7bd78" opacity=".72"/>
+          </g>
+        </svg>
+        <div class="explore-threshold__content">
+          <div class="explore-threshold__lens" aria-hidden="true">
+            <span class="explore-threshold__glass">
+              <span class="explore-threshold__orbit"></span>
+              <span class="explore-threshold__planet"></span>
+              <i class="explore-threshold__star explore-threshold__star--a"></i>
+              <i class="explore-threshold__star explore-threshold__star--b"></i>
+              <i class="explore-threshold__star explore-threshold__star--c"></i>
+              <i class="explore-threshold__star explore-threshold__star--d"></i>
+            </span>
+            <span class="explore-threshold__reticle"></span>
+          </div>
+          <div class="explore-threshold__copy">
+            <p class="explore-threshold__eyebrow">THE OBSERVATORY · SKY EXPLORER</p>
+            <h2 id="explore-threshold-title">Step through the lens.<br><em>The real sky is already moving.</em></h2>
+            <p>Roam from Earth to the Milky Way, focus any world, and move time beneath your hands. The positions are computed on this device; every illustrative distance is labelled.</p>
+            <a class="explore-threshold__enter" id="explore-threshold-enter" href="#explore-stage">Enter the living sky <span aria-hidden="true">→</span></a>
+            <p class="explore-threshold__proof">REAL POSITIONS · DISTANCES LABELLED · NO ACCOUNT</p>
+          </div>
+        </div>
+      </div>
 
       <div class="ap-award-orrery-wrap explore-orrery-wrap" id="apAwardOrreryWrap" hidden>
         <div class="ap-award-orrery-frame">
@@ -229,16 +293,16 @@
         </div>
 
         <div class="lite-vp-controls" role="toolbar" aria-label="Focus planets on the model">
-          <button type="button" class="lite-vp-btn active" data-lite-planet="earth" aria-label="Focus Earth"><span class="lite-vp-glyph" aria-hidden="true">&#9793;&#xFE0E;</span><span class="lite-vp-btn__label">Earth</span></button>
-          <button type="button" class="lite-vp-btn" data-lite-planet="sun" aria-label="Focus Sun"><span class="lite-vp-glyph" aria-hidden="true">&#9737;&#xFE0E;</span><span class="lite-vp-btn__label">Sun</span></button>
-          <button type="button" class="lite-vp-btn" data-lite-planet="moon" aria-label="Focus Moon"><span class="lite-vp-glyph" aria-hidden="true">&#9789;&#xFE0E;</span><span class="lite-vp-btn__label">Moon</span></button>
-          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="mercury" aria-label="Focus Mercury"><span class="lite-vp-glyph" aria-hidden="true">&#9791;&#xFE0E;</span></button>
-          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="venus" aria-label="Focus Venus"><span class="lite-vp-glyph" aria-hidden="true">&#9792;&#xFE0E;</span></button>
-          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="mars" aria-label="Focus Mars"><span class="lite-vp-glyph" aria-hidden="true">&#9794;&#xFE0E;</span></button>
-          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="jupiter" aria-label="Focus Jupiter"><span class="lite-vp-glyph" aria-hidden="true">&#9795;&#xFE0E;</span></button>
-          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="saturn" aria-label="Focus Saturn"><span class="lite-vp-glyph" aria-hidden="true">&#9796;&#xFE0E;</span></button>
-          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="uranus" aria-label="Focus Uranus"><span class="lite-vp-glyph" aria-hidden="true">&#9797;&#xFE0E;</span></button>
-          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="neptune" aria-label="Focus Neptune"><span class="lite-vp-glyph" aria-hidden="true">&#9798;&#xFE0E;</span></button>
+          <button type="button" class="lite-vp-btn active" data-lite-planet="earth" aria-label="Focus Earth" aria-pressed="true"><span class="lite-vp-glyph" aria-hidden="true">&#9793;&#xFE0E;</span><span class="lite-vp-btn__label">Earth</span></button>
+          <button type="button" class="lite-vp-btn" data-lite-planet="sun" aria-label="Focus Sun" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9737;&#xFE0E;</span><span class="lite-vp-btn__label">Sun</span></button>
+          <button type="button" class="lite-vp-btn" data-lite-planet="moon" aria-label="Focus Moon" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9789;&#xFE0E;</span><span class="lite-vp-btn__label">Moon</span></button>
+          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="mercury" aria-label="Focus Mercury" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9791;&#xFE0E;</span></button>
+          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="venus" aria-label="Focus Venus" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9792;&#xFE0E;</span></button>
+          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="mars" aria-label="Focus Mars" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9794;&#xFE0E;</span></button>
+          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="jupiter" aria-label="Focus Jupiter" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9795;&#xFE0E;</span></button>
+          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="saturn" aria-label="Focus Saturn" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9796;&#xFE0E;</span></button>
+          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="uranus" aria-label="Focus Uranus" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9797;&#xFE0E;</span></button>
+          <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="neptune" aria-label="Focus Neptune" aria-pressed="false"><span class="lite-vp-glyph" aria-hidden="true">&#9798;&#xFE0E;</span></button>
         </div>
 
         <div class="ap-orrery-time">
@@ -316,7 +380,7 @@
   <script src="js/ap-nav-model.js" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>
-  <script src="js/explore-boot.js?v=823" defer></script>
+  <script src="js/explore-boot.js?v=825" defer></script>
   <!-- WOW slice 1 · Model Window live caption + curtain-raise trigger — twin of
        the index.html snippet (piggybacks orrery-scale-change; reveal gated on
        html.orrery-full so the fallback/2D path never shows the frame). -->

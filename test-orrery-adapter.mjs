@@ -89,6 +89,56 @@ const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
 if (assetVersion && !exploreHtml.includes('js/explore-boot.js?v=' + assetVersion)) {
   fail('explore.html boot query does not match service-worker ' + assetVersion);
 }
+const exploreCss = readFileSync(join(root, 'css', 'explore-page.css'), 'utf8');
+const exploreBoot = readFileSync(join(root, 'js', 'explore-boot.js'), 'utf8');
+const navModel = readFileSync(join(root, 'js', 'ap-nav-model.js'), 'utf8');
+const loader = readFileSync(join(root, 'js', 'orrery-loader.js'), 'utf8');
+if (assetVersion && !exploreHtml.includes('css/explore-page.css?v=' + assetVersion)) {
+  fail('explore.html CSS query does not match service-worker ' + assetVersion);
+}
+for (const probe of [
+  'id="explore-threshold"',
+  'id="explore-threshold-enter"',
+  'explore-threshold-bypass',
+  'ap-explore-threshold-seen',
+  'tabindex="-1" aria-label="Living-sky 3D model',
+]) {
+  if (!exploreHtml.includes(probe)) fail('flagship Explore threshold missing: ' + probe);
+}
+const thresholdStart = exploreHtml.indexOf('id="explore-threshold"');
+const modelStart = exploreHtml.indexOf('id="apAwardOrreryWrap"');
+if (thresholdStart < 0 || modelStart <= thresholdStart) fail('threshold/model order is invalid');
+else if (exploreHtml.slice(thresholdStart, modelStart).includes('<canvas')) {
+  fail('Observatory threshold creates a second canvas/context');
+}
+const focusButtonCount = (exploreHtml.match(/data-lite-planet=/g) || []).length;
+const pressedCount = (exploreHtml.match(/data-lite-planet=[^>]+aria-pressed=/g) || []).length;
+if (focusButtonCount !== 10 || pressedCount !== focusButtonCount) {
+  fail('Explore planet buttons missing initial pressed state (' + pressedCount + '/' + focusButtonCount + ')');
+}
+for (const probe of [
+  'var webglIntent = !!resolveIntent();',
+  'setInstrumentInert',
+  'armWebglIntent();',
+  'new ResizeObserver(syncNavHeight)',
+  'setAttribute("aria-pressed"',
+]) {
+  if (!exploreBoot.includes(probe)) fail('Explore boot contract missing: ' + probe);
+}
+for (const probe of ['.explore-stage .lite-vp-glyph', 'var(--explore-deck-h', 'explore-threshold-entering', 'html.orrery-full .explore-hint { display: none; }']) {
+  if (!exploreCss.includes(probe)) fail('Explore CSS contract missing: ' + probe);
+}
+if (!loader.includes("b.setAttribute('aria-pressed', active ? 'true' : 'false')")) {
+  fail('orrery loader does not synchronize focus aria-pressed');
+}
+const navEclipse = navModel.indexOf("['eclipse.html', 'The Eclipse'");
+const navExplorer = navModel.indexOf("['explore.html', 'Sky Explorer'");
+const navMySky = navModel.indexOf("['mysky.html', 'My Sky'");
+if (!(navEclipse >= 0 && navExplorer > navEclipse && navMySky > navExplorer)) {
+  fail('Sky Explorer is not promoted directly after the eclipse campaign in More');
+}
+ok('flagship Explore threshold, direct-link bypass, one-context gate and accessible controls present');
+
 const eclipseHtml = readFileSync(join(root, 'eclipse.html'), 'utf8');
 for (const probe of [
   'start-focus="sun"',

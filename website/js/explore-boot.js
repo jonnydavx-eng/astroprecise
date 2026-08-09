@@ -20,7 +20,7 @@
  */
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var V = '823';
+  var V = '825';
   try {
     var ownScript = document.currentScript;
     var ownVersion = ownScript && new URL(ownScript.src, document.baseURI).searchParams.get('v');
@@ -192,7 +192,9 @@
     } catch (e2) { /* optional */ }
     try {
       document.querySelectorAll(".lite-vp-btn[data-lite-planet]").forEach(function (b) {
-        b.classList.toggle("active", (b.getAttribute("data-lite-planet") || "").toLowerCase() === liteId);
+        var active = (b.getAttribute("data-lite-planet") || "").toLowerCase() === liteId;
+        b.classList.toggle("active", active);
+        b.setAttribute("aria-pressed", active ? "true" : "false");
       });
     } catch (e3) { /* optional */ }
   }
@@ -253,12 +255,55 @@
   wrap.hidden = false;
 
   var loaderQueued = false;
-  var webglIntent = /(?:^|[#&])m=/.test(location.hash || '') ||
-    !!(stashed && stashed.m != null);
+  // Any explicit model instruction bypasses the threshold and deserves the
+  // full engine. This includes bare #focus= links, not just #m= moments.
+  var webglIntent = !!resolveIntent();
   function armWebglIntent() {
     if (webglIntent) return;
     webglIntent = true;
     queueLoader();
+  }
+
+  // Observatory threshold: gate the underlying controls until the visitor
+  // enters, then reveal the SAME poster/WebGL surface. No extra canvas/context.
+  var threshold = document.getElementById("explore-threshold");
+  var thresholdEnter = document.getElementById("explore-threshold-enter");
+  var stage = document.getElementById("explore-stage");
+  var thresholdTimer = 0;
+  function setInstrumentInert(on) {
+    if (!stage) return;
+    Array.prototype.forEach.call(stage.children, function (child) {
+      if (child === threshold || child.classList.contains("sr-only")) return;
+      if (on) child.setAttribute("inert", "");
+      else child.removeAttribute("inert");
+    });
+  }
+  function finishThreshold() {
+    document.documentElement.classList.remove("explore-threshold-pending", "explore-threshold-entering");
+    document.documentElement.classList.add("explore-threshold-entered");
+    setInstrumentInert(false);
+    if (threshold) threshold.hidden = true;
+    if (stage) {
+      try { stage.focus({ preventScroll: true }); }
+      catch { try { stage.focus(); } catch {} }
+    }
+  }
+  function enterThreshold(event) {
+    if (event) event.preventDefault();
+    armWebglIntent();
+    try { sessionStorage.setItem("ap-explore-threshold-seen", "1"); } catch {}
+    document.documentElement.classList.add("explore-threshold-entering");
+    if (thresholdTimer) clearTimeout(thresholdTimer);
+    thresholdTimer = setTimeout(finishThreshold, PRM ? 0 : 740);
+  }
+  if (threshold && thresholdEnter) {
+    if (document.documentElement.classList.contains("explore-threshold-pending")) {
+      setInstrumentInert(true);
+      thresholdEnter.addEventListener("click", enterThreshold);
+    } else {
+      threshold.hidden = true;
+      setInstrumentInert(false);
+    }
   }
   // Loading the lite poster is safe on first paint; WebGL/Three is a user
   // intent upgrade. A tap, keyboard action, or explicit model deep-link arms it.
@@ -351,6 +396,15 @@
     }
   }
   syncNavHeight();
+  // Deck height changes as WebGL controls arrive; keep the roaming hint and
+  // mobile legend clear without guessing a fixed control-deck height.
+  try {
+    var deckMeasure = document.getElementById("orrery-lite-deck");
+    if (deckMeasure && window.ResizeObserver) {
+      var deckObserver = new ResizeObserver(syncNavHeight);
+      deckObserver.observe(deckMeasure);
+    }
+  } catch { /* ResizeObserver is optional */ }
   window.addEventListener("resize", syncNavHeight, { passive: true });
   window.addEventListener("load", function () { setTimeout(syncNavHeight, 300); }, { once: true });
   // The deck grows when the scale strip un-hides; re-measure after boot.

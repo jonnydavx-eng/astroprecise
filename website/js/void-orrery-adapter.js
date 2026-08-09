@@ -36,7 +36,7 @@
   // chain. Publish it before loading orrery-loader.js so that loader imports
   // orrery-webgl.js with the same cache-safe version instead of its old fallback.
   var ADAPTER_V = new URL(ADAPTER_URL, document.baseURI).searchParams.get('v');
-  var ASSET_V = String(ADAPTER_V || window.AP_ASSET_V || '823');
+  var ASSET_V = String(ADAPTER_V || window.AP_ASSET_V || '825');
   window.AP_ASSET_V = ASSET_V;
 
   function assetUrl(name, extra) {
