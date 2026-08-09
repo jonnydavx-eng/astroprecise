@@ -14,6 +14,15 @@ const MOBILE = CLI_ARGS.includes('--mobile');
 const BASE = CLI_ARGS.find((a) => !a.startsWith('--')) || 'http://localhost:8790';
 const OUT = join(__dirname, 'out');
 
+async function launchBrowser(options) {
+  try {
+    return await chromium.launch(options);
+  } catch (error) {
+    if (!/Executable doesn't exist/i.test(String(error))) throw error;
+    return chromium.launch({ ...options, channel: 'chrome' });
+  }
+}
+
 async function snap(page, name) {
   const path = join(OUT, `${name}.png`);
   await page.screenshot({ path, fullPage: false });
@@ -49,7 +58,7 @@ async function readProbe(page) {
 
 async function main() {
   await mkdir(OUT, { recursive: true });
-  const browser = await chromium.launch({ headless: true });
+  const browser = await launchBrowser({ headless: true });
   const context = await browser.newContext({
     viewport: MOBILE ? { width: 390, height: 844 } : { width: 1440, height: 900 },
     deviceScaleFactor: MOBILE ? 3 : 1,
