@@ -341,6 +341,7 @@ html.orrery-full .explore-hint { opacity: 0.5; }
 }
 .explore-legend__toggle {
   width: 100%;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -524,7 +525,7 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 32px;
+  min-height: 44px;
   padding: 3px 10px 3px 8px;
   border: 1px solid rgba(168, 176, 188, 0.24);
   border-radius: 999px;
@@ -539,7 +540,7 @@ html.orrery-full .explore-hint { opacity: 0.5; }
 }
 
 .explore-stage .lite-vp-btn--sealonly {
-  min-width: 32px;
+  min-width: 44px;
   padding-inline: 8px;
 }
 
@@ -654,8 +655,8 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   }
 
   .explore-stage .ap-scale-stepper__btn {
-    min-width: 36px;
-    min-height: 32px;
+    min-width: 44px;
+    min-height: 44px;
     padding: 2px 10px;
     border: 1px solid rgba(168, 176, 188, 0.35);
     border-radius: 999px;
@@ -695,6 +696,9 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   max-width: 60vw;
 }
 .explore-return a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 0.7rem;
   letter-spacing: 0.03em;
