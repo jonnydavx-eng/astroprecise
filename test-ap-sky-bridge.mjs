@@ -44,7 +44,7 @@ ok('Chiron unsupported', SB.planetFocusSlug('Chiron') === null);
 {
   const chart = { birthDate: '1990-06-14', birthTime: '14:30', tz: 'UTC' };
   const link = SB.buildLinkFromChart(chart, { focus: 'venus' });
-  ok('link targets explore', link.startsWith('explore.html#'));
+  ok('link targets the Observatory', link.startsWith('index.html#'));
   ok('link has focus=venus', link.includes('focus=venus'));
   ok('link has encoded m', link.includes('m='));
 }
@@ -56,7 +56,7 @@ ok('Chiron unsupported', SB.planetFocusSlug('Chiron') === null);
 }
 
 /* stashSkyLink — a BIRTH moment must not appear in the link at all. It goes to
-   explore.html in sessionStorage; only the focus body (a planet, not a person)
+   index.html in sessionStorage; only the focus body (a planet, not a person)
    stays in the fragment. Added 2026-08-09 with the leak fix. */
 {
   const store = new Map();
@@ -68,18 +68,18 @@ ok('Chiron unsupported', SB.planetFocusSlug('Chiron') === null);
 
   const link = DL.stashSkyLink({ m: '1994-03-14T09:12:00.000Z', focus: 'venus' });
   ok('stash link carries NO moment', !link.includes('m='), link);
-  ok('stash link keeps the focus body', link === 'explore.html#focus=venus', link);
+  ok('stash link keeps the focus body', link === 'index.html#focus=venus', link);
   const stashed = JSON.parse(store.get('ap-explore-moment') || '{}');
   ok('the moment went to sessionStorage', stashed.m === '1994-03-14T09:12:00.000Z', stashed.m);
   ok('the focus went with it', stashed.focus === 'venus', stashed.focus);
 
   const bare = DL.stashSkyLink({ m: '1994-03-14T09:12:00.000Z' });
-  ok('no focus → a bare page link, still no moment', bare === 'explore.html', bare);
+  ok('no focus → a bare page link, still no moment', bare === 'index.html', bare);
 
   // A birth chart routed through the bridge must take the same road.
   const chartLink = SB.buildLinkFromChart({ birthDate: '1994-03-14', birthTime: '09:12', tz: 'UTC' }, { focus: 'earth' });
   ok('buildLinkFromChart stashes rather than publishes', !chartLink.includes('m='), chartLink);
-  ok('buildLinkFromChart still points at explore', chartLink === 'explore.html#focus=earth', chartLink);
+  ok('buildLinkFromChart points at the Observatory', chartLink === 'index.html#focus=earth', chartLink);
   const chartStash = JSON.parse(store.get('ap-explore-moment') || '{}');
   ok('the birth minute is in storage, to the minute', chartStash.m === '1994-03-14T09:12:00.000Z', chartStash.m);
 

@@ -1168,6 +1168,11 @@ const FinishShader = {
     }
   }
 
+  /** v833 flagship: one continuous model opens at System, never an Earth teaser. */
+  function isLivingSkyHome() {
+    try { return document.body.classList.contains('ap-live-home'); } catch (e) { return false; }
+  }
+
   /** Contain the initial Earth without changing the global Earth camera preset. */
   function containEarthFrame(fillFrac = 0.70) {
     if (!isHomeHeroEmbed() || onPreloaderStage() || !canvas || !meshes.earth) return false;
@@ -1582,8 +1587,9 @@ const FinishShader = {
       preloaderIntroFinished = true;
       preloaderIntroScheduled = false;
       holdPreloaderEarthFrame();
+    } else if (isLivingSkyHome()) {
+      settleToSystemHeroFrame(false);
     } else if (isHomeHeroEmbed()) {
-      // Structure clean: homepage rest frame is photoreal Earth, not sun-centred system.
       setDefaultEarthFrame();
     } else {
       settleToSystemHeroFrame(false);
@@ -1964,6 +1970,8 @@ const FinishShader = {
       preloaderIntroFinished = true;
       syncPreloaderCosmicClass(false);
       holdPreloaderEarthFrame();
+    } else if (isLivingSkyHome()) {
+      settleToSystemHeroFrame(false);
     } else if (isHomeHeroEmbed()) {
       setDefaultEarthFrame();
     } else {
@@ -3968,12 +3976,10 @@ const FinishShader = {
     solarDim = z <= 2 ? 1 : z <= 3.4 ? 0.55 + (3.4 - z) * 0.45 : z <= 4.4 ? 0.12 + (4.4 - z) * 0.43 : 0;
     const showSolar = solarDim > 0.02;
     const showPlanetLabels = showLabels && z <= 2.2;
-    const isolateHeroEarth = isHomeHeroEmbed() && !onPreloaderStage() && z < 0.55
-      && (!focusFrameId || focusFrameId === 'earth') && !moonFrameActive;
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
-      g.visible = showSolar && (!isolateHeroEarth || b.id === 'earth');
+      g.visible = showSolar;
       if (showSolar) {
         let s = z <= 2 ? 1 : z <= 3 ? 0.45 + (3 - z) * 0.55 : 0.15;
         if (instrumentMode && z <= 2) {
@@ -3995,16 +4001,16 @@ const FinishShader = {
     // Free-explore is instrumentMode but still needs sun to fade with continuous scale
     // (otherwise the disc hangs over the galaxy layers as a glitch).
     if (sunMesh && (!instrumentMode || freeExploreMode)) {
-      sunMesh.visible = showSolar && !isolateHeroEarth;
-      if (sunGlow.length) sunGlow.forEach((sp) => { sp.visible = showSolar && !isolateHeroEarth && z <= 2.2; });
-      if (sunCoronaGroup) sunCoronaGroup.visible = showSolar && !isolateHeroEarth && z <= 2.2 && !composer;
-      if (sunCoronaMesh) sunCoronaMesh.visible = showSolar && !isolateHeroEarth && z <= 2.4;
+      sunMesh.visible = showSolar;
+      if (sunGlow.length) sunGlow.forEach((sp) => { sp.visible = showSolar && z <= 2.2; });
+      if (sunCoronaGroup) sunCoronaGroup.visible = showSolar && z <= 2.2 && !composer;
+      if (sunCoronaMesh) sunCoronaMesh.visible = showSolar && z <= 2.4;
     }
     const earthDetailZ = preloaderCosmicJourney ? 1.52 : 1.2;
-    if (moonGroup) moonGroup.visible = showSolar && !isolateHeroEarth && z <= earthDetailZ;
+    if (moonGroup) moonGroup.visible = showSolar && z <= earthDetailZ;
     if (earthCloud) earthCloud.visible = showSolar && z <= earthDetailZ;
     if (earthOrbitGroup) {
-      earthOrbitGroup.visible = showSolar && !isolateHeroEarth && z <= earthDetailZ;
+      earthOrbitGroup.visible = showSolar && z <= earthDetailZ;
       if (earthOrbitGroup.visible && preloaderCosmicJourney) {
         const nearEarth = Math.max(0, (earthDetailZ - z) / earthDetailZ);
         earthOrbitGroup.scale.setScalar(1 + nearEarth * 0.42);
@@ -4016,7 +4022,7 @@ const FinishShader = {
       moonHaloMesh.material.opacity = 0.04 + Math.max(0, (earthDetailZ - z) / earthDetailZ) * 0.08;
     }
     orbitLines.forEach((o) => {
-      o.visible = !isolateHeroEarth && (showOrbits || (spaceFlightMode && z >= 0.85 && z <= 2.65)) && z <= 3.2;
+      o.visible = (showOrbits || (spaceFlightMode && z >= 0.85 && z <= 2.65)) && z <= 3.2;
     });
     eccentricGuides.forEach((line) => {
       line.visible = showEccentricGuides && showOrbits && z <= 3.2;
@@ -4033,11 +4039,11 @@ const FinishShader = {
         if (em.label) em.label.visible = exVis && showPlanetLabels;
       });
     }
-    if (halleyGroup) halleyGroup.visible = !isolateHeroEarth && z <= 3.2;
+    if (halleyGroup) halleyGroup.visible = z <= 3.2;
     if (labels.halley) labels.halley.visible = showLabels && z >= 1 && z <= 3.2;
     Object.keys(labels).forEach((k) => {
       if (k === 'halley') return;
-      if (labels[k]) labels[k].visible = showPlanetLabels && (!isolateHeroEarth || k === 'earth');
+      if (labels[k]) labels[k].visible = showPlanetLabels;
     });
 
     const oortF = scaleFade(z, 3, 0.75);
@@ -8048,8 +8054,10 @@ const FinishShader = {
       masterclassZoom = 6;
       scaleLevel = 6;
       setMasterclassZoom(6, false, true);
+    } else if (isLivingSkyHome()) {
+      // The Observatory opens on one stable, explorable system frame.
+      settleToSystemHeroFrame(false);
     } else if (isHomeHeroEmbed()) {
-      // Calm photoreal Earth rest frame on home (structure clean 2026-07-10).
       setDefaultEarthFrame();
     } else {
       settleToSystemHeroFrame(false);
@@ -8060,7 +8068,8 @@ const FinishShader = {
     if (PRM) {
       introActive = false;
       if (!preloaderMode) {
-        setDefaultEarthFrame();
+        if (isLivingSkyHome()) settleToSystemHeroFrame(false);
+        else setDefaultEarthFrame();
         updateScaleHUD();
       } else {
         camTarget.set(0, 0, 0);

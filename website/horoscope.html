@@ -117,7 +117,7 @@
   </script>
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferHoroscopeFonts(){var ua=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(ua)||/[?&]lite=1/.test(location.search||'')||(typeof window.chrome==='undefined'&&/Chrome/i.test(ua)))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferHoroscopeFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/horoscope-page-deferred.css','ap-css-horoscope-deferred');});</script>
-  <link rel="stylesheet" href="css/ap-launch-unified-v832.css?v=832" />
+  <link rel="stylesheet" href="css/ap-living-sky-v833.css?v=833" />
 </head>
 <body class="page-horoscope ap-cinematic-2026 ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
@@ -168,7 +168,7 @@
         </div>
         <div class="navbar__end">
           <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
-            <svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg>
+            <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
           </a>
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
             <span></span><span></span><span></span>
@@ -285,7 +285,7 @@
           <p class="dial-intro__label">Open the live sky</p>
           <p class="dial-intro__sub">Where the seven planets really are right now &mdash; drag to spin, or tap the centre star to lay your own chart over it.</p>
           <p class="dial-intro__model" style="margin:0.55rem 0 0;">
-            <a class="ap-inline-link" id="dial-model-link" href="explore.html#m=now">Open this sky in the 3D model &rarr;</a>
+            <a class="ap-inline-link" id="dial-model-link" href="index.html#m=now">Open this sky in the 3D model &rarr;</a>
           </p>
         </div>
 
@@ -921,14 +921,14 @@
     document.head.appendChild(s);
   })();
   </script>
-  <script src="js/ap-deep-link.js?v=752" defer></script>
+  <script src="js/ap-deep-link.js?v=833" defer></script>
   <!-- Inline init script -->
-  <script src="js/horoscope-page.js" defer></script>
+  <script src="js/horoscope-page.js?v=833" defer></script>
 
   <script src="js/element-seals.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
   <script src="js/icons.js" defer></script>
-  <script src="js/ap-nav-model-v832.js?v=832"></script>
+  <script src="js/ap-nav-model-v833.js?v=833"></script>
   <script src="js/app.js" defer></script>
   <script src="js/ap-page-bridge.js" defer></script>
   <script>

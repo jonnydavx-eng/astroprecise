@@ -166,7 +166,7 @@
         var label = data.title || data.dateLabel || 'a night you kept';
         var explore = (window.APDeepLink && data.m && APDeepLink.buildSkyLink)
           ? APDeepLink.buildSkyLink({ m: data.m, focus: 'earth' })
-          : (data.m ? 'explore.html#m=' + encodeURIComponent(data.m) + '&focus=earth' : 'explore.html#m=now');
+          : (data.m ? 'index.html#m=' + encodeURIComponent(data.m) + '&focus=earth' : 'index.html#m=now');
         hook.innerHTML = 'You froze a Moment — <em>' + String(label).replace(/</g, '&lt;') +
           '</em>. Compare with today\'s collective sky below, or ' +
           '<a href="moment.html">open Moment</a> · <a href="' + explore + '">see that night in 3D</a>.';
@@ -665,11 +665,11 @@
           var focusBody = RULER_ENGINE_STILL[signKey] || 'earth';
           dialModel.href = (window.APDeepLink && APDeepLink.buildSkyLink)
             ? APDeepLink.buildSkyLink({ m: 'now', focus: focusBody })
-            : 'explore.html#m=now&focus=' + encodeURIComponent(focusBody);
+            : 'index.html#m=now&focus=' + encodeURIComponent(focusBody);
         } catch (eDial) {
           dialModel.href = (window.APDeepLink && APDeepLink.buildSkyLink)
             ? APDeepLink.buildSkyLink({ m: 'now' })
-            : 'explore.html#m=now';
+            : 'index.html#m=now';
         }
       }
       var guide = document.getElementById('srp-guide-link');

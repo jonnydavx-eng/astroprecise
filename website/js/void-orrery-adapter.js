@@ -557,7 +557,21 @@
         this.dispatchEvent(new CustomEvent('planetfocus', { detail: detail, bubbles: true }));
       };
 
-      /* ── camera: flyTo / flyScale ── */
+      /* ── camera: one owner, one interruptible transition ── */
+      C.prototype.cancelNavigation = function () {
+        var O = this._engine;
+        if (!O) return;
+        try { if (O.cancelScaleJourney) O.cancelScaleJourney(false); } catch (e0) {}
+        try { if (O.cancelCosmicFlight) O.cancelCosmicFlight(false); } catch (e1) {}
+        try { if (O.cancelSpaceFlight) O.cancelSpaceFlight(false); } catch (e2) {}
+        try { if (O.cancelGalaxyTour) O.cancelGalaxyTour(); } catch (e3) {}
+        try { if (O.clearAspect) O.clearAspect(); } catch (e4) {}
+        try { if (O.isPortraitMode && O.isPortraitMode() && O.exitPortrait) O.exitPortrait(); } catch (e5) {}
+      };
+      C.prototype._prepareNavigation = function () {
+        this.cancelNavigation();
+      };
+
       C.prototype._engineFlyTo = function (key) {
         var O = this._engine;
         if (!O) return;
@@ -578,7 +592,7 @@
         key = key == null ? '' : String(key).toLowerCase();
         var self = this;
         if (!this._ready) { this._queue.push(function () { self.flyTo(key); }); }
-        else this._engineFlyTo(key);
+        else { this._prepareNavigation(); this._engineFlyTo(key); }
         // legacy dispatched planetfocus synchronously, renderer or not
         if (!key) this._emitFocus(key, { key: key, name: 'The System', glyph: '✦' });
         else this._emitFocus(key);
@@ -589,7 +603,7 @@
         if (lv === 'EARTH') return this.flyTo('earth');
         var idx = scaleToIndex(level);
         if (!this._ready) { this._queue.push(function () { self.flyScale(level); }); }
-        else this._applyScaleIndex(idx, true);
+        else { this._prepareNavigation(); this._applyScaleIndex(idx, true); }
         if (this._engineKind === 'canvas' || (this._engine && this._engine.isWebGL === false)) {
           // canvas engine emits no scale events — keep the ladder honest
           var name = SCALE_NAMES[idx];
@@ -780,7 +794,7 @@
           if (!O) return;
           try {
             var active = typeof O.isJourneyActive === 'function' && O.isJourneyActive();
-            if (active && typeof O.cancelScaleJourney === 'function') { O.cancelScaleJourney(true); return; }
+            if (active && typeof O.cancelScaleJourney === 'function') { O.cancelScaleJourney(false); return; }
             if (typeof O.startScaleJourney === 'function') O.startScaleJourney(6, { fullTour: true, direction: 'out' });
           } catch (e) {}
         }

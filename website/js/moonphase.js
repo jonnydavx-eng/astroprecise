@@ -300,12 +300,12 @@
             var utc = new Date(Date.UTC(p.y, p.m - 1, p.d, 12, 0, 0));
             var href = (window.APDeepLink && APDeepLink.buildSkyLink)
               ? APDeepLink.buildSkyLink({ m: utc, focus: 'moon' })
-              : 'explore.html#m=now&focus=moon';
+              : 'index.html#m=now&focus=moon';
             return '<a class="btn btn--outline" href="' + href + '">See this Moon in the 3D model &rarr;</a>';
           } catch (e) {
             var fallback = (window.APDeepLink && APDeepLink.buildSkyLink)
               ? APDeepLink.buildSkyLink({ m: 'now', focus: 'moon' })
-              : 'explore.html#m=now&focus=moon';
+              : 'index.html#m=now&focus=moon';
             return '<a class="btn btn--outline" href="' + fallback + '">See the Moon in the 3D model &rarr;</a>';
           }
         })() +

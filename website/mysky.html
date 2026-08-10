@@ -36,13 +36,14 @@
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"WebApplication","name":"Astro Precise — My Sky","url":"https://astroprecise.app/mysky.html","applicationCategory":"LifestyleApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Hub for free chart, sky, Moments, and daily sky tools.","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"}}
   </script>
+  <link rel="stylesheet" href="css/ap-living-sky-v833.css?v=833" />
 </head>
 <!--
   SAFE INTEGRATION RULES
   - Uses shared site-header + ap-page-boot (same chrome as Moment/Chart pages)
   - Does NOT load three.min.js or orrery-cinematic (no dual-Three with home ESM)
   - Visual: production marketing cinema + engine stills (real brand art)
-  - Live 3D: link to home / explore which own the production WebGL path
+  - Live 3D: link to the Live Sky Observatory, which owns the production WebGL path
 -->
 <body class="ap-no-nav-enter ap-mysky-page">
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -92,7 +93,7 @@
         <h2 id="mysky-visual-title">The living sky</h2>
         <p>
           Same brand art that powers the homepage hero — engine stills and the cinema system plate.
-          Interactive photoreal WebGL lives on Home and Explore (one Three.js stack, no conflicts).
+          Interactive photoreal WebGL lives in the Live Sky Observatory: one scene, one Three.js stack, no conflicts.
         </p>
         <figure class="mysky-cinema">
           <picture>
@@ -140,7 +141,7 @@
           <a class="mysky-cta mysky-cta--primary" href="index.html">Open the Observatory</a>
         </div>
         <p class="mysky-note">
-          Why no second WebGL here: the homepage already owns the flagship engine. My Sky is the map; Home/Explore are the instrument.
+          Why no second WebGL here: the homepage already owns the flagship engine. My Sky is the map; Live Sky is the instrument.
         </p>
       </section>
 
@@ -182,7 +183,7 @@
   <footer class="site-footer" role="contentinfo">
     <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#8B919C);font-size:0.85rem">
       <p style="margin:0 0 0.5rem">
-        <a href="explore.html">Explore</a> ·
+        <a href="index.html#lead">Live Sky</a> ·
         <a href="index.html">Home</a> ·
         <a href="chart.html">Chart</a> ·
         <a href="ephemeris.html">Sky</a> ·

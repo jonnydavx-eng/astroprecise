@@ -1,8 +1,8 @@
 /**
  * Astro Precise — model sky deep-link builder (H1 contract).
  *
- * Emitters sitewide → explore.html#m=<UTC|now>&focus=<body>[&scale=N]
- * Receiver: js/explore-boot.js (parseModelHash / resolveMomentDate).
+ * Emitters sitewide → index.html#m=<UTC|now>&focus=<body>[&scale=N]
+ * Receiver: js/ap-observatory-v833.js (hash + private session handoff).
  *
  * Deep links are UTC by contract: bare "1990-06-14T12:00" becomes Z-suffixed
  * so every visitor sees the same sky instant.
@@ -16,7 +16,7 @@
   };
 
   /* Handoff channel for personal moments — read and consumed by
-     js/explore-boot.js. Same-tab, same-origin, never transmitted. */
+     js/ap-observatory-v833.js. Same-tab, same-origin, never transmitted. */
   var STASH_KEY = 'ap-explore-moment';
 
   /** @param {Date|string|'now'|null|undefined} m */
@@ -39,7 +39,7 @@
    */
   function buildSkyLink(opts) {
     opts = opts || {};
-    var base = opts.base != null ? String(opts.base) : 'explore.html';
+    var base = opts.base != null ? String(opts.base) : 'index.html';
     var parts = [];
     var m = normalizeMoment(opts.m != null ? opts.m : 'now');
     if (m == null) m = 'now';
@@ -58,7 +58,7 @@
    * Same destination as buildSkyLink, for moments that are somebody's BIRTH
    * minute rather than a public astronomical event.
    *
-   * A link like explore.html#m=1994-03-14T09:12:00.000Z is a birth certificate
+   * A link like index.html#m=1994-03-14T09:12:00.000Z is a birth certificate
    * to the minute. It survives in the address bar, in a screenshot, in browser
    * history synced across that person's devices, and in whatever they paste it
    * into. So the moment travels in sessionStorage instead — same tab, same
@@ -78,7 +78,7 @@
     if (m == null) m = 'now';
     var focus = opts.focus ? String(opts.focus).toLowerCase() : null;
     if (focus && !VALID_FOCUS[focus]) focus = null;
-    var base = opts.base != null ? String(opts.base) : 'explore.html';
+    var base = opts.base != null ? String(opts.base) : 'index.html';
 
     try {
       window.sessionStorage.setItem(STASH_KEY, JSON.stringify({

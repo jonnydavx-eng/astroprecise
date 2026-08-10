@@ -8,7 +8,7 @@
  */
 import { chromium } from './visual-check/node_modules/playwright/index.mjs';
 
-const BASE = (process.argv[2] || 'http://127.0.0.1:8790').replace(/\/+$/, '');
+const BASE = (process.env.AP_BASE || process.argv[2] || 'http://127.0.0.1:8790').replace(/\/+$/, '');
 const errors = [];
 let browser;
 
@@ -89,6 +89,8 @@ try {
   }));
   assert(normalAfter.jd !== normalBefore, 'Normal mouse drag did not scrub the model time');
   assert(normalAfter.cursor === 'grab', 'Normal mouse release did not restore the grab cursor');
+  await page.evaluate(() => window.Orrery3D.setSpeed(0));
+  await page.waitForTimeout(80);
 
   // Regression: cancellation must reset drag state, and a later no-button move
   // must not rotate the camera.
@@ -192,13 +194,15 @@ try {
   assert(lostButtonAfter.jd === lostButtonBefore.jd, 'buttons=0 pointer move scrubbed the model time');
 
   // The wheel path remains live after the recovery cases.
+  const wheelDisabled = await page.evaluate(() => document.getElementById('orr')?.getAttribute('data-wheel') === 'off');
   const radiusBefore = await page.evaluate(() => window.Orrery3D.getCamRadius());
   await page.mouse.move(point.x, point.y);
   await page.keyboard.down('Control');
   await page.mouse.wheel(0, 180);
   await page.keyboard.up('Control');
   const radiusAfter = await page.evaluate(() => window.Orrery3D.getCamRadius());
-  assert(radiusAfter !== radiusBefore, 'Mouse wheel did not change the model zoom');
+  if (wheelDisabled) assert(radiusAfter === radiusBefore, 'data-wheel=off allowed the model to hijack page scrolling');
+  else assert(radiusAfter !== radiusBefore, 'Mouse wheel did not change the model zoom');
 
   assert(errors.length === 0, `Browser errors: ${errors.slice(0, 3).join(' | ')}`);
   console.log(JSON.stringify({
@@ -208,7 +212,7 @@ try {
     pointerCancel: { before: cancelBefore.jd, after: cancelAfter.jd, cursor: cancelAfter.cursor },
     lostCapture: { before: lostCaptureBefore.jd, after: lostCaptureAfter.jd, cursor: lostCaptureAfter.cursor },
     lostButton: { before: lostButtonBefore.jd, after: lostButtonAfter.jd, cursor: lostButtonAfter.cursor },
-    wheel: { before: radiusBefore, after: radiusAfter },
+    wheel: { disabled: wheelDisabled, before: radiusBefore, after: radiusAfter },
     errors,
   }, null, 2));
 } catch (error) {
