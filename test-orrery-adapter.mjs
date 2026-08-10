@@ -7,8 +7,9 @@
  *      scalechange {level}) and the seven scale names EARTH…COSMOS;
  *   3. the fail-open ladder: ?engine=legacy, js/orrery.js legacy injection,
  *      js/orrery-loader.js boot path, js/orrery3d.js canvas fail-open;
- *   4. every page that used to load js/orrery.js now loads the adapter, and the
- *      three pages with a live <void-orrery> carry the three import map;
+ *   4. every page that used to load js/orrery.js now loads the adapter, the
+ *      three pages with a live <void-orrery> carry the three import map, and
+ *      Explore enters the real model directly with its deck after the canvas;
  *   5. window.VoidEphem is byte-compatible: the adapter's port is evaluated
  *      alongside legacy orrery.js and outputs are compared numerically.
  */
@@ -114,56 +115,57 @@ for (const deliveredPath of ['./css/' + deliveredCssName, './js/' + deliveredBoo
 for (const criticalProbe of ['explore-page(?:-v\\d+)?\\.css', 'explore-boot(?:-v\\d+)?\\.js', 'ap-nav-model(?:-v\\d+)?\\.js']) {
   if (!sw.includes(criticalProbe)) fail('service-worker critical routing missing ' + criticalProbe);
 }
-for (const probe of [
+for (const retiredProbe of [
   'id="explore-threshold"',
   'id="explore-threshold-enter"',
   'explore-threshold-bypass',
   'ap-explore-threshold-seen',
-  'tabindex="-1" aria-label="Living-sky 3D model',
+  'The real sky waits beyond.',
+  'REAL POSITIONS ON ENTRY',
 ]) {
-  if (!exploreHtml.includes(probe)) fail('flagship Explore threshold missing: ' + probe);
+  if (exploreHtml.includes(retiredProbe)) fail('retired Explore 2D doorway remains: ' + retiredProbe);
+  if (exploreBoot.includes(retiredProbe)) fail('retired Explore doorway boot state remains: ' + retiredProbe);
 }
-if (!exploreHtml.includes('The real sky waits beyond.') ||
-    !exploreHtml.includes('REAL POSITIONS ON ENTRY')) {
-  fail('Explore threshold does not keep the poster/live honesty boundary');
+for (const probe of [
+  'id="apAwardOrreryWrap"',
+  'id="orrery-lite-deck"',
+  'tabindex="-1" aria-label="Living-sky 3D model',
+  'data-lite-planet="earth"',
+]) {
+  if (!exploreHtml.includes(probe)) fail('flagship Explore live-model contract missing: ' + probe);
 }
 
-const thresholdStart = exploreHtml.indexOf('id="explore-threshold"');
 const modelStart = exploreHtml.indexOf('id="apAwardOrreryWrap"');
-if (thresholdStart < 0 || modelStart <= thresholdStart) fail('threshold/model order is invalid');
-else if (exploreHtml.slice(thresholdStart, modelStart).includes('<canvas')) {
-  fail('Observatory threshold creates a second canvas/context');
-}
+const deckStart = exploreHtml.indexOf('id="orrery-lite-deck"');
+if (modelStart < 0 || deckStart <= modelStart) fail('Explore model/deck document order is invalid');
 const focusButtonCount = (exploreHtml.match(/data-lite-planet=/g) || []).length;
 const pressedCount = (exploreHtml.match(/data-lite-planet=[^>]+aria-pressed=/g) || []).length;
 if (focusButtonCount !== 10 || pressedCount !== focusButtonCount) {
   fail('Explore planet buttons missing initial pressed state (' + pressedCount + '/' + focusButtonCount + ')');
 }
 for (const probe of [
-  'var webglIntent = !!resolveIntent();',
-  'setInstrumentInert',
-  'armWebglIntent();',
+  'var webglIntent = true;',
+  'wrap.hidden = false;',
+  'queueLoader();',
   'new ResizeObserver(syncNavHeight)',
   'setAttribute("aria-pressed"',
 ]) {
   if (!exploreBoot.includes(probe)) fail('Explore boot contract missing: ' + probe);
 }
-for (const probe of ['.explore-stage .lite-vp-glyph', 'var(--explore-deck-h', 'explore-threshold-entering', 'html.orrery-full .explore-hint { display: none; }', '--ap-vc-accent: #140d05']) {
+for (const probe of ['.explore-stage .lite-vp-glyph', 'var(--explore-deck-h', 'html.orrery-full .explore-hint { display: none; }', '--ap-explore-model-h', 'grid-template-rows: var(--ap-explore-model-h) auto', '.explore-stage .explore-deck']) {
   if (!exploreCss.includes(probe)) fail('Explore CSS contract missing: ' + probe);
 }
+if (exploreCss.includes('.explore-threshold')) fail('retired Explore threshold CSS remains in the canonical source');
 if (!loader.includes("b.setAttribute('aria-pressed', active ? 'true' : 'false')")) {
   fail('orrery loader does not synchronize focus aria-pressed');
 }
 const navEclipse = navModel.indexOf("['eclipse.html', 'The Eclipse'");
-const navExplorer = navModel.indexOf("['explore.html', 'Sky Explorer'");
+const navExplorer = navModel.indexOf("['explore.html', 'Full 3D Observatory'");
 const navMySky = navModel.indexOf("['mysky.html', 'My Sky'");
 if (!(navEclipse >= 0 && navExplorer > navEclipse && navMySky > navExplorer)) {
-  fail('Sky Explorer is not promoted directly after the eclipse campaign in More');
+  fail('Full 3D Observatory is not promoted directly after the eclipse campaign in More');
 }
-if (/\['explore\.html', 'Sky Explorer', \{ badge: 'Live' \}\]/.test(navModel)) {
-  fail('Sky Explorer nav claims LIVE before the model is revealed');
-}
-ok('flagship Explore threshold, direct-link bypass, one-context gate and accessible controls present');
+ok('flagship Explore direct-WebGL entry, one-context model/deck order and accessible controls present');
 
 const eclipseHtml = readFileSync(join(root, 'eclipse.html'), 'utf8');
 for (const probe of [

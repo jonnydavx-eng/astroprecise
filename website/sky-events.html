@@ -13,7 +13,7 @@
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
 <link rel="stylesheet" href="./css/fonts.css">
-<script src="./js/void-orrery-adapter.js?v=830"></script>
+<script src="./js/void-orrery-adapter.js?v=832"></script>
 <style>
 :root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.24);--acc:#d8b46a;--good:rgba(168,214,176,.85)}
 *{box-sizing:border-box}
@@ -34,14 +34,45 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script src="./js/ambience.js"></script>
+  <link rel="stylesheet" href="css/ap-launch-unified-v832.css?v=832" />
+  <script src="js/ap-nav-model-v832.js?v=832" defer></script>
 </head>
-<body>
+<body class="page-sky-events ap-launch-article">
 <space-ambience density="200"></space-ambience>
+<header class="site-header" role="banner" data-ap-static-nav>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+        <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+      </a>
+      <div class="navbar__nav" role="group" aria-label="Primary">
+        <noscript>
+          <a href="index.html" class="navbar__link">Observatory</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">The Sky</a>
+          <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
+        </noscript>
+      </div>
+      <div class="navbar__end">
+        <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
+          <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
+        </a>
+        <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+  </nav>
+</header>
 <div class="wrap" style="position:relative;z-index:1">
 
-<div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0">
-  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)" href="./index.html">← THE OBSERVATORY</a>
-  <span class="mono" style="font-size:10px;letter-spacing:.26em;color:var(--acc)">SKY EVENTS · COMPUTED THIS MINUTE</span>
+
+<div class="launch-article-meta">
+  <span class="kicker">SKY EVENTS · COMPUTED THIS MINUTE</span>
+  <a class="navlink" href="./eclipse.html">12 AUG ECLIPSE →</a>
 </div>
 
 <h1>What the sky does next.</h1>

@@ -32,7 +32,7 @@
 <script src="./js/ephemeris.js" defer></script>
 <!-- M2: the live shadow sim runs the superior Orrery3D engine through the adapter
      (same <void-orrery> surface incl. setEclipse; fails open to js/orrery.js). -->
-<script src="./js/void-orrery-adapter.js?v=830" defer></script>
+<script src="./js/void-orrery-adapter.js?v=832" defer></script>
 <style>
 @font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
 @font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
@@ -89,25 +89,46 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
 @media (max-width:760px){input,select{padding:12px}}
 @media (max-width:430px){.card{padding:20px 18px}}
 </style>
+  <link rel="stylesheet" href="css/ap-launch-unified-v832.css?v=832" />
+  <script src="js/ap-nav-model-v832.js?v=832" defer></script>
 </head>
-<body>
+<body class="page-eclipse ap-launch-article">
 <a class="skip" href="#story">SKIP TO THE ECLIPSE</a>
-<div class="wrap">
-
-<header>
-  <div class="top">
-    <a class="navlink" href="./index.html">← ASTRO PRECISE</a>
-    <span class="kicker">THE REAL SKY NEWS · 12 AUGUST 2026</span>
-  </div>
-  <nav class="sitenav" aria-label="Primary">
-    <a href="./index.html">OBSERVATORY</a>
-    <a href="./chart.html">CHART</a>
-    <a href="./ephemeris.html">THE SKY</a>
-    <a href="./horoscope.html">DAILY</a>
-    <a href="./shop.html">SHOP</a>
-    <span aria-current="page">THE ECLIPSE</span>
+<header class="site-header" role="banner" data-ap-static-nav>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+        <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+      </a>
+      <div class="navbar__nav" role="group" aria-label="Primary">
+        <noscript>
+          <a href="index.html" class="navbar__link">Observatory</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">The Sky</a>
+          <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
+        </noscript>
+      </div>
+      <div class="navbar__end">
+        <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
+          <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
+        </a>
+        <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
   </nav>
 </header>
+<div class="wrap">
+
+
+<div class="launch-article-meta">
+  <span class="kicker">THE ECLIPSE · 12 AUGUST 2026</span>
+  <a class="navlink" href="./sky-events.html">REAL SKY NEWS →</a>
+</div>
 
 <main id="story" tabindex="-1">
 <p class="kicker" style="margin:44px 0 16px;color:var(--warn)"><span class="pulse">●</span>&nbsp; DEEP PARTIAL SOLAR ECLIPSE · 88–96% OF THE SUN COVERED ACROSS BRITAIN · UK MAXIMUM ≈19:12 BST IN LONDON</p>

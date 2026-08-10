@@ -424,10 +424,16 @@
     return opts;
   }
 
+  /* Host-owned camera policy: false stops carousel/timer movement, never taps. */
+  function allowsAutoDrive(host) {
+    return !(host && host.getAttribute && host.getAttribute('data-ap-auto-drive') === 'false');
+  }
+
   function mount(host, opts) {
     opts = opts || {};
     if (!host || !E()) return null;
     opts = mergeHostExclude(host, opts);
+    var autoDrive = allowsAutoDrive(host);
     // Stop prior controller if remounting same host
     if (host._apSkyNewsCtl && typeof host._apSkyNewsCtl.stop === 'function') {
       host._apSkyNewsCtl.stop();
@@ -518,7 +524,7 @@
       el.classList.add('ap-sky-news__card--on');
       el.setAttribute('aria-current', 'true');
       // Do not scrollIntoView on auto-cycle — disturbs keyboard/scroll position
-      if (host.id === 'ap-sky-news-band') { var eit = items[idx]; if (autoEclipse === 0 && eit && eit.id === 'eclipse') { driveEclipse(eit); autoEclipse = 1; } else if (autoEclipse === 1) { driveEclipse(eit); if (!eit || eit.id !== 'eclipse') autoEclipse = 2; } } // one auto-reveal per session; clicks always drive
+      if (autoDrive && host.id === 'ap-sky-news-band') { var eit = items[idx]; if (autoEclipse === 0 && eit && eit.id === 'eclipse') { driveEclipse(eit); autoEclipse = 1; } else if (autoEclipse === 1) { driveEclipse(eit); if (!eit || eit.id !== 'eclipse') autoEclipse = 2; } } // one auto-reveal per session; clicks always drive
       if (opts.autoFly === true && items[idx] && !items[idx].href) {
         driveModel(items[idx]);
       }
@@ -532,7 +538,7 @@
     }
     // Band: the initially highlighted card may be the eclipse card (auto-cycle's first
     // tick is seconds away) — settle the eclipse state shortly after the settle fly.
-    if (!prm && host.id === 'ap-sky-news-band' && items[0]) {
+    if (autoDrive && !prm && host.id === 'ap-sky-news-band' && items[0]) {
       setTimeout(function () { driveEclipse(items[0]); }, (opts.flyDelayMs || 1200) + 500);
     }
 
@@ -572,7 +578,7 @@
     // Tonight band: one settle fly, then click-driven
     var band = document.getElementById('ap-sky-news-band');
     if (band) {
-      mount(band, { autoFly: !narrow, autoCycle: true, cycleMs: 10000, limit: 6, flyDelayMs: 1800 });
+      mount(band, { autoFly: allowsAutoDrive(band) && !narrow, autoCycle: true, cycleMs: 10000, limit: 6, flyDelayMs: 1800 });
     }
   }
 

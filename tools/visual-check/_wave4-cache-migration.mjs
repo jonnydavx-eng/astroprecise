@@ -1,10 +1,10 @@
 /**
- * Explore v814 -> v826 first-response migration proof.
+ * Explore v814 -> v832 first-response migration proof.
  *
  * Runs a private local origin under a synthetic worker that reproduces the
  * live v814 failure mode: queries are canonicalized and ordinary assets are
  * cache-first. It seeds stale canonical Explore CSS, boot and nav responses,
- * proves those stale bytes win even with ?v=826, then loads the candidate and
+ * proves those stale bytes win even with ?v=832, then loads the candidate and
  * proves its filename-versioned assets all miss that cache and execute.
  */
 import http from 'node:http';
@@ -176,9 +176,9 @@ async function main() {
 
     const stale = await page.evaluate(async () => {
       const paths = [
-        '/css/explore-page.css?v=826',
-        '/js/explore-boot.js?v=826',
-        '/js/ap-nav-model.js?v=826',
+        '/css/explore-page.css?v=832',
+        '/js/explore-boot.js?v=832',
+        '/js/ap-nav-model.js?v=832',
       ];
       return Promise.all(paths.map(assetPath => fetch(assetPath).then(response => response.text())));
     });
@@ -209,9 +209,9 @@ async function main() {
     });
 
     const expected = [
-      '/css/explore-page-v826.css',
-      '/js/explore-boot-v826.js',
-      '/js/ap-nav-model-v826.js',
+      '/css/explore-page-v832.css',
+      '/js/explore-boot-v832.js',
+      '/js/ap-nav-model-v832.js',
     ];
     assert(state.controller.includes('__wave4-old-sw.js'), 'candidate was not controlled by the seeded v814 worker');
     assert(state.cssPath === expected[0], `candidate linked ${state.cssPath || 'no'} Explore CSS`);
@@ -227,22 +227,25 @@ async function main() {
 
     const delivered = await page.evaluate(async () => {
       const paths = [
-        '/css/explore-page-v826.css?v=826',
-        '/js/explore-boot-v826.js?v=826',
-        '/js/ap-nav-model-v826.js?v=826',
+        '/css/explore-page-v832.css?v=832',
+        '/js/explore-boot-v832.js?v=832',
+        '/js/ap-nav-model-v832.js?v=832',
       ];
       return Promise.all(paths.map(assetPath => fetch(assetPath).then(response => response.text())));
     });
     assert(!delivered[0].includes(MARKERS.css), 'versioned Explore CSS returned stale bytes');
     assert(!delivered[1].includes(MARKERS.boot), 'versioned Explore boot returned stale bytes');
     assert(!delivered[2].includes(MARKERS.nav), 'versioned nav model returned stale bytes');
-    assert(delivered[0].includes('(max-height: 520px)'), 'delivered CSS lacks the phone-landscape fix');
-    assert(delivered[1].includes('var webglIntent = !!resolveIntent();'), 'delivered boot lacks the Explore gate contract');
-    assert(delivered[2].includes("['explore.html', 'Sky Explorer']"), 'delivered nav lacks Sky Explorer');
-    assert(!delivered[2].includes("['explore.html', 'Sky Explorer', { badge: 'Live' }]"), 'delivered nav still claims Live');
+    assert(delivered[0].includes('--ap-explore-model-h'), 'delivered CSS lacks the contained model height contract');
+    assert(delivered[0].includes('grid-template-rows: var(--ap-explore-model-h) auto'), 'delivered CSS does not place the console after the model');
+    assert(!delivered[0].includes('.explore-threshold'), 'delivered CSS retains the retired 2D doorway');
+    assert(delivered[1].includes('var webglIntent = true;'), 'delivered boot does not enter the full model directly');
+    assert(!delivered[1].includes('ap-explore-threshold-seen'), 'delivered boot retains the retired doorway state');
+    assert(delivered[2].includes("['explore.html', 'Full 3D Observatory']"), 'delivered nav lacks Full 3D Observatory');
+    assert(!delivered[2].includes("['explore.html', 'Full 3D Observatory', { badge: 'Live' }]"), 'delivered nav makes an unproven Live claim');
     assert(pageErrors.length === 0, `candidate raised page errors: ${pageErrors.join(' | ')}`);
 
-    console.log('PASS v814 migration: stale canonical cache reproduced; v826 CSS, boot and nav arrived from new paths');
+    console.log('PASS v814 migration: stale canonical cache reproduced; v832 CSS, boot and nav arrived from new paths');
     await context.close();
   } finally {
     if (browser) await browser.close();

@@ -56,19 +56,6 @@
   { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
 
-  <script>
-  (function () {
-    var hashIntent = /(?:^|[#&;])(?:m|focus)=/i.test(location.hash || "");
-    var bypass = hashIntent;
-    try {
-      bypass = bypass ||
-        sessionStorage.getItem("ap-explore-threshold-seen") === "1" ||
-        !!sessionStorage.getItem("ap-explore-moment");
-    } catch (e) { /* storage is optional */ }
-    document.documentElement.classList.add(bypass ? "explore-threshold-bypass" : "explore-threshold-pending");
-  })();
-  </script>
-
   <!-- Base site shell (nav, footer, buttons, palette tokens, forms) -->
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
@@ -87,7 +74,7 @@
   <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=752" />
   <!-- Filename versioning bypasses the final cache-first response from an old
        worker; query strings alone are canonicalized away by that worker. -->
-  <link rel="stylesheet" href="css/explore-page-v830.css?v=830" />
+  <link rel="stylesheet" href="css/explore-page-v832.css?v=832" />
   <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
   <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css. -->
   <link rel="stylesheet" href="css/ap-model-window.css?v=826" id="ap-css-model-window" />
@@ -106,7 +93,8 @@
     }
   </style>
 
-  <!-- WebGL modules load only after an explicit model intent (launch/deep-link). -->
+  <!-- AP-V832: WebGL begins on entry; the obsolete 2D doorway remains hidden as fallback markup only. -->
+  <link rel="stylesheet" href="css/ap-launch-unified-v832.css?v=832" />
 </head>
 <body class="page-explore ap-enchanted">
 
@@ -158,57 +146,6 @@
     <section class="explore-stage" id="explore-stage" tabindex="-1" aria-label="Living-sky 3D model — drag to explore">
 
       <h1 class="sr-only">Explore the living sky — from Earth to the Milky Way</h1>
-
-      <!-- Observatory + Explore are one flagship room. This CSS-only threshold
-           reuses the existing poster/WebGL surface beneath it: no second canvas,
-           no second context. Model deep links and returning sessions bypass it. -->
-      <div class="explore-threshold" id="explore-threshold" aria-labelledby="explore-threshold-title">
-        <svg class="explore-threshold__vista" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-          <defs>
-            <linearGradient id="exploreThresholdSky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#11101f"/>
-              <stop offset=".46" stop-color="#2c2035"/>
-              <stop offset=".76" stop-color="#704238"/>
-              <stop offset="1" stop-color="#b67245"/>
-            </linearGradient>
-            <radialGradient id="exploreThresholdGlow" cx=".54" cy=".78" r=".62">
-              <stop offset="0" stop-color="#f0b16d" stop-opacity=".52"/>
-              <stop offset=".48" stop-color="#c17a4b" stop-opacity=".16"/>
-              <stop offset="1" stop-color="#08070c" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <rect width="1440" height="900" fill="url(#exploreThresholdSky)"/>
-          <rect width="1440" height="900" fill="url(#exploreThresholdGlow)"/>
-          <path d="M0 650L190 566l170 70 190-128 180 126 184-148 196 152 164-104 166 86v280H0Z" fill="#17101a" opacity=".82"/>
-          <path d="M0 746l248-102 232 128 286-154 276 158 240-114 158 90v148H0Z" fill="#09070c"/>
-          <g transform="translate(930 535)" fill="#0b080e">
-            <path d="M0 0a34 34 0 0 1 68 0Z"/>
-            <rect x="-9" y="-2" width="86" height="7" rx="2"/>
-            <rect x="30" y="-35" width="8" height="28" rx="3" fill="#1d1521"/>
-            <rect x="31.5" y="-32" width="5" height="22" rx="2" fill="#e7bd78" opacity=".72"/>
-          </g>
-        </svg>
-        <div class="explore-threshold__content">
-          <div class="explore-threshold__lens" aria-hidden="true">
-            <span class="explore-threshold__glass">
-              <span class="explore-threshold__orbit"></span>
-              <span class="explore-threshold__planet"></span>
-              <i class="explore-threshold__star explore-threshold__star--a"></i>
-              <i class="explore-threshold__star explore-threshold__star--b"></i>
-              <i class="explore-threshold__star explore-threshold__star--c"></i>
-              <i class="explore-threshold__star explore-threshold__star--d"></i>
-            </span>
-            <span class="explore-threshold__reticle"></span>
-          </div>
-          <div class="explore-threshold__copy">
-            <p class="explore-threshold__eyebrow">THE OBSERVATORY · SKY EXPLORER</p>
-            <h2 id="explore-threshold-title">Step through the lens.<br><em>The real sky waits beyond.</em></h2>
-            <p>Roam from Earth to the Milky Way, focus any world, and move time beneath your hands. Beyond the lens, positions are computed on this device.</p>
-            <a class="explore-threshold__enter" id="explore-threshold-enter" href="#explore-stage">Enter the living sky <span aria-hidden="true">→</span></a>
-            <p class="explore-threshold__proof">REAL POSITIONS ON ENTRY · DISTANCES LABELLED · NO ACCOUNT</p>
-          </div>
-        </div>
-      </div>
 
       <div class="ap-award-orrery-wrap explore-orrery-wrap" id="apAwardOrreryWrap" hidden>
         <div class="ap-award-orrery-frame">
@@ -394,12 +331,12 @@
   <script src="js/raf-core.js" defer></script>
   <!-- Old workers cache this model by pathname, so the release identity must
        live in the filename to keep the pre-entry honesty label current. -->
-  <script src="js/ap-nav-model-v830.js?v=830" defer></script>
+  <script src="js/ap-nav-model-v832.js?v=832" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>
   <!-- The path, not only the query, carries the release identity so an old
        cache-first worker cannot pair this new threshold with a stale boot. -->
-  <script src="js/explore-boot-v830.js?v=830" defer></script>
+  <script src="js/explore-boot-v832.js?v=832" defer></script>
   <!-- WOW slice 1 · Model Window live caption + curtain-raise trigger — twin of
        the index.html snippet (piggybacks orrery-scale-change; reveal gated on
        html.orrery-full so the fallback/2D path never shows the frame). -->
