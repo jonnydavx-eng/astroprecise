@@ -1,6 +1,6 @@
 # Model Surface Contract
 
-**Tip:** ap-v721 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
+**Tip:** ap-v834 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
 
 Three surfaces — never mix their honesty labels.
 
@@ -50,16 +50,16 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 
 ## Surface C — Live WebGL
 
-**What:** One running `orrery-webgl.js` canvas with VSOP87 positions, Earth rest frame, scale journey, planet focus.
+**What:** One live WebGL instrument per owning page. The Observatory uses `orrery-webgl.js` for VSOP87 positions, Earth rest frame, scale journey and planet focus. The eclipse page uses its dedicated Sun–Moon–Earth renderer and pure shadow-geometry module.
 
 **Where (only):**
 
 | Page | Role |
 |---|---|
-| `index.html` | Home observatory stage — full-viewport model, plinth tray, planet actions |
-| `explore.html` | Canonical `#m=` receiver — applies hash → `Orrery3D.setDate` + focus |
+| `index.html` | Home Observatory — the single solar-system model, scale journey and `#m=` receiver |
+| `eclipse.html` | Dedicated eclipse shadow instrument — one canvas, live/replay UTC geometry, umbra and penumbra |
 
-**Receiver:** `website/js/explore-boot.js` — `parseModelHash()` / `resolveMomentDate()`; sets `data-ap-model-link` on `<html>` when applied.
+**Receiver:** `website/js/ap-observatory-v834.js` owns home hash/session handoff. `explore.html` is a noindex redirect that preserves query and hash into `index.html`; it never mounts WebGL.
 
 **Mount rules:**
 
@@ -69,12 +69,16 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 4. **Fail:** **LIVE SKY UNAVAILABLE** + still plate + Chart / Observatory links.
 5. **Controls below the disc** — never cover the model (plinth tray, cast rail).
 6. **Home handoff:** `APSkyBridge.showPersonalSky()` may drive home orrery when already live; always emits `ap-sky-ready` for listeners.
+7. **Eclipse ownership:** `eclipse.html` must not load `<void-orrery>` or the generic adapter. `ap-eclipse-geometry-v834.js` computes the pure geometry; `ap-eclipse-live-v834.js` owns the page's only context.
+8. **Eclipse scale honesty:** angular separation, timing and shadow intersection are computed; distances are compressed and body sizes / visible shadow width are enlarged for clarity.
 
 **Honesty labels:**
 
 | Label | When |
 |---|---|
-| `LIVE · VSOP87 · <UTC>` | Surface C revealed + engine alive |
+| `LIVE · VSOP87 · <UTC>` | Observatory revealed + engine alive |
+| `LIVE NOW · MEEUS SUN/MOON · <UTC>` | Eclipse instrument tracking the current minute |
+| `EVENT VIEW · <UTC>` | Eclipse instrument displaying a selected historical/future minute |
 | `SETTLING…` | Boot / curtain-raise |
 | `LIVE SKY UNAVAILABLE` | WebGL fail, context lost, offline sky |
 | `SCHEMATIC · decorative field` | Surface A still or Surface B backdrop |
@@ -90,7 +94,7 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 | Moment freeze | A | Share card + explore link; `ap_moment_return` → horoscope return hook |
 | Daily return | A | Horoscope `mountMomentReturnHook` (7-day window) |
 
-**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Tip remains ap-v721.
+**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v834.
 
 **Event bus:** `ap-sky-ready` — `{ m, link, focus, chart|moment, source }` for share/telemetry hooks.
 
@@ -99,8 +103,8 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 ## Agent checklist (before ship)
 
 - [ ] Emitters use `APDeepLink.buildSkyLink` — no hand-built `#m=` strings.
-- [ ] Receiver changes only in `explore-boot.js` + engine — not duplicated on index hash (deferred).
-- [ ] Bump `?v=` on touched JS/CSS **and** `sw.js` `const V = "ap-v###"`.
+- [ ] Home hash/session receiver remains in `ap-observatory-v834.js`; Explore stays a redirect and mounts no context.
+- [ ] Bump `?v=` on touched JS/CSS **and** `sw.js` `const V = "ap-v###"`; precache both eclipse modules and its CSS.
 - [ ] LIVE label audit on every page with a sky panel.
 - [ ] `node tools/visual-check/_wave2-deeplink.mjs` + `npm test` green.
 

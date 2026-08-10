@@ -922,7 +922,7 @@
 
     const modelHref = (window.APSkyBridge && APSkyBridge.buildLinkFromChart)
       ? APSkyBridge.buildLinkFromChart(chart, { focus: 'earth' })
-      : 'explore.html#m=now&focus=earth';
+      : 'index.html#m=now&focus=earth';
 
     // Site spine after cast: Model → Keep → Daily → Reading (ephemeris secondary)
     const steps = [

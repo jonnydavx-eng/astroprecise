@@ -104,12 +104,29 @@ function listFiles(dir, filter) {
 function collectCanonical() {
   const paths = new Set(HTML_INCLUDE);
 
+  // Versioned shell families accumulate on disk for rollback, but only versions
+  // referenced by a shipped HTML page belong in a fresh install. Pre-caching every
+  // historical nav/Observatory/Explore bundle made new visitors download dead UI.
+  const referencedVersionedShells = new Set();
+  const versionedShellPattern = /^(?:\.\/)?(?:js\/(?:ap-nav-model|ap-observatory|explore-boot)-v\d+\.js|css\/(?:ap-living-sky|explore-page)-v\d+\.css)$/;
+  const assetRefPattern = /(?:src|href)=["'](?:\.\/)?((?:js|css)\/[^"'?#]+-v\d+\.(?:js|css))(?:\?[^"']*)?["']/g;
+  for (const rel of HTML_INCLUDE) {
+    if (!rel.endsWith('.html')) continue;
+    const full = join(ROOT, rel.replace(/^\.\//, ''));
+    if (!existsSync(full)) continue;
+    const html = readFileSync(full, 'utf8');
+    for (const match of html.matchAll(assetRefPattern)) referencedVersionedShells.add(`./${match[1]}`);
+  }
+  const keepVersionedShell = (rel) => !versionedShellPattern.test(rel) || referencedVersionedShells.has(rel);
+
   for (const f of listFiles(join(ROOT, 'css'), (_, name) => name.endsWith('.css'))) {
-    paths.add(toPrecachePath(f));
+    const rel = toPrecachePath(f);
+    if (keepVersionedShell(rel)) paths.add(rel);
   }
 
   for (const f of listFiles(join(ROOT, 'js'), (_, name) => name.endsWith('.js') && !JS_EXCLUDE.has(name))) {
-    paths.add(toPrecachePath(f));
+    const rel = toPrecachePath(f);
+    if (keepVersionedShell(rel)) paths.add(rel);
   }
 
   for (const rel of REQUIRED) paths.add(rel);

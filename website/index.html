@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- ap-v813 -->
+<!-- ap-v834 -->
 <title>Astro Precise — your birth chart, computed from the real sky</title>
 <meta name="description" content="Free birth chart computed privately on your device with planetarium-grade astronomy (VSOP87/ELP2000). No account, nothing uploaded. Plus today's real sky news and the 12 August 2026 eclipse.">
 <meta property="og:title" content="Astro Precise — your birth chart from the real sky">
@@ -25,18 +25,19 @@
 
 <!-- ── Three.js import map — REQUIRED for js/orrery-webgl.js (bare `import 'three'`).
      Without it the dynamic import silently rejects and every visitor gets the
-     2D dot fallback instead of the photoreal engine. COPIED VERBATIM from
-     explore.html; keep in sync. ── -->
+     2D dot fallback instead of the photoreal engine. This is the single Observatory
+     import map; the legacy Explore URL now redirects here. ── -->
 <script type="importmap">
 { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
 </script>
 
 <!-- M2: the stage runs the superior Orrery3D engine through the adapter (same
      <void-orrery> surface; ?engine=legacy or any failure fails open to js/orrery.js). -->
-<script src="./js/void-orrery-adapter.js?v=826" defer></script>
-<script src="./js/ap-sky-news.js?v=771" defer></script>
+<script src="./js/void-orrery-adapter.js?v=834" defer></script>
+<script src="./js/ap-sky-news.js?v=832" defer></script>
 <script src="./js/ap-checkout-honest.js?v=771" defer></script>
 <script src="./js/ap-gumroad-bridge.js?v=771" defer></script>
+<script src="./js/ap-nav-model-v834.js?v=834" defer></script>
 <style>
 @font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
 @font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
@@ -45,9 +46,9 @@
 @font-face{font-family:'Cinzel';src:url('./fonts/cinzel-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 :root{
   --ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);
-  --ember:#2f6bff;--ember-hi:#6b9bff;--brass:#1fb6a6;
-  --line:rgba(31,182,166,.15);--line2:rgba(31,182,166,.32);
-  --acc:#1fb6a6;--good:#a8d6b0;--warn:#2f6bff;--card:rgba(242,236,223,.03);
+  --ember:#d8b46a;--ember-hi:#f0d59d;--brass:#c9a227;
+  --line:rgba(201,162,39,.15);--line2:rgba(201,162,39,.32);
+  --acc:#c9a227;--good:#a8d6b0;--warn:#d8b46a;--card:rgba(242,236,223,.03);
   --serif:'Cormorant Garamond',Georgia,serif;--mono:'IBM Plex Mono',monospace;--caps:'Cinzel',serif;
   /* The size of the promise. It lives on :root — not inside .frontmatter, where
      it used to sit — so the atlas h2 rule below can be derived from it. While it
@@ -65,23 +66,23 @@
    so making the attribute authoritative is safe. */
 [hidden]{display:none!important}
 html{scroll-behavior:smooth}
-body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1100px 620px at 50% -8%,rgba(99,149,255,.12),transparent 62%),radial-gradient(900px 700px at 78% 28%,rgba(46,72,150,.14),transparent 62%),radial-gradient(760px 620px at 12% 58%,rgba(26,96,110,.12),transparent 60%),radial-gradient(800px 500px at 88% 6%,rgba(31,182,166,.07),transparent 60%);background-attachment:fixed}
+body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1100px 620px at 50% -8%,rgba(99,149,255,.12),transparent 62%),radial-gradient(900px 700px at 78% 28%,rgba(46,72,150,.14),transparent 62%),radial-gradient(760px 620px at 12% 58%,rgba(26,96,110,.12),transparent 60%),radial-gradient(800px 500px at 88% 6%,rgba(201,162,39,.07),transparent 60%);background-attachment:fixed}
 a{color:var(--brass);text-decoration:none;transition:color .25s}a:hover{color:var(--ember-hi)}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
 .mono{font-family:var(--mono)}
 .serif{font-family:var(--serif);font-style:italic;font-weight:500}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
-.btn{display:inline-block;background:var(--ember);color:#ffffff;border:0;border-radius:100px;padding:18px 38px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;cursor:pointer;box-shadow:0 6px 26px rgba(47,107,255,.28),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .28s cubic-bezier(.2,.9,.3,1.4),box-shadow .28s,filter .2s}
-.btn:hover{filter:brightness(1.12);color:#000;transform:translateY(-2px);box-shadow:0 14px 44px rgba(47,107,255,.45)}
+.btn{display:inline-block;background:var(--ember);color:#ffffff;border:0;border-radius:100px;padding:18px 38px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;cursor:pointer;box-shadow:0 6px 26px rgba(216,180,106,.28),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .28s cubic-bezier(.2,.9,.3,1.4),box-shadow .28s,filter .2s}
+.btn:hover{filter:brightness(1.12);color:#000;transform:translateY(-2px);box-shadow:0 14px 44px rgba(216,180,106,.45)}
 .btn:active{transform:translateY(0)}
 .btn.ghost{background:none;border:1px solid rgba(242,236,223,.3);color:var(--ink)}
-.btn.ghost:hover{border-color:var(--brass);color:#fff;box-shadow:0 10px 30px rgba(31,182,166,.18)}
+.btn.ghost:hover{border-color:var(--brass);color:#fff;box-shadow:0 10px 30px rgba(201,162,39,.18)}
 .card{border:1px solid var(--line2);border-radius:16px;background:rgba(242,236,223,.05);padding:26px 28px;box-shadow:0 10px 34px rgba(0,0,0,.28),inset 0 1px 0 rgba(242,236,223,.05)}
 .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.26em;color:var(--acc);margin-bottom:14px}
 .receipt{border:1px solid var(--line);border-radius:12px;background:rgba(242,236,223,.025);padding:16px 20px;display:flex;flex-direction:column;gap:7px}
 .receipt div{font-family:var(--mono);font-size:12px;letter-spacing:.06em;line-height:1.75;color:rgba(242,236,223,.85)}
 input,select{background:rgba(242,236,223,.045);border:1px solid var(--line2);border-radius:10px;color:var(--ink);font-family:var(--mono);font-size:16px;padding:13px 14px;color-scheme:dark;width:100%;transition:border-color .25s,box-shadow .25s}
-input:focus,select:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(47,107,255,.16)}
+input:focus,select:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(216,180,106,.16)}
 .field{display:flex;flex-direction:column;gap:8px;flex:1;min-width:130px}
 .field span{font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:rgba(242,236,223,.62)}
 section.band{padding:130px 0}
@@ -100,7 +101,7 @@ h2 em{font-family:var(--serif);font-style:italic;font-weight:500;letter-spacing:
 table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:16px 10px;border-top:1px solid var(--line);font-size:15px;line-height:1.55;vertical-align:top}
 tbody tr{transition:background .25s}
-tbody tr:hover{background:rgba(31,182,166,.04)}
+tbody tr:hover{background:rgba(201,162,39,.04)}
 th{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--acc);font-weight:500}
 td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:right;color:var(--brass)}
 .pulse{animation:pulse 2.4s infinite}
@@ -153,20 +154,6 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 /* The ONLY sanctioned use of capitals in this region. */
 .eyebrow{font-family:var(--mono);font-size:var(--t-eyebrow);letter-spacing:.16em;text-transform:uppercase;color:var(--e-ink-3);line-height:1.4}
 
-/* ── Masthead — thick/thin double rule, as a paper would set it ── */
-.masthead{border-bottom:2px solid var(--e-ink)}
-.masthead__inner{display:flex;align-items:center;justify-content:space-between;gap:12px 22px;padding-block:13px 11px}
-.masthead__brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--e-ink)}
-.masthead__brand:hover{color:var(--e-ink);text-decoration:none}
-.masthead__brand img{display:block;flex:none}
-.wordmark{font-family:var(--caps);font-weight:600;font-size:clamp(15px,1.4vw,19px);letter-spacing:.26em;line-height:1;text-transform:uppercase}
-.masthead__meta{font-family:var(--mono);font-size:13px;letter-spacing:.01em;color:var(--e-ink-3);line-height:1.4}
-.masthead__nav{display:flex;align-items:center;gap:22px;font-size:14.5px}
-.masthead__nav a{color:var(--e-ink-2)}
-.masthead__nav a:hover{color:var(--e-accent)}
-.masthead__more{background:none;border:0;padding:0;cursor:pointer;font-family:inherit;font-size:14.5px;color:var(--e-ink-2)}
-.masthead__more:hover,.masthead__more[aria-expanded="true"]{color:var(--e-accent)}
-.masthead__rule{height:1px;background:var(--e-rule-2);margin-top:3px}
 
 /* ── The front page — the lead story and its plate ── */
 .frontpage{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(28px,4vw,60px);align-items:start;padding-block:clamp(22px,3.2vh,46px) clamp(28px,4vh,52px)}
@@ -258,44 +245,44 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 
 /* The cast console keeps its one-off flash when the atlas points at it. */
 .console.console-flash{animation:consoleFlash 1.2s ease-out}
-@keyframes consoleFlash{0%{border-color:rgba(47,107,255,.95);box-shadow:0 0 0 6px rgba(47,107,255,.3),0 24px 70px rgba(0,0,10,.45)}100%{border-color:rgba(31,182,166,.4);box-shadow:0 24px 70px rgba(0,0,10,.45)}}
-#castCaption{margin-top:14px;font-size:13px;letter-spacing:.06em;color:#0e7a6f}
+@keyframes consoleFlash{0%{border-color:rgba(216,180,106,.95);box-shadow:0 0 0 6px rgba(216,180,106,.3),0 24px 70px rgba(0,0,10,.45)}100%{border-color:rgba(201,162,39,.4);box-shadow:0 24px 70px rgba(0,0,10,.45)}}
+#castCaption{margin-top:14px;font-size:13px;letter-spacing:.06em;color:#b98a32}
 @media (prefers-reduced-motion:reduce){.console.console-flash{animation:none}}
 
 /* Glass-paper instrument cards. They used to float over the hero; they now sit
    inside the plates they belong to (the readout, and the day's entry), which is
    where their own copy always said they were. Same card, same tokens. */
-.console,.reading{--ink:#191309;--dim:rgba(25,19,9,.78);--faint:rgba(25,19,9,.6);--brass:#0e7a6f;--acc:#0e7a6f;--line:rgba(140,110,60,.25);--line2:rgba(25,19,9,.3);--ember-hi:#2456d6;--good:#1e7a46;position:relative;z-index:1;background:rgba(246,241,230,.96);color:#191309;border:1px solid rgba(31,182,166,.4);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(0,0,10,.45)}
+.console,.reading{--ink:#191309;--dim:rgba(25,19,9,.78);--faint:rgba(25,19,9,.6);--brass:#b98a32;--acc:#b98a32;--line:rgba(140,110,60,.25);--line2:rgba(25,19,9,.3);--ember-hi:#d8b46a;--good:#1e7a46;position:relative;z-index:1;background:rgba(246,241,230,.96);color:#191309;border:1px solid rgba(201,162,39,.4);border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(0,0,10,.45)}
 .console{width:min(420px,100%)}
 .reading{width:min(420px,100%)}
-.console-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:#0e7a6f;margin:0 0 10px}
+.console-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:#b98a32;margin:0 0 10px}
 .console-eyebrow .pulse{color:var(--ember);margin-right:8px}
 .console-title{margin:0 0 16px;font-size:26px;line-height:1.12;font-weight:700;letter-spacing:-.015em;color:#191309}
-.console-title em{font-family:var(--serif);font-style:italic;font-weight:500;color:#2456d6}
+.console-title em{font-family:var(--serif);font-style:italic;font-weight:500;color:#d8b46a}
 .console .field span{color:rgba(25,19,9,.64)}
 .console input,.console select{background:rgba(255,255,255,.7);border:1px solid rgba(25,19,9,.3);color:#191309;color-scheme:light}
-.console input:focus,.console select:focus{border-color:#2456d6;box-shadow:0 0 0 3px rgba(47,107,255,.18)}
+.console input:focus,.console select:focus{border-color:#d8b46a;box-shadow:0 0 0 3px rgba(216,180,106,.18)}
 /* Secondary, not primary: the one filled button on the page is the coupon's.
    At the inherited 11px/.22em this label was legible in theory and a grey haze
    in practice, so it is set at 13px with a third of the tracking and a border
    that actually reads on paper. */
 .console #castBtn{width:100%;margin-top:14px;padding:15px 20px;font-size:13px;letter-spacing:.08em}
 .console .btn.ghost{border-color:rgba(25,19,9,.42);color:#191309}
-.console .btn.ghost:hover{border-color:#0e7a6f;background:rgba(14,122,111,.08);color:#000;box-shadow:none}
+.console .btn.ghost:hover{border-color:#b98a32;background:rgba(14,122,111,.08);color:#000;box-shadow:none}
 .console-note{margin-top:10px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:rgba(25,19,9,.62);text-align:center}
 .console .lbl{font-size:12px;letter-spacing:.18em}
 .console-hint{margin:14px 0 0;font-size:13px;line-height:1.5;color:rgba(25,19,9,.72)}
 .console .field span{font-size:12px;letter-spacing:.18em}
 .console .headline-row{border-top-color:rgba(25,19,9,.12)}
 .console .pill{background:rgba(25,19,9,.05);border:1px solid rgba(25,19,9,.3);color:#191309}
-.console .pill:hover{border-color:#0e7a6f;color:#000;transform:translateY(-1px)}
-.console .pill.on{border-color:#2456d6;color:#000;background:rgba(47,107,255,.12);box-shadow:0 0 14px rgba(47,107,255,.22)}
+.console .pill:hover{border-color:#b98a32;color:#000;transform:translateY(-1px)}
+.console .pill.on{border-color:#d8b46a;color:#000;background:rgba(216,180,106,.12);box-shadow:0 0 14px rgba(216,180,106,.22)}
 .console .wheelbox{background:radial-gradient(circle at 50% 46%,#17140f 0%,#0c0a09 68%,transparent 71%);border-radius:50%}
-.console-link{display:block;margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:#0e7a6f;text-align:center}
-.console-link:hover{color:#2456d6}
-.reading-tag{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:#0e7a6f;margin-bottom:10px}
+.console-link{display:block;margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:#b98a32;text-align:center}
+.console-link:hover{color:#d8b46a}
+.reading-tag{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:#b98a32;margin-bottom:10px}
 .reading .horo-line{border-top-color:rgba(25,19,9,.14);padding:14px 2px;gap:14px}
-.reading .horo-line .hl-lbl{color:#0e7a6f}
+.reading .horo-line .hl-lbl{color:#b98a32}
 .reading .horo-line .hl-txt{font-size:17px;color:rgba(25,19,9,.88)}
 
 /* sign picker — now a row inside Plate III, where its reading lands */
@@ -311,25 +298,25 @@ td.price{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:ri
 #deck .scrubrow{display:flex;align-items:center;gap:10px;padding:26px 12px 12px;pointer-events:auto;position:absolute;left:0;right:0;bottom:0;background:linear-gradient(to top,rgba(6,6,9,.82),rgba(6,6,9,.55) 55%,rgba(6,6,9,0))}
 #deck .scrubrow .mono{font-size:12px;letter-spacing:.14em;color:rgba(242,236,223,.62)}
 #deck .scrubrow #scrubLabel{min-width:96px;text-align:right;color:var(--brass)}
-#nowBtn{background:none;border:1px solid rgba(31,182,166,.45);color:var(--brass);border-radius:100px;padding:6px 14px;cursor:pointer}
+#nowBtn{background:none;border:1px solid rgba(201,162,39,.45);color:var(--brass);border-radius:100px;padding:6px 14px;cursor:pointer}
 #nowBtn:hover{border-color:var(--brass);color:#fff}
 input.scrub{-webkit-appearance:none;appearance:none;background:transparent;height:14px;cursor:pointer;border:0;padding:0}
-input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(242,236,223,.1),rgba(47,107,255,.55) 50%,rgba(242,236,223,.1))}
-input.scrub::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(47,107,255,.8);margin-top:-4.5px}
-input.scrub::-moz-range-track{height:2px;background:rgba(47,107,255,.4)}
-input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(47,107,255,.8)}
+input.scrub::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,rgba(242,236,223,.1),rgba(216,180,106,.55) 50%,rgba(242,236,223,.1))}
+input.scrub::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(216,180,106,.8);margin-top:-4.5px}
+input.scrub::-moz-range-track{height:2px;background:rgba(216,180,106,.4)}
+input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--ember);box-shadow:0 0 14px rgba(216,180,106,.8)}
 /* Fly-to dock and scale ladder: the same buttons the tall hero carried, laid
    out as two quiet rows beneath the plate instead of floating over the model.
    Nothing is removed — #ladder is the vertical duplicate of #mladder and is the
    only element hidden, because two copies of one control is one too many. */
 #dock{display:flex;flex-wrap:wrap;gap:6px;pointer-events:auto}
 #dock button{width:30px;height:30px;padding:0;border-radius:50%;background:rgba(8,8,11,.5);border:1px solid rgba(242,236,223,.2);color:rgba(242,236,223,.85);font-size:14px;cursor:pointer;transition:border-color .25s,box-shadow .25s,color .25s}
-#dock button:hover,#dock button.on{border-color:var(--ember);color:#fff;box-shadow:0 0 16px rgba(47,107,255,.45)}
+#dock button:hover,#dock button.on{border-color:var(--ember);color:#fff;box-shadow:0 0 16px rgba(216,180,106,.45)}
 #ladder{display:none}
 #mladder{display:flex;flex-wrap:wrap;gap:6px;pointer-events:auto}
 #mladder button{background:rgba(8,8,11,.6);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.78);border-radius:100px;padding:8px 13px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;cursor:pointer}
 #mladder button:hover{border-color:var(--brass);color:#fff}
-#mladder button.on{border-color:var(--ember);color:#fff;background:rgba(47,107,255,.2)}
+#mladder button.on{border-color:var(--ember);color:#fff;background:rgba(216,180,106,.2)}
 /* The telemetry line is the plate's live caption: a finished sentence by
    default, replaced with real facts the moment a world is focused. */
 #telemetry{font-family:var(--mono);font-size:12px;letter-spacing:.06em;line-height:1.85;color:rgba(242,236,223,.72);margin-top:12px}
@@ -338,7 +325,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .chap{border-top:1px solid var(--line)}
 .chap-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;padding-top:24px;margin-bottom:76px;flex-wrap:wrap}
 .chap-idx{display:flex;align-items:baseline;gap:26px}
-.chap-num{font-family:var(--caps);font-weight:600;font-size:clamp(54px,7vw,100px);line-height:.92;color:rgba(31,182,166,.16);letter-spacing:.02em;user-select:none}
+.chap-num{font-family:var(--caps);font-weight:600;font-size:clamp(54px,7vw,100px);line-height:.92;color:rgba(201,162,39,.16);letter-spacing:.02em;user-select:none}
 .chap-tag{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--brass)}
 .chap-note{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--faint);text-align:right;line-height:2.1}
 .wheelbox{width:380px;max-width:88vw;margin:0 auto;position:relative}
@@ -346,7 +333,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 .prow{display:flex;align-items:baseline;gap:14px;padding:8px 2px;border-top:1px solid rgba(242,236,223,.08);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em}
 .pill{display:inline-flex;align-items:center;gap:9px;background:rgba(8,8,11,.4);border:1px solid rgba(242,236,223,.22);color:rgba(242,236,223,.7);padding:12px 18px;border-radius:100px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;cursor:pointer;transition:border-color .25s,color .25s,transform .25s,box-shadow .25s}
 .pill:hover{border-color:var(--brass);color:#fff;transform:translateY(-1px)}
-.pill.on{border-color:var(--ember);color:#fff;background:rgba(47,107,255,.13);box-shadow:0 0 18px rgba(47,107,255,.3)}
+.pill.on{border-color:var(--ember);color:#fff;background:rgba(216,180,106,.13);box-shadow:0 0 18px rgba(216,180,106,.3)}
 .instrument{border:1px solid var(--line2);border-radius:18px;background:linear-gradient(180deg,rgba(242,236,223,.04),rgba(242,236,223,.012));padding:34px 32px}
 #castHint{display:none;margin-top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--ember-hi)}
 /* The readout plate: instrument card on the left, arcminute rows on the right */
@@ -499,68 +486,48 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 
 /* ═══ DAYBREAK — morning on top, night atlas below ═══ */
-.daybreak{--ink:#191309;--dim:rgba(25,19,9,.74);--faint:rgba(25,19,9,.56);--line:rgba(140,110,60,.20);--line2:rgba(140,110,60,.34);--brass:#0e7a6f;--acc:#0e7a6f;background:#f6f1e6;color:#191309}
+.daybreak{--ink:#191309;--dim:rgba(25,19,9,.74);--faint:rgba(25,19,9,.56);--line:rgba(140,110,60,.20);--line2:rgba(140,110,60,.34);--brass:#b98a32;--acc:#b98a32;background:#f6f1e6;color:#191309}
 /* The horizon now runs out of the edition band's tinted stock, not the plain
    sheet, so the join is seamless. */
 .daybreak-horizon{height:150px;background:linear-gradient(#efe9dc,rgba(239,233,220,0) 30%,#0a0908 72%);margin-bottom:-1px}
+
+
 </style>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
 </head>
-<body>
+<body class="ap-award-511 ap-live-home">
 
 <a class="skip" href="#lead">Skip to the main story</a>
 
-<!-- ══ MASTHEAD ════════════════════════════════════════════════════════════
-     A publication is dated and it credits its instruments. The dateline below
-     is a finished phrase — "The real-sky almanac" — that the script at the foot
-     of the page upgrades to today's date. Kill the JavaScript and it still
-     reads correctly. Nothing here waits on anything.
-     ════════════════════════════════════════════════════════════════════════ -->
-<div class="frontmatter frontmatter--head">
-  <header class="masthead">
-    <div class="shell">
-      <div class="masthead__inner">
-        <a class="masthead__brand" href="./">
-          <img src="./img/logo-mark.svg" alt="" width="30" height="30">
-          <span class="wordmark">Astro&nbsp;Precise</span>
-          <span class="masthead__meta"><time id="dateline">The real-sky almanac</time> · computed on your device</span>
+<header class="site-header" role="banner" data-ap-static-nav>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+        <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+      </a>
+      <div class="navbar__nav" role="group" aria-label="Primary">
+        <noscript>
+          <a href="index.html" class="navbar__link">Observatory</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">The Sky</a>
+          <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
+        </noscript>
+      </div>
+      <div class="navbar__end">
+        <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
+          <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
         </a>
-        <nav class="masthead__nav" aria-label="Sections">
-          <a class="nav-primary" href="./chart.html">The chart</a>
-          <a href="./eclipse.html">The eclipse</a>
-          <a href="./ephemeris.html">The sky</a>
-          <a href="./shop.html">Editions</a>
-          <button type="button" class="masthead__more" id="sbMenu" aria-expanded="false" aria-controls="sbPanel">More ▾</button>
-        </nav>
+        <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
-    <div class="masthead__rule" aria-hidden="true"></div>
-  </header>
-
-  <div class="sb-panel" id="sbPanel" hidden>
-    <div class="sb-panel-onpage">
-      <div class="sb-panel-lbl">On this page</div>
-      <a href="#cast">The readout</a>
-      <a href="#tonight">Sky news</a>
-      <a href="#shop">Editions</a>
-      <a href="#privacy">The audit</a>
-      <div class="sb-panel-div"></div>
-    </div>
-    <div class="sb-panel-lbl">Explore</div>
-    <a href="./" aria-current="page">The observatory</a>
-    <a href="./chart.html">Cast a chart<small>The full instrument — birth place, Rising, houses</small></a>
-    <a href="./ephemeris.html">The sky<small>Where every planet is, right now</small></a>
-    <a href="./explore.html">The explorer<small>Fly the real sky</small></a>
-    <a href="./horoscope.html">Daily<small>All twelve signs</small></a>
-    <a href="./mysky.html">My sky<small>Your hub</small></a>
-    <a href="./moment.html">Moment<small>Keep a sky</small></a>
-    <div class="sb-panel-div"></div>
-    <a href="./eclipse.html">The eclipse<small>12 August 2026</small></a>
-    <a href="./shop.html">Shop<small>All editions</small></a>
-    <a href="./guides.html">The library<small>Every tool</small></a>
-  </div>
-</div>
-
-<main>
+    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+  </nav>
+</header>
+<main id="main-content">
 
 <!-- ══ THE FRONT PAGE ══════════════════════════════════════════════════════
      The lead story, the coupon, and the plate. One promise; one primary
@@ -568,189 +535,133 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
      ════════════════════════════════════════════════════════════════════════ -->
 <div class="frontmatter">
   <div class="shell">
-    <article class="frontpage" id="lead">
+    <section class="ap-live-stage" id="lead" aria-label="Live sky Observatory">
+  <div class="ap-live-intro">
+    <div>
+      <p class="ap-live-eyebrow">The living sky · computed now</p>
+      <h1 class="ap-live-heading">The sky is alive.</h1>
+    </div>
+    <p class="ap-live-copy">
+      This is the real solar system for this minute, calculated in your browser.
+      Move from a planet to the Galaxy without leaving the Observatory.
+    </p>
+    <div class="ap-live-actions">
+      <a class="ap-action ap-action--primary" href="./chart.html">Cast my chart</a>
+      <a class="ap-action" href="./horoscope.html">Today’s horoscope</a>
+    </div>
+    <p class="ap-live-proof">Positions live · distances compressed so the system can be explored · drag to orbit · choose a named destination</p>
+  </div>
 
-      <div class="lead">
-        <p class="eyebrow kicker"><span class="kicker__dot" aria-hidden="true"></span>Free birth chart · no account</p>
+  <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
+    <void-orrery id="orr" start-radius="210" data-wheel="off" aria-label="Living-sky 3D model"></void-orrery>
+    <div class="ap-model-status" aria-live="polite">
+      <span id="sky-live-status" class="ap-model-status__live">Live now</span>
+      <span id="sky-scale-status">Solar system</span>
+      <span id="sky-time-status">Computing UTC</span>
+    </div>
+    <p class="ap-model-hint">Drag to orbit · choose a world to fly</p>
+  </div>
 
-        <h1 class="headline">The real sky at the minute you were born.</h1>
+  <aside class="ap-control-panel" aria-label="Explore the live sky">
+    <div class="ap-context">
+      <p class="ap-panel-label">Selected view</p>
+      <h2 id="sky-focus-title">Solar system</h2>
+      <p id="telemetry" aria-live="polite">Every major world is visible. Choose one below, or change scale to travel from Earth to the deep field.</p>
+    </div>
 
-        <p class="standfirst">
-          Every planet placed to a sixtieth of a degree by the same mathematics
-          planetarium software uses — worked out in your browser, free.<span class="wide-only">
-          Then we tell you what tradition makes of it, plainly, and exactly
-          where that reading stops.</span>
-        </p>
-
-        <!-- ── The coupon. It carries date, place and time, and it hands off to
-             the full instrument at chart.html, which can resolve the town to
-             coordinates and therefore produce a real Rising, Midheaven and
-             houses. The handoff travels in sessionStorage, NOT in the URL —
-             see the note on the script below the card, which explains why the
-             inputs deliberately have no `name`. chart.html picks it up in
-             js/chart-page.js → prefillFromHandoff; nobody retypes anything. ── -->
-        <div class="coupon">
-          <div class="coupon__tear">
-            <p class="eyebrow">Set your edition</p>
-            <span class="coupon__perf" aria-hidden="true"></span>
-          </div>
-          <div class="coupon__card">
-            <!-- No control below carries a `name`, and that is load-bearing:
-                 a browser can only serialise NAMED controls into a query
-                 string, so this form cannot put a birth date, time or town
-                 into a URL even if the script below never runs. -->
-            <form id="coupon-form" action="./chart.html" method="get">
-              <div class="fields">
-                <div class="field-e">
-                  <label for="f-date">Birth date</label>
-                  <input type="date" id="f-date" required
-                         min="1800-01-01" max="2200-12-31" autocomplete="bday">
-                </div>
-                <div class="field-e">
-                  <label for="f-time">Time <span class="opt">— optional</span></label>
-                  <input type="time" id="f-time">
-                </div>
-                <div class="field-e field--place">
-                  <label for="f-place">Birth place</label>
-                  <!-- required, because chart.html requires it. This card used
-                       to call birth place optional while the very next screen
-                       marked Birth City with a red asterisk and refused to
-                       cast without coordinates — the visitor found that out
-                       after committing. The two screens now ask for the same
-                       thing. Free text here is only a head start: the next
-                       screen still needs the town picked from its list, which
-                       is what carries the coordinates. -->
-                  <input type="text" id="f-place" required aria-required="true"
-                         placeholder="Town or city" autocomplete="off"
-                         aria-describedby="coupon-hint">
-                </div>
-              </div>
-
-              <!-- Carries the "optional" fact in prose, because the inline
-                   "— optional" on the Time label is suppressed below 640px to
-                   stop the label wrapping. -->
-              <p class="coupon__hint" id="coupon-hint">
-                Time is optional — it sharpens your moon sign. Your birth place
-                is not: it is what fixes your rising and your houses, and you
-                pick the town from a list on the next screen.
-              </p>
-
-              <div class="coupon__action">
-                <button class="btn-primary" type="submit">Cast my chart — free</button>
-                <span class="action-note">About twenty seconds. Free for good. Nothing to sign up to.</span>
-              </div>
-            </form>
-
-            <!-- ── The handoff. It must not touch the network. ──────────────
-                 Until 2026-08-08 this was a plain GET to chart.html, so
-                 pressing the button put the visitor's birth details straight
-                 into the request line —
-
-                   GET /chart.html?date=1901-02-03&time=04%3A05&city=Testtown
-
-                 — which is exactly what GitHub Pages and Cloudflare write into
-                 their access logs, and what the service worker then stored as
-                 a Cache Storage key. The colophon below this card promises the
-                 opposite, so the form is what had to change, not the wording.
-
-                 Two independent things now make that leak impossible:
-
-                   1. No control in the form has a `name` (see the note above
-                      it), so the browser has nothing to serialise. If this
-                      script throws, is blocked by an extension, or never
-                      arrives, the native submit still carries nothing.
-                   2. The values travel in sessionStorage — same tab, same
-                      origin, never transmitted. Where sessionStorage is
-                      unavailable (Safari with all storage blocked, some
-                      embedded webviews) we fall back to a URL fragment, which
-                      browsers never put in the request line and never send in
-                      a Referer header.
-
-                 chart.html reads both, in that order: js/chart-page.js →
-                 prefillFromHandoff. ── -->
-            <script>
-            (function () {
-              var form = document.getElementById('coupon-form');
-              if (!form) return;
-              form.addEventListener('submit', function (ev) {
-                ev.preventDefault();
-                function val(id) {
-                  var el = document.getElementById(id);
-                  return el && el.value ? el.value : '';
-                }
-                var payload = { date: val('f-date'), time: val('f-time'), city: val('f-place').trim() };
-                var target = './chart.html';
-                try {
-                  sessionStorage.setItem('ap-chart-handoff', JSON.stringify(payload));
-                } catch (err) {
-                  // Fragment, not query: never sent to the server. See above.
-                  target += '#' + new URLSearchParams(payload).toString();
-                }
-                // Assign rather than replace, so Back returns to this page.
-                location.href = target;
-              });
-            })();
-            </script>
-          </div>
-        </div>
-
-        <!-- Every clause here is checkable from the browser, and people do
-             check. Nothing goes in that the code does not already do. -->
-        <p class="colophon">
-          <b>Instruments:</b> VSOP87 for the planets, ELP2000 for the Moon,
-          after Meeus — the series planetarium software runs on, held to the
-          minute you were born. Valid 1800–2200&nbsp;CE. Your birth details are
-          read and computed on this device. Casting puts nothing in the address
-          bar and sends nothing to us; pressing the button above asks the server
-          for the next page and tells it nothing else about you. Open your
-          browser's network tab while you cast — not one request carries your
-          date, your time or your town.
-        </p>
+    <div class="ap-control-group">
+      <div class="ap-control-head">
+        <p class="ap-panel-label">Scale</p>
+        <span class="ap-control-note">Where am I?</span>
       </div>
+      <div id="ladder" role="group" aria-label="Scale ladder"></div>
+      <div id="mladder" role="group" aria-label="Choose spatial scale"></div>
+    </div>
 
-      <!-- ── The plate. Where an atlas prints a photographic plate, this one
-           runs: the same live orrery the hero used to fill the screen with,
-           kept whole — engine, scrub, scale ladder, fly-to dock and telemetry
-           — and set at plate size so the promise stays the largest thing on
-           the page. ── -->
-      <figure class="plate">
-        <div class="plate__stage" role="group" aria-label="The living sky — drag to orbit, click a world to fly">
-          <void-orrery id="orr"></void-orrery>
-          <div id="deck">
-            <div id="ladder" role="group" aria-label="Scale ladder"></div>
-            <!-- The 1800/2200 end labels were dropped: at plate width the row
-                 measured 286px of fixed content in 440px and the readout collided
-                 with the button. The range is stated in the slider's own label,
-                 in the caption, and by the readout itself. The button says
-                 "Live" rather than "Now" so it does not repeat the readout. -->
-            <div class="scrubrow">
-              <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" style="flex:1" aria-label="Scrub the model between the years 1800 and 2200">
-              <!-- Uppercase because the script writes uppercase into it
-                   ("19 MAR 1984"); this is instrument data, not prose. -->
-              <span class="mono" id="scrubLabel">NOW</span>
-              <button class="mono" id="nowBtn" type="button">Live</button>
+    <div class="ap-control-group">
+      <div class="ap-control-head">
+        <p class="ap-panel-label">Worlds</p>
+        <span class="ap-control-note">Fly directly</span>
+      </div>
+      <div id="dock" role="group" aria-label="Choose a named world"></div>
+    </div>
+
+    <div class="ap-control-group">
+      <div class="ap-control-head">
+        <p class="ap-panel-label">Time</p>
+        <span class="ap-control-note">1800–2200</span>
+      </div>
+      <div id="deck">
+        <div class="scrubrow">
+          <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" aria-label="Scrub the model between the years 1800 and 2200">
+          <span class="mono" id="scrubLabel">NOW</span>
+          <button class="mono" id="nowBtn" type="button">Return to live</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</section>
+
+<section class="ap-personal-entry" id="personal" aria-labelledby="personal-title">
+  <div class="ap-personal-entry__inner">
+    <div>
+      <p class="ap-live-eyebrow">Your sky, interpreted</p>
+      <h2 id="personal-title">The minute you entered the story.</h2>
+      <p class="standfirst">Set your birth details once. The full instrument places your chart, explains the result plainly and keeps the calculation on this device.</p>
+    </div>
+
+    <div class="coupon">
+      <div class="coupon__tear">
+        <p class="eyebrow">Cast your free chart</p>
+        <span class="coupon__perf" aria-hidden="true"></span>
+      </div>
+      <div class="coupon__card">
+        <form id="coupon-form" action="./chart.html" method="get">
+          <div class="fields">
+            <div class="field-e">
+              <label for="f-date">Birth date</label>
+              <input type="date" id="f-date" required min="1800-01-01" max="2200-12-31" autocomplete="bday">
+            </div>
+            <div class="field-e">
+              <label for="f-time">Time <span class="opt">— optional</span></label>
+              <input type="time" id="f-time">
+            </div>
+            <div class="field-e field--place">
+              <label for="f-place">Birth place</label>
+              <input type="text" id="f-place" required aria-required="true" placeholder="Town or city" autocomplete="off" aria-describedby="coupon-hint">
             </div>
           </div>
-        </div>
-        <div class="plate__chrome">
-          <span class="plate__chrome-lbl">Scale</span>
-          <div id="mladder" role="group" aria-label="Scale ladder"></div>
-        </div>
-        <div class="plate__chrome">
-          <span class="plate__chrome-lbl">Fly to</span>
-          <div id="dock" role="group" aria-label="Fly to a world"></div>
-        </div>
-        <p id="telemetry" aria-live="polite">Drag to orbit · click a world to fly · scrub any date from 1800 to 2200.</p>
-        <figcaption class="plate__caption">
-          <b>Fig. 1 — the sky, live</b>
-          Where these worlds actually are, this minute, drawn on your device by
-          the same series that places your chart. It opens on Earth; change the
-          scale to pull back to the whole system.
-          <a href="./explore.html">Open the full explorer →</a>
-        </figcaption>
-      </figure>
-
-    </article>
+          <p class="coupon__hint" id="coupon-hint">Time sharpens your Moon placement. Your town fixes your rising sign and houses; you choose the exact place from a list on the next screen.</p>
+          <div class="coupon__action">
+            <button class="btn-primary" type="submit">Cast my chart — free</button>
+            <span class="action-note">Private · no account · nothing placed in the address bar</span>
+          </div>
+        </form>
+        <script>
+        (function () {
+          var form = document.getElementById('coupon-form');
+          if (!form) return;
+          form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            function value(id) {
+              var field = document.getElementById(id);
+              return field && field.value ? field.value : '';
+            }
+            var payload = { date: value('f-date'), time: value('f-time'), city: value('f-place').trim() };
+            var target = './chart.html';
+            try {
+              sessionStorage.setItem('ap-chart-handoff', JSON.stringify(payload));
+            } catch (_) {
+              target += '#' + new URLSearchParams(payload).toString();
+            }
+            location.href = target;
+          });
+        })();
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
   </div>
 
   <!-- ══ THE NEXT BAND — in this edition ═══════════════════════════════════ -->
@@ -890,7 +801,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
           <div class="mono" id="castCaption" hidden>The model now holds your birth minute — scrub time at the top of the page</div>
           <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
             <button class="pill" id="flyMine" type="button">✦ Fly my sky</button>
-            <a class="pill" id="openExplorer" href="./explore.html">Open in the full explorer →</a>
+            <a class="pill" id="openExplorer" href="#lead">Return to the live sky ↑</a>
             <a class="pill" href="./deep-reading.html">Keep it — the £12 reading</a>
             <a class="pill" href="./natal-plate.html">The £14 plate</a>
           </div>
@@ -919,9 +830,11 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
          the direct planets too). Rendering both put the same Moon on screen
          twice, a few centimetres apart. The attribute lives here rather than in
          a mount() call because this band is mounted twice — once on load, once
-         after a cast — and the markup is the one place both agree on. -->
+         after a cast — and the markup is the one place both agree on.
+         Automatic camera drive is disabled here: the band may cycle its cards,
+         but only a visitor tap may move the observatory. -->
     <div id="ap-sky-news-band" class="ap-sky-news ap-sky-news--band"
-         data-ap-exclude="moon pair rx" style="margin:0 0 22px"></div>
+         data-ap-exclude="moon pair rx" data-ap-auto-drive="false" style="margin:0 0 22px"></div>
     <noscript>
       <p class="sub" style="margin:0">This readout is computed in your browser, so with JavaScript
       switched off there is nothing to show — the Moon phase, the tightest planetary pair and the
@@ -1005,7 +918,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
          offer: there is no cart, no payment link and no way to pay us today. The
          page said none of that before — it showed five prices and promised an
          unlock "the moment payment clears", which reads as a live shop. -->
-    <div class="card" id="checkoutClosed" style="margin:0 0 26px;border-color:rgba(31,182,166,.4)">
+    <div class="card" id="checkoutClosed" style="margin:0 0 26px;border-color:rgba(201,162,39,.4)">
       <div class="lbl" style="color:var(--good)">CHECKOUT IS NOT OPEN YET — SAID BEFORE THE PRICES, NOT AFTER</div>
       <p style="margin:0 0 14px;font-size:15.5px;line-height:1.7;color:var(--dim)">We're not taking money yet. There's no cart on this site, no payment link behind any price, and nothing you can accidentally buy. When checkout opens it will be through Gumroad, and everything below unlocks on your own device the moment it does.</p>
       <p style="margin:0 0 16px;font-size:15.5px;line-height:1.7;color:var(--dim)">Until then the whole engine is free and yours: cast your chart, read today's sky, run the eclipse teaser. If you'd like one email when checkout opens, leave your address — that's the only thing this form does.</p>
@@ -1122,20 +1035,24 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
 </script>
 
 <script>
-/* ═══ HERO — open the instrument on the whole living system, live ═══ */
+/* Reveal one finished model, then keep it bound to the real clock. */
 (function () {
-  'use strict';
-  var orr = document.getElementById('orr');
-  if (!orr) return;
-  var tries = 0;
-  var t = setInterval(function () {
-    tries++;
-    if (orr.flyTo) {
-      orr.flyTo('earth');
-      if (orr.setLive) orr.setLive();
-      clearInterval(t);
-    } else if (tries > 60) { clearInterval(t); }
-  }, 250);
+  var stage = document.querySelector(".ap-model-stage");
+  var revealed = false;
+  function revealModel() {
+    if (revealed || !stage) return;
+    revealed = true;
+    stage.classList.add("is-model-ready");
+  }
+  document.addEventListener("ap-earth-texture-ready", function () {
+    requestAnimationFrame(function () { requestAnimationFrame(revealModel); });
+  }, { once: true });
+  document.addEventListener("ap-orrery-ready", function () {
+    var orr = document.getElementById("orr");
+    if (orr && orr.setLive) orr.setLive();
+    setTimeout(revealModel, 2200);
+  }, { once: true });
+  setTimeout(revealModel, 6000);
 })();
 </script>
 
@@ -1287,13 +1204,13 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
       var len = i % 30 === 0 ? 12 : 5, op = i % 30 === 0 ? 0.4 : 0.22;
       x1 = cx + 186 * Math.cos(a); y1 = cy - 186 * Math.sin(a);
       x2 = cx + (186 - len) * Math.cos(a); y2 = cy - (186 - len) * Math.sin(a);
-      s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="rgba(31,182,166,' + op + ')" stroke-width="1"/>';
+      s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="rgba(201,162,39,' + op + ')" stroke-width="1"/>';
     }
     for (i = 0; i < 12; i++) {
       a = (180 - (i * 30 + 15)) * Math.PI / 180;
-      s += '<text x="' + (cx + 168 * Math.cos(a)) + '" y="' + (cy - 168 * Math.sin(a) + 5) + '" text-anchor="middle" font-size="15" fill="rgba(31,182,166,.78)">' + SGLYPH[i] + '</text>';
+      s += '<text x="' + (cx + 168 * Math.cos(a)) + '" y="' + (cy - 168 * Math.sin(a) + 5) + '" text-anchor="middle" font-size="15" fill="rgba(201,162,39,.78)">' + SGLYPH[i] + '</text>';
     }
-    var ASP = [[60, 'rgba(168,214,176,.55)'], [90, 'rgba(47,107,255,.5)'], [120, 'rgba(168,214,176,.55)'], [180, 'rgba(47,107,255,.5)']];
+    var ASP = [[60, 'rgba(168,214,176,.55)'], [90, 'rgba(216,180,106,.5)'], [120, 'rgba(168,214,176,.55)'], [180, 'rgba(216,180,106,.5)']];
     for (i = 0; i < rows.length; i++) for (var k = i + 1; k < rows.length; k++) {
       var sep = Math.abs(((rows[i].lon - rows[k].lon + 540) % 360) - 180);
       for (var q = 0; q < ASP.length; q++) if (Math.abs(sep - ASP[q][0]) <= 5) {
@@ -1306,7 +1223,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     sorted.forEach(function (r, idx) {
       a = (180 - r.lon) * Math.PI / 180;
       var R = idx % 2 ? 104 : 132;
-      s += '<text x="' + (cx + R * Math.cos(a)) + '" y="' + (cy - R * Math.sin(a) + 6) + '" text-anchor="middle" font-size="16" fill="#f2ecdf" style="text-shadow:0 0 8px #1fb6a6">' + r.glyph + '</text>';
+      s += '<text x="' + (cx + R * Math.cos(a)) + '" y="' + (cy - R * Math.sin(a) + 6) + '" text-anchor="middle" font-size="16" fill="#f2ecdf" style="text-shadow:0 0 8px #c9a227">' + r.glyph + '</text>';
     });
     $('wheel').innerHTML = s;
     $('rows').innerHTML = rows.map(function (r) {
@@ -1329,28 +1246,9 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     drawWheel(chart.rows);
     var lab = new Date((jd - 2440587.5) * 86400000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase();
     $('wheelTitle').textContent = 'YOUR SKY · ' + lab;
-    // ── Handoff to the full explorer. The birth minute does NOT ride in the link.
-    // Until 2026-08-09 this set href to
-    //   ./explore.html#m=<birth instant ISO>&focus=earth
-    // so clicking through parked the visitor's birth date AND time in the next
-    // page's address bar — copied, screenshotted, bookmarked, kept in history and
-    // synced to their other devices — for a page that only needed to know which
-    // instant to draw. explore-boot.js reads sessionStorage['ap-explore-moment']
-    // first and deletes it on read; the fragment reader is still there, so every
-    // public link (an eclipse, a calendar day, #m=now) is unaffected. Only
-    // focus=earth — a rest frame, not a person — stays in the link.
-    try {
-      var expIso = new Date((jd - 2440587.5) * 86400000).toISOString();
-      var expHref = './explore.html#focus=earth';
-      try {
-        sessionStorage.setItem('ap-explore-moment', JSON.stringify({ m: expIso, focus: 'earth', scale: null, ts: Date.now() }));
-      } catch (eS) {
-        // Storage blocked: fall back to the fragment. Not the request line, not
-        // the Referer — the weaker of the two, never the worse of the three.
-        expHref = './explore.html#m=' + encodeURIComponent(expIso) + '&focus=earth';
-      }
-      $('openExplorer').href = expHref;
-    } catch (e0) {}
+    // The Observatory is this page. The birth minute is already in the model;
+    // this link only returns the visitor to it and puts nothing personal in the URL.
+    if ($('openExplorer')) $('openExplorer').href = '#lead';
     var sun = chart.rows[0], moon = chart.rows[1];
     $('headlines').hidden = false;
     $('wheelWrap').hidden = false;
@@ -1358,7 +1256,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     $('headlineRows').innerHTML = [
       ['☉', 'SUN IN ' + fmt(sun.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(sun.lon / 30) % 12]],
       ['☽', 'MOON IN ' + fmt(moon.lon).split(' ')[1].toUpperCase(), SIGN_LINES[Math.floor(moon.lon / 30) % 12]],
-      ['↑', 'RISING — NEEDS A PLACE', 'This card cannot give you a Rising, or the top of your chart: both need the town you were born in. <a href="./chart.html" style="color:#2456d6">Add one in the full instrument →</a>']
+      ['↑', 'RISING — NEEDS A PLACE', 'This card cannot give you a Rising, or the top of your chart: both need the town you were born in. <a href="./chart.html" style="color:#d8b46a">Add one in the full instrument →</a>']
     ].map(function (h) {
       return '<div class="headline-row"><span style="width:18px;color:var(--brass)">' + h[0] + '</span><div><div class="mono" style="font-size:12px;letter-spacing:.12em">' + h[1] + '</div><div style="font-size:14.5px;color:var(--dim)">' + h[2] + '</div></div></div>';
     }).join('');
@@ -1533,21 +1431,37 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
     m.addEventListener('click', function () { if (orr.flyScale) orr.flyScale(lv); });
     if ($('mladder')) $('mladder').appendChild(m);
   });
-  var DOCK = [['#ffd76a','sun'],['#b0a89e','mercury'],['#f2d8a0','venus'],['#4d8fd1','earth'],['#c8cdd6','moon'],['#d1653a','mars'],['#d8a45e','jupiter'],['#e3c98f','saturn'],['#8fd4d8','uranus'],['#4d6fd1','neptune'],['','']];
-  DOCK.forEach(function (d) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.title = d[1] ? d[1][0].toUpperCase() + d[1].slice(1) : 'Whole system';
-    b.setAttribute('aria-label', b.title);
-    b.innerHTML = d[1] ? '<i style="display:block;width:11px;height:11px;border-radius:50%;margin:0 auto;background:' + d[0] + ';box-shadow:0 0 9px ' + d[0] + '"></i>' : '<i style="display:block;width:11px;height:11px;border-radius:50%;margin:0 auto;border:2px solid #1fb6a6;box-shadow:0 0 8px rgba(31,182,166,.7)"></i>';
-    b.addEventListener('click', function () { if (orr.flyTo) orr.flyTo(d[1]); });
-    b.dataset.key = d[1];
-    $('dock').appendChild(b);
+  var DOCK = [
+    { color: '#ffd76a', key: 'sun', name: 'Sun' },
+    { color: '#b0a89e', key: 'mercury', name: 'Mercury' },
+    { color: '#f2d8a0', key: 'venus', name: 'Venus' },
+    { color: '#4d8fd1', key: 'earth', name: 'Earth' },
+    { color: '#c8cdd6', key: 'moon', name: 'Moon' },
+    { color: '#d1653a', key: 'mars', name: 'Mars' },
+    { color: '#d8a45e', key: 'jupiter', name: 'Jupiter' },
+    { color: '#e3c98f', key: 'saturn', name: 'Saturn' },
+    { color: '#8fd4d8', key: 'uranus', name: 'Uranus' },
+    { color: '#4d6fd1', key: 'neptune', name: 'Neptune' },
+    { color: '#b8a3d8', key: 'pluto', name: 'Pluto' },
+    { color: '', key: '', name: 'System' }
+  ];
+  DOCK.forEach(function (world) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.title = world.name;
+    button.setAttribute('aria-label', 'Fly to ' + world.name);
+    button.setAttribute('aria-pressed', 'false');
+    button.dataset.key = world.key;
+    button.dataset.name = world.name;
+    button.style.setProperty('--world-color', world.color || '#d8b46a');
+    button.innerHTML = '<span class="world-dot' + (world.key ? '' : ' world-dot--system') + '" aria-hidden="true"></span><span>' + world.name + '</span>';
+    button.addEventListener('click', function () { if (orr.flyTo) orr.flyTo(world.key); });
+    $('dock').appendChild(button);
   });
-  var FACTS = { sun: ["99.86% OF THE SYSTEM'S MASS", 'Helios saw everything; Apollo drove the light.'], mercury: ['A YEAR IS 88 DAYS · A DAY IS 176', 'The messenger — quicksilver mind.'], venus: ['SPINS BACKWARDS · SUN RISES WEST', 'Morning star and evening star — the same goddess, twice.'], earth: ['THE ONLY WORLD WHERE ANYONE LOOKS UP', 'Home. Every chart ever cast began here.'], moon: ['DRIFTING 3.8 CM AWAY EVERY YEAR', 'Selene drives the silver chariot.'], mars: ['OLYMPUS MONS IS 2.5× EVEREST', 'The will to begin.'], jupiter: ['ROOM FOR 1,300 EARTHS', 'The king — luck, growth, appetite.'], saturn: ['RINGS 282,000 KM WIDE · ~1 KM THIN', 'The timekeeper — patience earned.'], uranus: ['ROLLS ON ITS SIDE', 'Sudden turns, strange genius.'], neptune: ['2,000 KM/H WINDS, SUNLESS BLUE', 'Fog, faith, the unseen ocean.'] };
+  var FACTS = { sun: ["99.86% OF THE SYSTEM'S MASS", 'Helios saw everything; Apollo drove the light.'], mercury: ['A YEAR IS 88 DAYS · A DAY IS 176', 'The messenger — quicksilver mind.'], venus: ['SPINS BACKWARDS · SUN RISES WEST', 'Morning star and evening star — the same goddess, twice.'], earth: ['THE ONLY WORLD WHERE ANYONE LOOKS UP', 'Home. Every chart ever cast began here.'], moon: ['DRIFTING 3.8 CM AWAY EVERY YEAR', 'Selene drives the silver chariot.'], mars: ['OLYMPUS MONS IS 2.5× EVEREST', 'The will to begin.'], jupiter: ['ROOM FOR 1,300 EARTHS', 'The king — luck, growth, appetite.'], saturn: ['RINGS 282,000 KM WIDE · ~1 KM THIN', 'The timekeeper — patience earned.'], uranus: ['ROLLS ON ITS SIDE', 'Sudden turns, strange genius.'], neptune: ['2,000 KM/H WINDS, SUNLESS BLUE', 'Fog, faith, the unseen ocean.'], pluto: ['A SMALL WORLD WITH FIVE MOONS', 'The far edge of the familiar system.'] };
   orr.addEventListener('planetfocus', function (e) {
     var d = e.detail, f = d.key ? FACTS[d.key] : null;
-    $('telemetry').innerHTML = '<div style="font-size:15px;color:#fff">' + (d.glyph || '') + '&nbsp;&nbsp;' + (d.name || '').toUpperCase() + '</div>' + (f ? '<div style="color:rgba(242,236,223,.6)">' + f[0] + '</div><div class="serif" style="font-size:16px;color:rgba(31,182,166,.9);letter-spacing:.01em">' + f[1] + '</div>' : '') + '<div style="color:rgba(242,236,223,.35)">DRAG TO ORBIT · CLICK A WORLD TO FLY</div>';
+    $('telemetry').innerHTML = '<div style="font-size:15px;color:#fff">' + (d.glyph || '') + '&nbsp;&nbsp;' + (d.name || '').toUpperCase() + '</div>' + (f ? '<div style="color:rgba(242,236,223,.6)">' + f[0] + '</div><div class="serif" style="font-size:16px;color:rgba(201,162,39,.9);letter-spacing:.01em">' + f[1] + '</div>' : '') + '<div style="color:rgba(242,236,223,.35)">DRAG TO ORBIT · CLICK A WORLD TO FLY</div>';
     Array.prototype.forEach.call($('dock').querySelectorAll('button'), function (b) { b.classList.toggle('on', b.dataset.key === (d.key || '')); });
   });
   orr.addEventListener('scalechange', function (e) {
@@ -1637,6 +1551,7 @@ input.scrub::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;
   });
 })();
 </script>
+<script src="./js/ap-observatory-v834.js?v=834" defer></script>
 <script src="./js/ap-sky-time.js" defer></script>
 </body>
 </html>

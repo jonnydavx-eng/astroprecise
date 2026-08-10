@@ -1,6 +1,6 @@
 /**
  * Astro Precise — Personal Sky bridge (Stage 2–3).
- * Chart/moment → explore.html deep link + optional home orrery handoff.
+ * Chart/moment → index.html deep link + optional home orrery handoff.
  * Uses APDeepLink.buildSkyLink() for the H1 #m= contract.
  */
 (function () {
@@ -87,7 +87,7 @@
     opts = opts || {};
     var m = chartMomentIso(chart) || 'now';
     // stashSkyLink, not buildSkyLink: this moment is a birth minute. It goes to
-    // explore.html in sessionStorage, so the link the visitor can see, copy and
+    // index.html in sessionStorage, so the link the visitor can see, copy and
     // paste carries only the focus body. Falls back to the fragment builder on
     // an old cached ap-deep-link.js or where storage is blocked.
     if (window.APDeepLink && window.APDeepLink.stashSkyLink) {
@@ -106,7 +106,7 @@
         base: opts.base
       });
     }
-    return 'explore.html#m=' + encodeURIComponent(m) + '&focus=earth';
+    return 'index.html#m=' + encodeURIComponent(m) + '&focus=earth';
   }
 
   /**
@@ -124,7 +124,7 @@
     if (window.APDeepLink && window.APDeepLink.buildSkyLink) {
       return window.APDeepLink.buildSkyLink({ m: m, focus: opts.focus || 'earth' });
     }
-    return 'explore.html#m=' + encodeURIComponent(m) + '&focus=earth';
+    return 'index.html#m=' + encodeURIComponent(m) + '&focus=earth';
   }
 
   function isHomeOrreryLive() {
@@ -241,7 +241,7 @@
     var iso = moment.utc.toISOString ? moment.utc.toISOString() : String(moment.utc);
     var link = (window.APDeepLink && window.APDeepLink.buildSkyLink)
       ? window.APDeepLink.buildSkyLink({ m: iso, focus: 'earth' })
-      : 'explore.html#m=' + encodeURIComponent(iso) + '&focus=earth';
+      : 'index.html#m=' + encodeURIComponent(iso) + '&focus=earth';
     try {
       document.dispatchEvent(new CustomEvent('ap-sky-ready', {
         bubbles: true,

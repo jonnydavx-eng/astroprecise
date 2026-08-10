@@ -7,8 +7,9 @@
  *      scalechange {level}) and the seven scale names EARTH…COSMOS;
  *   3. the fail-open ladder: ?engine=legacy, js/orrery.js legacy injection,
  *      js/orrery-loader.js boot path, js/orrery3d.js canvas fail-open;
- *   4. every page that used to load js/orrery.js now loads the adapter, and the
- *      three pages with a live <void-orrery> carry the three import map;
+ *   4. every page that used to load js/orrery.js now loads the adapter, the
+ *      adapter pages and the dedicated eclipse page carry the Three import map, and
+ *      Explore enters the real model directly with its deck after the canvas;
  *   5. window.VoidEphem is byte-compatible: the adapter's port is evaluated
  *      alongside legacy orrery.js and outputs are compared numerically.
  */
@@ -68,13 +69,13 @@ for (const probe of ['engine=legacy', 'orrery.js', 'orrery-loader.js', 'orrery3d
 ok('legacy param, legacy/canvas fallbacks, VoidEphem, import map, WebGL2 probe present');
 
 /* ── 4. page wiring ── */
-const pages = ['index.html', 'deep-time.html', 'eclipse.html', 'sky-card.html', 'sky-events.html', 'natal-plate.html'];
+const pages = ['index.html', 'deep-time.html', 'sky-card.html', 'sky-events.html', 'natal-plate.html'];
 for (const p of pages) {
   const html = readFileSync(join(root, p), 'utf8');
   if (!html.includes('js/void-orrery-adapter.js')) fail(`${p} does not load the adapter`);
   if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(html)) fail(`${p} still loads js/orrery.js directly`);
 }
-ok('all six former orrery.js pages load the adapter');
+ok('all five generic orrery pages load the adapter');
 
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 const assetVersion = (sw.match(/const V = ["']ap-v(\d+)["']/) || [])[1];
@@ -86,97 +87,145 @@ for (const p of pages) {
   }
 }
 const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
-const deliveredCssName = 'explore-page-v' + assetVersion + '.css';
-const deliveredBootName = 'explore-boot-v' + assetVersion + '.js';
+const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
+const livingCssName = 'ap-living-sky-v' + assetVersion + '.css';
+const observatoryName = 'ap-observatory-v' + assetVersion + '.js';
 const deliveredNavName = 'ap-nav-model-v' + assetVersion + '.js';
-if (assetVersion && !exploreHtml.includes('js/' + deliveredBootName + '?v=' + assetVersion)) {
-  fail('explore.html boot query does not match service-worker ' + assetVersion);
-}
-const exploreCss = readFileSync(join(root, 'css', 'explore-page.css'), 'utf8');
-const exploreBoot = readFileSync(join(root, 'js', 'explore-boot.js'), 'utf8');
-const deliveredCss = readFileSync(join(root, 'css', deliveredCssName), 'utf8');
-const deliveredBoot = readFileSync(join(root, 'js', deliveredBootName), 'utf8');
+const livingCss = readFileSync(join(root, 'css', livingCssName), 'utf8');
+const observatory = readFileSync(join(root, 'js', observatoryName), 'utf8');
 const navModel = readFileSync(join(root, 'js', 'ap-nav-model.js'), 'utf8');
 const deliveredNav = readFileSync(join(root, 'js', deliveredNavName), 'utf8');
 const loader = readFileSync(join(root, 'js', 'orrery-loader.js'), 'utf8');
-if (assetVersion && !exploreHtml.includes('css/' + deliveredCssName + '?v=' + assetVersion)) {
-  fail('explore.html CSS query does not match service-worker ' + assetVersion);
-}
-if (deliveredCss !== exploreCss) fail('versioned Explore CSS is not byte-identical to its canonical source');
-if (deliveredBoot !== exploreBoot) fail('versioned Explore boot is not byte-identical to its canonical source');
-if (deliveredNav !== navModel) fail('versioned nav model is not byte-identical to its canonical source');
-if (assetVersion && !exploreHtml.includes('js/' + deliveredNavName + '?v=' + assetVersion)) {
-  fail('explore.html nav query does not match service-worker ' + assetVersion);
-}
-for (const deliveredPath of ['./css/' + deliveredCssName, './js/' + deliveredBootName, './js/' + deliveredNavName]) {
-  if (!sw.includes("'" + deliveredPath + "'")) fail('service-worker precache missing ' + deliveredPath);
-}
-for (const criticalProbe of ['explore-page(?:-v\\d+)?\\.css', 'explore-boot(?:-v\\d+)?\\.js', 'ap-nav-model(?:-v\\d+)?\\.js']) {
-  if (!sw.includes(criticalProbe)) fail('service-worker critical routing missing ' + criticalProbe);
-}
+
 for (const probe of [
-  'id="explore-threshold"',
-  'id="explore-threshold-enter"',
-  'explore-threshold-bypass',
-  'ap-explore-threshold-seen',
-  'tabindex="-1" aria-label="Living-sky 3D model',
+  "new URL('./index.html', location.href)",
+  'target.search = location.search;',
+  'target.hash = location.hash;',
+  'location.replace(target.href);',
+  '<meta name="robots" content="noindex, follow">',
 ]) {
-  if (!exploreHtml.includes(probe)) fail('flagship Explore threshold missing: ' + probe);
+  if (!exploreHtml.includes(probe)) fail('merged Explore redirect contract missing: ' + probe);
 }
-if (!exploreHtml.includes('The real sky waits beyond.') ||
-    !exploreHtml.includes('REAL POSITIONS ON ENTRY')) {
-  fail('Explore threshold does not keep the poster/live honesty boundary');
+for (const retiredProbe of [
+  'id="explore-threshold"',
+  'id="apAwardOrreryWrap"',
+  'id="orrery-lite-deck"',
+  '<void-orrery',
+  'explore-boot-v',
+  'explore-page-v',
+]) {
+  if (exploreHtml.includes(retiredProbe)) fail('retired standalone Explore surface remains: ' + retiredProbe);
 }
 
-const thresholdStart = exploreHtml.indexOf('id="explore-threshold"');
-const modelStart = exploreHtml.indexOf('id="apAwardOrreryWrap"');
-if (thresholdStart < 0 || modelStart <= thresholdStart) fail('threshold/model order is invalid');
-else if (exploreHtml.slice(thresholdStart, modelStart).includes('<canvas')) {
-  fail('Observatory threshold creates a second canvas/context');
+for (const [kind, name] of [
+  ['CSS', livingCssName],
+  ['controller', observatoryName],
+  ['navigation', deliveredNavName],
+]) {
+  const folder = kind === 'CSS' ? 'css/' : 'js/';
+  if (!indexHtml.includes(folder + name + '?v=' + assetVersion)) {
+    fail('Observatory ' + kind + ' query does not match service-worker ' + assetVersion);
+  }
+  if (!sw.includes("'./" + folder + name + "'")) {
+    fail('service-worker precache missing ./' + folder + name);
+  }
 }
-const focusButtonCount = (exploreHtml.match(/data-lite-planet=/g) || []).length;
-const pressedCount = (exploreHtml.match(/data-lite-planet=[^>]+aria-pressed=/g) || []).length;
-if (focusButtonCount !== 10 || pressedCount !== focusButtonCount) {
-  fail('Explore planet buttons missing initial pressed state (' + pressedCount + '/' + focusButtonCount + ')');
+if (deliveredNav !== navModel) fail('versioned nav model is not byte-identical to its canonical source');
+
+const modelCount = (indexHtml.match(/<void-orrery\b(?=[^>]*\bid=)/g) || []).length;
+if (modelCount !== 1) fail('Observatory must own exactly one void-orrery (' + modelCount + ')');
+for (const probe of [
+  'class="ap-model-stage"',
+  'id="mladder"',
+  'id="dock"',
+  'aria-label="Interactive live solar system"',
+]) {
+  if (!indexHtml.includes(probe)) fail('Observatory live-model contract missing: ' + probe);
+}
+for (const retiredProbe of [
+  'id="explore-threshold"',
+  'id="orrery-lite-deck"',
+  'data-lite-planet="earth"',
+]) {
+  if (indexHtml.includes(retiredProbe)) fail('retired 2D/legacy model surface remains on Observatory: ' + retiredProbe);
 }
 for (const probe of [
-  'var webglIntent = !!resolveIntent();',
-  'setInstrumentInert',
-  'armWebglIntent();',
-  'new ResizeObserver(syncNavHeight)',
-  'setAttribute("aria-pressed"',
+  'var SCALE_KEYS =',
+  'var FOCUS =',
+  'function applyHash()',
+  'orrery.flyTo',
+  'function revealModelAfterChoice()',
+  'stage.scrollIntoView',
 ]) {
-  if (!exploreBoot.includes(probe)) fail('Explore boot contract missing: ' + probe);
+  if (!observatory.includes(probe)) fail('Observatory controller contract missing: ' + probe);
 }
-for (const probe of ['.explore-stage .lite-vp-glyph', 'var(--explore-deck-h', 'explore-threshold-entering', 'html.orrery-full .explore-hint { display: none; }', '--ap-vc-accent: #140d05']) {
-  if (!exploreCss.includes(probe)) fail('Explore CSS contract missing: ' + probe);
+for (const probe of [
+  '.ap-live-stage',
+  '.ap-model-stage',
+  '.ap-control-panel',
+  'v' + assetVersion + ' four-tab mobile navigation',
+  'body > nav.bottom-nav.bottom-nav',
+]) {
+  if (!livingCss.includes(probe)) fail('Living-sky CSS contract missing: ' + probe);
 }
+for (const probe of [
+  "['index.html', 'Live Sky', 'star4']",
+  "['chart.html', 'Chart', 'spiral']",
+  "['horoscope.html', 'Daily', 'crescent']",
+  "['shop.html', 'Shop', 'sparkles']",
+  'function renderStaticBottomNav()',
+]) {
+  if (!navModel.includes(probe)) fail('shared navigation contract missing: ' + probe);
+}
+if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in shared navigation');
 if (!loader.includes("b.setAttribute('aria-pressed', active ? 'true' : 'false')")) {
   fail('orrery loader does not synchronize focus aria-pressed');
 }
-const navEclipse = navModel.indexOf("['eclipse.html', 'The Eclipse'");
-const navExplorer = navModel.indexOf("['explore.html', 'Sky Explorer'");
-const navMySky = navModel.indexOf("['mysky.html', 'My Sky'");
-if (!(navEclipse >= 0 && navExplorer > navEclipse && navMySky > navExplorer)) {
-  fail('Sky Explorer is not promoted directly after the eclipse campaign in More');
-}
-if (/\['explore\.html', 'Sky Explorer', \{ badge: 'Live' \}\]/.test(navModel)) {
-  fail('Sky Explorer nav claims LIVE before the model is revealed');
-}
-ok('flagship Explore threshold, direct-link bypass, one-context gate and accessible controls present');
+ok('Explore redirects into one v' + assetVersion + ' Observatory with current model, navigation and phone controls');
 
 const eclipseHtml = readFileSync(join(root, 'eclipse.html'), 'utf8');
+const eclipseViewName = 'ap-eclipse-live-v' + assetVersion + '.js';
+const eclipseGeometryName = 'ap-eclipse-geometry-v' + assetVersion + '.js';
+const eclipseCssName = 'ap-eclipse-live-v' + assetVersion + '.css';
+const eclipseView = readFileSync(join(root, 'js', eclipseViewName), 'utf8');
+const eclipseGeometry = readFileSync(join(root, 'js', eclipseGeometryName), 'utf8');
 for (const probe of [
-  'start-focus="sun"',
-  'ECLIPSE_JD = 2461265.2402430554',
-  "o.flyTo('sun')",
-  'o.setEclipse(0.91, prm)',
-  '91% CORONA STUDY',
+  'id="ap-eclipse-live"',
+  'data-eclipse-now',
+  'data-eclipse-event',
+  'data-eclipse-range',
+  'data-eclipse-shadow-offset',
+  eclipseViewName + '?v=' + assetVersion,
+  eclipseCssName + '?v=' + assetVersion,
 ]) {
-  if (!eclipseHtml.includes(probe)) fail('eclipse campaign wiring missing: ' + probe);
+  if (!eclipseHtml.includes(probe)) fail('dedicated eclipse instrument wiring missing: ' + probe);
 }
-ok('all six former orrery.js pages and Explore use the current delivery identity');
-ok('eclipse panel fixes the exact instant, Sun focus and 91% dramatic treatment');
+for (const retired of ['<void-orrery', 'void-orrery-adapter.js', 'setEclipse(0.91', '91% CORONA STUDY']) {
+  if (eclipseHtml.includes(retired)) fail('retired cosmetic eclipse model remains: ' + retired);
+}
+for (const probe of [
+  "from './" + eclipseGeometryName + "'",
+  'new THREE.WebGLRenderer',
+  'positionVolume(umbra',
+  'positionVolume(penumbra',
+  "window.APEclipseLive",
+]) {
+  if (!eclipseView.includes(probe)) fail('eclipse WebGL view contract missing: ' + probe);
+}
+for (const probe of [
+  'export function computeShadowGeometry',
+  'export function computeEclipseGeometry',
+  'umbraLengthKm',
+  'penumbraRadiusAtEarthKm',
+  'shadowMissKm',
+]) {
+  if (!eclipseGeometry.includes(probe)) fail('pure eclipse geometry contract missing: ' + probe);
+}
+for (const asset of ['./js/' + eclipseViewName, './js/' + eclipseGeometryName, './css/' + eclipseCssName]) {
+  if (!sw.includes("'" + asset + "'")) fail('service-worker precache missing ' + asset);
+}
+ok('five generic orrery pages and the Observatory use the current delivery identity');
+ok('eclipse owns one dedicated live Sun-Moon-Earth shadow instrument');
 for (const p of ['index.html', 'deep-time.html', 'eclipse.html']) {
   const html = readFileSync(join(root, p), 'utf8');
   if (!/type=["']importmap["']/.test(html)) fail(`${p} missing the three import map`);
@@ -236,4 +285,4 @@ if (LE && AE) {
 }
 
 if (bad) { console.log(`${bad} adapter contract failure(s)`); process.exit(1); }
-console.log('PASS void-orrery adapter contract + VoidEphem byte-compat');
+console.log('PASS orrery adapter + dedicated eclipse instrument + VoidEphem byte-compat');

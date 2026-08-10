@@ -353,7 +353,7 @@
         var iso = moment.utc.toISOString ? moment.utc.toISOString() : String(moment.utc);
         state.lastSkyLink = (window.APDeepLink && APDeepLink.buildSkyLink)
           ? APDeepLink.buildSkyLink({ m: iso, focus: 'earth' })
-          : 'explore.html#m=' + encodeURIComponent(iso) + '&focus=earth';
+          : 'index.html#m=' + encodeURIComponent(iso) + '&focus=earth';
         document.dispatchEvent(new CustomEvent('ap-sky-ready', {
           bubbles: true,
           detail: { moment: moment, m: iso, link: state.lastSkyLink, focus: 'earth', source: 'moment-freeze' }
@@ -363,7 +363,7 @@
 
     var modelLink = $('mom-model-link');
     if (modelLink) {
-      modelLink.href = state.lastSkyLink || 'explore.html#m=now&focus=earth';
+      modelLink.href = state.lastSkyLink || 'index.html#m=now&focus=earth';
       modelLink.hidden = !state.lastSkyLink;
     }
 

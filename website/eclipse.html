@@ -23,16 +23,12 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What time is the solar eclipse on 12 August 2026 in the UK?","acceptedAnswer":{"@type":"Answer","text":"The Moon first touches the Sun between 18:08 and 18:17 BST depending where you are. Maximum is about 19:05 BST in Edinburgh, 19:12 BST in London and 19:16 BST in Truro. Last contact is around 20:10 BST — the eclipse is over before the Sun sets anywhere in Britain (sunset is about 20:22 in Dover, 20:29 in London and 20:46 in Penzance)."}},{"@type":"Question","name":"How much of the Sun will be covered in the UK?","acceptedAnswer":{"@type":"Answer","text":"Between 88% and 96%, depending where you stand — about 90% in London and roughly 95% in the far south-west. That makes it the deepest eclipse over southern Britain since 1999, though March 2015 was deeper in Scotland. Britain never reaches totality: that falls only along a track crossing Iceland and northern Spain."}},{"@type":"Question","name":"Is it safe to look at the eclipse?","acceptedAnswer":{"@type":"Answer","text":"Not at any point, anywhere in Britain. Even at 96% coverage the remaining sliver of Sun is dangerously bright, and because Britain never reaches totality there is no moment when it is safe to take your glasses off. Wear ISO 12312-2 certified eclipse glasses for the whole eclipse, or use a pinhole projector, or simply watch the light change around you."}},{"@type":"Question","name":"What else happens that night?","acceptedAnswer":{"@type":"Answer","text":"The Perseid meteor shower peaks the same night of 12–13 August 2026 under dark skies after the eclipse — up to around 100 meteors an hour after midnight."}}]}
 </script>
 <link rel="preload" href="./fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<!-- ── Three.js import map — REQUIRED for js/orrery-webgl.js (bare `import 'three'`).
-     COPIED VERBATIM from explore.html; keep in sync. Must sit in <head> — this page
-     has an inline module script, so a late-injected map would be ignored. ── -->
+<!-- Three.js import map for the dedicated eclipse module. It must stay in <head>
+     because both the instrument and the page controller use module scripts. -->
 <script type="importmap">
 { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
 </script>
 <script src="./js/ephemeris.js" defer></script>
-<!-- M2: the live shadow sim runs the superior Orrery3D engine through the adapter
-     (same <void-orrery> surface incl. setEclipse; fails open to js/orrery.js). -->
-<script src="./js/void-orrery-adapter.js?v=826" defer></script>
 <style>
 @font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
 @font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
@@ -89,25 +85,48 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
 @media (max-width:760px){input,select{padding:12px}}
 @media (max-width:430px){.card{padding:20px 18px}}
 </style>
+  <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=834" />
+  <script type="module" src="js/ap-eclipse-live-v834.js?v=834"></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
+  <script src="js/ap-nav-model-v834.js?v=834" defer></script>
 </head>
-<body>
+<body class="page-eclipse ap-launch-article">
 <a class="skip" href="#story">SKIP TO THE ECLIPSE</a>
-<div class="wrap">
-
-<header>
-  <div class="top">
-    <a class="navlink" href="./index.html">← ASTRO PRECISE</a>
-    <span class="kicker">THE REAL SKY NEWS · 12 AUGUST 2026</span>
-  </div>
-  <nav class="sitenav" aria-label="Primary">
-    <a href="./index.html">OBSERVATORY</a>
-    <a href="./chart.html">CHART</a>
-    <a href="./ephemeris.html">THE SKY</a>
-    <a href="./horoscope.html">DAILY</a>
-    <a href="./shop.html">SHOP</a>
-    <span aria-current="page">THE ECLIPSE</span>
+<header class="site-header" role="banner" data-ap-static-nav>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+        <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+      </a>
+      <div class="navbar__nav" role="group" aria-label="Primary">
+        <noscript>
+          <a href="index.html" class="navbar__link">Observatory</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">The Sky</a>
+          <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
+        </noscript>
+      </div>
+      <div class="navbar__end">
+        <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
+          <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
+        </a>
+        <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
   </nav>
 </header>
+<div class="wrap">
+
+
+<div class="launch-article-meta">
+  <span class="kicker">THE ECLIPSE · 12 AUGUST 2026</span>
+  <a class="navlink" href="./sky-events.html">THE REAL SKY NEWS →</a>
+</div>
 
 <main id="story" tabindex="-1">
 <p class="kicker" style="margin:44px 0 16px;color:var(--warn)"><span class="pulse">●</span>&nbsp; DEEP PARTIAL SOLAR ECLIPSE · 88–96% OF THE SUN COVERED ACROSS BRITAIN · UK MAXIMUM ≈19:12 BST IN LONDON</p>
@@ -125,39 +144,53 @@ td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap
   <div style="color:var(--faint)">COMPUTED HERE, IN YOUR BROWSER · NOTHING UPLOADED · <a href="./verify.html">VERIFY THE MATHS</a></div>
 </div>
 
-<!-- ——— LIVE SHADOW SIMULATION ——— -->
-<div style="position:relative;border:1px solid var(--line2);border-radius:6px;background:#040406;margin:22px 0;overflow:hidden;height:min(440px,60vh);box-shadow:0 10px 30px rgba(0,0,0,.26),inset 0 1px 0 rgba(242,236,223,.05)">
-  <void-orrery id="ecOrr" start-focus="sun" data-wheel="off" aria-label="Dramatic live model of the Sun and Moon at greatest eclipse"></void-orrery>
-  <div class="mono" style="position:absolute;left:12px;bottom:12px;font-size:8.5px;letter-spacing:.2em;color:var(--acc);background:rgba(4,4,6,.72);border:1px solid var(--line);border-radius:3px;padding:7px 11px;pointer-events:none">LIVE MODEL · 91% CORONA STUDY · SET TO GREATEST ECLIPSE · DRAG TO ORBIT</div>
-</div>
-<script>
-// Live eclipse panel: set the model to greatest eclipse (17:45:57 UT), frame
-// the Sun, then ease into a 91% corona-forward study. The percentage is a
-// campaign visual treatment, not an observer-specific obscuration calculation.
-(function () {
-  var prm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ECLIPSE_JD = 2461265.2402430554;
-  var applied = false;
-  function engage() {
-    var o = document.getElementById('ecOrr');
-    if (o && typeof o.setEclipse === 'function') {
-      if (!applied) {
-        try { if (typeof o.setJD === 'function') o.setJD(ECLIPSE_JD); } catch (e0) {}
-        try { if (typeof o.flyTo === 'function') o.flyTo('sun'); } catch (e1) {}
-      }
-      try { o.setEclipse(0.91, prm); applied = true; } catch (e2) {}
-      return applied;
-    }
-    return false;
-  }
-  document.addEventListener('ap-orrery-ready', function () { setTimeout(engage, 600); });
-  var iv = setInterval(function () { if (engage()) clearInterval(iv); }, 1000);
-  setTimeout(function () { clearInterval(iv); }, 45000); // stop after 45s regardless
-  setInterval(function () { // re-hold after any engine reboot
-    try { var o = document.getElementById('ecOrr'); if (applied && o && typeof o.getEclipse === 'function' && o.getEclipse() < 0.5) o.setEclipse(0.91, true); } catch (e2) {}
-  }, 4000);
-})();
-</script>
+<!-- ——— LIVE ECLIPSE SHADOW INSTRUMENT ——— -->
+<section class="ap-eclipse-live" id="ap-eclipse-live" data-mode="live" data-ready="false" aria-labelledby="eclipse-live-title">
+  <div class="ap-eclipse-live__head">
+    <div>
+      <p class="ap-eclipse-live__eyebrow">The shadow instrument · Sun → Moon → Earth</p>
+      <h2 class="ap-eclipse-live__title" id="eclipse-live-title">Watch the shadow find Earth.</h2>
+    </div>
+    <p class="ap-eclipse-live__intro">Not a decorative eclipse. This model recomputes the Sun, Moon and shadow axis for the displayed UTC minute. Drag to inspect the alignment; move between now and greatest eclipse.</p>
+  </div>
+  <div class="ap-eclipse-live__shell">
+    <div class="ap-eclipse-live__stage">
+      <canvas class="ap-eclipse-live__canvas" tabindex="0" aria-label="Interactive live 3D Sun, Moon and Earth eclipse alignment. Drag to orbit and use the mouse wheel or plus and minus keys to zoom."></canvas>
+      <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Live geometry · preparing</span></div>
+      <div class="ap-eclipse-live__labels" aria-hidden="true">
+        <span class="ap-eclipse-live__body-label" data-eclipse-label="sun">Sun</span>
+        <span class="ap-eclipse-live__body-label" data-eclipse-label="moon">Moon</span>
+        <span class="ap-eclipse-live__body-label" data-eclipse-label="earth">Earth</span>
+      </div>
+      <div class="ap-eclipse-live__legend" aria-hidden="true">
+        <span><i></i> Alignment axis</span>
+        <span><i data-cone="umbra"></i> Umbra</span>
+        <span><i data-cone="penumbra"></i> Penumbra</span>
+      </div>
+      <div class="ap-eclipse-live__fallback" hidden><div>Preparing the live eclipse geometry…</div></div>
+    </div>
+    <aside class="ap-eclipse-live__panel" aria-label="Live eclipse geometry readout">
+      <p class="ap-eclipse-live__mode" data-eclipse-mode>Live geocentric alignment</p>
+      <p class="ap-eclipse-live__status" data-eclipse-status aria-live="polite">Computing the shadow…</p>
+      <p class="ap-eclipse-live__time" data-eclipse-time>UTC geometry preparing</p>
+      <dl class="ap-eclipse-live__data">
+        <div class="ap-eclipse-live__datum"><dt>Sun–Moon separation</dt><dd data-eclipse-separation>—</dd></div>
+        <div class="ap-eclipse-live__datum"><dt>Moon distance</dt><dd data-eclipse-moon-distance>—</dd></div>
+        <div class="ap-eclipse-live__datum"><dt>Shadow axis</dt><dd data-eclipse-shadow-offset>—</dd></div>
+        <div class="ap-eclipse-live__datum"><dt>Moon / Sun apparent radius</dt><dd data-eclipse-ratio>—</dd></div>
+      </dl>
+      <div class="ap-eclipse-live__controls">
+        <div class="ap-eclipse-live__actions">
+          <button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="true">Track live now</button>
+          <button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="false">Greatest eclipse</button>
+        </div>
+        <label class="ap-eclipse-live__control-label" for="eclipse-time-range"><span>Explore the alignment</span><span data-eclipse-range-time>—</span></label>
+        <input class="ap-eclipse-live__range" id="eclipse-time-range" data-eclipse-range type="range" aria-label="Eclipse timeline from three days before to two days after greatest eclipse">
+        <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection computed from the browser ephemeris · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · local visibility still depends on where you stand.</p>
+      </div>
+    </aside>
+  </div>
+</section>
 
 <!-- ——— FREE TEASER ——— -->
 <div class="card" id="cast">

@@ -7,7 +7,7 @@ Astro Precise is a professional-grade astrology web app and installable PWA at h
 ## Primary tools (start here)
 
 - [Home](https://astroprecise.app/): Photoreal 3D solar-system hero (the live model), tonight's sky plate, daily sky, and the cast-your-chart funnel
-- [Explore the Model](https://astroprecise.app/explore.html): Full-viewport 3D solar-system model (Earth to Cosmos) — the flagship room of the site
+- [Live Sky Observatory](https://astroprecise.app/): One continuous 3D solar-system model from Earth to Cosmos — the flagship room of the site
 - [Birth Chart Calculator](https://astroprecise.app/chart.html): Full natal chart — Sun, Moon, rising, houses (Placidus/Whole/Equal/Porphyry), aspects
 - [Moment](https://astroprecise.app/moment.html): Freeze any night's sky — birth, wedding, memorial — as a free keepsake card, made privately on-device
 - [My Sky](https://astroprecise.app/mysky.html): Hub for the free spine — explore, cast, tonight's sky, keepsakes, daily reading

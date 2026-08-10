@@ -103,7 +103,7 @@
   function actionsHtml() {
     return (
       '<div class="ap-ev__actions">' +
-      '<a class="ap-ev__btn ap-ev__btn--primary" href="explore.html">Open full 3D sky</a>' +
+      '<a class="ap-ev__btn ap-ev__btn--primary" href="index.html#lead">Open the live 3D sky</a>' +
       '<a class="ap-ev__btn ap-ev__btn--ghost" href="chart.html">Cast your chart</a>' +
       '<a class="ap-ev__btn ap-ev__btn--ghost" href="mysky.html">My Sky</a>' +
       '</div>'
@@ -132,7 +132,7 @@
       (mode === 'tools' ? 'Continue around the sky' : 'Tools around the sky') +
       '</h2>' +
       (mode === 'full' || mode === 'cinema'
-        ? '<p class="ap-ev__lede">Same 3D engine as the homepage. Drag the orrery on <a href="explore.html">Explore</a> · cast on <a href="chart.html">Chart</a>.</p>'
+        ? '<p class="ap-ev__lede">Same 3D engine as the homepage. Drag the orrery on <a href="index.html#lead">Live Sky</a> · cast on <a href="chart.html">Chart</a>.</p>'
         /* Provenance line must survive in the modes that actually ship
            (modeForPage only returns tools/compact since v680). */
         : '<p class="ap-ev__lede ap-ev__lede--provenance">Same 3D engine as the homepage hero.</p>') +

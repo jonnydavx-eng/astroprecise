@@ -265,6 +265,7 @@ const FinishShader = {
                             // galactic plane) visible at hero/system scales.
   let sunMaterial = null, sunCoronaGroup = null, sunCoronaMesh = null, sunCoronaMat = null;
   let sunPromGroup = null, sunPointLight = null, sunDirLight = null, sunDirLightTarget = null, hemiLight = null;
+  let instrumentFillLight = null, instrumentFillTarget = null;
   let detailLightingUser = null; // null = auto, true = force detail, false = force cinematic glow
   let instrumentFirstFramePending = false;
   let instrumentStableFrames = 0;
@@ -1168,6 +1169,25 @@ const FinishShader = {
     }
   }
 
+  /** v834 flagship: one continuous model opens at System, never an Earth teaser. */
+  function isLivingSkyHome() {
+    try { return document.body.classList.contains('ap-live-home'); } catch (e) { return false; }
+  }
+
+  /** Contain the initial Earth without changing the global Earth camera preset. */
+  function containEarthFrame(fillFrac = 0.70) {
+    if (!isHomeHeroEmbed() || onPreloaderStage() || !canvas || !meshes.earth) return false;
+    const r = canvas.getBoundingClientRect();
+    const aspect = r.width / Math.max(1, r.height);
+    if (!Number.isFinite(aspect) || aspect <= 0) return false;
+    // computePortraitCamera fits against vertical FOV. Scale the requested fill by
+    // portrait aspect so the horizontal FOV becomes the limiting dimension.
+    const contextFill = freeExploreMode ? fillFrac * 0.84 : fillFrac;
+    const effectiveFill = Math.max(0.18, Math.min(0.74, contextFill * Math.min(1, aspect)));
+    computePortraitCamera('earth', effectiveFill);
+    return true;
+  }
+
   /** Default hero + enter-screen frame: lit Earth on the terminator — not wide system + labels. */
   function setDefaultEarthFrame() {
     scaleLevel = 0;
@@ -1179,10 +1199,12 @@ const FinishShader = {
     updateScaleHUD();
     needRecompute = true;
     updatePositions();
-    // ap-v750: closer, telephoto portrait — fills the viewport with atmosphere rim
-    setEarthTerminatorCamera(2.85, 7 * D2R);
-    camera.fov = CAM_FOV_CLOSE;
-    camera.updateProjectionMatrix();
+    // AP-V832: a contained, sun-lit Earth with deliberate breathing room.
+    if (!containEarthFrame(0.70)) {
+      setEarthTerminatorCamera(2.85, 7 * D2R);
+      camera.fov = CAM_FOV_CLOSE;
+      camera.updateProjectionMatrix();
+    }
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
     if (bloomPass && composer) {
       bloomPass.strength = perfTier === 'mid' ? 0.36 : 0.52;
@@ -1566,8 +1588,9 @@ const FinishShader = {
       preloaderIntroFinished = true;
       preloaderIntroScheduled = false;
       holdPreloaderEarthFrame();
+    } else if (isLivingSkyHome()) {
+      settleToSystemHeroFrame(false);
     } else if (isHomeHeroEmbed()) {
-      // Structure clean: homepage rest frame is photoreal Earth, not sun-centred system.
       setDefaultEarthFrame();
     } else {
       settleToSystemHeroFrame(false);
@@ -1838,11 +1861,27 @@ const FinishShader = {
   function ensureComposer() {
     if (composer || PRM || perfTier === 'low' || !renderer || !scene || !camera) return;
     try {
-      composer = new EffectComposer(renderer);
+      // EffectComposer renders through its own targets, so the renderer's canvas
+      // antialias flag no longer protects small planet silhouettes. Give the
+      // composer a multisampled HDR target on WebGL2: 4x on desktop, 2x on phones.
+      // This is the edge-quality fix; increasing DPR would spend much more fill
+      // rate while leaving the post-process target aliased.
+      const target = new THREE.WebGLRenderTarget(1, 1, {
+        type: THREE.HalfFloatType,
+        depthBuffer: true,
+        stencilBuffer: false,
+      });
+      if (renderer.capabilities.isWebGL2) {
+        const gl = renderer.getContext();
+        const requested = IS_PHONE || perfTier === 'mid' ? 2 : 4;
+        const supported = gl && gl.getParameter ? Number(gl.getParameter(gl.MAX_SAMPLES)) || requested : requested;
+        target.samples = Math.max(0, Math.min(requested, supported));
+      }
+      composer = new EffectComposer(renderer, target);
       composer.addPass(new RenderPass(scene, camera));
-      const bloomStrength = perfTier === 'mid' ? 0.30 : 0.44;
-      const bloomRadius = perfTier === 'mid' ? 0.42 : 0.55;
-      const bloomThreshold = perfTier === 'mid' ? 0.86 : 0.80;
+      const bloomStrength = perfTier === 'mid' ? 0.18 : 0.22;
+      const bloomRadius = perfTier === 'mid' ? 0.36 : 0.42;
+      const bloomThreshold = perfTier === 'mid' ? 1.08 : 1.05;
       bloomPass = new UnrealBloomPass(
         new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
         bloomStrength, bloomRadius, bloomThreshold
@@ -1948,6 +1987,8 @@ const FinishShader = {
       preloaderIntroFinished = true;
       syncPreloaderCosmicClass(false);
       holdPreloaderEarthFrame();
+    } else if (isLivingSkyHome()) {
+      settleToSystemHeroFrame(false);
     } else if (isHomeHeroEmbed()) {
       setDefaultEarthFrame();
     } else {
@@ -3881,10 +3922,11 @@ const FinishShader = {
       if (isInstrumentZoomBusy()) return;
       const outerT = Math.max(0, Math.min(1, (z - 2.2) / 2.8));
       const fogDensity = (perfTier === 'high' ? 0.00020 : 0.00024) + outerT * 0.0007;
-      const targetExp = (perfTier === 'high' ? 0.94 : 0.90) - outerT * 0.1;
-      const hemiI = (perfTier === 'high' ? 0.38 : 0.32) * (1 - outerT * 0.2);
-      const sunPtI = (perfTier === 'high' ? 2.0 : 1.65) * (1 - outerT * 0.35);
-      const sunDirI = (perfTier === 'high' ? 1.35 : 1.1) * (1 - outerT * 0.25);
+      const targetExp = (perfTier === 'high' ? 1.08 : 1.02) - outerT * 0.14;
+      const hemiI = (perfTier === 'high' ? 0.50 : 0.43) * (1 - outerT * 0.24);
+      const sunPtI = (perfTier === 'high' ? 2.1 : 1.75) * (1 - outerT * 0.35);
+      const sunDirI = (perfTier === 'high' ? 1.45 : 1.2) * (1 - outerT * 0.25);
+      const fillI = (perfTier === 'high' ? 0.72 : 0.60) * (1 - outerT * 0.7);
       const k = Math.min(1, (dt || 0.016) * 4.2);
       if (scene && scene.fog && !portraitMode) {
         scene.fog.color.setHex(0x040610);
@@ -3903,6 +3945,10 @@ const FinishShader = {
       }
       if (sunDirLight) {
         sunDirLight.intensity += (sunDirI - sunDirLight.intensity) * k;
+      }
+      if (instrumentFillLight) {
+        instrumentFillLight.position.copy(camera.position);
+        instrumentFillLight.intensity += (fillI - instrumentFillLight.intensity) * k;
       }
       return;
     }
@@ -3960,11 +4006,19 @@ const FinishShader = {
         let s = z <= 2 ? 1 : z <= 3 ? 0.45 + (3 - z) * 0.55 : 0.15;
         if (instrumentMode && z <= 2) {
           s *= z <= 1.6 ? 1.65 : 1.42;
+          // The wide System frame used to leave Mercury and Mars only a few
+          // physical pixels across. Texture detail cannot survive that. Enforce
+          // a modest display-radius floor while retaining honest positions and
+          // the documented exaggerated-size convention.
+          if (z >= 1.7) s = Math.max(s, 0.62 / Math.max(0.01, b.size));
         }
         if (preloaderCosmicJourney && z >= 1.4 && z <= 2.6) {
           s *= 1.06 + Math.sin((2.6 - z) * 1.8) * 0.04;
         }
         g.scale.setScalar(s);
+        const crispSystem = instrumentMode && z >= 1.7 && z <= 2.2;
+        const luminousHalo = g.userData.luminousHalo;
+        if (luminousHalo) luminousHalo.visible = !crispSystem || selectedPlanetId === b.id;
         const m = g.userData.mesh;
         if (m && m.material) {
           m.material.transparent = false;
@@ -5009,6 +5063,7 @@ const FinishShader = {
     if (ring.material) ring.material.opacity = b.id === 'venus' ? 0.58 : 0.46;
     const halo = g.userData.luminousHalo;
     if (halo) {
+      halo.visible = true;
       const hs = halo.userData.baseScale || 1;
       halo.scale.set(hs, hs, 1);
       if (halo.material) halo.material.opacity = 0.44;
@@ -5074,7 +5129,7 @@ const FinishShader = {
     const sunSel = selectedPlanetId === 'sun';
     const baseStrength = perfTier === 'mid' ? 0.055 : 0.08;
     bloomPass.strength = baseStrength * ramp * zoomMul;
-    bloomPass.threshold = sunSel ? 0.91 + (1 - ramp) * 0.06 : 0.96 + (1 - ramp) * 0.03;
+    bloomPass.threshold = sunSel ? 0.94 + (1 - ramp) * 0.06 : 1.06 + (1 - ramp) * 0.03;
     bloomPass.radius = 0.18;
   }
 
@@ -5155,7 +5210,13 @@ const FinishShader = {
     if (sunDirLight) {
       sunDirLight.intensity = free
         ? (perfTier === 'high' ? 1.85 : 1.55)
-        : (perfTier === 'high' ? 1.35 : 1.1);
+        : (perfTier === 'high' ? 1.45 : 1.2);
+    }
+    if (instrumentFillLight) {
+      instrumentFillLight.position.copy(camera.position);
+      instrumentFillLight.intensity = free
+        ? (perfTier === 'high' ? 0.84 : 0.70)
+        : (perfTier === 'high' ? 0.72 : 0.60);
     }
     if (renderer) {
       instrumentExposure = free
@@ -5174,8 +5235,8 @@ const FinishShader = {
       const g = meshes[b.id];
       const sh = g && g.userData.mat && g.userData.mat.userData.planetShader;
       if (!sh || !sh.uniforms.uLightWash) return;
-      sh.uniforms.uLightWash.value = 0.02;
-      sh.uniforms.uRimMul.value = 0.14;
+      sh.uniforms.uLightWash.value = 0.12;
+      sh.uniforms.uRimMul.value = 0.18;
     });
   }
 
@@ -5494,6 +5555,11 @@ const FinishShader = {
     hemiLight = new THREE.HemisphereLight(0x7088a8, 0x1a1410, perfTier === 'high' ? 0.48 : 0.40);
     scene.add(hemiLight);
     scene.add(new THREE.AmbientLight(0x3a5068, perfTier === 'high' ? 0.20 : 0.16));
+    instrumentFillTarget = new THREE.Object3D();
+    scene.add(instrumentFillTarget);
+    instrumentFillLight = new THREE.DirectionalLight(0x9bb0cf, 0);
+    instrumentFillLight.target = instrumentFillTarget;
+    scene.add(instrumentFillLight);
   }
 
   // Real bloom replaces the outer fake corona; keep a subtle inner halo on all tiers.
@@ -5756,6 +5822,7 @@ const FinishShader = {
           gl_FragColor.rgb *= 0.88 + day * 0.16;
           gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * vec3(1.05, 1.02, 0.96), day * uLightWash);
           gl_FragColor.rgb = mix(gl_FragColor.rgb * 0.78, gl_FragColor.rgb, twilight);
+          gl_FragColor.rgb += diffuseColor.rgb * uLightWash * (1.0 - day) * 0.52;
         }`);
   }
 
@@ -6659,8 +6726,9 @@ const FinishShader = {
             if (!sprite) return;
             let isRetro = false;
             try { isRetro = !!E.isRetrograde(b.id, jd); } catch (e) {}
-            sprite.visible = isRetro;
-            if (isRetro) {
+            const crispInstrument = instrumentMode && scaleLevel <= 2;
+            sprite.visible = isRetro && !crispInstrument;
+            if (isRetro && !crispInstrument) {
               const s = sprite.userData.baseScale * pulse;
               sprite.scale.set(s, s, 1);
             }
@@ -7147,28 +7215,12 @@ const FinishShader = {
         camAz += dAz * ck;
         camEl += (wantEl - camEl) * ck;
       } else if (instrumentMode && scaleLevel <= 2) {
-        if (instrumentIdleAz == null) instrumentIdleAz = camAz;
-        if (instrumentIdleEl == null) instrumentIdleEl = camEl;
-        if (dragging) { instrumentIdleAz = camAz; instrumentIdleEl = camEl; }
-        instrumentIdleAz += 0.014 * dt;
-        instrumentIdleEl = scalePreset(scaleLevel).camEl + Math.sin(t * 0.00028) * 0.012;
-        let dAz = instrumentIdleAz - camAz;
-        dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
-        const driftK = Math.min(1, dt * 0.72);
-        camAz += dAz * driftK;
-        camEl += (instrumentIdleEl - camEl) * driftK;
-        if (starField && !PRM) starField.rotation.y += dt * 0.0016;
-        if (starFieldFar && !PRM) starFieldFar.rotation.y -= dt * 0.00075;
-        if (milkyWayBand && !PRM) milkyWayBand.rotation.y += dt * 0.00055;
-        if (instrumentCosmicVeil && !PRM) {
-          instrumentCosmicVeil.rotation.y += dt * 0.00035;
-          instrumentCosmicVeil.children.forEach((ch) => {
-            if (!ch.material) return;
-            if (ch.userData.drift) ch.material.rotation += ch.userData.drift * dt;
-            const base = ch.userData.baseOpa ?? 0.28;
-            ch.material.opacity = base;
-          });
-        }
+        // A precision instrument should rest when nobody is touching it. The old
+        // continuous camera/star drift moved tiny planets across sub-pixels every
+        // frame, which read as shimmer and "floating". Real ephemeris updates,
+        // body rotation and the living Sun continue; only the camera is stable.
+        instrumentIdleAz = camAz;
+        instrumentIdleEl = camEl;
       } else {
         camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
       }
@@ -7367,6 +7419,10 @@ const FinishShader = {
     if (bloomPass) bloomPass.resolution.set(w, h);
     if (radialBlurPass) radialBlurPass.uniforms.uAspect.value = w / Math.max(h, 1);
     camera.aspect = w / h; camera.updateProjectionMatrix();
+    if (isHomeHeroEmbed() && scaleLevel === 0 && !scaleAnimActive && !introActive &&
+        !portraitMode && !moonFrameActive && !dragging) {
+      containEarthFrame(0.70);
+    }
   }
 
   function forceResize() {
@@ -8026,8 +8082,10 @@ const FinishShader = {
       masterclassZoom = 6;
       scaleLevel = 6;
       setMasterclassZoom(6, false, true);
+    } else if (isLivingSkyHome()) {
+      // The Observatory opens on one stable, explorable system frame.
+      settleToSystemHeroFrame(false);
     } else if (isHomeHeroEmbed()) {
-      // Calm photoreal Earth rest frame on home (structure clean 2026-07-10).
       setDefaultEarthFrame();
     } else {
       settleToSystemHeroFrame(false);
@@ -8038,7 +8096,8 @@ const FinishShader = {
     if (PRM) {
       introActive = false;
       if (!preloaderMode) {
-        setDefaultEarthFrame();
+        if (isLivingSkyHome()) settleToSystemHeroFrame(false);
+        else setDefaultEarthFrame();
         updateScaleHUD();
       } else {
         camTarget.set(0, 0, 0);
@@ -9595,6 +9654,7 @@ const FinishShader = {
       needRecompute = true;
     },
     forceResize,
+    containEarthFrame,
     refreshTextures,
     captureFrame(opts) {
       if (!renderer || !canvas) return null;
