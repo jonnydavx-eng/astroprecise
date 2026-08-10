@@ -28,16 +28,16 @@ Measured 2026-08-08 in `C:\Users\jonny\OneDrive\astroprecise`:
 - Rollback is preserved exactly as §3 M2 specified: `?engine=legacy` injects the
   old `js/orrery.js`, which self-registers `<void-orrery>` as before. There is a
   four-rung fail-open ladder below that (canvas engine, fresh canvas, static poster).
-- Live production serves **ap-v813** (`sw.js` `const V`, fetched 2026-08-08), and
-  every one of 842 deployable paths is byte-identical to a local build of HEAD.
+- Live production serves **ap-v830** (`sw.js` `const V`, fetched 2026-08-10).
+  The current launch proof is the focused asset/version and Chrome phone check recorded in the handoff; the 842-path byte measurement below is historical.
 
 **Read §2 and §3 Phase A/M2 as history — a record of why the change was made, not
 as work outstanding.** Everything else in the document (the §4 all-pages plan, the
 §5 wow map, the §7 owner decisions, and the Living Sky addendum) has *not* been
 superseded and still applies.
 
-**The four owner decisions in §7 remain open.** Nobody has recorded an answer to
-them. They are the live part of this document.
+**The three design decisions in §7 are recorded.** Focused Chrome browser QA now passes; physical Safari/WebBridge and formal Coherence remain separate evidence gaps.
+
 
 Two smaller notes from the same measurement:
 
@@ -193,15 +193,15 @@ generate-sw-precache → push → verify live version before reporting.
 
 ---
 
-## 7. DECISIONS NEEDED FROM JONNY — ⚠️ STILL OPEN
+## 7. DECISIONS RECORDED — REMAINING EVIDENCE
 
-Three decisions are now recorded below. Only Browser QA remains open.
+Three decisions are recorded below. Focused Chrome browser QA now passes; physical Safari/WebBridge and formal Coherence remain separate evidence gaps.
 
 1. **Eclipse mode concept — DECIDED:** dramatic corona-forward spectacle.
 2. **Legacy retirement — DECIDED:** redirect after the eclipse.
 3. **Observatory vs Explore — DECIDED:** merge into one flagship explorer.
-4. **Browser QA**: WebBridge still disconnected — pixel-level checks need it reconnected, or a
-   10-minute call where you screen-share and I direct the QA clicks.
+4. **Browser QA — FOCUSED PASS:** live Chrome desktop plus 390×844 mobile emulation reached the real v830 3D model with no horizontal overflow; the full-model plaque is hidden on mobile. Physical Safari/device and WebBridge receipt remain unmeasured.
+
 
 ---
 
