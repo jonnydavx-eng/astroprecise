@@ -1,7 +1,20 @@
 # STATUS — AstroPrecise
 
-**State:** Live at https://astroprecise.app, serving **ap-v813**. Commerce is dormant by design — all 12 Gumroad permalink slots read `REPLACE_ME`, so every buy control renders "Notify me — £x" and nothing can take money.
-Updated: 2026-08-08 (Claude @ BOOK-T1H4NJ753R)
+**State:** Live at https://astroprecise.app, serving **ap-v828**. Commerce is dormant by design — all 12 Gumroad permalink slots read `REPLACE_ME`, so every buy control renders "Notify me — £x" and nothing can take money.
+Updated: 2026-08-10 (Codex @ BOOK-T1H4NJ753R)
+
+## Measured 2026-08-10
+
+| Check | Result | How |
+|-------|--------|-----|
+| Live service-worker version | `ap-v828` | `GET https://astroprecise.app/sw.js?release=0cea8c5` → 200; response contains `ap-v828` |
+| Live Explore delivery | `v828` assets HTTP 200 | `GET /explore.html?release=0cea8c5`, `/css/explore-page-v828.css?release=0cea8c5` |
+| GitHub `main` | `0cea8c521c40085e8f13d2f988a213af6ecedce3` | GitHub API ref check after authorized push |
+| GitHub Pages workflow | success | [run 31383126218](https://github.com/jonnydavx-eng/astroprecise/actions/runs/31383126218) |
+| Release proofs | pass | `node test-orrery-adapter.mjs`; `node test-release-honesty.mjs` |
+| CI test, build, Lighthouse and deploy jobs | success | GitHub Actions run 31383126218 |
+
+The detailed 2026-08-08 tree/byte measurements below remain historical and are still labelled with their original date.
 
 ## Measured 2026-08-08
 
@@ -29,6 +42,10 @@ separately and does not count them as mismatches.
 - Real-phone orrery pass (bloom/ACES pipeline is code-reviewed and gated, never device-verified).
 - End-to-end purchase. Impossible until Gumroad products exist.
 - Test suite pass/fail. The 19 suites were **counted**, not run, in this stamp.
+
+## Release evidence still open
+
+- Formal Coherence v2.1 `LIVE` receipt was not minted. Codex native S8 identity preflight rejected the detached shell, and Hermes could not run its native reviewer because the paid model account had no available credits. The product was pushed and deployed through the authorized GitHub Pages workflow; no validator receipt is claimed.
 
 ## Open owner blockers
 
