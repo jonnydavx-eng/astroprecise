@@ -195,11 +195,11 @@ generate-sw-precache → push → verify live version before reporting.
 
 ## 7. DECISIONS NEEDED FROM JONNY — ⚠️ STILL OPEN
 
-None of these four has been answered. They are the live part of this document.
+Three decisions are now recorded below. Only Browser QA remains open.
 
-1. **Eclipse mode concept**: subtle realistic dimming vs dramatic corona-forward spectacle? (Recommend dramatic — it's a campaign.)
-2. **Legacy retirement**: OK to 301 index-classic/full to / post-eclipse?
-3. **observatory vs explore**: merge to one flagship explorer? (Recommend yes.)
+1. **Eclipse mode concept — DECIDED:** dramatic corona-forward spectacle.
+2. **Legacy retirement — DECIDED:** redirect after the eclipse.
+3. **Observatory vs Explore — DECIDED:** merge into one flagship explorer.
 4. **Browser QA**: WebBridge still disconnected — pixel-level checks need it reconnected, or a
    10-minute call where you screen-share and I direct the QA clicks.
 

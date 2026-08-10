@@ -52,7 +52,7 @@ separately and does not count them as mismatches.
 1. **6 Gumroad permalinks** — 12 `REPLACE_ME` slots across `website/js/gumroad-unlock.js` (lines 33–39) and `website/js/ap-gumroad-bridge.js` (lines 13–18). Nothing can be sold until these are pasted. See `ECLIPSE-RUNBOOK.md` §1b.
 2. **Legal name and postal address** — `[FULL LEGAL NAME]` / `[POSTAL ADDRESS]` placeholders are live on the public site at `website/privacy.html` lines 129 and 131 and `website/terms.html` lines 131 and 132. (`contact.html` has none, despite what the old runbook said.)
 3. **Fixed-offset timezone dropdowns with no DST history** — `website/index.html` line 351 (nine options) and `website/eclipse.html` lines 141–143 (seven options). A UK summer birth entered as "UT / GMT" is cast an hour out, which can move the Ascendant by a whole sign. Accuracy issue, not cosmetic.
-4. **Four design decisions** awaiting a yes/no — `docs/DESIGN-PLAN-2026-08-05.md` §7.
+4. **Browser QA receipt** — WebBridge/pixel-level browser checks remain open; the live deployment and automated CI checks have passed.
 
 ## Reference
 
