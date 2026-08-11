@@ -24,6 +24,7 @@ const mustExist = [
   'css/ap-living-sky-v834.css',
   'css/ap-eclipse-live-v834.css',
   'css/ap-footer-v835.css',
+  'css/ap-numerology-v835.css',
   'img/editorial/eclipse-launch-2026-v835.webp',
   'img/shop/numbered-sky-plate-v835.webp',
   'img/eclipse-geometry.svg',
@@ -54,6 +55,16 @@ ok(/Not for sale today/i.test(shop), 'shop states availability truthfully');
 ok(/Planned £/.test(shop), 'shop labels planned prices');
 ok(!/(?:gumroad|ap-checkout-honest)/i.test(shop), 'shop exposes no dead checkout path');
 ok(/ap-mystic-cards-v835\.js/.test(shop), 'shop loads art-only spectral interaction');
+
+const numerology = fs.readFileSync(path.join(web, 'numerology.html'), 'utf8');
+ok(/class="page-numerology"/.test(numerology) && /class="site-header"/.test(numerology),
+  'numerology uses the shared launch shell');
+ok(/ap-numerology-v835\.css\?v=835/.test(numerology) && /ap-nav-model\.js\?v=835/.test(numerology),
+  'numerology loads the v835 visual and navigation systems');
+ok(!/#6fd8c6|Space Grotesk|class="wrap"/.test(numerology), 'numerology excludes the retired teal mini-site');
+ok((numerology.match(/class="ap-number-route"/g) || []).length === 3, 'numerology exposes three clearly labelled traditions');
+const mysticCards = fs.readFileSync(path.join(web, 'js/ap-mystic-cards-v835.js'), 'utf8');
+ok(/page-numerology \.ap-number-route__visual/.test(mysticCards), 'numerology cards use the shared spectral interaction');
 
 const footerJs = fs.readFileSync(path.join(web, 'js/ap-footer-inject.js'), 'utf8');
 ok(/ap-footer-v835\.css\?v=835/.test(footerJs), 'shared footer self-loads its standalone styles');

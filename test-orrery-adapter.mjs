@@ -52,7 +52,7 @@ for (const level of ['EARTH', 'INNER', 'SYSTEM', 'OORT', 'STARS', 'GALAXY', 'COS
 }
 if (!A.includes('2440587.5')) fail('JD epoch constant missing');
 for (const probe of [
-  "withTimeout(importJob, 12000, 'webgl module import')",
+  "withTimeout(importJob, 30000, 'webgl module import')",
   'self._strict3D ? 15000 : 9000',
   'data-ap-orrery-retry',
   'first-frame-timeout',
@@ -72,6 +72,9 @@ if (modelOwners.length !== 1 || modelOwners[0] !== 'index.html') {
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
 if (!/js\/void-orrery-adapter\.js\?v=835/.test(indexHtml)) fail('Home missing v835 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=835"/.test(indexHtml)) {
+  fail('Home missing exact v835 WebGL modulepreload');
+}
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
 const modelCount = (indexHtml.match(/<void-orrery\b/g) || []).length;
@@ -182,14 +185,17 @@ ok('Eclipse owns one dedicated 3D instrument with panel readouts outside the can
 
 /* 6. Texture quality ladder and lazy deep-space work. */
 for (const name of ['earth_md.webp', 'jupiter_md.webp', 'mars_md.webp', 'mercury_md.webp',
-  'moon_md.webp', 'neptune_md.webp', 'saturn_md.webp', 'uranus_md.webp', 'venus_md.webp']) {
+  'moon_md.webp', 'neptune_md.webp', 'saturn_md.webp', 'saturn_ring_md.webp', 'uranus_md.webp', 'venus_md.webp']) {
   if (!existsSync(join(root, 'assets', 'textures', name))) fail('medium texture missing: ' + name);
 }
 for (const probe of ['function mediumName(name)', 'function wantsMediumTextures()',
+  'function isCriticalInstrumentTexture(file)', "requestPreloadTexture(file, 'medium')",
+  'coldInstrument && !isCriticalInstrumentTexture(file)', 'function scheduleFullTextureUpgrades()',
   'const galaxySpriteTextureCache = new Map()', 'if (p.id >= 3 && !galaxyBuilt) ensureGalaxyLayers()']) {
   if (!W.includes(probe)) fail('renderer quality/performance contract missing: ' + probe);
 }
-ok('renderer carries crisp medium textures and lazy deep-space allocation');
+if (/function webglOK\(\)/.test(W)) fail('renderer still creates a redundant module-evaluation WebGL context');
+ok('renderer stages crisp medium textures before idle full-resolution upgrades');
 
 /* 7. Import maps on the two live Three.js pages only. */
 for (const page of ['index.html', 'eclipse.html']) {

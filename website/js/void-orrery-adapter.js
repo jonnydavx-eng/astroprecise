@@ -244,7 +244,7 @@
     });
   }
 
-  /* Engine pipeline (memoized): strict pages allow 12s for the one WebGL module;
+  /* Engine pipeline (memoized): strict pages allow 30s for the one WebGL module;
    * compatibility embeds retain the 8s WebGL → 6s canvas ladder. The element is
    * defined only after the selected renderer has resolved. */
   var engineKind = null; // 'webgl' | 'canvas' | null
@@ -267,7 +267,7 @@
               return window.Orrery3D;
             });
         if (strict3DRequested()) {
-          return withTimeout(importJob, 12000, 'webgl module import').catch(function (err) {
+          return withTimeout(importJob, 30000, 'webgl module import').catch(function (err) {
             strictBootError = err;
             throw err;
           });

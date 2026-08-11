@@ -1,0 +1,492 @@
+/* AstroPrecise numerology index — one honest editorial instrument. */
+:root {
+  --ap-number-void: #020307;
+  --ap-number-raised: #0d121b;
+  --ap-number-paper: #f2ecdf;
+  --ap-number-brass: #d8b46a;
+  --ap-number-ember: #ff6428;
+  --ap-number-silver: #b9c8dc;
+}
+
+.page-numerology {
+  min-width: 0;
+  background: var(--ap-number-void);
+  color: var(--ap-number-paper);
+  font-family: "Schibsted Grotesk", system-ui, sans-serif;
+}
+
+.page-numerology main {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 76% 12%, rgba(216, 180, 106, .075), transparent 31rem),
+    radial-gradient(circle at 10% 48%, rgba(185, 200, 220, .045), transparent 25rem),
+    var(--ap-number-void);
+}
+
+.page-numerology a { color: inherit; }
+
+.ap-number-kicker,
+.ap-number-proof,
+.ap-number-boundary__ledger article > span,
+.ap-number-route__copy > span,
+.ap-number-route__copy > b,
+.ap-number-dial__axis,
+.ap-number-dial__caption {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+}
+
+.ap-number-kicker {
+  margin: 0 0 1rem;
+  color: var(--ap-number-brass);
+  font-size: .67rem;
+  line-height: 1.5;
+}
+
+.ap-number-hero {
+  width: min(1180px, calc(100% - 40px));
+  min-height: min(760px, calc(100svh - 66px));
+  margin: 0 auto;
+  padding: clamp(4.5rem, 9vw, 8rem) 0 clamp(4rem, 8vw, 7rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr);
+  align-items: center;
+  gap: clamp(2.5rem, 7vw, 7rem);
+}
+
+.ap-number-hero__copy { max-width: 660px; }
+
+.ap-number-hero h1,
+.ap-number-boundary h2,
+.ap-number-section-head h2,
+.ap-number-return h2,
+.ap-number-route h3 {
+  margin: 0;
+  color: var(--ap-number-paper);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+}
+
+.ap-number-hero h1 {
+  max-width: 13ch;
+  font-size: clamp(3.3rem, 7.4vw, 6.8rem);
+  line-height: .86;
+  letter-spacing: -.052em;
+}
+
+.ap-number-hero h1 em {
+  color: var(--ap-number-brass);
+  font-weight: 500;
+}
+
+.ap-number-lead {
+  max-width: 60ch;
+  margin: clamp(1.6rem, 3vw, 2.5rem) 0 0;
+  color: rgba(242, 236, 223, .72);
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  line-height: 1.7;
+}
+
+.ap-number-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
+}
+
+.ap-number-action {
+  min-height: 46px;
+  padding: .82rem 1.15rem;
+  border: 1px solid rgba(216, 180, 106, .3);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ap-number-paper);
+  font-size: .82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.ap-number-action:hover,
+.ap-number-action:focus-visible {
+  border-color: var(--ap-number-brass);
+  background: rgba(216, 180, 106, .08);
+}
+
+.ap-number-action--primary {
+  border-color: var(--ap-number-ember);
+  background: var(--ap-number-ember);
+  color: #130702;
+}
+
+.ap-number-action--primary:hover,
+.ap-number-action--primary:focus-visible {
+  border-color: #ff8a5b;
+  background: #ff7843;
+}
+
+.ap-number-proof {
+  margin: 1.2rem 0 0;
+  color: rgba(185, 200, 220, .58);
+  font-size: .57rem;
+  line-height: 1.7;
+}
+
+.ap-number-dial {
+  position: relative;
+  width: min(100%, 500px);
+  aspect-ratio: 1;
+  justify-self: end;
+  border: 1px solid rgba(216, 180, 106, .25);
+  border-radius: 50%;
+  background:
+    linear-gradient(90deg, transparent 49.86%, rgba(216, 180, 106, .2) 50%, transparent 50.14%),
+    linear-gradient(transparent 49.86%, rgba(216, 180, 106, .2) 50%, transparent 50.14%),
+    radial-gradient(circle, rgba(13, 18, 27, .92), rgba(2, 3, 7, .35) 70%);
+  box-shadow: 0 0 0 12px rgba(216, 180, 106, .018), 0 34px 90px rgba(0, 0, 0, .46);
+}
+
+.ap-number-dial::before,
+.ap-number-dial::after,
+.ap-number-dial__rings {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ap-number-dial::before {
+  inset: 8.5%;
+  border: 1px solid rgba(185, 200, 220, .16);
+}
+
+.ap-number-dial::after {
+  inset: 22%;
+  border: 1px dashed rgba(216, 180, 106, .24);
+  transform: rotate(17deg);
+}
+
+.ap-number-dial__rings {
+  inset: 34%;
+  border: 1px solid rgba(255, 100, 40, .38);
+  box-shadow: 0 0 38px rgba(255, 100, 40, .09), inset 0 0 28px rgba(255, 100, 40, .05);
+}
+
+.ap-number-dial__zero,
+.ap-number-dial__nine {
+  position: absolute;
+  top: 50%;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(8rem, 17vw, 13rem);
+  line-height: .7;
+  transform: translateY(-51%);
+}
+
+.ap-number-dial__zero {
+  left: 16%;
+  color: rgba(185, 200, 220, .12);
+}
+
+.ap-number-dial__nine {
+  right: 16%;
+  color: rgba(216, 180, 106, .88);
+  text-shadow: 0 0 34px rgba(216, 180, 106, .15);
+}
+
+.ap-number-dial__axis {
+  position: absolute;
+  right: 12%;
+  bottom: 17%;
+  left: 12%;
+  color: rgba(242, 236, 223, .42);
+  font-size: .5rem;
+  text-align: center;
+}
+
+.ap-number-dial__caption {
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  width: 180px;
+  color: rgba(242, 236, 223, .54);
+  font-size: .52rem;
+  line-height: 1.7;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.ap-number-boundary {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: clamp(4rem, 8vw, 7.5rem) 0;
+  border-top: 1px solid rgba(216, 180, 106, .14);
+  display: grid;
+  grid-template-columns: minmax(260px, .8fr) minmax(0, 1.2fr);
+  gap: clamp(2.5rem, 7vw, 7rem);
+}
+
+.ap-number-boundary h2,
+.ap-number-section-head h2,
+.ap-number-return h2 {
+  font-size: clamp(2.5rem, 5vw, 4.7rem);
+  line-height: .94;
+  letter-spacing: -.035em;
+}
+
+.ap-number-boundary__ledger {
+  border-top: 1px solid rgba(185, 200, 220, .18);
+}
+
+.ap-number-boundary__ledger article {
+  padding: 1.7rem 0;
+  border-bottom: 1px solid rgba(185, 200, 220, .14);
+  display: grid;
+  grid-template-columns: minmax(120px, .55fr) minmax(160px, .8fr) minmax(0, 1.25fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.ap-number-boundary__ledger article > span,
+.ap-number-route__copy > span {
+  color: var(--ap-number-brass);
+  font-size: .57rem;
+}
+
+.ap-number-boundary__ledger h3 {
+  margin: 0;
+  color: var(--ap-number-paper);
+  font-size: .96rem;
+}
+
+.ap-number-boundary__ledger p,
+.ap-number-section-head > p,
+.ap-number-route__copy p,
+.ap-number-return > p {
+  margin: 0;
+  color: rgba(242, 236, 223, .66);
+  line-height: 1.65;
+}
+
+.ap-number-boundary__ledger p { font-size: .88rem; }
+
+.ap-number-paths {
+  padding: clamp(4.5rem, 9vw, 8rem) max(20px, calc((100% - 1180px) / 2));
+  background: linear-gradient(180deg, rgba(13, 18, 27, .72), rgba(5, 7, 12, .96));
+  border-top: 1px solid rgba(185, 200, 220, .12);
+  border-bottom: 1px solid rgba(185, 200, 220, .12);
+}
+
+.ap-number-section-head {
+  max-width: 680px;
+  margin-bottom: 2.6rem;
+}
+
+.ap-number-section-head > p:last-child {
+  margin-top: 1rem;
+  max-width: 48ch;
+}
+
+.ap-number-route-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.ap-number-route {
+  min-width: 0;
+  border: 1px solid rgba(185, 200, 220, .15);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(2, 3, 7, .74);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 200ms ease, transform 240ms ease;
+}
+
+.ap-number-route:hover,
+.ap-number-route:focus-visible {
+  border-color: rgba(216, 180, 106, .48);
+  transform: translateY(-2px);
+}
+
+.ap-number-route__visual {
+  position: relative;
+  min-height: 230px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(185, 200, 220, .13);
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 56%, rgba(216, 180, 106, .1), transparent 40%),
+    #080b11;
+}
+
+.ap-number-route__visual strong {
+  position: relative;
+  z-index: 1;
+  color: rgba(242, 236, 223, .9);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(4.5rem, 8vw, 7rem);
+  font-weight: 500;
+  letter-spacing: -.04em;
+}
+
+.ap-number-route__index {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: var(--ap-number-brass);
+  font: .58rem/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .16em;
+}
+
+.ap-number-route__orbit,
+.ap-number-route__pulse {
+  position: absolute;
+  width: 66%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(216, 180, 106, .2);
+  border-radius: 50%;
+  transform: rotate(-18deg) scaleY(.62);
+}
+
+.ap-number-route__orbit::after {
+  content: "";
+  position: absolute;
+  top: 48%;
+  right: -4px;
+  width: 7px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ap-number-ember);
+  box-shadow: 0 0 16px rgba(255, 100, 40, .5);
+}
+
+.ap-number-route__grid {
+  position: absolute;
+  inset: 16%;
+  opacity: .24;
+  background:
+    linear-gradient(rgba(185, 200, 220, .22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(185, 200, 220, .22) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(circle, #000 30%, transparent 74%);
+}
+
+.ap-number-route__pulse {
+  width: 48%;
+  border-color: rgba(255, 100, 40, .34);
+  box-shadow: 0 0 0 26px rgba(255, 100, 40, .025), 0 0 0 52px rgba(216, 180, 106, .02);
+  transform: none;
+}
+
+.ap-number-route__copy { padding: 1.45rem; }
+
+.ap-number-route__copy h3 {
+  margin: .7rem 0 .6rem;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.ap-number-route__copy p {
+  min-height: 6.7em;
+  font-size: .88rem;
+}
+
+.ap-number-route__copy > b {
+  display: block;
+  margin-top: 1.25rem;
+  color: var(--ap-number-paper);
+  font-size: .56rem;
+}
+
+.ap-number-return {
+  width: min(900px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: clamp(5rem, 10vw, 9rem) 0;
+  text-align: center;
+}
+
+.ap-number-return > p {
+  max-width: 62ch;
+  margin: 1.2rem auto 1.8rem;
+}
+
+.ap-number-return .ap-number-action { margin-inline: auto; }
+
+.ap-number-return small {
+  display: block;
+  margin-top: 1rem;
+  color: rgba(185, 200, 220, .48);
+  font: .58rem/1.6 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+body.page-numerology > nav.bottom-nav.bottom-nav { display: none !important; }
+body.page-numerology { padding-bottom: 0 !important; }
+
+@media (max-width: 900px) {
+  .ap-number-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+  }
+  .ap-number-hero__copy { min-width: 0; }
+  .ap-number-dial {
+    width: min(100%, 470px);
+    justify-self: center;
+  }
+  .ap-number-boundary { grid-template-columns: minmax(0, 1fr); }
+  .ap-number-route-grid { grid-template-columns: minmax(0, 1fr); }
+  .ap-number-route {
+    display: grid;
+    grid-template-columns: minmax(220px, .75fr) minmax(0, 1.25fr);
+  }
+  .ap-number-route__visual {
+    min-height: 260px;
+    border-right: 1px solid rgba(185, 200, 220, .13);
+    border-bottom: 0;
+  }
+  .ap-number-route__copy p { min-height: 0; }
+}
+
+@media (max-width: 620px) {
+  .ap-number-hero,
+  .ap-number-boundary,
+  .ap-number-return {
+    width: min(100% - 32px, 1180px);
+  }
+  .ap-number-hero {
+    padding-top: 3.25rem;
+    gap: 3.25rem;
+  }
+  .ap-number-hero h1 {
+    max-width: 11ch;
+    font-size: clamp(3rem, 15vw, 4.4rem);
+  }
+  .ap-number-actions { display: grid; }
+  .ap-number-action { width: 100%; }
+  .ap-number-dial { width: min(92vw, 410px); }
+  .ap-number-boundary__ledger article {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .55rem;
+  }
+  .ap-number-paths {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+  .ap-number-route { display: block; }
+  .ap-number-route__visual {
+    min-height: 220px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(185, 200, 220, .13);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-number-action,
+  .ap-number-route { transition: none; }
+}

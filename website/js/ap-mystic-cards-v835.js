@@ -8,7 +8,8 @@
   var CARD_SELECTOR = [
     'body.page-home .ap-edition-art .ap-card-art',
     'body.page-shop .ap-shop-leads .ap-product__image',
-    'body.page-eclipse .ap-eclipse-geometry-plate .ap-card-art'
+    'body.page-eclipse .ap-eclipse-geometry-plate .ap-card-art',
+    'body.page-numerology .ap-number-route__visual'
   ].join(',');
 
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -19,6 +20,8 @@
   var pendingPoint = null;
   var frame = 0;
   function toneFor(card) {
+    var requested = card.getAttribute && card.getAttribute('data-ap-card-tone');
+    if (/^(brass|silver|ember)$/.test(requested || '')) return requested;
     if (card.closest('.page-eclipse') || card.closest('.ap-product--eclipse')) return 'ember';
     return 'brass';
   }
@@ -29,9 +32,9 @@
     card.dataset.apCardTone = toneFor(card);
 
     // Optical foil belongs to authored imagery, never reading copy or receipts.
-    var visual = card.matches('.ap-card-art, .ap-product__image')
+    var visual = card.matches('.ap-card-art, .ap-product__image, .ap-number-route__visual')
       ? card
-      : card.querySelector('.ap-card-art, .ap-product__image');
+      : card.querySelector('.ap-card-art, .ap-product__image, .ap-number-route__visual');
     if (visual) {
       visual.dataset.apCardVisual = '';
       var sheen = document.createElement('span');

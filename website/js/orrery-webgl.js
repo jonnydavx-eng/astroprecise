@@ -125,21 +125,10 @@ const FinishShader = {
 (function () {
   'use strict';
 
-  // ── WebGL capability check ────────────────────────────────────────────────
-  function webglOK() {
-    try {
-      const c = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext &&
-        (c.getContext('webgl2') || c.getContext('webgl') || c.getContext('experimental-webgl')));
-    } catch (e) { return false; }
-  }
-
-  if (!webglOK()) {
-    // The strict Home adapter treats a missing Orrery3D registration as an honest
-    // unavailable state. Do not inject the retired 2D renderer from this module.
-    window.__apOrreryWebGLUnavailable = true;
-    return;
-  }
+  // WebGL context ownership
+  // The adapter already performed the page's capability probe. Creating a second
+  // throwaway context delayed the real renderer and consumed scarce mobile GPU
+  // context capacity. THREE.WebGLRenderer remains the fail-closed capability test.
 
   const PRM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TEX = 'assets/textures/';
@@ -531,6 +520,7 @@ const FinishShader = {
   let earthMapReadyResolve = null;
   let earthMapReadyPromise = null;
   const texturePromiseCache = new Map();
+  let fullTextureUpgradeScheduled = false;
 
   function resetTextureReadiness() {
     if (texturesReadyResolve) texturesReadyResolve(false);
@@ -540,6 +530,7 @@ const FinishShader = {
     texturesReadyPromise = new Promise((res) => { texturesReadyResolve = res; });
     earthMapReadyPromise = new Promise((res) => { earthMapReadyResolve = res; });
     texturePromiseCache.clear();
+    fullTextureUpgradeScheduled = false;
   }
   resetTextureReadiness();
 
@@ -2002,9 +1993,20 @@ const FinishShader = {
     return files;
   }
 
-  function requestPreloadTexture(file) {
+  function requestPreloadTexture(file, quality) {
     const linear = /(?:specular|normal|clouds)/i.test(file);
-    return loadTex(file, linear ? false : true);
+    return loadTex(file, linear ? false : true, quality);
+  }
+
+  function isCriticalInstrumentTexture(file) {
+    return BODIES.some((b) => b.tex === file || b.ring === file);
+  }
+
+  function markTexturesReady(refresh) {
+    texturesReady = true;
+    if (refresh) refreshTextures();
+    if (texturesReadyResolve) { texturesReadyResolve(true); texturesReadyResolve = null; }
+    if (instrumentMode) scheduleFullTextureUpgrades();
   }
 
   function deferredTextureFiles() {
@@ -2025,7 +2027,7 @@ const FinishShader = {
     files.forEach((f) => {
       chain = chain.then(() => {
         if (destroyed) return;
-        return requestPreloadTexture(f);
+        return requestPreloadTexture(f, instrumentMode ? 'medium' : undefined);
       }).then(() => new Promise((res) => later(res, gap)));
     });
     return chain.then(() => { if (!destroyed) refreshTextures(); }).catch(() => {});
@@ -2034,14 +2036,29 @@ const FinishShader = {
   function preloadTextures() {
     if (onPreloaderStage()) {
       return Promise.all(earthTextureFiles().map(requestPreloadTexture)).then(() => {
-        texturesReady = true;
-        refreshTextures();
-        if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
+        markTexturesReady(true);
       }).catch(() => {
-        texturesReady = true;
-        if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
+        markTexturesReady(false);
       });
     }
+
+    // Home's first truthful frame needs the worlds people can see and select,
+    // not every auxiliary map in the library. All visible planet albedos and
+    // Saturn's ring arrive as crisp 1024px maps first. loadTex holds Moon and
+    // Earth detail layers behind this gate, then upgrades 2048px maps at idle.
+    if (instrumentMode) {
+      const critical = [];
+      BODIES.forEach((b) => {
+        if (b.tex) critical.push(b.tex);
+        if (b.ring) critical.push(b.ring);
+      });
+      return Promise.all(critical.map((file) => requestPreloadTexture(file, 'medium'))).then(() => {
+        markTexturesReady(false);
+      }).catch(() => {
+        markTexturesReady(false);
+      });
+    }
+
     const files = [];
     BODIES.forEach((b) => {
       if (b.tex) files.push(b.tex);
@@ -2050,12 +2067,9 @@ const FinishShader = {
     files.push('moon.jpg', 'earth_lights.png', 'earth_specular.jpg');
     if (perfTier !== 'low' && !PRM) files.push('earth_clouds.jpg', 'earth_normal.jpg');
     return Promise.all(files.map(requestPreloadTexture)).then(() => {
-      texturesReady = true;
-      refreshTextures();
-      if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
+      markTexturesReady(true);
     }).catch(() => {
-      texturesReady = true;
-      if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
+      markTexturesReady(false);
     });
   }
 
@@ -5030,20 +5044,22 @@ const FinishShader = {
   function smallName(name) { return name.replace(/\.(webp|jpe?g|png)$/i, '_sm.$1'); }
   function mediumName(name) { return name.replace(/\.(webp|jpe?g|png)$/i, '_md.$1'); }
 
-  function textureCandidates(file) {
+  function textureCandidates(file, quality) {
     const list = [];
     const webp = toWebp(file);
     const push = (name) => { if (name && list.indexOf(name) < 0) list.push(name); };
-    if (wantsSmallTextures()) push(smallName(webp));
-    else if (wantsMediumTextures()) push(mediumName(webp));
+    const smallRequested = quality === 'small' || (!quality && wantsSmallTextures());
+    const mediumRequested = quality === 'medium' || (!quality && wantsMediumTextures());
+    if (smallRequested) push(smallName(webp));
+    else if (mediumRequested) push(mediumName(webp));
     else push(webp);
     // Graceful quality ladder. The worker keeps compact maps in the offline shell;
     // a previously viewed medium map is also available from the runtime cache.
-    if (!wantsSmallTextures()) push(webp);
-    if (!wantsSmallTextures()) push(mediumName(webp));
+    if (!smallRequested) push(webp);
+    if (!smallRequested) push(mediumName(webp));
     push(smallName(webp));
     // Legacy fallbacks (only hit if a .webp is ever missing) — never 404 to black.
-    if (wantsSmallTextures()) {
+    if (smallRequested) {
       const smLegacy = smallName(file);
       if (smLegacy !== file) push(smLegacy);
     }
@@ -5051,14 +5067,19 @@ const FinishShader = {
     return list;
   }
 
-  function loadTex(file, srgb) {
-    const candidates = textureCandidates(file);
+  function loadTex(file, srgb, quality) {
+    // During the flagship cold start every initial request is fixed to medium.
+    // Non-critical maps wait on the visible-planet gate instead of competing
+    // with it. Calls made later can explicitly request the full 2048px source.
+    const coldInstrument = instrumentMode && !texturesReady && !onPreloaderStage();
+    const requestedQuality = quality || (coldInstrument ? 'medium' : undefined);
+    const candidates = textureCandidates(file, requestedQuality);
     const generation = runtimeGeneration;
     const expectedLoader = texLoader;
     const expectedRenderer = renderer;
     const cacheKey = `${generation}|${srgb === false ? 'linear' : 'srgb'}|${candidates.join('|')}`;
     if (texturePromiseCache.has(cacheKey)) return texturePromiseCache.get(cacheKey);
-    const promise = new Promise((res) => {
+    const begin = () => new Promise((res) => {
       let idx = 0;
       const tryNext = () => {
         if (destroyed || generation !== runtimeGeneration || texLoader !== expectedLoader || renderer !== expectedRenderer) return res(null);
@@ -5077,8 +5098,67 @@ const FinishShader = {
       };
       tryNext();
     });
+    const promise = coldInstrument && !isCriticalInstrumentTexture(file)
+      ? texturesReadyPromise.then(() => {
+          if (destroyed || generation !== runtimeGeneration) return null;
+          return begin();
+        })
+      : begin();
     texturePromiseCache.set(cacheKey, promise);
     return promise;
+  }
+
+  function applyFullBodyTexture(id, texture) {
+    if (!texture || destroyed) return;
+    if (id === 'moon') {
+      if (moonMesh && moonMesh.material) {
+        moonMesh.material.map = texture;
+        moonMesh.material.color.set(0xffffff);
+        moonMesh.material.needsUpdate = true;
+      }
+      return;
+    }
+    const group = meshes[id];
+    const material = group && group.userData && group.userData.mesh && group.userData.mesh.material;
+    if (material) {
+      material.map = texture;
+      material.color.set(0xffffff);
+      material.needsUpdate = true;
+    }
+  }
+
+  function upgradeBodyTexture(id) {
+    if (destroyed || perfTier !== 'high' || IS_PHONE || dataSavingRequested()) return Promise.resolve();
+    if (id === 'moon') {
+      return loadTex('moon.jpg', true, 'full').then((texture) => applyFullBodyTexture('moon', texture));
+    }
+    const body = BODIES.find((b) => b.id === id);
+    if (!body || !body.tex) return Promise.resolve();
+    const jobs = [loadTex(body.tex, true, 'full').then((texture) => applyFullBodyTexture(id, texture))];
+    if (body.ring) {
+      jobs.push(loadTex(body.ring, true, 'full').then((texture) => {
+        const material = saturnRingMesh && saturnRingMesh.material;
+        if (texture && material && material.uniforms) {
+          material.uniforms.uMap.value = texture;
+          material.needsUpdate = true;
+        }
+      }));
+    }
+    return Promise.all(jobs);
+  }
+
+  function scheduleFullTextureUpgrades() {
+    if (fullTextureUpgradeScheduled || destroyed || perfTier !== 'high' || IS_PHONE || dataSavingRequested()) return;
+    fullTextureUpgradeScheduled = true;
+    const queue = BODIES.map((b) => b.id).concat('moon');
+    const next = () => {
+      if (destroyed || !queue.length) return;
+      const id = queue.shift();
+      upgradeBodyTexture(id).catch(() => {}).then(() => {
+        if (!destroyed && queue.length) later(() => idle(next, { timeout: 2400 }), 70);
+      });
+    };
+    idle(next, { timeout: 3200 });
   }
 
   function ensureFocusRing(group, scaleMul) {
@@ -5180,6 +5260,10 @@ const FinishShader = {
     if (!id) return;
     if (id !== 'sun' && id !== 'moon' && !meshes[id]) return;
     selectedPlanetId = id;
+    // A deliberate close-up can promote that world's map immediately. Cold boot
+    // stays on the medium set; this runs only after readiness and user selection.
+    if (texturesReady) upgradeBodyTexture(id).catch(() => {});
+
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
