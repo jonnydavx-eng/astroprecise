@@ -52,7 +52,7 @@
   opacity: 0;
   background:
     radial-gradient(circle at var(--ap-card-px) var(--ap-card-py), rgba(var(--ap-card-spark),.26) 0 1.5%, rgba(var(--ap-card-glint),.13) 14%, transparent 36%),
-    conic-gradient(from 205deg at var(--ap-card-px) var(--ap-card-py), transparent 0 18%, rgba(185,200,220,.07) 24%, rgba(255,100,40,.075) 32%, rgba(216,180,106,.1) 41%, transparent 53% 100%);
+    conic-gradient(from 205deg at var(--ap-card-px) var(--ap-card-py), transparent 0 18%, rgba(var(--ap-card-spark),.06) 25%, rgba(var(--ap-card-glint),.11) 39%, transparent 53% 100%);
   background-size: 100% 100%, 180% 180%;
   background-position: center, var(--ap-card-px) var(--ap-card-py);
   box-shadow:
@@ -79,13 +79,6 @@
   transition: opacity 220ms ease, transform 360ms cubic-bezier(.2,.75,.25,1);
 }
 
-.ap-mystic-card__sheen::after {
-  content: "";
-  position: absolute;
-  inset: -45%;
-  background: repeating-linear-gradient(118deg, transparent 0 12px, rgba(242,236,223,.035) 13px, transparent 14px 28px);
-  transform: translate3d(0, 0, 0) rotate(.001deg);
-}
 
 [data-ap-mystic-card].is-ap-card-active {
   --ap-card-lift: -3px;
