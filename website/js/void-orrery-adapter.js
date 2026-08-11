@@ -244,11 +244,12 @@
     });
   }
 
-  /* Engine pipeline (memoized): loader → WebGL module import (8s) → canvas (6s).
-   * Resolves { kind, api }. The element is defined only after the first rung
-   * that succeeds — total failure keeps the legacy door open. */
+  /* Engine pipeline (memoized): strict pages allow 12s for the one WebGL module;
+   * compatibility embeds retain the 8s WebGL → 6s canvas ladder. The element is
+   * defined only after the selected renderer has resolved. */
   var engineKind = null; // 'webgl' | 'canvas' | null
   var runningEngine = null;
+  var strictBootError = null;
   function bootPipeline() {
     if (window.__voidOrreryPipeline) return window.__voidOrreryPipeline;
     ensureImportMap();
@@ -266,17 +267,8 @@
               return window.Orrery3D;
             });
         if (strict3DRequested()) {
-          var slowImportTimer = setTimeout(function () {
-            var status = document.getElementById('sky-live-status');
-            var telemetry = document.getElementById('telemetry');
-            if (status) status.textContent = 'Still preparing real 3D';
-            if (telemetry) telemetry.textContent = 'The first renderer load is taking longer on this device. The real model is still loading; no 2D substitute will replace it.';
-          }, 8000);
-          return importJob.then(function (O) {
-            clearTimeout(slowImportTimer);
-            return O;
-          }, function (err) {
-            clearTimeout(slowImportTimer);
+          return withTimeout(importJob, 12000, 'webgl module import').catch(function (err) {
+            strictBootError = err;
             throw err;
           });
         }
@@ -362,6 +354,7 @@
         this._lastFocusKey = null; this._lastFocusAt = 0;
         this._strict3D = this.getAttribute('data-renderer') === 'webgl-only';
         this._firstFrameSeen = false;
+        this._unavailableEmitted = false;
         this._onAnyFirstFrame = function () { this._firstFrameSeen = true; }.bind(this);
         document.addEventListener('ap-orrery-first-frame', this._onAnyFirstFrame);
         if (!this._ph) {
@@ -375,7 +368,8 @@
           this.appendChild(ph);
         }
         if (this._strict3D && (!CAN_WEBGL || engineKind === 'unavailable')) {
-          this._poster('This device could not start the real 3D Observatory. The chart and eclipse tools remain available.');
+          var bootReason = strictBootError && /timeout/i.test(strictBootError.message || '') ? 'module-import-timeout' : (!CAN_WEBGL ? 'webgl-unavailable' : 'module-import-failed');
+          this._poster('This device could not start the real 3D Observatory. The chart and eclipse tools remain available.', bootReason);
           return;
         }
         // data-wheel="off": keep page scroll, block the engine's own wheel-zoom.
@@ -390,7 +384,7 @@
         engineOwner = this;
         this._wireEngineEvents();
         this._bootEngine();
-        this._armWatchdog();
+        if (!this._strict3D) this._armWatchdog();
       };
 
       C.prototype.disconnectedCallback = function () {
@@ -434,12 +428,13 @@
             var options = self._engineKind === 'webgl'
               ? { instrument: true, freeExplore: true, webglOnly: self._strict3D, showOrbits: true, showLabels: true, selectedPlanet: 'sun' }
               : { skipIntro: true, fromLite: true };
+            if (self._strict3D) self._armWatchdog();
             var res = api.init(cv, options);
             return Promise.resolve(res).then(function () { return api; });
           })
           .then(function (api) {
             // WebGL init may have self-fallen-back to the canvas engine.
-            if (window.__apOrreryCanvasFallback && window.Orrery3D && window.Orrery3D !== api) {
+            if (!self._strict3D && window.__apOrreryCanvasFallback && window.Orrery3D && window.Orrery3D !== api) {
               api = window.Orrery3D;
               self._engineKind = 'canvas';
               engineKind = 'canvas';
@@ -450,7 +445,7 @@
           })
           .catch(function (err) {
             if (self._strict3D) {
-              self._poster('The real 3D Observatory could not start. No substitute model has been shown.');
+              self._poster('The real 3D Observatory could not start. No substitute model has been shown.', 'engine-init-failed');
               return;
             }
             warn('engine boot failed — failing open to canvas engine', err);
@@ -545,14 +540,12 @@
 
       C.prototype._armWatchdog = function () {
         var self = this;
+        if (this._watchdog) clearTimeout(this._watchdog);
         this._watchdog = setTimeout(function () {
           self._watchdog = null;
-          if (self._firstFrameSeen || self._posted) return;
+          if (self._firstFrameSeen || self._posted || !self.isConnected) return;
           if (self._strict3D) {
-            var status = document.getElementById('sky-live-status');
-            var telemetry = document.getElementById('telemetry');
-            if (status) status.textContent = 'Rendering first textured frame';
-            if (telemetry) telemetry.textContent = 'The real 3D renderer is loaded and still preparing its first complete frame. It will appear when the textures are ready.';
+            self._poster('The real 3D renderer did not produce a complete textured frame within 15 seconds. No substitute model has been shown.', 'first-frame-timeout');
             return;
           }
           if (self._onReadyFirstFrame) {
@@ -561,14 +554,14 @@
           }
           warn('9s without engine ready — failing open to canvas engine');
           self._toCanvasEngine();
-        }, 9000);
+        }, self._strict3D ? 15000 : 9000);
       };
 
       C.prototype._toCanvasEngine = function () {
         var self = this;
         if (this._posted) return;
         if (this._strict3D) {
-          this._poster('The real 3D Observatory stopped. No substitute model has been shown.');
+          this._poster('The real 3D Observatory stopped. No substitute model has been shown.', 'renderer-stopped');
           return;
         }
         if (this._engineKind === 'canvas' && this._canvasTried) { this._poster(); return; }
@@ -605,7 +598,7 @@
         });
       };
 
-      C.prototype._setUnavailable = function (message) {
+      C.prototype._setUnavailable = function (message, reason) {
         var status = document.getElementById('sky-live-status');
         var scale = document.getElementById('sky-scale-status');
         var time = document.getElementById('sky-time-status');
@@ -622,10 +615,14 @@
         });
         var stage = document.querySelector('.ap-model-stage');
         if (stage) { stage.setAttribute('aria-busy', 'false'); stage.dataset.modelState = 'unavailable'; }
-        try { document.dispatchEvent(new CustomEvent('ap-orrery-unavailable', { detail: { message: message || '' } })); } catch (e) {}
+        if (!this._unavailableEmitted) {
+          this._unavailableEmitted = true;
+          try { document.dispatchEvent(new CustomEvent('ap-orrery-unavailable', { detail: { message: message || '', reason: reason || 'unavailable', retryable: !!this._strict3D } })); } catch (e) {}
+        }
       };
 
-      C.prototype._poster = function (message) {
+      C.prototype._poster = function (message, reason) {
+        if (this._posted) return;
         this._posted = true;
         if (this._watchdog) { clearTimeout(this._watchdog); this._watchdog = null; }
         if (this._onReadyFirstFrame) {
@@ -641,11 +638,14 @@
         window.__voidOrreryEngine = 'poster';
         if (this._ph) { try { this._ph.remove(); } catch (e) {} this._ph = null; }
         if (this._canvas) { try { this._canvas.remove(); } catch (e) {} this._canvas = null; }
-        this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(216,180,106,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(255,100,40,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(320px,80%);padding:28px;border:1px solid rgba(216,180,106,.28);border-radius:8px;background:rgba(2,3,7,.78);text-align:center;color:#f2ecdf;font:12px/1.7 IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase"><strong style="display:block;margin-bottom:8px;color:#ff6428">Live sky unavailable</strong><span style="color:rgba(242,236,223,.68);text-transform:none;letter-spacing:0">Chart and eclipse calculations still work on this device.</span></div>';
+        var retryMarkup = this._strict3D ? '<button type="button" data-ap-orrery-retry style="display:block;margin:18px auto 0;padding:10px 16px;border:1px solid rgba(216,180,106,.55);border-radius:4px;background:rgba(216,180,106,.08);color:#f2ecdf;font:700 10px/1 IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Retry 3D</button>' : '';
+        this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(216,180,106,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(255,100,40,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(320px,80%);padding:28px;border:1px solid rgba(216,180,106,.28);border-radius:8px;background:rgba(2,3,7,.78);text-align:center;color:#f2ecdf;font:12px/1.7 IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase"><strong style="display:block;margin-bottom:8px;color:#ff6428">Live sky unavailable</strong><span style="color:rgba(242,236,223,.68);text-transform:none;letter-spacing:0">Chart and eclipse calculations still work on this device.</span>' + retryMarkup + '</div>';
+        var retry = this.querySelector('[data-ap-orrery-retry]');
+        if (retry) retry.addEventListener('click', function () { retry.disabled = true; window.location.reload(); }, { once: true });
         // keep the natal overlay + eclipse veil above the poster
         if (this._natalLayer) this.appendChild(this._natalLayer);
         if (this._veil) this.appendChild(this._veil);
-        this._setUnavailable(message);
+        this._setUnavailable(message, reason);
       };
 
       /* ── engine event re-emission (legacy event names, identical detail) ── */
@@ -670,7 +670,7 @@
         };
         this._onEngineReplaced = function (e) {
           var d = e && e.detail;
-          if (!d || d.engine !== 'canvas' || !d.api) return;
+          if (self._strict3D || !d || d.engine !== 'canvas' || !d.api) return;
           self._engine = d.api;
           self._canvas = d.canvas || self.querySelector('canvas');
           self._engineKind = 'canvas';
@@ -682,7 +682,7 @@
         this._onEngineFatal = function (e) {
           if (!self._strict3D || self._posted) return;
           var message = e && e.detail && e.detail.message;
-          self._poster(message || 'The real 3D Observatory stopped. No substitute model has been shown.');
+          self._poster(message || 'The real 3D Observatory stopped. No substitute model has been shown.', 'renderer-fatal');
         };
         document.addEventListener('orrery-scale-change', this._onScaleChange);
         document.addEventListener('orrery-planet-focus', this._onPlanetFocus);

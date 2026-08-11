@@ -2141,6 +2141,9 @@ const FinishShader = {
 
   function applyScalePreset(preset, animate) {
     const p = scalePreset(typeof preset === 'number' ? preset : (preset.id != null ? preset.id : preset));
+    // Deep-space geometry is not part of the opening System scene. Prepare it
+    // only when a journey actually crosses the Oort threshold.
+    if (p.id >= 3 && !galaxyBuilt) ensureGalaxyLayers();
     focusFrameId = null;      // v576: any scale change releases camera framing ownership
     moonFrameActive = false;
     camRadiusTarget = null;   // cancel free-zoom coast so preset isn't fought mid-lerp
@@ -2843,14 +2846,22 @@ const FinishShader = {
     { name: 'Fomalhaut', dir: [0.52, -0.68, 0.52], dist: 76, color: 0xfff8e8 },
   ];
 
+  const galaxySpriteTextureCache = new Map();
   function galaxySpriteTexture(inner, outer, w, h) {
+    const width = w || 256;
+    const height = h || 128;
+    const key = `${runtimeGeneration}|${inner}|${outer}|${width}|${height}`;
+    const cached = galaxySpriteTextureCache.get(key);
+    if (cached) return cached;
     const c = document.createElement('canvas');
-    c.width = w || 256; c.height = h || 128;
+    c.width = width; c.height = height;
     const x = c.getContext('2d');
     const g = x.createRadialGradient(c.width / 2, c.height / 2, 0, c.width / 2, c.height / 2, c.width / 2);
     g.addColorStop(0, inner); g.addColorStop(0.45, outer); g.addColorStop(1, 'rgba(0,0,0,0)');
     x.fillStyle = g; x.fillRect(0, 0, c.width, c.height);
-    return new THREE.CanvasTexture(c);
+    const texture = new THREE.CanvasTexture(c);
+    galaxySpriteTextureCache.set(key, texture);
+    return texture;
   }
 
   // Shared soft round-dot map for every galaxy point cloud. Without a map,
@@ -4022,6 +4033,7 @@ const FinishShader = {
   }
 
   function updateScaleVisualsContinuous(z) {
+    if (z >= 2.35 && !galaxyBuilt) ensureGalaxyLayers();
     const lv = Math.round(z);
     const portraitId = instrumentPortraitBodyId();
     solarDim = z <= 2 ? 1 : z <= 3.4 ? 0.55 + (3.4 - z) * 0.45 : z <= 4.4 ? 0.12 + (4.4 - z) * 0.43 : 0;
@@ -4934,13 +4946,12 @@ const FinishShader = {
     // texels across a visible hemisphere. Keep that on capable phones, but cap
     // decoded GPU dimensions on constrained tiers instead of sacrificing every
     // phone to the visibly soft 512×256 maps.
-    const cap = onPreloaderStage()
+    const compactTexture = onPreloaderStage() || dataSavingRequested();
+    const cap = compactTexture
       ? 512
-      : perfTier === 'low'
-        ? 512
-        : perfTier === 'mid'
-          ? (IS_PHONE ? 1024 : 2048)
-          : (IS_PHONE ? 2048 : 4096);
+      : perfTier === 'low' || perfTier === 'mid'
+        ? 1024
+        : (IS_PHONE ? 2048 : 4096);
     capTextureSize(t, cap);
     const max = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
     const anisoCap = perfTier === 'low' ? 4 : perfTier === 'mid' ? 8 : (IS_PHONE ? 8 : 12);
@@ -4952,16 +4963,12 @@ const FinishShader = {
     t.magFilter = THREE.LinearFilter;
   }
 
-  // ── Mobile texture tier (v582) ─────────────────────────────────────────────
-  // True on genuinely constrained clients so the heavy planet maps stream in at
-  // 512px (_sm) instead of full 2048px. Screen width alone is not a performance
-  // signal: high-tier phones keep the 2048px maps for crisp destination portraits.
+  // Three intentional texture tiers: 512px only for the loader/Save-Data,
+  // 1024px for constrained and mid devices, and 2048px on high-tier clients.
   function wantsSmallTextures() {
-    // Low-tier / explicit data-saving clients use compact maps. Mid-tier clients
-    // load the full source once and tuneTexture downsizes it to a 1024px GPU map,
-    // preserving close-portrait detail without retaining 2048px textures.
-    return perfTier === 'low' || dataSavingRequested();
+    return onPreloaderStage() || dataSavingRequested();
   }
+  function wantsMediumTextures() { return !wantsSmallTextures() && perfTier !== 'high'; }
 
   // Recover the strongest useful piece from the abandoned orrery-elevate branch:
   // a subtle image-based fill that gives each world a readable, non-flat limb.
@@ -5021,29 +5028,26 @@ const FinishShader = {
   // and keep the original extension only as a last-ditch fallback.
   function toWebp(name) { return name.replace(/\.(jpe?g|png)$/i, '.webp'); }
   function smallName(name) { return name.replace(/\.(webp|jpe?g|png)$/i, '_sm.$1'); }
+  function mediumName(name) { return name.replace(/\.(webp|jpe?g|png)$/i, '_md.$1'); }
 
   function textureCandidates(file) {
     const list = [];
     const webp = toWebp(file);
-    // During the preloader ALL tiers use the small map so the Earth-ready handshake
-    // (which releases the fly-in) fires fast; full-res maps swap in after, on the
-    // interactive orrery. (Loading-safety: never block the preloader on a big texture.)
-    // On constrained low/mid tiers we keep the small map as the interactive texture.
-    if (wantsSmallTextures() || onPreloaderStage()) {
-      list.push(smallName(webp));                              // e.g. mercury_sm.webp
-    }
-    list.push(webp);                                           // e.g. mercury.webp
-    if (!wantsSmallTextures() && !onPreloaderStage()) {
-      // The launch worker keeps the compact maps in its offline shell. Online,
-      // full resolution wins; offline, Three can recover to the cached 512px map.
-      list.push(smallName(webp));
-    }
+    const push = (name) => { if (name && list.indexOf(name) < 0) list.push(name); };
+    if (wantsSmallTextures()) push(smallName(webp));
+    else if (wantsMediumTextures()) push(mediumName(webp));
+    else push(webp);
+    // Graceful quality ladder. The worker keeps compact maps in the offline shell;
+    // a previously viewed medium map is also available from the runtime cache.
+    if (!wantsSmallTextures()) push(webp);
+    if (!wantsSmallTextures()) push(mediumName(webp));
+    push(smallName(webp));
     // Legacy fallbacks (only hit if a .webp is ever missing) — never 404 to black.
-    if (wantsSmallTextures() || onPreloaderStage()) {
+    if (wantsSmallTextures()) {
       const smLegacy = smallName(file);
-      if (smLegacy !== file) list.push(smLegacy);
+      if (smLegacy !== file) push(smLegacy);
     }
-    if (file !== webp) list.push(file);
+    if (file !== webp) push(file);
     return list;
   }
 
@@ -5179,17 +5183,21 @@ const FinishShader = {
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
-      const ring = g.userData.focusRing || ensureFocusRing(g, b.size * (b.id === 'venus' ? 4.6 : 3.6));
-      ring.visible = b.id === id;
-      if (ring.material) ring.material.opacity = b.id === 'venus' ? 0.72 : 0.55;
+      const ring = g.userData.focusRing || (!instrumentMode
+        ? ensureFocusRing(g, b.size * (b.id === 'venus' ? 4.6 : 3.6))
+        : null);
+      if (ring) {
+        ring.visible = !instrumentMode && b.id === id;
+        if (ring.material) ring.material.opacity = b.id === 'venus' ? 0.52 : 0.42;
+      }
     });
     if (sunFocusRing) sunFocusRing.visible = !instrumentMode && id === 'sun';
-    if (moonFocusRing) moonFocusRing.visible = id === 'moon';
+    if (moonFocusRing) moonFocusRing.visible = !instrumentMode && id === 'moon';
     if (id === 'sun' && sunMesh && !instrumentMode) {
       sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
       sunFocusRing.visible = true;
     }
-    if (id === 'moon' && moonGroup) {
+    if (id === 'moon' && moonGroup && !instrumentMode) {
       moonFocusRing = moonFocusRing || ensureFocusRing(moonGroup, 1.4);
       moonFocusRing.visible = true;
     }
@@ -5198,22 +5206,16 @@ const FinishShader = {
     } catch (e) { /* optional */ }
   }
 
-  function updateSelectedHighlight(t) {
+  function updateSelectedHighlight() {
     if (!selectedPlanetId || !instrumentMode) return;
-    const b = BODIES.find((x) => x.id === selectedPlanetId);
     const g = meshes[selectedPlanetId];
-    if (!g || !b) return;
-    const ring = g.userData.focusRing || ensureFocusRing(g, b.size * (b.id === 'venus' ? 4.6 : 3.6));
-    ring.visible = true;
-    const bs = ring.userData.baseScale || 1;
-    ring.scale.set(bs, bs, 1);
-    if (ring.material) ring.material.opacity = b.id === 'venus' ? 0.58 : 0.46;
+    if (!g) return;
     const halo = g.userData.luminousHalo;
     if (halo) {
       halo.visible = true;
       const hs = halo.userData.baseScale || 1;
       halo.scale.set(hs, hs, 1);
-      if (halo.material) halo.material.opacity = 0.44;
+      if (halo.material) halo.material.opacity = 0.14;
     }
   }
 
@@ -5398,7 +5400,6 @@ const FinishShader = {
   }
 
   function clearFocusHighlight() {
-    if (instrumentMode && selectedPlanetId) return;
     focusPlanetId = null;
     focusPlanetUntil = 0;
     if (focusOrbitsRestore === false) {
@@ -5428,8 +5429,12 @@ const FinishShader = {
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
-      const ring = ensureFocusRing(g, b.size * 3.8);
-      ring.visible = b.id === id;
+      if (b.id === id) {
+        const ring = ensureFocusRing(g, b.size * 3.8);
+        ring.visible = true;
+      } else if (g.userData.focusRing) {
+        g.userData.focusRing.visible = false;
+      }
     });
     if (id === 'sun' && sunMesh && !instrumentMode) {
       sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
@@ -5449,13 +5454,12 @@ const FinishShader = {
   }
 
   function updateFocusHighlight(t) {
-    if (instrumentMode) return;
     if (!focusPlanetId || t >= focusPlanetUntil) {
       if (focusPlanetId) clearFocusHighlight();
       return;
     }
     const pulse = 0.72 + 0.28 * Math.sin(t * 0.009);
-    const fade = Math.min(1, (focusPlanetUntil - t) / 2800);
+    const fade = Math.min(1, (focusPlanetUntil - t) / 500);
     BODIES.forEach((b) => {
       if (b.id !== focusPlanetId) return;
       const g = meshes[b.id];
@@ -5463,18 +5467,18 @@ const FinishShader = {
       if (ring) {
         const s = ring.userData.baseScale * (0.92 + pulse * 0.14);
         ring.scale.set(s, s, 1);
-        if (ring.material) ring.material.opacity = 0.55 + pulse * 0.35 * fade;
+        if (ring.material) ring.material.opacity = (0.38 + pulse * 0.2) * fade;
       }
     });
     if (focusPlanetId === 'sun' && sunFocusRing) {
       const s = sunFocusRing.userData.baseScale * (0.94 + pulse * 0.1);
       sunFocusRing.scale.set(s, s, 1);
-      if (sunFocusRing.material) sunFocusRing.material.opacity = 0.5 + pulse * 0.3 * fade;
+      if (sunFocusRing.material) sunFocusRing.material.opacity = (0.36 + pulse * 0.18) * fade;
     }
     if (focusPlanetId === 'moon' && moonFocusRing) {
       const s = moonFocusRing.userData.baseScale * (0.94 + pulse * 0.12);
       moonFocusRing.scale.set(s, s, 1);
-      if (moonFocusRing.material) moonFocusRing.material.opacity = 0.5 + pulse * 0.32 * fade;
+      if (moonFocusRing.material) moonFocusRing.material.opacity = (0.36 + pulse * 0.2) * fade;
     }
     if (bloomPass && composer && !instrumentMode && !wantsDetailLighting()) {
       bloomPass.strength = focusBloomBase + pulse * 0.14 * fade;
@@ -6115,7 +6119,7 @@ const FinishShader = {
         const lumHalo = new THREE.Sprite(new THREE.SpriteMaterial({
           map: lumTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
         }));
-        const lumS = b.size * 6.2;
+        const lumS = b.size * 3.4;
         lumHalo.scale.set(lumS, lumS, 1);
         lumHalo.userData.baseScale = lumS;
         group.add(lumHalo);
@@ -6780,11 +6784,25 @@ const FinishShader = {
   }
 
   // ── Animation loop ─────────────────────────────────────────────────────────
+  let lastFramePaintAt = 0;
+  let lastDomLabelPaintAt = 0;
+  function frameIntervalMs() {
+    if (perfTier === 'low') return 33;
+    const active = dragging || scaleAnimActive || introActive || camRadiusTarget != null
+      || flicking || journeyActive || masterclassIntroActive || daysPerSec !== 0 || aspectActive;
+    if (active) return 0;
+    return PRM ? 66 : 33;
+  }
+
   function frame(t) {
     if (destroyed) return;
-    try { frameBody(t); }
-    catch (err) {
-      reportWebGLFatal(err);
+    const interval = frameIntervalMs();
+    if (!lastFramePaintAt || t - lastFramePaintAt >= interval) {
+      lastFramePaintAt = t;
+      try { frameBody(t); }
+      catch (err) {
+        reportWebGLFatal(err);
+      }
     }
     if (!destroyed && running && inView) raf = requestAnimationFrame(frame);
     else raf = null;
@@ -7459,7 +7477,10 @@ const FinishShader = {
       stabilizeInstrumentSunFrame();
     }
     updateAspectView(t);
-    if (!introActive) updateDomLabels(1);
+    if (!introActive && (!lastDomLabelPaintAt || t - lastDomLabelPaintAt >= 33)) {
+      lastDomLabelPaintAt = t;
+      updateDomLabels(1);
+    }
     BODIES.forEach((b) => {
       const lab = labels[b.id]; if (!lab) return;
       lab.visible = !useDomLabels && showLabels && !introActive && scaleLevel <= 2;
@@ -8149,6 +8170,8 @@ const FinishShader = {
     destroyed = false;
     running = true;
     inView = true;
+    lastFramePaintAt = 0;
+    lastDomLabelPaintAt = 0;
     webglBooted = false;
     if (!window.AstroEphemeris) throw new Error('AstroEphemeris not loaded');
     canvas = canvasEl; wrap = canvas.parentElement;
@@ -8195,7 +8218,6 @@ const FinishShader = {
     buildPlanets(preloaderMode ? { earthOnly: true } : undefined);
     if (!preloaderMode) {
       buildAsteroids();
-      buildGalaxyLayers();
     } else if (perfTier !== 'low') {
       ensureGalaxyLayers();
     }
@@ -9613,6 +9635,8 @@ const FinishShader = {
     try { disposeHelioAspectLines(); } catch (e) {}
     try { disposePreloaderComets(); } catch (e) {}
     try { disposeSceneResources(scene); } catch (e) {}
+    galaxySpriteTextureCache.clear();
+    _galaxyDotTex = null;
     try { if (scene) scene.environment = null; } catch (e) {}
     try { if (envRT) envRT.dispose(); } catch (e) {}
     envRT = null;
