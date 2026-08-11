@@ -49,10 +49,31 @@ const RELEASE_PAGES = [
 const REQUIRED_TRANSITIVE = [
   './js/eclipse-reading.js',
   './js/reading-templates.json',
+  // Home imports this through a release-version expression, which the static
+  // import walker cannot discover. Adding the module lets the walker include
+  // its Three post-processing and orbital-math dependencies.
+  './js/orrery-webgl.js',
+  // Compact texture fallbacks make both 3D instruments usable after an offline
+  // refresh without forcing full-resolution maps into the install transaction.
+  './assets/textures/earth_sm.webp',
+  './assets/textures/earth_clouds_sm.webp',
+  './assets/textures/earth_lights_sm.webp',
+  './assets/textures/earth_normal_sm.webp',
+  './assets/textures/earth_specular_sm.webp',
+  './assets/textures/jupiter_sm.webp',
+  './assets/textures/mars_sm.webp',
+  './assets/textures/mercury_sm.webp',
+  './assets/textures/moon_sm.webp',
+  './assets/textures/neptune_sm.webp',
+  './assets/textures/saturn_sm.webp',
+  './assets/textures/saturn_ring_sm.webp',
+  './assets/textures/uranus_sm.webp',
+  './assets/textures/venus_sm.webp',
+  './img/orrery/env_nebula_cool_sm.webp',
 ];
 
 const MAX_SHELL_ENTRIES = 80;
-const MAX_SHELL_BYTES = 1_500_000;
+const MAX_SHELL_BYTES = 3_000_000;
 
 // Mirrors the import maps authored in index.html and eclipse.html. Bare ESM
 // specifiers are not relative URLs, so resolving them here is required before

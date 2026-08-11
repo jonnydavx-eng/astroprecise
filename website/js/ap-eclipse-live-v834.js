@@ -167,6 +167,44 @@ function makeGuideLine(points, color, opacity, dashed = false) {
   return line;
 }
 
+function makeVolumeGeometry(segments = 48) {
+  const positions = new Float32Array((segments + 1) * 2 * 3);
+  const indices = [];
+  for (let i = 0; i < segments; i += 1) {
+    const lower = i * 2;
+    const upper = lower + 1;
+    const nextLower = lower + 2;
+    const nextUpper = lower + 3;
+    indices.push(lower, nextLower, upper, nextLower, nextUpper, upper);
+  }
+  const geometry = new THREE.BufferGeometry();
+  const attribute = new THREE.BufferAttribute(positions, 3);
+  attribute.setUsage(THREE.DynamicDrawUsage);
+  geometry.setAttribute('position', attribute);
+  geometry.setIndex(indices);
+  geometry.userData.segments = segments;
+  return geometry;
+}
+
+function updateVolumeGeometry(geometry, length, nearRadius, farRadius) {
+  const positions = geometry.attributes.position.array;
+  const segments = geometry.userData.segments || 48;
+  for (let i = 0; i <= segments; i += 1) {
+    const angle = i / segments * Math.PI * 2;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const offset = i * 6;
+    positions[offset] = cos * nearRadius;
+    positions[offset + 1] = -length * .5;
+    positions[offset + 2] = sin * nearRadius;
+    positions[offset + 3] = cos * farRadius;
+    positions[offset + 4] = length * .5;
+    positions[offset + 5] = sin * farRadius;
+  }
+  geometry.attributes.position.needsUpdate = true;
+  geometry.computeBoundingSphere();
+}
+
 async function mount(root, E) {
   const canvas = root.querySelector('.ap-eclipse-live__canvas');
   const stage = root.querySelector('.ap-eclipse-live__stage');
@@ -200,6 +238,16 @@ async function mount(root, E) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(34, 1, .05, 220);
   const cameraTarget = new THREE.Vector3(0, 0, 0);
+  let mode = 'live';
+  let displayDate = new Date();
+  let state = null;
+  let inView = true;
+  let raf = 0;
+  let lastFrameAt = 0;
+  let loopRunning = false;
+  let liveTimer = 0;
+  let failed = false;
+  let disposed = false;
   let cameraRadius = 25;
   let cameraAzimuth = .2;
   let cameraElevation = .29;
@@ -244,8 +292,14 @@ async function mount(root, E) {
     texture.needsUpdate = true;
     return texture;
   };
-  const loadTexture = (url, srgb = true) => new Promise((resolve) => {
-    textureLoader.load(url, (texture) => resolve(prepareTexture(texture, srgb)), undefined, () => resolve(null));
+  const loadTexture = (url, srgb = true, fallbackUrl = '') => new Promise((resolve) => {
+    const attempt = (candidate, mayFallback) => {
+      textureLoader.load(candidate, (texture) => resolve(prepareTexture(texture, srgb)), undefined, () => {
+        if (mayFallback && fallbackUrl) attempt(fallbackUrl, false);
+        else resolve(null);
+      });
+    };
+    attempt(url, true);
   });
 
   const earthMaterial = new THREE.MeshStandardMaterial({
@@ -256,14 +310,16 @@ async function mount(root, E) {
   const earth = new THREE.Mesh(new THREE.SphereGeometry(1.06, 96, 96), earthMaterial);
   earth.position.copy(EARTH_POS);
   scene.add(earth);
-  const earthMapReady = loadTexture('./assets/textures/earth.webp').then((texture) => {
+  const earthMapReady = loadTexture('./assets/textures/earth.webp', true, './assets/textures/earth_sm.webp').then((texture) => {
     if (!texture) return;
+    if (disposed || failed) { texture.dispose(); return; }
     earthMaterial.map = texture;
     earthMaterial.color.set(0xffffff);
     earthMaterial.needsUpdate = true;
   });
-  const earthReliefReady = loadTexture('./assets/textures/earth_normal.webp', false).then((texture) => {
+  const earthReliefReady = loadTexture('./assets/textures/earth_normal.webp', false, './assets/textures/earth_normal_sm.webp').then((texture) => {
     if (!texture) return;
+    if (disposed || failed) { texture.dispose(); return; }
     earthMaterial.normalMap = texture;
     earthMaterial.normalScale = new THREE.Vector2(.52, .52);
     earthMaterial.needsUpdate = true;
@@ -289,8 +345,9 @@ async function mount(root, E) {
   });
   const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.075, 72, 72), cloudsMaterial);
   earth.add(clouds);
-  const cloudMapReady = loadTexture('./assets/textures/earth_clouds.webp').then((texture) => {
+  const cloudMapReady = loadTexture('./assets/textures/earth_clouds.webp', true, './assets/textures/earth_clouds_sm.webp').then((texture) => {
     if (!texture) return;
+    if (disposed || failed) { texture.dispose(); return; }
     cloudsMaterial.map = texture;
     cloudsMaterial.alphaMap = texture;
     cloudsMaterial.opacity = .62;
@@ -304,8 +361,9 @@ async function mount(root, E) {
   });
   const moon = new THREE.Mesh(new THREE.SphereGeometry(.48, 80, 80), moonMaterial);
   scene.add(moon);
-  const moonMapReady = loadTexture('./assets/textures/moon.webp').then((texture) => {
+  const moonMapReady = loadTexture('./assets/textures/moon.webp', true, './assets/textures/moon_sm.webp').then((texture) => {
     if (!texture) return;
+    if (disposed || failed) { texture.dispose(); return; }
     const bumpTexture = texture.clone();
     bumpTexture.colorSpace = THREE.NoColorSpace;
     bumpTexture.needsUpdate = true;
@@ -331,7 +389,7 @@ async function mount(root, E) {
   scene.add(makeGuideLine([SUN_POS.clone(), EARTH_POS.clone()], 0xd8b46a, .16, true));
 
   const umbra = new THREE.Mesh(
-    new THREE.CylinderGeometry(.01, .46, 5, 48, 1, true),
+    makeVolumeGeometry(48),
     new THREE.MeshBasicMaterial({
       color: 0x26384f,
       transparent: true,
@@ -341,7 +399,7 @@ async function mount(root, E) {
     })
   );
   const penumbra = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.2, .52, 7, 48, 1, true),
+    makeVolumeGeometry(48),
     new THREE.MeshBasicMaterial({
       color: 0xd8b46a,
       transparent: true,
@@ -380,17 +438,6 @@ async function mount(root, E) {
   shadowIntercept.visible = false;
   scene.add(shadowIntercept);
 
-  let mode = 'live';
-  let displayDate = new Date();
-  let state = null;
-  let inView = true;
-  let raf = 0;
-  let lastFrameAt = 0;
-  let loopRunning = false;
-  let liveTimer = 0;
-  let failed = false;
-  let disposed = false;
-
   function showUnavailable(err) {
     if (failed) return;
     failed = true;
@@ -407,8 +454,7 @@ async function mount(root, E) {
   }
 
   function positionVolume(mesh, origin, direction, length, nearRadius, farRadius) {
-    if (mesh.geometry) mesh.geometry.dispose();
-    mesh.geometry = new THREE.CylinderGeometry(farRadius, nearRadius, length, 48, 1, true);
+    updateVolumeGeometry(mesh.geometry, length, nearRadius, farRadius);
     mesh.position.copy(origin).addScaledVector(direction, length * .5);
     mesh.quaternion.setFromUnitVectors(Y_AXIS, direction);
   }
@@ -474,6 +520,7 @@ async function mount(root, E) {
     if (statusEl) statusEl.textContent = statusFor(state);
     if (timeEl) timeEl.textContent = `${formatUtc(state.date)} · Meeus Sun/Moon geometry`;
     if (rangeTimeEl) rangeTimeEl.textContent = formatUtc(state.date).replace(' · ', ' ');
+    if (range) range.setAttribute('aria-valuetext', formatUtc(state.date));
     if (sepEl) sepEl.textContent = `${state.separationDeg.toFixed(3)}°`;
     if (moonDistanceEl) moonDistanceEl.textContent = formatDistance(state.moonDistanceKm);
     if (shadowEl) shadowEl.textContent = state.umbraHits ? 'Umbra intersects Earth' : formatDistance(state.shadowMissKm);
@@ -500,8 +547,15 @@ async function mount(root, E) {
   range.min = '0';
   range.max = String(Math.round((RANGE_END_MS - RANGE_START_MS) / 60000));
   range.step = '1';
+  let rangeFrame = 0;
+  let pendingRangeMs = RANGE_START_MS;
   range.addEventListener('input', () => {
-    setDisplayDate(new Date(RANGE_START_MS + Number(range.value) * 60000), 'timeline');
+    pendingRangeMs = RANGE_START_MS + Number(range.value) * 60000;
+    if (rangeFrame) return;
+    rangeFrame = requestAnimationFrame(() => {
+      rangeFrame = 0;
+      setDisplayDate(new Date(pendingRangeMs), 'timeline');
+    });
   });
   nowButton.addEventListener('click', setLive);
   eventButton.addEventListener('click', setGreatest);
@@ -550,6 +604,15 @@ async function mount(root, E) {
     }
   }
 
+  let eventRenderFrame = 0;
+  function scheduleRender() {
+    if (loopRunning || eventRenderFrame || failed || disposed) return;
+    eventRenderFrame = requestAnimationFrame((time) => {
+      eventRenderFrame = 0;
+      render(time);
+    });
+  }
+
   function frame(time) {
     if (!loopRunning) return;
     if (time - lastFrameAt >= 33) {
@@ -589,7 +652,7 @@ async function mount(root, E) {
     cameraAzimuth -= dx * .006;
     cameraElevation = clamp(cameraElevation + dy * .0045, -.18, 1.05);
     applyCamera();
-    render();
+    scheduleRender();
   });
   const stopDrag = (event) => {
     dragging = false;
@@ -601,7 +664,7 @@ async function mount(root, E) {
     event.preventDefault();
     cameraRadius = clamp(cameraRadius * Math.exp(event.deltaY * .001), 16, 38);
     applyCamera();
-    render();
+    scheduleRender();
   }, { passive: false });
   canvas.addEventListener('keydown', (event) => {
     const key = event.key;
@@ -614,7 +677,7 @@ async function mount(root, E) {
     if (key === '+' || key === '=') cameraRadius = clamp(cameraRadius * .9, 16, 38);
     if (key === '-' || key === '_') cameraRadius = clamp(cameraRadius * 1.1, 16, 38);
     applyCamera();
-    render();
+    scheduleRender();
   });
   canvas.addEventListener('webglcontextlost', (event) => {
     try { event.preventDefault(); } catch (err) { /* context already gone */ }
@@ -662,6 +725,7 @@ async function mount(root, E) {
   startLoop();
   if (failed) return;
   if (fallback) fallback.hidden = true;
+  root.removeAttribute('data-failed');
   root.dataset.ready = 'true';
   window.APEclipseLive = {
     setLive,
@@ -681,6 +745,10 @@ async function mount(root, E) {
     stopLoop();
     if (liveTimer) clearInterval(liveTimer);
     liveTimer = 0;
+    if (rangeFrame) cancelAnimationFrame(rangeFrame);
+    rangeFrame = 0;
+    if (eventRenderFrame) cancelAnimationFrame(eventRenderFrame);
+    eventRenderFrame = 0;
     resizeObserver.disconnect();
     intersectionObserver.disconnect();
     scene.traverse((object) => {

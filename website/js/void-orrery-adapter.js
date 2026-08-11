@@ -265,6 +265,21 @@
               if (!window.Orrery3D) throw new Error('orrery-webgl did not register Orrery3D');
               return window.Orrery3D;
             });
+        if (strict3DRequested()) {
+          var slowImportTimer = setTimeout(function () {
+            var status = document.getElementById('sky-live-status');
+            var telemetry = document.getElementById('telemetry');
+            if (status) status.textContent = 'Still preparing real 3D';
+            if (telemetry) telemetry.textContent = 'The first renderer load is taking longer on this device. The real model is still loading; no 2D substitute will replace it.';
+          }, 8000);
+          return importJob.then(function (O) {
+            clearTimeout(slowImportTimer);
+            return O;
+          }, function (err) {
+            clearTimeout(slowImportTimer);
+            throw err;
+          });
+        }
         return withTimeout(importJob, 8000, 'webgl import');
       })
       .then(function (O) {
@@ -533,16 +548,19 @@
         this._watchdog = setTimeout(function () {
           self._watchdog = null;
           if (self._firstFrameSeen || self._posted) return;
+          if (self._strict3D) {
+            var status = document.getElementById('sky-live-status');
+            var telemetry = document.getElementById('telemetry');
+            if (status) status.textContent = 'Rendering first textured frame';
+            if (telemetry) telemetry.textContent = 'The real 3D renderer is loaded and still preparing its first complete frame. It will appear when the textures are ready.';
+            return;
+          }
           if (self._onReadyFirstFrame) {
             document.removeEventListener('ap-orrery-first-frame', self._onReadyFirstFrame);
             self._onReadyFirstFrame = null;
           }
-          if (self._strict3D) {
-            self._poster('The real 3D Observatory took too long to start. No substitute model has been shown.');
-          } else {
-            warn('9s without engine ready — failing open to canvas engine');
-            self._toCanvasEngine();
-          }
+          warn('9s without engine ready — failing open to canvas engine');
+          self._toCanvasEngine();
         }, 9000);
       };
 

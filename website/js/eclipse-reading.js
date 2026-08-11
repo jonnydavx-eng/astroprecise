@@ -102,13 +102,12 @@ export function buildReading(eclipseLon, natal, templates, opts = {}) {
 /** 139.84 -> "19°50′ Leo" */
 export function fmtDeg(lon, signs) {
   const norm = ((lon % 360) + 360) % 360;
-  const si = Math.floor(norm / 30);
-  const within = norm - si * 30;
-  const d = Math.floor(within);
-  const m = Math.round((within - d) * 60);
-  const dd = m === 60 ? d + 1 : d;
-  const mm = m === 60 ? 0 : m;
-  return `${dd}°${String(mm).padStart(2, '0')}′ ${signs[si]}`;
+  const totalMinutes = Math.round(norm * 60) % (360 * 60);
+  const si = Math.floor(totalMinutes / (30 * 60));
+  const withinSign = totalMinutes % (30 * 60);
+  const degrees = Math.floor(withinSign / 60);
+  const minutes = withinSign % 60;
+  return `${degrees}°${String(minutes).padStart(2, '0')}′ ${signs[si]}`;
 }
 
 /** Whole-sign house of a point given the Ascendant longitude (1..12), or null. */

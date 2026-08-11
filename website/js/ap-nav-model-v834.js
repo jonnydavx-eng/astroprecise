@@ -160,12 +160,20 @@
       }
     }
     if (toggle && mobile) {
+      setDrawer(false);
       toggle.addEventListener('click', function () {
         setDrawer(toggle.getAttribute('aria-expanded') !== 'true');
       });
       mobile.addEventListener('click', function (event) {
         if (event.target.closest('a')) setDrawer(false);
       });
+      var desktopBreakpoint = window.matchMedia && window.matchMedia('(min-width: 761px)');
+      if (desktopBreakpoint) {
+        var closeAtBreakpoint = function () { setDrawer(false); };
+        if (desktopBreakpoint.addEventListener) desktopBreakpoint.addEventListener('change', closeAtBreakpoint);
+        else if (desktopBreakpoint.addListener) desktopBreakpoint.addListener(closeAtBreakpoint);
+      }
+      window.addEventListener('pageshow', function () { setDrawer(false); });
     }
     document.addEventListener('click', function (event) {
       if (more && !more.contains(event.target)) closeMore();

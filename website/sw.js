@@ -556,8 +556,10 @@ self.addEventListener('fetch', e => {
 
     if (isCritical || /^(?:no-cache|reload)$/.test(e.request.cache)) {
       const network = await networkResponse;
-      if (network && network.ok) return network;
-      return cached || network || Response.error();
+      // A received HTTP response is authoritative, including 404/500. Only a
+      // rejected/no-response network attempt may fall back to the frozen cache.
+      if (network) return network;
+      return cached || Response.error();
     }
 
     // On-demand stale-while-revalidate. No bulk warm-up competes with WebGL.

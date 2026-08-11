@@ -85,6 +85,8 @@
   const lonInput  = document.getElementById('lon-input');
   const tzInput   = document.getElementById('tz-input');
   let activeIdx   = -1;
+  let searchSeq   = 0;
+  let searchTimer = 0;
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
     ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
@@ -128,6 +130,9 @@
   }
 
   function pickCity(c) {
+    searchSeq += 1;
+    if (searchTimer) clearTimeout(searchTimer);
+    searchTimer = 0;
     cityInput.value = c.admin ? `${c.name}, ${c.admin}, ${c.country}` : `${c.name}, ${c.country}`;
     cityInput.dataset.coordinatesLocked = 'true';
     latInput.value  = c.lat;
@@ -146,23 +151,26 @@
   }
 
   if (cityInput && dropdown) {
-    let searchSeq = 0;
-    const runSearch = window.AstroApp.debounce(q => {
-      const mySeq = ++searchSeq;
-      window.AstroApp.searchPlaces(q).then(({ results, source }) => {
-        if (mySeq !== searchSeq) return;
-        renderDropdown(results, source, results.length ? 'results' : 'empty');
-      });
-    }, 250);
     cityInput.addEventListener('input', () => {
+      const mySeq = ++searchSeq;
+      if (searchTimer) clearTimeout(searchTimer);
+      searchTimer = 0;
       cityInput.dataset.coordinatesLocked = 'false';
       const cityHint = document.getElementById('city-hint');
       if (cityHint && cityHint.firstChild) cityHint.firstChild.textContent = 'Pick a result for precise coordinates. ';
       latInput.value = ''; lonInput.value = ''; tzInput.value = '';
       const q = cityInput.value.trim();
-      if (q.length < 2) { searchSeq++; renderDropdown([], 'live', 'idle'); return; }
+      if (q.length < 2) { renderDropdown([], 'live', 'idle'); return; }
       renderDropdown([], 'live', 'searching');
-      runSearch(q);
+      searchTimer = setTimeout(() => {
+        searchTimer = 0;
+        window.AstroApp.searchPlaces(q).then(({ results, source }) => {
+          if (mySeq !== searchSeq || cityInput.value.trim() !== q || cityInput.dataset.coordinatesLocked === 'true') return;
+          renderDropdown(results, source, results.length ? 'results' : 'empty');
+        }).catch(() => {
+          if (mySeq === searchSeq && cityInput.value.trim() === q) renderDropdown([], 'live', 'empty');
+        });
+      }, 250);
     });
     cityInput.addEventListener('keydown', ev => {
       const items = dropdown._items || [];
@@ -638,10 +646,8 @@
        1. sessionStorage['ap-chart-handoff'] — what index.html writes. Same
           tab, same origin, never transmitted. Read once and deleted, so the
           details do not sit in the tab after they have been used.
-       2. location.hash (#date=&time=&city=) — the fallback index.html uses
-          when sessionStorage is blocked. A fragment is not part of the request
-          line and is not sent in a Referer, so it never reaches a server log.
-          It is stripped from the address bar as soon as it is read.
+       2. location.hash (#date=&time=&city=) — LEGACY ONLY. Current Home never
+          writes birth details into the address bar, even when storage is blocked.
        3. location.search (?date=&time=&city=) — LEGACY ONLY. As of 2026-08-09
           nothing on this site mints one: lifepath.html, profile.html and
           js/charts-dashboard.js were the last three and now hand over in
@@ -706,6 +712,23 @@
      URL always wins over the handoff. */
   function prefillFromHandoff() {
     try {
+      const routeQuery = new URLSearchParams(location.search);
+      if (routeQuery.get('entry') === 'private-reentry') {
+        try { history.replaceState(null, '', location.pathname); } catch (_) {}
+        const wrap = document.getElementById('chart-form-wrapper');
+        if (wrap && !document.getElementById('chart-handoff-note')) {
+          const note = document.createElement('p');
+          note.id = 'chart-handoff-note';
+          note.className = 'chart-handoff-note';
+          note.setAttribute('role', 'status');
+          note.textContent = 'Private browser storage is blocked, so your birth details were not carried in the address bar. Re-enter them here to keep the chart private.';
+          const header = wrap.querySelector('.form-glass__header');
+          if (header && header.parentNode) header.parentNode.insertBefore(note, header.nextSibling);
+          else wrap.insertBefore(note, wrap.firstChild);
+        }
+        const dateField = document.getElementById('date-input');
+        if (dateField) setTimeout(() => dateField.focus(), 0);
+      }
       const handoff = readHandoff();
       const d = handoff.date;
       const t = handoff.time;
@@ -1387,7 +1410,7 @@
       positions: window.AstroProfile && AstroProfile.packPositionsForSave
         ? AstroProfile.packPositionsForSave(chart.positions) : null,
       aspects: (chart.aspects || []).slice(0, 16),
-      engineV: 2,
+      engineV: window.AstroProfile && Number(AstroProfile.engineVersion) || 3,
     };
   }
 
@@ -1496,8 +1519,11 @@
     const a = document.createElement('a');
     a.download = `${(currentChart.name || 'chart').replace(/[^\w]+/g, '-').toLowerCase()}-natal-chart.json`;
     a.href = URL.createObjectURL(blob);
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(a.href);
+    const downloadUrl = a.href;
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
     if (window.AstroApp) AstroApp.showToast('Exported', 'Chart data downloaded as JSON.', 'success');
   });
 

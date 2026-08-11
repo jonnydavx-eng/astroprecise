@@ -5010,6 +5010,11 @@ const FinishShader = {
       list.push(smallName(webp));                              // e.g. mercury_sm.webp
     }
     list.push(webp);                                           // e.g. mercury.webp
+    if (!wantsSmallTextures() && !onPreloaderStage()) {
+      // The launch worker keeps the compact maps in its offline shell. Online,
+      // full resolution wins; offline, Three can recover to the cached 512px map.
+      list.push(smallName(webp));
+    }
     // Legacy fallbacks (only hit if a .webp is ever missing) — never 404 to black.
     if (wantsSmallTextures() || onPreloaderStage()) {
       const smLegacy = smallName(file);

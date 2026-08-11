@@ -52,16 +52,13 @@
       <div class="ap-eclipse-page-shell">
         <p class="ap-eclipse-kicker"><span aria-hidden="true"></span> Eclipse edition · 12 August 2026</p>
         <h1>The Moon crosses the Sun.<br><em>Watch the shadow arrive.</em></h1>
-        <p>One dedicated 3D instrument for the real Sun–Moon–Earth alignment, followed by the practical guide: where, when, how to watch safely and what the eclipse contacts in your chart.</p>
+        <p>One dedicated 3D instrument for the real Sun–Moon–Earth alignment. Drag the live shadow view immediately below, then use the practical guide for where, when, eye safety and chart contacts.</p>
         <div class="ap-eclipse-hero__meta"><span id="countdown">Calculating time to greatest eclipse</span><span id="eclipsePoint">Computing eclipse longitude</span></div>
       </div>
     </header>
 
     <section class="ap-eclipse-live" id="ap-eclipse-live" data-mode="live" data-ready="false" aria-labelledby="eclipse-live-title">
-      <div class="ap-eclipse-live__head">
-        <div><p class="ap-eclipse-live__eyebrow">The shadow instrument · Sun → Moon → Earth</p><h2 class="ap-eclipse-live__title" id="eclipse-live-title">Watch the shadow find Earth.</h2></div>
-        <p class="ap-eclipse-live__intro">This is computed geometry, not a decorative loop. Drag to inspect the alignment, then move between the current minute and greatest eclipse.</p>
-      </div>
+      <h2 class="sr-only" id="eclipse-live-title">Live 3D Sun, Moon and Earth shadow instrument</h2>
       <div class="ap-eclipse-live__shell">
         <div class="ap-eclipse-live__stage">
           <canvas class="ap-eclipse-live__canvas" tabindex="0" aria-label="Interactive 3D Sun, Moon and Earth eclipse alignment. Drag to orbit; use mouse wheel or plus and minus keys to zoom."></canvas>
@@ -79,7 +76,7 @@
             <div class="ap-eclipse-live__actions"><button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="true">Track live now</button><button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="false">Greatest eclipse</button></div>
             <label class="ap-eclipse-live__control-label" for="eclipse-time-range"><span>Explore the alignment</span><span data-eclipse-range-time>—</span></label>
             <input class="ap-eclipse-live__range" id="eclipse-time-range" data-eclipse-range type="range" aria-label="Eclipse timeline from three days before to two days after greatest eclipse">
-            <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection use the browser ephemeris · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · this is not a ground-track map.</p>
+          <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection use published Sun–Moon calculations · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · this is not a ground-track map.</p>
           </div>
         </aside>
       </div>
@@ -102,7 +99,7 @@
         <div>
           <p class="ap-eclipse-kicker">Your chart · computed here</p>
           <h2 id="contact-title">What does the eclipse contact?</h2>
-          <p>Use a chart already cast in AstroPrecise, or enter a birth moment below. The instrument shows the computed contact first, then a five-part traditional reflection. Unknown birth times withhold the Moon and chart angles instead of guessing.</p>
+          <p>Use a chart already cast in AstroPrecise, or enter a birth moment below. Manual entry compares date/time-based planetary contacts; a saved full chart is required for Ascendant and career-angle contacts. Unknown birth times withhold the Moon and angles instead of guessing.</p>
           <form id="eclipseContactForm">
             <label class="ap-eclipse-contact__saved" id="savedChartOption" hidden><input type="checkbox" id="useSavedChart" checked><span id="savedChartLabel">Use my saved chart</span></label>
             <div class="ap-eclipse-contact__fields">
@@ -111,7 +108,7 @@
               <label><span>Historical time zone</span><select id="tz"><option value="Europe/London" selected>London / UK</option><option value="Europe/Paris">Paris / Central Europe</option><option value="America/New_York">New York / US Eastern</option><option value="America/Los_Angeles">Los Angeles / US Pacific</option><option value="Asia/Kolkata">India</option><option value="Australia/Sydney">Sydney</option><option value="UTC">UTC / GMT</option></select></label>
             </div>
             <button type="submit" data-eclipse-contact-submit disabled>Read my eclipse contact</button>
-            <p class="ap-eclipse-contact__note">No account · no birth data is sent · historical time-zone rules are applied · if time is unknown, Moon and angle contacts are withheld</p>
+            <p class="ap-eclipse-contact__note" id="eclipseContactStatus" role="status">No account · no birth data is sent · historical time-zone rules are applied · manual entry has no location, so angles require a saved full chart · if time is unknown, Moon contacts are withheld</p>
           </form>
           <div class="ap-eclipse-result" id="eclipseResult" hidden tabindex="-1" aria-live="polite">
             <div class="ap-eclipse-result__head"><span>Computed receipt</span><strong id="eclipseResultState"></strong></div>
@@ -121,7 +118,7 @@
           </div>
         </div>
         <figure class="ap-eclipse-geometry-plate">
-          <img src="img/eclipse-geometry.svg" width="1200" height="630" loading="lazy" alt="Schematic computed geometry of the 12 August 2026 eclipse">
+          <span class="ap-card-art"><img src="img/eclipse-geometry.svg" width="1200" height="630" loading="lazy" alt="Schematic computed geometry of the 12 August 2026 eclipse"></span>
           <figcaption><span>Schematic · computed geometry</span>Local sky view and approximate London coverage. The live 3D instrument above shows alignment, not a geographically accurate ground track.</figcaption>
         </figure>
       </div>
@@ -132,6 +129,22 @@
   <script src="js/ap-footer-inject.js?v=835" defer></script>
   <script src="js/ap-nav-prefetch.js?v=835" defer data-ap-nav-prefetch="1"></script>
   <script src="js/ap-mystic-cards-v835.js?v=835" defer></script>
+  <script>
+    (function () {
+      var root = document.getElementById('ap-eclipse-live');
+      if (!root) return;
+      var timer = setTimeout(function () {
+        if (root.dataset.ready === 'true' || root.dataset.failed === 'true') return;
+        root.dataset.failed = 'true';
+        var fallback = root.querySelector('.ap-eclipse-live__fallback');
+        if (fallback) {
+          fallback.hidden = false;
+          fallback.innerHTML = '<div><strong>The live 3D module has not started.</strong><br><span>The computed diagram and viewing guide remain available; a late valid renderer may still recover.</span></div>';
+        }
+      }, 12000);
+      document.addEventListener('ap-eclipse-live-ready', function () { clearTimeout(timer); }, { once: true });
+    })();
+  </script>
   <script>
     if ('serviceWorker' in navigator && !/[?&]nosw=1/.test(location.search)) addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }, { once: true });
   </script>

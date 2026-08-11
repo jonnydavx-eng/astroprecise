@@ -72,7 +72,8 @@
 
     SCALES.forEach(function (scale) {
       var button = buildButton(scale[1], { lv: scale[0] }, function () {
-        if (orrery.flyScale) orrery.flyScale(scale[0]);
+        var accepted = orrery.flyScale && orrery.flyScale(scale[0]);
+        if (!accepted) return;
         if (telemetry) telemetry.textContent = SCALE_NOTES[scale[0]];
       });
       scaleGroup.appendChild(button);
@@ -80,7 +81,8 @@
 
     WORLDS.forEach(function (world) {
       var button = buildButton(world[1], { key: world[0], name: world[1] }, function () {
-        if (orrery.flyTo) orrery.flyTo(world[0]);
+        var accepted = orrery.flyTo && orrery.flyTo(world[0]);
+        if (!accepted) return;
       });
       button.setAttribute('aria-label', 'Fly to ' + world[1]);
       button.style.setProperty('--world-color', world[2] || '#d8b46a');
@@ -108,6 +110,28 @@
       if (scrub) scrub.value = String(sliderValueFor(Date.now()));
       if (scrubLabel) scrubLabel.textContent = 'NOW';
     });
+
+    function setControlsReady(ready) {
+      var controls = scaleGroup.querySelectorAll('button');
+      controls = Array.prototype.slice.call(controls).concat(
+        Array.prototype.slice.call(worldGroup.querySelectorAll('button')),
+        scrub ? [scrub] : [],
+        nowButton ? [nowButton] : []
+      );
+      controls.forEach(function (control) {
+        control.disabled = !ready;
+        if (ready) control.removeAttribute('aria-disabled');
+        else control.setAttribute('aria-disabled', 'true');
+      });
+    }
+
+    setControlsReady(false);
+    document.addEventListener('ap-orrery-ready', function () { setControlsReady(true); }, { once: true });
+    document.addEventListener('ap-orrery-unavailable', function () { setControlsReady(false); }, { once: true });
+    var stage = document.querySelector('.ap-model-stage');
+    if (stage && stage.getAttribute('aria-busy') === 'false' && orrery.getAttribute('data-engine') === 'webgl') {
+      setControlsReady(true);
+    }
 
     orrery.addEventListener('planetfocus', function (event) {
       var detail = event.detail || {};

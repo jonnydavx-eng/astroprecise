@@ -6,20 +6,11 @@
   --ecl-void: #050609;
   --ecl-panel: #0c0d11;
   width: min(1180px, calc(100vw - 32px));
-  margin: 34px 50% 42px;
+  margin: 18px 50% 42px;
   transform: translateX(-50%);
   color: var(--ecl-ivory);
 }
 
-.ap-eclipse-live__head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 360px);
-  align-items: end;
-  gap: 28px;
-  padding: 0 2px 18px;
-}
-
-.ap-eclipse-live__eyebrow,
 .ap-eclipse-live__time,
 .ap-eclipse-live__scale-note,
 .ap-eclipse-live__datum dt,
@@ -27,27 +18,6 @@
 .ap-eclipse-live__control-label {
   font-family: 'IBM Plex Mono', monospace;
   text-transform: uppercase;
-}
-
-.ap-eclipse-live__eyebrow {
-  margin: 0 0 9px;
-  color: var(--ecl-brass);
-  font-size: 9px;
-  letter-spacing: .24em;
-}
-
-.ap-eclipse-live__title {
-  max-width: 720px;
-  margin: 0;
-  font: italic 500 clamp(32px, 4.8vw, 58px)/.98 'Cormorant Garamond', Georgia, serif;
-  letter-spacing: -.025em;
-}
-
-.ap-eclipse-live__intro {
-  margin: 0 0 2px;
-  color: rgba(242, 236, 223, .74);
-  font-size: 14px;
-  line-height: 1.65;
 }
 
 .ap-eclipse-live__shell {
@@ -90,6 +60,10 @@
 .ap-eclipse-live[data-ready='true'] .ap-eclipse-live__canvas { opacity: 1; }
 
 .ap-eclipse-live__canvas:active { cursor: grabbing; }
+.ap-eclipse-live__canvas:focus-visible {
+  outline: 2px solid var(--ecl-ember);
+  outline-offset: -4px;
+}
 
 .ap-eclipse-live__live-badge {
   position: absolute;
@@ -323,8 +297,6 @@
 }
 
 @media (max-width: 900px) {
-  .ap-eclipse-live__head { grid-template-columns: 1fr; gap: 12px; }
-  .ap-eclipse-live__intro { max-width: 680px; }
   .ap-eclipse-live__shell { grid-template-columns: 1fr; }
   .ap-eclipse-live__stage { min-height: min(62vh, 560px); }
   .ap-eclipse-live__panel { border-left: 0; border-top: 1px solid rgba(216, 180, 106, .18); }
@@ -334,7 +306,6 @@
 
 @media (max-width: 560px) {
   .ap-eclipse-live { width: calc(100vw - 20px); margin-top: 28px; }
-  .ap-eclipse-live__title { font-size: clamp(34px, 11vw, 48px); }
   .ap-eclipse-live__shell { border-radius: 5px; }
   .ap-eclipse-live__stage { min-height: 440px; }
   .ap-eclipse-live__panel { padding: 20px 17px 18px; }

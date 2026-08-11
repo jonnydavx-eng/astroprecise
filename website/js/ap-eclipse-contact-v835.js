@@ -23,10 +23,11 @@ function waitForEphemeris() {
 
 function degreeText(longitude) {
   const norm = ((Number(longitude) % 360) + 360) % 360;
-  const sign = Math.floor(norm / 30);
-  let degrees = Math.floor(norm - sign * 30);
-  let minutes = Math.round((norm - sign * 30 - degrees) * 60);
-  if (minutes === 60) { degrees += 1; minutes = 0; }
+  const totalMinutes = Math.round(norm * 60) % (360 * 60);
+  const sign = Math.floor(totalMinutes / (30 * 60));
+  const withinSign = totalMinutes % (30 * 60);
+  const degrees = Math.floor(withinSign / 60);
+  const minutes = withinSign % 60;
   return `${degrees}°${String(minutes).padStart(2, '0')}′ ${SIGNS[sign]}`;
 }
 
@@ -82,6 +83,7 @@ function longitudeFrom(positions, key) {
 function natalFromPositions(positions, chart, timeKnown) {
   const natal = {};
   TARGETS.forEach((key) => {
+    if (key === 'moon' && !timeKnown) return;
     const longitude = longitudeFrom(positions, key);
     if (longitude != null) natal[key] = longitude;
   });
@@ -126,11 +128,48 @@ function manualNatal(engine) {
     instant.getUTCHours(), instant.getUTCMinutes(), instant.getUTCSeconds(),
   );
   return {
-    natal: natalFromPositions(engine.allPlanetPositions(jd), null, false),
+    natal: natalFromPositions(engine.allPlanetPositions(jd), null, timeKnown),
     timeKnown,
     label: timeKnown ? `${dateValue} · ${timeValue} · ${zone}` : `${dateValue} · time unknown`,
     source: 'manual',
   };
+}
+
+function validTimeZone(zone) {
+  if (!zone || typeof zone !== 'string' || zone.length > 80) return false;
+  try { new Intl.DateTimeFormat('en-GB', { timeZone: zone }).format(new Date()); return true; }
+  catch (_) { return false; }
+}
+
+function consumeChartHandoff() {
+  try {
+    const raw = sessionStorage.getItem('ap-eclipse-handoff');
+    if (!raw) return null;
+    sessionStorage.removeItem('ap-eclipse-handoff');
+    const value = JSON.parse(raw);
+    if (!value || typeof value !== 'object') return null;
+    if (value.ts && Math.abs(Date.now() - Number(value.ts)) > 6 * 60 * 60 * 1000) return null;
+    const dob = /^\d{4}-\d{2}-\d{2}$/.test(String(value.dob || '')) ? String(value.dob) : '';
+    const tob = /^([01]\d|2[0-3]):[0-5]\d$/.test(String(value.tob || '')) ? String(value.tob) : '';
+    const tzname = validTimeZone(value.tzname) ? value.tzname : '';
+    return dob ? { dob, tob, tzname } : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function applyChartHandoff(handoff) {
+  if (!handoff) return false;
+  byId('dob').value = handoff.dob;
+  byId('tob').value = handoff.tob;
+  if (handoff.tzname) {
+    const select = byId('tz');
+    if (![...select.options].some((item) => item.value === handoff.tzname)) select.add(new Option(handoff.tzname, handoff.tzname));
+    select.value = handoff.tzname;
+  }
+  const status = byId('eclipseContactStatus');
+  if (status) status.textContent = 'Your just-cast birth moment carried here privately. Manual entry compares planets; use a saved full chart for angles.';
+  return true;
 }
 
 function beatMarkup(number, title, beat) {
@@ -217,7 +256,8 @@ async function init() {
   const eclipseLongitude = engine.sunPosition(eventJd).lon;
   byId('eclipsePoint').textContent = `Eclipse point · ${degreeText(eclipseLongitude)} · greatest 18:46 BST`;
 
-  const savedMeta = seedSavedChart(getActiveChart());
+  const hasHandoff = applyChartHandoff(consumeChartHandoff());
+  const savedMeta = hasHandoff ? null : seedSavedChart(getActiveChart());
   const form = byId('eclipseContactForm');
   const submitButton = form.querySelector('[data-eclipse-contact-submit]');
   if (submitButton) submitButton.disabled = false;
@@ -247,4 +287,13 @@ init().catch((error) => {
   console.error('[AstroPrecise eclipse contact]', error);
   const point = byId('eclipsePoint');
   if (point) point.textContent = 'Eclipse contact instrument unavailable';
+  const status = byId('eclipseContactStatus');
+  if (status) status.textContent = 'The contact calculator did not initialise. The live eclipse model and viewing guide still work; retry this calculator when the connection is stable.';
+  const button = document.querySelector('[data-eclipse-contact-submit]');
+  if (button) {
+    button.disabled = false;
+    button.type = 'button';
+    button.textContent = 'Retry contact calculator';
+    button.addEventListener('click', () => location.reload(), { once: true });
+  }
 });
