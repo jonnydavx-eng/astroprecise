@@ -1,9 +1,9 @@
 /* Void Orrery adapter — M2 engine unification (2026-07).
  * Drop-in replacement for js/orrery.js on the <void-orrery> pages. Boots the
  * superior Orrery3D engine (js/orrery-webgl.js — bloom + grade pass, soft-disc
- * stars, real VSOP87) through the EXISTING loader path (js/orrery-loader.js +
- * an import map for bare `three`), while preserving the legacy element's exact
- * public surface:
+ * stars, real VSOP87). The flagship imports that renderer directly; archive
+ * embeds retain the old loader/fallback ladder. Both preserve the legacy
+ * element's exact public surface:
  *
  *   flyTo(key) flyScale(level) setNatal(rows) setJD(jd) setLive() getJD()
  *   setEclipse(k[,instant]) getEclipse() flight() lookUp() setObserver(lat,lon)
@@ -25,7 +25,8 @@
  * remains the real 3D instrument or reports unavailability. It never swaps to
  * the visually unrelated 2D/legacy renderer after first paint.
  *
- * Known-good reference for the choreography: explore.html + js/ap-award-orrery.js.
+ * The launch Observatory has one renderer owner and never evaluates the old
+ * lite-to-WebGL hero choreography.
  */
 (function () {
   'use strict';
@@ -40,7 +41,7 @@
   // chain. Publish it before loading orrery-loader.js so that loader imports
   // orrery-webgl.js with the same cache-safe version instead of its old fallback.
   var ADAPTER_V = new URL(ADAPTER_URL, document.baseURI).searchParams.get('v');
-  var ASSET_V = String(ADAPTER_V || window.AP_ASSET_V || '826');
+  var ASSET_V = String(ADAPTER_V || window.AP_ASSET_V || '835');
   window.AP_ASSET_V = ASSET_V;
 
   function assetUrl(name, extra) {
@@ -383,6 +384,10 @@
           document.removeEventListener('ap-orrery-first-frame', this._onAnyFirstFrame);
           this._onAnyFirstFrame = null;
         }
+        if (this._onReadyFirstFrame) {
+          document.removeEventListener('ap-orrery-first-frame', this._onReadyFirstFrame);
+          this._onReadyFirstFrame = null;
+        }
         if (engineOwner === this) {
           engineOwner = null;
           try { if (this._engine && this._engine.destroy) this._engine.destroy(); } catch (e) {}
@@ -491,24 +496,42 @@
 
       C.prototype._awaitFirstFrame = function (done) {
         var called = false, self = this;
-        function finish() { if (called) return; called = true; done(); }
+        function finish() {
+          if (called) return;
+          called = true;
+          if (self._watchdog) { clearTimeout(self._watchdog); self._watchdog = null; }
+          if (self._onReadyFirstFrame) {
+            document.removeEventListener('ap-orrery-first-frame', self._onReadyFirstFrame);
+            self._onReadyFirstFrame = null;
+          }
+          done();
+        }
         if (this._firstFrameSeen) {
           requestAnimationFrame(finish);
           return;
         }
-        document.addEventListener('ap-orrery-first-frame', function once() {
-          document.removeEventListener('ap-orrery-first-frame', once);
+        this._onReadyFirstFrame = function () {
           self._firstFrameSeen = true;
           finish();
-        });
-        requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(finish, 900); }); });
+        };
+        document.addEventListener('ap-orrery-first-frame', this._onReadyFirstFrame);
+        // Archive fallbacks historically lacked a reliable frame event. The
+        // flagship does not: it stays busy until the real WebGL renderer proves
+        // a frame, or the watchdog reports an explicit unavailable state.
+        if (!this._strict3D) {
+          requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(finish, 900); }); });
+        }
       };
 
       C.prototype._armWatchdog = function () {
         var self = this;
         this._watchdog = setTimeout(function () {
           self._watchdog = null;
-          if (self._ready || self._posted) return;
+          if (self._firstFrameSeen || self._posted) return;
+          if (self._onReadyFirstFrame) {
+            document.removeEventListener('ap-orrery-first-frame', self._onReadyFirstFrame);
+            self._onReadyFirstFrame = null;
+          }
           if (self._strict3D) {
             self._poster('The real 3D Observatory took too long to start. No substitute model has been shown.');
           } else {
@@ -581,6 +604,16 @@
 
       C.prototype._poster = function (message) {
         this._posted = true;
+        if (this._watchdog) { clearTimeout(this._watchdog); this._watchdog = null; }
+        if (this._onReadyFirstFrame) {
+          document.removeEventListener('ap-orrery-first-frame', this._onReadyFirstFrame);
+          this._onReadyFirstFrame = null;
+        }
+        this._unwireEngineEvents();
+        try { if (this._engine && this._engine.destroy) this._engine.destroy(); } catch (e) {}
+        if (runningEngine === this._engine) runningEngine = null;
+        this._engine = null;
+        this._ready = false;
         this.setAttribute('data-engine', 'poster');
         window.__voidOrreryEngine = 'poster';
         if (this._ph) { try { this._ph.remove(); } catch (e) {} this._ph = null; }
@@ -625,9 +658,6 @@
         };
         this._onEngineFatal = function (e) {
           if (!self._strict3D || self._posted) return;
-          self._posted = true;
-          try { if (self._engine && self._engine.destroy) self._engine.destroy(); } catch (_) {}
-          self._posted = false;
           var message = e && e.detail && e.detail.message;
           self._poster(message || 'The real 3D Observatory stopped. No substitute model has been shown.');
         };

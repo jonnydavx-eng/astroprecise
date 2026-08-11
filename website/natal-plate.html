@@ -1,242 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Natal Plate — the real sky news | Astro Precise</title>
-<meta name="description" content="Print-grade A3 plate of your birth minute — positions to a sixtieth of a degree, sealed fingerprint, live verify. The real sky news: computed, never fabricated. Weather report of the sky, not prophecy.">
-<meta property="og:title" content="The Natal Plate — the real sky news | Astro Precise">
-<meta property="og:description" content="A3 star map of one birth minute. Sealed AP-FP-1 fingerprint. The real sky news.">
-<link rel="canonical" href="https://astroprecise.app/natal-plate.html">
-<!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
-     IBM Plex Mono from Google Fonts, which handed Google a request from every
-     reader while privacy.html said the site's fonts were its own. Both files
-     were already in this repo and already precached by the service worker —
-     this page had simply never been cut over. The variable Schibsted file has
-     no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css">
-<script src="./js/void-orrery-adapter.js?v=834"></script>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#0a0e12;font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
-a{color:#d8b46a;text-decoration:none}a:hover{color:#ff7a45}
-a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2px}
-.mono{font-family:'IBM Plex Mono',monospace}
-.screenbar{max-width:1123px;margin:0 auto;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:#f2ecdf}
-.btn{display:inline-block;background:#f2ecdf;color:#000;border:0;border-radius:100px;padding:13px 26px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;cursor:pointer}
-.btn:hover{filter:brightness(1.08);color:#000}
-#scaler{transform-origin:top center}
-.sheet{width:297mm;height:420mm;background:#f8fbfc;color:#10202c;margin:0 auto 26px;box-shadow:0 8px 40px rgba(0,0,0,.6);padding:14mm 16mm 10mm;display:flex;flex-direction:column;position:relative}
-.hdr{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #10202c;padding-bottom:5mm}
-.tealbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.26em;color:#147a99;border-bottom:1px solid #10202c;padding-bottom:2mm;margin-bottom:1mm}
-.trow{display:flex;gap:4mm;align-items:baseline;padding:1.6mm 0;border-bottom:1px solid rgba(16,32,44,.14);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em}
-.crow{display:flex;gap:5mm;align-items:baseline;padding:1.8mm 0;border-bottom:1px solid rgba(16,32,44,.14);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em}
-@media print{
-  @page{size:297mm 420mm;margin:0}
-  body{background:#fff}
-  .screenbar{display:none}
-  #scaler{transform:none!important}
-  .sheet{box-shadow:none;margin:0;page-break-after:always}
-}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#020307">
+  <title>Numbered Sky Plate — product preview | AstroPrecise</title>
+  <meta name="description" content="Preview the planned AstroPrecise Numbered Sky Plate: a print-ready A3 birth-sky edition with computed positions and a fingerprint anyone can recompute.">
+  <link rel="canonical" href="https://astroprecise.app/natal-plate.html">
+  <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
+  <meta property="og:site_name" content="AstroPrecise">
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="Numbered Sky Plate — product preview">
+  <meta property="og:description" content="A print-ready A3 birth-sky edition with computed positions and a public, recomputable fingerprint.">
+  <meta property="og:url" content="https://astroprecise.app/natal-plate.html">
+  <meta property="og:image" content="https://astroprecise.app/img/shop/numbered-sky-plate-v835.webp">
+  <link rel="stylesheet" href="css/fonts.css?v=835">
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835">
+  <script src="js/ap-nav-model-v834.js?v=835" defer></script>
+  <style>
+    .ap-plate-main{border-bottom:1px solid var(--ap-line)}
+    .ap-plate-shell{width:min(1180px,calc(100% - 40px));margin:0 auto}
+    .ap-plate-hero{padding:clamp(48px,7vw,92px) 0;display:grid;grid-template-columns:minmax(0,.78fr) minmax(480px,1.22fr);gap:clamp(42px,7vw,92px);align-items:center}
+    .ap-plate-kicker{margin:0;color:var(--ap-brass);font:10px/1.5 var(--ap-data);letter-spacing:.15em;text-transform:uppercase}
+    .ap-plate-copy h1{max-width:9ch;margin:14px 0 20px;color:var(--ap-paper);font:italic 500 clamp(54px,7vw,88px)/.9 var(--ap-display);letter-spacing:-.035em}
+    .ap-plate-copy>p:not(.ap-plate-kicker){max-width:42ch;margin:0;color:var(--ap-paper-dim);font-size:17px;line-height:1.65}
+    .ap-plate-state{display:flex;gap:10px;align-items:center;margin:26px 0;color:var(--ap-silver);font:10px/1.5 var(--ap-data);letter-spacing:.08em;text-transform:uppercase}
+    .ap-plate-state i{width:7px;height:7px;border-radius:50%;background:var(--ap-ember);box-shadow:0 0 14px rgba(255,100,40,.6)}
+    .ap-plate-actions{display:flex;flex-wrap:wrap;gap:10px}
+    .ap-plate-actions a{min-height:48px;display:inline-flex;align-items:center;justify-content:center;padding:0 18px;border:1px solid var(--ap-line-strong);border-radius:5px;color:var(--ap-paper);font-weight:650;text-decoration:none}
+    .ap-plate-actions a:first-child{border-color:var(--ap-ember);background:var(--ap-ember);color:#170702}
+    .ap-plate-art{margin:0;border:1px solid var(--ap-line-strong);border-radius:8px;overflow:hidden;background:var(--ap-void-raised);box-shadow:var(--ap-shadow)}
+    .ap-plate-art img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+    .ap-plate-art figcaption{padding:14px 17px;color:var(--ap-paper-faint);font:10px/1.6 var(--ap-data);letter-spacing:.04em}
+    .ap-plate-spec{border-top:1px solid var(--ap-line);border-bottom:1px solid var(--ap-line)}
+    .ap-plate-spec__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+    .ap-plate-spec__grid>div{padding:28px 24px;border-left:1px solid var(--ap-line)}
+    .ap-plate-spec__grid>div:first-child{border-left:0}
+    .ap-plate-spec span{color:var(--ap-brass);font:9px/1.4 var(--ap-data);letter-spacing:.1em;text-transform:uppercase}
+    .ap-plate-spec strong{display:block;margin:9px 0 7px;color:var(--ap-paper);font:600 25px/1 var(--ap-display)}
+    .ap-plate-spec p{margin:0;color:var(--ap-paper-dim);font-size:13px;line-height:1.55}
+    .ap-plate-proof{padding:clamp(58px,8vw,96px) 0;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(38px,7vw,84px);align-items:start}
+    .ap-plate-proof h2{margin:12px 0 0;color:var(--ap-paper);font:600 clamp(40px,5vw,64px)/.98 var(--ap-display)}
+    .ap-plate-proof__receipt{border-top:1px solid var(--ap-line-strong)}
+    .ap-plate-proof__receipt>div{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--ap-line)}
+    .ap-plate-proof dt{color:var(--ap-brass);font:9px/1.5 var(--ap-data);letter-spacing:.1em;text-transform:uppercase}
+    .ap-plate-proof dd{margin:0;color:var(--ap-paper-dim);font-size:14px;line-height:1.6}
+    .ap-plate-proof dd a{color:var(--ap-silver)}
+    @media(max-width:800px){.ap-plate-shell{width:min(100% - 32px,1180px)}.ap-plate-hero,.ap-plate-proof{grid-template-columns:1fr}.ap-plate-hero{padding-top:40px}.ap-plate-copy h1{font-size:clamp(52px,15vw,72px)}.ap-plate-art{grid-row:1}.ap-plate-spec__grid{grid-template-columns:1fr 1fr}.ap-plate-spec__grid>div:nth-child(odd){border-left:0}.ap-plate-spec__grid>div:nth-child(n+3){border-top:1px solid var(--ap-line)}}
+    @media(max-width:480px){.ap-plate-spec__grid{grid-template-columns:1fr}.ap-plate-spec__grid>div{border-left:0!important;border-top:1px solid var(--ap-line)}.ap-plate-spec__grid>div:first-child{border-top:0}.ap-plate-actions a{width:100%}.ap-plate-proof__receipt>div{grid-template-columns:86px 1fr}}
+  </style>
 </head>
-<body>
+<body class="page-natal-plate">
+  <a class="skip-link" href="#main-content">Skip to plate preview</a>
+  <header class="site-header" role="banner" data-ap-static-nav>
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home"><span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28"></span><span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span></a>
+        <div class="navbar__nav" role="group" aria-label="Primary"><noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Birth Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="eclipse.html" class="navbar__link">Eclipse</a><a href="shop.html" class="navbar__link">Shop</a></noscript></div>
+        <div class="navbar__end"><button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button></div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+    </nav>
+  </header>
 
-<div class="screenbar">
-  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)" href="./index.html">← THE OBSERVATORY</a>
-  <h1 class="mono" style="margin:0;font-weight:400;font-size:10px;letter-spacing:.26em;color:#d8b46a">THE NATAL PLATE · £14 · SAMPLE EDITION SHOWN IN FULL</h1>
-  <span style="display:flex;gap:10px;flex-wrap:wrap">
-    <button class="btn" onclick="window.print()" type="button">PRINT / SAVE PDF</button>
-    <a class="btn" style="background:none;border:1px solid rgba(242,236,223,.35);color:#f2ecdf" href="./shop.html#plate">NOTIFY ME — £14 WHEN CHECKOUT OPENS</a>
-  </span>
-</div>
+  <main class="ap-plate-main" id="main-content">
+    <section class="ap-plate-shell ap-plate-hero" aria-labelledby="plate-title">
+      <div class="ap-plate-copy">
+        <p class="ap-plate-kicker">Planned edition · A3 digital plate</p>
+        <h1 id="plate-title">One minute. One sky.</h1>
+        <p>A print-ready record of the birth sky you compute in AstroPrecise: body positions, measured relationships and a numbered fingerprint that can be checked against a public register.</p>
+        <div class="ap-plate-state"><i aria-hidden="true"></i>Preview · planned £14 · checkout not connected</div>
+        <div class="ap-plate-actions"><a href="chart.html">Cast the free chart</a><a href="verify.html">Verify sample No. 001</a></div>
+      </div>
+      <figure class="ap-plate-art"><img src="img/shop/numbered-sky-plate-v835.webp" width="1600" height="900" alt="A black framed astronomical plate engraved with precise brass orbital arcs"><figcaption>Editorial product study · final geometry will be generated from the computed chart, not copied from this artwork</figcaption></figure>
+    </section>
 
-<div class="mono" style="max-width:1123px;margin:0 auto;padding:8px 22px 6px;color:#d8b46a;font-size:10px;letter-spacing:.22em">DESIGN MASTER · ENHANCED A3 PLATE (CLAUDE DESIGN LAB) · NATAL SERIES No. 001 — EDITION NUMBERING IS PER SERIES; THE VERIFY PAGE SHOWS THE ECLIPSE-MINUTE SERIES</div>
-<div style="max-width:1123px;margin:0 auto;padding:0 22px 14px;color:rgba(242,236,223,.8);font-size:15px;line-height:1.6">What this is: a print-grade A3 star map of your exact birth minute — every planet placed to a sixtieth of a degree, the wheel of angles between them, a sealed fingerprint, and a QR that re-computes the whole plate live for any doubter. <b style="color:#f2ecdf">£14, numbered, never reprinted for another person.</b> The full sample is shown below, in full — what you see is what arrives.</div>
-<div style="max-width:1123px;margin:0 auto 16px;padding:0 22px">
-  <img src="./img/plate-enhanced.svg" width="1240" height="1754" alt="Enhanced Natal Plate design master — print-grade A3 sample with sealed fingerprint and heliocentric band" style="width:100%;height:auto;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.55);background:#f8fbfc" loading="lazy" decoding="async" />
-</div>
+    <section class="ap-plate-spec" aria-label="Planned plate specification">
+      <div class="ap-plate-shell ap-plate-spec__grid">
+        <div><span>Format</span><strong>A3 digital</strong><p>Print-ready artwork intended for a local or professional printer.</p></div>
+        <div><span>Source</span><strong>Your chart</strong><p>Positions come from the same browser calculation shown before the product.</p></div>
+        <div><span>Proof</span><strong>AP-FP-1</strong><p>A SHA-256 fingerprint links the sealed figures to the public register.</p></div>
+        <div><span>Edition</span><strong>Numbered</strong><p>Numbering is per series; exact fulfilment terms will appear before payment.</p></div>
+      </div>
+    </section>
 
-<div id="scaler">
-<!-- SHEET 1 · THE NATAL PLATE -->
-<div class="sheet">
-  <div class="hdr">
-    <div>
-      <div style="font-size:26px;font-weight:700;letter-spacing:.12em">ASTROPRECISE</div>
-      <div class="mono" style="font-size:10px;letter-spacing:.3em;color:#147a99;margin-top:4px">THE NATAL PLATE · COMPUTED, NEVER FABRICATED</div>
-    </div>
-    <div class="mono" style="text-align:right;font-size:10px;letter-spacing:.18em;line-height:2;color:#33454f">EDITION No. 001 · SAMPLE COMMISSION<br>MEEUS SERIES · TO A SIXTIETH OF A DEGREE</div>
-  </div>
-  <div style="display:flex;justify-content:space-between;align-items:baseline;padding:6mm 0 4mm;flex-wrap:wrap;gap:10px">
-    <div style="font-size:21px;font-weight:700">The sky over Manchester · 14 March 1994 · 09:12 UTC</div>
-    <div class="mono" style="font-size:10px;letter-spacing:.16em;color:#33454f">ONE MINUTE · ONE SKY · NEVER REPRINTED FOR ANOTHER</div>
-  </div>
-  <div style="display:flex;justify-content:center;padding:2mm 0">
-    <svg id="plate" viewBox="0 0 1000 1000" style="width:236mm;height:236mm;display:block" role="img" aria-label="Star plate of the birth minute"></svg>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 10mm;padding:4mm 0 0">
-    <div><div class="tealbl">POSITIONS · NEVER ROUNDED</div><div id="tableL"></div></div>
-    <div><div class="tealbl">&nbsp;</div><div id="tableR"></div></div>
-  </div>
-  <div style="padding:4mm 0 0">
-    <div class="tealbl">MEASURED ANGLES · WITHIN 5° OF EXACT</div>
-    <div id="aspectRows" style="display:flex;flex-wrap:wrap;gap:2mm 8mm"></div>
-  </div>
-  <div style="flex:1"></div>
-  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8mm;border-top:2px solid #10202c;padding-top:4mm">
-    <div class="mono" style="font-size:9.5px;letter-spacing:.14em;line-height:2;color:#33454f">
-      <!-- This block used to read "astroprecise.app/#b=1994-03-14|09:12|0" — the
-           printed plate instructing its owner to type their own birth date and
-           time into an address bar. An address bar is the one field on a
-           computer that is not private: it goes into history, into autocomplete,
-           onto every device that account is signed in to, and on most setups it
-           is a search box that sends what is being typed away as it is typed.
-           The plate carries its own sealed figures, so nothing about the owner
-           needs typing anywhere to check it. The #b= reader still exists for
-           anyone holding an old plate; this stops us minting new ones. -->
-      <span style="color:#10202c;font-weight:500">VERIFY THIS PLATE</span> — the figures above are sealed, and the seal re-computes:<br>
-      <span style="color:#147a99">astroprecise.app/verify.html</span><br>
-      It reads the plate's own numbers, in your browser, and checks them against the public register.<br>
-      Nothing about you is typed in, and nothing about you was uploaded to print this. It was computed where it was read.
-    </div>
-    <svg viewBox="0 0 120 120" style="width:24mm;height:24mm;flex:none" aria-hidden="true">
-      <circle cx="60" cy="60" r="56" style="fill:none;stroke:#147a99;stroke-width:2"></circle>
-      <circle cx="60" cy="60" r="44" style="fill:none;stroke:#147a99;stroke-width:1" opacity="0.5" stroke-dasharray="4 4"></circle>
-      <text x="60" y="66" text-anchor="middle" style="fill:#147a99;font-size:26px">✶</text>
-      <text x="60" y="86" text-anchor="middle" style="fill:#33454f;font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:2px">±1′</text>
-    </svg>
-  </div>
-</div>
+    <section class="ap-plate-shell ap-plate-proof" aria-labelledby="proof-title">
+      <div><p class="ap-plate-kicker">What is real today</p><h2 id="proof-title">The proof system already works.</h2></div>
+      <dl class="ap-plate-proof__receipt">
+        <div><dt>Calculation</dt><dd>The free chart and sample fingerprint run locally in the browser. Accuracy varies by body and date; the plate never claims navigation-grade precision.</dd></div>
+        <div><dt>Verification</dt><dd><a href="verify.html">Recompute sample No. 001</a> against the on-site public register with the shared AP-FP-1 module.</dd></div>
+        <div><dt>Availability</dt><dd>The physical-looking image above is an editorial study. Paid generation and delivery are not available until a verified checkout is visibly connected.</dd></div>
+        <div><dt>Next step</dt><dd><a href="shop.html#editions">Review the launch set</a> or cast the free chart first. No account and no purchase are required.</dd></div>
+      </dl>
+    </section>
+  </main>
 
-<!-- SHEET 2 · TWO SKIES -->
-<div class="sheet">
-  <div class="hdr">
-    <div>
-      <div style="font-size:26px;font-weight:700;letter-spacing:.12em">TWO SKIES</div>
-      <div class="mono" style="font-size:10px;letter-spacing:.3em;color:#147a99;margin-top:4px">THE COUPLES PLATE · MEASURED, NOT SCORED</div>
-    </div>
-    <div class="mono" style="text-align:right;font-size:10px;letter-spacing:.18em;line-height:2;color:#33454f">EDITION No. 001 · SAMPLE COMMISSION<br>28 CROSS-ANGLES · WITHIN 4° OF EXACT</div>
-  </div>
-  <div style="padding:6mm 0 2mm">
-    <div style="font-size:19px;font-weight:700">Manchester, 14 March 1994 · 09:12 — and Leeds, 2 November 1995 · 20:40</div>
-  </div>
-  <div style="display:flex;justify-content:center">
-    <svg id="duo" viewBox="0 0 1000 520" style="width:250mm;height:130mm;display:block" role="img" aria-label="Two charts side by side"></svg>
-  </div>
-  <div style="padding:2mm 0 0">
-    <div class="tealbl">THE ANGLES BETWEEN YOU · TIGHTEST FIRST</div>
-    <div id="crossRows"></div>
-    <div class="mono" style="font-size:9px;letter-spacing:.14em;color:#33454f;padding-top:3mm;line-height:1.9">● TEAL = FLOWING · THESE TWO SUPPORT EACH OTHER · ● CLAY = CHARGED · THESE TWO PULL. GEOMETRY, NOT A VERDICT — THE WRITTEN READING TELLS THE STORY.</div>
-  </div>
-  <div style="flex:1"></div>
-  <div class="mono" style="display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid #10202c;padding-top:4mm;font-size:9.5px;letter-spacing:.14em;color:#33454f">
-    <span>VERIFY: <span style="color:#147a99">astroprecise.app</span> — MEASURE ANY TWO CHARTS, FREE</span>
-    <span>ASTROPRECISE · COMPUTED, NEVER FABRICATED</span>
-  </div>
-</div>
-</div>
-
-<script>
-(function () {
-  'use strict';
-  var $ = function (id) { return document.getElementById(id); };
-  function fit() {
-    var w = document.documentElement.clientWidth, sheetPx = 1123;
-    var s = Math.min(1, (w - 16) / sheetPx);
-    $('scaler').style.transform = 'scale(' + s + ')';
-    $('scaler').style.height = s < 1 ? ($('scaler').scrollHeight * s + 40) + 'px' : 'auto';
-  }
-  window.addEventListener('resize', fit);
-  function build() {
-    var E = window.VoidEphem;
-    if (!E) { setTimeout(build, 150); return; }
-    var rowsA = E.positions(new Date(Date.UTC(1994, 2, 14, 9, 12))).rows;
-    var rowsB = E.positions(new Date(Date.UTC(1995, 10, 2, 20, 40))).rows;
-    var posText = function (r) { return r.sign.deg + '°' + String(r.sign.min).padStart(2, '0') + '′ ' + r.sign.name.toUpperCase(); };
-    var pt = function (lon, r, cx, cy) { var a = (180 - lon) * Math.PI / 180; return [+(cx + r * Math.cos(a)).toFixed(1), +(cy - r * Math.sin(a)).toFixed(1)]; };
-    var cx = 500, cy = 500, s = '';
-    s += '<circle cx="500" cy="500" r="470" fill="#0c1722"/>';
-    var seed = 19940314, rand = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-    for (var i = 0; i < 260; i++) {
-      var t = rand() * Math.PI * 2, rr = Math.sqrt(rand()) * 458;
-      s += '<circle cx="' + (cx + rr * Math.cos(t)).toFixed(1) + '" cy="' + (cy + rr * Math.sin(t)).toFixed(1) + '" r="' + (0.6 + rand() * 1.7).toFixed(1) + '" fill="#e9f2f6" opacity="' + (0.25 + rand() * 0.7).toFixed(2) + '"/>';
-    }
-    s += '<circle cx="500" cy="500" r="470" fill="none" stroke="#10202c" stroke-width="3"/>';
-    s += '<circle cx="500" cy="500" r="434" fill="none" stroke="#d8b46a" stroke-width="1" opacity="0.5"/>';
-    s += '<circle cx="500" cy="500" r="250" fill="none" stroke="#d8b46a" stroke-width="1" opacity="0.25"/>';
-    for (i = 0; i < 72; i++) {
-      var major = i % 6 === 0, lon = i * 5;
-      var p1 = pt(lon, major ? 404 : 418, cx, cy), p2 = pt(lon, 434, cx, cy);
-      s += '<line x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '" stroke="#d8b46a" stroke-width="' + (major ? 2 : 1) + '" opacity="' + (major ? 0.85 : 0.4) + '"/>';
-    }
-    // Printed labels say what the angle DOES and give its size, rather than
-    // naming it in trade jargon. "EASY 60°" is both plainer than "SEXTILE" and
-    // strictly more informative — the reader can see which angle was measured.
-    var GATE = [[0, 'TOGETHER', 1], [60, 'EASY 60°', 1], [90, 'TENSE 90°', 0], [120, 'EASY 120°', 1], [180, 'FACING 180°', 0]];
-    function hits(ra, rb, gate, crossMode) {
-      var out = [];
-      for (var a2 = 0; a2 < ra.length; a2++) for (var k = crossMode ? 0 : a2 + 1; k < rb.length; k++) {
-        var sep = Math.abs(((ra[a2].lon - rb[k].lon + 540) % 360) - 180);
-        for (var q = 0; q < GATE.length; q++) {
-          var orb = Math.abs(sep - GATE[q][0]);
-          if (orb <= gate && !(GATE[q][0] === 0 && !crossMode && orb > 5)) { out.push({ a: ra[a2], b: rb[k], verb: GATE[q][1], easy: GATE[q][2], orb: orb, ang: GATE[q][0] }); break; }
-        }
-      }
-      return out.sort(function (x, y) { return x.orb - y.orb; });
-    }
-    var own = hits(rowsA, rowsA, 5, false);
-    own.forEach(function (h) {
-      var q1 = pt(h.a.lon, 240, cx, cy), q2 = pt(h.b.lon, 240, cx, cy);
-      s += '<line x1="' + q1[0] + '" y1="' + q1[1] + '" x2="' + q2[0] + '" y2="' + q2[1] + '" stroke="' + (h.ang === 0 ? '#e9f2f6' : h.easy ? '#4bd0c0' : '#f28a6a') + '" stroke-width="2.5" opacity="0.85"/>';
-    });
-    E.SIGNS.forEach(function (sg, i2) {
-      var p = pt(i2 * 30 + 15, 452, cx, cy);
-      s += '<text x="' + p[0] + '" y="' + p[1] + '" text-anchor="middle" dominant-baseline="middle" fill="#d8b46a" font-size="30" opacity="0.9">' + sg[1] + '</text>';
-    });
-    rowsA.slice().sort(function (a2, b2) { return a2.lon - b2.lon; }).forEach(function (r, i2) {
-      var rg = i2 % 2 ? 296 : 362;
-      var g = pt(r.lon, rg, cx, cy), d = pt(r.lon, 404, cx, cy);
-      s += '<line x1="' + d[0] + '" y1="' + d[1] + '" x2="' + g[0] + '" y2="' + (g[1] - 24) + '" stroke="#5b7684" stroke-width="1" opacity="0.6"/>';
-      s += '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="5" fill="#e9f2f6"/>';
-      s += '<text x="' + g[0] + '" y="' + g[1] + '" text-anchor="middle" dominant-baseline="middle" fill="#ffffff" font-size="40">' + r.glyph + '</text>';
-      s += '<text x="' + g[0] + '" y="' + (g[1] + 32) + '" text-anchor="middle" fill="#d8b46a" font-size="15" font-family="IBM Plex Mono, monospace" letter-spacing="1">' + r.sign.deg + '°' + r.sign.glyph + '</text>';
-    });
-    s += '<text x="500" y="268" text-anchor="middle" fill="#147a99" font-size="30">✶</text>';
-    $('plate').innerHTML = s;
-    var trow = function (r) { return '<div class="trow"><span style="width:6mm">' + r.glyph + '</span><span style="width:24mm;color:#33454f">' + r.name.toUpperCase() + '</span><span style="flex:1;text-align:right">' + posText(r) + '</span><span style="width:6mm;text-align:right;color:#d4573a">' + (r.retro ? '℞' : '') + '</span></div>'; };
-    $('tableL').innerHTML = rowsA.slice(0, 5).map(trow).join('');
-    $('tableR').innerHTML = rowsA.slice(5).map(trow).join('');
-    $('aspectRows').innerHTML = own.map(function (h) {
-      return '<span class="mono" style="font-size:10.5px;letter-spacing:.06em;padding:1.6mm 0"><span style="color:' + (h.ang === 0 ? '#33454f' : h.easy ? '#1a9e8f' : '#d4573a') + '">●</span> ' + h.a.name.toUpperCase() + ' ' + h.verb + ' ' + h.b.name.toUpperCase() + ' · ' + h.orb.toFixed(1) + '° OFF EXACT</span>';
-    }).join('');
-    var s2 = '';
-    [[260, rowsA, 'YOU · 1994'], [740, rowsB, 'THEM · 1995']].forEach(function (side) {
-      var dcx = side[0];
-      s2 += '<circle cx="' + dcx + '" cy="250" r="218" fill="none" stroke="#10202c" stroke-width="2.5"/>';
-      s2 += '<circle cx="' + dcx + '" cy="250" r="196" fill="none" stroke="#147a99" stroke-width="1" opacity="0.45"/>';
-      s2 += '<circle cx="' + dcx + '" cy="250" r="120" fill="none" stroke="#147a99" stroke-width="1" opacity="0.22"/>';
-      side[1].slice().sort(function (a2, b2) { return a2.lon - b2.lon; }).forEach(function (r, i2) {
-        var rg = i2 % 2 ? 138 : 170;
-        var g = pt(r.lon, rg, dcx, 250), d = pt(r.lon, 196, dcx, 250);
-        s2 += '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="3.5" fill="#147a99"/>';
-        s2 += '<text x="' + g[0] + '" y="' + g[1] + '" text-anchor="middle" dominant-baseline="middle" fill="#10202c" font-size="24">' + r.glyph + '</text>';
-      });
-      s2 += '<text x="' + dcx + '" y="505" text-anchor="middle" fill="#33454f" font-size="15" font-family="IBM Plex Mono, monospace" letter-spacing="3">' + side[2] + '</text>';
-    });
-    $('duo').innerHTML = s2;
-    var KEYS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'];
-    var flt = function (rows) { return rows.filter(function (r) { return KEYS.indexOf(r.key) >= 0; }); };
-    $('crossRows').innerHTML = hits(flt(rowsA), flt(rowsB), 4, true).slice(0, 9).map(function (h) {
-      return '<div class="crow"><span style="width:34mm">' + h.a.glyph + ' YOUR ' + h.a.name.toUpperCase() + '</span><span style="width:24mm;text-align:center;color:' + (h.easy ? '#1a9e8f' : '#d4573a') + '">' + h.verb + '</span><span style="width:34mm">' + h.b.glyph + ' THEIR ' + h.b.name.toUpperCase() + '</span><span style="flex:1;text-align:right;color:#33454f">' + h.orb.toFixed(1) + '° OFF EXACT</span></div>';
-    }).join('');
-    fit();
-  }
-  build();
-})();
-</script>
-<script src="./js/ap-checkout-honest.js?v=771" defer></script>
-<script src="./js/ap-gumroad-bridge.js?v=771" defer></script>
-<script src="./js/ap-sky-time.js" defer></script>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
+  <script src="js/ap-sky-time.js?v=835" defer></script>
 </body>
 </html>

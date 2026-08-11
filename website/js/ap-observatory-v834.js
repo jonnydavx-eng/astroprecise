@@ -35,12 +35,6 @@
 
   function byId(id) { return document.getElementById(id); }
 
-  function setSkyPeriod() {
-    var h = new Date().getHours();
-    var period = h < 6 ? 'night' : h < 10 ? 'dawn' : h < 17 ? 'day' : h < 21 ? 'dusk' : 'night';
-    document.body.dataset.skyPeriod = period;
-  }
-
   function formatUtc(date) {
     try {
       return new Intl.DateTimeFormat('en-GB', {
@@ -158,7 +152,7 @@
       if (state.focus && FOCUS[state.focus] && orrery.flyTo) {
         if (orrery.flyTo(state.focus) !== false) showFocus(FOCUS[state.focus], { key: state.focus });
       } else if (state.scale != null && orrery.flyScale) {
-        orrery.flyScale(Number(state.scale));
+        orrery.flyScale(state.scale);
         showScale(state.scale);
       } else {
         showScale('SYSTEM');
@@ -242,7 +236,6 @@
     }, 30000);
   }
 
-  setSkyPeriod();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();

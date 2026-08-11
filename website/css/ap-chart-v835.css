@@ -47,6 +47,10 @@
   font-family: var(--chart-body);
 }
 
+body.page-chart {
+  background: var(--chart-void);
+}
+
 .page-chart .ap-symbols {
   position: absolute;
   width: 0;
@@ -1256,8 +1260,7 @@
 }
 
 .page-chart .chart-save-confirmation,
-.page-chart .chart-handoff-note,
-.page-chart .chart-tabs-hint {
+.page-chart .chart-handoff-note {
   max-width: 76ch;
   display: flex;
   align-items: flex-start;
@@ -1274,11 +1277,6 @@
 .page-chart .chart-save-confirmation a,
 .page-chart .chart-handoff-note a {
   color: var(--chart-brass);
-}
-
-.page-chart .chart-tabs-hint {
-  margin: 0 0 18px;
-  border-left-color: var(--chart-silver);
 }
 
 .page-chart .big-three-section {
@@ -1483,6 +1481,21 @@
   border: 1px dashed rgba(216, 180, 106, 0.15);
   border-radius: 50%;
   pointer-events: none;
+}
+
+.page-chart .natal-wheel-container--withheld {
+  width: 100%;
+  min-height: 220px;
+  padding: 22px;
+  border-radius: 5px;
+}
+
+.page-chart .natal-wheel-container--withheld::before {
+  display: none;
+}
+
+.page-chart .natal-wheel-container--withheld .natal-wheel-mount {
+  aspect-ratio: auto;
 }
 
 .page-chart .natal-wheel-mount {
@@ -2041,7 +2054,7 @@
   place-items: center;
   padding: 28px;
   border: 1px dashed rgba(185, 200, 220, 0.32);
-  border-radius: 50%;
+  border-radius: 5px;
   color: var(--chart-silver);
   text-align: center;
 }
@@ -2495,11 +2508,7 @@
     justify-content: flex-start;
   }
 
-  .page-chart .ap-withheld-card {
-    min-height: 220px;
-    border-radius: 50%;
-    padding: 24px;
-  }
+  .page-chart .ap-withheld-card { min-height: 180px; padding: 24px; }
 
   .page-chart .house-system-switch__opts {
     grid-template-columns: minmax(0, 1fr);

@@ -88,7 +88,7 @@
   }
 
   function isLaunchRoute() {
-    return /^(?:index|chart|horoscope|shop|eclipse|privacy|terms|refunds|verify)\.html$/i.test(staticHere());
+    return /^(?:index|chart|horoscope|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(staticHere());
   }
 
   function staticLink(row, here, drawer) {

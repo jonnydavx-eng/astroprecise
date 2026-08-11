@@ -37,11 +37,6 @@
     leo: 'Sun', virgo: 'Mercury', libra: 'Venus', scorpio: 'Pluto',
     sagittarius: 'Jupiter', capricorn: 'Saturn', aquarius: 'Uranus', pisces: 'Neptune',
   };
-  const RULER_STILLS = {
-    aries: 'mars', taurus: 'venus', gemini: 'mercury', cancer: 'moon',
-    leo: 'sun', virgo: 'mercury', libra: 'venus', scorpio: 'pluto',
-    sagittarius: 'jupiter', capricorn: 'saturn', aquarius: 'uranus', pisces: 'neptune',
-  };
   const PHASE_NAMES = [
     'New Moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous',
     'Full Moon', 'Waning gibbous', 'Last quarter', 'Waning crescent',
@@ -61,7 +56,6 @@
         else {
           existing.addEventListener('load', resolve, { once: true });
           existing.addEventListener('error', reject, { once: true });
-          window.setTimeout(resolve, 0);
         }
         return;
       }
@@ -116,7 +110,7 @@
     const host = document.getElementById('toast-container');
     if (!host) return;
     const toast = document.createElement('div');
-    toast.className = 'toast';
+    toast.className = 'toast toast--fallback';
     toast.textContent = title + ' · ' + message;
     host.appendChild(toast);
     window.setTimeout(function () { toast.remove(); }, 3600);
@@ -164,7 +158,7 @@
     context.beginPath();
     context.arc(cx, cy, radius, 0, Math.PI * 2);
     context.clip();
-    context.fillStyle = '#18202d';
+    context.fillStyle = '#020307';
     context.fillRect(0, 0, width, height);
     context.fillStyle = '#f2ecdf';
     context.beginPath();
@@ -210,12 +204,11 @@
     const data = window.Interpretations && Interpretations.getDailyHoroscope(info.name, new Date());
     if (!panel || !data) throw new Error('No daily reading returned');
 
-    const thumb = document.getElementById('srp-card-thumb');
+    const seal = document.getElementById('srp-sign-seal');
     const ruler = RULERS[signKey] || '';
-    if (thumb) {
-      const body = RULER_STILLS[signKey] || 'earth';
-      thumb.src = 'img/engine/' + body + '.webp';
-      thumb.alt = info.name + ' · ruled by ' + ruler + ' · Observatory engine still';
+    if (seal) {
+      seal.src = 'assets/images/seals/zodiac/' + signKey + '.svg';
+      seal.alt = info.name + ' engraved zodiac seal';
     }
     document.getElementById('srp-sign-name').textContent = info.name;
     document.getElementById('srp-date').textContent = info.dates + ' · ' + new Date().toLocaleDateString('en-GB', {
@@ -258,6 +251,9 @@
   function selectSign(signKey) {
     if (!SIGNS[signKey]) return;
     const token = ++selectionToken;
+    document.querySelectorAll('.sign-card').forEach(function (button) {
+      button.removeAttribute('aria-busy');
+    });
     const card = document.querySelector('.sign-card[data-sign="' + signKey + '"]');
     if (card) card.setAttribute('aria-busy', 'true');
     setStatus('Calculating ' + SIGNS[signKey].name + ' at 12:00 UT…');
@@ -275,6 +271,7 @@
 
   function closeReading() {
     selectionToken += 1;
+    const previousSign = currentOpenSign;
     currentOpenSign = null;
     const panel = document.getElementById('sign-reading-panel');
     if (panel) {
@@ -286,6 +283,8 @@
     syncSignButtons(null);
     updateReadingUrl(null);
     setStatus('');
+    const previousCard = previousSign && document.querySelector('.sign-card[data-sign="' + previousSign + '"]');
+    if (previousCard) previousCard.focus();
   }
 
   function updateEvidenceLedger() {
@@ -307,8 +306,14 @@
         return;
       }
       const normalized = ((lon % 360) + 360) % 360;
-      const sign = signs[Math.floor(normalized / 30)] || 'Aries';
-      target.textContent = sign + ' ' + (normalized % 30).toFixed(1) + '°' + (position.retrograde ? ' · retrograde' : '');
+      let signIndex = Math.floor(normalized / 30);
+      let degree = Math.round((normalized - signIndex * 30) * 10) / 10;
+      if (degree >= 30) {
+        signIndex = (signIndex + 1) % signs.length;
+        degree = 0;
+      }
+      const sign = signs[signIndex] || 'Aries';
+      target.textContent = sign + ' ' + degree.toFixed(1) + '°' + (position.retrograde ? ' · retrograde' : '');
     });
   }
 
@@ -480,8 +485,11 @@
     const data = Interpretations.getDailyHoroscope(info.name, new Date());
     const url = new URL(window.location.href);
     url.searchParams.set('sign', currentOpenSign);
+    const overview = String(data.overview || '').trim();
+    const sentenceMatch = overview.match(/^.*?[.!?](?:\s|$)/);
+    const firstSentence = sentenceMatch ? sentenceMatch[0].trim() : overview;
     const text = info.name + ' · ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + '. ' +
-      String(data.overview || '').split(/(?<=[.!?])\s/)[0] + ' Astrological interpretation from positions calculated at 12:00 UT.';
+      firstSentence + ' Astrological interpretation from positions calculated at 12:00 UT.';
     try {
       if (navigator.share) await navigator.share({ title: info.name + ' daily reading', text: text, url: url.href });
       else if (navigator.clipboard && navigator.clipboard.writeText) {

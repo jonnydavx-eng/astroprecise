@@ -26,6 +26,7 @@
     { href: 'terms.html', label: 'Terms' },
     { href: 'refunds.html', label: 'Refunds' },
     { href: 'verify.html', label: 'Verify' },
+    { href: 'contact.html', label: 'Contact' },
   ];
 
   function linksHtml(items) {
@@ -55,7 +56,7 @@
   }
 
   function mount() {
-    var existing = document.querySelector('footer:not(.ap-lite-footer)');
+    var existing = document.querySelector('body > footer:not(.ap-lite-footer)');
     if (existing && existing.matches('.ap-site-footer[data-ap-footer-model="compact-v835"]')
         && existing.querySelector('.ap-site-footer__inner')) {
       // Authored launch footers are already complete at first paint. Replacing

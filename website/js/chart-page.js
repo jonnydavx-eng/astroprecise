@@ -2,7 +2,7 @@
  * Astro Precise — Birth Chart Page Controller
  * Wires the chart form to the ephemeris engine, renders results, and adds
  * city autocomplete, timezone-correct UT conversion, shareable links, a
- * downloadable natal poster, and a premium Big Three share card.
+ * downloadable natal plate, and a Big Three share card.
  *
  * Requires: ephemeris.js, chart-render.js, ap-load-interpretations.js, profile.js, app.js
  */
@@ -718,7 +718,7 @@
 
       if (gotTime) {
         timeEl.value = t;
-        // The `input` listener in chart.html owns the accuracy status line.
+        // The form interaction listener below owns the accuracy status line.
         timeEl.dispatchEvent(new Event('input', { bubbles: true }));
         timeEl.dispatchEvent(new Event('change', { bubbles: true }));
       }
@@ -754,7 +754,8 @@
 
       const form = document.getElementById('chart-form');
       if (form && typeof form.scrollIntoView === 'function') {
-        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        form.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
       }
       // The place always needs confirming, so it wins focus whenever it is the
       // outstanding field — including when we just pre-filled its text.
@@ -763,9 +764,10 @@
         : (timeEl && !timeEl.value ? timeEl : null);
       if (nextField) {
         // Focus after the smooth scroll settles; preventScroll so we don't fight it.
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         setTimeout(function () {
           try { nextField.focus({ preventScroll: true }); } catch (e) { nextField.focus(); }
-        }, 360);
+        }, reduce ? 0 : 360);
       }
     } catch (e) {}
   }
@@ -773,8 +775,12 @@
   // ── Results rendering ─────────────────────────────────────────────────────
 
   function fmtDeg(p) {
-    const dg = Math.floor(p.degree);
-    const mn = Math.round((p.degree - dg) * 60);
+    let dg = Math.floor(p.degree);
+    let mn = Math.round((p.degree - dg) * 60);
+    if (mn === 60) {
+      dg = (dg + 1) % 30;
+      mn = 0;
+    }
     return `${dg}°${String(mn).padStart(2, '0')}′`;
   }
 
@@ -789,21 +795,6 @@
       return;
     }
     wrapEl.classList.remove('hidden');
-
-    var tabsHint = document.getElementById('chart-tabs-hint');
-    if (!tabsHint) {
-      tabsHint = document.createElement('p');
-      tabsHint.id = 'chart-tabs-hint';
-      tabsHint.className = 'chart-tabs-hint';
-      tabsHint.textContent = 'Explore Overview, Planets, Houses, and Aspects — each tab opens a different layer of your chart.';
-      var tabsHost = wrapEl.querySelector('.tabs-card, .chart-tabs');
-      if (tabsHost && tabsHost.parentNode) {
-        tabsHost.parentNode.insertBefore(tabsHint, tabsHost);
-      } else {
-        wrapEl.insertBefore(tabsHint, wrapEl.firstChild.nextSibling);
-      }
-    }
-    tabsHint.removeAttribute('hidden');
 
     const resultNameEl = document.getElementById('result-name');
     if (resultNameEl) {
@@ -924,13 +915,17 @@
   function renderWheel(chart) {
     const el = document.getElementById('natal-wheel');
     if (!el) return;
+    const wrap = document.getElementById('natal-wheel-wrap');
     if (!chart.houses) {
       el.innerHTML = '<div class="ap-withheld-card" role="status"><div><strong>Natal wheel angles withheld</strong><span>Birth time is unknown, so the wheel cannot claim an Ascendant, MC or house cusps. Planetary signs remain available below.</span></div></div>';
       el.classList.remove('natal-wheel--loading', 'natal-wheel--loaded');
-      const wrap = document.getElementById('natal-wheel-wrap');
-      if (wrap) wrap.removeAttribute('aria-busy');
+      if (wrap) {
+        wrap.classList.add('natal-wheel-container--withheld');
+        wrap.removeAttribute('aria-busy');
+      }
       return;
     }
+    if (wrap) wrap.classList.remove('natal-wheel-container--withheld');
     if (!window.AstroChartRender) {
       // Renderer missing (failed to load/parse) — say so instead of a silent blank wheel.
       el.innerHTML = '<p class="chart-render-error">The chart renderer didn\'t load — please refresh the page.</p>';
@@ -944,7 +939,6 @@
       { title: null, wheelOnly: true, showTable: false, showLegend: false });
     el.classList.remove('natal-wheel--loading');
     el.classList.add('natal-wheel--loaded');
-    const wrap = document.getElementById('natal-wheel-wrap');
     if (wrap) wrap.removeAttribute('aria-busy');
   }
 
@@ -1353,8 +1347,6 @@
         panel.setAttribute('aria-hidden', panel.id === btn.getAttribute('aria-controls') ? 'false' : 'true');
       });
       if (moveFocus) btn.focus();
-      const hint = document.getElementById('chart-tabs-hint');
-      if (hint) hint.setAttribute('hidden', '');
     }
 
     tabs.forEach(function (btn, index) {
@@ -1533,12 +1525,11 @@
   // A single resolution-independent painter (paintShareImage) feeds every output:
   //   • square    1080×1080  — Instagram / general social post
   //   • story     1080×1920  — IG / FB / WhatsApp story (9:16)
-  //   • wallpaper 1080×1920  — lock-screen portrait (lead magnet)
+  //   • wallpaper 1080×1920  — lock-screen portrait
   //   • bigthree  1080×1080  — Sun / Moon / Rising social card only
-  //   • print     2480×3508  — A4-proportioned, print-on-demand poster (300dpi)
-  // The merch / print-on-demand line will reuse the SAME pipeline, so geometry is
-  // expressed in a 0..1 "design space" and multiplied by the canvas size: the
-  // print export is genuinely high-resolution, not an upscaled screenshot.
+  //   • print     2480×3508  — A4-proportioned high-resolution plate
+  // Geometry is resolution-independent, so the print export is drawn at its
+  // target dimensions rather than upscaled from a screenshot.
   // Honest + deterministic: only the real computed chart is ever drawn.
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -1565,7 +1556,7 @@
     story:     { w: 2160, h: 3840 },
     wallpaper: { w: 1080, h: 1920 },
     bigthree:  { w: 1080, h: 1080 },
-    print:     { w: 4960, h: 7016 }, // A4 @ ~600dpi — print-on-demand HD
+    print:     { w: 4960, h: 7016 }, // A4-proportioned high-resolution export
     // Legacy social sizes (still available via export picker)
     square1x: { w: 1080, h: 1080 },
     story1x:  { w: 1080, h: 1920 },
@@ -1723,11 +1714,11 @@
     x.lineJoin = 'round';
     const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                          'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-    // Observatory element tints (muted — match --ap-element-*)
+    // Brand-token element tints: ember, brass, paper and silver.
     const ELEMENT_SECTOR = {
-      Aries:'rgba(184,90,66,0.11)', Taurus:'rgba(90,122,72,0.11)', Gemini:'rgba(138,122,106,0.10)', Cancer:'rgba(74,117,128,0.12)',
-      Leo:'rgba(184,90,66,0.11)', Virgo:'rgba(90,122,72,0.11)', Libra:'rgba(138,122,106,0.10)', Scorpio:'rgba(74,117,128,0.12)',
-      Sagittarius:'rgba(184,90,66,0.11)', Capricorn:'rgba(90,122,72,0.11)', Aquarius:'rgba(138,122,106,0.10)', Pisces:'rgba(74,117,128,0.12)',
+      Aries:'rgba(255,100,40,0.09)', Taurus:'rgba(216,180,106,0.09)', Gemini:'rgba(242,236,223,0.06)', Cancer:'rgba(185,200,220,0.09)',
+      Leo:'rgba(255,100,40,0.09)', Virgo:'rgba(216,180,106,0.09)', Libra:'rgba(242,236,223,0.06)', Scorpio:'rgba(185,200,220,0.09)',
+      Sagittarius:'rgba(255,100,40,0.09)', Capricorn:'rgba(216,180,106,0.09)', Aquarius:'rgba(242,236,223,0.06)', Pisces:'rgba(185,200,220,0.09)',
     };
     const rOuter     = R;
     const rBand      = R * 0.89;
@@ -1795,14 +1786,14 @@
 
     // Aspect lines
     const ASPECT_LINE_COLORS = {
-      Trine: '#3fae7a', Sextile: '#9db36a', Conjunction: '#e8c96a',
-      Opposition: '#b04a52', Square: '#b04a52',
+      Trine: '#B9C8DC', Sextile: '#D8B46A', Conjunction: '#D8B46A',
+      Opposition: '#FF6428', Square: '#FF6428',
     };
     (chart.renderAspects || []).slice(0, 24).forEach(asp => {
       const p1 = chart.positions[asp.planet1], p2 = chart.positions[asp.planet2];
       if (!p1 || !p2) return;
       const a1 = ang(p1.lon), a2 = ang(p2.lon);
-      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(168, 158, 136,0.3)';
+      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(185,200,220,0.3)';
       x.strokeStyle = col.startsWith('rgba') ? col : col + '66';
       x.globalAlpha = 0.5; x.lineWidth = 1.5 * lw;
       x.beginPath();
@@ -1816,7 +1807,7 @@
     if (hasAngles) {
       chart.houses.forEach(cusp => {
         const a = ang(cusp);
-        x.strokeStyle = 'rgba(168, 158, 136,0.2)'; x.lineWidth = 1 * lw;
+        x.strokeStyle = 'rgba(185,200,220,0.2)'; x.lineWidth = 1 * lw;
         x.beginPath(); x.moveTo(cx, cy);
         x.lineTo(cx + Math.cos(a) * rInner, cy + Math.sin(a) * rInner); x.stroke();
       });
@@ -1825,12 +1816,12 @@
     // Ascendant axis
     if (hasAngles) {
       const aAsc = ang(ascLon);
-      x.strokeStyle = 'rgba(176,74,82,0.9)'; x.lineWidth = 2.5 * lw;
+      x.strokeStyle = 'rgba(255,100,40,0.9)'; x.lineWidth = 2.5 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(aAsc) * rInner,     cy + Math.sin(aAsc) * rInner);
       x.lineTo(cx + Math.cos(aAsc) * rSignInner, cy + Math.sin(aAsc) * rSignInner);
       x.stroke();
-      x.fillStyle = '#c97a82';
+      x.fillStyle = '#FF6428';
       x.font = `bold ${R * 0.05}px ${FONT_SANS}`;
       x.textBaseline = 'middle'; x.textAlign = 'center';
       x.fillText('ASC', cx + Math.cos(aAsc) * (rInner - 32 * lw), cy + Math.sin(aAsc) * (rInner - 32 * lw));
@@ -1850,7 +1841,7 @@
       const py2 = cy + Math.sin(a) * rPlanets;
 
       const at2 = ang(p.lon);
-      x.strokeStyle = 'rgba(240,232,216,0.45)'; x.lineWidth = 1 * lw;
+      x.strokeStyle = 'rgba(242,236,223,0.45)'; x.lineWidth = 1 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(at2) * rSignInner,            cy + Math.sin(at2) * rSignInner);
       x.lineTo(cx + Math.cos(at2) * (rSignInner - 14 * lw), cy + Math.sin(at2) * (rSignInner - 14 * lw));
@@ -1878,7 +1869,7 @@
       }
 
       if (p.retrograde) {
-        x.fillStyle = '#c97a82';
+        x.fillStyle = '#FF6428';
         x.font = `500 ${R * 0.04}px "IBM Plex Mono", ${FONT_SANS}`;
         x.fillText('℞', px2 + R * 0.055, py2 - R * 0.05);
       }
@@ -1929,7 +1920,7 @@
       x.font = `600 ${20 * scale}px ${FONT_SANS}`;
       x.fillText(er.label.toUpperCase(), x0, rowY + BAR_H / 2 + 7 * scale);
 
-      x.fillStyle = 'rgba(168, 158, 136,0.08)';
+      x.fillStyle = 'rgba(185,200,220,0.08)';
       x.beginPath();
       if (x.roundRect) x.roundRect(innerX, rowY, innerW, BAR_H, 6 * scale); else x.rect(innerX, rowY, innerW, BAR_H);
       x.fill();
@@ -1973,7 +1964,7 @@
       col.forEach((row, r) => {
         const ry = y0 + 36 * scale + r * ROW_H;
         if (r > 0) {
-          x.strokeStyle = 'rgba(168, 158, 136,0.08)'; x.lineWidth = 1 * scale;
+          x.strokeStyle = 'rgba(185,200,220,0.08)'; x.lineWidth = 1 * scale;
           x.beginPath(); x.moveTo(colX, ry - 6 * scale); x.lineTo(colX + colW - 60 * scale, ry - 6 * scale); x.stroke();
         }
         x.textAlign = 'left';
@@ -1999,7 +1990,7 @@
         x.font = `400 ${18 * scale}px "Courier New", monospace`;
         x.textAlign = 'right';
         x.fillText(
-          `${Math.floor(row.p.degree)}°${String(Math.round((row.p.degree - Math.floor(row.p.degree)) * 60)).padStart(2,'0')}′${row.p.retrograde ? ' ℞' : ''}`,
+          `${fmtDeg(row.p)}${row.p.retrograde ? ' ℞' : ''}`,
           colX + colW - 60 * scale, ry + 10 * scale);
       });
     });
@@ -2138,9 +2129,7 @@
       if (pos) {
         x.fillStyle = PAL.silverDim;
         x.font = `400 ${17 * S}px ${FONT_SANS}`;
-        x.fillText(
-          `${Math.floor(pos.degree)}°${String(Math.round((pos.degree - Math.floor(pos.degree)) * 60)).padStart(2, '0')}′`,
-          tx, y + orbR + 82 * S);
+        x.fillText(fmtDeg(pos), tx, y + orbR + 82 * S);
       }
     });
 
@@ -2540,8 +2529,14 @@
     });
 
     timeUnknownBtn?.addEventListener('click', function () {
+      const chooseApproximate = !accuracyInput || accuracyInput.value === 'unknown';
       if (timeInput) timeInput.value = '';
+      document.querySelectorAll('.time-btn').forEach(function (item) {
+        item.classList.remove('active');
+        item.setAttribute('aria-pressed', 'false');
+      });
       setTimeAccuracy('unknown');
+      if (!chooseApproximate) return;
       const item = document.getElementById('chart-advanced-item');
       const trigger = document.getElementById('chart-advanced-trigger');
       if (item && trigger && !item.classList.contains('is-open')) trigger.click();

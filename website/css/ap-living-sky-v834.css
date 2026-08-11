@@ -101,7 +101,7 @@ button, a { touch-action: manipulation; }
   display: inline-flex;
   align-items: center;
   border: 0;
-  border-radius: 999px;
+  border-radius: 5px;
   padding: 0 15px;
   background: transparent;
   color: var(--ap-paper-dim);
@@ -148,7 +148,7 @@ button, a { touch-action: manipulation; }
   gap: 12px;
   padding: 18px;
   border: 1px solid var(--ap-line-strong);
-  border-radius: 16px;
+  border-radius: 8px;
   background: rgba(8, 11, 17, 0.98);
   box-shadow: var(--ap-shadow);
 }
@@ -223,7 +223,7 @@ body.ap-live-home { background-attachment: fixed; }
   justify-content: center;
   padding: 0 18px;
   border: 1px solid var(--ap-line-strong);
-  border-radius: 999px;
+  border-radius: 5px;
   color: var(--ap-paper);
   background: rgba(216, 180, 106, 0.05);
   font-size: 13px;
@@ -363,7 +363,7 @@ body.ap-live-home { background-attachment: fixed; }
   gap: 9px;
   padding: 9px 11px;
   border: 1px solid rgba(185, 200, 220, 0.18);
-  border-radius: 10px;
+  border-radius: 5px;
   background: rgba(185, 200, 220, 0.035);
   color: var(--ap-paper-dim);
   font: 10px var(--ap-data);
@@ -393,7 +393,7 @@ body.ap-live-home { background-attachment: fixed; }
   min-height: 44px;
   padding: 0 16px;
   border: 1px solid var(--ap-line-strong);
-  border-radius: 999px;
+  border-radius: 5px;
   background: rgba(216, 180, 106, 0.06);
   color: var(--ap-paper);
   cursor: pointer;
@@ -445,7 +445,7 @@ input.scrub::-moz-range-thumb { width: 18px; height: 18px; border: 2px solid var
   width: 100%;
   min-height: 46px;
   border: 1px solid rgba(185, 200, 220, 0.22);
-  border-radius: 10px;
+  border-radius: 5px;
   background: rgba(185, 200, 220, 0.05);
   color: var(--ap-paper);
   padding: 11px 13px;
@@ -785,8 +785,9 @@ body.page-eclipse h1 em { color: var(--ap-ember); }
     justify-content: space-between;
   }
   .ap-site-footer__legal {
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
     justify-content: start;
+    column-gap: 14px;
   }
   .ap-site-footer__colophon {
     width: min(100% - 32px, 1180px);

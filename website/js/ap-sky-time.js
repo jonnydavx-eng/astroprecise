@@ -2,7 +2,7 @@
  * ap-sky-time.js — time-of-sky theming
  *
  * The site's mood follows the visitor's local time, subtly. One small module,
- * wired on index.html / horoscope.html / eclipse.html:
+ * wired on the launch routes that use the shared sky shell:
  *
  *   Dayparts (local hour):  NIGHT 22–5 · DAWN 5–8 · DAY 8–17 · DUSK 17–22
  *
