@@ -3751,6 +3751,11 @@ const FinishShader = {
     return Math.max(0, 1 - d);
   }
 
+  function smoothUnit(value) {
+    const t = Math.max(0, Math.min(1, value));
+    return t * t * (3 - 2 * t);
+  }
+
   function wantsDetailLighting() {
     if (detailLightingUser !== null) return detailLightingUser;
     if (scaleLevel >= 3) return false;
@@ -4006,7 +4011,13 @@ const FinishShader = {
     [group.userData.atmo, group.userData.atmoOuter].forEach((shell) => {
       const u = shell && shell.material && shell.material.uniforms && shell.material.uniforms.uIntensity;
       if (!u || shell.userData.baseIntensity == null) return;
-      u.value = shell.userData.baseIntensity * factor;
+      const target = shell.userData.baseIntensity * factor;
+      if (!webglBooted || instrumentFirstFramePending) {
+        u.value = target;
+        return;
+      }
+      const blend = 1 - Math.exp(-8 * Math.max(0.001, lastDt || 0.016));
+      u.value += (target - u.value) * blend;
     });
   }
 
@@ -4020,17 +4031,19 @@ const FinishShader = {
       const g = meshes[b.id];
       if (!g) return;
       g.visible = showSolar;
-      const systemOverview = instrumentMode && z >= 1.55 && z <= 2.35;
-      const atmosphereFactor = systemOverview
-        ? (portraitId === b.id ? 0.88 : b.id === 'earth' ? 0.38 : 0.24)
-        : 1;
+      const overviewIn = smoothUnit((z - 1.25) / 0.55);
+      const overviewOut = 1 - smoothUnit((z - 2.25) / 0.75);
+      const overviewAmount = instrumentMode ? overviewIn * overviewOut : 0;
+      const overviewAtmosphere = portraitId === b.id ? 0.88 : b.id === 'earth' ? 0.38 : 0.24;
+      const atmosphereFactor = 1 + (overviewAtmosphere - 1) * overviewAmount;
       setGroupAtmosphereStrength(g, atmosphereFactor);
       if (showSolar) {
         let s = z <= 2 ? 1 : z <= 3 ? 0.45 + (3 - z) * 0.55 : 0.15;
         if (instrumentMode && z <= 2) {
-          const overviewScale = IS_PHONE
-            ? (z <= 1.6 ? 1.46 : 1.28)
-            : (z <= 1.6 ? 1.38 : 1.22);
+          const scaleBlend = smoothUnit((z - 1.25) / 0.65);
+          const closeScale = IS_PHONE ? 1.46 : 1.38;
+          const systemScale = IS_PHONE ? 1.28 : 1.22;
+          const overviewScale = closeScale + (systemScale - closeScale) * scaleBlend;
           s *= overviewScale;
           // The wide System frame used to leave Mercury and Mars only a few
           // physical pixels across. Keep a restrained display-radius floor, then
