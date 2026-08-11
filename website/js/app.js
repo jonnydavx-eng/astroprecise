@@ -359,6 +359,12 @@ const AstroApp = (() => {
       || NAV_EXTRAS.some(function (r) { return r[0] === here; });
   }
 
+  function isLaunchRoute(here) {
+    return /^(?:index|chart|horoscope|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(
+      here || (location.pathname.split('/').pop() || 'index.html')
+    );
+  }
+
   function renderMoreMenu(here) {
     var active = morePageActive(here);
     var groups = NAV_DRAWER_SECTIONS.map(function (sec) {
@@ -507,9 +513,10 @@ const AstroApp = (() => {
     }
   }
 
-  function renderDrawer(here) {
+  function renderDrawer(here, launch) {
     var html = '<p class="navbar__drawer-heading">Main</p>'
       + navLinkHtml(NAV_PRIMARY, here, true);
+    if (launch) return html;
     NAV_DRAWER_SECTIONS.forEach(function (sec) {
       var items = navItemsForDrawerSection(sec);
       if (!items.length) return;
@@ -527,6 +534,7 @@ const AstroApp = (() => {
 
   function renderNav() {
     var here = location.pathname.split('/').pop() || 'index.html';
+    var launch = isLaunchRoute(here);
     var desktop = document.querySelector('.navbar__nav');
     var mobile = document.querySelector('.navbar__mobile-menu');
     if (desktop) {
@@ -535,10 +543,10 @@ const AstroApp = (() => {
       //  nav links — chart/shop/compatibility/ephemeris/horoscope — kept a stale
       //  vocabulary and the menu changed under the visitor. The static markup is
       //  now purely a no-JS fallback.)
-      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + renderMoreMenu(here);
+      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + (launch ? '' : renderMoreMenu(here));
       initMoreMenu();
     }
-    if (mobile) mobile.innerHTML = renderDrawer(here);
+    if (mobile) mobile.innerHTML = renderDrawer(here, launch);
   }
 
   /** Right rail: profile + hamburger — keeps center nav from overlapping. */
@@ -576,6 +584,7 @@ const AstroApp = (() => {
 
   /** Profile as a top-bar tab on every page (not in the bottom nav). */
   function injectTopProfile() {
+    if (isLaunchRoute()) return;
     if (document.querySelector('.navbar__profile-top')) return;
     var inner = document.querySelector('.navbar__inner');
     if (!inner) return;

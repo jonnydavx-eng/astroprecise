@@ -56,7 +56,6 @@ Astro Precise is a professional-grade astrology web app and installable PWA at h
 ## Optional
 
 - [Shop](https://astroprecise.app/shop.html): Print-on-demand + digital readings (external checkout when live)
-- [The Lookbook](https://astroprecise.app/catalogue.html): Full visual catalogue of every personalised piece — readings, prints, apparel, gifts and engraved chart jewellery (checkout opening soon)
 - [Privacy](https://astroprecise.app/privacy.html)
 - [Terms](https://astroprecise.app/terms.html)
 - [Sitemap](https://astroprecise.app/sitemap.xml)

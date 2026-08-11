@@ -411,7 +411,7 @@
           .then(function () {
             if (!self.isConnected) throw new Error('detached during boot');
             var cv = document.createElement('canvas');
-            cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none';
+            cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;opacity:0;transition:opacity .45s ease';
             self._canvas = cv;
             self.insertBefore(cv, self._ph || null);
             var api = (self._engineKind === 'canvas' ? runningEngine : window.Orrery3D) || runningEngine;
@@ -508,6 +508,7 @@
             document.removeEventListener('ap-orrery-first-frame', self._onReadyFirstFrame);
             self._onReadyFirstFrame = null;
           }
+          if (self._canvas) self._canvas.style.opacity = '1';
           done();
         }
         if (this._firstFrameSeen) {

@@ -53,12 +53,6 @@
     air:   '#F2ECDF',
     water: '#B9C8DC',
   };
-  const ELEMENT_LABEL_COLORS = {
-    fire:  '#FF6428',
-    earth: '#D8B46A',
-    air:   '#F2ECDF',
-    water: '#B9C8DC',
-  };
   // Modality mapping
   const MODALITY_MAP = {
     Aries:'cardinal', Cancer:'cardinal', Libra:'cardinal', Capricorn:'cardinal',
@@ -479,7 +473,7 @@
         // whole birth record — name, date, time, town, lat, lon, tz — into the
         // address bar on every calculation. Sharing never needed it: the Share
         // and Copy-link buttons build their URL on demand from the chart object
-        // (APChartShare.buildShareUrl), so the only thing the address-bar write
+        // (buildChartShareUrl), so the only thing the address-bar write
         // achieved was putting birth data somewhere the visitor did not ask for
         // it — history, bookmarks, browser sync, and the next Referer header.
       } catch (err) {
@@ -562,15 +556,14 @@
   // ── Restoring a complete chart ────────────────────────────────────────────
 
   /* Where a full chart restore (n, d, t, c, lat, lon, tz, a, hs) comes from,
-     in priority order. Nothing on this site writes birth data into a URL any
-     more; both remaining paths exist so links minted before 2026-08-09 keep
-     working.
+     in priority order. Nothing on this route writes birth data into a
+     network-visible query; deliberate shares use a client-only fragment.
 
        1. sessionStorage['ap-chart-restore'] — what the saved-chart galleries
           (charts.html, profile.html) now hand over. Same tab, same origin,
           never transmitted. Read once and deleted.
        2. location.hash — a chart somebody deliberately SHARED with this person
-          (APChartShare.buildShareUrl). Sharing a chart is the feature; sending
+          (buildChartShareUrl). Sharing a chart is the feature; sending
           it to a server on the way is not, and a fragment is never part of the
           request line or the Referer. Stripped from the address bar on use.
        3. location.search — LEGACY. A query string reaches the origin and the
@@ -849,7 +842,8 @@
     renderTabs(chart);
     initTabs();
 
-    wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    wrapEl.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         var firstTab = wrapEl.querySelector('[role="tab"]');
@@ -1193,21 +1187,14 @@
           'Lunar nodes: ' + modeLabel + ' · Lilith = mean Black Moon · South Node = North Node + 180° · ' +
           'Chiron: Kepler orbit from JPL elements — to the degree 1970–2030, approximate for mid-century births</p>';
       }
-      // Tag each placement card AFTER all innerHTML writes (innerHTML += re-parses
-      // and would drop these attributes). data-planet uses the internal key (e.g.
-      // NorthNode) to match the wheel's glyph group; class drives element tint.
+      // Tag each placement card after all innerHTML writes. data-planet uses the
+      // internal key (for example NorthNode) to match the wheel's glyph group.
       const placementCards = pt.querySelectorAll('.ap-reading-card--placement');
       renderedPlanets.forEach((k, i) => {
         const card = placementCards[i];
         if (!card) return;
-        const signName = chart.positions[k].sign || '';
-        const elemKey = ELEMENT_MAP[signName] || '';
         card.setAttribute('data-planet', k);
         card.setAttribute('tabindex', '0');
-        if (elemKey) {
-          card.classList.add('ap-elem-' + elemKey);
-          card.style.setProperty('--row-elem', 'var(--ap-element-' + elemKey + ')');
-        }
       });
     } else if (pt) {
       pt.innerHTML = '<p class="ap-reading-empty">Reading formatter loading — refresh if this persists.</p>';
@@ -1225,7 +1212,6 @@
         planetsByHouse[hh] = planetsByHouse[hh] || [];
         planetsByHouse[hh].push(k);
       });
-      const houseSigns = [];
       const curSys = chart.houseSystem || 'equal';
       const switcherHtml =
         '<div class="house-system-switch" role="group" aria-label="House system — the framework that divides your chart into twelve life areas">' +
@@ -1241,7 +1227,6 @@
         '</div>';
       ht.innerHTML = switcherHtml + chart.houses.map((cusp, i) => {
         const sign = E().signOf(cusp);
-        houseSigns.push(sign);
         const deg  = cusp % 30;
         const dg = Math.floor(deg), mn = Math.round((deg - dg) * 60);
         const hm = I && I.getHouseMeaning ? I.getHouseMeaning(i + 1) : null;
@@ -1257,18 +1242,6 @@
       }).join('');
       ht.querySelectorAll('[data-house-system]').forEach(function (btn) {
         btn.addEventListener('click', function () { switchHouseSystem(btn.dataset.houseSystem); });
-      });
-      // Element-tint each house card by its cusp sign (purely visual; the cusp
-      // sign + degree shown in the meta are unchanged engine values).
-      const houseCards = ht.querySelectorAll('.ap-reading-card--placement');
-      houseSigns.forEach((sign, i) => {
-        const card = houseCards[i];
-        if (!card) return;
-        const elemKey = ELEMENT_MAP[sign] || '';
-        if (elemKey) {
-          card.classList.add('ap-elem-' + elemKey);
-          card.style.setProperty('--row-elem', 'var(--ap-element-' + elemKey + ')');
-        }
       });
     }
 
@@ -1418,6 +1391,29 @@
     };
   }
 
+  function buildChartShareUrl(chart) {
+    if (!chart || !chart.birthDate || chart.lat == null || chart.lon == null || !isValidTimeZone(chart.tz)) {
+      return location.href;
+    }
+    const params = new URLSearchParams();
+    const fields = {
+      n: chart.name || 'Shared Chart',
+      d: chart.birthDate,
+      t: chart.birthTime || '',
+      c: chart.city || '',
+      lat: String(chart.lat),
+      lon: String(chart.lon),
+      tz: chart.tz,
+      hs: chart.houseSystem || 'equal',
+      a: chart.timeAccuracy || (hasKnownBirthTime(chart) ? 'exact' : 'unknown'),
+    };
+    Object.keys(fields).forEach(function (key) {
+      if (fields[key] !== '') params.set(key, fields[key]);
+    });
+    const page = hasKnownBirthTime(chart) ? 'chart-view.html' : 'chart.html';
+    return location.origin + location.pathname.replace(/[^/]+$/, '') + page + '#' + params.toString();
+  }
+
   document.getElementById('save-btn')?.addEventListener('click', () => {
     if (!currentChart || !window.AstroProfile) {
       if (window.AstroApp) AstroApp.showToast('Save unavailable', 'This browser could not open local chart storage.', 'warning');
@@ -1445,12 +1441,8 @@
   // Share Chart → beautiful chart-view link (preferred) or image via Web Share API.
   document.getElementById('share-btn')?.addEventListener('click', async () => {
     if (!currentChart) return;
-    const shareUrl = (window.APChartShare
-      ? APChartShare.buildShareUrl(currentChart, null, { interactive: !hasKnownBirthTime(currentChart) })
-      : null) || location.href;
-    const text = window.APChartShare && currentChart.positions.Moon
-      ? APChartShare.bigThreeLine(currentChart)
-      : sharePlacementLine(currentChart);
+    const shareUrl = buildChartShareUrl(currentChart);
+    const text = sharePlacementLine(currentChart);
     // Prefer sharing the generated image (richer than a bare link) on capable devices.
     if (navigator.canShare && navigator.share) {
       try {
@@ -1465,8 +1457,6 @@
     try {
       if (navigator.share) {
         await navigator.share({ title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
-      } else if (window.APChartShare && hasKnownBirthTime(currentChart)) {
-        await APChartShare.copyShareLink(currentChart, null);
       } else {
         await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
         if (window.AstroApp) AstroApp.showToast('Link copied', 'Share link copied to clipboard.', 'success');
@@ -1540,6 +1530,7 @@
   // The exported plate uses the same typography as the live field instrument.
   const FONT_DISPLAY = '"Cormorant Garamond", Georgia, serif';
   const FONT_SANS    = '"Schibsted Grotesk", system-ui, sans-serif';
+  const FONT_MONO    = '"IBM Plex Mono", ui-monospace, monospace';
 
   // Engraved palette (matches css/main.css :root) ────────────────────────────
   const PAL = {
@@ -1905,10 +1896,10 @@
     x.beginPath(); x.moveTo(x0, y0 + 16 * scale); x.lineTo(x0 + barW, y0 + 16 * scale); x.stroke();
 
     const rows = [
-      { key: 'fire',  label: 'Fire',  color: ELEMENT_COLORS.fire,  lColor: ELEMENT_LABEL_COLORS.fire  },
-      { key: 'earth', label: 'Earth', color: ELEMENT_COLORS.earth, lColor: ELEMENT_LABEL_COLORS.earth },
-      { key: 'air',   label: 'Air',   color: ELEMENT_COLORS.air,   lColor: ELEMENT_LABEL_COLORS.air   },
-      { key: 'water', label: 'Water', color: ELEMENT_COLORS.water, lColor: ELEMENT_LABEL_COLORS.water },
+      { key: 'fire',  label: 'Fire',  color: ELEMENT_COLORS.fire },
+      { key: 'earth', label: 'Earth', color: ELEMENT_COLORS.earth },
+      { key: 'air',   label: 'Air',   color: ELEMENT_COLORS.air },
+      { key: 'water', label: 'Water', color: ELEMENT_COLORS.water },
     ];
     const maxCount = 7;
     const BAR_H = 26 * scale;
@@ -1920,7 +1911,7 @@
       const fillW = (count / maxCount) * innerW;
 
       x.textAlign = 'left';
-      x.fillStyle = er.lColor;
+      x.fillStyle = er.color;
       x.font = `600 ${20 * scale}px ${FONT_SANS}`;
       x.fillText(er.label.toUpperCase(), x0, rowY + BAR_H / 2 + 7 * scale);
 
@@ -1991,7 +1982,7 @@
         }
 
         x.fillStyle = PAL.gold;
-        x.font = `400 ${18 * scale}px "Courier New", monospace`;
+        x.font = `400 ${18 * scale}px ${FONT_MONO}`;
         x.textAlign = 'right';
         x.fillText(
           `${fmtDeg(row.p)}${row.p.retrograde ? ' ℞' : ''}`,

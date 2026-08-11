@@ -556,10 +556,22 @@ const FinishShader = {
   const CAM_FOV_WIDE = 44;
   let texturesReady = false;
   let texturesReadyResolve = null;
-  const texturesReadyPromise = new Promise((res) => { texturesReadyResolve = res; });
+  let texturesReadyPromise = null;
   let earthMapReady = false;
   let earthMapReadyResolve = null;
-  const earthMapReadyPromise = new Promise((res) => { earthMapReadyResolve = res; });
+  let earthMapReadyPromise = null;
+  const texturePromiseCache = new Map();
+
+  function resetTextureReadiness() {
+    if (texturesReadyResolve) texturesReadyResolve(false);
+    if (earthMapReadyResolve) earthMapReadyResolve(false);
+    texturesReady = false;
+    earthMapReady = false;
+    texturesReadyPromise = new Promise((res) => { texturesReadyResolve = res; });
+    earthMapReadyPromise = new Promise((res) => { earthMapReadyResolve = res; });
+    texturePromiseCache.clear();
+  }
+  resetTextureReadiness();
 
   function markEarthMapReady() {
     if (earthMapReady) return;
@@ -2017,6 +2029,11 @@ const FinishShader = {
     return files;
   }
 
+  function requestPreloadTexture(file) {
+    const linear = /(?:specular|normal|clouds)/i.test(file);
+    return loadTex(file, linear ? false : true);
+  }
+
   function deferredTextureFiles() {
     const files = [];
     BODIES.forEach((b) => {
@@ -2035,7 +2052,7 @@ const FinishShader = {
     files.forEach((f) => {
       chain = chain.then(() => {
         if (destroyed) return;
-        return loadTex(f);
+        return requestPreloadTexture(f);
       }).then(() => new Promise((res) => later(res, gap)));
     });
     return chain.then(() => { if (!destroyed) refreshTextures(); }).catch(() => {});
@@ -2043,7 +2060,7 @@ const FinishShader = {
 
   function preloadTextures() {
     if (onPreloaderStage()) {
-      return Promise.all(earthTextureFiles().map((f) => loadTex(f))).then(() => {
+      return Promise.all(earthTextureFiles().map(requestPreloadTexture)).then(() => {
         texturesReady = true;
         refreshTextures();
         if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
@@ -2059,7 +2076,7 @@ const FinishShader = {
     });
     files.push('moon.jpg', 'earth_lights.png', 'earth_specular.jpg');
     if (perfTier !== 'low' && !PRM) files.push('earth_clouds.jpg', 'earth_normal.jpg');
-    return Promise.all(files.map((f) => loadTex(f))).then(() => {
+    return Promise.all(files.map(requestPreloadTexture)).then(() => {
       texturesReady = true;
       refreshTextures();
       if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
@@ -5006,12 +5023,23 @@ const FinishShader = {
 
   function loadTex(file, srgb) {
     const candidates = textureCandidates(file);
-    return new Promise((res) => {
+    const generation = runtimeGeneration;
+    const expectedLoader = texLoader;
+    const expectedRenderer = renderer;
+    const cacheKey = `${generation}|${srgb === false ? 'linear' : 'srgb'}|${candidates.join('|')}`;
+    if (texturePromiseCache.has(cacheKey)) return texturePromiseCache.get(cacheKey);
+    const promise = new Promise((res) => {
       let idx = 0;
       const tryNext = () => {
+        if (destroyed || generation !== runtimeGeneration || texLoader !== expectedLoader || renderer !== expectedRenderer) return res(null);
         if (idx >= candidates.length) return res(null);
         const f = candidates[idx++];
-        texLoader.load(TEX + f, (t) => {
+        expectedLoader.load(TEX + f, (t) => {
+          if (destroyed || generation !== runtimeGeneration || texLoader !== expectedLoader || renderer !== expectedRenderer) {
+            try { t.dispose(); } catch (_) {}
+            res(null);
+            return;
+          }
           if (srgb !== false) t.colorSpace = THREE.SRGBColorSpace;
           tuneTexture(t);
           res(t);
@@ -5019,6 +5047,8 @@ const FinishShader = {
       };
       tryNext();
     });
+    texturePromiseCache.set(cacheKey, promise);
+    return promise;
   }
 
   function ensureFocusRing(group, scaleMul) {
@@ -7356,7 +7386,7 @@ const FinishShader = {
     updateSelectedHighlight(t);
     updatePlanetTrails();
     if (instrumentMode) {
-      if (instrumentFirstFramePending) {
+      if (instrumentFirstFramePending && texturesReady) {
         syncPosterSunVisibility();
         instrumentStableFrames += 1;
         if (instrumentStableFrames >= INSTRUMENT_FIRST_FRAME_FRAMES) {
@@ -8151,6 +8181,7 @@ const FinishShader = {
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
     runtimeGeneration += 1;
+    resetTextureReadiness();
     window.__apOrreryIBL = false;
     if (!preloaderMode) initEnvironmentIBL();
 
