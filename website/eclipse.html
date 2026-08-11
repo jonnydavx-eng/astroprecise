@@ -62,12 +62,11 @@
       <div class="ap-eclipse-live__shell">
         <div class="ap-eclipse-live__stage">
           <canvas class="ap-eclipse-live__canvas" tabindex="0" aria-label="Interactive 3D Sun, Moon and Earth eclipse alignment. Drag to orbit; use mouse wheel or plus and minus keys to zoom."></canvas>
-          <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Live geometry · preparing</span></div>
           <div class="ap-eclipse-live__labels" aria-hidden="true"><span class="ap-eclipse-live__body-label" data-eclipse-label="sun">Sun</span><span class="ap-eclipse-live__body-label" data-eclipse-label="moon">Moon</span><span class="ap-eclipse-live__body-label" data-eclipse-label="earth">Earth</span></div>
-          <div class="ap-eclipse-live__legend" aria-hidden="true"><span><i></i> Alignment axis</span><span><i data-cone="umbra"></i> Umbra</span><span><i data-cone="penumbra"></i> Penumbra</span><span><i data-cone="intercept"></i> Earth intercept</span></div>
           <div class="ap-eclipse-live__fallback"><div>Preparing the live eclipse geometry…</div></div>
         </div>
         <aside class="ap-eclipse-live__panel" aria-label="Live eclipse geometry readout">
+          <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Live geometry · preparing</span></div>
           <p class="ap-eclipse-live__mode" data-eclipse-mode>Live geocentric alignment</p>
           <p class="ap-eclipse-live__status" data-eclipse-status aria-live="polite">Computing the shadow…</p>
           <p class="ap-eclipse-live__time" data-eclipse-time>UTC geometry preparing</p>
@@ -76,8 +75,9 @@
             <div class="ap-eclipse-live__actions"><button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="true">Track live now</button><button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="false">Greatest eclipse</button></div>
             <label class="ap-eclipse-live__control-label" for="eclipse-time-range"><span>Explore the alignment</span><span data-eclipse-range-time>—</span></label>
             <input class="ap-eclipse-live__range" id="eclipse-time-range" data-eclipse-range type="range" aria-label="Eclipse timeline from three days before to two days after greatest eclipse">
-          <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection use published Sun–Moon calculations · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · this is not a ground-track map.</p>
+            <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection use published Sun–Moon calculations · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · this is not a ground-track map.</p>
           </div>
+          <div class="ap-eclipse-live__legend" aria-hidden="true"><span><i></i> Alignment axis</span><span><i data-cone="umbra"></i> Umbra</span><span><i data-cone="penumbra"></i> Penumbra</span><span><i data-cone="intercept"></i> Earth intercept</span></div>
         </aside>
       </div>
     </section>

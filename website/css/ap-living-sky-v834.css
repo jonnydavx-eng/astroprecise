@@ -271,21 +271,18 @@ body.ap-live-home { background-attachment: fixed; }
   height: 100%;
 }
 .ap-model-status {
-  position: absolute;
+  position: static;
   pointer-events: none;
-  z-index: 5;
-  left: 20px;
-  top: 20px;
-  max-width: calc(100% - 40px);
+  max-width: none;
   display: flex;
   flex-wrap: wrap;
   gap: 7px 12px;
   align-items: center;
-  padding: 9px 12px;
-  border: 1px solid rgba(185, 200, 220, 0.22);
-  border-radius: 999px;
-  background: rgba(3, 5, 9, 0.7);
-  backdrop-filter: blur(12px);
+  padding: 0 0 15px;
+  border: 0;
+  border-bottom: 1px solid var(--ap-line);
+  border-radius: 0;
+  background: none;
   color: var(--ap-silver);
   font: 10px var(--ap-data);
   letter-spacing: 0.1em;
@@ -302,18 +299,14 @@ body.ap-live-home { background-attachment: fixed; }
   box-shadow: 0 0 16px var(--ap-ember);
 }
 .ap-model-hint {
-  position: absolute;
+  position: static;
   pointer-events: none;
-  z-index: 5;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  margin: 0;
+  margin: 11px 0 18px;
   color: rgba(242, 236, 223, 0.54);
   font: 10px var(--ap-data);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  white-space: nowrap;
+  white-space: normal;
 }
 .ap-control-panel {
   position: relative;
@@ -749,8 +742,8 @@ body.page-eclipse h1 em { color: var(--ap-ember); }
   .ap-live-actions { margin-top: 18px; }
   .ap-live-proof { display: none; }
   .ap-model-stage { height: 50svh; min-height: 390px; border-bottom: 1px solid var(--ap-line); }
-  .ap-model-status { left: 12px; top: 12px; max-width: calc(100% - 24px); font-size: 8px; }
-  .ap-model-hint { bottom: 12px; font-size: 8px; }
+  .ap-model-status { font-size: 8px; }
+  .ap-model-hint { font-size: 8px; }
   .ap-control-panel { overflow: visible; padding: 24px 16px 32px; border-left: 0; }
   .ap-context { padding-bottom: 18px; }
   .ap-context h2 { font-size: 32px; }

@@ -232,6 +232,9 @@ async function mount(root, E) {
   }
   [range, nowButton, eventButton].forEach((control) => { control.disabled = true; });
   const reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const constrainedRender = (navigator.deviceMemory && navigator.deviceMemory <= 4)
+    || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+  const interactionFrameMs = constrainedRender ? 30 : 16;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -573,7 +576,7 @@ async function mount(root, E) {
       const eased = progress < .5
         ? 4 * progress * progress * progress
         : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-      if (progress >= 1 || now - lastPaintAt >= 30) {
+      if (progress >= 1 || now - lastPaintAt >= interactionFrameMs) {
         lastPaintAt = now;
         setDisplayDate(new Date(fromMs + (targetMs - fromMs) * eased), nextMode);
       }
@@ -609,9 +612,7 @@ async function mount(root, E) {
     const width = Math.max(1, Math.round(rect.width));
     const height = Math.max(1, Math.round(rect.height));
     const phone = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-    const constrained = (navigator.deviceMemory && navigator.deviceMemory <= 4)
-      || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, phone && constrained ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, phone && constrainedRender ? 1.5 : 2));
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -632,7 +633,7 @@ async function mount(root, E) {
     });
   }
 
-  function render(time = 0) {
+  function render(time = performance.now()) {
     if (!inView || failed || disposed) return;
     try {
       if (!reducedMotion) sunMaterial.uniforms.uTime.value = time * .001;
@@ -658,7 +659,8 @@ async function mount(root, E) {
 
   function frame(time) {
     if (!loopRunning) return;
-    if (time - lastFrameAt >= 33) {
+    const frameMs = dragging ? interactionFrameMs : 33;
+    if (time - lastFrameAt >= frameMs) {
       lastFrameAt = time;
       render(time);
     }
@@ -780,7 +782,7 @@ async function mount(root, E) {
   document.dispatchEvent(new CustomEvent('ap-eclipse-live-ready', { detail: { state } }));
 
   liveTimer = setInterval(() => {
-    if (mode === 'live') setLive();
+    if (mode === 'live' && !travelFrame) setLive();
   }, 30000);
 
   function dispose() {
