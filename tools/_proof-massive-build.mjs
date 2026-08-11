@@ -1,5 +1,5 @@
 /**
- * Static proof: AstroPrecise v835 launch architecture.
+ * Static proof: AstroPrecise v836 launch architecture.
  * Exit 0 only when the flagship 3D, truthful commerce, shared chrome and
  * verification surfaces are wired to the current release contract.
  */
@@ -26,8 +26,11 @@ const mustExist = [
   'css/ap-footer-v835.css',
   'css/ap-numerology-v835.css',
   'img/editorial/eclipse-launch-2026-v835.webp',
+  'img/editorial/eclipse-field-guide-cover-final-v836.png',
   'img/shop/numbered-sky-plate-v835.webp',
   'img/eclipse-geometry.svg',
+  'downloads/astroprecise-eclipse-field-guide-2026.pdf',
+  'guides/eclipse-field-guide-2026.html',
   'js/eclipse-reading.js',
   'js/plate-fingerprint.js',
   'assets/textures/earth_md.webp',
@@ -84,9 +87,13 @@ ok(missingFooters.length === 0, 'all sitemap HTML routes load the compact footer
   + (missingFooters.length ? ': ' + missingFooters.join(', ') : ''));
 
 const eclipse = fs.readFileSync(path.join(web, 'eclipse.html'), 'utf8');
-ok(/ap-eclipse-live-v834\.js\?v=835/.test(eclipse), 'eclipse loads the dedicated v835 3D instrument');
+ok(/ap-eclipse-live-v834\.js\?v=836/.test(eclipse), 'eclipse loads the dedicated v836 3D instrument');
 ok(/class="ap-eclipse-live__canvas"/.test(eclipse), 'eclipse owns one dedicated 3D canvas');
 ok(/data-eclipse-event/.test(eclipse) && /data-eclipse-now/.test(eclipse), 'eclipse exposes live and greatest-event controls');
+ok(/data-eclipse-play/.test(eclipse) && (eclipse.match(/data-eclipse-lens=/g) || []).length === 3,
+  'eclipse exposes a computed passage replay and three camera lenses');
+ok(/data-eclipse-share/.test(eclipse), 'eclipse exposes shareable computed moments');
+ok(/astroprecise-eclipse-field-guide-2026\.pdf/.test(eclipse), 'eclipse exposes the free field guide');
 ok(!/(?:gumroad|ap-checkout-honest)/i.test(eclipse), 'eclipse exposes no dead checkout path');
 
 const deep = fs.readFileSync(path.join(web, 'deep-reading.html'), 'utf8');
@@ -99,7 +106,7 @@ ok(!/(?:gumroad|ap-checkout-honest)/i.test(plate), 'natal plate exposes no dead 
 
 const sw = fs.readFileSync(path.join(web, 'sw.js'), 'utf8');
 const versionMatch = sw.match(/const V\s*=\s*"([^"]+)"/);
-ok(versionMatch && versionMatch[1] === 'ap-v835', 'SW release tip ' + (versionMatch && versionMatch[1]));
+ok(versionMatch && versionMatch[1] === 'ap-v836', 'SW release tip ' + (versionMatch && versionMatch[1]));
 
 const verify = fs.readFileSync(path.join(web, 'verify.html'), 'utf8');
 ok(/plate-fingerprint\.js/.test(verify), 'verify imports plate-fingerprint');

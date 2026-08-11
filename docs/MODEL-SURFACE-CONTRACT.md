@@ -1,6 +1,6 @@
 # Model Surface Contract
 
-**Tip:** ap-v835 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
+**Tip:** ap-v836 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
 
 Three surfaces — never mix their honesty labels.
 
@@ -94,7 +94,7 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 | Moment freeze | A | Share card + explore link; `ap_moment_return` → horoscope return hook |
 | Daily return | A | Horoscope `mountMomentReturnHook` (7-day window) |
 
-**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v835.
+**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v836.
 
 **Event bus:** `ap-sky-ready` — `{ m, link, focus, chart|moment, source }` for share/telemetry hooks.
 

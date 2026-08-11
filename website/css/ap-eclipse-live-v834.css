@@ -53,11 +53,11 @@
   cursor: grab;
   touch-action: none;
   image-rendering: auto;
-  opacity: 0;
-  transition: opacity 620ms cubic-bezier(.2,.75,.25,1);
+  visibility: hidden;
+  opacity: 1;
 }
 
-.ap-eclipse-live[data-ready='true'] .ap-eclipse-live__canvas { opacity: 1; }
+.ap-eclipse-live[data-ready='true'] .ap-eclipse-live__canvas { visibility: visible; }
 
 .ap-eclipse-live__canvas:active { cursor: grabbing; }
 .ap-eclipse-live__canvas:focus-visible {
@@ -218,6 +218,95 @@
 
 .ap-eclipse-live__controls { margin-top: auto; padding-top: 20px; }
 .ap-eclipse-live__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.ap-eclipse-live__button--passage {
+  width: 100%;
+  margin-top: 8px;
+  border-color: rgba(255, 100, 40, .34);
+}
+
+.ap-eclipse-live__lens {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.ap-eclipse-live__lens > span {
+  color: rgba(242, 236, 223, .46);
+  font: 8px/1.2 'IBM Plex Mono', monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.ap-eclipse-live__lens > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.ap-eclipse-live__lens-button {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 1px solid rgba(216, 180, 106, .2);
+  border-radius: 3px;
+  background: transparent;
+  color: rgba(242, 236, 223, .58);
+  font: 7.5px/1.2 'IBM Plex Mono', monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ap-eclipse-live__lens-button:hover,
+.ap-eclipse-live__lens-button[aria-pressed='true'] {
+  border-color: var(--ecl-brass);
+  background: rgba(216, 180, 106, .09);
+  color: var(--ecl-ivory);
+}
+
+.ap-eclipse-live__share {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(216, 180, 106, .12);
+}
+
+.ap-eclipse-live__share button {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ecl-brass);
+  font: 8px/1.2 'IBM Plex Mono', monospace;
+  letter-spacing: .12em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ap-eclipse-live__share span {
+  color: rgba(242, 236, 223, .48);
+  font: 7.5px/1.35 'IBM Plex Mono', monospace;
+  text-align: right;
+}
+
+.ap-eclipse-live__lens-button:focus-visible,
+.ap-eclipse-live__share button:focus-visible,
+.ap-eclipse-live__button:focus-visible {
+  outline: 2px solid var(--ecl-ember);
+  outline-offset: 2px;
+}
+
+.ap-eclipse-live__lens-button:disabled,
+.ap-eclipse-live__share button:disabled {
+  cursor: wait;
+  opacity: .42;
+}
 
 .ap-eclipse-live__button {
   min-height: 44px;

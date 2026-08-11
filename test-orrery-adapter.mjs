@@ -1,4 +1,4 @@
-/* Gate: v835 flagship renderer contract.
+/* Gate: v836 flagship renderer contract.
  * Home owns the one general <void-orrery>; Eclipse owns a separate dedicated
  * Sun–Moon–Earth renderer. Product, card and archive routes mount no spare model.
  */
@@ -53,7 +53,7 @@ for (const level of ['EARTH', 'INNER', 'SYSTEM', 'OORT', 'STARS', 'GALAXY', 'COS
 if (!A.includes('2440587.5')) fail('JD epoch constant missing');
 for (const probe of [
   "withTimeout(importJob, 30000, 'webgl module import')",
-  'self._strict3D ? 15000 : 9000',
+  'self._strict3D ? 25000 : 9000',
   'data-ap-orrery-retry',
   'first-frame-timeout',
   'retryable: !!this._strict3D',
@@ -63,6 +63,32 @@ for (const probe of [
   if (!A.includes(probe)) fail('strict renderer contract missing: ' + probe);
 }
 ok('strict Home renderer times out truthfully and cannot silently swap models');
+for (const probe of [
+  'visibility:hidden;opacity:1',
+  "earthTextureFiles().concat('moon.jpg')",
+  'instrumentStartupTextureQuality()',
+  '&& !envIblLoading',
+  'instrumentSunRevealT() >= 0.999',
+  'announceInstrumentFirstFrame = true',
+]) {
+  if (!A.includes(probe) && !W.includes(probe)) fail('stable Home reveal contract missing: ' + probe);
+}
+if (A.includes('transition:opacity .45s ease')) fail('Home still fades an unsettled WebGL canvas');
+if (!/function frameBody\(t\)\s*\{\s*let announceInstrumentFirstFrame = false;/.test(W)) {
+  fail('Home first-frame announcement state is scoped inside the render body');
+}
+if (!/if \(composer\) composer\.render\(\);\s*else renderer\.render\(scene, camera\);\s*if \(announceInstrumentFirstFrame\) dispatchOrreryFirstFrame\(\);/.test(W)) {
+if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 96 : 84;') || !W.includes('camRadius: SYSTEM_CAM_RADIUS, camMin: 48')) {
+  fail('System camera no longer frames all eight major worlds');
+}
+if (!W.includes('!portraitMode && !focusFrameId')) {
+  fail('free-explore scale sync can still stomp a focused planet portrait');
+}
+if (!W.includes('!dragging && !focusFrameId && !freeExploreMode')) {
+  fail('Home resize can still retarget an outer-planet portrait to Earth');
+}
+  fail('Home announces first frame before the settled buffer is rendered');
+}
 
 /* 3. Exactly one general model, with status outside its canvas. */
 const htmlFiles = readdirSync(root).filter((name) => name.endsWith('.html'));
@@ -71,9 +97,9 @@ if (modelOwners.length !== 1 || modelOwners[0] !== 'index.html') {
   fail('general orrery owners must be index.html only: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=835/.test(indexHtml)) fail('Home missing v835 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=835"/.test(indexHtml)) {
-  fail('Home missing exact v835 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=836/.test(indexHtml)) fail('Home missing v836 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=836"/.test(indexHtml)) {
+  fail('Home missing exact v836 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
@@ -96,7 +122,7 @@ ok('Home owns one strict model with unobstructed canvas and adjacent controls');
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
   'css/ap-living-sky-v834.css?v=835',
-  'js/ap-observatory-v834.js?v=835',
+  'js/ap-observatory-v834.js?v=836',
   'js/ap-nav-model.js?v=835',
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
@@ -141,16 +167,18 @@ ok('Explore merges into the one flagship Observatory');
 /* 5. Dedicated Eclipse renderer and unobstructed stage. */
 const eclipseHtml = readFileSync(join(root, 'eclipse.html'), 'utf8');
 const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'utf8');
+const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=835',
-  'css/ap-eclipse-live-v834.css?v=835',
+  'js/ap-eclipse-live-v834.js?v=836',
+  'css/ap-eclipse-live-v834.css?v=836',
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
   if (!sw.includes("'" + bare + "'")) fail('service worker missing ' + bare);
 }
 for (const probe of ['id="ap-eclipse-live"', 'data-eclipse-now', 'data-eclipse-event',
+  'data-eclipse-play', 'data-eclipse-lens="system"', 'data-eclipse-share',
   'data-eclipse-range', 'data-eclipse-shadow-offset']) {
   if (!eclipseHtml.includes(probe)) fail('dedicated eclipse wiring missing: ' + probe);
 }
@@ -173,15 +201,43 @@ for (const probe of [
   'new THREE.WebGLRenderer',
   'positionVolume(umbra',
   'positionVolume(penumbra',
+  'const PASSAGE_START_MS',
+  'function playPassage()',
+  'function setLens(key',
+  'const activePointers = new Map()',
+  "url.searchParams.set('moment'",
   'window.APEclipseLive',
 ]) {
   if (!eclipseView.includes(probe)) fail('Eclipse WebGL contract missing: ' + probe);
 }
+for (const probe of ['visibility: hidden;', "[data-ready='true'] .ap-eclipse-live__canvas { visibility: visible; }"]) {
+  if (!eclipseLiveCss.includes(probe)) fail('stable Eclipse reveal CSS missing: ' + probe);
+}
+if (/transition:\s*opacity\s+620ms/.test(eclipseLiveCss)) fail('Eclipse still cross-fades the WebGL canvas');
+for (const probe of ['Settling 3D', 'function renderStableFrames', 'await renderStableFrames(3);']) {
+  if (!eclipseView.includes(probe)) fail('stable Eclipse frame gate missing: ' + probe);
+}
+if (!/root\.dataset\.ready = 'true';\s*updateReadout\(\);\s*startLoop\(\);/.test(eclipseView)) {
+  fail('Eclipse says Live before its stable buffer is revealed');
+}
+
 for (const probe of ['export function computeShadowGeometry', 'export function computeEclipseGeometry',
   'umbraLengthKm', 'penumbraRadiusAtEarthKm', 'shadowMissKm']) {
   if (!eclipseGeometry.includes(probe)) fail('pure eclipse geometry contract missing: ' + probe);
 }
 ok('Eclipse owns one dedicated 3D instrument with panel readouts outside the canvas');
+for (const file of [
+  'downloads/astroprecise-eclipse-field-guide-2026.pdf',
+  'guides/eclipse-field-guide-2026.html',
+  'img/editorial/eclipse-field-guide-cover-final-v836.png',
+]) {
+  if (!existsSync(join(root, file))) fail('Eclipse guide asset missing: ' + file);
+}
+if (!eclipseHtml.includes('downloads/astroprecise-eclipse-field-guide-2026.pdf')) {
+  fail('Eclipse page does not expose the downloadable field guide');
+}
+ok('Eclipse launch guide and product doorway are present');
+
 
 /* 6. Texture quality ladder and lazy deep-space work. */
 for (const name of ['earth_md.webp', 'jupiter_md.webp', 'mars_md.webp', 'mercury_md.webp',
@@ -189,7 +245,7 @@ for (const name of ['earth_md.webp', 'jupiter_md.webp', 'mars_md.webp', 'mercury
   if (!existsSync(join(root, 'assets', 'textures', name))) fail('medium texture missing: ' + name);
 }
 for (const probe of ['function mediumName(name)', 'function wantsMediumTextures()',
-  'function isCriticalInstrumentTexture(file)', "requestPreloadTexture(file, 'medium')",
+  'function isCriticalInstrumentTexture(file)', 'requestPreloadTexture(file, startupQuality)',
   'coldInstrument && !isCriticalInstrumentTexture(file)', 'function scheduleFullTextureUpgrades()',
   'const galaxySpriteTextureCache = new Map()', 'if (p.id >= 3 && !galaxyBuilt) ensureGalaxyLayers()']) {
   if (!W.includes(probe)) fail('renderer quality/performance contract missing: ' + probe);

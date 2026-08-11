@@ -146,6 +146,7 @@ const FinishShader = {
   let fatalReported = false;
   let envRT = null;
   let envIblLoading = false;
+  let envIblFrozen = false;
   let runtimeGeneration = 0;
   let raf = null, destroyed = false, running = true, inView = true;
   let lifecycleListeners = [];
@@ -227,6 +228,7 @@ const FinishShader = {
   let instrumentStableFrames = 0;
   let instrumentSunHandoffReady = false;
   let instrumentSunRevealStart = 0;
+  const INSTRUMENT_IBL_STARTUP_BUDGET_MS = 6500;
   const INSTRUMENT_FIRST_FRAME_FRAMES = 4;
   const INSTRUMENT_SUN_REVEAL_MS = 480;
   let instrumentIdleAz = null;
@@ -320,6 +322,7 @@ const FinishShader = {
     catch (e) { return false; }
   })();
 
+  const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 96 : 84;
   function dataSavingRequested() {
     try {
       const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -366,7 +369,7 @@ const FinishShader = {
   let scrubVel = 0, flicking = false, onScrub = null;
 
   // camera orbit (spherical around target)
-  let camRadius = 48, camAz = -0.6, camEl = 26 * D2R;  // tighter framing — inner system + Earth as the hero (was 82)
+  let camRadius = SYSTEM_CAM_RADIUS, camAz = -0.6, camEl = 26 * D2R;  // complete eight-world System composition
   let camRadiusTarget = null;
   let zoomSettleUntil = 0;
   let instrumentBloomZoom = 1;
@@ -593,7 +596,7 @@ const FinishShader = {
       camRadius: 22, camMin: 14, camMax: 38, camEl: 22 * D2R, camAz: -0.6, targetEarth: false,
       honesty: 'Positions live (VSOP87) · distances schematic' },
     { id: 2, name: 'System', hud: 'Full solar system',
-      camRadius: 48, camMin: 32, camMax: 160, camEl: 26 * D2R, camAz: -0.6, targetEarth: false,
+      camRadius: SYSTEM_CAM_RADIUS, camMin: 48, camMax: 160, camEl: 26 * D2R, camAz: -0.6, targetEarth: false,
       honesty: 'Positions live (VSOP87) · distances schematic' },
     { id: 3, name: 'Oort', hud: 'Oort cloud',
       camRadius: 108, camMin: 78, camMax: 175, camEl: 20 * D2R, camAz: -0.45, targetEarth: false,
@@ -622,8 +625,8 @@ const FinishShader = {
   const SPACE_FLIGHT_MS = 54000;
   const SPACE_FLIGHT_TO = 5;
   let scaleAnimActive = false, scaleAnimStart = 0;
-  const scaleAnimFrom = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
-  const scaleAnimTo = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
+  const scaleAnimFrom = { radius: SYSTEM_CAM_RADIUS, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
+  const scaleAnimTo = { radius: SYSTEM_CAM_RADIUS, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
   const SCALE_ANIM_MS = PRM ? 1100 : 2100;
   const JOURNEY_ANIM_MS = PRM ? 1600 : 5200;
   const JOURNEY_HOLD_MS = PRM ? 1200 : 4800;
@@ -894,6 +897,7 @@ const FinishShader = {
   }
   const _projLabel = new THREE.Vector3();
   let domLabelLayer = null;
+  const _projSunLabel = new THREE.Vector3();
   const domLabelEls = {};
   let useDomLabels = false;
 
@@ -1999,7 +2003,9 @@ const FinishShader = {
   }
 
   function isCriticalInstrumentTexture(file) {
-    return BODIES.some((b) => b.tex === file || b.ring === file);
+    return file === 'moon.jpg'
+      || earthTextureFiles().includes(file)
+      || BODIES.some((b) => b.tex === file || b.ring === file);
   }
 
   function markTexturesReady(refresh) {
@@ -2042,17 +2048,18 @@ const FinishShader = {
       });
     }
 
-    // Home's first truthful frame needs the worlds people can see and select,
-    // not every auxiliary map in the library. All visible planet albedos and
-    // Saturn's ring arrive as crisp 1024px maps first. loadTex holds Moon and
-    // Earth detail layers behind this gate, then upgrades 2048px maps at idle.
+    // Home reveals only after every visible world plus Earth's lighting layers
+    // share one settled texture tier. High desktop clients receive the full maps;
+    // phones and constrained devices receive the crisp medium tier without a
+    // second visible startup swap.
     if (instrumentMode) {
-      const critical = [];
+      const critical = earthTextureFiles().concat('moon.jpg');
       BODIES.forEach((b) => {
         if (b.tex) critical.push(b.tex);
         if (b.ring) critical.push(b.ring);
       });
-      return Promise.all(critical.map((file) => requestPreloadTexture(file, 'medium'))).then(() => {
+      const startupQuality = instrumentStartupTextureQuality();
+      return Promise.all(Array.from(new Set(critical)).map((file) => requestPreloadTexture(file, startupQuality))).then(() => {
         markTexturesReady(false);
       }).catch(() => {
         markTexturesReady(false);
@@ -3813,7 +3820,7 @@ const FinishShader = {
   function isEarthPosterBlocking() {
     if (!instrumentMode || freeExploreMode) return false;
     const el = document.getElementById('ol-earth-poster');
-    if (!el) return true;
+    if (!el) return false;
     if (el.classList.contains('ol-earth-poster--done')) return false;
     return true;
   }
@@ -4984,11 +4991,15 @@ const FinishShader = {
   }
   function wantsMediumTextures() { return !wantsSmallTextures() && perfTier !== 'high'; }
 
+  function instrumentStartupTextureQuality() {
+    return perfTier === 'high' && !IS_PHONE && !dataSavingRequested() ? 'full' : 'medium';
+  }
+
   // Recover the strongest useful piece from the abandoned orrery-elevate branch:
   // a subtle image-based fill that gives each world a readable, non-flat limb.
   // It affects lighting only; the procedural sky remains the visible background.
   function initEnvironmentIBL() {
-    if (perfTier === 'low' || !renderer || !scene || !texLoader || scene.environment || envRT || envIblLoading) return;
+    if (perfTier === 'low' || !renderer || !scene || !texLoader || scene.environment || envRT || envIblLoading || envIblFrozen) return;
     if (renderer.capabilities && renderer.capabilities.isWebGL2 === false) return;
 
     const generation = runtimeGeneration;
@@ -5001,11 +5012,25 @@ const FinishShader = {
       : 'env_nebula_cool.webp';
 
     envIblLoading = true;
+    if (instrumentMode) {
+      later(() => {
+        if (destroyed || generation !== runtimeGeneration || renderer !== expectedRenderer || scene !== expectedScene) return;
+        if (!envIblLoading || envRT || scene.environment) return;
+        // Never let optional PMREM lighting race the complete-texture reveal.
+        // A late result is discarded, so the visible model cannot brightness-swap.
+        envIblFrozen = true;
+        envIblLoading = false;
+      }, INSTRUMENT_IBL_STARTUP_BUDGET_MS);
+    }
     try {
       texLoader.load(ORRERY_ENV_TEX + file, (tex) => {
         let pmrem = null;
         try {
           envIblLoading = false;
+          if (envIblFrozen) {
+            tex.dispose();
+            return;
+          }
           if (destroyed || generation !== runtimeGeneration || renderer !== expectedRenderer || scene !== expectedScene) {
             tex.dispose();
             return;
@@ -5068,11 +5093,10 @@ const FinishShader = {
   }
 
   function loadTex(file, srgb, quality) {
-    // During the flagship cold start every initial request is fixed to medium.
-    // Non-critical maps wait on the visible-planet gate instead of competing
-    // with it. Calls made later can explicitly request the full 2048px source.
+    // Every startup consumer shares one tier so the ready gate cannot expose a
+    // medium-to-full texture swap. Truly deferred maps still wait on that gate.
     const coldInstrument = instrumentMode && !texturesReady && !onPreloaderStage();
-    const requestedQuality = quality || (coldInstrument ? 'medium' : undefined);
+    const requestedQuality = quality || (coldInstrument ? instrumentStartupTextureQuality() : undefined);
     const candidates = textureCandidates(file, requestedQuality);
     const generation = runtimeGeneration;
     const expectedLoader = texLoader;
@@ -6598,6 +6622,8 @@ const FinishShader = {
       } else if (introActive) {
         alpha = introLabelAlpha(b.id, introP);
       } else if (focusPlanetId === b.id && performance.now() < focusPlanetUntil) {
+      } else if (focusFrameId && focusFrameId !== 'moon' && focusFrameId !== 'aspect') {
+        alpha = focusFrameId === b.id ? 1 : 0;
         alpha = 1;
       } else if (showLabels && scaleLevel >= 1 && scaleLevel <= 2) {
         // v576: labels live at INNER/SYSTEM scales — the Earth rest frame stays clean
@@ -6620,7 +6646,22 @@ const FinishShader = {
       const x = ox + (_projLabel.x * 0.5 + 0.5) * w;
       const y = oy + (-_projLabel.y * 0.5 + 0.5) * h;
       const depthFade = Math.max(0.35, 1 - Math.max(0, _projLabel.z) * 0.35);
-      el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -100%)`;
+      let labelX = x;
+      let labelY = y;
+      let labelAnchor = 'translate(-50%, -100%)';
+      if (b.id === 'mercury' && sunMesh && scaleLevel >= 1 && scaleLevel <= 2) {
+        _projSunLabel.copy(sunMesh.position).project(camera);
+        const sunX = ox + (_projSunLabel.x * 0.5 + 0.5) * w;
+        const sunY = oy + (-_projSunLabel.y * 0.5 + 0.5) * h;
+        const dx = x - sunX;
+        const dy = y - sunY;
+        const distance = Math.max(1, Math.hypot(dx, dy));
+        const push = scaleLevel === 2 ? 64 : 34;
+        labelX += (dx / distance) * push;
+        labelY += (dy / distance) * push;
+        labelAnchor = 'translate(-50%, -50%)';
+      }
+      el.style.transform = `translate(${labelX.toFixed(1)}px, ${labelY.toFixed(1)}px) ${labelAnchor}`;
       el.style.opacity = String(alpha * depthFade);
     });
   }
@@ -6892,6 +6933,7 @@ const FinishShader = {
     else raf = null;
   }
   function frameBody(t) {
+    let announceInstrumentFirstFrame = false;
     if (window.__orreryPreloaderOwns) inView = true;
     // Wall-clock intro completion — tab hidden / throttled rAF must not stall Enter.
     if (introActive && !preloaderCosmicJourney && introStart > 0 && meshes.earth) {
@@ -7521,7 +7563,7 @@ const FinishShader = {
     // Free explore: keep continuous scale layers honest while the user coasts zoom.
     // While free-zooming (or coasting camRadiusTarget), keep layers in sync.
     // Skip during scaleAnim so fly-to / strip jumps aren't visually stomped.
-    if (freeExploreMode && !scaleAnimActive && !introActive && !portraitMode) {
+    if (freeExploreMode && !scaleAnimActive && !introActive && !portraitMode && !focusFrameId) {
       syncFreeExploreScaleFromRadius(camRadius, { dispatch: false });
     }
     applyEclipseVisuals();
@@ -7550,15 +7592,17 @@ const FinishShader = {
     updateSelectedHighlight(t);
     updatePlanetTrails();
     if (instrumentMode) {
-      if (instrumentFirstFramePending && texturesReady) {
-        syncPosterSunVisibility();
+      stabilizeInstrumentSunFrame();
+      const startupVisualsSettled = texturesReady
+        && !envIblLoading
+        && instrumentSunRevealT() >= 0.999;
+      if (instrumentFirstFramePending && startupVisualsSettled) {
         instrumentStableFrames += 1;
         if (instrumentStableFrames >= INSTRUMENT_FIRST_FRAME_FRAMES) {
           instrumentFirstFramePending = false;
-          dispatchOrreryFirstFrame();
+          announceInstrumentFirstFrame = true;
         }
       }
-      stabilizeInstrumentSunFrame();
     }
     updateAspectView(t);
     if (!introActive && (!lastDomLabelPaintAt || t - lastDomLabelPaintAt >= 33)) {
@@ -7572,6 +7616,13 @@ const FinishShader = {
         const m = meshes[b.id];
         if (!m) return;
         lab.position.set(m.position.x, m.position.y + b.size + 0.9, m.position.z);
+        if (b.id === 'mercury' && scaleLevel === 2 && sunMesh) {
+          const labelDx = m.position.x - sunMesh.position.x;
+          const labelDz = m.position.z - sunMesh.position.z;
+          const labelDistance = Math.max(0.01, Math.hypot(labelDx, labelDz));
+          lab.position.x += (labelDx / labelDistance) * 4.5;
+          lab.position.z += (labelDz / labelDistance) * 4.5;
+        }
         const d = camera.position.distanceTo(lab.position);
         const s = Math.max(0.04, d * 0.018);
         lab.scale.set(s * lab.userData.aspect, s, 1);
@@ -7586,6 +7637,7 @@ const FinishShader = {
 
     if (composer) composer.render();
     else renderer.render(scene, camera);
+    if (announceInstrumentFirstFrame) dispatchOrreryFirstFrame();
   }
 
   // ── UI date readout (mirrors canvas behaviour) ─────────────────────────────
@@ -7714,7 +7766,7 @@ const FinishShader = {
     if (radialBlurPass) radialBlurPass.uniforms.uAspect.value = w / Math.max(h, 1);
     camera.aspect = w / h; camera.updateProjectionMatrix();
     if (isHomeHeroEmbed() && scaleLevel === 0 && !scaleAnimActive && !introActive &&
-        !portraitMode && !moonFrameActive && !dragging) {
+        !portraitMode && !moonFrameActive && !dragging && !focusFrameId && !freeExploreMode) {
       containEarthFrame(0.70);
     }
   }
@@ -8290,6 +8342,7 @@ const FinishShader = {
     if (!preloaderMode && !PRM && perfTier !== 'low') {
       ensureComposer();
     }
+    envIblFrozen = false;
 
     const now = new Date();
     baseNowMs = now.getTime();
@@ -9733,6 +9786,7 @@ const FinishShader = {
     bloomPass = null;
     radialBlurPass = null;
     finishPass = null;
+    envIblFrozen = false;
     try { renderer && renderer.dispose(); } catch (e) {}
     try { renderer && renderer.forceContextLoss && renderer.forceContextLoss(); } catch (e) {}
     if (gaiaWorker) {

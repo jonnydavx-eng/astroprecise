@@ -44,7 +44,7 @@ export default [
     },
   },
 
-  // Eight website modules that ARE ES modules today (top-level import/export).
+  // Eleven website modules that ARE ES modules today (top-level import/export).
   // Without this override the block above forces sourceType 'script' and ESLint
   // exits 1 with a parse error on every one of them — meaning the exact files
   // hand-edited at commerce flip (gumroad-unlock, the eclipse pair) had NO
@@ -55,6 +55,9 @@ export default [
     files: [
       'website/js/orrery-webgl.js',
       'website/js/ap-eclipse-page.js',
+      'website/js/ap-eclipse-contact-v835.js',
+      'website/js/ap-eclipse-geometry-v834.js',
+      'website/js/ap-eclipse-live-v834.js',
       'website/js/eclipse-reading.js',
       'website/js/deep-reading.js',
       'website/js/gumroad-unlock.js',

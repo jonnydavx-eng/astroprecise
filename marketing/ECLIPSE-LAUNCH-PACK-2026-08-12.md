@@ -1,4 +1,6 @@
 # AstroPrecise — Eclipse Launch Pack, 12 August 2026
+> [!CAUTION]
+> **SUPERSEDED 11 AUGUST 2026. DO NOT SCHEDULE FROM THIS FILE.** The £2.99 / £6 eclipse offer and its posts no longer match the launch candidate. Use [`ECLIPSE-X-LAUNCH-2026-08-12.md`](ECLIPSE-X-LAUNCH-2026-08-12.md), which carries the current free Field Guide, My Eclipse Moment £9 / £12 / £16 product spine and checkout proof gate.
 
 > **Author:** Kimi (Kimi CLI @ BOOK-T1H4NJ753R), 1 August 2026, as
 > `AstroPrecise-Eclipse-Marketing-Pack.md`. Imported into the canonical repo

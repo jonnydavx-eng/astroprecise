@@ -8,6 +8,11 @@ import {
 const EARTH_POS = new THREE.Vector3(8, 0, 0);
 const SUN_POS = new THREE.Vector3(-11, 0, 0);
 const MOON_SCENE_DISTANCE = 5.5;
+// NASA's published global eclipse window, replayed as real computed instants.
+const PASSAGE_START_MS = Date.UTC(2026, 7, 12, 15, 34, 0);
+const PASSAGE_END_MS = Date.UTC(2026, 7, 12, 20, 57, 0);
+const PASSAGE_DURATION_MS = 14000;
+const LENS_KEYS = new Set(['system', 'shadow', 'earth']);
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
 const Z_AXIS = new THREE.Vector3(0, 0, 1);
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
@@ -212,6 +217,10 @@ async function mount(root, E) {
   const range = root.querySelector('[data-eclipse-range]');
   const nowButton = root.querySelector('[data-eclipse-now]');
   const eventButton = root.querySelector('[data-eclipse-event]');
+  const playButton = root.querySelector('[data-eclipse-play]');
+  const shareButton = root.querySelector('[data-eclipse-share]');
+  const shareStatusEl = root.querySelector('[data-eclipse-share-status]');
+  const lensButtons = Array.from(root.querySelectorAll('[data-eclipse-lens]'));
   const modeEl = root.querySelector('[data-eclipse-mode]');
   const statusEl = root.querySelector('[data-eclipse-status]');
   const timeEl = root.querySelector('[data-eclipse-time]');
@@ -227,10 +236,12 @@ async function mount(root, E) {
     earth: root.querySelector('[data-eclipse-label="earth"]'),
   };
 
-  if (!canvas || !stage || !range || !nowButton || !eventButton) {
+  if (!canvas || !stage || !range || !nowButton || !eventButton || !playButton || lensButtons.length !== 3) {
     throw new Error('Eclipse instrument controls are incomplete');
   }
-  [range, nowButton, eventButton].forEach((control) => { control.disabled = true; });
+  const instrumentControls = [range, nowButton, eventButton, playButton, shareButton, ...lensButtons]
+    .filter(Boolean);
+  instrumentControls.forEach((control) => { control.disabled = true; });
   const reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const constrainedRender = (navigator.deviceMemory && navigator.deviceMemory <= 4)
     || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
@@ -254,11 +265,16 @@ async function mount(root, E) {
   let liveTimer = 0;
   let travelFrame = 0;
   let travelToken = 0;
+  let passageFrame = 0;
+  let passageToken = 0;
+  let shareStatusTimer = 0;
   let failed = false;
   let disposed = false;
   let cameraRadius = 25;
   let cameraAzimuth = .2;
   let cameraElevation = .29;
+  let cameraFrame = 0;
+  let activeLens = 'system';
   const applyCamera = () => {
     const c = Math.cos(cameraElevation);
     camera.position.set(
@@ -382,6 +398,78 @@ async function mount(root, E) {
     moonMaterial.needsUpdate = true;
   });
 
+  function lensPose(key) {
+    if (key === 'earth') {
+      return { target: EARTH_POS.clone(), radius: 5.3, azimuth: .78, elevation: .24 };
+    }
+    if (key === 'shadow') {
+      return {
+        target: new THREE.Vector3().lerpVectors(moon.position, EARTH_POS, .58),
+        radius: 9.4,
+        azimuth: .34,
+        elevation: .25,
+      };
+    }
+    return { target: new THREE.Vector3(0, 0, 0), radius: 25, azimuth: .2, elevation: .29 };
+  }
+
+  function syncLensControls() {
+    root.dataset.view = activeLens;
+    lensButtons.forEach((button) => {
+      button.setAttribute('aria-pressed', button.dataset.eclipseLens === activeLens ? 'true' : 'false');
+    });
+  }
+
+  function clampCameraRadius(value) {
+    if (activeLens === 'earth') return clamp(value, 3.4, 12);
+    if (activeLens === 'shadow') return clamp(value, 6.2, 20);
+    return clamp(value, 16, 38);
+  }
+  function cancelCameraTravel() {
+    if (cameraFrame) cancelAnimationFrame(cameraFrame);
+    cameraFrame = 0;
+  }
+
+  function setLens(key, animate = true) {
+    if (!LENS_KEYS.has(key) || failed || disposed) return;
+    cancelCameraTravel();
+    activeLens = key;
+    syncLensControls();
+    const next = lensPose(key);
+    if (!animate || reducedMotion) {
+      cameraTarget.copy(next.target);
+      cameraRadius = next.radius;
+      cameraAzimuth = next.azimuth;
+      cameraElevation = next.elevation;
+      applyCamera();
+      render();
+      return;
+    }
+    const fromTarget = cameraTarget.clone();
+    const fromRadius = cameraRadius;
+    const fromAzimuth = cameraAzimuth;
+    const fromElevation = cameraElevation;
+    const startedAt = performance.now();
+    const step = (now) => {
+      if (failed || disposed) return;
+      const progress = clamp((now - startedAt) / 820, 0, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      cameraTarget.lerpVectors(fromTarget, next.target, eased);
+      cameraRadius = fromRadius + (next.radius - fromRadius) * eased;
+      cameraAzimuth = fromAzimuth + (next.azimuth - fromAzimuth) * eased;
+      cameraElevation = fromElevation + (next.elevation - fromElevation) * eased;
+      applyCamera();
+      render(now);
+      if (progress < 1) cameraFrame = requestAnimationFrame(step);
+      else cameraFrame = 0;
+    };
+    cameraFrame = requestAnimationFrame(step);
+  }
+
+  lensButtons.forEach((button) => {
+    button.addEventListener('click', () => setLens(button.dataset.eclipseLens));
+  });
+
   const moonOrbit = new THREE.LineLoop(
     new THREE.BufferGeometry().setFromPoints(Array.from({ length: 128 }, (_, i) => {
       const a = i / 128 * Math.PI * 2;
@@ -452,7 +540,7 @@ async function mount(root, E) {
     stopLoop();
     root.dataset.failed = 'true';
     root.removeAttribute('data-ready');
-    [range, nowButton, eventButton].forEach((control) => { if (control) control.disabled = true; });
+    instrumentControls.forEach((control) => { control.disabled = true; });
     if (fallback) {
       fallback.hidden = false;
       fallback.innerHTML = '<div><strong>Live eclipse geometry is unavailable on this device.</strong><br><span>Use the computed diagram below; the times and safety guidance remain available.</span></div>';
@@ -477,6 +565,10 @@ async function mount(root, E) {
     moon.position.copy(EARTH_POS).addScaledVector(moonDirection, MOON_SCENE_DISTANCE);
     moon.lookAt(EARTH_POS);
     moon.rotateY(Math.PI * .5);
+    if (!cameraFrame && activeLens === 'shadow') {
+      cameraTarget.lerpVectors(moon.position, EARTH_POS, .58);
+      applyCamera();
+    }
 
     const lightAxisScene = moon.position.clone().sub(SUN_POS).normalize();
     const sceneUmbraLength = clamp(MOON_SCENE_DISTANCE * computed.umbraLengthKm / computed.moonDistanceKm, 3.8, 7.2);
@@ -524,7 +616,11 @@ async function mount(root, E) {
     root.dataset.separation = state.separationDeg.toFixed(4);
     root.dataset.shadowOffsetKm = Math.round(state.shadowMissKm);
     root.dataset.umbraHits = state.umbraHits ? 'true' : 'false';
-    if (modeEl) modeEl.textContent = mode === 'live' ? 'Live geocentric alignment' : mode === 'greatest' ? 'Greatest eclipse replay' : 'Timeline view';
+    const modeLabel = mode === 'live' ? 'Live geocentric alignment'
+      : mode === 'greatest' ? 'Greatest eclipse replay'
+        : mode === 'passage' ? 'Shadow passage replay'
+          : 'Timeline view';
+    if (modeEl) modeEl.textContent = modeLabel;
     if (statusEl) statusEl.textContent = statusFor(state);
     if (timeEl) timeEl.textContent = `${formatUtc(state.date)} · Meeus Sun/Moon geometry`;
     if (rangeTimeEl) rangeTimeEl.textContent = formatUtc(state.date).replace(' · ', ' ');
@@ -533,9 +629,16 @@ async function mount(root, E) {
     if (moonDistanceEl) moonDistanceEl.textContent = formatDistance(state.moonDistanceKm);
     if (shadowEl) shadowEl.textContent = state.umbraHits ? 'Umbra intersects Earth' : formatDistance(state.shadowMissKm);
     if (ratioEl) ratioEl.textContent = `${state.apparentRatio.toFixed(3)}×`;
-    if (badgeEl) badgeEl.textContent = mode === 'live' ? `Live now · ${formatUtc(state.date)}` : `Computed replay · ${formatUtc(state.date)}`;
+    if (badgeEl) {
+      const badgeMode = root.dataset.ready === 'true'
+        ? (mode === 'live' ? 'Live now' : 'Computed replay')
+        : 'Settling 3D';
+      badgeEl.textContent = `${badgeMode} · ${formatUtc(state.date)}`;
+    }
     if (nowButton) nowButton.setAttribute('aria-pressed', mode === 'live' ? 'true' : 'false');
     if (eventButton) eventButton.setAttribute('aria-pressed', mode === 'greatest' ? 'true' : 'false');
+    playButton.setAttribute('aria-pressed', mode === 'passage' ? 'true' : 'false');
+    playButton.textContent = mode === 'passage' ? 'Pause the shadow passage' : 'Play the shadow passage';
   }
 
   function setDisplayDate(date, nextMode) {
@@ -559,6 +662,7 @@ async function mount(root, E) {
     const targetMs = new Date(date).getTime();
     if (!Number.isFinite(targetMs) || failed || disposed) return;
     cancelTravel();
+    cancelPassage();
     if (reducedMotion) {
       setDisplayDate(new Date(targetMs), nextMode);
       return;
@@ -586,8 +690,58 @@ async function mount(root, E) {
     travelFrame = requestAnimationFrame(step);
   }
 
-  function setLive() { setDisplayDate(new Date(), 'live'); }
-  function setGreatest() { setDisplayDate(new Date(EVENT_MS), 'greatest'); }
+  function cancelPassage() {
+    passageToken += 1;
+    if (passageFrame) cancelAnimationFrame(passageFrame);
+    passageFrame = 0;
+    if (mode === 'passage') {
+      mode = 'timeline';
+      updateReadout();
+    }
+  }
+
+  function playPassage() {
+    if (passageFrame) {
+      cancelPassage();
+      return;
+    }
+    cancelTravel();
+    if (reducedMotion) {
+      setGreatest();
+      return;
+    }
+    const token = ++passageToken;
+    const startedAt = performance.now();
+    let lastPaintAt = 0;
+    mode = 'passage';
+    updateReadout();
+    setLens('shadow');
+    const step = (now) => {
+      if (token !== passageToken || failed || disposed) return;
+      const progress = clamp((now - startedAt) / PASSAGE_DURATION_MS, 0, 1);
+      if (progress >= 1 || now - lastPaintAt >= interactionFrameMs) {
+        lastPaintAt = now;
+        const moment = PASSAGE_START_MS + (PASSAGE_END_MS - PASSAGE_START_MS) * progress;
+        setDisplayDate(new Date(moment), 'passage');
+      }
+      if (progress < 1) {
+        passageFrame = requestAnimationFrame(step);
+      } else {
+        passageFrame = 0;
+        setDisplayDate(new Date(PASSAGE_END_MS), 'timeline');
+      }
+    };
+    passageFrame = requestAnimationFrame(step);
+  }
+
+  function setLive() {
+    cancelPassage();
+    setDisplayDate(new Date(), 'live');
+  }
+  function setGreatest() {
+    cancelPassage();
+    setDisplayDate(new Date(EVENT_MS), 'greatest');
+  }
 
   range.min = '0';
   range.max = String(Math.round((RANGE_END_MS - RANGE_START_MS) / 60000));
@@ -596,6 +750,7 @@ async function mount(root, E) {
   let pendingRangeMs = RANGE_START_MS;
   range.addEventListener('input', () => {
     cancelTravel();
+    cancelPassage();
     pendingRangeMs = RANGE_START_MS + Number(range.value) * 60000;
     if (rangeFrame) return;
     rangeFrame = requestAnimationFrame(() => {
@@ -605,6 +760,41 @@ async function mount(root, E) {
   });
   nowButton.addEventListener('click', () => travelToDate(new Date(), 'live'));
   eventButton.addEventListener('click', () => travelToDate(new Date(EVENT_MS), 'greatest'));
+  playButton.addEventListener('click', playPassage);
+
+  function setShareStatus(message) {
+    if (!shareStatusEl) return;
+    shareStatusEl.textContent = message;
+    if (shareStatusTimer) clearTimeout(shareStatusTimer);
+    shareStatusTimer = setTimeout(() => { shareStatusEl.textContent = ''; }, 4200);
+  }
+
+  async function shareMoment() {
+    if (!state) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete('nosw');
+    url.searchParams.set('moment', displayDate.toISOString());
+    url.searchParams.set('lens', activeLens);
+    url.hash = 'ap-eclipse-live';
+    const title = 'The 12 August 2026 eclipse in 3D';
+    const text = `Explore the computed Sun-Moon-Earth alignment at ${formatUtc(displayDate)}.`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, text, url: url.toString() });
+        setShareStatus('Moment shared');
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url.toString());
+        setShareStatus('Link copied');
+      } else {
+        throw new Error('Clipboard unavailable');
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+      setShareStatus('Could not share');
+    }
+  }
+
+  if (shareButton) shareButton.addEventListener('click', shareMoment);
 
   function resize() {
     if (failed || disposed) return;
@@ -648,6 +838,20 @@ async function mount(root, E) {
     }
   }
 
+  function renderStableFrames(count = 3) {
+    return new Promise((resolve) => {
+      let remaining = count;
+      const step = (time) => {
+        if (failed || disposed) { resolve(); return; }
+        render(time);
+        remaining -= 1;
+        if (remaining > 0) requestAnimationFrame(step);
+        else resolve();
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
   let eventRenderFrame = 0;
   function scheduleRender() {
     if (loopRunning || eventRenderFrame || failed || disposed) return;
@@ -682,13 +886,39 @@ async function mount(root, E) {
   let dragging = false;
   let lastX = 0;
   let lastY = 0;
+  let pinchDistance = 0;
+  const activePointers = new Map();
+  const distanceBetweenPointers = () => {
+    const points = Array.from(activePointers.values());
+    if (points.length < 2) return 0;
+    return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+  };
   canvas.addEventListener('pointerdown', (event) => {
-    dragging = true;
-    lastX = event.clientX;
-    lastY = event.clientY;
+    cancelCameraTravel();
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (activePointers.size === 1) {
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+    } else {
+      dragging = false;
+      pinchDistance = distanceBetweenPointers();
+    }
     canvas.setPointerCapture(event.pointerId);
   });
   canvas.addEventListener('pointermove', (event) => {
+    if (!activePointers.has(event.pointerId)) return;
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (activePointers.size >= 2) {
+      const nextDistance = distanceBetweenPointers();
+      if (pinchDistance > 0 && nextDistance > 0) {
+        cameraRadius = clampCameraRadius(cameraRadius * pinchDistance / nextDistance);
+        applyCamera();
+        scheduleRender();
+      }
+      pinchDistance = nextDistance;
+      return;
+    }
     if (!dragging) return;
     const dx = event.clientX - lastX;
     const dy = event.clientY - lastY;
@@ -700,14 +930,22 @@ async function mount(root, E) {
     scheduleRender();
   });
   const stopDrag = (event) => {
-    dragging = false;
+    activePointers.delete(event.pointerId);
+    pinchDistance = 0;
+    if (activePointers.size === 1) {
+      const remaining = activePointers.values().next().value;
+      dragging = true;
+      lastX = remaining.x;
+      lastY = remaining.y;
+    } else dragging = false;
     try { canvas.releasePointerCapture(event.pointerId); } catch (err) { /* already released */ }
   };
   canvas.addEventListener('pointerup', stopDrag);
   canvas.addEventListener('pointercancel', stopDrag);
   canvas.addEventListener('wheel', (event) => {
     event.preventDefault();
-    cameraRadius = clamp(cameraRadius * Math.exp(event.deltaY * .001), 16, 38);
+    cancelCameraTravel();
+    cameraRadius = clampCameraRadius(cameraRadius * Math.exp(event.deltaY * .001));
     applyCamera();
     scheduleRender();
   }, { passive: false });
@@ -715,12 +953,13 @@ async function mount(root, E) {
     const key = event.key;
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '=', '-', '_'].includes(key)) return;
     event.preventDefault();
+    cancelCameraTravel();
     if (key === 'ArrowLeft') cameraAzimuth += .09;
     if (key === 'ArrowRight') cameraAzimuth -= .09;
     if (key === 'ArrowUp') cameraElevation = clamp(cameraElevation - .07, -.18, 1.05);
     if (key === 'ArrowDown') cameraElevation = clamp(cameraElevation + .07, -.18, 1.05);
-    if (key === '+' || key === '=') cameraRadius = clamp(cameraRadius * .9, 16, 38);
-    if (key === '-' || key === '_') cameraRadius = clamp(cameraRadius * 1.1, 16, 38);
+    if (key === '+' || key === '=') cameraRadius = clampCameraRadius(cameraRadius * .9);
+    if (key === '-' || key === '_') cameraRadius = clampCameraRadius(cameraRadius * 1.1);
     applyCamera();
     scheduleRender();
   });
@@ -761,23 +1000,35 @@ async function mount(root, E) {
     startLoop();
   });
 
-  // Do not reveal a flat placeholder model and then swap maps underneath it.
-  // The instrument appears once its four visible surface layers have settled.
+  // Do not reveal a flat placeholder model or a half-composited WebGL frame.
+  // Surfaces settle first, then three complete hidden frames warm the renderer;
+  // only that stable buffer is made visible and allowed to say Live now.
   await Promise.allSettled([earthMapReady, earthReliefReady, cloudMapReady, moonMapReady]);
   if (failed || disposed) return;
-  setLive();
+  const sharedParams = new URLSearchParams(window.location.search);
+  const sharedMoment = sharedParams.get('moment');
+  const sharedMs = sharedMoment ? new Date(sharedMoment).getTime() : NaN;
+  const sharedLens = sharedParams.get('lens');
+  if (Number.isFinite(sharedMs) && sharedMs >= RANGE_START_MS && sharedMs <= RANGE_END_MS) {
+    setDisplayDate(new Date(sharedMs), 'timeline');
+  } else setLive();
+  setLens(LENS_KEYS.has(sharedLens) ? sharedLens : 'system', false);
   resize();
-  startLoop();
-  if (failed) return;
+  await renderStableFrames(3);
+  if (failed || disposed) return;
   if (fallback) fallback.hidden = true;
   root.removeAttribute('data-failed');
   root.dataset.ready = 'true';
-  [range, nowButton, eventButton].forEach((control) => { control.disabled = false; });
+  updateReadout();
+  startLoop();
+  instrumentControls.forEach((control) => { control.disabled = false; });
   window.APEclipseLive = {
     setLive,
     setGreatest,
+    playPassage,
+    setLens,
     setDate: (value) => setDisplayDate(new Date(value), 'timeline'),
-    getState: () => state && { ...state, date: new Date(state.date) },
+    getState: () => state && { ...state, date: new Date(state.date), mode, lens: activeLens },
   };
   document.dispatchEvent(new CustomEvent('ap-eclipse-live-ready', { detail: { state } }));
 
@@ -792,6 +1043,9 @@ async function mount(root, E) {
     if (liveTimer) clearInterval(liveTimer);
     liveTimer = 0;
     cancelTravel();
+    cancelPassage();
+    cancelCameraTravel();
+    if (shareStatusTimer) clearTimeout(shareStatusTimer);
     if (rangeFrame) cancelAnimationFrame(rangeFrame);
     rangeFrame = 0;
     if (eventRenderFrame) cancelAnimationFrame(eventRenderFrame);

@@ -420,7 +420,10 @@
           .then(function () {
             if (!self.isConnected) throw new Error('detached during boot');
             var cv = document.createElement('canvas');
-            cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;opacity:0;transition:opacity .45s ease';
+            // Keep the real canvas completely out of the composited page until the
+            // engine has rendered its settled surface/lighting frame. Fading the
+            // canvas itself exposed texture and bloom changes as a visible flash.
+            cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;visibility:hidden;opacity:1';
             self._canvas = cv;
             self.insertBefore(cv, self._ph || null);
             var api = (self._engineKind === 'canvas' ? runningEngine : window.Orrery3D) || runningEngine;
@@ -518,7 +521,10 @@
             document.removeEventListener('ap-orrery-first-frame', self._onReadyFirstFrame);
             self._onReadyFirstFrame = null;
           }
-          if (self._canvas) self._canvas.style.opacity = '1';
+          if (self._canvas) {
+            self._canvas.style.opacity = '1';
+            self._canvas.style.visibility = 'visible';
+          }
           done();
         }
         if (this._firstFrameSeen) {
@@ -545,7 +551,7 @@
           self._watchdog = null;
           if (self._firstFrameSeen || self._posted || !self.isConnected) return;
           if (self._strict3D) {
-            self._poster('The real 3D renderer did not produce a complete textured frame within 15 seconds. No substitute model has been shown.', 'first-frame-timeout');
+            self._poster('The real 3D renderer did not produce a complete textured frame within 25 seconds. No substitute model has been shown.', 'first-frame-timeout');
             return;
           }
           if (self._onReadyFirstFrame) {
@@ -554,7 +560,7 @@
           }
           warn('9s without engine ready — failing open to canvas engine');
           self._toCanvasEngine();
-        }, self._strict3D ? 15000 : 9000);
+        }, self._strict3D ? 25000 : 9000);
       };
 
       C.prototype._toCanvasEngine = function () {
