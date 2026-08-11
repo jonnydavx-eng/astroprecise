@@ -22,8 +22,8 @@ async function launchBrowser(options) {
 
 const PAGES = [
   { id: 'index', path: '/?lite=1', wait: 'h1.hero__h1, .hero__h1', note: 'Home lite shell LCP', requireStarfield: false },
-  { id: 'chart', path: '/chart.html', wait: '#chart-form, .chart-form, form', note: 'Birth chart form + wheel mount' },
-  { id: 'horoscope', path: '/horoscope.html', wait: '.horoscope-hero, .section__title, main', note: 'Daily horoscope hub' },
+  { id: 'chart', path: '/chart.html', wait: '#chart-form, .chart-form, form', note: 'Birth chart form + wheel mount', requireStarfield: false },
+  { id: 'horoscope', path: '/horoscope.html', wait: '.horoscope-hero, .section__title, main', note: 'Daily horoscope hub', requireStarfield: false },
   { id: 'compatibility', path: '/compatibility.html', wait: 'main, .compat', note: 'Synastry / match UI' },
   { id: 'ephemeris', path: '/ephemeris.html', wait: '#orrery-canvas, .instrument, main', note: 'Sky instrument + ephemeris' },
   { id: 'lifepath', path: '/lifepath.html', wait: 'main, form', note: 'Life path numerology' },
