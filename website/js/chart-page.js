@@ -27,11 +27,11 @@
     opposition:     { name:'Opposition',     glyph:'☍', color:'#FF6428' },
     trine:          { name:'Trine',          glyph:'△', color:'#B9C8DC' },
     square:         { name:'Square',         glyph:'□', color:'#FF6428' },
-    sextile:        { name:'Sextile',        glyph:'⚹', color:'#D8B46A' },
+    sextile:        { name:'Helpful angle',  glyph:'⚹', color:'#D8B46A' },
     quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#B9C8DC' },
     semisquare:     { name:'SemiSquare',      glyph:'∠', color:'#B9C8DC' },
     sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#B9C8DC' },
-    semisextile:    { name:'SemiSextile',     glyph:'⚺', color:'#B9C8DC' },
+    semisextile:    { name:'Slight angle',    glyph:'⚺', color:'#B9C8DC' },
     quintile:       { name:'Quintile',        glyph:'Q', color:'#B9C8DC' },
   };
   const HOUSE_THEMES = [
@@ -868,12 +868,10 @@
 
      sessionStorage is same tab, same origin, never transmitted, and gone when
      the tab closes. `from=chart` stays in the query: it names the route, not a
-     person. Where storage is blocked, the old query is the fallback — a working
-     handoff beats a broken one, and eclipse.html still reads it. */
+     person. Where storage is blocked, the visitor re-enters the details rather
+     than leaking a birth moment into a request URL. */
   function eclipseHandoffHref(chart) {
-    const legacy = 'eclipse.html?from=chart&dob=' + encodeURIComponent(chart.birthDate || '') +
-      (chart.birthTime ? '&tob=' + encodeURIComponent(chart.birthTime) : '') +
-      (chart.tz ? '&tzname=' + encodeURIComponent(chart.tz) : '');
+    const target = 'eclipse.html?from=chart';
     try {
       sessionStorage.setItem('ap-eclipse-handoff', JSON.stringify({
         dob: chart.birthDate || '',
@@ -882,9 +880,11 @@
         ts: Date.now(),
       }));
     } catch (e) {
-      return legacy;
+      // Storage-disabled browsers reopen the blank private form. A working
+      // handoff is not worth putting a birth moment into a request URL.
+      return target;
     }
-    return 'eclipse.html?from=chart';
+    return target;
   }
 
   function renderBigThree(chart) {

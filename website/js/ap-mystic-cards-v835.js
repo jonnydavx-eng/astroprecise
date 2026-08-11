@@ -35,6 +35,10 @@
 
   function reveal(card) {
     card.dataset.apCardReveal = 'ready';
+    var delay = Number.parseInt(card.style.getPropertyValue('--ap-card-delay'), 10) || 0;
+    window.setTimeout(function () {
+      if (document.contains(card)) card.style.setProperty('--ap-card-delay', '0ms');
+    }, delay + 520);
   }
 
   if (motionAllowed && 'IntersectionObserver' in window) {
@@ -146,5 +150,9 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
-  window.addEventListener('pagehide', stop, { once: true });
+  window.addEventListener('pagehide', function (event) {
+    // A bfcache page is suspended, not destroyed; keep observers alive so
+    // dynamically generated Chart cards still receive the treatment on return.
+    if (!event.persisted) stop();
+  }, { once: true });
 })();
