@@ -1,0 +1,58 @@
+/* AstroPrecise v835 — Observatory front screen. Route structure only. */
+.ap-live-home main { display: block; }
+.ap-live-home .ap-action,
+.ap-live-home .btn-primary {
+  border-radius: 5px;
+}
+.ap-live-home .ap-live-copy { max-width: 40ch; }
+.ap-live-home .ap-personal-entry { border-top: 1px solid var(--ap-line); }
+.ap-live-home .ap-personal-entry__inner { padding-block: clamp(48px, 6vw, 76px); }
+.ap-live-home .coupon,
+.ap-live-home .coupon__card { border-radius: 8px; }
+
+.ap-edition-art {
+  align-self: start;
+  border: 1px solid var(--ap-line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--ap-void-raised);
+}
+.ap-edition-art figure { margin: 0; }
+.ap-edition-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  filter: saturate(0.82) contrast(1.04);
+}
+.ap-edition-art figcaption { padding: 18px 20px; color: var(--ap-paper-dim); font-size: 13px; line-height: 1.6; }
+.ap-edition-art figcaption span { display: block; margin-bottom: 8px; color: var(--ap-brass); font: 10px/1.4 var(--ap-data); letter-spacing: 0.08em; text-transform: uppercase; }
+.ap-edition-art figcaption strong { display: block; margin-bottom: 5px; color: var(--ap-paper); font: 600 22px/1.05 var(--ap-display); }
+.ap-edition-art__actions { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--ap-line); }
+.ap-edition-art__actions a { min-height: 48px; display: flex; align-items: center; padding: 10px 16px; border-right: 1px solid var(--ap-line); color: var(--ap-brass-bright); font: 11px/1.4 var(--ap-data); text-decoration: none; }
+.ap-edition-art__actions a:last-child { border-right: 0; }
+
+.ap-proof-ledger { border-top: 1px solid var(--ap-line); }
+.ap-proof-ledger__inner {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.ap-proof-ledger__inner > div { padding: 30px; border-left: 1px solid var(--ap-line); }
+.ap-proof-ledger__inner > div:first-child { border-left: 0; }
+.ap-proof-ledger span { color: var(--ap-brass); font: 10px/1.4 var(--ap-data); letter-spacing: 0.08em; text-transform: uppercase; }
+.ap-proof-ledger strong { display: block; margin-top: 10px; color: var(--ap-paper); font: 600 24px/1.05 var(--ap-display); }
+.ap-proof-ledger p { margin: 8px 0 0; color: var(--ap-paper-dim); font-size: 13px; line-height: 1.6; }
+
+@media (max-width: 700px) {
+  .ap-live-home .ap-live-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .ap-live-home .ap-live-actions a { min-height: 48px; justify-content: center; padding-inline: 10px; text-align: center; }
+  .ap-edition-art__actions { grid-template-columns: 1fr; }
+  .ap-edition-art__actions a { border-right: 0; border-top: 1px solid var(--ap-line); }
+  .ap-edition-art__actions a:first-child { border-top: 0; }
+  .ap-proof-ledger__inner { width: min(100% - 32px, 1180px); grid-template-columns: 1fr; }
+  .ap-proof-ledger__inner > div { padding: 22px 0; border-left: 0; border-top: 1px solid var(--ap-line); }
+  .ap-proof-ledger__inner > div:first-child { border-top: 0; }
+}
