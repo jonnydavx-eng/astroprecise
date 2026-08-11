@@ -106,7 +106,7 @@ function auditSaveSync() {
 
 // ── Static wiring checks ────────────────────────────────────────────────────
 function auditStaticFiles() {
-  console.log('\n2. Chart page buttons + commerce config (static)');
+  console.log('\n2. Chart actions + eclipse handoff + commerce config (static)');
 
   const appJs = readFileSync(join(WEB, 'js', 'app.js'), 'utf8');
   if (appJs.includes(DEAD_HOST)) fail('app.js free of dead Lemon Squeezy URLs', 'lemonsqueezy.com found');
@@ -121,12 +121,16 @@ function auditStaticFiles() {
   else ok('per-SKU detailsForm (post-payment Typeform) wiring');
 
   const chartPage = readFileSync(join(WEB, 'js', 'chart-page.js'), 'utf8');
-  for (const id of ['save-btn', 'share-btn', 'print-btn', 'json-btn', 'app-btn', 'poster-btn']) {
+  for (const id of ['save-btn', 'share-btn', 'print-btn', 'json-btn', 'poster-btn']) {
     if (!chartPage.includes("getElementById('" + id + "')")) fail('chart-page wires #' + id);
     else ok('chart-page wires #' + id);
   }
-  if (!chartPage.includes('deepReadingUrl')) fail('chart-page deep teaser');
-  else ok('chart-page deep teaser reads AP_MON.deepReadingUrl');
+  if (!chartPage.includes("'eclipse-handoff', 'eclipse-cta'") ||
+      !chartPage.includes("sessionStorage.setItem('ap-eclipse-handoff'")) {
+    fail('chart-page eclipse handoff wiring');
+  } else {
+    ok('chart-page wires both eclipse CTAs through session-only handoff');
+  }
 
   const profileHtml = readFileSync(join(WEB, 'profile.html'), 'utf8');
   if (!profileHtml.includes('js/profile.js')) fail('profile.html loads profile.js');
@@ -142,14 +146,9 @@ async function auditLivePreview() {
     const chart = await fetchText(BASE + '/chart.html');
     if (chart.status !== 200) { fail('chart.html HTTP', String(chart.status)); return; }
     ok('chart.html HTTP 200');
-    for (const id of ['save-btn', 'share-btn', 'poster-btn', 'deep-teaser']) {
-      if (!chart.body.includes('id="' + id + '"') && id !== 'deep-teaser') {
-        fail('chart.html contains #' + id);
-      } else if (id === 'deep-teaser' && !chart.body.includes('id="deep-teaser"')) {
-        fail('chart.html contains #deep-teaser');
-      } else {
-        ok('chart.html serves #' + id);
-      }
+    for (const id of ['save-btn', 'share-btn', 'poster-btn', 'eclipse-handoff', 'eclipse-cta']) {
+      if (!chart.body.includes('id="' + id + '"')) fail('chart.html contains #' + id);
+      else ok('chart.html serves #' + id);
     }
 
     const app = await fetchText(BASE + '/js/app.js');
