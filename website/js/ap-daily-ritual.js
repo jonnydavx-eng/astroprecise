@@ -152,7 +152,7 @@
     if (chart) {
       /* brass-bordered personal card */
       var card = el('div',
-        'border:1px solid rgba(216,180,106,.30);border-radius:14px;' +
+        'border:1px solid rgba(216,180,106,.30);border-radius:5px;' +
         'padding:16px 18px 14px;' +
         'background:linear-gradient(158deg, rgba(242,236,223,.04), rgba(242,236,223,.02));' +
         'box-shadow:inset 0 1px 0 rgba(242,236,223,.06);');
@@ -187,7 +187,7 @@
         'margin:0 0 var(--space-3,1rem);');
       invite.appendChild(document.createTextNode('Save your free chart on the homepage and this space reads YOUR sky, not just your sign’s '));
       var go = el('a', 'color:#ff7a45;text-decoration:none;', '→');
-      go.href = './#cast';
+      go.href = './chart.html';
       invite.appendChild(go);
       wrap.appendChild(invite);
     }
@@ -204,12 +204,11 @@
     var pillStyle =
       'display:inline-block;font-family:' + MONO + ';font-size:9px;letter-spacing:.18em;' +
       'color:#d8b46a;background:transparent;border:1px solid rgba(216,180,106,.45);' +
-      'border-radius:100px;padding:8px 16px;cursor:pointer;text-decoration:none;' +
+      'border-radius:5px;padding:8px 16px;cursor:pointer;text-decoration:none;' +
       'text-transform:uppercase;';
     var row = el('div', 'display:flex;gap:10px;flex-wrap:wrap;margin-top:var(--space-3,1rem);');
-    var watch = el('button', pillStyle, 'Watch today’s sky turn');
-    watch.type = 'button';
-    watch.addEventListener('click', watchSkyTurn);
+    var watch = el('a', pillStyle, 'Open the live Observatory →');
+    watch.href = './index.html#m=now';
     var keep = el('a', pillStyle, 'Keep today’s sky as a card →');
     keep.href = './sky-card.html';
     row.appendChild(watch);

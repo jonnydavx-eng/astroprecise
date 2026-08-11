@@ -218,6 +218,19 @@
       if (window.EclipticDialData && typeof EclipticDialData.getPlanetLons === 'function') {
         return EclipticDialData.getPlanetLons() || {};
       }
+      try {
+        var eph = window.AstroEphemeris;
+        if (eph && typeof eph.julianDay === 'function' && typeof eph.allPlanetPositions === 'function') {
+          var now = new Date();
+          var jd = eph.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 0);
+          var positions = eph.allPlanetPositions(jd) || {};
+          var out = {};
+          Object.keys(positions).forEach(function (name) {
+            if (positions[name] && isFinite(positions[name].lon)) out[name.toLowerCase()] = positions[name].lon;
+          });
+          return out;
+        }
+      } catch (e) {}
       return {};
     }
 
@@ -1161,8 +1174,8 @@
 
       }
 
-      function bootPersonalizedDial() {
-        if (auditPath) return;
+    function bootPersonalizedDial() {
+        if (auditPath || document.body.classList.contains('ap-daily-ledger')) return;
         var params = new URLSearchParams(window.location.search);
         if (params.get('sign')) return;
         var opened = false;
@@ -1229,7 +1242,7 @@
       }
 
       function scheduleZodiacSphere() {
-        if (sphereLoadQueued || auditPath) return;
+        if (sphereLoadQueued || auditPath || document.body.classList.contains('ap-daily-ledger')) return;
         sphereLoadQueued = true;
         loadZodiacSphere();
       }

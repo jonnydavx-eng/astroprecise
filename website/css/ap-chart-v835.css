@@ -1,0 +1,543 @@
+/* AstroPrecise launch chart — one engraved field instrument, no legacy nebula stack. */
+
+.page-chart {
+  --chart-void: #020307;
+  --chart-raised: #0d121b;
+  --chart-paper: #f2ecdf;
+  --chart-brass: #d8b46a;
+  --chart-ember: #ff6428;
+  --chart-silver: #b9c8dc;
+  --chart-line: rgba(216, 180, 106, 0.22);
+  background: var(--chart-void);
+  color: var(--chart-paper);
+  font-family: "Schibsted Grotesk", system-ui, sans-serif;
+}
+
+.page-chart #starfield-canvas,
+.page-chart .aurora-orb,
+.page-chart .chart-hero__orb-a,
+.page-chart .chart-hero__orb-b {
+  display: none !important;
+}
+
+.page-chart #main-content {
+  overflow: clip;
+  background:
+    linear-gradient(rgba(216, 180, 106, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(216, 180, 106, 0.02) 1px, transparent 1px),
+    var(--chart-void);
+  background-size: 88px 88px;
+}
+
+.page-chart .chart-hero {
+  position: relative;
+  min-height: clamp(520px, 66vw, 720px);
+  display: grid;
+  align-items: end;
+  margin: 0;
+  padding: clamp(112px, 13vw, 176px) 0 clamp(56px, 7vw, 88px);
+  border-bottom: 1px solid var(--chart-line);
+  background: #030509;
+  isolation: isolate;
+}
+
+.page-chart .chart-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, #020307 0%, rgba(2, 3, 7, 0.96) 38%, rgba(2, 3, 7, 0.46) 72%, #020307 100%),
+    linear-gradient(0deg, #020307 0%, transparent 38%);
+}
+
+.page-chart .chart-hero__cosmic-art {
+  display: block !important;
+  position: absolute;
+  z-index: -2;
+  inset: 0 0 0 38%;
+  background: url("../img/editorial/natal-plate-editorial.webp") center / cover no-repeat;
+  filter: saturate(0.72) contrast(1.1) brightness(0.78);
+  opacity: 0.88;
+}
+
+.page-chart .chart-hero .container {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.page-chart .chart-hero__eyebrow,
+.page-chart .chart-hero__timecode,
+.page-chart .chart-form__progress,
+.page-chart .form-section-label__text,
+.page-chart .result-badge,
+.page-chart .chart-method-ledger__kicker {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.page-chart .chart-hero__eyebrow {
+  max-width: 62ch;
+  margin: 0 0 18px;
+  color: var(--chart-ember);
+  font-size: 0.67rem;
+}
+
+.page-chart .chart-hero__title {
+  max-width: 8.4ch;
+  margin: 0;
+  color: var(--chart-paper);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(4rem, 8.7vw, 8.4rem);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 0.82;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.page-chart .chart-hero__subtitle {
+  max-width: 52ch;
+  margin: 30px 0 0;
+  color: rgba(242, 236, 223, 0.72);
+  font-size: clamp(1rem, 1.35vw, 1.16rem);
+  line-height: 1.68;
+}
+
+.page-chart .chart-hero__timecode {
+  margin: 22px 0 0;
+  color: var(--chart-brass);
+  font-size: 0.61rem;
+  line-height: 1.8;
+}
+
+.page-chart .btn,
+.page-chart button,
+.page-chart input,
+.page-chart select,
+.page-chart .action-btn {
+  border-radius: 5px !important;
+}
+
+.page-chart .btn--primary,
+.page-chart .btn--calculate,
+.page-chart .action-btn--gold {
+  border: 1px solid var(--chart-ember) !important;
+  background: var(--chart-ember) !important;
+  color: #1b0b03 !important;
+  box-shadow: none !important;
+}
+
+.page-chart .btn--primary:hover,
+.page-chart .btn--calculate:hover,
+.page-chart .action-btn--gold:hover {
+  background: #ff7b46 !important;
+}
+
+.page-chart main > .container[aria-label="The 12 August eclipse"] {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto !important;
+  padding-top: 24px;
+}
+
+.page-chart main > .container[aria-label="The 12 August eclipse"] > a {
+  border: 1px solid rgba(255, 100, 40, 0.46) !important;
+  border-radius: 5px !important;
+  padding: 15px 18px !important;
+  background: rgba(255, 100, 40, 0.055) !important;
+}
+
+.page-chart .chart-layout {
+  width: min(1180px, calc(100% - 40px));
+  margin: clamp(44px, 6vw, 76px) auto clamp(70px, 9vw, 118px);
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(280px, 5fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 58px);
+}
+
+.page-chart .form-glass {
+  position: relative;
+  margin: 0;
+  padding: clamp(24px, 4vw, 46px);
+  border: 1px solid var(--chart-line);
+  border-radius: 8px;
+  background: linear-gradient(145deg, rgba(13, 18, 27, 0.98), rgba(5, 7, 11, 0.98));
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.36);
+  backdrop-filter: none;
+}
+
+.page-chart .form-glass::before {
+  content: "AP / NATAL / 01";
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  color: rgba(216, 180, 106, 0.48);
+  font: 0.54rem/1 "IBM Plex Mono", monospace;
+  letter-spacing: 0.16em;
+}
+
+.page-chart .form-glass__icon {
+  display: none;
+}
+
+.page-chart .form-glass__header {
+  margin: 0 0 34px;
+  padding: 0 0 26px;
+  border-bottom: 1px solid var(--chart-line);
+  text-align: left;
+}
+
+.page-chart .form-glass__title {
+  margin: 0;
+  color: var(--chart-paper);
+  font: 500 clamp(2.25rem, 4.2vw, 3.8rem)/0.94 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: -0.035em;
+}
+
+.page-chart .form-glass__sub {
+  display: block;
+  min-height: 0;
+  max-width: 56ch;
+  margin: 15px 0 0;
+  overflow: visible;
+  color: rgba(242, 236, 223, 0.64);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.page-chart .chart-form__progress {
+  margin: 15px 0 0;
+  color: var(--chart-brass);
+  font-size: 0.58rem;
+}
+
+.page-chart .form-section-label {
+  margin: 26px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-chart .form-section-label__num {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid rgba(216, 180, 106, 0.42);
+  border-radius: 50%;
+  color: var(--chart-brass);
+  font: 0.62rem/1 "IBM Plex Mono", monospace;
+}
+
+.page-chart .form-section-label__text,
+.page-chart .form-label {
+  color: rgba(242, 236, 223, 0.78);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.page-chart .form-group {
+  margin: 0 0 22px;
+}
+
+.page-chart .form-input,
+.page-chart .form-select {
+  min-height: 52px;
+  border: 1px solid rgba(185, 200, 220, 0.22) !important;
+  background: #070a10 !important;
+  color: var(--chart-paper) !important;
+  box-shadow: none !important;
+}
+
+.page-chart .form-input:focus,
+.page-chart .form-select:focus {
+  border-color: var(--chart-brass) !important;
+  outline: 1px solid var(--chart-brass) !important;
+  outline-offset: 2px;
+}
+
+.page-chart .form-hint {
+  color: rgba(185, 200, 220, 0.62);
+  line-height: 1.55;
+}
+
+.page-chart .form-hint button,
+.page-chart .ap-inline-link {
+  color: var(--chart-brass) !important;
+}
+
+.page-chart .autocomplete-dropdown {
+  border: 1px solid var(--chart-line);
+  background: #0d121b;
+  color: var(--chart-paper);
+}
+
+.page-chart .form-divider {
+  border-color: var(--chart-line);
+}
+
+.page-chart .form-cta {
+  position: static !important;
+  margin: 8px 0 0 !important;
+  padding: 0 !important;
+  background: none !important;
+}
+
+.page-chart .btn--calculate {
+  width: 100%;
+  min-height: 56px;
+  font: 700 0.73rem/1 "IBM Plex Mono", monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.page-chart .btn--sample {
+  margin-top: 10px;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--chart-brass) !important;
+  font-size: 0.76rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.page-chart .accordion-item,
+.page-chart .house-card,
+.page-chart .node-toggle__pill {
+  border: 1px solid rgba(185, 200, 220, 0.18) !important;
+  border-radius: 5px !important;
+  background: rgba(2, 3, 7, 0.55) !important;
+  box-shadow: none !important;
+}
+
+.page-chart .accordion-trigger {
+  color: var(--chart-brass) !important;
+  font-family: "IBM Plex Mono", monospace !important;
+}
+
+.page-chart .accordion-content {
+  max-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.page-chart .accordion-item.is-open .accordion-content {
+  max-height: 2200px !important;
+}
+
+.page-chart .house-card.active,
+.page-chart .node-toggle__opt input:checked + .node-toggle__pill {
+  border-color: var(--chart-brass) !important;
+  background: rgba(216, 180, 106, 0.075) !important;
+}
+
+.page-chart .chart-method-ledger {
+  position: sticky;
+  top: 96px;
+  border-top: 1px solid var(--chart-line);
+}
+
+.page-chart .chart-method-ledger__head {
+  padding: 22px 0 28px;
+}
+
+.page-chart .chart-method-ledger__kicker {
+  margin: 0 0 12px;
+  color: var(--chart-ember);
+  font-size: 0.58rem;
+}
+
+.page-chart .chart-method-ledger h2 {
+  max-width: 9ch;
+  margin: 0;
+  color: var(--chart-paper);
+  font: 500 clamp(2.1rem, 4vw, 3.4rem)/0.94 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: -0.035em;
+}
+
+.page-chart .chart-method-ledger__row {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 16px;
+  padding: 22px 0;
+  border-top: 1px solid rgba(216, 180, 106, 0.14);
+}
+
+.page-chart .chart-method-ledger__row b {
+  color: var(--chart-brass);
+  font: 0.62rem/1.5 "IBM Plex Mono", monospace;
+}
+
+.page-chart .chart-method-ledger__row strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--chart-paper);
+  font: 500 1.2rem/1.2 "Cormorant Garamond", Georgia, serif;
+}
+
+.page-chart .chart-method-ledger__row span {
+  color: rgba(242, 236, 223, 0.58);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.page-chart #chart-result,
+.page-chart #chart-loading {
+  grid-column: 1 / -1;
+}
+
+.page-chart #chart-result.hidden,
+.page-chart #chart-loading.hidden {
+  display: none !important;
+}
+
+.page-chart #chart-result {
+  margin-top: 20px;
+}
+
+.page-chart .result-header-card,
+.page-chart .big-three-card,
+.page-chart .chart-wheel-card,
+.page-chart .tabs-card,
+.page-chart .reading-card {
+  border: 1px solid var(--chart-line) !important;
+  border-radius: 8px !important;
+  background: #080c12 !important;
+  box-shadow: none !important;
+}
+
+.page-chart .result-header-card {
+  padding: clamp(22px, 4vw, 42px);
+}
+
+.page-chart .result-header-card h2,
+.page-chart .big-three-card__sign,
+.page-chart .chart-wheel-label,
+.page-chart .tabs-card h2,
+.page-chart .tabs-card h3 {
+  color: var(--chart-paper) !important;
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+}
+
+.page-chart .result-actions,
+.page-chart .tabs-nav {
+  gap: 8px;
+}
+
+.page-chart .action-btn,
+.page-chart .tab-trigger {
+  border: 1px solid rgba(216, 180, 106, 0.25) !important;
+  background: transparent !important;
+  color: var(--chart-paper) !important;
+  box-shadow: none !important;
+}
+
+.page-chart .tab-trigger[aria-selected="true"] {
+  border-color: var(--chart-brass) !important;
+  color: var(--chart-brass) !important;
+}
+
+.page-chart .big-three-grid {
+  gap: 12px;
+}
+
+.page-chart .chart-results-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+  gap: 20px;
+}
+
+.page-chart .chart-wheel-stage__halo,
+.page-chart .chart-wheel-stage__meridian {
+  opacity: 0.22 !important;
+  filter: sepia(0.7);
+}
+
+.page-chart .chart-keepsake-band,
+.page-chart #chart-ai-panel,
+.page-chart #ap-natal-sphere,
+.page-chart #wallpaper-lead,
+.page-chart #email-capture,
+.page-chart .edu-section {
+  display: none !important;
+}
+
+.page-chart .footer {
+  margin-top: 0;
+}
+
+@media (max-width: 900px) {
+  .page-chart .chart-hero {
+    min-height: 620px;
+    align-items: end;
+  }
+
+  .page-chart .chart-hero__cosmic-art {
+    inset: 0 0 38% 14%;
+    opacity: 0.52;
+  }
+
+  .page-chart .chart-hero::before {
+    background: linear-gradient(0deg, #020307 0 48%, rgba(2, 3, 7, 0.12) 88%, #020307 100%);
+  }
+
+  .page-chart .chart-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .page-chart .chart-method-ledger {
+    position: static;
+    top: auto;
+  }
+
+  .page-chart .chart-results-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-chart .chart-hero .container,
+  .page-chart main > .container[aria-label="The 12 August eclipse"],
+  .page-chart .chart-layout {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .page-chart .chart-hero {
+    min-height: 580px;
+    padding-bottom: 44px;
+  }
+
+  .page-chart .chart-hero__title {
+    font-size: clamp(3.75rem, 18vw, 5.2rem);
+  }
+
+  .page-chart .chart-hero__subtitle {
+    font-size: 0.94rem;
+  }
+
+  .page-chart .form-glass {
+    padding: 22px 16px;
+  }
+
+  .page-chart .time-selector,
+  .page-chart .house-cards,
+  .page-chart .big-three-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .page-chart .result-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-chart *,
+  .page-chart *::before,
+  .page-chart *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

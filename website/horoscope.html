@@ -8,7 +8,7 @@
   <meta name="description" content="Daily horoscope for all 12 signs from today's real sky — computed in your browser. The real sky news: weather report of the sky, not prophecy. Free, no account." />
   <title>Daily Horoscope — the real sky news | Astro Precise</title>
 <link rel="preload" href="css/main-lite.css" as="style" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -54,23 +54,10 @@
   }
   </script>
   <link rel="stylesheet" href="css/horoscope-critical.css" />
-  <link rel="stylesheet" href="css/ap-forms.css" />
-  <link rel="stylesheet" href="css/instrument-panel.css" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
   <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=752" id="ap-css-palette-2026" />
-  <link rel="stylesheet" href="css/ap-model-stage.css?v=752" id="ap-css-model-stage" />
-  <link rel="stylesheet" href="css/ap-page-structure.css?v=752" id="ap-css-page-structure" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=752" />
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=752" />
-  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
-  <link rel="stylesheet" href="css/celestial-seals.css" />
-  <link rel="stylesheet" href="css/ap-brand-nebula.css?v=752" id="ap-css-brand-nebula" />
-  <!-- v4 ATLAS override — final eager cascade (token remap + page plates) -->
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=787" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-atlas-horoscope.css?v=787" id="ap-css-atlas-horoscope" />
+  <link rel="stylesheet" href="css/horoscope-page-deferred.css?v=835" />
+  <link rel="stylesheet" href="css/celestial-seals.css?v=835" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=835" id="ap-css-palette-2026" />
   <style>
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
     /* LCP shell — system fonts paint before deferred webfonts */
@@ -115,11 +102,10 @@
     if (!window.__apHoroscopeAudit) document.documentElement.classList.add('ap-canvas-primary');
   })();
   </script>
-  <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferHoroscopeFonts(){var ua=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(ua)||/[?&]lite=1/.test(location.search||'')||(typeof window.chrome==='undefined'&&/Chrome/i.test(ua)))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferHoroscopeFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/horoscope-page-deferred.css','ap-css-horoscope-deferred');});</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835" />
+  <link rel="stylesheet" href="css/ap-daily-v835.css?v=835" />
 </head>
-<body class="page-horoscope ap-cinematic-2026 ap-no-nav-enter">
+<body class="page-horoscope ap-daily-ledger ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -279,68 +265,7 @@
           </div>
         </div>
 
-        <!-- Dial intro — the 3D dial is now a secondary "explore" layer below the
-             reading (floated here via flex order). This label gives it context. -->
-        <div class="dial-intro" id="dial-intro">
-          <p class="dial-intro__label">Open the live sky</p>
-          <p class="dial-intro__sub">Where the seven planets really are right now &mdash; drag to spin, or tap the centre star to lay your own chart over it.</p>
-          <p class="dial-intro__model" style="margin:0.55rem 0 0;">
-            <a class="ap-inline-link" id="dial-model-link" href="index.html#m=now">Open this sky in the 3D model &rarr;</a>
-          </p>
-        </div>
-
-        <!-- The 3D canvas -->
-        <div class="sphere-wrap" id="sphere-wrap" role="region" aria-label="Interactive 3D zodiac ring">
-          <div class="sphere-space-bg" aria-hidden="true"></div>
-          <div class="sphere-dial-loading" id="sphere-dial-loading" aria-hidden="true">
-            <span class="sphere-dial-loading__ring"></span>
-            <span class="sphere-dial-loading__label">Loading live dial…</span>
-          </div>
-          <div class="sphere-poster" id="sphere-poster" role="img" aria-label="Zodiac ring — drag to spin, tap a sign for today's reading">
-            <svg class="sphere-poster__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-              <defs>
-                <radialGradient id="sphere-poster-bg" cx="50%" cy="45%" r="68%">
-                  <stop offset="0%" stop-color="#0f1824"/>
-                  <stop offset="72%" stop-color="#060a10"/>
-                </radialGradient>
-                <radialGradient id="sphere-poster-glow" cx="50%" cy="48%" r="44%">
-                  <stop offset="0%" stop-color="rgba(168, 176, 188,0.14)"/>
-                  <stop offset="100%" stop-color="rgba(168, 176, 188,0)"/>
-                </radialGradient>
-                <radialGradient id="sphere-poster-star" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#d8b46a"/>
-                  <stop offset="55%" stop-color="#A8B0BC"/>
-                  <stop offset="100%" stop-color="#4A5462"/>
-                </radialGradient>
-              </defs>
-              <rect width="600" height="420" fill="url(#sphere-poster-bg)"/>
-              <rect width="600" height="420" fill="url(#sphere-poster-glow)"/>
-              <g fill="rgba(200,212,245,0.38)">
-                <circle cx="42" cy="58" r="0.9"/><circle cx="118" cy="34" r="1.2"/><circle cx="198" cy="72" r="0.7"/>
-                <circle cx="512" cy="48" r="1.0"/><circle cx="558" cy="112" r="0.8"/><circle cx="88" cy="168" r="1.1"/>
-                <circle cx="534" cy="198" r="0.9"/><circle cx="36" cy="248" r="0.7"/><circle cx="572" cy="286" r="1.0"/>
-                <circle cx="146" cy="312" r="0.8"/><circle cx="468" cy="348" r="0.9"/><circle cx="284" cy="28" r="1.1"/>
-                <circle cx="362" cy="392" r="0.7"/><circle cx="224" cy="104" r="0.8"/><circle cx="416" cy="128" r="0.9"/>
-              </g>
-              <!-- Interactive ring injected by horoscope-wheel-poster.js -->
-            </svg>
-          </div>
-          <canvas id="zodiac-ring-canvas" width="600" height="420" aria-hidden="true"></canvas>
-          <noscript>
-            <p style="color:var(--silver);text-align:center;padding:2rem;">Enable JavaScript to use the interactive zodiac ring.</p>
-          </noscript>
-        </div>
-        <div class="sphere-controls" aria-live="polite">
-          <p class="sphere-selected-label" id="sphere-selected-label">Drag the dial or tap a sign</p>
-          <p class="sphere-no-chart-note" id="sphere-no-chart-note" hidden role="status">
-            We need your birth chart first to find your sign.
-            <a href="chart.html" class="ap-inline-link">Calculate your chart →</a>
-          </p>
-          <button type="button" class="btn btn--primary btn--sm" id="sphere-spin-mine">Go to my sign</button>
-          <button type="button" class="btn btn--outline btn--sm" id="sphere-spin-random">Explore a sign</button>
-        </div>
-
-        <!-- Reading dock — directly under dial controls -->
+        <!-- One product only: sign-ledger first, selected reading directly below. -->
         <div class="sign-reading-panel sign-reading-panel--hero" id="sign-reading-panel" aria-hidden="true" inert>
           <div class="sign-reading-panel__inner">
             <div class="sign-reading-panel__header">
@@ -479,7 +404,7 @@
     <!-- ECLIPSE BAND — the event CTA, hoisted to the first scroll -->
     <section class="container" aria-label="The 12 August eclipse" style="margin-top:var(--space-8);">
       <div style="border:1px solid rgba(230,161,92,.32);border-radius:16px;padding:var(--space-6,1.5rem) var(--space-5,1.25rem);background:rgba(230,161,92,.05);text-align:center;">
-        <p style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver-dim,#8891AA);margin:0 0 0.5rem;">12 August 2026 &middot; deepest over southern Britain since 1999</p>
+        <p style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver-dim,#8891AA);margin:0 0 0.5rem;">12 August 2026 &middot; partial across the UK &middot; totality in Greenland, Iceland and Spain</p>
         <h2 class="section__title" style="margin:0 0 0.6rem;">Where does the eclipse land in <em>your</em> chart?</h2>
         <p style="max-width:52ch;margin:0 auto var(--space-4,1rem);color:var(--silver,#C8D0E8);line-height:1.6;">Free teaser &mdash; computed on this device, never uploaded. The Eclipse Night Reading (&#163;2.99, checkout opening soon) maps the night against your birth minute in five chapters.</p>
         <a href="eclipse.html" class="btn btn--primary">See your eclipse contact &mdash; free</a>
@@ -584,7 +509,7 @@
     <details class="ap-more-sky" id="ap-daily-weather">
       <summary class="ap-more-sky__summary">Planetary weather, Moon &amp; week ahead</summary>
       <div class="ap-more-sky__body">
-    <section class="section section--alt" aria-labelledby="sky-heading">
+    <section class="section section--alt" id="daily-weather-section" aria-labelledby="sky-heading">
       <div class="container">
         <h2 class="section__title" id="sky-heading">Today's Planetary Weather</h2>
         <p class="section__subtitle">Current positions of all planets — and the influence on collective energy the astrological tradition reads into them</p>
@@ -684,7 +609,7 @@
     <!-- ============================================================
          MOON PHASE
     ============================================================ -->
-    <section class="section" aria-labelledby="moon-heading">
+    <section class="section" id="daily-moon-section" aria-labelledby="moon-heading">
       <div class="container">
         <h2 class="section__title" id="moon-heading"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg><span>Moon Phase</span></h2>
         <p class="section__subtitle">Current lunar energy and guidance for today</p>
@@ -701,7 +626,7 @@
     <!-- ============================================================
          RETROGRADE CALENDAR
     ============================================================ -->
-    <section class="section section--alt" aria-labelledby="retro-heading">
+    <section class="section section--alt" id="daily-retro-section" aria-labelledby="retro-heading">
       <div class="container">
         <h2 class="section__title" id="retro-heading">Retrograde Calendar</h2>
         <p class="section__subtitle">Active and upcoming <abbr class="ap-gloss" title="Retrograde — the weeks when a planet appears to move backward through the zodiac as seen from Earth (an optical effect of our orbits, not a real reversal)">retrograde</abbr> windows — computed live, never canned</p>
@@ -726,7 +651,7 @@
     <!-- ============================================================
          WEEKLY FORECAST
     ============================================================ -->
-    <section class="section" aria-labelledby="weekly-heading">
+    <section class="section" id="daily-week-section" aria-labelledby="weekly-heading">
       <div class="container">
         <h2 class="section__title" id="weekly-heading">This Week in the Stars</h2>
         <p class="section__subtitle">Key themes and transits shaping the collective energy over the coming days</p>
@@ -910,7 +835,6 @@
   <script src="js/raf-core.js" defer></script>
   <script src="js/content-service.js" defer></script>
   <script src="js/ap-zodiac-constants.js" defer></script>
-  <script src="js/ecliptic-dial-data.js?v=752" defer></script>
   <script src="js/sign-daily.js" defer></script>
   <script>
   (function () {
@@ -921,14 +845,15 @@
     document.head.appendChild(s);
   })();
   </script>
-  <script src="js/ap-deep-link.js?v=834" defer></script>
+  <script src="js/ap-deep-link.js?v=835" defer></script>
   <!-- Inline init script -->
-  <script src="js/horoscope-page.js?v=834" defer></script>
+  <script src="js/horoscope-page.js?v=835" defer></script>
 
   <script src="js/element-seals.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
   <script src="js/icons.js" defer></script>
-  <script src="js/ap-nav-model-v834.js?v=834"></script>
+  <script src="js/ap-nav-model-v834.js?v=835"></script>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ap-page-bridge.js" defer></script>
   <script>
@@ -947,10 +872,7 @@
       if (window.requestIdleCallback) requestIdleCallback(fn, { timeout: timeoutMs || 5000 });
       else setTimeout(fn, Math.min(timeoutMs || 5000, 2000));
     }
-    function bootAmbient() {
-      if (auditPath()) return;
-      ['js/cosmos.js', 'js/effects.js'].forEach(inject);
-    }
+    function bootAmbient() { /* Launch daily uses the authored editorial field. */ }
     function bootSubscribe() {
       if (auditPath() || window.__apHsBooted) return;
       window.__apHsBooted = true;
@@ -958,7 +880,7 @@
     }
     function bootHeavy() {
       if (auditPath()) return;
-      ['js/oracle.js', 'js/chart-render.js'].forEach(inject);
+      ['js/oracle.js'].forEach(inject);
     }
     var sub = document.getElementById('horoscope-subscribe');
     if (sub && 'IntersectionObserver' in window && !auditPath()) {
@@ -984,7 +906,6 @@
   <script src="js/ap-daily-ritual.js" defer></script>
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/ap-daily-bridge.js" defer></script>
-  <script src="js/ap-ai-assistant.js" defer></script>
   <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

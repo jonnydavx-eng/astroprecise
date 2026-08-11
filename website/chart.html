@@ -10,8 +10,7 @@
   <title>Free Birth Chart — the real sky news | Astro Precise</title>
 <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -68,13 +67,12 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="css/chart-critical.css?v=771" />
   <link rel="stylesheet" href="css/ap-forms.css" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
   <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/ap-page-structure.css?v=771" id="ap-css-page-structure" />
-  <link rel="stylesheet" href="css/ap-model-stage.css?v=771" id="ap-css-model-stage" />
-  <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
+  <link rel="stylesheet" href="css/chart.css?v=835" />
+  <link rel="stylesheet" href="css/chart-page-deferred.css?v=835" />
+  <link rel="stylesheet" href="css/ap-reading.css?v=835" />
+  <link rel="stylesheet" href="css/celestial-seals.css?v=835" />
   <style>
     /* LCP shell — system fonts paint before deferred webfonts (subtitle is LCP element) */
     .chart-hero__title {
@@ -218,21 +216,11 @@
       border-top-color: var(--ap-cta-ink, #1a0d05);
     }
   </style>
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=771" id="ap-css-structure-clean" />
-  <!-- Corrective wave: load the shared nav/precision layer after structure-clean
-       so its non-overflow mobile grid is the final cascade on chart. -->
-  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=771" id="ap-css-overhaul-s8" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=771" id="ap-css-palette-2026" />
-  <link rel="stylesheet" href="css/ap-brand-nebula.css?v=771" id="ap-css-brand-nebula" />
-  <!-- v4 ATLAS override — final eager cascade: remaps the token vocabulary to
-       night ink / warm paper / signal ember / engraved brass (flight-film language) -->
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=787" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-atlas-chart.css?v=787" id="ap-css-atlas-chart" />
-  <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferChartFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferChartFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferPageCss('css/ap-micro-delight.css?v=779','ap-css-micro-delight');deferPageCss('css/ap-ai-panel.css?v=779','ap-css-ai-panel');deferPageCss('css/ap-natal-sphere.css?v=779','ap-css-natal-sphere');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/chart.css','ap-css-chart');deferPageCss('css/chart-page-deferred.css','ap-css-chart-deferred');deferPageCss('css/ap-reading.css','ap-css-reading');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=835" id="ap-css-palette-2026" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835" />
+  <link rel="stylesheet" href="css/ap-chart-v835.css?v=835" />
 </head>
-<body class="page-chart ap-enchanted ap-cinematic-2026 ap-no-nav-enter">
+<body class="page-chart ap-field-instrument ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -296,7 +284,7 @@
         <p class="chart-hero__eyebrow" aria-hidden="true">FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
         <h1 class="chart-hero__title" id="page-title">Your natal chart, to the minute</h1>
         <p class="chart-hero__subtitle">
-          Enter your birth date, place and time — every planet placed to a sixtieth of a degree by planetarium-grade mathematics, privately in your browser. Nothing is uploaded, ever.
+          Enter your birth date, place and time. Supported positions are computed in your browser with published astronomical methods; your place is resolved to coordinates, then the chart stays on this device.
         </p>
         <p class="chart-hero__timecode" aria-hidden="true">VSOP87 + ELP2000 &middot; 1800&ndash;2200 CE &middot; <b>computed on-device</b> &middot; nothing uploaded</p>
         <p style="margin:1.1rem 0 0;display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center">
@@ -309,7 +297,7 @@
     <!-- ECLIPSE STRIP — route the funnel's SEO entry into the event -->
     <section class="container" aria-label="The 12 August eclipse" style="margin:1.2rem auto 0;">
       <a href="eclipse.html" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border:1px solid rgba(255,90,31,.4);border-radius:6px;padding:14px 20px;background:linear-gradient(90deg,rgba(255,90,31,.1),rgba(255,90,31,.02));text-decoration:none;color:inherit">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;color:#ff5a1f">&#9679; THE ECLIPSE — 12 AUG 2026 &middot; DEEPEST OVER SOUTHERN BRITAIN SINCE 1999</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;color:#ff6428">&#9679; THE ECLIPSE — 12 AUG 2026 &middot; PARTIAL ACROSS THE UK · TOTALITY IN GREENLAND, ICELAND &amp; SPAIN</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.14em;color:#d8b46a;white-space:nowrap">WHERE DOES IT LAND IN YOUR CHART &rarr;</span>
       </a>
     </section>
@@ -560,6 +548,25 @@
 
         </form>
       </div><!-- /.form-glass -->
+
+      <aside class="chart-method-ledger" aria-labelledby="chart-method-title">
+        <div class="chart-method-ledger__head">
+          <p class="chart-method-ledger__kicker">Instrument specification</p>
+          <h2 id="chart-method-title">A chart you can audit.</h2>
+        </div>
+        <div class="chart-method-ledger__row">
+          <b>01</b>
+          <div><strong>Real positions</strong><span>Western tropical, geocentric longitudes from the site’s astronomy engine; the wheel is a schematic drawing of those values.</span></div>
+        </div>
+        <div class="chart-method-ledger__row">
+          <b>02</b>
+          <div><strong>Time honesty</strong><span>No birth time? Planetary signs remain available; Rising, Midheaven and houses are withheld instead of guessed.</span></div>
+        </div>
+        <div class="chart-method-ledger__row">
+          <b>03</b>
+          <div><strong>Private by structure</strong><span>Birth fields have no URL names. Only the place search contacts Open-Meteo to resolve coordinates.</span></div>
+        </div>
+      </aside>
 
       <!-- ============================================================
            CHART RESULTS (hidden until calculated)
@@ -1043,19 +1050,16 @@
   <script src="js/profile.js" defer></script>
   <script src="js/ap-chart-share.js" defer></script>
   <script src="js/ap-personal-memory.js" defer></script>
-  <script src="js/ap-ai-assistant.js" defer></script>
   <script src="js/icons.js" defer></script>
   <script src="js/content-service.js" defer></script>
-  <script src="js/ap-nav-model-v834.js?v=834" defer></script>
+  <script src="js/ap-nav-model-v834.js?v=835" defer></script>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ap-page-bridge.js" defer></script>
   <script src="js/ap-canvas-seals.js" defer></script>
-  <script src="js/ap-deep-link.js?v=834" defer></script>
-  <script src="js/ap-natal-sphere.js?v=771" defer></script>
-  <script src="js/ap-sky-bridge.js?v=834" defer></script>
-  <script src="js/ap-checkout-honest.js?v=771" defer></script>
-  <script src="js/ap-gumroad-bridge.js?v=771" defer></script>
-  <script src="js/chart-page.js?v=834" defer></script>
+  <script src="js/ap-deep-link.js?v=835" defer></script>
+  <script src="js/ap-sky-bridge.js?v=835" defer></script>
+  <script src="js/chart-page.js?v=835" defer></script>
   <script>
   (function () {
     function inject(src) {
@@ -1064,11 +1068,7 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    function idle() {
-      if (navigator.webdriver) return;
-      inject('js/cosmos.js');
-      inject('js/effects.js');
-    }
+    function idle() { /* Launch chart has an authored static field; no ambient injector. */ }
     window.addEventListener('load', function () {
       if (window.requestIdleCallback) requestIdleCallback(idle, { timeout: 4000 });
       else setTimeout(idle, 1200);

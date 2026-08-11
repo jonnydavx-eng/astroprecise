@@ -1116,6 +1116,10 @@ window.AstroApp = AstroApp;
 // symbol on the site is drawn in the same engraved hand. stroke:currentColor
 // means they inherit gold/silver from their context automatically.
 (function injectEngravedIcons() {
+  // Launch pages already carry the compact symbol sheet they use. Injecting a
+  // second sheet creates duplicate IDs and makes <use> resolution depend on DOM
+  // order, which showed up as apparently random icons after route transitions.
+  if (document.getElementById('ei-star4')) return;
   const I = {
     pin: '<path d="M12 21c-4-5.3-6-8.4-6-11a6 6 0 1 1 12 0c0 2.6-2 5.7-6 11Z"/><circle cx="12" cy="10" r="2.2"/>',
     crescent: '<path d="M14.5 3.5a9 9 0 1 0 6.2 11.8A7.2 7.2 0 0 1 14.5 3.5Z"/>',
