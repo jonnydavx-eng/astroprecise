@@ -6,26 +6,20 @@
   'use strict';
 
   var CARD_SELECTOR = [
-    'body.page-home .ap-edition-art figure',
-    'body.page-shop .ap-shop-leads .ap-product',
-    'body.page-horoscope .reading-card',
-    'body.page-chart .big-three-card',
-    'body.page-chart .pattern-card',
-    'body.page-eclipse .ap-eclipse-geometry-plate',
-    'body.page-eclipse #eclipseContactRows > li'
+    'body.page-home .ap-edition-art .ap-card-art',
+    'body.page-shop .ap-shop-leads .ap-product__image',
+    'body.page-eclipse .ap-eclipse-geometry-plate .ap-card-art'
   ].join(',');
 
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   var saveData = !!(navigator.connection && navigator.connection.saveData);
   var motionAllowed = !reduce && !saveData;
-  var mutationObserver = null;
   var activeCard = null;
   var pendingPoint = null;
   var frame = 0;
   function toneFor(card) {
-    if (card.closest('.page-eclipse') || card.classList.contains('ap-product--eclipse')) return 'ember';
-    if (card.closest('.page-chart') || card.closest('.page-horoscope')) return 'silver';
+    if (card.closest('.page-eclipse') || card.closest('.ap-product--eclipse')) return 'ember';
     return 'brass';
   }
 
@@ -34,8 +28,7 @@
     card.dataset.apMysticCard = '';
     card.dataset.apCardTone = toneFor(card);
 
-    // Optical foil belongs to imagery, never over reading copy. Compact result
-    // cards receive depth only; editorial/product figures receive the light field.
+    // Optical foil belongs to authored imagery, never reading copy or receipts.
     var visual = card.matches('.ap-card-art, .ap-product__image')
       ? card
       : card.querySelector('.ap-card-art, .ap-product__image');
@@ -78,8 +71,8 @@
     var y = Math.max(0, Math.min(1, (pendingPoint.y - rect.top) / rect.height));
     activeCard.style.setProperty('--ap-card-px', (x * 100).toFixed(2) + '%');
     activeCard.style.setProperty('--ap-card-py', (y * 100).toFixed(2) + '%');
-    activeCard.style.setProperty('--ap-card-rx', ((0.5 - y) * 4).toFixed(2) + 'deg');
-    activeCard.style.setProperty('--ap-card-ry', ((x - 0.5) * 4.8).toFixed(2) + 'deg');
+    activeCard.style.setProperty('--ap-card-rx', ((0.5 - y) * 2.4).toFixed(2) + 'deg');
+    activeCard.style.setProperty('--ap-card-ry', ((x - 0.5) * 3).toFixed(2) + 'deg');
   }
 
   function onPointerMove(event) {
@@ -116,14 +109,6 @@
     document.addEventListener('pointerout', onPointerOut, { passive: true });
     document.addEventListener('focusin', onFocusIn);
     document.addEventListener('focusout', onFocusOut);
-    if ('MutationObserver' in window) {
-      mutationObserver = new MutationObserver(function (records) {
-        records.forEach(function (record) {
-          record.addedNodes.forEach(function (node) { if (node.nodeType === 1) scan(node); });
-        });
-      });
-      mutationObserver.observe(document.body, { childList: true, subtree: true });
-    }
   }
 
   function stop() {
@@ -131,7 +116,6 @@
     frame = 0;
     pendingPoint = null;
     reset(activeCard);
-    if (mutationObserver) mutationObserver.disconnect();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
