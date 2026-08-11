@@ -3993,6 +3993,11 @@ const FinishShader = {
     }
   }
 
+  function instrumentPortraitBodyId() {
+    if (!instrumentMode || !focusFrameId || /^(earth|moon|sun|aspect)$/.test(focusFrameId)) return null;
+    return BODIES.some((b) => b.id === focusFrameId) ? focusFrameId : null;
+  }
+
   function updateScaleVisualsContinuous(z) {
     const lv = Math.round(z);
     solarDim = z <= 2 ? 1 : z <= 3.4 ? 0.55 + (3.4 - z) * 0.45 : z <= 4.4 ? 0.12 + (4.4 - z) * 0.43 : 0;
@@ -4075,6 +4080,30 @@ const FinishShader = {
       if (k === 'halley') return;
       if (labels[k]) labels[k].visible = showPlanetLabels;
     });
+
+    // A named world is a portrait, not another solar-system overview. Keeping
+    // the other bodies, orbit rails and the Sun disc in the same close frame
+    // created overlapping silhouettes and made a successful click look broken.
+    // The light at the Sun remains active; only its rendered disc is collapsed.
+    const portraitId = instrumentPortraitBodyId();
+    if (portraitId) {
+      BODIES.forEach((b) => {
+        const g = meshes[b.id];
+        if (g) g.visible = b.id === portraitId;
+        if (labels[b.id]) labels[b.id].visible = false;
+      });
+      orbitLines.forEach((o) => { if (o) o.visible = false; });
+      eccentricGuides.forEach((o) => { if (o) o.visible = false; });
+      if (moonGroup) moonGroup.visible = false;
+      if (earthOrbitGroup) earthOrbitGroup.visible = false;
+      if (asteroidPoints) asteroidPoints.visible = false;
+      if (extraBodiesGroup) extraBodiesGroup.visible = false;
+      if (halleyGroup) halleyGroup.visible = false;
+      if (labels.halley) labels.halley.visible = false;
+      if (sunGlow.length) sunGlow.forEach((sp) => { sp.visible = false; });
+      if (sunCoronaGroup) sunCoronaGroup.visible = false;
+      if (sunCoronaMesh) sunCoronaMesh.visible = false;
+    }
 
     const oortF = scaleFade(z, 3, 0.75);
     if (oortShell) {
@@ -6809,7 +6838,7 @@ const FinishShader = {
       });
     }
     if (instrumentMode && sunMesh) {
-      sunMesh.scale.setScalar(1);
+      sunMesh.scale.setScalar(instrumentPortraitBodyId() ? 0.001 : 1);
     }
     if (sunGlow.length && !PRM && scaleLevel <= 2 && !instrumentMode) {
       const corePulse = 1 + Math.sin(t * 0.0026) * 0.07;
@@ -8874,9 +8903,9 @@ const FinishShader = {
     scaleAnimFrom.tx = camTarget.x;
     scaleAnimFrom.ty = camTarget.y;
     scaleAnimFrom.tz = camTarget.z;
-    scaleAnimTo.radius = inner ? Math.max(body.size * 6.8, 10) : Math.max(body.size * 8.2, 7.5);
+    scaleAnimTo.radius = planetPortraitRadius(body, pos, inner, true);
     scaleAnimTo.el = inner ? 14 * D2R : 12 * D2R;
-    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.28;
+    const azWant = Math.atan2(pos.z, pos.x) + Math.PI - (inner ? 0.20 : 0.28);
     let azD = azWant - camAz;
     azD = Math.atan2(Math.sin(azD), Math.cos(azD));
     scaleAnimTo.az = camAz + azD;
@@ -8900,6 +8929,17 @@ const FinishShader = {
         detail: { level: scaleLevel, preset: scalePreset(scaleLevel), freeExplore: true },
       }));
     } catch (e) { /* optional */ }
+  }
+
+  function planetPortraitRadius(body, pos, inner, freeFlight) {
+    const orbitRadius = Math.max(0.01, Math.hypot(pos.x, pos.z));
+    if (inner) {
+      const editorialFloor = body.id === 'mercury' ? 2.25 : body.id === 'venus' ? 4.2 : 6.2;
+      const preferred = Math.max(body.size * (freeFlight ? 6.8 : 6.5), editorialFloor);
+      return Math.min(preferred, orbitRadius * 0.72);
+    }
+    const preferred = Math.max(body.size * (freeFlight ? 8.2 : 7.8), body.id === 'saturn' ? 8.6 : 7);
+    return Math.min(preferred, orbitRadius * 0.58);
   }
 
   function focusPlanet(id) {
@@ -9000,9 +9040,9 @@ const FinishShader = {
     // Camera sits SUNWARD of the planet (az + π, nudged off-axis for modelling
     // shadow) so the lit hemisphere faces the lens and the sun stays behind it.
     // Closer portraits — fill the frame with lit hemisphere texture
-    scaleAnimTo.radius = inner ? Math.max(body.size * 6.5, 10) : Math.max(body.size * 7.8, 7);
+    scaleAnimTo.radius = planetPortraitRadius(body, pos, inner, false);
     scaleAnimTo.el = inner ? 14 * D2R : 12 * D2R;
-    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.28;
+    const azWant = Math.atan2(pos.z, pos.x) + Math.PI - (inner ? 0.20 : 0.28);
     let azD = azWant - camAz;
     azD = Math.atan2(Math.sin(azD), Math.cos(azD));
     scaleAnimTo.az = camAz + azD; // shortest swing
