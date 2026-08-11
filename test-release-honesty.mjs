@@ -14,9 +14,12 @@ assert.ok(!chartPage.includes('within orb for this chart'));
 for (const path of ['./website/index-full.html', './website/deep-time.html', './website/terms.html']) {
   assert.equal(/arcminute/i.test(read(path)), false, `${path} must not make an arcminute claim`);
 }
-assert.ok(read('./website/index-full.html').includes('Sky model warming in your browser.'));
+const home = read('./website/index.html');
+const orreryAdapter = read('./website/js/void-orrery-adapter.js');
+assert.ok(home.includes('Preparing 3D'));
+assert.ok(orreryAdapter.includes('No substitute model has been shown.') && orreryAdapter.includes('Retry 3D'));
 const deepTime = read('./website/deep-time.html');
-assert.ok(deepTime.includes('FOR THE MOMENT SHOWN'));
+assert.ok(deepTime.includes('duplicate Deep-Time model has been retired') && deepTime.includes('Open the Observatory'));
 assert.equal(/minute you were born/i.test(deepTime), false);
 
 for (const path of ['./website/transits.html', './website/this-weeks-sky.html']) {
@@ -28,7 +31,8 @@ assert.equal(/refine on map|if you use the map|OpenStreetMap\/Carto/i.test(priva
 assert.equal(/optional map tiles/i.test(read('./website/terms.html')), false);
 
 const serviceWorker = read('./website/sw.js');
-assert.ok(serviceWorker.includes('js\\/chart-page\\.js'), 'chart-page.js must be network-first');
+assert.ok(serviceWorker.includes('app|chart-page|horoscope-page'), 'chart-page.js must remain release-critical');
+assert.ok(serviceWorker.includes('if (isCritical ||') && serviceWorker.includes('if (network) return network;'), 'release-critical code must remain network-first');
 
 const runbook = read('./ECLIPSE-RUNBOOK.md');
 assert.ok(runbook.includes('23 suites, must be 23/23'));

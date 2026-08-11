@@ -77,8 +77,8 @@ for (const file of ['website/img/plate-enhanced.svg', 'website/img/design/plate-
 }
 
 const chart = readFileSync('website/chart.html', 'utf8');
-ok('chart copy keeps the accuracy hedge', chart.includes('typically placing the'));
-ok('chart copy uses the supported singular figure', chart.includes('about a sixtieth of a degree'));
+ok('chart copy keeps the accuracy hedge', chart.includes('typically place the supported major-planet positions'));
+ok('chart copy uses the supported singular figure', chart.includes('within about a sixtieth of a degree'));
 ok('chart copy does not claim every body', !chart.includes('placing every body'));
 
 if (failures.length) {

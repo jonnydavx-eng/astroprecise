@@ -12,7 +12,8 @@ const {
 
 const E = globalThis.AstroEphemeris;
 assert.ok(E && E.sunPosition && E.moonPosition, 'browser ephemeris should evaluate under Node');
-assert.equal(EVENT_MS, Date.UTC(2026, 7, 12, 17, 45, 57));
+// NASA/GSFC catalog greatest eclipse: 12 August 2026 at 17:45:51 UTC.
+assert.equal(EVENT_MS, Date.UTC(2026, 7, 12, 17, 45, 51));
 assert.equal(EVENT_MS - RANGE_START_MS, 72 * 60 * 60 * 1000);
 assert.equal(RANGE_END_MS - EVENT_MS, 48 * 60 * 60 * 1000);
 

@@ -5,31 +5,27 @@
  * OBSERVATORY STRUCTURE (2026-07-10 — the homepage IS the model):
  *   The living orrery is the product; index.html is the Observatory.
  *
- * Primary bar: Observatory · Chart · The Sky · Daily · Shop
- *   Observatory = the full-model homepage (index.html)
- *   Chart       = cast natal (chart.html)
- *   The Sky     = sky instrument / ephemeris (ephemeris.html)
- *   Daily       = horoscope (horoscope.html)
- *   Shop        = keepsakes
+ * Launch bar: Observatory · Chart · Daily · Eclipse · Shop.
+ * The historical tools remain directly addressable, but they never leak into
+ * the five-route launch shell or reintroduce a second "Explore" entrance.
  *
- * Bottom tabs (4): Live Sky · Chart · Daily · Shop
- * More: My Sky hub, Moment, Cosmic Story, Library, Match, tools…
+ * Archive-only bottom tabs: Live Sky · Chart · Daily · Shop.
  *
- * Site spine: Observatory (see) → Chart (cast) → The Sky (instrument) → Keep → Daily → Shop
+ * Site spine: Observatory (see) → Chart (cast) → Daily (return) → Eclipse (event) → Shop (keep)
  * index.html is the single live Observatory; Explore is an action inside that scene, not another route.
  */
 'use strict';
 
 (function () {
   var NAV_PRIMARY = [
-    ['index.html', 'Live Sky'],
-    ['chart.html', 'Birth Chart'],
+    ['index.html', 'Observatory'],
+    ['chart.html', 'Chart'],
     ['horoscope.html', 'Daily'],
     ['eclipse.html', 'Eclipse', { badge: '12 Aug' }],
     ['shop.html', 'Shop'],
   ];
 
-  // Hub + keep + story + library first in More
+  // Historical direct routes, exposed only on archive pages.
   var NAV_MORE_EXPLORE = [
     ['ephemeris.html', 'Sky tools', { badge: 'Live' }],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
@@ -42,7 +38,7 @@
     ['charts.html', 'My Charts'],
   ];
 
-  // Four tabs only — model + cast + sky + daily (distinct icons)
+  // Archive mobile tabs only; launch routes use the authored responsive header.
   var NAV_BOTTOM_TABS = [
     ['index.html', 'Live Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
@@ -63,7 +59,6 @@
   var NAV_EXTRAS = [
     ['tonight.html', 'Tonight'], ['this-weeks-sky.html', 'This Week'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
-    ['catalogue.html', 'Lookbook'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
@@ -87,6 +82,10 @@
     return location.pathname.split('/').pop() || 'index.html';
   }
 
+  function isLaunchRoute() {
+    return /^(?:index|chart|horoscope|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(staticHere());
+  }
+
   function staticLink(row, here, drawer) {
     var href = row[0], label = row[1], meta = row[2] || {};
     var active = href === here;
@@ -104,11 +103,12 @@
     if (!header || header.dataset.apStaticNavReady) return;
     header.dataset.apStaticNavReady = '1';
     var here = staticHere();
+    var launch = isLaunchRoute();
     var desktop = header.querySelector('.navbar__nav');
     var mobile = header.querySelector('.navbar__mobile-menu');
     var toggle = header.querySelector('.navbar__toggle');
     var moreActive = NAV_MORE_EXPLORE.concat(NAV_EXTRAS).some(function (row) { return row[0] === here; });
-    var groups = [
+    var groups = launch ? [] : [
       { label: 'Your astrology', items: NAV_MORE_EXPLORE },
       { label: 'More tools', items: NAV_EXTRAS }
     ];
@@ -117,7 +117,7 @@
         return '<div class="navbar__more-group" role="group" aria-label="' + group.label + '"><p class="navbar__more-label">' + group.label + '</p>' + staticLinks(group.items, here, true) + '</div>';
       }).join('');
       desktop.innerHTML = staticLinks(NAV_PRIMARY, here, false)
-        + '<div class="navbar__more" data-nav-more><button type="button" class="navbar__more-btn' + (moreActive ? ' active' : '') + '" aria-expanded="false" aria-controls="navbar-more-panel-static">More</button><div class="navbar__more-panel" id="navbar-more-panel-static" hidden>' + panel + '</div></div>';
+        + (groups.length ? '<div class="navbar__more" data-nav-more><button type="button" class="navbar__more-btn' + (moreActive ? ' active' : '') + '" aria-expanded="false" aria-controls="navbar-more-panel-static">More</button><div class="navbar__more-panel" id="navbar-more-panel-static" hidden>' + panel + '</div></div>' : '');
     }
     if (mobile) {
       var drawer = '<p class="navbar__drawer-heading">Main</p>' + staticLinks(NAV_PRIMARY, here, true);
@@ -156,12 +156,20 @@
       }
     }
     if (toggle && mobile) {
+      setDrawer(false);
       toggle.addEventListener('click', function () {
         setDrawer(toggle.getAttribute('aria-expanded') !== 'true');
       });
       mobile.addEventListener('click', function (event) {
         if (event.target.closest('a')) setDrawer(false);
       });
+      var desktopBreakpoint = window.matchMedia && window.matchMedia('(min-width: 761px)');
+      if (desktopBreakpoint) {
+        var closeAtBreakpoint = function () { setDrawer(false); };
+        if (desktopBreakpoint.addEventListener) desktopBreakpoint.addEventListener('change', closeAtBreakpoint);
+        else if (desktopBreakpoint.addListener) desktopBreakpoint.addListener(closeAtBreakpoint);
+      }
+      window.addEventListener('pageshow', function () { setDrawer(false); });
     }
     document.addEventListener('click', function (event) {
       if (more && !more.contains(event.target)) closeMore();
@@ -214,8 +222,17 @@
 
   function bootLivingSkyShell() {
     document.querySelectorAll('[data-ap-static-nav]').forEach(renderStaticHeader);
+    if (isLaunchRoute()) {
+      // Launch pages deliberately load shared shell CSS first and authored route
+      // CSS last. Re-appending the shell at 0/320/1200ms caused a visible design
+      // swap and let shared rules override the route after first paint. Their
+      // responsive header is sufficient, so no injected bottom bar either.
+      document.querySelectorAll('.bottom-nav').forEach(function (nav) { nav.remove(); });
+      document.documentElement.style.removeProperty('--bottom-nav-h');
+      return;
+    }
     renderStaticBottomNav();
-    // Deferred page boots may append legacy styles at DOM ready. Keep the shared living-sky system last.
+    // Archive routes still load deferred legacy sheets; keep the shared shell last there.
     setTimeout(promoteLivingSkyStyles, 0);
     setTimeout(promoteLivingSkyStyles, 320);
     setTimeout(promoteLivingSkyStyles, 1200);

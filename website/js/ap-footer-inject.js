@@ -14,6 +14,18 @@
   var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   if (SKIP_PAGES.test(page)) return;
 
+  function ensureStyles() {
+    if (document.querySelector('link[href*="ap-living-sky-v834.css"],link[href*="ap-footer-v835.css"]')) return;
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = new URL('css/ap-footer-v835.css?v=835', document.baseURI).href;
+    link.dataset.apFooterStyles = '835';
+    (document.head || document.documentElement).appendChild(link);
+  }
+
+  // Several long-tail pages load the shared footer without the launch shell.
+  // Load only this self-contained layer there so the footer never becomes raw text.
+  ensureStyles();
   var CORE_LINKS = [
     { href: 'index.html', label: 'Observatory' },
     { href: 'chart.html', label: 'Chart' },
@@ -44,14 +56,14 @@
       +       '<img src="img/logo-mark.svg" width="28" height="28" alt="" decoding="async">'
       +       '<span>AstroPrecise</span>'
       +     '</a>'
-      +     '<p>Live sky calculations and reflective astrology, without a hidden data trail. Birth details stay on this device; only place search calls Open-Meteo.</p>'
+      +     '<p>The sky computed here; astrology explained with care. Birth details stay on this device.</p>'
       +   '</div>'
       +   '<nav class="ap-site-footer__routes" aria-label="Core pages">' + linksHtml(CORE_LINKS) + '</nav>'
       +   '<nav class="ap-site-footer__legal" aria-label="Legal and verification">' + linksHtml(LEGAL_LINKS) + '</nav>'
       + '</div>'
       + '<div class="ap-site-footer__colophon">'
       +   '<span>&copy; ' + new Date().getFullYear() + ' AstroPrecise</span>'
-      +   '<span>Live calculations · No account required · Planet imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span>'
+      +   '<span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> / <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span>'
       + '</div>';
   }
 

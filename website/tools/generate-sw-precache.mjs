@@ -49,6 +49,7 @@ const RELEASE_PAGES = [
 const REQUIRED_TRANSITIVE = [
   './js/eclipse-reading.js',
   './js/reading-templates.json',
+  './css/ap-footer-v835.css',
   // Home imports this through a release-version expression, which the static
   // import walker cannot discover. Adding the module lets the walker include
   // its Three post-processing and orbital-math dependencies.

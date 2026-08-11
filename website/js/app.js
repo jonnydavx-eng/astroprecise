@@ -280,36 +280,42 @@ const AstroApp = (() => {
   // ── Navigation IA — js/ap-nav-model.js (window.AP_NAV) is canonical ─────
   const _apNav = (typeof window !== 'undefined' && window.AP_NAV) || {};
   const NAV_PRIMARY = _apNav.NAV_PRIMARY || [
-    ['index.html', 'Home'],
+    ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
     ['horoscope.html', 'Daily'],
-    ['compatibility.html', 'Match'],
-    ['ephemeris.html', 'Sky'],
-  ];
-  const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
-    ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
-    ['lifepath.html', 'Life Path'],
-    ['transits.html', 'Transits'],
-    ['why.html', 'Why'],
+    ['eclipse.html', 'Eclipse', { badge: '12 Aug' }],
     ['shop.html', 'Shop'],
   ];
+  const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
+    ['ephemeris.html', 'Sky tools', { badge: 'Live' }],
+    ['mysky.html', 'My Sky', { badge: 'Hub' }],
+    ['moment.html', 'Moment', { badge: 'Keep' }],
+    ['cosmic-story.html', 'Cosmic Story'],
+    ['guides.html', 'Library'],
+    ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
+    ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
+    ['profile.html', 'Profile'],
+    ['charts.html', 'My Charts'],
+  ];
   const NAV_EXTRAS = _apNav.NAV_EXTRAS || [
-    ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
-    ['tonight.html', 'Tonight'], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
-    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
-    ['what-is-my-rising-sign.html', 'Rising Sign'], ['synastry.html', 'Synastry'],
+    ['tonight.html', 'Tonight'], ['this-weeks-sky.html', 'This Week'],
+    ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
-    ['links.html', 'Links'],
+    ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
+    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
+    ['lifepath.html', 'Life Path'],
+    ['quiz.html', 'Cosmic Quiz'], ['accuracy.html', 'Accuracy'],
+    ['why.html', 'Why'], ['links.html', 'Links'],
   ];
   const NAV_BOTTOM_TABS = _apNav.NAV_BOTTOM_TABS || [
-    ['index.html', 'Home', 'star4'],
+    ['index.html', 'Live Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
     ['horoscope.html', 'Daily', 'crescent'],
-    ['ephemeris.html', 'Sky', 'telescope'],
+    ['shop.html', 'Shop', 'sparkles'],
   ];
   const NAV_DRAWER_SECTIONS = _apNav.NAV_DRAWER_SECTIONS || [
-    { label: 'Explore', items: NAV_MORE_EXPLORE },
-    { label: 'Tools', items: NAV_EXTRAS },
+    { label: 'Your astrology', items: NAV_MORE_EXPLORE },
+    { label: 'More tools', items: NAV_EXTRAS },
   ];
   // Legacy aliases for any code that still reads these
   const NAV_CORE = NAV_PRIMARY.concat(NAV_MORE_EXPLORE);

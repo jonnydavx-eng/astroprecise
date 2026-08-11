@@ -1,48 +1,52 @@
 /**
- * Proof: eclipse quiet-gate engine + page honesty (ap-v762+).
- * Production eclipse.html is an inline module (not ap-eclipse-page.js).
+ * Proof: dedicated 2026 eclipse instrument, contact engine and launch honesty.
  */
-import { readFileSync } from 'node:fs'
-import { buildEclipseReading5 } from '../website/js/eclipse-reading.js'
+import { readFileSync } from 'node:fs';
+import { buildEclipseReading5 } from '../website/js/eclipse-reading.js';
 
-const templates = JSON.parse(readFileSync('website/js/reading-templates.json', 'utf8'))
-const eclipseHtml = readFileSync('website/eclipse.html', 'utf8')
-const peCss = readFileSync('website/css/ap-frontier-pe.css', 'utf8')
-const sw = readFileSync('website/sw.js', 'utf8')
-const honest = readFileSync('website/js/ap-checkout-honest.js', 'utf8')
+const templates = JSON.parse(readFileSync('website/js/reading-templates.json', 'utf8'));
+const eclipseHtml = readFileSync('website/eclipse.html', 'utf8');
+const eclipseCss = readFileSync('website/css/ap-eclipse-v835.css', 'utf8');
+const liveJs = readFileSync('website/js/ap-eclipse-live-v834.js', 'utf8');
+const geometryJs = readFileSync('website/js/ap-eclipse-geometry-v834.js', 'utf8');
+const sw = readFileSync('website/sw.js', 'utf8');
 
-const fails = []
-if (!eclipseHtml.includes('buildEclipseReading5')) fails.push('eclipse missing engine import')
-if (!eclipseHtml.includes('gateSale')) fails.push('eclipse missing gateSale branch')
-if (!eclipseHtml.includes('quietBox')) fails.push('eclipse missing quietBox')
-if (!eclipseHtml.includes('saleBox')) fails.push('eclipse missing saleBox')
-if (!eclipseHtml.includes('ap-checkout-honest')) fails.push('eclipse missing honest checkout script')
-if (!eclipseHtml.includes('eclipse-geometry.svg')) fails.push('eclipse missing geometry master')
-if (!eclipseHtml.includes('THE REAL SKY NEWS')) fails.push('eclipse missing brand line')
-if (!peCss.includes('text-wrap: balance') && !peCss.includes('text-wrap:balance')) {
-  // PE may use either form
-  if (!peCss.includes('text-wrap')) fails.push('PE css missing text-wrap')
+const fails = [];
+if (!/ap-eclipse-live-v834\.js\?v=835/.test(eclipseHtml)) fails.push('eclipse missing dedicated 3D module');
+if (!/class="ap-eclipse-live__canvas"/.test(eclipseHtml)) fails.push('eclipse missing dedicated canvas');
+if (!/data-eclipse-now/.test(eclipseHtml) || !/data-eclipse-event/.test(eclipseHtml)) {
+  fails.push('eclipse missing live/greatest controls');
 }
-if (!/ap-v(7[6-9]\d?|8\d{2})/.test(sw)) fails.push('SW tip not in 76x–8xx range')
-if (!honest.includes('hardenAllDeadGumroad')) fails.push('honest checkout missing hardener')
+if (!/ap-eclipse-contact-v835\.js\?v=835/.test(eclipseHtml)) fails.push('eclipse missing contact controller');
+if (!/id="eclipseContactForm"/.test(eclipseHtml)) fails.push('eclipse missing chart-contact form');
+if (!eclipseHtml.includes('eclipse-geometry.svg')) fails.push('eclipse missing authored geometry plate');
+if (!/Watch the shadow arrive/i.test(eclipseHtml)) fails.push('eclipse missing launch brand line');
+if (/(?:gumroad|ap-checkout-honest)/i.test(eclipseHtml)) fails.push('eclipse contains a dead checkout path');
+if (!/var\(--ap-brass\)/.test(eclipseCss)) fails.push('eclipse does not consume the shared launch brass token');
+if (!/new THREE\.WebGLRenderer/.test(liveJs)) fails.push('eclipse live module missing WebGL renderer');
+if (!/function setDisplayDate/.test(liveJs)) fails.push('eclipse live module missing time-travel state');
+if (!/Date\.UTC\(2026, 7, 12, 17, 45, 51\)/.test(geometryJs)) {
+  fails.push('eclipse geometry maximum is not 17:45:51 UTC');
+}
+if (!/const V\s*=\s*["']ap-v835["']/.test(sw)) fails.push('SW tip is not exactly v835');
 
-// Quiet chart: bodies clustered away from aspect angles to 140.133°
+// Quiet chart: bodies clustered away from aspect angles to 140.133°.
 const quiet = buildEclipseReading5(140.133, {
   sun: 100, moon: 102, mercury: 104, venus: 106, mars: 108,
   jupiter: 110, saturn: 112, uranus: 114, neptune: 116, pluto: 118,
-}, templates, { quietGateDeg: 5 })
-if (!quiet.gateSale) fails.push('expected gateSale on quiet chart')
+}, templates, { quietGateDeg: 5 });
+if (!quiet.gateSale) fails.push('expected quiet gate on a no-contact chart');
 
-// Hot chart: Sun on eclipse
+// Hot chart: Sun on the eclipse degree.
 const hot = buildEclipseReading5(140.133, {
   sun: 140.133, moon: 10, mercury: 20, venus: 30, mars: 40,
   jupiter: 50, saturn: 60, uranus: 70, neptune: 80, pluto: 90,
-}, templates, { quietGateDeg: 5 })
-if (hot.gateSale) fails.push('expected sale open on sun-conjunction')
-if (!hot.anchor || !hot.contact) fails.push('hot reading missing beats')
+}, templates, { quietGateDeg: 5 });
+if (hot.gateSale) fails.push('expected contact reading on Sun conjunction');
+if (!hot.anchor || !hot.contact) fails.push('contact reading missing authored beats');
 
 if (fails.length) {
-  console.error('FAIL', fails)
-  process.exit(1)
+  console.error('FAIL', fails);
+  process.exit(1);
 }
-console.log('PASS eclipse-wire + honest-checkout + geometry + brand')
+console.log('PASS eclipse 3D + geometry + contact engine + launch honesty');
