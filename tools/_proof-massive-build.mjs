@@ -1,5 +1,5 @@
 /**
- * Static proof: AstroPrecise v836 launch architecture.
+ * Static proof: AstroPrecise v837 launch architecture.
  * Exit 0 only when the flagship 3D, truthful commerce, shared chrome and
  * verification surfaces are wired to the current release contract.
  */
@@ -50,7 +50,7 @@ ok(/js\/ap-nav-model\.js\?v=835/.test(index) && !/ap-nav-model-v834/.test(index)
 
 const chart = fs.readFileSync(path.join(web, 'chart.html'), 'utf8');
 ok(/id="chart-form"/.test(chart), 'chart keeps the birth-chart calculation form');
-ok(/js\/chart-page\.js\?v=835/.test(chart), 'chart loads the v835 calculation controller');
+ok(/js\/chart-page\.js\?v=837/.test(chart), 'chart loads the v837 calculation controller');
 ok(!/ap-natal-sphere/.test(chart), 'chart excludes retired natal-sphere decoration');
 
 const shop = fs.readFileSync(path.join(web, 'shop.html'), 'utf8');
@@ -106,7 +106,7 @@ ok(!/(?:gumroad|ap-checkout-honest)/i.test(plate), 'natal plate exposes no dead 
 
 const sw = fs.readFileSync(path.join(web, 'sw.js'), 'utf8');
 const versionMatch = sw.match(/const V\s*=\s*"([^"]+)"/);
-ok(versionMatch && versionMatch[1] === 'ap-v836', 'SW release tip ' + (versionMatch && versionMatch[1]));
+ok(versionMatch && versionMatch[1] === 'ap-v837', 'SW release tip ' + (versionMatch && versionMatch[1]));
 
 const verify = fs.readFileSync(path.join(web, 'verify.html'), 'utf8');
 ok(/plate-fingerprint\.js/.test(verify), 'verify imports plate-fingerprint');

@@ -1,4 +1,4 @@
-/* Gate: v836 flagship renderer contract.
+/* Gate: v837 flagship renderer contract.
  * Home owns the one general <void-orrery>; Eclipse owns a separate dedicated
  * Sun–Moon–Earth renderer. Product, card and archive routes mount no spare model.
  */
@@ -70,6 +70,10 @@ for (const probe of [
   '&& !envIblLoading',
   'instrumentSunRevealT() >= 0.999',
   'announceInstrumentFirstFrame = true',
+  'function homeCanvasIntersectsViewport()',
+  'function shouldRenderFrame()',
+  'webglBooted && running && !destroyed && shouldRenderFrame() && !raf',
+  'if (isLivingSkyHome()) return;',
 ]) {
   if (!A.includes(probe) && !W.includes(probe)) fail('stable Home reveal contract missing: ' + probe);
 }
@@ -97,9 +101,9 @@ if (modelOwners.length !== 1 || modelOwners[0] !== 'index.html') {
   fail('general orrery owners must be index.html only: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=836/.test(indexHtml)) fail('Home missing v836 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=836"/.test(indexHtml)) {
-  fail('Home missing exact v836 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=837/.test(indexHtml)) fail('Home missing v837 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=837"/.test(indexHtml)) {
+  fail('Home missing exact v837 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');

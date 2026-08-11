@@ -6,10 +6,33 @@ const count = (text, pattern) => (text.match(pattern) || []).length;
 
 const chartPage = read('./website/js/chart-page.js');
 assert.ok(chartPage.includes('Career point'));
-assert.ok(chartPage.includes('° from exact ·'));
+assert.ok(chartPage.includes("fs.orb.toFixed(1) + '° from exact'"));
 assert.ok(!chartPage.includes('}° orb ·'));
 assert.ok(!chartPage.includes('Rising, Ascendant, Midheaven, houses'));
 assert.ok(!chartPage.includes('within orb for this chart'));
+
+const chartHtml = read('./website/chart.html');
+const chartCss = read('./website/css/ap-chart-v835.css');
+const interpretationsLoader = read('./website/js/ap-load-interpretations.js');
+const readingFormat = read('./website/js/reading-format.js');
+const chartRender = read('./website/js/chart-render.js');
+assert.ok(chartPage.includes("name:'Semi-sextile'"));
+assert.equal(chartPage.includes("name:'Slight angle'"), false);
+assert.ok(chartCss.includes('.ap-reading-card > .ap-reading-card__content:only-child'));
+assert.ok(chartCss.includes('scroll-margin-top:'));
+assert.ok(chartHtml.includes('ap-chart-v835.css?v=837'));
+assert.ok(chartHtml.includes('ap-load-interpretations.js?v=837') && chartHtml.includes('chart-page.js?v=837'));
+assert.ok(chartHtml.includes('reading-format.js?v=837') && chartHtml.includes('chart-render.js?v=837'));
+assert.ok(readingFormat.includes('if (leadHtml) inner += leadHtml;') && !readingFormat.includes('leadHtml && !collapsed'));
+assert.ok(interpretationsLoader.includes('interpretations.js?v='));
+assert.ok(chartPage.includes('degree withheld') && chartPage.includes('Date-reference angle'));
+assert.ok(chartPage.includes('Secondary contacts · minor aspects and calculated points'));
+assert.ok(chartPage.includes('resultNameEl.focus') && !chartPage.includes('firstTab = wrapEl'));
+assert.ok(chartPage.includes("document.body.classList.add('ap-chart-has-results')"));
+assert.ok(chartCss.includes('.page-chart.ap-chart-has-results .chart-method-ledger'));
+assert.ok(!chartPage.includes('catch (e) { a = null; }'));
+assert.ok(chartRender.includes('displayBodyName(p1name)') && chartRender.includes('displayBodyName(p2name)'));
+assert.equal(chartHtml.includes('Robust even when your birth time is approximate'), false);
 
 for (const path of ['./website/index-full.html', './website/deep-time.html', './website/terms.html']) {
   assert.equal(/arcminute/i.test(read(path)), false, `${path} must not make an arcminute claim`);

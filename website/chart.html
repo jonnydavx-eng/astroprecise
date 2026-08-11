@@ -7,6 +7,7 @@
   <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
   <title>Free Birth Chart — calculated on your device | Astro Precise</title>
+  <script>window.AP_ASSET_V='837';</script>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/fonts.css?v=835" />
 <link rel="manifest" href="manifest.json" />
@@ -67,7 +68,7 @@
   </script>
   <link rel="stylesheet" href="css/celestial-seals.css?v=835" />
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835" />
-  <link rel="stylesheet" href="css/ap-chart-v835.css?v=835" />
+  <link rel="stylesheet" href="css/ap-chart-v835.css?v=837" />
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
@@ -340,7 +341,7 @@
                   <div class="house-cards" role="radiogroup" aria-label="House system selection">
                     <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
                       <div class="house-card__name">Equal</div>
-                      <div class="house-card__desc">Each house spans exactly 30° from your Ascendant. Robust even when your birth time is approximate — the default here.</div>
+                      <div class="house-card__desc">Each house spans exactly 30° from your Ascendant. Simple to compare, but every cusp and placement remains provisional when birth time is approximate.</div>
                     </div>
                     <div class="house-card" data-value="placidus" tabindex="-1" role="radio" aria-checked="false">
                       <div class="house-card__name">Placidus</div>
@@ -577,9 +578,9 @@
   <script src="js/ap-zodiac-constants.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
-  <script src="js/reading-format.js" defer></script>
-  <script src="js/chart-render.js" defer></script>
-  <script src="js/ap-load-interpretations.js" defer></script>
+  <script src="js/reading-format.js?v=837" defer></script>
+  <script src="js/chart-render.js?v=837" defer></script>
+  <script src="js/ap-load-interpretations.js?v=837" defer></script>
   <script src="js/profile.js" defer></script>
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/icons.js" defer></script>
@@ -587,6 +588,6 @@
   <script src="js/ap-footer-inject.js?v=835" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ap-canvas-seals.js" defer></script>
-  <script src="js/chart-page.js?v=835" defer></script>
+  <script src="js/chart-page.js?v=837" defer></script>
 </body>
 </html>

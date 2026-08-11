@@ -141,6 +141,11 @@
     Neptune:'♆︎',  Pluto:'♇︎',     Chiron:'⚷︎',   Lilith:'⚸︎',
     NorthNode:'☊︎', SouthNode:'☋︎', Ascendant:'AC', Midheaven:'MC'
   };
+  const BODY_DISPLAY = Object.freeze({
+    NorthNode:'North Node', SouthNode:'South Node', NNode:'North Node', SNode:'South Node',
+  });
+  const displayBodyName = name => BODY_DISPLAY[name] || String(name || '');
+
 
   // Planet marker tints — atlas family: warm brass/parchment with ember node
   // accents; Neptune keeps a deep sea-teal (planet realism, not brand ice).
@@ -800,7 +805,7 @@
     p.replaceChildren();
     const h = document.createElement('span');
     h.className = 'ap-aspect-popover__title';
-    h.textContent = `${p1} & ${p2} — ${aspectLabel(name)}`;
+    h.textContent = `${displayBodyName(p1)} & ${displayBodyName(p2)} — ${aspectLabel(name)}`;
     p.appendChild(h);
     if (orb) {
       const o = document.createElement('span');
@@ -889,7 +894,7 @@
         : '';
       const orbTxt = orbStr ? ` (${orbStr}° off exact)` : '';
       const title = el('title');
-      title.textContent = `${p1name} & ${p2name} — ${aspectLabel(aspectName)}${orbTxt}`;
+      title.textContent = `${displayBodyName(p1name)} & ${displayBodyName(p2name)} — ${aspectLabel(aspectName)}${orbTxt}`;
 
       const isMajor = ['Conjunction', 'Opposition', 'Trine', 'Square', 'Sextile'].includes(styleKey);
       const attrs = {

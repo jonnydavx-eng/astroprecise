@@ -1849,6 +1849,11 @@ const FinishShader = {
 
   function ensureComposer() {
     if (composer || PRM || perfTier === 'low' || !renderer || !scene || !camera) return;
+    // The flagship Home canvas is continuously resized by its responsive shell.
+    // Chromium can resolve the multisampled HalfFloat composer target to an empty
+    // frame after that resize, while the underlying scene keeps rendering. Keep
+    // Home on the stable direct WebGL path; dedicated full-screen tools retain FX.
+    if (isLivingSkyHome()) return;
     try {
       // EffectComposer renders through its own targets, so the renderer's canvas
       // antialias flag no longer protects small planet silhouettes. Give the
@@ -6919,6 +6924,26 @@ const FinishShader = {
     return PRM ? 66 : 33;
   }
 
+  // IntersectionObserver can report a stale non-intersecting state while the
+  // hidden startup canvas is being laid out (notably in embedded Chromium
+  // views). A later ResizeObserver / visualViewport resize then clears the
+  // preserved buffer with no RAF left to repaint it, leaving a black model
+  // until the visitor clicks a world. Geometry is the final authority for the
+  // Home instrument while it actually overlaps the viewport.
+  function homeCanvasIntersectsViewport() {
+    if (!instrumentMode || !isLivingSkyHome() || !canvas) return false;
+    const rect = canvas.getBoundingClientRect();
+    const width = window.innerWidth || document.documentElement.clientWidth || 0;
+    const height = window.innerHeight || document.documentElement.clientHeight || 0;
+    return rect.width > 1 && rect.height > 1
+      && rect.right > 0 && rect.bottom > 0
+      && rect.left < width && rect.top < height;
+  }
+
+  function shouldRenderFrame() {
+    return inView || instrumentFirstFramePending || homeCanvasIntersectsViewport();
+  }
+
   function frame(t) {
     if (destroyed) return;
     const interval = frameIntervalMs();
@@ -6929,7 +6954,7 @@ const FinishShader = {
         reportWebGLFatal(err);
       }
     }
-    if (!destroyed && running && inView) raf = requestAnimationFrame(frame);
+    if (!destroyed && running && shouldRenderFrame()) raf = requestAnimationFrame(frame);
     else raf = null;
   }
   function frameBody(t) {
@@ -6939,7 +6964,7 @@ const FinishShader = {
     if (introActive && !preloaderCosmicJourney && introStart > 0 && meshes.earth) {
       if ((t - introStart) >= introDurationMs()) finishIntro();
     }
-    if (!running || !inView) { lastT = t; return; }
+    if (!running || !shouldRenderFrame()) { lastT = t; return; }
     const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t; lastDt = dt;
 
     if (camRadiusTarget != null) {
@@ -7769,6 +7794,11 @@ const FinishShader = {
         !portraitMode && !moonFrameActive && !dragging && !focusFrameId && !freeExploreMode) {
       containEarthFrame(0.70);
     }
+    // Resizing clears the WebGL drawing buffer. If a stale intersection state
+    // previously stopped RAF while Home is visibly on screen, repaint now.
+    if (webglBooted && running && !destroyed && shouldRenderFrame() && !raf) {
+      raf = requestAnimationFrame(frame);
+    }
   }
 
   function forceResize() {
@@ -8435,9 +8465,9 @@ const FinishShader = {
     }
     if ('IntersectionObserver' in window && !window.__orreryPreloaderOwns) {
       const io = new IntersectionObserver((ents) => {
-        const was = inView;
+        const was = shouldRenderFrame();
         inView = ents[0].isIntersecting;
-        if (!was && inView && !destroyed && running && !raf) raf = requestAnimationFrame(frame);
+        if (!was && shouldRenderFrame() && !destroyed && running && !raf) raf = requestAnimationFrame(frame);
       }, { threshold: 0.01 });
       trackObserver(io, canvas); canvas._orreryIO = io;
     } else {
@@ -8445,7 +8475,7 @@ const FinishShader = {
     }
     listen(document, 'visibilitychange', () => {
       running = !document.hidden;
-      if (running && inView && !destroyed && !raf) raf = requestAnimationFrame(frame);
+      if (running && shouldRenderFrame() && !destroyed && !raf) raf = requestAnimationFrame(frame);
     });
     listen(canvas, 'webglcontextlost', (e) => {
       try { e.preventDefault(); } catch (_) {}

@@ -15,7 +15,7 @@
 
     loadPromise = new Promise(function (resolve, reject) {
       var s = document.createElement('script');
-      s.src = 'js/interpretations.js';
+      s.src = 'js/interpretations.js?v=' + encodeURIComponent(String(window.AP_ASSET_V || '837'));
       s.async = true;
       s.onload = function () {
         window.__apInterpReady = true;

@@ -103,18 +103,17 @@
       inner += '<p class="ap-reading-card__eyebrow">' + esc(eyebrow) + '</p>';
     }
     inner += '<h4 class="ap-reading-card__title">' + esc(title) + '</h4>';
-    if (leadHtml && !collapsed) inner += leadHtml;
+    if (leadHtml) inner += leadHtml;
     if (bodyHtml && !collapsed) inner += '<div class="ap-reading-card__body">' + bodyHtml + '</div>';
 
-    if (collapsed && plain.length > 80) {
+    if (collapsed && bodyHtml && plain.length > 80) {
       inner += '<details class="ap-reading-details">';
       inner += '<summary class="ap-reading-details__summary">Continue reading</summary>';
       inner += '<div class="ap-reading-details__content">';
-      if (!leadHtml) inner += readingLead(plain);
-      inner += '<div class="ap-reading-card__body">' + readingBody(plain, opts) + '</div>';
+      inner += '<div class="ap-reading-card__body">' + bodyHtml + '</div>';
       inner += '</div></details>';
-    } else if (collapsed && plain) {
-      inner += '<div class="ap-reading-card__body">' + readingBody(plain, opts) + '</div>';
+    } else if (collapsed && bodyHtml) {
+      inner += '<div class="ap-reading-card__body">' + bodyHtml + '</div>';
     }
 
     return (
@@ -182,6 +181,8 @@
     const interp = opts.interpretation || '';
     const plain = stripTags(interp);
     const title = (opts.planet1 || '') + ' ' + (d.name || opts.aspect || '') + ' ' + (opts.planet2 || '');
+    const meta = opts.meta ||
+      ('Computed angle' + (opts.orb != null ? ' · ' + opts.orb.toFixed(1) + '° off exact' : ''));
     let body = '';
     if (plain) {
       body = readingLead(plain) +
@@ -198,7 +199,7 @@
       '<div class="ap-reading-card__head-row">' +
       '<span class="ap-reading-card__aspect-glyph" aria-hidden="true">' + esc(d.glyph || '·') + '</span>' +
       '<div><h4 class="ap-reading-card__title">' + esc(title.trim()) + '</h4>' +
-'<p class="ap-reading-card__meta">' + esc('Computed angle' + (opts.orb != null ? ' · ' + opts.orb.toFixed(1) + '° off exact' : '')) + '</p></div>' +
+'<p class="ap-reading-card__meta">' + esc(meta) + '</p></div>' +
       '</div>' + body +
       '</div></article>'
     );

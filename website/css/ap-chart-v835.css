@@ -1029,6 +1029,11 @@ body.page-chart {
   min-width: 0;
   border-top: 1px solid var(--chart-line);
 }
+.page-chart.ap-chart-has-results .chart-method-ledger {
+  position: static;
+  top: auto;
+}
+
 
 .page-chart .chart-method-ledger__head {
   padding: 22px 0 28px;
@@ -1078,6 +1083,7 @@ body.page-chart {
 .page-chart #chart-result {
   grid-column: 1 / -1;
   min-width: 0;
+  scroll-margin-top: calc(var(--ap-nav-h, 64px) + 24px);
 }
 
 .page-chart #chart-result {
@@ -1109,6 +1115,7 @@ body.page-chart {
   font: 500 clamp(2.8rem, 6vw, 5.4rem) / 0.88 var(--chart-display);
   letter-spacing: -0.045em;
   overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 .page-chart .result-header-meta h2:empty {
@@ -1133,7 +1140,7 @@ body.page-chart {
   border: 1px solid var(--chart-line-strong);
   border-radius: 999px;
   color: var(--chart-brass);
-  font-size: 0.56rem;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 
@@ -1192,7 +1199,7 @@ body.page-chart {
   border-radius: 5px;
   background: transparent;
   color: var(--chart-paper);
-  font: 650 0.65rem/1.35 var(--chart-data);
+  font: 650 0.75rem/1.35 var(--chart-data);
   letter-spacing: 0.07em;
   text-align: center;
   text-decoration: none;
@@ -1612,7 +1619,7 @@ body.page-chart {
   border-radius: 0;
   background: transparent;
   color: var(--chart-silver-dim);
-  font: 650 0.63rem/1.35 var(--chart-data);
+  font: 650 0.75rem/1.35 var(--chart-data);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
@@ -1676,6 +1683,13 @@ body.page-chart {
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
+.page-chart .ap-reading-section-label--secondary {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--chart-line-silver);
+  color: var(--chart-silver);
+}
+
 
 .page-chart .ap-reading-hero__title {
   margin: 0;
@@ -1699,7 +1713,7 @@ body.page-chart {
   padding: 4px 8px;
   border: 1px solid rgba(185, 200, 220, 0.28);
   color: var(--chart-silver);
-  font: 0.55rem/1.35 var(--chart-data);
+  font: 0.75rem/1.35 var(--chart-data);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -1792,11 +1806,17 @@ body.page-chart {
   max-width: 68ch;
 }
 
+.page-chart .ap-reading-card > .ap-reading-card__content:only-child {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
 .page-chart .ap-reading-card__title,
 .page-chart .analysis-section__title {
   margin: 0 0 10px;
   color: var(--chart-paper);
   font: 500 clamp(1.3rem, 2.5vw, 1.7rem) / 1.16 var(--chart-display);
+  overflow-wrap: anywhere;
 }
 
 .page-chart .ap-reading-card__meta {
@@ -1820,6 +1840,10 @@ body.page-chart {
   align-items: flex-start;
   gap: 12px;
 }
+.page-chart .ap-reading-card__head-row > div {
+  min-width: 0;
+}
+
 
 .page-chart .ap-reading-card__aspect-glyph {
   flex: 0 0 auto;
@@ -2317,9 +2341,9 @@ body.page-chart {
   }
 
   .page-chart .result-actions__more-menu {
-    right: auto;
-    left: 0;
-    width: min(240px, calc(100vw - 64px));
+    right: 0;
+    left: auto;
+    width: min(240px, calc(100vw - 40px));
   }
 
   .page-chart .chart-wheel-header {

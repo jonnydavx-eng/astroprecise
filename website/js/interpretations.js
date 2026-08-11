@@ -381,28 +381,39 @@ window.Interpretations = (() => {
     const venus= signOf(chart.positions.Venus?.lon || 0);
     const saturn=signOf(chart.positions.Saturn?.lon|| 0);
     const node = signOf(chart.positions.NNode?.lon || 0);
+    const coreBodies = new Set([
+      'Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto',
+    ]);
 
-    const personality = `With your Sun in ${sun}, Moon in ${moon}, and ${asc} Rising, you embody a unique fusion of ${sun} vitality, ${moon} emotional instincts, and ${asc} outward presentation. Your core identity is shaped by ${sun} themes — ${trimProse(getPlanetInterpretation('Sun', sun), 120) || 'personal power and self-expression'}. ` +
-      `Emotionally, your ${moon} Moon gives you a ${moon === 'Cancer' || moon === 'Pisces' || moon === 'Scorpio' ? 'deep, intuitive' : moon === 'Aries' || moon === 'Leo' || moon === 'Sagittarius' ? 'fiery, spontaneous' : 'thoughtful, measured'} inner world. ` +
-      `Others experience you first through your ${asc} Ascendant — ${moon === asc ? 'your inner and outer selves are notably aligned' : `which can sometimes feel at odds with your deeper ${sun} Sun nature, creating the interesting complexity that makes you so compelling`}.`;
+    const sunTheme = trimProse(getPlanetInterpretation('Sun', sun), 120) || 'This placement is associated with identity and self-expression.';
+    const personality = `Your ${sun} Sun, ${moon} Moon, and ${asc} Ascendant describe three distinct layers: identity, emotional response, and outward style. ${sunTheme} ` +
+      `A ${moon} Moon is commonly associated with a ${moon === 'Cancer' || moon === 'Pisces' || moon === 'Scorpio' ? 'deep, intuitive' : moon === 'Aries' || moon === 'Leo' || moon === 'Sagittarius' ? 'fiery, spontaneous' : 'thoughtful, measured'} emotional style. ` +
+      `Your ${asc} Ascendant describes the style others may meet first — ${moon === asc ? 'here, inner response and outward style share the same sign language' : `different from your ${sun} Sun; that contrast may show where private priorities and presentation diverge`}.`;
 
     const venusHouse = chart.planetHouses?.Venus;
     const venusHouseBlurb = venusHouse
       ? trimProse(getHouseMeaning(venusHouse)?.meaning || getHouseMeaning(venusHouse)?.keyword || 'relationship themes', 80)
       : '';
-    const love = `Venus in ${venus} describes how you love and what you find beautiful. ${trimProse(getPlanetInterpretation('Venus', venus), 200) || 'You seek harmony and connection in relationships'} ` +
-      `Your ${asc} Rising shapes your approach to partnership — you attract partners who complement your ${asc} energy.${venusHouse ? ` Venus occupies your ${ordinal(venusHouse)} house, emphasizing ${venusHouseBlurb}` : ''}`;
+    const love = `Venus in ${venus} is traditionally read as a relationship and values style. ${trimProse(getPlanetInterpretation('Venus', venus), 200) || 'This placement is associated with harmony, preference, and connection.'} ` +
+      `A ${asc} Ascendant may shape how that style is first expressed.${venusHouse ? ` Venus occupies your ${ordinal(venusHouse)} house, placing extra emphasis on ${venusHouseBlurb}` : ''}`;
 
-    const career = `The top of your chart sits in ${mc}, so public recognition tends to arrive through ${mc} themes. Your Sun in ${sun} fuels that public climb — ${trimProse(getPlanetInterpretation('Sun', sun), 120) || 'leadership and self-expression'} ` +
-      `Saturn in ${saturn} describes your relationship with discipline, authority, and long-term achievement: ${trimProse(getPlanetInterpretation('Saturn', saturn), 150) || 'structured growth over time'} ` +
-      `The chart ruler (${chart.chartRuler || '?'}) adds its distinctive flavor to how you pursue your calling.`;
+    const career = `The top of your chart is in ${mc}; astrologers associate this angle with public direction and contribution expressed through ${mc} themes. ` +
+      `Your ${sun} Sun contributes its identity style: ${trimProse(getPlanetInterpretation('Sun', sun), 120) || 'leadership and self-expression.'} ` +
+      `Saturn in ${saturn} may describe how discipline, authority, and long-term work are approached: ${trimProse(getPlanetInterpretation('Saturn', saturn), 150) || 'structured growth over time.'} ` +
+      `The chart ruler (${chart.chartRuler || '?'}) adds another theme to how vocation is explored.`;
 
-    const challenges = `Saturn in ${saturn} marks your primary growth edge — areas where resistance becomes wisdom. ${trimProse(getPlanetInterpretation('Saturn', saturn), 160) || 'Discipline and structure are your teachers'} ` +
-      `${chart.aspects?.filter(a => a.aspect === 'square' || a.aspect === 'opposition').slice(0,2).map(a => `The ${a.aspect} between your ${a.planet1} and ${a.planet2} — ${a.orb.toFixed(1)}° off exact — creates productive tension that demands integration.`).join(' ')||'Your chart shows a balance of challenge and support.'}`;
+    const hardAspectText = chart.aspects?.filter(a =>
+      coreBodies.has(a.planet1) && coreBodies.has(a.planet2) &&
+      (a.aspect === 'square' || a.aspect === 'opposition')
+    ).slice(0, 2).map(a =>
+      `The ${a.aspect} between ${a.planet1} and ${a.planet2} — ${a.orb.toFixed(1)}° off exact — may describe friction that invites conscious integration.`
+    ).join(' ');
+    const challenges = `Saturn in ${saturn} is often read as a growth edge: a place where limits, patience, and responsibility become visible. ${trimProse(getPlanetInterpretation('Saturn', saturn), 160) || 'This placement is associated with discipline and structure.'} ` +
+      `${hardAspectText || 'No close core-planet square or opposition dominates this summary.'}`;
 
-    const lifePurpose = `Your North Node in ${node} points toward your soul's evolutionary direction — moving toward ${node} qualities that may feel unfamiliar but deeply fulfilling. ` +
-      `With your Sun in ${sun} and rising ${asc}, your purpose is expressed through ${sun} themes channeled through a ${asc} lens. ` +
-      `The combination of your nodal axis and solar purpose suggests a life path centered on ${['authenticity','service','connection','transformation','wisdom','creativity'][Math.floor((chart.asc||0)/60) % 6]}.`;
+    const lifePurpose = `In modern nodal astrology, a North Node in ${node} is associated with practising ${node} qualities that may initially feel unfamiliar. ` +
+      `Your ${sun} Sun and ${asc} Ascendant add identity and presentation themes to that interpretation. ` +
+      `Together they may offer a useful reflection on growth, but they do not prescribe one purpose or a fixed destiny.`;
 
     const keyPlacements = [
       `Sun in ${sun} (${ordinal(chart.planetHouses?.Sun||1)} house) — core identity and life force`,
@@ -2086,7 +2097,10 @@ function getDailyHoroscope(sign, date) {
 // ── SECTION 3: analyzeChartDetailed helper ────────────────────────────────
 // Standalone wrapper that calls the main analyzeChart but adds ASPECTS lookup
 function analyzeChartDetailed(chartData) {
-  const result = analyzeChart(chartData);
+  const baseAnalyze = window.Interpretations && window.Interpretations.analyzeChart;
+  const result = typeof baseAnalyze === 'function'
+    ? baseAnalyze(chartData)
+    : { personality:'', love:'', career:'', challenges:'', lifePurpose:'', keyPlacements:[] };
   if (!chartData || !chartData.aspects) return result;
 
   const aspectNarratives = [];
@@ -2799,6 +2813,10 @@ if (window.Interpretations) {
     southnode: 'southnode',
   };
 
+  const PATTERN_PLANETS = new Set([
+    'sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto',
+  ]);
+
   function uniquePatternPoints(positions) {
     const points = [];
     const seen = new Set();
@@ -2807,7 +2825,7 @@ if (window.Interpretations) {
       if (!position || position.lon == null) return;
       const normalized = String(name).toLowerCase();
       const canonical = POSITION_ALIASES[normalized] || normalized;
-      if (canonical === 'ascendant' || canonical === 'midheaven' || seen.has(canonical)) return;
+      if (!PATTERN_PLANETS.has(canonical) || seen.has(canonical)) return;
       seen.add(canonical);
       points.push(name);
     });
@@ -2819,6 +2837,10 @@ if (window.Interpretations) {
     // Angles may be described elsewhere, but they are not planets and must
     // never create a pattern or be counted twice through an alias key.
     const planetNames = uniquePatternPoints(positions);
+    const planetSet = new Set(planetNames);
+    const patternAspects = (aspects || []).filter(a =>
+      a && planetSet.has(a.planet1) && planetSet.has(a.planet2)
+    );
 
     // Stellium — 3+ planets within same 30° sign
     const bySigns = {};
@@ -2840,7 +2862,7 @@ if (window.Interpretations) {
     });
 
     // Grand Trine — 3 planets mutually trine (within 8°)
-    const trines = (aspects || []).filter(a => a.aspect === 'trine');
+    const trines = patternAspects.filter(a => a.aspect === 'trine');
     const trineMap = {};
     trines.forEach(a => {
       const key = [a.planet1, a.planet2].sort().join('|');
@@ -2869,8 +2891,8 @@ if (window.Interpretations) {
     }
 
     // T-Square — 2 planets in opposition, both square a third (focal planet)
-    const oppositions = (aspects || []).filter(a => a.aspect === 'opposition');
-    const squares = (aspects || []).filter(a => a.aspect === 'square');
+    const oppositions = patternAspects.filter(a => a.aspect === 'opposition');
+    const squares = patternAspects.filter(a => a.aspect === 'square');
     oppositions.forEach(opp => {
       const [p1, p2] = [opp.planet1, opp.planet2];
       planetNames.forEach(focal => {
@@ -2916,8 +2938,8 @@ if (window.Interpretations) {
     }
 
     // Yod — 2 planets in sextile, both quincunx a third ("Finger of God")
-    const sextiles = (aspects || []).filter(a => a.aspect === 'sextile');
-    const quincunxes = (aspects || []).filter(a => a.aspect === 'quincunx');
+    const sextiles = patternAspects.filter(a => a.aspect === 'sextile');
+    const quincunxes = patternAspects.filter(a => a.aspect === 'quincunx');
     sextiles.forEach(sxt => {
       const [s1, s2] = [sxt.planet1, sxt.planet2];
       planetNames.forEach(apex => {
@@ -2928,7 +2950,7 @@ if (window.Interpretations) {
           patterns.push({
             name: 'Yod',
             glyph: '⚶',
-            description: `${cap(s1)} and ${cap(s2)} sit at a helpful angle to each other and both point to ${cap(apex)} — the Finger of God. ${cap(apex)} carries a fated, highly-specific life mission that cannot easily be refused or explained; it must be lived into through repeated adjustment.`,
+            description: `${cap(s1)} and ${cap(s2)} form a sextile and both point to ${cap(apex)} — the Yod's apex. ${cap(apex)} becomes the adjustment point. This pattern concentrates attention there, and integration comes through repeated, deliberate course-correction rather than one fixed destiny.`,
             planets: [s1, s2, apex],
             apex: apex,
             type: 'yod',
@@ -2942,10 +2964,10 @@ if (window.Interpretations) {
     // (built from already-detected grand trines)
     patterns.filter(p => p.type === 'grand-trine').forEach(gt => {
       gt.planets.forEach(p => {
-        const opp = oppositions.find(o =>
-          (o.planet1 === p || o.planet2 === p) &&
-          !gt.planets.includes(o.planet1 === p ? o.planet2 : o.planet1) === false
-        );
+        const opp = oppositions.find(o => {
+          const other = o.planet1 === p ? o.planet2 : (o.planet2 === p ? o.planet1 : null);
+          return other && !gt.planets.includes(other) && o.orb < 8;
+        });
         if (opp) {
           const kiteApex = opp.planet1 === p ? opp.planet2 : opp.planet1;
           if (!gt.planets.includes(kiteApex)) {
@@ -3122,26 +3144,26 @@ if (window.Interpretations) {
   // fixed-star astrology). Precession moves them ~50.3″/yr; adjusted at query
   // time. The four "royal stars" are the Persian Watchers of the sky.
   const FIXED_STARS = [
-    { name: 'Algol',        lon2000:  56.17, con: 'Perseus',          meaning: 'The most intense star in the canon — confronting what others turn away from; power reclaimed from crisis and the courage to face the shadow directly.' },
-    { name: 'Alcyone',      lon2000:  60.00, con: 'Taurus (Pleiades)', meaning: 'Heart of the Pleiades — vision and inner sight, sometimes at the cost of seeing what is painful; mystical perception and ancestral memory.' },
-    { name: 'Aldebaran',    lon2000:  69.79, con: 'Taurus', royal: 'Watcher of the East', meaning: 'Success through unwavering integrity. Honors and achievement are promised, but only while the native stays true to their own moral line.' },
-    { name: 'Rigel',        lon2000:  76.83, con: 'Orion',            meaning: 'The teacher and the builder — ambition channeled into educating and elevating others; technical brilliance and rapid rises.' },
-    { name: 'Capella',      lon2000:  81.86, con: 'Auriga',           meaning: 'Restless curiosity and the love of freedom — a need for movement, learning, and independence that resists every harness.' },
-    { name: 'Betelgeuse',   lon2000:  88.75, con: 'Orion',            meaning: 'Unqualified success — ease of accomplishment and natural luck in worldly affairs, the strong right shoulder of the Hunter.' },
-    { name: 'Sirius',       lon2000: 104.08, con: 'Canis Major',      meaning: 'The brightest star in the sky — the mundane made sacred; fame, ambition, and deeds that burn brighter and reach further than intended.' },
-    { name: 'Castor',       lon2000: 110.24, con: 'Gemini',           meaning: 'The mortal twin — the writer and storyteller; intelligence expressed through ideas, language, and sudden shifts of fortune.' },
-    { name: 'Pollux',       lon2000: 113.22, con: 'Gemini',           meaning: 'The immortal twin — the fighter and craftsman; strength forged through contest and the willingness to struggle for what matters.' },
-    { name: 'Procyon',      lon2000: 115.79, con: 'Canis Minor',      meaning: 'The star that rises before Sirius — quick rewards that demand quick action; opportunities that must be seized before they pass.' },
-    { name: 'Alphard',      lon2000: 147.28, con: 'Hydra',            meaning: 'The solitary one — intensity of feeling and appetite; transformative passage through the strong emotions others suppress.' },
-    { name: 'Regulus',      lon2000: 149.83, con: 'Leo', royal: 'Watcher of the North', meaning: 'The heart of the Lion — leadership, honors, and royal success, granted on one condition: never take revenge. Magnanimity is the contract.' },
-    { name: 'Algorab',      lon2000: 193.45, con: 'Corvus',           meaning: 'The Crow — the scavenger\'s gift of finding value where others see none; tests of character around opportunism and honesty.' },
-    { name: 'Spica',        lon2000: 203.84, con: 'Virgo',            meaning: 'The gift of the goddess — pure talent, protection, and brilliance; a marker of exceptional skill that seems given rather than earned.' },
-    { name: 'Arcturus',     lon2000: 204.23, con: 'Boötes',           meaning: 'The pathfinder — prosperity through pioneering a new way; the guardian who leads others into unmapped territory.' },
-    { name: 'Antares',      lon2000: 249.76, con: 'Scorpius', royal: 'Watcher of the West', meaning: 'The rival of Mars — obsessive courage and the drive toward intensity; success through entering the heat rather than avoiding it.' },
-    { name: 'Vega',         lon2000: 285.32, con: 'Lyra',             meaning: 'The falling eagle, the harp of Orpheus — charisma, artistry, and a magical, otherworldly quality to the voice or creative gift.' },
-    { name: 'Altair',       lon2000: 301.78, con: 'Aquila',           meaning: 'The eagle in flight — boldness, swiftness, and the confidence to act decisively from great heights; daring rewarded.' },
-    { name: 'Deneb Algedi', lon2000: 323.55, con: 'Capricornus',      meaning: 'The benefic ruler — wisdom applied to practical life; the law-giver who protects through structure and fair judgment.' },
-    { name: 'Fomalhaut',    lon2000: 333.87, con: 'Piscis Austrinus', royal: 'Watcher of the South', meaning: 'The loneliest royal star — idealism and mysticism; success through ideals kept uncorrupted, and the falls that follow compromise.' },
+    { name: 'Algol',        lon2000:  56.17, con: 'Perseus',          meaning: 'Traditional fixed-star symbolism links Algol with intensity, confronting crisis, and reclaiming power from material others may avoid.' },
+    { name: 'Alcyone',      lon2000:  60.00, con: 'Taurus (Pleiades)', meaning: 'Traditional fixed-star symbolism links Alcyone with vision, sensitivity and ancestral memory, alongside a caution about painful awareness.' },
+    { name: 'Aldebaran',    lon2000:  69.79, con: 'Taurus', royal: 'Watcher of the East', meaning: 'Traditional fixed-star symbolism links Aldebaran with integrity, visibility and achievement, while cautioning that reputation depends on how power is used.' },
+    { name: 'Rigel',        lon2000:  76.83, con: 'Orion',            meaning: 'Traditional fixed-star symbolism links Rigel with teaching, technical skill and constructive ambition.' },
+    { name: 'Capella',      lon2000:  81.86, con: 'Auriga',           meaning: 'Traditional fixed-star symbolism links Capella with curiosity, movement, learning and independence.' },
+    { name: 'Betelgeuse',   lon2000:  88.75, con: 'Orion',            meaning: 'Traditional fixed-star symbolism links Betelgeuse with confidence, accomplishment and worldly visibility; this is symbolic language, not a promise of success.' },
+    { name: 'Sirius',       lon2000: 104.08, con: 'Canis Major',      meaning: 'Traditional fixed-star symbolism links Sirius with ambition, visibility and the capacity for actions to have a wider reach.' },
+    { name: 'Castor',       lon2000: 110.24, con: 'Gemini',           meaning: 'Traditional fixed-star symbolism links Castor with language, storytelling and intellectual adaptability.' },
+    { name: 'Pollux',       lon2000: 113.22, con: 'Gemini',           meaning: 'Traditional fixed-star symbolism links Pollux with courage, craft and resilience developed through contest.' },
+    { name: 'Procyon',      lon2000: 115.79, con: 'Canis Minor',      meaning: 'Traditional fixed-star symbolism links Procyon with quick response and short-lived opportunities, alongside a caution about pacing.' },
+    { name: 'Alphard',      lon2000: 147.28, con: 'Hydra',            meaning: 'Traditional fixed-star symbolism links Alphard with emotional intensity, solitude and transformative encounters.' },
+    { name: 'Regulus',      lon2000: 149.83, con: 'Leo', royal: 'Watcher of the North', meaning: 'Traditional fixed-star symbolism links Regulus with leadership and prominence, alongside a caution against revenge, pride and misused authority.' },
+    { name: 'Algorab',      lon2000: 193.45, con: 'Corvus',           meaning: 'Traditional fixed-star symbolism links Algorab with resourcefulness and finding overlooked value, alongside a caution about opportunism.' },
+    { name: 'Spica',        lon2000: 203.84, con: 'Virgo',            meaning: 'Traditional fixed-star symbolism links Spica with talent, craft and protection; it may describe gifts that still require practice and stewardship.' },
+    { name: 'Arcturus',     lon2000: 204.23, con: 'Boötes',           meaning: 'Traditional fixed-star symbolism links Arcturus with pioneering, practical leadership and prosperity through opening a new path.' },
+    { name: 'Antares',      lon2000: 249.76, con: 'Scorpius', royal: 'Watcher of the West', meaning: 'Traditional fixed-star symbolism links Antares with courage, intensity and high-stakes action, alongside a caution against compulsion.' },
+    { name: 'Vega',         lon2000: 285.32, con: 'Lyra',             meaning: 'Traditional fixed-star symbolism links Vega with artistry, charisma and an imaginative or distinctive creative voice.' },
+    { name: 'Altair',       lon2000: 301.78, con: 'Aquila',           meaning: 'Traditional fixed-star symbolism links Altair with boldness, speed, perspective and decisive action.' },
+    { name: 'Deneb Algedi', lon2000: 323.55, con: 'Capricornus',      meaning: 'Traditional fixed-star symbolism links Deneb Algedi with practical wisdom, structure and fair judgement.' },
+    { name: 'Fomalhaut',    lon2000: 333.87, con: 'Piscis Austrinus', royal: 'Watcher of the South', meaning: 'Traditional fixed-star symbolism links Fomalhaut with idealism, mysticism and creative vision, alongside a caution against compromising core values.' },
   ];
 
   const PRECESSION_DEG_PER_YEAR = 50.29 / 3600;

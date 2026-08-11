@@ -22,18 +22,34 @@
     Saturn:'♄︎', Uranus:'♅︎', Neptune:'♆︎', Pluto:'♇︎', Chiron:'⚷︎', Lilith:'⚸︎',
     NorthNode:'☊︎', SouthNode:'☋︎', Ascendant:'AC', Midheaven:'MC',
   };
+  const BODY_DISPLAY = Object.freeze({
+    NorthNode:'North Node', SouthNode:'South Node', NNode:'North Node', SNode:'South Node',
+    Ascendant:'Rising', Midheaven:'MC',
+  });
+  const bodyLabel = name => BODY_DISPLAY[name] || String(name || '');
+  const humanizeBodyNames = text => String(text || '')
+    .replace(/\bNorthNode\b/g, 'North Node')
+    .replace(/\bSouthNode\b/g, 'South Node')
+    .replace(/\bNNode\b/g, 'North Node')
+    .replace(/\bSNode\b/g, 'South Node');
   const ASPECT_DISPLAY = {
     conjunction:    { name:'Conjunction',    glyph:'☌', color:'#D8B46A' },
     opposition:     { name:'Opposition',     glyph:'☍', color:'#FF6428' },
     trine:          { name:'Trine',          glyph:'△', color:'#B9C8DC' },
     square:         { name:'Square',         glyph:'□', color:'#FF6428' },
-    sextile:        { name:'Helpful angle',  glyph:'⚹', color:'#D8B46A' },
+    sextile:        { name:'Sextile',        glyph:'⚹', color:'#D8B46A' },
     quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#B9C8DC' },
-    semisquare:     { name:'SemiSquare',      glyph:'∠', color:'#B9C8DC' },
+    semisquare:     { name:'Semi-square',     glyph:'∠', color:'#B9C8DC' },
     sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#B9C8DC' },
-    semisextile:    { name:'Slight angle',    glyph:'⚺', color:'#B9C8DC' },
+    semisextile:    { name:'Semi-sextile',    glyph:'⚺', color:'#B9C8DC' },
     quintile:       { name:'Quintile',        glyph:'Q', color:'#B9C8DC' },
   };
+  const CORE_READING_BODIES = new Set([
+    'Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto',
+  ]);
+  const MAJOR_READING_ASPECTS = new Set([
+    'conjunction','opposition','trine','square','sextile',
+  ]);
   const HOUSE_THEMES = [
     'Self & Identity', 'Money & Values', 'Mind & Communication', 'Home & Roots',
     'Creativity & Joy', 'Work & Health', 'Partnership', 'Transformation',
@@ -832,6 +848,7 @@
       return;
     }
     wrapEl.classList.remove('hidden');
+    document.body.classList.add('ap-chart-has-results');
 
     const resultNameEl = document.getElementById('result-name');
     if (resultNameEl) {
@@ -839,6 +856,7 @@
       // redundant and wrapped awkwardly on the em-dash at mobile widths.
       resultNameEl.textContent = chart.name;
       resultNameEl.removeAttribute('aria-hidden');
+      resultNameEl.setAttribute('tabindex', '-1');
     }
     document.getElementById('result-date').textContent =
       `${chart.birthDate}${chart.birthTime ? ' at ' + chart.birthTime : ' · time unknown'} · ${chart.city}`;
@@ -847,7 +865,7 @@
       const level = chart.timeAccuracy || (chart.birthTime ? 'exact' : 'unknown');
       const labels = {
         exact: 'Exact time · Moon, Rising, MC and houses included',
-        approximate: 'Approximate time · Moon and angles are provisional',
+        approximate: 'Approximate time · Moon, angles, houses and house placements are provisional',
         unknown: 'Time unknown · Moon, Rising, MC and houses withheld',
       };
       precisionLabel.dataset.level = level;
@@ -867,14 +885,13 @@
 
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     wrapEl.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-    requestAnimationFrame(function () {
+    if (resultNameEl && typeof resultNameEl.focus === 'function') {
       requestAnimationFrame(function () {
-        var firstTab = wrapEl.querySelector('[role="tab"]');
-        if (firstTab && typeof firstTab.focus === 'function') {
-          try { firstTab.focus({ preventScroll: true }); } catch (e) { firstTab.focus(); }
-        }
+        requestAnimationFrame(function () {
+          try { resultNameEl.focus({ preventScroll: true }); } catch (e) { resultNameEl.focus(); }
+        });
       });
-    });
+    }
   }
 
   /* ── Chart → eclipse handoff. Carries the just-cast birth data so nobody
@@ -915,7 +932,7 @@
     if (!el) return;
     const moon = chart.positions.Moon;
     const items = [
-      { key: 'Sun', label: 'Sun', sub: 'Core Identity', sign: chart.positions.Sun.sign, deg: fmtDeg(chart.positions.Sun), seal: 'planet:sun' },
+      { key: 'Sun', label: 'Sun', sub: 'Core Identity', sign: chart.positions.Sun.sign, deg: chart.timeKnown ? fmtDeg(chart.positions.Sun) : 'Date reference', seal: 'planet:sun' },
       moon
         ? { key: 'Moon', label: 'Moon', sub: 'Inner World', sign: moon.sign, deg: fmtDeg(moon), seal: 'planet:moon' }
         : { key: 'Moon', label: 'Moon', sub: 'Inner World', withheld: true, reason: 'Add an exact or approximate birth time to place the Moon reliably.' },
@@ -1034,8 +1051,8 @@
     if (!I || !asp) return '';
     const type = capAspectName(asp.aspect);
     const via = I.getAspectMeaning && I.getAspectMeaning(type, asp.planet1, asp.planet2);
-    if (via && via.indexOf('adds texture') === -1) return via;
-    return `${asp.planet1} ${type.toLowerCase()} ${asp.planet2} colours how these two parts of your chart speak to each other — notice when both themes show up in the same story.`;
+    if (via && via.indexOf('adds texture') === -1) return humanizeBodyNames(via);
+    return `${bodyLabel(asp.planet1)} ${type.toLowerCase()} ${bodyLabel(asp.planet2)} colours how these two parts of your chart speak to each other — notice when both themes show up in the same story.`;
   }
 
   function planetIcon(name) {
@@ -1055,7 +1072,19 @@
       // The interpretation library has a historical noon fallback for ASC/MC.
       // Do not call it when the visitor deliberately left time unknown: a
       // polished Aries/MC paragraph would be an angle claim, not a result.
-      try { a = chart.risingSign && I && I.analyzeChartDetailed ? I.analyzeChartDetailed(chart) : null; } catch (e) { a = null; }
+      const analyzer = I && (I.analyzeChartDetailed || I.analyzeChart);
+      if (chart.risingSign && typeof analyzer === 'function') {
+        try {
+          a = analyzer.call(I, chart);
+        } catch (e) {
+          console.error('[AstroPrecise] Detailed chart analysis failed', e);
+          if (analyzer !== I.analyzeChart && typeof I.analyzeChart === 'function') {
+            try { a = I.analyzeChart(chart); } catch (fallbackError) {
+              console.error('[AstroPrecise] Chart analysis fallback failed', fallbackError);
+            }
+          }
+        }
+      }
       const blocks = [];
       const tocItems = [];
       let readText = '';
@@ -1122,14 +1151,19 @@
               <strong class="pattern-card__name">${esc(patt.name)}</strong>
               ${patt.strength === 'major' ? '<span class="pattern-card__badge">Major</span>' : ''}
             </div>
-            <p class="pattern-card__body">${esc(patt.description)}</p>
+            <p class="pattern-card__body">${esc(humanizeBodyNames(patt.description))}</p>
           </div>`).join('');
-        blocks.push('<p class="ap-reading-section-label">Chart patterns</p>' + patternCards);
+        const patternHeading = chart.timeKnown ? 'Chart patterns' : 'Date-reference patterns';
+        const patternNote = chart.timeKnown
+          ? ''
+          : '<p class="ap-reading-card__meta ap-reading-card__meta--intro">Based on a neutral date-reference time; treat these patterns as provisional until a birth time is known.</p>';
+        blocks.push('<p class="ap-reading-section-label">' + patternHeading + '</p>' + patternNote + patternCards);
       }
 
       // Part of Fortune — needs a real Ascendant, so only when birth time is
       // known (a noon-default ASC would make the Lot meaningless).
-      if (I && I.getPartOfFortune && chart.birthTime && typeof chart.asc === 'number' && chart.positions.Sun && chart.positions.Moon) {
+      const exactBirthTime = (chart.timeAccuracy || (chart.birthTime ? 'exact' : 'unknown')) === 'exact';
+      if (exactBirthTime && I && I.getPartOfFortune && typeof chart.asc === 'number' && chart.positions.Sun && chart.positions.Moon) {
         const sunHouse = chart.planetHouses ? chart.planetHouses.Sun : null;
         const isDay = sunHouse >= 7 && sunHouse <= 12;
         const pof = I.getPartOfFortune(chart.asc, chart.positions.Sun.lon, chart.positions.Moon.lon, isDay);
@@ -1137,6 +1171,10 @@
           `Your Part of Fortune falls at <strong>${pof.degree}° ${pof.sign}</strong> ` +
           `(${isDay ? 'day' : 'night'} chart formula) — the point where Sun, Moon, and Ascendant ` +
           `converge; classically read as where life flows with the least resistance.`));
+      } else if (chart.timeAccuracy === 'approximate') {
+        blocks.push(analysisSection('Lot of Fortune withheld',
+          'This point depends on the exact Ascendant and Moon. Because the selected birth time is approximate, AstroPrecise does not present it as a precise natal point.',
+          { eyebrow: 'Precision boundary' }));
       }
 
       const fixedStars = I && I.getFixedStarConjunctions
@@ -1157,13 +1195,17 @@
             <div class="pattern-card__head">
               <span class="eng-star-mark pattern-card__star-mark" aria-hidden="true"></span>
               <strong class="pattern-card__name pattern-card__name--star">${esc(fs.point === 'Midheaven' ? 'Career point' : fs.point === 'Ascendant' ? 'Rising sign' : fs.point)} conjunct ${esc(fs.star)}</strong>
-              <span class="pattern-card__meta">${esc(fs.orb.toFixed(1))}° from exact · ${esc(fs.constellation)}</span>
+              <span class="pattern-card__meta">${esc(chart.timeAccuracy === 'exact' ? fs.orb.toFixed(1) + '° from exact' : chart.timeAccuracy === 'approximate' ? 'Contact at selected approximate time' : 'Contact at neutral date-reference time')} · ${esc(fs.constellation)}</span>
               ${fs.royal ? `<span class="pattern-card__badge pattern-card__badge--royal">Royal star — ${esc(fs.royal)}</span>` : ''}
             </div>
             <p class="pattern-card__body">${esc(fs.meaning)}</p>
           </div>`).join('');
+        const fixedStarNote = 'Traditional symbolic contacts within 1° of major named stars, precession-corrected to your birth year.' +
+          (chart.timeAccuracy === 'approximate'
+            ? ' Moon and angle contacts remain provisional because the selected time is approximate.'
+            : chart.timeAccuracy === 'unknown' ? ' Contacts use a neutral date-reference time and remain provisional until a birth time is known.' : '');
         blocks.push('<p class="ap-reading-section-label">Fixed star conjunctions</p>' +
-          '<p class="ap-reading-card__meta ap-reading-card__meta--intro">Natal points within 1° of major named stars, precession-corrected to your birth year.</p>' +
+          '<p class="ap-reading-card__meta ap-reading-card__meta--intro">' + esc(fixedStarNote) + '</p>' +
           starCards);
       }
 
@@ -1174,21 +1216,22 @@
     const pt = document.getElementById('planets-table');
     if (pt && fmt) {
       const order = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','Lilith','NorthNode','SouthNode'];
-      const DISPLAY_NAME = { NorthNode:'North Node', SouthNode:'South Node', Lilith:'Lilith' };
       const renderedPlanets = order.filter(k => chart.positions[k]);
       const planetMarkup = renderedPlanets.map(k => {
         const p = chart.positions[k];
         const h = chart.planetHouses[k];
-        const label = DISPLAY_NAME[k] || k;
+        const label = bodyLabel(k);
         const signName = p.sign || '';
         const interp = I && I.getPlanetInterpretation
           ? I.getPlanetInterpretation(label, signName)
           : '';
         const houseInterp = h && I && I.getPlanetInHouse ? (I.getPlanetInHouse(label, h) || '') : '';
         const fullText = [interp, houseInterp].filter(Boolean).join(' ');
-        const meta = signName + (h ? ' · House ' + h : '') + ' · ' + fmtDeg(p) +
+        const houseMeta = h ? ' · House ' + h + (chart.timeAccuracy === 'approximate' ? ' (provisional)' : '') : '';
+        const positionMeta = chart.timeKnown ? fmtDeg(p) : 'date reference · degree withheld';
+        const meta = signName + houseMeta + ' · ' + positionMeta +
           (p.retrograde ? ' · ℞ retrograde' : '');
-        const dignity = I && I.getDignity ? I.getDignity(label.toLowerCase(), signName.toLowerCase()) : null;
+        const dignity = chart.timeKnown && I && I.getDignity ? I.getDignity(label.toLowerCase(), signName.toLowerCase()) : null;
         const dignityMeta = dignity && dignity.status !== 'peregrine'
           ? ' · ' + dignity.label
           : '';
@@ -1236,7 +1279,11 @@
         planetsByHouse[hh].push(k);
       });
       const curSys = chart.houseSystem || 'equal';
+      const provisionalHouseNote = chart.timeAccuracy === 'approximate'
+        ? '<div class="ap-withheld-card ap-withheld-card--provisional" role="note"><div><strong>Provisional houses</strong><span>The selected time is approximate, so every cusp and house placement may shift. Use these as a working frame, not exact boundaries.</span></div></div>'
+        : '';
       const switcherHtml =
+
         '<div class="house-system-switch" role="group" aria-label="House system — the framework that divides your chart into twelve life areas">' +
           '<p class="house-system-switch__label"><span class="house-system-switch__name">' +
             (HOUSE_SYSTEM_NAMES[curSys] || 'Equal') + ' houses</span> — switchable</p>' +
@@ -1248,17 +1295,18 @@
             }).join('') +
           '</div>' +
         '</div>';
-      ht.innerHTML = switcherHtml + chart.houses.map((cusp, i) => {
+      ht.innerHTML = provisionalHouseNote + switcherHtml + chart.houses.map((cusp, i) => {
         const sign = E().signOf(cusp);
         const deg  = cusp % 30;
         const dg = Math.floor(deg), mn = Math.round((deg - dg) * 60);
         const hm = I && I.getHouseMeaning ? I.getHouseMeaning(i + 1) : null;
-        const occupants = (planetsByHouse[i + 1] || []).join(', ');
+        const occupants = (planetsByHouse[i + 1] || []).map(bodyLabel).join(', ');
         const text = (hm && hm.meaning ? hm.meaning + ' ' : '') +
-          (occupants ? 'Planets here: ' + occupants + '.' : 'No major planets in this house — the theme runs in the background until transits or progressions activate it.');
+          (occupants ? 'Chart points here: ' + occupants + '.' : 'No listed planets or points in this house — the theme runs in the background until transits or progressions activate it.');
         return fmt.placement({
           title: 'House ' + (i + 1) + ' · ' + (HOUSE_THEMES[i] || ''),
-          meta: (hm && hm.keyword ? hm.keyword + ' · ' : '') + sign + ' ' + dg + '°' + String(mn).padStart(2, '0') + '′ on the cusp',
+          meta: (hm && hm.keyword ? hm.keyword + ' · ' : '') + sign + ' ' + dg + '°' + String(mn).padStart(2, '0') +
+            '′ on the cusp' + (chart.timeAccuracy === 'approximate' ? ' · provisional' : ''),
           text: text,
           icon: '<span class="ap-reading-card__aspect-glyph ap-reading-card__roman">' + roman(i + 1) + '</span>',
         });
@@ -1271,25 +1319,40 @@
     // Aspects
     const at = document.getElementById('aspects-table');
     if (at && fmt) {
-      const main = chart.aspects
-        .filter(x => !['Ascendant','Midheaven','SouthNode'].includes(x.planet1) &&
-                     !['Ascendant','Midheaven','SouthNode'].includes(x.planet2))
-        .sort((x, y) => x.orb - y.orb)
-        .slice(0, 18);
+      const eligible = chart.aspects.filter(x =>
+        !['Ascendant','Midheaven','SouthNode'].includes(x.planet1) &&
+        !['Ascendant','Midheaven','SouthNode'].includes(x.planet2)
+      );
+      const isCoreMajor = x =>
+        CORE_READING_BODIES.has(x.planet1) &&
+        CORE_READING_BODIES.has(x.planet2) &&
+        MAJOR_READING_ASPECTS.has(x.aspect);
+      const coreMajor = eligible.filter(isCoreMajor)
+        .sort((x, y) => (x.orb ?? 99) - (y.orb ?? 99));
+      const secondaryContacts = eligible.filter(x => !isCoreMajor(x))
+        .sort((x, y) => (x.orb ?? 99) - (y.orb ?? 99));
+      const primary = coreMajor.slice(0, 14);
+      const secondary = secondaryContacts.slice(0, 4);
+      const main = primary.concat(secondary);
+      const secondaryStart = primary.length;
       at.innerHTML = main.length
-        ? main.map(x => {
+        ? main.map((x, index) => {
           const d = ASPECT_DISPLAY[x.aspect] || { name: x.aspect, glyph: '·', color: 'var(--silver)' };
-          return fmt.aspect({
-            planet1: x.planet1,
-            planet2: x.planet2,
+          const sectionLabel = index === secondaryStart && secondary.length
+            ? '<p class="ap-reading-section-label ap-reading-section-label--secondary">Secondary contacts · minor aspects and calculated points</p>'
+            : '';
+          return sectionLabel + fmt.aspect({
+            planet1: bodyLabel(x.planet1),
+            planet2: bodyLabel(x.planet2),
             aspect: x.aspect,
             display: d,
             applying: x.applying,
-            orb: x.orb,
+            meta: chart.timeKnown ? '' : 'Date-reference angle · orb withheld without a birth time',
+            orb: chart.timeKnown ? x.orb : null,
             interpretation: aspectInterpretation(I, x),
           });
         }).join('')
-        : '<p class="ap-reading-empty">No major aspects close enough to count for this chart.</p>';
+        : '<p class="ap-reading-empty">No supported aspects close enough to include in this reading.</p>';
 
       // Tag each rendered aspect card with the SAME key the wheel uses
       // (`${p1}-${p2}-${type.toLowerCase()}`), so the bidirectional highlight can
@@ -2545,7 +2608,7 @@
         accuracyStatus.textContent = level === 'exact'
           ? 'Exact time · Moon, Rising, MC and houses will be calculated.'
           : level === 'approximate'
-            ? 'Approximate time · Moon and angles are provisional.'
+            ? 'Approximate time · Moon, angles, houses and house placements are provisional.'
             : 'Time unknown · Moon, Rising, MC and houses will be withheld.';
       }
       if (timeUnknownBtn) {
