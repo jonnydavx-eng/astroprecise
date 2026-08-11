@@ -501,7 +501,7 @@
     margin: 0;
   }
   .ap-eclipse-live__button,
-  .ap-eclipse-live__lens-button { min-height: 42px; }
+  .ap-eclipse-live__lens-button { min-height: 44px; }
   .ap-eclipse-live__advanced {
     grid-area: advanced;
     margin: 0;
