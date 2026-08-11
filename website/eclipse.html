@@ -1,615 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The 12 August Eclipse — your sky, computed | Astro Precise</title>
-<meta name="description" content="A total solar eclipse crosses Iceland and northern Spain on 12 August 2026; Britain sees a deep partial, 88–96% covered, maximum about 19:12 BST in London. Enter your birth minute and see — computed on your device, never uploaded — exactly where it lands in your chart.">
-<meta property="og:title" content="Your eclipse, computed — 12 August 2026">
-<meta property="og:description" content="Where does the August 2026 eclipse land in your birth chart? Compute your eclipse contact free, on-device. Quiet charts told so before you pay.">
-<meta name="twitter:title" content="Your eclipse, computed — 12 August 2026">
-<meta name="twitter:description" content="Where does the August 2026 eclipse land in your birth chart? Compute your eclipse contact free, on-device. Quiet charts told so before you pay.">
-<meta property="og:url" content="https://astroprecise.app/eclipse.html">
-<meta property="og:image" content="https://astroprecise.app/img/eclipse-og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://astroprecise.app/img/eclipse-og.png">
-<link rel="canonical" href="https://astroprecise.app/eclipse.html">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Event","name":"Total Solar Eclipse of 12 August 2026 (UK: deep partial, 88–96%)","description":"Total solar eclipse crossing Iceland and northern Spain. Britain never reaches totality — it sees a deep partial of 88–96%, the deepest over southern Britain since 1999 (March 2015 was deeper in Scotland). The Moon first touches the Sun between 18:08 and 18:17 BST; maximum is about 19:05 BST in Edinburgh, 19:12 in London and 19:16 in Truro; the Sun is clear again by about 20:10 BST, well before sunset. Greatest eclipse worldwide is 18:46 BST (17:46 UT), 45 km off western Iceland — a different moment from the UK maximum. The Perseid meteor shower peaks the same night.","image":["https://astroprecise.app/img/eclipse-og.png"],"startDate":"2026-08-12T18:08:00+01:00","endDate":"2026-08-12T20:10:00+01:00","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/MixedEventAttendanceMode","location":{"@type":"Place","name":"United Kingdom (visible nationwide, weather permitting)","address":{"@type":"PostalAddress","addressCountry":"GB"}},"organizer":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"},"offers":{"@type":"Offer","url":"https://astroprecise.app/eclipse.html","price":"0","priceCurrency":"GBP","availability":"https://schema.org/InStock","description":"Free: compute your exact eclipse contact in your browser."}}
-</script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What time is the solar eclipse on 12 August 2026 in the UK?","acceptedAnswer":{"@type":"Answer","text":"The Moon first touches the Sun between 18:08 and 18:17 BST depending where you are. Maximum is about 19:05 BST in Edinburgh, 19:12 BST in London and 19:16 BST in Truro. Last contact is around 20:10 BST — the eclipse is over before the Sun sets anywhere in Britain (sunset is about 20:22 in Dover, 20:29 in London and 20:46 in Penzance)."}},{"@type":"Question","name":"How much of the Sun will be covered in the UK?","acceptedAnswer":{"@type":"Answer","text":"Between 88% and 96%, depending where you stand — about 90% in London and roughly 95% in the far south-west. That makes it the deepest eclipse over southern Britain since 1999, though March 2015 was deeper in Scotland. Britain never reaches totality: that falls only along a track crossing Iceland and northern Spain."}},{"@type":"Question","name":"Is it safe to look at the eclipse?","acceptedAnswer":{"@type":"Answer","text":"Not at any point, anywhere in Britain. Even at 96% coverage the remaining sliver of Sun is dangerously bright, and because Britain never reaches totality there is no moment when it is safe to take your glasses off. Wear ISO 12312-2 certified eclipse glasses for the whole eclipse, or use a pinhole projector, or simply watch the light change around you."}},{"@type":"Question","name":"What else happens that night?","acceptedAnswer":{"@type":"Answer","text":"The Perseid meteor shower peaks the same night of 12–13 August 2026 under dark skies after the eclipse — up to around 100 meteors an hour after midnight."}}]}
-</script>
-<link rel="preload" href="./fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<!-- Three.js import map for the dedicated eclipse module. It must stay in <head>
-     because both the instrument and the page controller use module scripts. -->
-<script type="importmap">
-{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
-</script>
-<script src="./js/ephemeris.js" defer></script>
-<style>
-@font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
-@font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Cormorant Garamond';src:url('./fonts/cormorant-garamond-italic-500.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
-:root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.28);--acc:#d8b46a;--warn:#ff5a1f;--good:#a8d6b0;--card:rgba(242,236,223,.035)}
-*{box-sizing:border-box}
-body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;background-image:radial-gradient(1000px 560px at 50% -6%,rgba(255,122,69,.09),transparent 62%),radial-gradient(700px 460px at 90% 8%,rgba(216,180,106,.05),transparent 60%);background-attachment:fixed}
-a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
-a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--warn);outline-offset:2px}
-.mono{font-family:'IBM Plex Mono',monospace}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.wrap{max-width:680px;margin:0 auto;padding:0 22px 90px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0}
-.kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.26em;color:var(--acc)}
-.navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)}
-/* Primary site nav — destinations and labels mirror js/ap-nav-model.js (NAV_PRIMARY).
-   Rendered inline because this page carries its own stylesheet and does not load the
-   shared navbar CSS. Keep in sync with the model; do not invent a second IA here. */
-.skip{position:absolute;left:-9999px;top:0;background:var(--warn);color:#1a0d05;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;padding:12px 18px;border-radius:0 0 4px 0;z-index:20}
-.skip:focus{left:0;color:#1a0d05}
-.sitenav{display:flex;flex-wrap:wrap;gap:2px;margin:14px 0 0;padding:9px 0 0;border-top:1px solid var(--line)}
-.sitenav a,.sitenav span{display:inline-flex;align-items:center;min-height:40px;padding:0 13px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.17em;line-height:1.2;color:rgba(242,236,223,.7)}
-.sitenav a:hover{color:var(--ink);background:rgba(242,236,223,.055)}
-.sitenav [aria-current="page"]{color:var(--acc);background:rgba(216,180,106,.1)}
-/* Demoted, honestly-labelled funnel exit — never dressed as a co-equal primary button. */
-.quietlink{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;color:rgba(242,236,223,.66);text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:4px;padding:9px 0}
-.quietlink:hover{color:var(--acc);text-decoration-color:var(--acc)}
-.formnote{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;line-height:1.6;margin-top:10px}
-.formnote--bad{color:#ffb59a}
-h1{margin:54px 0 14px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(40px,8vw,64px);line-height:1.04;letter-spacing:-.01em}
-.lede{margin:0 0 26px;font-size:18px;line-height:1.65;color:var(--dim)}
-.card{border:1px solid var(--line2);border-radius:6px;background:rgba(242,236,223,.05);padding:24px 26px;margin:22px 0;box-shadow:0 10px 30px rgba(0,0,0,.26),inset 0 1px 0 rgba(242,236,223,.05)}
-.receipt{border:1px solid var(--line);border-radius:4px;background:rgba(242,236,223,.03);padding:14px 18px;display:flex;flex-direction:column;gap:6px}
-.receipt div{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;line-height:1.7;color:rgba(242,236,223,.85)}
-.serif{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-style:italic;font-size:19px;line-height:1.7;color:rgba(242,236,223,.84)}
-.lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:10px}
-.field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:130px}
-.field span{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.22em;color:rgba(242,236,223,.62)}
-input,select{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radius:4px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:16px;padding:11px 12px;color-scheme:dark;width:100%}
-.btn{display:inline-block;background:var(--warn);color:#1a0d05;border:0;border-radius:4px;padding:15px 32px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em;cursor:pointer;box-shadow:0 5px 22px rgba(255,90,31,.26),inset 0 1px 0 rgba(255,255,255,.16);transition:filter .2s,box-shadow .25s}
-.btn:hover{filter:brightness(1.12);color:#1a0d05;box-shadow:0 10px 34px rgba(255,90,31,.4)}
-.btn.ghost{background:none;border:1px solid rgba(216,180,106,.4);color:var(--ink)}
-.btn.ghost:hover{border-color:var(--warn);color:#ff7a45}
-.rule{border-top:1px solid var(--line);margin:34px 0}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.58);line-height:2.1}
-table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:11px 8px;border-top:1px solid var(--line);font-size:14.5px;line-height:1.5;vertical-align:top}
-th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--acc);font-weight:500}
-td .mono{font-size:11px;letter-spacing:.08em;color:rgba(242,236,223,.85)}
-td.price{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap;color:var(--ink);text-align:right}
-.pulse{animation:pulse 2.4s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media (max-width:760px){input,select{padding:12px}}
-@media (max-width:430px){.card{padding:20px 18px}}
-</style>
-  <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=834" />
-  <script type="module" src="js/ap-eclipse-live-v834.js?v=834"></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
-  <script src="js/ap-nav-model-v834.js?v=834" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#020307">
+  <title>12 August 2026 Eclipse — live 3D view | AstroPrecise</title>
+  <meta name="description" content="Explore the 12 August 2026 solar eclipse in a dedicated live 3D Sun–Moon–Earth instrument, check UK viewing times and compute its closest contacts to your birth chart.">
+  <link rel="canonical" href="https://astroprecise.app/eclipse.html">
+  <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
+  <meta property="og:title" content="12 August 2026 Eclipse — live 3D view">
+  <meta property="og:description" content="Live shadow geometry, UK viewing guide, safety and a private chart-contact calculator.">
+  <meta property="og:url" content="https://astroprecise.app/eclipse.html">
+  <meta property="og:image" content="https://astroprecise.app/img/eclipse-og.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Event","name":"Total Solar Eclipse of 12 August 2026","description":"Total solar eclipse crossing Greenland, Iceland, Spain and a small part of Portugal. The UK sees a deep partial eclipse low in the western sky.","startDate":"2026-08-12T15:34:00Z","endDate":"2026-08-12T20:57:00Z","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/MixedEventAttendanceMode","image":["https://astroprecise.app/img/eclipse-og.png"],"url":"https://astroprecise.app/eclipse.html"}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What time is the eclipse in London on 12 August 2026?","acceptedAnswer":{"@type":"Answer","text":"The Royal Observatory Greenwich gives first contact at about 18:17 BST, maximum at 19:12 and the end at 20:06. Times vary by location."}},{"@type":"Question","name":"Where is the 12 August 2026 eclipse total?","acceptedAnswer":{"@type":"Answer","text":"The path of totality crosses Greenland, Iceland, Spain and a small corner of northeastern Portugal. The United Kingdom sees a partial eclipse."}},{"@type":"Question","name":"Is the partial eclipse safe to look at?","acceptedAnswer":{"@type":"Answer","text":"No. In every partial phase use genuine ISO 12312-2 eclipse viewers or an indirect projection method. Proper solar filters must be fitted to the front of cameras, binoculars and telescopes."}}]}
+  </script>
+
+  <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face{font-family:'Schibsted Grotesk';src:url('fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
+    @font-face{font-family:'IBM Plex Mono';src:url('fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:'Cormorant Garamond';src:url('fonts/cormorant-garamond-italic-500.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
+    @font-face{font-family:'Cormorant Garamond';src:url('fonts/cormorant-garamond-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+    @font-face{font-family:'Cinzel';src:url('fonts/cinzel-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+  </style>
+  <script>window.AP_ASSET_V='835';</script>
+  <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }</script>
+  <script src="js/ephemeris.js?v=835" defer></script>
+  <script src="js/ap-nav-model-v834.js?v=835" defer></script>
+  <script type="module" src="js/ap-eclipse-live-v834.js?v=835"></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835">
+  <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=835">
+  <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=835">
 </head>
-<body class="page-eclipse ap-launch-article">
-<a class="skip" href="#story">SKIP TO THE ECLIPSE</a>
-<header class="site-header" role="banner" data-ap-static-nav>
-  <nav class="navbar" aria-label="Main navigation">
-    <div class="navbar__inner">
-      <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
-        <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
-        <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-      </a>
-      <div class="navbar__nav" role="group" aria-label="Primary">
-        <noscript>
-          <a href="index.html" class="navbar__link">Observatory</a>
-          <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="ephemeris.html" class="navbar__link">The Sky</a>
-          <a href="horoscope.html" class="navbar__link">Daily</a>
-          <a href="shop.html" class="navbar__link">Shop</a>
-        </noscript>
+<body class="page-eclipse eclipse-v835">
+  <a class="skip" href="#eclipse-live-title">Skip to the eclipse instrument</a>
+  <header class="site-header" role="banner" data-ap-static-nav>
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home"><span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span><span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span></a>
+        <div class="navbar__nav" role="group" aria-label="Primary"><noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="eclipse.html" class="navbar__link" aria-current="page">Eclipse</a><a href="shop.html" class="navbar__link">Shop</a></noscript></div>
+        <div class="navbar__end"><a href="profile.html" class="navbar__profile-top" aria-label="My profile"><svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg></a><button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button></div>
       </div>
-      <div class="navbar__end">
-        <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
-          <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
-        </a>
-        <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
-          <span></span><span></span><span></span>
-        </button>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <header class="ap-eclipse-hero">
+      <div class="ap-eclipse-page-shell">
+        <p class="ap-eclipse-kicker"><span aria-hidden="true"></span> Tomorrow · 12 August 2026</p>
+        <h1>The Moon crosses the Sun.<br><em>Watch the shadow arrive.</em></h1>
+        <p>One dedicated 3D instrument for the real Sun–Moon–Earth alignment, followed by the practical guide: where, when, how to watch safely and what the eclipse contacts in your chart.</p>
+        <div class="ap-eclipse-hero__meta"><span id="countdown">Calculating time to greatest eclipse</span><span id="eclipsePoint">Computing eclipse longitude</span></div>
       </div>
-    </div>
-    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
-  </nav>
-</header>
-<div class="wrap">
+    </header>
 
-
-<div class="launch-article-meta">
-  <span class="kicker">THE ECLIPSE · 12 AUGUST 2026</span>
-  <a class="navlink" href="./sky-events.html">THE REAL SKY NEWS →</a>
-</div>
-
-<main id="story" tabindex="-1">
-<p class="kicker" style="margin:44px 0 16px;color:var(--warn)"><span class="pulse">●</span>&nbsp; DEEP PARTIAL SOLAR ECLIPSE · 88–96% OF THE SUN COVERED ACROSS BRITAIN · UK MAXIMUM ≈19:12 BST IN LONDON</p>
-<h1 style="margin-top:0">On 12 August, the Moon covers the Sun.<br>See where it lands in <em style="color:#ff5a1f">your</em> chart.</h1>
-<p class="lede">The deepest eclipse over southern Britain since 1999 — and the Perseids the same night. Enter your birth date and this page computes, free and on your device, the exact point in your chart the eclipse touches. <b style="color:var(--ink)">If it touches nothing, we tell you before you pay.</b></p>
-<div style="margin:0 0 26px">
-  <a class="btn" href="#cast" style="text-decoration:none">COMPUTE MY ECLIPSE CONTACT — FREE</a>
-  <div><a class="quietlink" href="./shop.html#eclipse-reading">Or read what the £2.99 eclipse reading contains, in the shop →</a></div>
-</div>
-
-<div class="receipt" role="status">
-  <div><span class="pulse" style="color:var(--good)">●</span>&nbsp; <span id="countdown" aria-hidden="true">COMPUTING…</span><span class="sr-only">The eclipse is deepest of all at 18:46 UK summer time on 12 August 2026, out at sea off western Iceland. Britain's own maximum comes later — about 19:12 in London.</span></div>
-  <div id="eclipsePoint">ECLIPSE POINT: COMPUTING FROM THE MEEUS SERIES…</div>
-  <div style="color:var(--faint)">TWO DIFFERENT MOMENTS: THE ECLIPSE IS DEEPEST OF ALL AT 18:46 BST, OUT AT SEA OFF ICELAND — BRITAIN'S OWN MAXIMUM COMES LATER, ≈19:12 BST IN LONDON (19:05 EDINBURGH · 19:16 TRURO)</div>
-  <div style="color:var(--faint)">COMPUTED HERE, IN YOUR BROWSER · NOTHING UPLOADED · <a href="./verify.html">VERIFY THE MATHS</a></div>
-</div>
-
-<!-- ——— LIVE ECLIPSE SHADOW INSTRUMENT ——— -->
-<section class="ap-eclipse-live" id="ap-eclipse-live" data-mode="live" data-ready="false" aria-labelledby="eclipse-live-title">
-  <div class="ap-eclipse-live__head">
-    <div>
-      <p class="ap-eclipse-live__eyebrow">The shadow instrument · Sun → Moon → Earth</p>
-      <h2 class="ap-eclipse-live__title" id="eclipse-live-title">Watch the shadow find Earth.</h2>
-    </div>
-    <p class="ap-eclipse-live__intro">Not a decorative eclipse. This model recomputes the Sun, Moon and shadow axis for the displayed UTC minute. Drag to inspect the alignment; move between now and greatest eclipse.</p>
-  </div>
-  <div class="ap-eclipse-live__shell">
-    <div class="ap-eclipse-live__stage">
-      <canvas class="ap-eclipse-live__canvas" tabindex="0" aria-label="Interactive live 3D Sun, Moon and Earth eclipse alignment. Drag to orbit and use the mouse wheel or plus and minus keys to zoom."></canvas>
-      <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Live geometry · preparing</span></div>
-      <div class="ap-eclipse-live__labels" aria-hidden="true">
-        <span class="ap-eclipse-live__body-label" data-eclipse-label="sun">Sun</span>
-        <span class="ap-eclipse-live__body-label" data-eclipse-label="moon">Moon</span>
-        <span class="ap-eclipse-live__body-label" data-eclipse-label="earth">Earth</span>
+    <section class="ap-eclipse-live" id="ap-eclipse-live" data-mode="live" data-ready="false" aria-labelledby="eclipse-live-title">
+      <div class="ap-eclipse-live__head">
+        <div><p class="ap-eclipse-live__eyebrow">The shadow instrument · Sun → Moon → Earth</p><h2 class="ap-eclipse-live__title" id="eclipse-live-title">Watch the shadow find Earth.</h2></div>
+        <p class="ap-eclipse-live__intro">This is computed geometry, not a decorative loop. Drag to inspect the alignment, then move between the current minute and greatest eclipse.</p>
       </div>
-      <div class="ap-eclipse-live__legend" aria-hidden="true">
-        <span><i></i> Alignment axis</span>
-        <span><i data-cone="umbra"></i> Umbra</span>
-        <span><i data-cone="penumbra"></i> Penumbra</span>
-      </div>
-      <div class="ap-eclipse-live__fallback" hidden><div>Preparing the live eclipse geometry…</div></div>
-    </div>
-    <aside class="ap-eclipse-live__panel" aria-label="Live eclipse geometry readout">
-      <p class="ap-eclipse-live__mode" data-eclipse-mode>Live geocentric alignment</p>
-      <p class="ap-eclipse-live__status" data-eclipse-status aria-live="polite">Computing the shadow…</p>
-      <p class="ap-eclipse-live__time" data-eclipse-time>UTC geometry preparing</p>
-      <dl class="ap-eclipse-live__data">
-        <div class="ap-eclipse-live__datum"><dt>Sun–Moon separation</dt><dd data-eclipse-separation>—</dd></div>
-        <div class="ap-eclipse-live__datum"><dt>Moon distance</dt><dd data-eclipse-moon-distance>—</dd></div>
-        <div class="ap-eclipse-live__datum"><dt>Shadow axis</dt><dd data-eclipse-shadow-offset>—</dd></div>
-        <div class="ap-eclipse-live__datum"><dt>Moon / Sun apparent radius</dt><dd data-eclipse-ratio>—</dd></div>
-      </dl>
-      <div class="ap-eclipse-live__controls">
-        <div class="ap-eclipse-live__actions">
-          <button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="true">Track live now</button>
-          <button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="false">Greatest eclipse</button>
+      <div class="ap-eclipse-live__shell">
+        <div class="ap-eclipse-live__stage">
+          <canvas class="ap-eclipse-live__canvas" tabindex="0" aria-label="Interactive 3D Sun, Moon and Earth eclipse alignment. Drag to orbit; use mouse wheel or plus and minus keys to zoom."></canvas>
+          <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Live geometry · preparing</span></div>
+          <div class="ap-eclipse-live__labels" aria-hidden="true"><span class="ap-eclipse-live__body-label" data-eclipse-label="sun">Sun</span><span class="ap-eclipse-live__body-label" data-eclipse-label="moon">Moon</span><span class="ap-eclipse-live__body-label" data-eclipse-label="earth">Earth</span></div>
+          <div class="ap-eclipse-live__legend" aria-hidden="true"><span><i></i> Alignment axis</span><span><i data-cone="umbra"></i> Umbra</span><span><i data-cone="penumbra"></i> Penumbra</span></div>
+          <div class="ap-eclipse-live__fallback" hidden><div>Preparing the live eclipse geometry…</div></div>
         </div>
-        <label class="ap-eclipse-live__control-label" for="eclipse-time-range"><span>Explore the alignment</span><span data-eclipse-range-time>—</span></label>
-        <input class="ap-eclipse-live__range" id="eclipse-time-range" data-eclipse-range type="range" aria-label="Eclipse timeline from three days before to two days after greatest eclipse">
-        <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection computed from the browser ephemeris · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · local visibility still depends on where you stand.</p>
+        <aside class="ap-eclipse-live__panel" aria-label="Live eclipse geometry readout">
+          <p class="ap-eclipse-live__mode" data-eclipse-mode>Live geocentric alignment</p>
+          <p class="ap-eclipse-live__status" data-eclipse-status aria-live="polite">Computing the shadow…</p>
+          <p class="ap-eclipse-live__time" data-eclipse-time>UTC geometry preparing</p>
+          <dl class="ap-eclipse-live__data"><div class="ap-eclipse-live__datum"><dt>Sun–Moon separation</dt><dd data-eclipse-separation>—</dd></div><div class="ap-eclipse-live__datum"><dt>Moon distance</dt><dd data-eclipse-moon-distance>—</dd></div><div class="ap-eclipse-live__datum"><dt>Shadow axis</dt><dd data-eclipse-shadow-offset>—</dd></div><div class="ap-eclipse-live__datum"><dt>Moon / Sun apparent radius</dt><dd data-eclipse-ratio>—</dd></div></dl>
+          <div class="ap-eclipse-live__controls">
+            <div class="ap-eclipse-live__actions"><button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="true">Track live now</button><button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="false">Greatest eclipse</button></div>
+            <label class="ap-eclipse-live__control-label" for="eclipse-time-range"><span>Explore the alignment</span><span data-eclipse-range-time>—</span></label>
+            <input class="ap-eclipse-live__range" id="eclipse-time-range" data-eclipse-range type="range" aria-label="Eclipse timeline from three days before to two days after greatest eclipse">
+            <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection use the browser ephemeris · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · this is not a ground-track map.</p>
+          </div>
+        </aside>
       </div>
-    </aside>
-  </div>
-</section>
+    </section>
 
-<!-- ——— FREE TEASER ——— -->
-<div class="card" id="cast">
-  <div class="lbl">STEP 1 · FREE — SEE THE CONTACT</div>
-  <form id="castForm" action="#" method="get" onsubmit="document.getElementById('castBtn').click();return false">
-  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
-    <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" min="1900-01-01" max="2026-12-31"></label>
-    <label class="field"><span>TIME (SHARPENS THE MOON)</span><input type="time" id="tob" value="12:00"></label>
-    <label class="field"><span>TIME ZONE WHEN BORN</span>
-      <select id="tz">
-        <option value="0">UT / GMT</option><option value="1" selected>UK SUMMER (BST, +1)</option>
-        <option value="2">CENTRAL EU SUMMER (+2)</option><option value="-4">US EASTERN (−4)</option>
-        <option value="-7">US PACIFIC (−7)</option><option value="5.5">INDIA (+5.5)</option><option value="10">SYDNEY (+10)</option>
-      </select></label>
-  </div>
-  <button class="btn" id="castBtn" type="button">COMPUTE MY ECLIPSE CONTACT — FREE</button>
-  <input type="submit" style="position:absolute;left:-9999px;width:0;height:0;opacity:0" tabindex="-1" aria-hidden="true">
-  </form>
-  <div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--faint);margin-top:12px">NO ACCOUNT · YOUR BIRTH DATA NEVER LEAVES THIS PAGE · NO BIRTH PLACE = NO HOUSES, AND WE SAY SO · DON'T KNOW YOUR TIME? LEAVE IT AT NOON — SIGNS STAY EXACT</div>
-</div>
-
-<div style="margin:22px 0 8px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#08080b">
-  <img src="./img/eclipse-geometry.svg" width="1200" height="630" alt="Computed geometry of the 12 August 2026 partial solar eclipse as seen from London — the Moon covering 90% of the Sun at 20°02′ Leo" style="display:block;width:100%;height:auto" loading="lazy" decoding="async" />
-</div>
-
-<!-- ——— RESULT ——— -->
-<div id="result" hidden>
-  <div class="card">
-    <div class="lbl">YOUR ECLIPSE RECEIPT</div>
-    <div class="receipt" id="anchorBox"></div>
-    <p class="serif" id="anchorSerif" style="margin:16px 0 0"></p>
-  </div>
-
-  <!-- quiet gate: shown INSTEAD of the sale when the eclipse makes no direct
-       contact. The wording says "direct contact", not "no contact" — a soft touch
-       can and does sit inside the gate, and the receipt above may well name one.
-       Saying "no close contact" here while the receipt printed 0°25′ was the
-       contradiction this box used to ship with. -->
-  <div class="card" id="quietBox" hidden>
-    <div class="lbl" style="color:var(--good)">A QUIET ONE FOR YOU — AND WE'D RATHER TELL YOU</div>
-    <div class="receipt"><div id="quietMono"></div></div>
-    <p class="serif" id="quietSerif" style="margin:16px 0 0"></p>
-    <p style="font-size:14.5px;line-height:1.6;color:var(--dim);margin:16px 0 0">This eclipse makes no direct contact with your placements, so <b style="color:var(--ink)">we don't think the £2.99 Night Reading is worth it for you</b> — it would be honest, and thin. Nothing is missing from your chart; this particular night just isn't pointed at it. The <a href="./deep-reading.html">£12 Deep Reading</a> reads your whole sky instead, or the <a href="./shop.html#sky-pass">£5 Sky Pass</a> — thirty dated days of your real sky, no thin eclipse chapter. Neither is on sale yet; checkout isn't open.</p>
-  </div>
-
-  <div id="saleBox" hidden>
-    <div class="card">
-      <div class="lbl">STEP 2 · THE FULL READING — £2.99</div>
-      <div class="receipt" id="contactTeaser"></div>
-      <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:16px 0">That's the computed receipt — free, checkable, yours. The full reading adds the remaining four written beats: what this point governs in your chart (with whole-sign house when your place is given at unlock), the one question to sit with on eclipse night, and the honest close. ≈350 words, written from your own placements and nothing else.</p>
-      <!-- ONE primary here. The email capture is it while checkout is dormant; the shop
-           link is a demoted, plainly-labelled exit. upgradeBuyBtn() below promotes #buyBtn
-           to the primary (and hides this form) only once a real Gumroad permalink exists. -->
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
-        <form id="saleNotify" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0;width:100%">
-          <input id="saleEmail" type="email" required placeholder="you@example.com" aria-label="Email for checkout-open alert" style="flex:1;min-width:200px">
-          <button class="btn" id="saleNotifyBtn" type="submit">NOTIFY ME WHEN THE £2.99 UNLOCK OPENS</button>
-        </form>
-        <div class="mono formnote" id="saleNotifyMsg" role="status" aria-live="polite" style="display:none"></div>
-        <!-- The post-eclipse price-rise tag was deleted here on 2026-08-09: nothing
-             can be bought at £2.99, so there was never a higher price to be saved
-             from. A discount off a price nobody has ever paid is not a discount.
-             "NO FAKE CHECKOUT" stays — it is true, and it is the whole point. -->
-        <span class="mono" id="buyNote" style="font-size:11px;letter-spacing:.14em;color:var(--faint)">GUMROAD WHEN LIVE · NO FAKE CHECKOUT</span>
-        <a class="quietlink" id="buyBtn" href="./shop.html#eclipse-reading">Or see this edition alongside the others in the shop →</a>
-      </div>
-      <div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--faint);margin-top:10px">OR <a href="./shop.html#eclipse-set" style="color:var(--acc)">THE ECLIPSE SET — READING + SKY CARD + PRINTABLE NIGHT PAGE, £6</a></div>
-      <details style="margin-top:16px">
-        <summary class="mono" style="font-size:9px;letter-spacing:.18em;color:var(--faint);cursor:pointer">ALREADY BOUGHT? ENTER YOUR LICENSE KEY</summary>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-          <input id="licKey" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX" style="flex:1;min-width:220px" aria-label="Gumroad license key">
-          <button class="btn ghost" id="licBtn" type="button">UNLOCK</button>
+    <section class="ap-eclipse-guide" aria-labelledby="guide-title">
+      <div class="ap-eclipse-page-shell">
+        <header><p class="ap-eclipse-kicker">Launch guide · checked 11 August</p><h2 id="guide-title">Where. When. Watch. Safety.</h2></header>
+        <div class="ap-eclipse-guide__grid">
+          <article><span>01 · Totality</span><h3>Greenland, Iceland, Spain</h3><p>The path of totality also clips a small part of northeastern Portugal. Elsewhere across much of the Northern Hemisphere the eclipse is partial.</p><a href="https://science.nasa.gov/eclipses/future-eclipses/total-solar-eclipse-on-august-12-2026/" rel="noopener">NASA path and overview</a></article>
+          <article><span>02 · London</span><h3>18:17 · 19:12 · 20:06 BST</h3><p>First contact, maximum and end according to the Royal Observatory Greenwich. The Sun is low in the west; find an open western horizon and check local times.</p><a href="https://www.rmg.co.uk/stories/space-astronomy/how-see-12-august-2026-partial-solar-eclipse" rel="noopener">Royal Observatory guide</a></article>
+          <article><span>03 · Watch live</span><h3>NASA, ESA and Greenwich</h3><p>NASA’s programme begins at 18:15 BST. ESA will broadcast from Spain, and the Royal Observatory has a UK-focused stream.</p><div><a href="https://www.nasa.gov/live" rel="noopener">NASA Live</a><a href="https://www.esa.int/Newsroom/Press_Releases/Join_ESA_for_a_total_solar_eclipse_on_12_August_2026" rel="noopener">ESA coverage</a></div></article>
+          <article class="ap-eclipse-guide__safety"><span>04 · Eye safety</span><h3>Glasses stay on for every partial phase.</h3><p>Use genuine ISO 12312-2 eclipse viewers or indirect projection. Cameras, binoculars and telescopes need a purpose-made solar filter secured over the front—not at the eyepiece.</p><a href="https://science.nasa.gov/eclipses/safety/" rel="noopener">NASA viewing safety</a></article>
         </div>
-        <div class="mono" id="licMsg" style="font-size:9px;letter-spacing:.16em;color:var(--faint);margin-top:8px"></div>
-      </details>
-    </div>
-  </div>
+      </div>
+    </section>
 
-  <div id="fullReading" hidden>
-    <div class="card" style="border-color:rgba(126,240,200,.35)">
-      <div class="lbl" style="color:var(--good)">UNLOCKED · YOUR FIVE-BEAT ECLIPSE READING</div>
-      <div id="beats"></div>
-      <div class="rule"></div>
-      <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint)" id="readingFoot"></div>
-    </div>
-  </div>
-<!-- ——— HOW YOU RECEIVE IT ——— -->
-  <div class="card">
-    <div class="lbl">HOW YOU'LL RECEIVE IT — ONCE CHECKOUT OPENS</div>
-    <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0 0 10px"><b style="color:var(--ink)">Instantly, on this device.</b> Your reading is computed here, so when payment clears it unlocks with no email wait, no queue and nothing sent off to be "prepared". It was ready before you paid.</p>
-    <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0"><b style="color:var(--ink)">Permanently re-accessible.</b> Your receipt will carry a licence key — paste it above on any device, any time, and the reading recomputes and unlocks again. Losing the tab loses nothing. Checkout isn't open yet, so none of this can happen today; the teaser above is free and complete as it stands.</p>
-  </div>
-</div>
+    <section class="ap-eclipse-contact" id="contact" aria-labelledby="contact-title">
+      <div class="ap-eclipse-page-shell ap-eclipse-contact__grid">
+        <div>
+          <p class="ap-eclipse-kicker">Your chart · computed here</p>
+          <h2 id="contact-title">What does the eclipse contact?</h2>
+          <p>Enter the birth moment to compare the eclipse longitude with your natal planets. The calculator returns the three closest traditional major aspects and their exact orbs. It does not infer houses without a birthplace.</p>
+          <form id="eclipseContactForm">
+            <div class="ap-eclipse-contact__fields">
+              <label><span>Birth date</span><input type="date" id="dob" required min="1900-01-01" max="2026-12-31" autocomplete="bday"></label>
+              <label><span>Birth time</span><input type="time" id="tob" value="12:00"></label>
+              <label><span>Time zone</span><select id="tz"><option value="0">UT / GMT</option><option value="1" selected>UK summer +1</option><option value="2">Central Europe summer +2</option><option value="-4">US Eastern −4</option><option value="-7">US Pacific −7</option><option value="5.5">India +5.5</option><option value="10">Sydney +10</option></select></label>
+            </div>
+            <button type="submit">Compute my eclipse contacts</button>
+            <p class="ap-eclipse-contact__note">No account · birth details stay in this browser · noon is a usable fallback when time is unknown</p>
+          </form>
+          <div class="ap-eclipse-result" id="eclipseResult" hidden tabindex="-1" aria-live="polite">
+            <div class="ap-eclipse-result__head"><span>Computed receipt</span><strong id="eclipseResultState"></strong></div>
+            <ol id="eclipseContactRows"></ol>
+            <p id="eclipseResultNote"></p>
+            <a href="shop.html#editions">See the planned written edition</a>
+          </div>
+        </div>
+        <figure class="ap-eclipse-geometry-plate">
+          <img src="img/eclipse-geometry.svg" width="1200" height="630" loading="lazy" alt="Schematic computed geometry of the 12 August 2026 eclipse">
+          <figcaption><span>Schematic · computed geometry</span>Local sky view and approximate London coverage. The live 3D instrument above shows alignment, not a geographically accurate ground track.</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
 
-<!-- ——— LOOK SAFELY ——— -->
-<div class="card" style="border-color:rgba(255,90,31,.4);background:rgba(255,90,31,.05)">
-  <div class="lbl" style="color:var(--warn)">LOOK SAFELY — THIS MATTERS</div>
-  <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0">Even at 96% coverage the remaining sliver of Sun is dangerously bright — Britain never reaches totality, so there is no moment it's safe to look directly and <b style="color:var(--ink)">no moment to take the glasses off</b>. Keep them on from first contact to last. Use <b style="color:var(--ink)">ISO&nbsp;12312-2 certified eclipse glasses</b> (check the standard is printed on them), a pinhole projector, or simply watch the light change around you. Sunglasses, phone cameras and exposed film do <b style="color:var(--ink)">not</b> protect your eyes. We take no cut on glasses — we just want you to keep your sight.</p>
-</div>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
+  <script>
+    (function () {
+      'use strict';
+      var E = window.AstroEphemeris;
+      var SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+      var BODIES = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+      var ASPECTS = [[0,'conjunction'],[60,'sextile'],[90,'square'],[120,'trine'],[180,'opposition']];
+      var eventJd, eclipseLon;
 
-<!-- ——— THE HONEST SHOP · FIVE SKUS ——— -->
-<details class="card" style="padding:18px 22px">
-  <summary class="mono" style="font-size:10px;letter-spacing:.2em;color:var(--acc);cursor:pointer">EVERYTHING ELSE WE SELL — THE HONEST SHOP</summary>
-  <table style="margin-top:14px">
-    <tr><th>EDITION</th><th>WHAT'S INSIDE</th><th style="text-align:right">PRICE WHEN IT OPENS</th></tr>
-    <tr><td><b>Eclipse Night Reading</b></td><td>The five beats: anchor receipt · closest contact and exactly how close · what it governs (whole-sign house when place given) · the question · honest close. ≈350 words.<div class="mono" style="margin-top:4px">IF YOUR CHART IS QUIET WE SAY SO FIRST</div></td><td class="price">£2.99<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
-    <tr><td><b>Eclipse Set</b></td><td>The reading + your eclipse Sky Card (share image) + the printable eclipse-night page. The £6 slot is this set's alone — the old poster is retired.</td><td class="price">£6<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
-    <tr><td><b>Deep Reading</b></td><td>Seven computed chapters — frame, three lights, shape, the three tightest contacts and how close each one is, long arcs, live "your sky today", the letter. ≈1,800 words. <a href="./sample-reading.html">Read a complete sample, free →</a></td><td class="price">£12<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
-    <tr><td><b>The Plate</b></td><td>A3 print-grade star map of your birth minute — every position printed to the minute you were born, aspect wheel, QR that re-computes it live for any doubter, numbered edition. Two Skies couples edition same price.</td><td class="price">£14<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
-    <tr><td><b>Sky Pass</b></td><td>30 dated days of chart-aware daily sky notes — your transits, not sun-sign weather. <b>A dated edition, 12 Aug – 10 Sep, that simply ends.</b> No subscription, no auto-renew, nothing to cancel.</td><td class="price">£5<br><span style="color:var(--faint)">not yet on sale</span></td></tr>
-  </table>
-  <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint);margin-top:14px">ALL DIGITAL · ALL COMPUTED ON YOUR DEVICE · <a href="./refunds.html">REFUNDS &amp; YOUR RIGHTS</a></div>
-</details>
+      function byId(id) { return document.getElementById(id); }
+      function angularDistance(a, b) { return Math.abs(((a - b + 540) % 360) - 180); }
+      function degreeText(value) { var d = Math.floor(value); var m = Math.round((value - d) * 60); if (m === 60) { d += 1; m = 0; } return d + '°' + String(m).padStart(2, '0') + '′'; }
+      function longitudeText(value) { var normalized = ((value % 360) + 360) % 360; var sign = Math.floor(normalized / 30); return degreeText(normalized - sign * 30) + ' ' + SIGNS[sign]; }
 
-<!-- ——— EMAIL ——— -->
-<div class="card">
-  <div class="lbl">ECLIPSE MORNING, IN YOUR INBOX</div>
-  <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0 0 14px">One email the morning of 12 August with your times, the weather windows, and your unlock link. Nothing else, ever — this list exists for one dawn.</p>
-  <form id="emailForm" style="display:flex;gap:10px;flex-wrap:wrap">
-    <input type="email" id="eclipseEmail" required placeholder="you@example.com" style="flex:1;min-width:200px" aria-label="Email address" autocomplete="email">
-    <button class="btn" id="emailFormBtn" type="submit">NOTIFY ME FOR ECLIPSE DAWN</button>
-  </form>
-  <div class="mono formnote" id="emailMsg" role="status" aria-live="polite" style="display:none"></div>
-  <div class="mono" style="font-size:8.5px;letter-spacing:.16em;color:var(--faint);margin-top:10px">ONE EMAIL ONLY · BIRTH DATA NEVER ATTACHED</div>
-</div>
-
-</main>
-
-<footer>
-<div class="rule"></div>
-<div class="foot">
-  ASTRONOMY FIRST: EVERY POSITION ABOVE IS COMPUTED FROM THE MEEUS SERIES ON YOUR DEVICE. THE MEANINGS ARE TRADITIONAL ASTROLOGY, OFFERED FOR REFLECTION — NOT ADVICE, NOT PREDICTION.<br>
-  <a href="./index.html">THE OBSERVATORY</a> · <a href="./chart.html">CAST A CHART</a> · <a href="./ephemeris.html">THE SKY</a> · <a href="./horoscope.html">DAILY</a> · <a href="./shop.html">SHOP</a><br>
-  <a href="./deep-reading.html">DEEP READING SAMPLE</a> · <a href="./verify.html">VERIFY A PLATE</a> · <a href="./refunds.html">REFUNDS &amp; YOUR RIGHTS</a> · <a href="./privacy.html">PRIVACY</a><br>
-  © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
-</div>
-</footer>
-
-</div>
-
-<script type="module">
-import { buildEclipseReading5, fmtDeg } from './js/eclipse-reading.js';
-import { verifyLicense, isCheckoutReady, GUMROAD_PRODUCTS } from './js/gumroad-unlock.js';
-
-const E = window.AstroEphemeris;
-const $ = (id) => document.getElementById(id);
-let templates = null, lastNatal = null, lastReading = null;
-fetch('./js/reading-templates.json').then((r) => r.json()).then((t) => { templates = t; });
-
-// Greatest eclipse, 12 Aug 2026, 45 km off western Iceland. The same instant is
-// used for two different things here and they need different care — hence the
-// length of this note.
-//
-// 1. AS A CLOCK TIME (printed to the minute, so the 69 s matters).
-//    17:47:06 TT is the instant of greatest eclipse — NASA/GSFC Besselian
-//    elements for 2026 Aug 12. ΔT (TT−UT1) in mid-2026 is 69.1 s, from the
-//    USNO/IERS long-term prediction file (2026.50 = 69.11 s, 2026.75 = 69.09 s).
-//    So UT = 17:47:06 − 69.1 s = 17:45:57, which is 18:45:57 BST → 18:46 BST.
-//    This page used to print "17:46 TD". That was the UT figure wearing the
-//    wrong label: 17:46 is UT, 17:47 is TT. The BST minute was right by luck.
-//    (NASA's own page says 17:45:51 UT because it still carries ΔT = 75.4 s,
-//    predicted in 2006 — the Earth then sped up instead of slowing. 17:45:51
-//    and 17:45:57 both round to 18:46 BST, so the printed minute is safe
-//    against that whole disagreement.)
-//
-// 2. AS AN INPUT TO THE SERIES (printed to the minute of arc, so it does not).
-//    69 s moves the Sun about 3 seconds of arc — far below the precision we
-//    print. 17:46 flat is fed in below and the answer is 20°02′ Leo either way.
-//    Do not "correct" this argument to match the clock time above: they are
-//    answering different questions, and the two only look like one number.
-const jdEcl = E.julianDay(2026, 8, 12, 17, 46, 0);
-const eclipseLon = E.sunPosition(jdEcl).lon;
-const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-$('eclipsePoint').textContent = `ECLIPSE POINT: ${fmtDeg(eclipseLon, SIGNS).toUpperCase()} · GREATEST ECLIPSE 18:46 BST (17:46 UT) · MEEUS CH.25`;
-
-function tickCountdown() {
-  // 17:45:57 UT — see the ΔT note above. Seconds are carried so the target is
-  // the moment we print, not a rounded stand-in for it.
-  const ms = Date.UTC(2026, 7, 12, 17, 45, 57) - Date.now();
-  if (ms <= 0) { $('countdown').textContent = 'THE ECLIPSE HAS PASSED — THE READING STILL HOLDS'; return; }
-  const d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), m = Math.floor(ms % 3600000 / 60000);
-  $('countdown').textContent = `T−${d}D ${String(h).padStart(2,'0')}H ${String(m).padStart(2,'0')}M TO GREATEST ECLIPSE (18:46 BST, OFF ICELAND)`;
-}
-tickCountdown(); setInterval(tickCountdown, 30000);
-
-function natalFrom(dob, tob, tz) {
-  const [y, mo, d] = dob.split('-').map(Number);
-  const [hh, mm] = (tob || '12:00').split(':').map(Number);
-  const jd = E.julianDay(y, mo, d, hh - tz, mm, 0);
-  const P = E.allPlanetPositions(jd);
-  const map = { sun:'Sun', moon:'Moon', mercury:'Mercury', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', uranus:'Uranus', neptune:'Neptune', pluto:'Pluto' };
-  const natal = {};
-  for (const [k, name] of Object.entries(map)) natal[k] = P[name].lon;
-  return natal;
-}
-
-function render() {
-  const dob = $('dob').value;
-  if (!dob || !templates) { if (!dob) $('dob').focus(); return; }
-  const timeGiven = $('tob').value && $('tob').value !== '12:00';
-  lastNatal = natalFrom(dob, $('tob').value, parseFloat($('tz').value));
-  lastReading = buildEclipseReading5(eclipseLon, lastNatal, templates, {
-    local: { date: '12 August 2026' }, timed: timeGiven
-  });
-  $('result').hidden = false;
-  $('result').scrollIntoView({ behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth', block: 'start' });
-  $('anchorBox').innerHTML = `<div>${lastReading.anchor.mono}</div>`;
-  $('anchorSerif').textContent = lastReading.anchor.serif;
-  const unlocked = localStorage.getItem('ap-eclipse-unlocked') === '1';
-  if (lastReading.gateSale) {
-    $('quietBox').hidden = false; $('saleBox').hidden = true; $('fullReading').hidden = true;
-    $('quietMono').textContent = lastReading.contact.mono;
-    $('quietSerif').textContent = lastReading.contact.serif;
-  } else {
-    $('quietBox').hidden = true;
-    $('contactTeaser').innerHTML = `<div>${lastReading.contact.mono}</div>`;
-    if (unlocked) showFull(); else { $('saleBox').hidden = false; $('fullReading').hidden = true; }
-  }
-}
-
-function showFull() {
-  $('saleBox').hidden = true; $('fullReading').hidden = false;
-  const r = lastReading, rows = [];
-  const beat = (n, label, mono, serif) => rows.push(
-    `<div style="border-top:1px solid var(--line);padding:18px 0 16px">
-      <div class="mono" style="font-size:9px;letter-spacing:.22em;color:var(--acc);margin-bottom:10px">BEAT ${n} · ${label}</div>
-      ${mono ? `<div class="receipt" style="margin-bottom:10px"><div>${mono}</div></div>` : ''}
-      ${serif ? `<p class="serif" style="margin:0">${serif}</p>` : ''}
-    </div>`);
-  beat(1, 'THE ANCHOR', r.anchor.mono, r.anchor.serif);
-  beat(2, 'THE CONTACT', r.contact.mono + (r.contact.secondary ? '<br>' + r.contact.secondary.mono : ''), r.contact.secondary ? r.contact.secondary.serif : null);
-  if (r.governs) beat(3, 'WHAT IT GOVERNS', null, r.governs.serif);
-  if (r.question) beat(4, 'THE QUESTION', null, r.question.serif);
-  beat(5, 'THE HONEST CLOSE', r.close.mono, r.close.serif);
-  $('beats').innerHTML = rows.join('');
-  $('readingFoot').textContent = `≈${r.wordCount} WORDS · ${(r.houseNote || 'HOUSES APPEAR WHEN A BIRTH PLACE IS GIVEN').toUpperCase()} · ${r.legal.toUpperCase()}`;
-}
-
-$('castBtn').addEventListener('click', render);
-
-// Buy button: flips from inline notify-form to live Gumroad checkout the moment a real permalink exists.
-// Exactly one primary CTA exists in either state — dormant: the email capture; live: #buyBtn.
-(function upgradeBuyBtn() {
-  const b = $('buyBtn'), f = $('saleNotify');
-  // Dormant: leave #buyBtn as the demoted .quietlink shop exit; the form stays the primary.
-  if (!isCheckoutReady('eclipse-reading')) return;
-  const permalink = (GUMROAD_PRODUCTS['eclipse-reading'] || {}).permalink;
-  if (f) f.style.display = 'none';
-  const stale = $('saleNotifyMsg');
-  if (stale) stale.style.display = 'none';
-  if (b) {
-    b.className = 'btn';   // promoted: checkout is live, so this becomes the single primary
-    b.textContent = 'UNLOCK THE FULL READING — £2.99';
-    if (permalink) b.href = `https://gumroad.com/l/${permalink}?wanted=true`;
-  }
-  const note = $('buyNote');
-  if (note) note.textContent = 'INSTANT UNLOCK · PAYMENT ON GUMROAD, READING COMPUTED HERE';
-})();
-
-/* ——— Email capture: success now MEANS success ———
- * The premise this block used to carry — "the Worker does not send CORS headers" —
- * was wrong. Measured 2026-08-09: OPTIONS https://list.astroprecise.app/subscribe
- * answers 204 with Access-Control-Allow-Methods: POST, OPTIONS, GET and echoes the
- * requesting Origin (checked against both https://astroprecise.app and
- * http://localhost:8790). So the opaque no-cors mode was throwing away a perfectly readable
- * response and forcing this page to say the weaker "SENT" when it could say "on the
- * list" — or, worse, to call a 500 a send.
- * Now: a normal cors fetch, and res.ok is the only thing that earns a success line.
- *   rejected  → the request never left. Say so, let them retry.
- *   !res.ok   → the list refused it. Say so, let them retry.
- *   res.ok    → they are actually on the list, and we can say it.
- */
-const OK_STYLE  = 'font-size:11px;letter-spacing:.14em;color:var(--good);padding:12px 0';
-const MAILTO    = 'contact@astroprecise.app';
-
-function rememberIntent(email, source) {
-  try {
-    const prev = JSON.parse(localStorage.getItem('ap_email_intent') || '[]');
-    prev.push({ email, savedAt: Date.now(), source });
-    localStorage.setItem('ap_email_intent', JSON.stringify(prev.slice(-50)));
-  } catch (err) { /* private mode or quota — the network request is what counts */ }
-}
-
-async function postSubscribe(email, tag) {
-  const body = new FormData();
-  body.append('email', email);
-  body.append('tags', tag);
-  const res = await fetch('https://list.astroprecise.app/subscribe', { method: 'POST', body });
-  if (!res.ok) throw new Error(`subscribe HTTP ${res.status}`);
-}
-
-function showFormError(msgEl, btn, label) {
-  if (btn) { btn.disabled = false; btn.textContent = label; }
-  if (!msgEl) return;
-  msgEl.className = 'mono formnote formnote--bad';
-  msgEl.style.display = '';
-  msgEl.textContent = `THAT DID NOT SEND — YOU ARE NOT ON THE LIST. CHECK YOUR CONNECTION AND TRY AGAIN, OR EMAIL ${MAILTO.toUpperCase()}`;
-}
-
-// Dormant-checkout capture: sale-box notify form → subscribe worker (+ same-device backstop)
-$('saleNotify')?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const em = $('saleEmail').value.trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
-  const btn = $('saleNotifyBtn'), msg = $('saleNotifyMsg');
-  if (btn) { btn.disabled = true; btn.textContent = 'SENDING…'; }
-  if (msg) msg.style.display = 'none';
-  rememberIntent(em, 'checkout-eclipse-reading');
-  try {
-    await postSubscribe(em, 'checkout-eclipse-reading');
-  } catch (err) {
-    showFormError(msg, btn, 'NOTIFY ME WHEN THE £2.99 UNLOCK OPENS');
-    return;
-  }
-  $('saleNotify').innerHTML = `<div class="mono" style="${OK_STYLE}">✦ YOU&rsquo;RE ON THE LIST — WE&rsquo;LL EMAIL YOU WHEN THE £2.99 UNLOCK GOES LIVE, AND NOTHING ELSE.</div>`;
-});
-
-// Eclipse-dawn list: POST to the live subscribe worker (+ same-device backstop)
-$('emailForm')?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const em = $('eclipseEmail').value.trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
-  const btn = $('emailFormBtn'), msg = $('emailMsg');
-  if (btn) { btn.disabled = true; btn.textContent = 'SENDING…'; }
-  if (msg) msg.style.display = 'none';
-  rememberIntent(em, 'eclipse-dawn');
-  try {
-    await postSubscribe(em, 'eclipse-dawn');
-  } catch (err) {
-    showFormError(msg, btn, 'NOTIFY ME FOR ECLIPSE DAWN');
-    return;
-  }
-  $('emailForm').innerHTML = `<div class="mono" style="${OK_STYLE}">✦ SENT — ONE EMAIL, THE MORNING OF 12 AUGUST. NOTHING BY THEN? WRITE TO ${MAILTO.toUpperCase()}</div>`;
-});
-$('licBtn')?.addEventListener('click', async () => {
-  const key = $('licKey').value.trim();
-  if (!key) return;
-  // Dormant checkout: license API cannot verify until Gumroad permalinks exist
-  try {
-    const { isCheckoutReady } = await import('./js/gumroad-unlock.js');
-    if (!isCheckoutReady('eclipse-reading')) {
-      $('licMsg').textContent = 'CHECKOUT NOT LIVE YET — LICENSE VERIFY WAITS FOR GUMROAD PERMALINKS. USE NOTIFY ME ABOVE.';
-      return;
-    }
-  } catch (e0) { /* continue to verify */ }
-  $('licMsg').textContent = 'CHECKING WITH GUMROAD…';
-  try {
-    const res = await verifyLicense('eclipse-reading', key);
-    if (res.valid) { localStorage.setItem('ap-eclipse-unlocked', '1'); $('licMsg').textContent = 'UNLOCKED — PERMANENT ON THIS DEVICE'; showFull(); }
-    else $('licMsg').textContent = 'KEY NOT RECOGNISED — CHECK YOUR GUMROAD RECEIPT';
-  } catch (e) { $('licMsg').textContent = 'COULD NOT REACH GUMROAD — TRY AGAIN'; }
-});
-// on return from Gumroad with ?license=KEY
-const lic = new URLSearchParams(location.search).get('license');
-if (lic) { document.querySelector('#saleBox details')?.setAttribute('open', ''); setTimeout(() => { $('licKey').value = lic; $('licBtn').click(); }, 600); }
-
-// Prefill from the chart.html handoff (?dob=YYYY-MM-DD&tob=HH:MM&tzname=IANA) and auto-run the free teaser
-function ianaOffsetHours(name, y, mo, d, hh, mm) {
-  try {
-    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: name, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
-    const guess = Date.UTC(y, mo - 1, d, hh, mm);
-    const p = {};
-    fmt.formatToParts(new Date(guess)).forEach((x) => { p[x.type] = x.value; });
-    const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, (+p.hour) % 24, +p.minute);
-    return (asUTC - guess) / 3600000;
-  } catch (e) { return 0; }
-}
-// Where the handoff can legitimately come from, best first:
-//   1. sessionStorage['ap-eclipse-handoff'] — what chart.html writes since
-//      2026-08-09. Same tab, same origin, never transmitted. Read once, then
-//      deleted.
-//   2. LEGACY ONLY: ?dob=&tob=&tzname= — a link minted before that, or a page
-//      opened where storage was blocked. Honoured, then taken out of the
-//      address bar so a birth date is not left sitting in it.
-// Reading a query was never the harm; creating one was.
-const qp2 = new URLSearchParams(location.search);
-let handoffFromQuery = !!qp2.get('dob');
-if (!handoffFromQuery) {
-  try {
-    const rawHandoff = sessionStorage.getItem('ap-eclipse-handoff');
-    if (rawHandoff) {
-      sessionStorage.removeItem('ap-eclipse-handoff');
-      const h = JSON.parse(rawHandoff);
-      if (h && h.dob && (!h.ts || Date.now() - h.ts < 30 * 60 * 1000)) {
-        qp2.set('dob', h.dob);
-        if (h.tob) qp2.set('tob', h.tob);
-        if (h.tzname) qp2.set('tzname', h.tzname);
+      function initEvent() {
+        if (!E) { setTimeout(initEvent, 40); return; }
+        eventJd = E.julianDay(2026, 8, 12, 17, 46, 0);
+        eclipseLon = E.sunPosition(eventJd).lon;
+        byId('eclipsePoint').textContent = 'Eclipse point · ' + longitudeText(eclipseLon) + ' · greatest 18:46 BST';
+        tick(); setInterval(tick, 30000);
       }
-    }
-  } catch (eH) { /* private mode — the visitor re-enters their date, nothing breaks */ }
-}
-if (handoffFromQuery) {
-  // Strip only the birth fields; ?license= and ?from= are not personal and the
-  // licence flow above has already read its value.
-  try {
-    const keep = new URLSearchParams(location.search);
-    ['dob', 'tob', 'tzname', 'tz'].forEach((k) => keep.delete(k));
-    const q = keep.toString();
-    history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
-  } catch (eStrip) { /* pre-history browser */ }
-}
-if (qp2.get('dob')) {
-  $('dob').value = qp2.get('dob');
-  if (qp2.get('tob')) $('tob').value = qp2.get('tob');
-  const tzName = qp2.get('tzname');
-  if (tzName) {
-    const [py, pm, pd] = qp2.get('dob').split('-').map(Number);
-    const [ph, pn] = (qp2.get('tob') || '12:00').split(':').map(Number);
-    const off = ianaOffsetHours(tzName, py, pm, pd, ph || 12, pn || 0);
-    $('tz').add(new Option(tzName.replace(/_/g, ' ') + ' (auto)', String(off), true, true));
-  } else if (qp2.get('tz') !== null) {
-    $('tz').value = qp2.get('tz');
-  }
-  const tryRender = () => { if (templates) render(); else setTimeout(tryRender, 200); };
-  tryRender();
-}
-</script>
-<script src="./js/ap-checkout-honest.js?v=771" defer></script>
-<script src="./js/ap-gumroad-bridge.js?v=771" defer></script>
-<script src="./js/ap-sky-time.js" defer></script>
+      function tick() {
+        var ms = Date.UTC(2026, 7, 12, 17, 45, 57) - Date.now();
+        if (ms <= 0) { byId('countdown').textContent = 'Greatest eclipse has passed · replay remains available'; return; }
+        var d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), m = Math.floor(ms % 3600000 / 60000);
+        byId('countdown').textContent = 'T−' + d + 'd ' + String(h).padStart(2,'0') + 'h ' + String(m).padStart(2,'0') + 'm to greatest eclipse';
+      }
+      function natalPositions() {
+        var date = byId('dob').value.split('-').map(Number);
+        var time = (byId('tob').value || '12:00').split(':').map(Number);
+        var jd = E.julianDay(date[0], date[1], date[2], time[0] - Number(byId('tz').value), time[1], 0);
+        return E.allPlanetPositions(jd);
+      }
+      function contacts(positions) {
+        var rows = [];
+        BODIES.forEach(function (name) {
+          var separation = angularDistance(eclipseLon, positions[name].lon);
+          ASPECTS.forEach(function (aspect) { rows.push({ body: name, aspect: aspect[1], angle: aspect[0], orb: Math.abs(separation - aspect[0]), natal: positions[name].lon }); });
+        });
+        return rows.sort(function (a, b) { return a.orb - b.orb; }).slice(0, 3);
+      }
+      byId('eclipseContactForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!byId('dob').value || !E || eclipseLon == null) { byId('dob').focus(); return; }
+        var rows = contacts(natalPositions());
+        var direct = rows[0].orb <= 3;
+        byId('eclipseResultState').textContent = direct ? 'A close contact is present' : 'A quiet eclipse for this chart';
+        byId('eclipseContactRows').innerHTML = rows.map(function (row, index) {
+          return '<li><span>0' + (index + 1) + '</span><div><strong>Eclipse ' + row.aspect + ' natal ' + row.body + '</strong><p>' + longitudeText(row.natal) + ' · orb ' + degreeText(row.orb) + '</p></div></li>';
+        }).join('');
+        byId('eclipseResultNote').textContent = direct
+          ? 'Traditional astrology treats contacts within 3° as close. That meaning is interpretive; the positions and distances above are the computed evidence.'
+          : 'None of the three closest major contacts falls within 3°. We would not present this eclipse as a dominant personal event for this chart.';
+        byId('eclipseResult').hidden = false;
+        byId('eclipseResult').focus({ preventScroll: true });
+        byId('eclipseResult').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+      });
+      initEvent();
+    })();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator && !/[?&]nosw=1/.test(location.search)) addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }, { once: true });
+  </script>
 </body>
 </html>

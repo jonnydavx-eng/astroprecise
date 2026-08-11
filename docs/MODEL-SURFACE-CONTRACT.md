@@ -1,6 +1,6 @@
 # Model Surface Contract
 
-**Tip:** ap-v834 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
+**Tip:** ap-v835 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
 
 Three surfaces — never mix their honesty labels.
 
@@ -23,7 +23,7 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 | Param | Values | Notes |
 |---|---|---|
 | `m` | ISO UTC string or `now` | Bare `YYYY-MM-DDTHH:mm` gets `Z` appended (UTC contract) |
-| `focus` | `earth` · `sun` · `moon` · `mercury` … `pluto` | Lowercase; invalid slugs omitted |
+| `focus` | `earth` · `sun` · `moon` · `mercury` … `neptune` | Lowercase; invalid slugs omitted. Pluto remains an optional scene point on capable devices, not a public focus destination. |
 | `scale` | integer | Optional zoom beat |
 
 **Bridge helpers:** `APSkyBridge.buildLinkFromChart()` / `buildLinkFromDate()` derive `m` from saved chart or date-only (UTC noon when time unknown).
@@ -94,7 +94,7 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 | Moment freeze | A | Share card + explore link; `ap_moment_return` → horoscope return hook |
 | Daily return | A | Horoscope `mountMomentReturnHook` (7-day window) |
 
-**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v834.
+**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v835.
 
 **Event bus:** `ap-sky-ready` — `{ m, link, focus, chart|moment, source }` for share/telemetry hooks.
 

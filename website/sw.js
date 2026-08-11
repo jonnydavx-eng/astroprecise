@@ -436,7 +436,7 @@ const PRECACHE = [
 // Keep the update gate small and atomic: the shell and navigation contract
 // must install together. The long tail is opportunistic and may backfill
 // individually on a flaky/offline connection.
-const CORE = PRECACHE.filter(u => u === './' || /(?:^\.\/)?(?:index\.html|offline\.html|js\/(?:app|ap-page-boot|ap-nav-model|ap-asset-v)\.js|css\/(?:main-lite|ap-overhaul-s8|ap-palette-2026)\.css)$/.test(u));
+const CORE = PRECACHE.filter(u => u === './' || /(?:^\.\/)?(?:index\.html|offline\.html|js\/(?:app|ap-page-boot|ap-nav-model(?:-v\d+)?|ap-asset-v|ap-footer-inject|void-orrery-adapter|ap-observatory-controls-v\d+)\.js|css\/(?:main-lite|ap-overhaul-s8|ap-palette-2026|ap-living-sky-v\d+|ap-home-v\d+)\.css)$/.test(u));
 const OPTIONAL = PRECACHE.filter(u => CORE.indexOf(u) < 0);
 function canonicalAssetKey(value) {
   const u = new URL(typeof value === 'string' ? value : value.url, self.registration.scope);
@@ -484,7 +484,8 @@ self.addEventListener('activate', e => {
       )))
       .then(() => self.clients.claim())
   );
-  /* OPTIONAL backfill, deferred to 4s after activation: best-effort warm of the
+  /* OPTIONAL backfill, deferred until the launch view has had time to settle:
+     best-effort warm of the
      long tail. Anything not yet backfilled is covered by the runtime
      cache-first path in the fetch handler below. */
   setTimeout(() => {
@@ -492,7 +493,7 @@ self.addEventListener('activate', e => {
       fetch(new Request(canonicalAssetKey(u), { cache: 'reload' }))
         .then(r => { if (r && r.status === 200) return c.put(canonicalAssetKey(u), r); })
     )));
-  }, 4000);
+  }, 20000);
 });
 
 self.addEventListener('fetch', e => {
@@ -514,7 +515,11 @@ self.addEventListener('fetch', e => {
   // Network-first for the scripts/styles that drive the home cinematic + orrery, so a
   // freshly-deployed HTML never runs against stale cache-first JS from a prior version
   // (the v453-v463 deploy-mismatch that broke the loading sequence / 3D model / layout).
-  const isCritical = /\/(js\/app\.js|js\/chart-page\.js|js\/horoscope-page\.js|js\/cosmos\.js|js\/orrery\.js|js\/orrery-loader\.js|js\/orrery-webgl\.js|js\/void-orrery-adapter\.js|js\/explore-boot(?:-v\d+)?\.js|js\/ap-nav-model(?:-v\d+)?\.js|js\/ap-observatory(?:-v\d+)?\.js|js\/ambience\.js|js\/eclipse-reading\.js|js\/deep-reading\.js|js\/plate-fingerprint\.js|js\/ap-sky-news\.js|js\/ap-natal-sphere\.js|js\/ap-checkout-honest\.js|js\/ap-gumroad-bridge\.js|js\/gumroad-unlock\.js|js\/ap-award-orrery\.js|js\/ap-home-bootstrap\.js|js\/hero-instrument\.js|js\/effects\.js|js\/ephemeris\.js|js\/lite-orrery\.js|js\/lite-shell-boot\.js|css\/main\.css|css\/explore-page(?:-v\d+)?\.css|css\/ap-model-window\.css|css\/ap-observatory-home\.css|css\/ap-brand-nebula\.css|css\/ap-sky-news\.css|css\/ap-natal-sphere\.css)$/.test(path);
+  const isCritical =
+    /\/js\/(?:app|chart-page|horoscope-page|cosmos|orrery|orrery-loader|orrery-webgl|void-orrery-adapter|ambience|eclipse-reading|deep-reading|plate-fingerprint|ap-sky-news|ap-natal-sphere|ap-checkout-honest|ap-gumroad-bridge|gumroad-unlock|ap-award-orrery|ap-home-bootstrap|hero-instrument|effects|ephemeris|lite-orrery|lite-shell-boot|ap-footer-inject|ap-page-boot|ap-asset-v)\.js$/.test(path) ||
+    /\/js\/(?:explore-boot|ap-nav-model|ap-observatory|ap-observatory-controls|ap-eclipse-geometry|ap-eclipse-live)(?:-v\d+)?\.js$/.test(path) ||
+    /\/css\/(?:main|main-lite|ap-model-window|ap-observatory-home|ap-brand-nebula|ap-sky-news|ap-natal-sphere|ap-palette-2026)\.css$/.test(path) ||
+    /\/css\/(?:explore-page|ap-living-sky|ap-home|ap-shop|ap-eclipse)(?:-v\d+)?\.css$/.test(path);
 
   /* Cache key: NEVER the raw request, not even for a navigation. A navigation
      URL can carry a visitor's birth details in its query — the homepage no
@@ -552,7 +557,7 @@ self.addEventListener('fetch', e => {
         );
       }
       if (isCritical) {
-        // app.js + main.css: network-first so email/intro fixes reach users promptly
+        // Launch-critical JS/CSS: network-first so one deploy cannot mix revisions.
         return networkFetch.then(res => (res && res.ok) ? res : cached);
       }
       // Other assets: cache-first, revalidate in background

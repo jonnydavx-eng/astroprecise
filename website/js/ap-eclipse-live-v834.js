@@ -43,7 +43,7 @@ function waitForEphemeris(limit = 100) {
 
 
 function formatUtc(date) {
-  return date.toISOString().replace('.000Z', 'Z').replace('T', ' · ');
+  return `${date.toISOString().slice(0, 16).replace('T', ' · ')} UTC`;
 }
 
 function formatDistance(km) {

@@ -181,6 +181,7 @@ const FinishShader = {
 
   const PRM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TEX = 'assets/textures/';
+  const ORRERY_ENV_TEX = 'img/orrery/';
   const D2R = Math.PI / 180;
 
   function isAwardMode() {
@@ -191,6 +192,9 @@ const FinishShader = {
 
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
+  let envRT = null;
+  let envIblLoading = false;
+  let runtimeGeneration = 0;
   let raf = null, destroyed = false, running = true, inView = true;
   let lifecycleListeners = [];
   let lifecycleObservers = [];
@@ -1940,6 +1944,7 @@ const FinishShader = {
 
   function settleHeavyWork() {
     if (destroyed) return;
+    initEnvironmentIBL();
     buildRemainingPlanets();
     upgradeSunVisuals();
     ensureGalaxyLayers();
@@ -3778,7 +3783,7 @@ const FinishShader = {
 
   /** True while the 2D poster owns centre-frame (ready or fading — until --done). */
   function isEarthPosterBlocking() {
-    if (!instrumentMode) return false;
+    if (!instrumentMode || freeExploreMode) return false;
     const el = document.getElementById('ol-earth-poster');
     if (!el) return true;
     if (el.classList.contains('ol-earth-poster--done')) return false;
@@ -4913,6 +4918,55 @@ const FinishShader = {
       if ((window.innerWidth || 9999) <= 560) return true;     // very narrow viewport
     } catch (e) { /* fall through */ }
     return false;
+  }
+
+  // Recover the strongest useful piece from the abandoned orrery-elevate branch:
+  // a subtle image-based fill that gives each world a readable, non-flat limb.
+  // It affects lighting only; the procedural sky remains the visible background.
+  function initEnvironmentIBL() {
+    if (perfTier === 'low' || !renderer || !scene || !texLoader || scene.environment || envRT || envIblLoading) return;
+    if (renderer.capabilities && renderer.capabilities.isWebGL2 === false) return;
+
+    const generation = runtimeGeneration;
+    const expectedRenderer = renderer;
+    const expectedScene = scene;
+    const file = (wantsSmallTextures() || IS_PHONE) ? 'env_nebula_cool_sm.webp' : 'env_nebula_cool.webp';
+
+    envIblLoading = true;
+    try {
+      texLoader.load(ORRERY_ENV_TEX + file, (tex) => {
+        let pmrem = null;
+        try {
+          envIblLoading = false;
+          if (destroyed || generation !== runtimeGeneration || renderer !== expectedRenderer || scene !== expectedScene) {
+            tex.dispose();
+            return;
+          }
+          if (envRT || scene.environment) {
+            tex.dispose();
+            return;
+          }
+          tex.mapping = THREE.EquirectangularReflectionMapping;
+          tex.colorSpace = THREE.SRGBColorSpace;
+          pmrem = new THREE.PMREMGenerator(renderer);
+          pmrem.compileEquirectangularShader();
+          const rt = pmrem.fromEquirectangular(tex);
+          if (destroyed || generation !== runtimeGeneration || renderer !== expectedRenderer || scene !== expectedScene) {
+            rt.dispose();
+            tex.dispose();
+            return;
+          }
+          envRT = rt;
+          scene.environment = rt.texture;
+          window.__apOrreryIBL = true;
+          tex.dispose();
+        } catch (e) {
+          try { tex.dispose(); } catch (_) {}
+        } finally {
+          try { if (pmrem) pmrem.dispose(); } catch (_) {}
+        }
+      }, undefined, () => { envIblLoading = false; });
+    } catch (e) { envIblLoading = false; /* Missing/unsupported environment lighting keeps the prior look. */ }
   }
 
   // Logical texture names in this file use .jpg/.png; on disk they are WebP
@@ -7947,6 +8001,9 @@ const FinishShader = {
       await waitForFallbackFrame();
       window.__orreryReady = true;
       window.__apOrreryCanvasFallback = true;
+      document.dispatchEvent(new CustomEvent('ap-orrery-engine-replaced', {
+        detail: { engine: 'canvas', api: window.Orrery3D, canvas: fresh }
+      }));
       document.dispatchEvent(new Event('ap-orrery-ready'));
       fallbackPromise = null;
       window.__apOrreryFallbackPromise = null;
@@ -8058,6 +8115,9 @@ const FinishShader = {
     scene.fog = new THREE.FogExp2(isAwardMode() ? 0x0c1016 : 0x050406, 0.00045);
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
+    runtimeGeneration += 1;
+    window.__apOrreryIBL = false;
+    if (!preloaderMode) initEnvironmentIBL();
 
     // Bloom composer — defer during preloader to cut GPU memory; built in settleFromIntro.
     if (!preloaderMode && !PRM && perfTier !== 'low') {
@@ -9462,6 +9522,7 @@ const FinishShader = {
   }
 
   function destroy() {
+    runtimeGeneration += 1;
     destroyed = true;
     if (raf) { cancelAnimationFrame(raf); raf = null; }
     activePointers.clear();
@@ -9493,6 +9554,10 @@ const FinishShader = {
     try { disposeHelioAspectLines(); } catch (e) {}
     try { disposePreloaderComets(); } catch (e) {}
     try { disposeSceneResources(scene); } catch (e) {}
+    try { if (scene) scene.environment = null; } catch (e) {}
+    try { if (envRT) envRT.dispose(); } catch (e) {}
+    envRT = null;
+    envIblLoading = false;
     if (composer) {
       try { composer.passes && composer.passes.forEach((pass) => pass && pass.dispose && pass.dispose()); } catch (e) {}
       try { composer.dispose && composer.dispose(); } catch (e) {}
@@ -9513,6 +9578,99 @@ const FinishShader = {
     leoCraft.length = 0;
     Object.keys(velocityArrows).forEach((id) => { delete velocityArrows[id]; });
     Object.keys(labels).forEach((id) => { delete labels[id]; });
+    Object.keys(extraMeshes).forEach((id) => { delete extraMeshes[id]; });
+    Object.keys(trailState).forEach((id) => { delete trailState[id]; });
+    Object.keys(planetTrails).forEach((id) => { delete planetTrails[id]; });
+
+    earthCloud = null;
+    moonGroup = null;
+    moonMesh = null;
+    moonCraterGroup = null;
+    moonHaloMesh = null;
+    earthOrbitGroup = null;
+    earthDebrisPoints = null;
+    leoOrbitRing = null;
+    geoOrbitRing = null;
+    earthMat = null;
+    earthAtmoMat = null;
+    earthAtmoMatOuter = null;
+    earthUniforms.uCloudTex.value = null;
+    earthUniforms.uHasLights.value = 0;
+    earthUniforms.uCloudShadow.value = 0;
+
+    sunMesh = null;
+    sunGlow.length = 0;
+    sunMaterial = null;
+    sunCoronaGroup = null;
+    sunCoronaMesh = null;
+    sunCoronaMat = null;
+    sunPromGroup = null;
+    sunPointLight = null;
+    sunDirLight = null;
+    sunDirLightTarget = null;
+    hemiLight = null;
+    instrumentFillLight = null;
+    instrumentFillTarget = null;
+    sunFocusRing = null;
+    moonFocusRing = null;
+    saturnRingMesh = null;
+    saturnShadowBand = null;
+    sunMarker = null;
+
+    starField = null;
+    starFieldFar = null;
+    milkyWayBand = null;
+    asteroidPoints = null;
+    halleyGroup = null;
+    halleyOrbit = null;
+    halleyTail = null;
+    preloaderComets = null;
+    galaxyGroup = null;
+    milkyWayGroup = null;
+    oortShell = null;
+    localStarsGroup = null;
+    catalogStarsGroup = null;
+    milkyWayDisk = null;
+    cosmicField = null;
+    milkyWayBulge = null;
+    milkyWayDust = null;
+    milkyWayHII = null;
+    milkyWayArmRibbons = null;
+    milkyWaySatellites = null;
+    milkyWaySoftDisk = null;
+    milkyWayDustLanes = null;
+    galacticCore = null;
+    galacticCoreRing = null;
+    galacticBar = null;
+    galacticHalo = null;
+    galacticHaloDisk = null;
+    gaiaSamplePoints = null;
+    magellanicStreamLine = null;
+    magellanicStreamGlow = null;
+    magellanicStreamLabel = null;
+    brightGalacticStars = null;
+    instrumentCosmicVeil = null;
+    extraBodiesGroup = null;
+    trailsGroup = null;
+    galaxyBuilt = false;
+    milkySpiralBuilt = false;
+    gaiaSampleBuilt = false;
+    allPlanetsBuilt = false;
+    sunVisualsMinimal = false;
+    trailsActive = false;
+    trailLastJd = 0;
+    trailIdle = 0;
+    focusPlanetId = null;
+    focusFrameId = null;
+    focusPlanetUntil = 0;
+    moonFrameActive = false;
+    portraitMode = false;
+    portraitId = null;
+    portraitRestore = null;
+    aspectGroup = null;
+    aspectData = null;
+    aspectActive = false;
+    aspectHelioGroup = null;
     scene = null;
     camera = null;
     texLoader = null;
@@ -9527,6 +9685,7 @@ const FinishShader = {
     running = false;
     inView = false;
     fellBack = false;
+    window.__apOrreryIBL = false;
   }
 
   window.Orrery3D = {

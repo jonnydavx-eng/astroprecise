@@ -85,7 +85,7 @@
       <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
         <void-orrery id="orr" start-radius="210" data-wheel="off" aria-label="Living-sky 3D model"></void-orrery>
         <div class="ap-model-status" aria-live="polite">
-          <span id="sky-live-status" class="ap-model-status__live">Live now</span>
+          <span id="sky-live-status">Preparing 3D</span>
           <span id="sky-scale-status">Solar system</span>
           <span id="sky-time-status">Computing UTC</span>
         </div>
@@ -242,7 +242,7 @@
         if (orrery && orrery.setLive) orrery.setLive();
         setTimeout(reveal, 1800);
       }, { once: true });
-      setTimeout(reveal, 6000);
+      document.addEventListener('ap-orrery-unavailable', reveal, { once: true });
     })();
   </script>
   <script src="js/ap-observatory-controls-v835.js?v=835" defer></script>

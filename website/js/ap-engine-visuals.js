@@ -158,6 +158,10 @@
     /* My Sky already is the hub map — no second tools strip */
     if (body.classList.contains('ap-mysky-page')) return true;
     var key = pageKey();
+    /* Launch core is intentionally sparse: these routes already have a single
+       obvious job. Injecting the generic model/tool promotion made them read as
+       unrelated sites and duplicated navigation below the real content. */
+    if (/^(chart|horoscope|shop|catalogue)\.html$/.test(key)) return true;
     if (/^(privacy|terms|404|offline|phone|audit|index-classic|index-ephemeris|auth-redirect|sample-reading)/.test(key)) {
       // sample-reading is a print-like document — keep clean
       return true;

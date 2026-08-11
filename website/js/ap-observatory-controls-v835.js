@@ -18,7 +18,6 @@
     ['saturn', 'Saturn', '#dfc184'],
     ['uranus', 'Uranus', '#8fcfd0'],
     ['neptune', 'Neptune', '#526fd0'],
-    ['pluto', 'Pluto', '#aa99c5'],
   ];
   var FACTS = {
     sun: 'The system’s light and 99.86% of its mass.',
@@ -31,7 +30,6 @@
     saturn: 'A gas giant encircled by an extraordinarily thin ring system.',
     uranus: 'An ice giant rotating almost on its side.',
     neptune: 'A blue ice giant with the fastest planetary winds measured.',
-    pluto: 'A small, complex world at the familiar system’s far edge.',
   };
   var SCALE_NOTES = {
     EARTH: 'Earth and its immediate sky.',

@@ -8,7 +8,7 @@
   var FOCUS = {
     sun: 'Sun', mercury: 'Mercury', venus: 'Venus', earth: 'Earth', moon: 'Moon',
     mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus',
-    neptune: 'Neptune', pluto: 'Pluto'
+    neptune: 'Neptune'
   };
 
   var STASH_KEY = 'ap-explore-moment';
@@ -156,8 +156,7 @@
       }
       setMoment(state.moment);
       if (state.focus && FOCUS[state.focus] && orrery.flyTo) {
-        orrery.flyTo(state.focus);
-        showFocus(FOCUS[state.focus], { key: state.focus });
+        if (orrery.flyTo(state.focus) !== false) showFocus(FOCUS[state.focus], { key: state.focus });
       } else if (state.scale != null && orrery.flyScale) {
         orrery.flyScale(Number(state.scale));
         showScale(state.scale);
@@ -201,7 +200,6 @@
       worldGroup.addEventListener('click', function (event) {
         var button = event.target.closest('button');
         if (!button) return;
-        showFocus(button.dataset.name || 'Solar system', { key: button.dataset.key || '' });
         revealModelAfterChoice();
       });
     }
@@ -210,7 +208,6 @@
       scaleGroup.addEventListener('click', function (event) {
         var button = event.target.closest('button');
         if (!button) return;
-        showScale(button.dataset.lv);
         revealModelAfterChoice();
       });
     }

@@ -326,6 +326,9 @@
         this._eclipseK = 0; this._eclipseTarget = 0;
         this._lastLevelName = null;
         this._lastFocusKey = null; this._lastFocusAt = 0;
+        this._firstFrameSeen = false;
+        this._onAnyFirstFrame = function () { this._firstFrameSeen = true; }.bind(this);
+        document.addEventListener('ap-orrery-first-frame', this._onAnyFirstFrame);
         if (!this._ph) {
           var ph = this._ph = document.createElement('div');
           ph.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;pointer-events:none';
@@ -360,10 +363,19 @@
         if (this._eclipseHold) { clearInterval(this._eclipseHold); this._eclipseHold = null; }
         if (this._watchdog) { clearTimeout(this._watchdog); this._watchdog = null; }
         this._unwireEngineEvents();
+        if (this._onAnyFirstFrame) {
+          document.removeEventListener('ap-orrery-first-frame', this._onAnyFirstFrame);
+          this._onAnyFirstFrame = null;
+        }
         if (engineOwner === this) {
           engineOwner = null;
           try { if (this._engine && this._engine.destroy) this._engine.destroy(); } catch (e) {}
         }
+        if (this._canvas && this._canvas.parentNode === this) this._canvas.remove();
+        this._canvas = null;
+        this._engine = null;
+        this._ready = false;
+        this._booted = false;
       };
 
       /* ── boot ── */
@@ -379,7 +391,10 @@
             self.insertBefore(cv, self._ph || null);
             var api = (self._engineKind === 'canvas' ? runningEngine : window.Orrery3D) || runningEngine;
             if (!api || typeof api.init !== 'function') throw new Error('Orrery3D missing');
-            var res = api.init(cv, {});
+            var options = self._engineKind === 'webgl'
+              ? { instrument: true, freeExplore: true, showOrbits: true, showLabels: true, selectedPlanet: 'sun' }
+              : { skipIntro: true, fromLite: true };
+            var res = api.init(cv, options);
             return Promise.resolve(res).then(function () { return api; });
           })
           .then(function (api) {
@@ -451,10 +466,15 @@
       };
 
       C.prototype._awaitFirstFrame = function (done) {
-        var called = false;
+        var called = false, self = this;
         function finish() { if (called) return; called = true; done(); }
+        if (this._firstFrameSeen) {
+          requestAnimationFrame(finish);
+          return;
+        }
         document.addEventListener('ap-orrery-first-frame', function once() {
           document.removeEventListener('ap-orrery-first-frame', once);
+          self._firstFrameSeen = true;
           finish();
         });
         requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(finish, 900); }); });
@@ -507,16 +527,37 @@
         });
       };
 
-      C.prototype._poster = function () {
+      C.prototype._setUnavailable = function (message) {
+        var status = document.getElementById('sky-live-status');
+        var scale = document.getElementById('sky-scale-status');
+        var time = document.getElementById('sky-time-status');
+        var telemetry = document.getElementById('telemetry');
+        if (status) { status.textContent = 'Live sky unavailable'; status.classList.remove('ap-model-status__live'); }
+        if (scale) scale.textContent = '3D renderer unavailable';
+        if (time) time.textContent = 'Chart tools still work';
+        if (telemetry) telemetry.textContent = message || 'The 3D sky could not start on this device. Chart and eclipse calculations remain available.';
+        ['mladder', 'dock', 'scrub', 'nowBtn'].forEach(function (id) {
+          var root = document.getElementById(id);
+          if (!root) return;
+          if (/^(INPUT|BUTTON|SELECT)$/.test(root.tagName)) root.disabled = true;
+          Array.prototype.forEach.call(root.querySelectorAll('button,input,select'), function (control) { control.disabled = true; });
+        });
+        var stage = document.querySelector('.ap-model-stage');
+        if (stage) { stage.setAttribute('aria-busy', 'false'); stage.dataset.modelState = 'unavailable'; }
+        try { document.dispatchEvent(new CustomEvent('ap-orrery-unavailable', { detail: { message: message || '' } })); } catch (e) {}
+      };
+
+      C.prototype._poster = function (message) {
         this._posted = true;
         this.setAttribute('data-engine', 'poster');
         window.__voidOrreryEngine = 'poster';
         if (this._ph) { try { this._ph.remove(); } catch (e) {} this._ph = null; }
         if (this._canvas) { try { this._canvas.remove(); } catch (e) {} this._canvas = null; }
-        this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(216,180,106,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(255,90,31,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;border:1px solid rgba(216,180,106,.28);box-shadow:0 0 60px rgba(216,180,106,.15),inset 0 0 60px rgba(216,180,106,.1)"></div>';
+        this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(216,180,106,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(255,100,40,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(320px,80%);padding:28px;border:1px solid rgba(216,180,106,.28);border-radius:8px;background:rgba(2,3,7,.78);text-align:center;color:#f2ecdf;font:12px/1.7 IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase"><strong style="display:block;margin-bottom:8px;color:#ff6428">Live sky unavailable</strong><span style="color:rgba(242,236,223,.68);text-transform:none;letter-spacing:0">Chart and eclipse calculations still work on this device.</span></div>';
         // keep the natal overlay + eclipse veil above the poster
         if (this._natalLayer) this.appendChild(this._natalLayer);
         if (this._veil) this.appendChild(this._veil);
+        this._setUnavailable(message);
       };
 
       /* ── engine event re-emission (legacy event names, identical detail) ── */
@@ -539,12 +580,25 @@
           if (self._lastFocusKey === key && Date.now() - self._lastFocusAt < 600) return;
           self._emitFocus(key);
         };
+        this._onEngineReplaced = function (e) {
+          var d = e && e.detail;
+          if (!d || d.engine !== 'canvas' || !d.api) return;
+          self._engine = d.api;
+          self._canvas = d.canvas || self.querySelector('canvas');
+          self._engineKind = 'canvas';
+          runningEngine = d.api;
+          engineKind = 'canvas';
+          self.setAttribute('data-engine', 'canvas');
+          self._setUnavailable('The 3D renderer stopped, so the page switched to a limited fallback. Chart and eclipse calculations still work.');
+        };
         document.addEventListener('orrery-scale-change', this._onScaleChange);
         document.addEventListener('orrery-planet-focus', this._onPlanetFocus);
+        document.addEventListener('ap-orrery-engine-replaced', this._onEngineReplaced);
       };
       C.prototype._unwireEngineEvents = function () {
         if (this._onScaleChange) { try { document.removeEventListener('orrery-scale-change', this._onScaleChange); } catch (e) {} this._onScaleChange = null; }
         if (this._onPlanetFocus) { try { document.removeEventListener('orrery-planet-focus', this._onPlanetFocus); } catch (e) {} this._onPlanetFocus = null; }
+        if (this._onEngineReplaced) { try { document.removeEventListener('ap-orrery-engine-replaced', this._onEngineReplaced); } catch (e) {} this._onEngineReplaced = null; }
       };
       C.prototype._emitFocus = function (key, info) {
         var detail = info || { key: key };
@@ -574,46 +628,43 @@
 
       C.prototype._engineFlyTo = function (key) {
         var O = this._engine;
-        if (!O) return;
+        if (!O || this._engineKind !== 'webgl') return false;
         var id = String(key || '').toLowerCase();
+        if (id === 'pluto') return false;
         try {
-          if (!id) { if (O.setScaleLevel) O.setScaleLevel(2, true); return; }
-          if (O.focusPlanet) { O.focusPlanet(id); return; }
-          if (O.flyToBody) { O.flyToBody(id); return; }
+          if (!id) { if (O.setScaleLevel) { O.setScaleLevel(2, true); return true; } return false; }
+          if (O.focusPlanet) { O.focusPlanet(id); return true; }
+          if (O.flyToBody) { O.flyToBody(id); return true; }
         } catch (e) {}
+        return false;
       };
       C.prototype._applyScaleIndex = function (idx, animate) {
         var O = this._engine;
-        if (!O) return;
-        try { if (O.setScaleLevel) O.setScaleLevel(idx, animate !== false); } catch (e) {}
+        if (!O || this._engineKind !== 'webgl' || !O.setScaleLevel) return false;
+        try { O.setScaleLevel(idx, animate !== false); } catch (e) { return false; }
         this._lastScaleIndex = idx;
+        return true;
       };
       C.prototype.flyTo = function (key) {
         key = key == null ? '' : String(key).toLowerCase();
         var self = this;
-        if (!this._ready) { this._queue.push(function () { self.flyTo(key); }); }
-        else { this._prepareNavigation(); this._engineFlyTo(key); }
-        // legacy dispatched planetfocus synchronously, renderer or not
+        if (!this._ready) { this._queue.push(function () { self.flyTo(key); }); return true; }
+        this._prepareNavigation();
+        if (!this._engineFlyTo(key)) return false;
         if (!key) this._emitFocus(key, { key: key, name: 'The System', glyph: '✦' });
         else this._emitFocus(key);
+        return true;
       };
       C.prototype.flyScale = function (level) {
         var self = this;
         var lv = String(level == null ? '' : level).toUpperCase();
         if (lv === 'EARTH') return this.flyTo('earth');
         var idx = scaleToIndex(level);
-        if (!this._ready) { this._queue.push(function () { self.flyScale(level); }); }
-        else { this._prepareNavigation(); this._applyScaleIndex(idx, true); }
-        if (this._engineKind === 'canvas' || (this._engine && this._engine.isWebGL === false)) {
-          // canvas engine emits no scale events — keep the ladder honest
-          var name = SCALE_NAMES[idx];
-          if (name !== this._lastLevelName) {
-            this._lastLevelName = name;
-            this._syncNatalVisibility();
-            this.dispatchEvent(new CustomEvent('scalechange', { detail: { level: name }, bubbles: true }));
-          }
-        }
+        if (!this._ready) { this._queue.push(function () { self.flyScale(level); }); return true; }
+        this._prepareNavigation();
+        if (!this._applyScaleIndex(idx, true)) return false;
         this._emitFocus(null, { key: null, name: SCALE_FOCUS_NAMES[lv] || lv, glyph: '✦' });
+        return true;
       };
 
       /* ── time: setJD / setLive / getJD ── */

@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '771');
+const AP_ASSET_V = String(window.AP_ASSET_V || '835');
 
 const AstroApp = (() => {
 
@@ -42,8 +42,10 @@ const AstroApp = (() => {
     initToastContainer();
     initScrollAnimations();
     initModalHandlers();
-    // Sitewide engine stills / cinema plate (no Three.js — safe)
-    ensureEngineVisuals();
+    // Secondary archive pages may still use the legacy promo rail. The launch
+    // routes have their own authored hierarchy and must not receive injected
+    // art, model cards, or extra CSS after first paint.
+    if (!isLaunchCorePage()) ensureEngineVisuals();
 
     // Load preferences
     if (window.AstroProfile) {
@@ -57,6 +59,11 @@ const AstroApp = (() => {
   }
 
   /** Load engine stills module once (shared 3D brand art, no WebGL). */
+  function isLaunchCorePage() {
+    var key = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
+    return /^(index|chart|horoscope|shop|eclipse)\.html$/.test(key);
+  }
+
   function ensureEngineVisuals() {
     ensurePaletteCss();
     ensureLogoAuroraCss();

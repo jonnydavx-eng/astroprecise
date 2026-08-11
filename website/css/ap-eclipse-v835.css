@@ -1,0 +1,64 @@
+/* AstroPrecise v835 — eclipse launch route around the dedicated renderer. */
+.eclipse-v835 { background: var(--ap-void-deep); }
+.ap-eclipse-page-shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+.ap-eclipse-kicker { margin: 0; color: var(--ap-brass); font: 10px/1.5 var(--ap-data); letter-spacing: .11em; text-transform: uppercase; }
+.ap-eclipse-kicker > span { display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--ap-ember); box-shadow: 0 0 14px rgba(255,100,40,.6); }
+.ap-eclipse-hero { padding: clamp(44px, 6vw, 76px) 0 18px; }
+.ap-eclipse-hero h1 { max-width: 14ch; margin: 15px 0 20px; color: var(--ap-paper); font: 600 clamp(48px, 7vw, 92px)/.9 var(--ap-display); letter-spacing: -.035em; }
+.ap-eclipse-hero h1 em { color: var(--ap-ember); font-weight: 500; }
+.ap-eclipse-hero .ap-eclipse-page-shell > p:not(.ap-eclipse-kicker) { max-width: 66ch; margin: 0; color: var(--ap-paper-dim); font-size: 17px; line-height: 1.65; }
+.ap-eclipse-hero__meta { margin-top: 24px; display: flex; gap: 8px 22px; flex-wrap: wrap; color: var(--ap-silver); font: 10px/1.5 var(--ap-data); text-transform: uppercase; letter-spacing: .07em; }
+.ap-eclipse-hero__meta span { padding-left: 12px; border-left: 1px solid var(--ap-line-strong); }
+
+.ap-eclipse-guide { padding: clamp(54px, 7vw, 88px) 0; border-top: 1px solid var(--ap-line); }
+.ap-eclipse-guide header { display: grid; grid-template-columns: .48fr 1fr; gap: 14px 40px; align-items: end; margin-bottom: 34px; }
+.ap-eclipse-guide header .ap-eclipse-kicker { grid-column: 1 / -1; }
+.ap-eclipse-guide h2, .ap-eclipse-contact h2 { margin: 0; color: var(--ap-paper); font: 600 clamp(38px, 5vw, 64px)/.98 var(--ap-display); }
+.ap-eclipse-guide__grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border: 1px solid var(--ap-line); border-radius: 8px; overflow: hidden; }
+.ap-eclipse-guide article { min-height: 270px; padding: clamp(22px, 3vw, 32px); border-top: 1px solid var(--ap-line); border-left: 1px solid var(--ap-line); background: rgba(13,18,27,.58); }
+.ap-eclipse-guide article:nth-child(-n+2) { border-top: 0; }
+.ap-eclipse-guide article:nth-child(odd) { border-left: 0; }
+.ap-eclipse-guide article > span { color: var(--ap-brass); font: 10px var(--ap-data); letter-spacing: .08em; text-transform: uppercase; }
+.ap-eclipse-guide h3 { margin: 20px 0 12px; color: var(--ap-paper); font: 600 30px/1.02 var(--ap-display); }
+.ap-eclipse-guide article p { margin: 0 0 20px; color: var(--ap-paper-dim); line-height: 1.62; }
+.ap-eclipse-guide article a { display: inline-block; margin-right: 18px; color: var(--ap-brass-bright); font-size: 13px; }
+.ap-eclipse-guide__safety { background: rgba(255,100,40,.045) !important; }
+.ap-eclipse-guide__safety > span, .ap-eclipse-guide__safety h3 { color: var(--ap-ember) !important; }
+
+.ap-eclipse-contact { padding: clamp(56px, 8vw, 96px) 0; border-top: 1px solid var(--ap-line); }
+.ap-eclipse-contact__grid { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(300px,.8fr); gap: clamp(40px, 7vw, 86px); align-items: start; }
+.ap-eclipse-contact h2 { margin: 14px 0 18px; }
+.ap-eclipse-contact__grid > div > p:not(.ap-eclipse-kicker) { max-width: 65ch; color: var(--ap-paper-dim); line-height: 1.65; }
+.ap-eclipse-contact form { margin-top: 28px; padding: 22px; border: 1px solid var(--ap-line); border-radius: 8px; background: rgba(13,18,27,.66); }
+.ap-eclipse-contact__fields { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.ap-eclipse-contact label span { display: block; margin-bottom: 7px; color: var(--ap-brass); font: 10px var(--ap-data); letter-spacing: .07em; text-transform: uppercase; }
+.ap-eclipse-contact input, .ap-eclipse-contact select { width: 100%; min-height: 46px; padding: 9px 11px; border: 1px solid var(--ap-line-strong); border-radius: 4px; background: var(--ap-void-deep); color: var(--ap-paper); font-size: 16px; color-scheme: dark; }
+.ap-eclipse-contact form button { min-height: 48px; margin-top: 14px; padding: 0 18px; border: 1px solid var(--ap-ember); border-radius: 5px; background: var(--ap-ember); color: #170702; font-weight: 700; cursor: pointer; }
+.ap-eclipse-contact__note { margin: 11px 0 0; color: var(--ap-paper-faint); font: 10px/1.55 var(--ap-data); }
+.ap-eclipse-result { margin-top: 16px; padding: 22px; border: 1px solid var(--ap-line-strong); border-radius: 8px; background: rgba(13,18,27,.74); }
+.ap-eclipse-result__head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--ap-line); }
+.ap-eclipse-result__head span { color: var(--ap-brass); font: 10px var(--ap-data); text-transform: uppercase; letter-spacing: .08em; }
+.ap-eclipse-result__head strong { color: var(--ap-paper); font-size: 13px; }
+.ap-eclipse-result ol { list-style: none; margin: 0; padding: 0; }
+.ap-eclipse-result li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--ap-line); }
+.ap-eclipse-result li > span { color: var(--ap-brass); font: 10px var(--ap-data); }
+.ap-eclipse-result li strong { color: var(--ap-paper); }
+.ap-eclipse-result li p { margin: 4px 0 0; color: var(--ap-silver); font: 11px var(--ap-data); }
+#eclipseResultNote { margin: 16px 0; color: var(--ap-paper-dim); font-size: 13px; line-height: 1.6; }
+.ap-eclipse-geometry-plate { margin: 0; border: 1px solid var(--ap-line); border-radius: 8px; overflow: hidden; background: #08090d; }
+.ap-eclipse-geometry-plate img { display: block; width: 100%; height: auto; }
+.ap-eclipse-geometry-plate figcaption { padding: 16px 18px; color: var(--ap-paper-faint); font-size: 12px; line-height: 1.6; }
+.ap-eclipse-geometry-plate figcaption span { display: block; margin-bottom: 7px; color: var(--ap-brass); font: 10px var(--ap-data); text-transform: uppercase; letter-spacing: .08em; }
+
+@media (max-width: 760px) {
+  .ap-eclipse-page-shell { width: min(100% - 32px, 1180px); }
+  .ap-eclipse-hero { padding-top: 36px; }
+  .ap-eclipse-hero h1 { font-size: clamp(46px, 14vw, 64px); }
+  .ap-eclipse-guide header, .ap-eclipse-contact__grid { grid-template-columns: 1fr; }
+  .ap-eclipse-guide__grid { grid-template-columns: 1fr; }
+  .ap-eclipse-guide article { min-height: 0; border-left: 0; border-top: 1px solid var(--ap-line) !important; }
+  .ap-eclipse-guide article:first-child { border-top: 0 !important; }
+  .ap-eclipse-contact__fields { grid-template-columns: 1fr; }
+  .ap-eclipse-contact form button { width: 100%; }
+  .ap-eclipse-geometry-plate { max-width: 560px; }
+}
