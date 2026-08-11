@@ -1,192 +1,189 @@
-/* ==========================================================================
-   AstroPrecise — Jet · Silver · Aurora (site rebuild 2026-07-09)
-   Research: NASA Eyes · our engine Earth limb · Imagine jet-aurora targets
-   Stage = jet black · metal = silver chrome · life = aurora limb glow
-   Legacy aliases remap gold/brass → silver so old rules recolour sitewide.
+/* ========================================================================== 
+   AstroPrecise — Field Instrument palette (launch system, 2026-08-11)
+
+   This is the compatibility source of truth for old route styles.  Historic
+   names such as gold, aurora and cyan deliberately resolve into the same
+   blackened-brass instrument language used by ap-living-sky-v834.css.
+   Astronomical colour belongs inside the renderers; site chrome stays quiet.
    ========================================================================== */
 
 :root {
-  /* ── Jet void ── */
-  --ap-jet:           #000000;
-  --ap-jet-soft:      #08080b;
-  --ap-jet-base:      #0A0A0C;
-  --ap-jet-mid:       #101014;
-  --ap-jet-raised:    #18181E;
-  --ap-jet-elevated:  #22222A;
+  color-scheme: dark;
 
-  --ap-void-deep:     var(--ap-jet-soft);
-  --ap-void-base:     var(--ap-jet-base);
-  --ap-void-mid:      var(--ap-jet-mid);
-  --ap-void-raised:   var(--ap-jet-raised);
+  /* Canonical surfaces */
+  --ap-void: #05070b;
+  --ap-void-deep: #020307;
+  --ap-void-base: #05070b;
+  --ap-void-mid: #0a0e15;
+  --ap-void-raised: #0d121b;
+  --ap-void-soft: #131b28;
+  --ap-jet: var(--ap-void-deep);
+  --ap-jet-soft: var(--ap-void);
+  --ap-jet-base: var(--ap-void);
+  --ap-jet-mid: var(--ap-void-mid);
+  --ap-jet-raised: var(--ap-void-raised);
+  --ap-jet-elevated: var(--ap-void-soft);
 
-  /* ── Silver metal ── */
-  --ap-silver-bright: #E8EBF0; /* primary text */
-  --ap-silver:        #C8CDD6; /* secondary / metal */
-  --ap-silver-dim:    #8B919C; /* muted UI */
-  --ap-silver-faint:  #5C616A; /* captions */
-  --ap-chrome:        #A8B0BC; /* icons / hairlines */
+  /* Canonical text and instrument metals */
+  --ap-paper: #f2ecdf;
+  --ap-paper-dim: rgba(242, 236, 223, 0.72);
+  --ap-paper-faint: rgba(242, 236, 223, 0.48);
+  --ap-brass: #d8b46a;
+  --ap-brass-bright: #f0d59d;
+  --ap-ember: #ff6428;
+  --ap-silver: #b9c8dc;
+  --ap-proof: #a8d6b0;
 
-  --ap-silver-a08: rgba(200, 205, 214, 0.08);
-  --ap-silver-a12: rgba(200, 205, 214, 0.12);
-  --ap-silver-a18: rgba(200, 205, 214, 0.18);
-  --ap-silver-a28: rgba(200, 205, 214, 0.28);
-  --ap-silver-a40: rgba(200, 205, 214, 0.40);
-  --ap-silver-a55: rgba(200, 205, 214, 0.55);
+  --ap-silver-bright: var(--ap-paper);
+  --ap-silver-dim: rgba(185, 200, 220, 0.68);
+  --ap-silver-faint: rgba(185, 200, 220, 0.45);
+  --ap-chrome: var(--ap-silver);
+  --ap-silver-a08: rgba(185, 200, 220, 0.08);
+  --ap-silver-a12: rgba(185, 200, 220, 0.12);
+  --ap-silver-a18: rgba(185, 200, 220, 0.18);
+  --ap-silver-a28: rgba(185, 200, 220, 0.28);
+  --ap-silver-a40: rgba(185, 200, 220, 0.40);
+  --ap-silver-a55: rgba(185, 200, 220, 0.55);
 
-  /* ── Aurora — Earth limb ice (primary accent) ── */
-  --ap-aurora:        #7EC8E8;
-  --ap-aurora-bright: #A8DCF2;
-  --ap-aurora-deep:   #4A9FD4;
-  --ap-aurora-violet: #8B7CE0;
-  --ap-aurora-a10:    rgba(126, 200, 232, 0.10);
-  --ap-aurora-a16:    rgba(126, 200, 232, 0.16);
-  --ap-aurora-a28:    rgba(126, 200, 232, 0.28);
-  --ap-aurora-a40:    rgba(126, 200, 232, 0.40);
+  --ap-brass-a06: rgba(216, 180, 106, 0.06);
+  --ap-brass-a08: rgba(216, 180, 106, 0.08);
+  --ap-brass-a12: rgba(216, 180, 106, 0.12);
+  --ap-brass-a18: rgba(216, 180, 106, 0.18);
+  --ap-brass-a28: rgba(216, 180, 106, 0.28);
+  --ap-brass-a40: rgba(216, 180, 106, 0.40);
+  --ap-brass-a55: rgba(216, 180, 106, 0.55);
 
-  /* Cyan alias → aurora (keeps existing --ap-cyan rules) */
-  --ap-cyan:          var(--ap-aurora);
-  --ap-cyan-bright:   var(--ap-aurora-bright);
-  --ap-cyan-dim:      var(--ap-aurora-deep);
-  --ap-cyan-a10:      var(--ap-aurora-a10);
-  --ap-cyan-a16:      var(--ap-aurora-a16);
-  --ap-cyan-a28:      var(--ap-aurora-a28);
-  --ap-cyan-a40:      var(--ap-aurora-a40);
+  /* Historical aurora/cyan aliases: telemetry silver, never interface blue. */
+  --ap-aurora: var(--ap-brass);
+  --ap-aurora-bright: var(--ap-brass-bright);
+  --ap-aurora-deep: #b08a43;
+  --ap-aurora-violet: var(--ap-silver);
+  --ap-aurora-a10: var(--ap-brass-a08);
+  --ap-aurora-a16: var(--ap-brass-a18);
+  --ap-aurora-a28: var(--ap-brass-a28);
+  --ap-aurora-a40: var(--ap-brass-a40);
+  --ap-cyan: var(--ap-silver);
+  --ap-cyan-bright: var(--ap-paper);
+  --ap-cyan-dim: var(--ap-silver-dim);
+  --ap-cyan-a10: var(--ap-silver-a08);
+  --ap-cyan-a16: var(--ap-silver-a18);
+  --ap-cyan-a28: var(--ap-silver-a28);
+  --ap-cyan-a40: var(--ap-silver-a40);
 
-  /* ── Gold tokens REMAPPED → silver/aurora (sitewide recolour) ── */
-  --ap-gold-ink:       #4A5058;
-  --ap-gold-shadow:    #6A7078;
-  --ap-gold-core:      var(--ap-chrome);       /* was brass UI → chrome */
-  --ap-gold-bright:    var(--ap-silver);
-  --ap-gold-vivid:     var(--ap-silver-bright);
-  --ap-gold-parchment: var(--ap-silver-bright);
+  /* Historical gold aliases: aged brass. */
+  --ap-gold-ink: #8f6f36;
+  --ap-gold-shadow: #b08a43;
+  --ap-gold-core: var(--ap-brass);
+  --ap-gold-bright: var(--ap-brass-bright);
+  --ap-gold-vivid: var(--ap-brass-bright);
+  --ap-gold-parchment: var(--ap-paper);
+  --ap-gold-a06: var(--ap-brass-a06);
+  --ap-gold-a08: var(--ap-brass-a08);
+  --ap-gold-a12: var(--ap-brass-a12);
+  --ap-gold-a16: var(--ap-brass-a18);
+  --ap-gold-a22: var(--ap-brass-a28);
+  --ap-gold-a28: var(--ap-brass-a28);
+  --ap-gold-a40: var(--ap-brass-a40);
+  --ap-gold-a55: var(--ap-brass-a55);
+  --ap-sun-glint: #f5d58f;
 
-  --ap-gold-a06: var(--ap-silver-a08);
-  --ap-gold-a08: var(--ap-silver-a08);
-  --ap-gold-a12: var(--ap-silver-a12);
-  --ap-gold-a16: var(--ap-silver-a18);
-  --ap-gold-a22: var(--ap-silver-a28);
-  --ap-gold-a28: var(--ap-silver-a28);
-  --ap-gold-a40: var(--ap-silver-a40);
-  --ap-gold-a55: var(--ap-silver-a55);
+  /* Semantic accents. Ember is action/event; green is verified proof. */
+  --ap-element-fire: var(--ap-ember);
+  --ap-element-fire-glow: rgba(255, 100, 40, 0.12);
+  --ap-element-earth: var(--ap-proof);
+  --ap-element-earth-glow: rgba(168, 214, 176, 0.10);
+  --ap-element-air: var(--ap-silver);
+  --ap-element-air-glow: var(--ap-silver-a12);
+  --ap-element-water: var(--ap-silver);
+  --ap-element-water-glow: var(--ap-silver-a12);
+  --ap-obs-violet: var(--ap-brass-a06);
+  --ap-obs-burgundy: rgba(255, 100, 40, 0.035);
+  --ap-obs-violet-strong: var(--ap-brass-a12);
 
-  /* Rare sun glint (Sun body / prices only — not chrome) */
-  --ap-sun-glint:      #E8DCC8;
+  /* Panels, copy and focus */
+  --ap-ip-void: var(--ap-void-deep);
+  --ap-ip-surface: rgba(13, 18, 27, 0.82);
+  --ap-ip-surface-deep: rgba(2, 3, 7, 0.88);
+  --ap-ip-border: var(--ap-brass-a18);
+  --ap-ip-border-rim: var(--ap-brass-a28);
+  --ap-ip-engrave-line: var(--ap-brass-a18);
+  --ap-ip-gold: var(--ap-brass);
+  --ap-ip-gold-pale: var(--ap-brass-bright);
+  --ap-ip-silver: var(--ap-silver);
+  --ap-ip-silver-dim: var(--ap-silver-dim);
+  --ap-text-primary: var(--ap-paper);
+  --ap-text-secondary: var(--ap-paper-dim);
+  --ap-text-muted: var(--ap-paper-faint);
+  --ap-text-faint: var(--ap-paper-faint);
+  --ap-link: var(--ap-brass-bright);
+  --ap-link-hover: var(--ap-paper);
+  --ap-link-active: var(--ap-ember);
+  --ap-focus-ring: var(--ap-ember);
+  --ap-focus-shadow: 0 0 0 3px rgba(255, 100, 40, 0.24);
 
-  /* ── Element accents (cool-shifted) ── */
-  --ap-element-fire:       #E07070;
-  --ap-element-fire-glow:  rgba(224, 112, 112, 0.12);
-  --ap-element-earth:      #6A9A70;
-  --ap-element-earth-glow: rgba(106, 154, 112, 0.10);
-  --ap-element-air:        var(--ap-silver);
-  --ap-element-air-glow:   var(--ap-silver-a12);
-  --ap-element-water:      var(--ap-aurora);
-  --ap-element-water-glow: var(--ap-aurora-a16);
+  /* Actions are solid instrument controls, not gradients. */
+  --ap-cta: var(--ap-ember);
+  --ap-cta-hover: #ff7a45;
+  --ap-cta-ink: #170702;
+  --ap-cta-grad: var(--ap-ember);
 
-  /* ── Atmosphere ── */
-  --ap-obs-violet:   rgba(100, 90, 180, 0.10);
-  --ap-obs-burgundy: rgba(60, 40, 80, 0.08);
-  --ap-obs-violet-strong: rgba(100, 90, 180, 0.16);
+  --ap-line: var(--ap-brass-a18);
+  --ap-line-strong: var(--ap-brass-a40);
+  --ap-hairline: var(--ap-brass-a12);
+  --ap-rim-light: var(--ap-brass-a18);
+  --ap-rim-shadow: inset 0 1px 0 rgba(242, 236, 223, 0.05);
+  --ap-card-surface: rgba(13, 18, 27, 0.76);
+  --ap-card-border: var(--ap-line);
+  --ap-card-border-strong: var(--ap-line-strong);
+  --ap-shadow-card: 0 18px 54px rgba(0, 0, 0, 0.42);
+  --ap-shadow-raised: 0 28px 80px rgba(0, 0, 0, 0.50);
+  --ap-glow-gold: radial-gradient(ellipse 140% 100% at 50% 12%, var(--ap-brass-a08), transparent 68%);
+  --ap-glow-stage: radial-gradient(ellipse 90% 60% at 70% 32%, var(--ap-brass-a06), transparent 62%);
 
-  /* ── Instrument panels (glass on jet) ── */
-  --ap-ip-void:         var(--ap-jet);
-  --ap-ip-surface:      rgba(18, 18, 24, 0.72);
-  --ap-ip-surface-deep: rgba(8, 8, 12, 0.82);
-  --ap-ip-border:       var(--ap-silver-a18);
-  --ap-ip-border-rim:   var(--ap-aurora-a28);
-  --ap-ip-engrave-line: var(--ap-silver-a18);
-  --ap-ip-gold:         var(--ap-chrome);
-  --ap-ip-gold-pale:    var(--ap-silver-bright);
-  --ap-ip-silver:       var(--ap-silver);
-  --ap-ip-silver-dim:   var(--ap-silver-dim);
-
-  /* ── Text ── */
-  --ap-text-primary:   var(--ap-silver-bright);
-  --ap-text-secondary: var(--ap-silver);
-  --ap-text-muted:     var(--ap-silver-dim);
-  --ap-text-faint:     var(--ap-silver-faint);
-
-  /* ── Link & focus ── */
-  --ap-link:         var(--ap-aurora);
-  --ap-link-hover:   var(--ap-aurora-bright);
-  --ap-link-active:  var(--ap-silver-bright);
-  --ap-focus-ring:   var(--ap-aurora);
-  --ap-focus-shadow: 0 0 0 3px var(--ap-aurora-a28);
-
-  /* ── CTA — silver aurora gradient ── */
-  --ap-cta:       #6AB0FF;
-  --ap-cta-hover: #8FC4FF;
-  --ap-cta-ink:   #050508;
-  --ap-cta-grad:  linear-gradient(135deg, #4A90E0 0%, #7EC8E8 45%, #C8D8E8 100%);
-
-  /* ── Hairlines ── */
-  --ap-hairline: rgba(232, 235, 240, 0.08);
-  --ap-rim-light: rgba(232, 235, 240, 0.14);
-
-  /* ── Depth / glass ── */
-  --ap-silver-cool:     var(--ap-silver);
-  --ap-silver-cool-dim: var(--ap-silver-dim);
-  --ap-glow-gold:    radial-gradient(ellipse 160% 130% at 50% 22%, var(--ap-aurora-a16) 0%, transparent 68%);
-  --ap-glow-stage:   radial-gradient(ellipse 90% 60% at 70% 40%, var(--ap-aurora-a10) 0%, transparent 55%),
-                     radial-gradient(ellipse 50% 40% at 20% 80%, rgba(139, 124, 224, 0.05) 0%, transparent 50%);
-  --ap-rim-shadow:   inset 0 1px 0 rgba(232, 235, 240, 0.07);
-  --ap-card-surface: linear-gradient(165deg, rgba(24, 24, 32, 0.82) 0%, rgba(8, 8, 12, 0.65) 100%);
-  --ap-card-border:        var(--ap-silver-a18);
-  --ap-card-border-strong: var(--ap-aurora-a28);
-  --ap-shadow-card:   0 12px 40px rgba(0, 0, 0, 0.55);
-  --ap-shadow-raised: 0 20px 60px rgba(0, 0, 0, 0.65);
-  --gold-vivid:       var(--ap-silver-bright);
-  --silver-cool:      var(--ap-silver);
-
-  /* ── Legacy aliases — force jet/silver system ── */
-  --void:  var(--ap-jet-soft);
-  --bg:    var(--ap-jet-soft);
-  --bg-2:  var(--ap-jet-mid);
-  --bg-3:  var(--ap-jet-raised);
-
-  --gold:        var(--ap-chrome);
-  --gold-light:  var(--ap-silver-bright);
-  --gold-pale:   var(--ap-silver-bright);
-  --gold-dim:    var(--ap-silver-a18);
-  --gold-hero:   var(--ap-aurora);
-  --gold-hero-light: var(--ap-silver-bright);
-  --gold-bright: var(--ap-silver);
-  --hermetic-gold: var(--ap-chrome);
-  --brass:       var(--ap-chrome);
-  --brass-bright: var(--ap-silver);
-  --brass-vivid: var(--ap-silver-bright);
-
-  --white:       var(--ap-silver-bright);
-  --silver:      var(--ap-silver);
-  --silver-dim:  var(--ap-silver-dim);
+  /* Legacy variable contract */
+  --void: var(--ap-void);
+  --bg: var(--ap-void);
+  --bg-2: var(--ap-void-mid);
+  --bg-3: var(--ap-void-raised);
+  --gold: var(--ap-brass);
+  --gold-light: var(--ap-brass-bright);
+  --gold-pale: var(--ap-paper);
+  --gold-dim: var(--ap-brass-a18);
+  --gold-hero: var(--ap-brass);
+  --gold-hero-light: var(--ap-brass-bright);
+  --gold-bright: var(--ap-brass-bright);
+  --gold-vivid: var(--ap-brass-bright);
+  --hermetic-gold: var(--ap-brass);
+  --brass: var(--ap-brass);
+  --brass-bright: var(--ap-brass-bright);
+  --brass-vivid: var(--ap-brass-bright);
+  --white: var(--ap-paper);
+  --silver: var(--ap-silver);
+  --silver-cool: var(--ap-silver);
+  --silver-dim: var(--ap-silver-dim);
   --silver-dark: var(--ap-silver-faint);
-
-  --border:        var(--ap-silver-a18);
-  --border-2:      var(--ap-aurora-a28);
-  --border-glow:   var(--ap-aurora-a40);
-  --glass-border:  var(--ap-silver-a18);
-
-  --surface:       var(--ap-ip-surface);
-  --glass:         var(--ap-ip-surface);
-  --glass-bg:      var(--ap-ip-surface);
-
-  --purple: #6A6090;
-  --terracotta: var(--ap-cta);
-  --ink: var(--ap-silver-bright);
-  --ink-faded: var(--ap-silver);
-
-  --color-gold:      var(--ap-chrome);
-  --color-gold-pale: var(--ap-silver-bright);
-  --color-gold-light: var(--ap-silver-bright);
-  --color-silver:    var(--ap-silver);
+  --border: var(--ap-line);
+  --border-2: var(--ap-line-strong);
+  --border-glow: var(--ap-brass-a40);
+  --glass-border: var(--ap-line);
+  --surface: var(--ap-ip-surface);
+  --glass: var(--ap-ip-surface);
+  --glass-bg: var(--ap-ip-surface);
+  --purple: var(--ap-brass);
+  --terracotta: var(--ap-ember);
+  --ink: var(--ap-paper);
+  --ink-faded: var(--ap-paper-dim);
+  --color-gold: var(--ap-brass);
+  --color-gold-pale: var(--ap-paper);
+  --color-gold-light: var(--ap-brass-bright);
+  --color-silver: var(--ap-silver);
   --color-silver-dim: var(--ap-silver-dim);
-  --color-white:     var(--ap-silver-bright);
+  --color-white: var(--ap-paper);
 
-  /* ── Fluid display ── */
   --display-1: clamp(2.4rem, 1.5rem + 4vw, 4.2rem);
   --display-2: clamp(1.8rem, 1.3rem + 2.2vw, 2.8rem);
   --display-3: clamp(1.35rem, 1.15rem + 1vw, 1.9rem);
   --text-data: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
-
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;

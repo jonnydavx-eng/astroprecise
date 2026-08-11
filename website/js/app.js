@@ -2035,10 +2035,9 @@ else AstroApp.init();
     b.setAttribute('role', 'region');
     b.setAttribute('aria-label', 'Privacy notice');
     b.innerHTML =
-      '<span class="privacy-banner__text"><strong>Everything happens in your hands.</strong> ' +
-      'Charts and readings compute in your browser. Only place-name searches query a geocoder ' +
-      '(Open-Meteo) — your birth moment and readings never leave your device.</span>' +
-      '<button class="privacy-banner__close" type="button">Understood</button>';
+      '<span class="privacy-banner__text"><strong>Private by design.</strong> ' +
+      'Charts compute here; only place search contacts Open-Meteo.</span>' +
+      '<button class="privacy-banner__close" type="button">Got it</button>';
     document.body.appendChild(b);
     b.querySelector('.privacy-banner__close').addEventListener('click', () => {
       b.classList.add('is-hidden');

@@ -8,7 +8,7 @@
 
   document.documentElement.classList.add('ap-enchanted', 'ap-brand-nebula');
 
-if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '833';
+if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '835';
   var AV = window.AP_ASSET_V;
 
   // Client error beacon (session buffer; optional future Sentry DSN via meta)
@@ -96,6 +96,7 @@ if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '833';
     'js/icons.js',
     'js/ap-page-bridge.js',
     'js/ap-nav-model.js',
+    'js/ap-footer-inject.js',
     'js/app.js',
     // Engine stills / cinema plate sitewide (no Three.js — safe)
     'js/ap-engine-visuals.js',

@@ -1,227 +1,106 @@
-# Design System Master File
+# AstroPrecise design system — launch master
 
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+**Direction:** a blackened astronomical field instrument and contemporary
+ephemeris journal. This is not a generic space site, luxury-store template or
+rounded bento dashboard. The live sky model is the one visual signature.
 
----
+## Non-negotiable hierarchy
 
-**Project:** AstroPrecise
-**Generated:** 2026-08-11 03:01:22
-**Category:** E-commerce Luxury
-**Design Dials:** Variance 8/10 (Bold / Asymmetric) | Motion 6/10 (Standard) | Density 4/10 (Standard)
+1. The home Observatory owns the full live orrery.
+2. Eclipse owns one dedicated Sun–Moon–Earth shadow instrument because it
+   performs a different scientific task.
+3. Other pages may link to the Observatory or show clearly labelled editorial
+   artwork; they never imitate a live model or display a false `LIVE` state.
+4. Every route uses the same masthead, bottom navigation, palette, typography,
+   control geometry and compact footer.
 
----
+## Palette
 
-## Global Rules
+| Role | Value | Rule |
+| --- | --- | --- |
+| Deep void | `#020307` | Page ground |
+| Void | `#05070B` | Primary surface |
+| Raised void | `#0D121B` | Instrument plates |
+| Paper | `#F2ECDF` | Primary copy |
+| Aged brass | `#D8B46A` | Datum lines, labels, links |
+| Ember | `#FF6428` | Events, live state, one decisive action |
+| Proof | `#A8D6B0` | Verified/computed status only |
+| Telemetry silver | `#B9C8DC` | Coordinates and secondary data |
 
-### Color Palette
+No cyan, teal, burgundy or decorative purple in interface chrome. Physically
+truthful planetary colour remains inside WebGL. Umbra violet is exclusive to
+the eclipse renderer.
 
-| Role | Hex | CSS Variable |
-|------|-----|--------------|
-| Primary | `#1C1917` | `--color-primary` |
-| On Primary | `#FFFFFF` | `--color-on-primary` |
-| Secondary | `#44403C` | `--color-secondary` |
-| Accent/CTA | `#A16207` | `--color-accent` |
-| Background | `#FAFAF9` | `--color-background` |
-| Foreground | `#0C0A09` | `--color-foreground` |
-| Muted | `#E8ECF0` | `--color-muted` |
-| Border | `#D6D3D1` | `--color-border` |
-| Destructive | `#DC2626` | `--color-destructive` |
-| Ring | `#1C1917` | `--color-ring` |
+## Typography
 
-**Color Notes:** Premium dark + gold accent [Accent adjusted from #CA8A04 for WCAG 3:1]
+- `Cormorant Garamond`, italic 500: one principal thesis per page; no other
+  large decorative statements.
+- `Schibsted Grotesk`: body, labels, controls and explanatory copy.
+- `IBM Plex Mono`: UTC, coordinates, prices, evidence and instrument states.
+- `Cinzel`: edition marks and plate numbers only.
+- Mobile body copy is at least 16px; meaningful utility text is at least 12px.
+- Long copy stays within 65–72 characters per line.
 
-### Typography
+## Geometry and spacing
 
-- **Heading Font:** Playfair Display
-- **Body Font:** Inter
-- **Mood:** elegant, luxury, sophisticated, timeless, premium, editorial
-- **Google Fonts:** [Playfair Display + Inter](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap)
+- Corners are engraved: 3–6px for controls and 8–12px for large plates.
+- Pills are reserved for state, filters and `LIVE`; primary actions are not
+  capsules.
+- Use an 8px rhythm: 8, 16, 24, 32, 48, 64 and 80px.
+- Shared desktop content width: 1180px. Mobile gutter: 16px minimum.
+- Below-model sections use 48–80px vertical padding, never 120px catalog gaps.
+- Hairlines are brass at 18% or 36%; shadows are black depth, never neon glow.
 
-**CSS Import:**
-```css
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
-```
+## Component grammar
 
-### Spacing Variables
-
-*Density: 4/10 — Standard*
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--space-xs` | `4px` / `0.25rem` | Tight gaps |
-| `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |
-| `--space-md` | `16px` / `1rem` | Standard padding |
-| `--space-lg` | `24px` / `1.5rem` | Section padding |
-| `--space-xl` | `32px` / `2rem` | Large gaps |
-| `--space-2xl` | `48px` / `3rem` | Section margins |
-| `--space-3xl` | `64px` / `4rem` | Hero padding |
-
-### Shadow Depths
-
-| Level | Value | Usage |
-|-------|-------|-------|
-| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Subtle lift |
-| `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Cards, buttons |
-| `--shadow-lg` | `0 10px 15px rgba(0,0,0,0.1)` | Modals, dropdowns |
-| `--shadow-xl` | `0 20px 25px rgba(0,0,0,0.15)` | Hero images, featured cards |
-
----
-
-## Component Specs
-
-### Buttons
-
-```css
-/* Primary Button */
-.btn-primary {
-  background: #A16207;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background: transparent;
-  color: #1C1917;
-  border: 2px solid #1C1917;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-```
-
-### Cards
-
-```css
-.card {
-  background: #FAFAF9;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow-md);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-```
-
-### Inputs
-
-```css
-.input {
-  padding: 12px 16px;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 200ms ease;
-}
-
-.input:focus {
-  border-color: #1C1917;
-  outline: none;
-  box-shadow: 0 0 0 3px #1C191720;
-}
-```
-
-### Modals
-
-```css
-.modal-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: var(--shadow-xl);
-  max-width: 500px;
-  width: 90%;
-}
-```
-
----
-
-## Style Guidelines
-
-**Style:** Bento Grids
-
-**Keywords:** Apple-style, modular, cards, organized, clean, hierarchy, grid, rounded, soft
-
-**Best For:** Product features, dashboards, personal sites, marketing summaries, galleries
-
-**Key Effects:** Hover scale (1.02), soft shadow expansion, smooth layout shifts, content reveal
-
-### Page Pattern
-
-**Pattern Name:** Immersive/Interactive Experience
-
-- **Conversion Strategy:** 40% higher engagement. Performance trade-off. Provide skip option. Mobile fallback essential.
-- **CTA Placement:** After interaction complete + Skip option for impatient users
-- **Section Order:** 1. Full-screen interactive element, 2. Guided product tour, 3. Key benefits revealed, 4. CTA after completion
-
----
+- One primary action per view. Ember denotes that action; secondary actions
+  are transparent with a brass hairline.
+- Controls have at least a 44×44px interactive area and stable hover/pressed
+  states that do not move surrounding layout.
+- Cards exist only when content is independently actionable. Related facts use
+  an engraved ledger with ruled rows instead of generic feature cards.
+- Product imagery uses one grammar: quiet void or natural field, technical
+  datum line, restrained brass annotation and at most one ember event marker.
+- Renderer stills are labelled `SCHEMATIC`; generated natal charts are labelled
+  editorial and never presented as computed proof.
 
 ## Motion
 
-**Stagger List** (Standard) — Trigger: load or scroll | Duration: 300-450ms | Easing: `back.out(1.4)`
+- The orrery provides the spectacle. Site UI motion is subordinate.
+- Micro-interactions: 180–280ms, opacity or transform only, ease-out on entry.
+- No bounce, back-easing, decorative parallax or mass card stagger.
+- Content replacement crossfades in place; state changes never flash between
+  two renderers.
+- `prefers-reduced-motion` disables non-essential movement while preserving all
+  information and controls.
 
-```js
-gsap.from('.grid-item', { opacity: 0, scale: 0.92, y: 16, duration: 0.4, stagger: { each: 0.06, from: 'start', grid: 'auto' }, ease: 'back.out(1.4)' });
-```
+## Route shape
 
-**Framework notes:** grid: 'auto' lets GSAP infer rows/columns from a CSS grid layout for a natural wave stagger
+- **Home:** live Observatory → compact personal entry → three-row current
+  edition → concise computation/privacy proof → compact footer.
+- **Chart:** asymmetric thesis + birth-data instrument → result → one
+  three-row explanatory specification.
+- **Daily:** concise thesis → 6×2 sign ledger (2 columns on phone) → selected
+  readout → honest generic-reading note → collapsed sky-weather ledger.
+- **Eclipse:** live shadow instrument near the top → local result → tomorrow’s
+  visibility/watch/safety guide → inset computed-geometry schematic.
+- **Shop:** honest preview state → 7/5 lead products → three-item ledger →
+  three-row delivery/proof explanation. No checkout urgency without checkout.
 
-- ✅ Combine with from: 'center' for a bento-grid layout to draw the eye inward first
-- ❌ Don't use back.out on dense data tables; the overshoot reads as sloppy on informational UI
-- ⚡ Group DOM writes; avoid interleaving layout reads (getBoundingClientRect) between staggered tweens
+## Shared footer
 
----
+Maximum 260px desktop and 320px phone: wordmark, one honest sentence, four core
+routes and Privacy / Refunds / Verify. No zodiac directory, sign strip,
+affiliate shelf, duplicated catalogue or SEO sitemap wall.
 
-## Anti-Patterns (Do NOT Use)
+## Launch checklist
 
-- ❌ Vibrant & Block-based
-- ❌ Playful colors
-
-### Additional Forbidden Patterns
-
-- ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
-- ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
-- ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
-- ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
-- ❌ **Instant state changes** — Always use transitions (150-300ms)
-- ❌ **Invisible focus states** — Focus states must be visible for a11y
-
----
-
-## Pre-Delivery Checklist
-
-Before delivering any UI code, verify:
-
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Light mode: text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
+- One palette and type hierarchy on every key route.
+- No emoji as structural icons; use the existing SVG icon grammar.
+- Visible focus states and sequential headings.
+- No horizontal scroll at 375px; fixed navigation reserves its safe area.
+- Images declare dimensions and use WebP/AVIF where practical.
+- One WebGL context per page; no fake live badges.
+- No false commerce, privacy, astronomical or availability claims.
+- Consolidated review at 375, 390, 768, 1024 and 1440px; reduced motion; keyboard;
+  renderer focus for all planets; service-worker upgrade path.
