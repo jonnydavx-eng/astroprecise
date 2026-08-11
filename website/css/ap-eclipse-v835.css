@@ -38,6 +38,7 @@
 .ap-eclipse-contact label span { display: block; margin-bottom: 7px; color: var(--ap-brass); font: 10px var(--ap-data); letter-spacing: .07em; text-transform: uppercase; }
 .ap-eclipse-contact input, .ap-eclipse-contact select { width: 100%; min-height: 46px; padding: 9px 11px; border: 1px solid var(--ap-line-strong); border-radius: 4px; background: var(--ap-void-deep); color: var(--ap-paper); font-size: 16px; color-scheme: dark; }
 .ap-eclipse-contact form button { min-height: 48px; margin-top: 14px; padding: 0 18px; border: 1px solid var(--ap-ember); border-radius: 5px; background: var(--ap-ember); color: #170702; font-weight: 700; cursor: pointer; }
+.ap-eclipse-contact form button:disabled { opacity: .42; cursor: wait; }
 .ap-eclipse-contact__note { margin: 11px 0 0; color: var(--ap-paper-faint); font: 10px/1.55 var(--ap-data); }
 .ap-eclipse-result { margin-top: 16px; padding: 22px; border: 1px solid var(--ap-line-strong); border-radius: 8px; background: rgba(13,18,27,.74); }
 .ap-eclipse-result__head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--ap-line); }

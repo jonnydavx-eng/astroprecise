@@ -517,9 +517,9 @@ self.addEventListener('fetch', e => {
   // (the v453-v463 deploy-mismatch that broke the loading sequence / 3D model / layout).
   const isCritical =
     /\/js\/(?:app|chart-page|horoscope-page|cosmos|orrery|orrery-loader|orrery-webgl|void-orrery-adapter|ambience|eclipse-reading|deep-reading|plate-fingerprint|ap-sky-news|ap-natal-sphere|ap-checkout-honest|ap-gumroad-bridge|gumroad-unlock|ap-award-orrery|ap-home-bootstrap|hero-instrument|effects|ephemeris|lite-orrery|lite-shell-boot|ap-footer-inject|ap-page-boot|ap-asset-v)\.js$/.test(path) ||
-    /\/js\/(?:explore-boot|ap-nav-model|ap-observatory|ap-observatory-controls|ap-eclipse-geometry|ap-eclipse-live)(?:-v\d+)?\.js$/.test(path) ||
+    /\/js\/(?:explore-boot|ap-nav-model|ap-observatory|ap-observatory-controls|ap-eclipse-geometry|ap-eclipse-live|ap-eclipse-contact)(?:-v\d+)?\.js$/.test(path) ||
     /\/css\/(?:main|main-lite|ap-model-window|ap-observatory-home|ap-brand-nebula|ap-sky-news|ap-natal-sphere|ap-palette-2026)\.css$/.test(path) ||
-    /\/css\/(?:explore-page|ap-living-sky|ap-home|ap-shop|ap-eclipse)(?:-v\d+)?\.css$/.test(path);
+    /\/css\/(?:explore-page|ap-living-sky|ap-home|ap-shop|ap-eclipse|ap-chart|ap-daily)(?:-v\d+)?\.css$/.test(path);
 
   /* Cache key: NEVER the raw request, not even for a navigation. A navigation
      URL can carry a visitor's birth details in its query — the homepage no

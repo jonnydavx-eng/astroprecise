@@ -70,8 +70,8 @@
         <header class="ap-shop-section-head"><p class="ap-shop-kicker">The launch set</p><h2 id="editions-title">Five editions. One calculation.</h2><p>Choose depth and format only after seeing the free result. A quiet chart is reported honestly before any future purchase.</p></header>
 
         <div class="ap-shop-leads">
-          <article class="ap-product ap-product--eclipse">
-            <a class="ap-product__image" href="eclipse.html"><img src="img/eclipse-og.webp" width="1600" height="900" loading="lazy" alt="A dark eclipse plate with a crescent of sunlight"><span>12 Aug 2026</span></a>
+          <article class="ap-product ap-product--eclipse" id="eclipse-reading">
+            <a class="ap-product__image" href="eclipse.html"><img src="img/editorial/eclipse-launch-2026-v835.webp" width="1600" height="900" loading="lazy" alt="A cinematic eclipse field study for the 12 August 2026 launch"><span>12 Aug 2026</span></a>
             <div class="ap-product__body"><p class="ap-product__kind">Event reading · preview</p><h3>Eclipse Night Reading</h3><p class="ap-product__hook">Where the shadow reaches your chart—or where it does not.</p><p>Five concise beats from the eclipse to your own placements, with each contact’s exact distance shown first. Approximately 350 words.</p><div class="ap-product__foot"><strong>Planned £2.99</strong><a href="eclipse.html">Open free teaser</a></div></div>
           </article>
           <article class="ap-product ap-product--deep" id="deep-reading">
@@ -101,10 +101,10 @@
 
     <section class="ap-shop-notify" aria-labelledby="notify-title">
       <div class="ap-shop-shell ap-shop-notify__inner">
-        <div><p class="ap-shop-kicker">One launch message</p><h2 id="notify-title">Tell me when checkout is real.</h2><p>No sequence, no chart data, no false countdown. Just one email when the editions can actually be bought.</p></div>
+        <div><p class="ap-shop-kicker">Availability list</p><h2 id="notify-title">Tell me when verified checkout opens.</h2><p>We&rsquo;ll use this address to tell you when verified checkout opens. No chart data and no false countdown.</p></div>
         <form id="shopNotify" novalidate>
           <label for="shopNotifyEmail">Email address</label>
-          <div><input id="shopNotifyEmail" type="email" required autocomplete="email" placeholder="you@example.com"><button id="shopNotifyBtn" type="submit">Notify me once</button></div>
+          <div><input id="shopNotifyEmail" type="email" required autocomplete="email" placeholder="you@example.com"><button id="shopNotifyBtn" type="submit">Join availability list</button></div>
           <p id="shopNotifyMsg" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -127,8 +127,8 @@
         button.disabled = true; button.textContent = 'Sending…'; message.textContent = '';
         var body = new FormData(); body.append('email', email); body.append('tags', 'checkout-open');
         fetch('https://list.astroprecise.app/subscribe', { method: 'POST', body: body })
-          .then(function (response) { if (!response.ok) throw new Error(String(response.status)); form.innerHTML = '<p class="ap-shop-notify__success" role="status">You are on the one-message list.</p>'; })
-          .catch(function () { button.disabled = false; button.textContent = 'Notify me once'; message.textContent = 'That did not send. Nothing was saved—please try again.'; message.dataset.state = 'error'; });
+          .then(function (response) { if (!response.ok) throw new Error(String(response.status)); form.innerHTML = '<p class="ap-shop-notify__success" role="status">Your address is on the availability list. We&rsquo;ll use it to tell you when verified checkout opens.</p>'; })
+          .catch(function () { button.disabled = false; button.textContent = 'Join availability list'; message.textContent = 'That did not send. Nothing was saved—please try again.'; message.dataset.state = 'error'; });
       });
     })();
   </script>

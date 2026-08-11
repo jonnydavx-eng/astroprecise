@@ -71,28 +71,8 @@
   isolation: isolate;
 }
 
-.ap-eclipse-live__stage::before {
-  content: '';
-  position: absolute;
-  inset: 18px;
-  z-index: 2;
-  border: 1px solid rgba(216, 180, 106, .09);
-  border-radius: 50%;
-  pointer-events: none;
-  mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
-}
-
-.ap-eclipse-live__stage::after {
-  content: '';
-  position: absolute;
-  inset: 50% auto auto 50%;
-  z-index: 2;
-  width: min(34vw, 390px);
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(216, 180, 106, .2), transparent);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
+.ap-eclipse-live__stage::before,
+.ap-eclipse-live__stage::after { display: none; }
 
 .ap-eclipse-live__canvas {
   position: absolute;
@@ -186,7 +166,7 @@
 
 .ap-eclipse-live__legend span { display: inline-flex; align-items: center; gap: 6px; }
 .ap-eclipse-live__legend i { width: 18px; height: 1px; background: var(--ecl-brass); }
-.ap-eclipse-live__legend i[data-cone='umbra'] { height: 5px; background: rgba(108, 92, 160, .58); }
+.ap-eclipse-live__legend i[data-cone='umbra'] { height: 5px; background: rgba(74, 105, 140, .58); }
 .ap-eclipse-live__legend i[data-cone='penumbra'] { height: 5px; background: rgba(216, 180, 106, .3); }
 
 .ap-eclipse-live__panel {

@@ -312,7 +312,7 @@ function mount(root, E) {
   const umbra = new THREE.Mesh(
     new THREE.CylinderGeometry(.01, .46, 5, 48, 1, true),
     new THREE.MeshBasicMaterial({
-      color: 0x6a5a96,
+      color: 0x26384f,
       transparent: true,
       opacity: .28,
       side: THREE.DoubleSide,
@@ -331,7 +331,7 @@ function mount(root, E) {
     })
   );
   scene.add(penumbra, umbra);
-  const shadowAxis = makeGuideLine([new THREE.Vector3(), new THREE.Vector3(1, 0, 0)], 0xb9a4df, .48, true);
+  const shadowAxis = makeGuideLine([new THREE.Vector3(), new THREE.Vector3(1, 0, 0)], 0xb9c8dc, .48, true);
   scene.add(shadowAxis);
 
   let mode = 'live';
@@ -431,7 +431,9 @@ function mount(root, E) {
     const width = Math.max(1, Math.round(rect.width));
     const height = Math.max(1, Math.round(rect.height));
     const phone = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, phone ? 1.6 : 2));
+    const constrained = (navigator.deviceMemory && navigator.deviceMemory <= 4)
+      || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, phone && constrained ? 1.5 : 2));
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();

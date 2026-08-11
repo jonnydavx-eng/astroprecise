@@ -332,14 +332,11 @@
         if (!this._ph) {
           var ph = this._ph = document.createElement('div');
           ph.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;pointer-events:none';
-          // The placeholder is a drawn ring and nothing else. It carried the
-          // words "WAKING THE ENGINE…" until 2026-08-08; that string was the
-          // first thing a visitor read on the homepage, and on any path where
-          // the first frame never arrives it was also the last. A shipped
-          // default state must not contain loading text — the ring alone says
-          // "something is about to appear" without making a claim that has to
-          // resolve. Removed here and in js/orrery.js; nothing else changed.
-          ph.innerHTML = '<div style="width:180px;height:180px;border-radius:50%;border:1px solid rgba(216,180,106,.28);box-shadow:inset 0 0 60px rgba(216,180,106,.1)"></div>';
+          // Do not impersonate the renderer with a flat ring or poster while the
+          // module loads. The authored status readout already says "Preparing
+          // 3D"; a quiet field makes the first visible celestial object a real
+          // WebGL frame and removes the 2D→3D visual bait-and-switch.
+          ph.innerHTML = '';
           this.appendChild(ph);
         }
         // data-wheel="off": keep page scroll, block the engine's own wheel-zoom.

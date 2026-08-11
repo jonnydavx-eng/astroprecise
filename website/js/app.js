@@ -1072,13 +1072,9 @@ const AstroApp = (() => {
           </div>
           <div class="card" style="padding:var(--space-4)">
             <div class="text-gold" style="font-size:1.2rem;margin-bottom:var(--space-2)">${EI('leaf')}</div>
-            <strong class="text-white" style="display:block;font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--space-2)">Health</strong>
+            <strong class="text-white" style="display:block;font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--space-2)">Wellbeing reflection</strong>
             <p style="font-size:var(--text-sm);color:var(--color-silver-dim)">${data.health}</p>
           </div>
-        </div>
-        <div class="flex gap-4" style="font-size:var(--text-sm)">
-          <span>Lucky Number: <strong class="text-gold">${data.luckyNumber}</strong></span>
-          <span>Lucky Color: <strong class="text-gold">${data.luckyColor}</strong></span>
         </div>
       </div>
     `;

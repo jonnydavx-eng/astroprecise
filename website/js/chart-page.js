@@ -1993,7 +1993,7 @@
     const capTitle = host.querySelector('.email-capture__title');
     const capSub = host.querySelector('.email-capture__sub');
     if (capTitle) capTitle.textContent = 'Get cosmic weather for your chart';
-    if (capSub) capSub.innerHTML = 'Monthly transit notes for <em>your</em> chart, deep-reading previews, shop drops &amp; horoscopes when they ship — no spam, unsubscribe anytime. Your birth data stays on your device.';
+    if (capSub) capSub.innerHTML = 'Monthly transit notes for <em>your</em> chart, Deep Reading previews, shop drops &amp; horoscopes when they ship — no spam, unsubscribe anytime. Date, time and chart calculation stay on your device; place search uses Open-Meteo.';
 
     if (emailCaptureWired) return;  // wire the form exactly once
     emailCaptureWired = true;

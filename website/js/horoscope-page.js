@@ -106,11 +106,6 @@
       bootEngines().then(fn);
     }
 
-    function ephemerisReady() {
-      return !!(window.AstroEphemeris &&
-        typeof window.AstroEphemeris.julianDay === 'function');
-    }
-
     function getActiveSavedChart() {
       if (!window.AstroProfile) return null;
       if (typeof AstroProfile.getActiveChart === 'function') return AstroProfile.getActiveChart();
@@ -135,43 +130,6 @@
         }
       } catch(e) {}
       return null;
-    }
-
-    /** Daily return hook when visitor recently froze a Moment (Stage 3 closure). */
-    function mountMomentReturnHook() {
-      var hook = document.getElementById('ap-moment-return-hook');
-      if (!hook) {
-        var anchor = document.getElementById('srp-personal-note')
-          || document.querySelector('.sign-reading-panel')
-          || document.getElementById('sign-reading-panel');
-        if (!anchor || !anchor.parentNode) return;
-        hook = document.createElement('p');
-        hook.id = 'ap-moment-return-hook';
-        hook.className = 'srp-moment-return';
-        hook.setAttribute('aria-live', 'polite');
-        hook.hidden = true;
-        anchor.parentNode.insertBefore(hook, anchor.nextSibling);
-      }
-      try {
-        var raw = localStorage.getItem('ap_moment_return');
-        if (!raw) { hook.hidden = true; return; }
-        var data = JSON.parse(raw);
-        if (!data || !data.ts || Date.now() - data.ts > 7 * 86400000) {
-          localStorage.removeItem('ap_moment_return');
-          hook.hidden = true;
-          return;
-        }
-        var label = data.title || data.dateLabel || 'a night you kept';
-        var explore = (window.APDeepLink && data.m && APDeepLink.buildSkyLink)
-          ? APDeepLink.buildSkyLink({ m: data.m, focus: 'earth' })
-          : (data.m ? 'index.html#m=' + encodeURIComponent(data.m) + '&focus=earth' : 'index.html#m=now');
-        hook.innerHTML = 'You froze a Moment — <em>' + String(label).replace(/</g, '&lt;') +
-          '</em>. Compare with today\'s collective sky below, or ' +
-          '<a href="moment.html">open Moment</a> · <a href="' + explore + '">see that night in 3D</a>.';
-        hook.hidden = false;
-      } catch (e) {
-        hook.hidden = true;
-      }
     }
 
     function getUserNatalMarkers() {
@@ -214,7 +172,7 @@
         var eph = window.AstroEphemeris;
         if (eph && typeof eph.julianDay === 'function' && typeof eph.allPlanetPositions === 'function') {
           var now = new Date();
-          var jd = eph.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), 12, 0, 0);
+          var jd = eph.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), 12, 0, 0);
           var positions = eph.allPlanetPositions(jd) || {};
           var out = {};
           Object.keys(positions).forEach(function (name) {
@@ -587,33 +545,6 @@
       });
     }
 
-    // Fill + reveal the Monthly Outlook accordion, booting horoscope-subscribe.js
-    // on demand if it has not loaded yet (it is otherwise gated behind an
-    // IntersectionObserver far down the page). The Monthly button stays hidden
-    // until its body has real content so it never reads as a dead control.
-    function revealMonthlyWrap() {
-      var wrap = document.getElementById('srp-monthly-wrap');
-      var body = document.getElementById('srp-monthly-body');
-      if (wrap) wrap.hidden = !(body && body.innerHTML.trim());
-    }
-    function ensureMonthlyPanel(signKey) {
-      var wrap = document.getElementById('srp-monthly-wrap');
-      if (wrap) wrap.hidden = true; // hide until filled
-      function fill() {
-        if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.fillMonthlyPanel === 'function') {
-          HoroscopeSubscribe.fillMonthlyPanel(signKey);
-          revealMonthlyWrap();
-        }
-      }
-      if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.fillMonthlyPanel === 'function') {
-        fill();
-        return;
-      }
-      if (auditPath) return;
-      window.__apHsBooted = true; // claim the boot so the IO loader does not double-inject
-      loadScript('js/horoscope-subscribe.js').then(fill).catch(function () {});
-    }
-
     function openPanel(signKey) {
       var info = SIGNS[signKey];
       if (!info) return;
@@ -697,27 +628,6 @@
       document.getElementById('srp-love').textContent = data.love || '';
       document.getElementById('srp-career').textContent = data.career || '';
       document.getElementById('srp-health').textContent = data.health || '';
-
-      // Personal transit note when user has a saved chart for a different sign
-      var noteEl = document.getElementById('srp-personal-note');
-      if (noteEl) {
-        var userSun = getUserSign();
-        if (userSun && userSun !== signKey && window.AstroOracle && typeof AstroOracle.getDailyInsight === 'function' && ephemerisReady()) {
-          try {
-            var oracle = AstroOracle.getDailyInsight(null, new Date());
-            if (oracle && oracle.headline) {
-              noteEl.textContent = 'Your sky today: ' + oracle.headline;
-              noteEl.removeAttribute('hidden');
-            } else {
-              noteEl.setAttribute('hidden', '');
-            }
-          } catch (e) {
-            noteEl.setAttribute('hidden', '');
-          }
-        } else {
-          noteEl.setAttribute('hidden', '');
-        }
-      }
 
       // Planetary ruler badge
       var rulerEl = document.getElementById('srp-ruler-badge');
@@ -1598,182 +1508,43 @@
       // Dynamic planet weather from live ephemeris
       (function updatePlanetWeather() {
         var PLANET_INFO = [
-          { key:'sun',     symbol:'☉', name:'Sun',     descs: { Aries:'Leadership and fresh starts are energised.',Taurus:'Steady growth and sensual pleasures are highlighted.',Gemini:'Curiosity and communication are favoured.',Cancer:'Home, family, and emotional depth are centred.',Leo:'Creativity and self-expression shine brilliantly.',Virgo:'Detail, service, and refinement are in focus.',Libra:'Balance, beauty, and partnerships are blessed.',Scorpio:'Depth, intensity, and transformation are at work.',Sagittarius:'Adventure, philosophy, and optimism expand.',Capricorn:'Ambition, structure, and discipline are key.',Aquarius:'Originality, community, and vision are strong.',Pisces:'Intuition, compassion, and dreams deepen.' } },
-          { key:'moon',    symbol:'☽', name:'Moon',    descs: { Aries:'Impulses and fresh emotional starts.',Taurus:'Comfort and sensory satisfaction are craved.',Gemini:'Feelings are curious and changeable.',Cancer:'Intuition and nurturing instincts peak.',Leo:'Heart needs recognition and warmth.',Virgo:'Emotions seek order and usefulness.',Libra:'Fairness and relational harmony are needed.',Scorpio:'Emotional depth and intensity run high.',Sagittarius:'The spirit craves freedom and adventure.',Capricorn:'Practicality and emotional reserve dominate.',Aquarius:'Detachment and idealism colour the feelings.',Pisces:'Sensitivity and empathy are at their peak.' } },
-          { key:'mercury', symbol:'☿', name:'Mercury', descs: { Aries:'Sharp, direct, and fast-acting communication.',Taurus:'Deliberate, practical, and sensory thinking.',Gemini:'Agile, witty, and multi-threaded ideas.',Cancer:'Intuitive, nurturing, and memory-linked thoughts.',Leo:'Dramatic, confident, and expressive communication.',Virgo:'Precise, analytical, and detail-oriented thinking.',Libra:'Diplomatic, balanced, and aesthetically-minded ideas.',Scorpio:'Deep, investigative, and strategically sharp thinking.',Sagittarius:'Expansive, philosophical, and far-ranging thoughts.',Capricorn:'Structured, strategic, and long-term planning.',Aquarius:'Innovative, abstract, and forward-thinking ideas.',Pisces:'Imaginative, intuitive, and poetic communication.' } },
-          { key:'venus',   symbol:'♀', name:'Venus',   descs: { Aries:'Bold, impulsive, and pioneering in love and art.',Taurus:'Sensual, loyal, and luxury-loving.',Gemini:'Flirtatious, playful, and intellectually stimulated.',Cancer:'Tender, protective, and deeply feeling in love.',Leo:'Passionate, generous, and dramatically romantic.',Virgo:'Refined, thoughtful, and devoted in relationships.',Libra:'Harmonious, charming, and deeply relational.',Scorpio:'Intense, magnetic, and transformatively deep.',Sagittarius:'Free-spirited, adventurous, and expansive in love.',Capricorn:'Loyal, ambitious, and status-conscious in love.',Aquarius:'Unconventional, idealistic, and freedom-honouring.',Pisces:'Compassionate, romantic, and spiritually attuned.' } },
-          { key:'mars',    symbol:'♂', name:'Mars',    descs: { Aries:'Primal drive and decisive action surge.',Taurus:'Slow-building but unstoppable determination.',Gemini:'Scattered energy applied with wit and speed.',Cancer:'Protective drives and emotional defence.',Leo:'Bold, dramatic, and fiercely proud action.',Virgo:'Precise, methodical, and critically applied energy.',Libra:'Conflict avoided; energy flows through cooperation.',Scorpio:'Strategic, focused, and intensely purposeful.',Sagittarius:'Restless expansion and inspired pursuit.',Capricorn:'Disciplined, ambitious, and patient effort.',Aquarius:'Rebellious energy for humanitarian causes.',Pisces:'Elusive energy best channelled through creativity.' } },
-          { key:'jupiter', symbol:'♃', name:'Jupiter', descs: { Aries:'Fortune through bold starts and leadership.',Taurus:'Abundance through patience and steady growth.',Gemini:'Expansion through learning and communication.',Cancer:'Growth through family, home, and emotional wisdom.',Leo:'Prosperity through creativity and generous leadership.',Virgo:'Expansion through service, skill, and health.',Libra:'Fortune through fairness, beauty, and partnership.',Scorpio:'Growth through depth, research, and transformation.',Sagittarius:'Most naturally at home — wide horizons beckon.',Capricorn:'Structure, achievement, and long-term building flourish.',Aquarius:'Innovation, community, and future-building expand.',Pisces:'Spiritual wisdom, compassion, and artistic flow grow.' } },
-          { key:'saturn',  symbol:'♄', name:'Saturn',  descs: { Aries:'Boundaries on impulse; patience is the lesson.',Taurus:'Slow, steady discipline applied to material life.',Gemini:'Structure needed in communication and learning.',Cancer:'Emotional boundaries and family responsibilities.',Leo:'Humility tempers pride; creativity takes real effort.',Virgo:'High standards and practical mastery are forged.',Libra:'Relationships require real commitment and fairness.',Scorpio:'Deep transformation demands surrender of control.',Sagittarius:'Beliefs and philosophies are tested and refined.',Capricorn:'Mastery earned through sustained discipline and ambition.',Aquarius:'Responsibility to community and innovation is required.',Pisces:'Boundaries around the formless must be carefully held.' } },
+          { key:'Sun', id:'ap-sky-sun' },
+          { key:'Moon', id:'ap-sky-moon' },
+          { key:'Mercury', id:'ap-sky-mercury' },
+          { key:'Venus', id:'ap-sky-venus' },
+          { key:'Mars', id:'ap-sky-mars' },
+          { key:'Jupiter', id:'ap-sky-jupiter' },
+          { key:'Saturn', id:'ap-sky-saturn' },
         ];
 
         function tryUpdate() {
-          if (!window.AstroEphemeris || typeof AstroEphemeris.calculateNatalChart !== 'function') return;
+          if (!window.AstroEphemeris || typeof AstroEphemeris.julianDay !== 'function' || typeof AstroEphemeris.allPlanetPositions !== 'function') return;
           var now = new Date();
-          var raw = AstroEphemeris.calculateNatalChart(now.getUTCFullYear(), now.getUTCMonth()+1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 51.5, 0);
-          if (!raw || !raw.positions) return;
-
-          // Update main planet grid
-          var container = document.getElementById('todays-sky');
-          if (container) {
-            container.innerHTML = '';
-            PLANET_INFO.forEach(function(p) {
-              var pos = raw.positions[p.key];
-              if (!pos) return;
-              var sign = pos.sign || 'Aries';
-              var deg = Math.floor(pos.degree || 0);
-              var rx = pos.retrograde ? ' <span class="retrograde-badge" aria-label="retrograde">Rx</span>' : '';
-              var desc = p.descs[sign] || 'Planetary energies are active and notable.';
-              var card = document.createElement('div');
-              card.className = 'planet-weather-card';
-              card.innerHTML = '<span class="planet-weather-card__symbol" aria-hidden="true">' + p.symbol + '</span>' +
-                '<span class="planet-weather-card__name">' + p.name + '</span>' +
-                '<span class="planet-weather-card__position">' + sign + ' ' + deg + '°' + rx + '</span>' +
-                '<span class="planet-weather-card__desc">' + desc + '</span>';
-              container.appendChild(card);
-            });
-          }
-
-          // Update live planets strip (in-place — preserve SSR pills, no innerHTML rebuild)
-          var strip = document.getElementById('planets-strip-inner');
-          if (strip) {
-            PLANET_INFO.forEach(function(p) {
-              var pos = raw.positions[p.key];
-              if (!pos) return;
-              var sign = pos.sign || 'Aries';
-              var deg = Math.floor(pos.degree || 0);
-              var pill = strip.querySelector('.planet-pill[data-planet="' + p.name + '"]');
-              if (!pill) {
-                pill = document.createElement('div');
-                pill.className = 'planet-pill';
-                pill.dataset.planet = p.name;
-                var symHtml = (window.AstroIcons && AstroIcons.planet) ? AstroIcons.planet(p.name, { sm: true }) : p.symbol;
-                pill.innerHTML = '<span class="planet-pill__symbol" aria-hidden="true">' + symHtml + '</span>' +
-                  '<span class="planet-pill__info"><span class="planet-pill__sign"></span></span>';
-                strip.appendChild(pill);
-              }
-              var sym = pill.querySelector('.planet-pill__symbol');
-              // Never clobber an upgraded seal (or its pre-upgrade .ap-orb) with raw glyph text
-              if (sym && !sym.querySelector('.ap-seal') && !sym.querySelector('.ap-orb') && sym.textContent !== p.symbol) sym.textContent = p.symbol;
-              var info = pill.querySelector('.planet-pill__info');
-              if (!info) return;
-              var signEl = info.querySelector('.planet-pill__sign');
-              if (!signEl) {
-                signEl = document.createElement('span');
-                signEl.className = 'planet-pill__sign';
-                info.appendChild(signEl);
-              }
-              signEl.textContent = sign;
-              Array.from(info.childNodes).forEach(function(node) {
-                if (node !== signEl) info.removeChild(node);
-              });
-              info.appendChild(document.createTextNode(' ' + deg + '\u00B0'));
-              if (pos.retrograde) {
-                var rx = document.createElement('span');
-                rx.className = 'planet-pill__rx';
-                rx.textContent = 'Rx';
-                info.appendChild(rx);
-              }
-            });
-          }
+          var jd = AstroEphemeris.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), 12, 0, 0);
+          var positions = AstroEphemeris.allPlanetPositions(jd) || {};
+          var signNames = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+          PLANET_INFO.forEach(function (planet) {
+            var target = document.getElementById(planet.id);
+            if (!target) return;
+            var pos = positions[planet.key];
+            var lon = pos && Number(pos.lon);
+            if (!isFinite(lon)) {
+              target.textContent = 'Position unavailable';
+              return;
+            }
+            var normalized = ((lon % 360) + 360) % 360;
+            var sign = signNames[Math.floor(normalized / 30)] || 'Aries';
+            var degree = (normalized % 30).toFixed(1);
+            target.textContent = sign + ' ' + degree + '°' + (pos.retrograde ? ' · retrograde' : '');
+          });
         }
         engineAfterLoad.push(tryUpdate);
-        engineAfterLoad.push(dialDataRefresh);
-      })();
-
-      // Cosmic status bar: void moon, planetary hour, retrogrades
-      (function updateCosmicStatus() {
-        function tryStatus() {
-          if (!window.AstroEphemeris || !window.AstroOracle) return;
-          var now = new Date();
-          var raw = AstroEphemeris.calculateNatalChart(now.getUTCFullYear(), now.getUTCMonth()+1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 51.5, 0);
-          if (!raw) return;
-
-          // Retrograde display
-          var PLANETS_RX = [
-            {key:'mercury',label:'Mercury'},{key:'venus',label:'Venus'},{key:'mars',label:'Mars'},
-            {key:'jupiter',label:'Jupiter'},{key:'saturn',label:'Saturn'},{key:'uranus',label:'Uranus'},
-            {key:'neptune',label:'Neptune'},{key:'pluto',label:'Pluto'},
-          ];
-          var retroList = PLANETS_RX.filter(function(p){ return raw.positions && raw.positions[p.key] && raw.positions[p.key].retrograde; });
-          var rxEl = document.getElementById('retrogrades-list');
-          if (rxEl) {
-            if (!retroList.length) {
-              rxEl.textContent = 'No planets retrograde';
-            } else {
-              rxEl.innerHTML = retroList.map(function(p) {
-                var seal = '';
-                if (window.AstroIcons && AstroIcons.planet) {
-                  seal = AstroIcons.planet(p.label, { sm: true, hidden: true, label: p.label + ' retrograde' });
-                } else if (window.AstroCelestialSeals) {
-                  seal = AstroCelestialSeals.planet(p.key, { sm: true, hidden: true });
-                }
-                return (seal ? seal + ' ' : '') + p.label + ' ℞';
-              }).join('<span class="retro-sep" aria-hidden="true"> · </span>');
-            }
-          }
-
-          // Void of course moon
-          var voc = AstroOracle.getVoidOfCourseMoon ? AstroOracle.getVoidOfCourseMoon(now) : null;
-          var vocBadge = document.getElementById('void-moon-badge');
-          if (voc && voc.isVoid && vocBadge) {
-            vocBadge.style.display = 'flex';
-            var vocSign = document.getElementById('void-moon-sign');
-            if (vocSign) vocSign.textContent = '— moon in ' + (voc.moonSign || '') + ', no major aspects until sign change';
-          }
-
-          // Planetary hour
-          var ph = AstroOracle.getPlanetaryHour ? AstroOracle.getPlanetaryHour(now, 51.5, 0) : null;
-          if (ph) {
-            var phName = document.getElementById('ph-name');
-            var phGlyph = document.getElementById('ph-glyph');
-            if (phName) phName.textContent = ph.planet;
-            if (phGlyph) {
-              if (window.AstroCelestialSeals) {
-                phGlyph.innerHTML = AstroCelestialSeals.planet(ph.planet.toLowerCase(), { sm: true, hidden: true });
-              } else if (window.AstroIcons) {
-                phGlyph.innerHTML = AstroIcons.planet(ph.planet, { sm: true, hidden: true });
-              } else {
-                phGlyph.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg>';
-              }
-            }
-          }
+        var ledger = document.getElementById('ap-daily-weather');
+        if (ledger) {
+          ledger.addEventListener('toggle', function () {
+            if (ledger.open) bootEngines().then(tryUpdate).catch(function () {});
+          });
         }
-        engineAfterLoad.push(tryStatus);
-      })();
-
-      // Dynamic weekly forecast via Oracle
-      (function updateWeeklyForecast() {
-        if (auditPath) return;
-        function tryUpdate() {
-          if (!window.AstroOracle || typeof AstroOracle.getDailyInsight !== 'function' || !ephemerisReady()) {
-            setTimeout(tryUpdate, 400); return;
-          }
-          var container = document.getElementById('weekly-forecast');
-          if (!container) return;
-          container.innerHTML = '';
-          var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-          var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          var today = new Date();
-          for (var i = 0; i < 5; i++) {
-            var d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
-            var insight = AstroOracle.getDailyInsight(null, d);
-            var dateStr = DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
-            var div = document.createElement('div');
-            div.className = 'transit-item' + (i === 0 ? ' transit-item--major' : '') + ' animate-in';
-            var headline = (insight.headline && String(insight.headline).trim())
-              ? insight.headline
-              : ('Sky note — ' + dateStr);
-            var body = (insight.body && String(insight.body).trim())
-              ? insight.body
-              : 'Transit themes update as the live sky shifts.';
-            div.innerHTML = '<p class="transit-item__date">' + dateStr + '</p>' +
-              '<h3 class="transit-item__title">' + headline + '</h3>' +
-              '<p class="transit-item__desc">' + body + '</p>';
-            container.appendChild(div);
-          }
-        }
-        tryUpdate();
       })();
 
       // Auto-open from ?sign= URL param or last explored sign (device memory)
@@ -1793,126 +1564,4 @@
       }
     });
 
-    // ── "Today, for you" — personalised daily reading ───────────────────────
-    // Injected on demand, BELOW the full-height sphere hero (so its reveal can
-    // never shift above-the-fold content / regress LCP), and ONLY for visitors
-    // with a saved chart. Nothing here runs on the audit path or for chartless
-    // visitors beyond a light prompt — the page's perf is untouched otherwise.
-    var PT_AREA = {
-      Sun: 'identity and vitality', Moon: 'feelings and home',
-      Mercury: 'your mind and conversations', Venus: 'love and what you value',
-      Mars: 'drive and momentum', Jupiter: 'growth and opportunity',
-      Saturn: 'structure and discipline', Uranus: 'change and freedom',
-      Neptune: 'dreams and intuition', Pluto: 'depth and transformation',
-      Ascendant: 'how you show up', Midheaven: 'your work and direction'
-    };
-    var PT_WORD = { conjunction: 'meets', opposition: 'opposes', square: 'challenges', trine: 'flows with', sextile: 'supports' };
-    // The two chart angles are stored under their trade names; these are printed instead.
-    var PT_POINT = { Midheaven: 'the top of your chart', Ascendant: 'your Rising' };
-
-    function ptEsc(s) {
-      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-      });
-    }
-
-    function ptAspectSentence(a) {
-      var asp = String(a.aspect || '').toLowerCase();
-      var word = PT_WORD[asp] || 'is in contact with';
-      var area = PT_AREA[a.natal] || 'your inner world';
-      var lead;
-      if (asp === 'trine' || asp === 'sextile') lead = 'a flowing day for';
-      else if (asp === 'square' || asp === 'opposition') lead = 'a day that asks something of';
-      else lead = 'a day that draws focus to';
-      return 'Transiting <strong>' + ptEsc(a.transit) + '</strong> ' + word +
-        ' <strong>' + ptEsc(PT_POINT[a.natal] || ('your ' + a.natal)) + '</strong> — <em>' + lead + ' ' + area + '</em>.';
-    }
-
-    function ptInjectAfterHero(el) {
-      var hero = document.querySelector('.sphere-hero');
-      var main = document.getElementById('main-content') || document.querySelector('main');
-      if (hero && hero.parentNode) hero.insertAdjacentElement('afterend', el);
-      else if (main) main.insertBefore(el, main.firstChild);
-      else document.body.appendChild(el);
-    }
-
-    function renderPersonalToday(reading) {
-      if (!reading) return false;
-      var name = reading.name ? ptEsc(reading.name) : '';
-      var dateStr = new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-      var streak = null;
-      try { if (window.DailyTransit && DailyTransit.bumpStreak) streak = DailyTransit.bumpStreak(reading.iso); } catch (e) {}
-      var headline = (reading.insight && reading.insight.headline) ? ptEsc(reading.insight.headline) : 'Your sky today';
-      var mood = (reading.insight && isFinite(reading.insight.moodScore))
-        ? Math.max(0, Math.min(100, Math.round(reading.insight.moodScore))) : null;
-      var aspects = (reading.aspects || []).slice(0, 3);
-
-      var html = '<div class="ptoday-card">' +
-        '<div class="ptoday-card__head"><div>' +
-          '<p class="ptoday-card__eyebrow">Today, for you</p>' +
-          '<h2 class="ptoday-card__who" id="ptoday-who">' + (name ? 'Today, ' + name : 'Today, for you') + '</h2>' +
-          '<p class="ptoday-card__date">' + ptEsc(dateStr) + '</p>' +
-        '</div>' +
-        ((streak && streak.count) ? '<span class="ptoday-streak">Day ' + streak.count + ' of tuning in</span>' : '') +
-        '</div>' +
-        '<p class="ptoday-card__headline">' + headline + '</p>' +
-        (mood != null ? '<div class="ptoday-energy"><span>Energy</span><div class="ptoday-energy__track"><div class="ptoday-energy__fill" style="width:' + mood + '%"></div></div><span>' + mood + '/100</span></div>' : '') +
-        (aspects.length
-          ? '<ul class="ptoday-aspects">' + aspects.map(function (a) { return '<li class="ptoday-aspect">' + ptAspectSentence(a) + '</li>'; }).join('') + '</ul>'
-          : '<p class="ptoday-aspect" style="padding-left:0">A quiet sky today — no exact transits to your chart. A day to simply be.</p>') +
-        ((reading.sunSign || reading.moonSign) ? '<div class="ptoday-chips">' +
-          (reading.sunSign ? '<span class="ptoday-chip">☉ Sun in ' + ptEsc(reading.sunSign) + '</span>' : '') +
-          (reading.moonSign ? '<span class="ptoday-chip">☾ Moon in ' + ptEsc(reading.moonSign) + '</span>' : '') +
-        '</div>' : '') +
-        '<div class="ptoday-card__foot"><a class="ptoday-link" href="transits.html">Read your full transit forecast →</a></div>' +
-      '</div>';
-
-      var sec = document.createElement('section');
-      sec.className = 'personal-today';
-      sec.setAttribute('aria-label', 'Your personal reading for today');
-      sec.innerHTML = html;
-      ptInjectAfterHero(sec);
-      return true;
-    }
-
-    function showPersonalPrompt() {
-      if (auditPath || document.querySelector('.personal-prompt') || document.querySelector('.personal-today')) return;
-      var sec = document.createElement('section');
-      sec.className = 'personal-prompt';
-      sec.innerHTML = '<div class="pprompt-card">' +
-        '<p class="pprompt-card__eyebrow">Make this yours</p>' +
-        '<h2 class="pprompt-card__title">These readings are generic by sun sign</h2>' +
-        '<p class="pprompt-card__text">Cast your free birth chart and your daily reading becomes personal — computed from today’s real sky against <em>your</em> exact placements, every day.</p>' +
-        '<a class="btn btn--primary" href="chart.html">Cast your free chart →</a>' +
-      '</div>';
-      ptInjectAfterHero(sec);
-    }
-
-    function bootPersonalToday() {
-      if (auditPath) return; // never on the audit/Lighthouse path
-      // Personal styling loads on demand — never in the critical render path.
-      if (!document.getElementById('ap-css-horoscope-personal')) {
-        var pl = document.createElement('link');
-        pl.rel = 'stylesheet'; pl.href = 'css/horoscope-personal.css';
-        pl.id = 'ap-css-horoscope-personal';
-        document.head.appendChild(pl);
-      }
-      loadScript('js/profile.js').then(function () {
-        var hasChart = false;
-        try { hasChart = !!(window.AstroProfile && typeof AstroProfile.getCharts === 'function' && AstroProfile.getCharts().length); } catch (e) {}
-        if (!hasChart) { showPersonalPrompt(); return; }
-        loadScript('js/ephemeris.js')
-          .then(function () { return loadScript('js/oracle.js'); })
-          .then(function () { return loadScript('js/ap-zodiac-constants.js'); })
-          .then(function () { return loadScript('js/icons.js'); })
-          .then(function () { return loadScript('js/daily-transit.js'); })
-          .then(function () {
-            var reading = null;
-            try { reading = (window.DailyTransit && DailyTransit.buildReading) ? DailyTransit.buildReading(new Date()) : null; } catch (e) { reading = null; }
-            if (!reading || !reading.hasChart) { showPersonalPrompt(); return; }
-            try { renderPersonalToday(reading); } catch (e) {}
-          })
-          .catch(function () { /* engine unavailable — stay quiet, no fabricated reading */ });
-      }).catch(function () {});
-    }
   })();

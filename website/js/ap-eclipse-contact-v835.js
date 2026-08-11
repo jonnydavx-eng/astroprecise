@@ -214,6 +214,8 @@ async function init() {
 
   const savedMeta = seedSavedChart(getActiveChart());
   const form = byId('eclipseContactForm');
+  const submitButton = form.querySelector('[data-eclipse-contact-submit]');
+  if (submitButton) submitButton.disabled = false;
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     try {

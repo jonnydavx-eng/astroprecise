@@ -93,8 +93,9 @@
     .ap-computed-sky__row{display:grid;grid-template-columns:minmax(7rem,.7fr) minmax(0,1fr);gap:1rem;padding:1rem 1.1rem;border-right:1px solid rgba(216,180,106,.2);border-bottom:1px solid rgba(216,180,106,.2);background:rgba(2,3,7,.44)}
     .ap-computed-sky__row dt{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.25rem;color:#f2ecdf}
     .ap-computed-sky__row dd{margin:0;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:.65rem;line-height:1.7;letter-spacing:.08em;text-transform:uppercase;color:#d8b46a}
+    .ap-computed-sky__row:last-child{grid-column:1/-1}
     .ap-computed-sky__action{display:inline-block;margin-top:1.25rem;color:#ff6428;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
-    @media(max-width:640px){.ap-computed-sky__ledger{grid-template-columns:1fr}.ap-computed-sky__row{grid-template-columns:1fr}.ap-computed-sky__row dd{text-align:left}}
+    @media(max-width:640px){.ap-computed-sky__ledger{grid-template-columns:1fr}.ap-computed-sky__row{grid-template-columns:1fr;grid-column:auto}.ap-computed-sky__row dd{text-align:left}}
   </style>
   <script>
   (function () {
@@ -319,7 +320,6 @@
                 <p class="reading-card__text" id="srp-health"></p>
               </div>
             </div>
-            <p class="srp-personal-note" id="srp-personal-note" hidden></p>
             <p style="margin-top:var(--space-4);">
               <span class="ap-badge ap-badge--deterministic">Positions calculated for today at 12:00 UT · interpreted through a solar chart</span>
             </p>
@@ -339,9 +339,7 @@
       </div>
     </section>
 
-    <!-- ============================================================
-         TODAY'S PLANETARY WEATHER
-    ============================================================ -->
+    <!-- One collapsed evidence ledger: the calculation beneath the interpretation. -->
     <details class="ap-more-sky" id="ap-daily-weather">
       <summary class="ap-more-sky__summary">Today&rsquo;s computed sky &middot; evidence ledger</summary>
       <div class="ap-more-sky__body">
