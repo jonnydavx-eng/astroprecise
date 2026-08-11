@@ -4931,9 +4931,8 @@ const FinishShader = {
 
   // ── Mobile texture tier (v582) ─────────────────────────────────────────────
   // True on genuinely constrained clients so the heavy planet maps stream in at
-  // 512px (_sm) instead of full 2048px. Covers the low/mid perfTier AND phones
-  // that report a "high" tier (many mid-range Androids do) but present a
-  // coarse pointer + narrow viewport — those still can't afford ~2.8MB of maps.
+  // 512px (_sm) instead of full 2048px. Screen width alone is not a performance
+  // signal: high-tier phones keep the 2048px maps for crisp destination portraits.
   function wantsSmallTextures() {
     if (perfTier === 'low' || perfTier === 'mid') return true;
     try {
@@ -5006,8 +5005,7 @@ const FinishShader = {
     // During the preloader ALL tiers use the small map so the Earth-ready handshake
     // (which releases the fly-in) fires fast; full-res maps swap in after, on the
     // interactive orrery. (Loading-safety: never block the preloader on a big texture.)
-    // On constrained clients (low/mid tier or coarse+narrow) we KEEP the small map
-    // as the interactive texture too — that's the mobile texture diet.
+    // On constrained low/mid tiers we keep the small map as the interactive texture.
     if (wantsSmallTextures() || onPreloaderStage()) {
       list.push(smallName(webp));                              // e.g. mercury_sm.webp
     }

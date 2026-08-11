@@ -83,7 +83,11 @@
   cursor: grab;
   touch-action: none;
   image-rendering: auto;
+  opacity: 0;
+  transition: opacity 620ms cubic-bezier(.2,.75,.25,1);
 }
+
+.ap-eclipse-live[data-ready='true'] .ap-eclipse-live__canvas { opacity: 1; }
 
 .ap-eclipse-live__canvas:active { cursor: grabbing; }
 
@@ -168,6 +172,13 @@
 .ap-eclipse-live__legend i { width: 18px; height: 1px; background: var(--ecl-brass); }
 .ap-eclipse-live__legend i[data-cone='umbra'] { height: 5px; background: rgba(74, 105, 140, .58); }
 .ap-eclipse-live__legend i[data-cone='penumbra'] { height: 5px; background: rgba(216, 180, 106, .3); }
+.ap-eclipse-live__legend i[data-cone='intercept'] {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ecl-ember);
+  box-shadow: 0 0 10px rgba(255, 100, 40, .68);
+}
 
 .ap-eclipse-live__panel {
   position: relative;
@@ -283,12 +294,33 @@
   display: grid;
   place-items: center;
   padding: 32px;
-  background: #07080b url('../img/eclipse-geometry.svg') center/cover no-repeat;
+  background:
+    radial-gradient(circle at 50% 47%, rgba(216, 180, 106, .08), transparent 18%),
+    linear-gradient(90deg, transparent 12%, rgba(216, 180, 106, .14) 50%, transparent 88%),
+    #07080b;
   color: var(--ecl-ivory);
   text-align: center;
 }
 
+.ap-eclipse-live__fallback > div {
+  max-width: 36ch;
+  padding: 18px 22px;
+  border: 1px solid rgba(216, 180, 106, .22);
+  background: rgba(2, 3, 7, .78);
+  font: 11px/1.7 'IBM Plex Mono', monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.ap-eclipse-live[data-failed='true'] .ap-eclipse-live__fallback {
+  background: #07080b url('../img/eclipse-geometry.svg') center/cover no-repeat;
+}
+
 .ap-eclipse-live__fallback[hidden] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-eclipse-live__canvas { transition: none; }
+}
 
 @media (max-width: 900px) {
   .ap-eclipse-live__head { grid-template-columns: 1fr; gap: 12px; }

@@ -9,6 +9,7 @@ const EARTH_POS = new THREE.Vector3(8, 0, 0);
 const SUN_POS = new THREE.Vector3(-11, 0, 0);
 const MOON_SCENE_DISTANCE = 5.5;
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
+const Z_AXIS = new THREE.Vector3(0, 0, 1);
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 const rad = (d) => d * Math.PI / 180;
 
@@ -166,7 +167,7 @@ function makeGuideLine(points, color, opacity, dashed = false) {
   return line;
 }
 
-function mount(root, E) {
+async function mount(root, E) {
   const canvas = root.querySelector('.ap-eclipse-live__canvas');
   const stage = root.querySelector('.ap-eclipse-live__stage');
   const fallback = root.querySelector('.ap-eclipse-live__fallback');
@@ -235,14 +236,17 @@ function mount(root, E) {
 
   const textureLoader = new THREE.TextureLoader();
   const maxAnisotropy = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
-  const prepareTexture = (texture) => {
-    texture.colorSpace = THREE.SRGBColorSpace;
+  const prepareTexture = (texture, srgb = true) => {
+    texture.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
     texture.anisotropy = Math.min(maxAnisotropy, 8);
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
     return texture;
   };
+  const loadTexture = (url, srgb = true) => new Promise((resolve) => {
+    textureLoader.load(url, (texture) => resolve(prepareTexture(texture, srgb)), undefined, () => resolve(null));
+  });
 
   const earthMaterial = new THREE.MeshStandardMaterial({
     color: 0x346a94,
@@ -252,9 +256,16 @@ function mount(root, E) {
   const earth = new THREE.Mesh(new THREE.SphereGeometry(1.06, 96, 96), earthMaterial);
   earth.position.copy(EARTH_POS);
   scene.add(earth);
-  textureLoader.load('./assets/textures/earth.webp', (texture) => {
-    earthMaterial.map = prepareTexture(texture);
+  const earthMapReady = loadTexture('./assets/textures/earth.webp').then((texture) => {
+    if (!texture) return;
+    earthMaterial.map = texture;
     earthMaterial.color.set(0xffffff);
+    earthMaterial.needsUpdate = true;
+  });
+  const earthReliefReady = loadTexture('./assets/textures/earth_normal.webp', false).then((texture) => {
+    if (!texture) return;
+    earthMaterial.normalMap = texture;
+    earthMaterial.normalScale = new THREE.Vector2(.52, .52);
     earthMaterial.needsUpdate = true;
   });
   const earthAtmosphere = new THREE.Mesh(
@@ -278,8 +289,8 @@ function mount(root, E) {
   });
   const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.075, 72, 72), cloudsMaterial);
   earth.add(clouds);
-  textureLoader.load('./assets/textures/earth_clouds.webp', (texture) => {
-    prepareTexture(texture);
+  const cloudMapReady = loadTexture('./assets/textures/earth_clouds.webp').then((texture) => {
+    if (!texture) return;
     cloudsMaterial.map = texture;
     cloudsMaterial.alphaMap = texture;
     cloudsMaterial.opacity = .62;
@@ -293,8 +304,14 @@ function mount(root, E) {
   });
   const moon = new THREE.Mesh(new THREE.SphereGeometry(.48, 80, 80), moonMaterial);
   scene.add(moon);
-  textureLoader.load('./assets/textures/moon.webp', (texture) => {
-    moonMaterial.map = prepareTexture(texture);
+  const moonMapReady = loadTexture('./assets/textures/moon.webp').then((texture) => {
+    if (!texture) return;
+    const bumpTexture = texture.clone();
+    bumpTexture.colorSpace = THREE.NoColorSpace;
+    bumpTexture.needsUpdate = true;
+    moonMaterial.map = texture;
+    moonMaterial.bumpMap = bumpTexture;
+    moonMaterial.bumpScale = .022;
     moonMaterial.color.set(0xffffff);
     moonMaterial.needsUpdate = true;
   });
@@ -337,6 +354,31 @@ function mount(root, E) {
   scene.add(penumbra, umbra);
   const shadowAxis = makeGuideLine([new THREE.Vector3(), new THREE.Vector3(1, 0, 0)], 0xb9c8dc, .48, true);
   scene.add(shadowAxis);
+  const shadowIntercept = new THREE.Group();
+  const shadowInterceptCore = new THREE.Mesh(
+    new THREE.CircleGeometry(.10, 48),
+    new THREE.MeshBasicMaterial({
+      color: 0xff6428,
+      transparent: true,
+      opacity: .46,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    })
+  );
+  const shadowInterceptRing = new THREE.Mesh(
+    new THREE.RingGeometry(.145, .205, 64),
+    new THREE.MeshBasicMaterial({
+      color: 0xf2ecdf,
+      transparent: true,
+      opacity: .72,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    })
+  );
+  shadowIntercept.add(shadowInterceptCore, shadowInterceptRing);
+  shadowIntercept.visible = false;
+  scene.add(shadowIntercept);
 
   let mode = 'live';
   let displayDate = new Date();
@@ -393,6 +435,20 @@ function mount(root, E) {
       moon.position.clone().addScaledVector(lightAxisScene, scenePenumbraLength + .8),
     ]);
     shadowAxis.computeLineDistances();
+
+    // Mark the real geometric intercept only when the umbral axis reaches the
+    // Earth sphere. This is an alignment marker, never a claimed ground-track map.
+    shadowIntercept.visible = !!computed.umbraHits;
+    if (shadowIntercept.visible) {
+      const axisToEarth = EARTH_POS.clone().sub(moon.position).dot(lightAxisScene);
+      const axisAtEarth = moon.position.clone().addScaledVector(lightAxisScene, axisToEarth);
+      const lateral = axisAtEarth.clone().sub(EARTH_POS);
+      const earthRadius = 1.06;
+      const lateralSq = Math.min(lateral.lengthSq(), earthRadius * earthRadius * .985);
+      const entryDepth = Math.sqrt(Math.max(.001, earthRadius * earthRadius - lateralSq));
+      shadowIntercept.position.copy(axisAtEarth).addScaledVector(lightAxisScene, -entryDepth * 1.008);
+      shadowIntercept.quaternion.setFromUnitVectors(Z_AXIS, lightAxisScene);
+    }
 
     const gmst = E.greenwichSiderealTime ? E.greenwichSiderealTime(computed.jd) : (computed.jd * 360.985647) % 360;
     earth.rotation.y = rad(gmst + 90);
@@ -483,6 +539,10 @@ function mount(root, E) {
     if (!inView || failed || disposed) return;
     try {
       if (!reducedMotion) sunMaterial.uniforms.uTime.value = time * .001;
+      if (shadowIntercept.visible) {
+        const pulse = reducedMotion ? 1 : 1 + Math.sin(time * .004) * .08;
+        shadowIntercept.scale.setScalar(pulse);
+      }
       renderer.render(scene, camera);
       updateLabels();
     } catch (err) {
@@ -582,6 +642,21 @@ function mount(root, E) {
     }
   });
 
+  window.addEventListener('pagehide', (event) => {
+    if (event.persisted) stopLoop();
+    else dispose();
+  });
+  window.addEventListener('pageshow', (event) => {
+    if (!event.persisted || failed || disposed || root.dataset.ready !== 'true') return;
+    resize();
+    if (mode === 'live') setLive();
+    startLoop();
+  });
+
+  // Do not reveal a flat placeholder model and then swap maps underneath it.
+  // The instrument appears once its four visible surface layers have settled.
+  await Promise.allSettled([earthMapReady, earthReliefReady, cloudMapReady, moonMapReady]);
+  if (failed || disposed) return;
   setLive();
   resize();
   startLoop();
@@ -623,16 +698,6 @@ function mount(root, E) {
     if (window.APEclipseLive && window.APEclipseLive.getState) delete window.APEclipseLive;
   }
 
-  window.addEventListener('pagehide', (event) => {
-    if (event.persisted) stopLoop();
-    else dispose();
-  });
-  window.addEventListener('pageshow', (event) => {
-    if (!event.persisted || failed || disposed) return;
-    resize();
-    if (mode === 'live') setLive();
-    startLoop();
-  });
 }
 
 async function boot() {
@@ -642,7 +707,7 @@ async function boot() {
   try {
     if (!webglAvailable()) throw new Error('WebGL unavailable');
     const E = await waitForEphemeris();
-    mount(root, E);
+    await mount(root, E);
   } catch (err) {
     root.dataset.failed = 'true';
     if (fallback) {

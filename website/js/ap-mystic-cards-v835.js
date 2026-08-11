@@ -32,6 +32,7 @@
   var pendingPoint = null;
   var frame = 0;
   var cardOrder = 0;
+  var CARD_TONES = ['brass', 'silver', 'brass', 'ember'];
 
   function reveal(card) {
     card.dataset.apCardReveal = 'ready';
@@ -54,6 +55,7 @@
   function prepare(card) {
     if (!card || card.nodeType !== 1 || card.dataset.apMysticCard != null) return;
     card.dataset.apMysticCard = '';
+    card.dataset.apCardTone = CARD_TONES[cardOrder % CARD_TONES.length];
     card.style.setProperty('--ap-card-delay', Math.min(cardOrder % 6, 5) * 45 + 'ms');
     cardOrder += 1;
 
