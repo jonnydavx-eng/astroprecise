@@ -23,16 +23,16 @@
     NorthNode:'☊︎', SouthNode:'☋︎', Ascendant:'AC', Midheaven:'MC',
   };
   const ASPECT_DISPLAY = {
-    conjunction:    { name:'Conjunction',    glyph:'☌', color:'#e8c96a' },
-    opposition:     { name:'Opposition',     glyph:'☍', color:'#b04a52' },
-    trine:          { name:'Trine',          glyph:'△', color:'#3fae7a' },
-    square:         { name:'Square',         glyph:'□', color:'#b04a52' },
-    sextile:        { name:'Sextile',        glyph:'⚹', color:'#9db36a' },
-    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#7E7565' },
-    semisquare:     { name:'SemiSquare',     glyph:'∠', color:'#7E7565' },
-    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#7E7565' },
-    semisextile:    { name:'Semisextile',    glyph:'⚺', color:'#7E7565' },
-    quintile:       { name:'Quintile',       glyph:'Q', color:'#7E7565' },
+    conjunction:    { name:'Conjunction',    glyph:'☌', color:'#D8B46A' },
+    opposition:     { name:'Opposition',     glyph:'☍', color:'#FF6428' },
+    trine:          { name:'Trine',          glyph:'△', color:'#B9C8DC' },
+    square:         { name:'Square',         glyph:'□', color:'#FF6428' },
+    sextile:        { name:'Sextile',        glyph:'⚹', color:'#D8B46A' },
+    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#B9C8DC' },
+    semisquare:     { name:'SemiSquare',      glyph:'∠', color:'#B9C8DC' },
+    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#B9C8DC' },
+    semisextile:    { name:'SemiSextile',     glyph:'⚺', color:'#B9C8DC' },
+    quintile:       { name:'Quintile',        glyph:'Q', color:'#B9C8DC' },
   };
   const HOUSE_THEMES = [
     'Self & Identity', 'Money & Values', 'Mind & Communication', 'Home & Roots',
@@ -48,16 +48,16 @@
     Cancer:'water',     Scorpio:'water', Pisces:'water',
   };
   const ELEMENT_COLORS = {
-    fire:  '#D85A2C',
-    earth: '#5E7A3A',
-    air:   '#A78BBA',
-    water: '#3F7D76',
+    fire:  '#FF6428',
+    earth: '#D8B46A',
+    air:   '#F2ECDF',
+    water: '#B9C8DC',
   };
   const ELEMENT_LABEL_COLORS = {
-    fire:  '#F0A878',
-    earth: '#A8C07A',
-    air:   '#C6AEDA',
-    water: '#7FB8B0',
+    fire:  '#FF6428',
+    earth: '#D8B46A',
+    air:   '#F2ECDF',
+    water: '#B9C8DC',
   };
   // Modality mapping
   const MODALITY_MAP = {
@@ -102,31 +102,36 @@
   function renderDropdown(items, source, state) {
     if (!dropdown) return;
     activeIdx = -1;
+    cityInput.removeAttribute('aria-activedescendant');
     dropdown._items = items;
     if (state === 'searching') {
       dropdown.innerHTML = '<div class="autocomplete-note">Searching the gazetteer…</div>';
       dropdown.hidden = false;
+      cityInput.setAttribute('aria-expanded', 'true');
       return;
     }
     if (!items.length) {
       if (state === 'empty') {
         dropdown.innerHTML = '<div class="autocomplete-note">No places matched — check the spelling, or try the nearest larger town.</div>';
         dropdown.hidden = false;
+        cityInput.setAttribute('aria-expanded', 'true');
       } else {
         dropdown.innerHTML = '';
         dropdown.hidden = true;
+        cityInput.setAttribute('aria-expanded', 'false');
       }
       return;
     }
     const note = source === 'offline'
       ? '<div class="autocomplete-note">Offline — built-in city list only</div>' : '';
     dropdown.innerHTML = items.map((c, i) =>
-      `<div class="autocomplete-option" role="option" data-i="${i}" id="city-opt-${i}">
-        <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span> <strong>${esc(c.name)}</strong>&nbsp;<span style="opacity:0.6">${esc(regionOf(c))}</span>
+      `<div class="autocomplete-option" role="option" aria-selected="false" data-i="${i}" id="city-opt-${i}">
+        <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span> <strong>${esc(c.name)}</strong><span class="autocomplete-option__region">${esc(regionOf(c))}</span>
       </div>`).join('') + note;
     dropdown.hidden = false;
+    cityInput.setAttribute('aria-expanded', 'true');
     dropdown.querySelectorAll('.autocomplete-option').forEach(elx => {
-      elx.addEventListener('mousedown', ev => { ev.preventDefault(); pickCity(items[+elx.dataset.i]); });
+      elx.addEventListener('pointerdown', ev => { ev.preventDefault(); pickCity(items[+elx.dataset.i]); });
     });
   }
 
@@ -138,6 +143,8 @@
     tzInput.value   = c.tz || '';
     dropdown.innerHTML = '';
     dropdown.hidden = true;
+    cityInput.setAttribute('aria-expanded', 'false');
+    cityInput.removeAttribute('aria-activedescendant');
     const cityHint = document.getElementById('city-hint');
     if (cityHint) {
       cityHint.dataset.state = 'selected';
@@ -171,17 +178,25 @@
       if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
         ev.preventDefault();
         activeIdx = (activeIdx + (ev.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length;
-        dropdown.querySelectorAll('.autocomplete-option').forEach((elx, i) =>
-          elx.classList.toggle('is-selected', i === activeIdx));
+        dropdown.querySelectorAll('.autocomplete-option').forEach((elx, i) => {
+          const selected = i === activeIdx;
+          elx.classList.toggle('is-selected', selected);
+          elx.setAttribute('aria-selected', selected ? 'true' : 'false');
+        });
+        cityInput.setAttribute('aria-activedescendant', `city-opt-${activeIdx}`);
       } else if (ev.key === 'Enter' && activeIdx >= 0) {
         ev.preventDefault();
         pickCity(items[activeIdx]);
       } else if (ev.key === 'Escape') {
         dropdown.innerHTML = ''; dropdown.hidden = true;
+        cityInput.setAttribute('aria-expanded', 'false');
+        cityInput.removeAttribute('aria-activedescendant');
       }
     });
     cityInput.addEventListener('blur', () => setTimeout(() => {
       dropdown.innerHTML = ''; dropdown.hidden = true;
+      cityInput.setAttribute('aria-expanded', 'false');
+      cityInput.removeAttribute('aria-activedescendant');
     }, 150));
   }
 
@@ -446,26 +461,6 @@
         // (APChartShare.buildShareUrl), so the only thing the address-bar write
         // achieved was putting birth data somewhere the visitor did not ask for
         // it — history, bookmarks, browser sync, and the next Referer header.
-        // Pin this sky onto the home orrery (Celestia's payoff, ported):
-        // the hero instrument stops being "the sky today" and becomes yours.
-        try {
-          const pts = {
-            sun:  currentChart.positions.Sun?.lon,
-            moon: currentChart.positions.Moon?.lon,
-          };
-          if (input.timeKnown) pts.asc = currentChart.positions.Ascendant?.lon;
-          localStorage.setItem('ap_natal_pins', JSON.stringify({
-            name: firstNameOf(input.name) || input.name,
-            sunSign: currentChart.positions.Sun?.sign,
-            points: pts,
-            savedAt: Date.now(),
-          }));
-          var isSample = /^sample:/i.test(input.name || '');
-          if (window.AstroApp && !isSample) {
-            AstroApp.showToast('Pinned to the heavens',
-              'Your Sun, Moon' + (input.timeKnown ? ' & Ascendant' : '') + ' now mark the home orrery’s zodiac ring.', 'success');
-          }
-        } catch (e) {}
       } catch (err) {
         if (window.AstroApp) AstroApp.showToast('Calculation failed', String(err.message || err), 'error');
       }
@@ -612,6 +607,7 @@
         var on = card.dataset.value === hs;
         card.classList.toggle('active', on);
         card.setAttribute('aria-checked', on ? 'true' : 'false');
+        card.tabIndex = on ? 0 : -1;
       });
     }
     document.dispatchEvent(new CustomEvent('astro:city-selected'));
@@ -749,7 +745,7 @@
         note.id = 'chart-handoff-note';
         note.className = 'chart-handoff-note';
         note.setAttribute('role', 'status');
-        note.innerHTML = '<span class="chart-handoff-note__mark" aria-hidden="true">✦</span> ' +
+        note.innerHTML = '<span class="chart-handoff-note__mark eng-star-mark" aria-hidden="true"></span> ' +
           'Your ' + esc(listed) + ' carried over from the homepage. ' + asks;
         const header = wrap.querySelector('.form-glass__header');
         if (header && header.parentNode) header.parentNode.insertBefore(note, header.nextSibling);
@@ -937,7 +933,7 @@
     }
     if (!window.AstroChartRender) {
       // Renderer missing (failed to load/parse) — say so instead of a silent blank wheel.
-      el.innerHTML = '<p style="text-align:center;color:var(--silver-dim,#8F8579);padding:2rem;">The chart renderer didn\'t load — please refresh the page.</p>';
+      el.innerHTML = '<p class="chart-render-error">The chart renderer didn\'t load — please refresh the page.</p>';
       return;
     }
     el.classList.add('natal-wheel--loading');
@@ -950,193 +946,6 @@
     el.classList.add('natal-wheel--loaded');
     const wrap = document.getElementById('natal-wheel-wrap');
     if (wrap) wrap.removeAttribute('aria-busy');
-    paintWheelSky(chart);
-    if (window.APSkyBridge && typeof APSkyBridge.mountChartPlanetDoorway === 'function') {
-      APSkyBridge.mountChartPlanetDoorway(chart, el);
-    }
-  }
-
-  // ── "Your sky" backdrop behind the wheel (ART-DIRECTION-2026 motif #3) ──────
-  // A dimmed, engine-captured System-preset frame of the birth moment sits behind
-  // the wheel. If a live Orrery3D is mounted (it is not on this page today), we
-  // capture its frame; otherwise we paint a deterministic cool sky seeded from the
-  // birth data — same "your sky, computed in your browser" honesty as the share
-  // card. A still, not a live loop: CLS-safe and reduced-motion-safe by nature.
-  function captureBirthSky(chart) {
-    try {
-      const O = window.Orrery3D;
-      if (!O || typeof O.captureFrame !== 'function' || O.isWebGL === undefined) return null;
-      // Drive the engine to the birth date if it exposes the timeline hook.
-      if (typeof O.setTimelineDays === 'function' && typeof chart.jd === 'number') {
-        const nowJd = E().julianDay(
-          new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate(), 12, 0, 0);
-        O.setTimelineDays(Math.round(chart.jd - nowJd));
-      }
-      const frame = O.captureFrame({ scale: 1 });
-      return (frame && frame.width) ? frame : null;
-    } catch (e) { return null; }
-  }
-
-  // 3D engine still library (no live WebGL on chart page — ART-DIRECTION hard rule)
-  let _engineSkyImg = null;
-  let _engineSkyLoading = false;
-  let _engineSkySrc = '';
-  const RULER_ENGINE = {
-    sun: 'img/engine/sun.webp', moon: 'img/engine/moon.webp',
-    mercury: 'img/engine/mercury.webp', venus: 'img/engine/venus.webp',
-    mars: 'img/engine/mars.webp', jupiter: 'img/engine/jupiter.webp',
-    saturn: 'img/engine/saturn.webp', uranus: 'img/engine/uranus.webp',
-    neptune: 'img/engine/neptune.webp', pluto: 'img/engine/pluto.webp',
-  };
-  // Export plate policy (honest): prefer Sun-sign traditional ruler so the
-  // photoreal window matches “your sky” marketing for sun-sign visitors.
-  // ASC chart-ruler is fallback when Sun sign is missing. Library still ≠ natal frame.
-  const SUN_SIGN_RULER = {
-    Aries: 'mars', Taurus: 'venus', Gemini: 'mercury', Cancer: 'moon', Leo: 'sun', Virgo: 'mercury',
-    Libra: 'venus', Scorpio: 'mars', Sagittarius: 'jupiter', Capricorn: 'saturn', Aquarius: 'saturn', Pisces: 'jupiter',
-  };
-  function enginePlateSrcForChart(chart) {
-    const sun = chart && chart.positions && chart.positions.Sun && chart.positions.Sun.sign;
-    const sunSlug = SUN_SIGN_RULER[sun];
-    if (sunSlug && RULER_ENGINE[sunSlug]) return RULER_ENGINE[sunSlug];
-    const r = String((chart && (chart.chartRuler || chart.ruler)) || '').toLowerCase();
-    if (RULER_ENGINE[r]) return RULER_ENGINE[r];
-    return 'img/engine/earth-moon.webp';
-  }
-  function enginePlateLabelForChart(chart) {
-    const sun = chart && chart.positions && chart.positions.Sun && chart.positions.Sun.sign;
-    const sunSlug = SUN_SIGN_RULER[sun];
-    if (sunSlug && sun) return sunSlug.charAt(0).toUpperCase() + sunSlug.slice(1) + ' · ' + sun + ' Sun';
-    const r = String((chart && (chart.chartRuler || chart.ruler)) || '').toLowerCase();
-    if (r) return r.charAt(0).toUpperCase() + r.slice(1) + ' · chart ruler';
-    return 'Earth · system plate';
-  }
-  // Queue of waiters when the same plate is already loading
-  let _engineSkyWaiters = [];
-  let _engineSkyGen = 0;
-  function loadEngineSkyPlate(cb, chart) {
-    const src = enginePlateSrcForChart(chart) || 'img/engine/earth-moon.webp';
-    if (_engineSkyImg && _engineSkyImg.complete && _engineSkyImg.naturalWidth && _engineSkySrc === src) {
-      if (cb) cb(_engineSkyImg);
-      return;
-    }
-    if (_engineSkyLoading && _engineSkySrc === src) {
-      if (cb) _engineSkyWaiters.push(cb);
-      return;
-    }
-    // Chart identity changed — invalidate previous plate; bump gen so stale onload is ignored
-    if (_engineSkySrc && _engineSkySrc !== src) {
-      _engineSkyImg = null;
-    }
-    const gen = ++_engineSkyGen;
-    _engineSkyLoading = true;
-    _engineSkySrc = src;
-    _engineSkyWaiters = cb ? [cb] : [];
-    const img = new Image();
-    const finish = function (resolved) {
-      if (gen !== _engineSkyGen) return; // stale load — a newer cast/export won
-      _engineSkyLoading = false;
-      if (resolved) _engineSkyImg = resolved;
-      const waiters = _engineSkyWaiters.slice();
-      _engineSkyWaiters = [];
-      waiters.forEach(function (fn) { try { fn(resolved); } catch (e) { /* ignore */ } });
-    };
-    img.onload = function () { finish(img); };
-    img.onerror = function () {
-      if (gen !== _engineSkyGen) return;
-      if (src !== 'img/engine/earth-moon.webp' && src !== 'img/engine/earth.webp') {
-        // Cascade: planet → earth-moon → earth (same gen until parent finishes)
-        _engineSkyLoading = false;
-        _engineSkySrc = '';
-        loadEngineSkyPlate(function (fb) {
-          if (gen !== _engineSkyGen) return;
-          if (fb) finish(fb);
-          else {
-            const earth = new Image();
-            earth.onload = function () { if (gen === _engineSkyGen) finish(earth); };
-            earth.onerror = function () { if (gen === _engineSkyGen) finish(null); };
-            _engineSkySrc = 'img/engine/earth.webp';
-            _engineSkyLoading = true;
-            earth.src = 'img/engine/earth.webp';
-          }
-        }, null);
-        return;
-      }
-      if (src === 'img/engine/earth-moon.webp') {
-        const earth = new Image();
-        earth.onload = function () { if (gen === _engineSkyGen) finish(earth); };
-        earth.onerror = function () { if (gen === _engineSkyGen) finish(null); };
-        _engineSkySrc = 'img/engine/earth.webp';
-        _engineSkyLoading = true;
-        earth.src = 'img/engine/earth.webp';
-        return;
-      }
-      finish(null);
-    };
-    img.src = src;
-  }
-  function ensureEngineSkyPlate(chart) {
-    return new Promise(function (resolve) {
-      loadEngineSkyPlate(function (img) { resolve(img || null); }, chart);
-    });
-  }
-  function paintDeterministicSky(x, W, H, chart, engineImg) {
-    const seed = seedFromChart(chart);
-    const elem = (chart.dominant && chart.dominant.element) || 'water';
-    const tint = { fire: '184,90,66', earth: '90,122,72', air: '138,122,106', water: '74,117,128' }[elem] || '74,117,128';
-    // Void base
-    x.fillStyle = '#07070A';
-    x.fillRect(0, 0, W, H);
-    // Engine photoreal plate — chart-keyed ruler still; wheel holds personal geometry
-    if (engineImg && engineImg.naturalWidth) {
-      x.save();
-      x.globalAlpha = 0.28;
-      const s = Math.max(W / engineImg.naturalWidth, H / engineImg.naturalHeight) * 1.05;
-      const dw = engineImg.naturalWidth * s, dh = engineImg.naturalHeight * s;
-      x.drawImage(engineImg, (W - dw) / 2, (H - dh) / 2 - H * 0.04, dw, dh);
-      x.restore();
-    }
-    // Faint element-tinted glow — the one personalised, non-fabricated cue.
-    const g = x.createRadialGradient(W * 0.5, H * 0.44, 0, W * 0.5, H * 0.5, W * 0.62);
-    g.addColorStop(0, 'rgba(' + tint + ',0.20)');
-    g.addColorStop(0.55, 'rgba(' + tint + ',0.06)');
-    g.addColorStop(1, 'transparent');
-    x.fillStyle = g;
-    x.fillRect(0, 0, W, H);
-    drawStars(x, W, H, 240, seed, W / 1080);
-  }
-
-  function paintWheelSky(chart) {
-    try {
-      const stage = document.querySelector('.chart-wheel-stage');
-      if (!stage || !chart) return;
-      let cv = stage.querySelector('.chart-wheel-stage__sky');
-      if (!cv) {
-        cv = document.createElement('canvas');
-        cv.className = 'chart-wheel-stage__sky';
-        cv.setAttribute('aria-hidden', 'true');
-        stage.insertBefore(cv, stage.firstChild);
-      }
-      const W = 900, H = 900;
-      cv.width = W; cv.height = H;
-      const x = (window.RafCore && window.RafCore.prepExportCtx)
-        ? window.RafCore.prepExportCtx(cv, W, H) : cv.getContext('2d');
-      x.clearRect(0, 0, W, H);
-      const frame = captureBirthSky(chart);
-      if (frame) {
-        x.drawImage(frame, 0, 0, W, H);
-        stage.classList.add('has-sky');
-      } else {
-        paintDeterministicSky(x, W, H, chart, _engineSkyImg);
-        stage.classList.add('has-sky');
-        // Load plate for this chart's ruling body, then repaint
-        loadEngineSkyPlate(function (img) {
-          if (!img || !stage.isConnected) return;
-          x.clearRect(0, 0, W, H);
-          paintDeterministicSky(x, W, H, chart, img);
-        }, chart);
-      }
-    } catch (e) { /* wheel still renders on its own plate */ }
   }
 
   const HOUSE_SYSTEM_NAMES = { equal: 'Equal', placidus: 'Placidus', whole: 'Whole Sign' };
@@ -1311,15 +1120,15 @@
         const starCards = fixedStars.slice(0, 6).map(fs => `
           <div class="pattern-card pattern-card--star">
             <div class="pattern-card__head">
-              <span class="eng-star-mark" style="color:#c9a88a;"></span>
+              <span class="eng-star-mark pattern-card__star-mark" aria-hidden="true"></span>
               <strong class="pattern-card__name pattern-card__name--star">${esc(fs.point === 'Midheaven' ? 'Career point' : fs.point === 'Ascendant' ? 'Rising sign' : fs.point)} conjunct ${esc(fs.star)}</strong>
               <span class="pattern-card__meta">${esc(fs.orb.toFixed(1))}° from exact · ${esc(fs.constellation)}</span>
-              ${fs.royal ? `<span class="pattern-card__badge" style="color:var(--gold);">★ Royal Star — ${esc(fs.royal)}</span>` : ''}
+              ${fs.royal ? `<span class="pattern-card__badge pattern-card__badge--royal">Royal star — ${esc(fs.royal)}</span>` : ''}
             </div>
             <p class="pattern-card__body">${esc(fs.meaning)}</p>
           </div>`).join('');
         blocks.push('<p class="ap-reading-section-label">Fixed star conjunctions</p>' +
-          '<p class="ap-reading-card__meta" style="margin:0 0 var(--space-4);max-width:65ch;">Natal points within 1° of major named stars, precession-corrected to your birth year.</p>' +
+          '<p class="ap-reading-card__meta ap-reading-card__meta--intro">Natal points within 1° of major named stars, precession-corrected to your birth year.</p>' +
           starCards);
       }
 
@@ -1357,7 +1166,7 @@
       }).join('');
       if (chart.nodeMode) {
         const modeLabel = chart.nodeMode === 'true' ? 'True (osculating) node' : 'Mean node';
-        pt.innerHTML += '<p class="ap-reading-card__meta" style="text-align:center;margin-top:var(--space-4);">' +
+        pt.innerHTML += '<p class="ap-reading-card__meta ap-reading-card__meta--centered">' +
           'Lunar nodes: ' + modeLabel + ' · Lilith = mean Black Moon · South Node = North Node + 180° · ' +
           'Chiron: Kepler orbit from JPL elements — to the degree 1970–2030, approximate for mid-century births</p>';
       }
@@ -1423,7 +1232,7 @@
           title: 'House ' + (i + 1) + ' · ' + (HOUSE_THEMES[i] || ''),
           meta: (hm && hm.keyword ? hm.keyword + ' · ' : '') + sign + ' ' + dg + '°' + String(mn).padStart(2, '0') + '′ on the cusp',
           text: text,
-          icon: '<span class="ap-reading-card__aspect-glyph" style="font-size:0.85rem;color:var(--gold);">' + roman(i + 1) + '</span>',
+          icon: '<span class="ap-reading-card__aspect-glyph ap-reading-card__roman">' + roman(i + 1) + '</span>',
         });
       }).join('');
       ht.querySelectorAll('[data-house-system]').forEach(function (btn) {
@@ -1530,16 +1339,36 @@
   function initTabs() {
     if (tabsInit) return;
     tabsInit = true;
-    // Support both old .tabs__trigger class (from chart-render) and new .tab-trigger
-    document.querySelectorAll('.tabs__trigger, .tab-trigger').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tabs__trigger, .tab-trigger').forEach(b => b.setAttribute('aria-selected', 'false'));
-        document.querySelectorAll('.tabs__panel, .tab-panel').forEach(p => p.setAttribute('aria-hidden', 'true'));
-        btn.setAttribute('aria-selected', 'true');
-        const panel = document.getElementById(btn.getAttribute('aria-controls'));
-        if (panel) panel.setAttribute('aria-hidden', 'false');
-        var hint = document.getElementById('chart-tabs-hint');
-        if (hint) hint.setAttribute('hidden', '');
+    const tabs = Array.from(document.querySelectorAll('.chart-detail-tabs .tabs__trigger, .chart-detail-tabs .tab-trigger'));
+    const panels = Array.from(document.querySelectorAll('.chart-detail-tabs .tabs__panel, .chart-detail-tabs .tab-panel'));
+    if (!tabs.length) return;
+
+    function activateTab(btn, moveFocus) {
+      tabs.forEach(function (item) {
+        const selected = item === btn;
+        item.setAttribute('aria-selected', selected ? 'true' : 'false');
+        item.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(function (panel) {
+        panel.setAttribute('aria-hidden', panel.id === btn.getAttribute('aria-controls') ? 'false' : 'true');
+      });
+      if (moveFocus) btn.focus();
+      const hint = document.getElementById('chart-tabs-hint');
+      if (hint) hint.setAttribute('hidden', '');
+    }
+
+    tabs.forEach(function (btn, index) {
+      btn.tabIndex = btn.getAttribute('aria-selected') === 'true' ? 0 : -1;
+      btn.addEventListener('click', function () { activateTab(btn, false); });
+      btn.addEventListener('keydown', function (event) {
+        let next = null;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = tabs[(index + 1) % tabs.length];
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = tabs[(index + tabs.length - 1) % tabs.length];
+        if (event.key === 'Home') next = tabs[0];
+        if (event.key === 'End') next = tabs[tabs.length - 1];
+        if (!next) return;
+        event.preventDefault();
+        activateTab(next, true);
       });
     });
   }
@@ -1611,7 +1440,7 @@
           row.parentNode.insertBefore(chip, row.nextSibling);
         }
         chip.hidden = false;
-        chip.innerHTML = '<span class="chart-save-confirmation__mark" aria-hidden="true">✦</span>' +
+        chip.innerHTML = '<span class="chart-save-confirmation__mark eng-star-mark" aria-hidden="true"></span>' +
           '<span>Saved on this device — <a href="charts.html">open My Charts →</a></span>';
       }
     }
@@ -1713,22 +1542,22 @@
   // Honest + deterministic: only the real computed chart is ever drawn.
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Cinzel (display) + Inter (sans), loaded by the page <head>; serif/sans fallback.
-  const FONT_DISPLAY = '"AstroGlyph", "Cinzel", "Cormorant Garamond", Georgia, serif';
-  const FONT_SANS    = '"Inter", "Helvetica Neue", Arial, sans-serif';
+  // The exported plate uses the same typography as the live field instrument.
+  const FONT_DISPLAY = '"Cormorant Garamond", Georgia, serif';
+  const FONT_SANS    = '"Schibsted Grotesk", system-ui, sans-serif';
 
   // Engraved palette (matches css/main.css :root) ────────────────────────────
   const PAL = {
-    void:     '#07070A',   // --ap-void-deep
-    voidWarm: '#121826',   // --ap-void-mid (name kept; value is cool)
-    lapis:    '#4A7580',   // structural/accent lines → water element accent
-    gold:     '#d8b46a',   // --ap-gold-core
-    goldHi:   '#ff5a1f',   // --ap-gold-bright
-    goldPale: '#f2ecdf',   // --ap-gold-parchment
-    parchment:'#f2ecdf',
-    oxblood:  '#4A7580',   // retired oxblood → cool water accent
-    silver:   '#ddd3bf',   // --ap-text-secondary
-    silverDim:'#9a8f7a',   // --ap-text-muted
+    void:      '#020307',
+    voidWarm:  '#0D121B',
+    lapis:     '#B9C8DC',
+    gold:      '#D8B46A',
+    goldHi:    '#FF6428',
+    goldPale:  '#F2ECDF',
+    parchment: '#F2ECDF',
+    oxblood:   '#FF6428',
+    silver:    '#B9C8DC',
+    silverDim: 'rgba(185,200,220,0.68)',
   };
 
   const SHARE_FORMATS = {
@@ -1773,85 +1602,31 @@
       const alpha = 0.12 + rnd() * 0.55;
       const r     = (rnd() * 1.8 + 0.3) * S;
       x.fillStyle = sparkle
-        ? `rgba(205,174,106,${alpha})`
-        : `rgba(240,232,216,${alpha})`;
+        ? `rgba(216,180,106,${alpha})`
+        : `rgba(242,236,223,${alpha})`;
       x.beginPath();
       x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2);
       x.fill();
     }
   }
 
-  // Masterpiece ground: void + engine photoreal window + brass atmosphere + stars.
-  // Engine stills from make-engine-stills (3D orrery library) — not stock nebulas.
-  // eng: optional preloaded plate (preferred over global — avoids stale chart race).
-  function paintBackground(x, W, H, seed, S, eng) {
+  // Honest plate ground: flat void, raised ledger band, grid and plotted stars.
+  function paintBackground(x, W, H, seed, S) {
     x.fillStyle = PAL.void;
     x.fillRect(0, 0, W, H);
-
-    // Photoreal 3D engine plate as soft full-field atmosphere (marketing parity)
-    eng = eng || _engineSkyImg;
-    if (eng && eng.naturalWidth) {
-      x.save();
-      x.globalAlpha = 0.28;
-      const s = Math.max(W / eng.naturalWidth, H / eng.naturalHeight) * 1.12;
-      const dw = eng.naturalWidth * s, dh = eng.naturalHeight * s;
-      x.drawImage(eng, (W - dw) / 2, (H - dh) / 2 - H * 0.06, dw, dh);
-      x.restore();
-    }
-
-    // Brass nebula (top) — token brass only
-    const neb1 = x.createRadialGradient(W * 0.72, H * 0.16, 0, W * 0.72, H * 0.16, Math.max(W, H) * 0.75);
-    neb1.addColorStop(0, 'rgba(216,180,106,0.16)');
-    neb1.addColorStop(0.5, 'rgba(216,180,106,0.05)');
-    neb1.addColorStop(1, 'transparent');
-    x.fillStyle = neb1; x.fillRect(0, 0, W, H);
-
-    // Cool raised void (lower)
-    const neb2 = x.createRadialGradient(W * 0.2, H * 0.86, 0, W * 0.2, H * 0.86, Math.max(W, H) * 0.7);
-    neb2.addColorStop(0, 'rgba(26,34,48,0.55)');
-    neb2.addColorStop(0.5, 'rgba(74,117,128,0.10)');
-    neb2.addColorStop(1, 'transparent');
-    x.fillStyle = neb2; x.fillRect(0, 0, W, H);
+    x.fillStyle = 'rgba(13,18,27,0.72)';
+    x.fillRect(0, H * 0.18, W, H * 0.64);
 
     drawDotGrid(x, W, H, S);
     drawStars(x, W, H, Math.round((W * H) / 4800), seed, S);
-
-    // Circular engine “window” behind wheel zone (masterpiece motif — framed keep)
-    if (eng && eng.naturalWidth) {
-      const wx = W / 2, wy = H * 0.48, wr = Math.min(W, H) * 0.30;
-      x.save();
-      x.beginPath();
-      x.arc(wx, wy, wr, 0, Math.PI * 2);
-      x.closePath();
-      x.clip();
-      x.globalAlpha = 0.48;
-      const s2 = Math.max((wr * 2) / eng.naturalWidth, (wr * 2) / eng.naturalHeight);
-      const dw2 = eng.naturalWidth * s2, dh2 = eng.naturalHeight * s2;
-      x.drawImage(eng, wx - dw2 / 2, wy - dh2 / 2, dw2, dh2);
-      x.restore();
-      // Engraved porthole rings (masterpiece plate · silver + aurora limb)
-      x.strokeStyle = 'rgba(242,236,223,0.48)';
-      x.lineWidth = Math.max(2.5, 2.5 * S);
-      x.beginPath();
-      x.arc(wx, wy, wr, 0, Math.PI * 2);
-      x.stroke();
-      x.strokeStyle = 'rgba(216,180,106,0.22)';
-      x.lineWidth = Math.max(1, 1.2 * S);
-      x.beginPath();
-      x.arc(wx, wy, wr + 6 * S, 0, Math.PI * 2);
-      x.stroke();
-      x.strokeStyle = 'rgba(255,90,31,0.16)';
-      x.lineWidth = Math.max(1, 1 * S);
-      x.beginPath();
-      x.arc(wx, wy, wr + 11 * S, 0, Math.PI * 2);
-      x.stroke();
-    }
-
-    // Subtle vignette to focus the eye
-    const vig = x.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.72);
-    vig.addColorStop(0, 'transparent');
-    vig.addColorStop(1, 'rgba(12,16,22,0.62)');
-    x.fillStyle = vig; x.fillRect(0, 0, W, H);
+    x.strokeStyle = 'rgba(185,200,220,0.12)';
+    x.lineWidth = Math.max(1, S);
+    x.beginPath();
+    x.moveTo(W / 2, H * 0.18);
+    x.lineTo(W / 2, H * 0.82);
+    x.moveTo(W * 0.12, H / 2);
+    x.lineTo(W * 0.88, H / 2);
+    x.stroke();
   }
 
   // Double gold frame with generous margin (print bleed-friendly).
@@ -1888,8 +1663,20 @@
     return px;
   }
 
-  // Sign seal on a glass orb plate; first letter of sign if seal not ready yet.
+  // Sign seal on an engraved plate; unknown angles are explicitly withheld.
   function drawSignOrb(x, signName, cx, cy, r, elemCol) {
+    if (!signName) {
+      x.fillStyle = PAL.voidWarm;
+      x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
+      x.strokeStyle = 'rgba(185,200,220,0.34)';
+      x.lineWidth = Math.max(1, r * 0.045);
+      x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
+      x.fillStyle = PAL.silver;
+      x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.font = `500 ${r * 0.7}px ${FONT_DISPLAY}`;
+      x.fillText('—', cx, cy - r * 0.04);
+      return;
+    }
     const seals = window.APCanvasSeals;
     if (seals && typeof seals.drawSealPlate === 'function') {
       if (seals.drawSealPlate(x, signName, cx, cy, r, elemCol)) return;
@@ -2218,7 +2005,7 @@
     });
   }
 
-  // Lock-screen wallpaper — warm void, centred wheel, big three, minimal chrome.
+  // Lock-screen wallpaper — flat field plate, centred wheel, restrained chrome.
   function paintWallpaperImage(chart) {
     const fmt = SHARE_FORMATS.wallpaper;
     const W = fmt.w, H = fmt.h;
@@ -2231,21 +2018,7 @@
     const S = W / 1080;
     const seed = seedFromChart(chart);
 
-    // Warm void ground (lighter vignette — clock widgets sit on top)
-    const g = x.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#07070A');
-    g.addColorStop(0.45, PAL.voidWarm);
-    g.addColorStop(1, '#121826');
-    x.fillStyle = g; x.fillRect(0, 0, W, H);
-
-    const neb = x.createRadialGradient(W * 0.5, H * 0.42, 0, W * 0.5, H * 0.42, Math.max(W, H) * 0.85);
-    neb.addColorStop(0, 'rgba(216,180,106,0.14)');
-    neb.addColorStop(0.55, 'rgba(74,117,128,0.08)');
-    neb.addColorStop(1, 'transparent');
-    x.fillStyle = neb; x.fillRect(0, 0, W, H);
-
-    drawDotGrid(x, W, H, S);
-    drawStars(x, W, H, Math.round((W * H) / 6200), seed, S);
+    paintBackground(x, W, H, seed, S);
 
     const safeTop = 200 * S;
     const safeBot = 280 * S;
@@ -2261,10 +2034,10 @@
     x.fillStyle = PAL.goldPale;
     x.font = `500 ${22 * S}px ${FONT_SANS}`;
     x.fillText(
-      `☉ ${chart.positions.Sun.sign}   ·   ☽ ${chart.positions.Moon.sign}   ·   ↑ ${chart.risingSign}`,
+      `☉ ${chart.positions.Sun.sign}   ·   ☽ ${chart.positions.Moon.sign}   ·   ${chart.risingSign ? '↑ ' + chart.risingSign : 'Rising withheld'}`,
       W / 2, y);
 
-    // Glass orbs row
+    // Engraved placement row
     y += 56 * S;
     const trio = [
       { sign: chart.positions.Sun.sign,  label: 'SUN' },
@@ -2296,7 +2069,7 @@
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${16 * S}px ${FONT_SANS}`;
     x.textAlign = 'center';
-    x.fillText('astroprecise  ·  your sky', W / 2, H - safeBot + 72 * S);
+    x.fillText('astroprecise  ·  computed natal plate', W / 2, H - safeBot + 72 * S);
 
     return cv;
   }
@@ -2314,7 +2087,7 @@
     const S = W / 1080;
     const seed = seedFromChart(chart);
 
-    paintBackground(x, W, H, seed, S, _engineSkyImg);
+    paintBackground(x, W, H, seed, S);
     drawFrame(x, W, H, 36 * S, 52 * S);
 
     x.textAlign = 'center';
@@ -2359,7 +2132,7 @@
 
       x.fillStyle = PAL.parchment;
       x.font = `600 ${28 * S}px ${FONT_SANS}`;
-      x.fillText(t.sign, tx, y + orbR + 58 * S);
+      x.fillText(t.sign || 'WITHHELD', tx, y + orbR + 58 * S);
 
       const pos = t.key && chart.positions[t.key];
       if (pos) {
@@ -2409,12 +2182,11 @@
     const S = W / 1080;                       // scale relative to the 1080-wide baseline
     const seed = seedFromChart(chart);
 
-    paintBackground(x, W, H, seed, S, _engineSkyImg);
+    paintBackground(x, W, H, seed, S);
     drawFrame(x, W, H, 44 * S, 62 * S);
 
     const cityShort = (chart.city || '').split(',')[0];
-    const plateLbl = enginePlateLabelForChart(chart);
-    const accLine = 'VSOP87 · ELP2000 · private browser math · not AI art';
+    const accLine = 'VSOP87 · ELP2000 · calculated on device';
 
     // ── Header (shared) ──
     x.textAlign = 'center';
@@ -2439,7 +2211,7 @@
       `${chart.birthDate}${chart.birthTime ? ' · ' + chart.birthTime : ''}${cityShort ? '  ·  ' + cityShort : ''}`,
       W / 2, y);
 
-    // ── Big-Three glass orbs (shared) ──
+    // ── Core placement plates (shared) ──
     y += 78 * S;
     const trio = [
       { sign: chart.positions.Sun.sign,  label: 'SUN' },
@@ -2458,7 +2230,7 @@
       x.fillText(t.label, tx, y + orbR + 26 * S);
       x.fillStyle = PAL.silver;
       x.font = `400 ${17 * S}px ${FONT_SANS}`;
-      x.fillText(t.sign, tx, y + orbR + 48 * S);
+      x.fillText(t.sign || 'WITHHELD', tx, y + orbR + 48 * S);
     });
 
     // Dominant-energy line
@@ -2521,9 +2293,9 @@
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${18 * S}px ${FONT_SANS}`;
     x.fillText(`astroprecise  ·  ${accLine}`, W / 2, H - 88 * S);
-    x.fillStyle = 'rgba(168,158,136,0.9)';
+    x.fillStyle = 'rgba(185,200,220,0.72)';
     x.font = `400 ${13 * S}px ${FONT_SANS}`;
-    x.fillText('Wheel = your degrees · window = ' + plateLbl + ' · free PNG ≠ paid print', W / 2, H - 58 * S);
+    x.fillText('Wheel = computed degrees · artwork = schematic field plate', W / 2, H - 58 * S);
 
     return cv;
   }
@@ -2572,20 +2344,15 @@
   // One-tap export: Web Share (with image file) where supported, else download.
   async function exportShareImage(chart, format, opts) {
     opts = opts || {};
-    // Masterpiece path: preload zodiac + planet seals + engine plate before paint.
-    // Await plate fully (no 900ms race that could paint a prior chart's still).
+    // Preload engraved zodiac and planet seals before painting the export.
     try {
-      const plateP = ensureEngineSkyPlate(chart);
       if (window.APCanvasSeals) {
         const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
         const planets = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
         await Promise.all([
           APCanvasSeals.preload ? APCanvasSeals.preload(signs) : Promise.resolve(),
           APCanvasSeals.preloadPlanets ? APCanvasSeals.preloadPlanets(planets) : Promise.resolve(),
-          plateP,
         ]);
-      } else {
-        await plateP;
       }
     } catch (e) { /* paint with fallbacks */ }
 
@@ -2629,13 +2396,20 @@
   // Tiny chooser so one button can offer all three formats without a framework.
   function openShareFormatMenu(anchorBtn) {
     if (!currentChart) return;
-    document.getElementById('share-format-menu')?.remove();
+    const existing = document.getElementById('share-format-menu');
+    if (existing) {
+      if (typeof existing._close === 'function') existing._close();
+      else existing.remove();
+      return;
+    }
     const menu = document.createElement('div');
     menu.id = 'share-format-menu';
     menu.className = 'chart-export-menu';
     menu.setAttribute('role', 'menu');
+    menu.setAttribute('aria-label', 'Export artwork format');
+    anchorBtn.setAttribute('aria-expanded', 'true');
     const opts = [
-      { fmt: 'print',  title: 'Print plate · 4960×7016', sub: 'High-resolution wall plate · seals + engine still' },
+      { fmt: 'print',  title: 'Print plate · 4960×7016', sub: 'High-resolution computed wheel + ledger' },
       { fmt: 'square', title: 'Square · 2160×2160', sub: 'High-resolution social plate' },
       { fmt: 'story',  title: 'Story · 2160×3840 HD',  sub: 'IG / WhatsApp stories' },
       { fmt: 'wallpaper', title: 'Phone wallpaper · 1080×1920', sub: 'Lock screen — your chart' },
@@ -2650,15 +2424,27 @@
 
     document.body.appendChild(menu);
     const r = anchorBtn.getBoundingClientRect();
-    menu.style.top  = (r.bottom + window.scrollY + 8) + 'px';
-    menu.style.left = (Math.min(r.left + window.scrollX, window.scrollX + window.innerWidth - menu.offsetWidth - 12)) + 'px';
+    const margin = 12;
+    const menuWidth = menu.offsetWidth;
+    const menuHeight = menu.offsetHeight;
+    const spaceBelow = window.innerHeight - r.bottom - margin;
+    const top = spaceBelow >= menuHeight
+      ? r.bottom + 8
+      : Math.max(margin, r.top - menuHeight - 8);
+    const left = Math.max(margin, Math.min(r.left, window.innerWidth - menuWidth - margin));
+    menu.style.top = top + 'px';
+    menu.style.left = left + 'px';
 
     const close = () => {
       menu.remove();
+      anchorBtn.setAttribute('aria-expanded', 'false');
       document.removeEventListener('click', onDoc, true);
       document.removeEventListener('keydown', onKey, true);
+      window.removeEventListener('resize', close);
+      window.removeEventListener('scroll', close, true);
       try { anchorBtn.focus(); } catch (e) {}
     };
+    menu._close = close;
     const onDoc = ev => { if (!menu.contains(ev.target) && ev.target !== anchorBtn) close(); };
     const onKey = ev => {
       if (ev.key === 'Escape') { ev.preventDefault(); close(); return; }
@@ -2676,6 +2462,8 @@
     setTimeout(() => {
       document.addEventListener('click', onDoc, true);
       document.addEventListener('keydown', onKey, true);
+      window.addEventListener('resize', close, { once: true });
+      window.addEventListener('scroll', close, { once: true, capture: true });
       const first = menu.querySelector('button[role="menuitem"]');
       try { if (first) first.focus(); } catch (e) {}
     }, 0);
@@ -2696,12 +2484,6 @@
   // BIG THREE SHARE CARD — Sun/Moon/Rising orbs only (no natal wheel).
   // ═══════════════════════════════════════════════════════════════════════════
 
-  function drawShareCard(chart) { return paintShareImage(chart, 'bigthree'); }
-
-  function addShareCardButton() {
-    // The HTML already has the buttons; wiring lives below. No-op kept for boot.
-  }
-
   function initAdvancedAccordion() {
     const root = document.getElementById('chart-advanced');
     const item = document.getElementById('chart-advanced-item');
@@ -2709,14 +2491,12 @@
     const panel = document.getElementById('chart-advanced-panel');
     if (!root || !item || !trigger || !panel) return;
 
-    const mq = window.matchMedia('(max-width: 768px)');
-    // Structure clean: always start collapsed so Calculate stays first-viewport.
+    // Always start collapsed so Calculate stays in the first form viewport.
     item.classList.remove('is-open');
 
     const sync = () => {
       const open = item.classList.contains('is-open');
       trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-      panel.style.maxHeight = open ? `${panel.scrollHeight}px` : '0';
     };
 
     trigger.addEventListener('click', () => {
@@ -2724,8 +2504,6 @@
       sync();
     });
 
-    if (mq.addEventListener) mq.addEventListener('change', sync);
-    else mq.addListener(sync);
     sync();
   }
 
@@ -2753,7 +2531,6 @@
             : 'Time unknown · Rising, MC and houses will be withheld.';
       }
       if (timeUnknownBtn) {
-        timeUnknownBtn.setAttribute('aria-pressed', level === 'unknown' ? 'true' : 'false');
         timeUnknownBtn.textContent = level === 'unknown' ? 'Choose an approximate time' : 'Mark time unknown';
       }
     }
@@ -2778,8 +2555,12 @@
 
     document.querySelectorAll('.time-btn').forEach(function (button) {
       button.addEventListener('click', function () {
-        document.querySelectorAll('.time-btn').forEach(function (item) { item.classList.remove('active'); });
+        document.querySelectorAll('.time-btn').forEach(function (item) {
+          item.classList.remove('active');
+          item.setAttribute('aria-pressed', 'false');
+        });
         button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
         if (!timeInput) return;
         timeInput.value = button.dataset.time;
         setTimeAccuracy('approximate');
@@ -2792,7 +2573,10 @@
         const value = timeInput.value;
         const activePreset = document.querySelector('.time-btn.active');
         if (!activePreset || activePreset.dataset.time !== value) {
-          document.querySelectorAll('.time-btn').forEach(function (item) { item.classList.remove('active'); });
+          document.querySelectorAll('.time-btn').forEach(function (item) {
+            item.classList.remove('active');
+            item.setAttribute('aria-pressed', 'false');
+          });
         }
         setTimeAccuracy(value ? (activePreset && activePreset.dataset.time === value ? 'approximate' : 'exact') : 'unknown');
       });
@@ -2808,15 +2592,26 @@
         const selected = item === card;
         item.classList.toggle('active', selected);
         item.setAttribute('aria-checked', selected ? 'true' : 'false');
+        item.tabIndex = selected ? 0 : -1;
       });
       if (houseInput) houseInput.value = card.dataset.value;
     }
-    document.querySelectorAll('.house-card').forEach(function (card) {
+    const houseCards = Array.from(document.querySelectorAll('.house-card'));
+    houseCards.forEach(function (card, index) {
       card.addEventListener('click', function () { selectHouseCard(card); });
       card.addEventListener('keydown', function (event) {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          selectHouseCard(card);
+          return;
+        }
+        let next = null;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = houseCards[(index + 1) % houseCards.length];
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = houseCards[(index + houseCards.length - 1) % houseCards.length];
+        if (!next) return;
         event.preventDefault();
-        selectHouseCard(card);
+        selectHouseCard(next);
+        next.focus();
       });
     });
 
@@ -2878,7 +2673,6 @@
   function boot() {
     if (booted) return;
     booted = true;
-    addShareCardButton();
     initNodeToggle();
     initAdvancedAccordion();
     initPersonalMemory();

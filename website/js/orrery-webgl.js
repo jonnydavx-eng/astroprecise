@@ -192,6 +192,8 @@ const FinishShader = {
 
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
+  let webglOnlyMode = false;
+  let fatalReported = false;
   let envRT = null;
   let envIblLoading = false;
   let runtimeGeneration = 0;
@@ -6688,7 +6690,13 @@ const FinishShader = {
   function frame(t) {
     if (destroyed) return;
     try { frameBody(t); }
-    catch (err) { console.warn('[orrery] render error — falling back to canvas orrery:', err); fallbackToCanvas(canvas); }
+    catch (err) {
+      if (webglOnlyMode) reportWebGLFatal(err);
+      else {
+        console.warn('[orrery] render error — falling back to canvas orrery:', err);
+        fallbackToCanvas(canvas).catch((fallbackErr) => console.warn('[orrery] canvas fallback failed:', fallbackErr));
+      }
+    }
     if (!destroyed && running && inView) raf = requestAnimationFrame(frame);
     else raf = null;
   }
@@ -7948,6 +7956,16 @@ const FinishShader = {
   let fallbackRoot = null;
   let fallbackWasFull = false;
   let fallbackWasCanvas = false;
+  function reportWebGLFatal(err) {
+    if (fatalReported) return;
+    fatalReported = true;
+    running = false;
+    if (raf) { try { cancelAnimationFrame(raf); } catch (_) {} raf = null; }
+    const message = err && err.message
+      ? `The real 3D Observatory stopped (${err.message}). No substitute model has been shown.`
+      : 'The real 3D Observatory stopped. No substitute model has been shown.';
+    try { document.dispatchEvent(new CustomEvent('ap-orrery-fatal', { detail: { message } })); } catch (_) {}
+  }
   function waitForFallbackFrame() {
     return new Promise((resolve) => {
       let done = false;
@@ -7963,6 +7981,11 @@ const FinishShader = {
     });
   }
   function fallbackToCanvas(canvasEl) {
+    if (webglOnlyMode) {
+      const err = new Error('canvas fallback disabled for the flagship Observatory');
+      reportWebGLFatal(err);
+      return Promise.reject(err);
+    }
     if (window.__orreryPreloaderOwns && !window.__apHeroEntered) {
       console.warn('[orrery] preloader owns canvas — skipping canvas fallback');
       return Promise.reject(new Error('canvas fallback blocked during preloader'));
@@ -8046,6 +8069,8 @@ const FinishShader = {
       canvasEl = options.canvas;
     }
     options = options || {};
+    webglOnlyMode = !!options.webglOnly;
+    fatalReported = false;
     if (options.spaceFlight) {
       spaceFlightMode = true;
       masterclassMode = true;
@@ -8082,7 +8107,11 @@ const FinishShader = {
       else if (options.showOrbits != null) updateScaleVisuals(scaleLevel);
       if (options.date) setDate(options.date instanceof Date ? options.date : new Date(options.date));
     }
-    catch (err) { console.warn('[orrery] WebGL init failed — falling back to canvas orrery:', err); return fallbackToCanvas(canvasEl); }
+    catch (err) {
+      if (webglOnlyMode) throw err;
+      console.warn('[orrery] WebGL init failed — falling back to canvas orrery:', err);
+      return fallbackToCanvas(canvasEl);
+    }
   }
   let webglBooted = false;
   function _initWebGL(canvasEl) {
@@ -8236,8 +8265,11 @@ const FinishShader = {
     });
     listen(canvas, 'webglcontextlost', (e) => {
       try { e.preventDefault(); } catch (_) {}
-      console.warn('[orrery] WebGL context lost — falling back to canvas orrery');
-      fallbackToCanvas(canvas);
+      if (webglOnlyMode) reportWebGLFatal(new Error('WebGL context was lost'));
+      else {
+        console.warn('[orrery] WebGL context lost — falling back to canvas orrery');
+        fallbackToCanvas(canvas).catch((err) => console.warn('[orrery] canvas fallback failed:', err));
+      }
     }, false);
 
     if (instrumentMode) syncPosterSunVisibility();

@@ -56,6 +56,18 @@
 
   function mount() {
     var existing = document.querySelector('footer:not(.ap-lite-footer)');
+    if (existing && existing.matches('.ap-site-footer[data-ap-footer-model="compact-v835"]')
+        && existing.querySelector('.ap-site-footer__inner')) {
+      // Authored launch footers are already complete at first paint. Replacing
+      // their innerHTML at DOM ready caused an unnecessary visible shell swap.
+      Array.prototype.forEach.call(existing.querySelectorAll('a[aria-current="page"]'), function (link) {
+        link.removeAttribute('aria-current');
+      });
+      var active = existing.querySelector('a[href="' + page.replace(/"/g, '') + '"]');
+      if (active) active.setAttribute('aria-current', 'page');
+      document.dispatchEvent(new CustomEvent('ap:footer-injected'));
+      return;
+    }
     var footer = existing || document.createElement('footer');
 
     footer.className = 'ap-site-footer';

@@ -11,7 +11,7 @@
  *   attrs:  start-focus start-radius motion orbits data-wheel
  *   global: window.VoidEphem (byte-identical ephemeris utilities)
  *
- * Fallback ladder (fail-open at every rung, legacy stays one script away):
+ * Fallback ladder (archive embeds only; legacy stays one script away):
  *   1. ?engine=legacy or a failed sync probe (no WebGL2 / no import maps)
  *      → inject js/orrery.js; it self-registers <void-orrery> exactly as before.
  *   2. WebGL module import fails or stalls (>8s)
@@ -20,6 +20,10 @@
  *      → canvas engine on a fresh canvas node.
  *   4. Canvas engine unavailable
  *      → legacy (pre-registration) or the static observatory poster.
+ *
+ * The flagship Observatory opts into data-renderer="webgl-only": it either
+ * remains the real 3D instrument or reports unavailability. It never swaps to
+ * the visually unrelated 2D/legacy renderer after first paint.
  *
  * Known-good reference for the choreography: explore.html + js/ap-award-orrery.js.
  */
@@ -162,6 +166,10 @@
   var FORCE_WEBGL = engineParam === 'webgl';
   var CAN_WEBGL = null;
 
+  function strict3DRequested() {
+    return !!document.querySelector('void-orrery[data-renderer="webgl-only"]');
+  }
+
   /* VoidEphem is useful on pages without a model. Defer the WebGL capability
    * probe and legacy engine injection until a <void-orrery> actually exists. */
   defineVoidEphem();
@@ -170,7 +178,7 @@
     if (CAN_WEBGL !== null) return CAN_WEBGL;
     CAN_WEBGL = !FORCE_LEGACY && !!window.customElements &&
       (FORCE_WEBGL || (importMapOK() && webgl2OK()));
-    if (!CAN_WEBGL) loadLegacy(FORCE_LEGACY ? '?engine=legacy' : 'capability probe');
+    if (!CAN_WEBGL && !strict3DRequested()) loadLegacy(FORCE_LEGACY ? '?engine=legacy' : 'capability probe');
     return CAN_WEBGL;
   }
 
@@ -239,9 +247,14 @@
   function bootPipeline() {
     if (window.__voidOrreryPipeline) return window.__voidOrreryPipeline;
     ensureImportMap();
-    var p = ensureLoader().catch(function () { return true; /* loader optional — direct import fallback */ })
+    var p = (strict3DRequested()
+        ? Promise.resolve(true)
+        : ensureLoader().catch(function () { return true; /* loader optional — direct import fallback */ }))
       .then(function () {
-        var importJob = window.__loadOrreryEngine
+        // The launch Observatory imports the one intended renderer directly.
+        // It does not evaluate the 1,000-line legacy/lite handoff loader whose
+        // fallback choreography belongs to archive embeds.
+        var importJob = !strict3DRequested() && window.__loadOrreryEngine
           ? window.__loadOrreryEngine()
           : import(assetUrl('orrery-webgl.js')).then(function () {
               if (!window.Orrery3D) throw new Error('orrery-webgl did not register Orrery3D');
@@ -256,6 +269,7 @@
         return { kind: 'webgl', api: O };
       })
       .catch(function (err) {
+        if (strict3DRequested()) throw err;
         warn('WebGL engine import unavailable — failing open to canvas engine', err);
         return withTimeout(loadCanvasEngine(), 6000, 'canvas engine').then(function (O) {
           engineKind = 'canvas';
@@ -326,6 +340,7 @@
         this._eclipseK = 0; this._eclipseTarget = 0;
         this._lastLevelName = null;
         this._lastFocusKey = null; this._lastFocusAt = 0;
+        this._strict3D = this.getAttribute('data-renderer') === 'webgl-only';
         this._firstFrameSeen = false;
         this._onAnyFirstFrame = function () { this._firstFrameSeen = true; }.bind(this);
         document.addEventListener('ap-orrery-first-frame', this._onAnyFirstFrame);
@@ -338,6 +353,10 @@
           // WebGL frame and removes the 2D→3D visual bait-and-switch.
           ph.innerHTML = '';
           this.appendChild(ph);
+        }
+        if (this._strict3D && (!CAN_WEBGL || engineKind === 'unavailable')) {
+          this._poster('This device could not start the real 3D Observatory. The chart and eclipse tools remain available.');
+          return;
         }
         // data-wheel="off": keep page scroll, block the engine's own wheel-zoom.
         if (this.getAttribute('data-wheel') === 'off') {
@@ -389,7 +408,7 @@
             var api = (self._engineKind === 'canvas' ? runningEngine : window.Orrery3D) || runningEngine;
             if (!api || typeof api.init !== 'function') throw new Error('Orrery3D missing');
             var options = self._engineKind === 'webgl'
-              ? { instrument: true, freeExplore: true, showOrbits: true, showLabels: true, selectedPlanet: 'sun' }
+              ? { instrument: true, freeExplore: true, webglOnly: self._strict3D, showOrbits: true, showLabels: true, selectedPlanet: 'sun' }
               : { skipIntro: true, fromLite: true };
             var res = api.init(cv, options);
             return Promise.resolve(res).then(function () { return api; });
@@ -406,6 +425,10 @@
             self._postInit();
           })
           .catch(function (err) {
+            if (self._strict3D) {
+              self._poster('The real 3D Observatory could not start. No substitute model has been shown.');
+              return;
+            }
             warn('engine boot failed — failing open to canvas engine', err);
             self._toCanvasEngine();
           });
@@ -413,6 +436,10 @@
 
       C.prototype._postInit = function () {
         var O = this._engine, self = this;
+        if (this._posted) {
+          try { if (O && O.destroy) O.destroy(); } catch (_) {}
+          return;
+        }
         try { if (O.setSpeed) O.setSpeed(0); } catch (e) {}
         try { if (O.skipIntro) O.skipIntro(); } catch (e) {}
         if (this.getAttribute('orbits') === 'off') {
@@ -482,14 +509,22 @@
         this._watchdog = setTimeout(function () {
           self._watchdog = null;
           if (self._ready || self._posted) return;
-          warn('9s without engine ready — failing open to canvas engine');
-          self._toCanvasEngine();
+          if (self._strict3D) {
+            self._poster('The real 3D Observatory took too long to start. No substitute model has been shown.');
+          } else {
+            warn('9s without engine ready — failing open to canvas engine');
+            self._toCanvasEngine();
+          }
         }, 9000);
       };
 
       C.prototype._toCanvasEngine = function () {
         var self = this;
         if (this._posted) return;
+        if (this._strict3D) {
+          this._poster('The real 3D Observatory stopped. No substitute model has been shown.');
+          return;
+        }
         if (this._engineKind === 'canvas' && this._canvasTried) { this._poster(); return; }
         this._engineKind = 'canvas';
         engineKind = 'canvas';
@@ -588,14 +623,24 @@
           self.setAttribute('data-engine', 'canvas');
           self._setUnavailable('The 3D renderer stopped, so the page switched to a limited fallback. Chart and eclipse calculations still work.');
         };
+        this._onEngineFatal = function (e) {
+          if (!self._strict3D || self._posted) return;
+          self._posted = true;
+          try { if (self._engine && self._engine.destroy) self._engine.destroy(); } catch (_) {}
+          self._posted = false;
+          var message = e && e.detail && e.detail.message;
+          self._poster(message || 'The real 3D Observatory stopped. No substitute model has been shown.');
+        };
         document.addEventListener('orrery-scale-change', this._onScaleChange);
         document.addEventListener('orrery-planet-focus', this._onPlanetFocus);
         document.addEventListener('ap-orrery-engine-replaced', this._onEngineReplaced);
+        document.addEventListener('ap-orrery-fatal', this._onEngineFatal);
       };
       C.prototype._unwireEngineEvents = function () {
         if (this._onScaleChange) { try { document.removeEventListener('orrery-scale-change', this._onScaleChange); } catch (e) {} this._onScaleChange = null; }
         if (this._onPlanetFocus) { try { document.removeEventListener('orrery-planet-focus', this._onPlanetFocus); } catch (e) {} this._onPlanetFocus = null; }
         if (this._onEngineReplaced) { try { document.removeEventListener('ap-orrery-engine-replaced', this._onEngineReplaced); } catch (e) {} this._onEngineReplaced = null; }
+        if (this._onEngineFatal) { try { document.removeEventListener('ap-orrery-fatal', this._onEngineFatal); } catch (e) {} this._onEngineFatal = null; }
       };
       C.prototype._emitFocus = function (key, info) {
         var detail = info || { key: key };
@@ -881,13 +926,27 @@
     if (!document.querySelector('void-orrery')) return;
     bootStarted = true;
     if (mo) { try { mo.disconnect(); } catch (e) {} mo = null; }
-    if (!selectEnginePath()) return;
+    if (!selectEnginePath()) {
+      if (strict3DRequested()) {
+        engineKind = 'unavailable';
+        runningEngine = null;
+        defineElement();
+      }
+      return;
+    }
     bootPipeline().then(function () {
       defineElement();
       log('engine pipeline up (' + (engineKind || '?') + ') — <void-orrery> registered');
     }).catch(function (err) {
-      warn('all modern engines unavailable — falling back to legacy', err);
-      loadLegacy('webgl+canvas failed');
+      if (strict3DRequested()) {
+        engineKind = 'unavailable';
+        runningEngine = null;
+        defineElement();
+        warn('real 3D Observatory unavailable — no substitute renderer loaded', err);
+      } else {
+        warn('all modern engines unavailable — falling back to legacy', err);
+        loadLegacy('webgl+canvas failed');
+      }
     });
   }
   var mo = null;

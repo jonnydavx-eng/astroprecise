@@ -13,19 +13,34 @@
 <meta property="og:url" content="https://astroprecise.app/refunds.html">
 <meta name="theme-color" content="#020307">
 <link rel="preload" href="./fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/fonts.css?v=835">
 <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835">
+<script src="js/ap-nav-model-v834.js?v=835" defer></script>
 <style>
-@font-face{font-family:'Schibsted Grotesk';src:url('./fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
-@font-face{font-family:'IBM Plex Mono';src:url('./fonts/ibm-plex-mono-normal-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Cormorant Garamond';src:url('./fonts/cormorant-garamond-italic-500.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
 body{margin:0;background:#020307}
 a{color:#d8b46a;text-decoration:none}a:hover{color:#ff7a45}
 a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body>
-<div style="background:#020307;color:#f2ecdf;font-family:'Schibsted Grotesk',sans-serif;min-height:100vh">
+<body class="page-legal">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header" role="banner" data-ap-static-nav>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32"></div>
+        <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+      </a>
+      <div class="navbar__nav" role="group" aria-label="Primary">
+        <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Birth Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="eclipse.html" class="navbar__link">Eclipse</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+      </div>
+      <div class="navbar__end"><button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu"><span></span><span></span><span></span></button></div>
+    </div>
+    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+  </nav>
+</header>
+<main id="main-content" style="background:#020307;color:#f2ecdf;font-family:'Schibsted Grotesk',sans-serif">
 <div style="max-width:680px;margin:0 auto;padding:0 22px 90px">
 
 <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0">
@@ -64,9 +79,9 @@ a:focus-visible,button:focus-visible{outline:2px solid #d8b46a;outline-offset:2p
 <div style="margin-top:34px;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.4);line-height:2.1">READINGS ARE COMPUTED ASTRONOMY WITH TRADITIONAL MEANINGS OFFERED FOR REFLECTION — NOT ADVICE OR PREDICTION · THIS PAGE IS A PLAIN-ENGLISH SUMMARY, NOT LEGAL ADVICE</div>
 
 </div>
-</div>
+</main>
 <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
 <script src="js/ap-footer-inject.js?v=835" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
+<script src="js/ap-sky-time.js?v=835" defer></script>
 </body>
 </html>

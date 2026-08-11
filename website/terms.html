@@ -30,22 +30,10 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta name="theme-color" content="#020307" />
-  <!-- Standard tier-C chrome (masthead + footer system), mirroring why.html.
-       Links sit BEFORE the page's own <style> so the bespoke legal look wins. -->
-  <link rel="stylesheet" href="css/ap-palette-2026.css" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/ap-page-bridge.css" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=787" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/fonts.css?v=835" />
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835" />
   <script src="js/ap-nav-model-v834.js?v=835" defer></script>
   <style>
-    /* Critical fonts — block display prevents lede/h1 reflow CLS */
-    @font-face{font-family:'Cinzel';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cinzel-normal-400.woff2) format('woff2');}
-    @font-face{font-family:'Cinzel';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cinzel-normal-600.woff2) format('woff2');}
-    @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-normal-400.woff2) format('woff2');}
-    @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cormorant-garamond-normal-600.woff2) format('woff2');}
-    @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-italic-400.woff2) format('woff2');}
     :root{ --gold:#d8b46a; --gold-light:#f2ecdf; --ink:#f2ecdf; --dim:rgba(242,236,223,.76); --void:#020307; }
     *{box-sizing:border-box;}
     body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#0d121b 0%,#020307 55%,#020307 100%);
@@ -92,7 +80,7 @@
           <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Birth Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="eclipse.html" class="navbar__link">Eclipse</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -195,6 +183,6 @@
   </main>
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
   <script src="js/ap-footer-inject.js?v=835" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
+<script src="js/ap-sky-time.js?v=835" defer></script>
 </body>
 </html>

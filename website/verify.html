@@ -8,18 +8,22 @@
 <meta property="og:title" content="Verify a Plate · the real sky news">
 <meta property="og:description" content="Re-run the sky on your device and match the sealed record — computed, never fabricated.">
 <link rel="canonical" href="https://astroprecise.app/verify.html">
+<meta name="theme-color" content="#020307">
 <!-- Self-hosted since 2026-08-09. This page was the last one asking Google for
      type. Newsreader, Space Grotesk and JetBrains Mono are not in this repo, so
      rather than add three more font files it now uses the three the rest of the
      site already ships: Cormorant Garamond, Schibsted Grotesk and IBM Plex Mono.
      Same roles, same weights, and no request leaves this site. -->
-<link rel="stylesheet" href="./css/fonts.css">
+<link rel="stylesheet" href="./css/fonts.css?v=835">
+<link rel="stylesheet" href="./css/ap-living-sky-v834.css?v=835">
 <script src="./js/ephemeris.js"></script>
+<script src="./js/ap-nav-model-v834.js?v=835" defer></script>
 <style>
 :root{ --bg:#020307; --ink:#f2ecdf; --teal:#d8b46a; --ice:#b9c8dc; --line:rgba(216,180,106,.22); --mut:rgba(242,236,223,.56); --warn:#ff6428; }
 *{box-sizing:border-box;margin:0}
 body{background:radial-gradient(1000px 620px at 50% -10%,rgba(216,180,106,.08),#020307 64%);color:var(--ink);
-  font-family:'Schibsted Grotesk',ui-sans-serif,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
+  font-family:'Schibsted Grotesk',ui-sans-serif,sans-serif;min-height:100vh}
+.verify-main{min-height:calc(100svh - var(--ap-nav-h));display:flex;align-items:center;justify-content:center;padding:clamp(28px,6vw,76px) 28px}
 .card{width:100%;max-width:640px;background:rgba(13,18,27,.78);backdrop-filter:blur(14px);
   border:1px solid rgba(216,180,106,.22);border-radius:8px;padding:30px 30px 26px;
   box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
@@ -53,6 +57,23 @@ button.ghost{color:var(--mut);border-color:rgba(185,200,220,.26)}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header" role="banner" data-ap-static-nav>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32"></div>
+        <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+      </a>
+      <div class="navbar__nav" role="group" aria-label="Primary">
+        <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Birth Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="eclipse.html" class="navbar__link">Eclipse</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+      </div>
+      <div class="navbar__end"><button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu"><span></span><span></span><span></span></button></div>
+    </div>
+    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+  </nav>
+</header>
+<main class="verify-main" id="main-content">
 <div class="card">
   <div class="kick">Astro Precise · verify · the real sky news</div>
   <h1 id="title">Plate No. 001</h1>
@@ -80,6 +101,7 @@ button.ghost{color:var(--mut);border-color:rgba(185,200,220,.26)}
     </span>
   </div>
 </div>
+</main>
 
 <script type="module">
 /**
@@ -259,6 +281,8 @@ $('run').addEventListener('click', () => { runFingerprint(); });
 $('engine').addEventListener('click', () => { engineCrossCheck(); });
 loadRegister().then(() => runFingerprint());
 </script>
-<script src="./js/ap-sky-time.js" defer></script>
+<footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+<script src="./js/ap-footer-inject.js?v=835" defer></script>
+<script src="./js/ap-sky-time.js?v=835" defer></script>
 </body>
 </html>
