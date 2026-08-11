@@ -1,8 +1,9 @@
-/** Single cache-bust tip for injectors — keep in sync with website/sw.js `const V`. */
+/** Shared release tip for runtime injectors; advanced with sw.js by the generator. */
 (function (g) {
-g.AP_ASSET_V = '834';
+  'use strict';
+  g.AP_ASSET_V = '834';
+  g.AP_CACHE_V = 'ap-v' + g.AP_ASSET_V;
 })(typeof window !== 'undefined' ? window : globalThis);
-
 
 
 

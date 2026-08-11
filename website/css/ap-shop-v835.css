@@ -11,7 +11,7 @@
 .ap-shop-actions .ap-action { border-radius: 5px; }
 .ap-shop-status { max-width: 54ch; margin: 22px 0 0; color: var(--ap-paper-faint); font-size: 12px; line-height: 1.55; }
 .ap-shop-status span { margin-right: 8px; color: var(--ap-ember); font: 10px var(--ap-data); letter-spacing: .08em; text-transform: uppercase; }
-.ap-shop-hero__art { margin: 0; border: 1px solid var(--ap-line); border-radius: 8px; overflow: hidden; background: var(--ap-void-raised); transform: rotate(1.2deg); }
+.ap-shop-hero__art { margin: 0; border: 1px solid var(--ap-line); border-radius: 8px; overflow: hidden; background: var(--ap-void-raised); }
 .ap-shop-hero__art img { display: block; width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover; filter: saturate(.78) contrast(1.04); }
 .ap-shop-hero__art figcaption { padding: 12px 16px; color: var(--ap-paper-faint); font: 10px/1.5 var(--ap-data); text-transform: uppercase; letter-spacing: .07em; }
 
@@ -66,7 +66,7 @@
 
 @media (max-width: 820px) {
   .ap-shop-hero__grid, .ap-shop-method__grid, .ap-shop-notify__inner { grid-template-columns: 1fr; }
-  .ap-shop-hero__art { max-width: 620px; transform: none; }
+  .ap-shop-hero__art { max-width: 620px; }
   .ap-shop-section-head { grid-template-columns: 1fr; }
   .ap-shop-leads { grid-template-columns: 1fr; }
   .ap-product-ledger { grid-template-columns: 1fr; }

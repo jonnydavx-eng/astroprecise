@@ -1,7 +1,9 @@
 /**
- * Astro Precise Service Worker — cache-first offline support.
- * Shell + assets go to a versioned static cache on install.
- * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
+ * AstroPrecise service worker.
+ *
+ * Install: a small, generated Home/Eclipse/offline shell.
+ * Runtime: network-first navigations and release-critical code; on-demand
+ * stale-while-revalidate for other same-origin assets.
  */
 
 const V = "ap-v834";
@@ -419,25 +421,10 @@ const PRECACHE = [
 ];
 /* PRECACHE_END */
 
-/* ---------------------------------------------------------------------------
-   RESTORED 2026-07-31 (Claude @ BOOK-T1H4NJ753R) — and deliberately placed BELOW
-   the PRECACHE_END marker so the generator can never delete them again.
+/* Keep runtime definitions below PRECACHE_END. Commit be871d1 once put them
+   inside the generated block; regeneration deleted them and broke every worker
+   lifecycle event. The generator now fails closed if they move. */
 
-   CORE, OPTIONAL and canonicalAssetKey were wiped by the weekly content-bank bot
-   in commit be871d1 (2026-07-20) because they sat INSIDE the PRECACHE block that
-   tools/generate-sw-precache.mjs rewrites wholesale. The result: this worker
-   referenced three identifiers that no longer existed, so install() threw and the
-   fetch handler crashed — no offline mode, no precache, and returning visitors
-   were pinned to a July worker. Every test stayed green because nothing lints sw.js.
-   Text below is byte-identical to `git show be871d1^:website/sw.js`.
-   DO NOT move these back above PRECACHE_END.
---------------------------------------------------------------------------- */
-
-// Keep the update gate small and atomic: the shell and navigation contract
-// must install together. The long tail is opportunistic and may backfill
-// individually on a flaky/offline connection.
-const CORE = PRECACHE.filter(u => u === './' || /(?:^\.\/)?(?:index\.html|offline\.html|js\/(?:app|ap-page-boot|ap-nav-model(?:-v\d+)?|ap-asset-v|ap-footer-inject|void-orrery-adapter|ap-observatory-controls-v\d+)\.js|css\/(?:main-lite|ap-overhaul-s8|ap-palette-2026|ap-living-sky-v\d+|ap-home-v\d+)\.css)$/.test(u));
-const OPTIONAL = PRECACHE.filter(u => CORE.indexOf(u) < 0);
 function canonicalAssetKey(value) {
   const u = new URL(typeof value === 'string' ? value : value.url, self.registration.scope);
   u.search = '';
@@ -445,22 +432,30 @@ function canonicalAssetKey(value) {
   return u.href;
 }
 
+// Until the next generator run, accept the historical broad PRECACHE block but
+// install only its small launch subset. Generated blocks declare launch-shell
+// mode and contain no optional long tail, so every listed entry is atomic CORE.
+const LEGACY_CORE = /(?:^\.\/)?(?:index\.html|eclipse\.html|offline\.html|manifest\.webmanifest|js\/(?:app|ap-page-boot|ap-nav-model(?:-v\d+)?|ap-asset-v|ap-footer-inject|void-orrery-adapter|ap-observatory(?:-controls)?(?:-v\d+)?|ap-sky-time|ap-eclipse-(?:live|contact)(?:-v\d+)?|ephemeris|eclipse-reading)\.js|js\/reading-templates\.json|css\/(?:main-lite|ap-overhaul-s8|ap-palette-2026|ap-living-sky-v\d+|ap-home-v\d+|ap-eclipse(?:-live)?-v\d+)\.css|fonts\/(?:schibsted-grotesk-latin-var|cormorant-garamond-normal-600)\.woff2|img\/(?:logo-mark|eclipse-geometry)\.svg|img\/editorial\/eclipse-launch-2026-v\d+\.webp)$/;
+const CORE = (typeof PRECACHE_MODE !== 'undefined' && PRECACHE_MODE === 'launch-shell')
+  ? PRECACHE
+  : PRECACHE.filter(u => u === './' || LEGACY_CORE.test(u));
+const CORE_KEYS = new Set(CORE.map(canonicalAssetKey));
+const OWN_CACHE_NAME = /^ap-v\d+$/;
+
+function cacheableResponse(request, response) {
+  if (!response || response.status !== 200 || response.type !== 'basic') return false;
+  if (request.cache === 'no-store') return false;
+  if (/\bno-store\b/i.test(response.headers.get('cache-control') || '')) return false;
+  if ((response.headers.get('vary') || '').trim() === '*') return false;
+  return true;
+}
+
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(V).then(c => {
-      /* Precache with cache:'reload' so a new SW version always pulls FRESH files
-         from the network — never bakes a stale HTTP-cached (or old-SW-served)
-         copy into the new cache. Without this, a freshly-deployed asset can be
-         shadowed by the browser HTTP cache at install time and then served
-         cache-first forever, which is exactly the stale-JS / layout-mismatch
-         class this SW already guards against on the runtime path.
-
-         CORE is intentionally atomic: a new worker never claims clients with
-         half a shell. OPTIONAL remains best-effort and backfills at runtime. */
+      // A worker never claims clients with half a shell. cache:'reload' also
+      // prevents the browser HTTP cache baking the previous release into V.
       const installCore = CORE.map(u => new Request(canonicalAssetKey(u), { cache: 'reload' }));
-      /* OPTIONAL backfill moved to activate()+4s (2026-07-31 perf diet): install
-         no longer fetches the OPTIONAL long tail while first render fights for
-         bandwidth. */
       return c.addAll(installCore);
     }).then(() => self.skipWaiting())
   );
@@ -468,42 +463,34 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== V).map(k => caches.delete(k))))
-      /* Evict any entry whose KEY carries a query string. Until 2026-08-08 the
-         fetch handler below cached navigations under the full request URL, so a
-         visitor who reached chart.html?date=…&time=…&city=… ended up with their
-         own birth details written into Cache Storage as the *name* of an entry —
-         visible in devtools and sitting on disk. Nothing here legitimately keys
-         on a query (every asset goes through canonicalAssetKey, which strips
-         it), so anything with one is either that leak or dead weight. */
-      .then(() => caches.open(V))
-      .then(c => c.keys().then(reqs => Promise.all(
-        reqs.filter(r => { try { return !!new URL(r.url).search; } catch (_) { return false; } })
-            .map(r => c.delete(r))
-      )))
-      .then(() => self.clients.claim())
+    (async () => {
+      const keys = await caches.keys();
+      // Delete only AstroPrecise release caches. Other applications sharing an
+      // origin must never lose their Cache Storage because this worker updated.
+      await Promise.all(keys.filter(k => k !== V && OWN_CACHE_NAME.test(k)).map(k => caches.delete(k)));
+
+      const cache = await caches.open(V);
+      // Older workers used query-bearing cache keys. Besides wasting space,
+      // chart URLs could expose birth details in DevTools. Current keys are
+      // canonical and query-free; purge any survivor before claiming clients.
+      const requests = await cache.keys();
+      await Promise.all(requests.filter(request => {
+        try { return Boolean(new URL(request.url).search); } catch (_) { return false; }
+      }).map(request => cache.delete(request)));
+
+      if (self.registration.navigationPreload) {
+        try { await self.registration.navigationPreload.enable(); } catch (_) {}
+      }
+      await self.clients.claim();
+    })()
   );
-  /* OPTIONAL backfill, deferred until the launch view has had time to settle:
-     best-effort warm of the
-     long tail. Anything not yet backfilled is covered by the runtime
-     cache-first path in the fetch handler below. */
-  setTimeout(() => {
-    caches.open(V).then(c => Promise.allSettled(OPTIONAL.map(u =>
-      fetch(new Request(canonicalAssetKey(u), { cache: 'reload' }))
-        .then(r => { if (r && r.status === 200) return c.put(canonicalAssetKey(u), r); })
-    )));
-  }, 20000);
 });
 
 self.addEventListener('fetch', e => {
-  // Only intercept same-origin GET requests
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
-
-  // External APIs (SWPC, ANU) — network-only, never cache
-  if (url.hostname !== self.location.hostname) return;
+  if (/\/api(?:\/|$)/i.test(url.pathname)) return;
 
   // Media (video/audio) — never intercept. Byte-range streaming must hit the
   // network directly; SW caching/serving full responses stalls <video> playback.
@@ -512,58 +499,70 @@ self.addEventListener('fetch', e => {
 
   const isNav = e.request.mode === 'navigate';
   const path = url.pathname.replace(/\/+$/, '') || '/';
-  // Network-first for the scripts/styles that drive the home cinematic + orrery, so a
-  // freshly-deployed HTML never runs against stale cache-first JS from a prior version
-  // (the v453-v463 deploy-mismatch that broke the loading sequence / 3D model / layout).
-  const isCritical =
+  const cacheKey = canonicalAssetKey(e.request);
+  // Generated shell entries and route engines revalidate through the HTTP cache.
+  // The release-specific cache lookup below prevents old-cache bleed entirely.
+  const isCritical = CORE_KEYS.has(cacheKey) ||
     /\/js\/(?:app|chart-page|horoscope-page|cosmos|orrery|orrery-loader|orrery-webgl|void-orrery-adapter|ambience|eclipse-reading|deep-reading|plate-fingerprint|ap-sky-news|ap-natal-sphere|ap-checkout-honest|ap-gumroad-bridge|gumroad-unlock|ap-award-orrery|ap-home-bootstrap|hero-instrument|effects|ephemeris|lite-orrery|lite-shell-boot|ap-footer-inject|ap-page-boot|ap-asset-v)\.js$/.test(path) ||
     /\/js\/(?:explore-boot|ap-nav-model|ap-observatory|ap-observatory-controls|ap-eclipse-geometry|ap-eclipse-live|ap-eclipse-contact)(?:-v\d+)?\.js$/.test(path) ||
     /\/css\/(?:main|main-lite|ap-model-window|ap-observatory-home|ap-brand-nebula|ap-sky-news|ap-natal-sphere|ap-palette-2026)\.css$/.test(path) ||
     /\/css\/(?:explore-page|ap-living-sky|ap-home|ap-shop|ap-eclipse|ap-chart|ap-daily)(?:-v\d+)?\.css$/.test(path);
 
-  /* Cache key: NEVER the raw request, not even for a navigation. A navigation
-     URL can carry a visitor's birth details in its query — the homepage no
-     longer mints such links, but legacy ?date= / ?d= links from lifepath,
-     profile and the saved-charts dashboard still exist — and c.put(e.request)
-     would write those details into Cache Storage as the entry's *name*. On a
-     static host the HTML is byte-identical whatever the query says (the query
-     is read by JS after load), so dropping it costs nothing and makes the
-     "stored nowhere" promise on the homepage true. It also makes the offline
-     fallback work for query-bearing URLs, which previously always missed. */
-  const cacheKey = canonicalAssetKey(e.request);
-  e.respondWith(
-    caches.match(cacheKey).then(cached => {
-      /* Navigations + critical assets revalidate past the HTTP cache: GitHub
-         Pages serves everything with max-age=600, so a plain fetch() here could
-         return up-to-10-min-old HTML/CSS from the browser HTTP cache and still
-         look "network-first". cache:'no-cache' forces an ETag revalidation
-         (cheap 304 when unchanged). Note fetch(e.request, init) throws for
-         mode:'navigate' requests, hence the URL form. */
-      const networkFetch = ((isNav || isCritical)
-        ? fetch(e.request.url, { cache: 'no-cache' })
-        : fetch(e.request)
-      ).then(res => {
-        if (res && res.status === 200 && res.type === 'basic') {
-          const clone = res.clone();
-          caches.open(V).then(c => c.put(cacheKey, clone));
-        }
-        return res;
-      }).catch(() => null);
+  const activeCache = caches.open(V);
+  const mayReadCache = e.request.cache !== 'no-store';
+  const cachedResponse = mayReadCache
+    ? activeCache.then(cache => cache.match(cacheKey))
+    : Promise.resolve(undefined);
 
-      if (isNav) {
-        // HTML: prefer network, fall back to cache → offline page → home
-        return networkFetch.then(res =>
-          (res && res.ok) ? res : (cached || caches.match('./offline.html') || caches.match('./index.html'))
-        );
-      }
-      if (isCritical) {
-        // Launch-critical JS/CSS: network-first so one deploy cannot mix revisions.
-        return networkFetch.then(res => (res && res.ok) ? res : cached);
-      }
-      // Other assets: cache-first, revalidate in background
-      return cached || networkFetch;
-    })
-  );
+  const requestNetwork = () => (isNav || isCritical || /^(?:no-cache|reload)$/.test(e.request.cache))
+    ? fetch(e.request.url, { cache: 'no-cache', credentials: 'same-origin' })
+    : fetch(e.request);
+
+  // Navigation preload starts the document request while the worker wakes. If
+  // unsupported or empty, fall back to the normal network request.
+  const rawNetwork = isNav && e.preloadResponse
+    ? e.preloadResponse.then(response => response || requestNetwork(), () => requestNetwork())
+    : requestNetwork();
+
+  // Hold runtime writes alive. The previous fire-and-forget cache.put could be
+  // terminated as soon as respondWith settled, making "available offline" random.
+  const cacheUpdate = rawNetwork.then(response => {
+    if (!cacheableResponse(e.request, response)) return undefined;
+    const copy = response.clone();
+    return activeCache.then(cache => cache.put(cacheKey, copy));
+  }).catch(() => undefined);
+  e.waitUntil(cacheUpdate);
+
+  const networkResponse = rawNetwork.catch(() => null);
+  e.respondWith((async () => {
+    const cache = await activeCache;
+    const cached = await cachedResponse;
+
+    if (isNav) {
+      const network = await networkResponse;
+      // Preserve real online 404/500 responses. The old `res.ok` gate disguised
+      // them as the offline page and made broken links look like lost internet.
+      if (network) return network;
+      if (cached) return cached;
+      const offline = await cache.match(canonicalAssetKey('./offline.html'));
+      if (offline) return offline;
+      const home = await cache.match(canonicalAssetKey('./'));
+      if (home) return home;
+      return new Response('AstroPrecise is offline. Reconnect and try again.', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      });
+    }
+
+    if (isCritical || /^(?:no-cache|reload)$/.test(e.request.cache)) {
+      const network = await networkResponse;
+      if (network && network.ok) return network;
+      return cached || network || Response.error();
+    }
+
+    // On-demand stale-while-revalidate. No bulk warm-up competes with WebGL.
+    return cached || await networkResponse || Response.error();
+  })());
 });
 
 

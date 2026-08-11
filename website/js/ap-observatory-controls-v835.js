@@ -40,6 +40,16 @@
     GALAXY: 'A navigable Milky Way diagram, not a distance-true survey.',
     COSMOS: 'A deep-field visualisation at the instrument’s widest scale.',
   };
+  var RANGE_START_MS = Date.UTC(1800, 0, 1);
+  var RANGE_END_MS = Date.UTC(2200, 0, 1);
+
+  function sliderValueFor(ms) {
+    return Math.max(0, Math.min(1000, ((ms - RANGE_START_MS) / (RANGE_END_MS - RANGE_START_MS)) * 1000));
+  }
+
+  function millisForSlider(value) {
+    return RANGE_START_MS + (Number(value) / 1000) * (RANGE_END_MS - RANGE_START_MS);
+  }
 
   function byId(id) { return document.getElementById(id); }
 
@@ -80,12 +90,13 @@
 
     var scrub = byId('scrub');
     var scrubLabel = byId('scrubLabel');
+    if (scrub) scrub.value = String(sliderValueFor(Date.now()));
     if (scrub) scrub.addEventListener('input', function () {
-      var year = 1800 + Number(scrub.value) * 0.4;
-      var jd = 2451545 + (year - 2000) * 365.25;
+      var dateMs = millisForSlider(scrub.value);
+      var jd = dateMs / 86400000 + 2440587.5;
       if (orrery.setJD) orrery.setJD(jd);
       if (scrubLabel) {
-        scrubLabel.textContent = new Date((jd - 2440587.5) * 86400000)
+        scrubLabel.textContent = new Date(dateMs)
           .toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
           .toUpperCase();
       }
@@ -94,7 +105,7 @@
     var nowButton = byId('nowBtn');
     if (nowButton) nowButton.addEventListener('click', function () {
       if (orrery.setLive) orrery.setLive();
-      if (scrub) scrub.value = '566';
+      if (scrub) scrub.value = String(sliderValueFor(Date.now()));
       if (scrubLabel) scrubLabel.textContent = 'NOW';
     });
 

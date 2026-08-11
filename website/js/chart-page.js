@@ -2193,7 +2193,7 @@ host.classList.add('is-done');
     if (!currentChart) return;
     const I = window.AstroInterpretations;
     const data = {
-      generator: 'Astro Precise (astroprecise ephemeris — truncated VSOP87/ELP2000, ~1′ accuracy)',
+      generator: 'AstroPrecise browser ephemeris (published VSOP87, ELP2000 and Meeus-based methods; accuracy varies by body and date)',
       exported: new Date().toISOString(),
       name: currentChart.name,
       birthDate: currentChart.birthDate,

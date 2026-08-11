@@ -201,6 +201,11 @@ function seedSavedChart(chart) {
 async function init() {
   updateCountdown();
   setInterval(updateCountdown, 30000);
+  const birthDate = byId('dob');
+  if (birthDate) {
+    const today = new Date();
+    birthDate.max = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, '0'), String(today.getDate()).padStart(2, '0')].join('-');
+  }
   const [engine, templates] = await Promise.all([
     waitForEphemeris(),
     fetch('js/reading-templates.json?v=835').then((response) => {

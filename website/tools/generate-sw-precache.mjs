@@ -1,306 +1,291 @@
 #!/usr/bin/env node
 /**
- * Regenerate sw.js PRECACHE from canonical file sets.
- * Run from website root:  node tools/generate-sw-precache.mjs
+ * Regenerate the AstroPrecise launch shell and advance the shared cache version.
  *
- * Scans html / css / js plus static asset globs, dedupes, sorts, and
- * replaces the PRECACHE block between markers in sw.js. Bumps cache V.
+ * Run once, from website/:
+ *   node tools/generate-sw-precache.mjs
+ *
+ * The service worker caches only the Home/Eclipse/offline shell at install time.
+ * Every other same-origin asset is cached on first use by sw.js. This keeps an
+ * update atomic without downloading the historical long tail beside the 3D view.
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
-import { dirname, join, relative, posix } from 'path';
-import { fileURLToPath } from 'url';
+import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { dirname, join, posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SW_PATH = join(ROOT, 'sw.js');
+const ASSET_VERSION_PATH = join(ROOT, 'js', 'ap-asset-v.js');
 
-const SIGN_KEYS = [
-  'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
-  'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
+// These documents form the launch-day offline shell. Other routes remain
+// network-first for navigation and become available offline after their first use.
+const SHELL_DOCUMENTS = [
+  './index.html',
+  './eclipse.html',
+  './offline.html',
 ];
 
-/** Root HTML shipped to users (exclude dev / redirect shells). */
-const HTML_INCLUDE = new Set([
-  './',
-  ...[
-    'index.html', 'index-full.html', 'index-lite.html', '404.html',
-    'chart.html', 'chart-view.html', 'horoscope.html', 'compatibility.html', 'transits.html',
-    'cosmic-story.html',
-    // eclipse.html + deep-reading.html added 2026-08-08: they were the only two
-    // revenue pages NOT precached while their own JS was — an offline visitor on
-    // eclipse night got offline.html. outreach.html removed the same day: it is
-    // the internal marketing toolkit (noindex), 34 KB installed into every
-    // visitor's cache for no user benefit; it stays deployed, just not precached.
-    'eclipse.html', 'deep-reading.html',
-    'ephemeris.html', 'lifepath.html', 'shop.html', 'accuracy.html', 'why.html',
-    'links.html', 'charts.html', 'retrograde.html', 'moonphase.html',
-    'what-is-my-rising-sign.html', 'synastry.html', 'solar-return.html', 'saturn-return.html',
-    'quiz.html', 'angel-numbers.html', 'tonight.html', 'this-weeks-sky.html', 'name-numerology.html',
-    'guides.html', 'catalogue.html', 'explore.html', 'moment.html', 'mysky.html',
-    'privacy.html', 'terms.html', 'profile.html', 'sample-reading.html',
-    'offline.html', // sw.js fetch handler falls back to caches.match('./offline.html')
-    ...SIGN_KEYS.map((k) => `${k}.html`),
-    'manifest.json', 'robots.txt', 'sitemap.xml', 'llms.txt',
-  ].map((f) => `./${f}`),
-]);
+// Pages whose explicit ?v= release tips must move with sw.js. Unversioned legacy
+// assets are allowed; a conflicting explicit release is not.
+const RELEASE_PAGES = [
+  './index.html',
+  './eclipse.html',
+  './chart.html',
+  './horoscope.html',
+  './shop.html',
+];
 
-/** JS omitted from precache (runtime import / optional heavy). */
-const JS_EXCLUDE = new Set([
-  // Internal outreach toolkit data (2026-08-08) — pairs with outreach.html's
-  // removal from HTML_INCLUDE above; team-only content, not visitor content.
-  'outreach-content.js',
-  'orrery-webgl.js',
-  // Engine-only deps of orrery-webgl.js (OrbitLab sync, Phase 1.6) — the engine
-  // itself is deliberately NOT precached, so its deps lazy-cache at runtime too.
-  'orbitlab-bodies.js',
-  'orbitlab-orbital-math.js',
-  'gaia-sample.js',
-  'gaia-sample-worker.js',
-  'orrery3d.js',
-  'ephemeris-lazy-modules.js',
-  'interpretations.js',
-  'ap-load-interpretations.js',
-  // Three.js builds (2026-07-31 perf diet): ~1.9 MB combined. three.min.js is the
-  // deprecated r150 build referenced by no page; three.module.min.js is used only
-  // by explore.html (ESM); three.r128.min.js is the orrery loader's self-hosted
-  // build, injected after the poster frame — all three runtime-cache on first use.
-  'three.min.js',
-  'three.module.min.js',
-  'three.r128.min.js',
-]);
-
-/** Always include even if scan would miss them. */
-const REQUIRED = [
-  // eclipse.html fetches this at runtime (line ~260); it is .json so the js/
-  // scan (which filters on .js) never picks it up. Without it a precached
-  // eclipse.html still fails offline at the reading step. Added 2026-08-08.
+// Runtime references that cannot be derived safely from markup. The Eclipse
+// contact module imports the engine relative to itself and fetches the JSON from
+// the document root; both are part of the launch experience.
+const REQUIRED_TRANSITIVE = [
+  './js/eclipse-reading.js',
   './js/reading-templates.json',
-  './css/sign-page.css',
-  './js/ap-canvas-seals.js',
-  './js/ap-zodiac-constants.js',
-  './js/ap-page-boot.js',
-  './js/sign-page-boot.js',
-  './js/content-service.js',
-  ...SIGN_KEYS.map((k) => `./${k}.html`),
 ];
 
-function toPrecachePath(absPath) {
-  const rel = relative(ROOT, absPath).split('\\').join('/');
-  return `./${rel}`;
+const MAX_SHELL_ENTRIES = 80;
+const MAX_SHELL_BYTES = 1_500_000;
+
+// Mirrors the import maps authored in index.html and eclipse.html. Bare ESM
+// specifiers are not relative URLs, so resolving them here is required before
+// walking the Eclipse renderer's static dependency graph.
+const BARE_IMPORTS = new Map([
+  ['three', './js/vendor/three/three.module.min.js'],
+]);
+const BARE_IMPORT_PREFIXES = [
+  ['three/addons/', './js/vendor/three/jsm/'],
+];
+
+function fileFor(relPath) {
+  if (relPath === './') return join(ROOT, 'index.html');
+  return join(ROOT, ...relPath.replace(/^\.\//, '').split('/'));
 }
 
-function listFiles(dir, filter) {
-  if (!existsSync(dir)) return [];
-  const out = [];
-  for (const name of readdirSync(dir)) {
-    const full = join(dir, name);
-    const st = statSync(full);
-    if (st.isDirectory()) out.push(...listFiles(full, filter));
-    else if (!filter || filter(full, name)) out.push(full);
+function assertFile(relPath, context = 'launch shell') {
+  const abs = fileFor(relPath);
+  if (!existsSync(abs) || !statSync(abs).isFile()) {
+    throw new Error(`${context}: missing file ${relPath}`);
   }
-  return out;
+  return abs;
 }
 
-function collectCanonical() {
-  const paths = new Set(HTML_INCLUDE);
+function localPath(rawRef, fromRel, resolveBareImports = false) {
+  if (!rawRef) return null;
+  let ref = String(rawRef).trim();
+  if (!ref || /^(?:data:|blob:|https?:|mailto:|tel:|javascript:|#)/i.test(ref)) return null;
 
-  // Versioned shell families accumulate on disk for rollback, but only versions
-  // referenced by a shipped HTML page belong in a fresh install. Pre-caching every
-  // historical nav/Observatory/Explore bundle made new visitors download dead UI.
-  const referencedVersionedShells = new Set();
-  const versionedShellPattern = /^(?:\.\/)?(?:js\/(?:ap-nav-model|ap-observatory|explore-boot)-v\d+\.js|css\/(?:ap-living-sky|explore-page)-v\d+\.css)$/;
-  const assetRefPattern = /(?:src|href)=["'](?:\.\/)?((?:js|css)\/[^"'?#]+-v\d+\.(?:js|css))(?:\?[^"']*)?["']/g;
-  for (const rel of HTML_INCLUDE) {
-    if (!rel.endsWith('.html')) continue;
-    const full = join(ROOT, rel.replace(/^\.\//, ''));
-    if (!existsSync(full)) continue;
-    const html = readFileSync(full, 'utf8');
-    for (const match of html.matchAll(assetRefPattern)) referencedVersionedShells.add(`./${match[1]}`);
-  }
-  const keepVersionedShell = (rel) => !versionedShellPattern.test(rel) || referencedVersionedShells.has(rel);
+  ref = ref.split(/[?#]/, 1)[0].trim();
+  if (!ref) return null;
+  if (ref === '/') return './';
 
-  for (const f of listFiles(join(ROOT, 'css'), (_, name) => name.endsWith('.css'))) {
-    const rel = toPrecachePath(f);
-    if (keepVersionedShell(rel)) paths.add(rel);
+  if (resolveBareImports && !ref.startsWith('.') && !ref.startsWith('/')) {
+    if (BARE_IMPORTS.has(ref)) return BARE_IMPORTS.get(ref);
+    const mapped = BARE_IMPORT_PREFIXES.find(([prefix]) => ref.startsWith(prefix));
+    if (mapped) return `${mapped[1]}${ref.slice(mapped[0].length)}`;
+    throw new Error(`unmapped bare module specifier ${ref} from ${fromRel}`);
   }
 
-  for (const f of listFiles(join(ROOT, 'js'), (_, name) => name.endsWith('.js') && !JS_EXCLUDE.has(name))) {
-    const rel = toPrecachePath(f);
-    if (keepVersionedShell(rel)) paths.add(rel);
+  let rel;
+  if (ref.startsWith('/')) {
+    rel = ref.replace(/^\/+/, '');
+  } else {
+    const from = fromRel.replace(/^\.\//, '');
+    rel = posix.normalize(posix.join(posix.dirname(from), ref.replace(/\\/g, '/')));
   }
 
-  for (const rel of REQUIRED) paths.add(rel);
-
-  if (existsSync(join(ROOT, 'js', 'ap-nav-model.js'))) {
-    paths.add('./js/ap-nav-model.js');
+  if (!rel || rel === '.') return './';
+  if (rel === '..' || rel.startsWith('../') || posix.isAbsolute(rel)) {
+    throw new Error(`launch shell reference escapes website/: ${rawRef} from ${fromRel}`);
   }
+  return `./${rel.replace(/^\.\//, '')}`;
+}
 
-  // Static asset canonical sets
-  const staticDirs = [
-    join(ROOT, 'fonts'),
-    join(ROOT, 'data'),
-    join(ROOT, 'assets', 'textures'),
-    join(ROOT, 'assets', 'images', 'orbs', 'planets'),
-    join(ROOT, 'assets', 'images', 'seals'),
-    join(ROOT, 'assets', 'images', 'zodiac-cards'),
-    join(ROOT, 'img'),
-    join(ROOT, 'img', 'shop'),
-  ];
-
-  // Keep the precache install shell lean:
-  //  - img/engine/* — large photoreal stills, only on the pages that show them
-  //  - img/design-targets/* — design-reference mockups, referenced by no page
-  //  - img/orrery/* — planet and environment maps for the WebGL orrery, added
-  //    2026-08-08 (14 files, 3.6 MB). Same class as assets/textures/* below and
-  //    excluded for the same reason: the engine pulls them only when the 3D view
-  //    opens, so they runtime-cache on first use via the fetch handler's
-  //    cache-first path. Measured 2026-08-08: no HTML, JS, CSS or JSON in
-  //    website/ references any of them yet, so precaching would put 3.6 MB into
-  //    every visitor's install shell for files nothing asks for. Revisit when a
-  //    page actually loads them — then the _sm twins are the ones to add, not
-  //    the _2k, exactly as the assets/textures rule below already does.
-  //  - img/shop/* — 7.5 MB of product imagery, only ever shown on shop/plate pages
-  //  - img/og-*, img/eclipse-og.* — social-scraper cards; browsers never fetch them
-  //  - img/icon-(maskable-)512.png — PWA install icons, fetched only on install
-  //  - img/marketing-*, hero-cosmic-ref, shop-product-cover, zodiac-glyphs-grid —
-  //    heavy CSS backgrounds / section art that lazy-load on first view anyway
-  //  - assets/textures/*.{jpg,png} — the LEGACY raster maps, superseded by .webp
-  //    (the engine loads .webp; the .jpg/.png stay on disk only as a runtime
-  //    fallback). Precaching both formats would double the texture payload.
-  //  - assets/textures/*.webp EXCEPT *_sm.webp — full-size planet maps (~2.5 MB)
-  //    are loaded by the WebGL layer only when the 3D view opens; the _sm twins
-  //    cover the poster/first-paint path.
-  // These lazy-cache at runtime instead.
-  const PRECACHE_EXCLUDE = /(^|\/)img\/(engine|design-targets|shop|og|orrery|textures)\/|(^|\/)img\/(?:og-|eclipse-og)[^/]*\.(jpe?g|png|webp)$|(^|\/)img\/moment\/og-[^/]*\.(jpe?g|png|webp)$|(^|\/)img\/icon-(?:maskable-)?(?:192|512)\.png$|(^|\/)img\/apple-touch-icon\.png$|(^|\/)img\/zodiac-glyphs-(?:all|row)\.jpg$|(^|\/)img\/(?:marketing-|hero-cosmic-ref|shop-product-cover|zodiac-glyphs-grid)[^/]*\.(jpe?g|png|webp)$|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$|(^|\/)assets\/textures\/[^/]*(?<!_sm)\.webp$|(^|\/)[^/]*\.bak(?:[-.][^/]*)?$/i;
-
-  // Content-bank windowing (2026-07-10): the bank is now a rolling ~188-day
-  // set (today−7 … today+180, refreshed weekly by
-  // .github/workflows/refresh-content-bank.yml) — precaching ALL of it would
-  // push ~4.5 MB / ~200 extra entries through every SW install. Precache only
-  // what the next fortnight of visits can actually hit:
-  //   manifest.json + core/* + current & next monthly + daily today−1…today+14
-  // (UTC window, matching the builder's UTC date keys). Everything outside
-  // the window backfills on demand via the sw.js runtime cache-first path
-  // ("return cached || networkFetch" + cache.put on 200 responses).
-  const DAY_MS = 86400000;
-  const nowU = new Date();
-  const todayUTC = Date.UTC(nowU.getUTCFullYear(), nowU.getUTCMonth(), nowU.getUTCDate());
-  const bankDailyWindow = new Set();
-  for (let i = -1; i <= 14; i++) {
-    bankDailyWindow.add(new Date(todayUTC + i * DAY_MS).toISOString().slice(0, 10));
+function tagAssetRefs(html) {
+  const refs = [];
+  const tags = html.match(/<(?:script|link|img|source|video)\b[^>]*>/gi) || [];
+  for (const tag of tags) {
+    for (const match of tag.matchAll(/\b(?:src|href|poster)\s*=\s*(["'])(.*?)\1/gi)) {
+      refs.push(match[2]);
+    }
+    for (const match of tag.matchAll(/\bsrcset\s*=\s*(["'])(.*?)\1/gi)) {
+      if (/^\s*data:/i.test(match[2])) continue;
+      for (const candidate of match[2].split(',')) {
+        const ref = candidate.trim().split(/\s+/, 1)[0];
+        if (ref) refs.push(ref);
+      }
+    }
   }
-  const bankMonthlyWindow = new Set();
-  for (let k = 0; k <= 1; k++) {
-    const d = new Date(Date.UTC(nowU.getUTCFullYear(), nowU.getUTCMonth() + k, 1));
-    bankMonthlyWindow.add(`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`);
-  }
-  function contentBankAllowed(rel) {
-    const m = rel.match(/^\.\/data\/content-bank\/(.+)$/);
-    if (!m) return true; // not a content-bank path — no windowing
-    const sub = m[1];
-    if (sub === 'manifest.json' || sub.startsWith('core/')) return true;
-    const daily = sub.match(/^daily\/(\d{4}-\d{2}-\d{2})\.json$/);
-    if (daily) return bankDailyWindow.has(daily[1]);
-    const monthly = sub.match(/^monthly\/(\d{4}-\d{2})\.json$/);
-    if (monthly) return bankMonthlyWindow.has(monthly[1]);
-    return false; // unknown bank file — runtime-cache only
-  }
-  const RETIRED_OG = new Set([
-    './img/og-banner-improved.jpg',
-    './img/og-banner-v576.jpg',
-    './img/og-banner-v576.webp',
-  ]);
+  return refs;
+}
 
-  /** Skip legacy raster when WebP (or SVG for shop products) is the shipped format. */
-  function skipLegacyRaster(absPath) {
-    const rel = toPrecachePath(absPath);
-    if (/(^|\/)\.[^/]*\.bak(?:[-.][^/]*)?\.(?:jpe?g|png|webp|gif)$/i.test(rel) || /(^|\/)[^/]*\.bak(?:[-.][^/]*)?$/i.test(rel)) return true;
-    if (RETIRED_OG.has(rel)) return true;
-    if (!/\.(jpe?g|png)$/i.test(rel)) return false;
-    const base = absPath.replace(/\.(jpe?g|png)$/i, '');
-    if (existsSync(`${base}.webp`)) return true;
-    if (/\/img\/shop\/product-/.test(rel) && existsSync(`${base}.svg`)) return true;
-    return false;
-  }
+function cssAssetRefs(css) {
+  const refs = [];
+  for (const match of css.matchAll(/url\(\s*(["']?)(.*?)\1\s*\)/gi)) refs.push(match[2]);
+  for (const match of css.matchAll(/@import\s+(?:url\(\s*)?(["'])(.*?)\1/gi)) refs.push(match[2]);
+  return refs;
+}
 
-  for (const dir of staticDirs) {
-    for (const f of listFiles(dir)) {
-      const rel = toPrecachePath(f);
-      if (PRECACHE_EXCLUDE.test(rel)) continue;
-      if (!contentBankAllowed(rel)) continue;
-      if (skipLegacyRaster(f)) continue;
-      if (/\.(woff2|json|jpg|jpeg|png|svg|webp)$/i.test(rel)) paths.add(rel);
+function jsImportRefs(js) {
+  const refs = [];
+  for (const match of js.matchAll(/\bimport\s*\(\s*(["'])(.*?)\1\s*\)/g)) refs.push(match[2]);
+  for (const match of js.matchAll(/\b(?:import|export)\s+(?:[^"']*?\s+from\s+)?(["'])(.*?)\1/g)) refs.push(match[2]);
+  return refs;
+}
+
+function collectLaunchShell() {
+  const entries = new Set(['./', ...SHELL_DOCUMENTS, ...REQUIRED_TRANSITIVE]);
+  const queue = [...SHELL_DOCUMENTS, ...REQUIRED_TRANSITIVE];
+  const scanned = new Set();
+
+  while (queue.length) {
+    const rel = queue.shift();
+    if (scanned.has(rel)) continue;
+    scanned.add(rel);
+
+    const abs = assertFile(rel);
+    const extension = posix.extname(rel).toLowerCase();
+    if (!['.html', '.css', '.js'].includes(extension)) continue;
+
+    const source = readFileSync(abs, 'utf8');
+    const rawRefs = extension === '.html'
+      ? tagAssetRefs(source)
+      : extension === '.css'
+        ? cssAssetRefs(source)
+        : jsImportRefs(source);
+
+    for (const rawRef of rawRefs) {
+      const child = localPath(rawRef, rel, extension === '.js');
+      if (!child) continue;
+      assertFile(child, `reference from ${rel}`);
+      if (!entries.has(child)) entries.add(child);
+      if (/\.(?:html|css|js)$/i.test(child) && !scanned.has(child)) queue.push(child);
     }
   }
 
-  return [...paths].sort((a, b) => a.localeCompare(b));
+  const sorted = [...entries].sort((a, b) => {
+    if (a === './') return -1;
+    if (b === './') return 1;
+    return a.localeCompare(b);
+  });
+
+  let bytes = 0;
+  for (const rel of sorted) bytes += statSync(assertFile(rel)).size;
+  if (sorted.length > MAX_SHELL_ENTRIES || bytes > MAX_SHELL_BYTES) {
+    throw new Error(
+      `launch shell budget exceeded: ${sorted.length}/${MAX_SHELL_ENTRIES} entries, ` +
+      `${bytes}/${MAX_SHELL_BYTES} bytes. Keep large/optional media on demand.`,
+    );
+  }
+
+  return { entries: sorted, bytes };
 }
 
 function bumpVersion(swText) {
-  const m = swText.match(/const V = ["'](ap-v\d+)["']/);
-  if (!m) throw new Error('sw.js: could not parse const V');
-  const n = parseInt(m[1].replace('ap-v', ''), 10);
-  const next = `ap-v${n + 1}`;
-  return swText.replace(/const V = ["']ap-v\d+["']/, `const V = "${next}"`);
+  const match = swText.match(/const V = ["']ap-v(\d+)["']/);
+  if (!match) throw new Error('sw.js: could not parse const V');
+  const version = String(Number.parseInt(match[1], 10) + 1);
+  return {
+    version,
+    text: swText.replace(/const V = ["']ap-v\d+["']/, `const V = "ap-v${version}"`),
+  };
 }
 
 function formatPrecache(entries) {
-  const lines = entries.map((e) => `  '${e}',`);
   return [
     '/* PRECACHE_BEGIN — generated by tools/generate-sw-precache.mjs */',
+    "const PRECACHE_MODE = 'launch-shell';",
     'const PRECACHE = [',
-    ...lines,
+    ...entries.map((entry) => `  '${entry}',`),
     '];',
     '/* PRECACHE_END */',
   ].join('\n');
 }
 
 function replacePrecache(swText, block) {
-  const re = /\/\* PRECACHE_BEGIN[\s\S]*?\/\* PRECACHE_END \*\//;
-  if (re.test(swText)) return swText.replace(re, block);
-
-  const legacy = /const PRECACHE = \[[\s\S]*?\];/;
-  if (!legacy.test(swText)) throw new Error('sw.js: no PRECACHE block found');
-  return swText.replace(legacy, block);
+  const markers = /\/\* PRECACHE_BEGIN[\s\S]*?\/\* PRECACHE_END \*\//;
+  if (!markers.test(swText)) throw new Error('sw.js: no generated PRECACHE marker block found');
+  return swText.replace(markers, block);
 }
 
-function main() {
-  const entries = collectCanonical();
-  let sw = readFileSync(SW_PATH, 'utf8');
-  sw = bumpVersion(sw);
-  const ver = sw.match(/const V = ["']ap-v(\d+)["']/)?.[1];
-  if (ver) {
-    const assetPath = join(ROOT, 'js', 'ap-asset-v.js');
-    if (existsSync(assetPath)) {
-      const asset = readFileSync(assetPath, 'utf8');
-      writeFileSync(assetPath, asset.replace(/AP_ASSET_V\s*=\s*['"]\d+['"]/, `AP_ASSET_V = '${ver}'`), 'utf8');
+function replaceAssetVersion(assetText, version) {
+  const pattern = /(AP_ASSET_V\s*=\s*['"])(\d+)(['"])/g;
+  const matches = [...assetText.matchAll(pattern)];
+  if (matches.length !== 1) {
+    throw new Error(`ap-asset-v.js: expected one AP_ASSET_V literal, found ${matches.length}`);
+  }
+  return assetText.replace(pattern, (_, prefix, _oldVersion, suffix) => `${prefix}${version}${suffix}`);
+}
+
+function assertReleaseQueries(version) {
+  const conflicts = [];
+  for (const page of RELEASE_PAGES) {
+    const html = readFileSync(assertFile(page, 'release route'), 'utf8');
+    for (const ref of tagAssetRefs(html)) {
+      if (!/\.(?:css|js)(?:[?#]|$)/i.test(ref)) continue;
+      const match = ref.match(/[?&]v=(\d+)(?:[&#]|$)/i);
+      if (match && match[1] !== version) conflicts.push(`${page}: ${ref}`);
     }
   }
-  sw = replacePrecache(sw, formatPrecache(entries));
+  if (conflicts.length) {
+    throw new Error(
+      `explicit route asset version(s) do not match target ${version}:\n${conflicts.join('\n')}`,
+    );
+  }
+}
 
-  // GUARD added 2026-07-31 (Claude @ BOOK-T1H4NJ753R). On 2026-07-20 this generator
-  // silently deleted CORE, OPTIONAL and canonicalAssetKey because they had been written
-  // INSIDE the PRECACHE markers, which replacePrecache() overwrites wholesale. The live
-  // service worker then referenced three identifiers that no longer existed: install()
-  // threw, the fetch handler crashed, offline mode died, and returning visitors were
-  // pinned to a July worker. Every test stayed green because nothing lints sw.js.
-  // Fail loudly rather than ship that again. Definitions now live BELOW the end marker.
-  const REQUIRED = ['CORE', 'OPTIONAL', 'canonicalAssetKey'];
-  const missing = REQUIRED.filter(
-    (id) => !new RegExp(`(?:^|\\n)\\s*(?:const|function)\\s+${id}\\b`).test(sw),
+function assertWorkerShape(swText, version) {
+  const end = swText.indexOf('/* PRECACHE_END */');
+  if (end < 0) throw new Error('sw.js: PRECACHE_END marker missing after generation');
+  const tail = swText.slice(end);
+  const required = ['CORE', 'canonicalAssetKey'];
+  const missing = required.filter(
+    (id) => !new RegExp(`(?:^|\\n)\\s*(?:const|function)\\s+${id}\\b`).test(tail),
   );
   if (missing.length) {
     throw new Error(
       `sw.js would lose required definition(s): ${missing.join(', ')}. ` +
-        'They must be declared BELOW the PRECACHE_END marker — anything between the ' +
-        'markers is regenerated and destroyed. See git show be871d1^:website/sw.js.',
+      'Definitions must remain below PRECACHE_END.',
     );
   }
+  if (!swText.includes("const PRECACHE_MODE = 'launch-shell';")) {
+    throw new Error('sw.js: generated launch-shell mode marker missing');
+  }
+  if (!swText.includes(`const V = "ap-v${version}"`)) {
+    throw new Error(`sw.js: generated cache version is not ap-v${version}`);
+  }
+}
 
-  writeFileSync(SW_PATH, sw, 'utf8');
+function writeBothOrRestore(originalSw, nextSw, originalAsset, nextAsset) {
+  try {
+    writeFileSync(ASSET_VERSION_PATH, nextAsset, 'utf8');
+    writeFileSync(SW_PATH, nextSw, 'utf8');
+    if (readFileSync(ASSET_VERSION_PATH, 'utf8') !== nextAsset || readFileSync(SW_PATH, 'utf8') !== nextSw) {
+      throw new Error('post-write verification failed');
+    }
+  } catch (error) {
+    try { writeFileSync(ASSET_VERSION_PATH, originalAsset, 'utf8'); } catch (_) {}
+    try { writeFileSync(SW_PATH, originalSw, 'utf8'); } catch (_) {}
+    throw error;
+  }
+}
 
-  const versionLabel = sw.match(/const V = ["'](ap-v\d+)["']/)?.[1] ?? '?';
-  console.log(`sw.js updated — ${versionLabel}, ${entries.length} precache entries`);
+function main() {
+  const originalSw = readFileSync(SW_PATH, 'utf8');
+  const originalAsset = readFileSync(ASSET_VERSION_PATH, 'utf8');
+  const shell = collectLaunchShell();
+  const bumped = bumpVersion(originalSw);
+
+  assertReleaseQueries(bumped.version);
+  const nextSw = replacePrecache(bumped.text, formatPrecache(shell.entries));
+  const nextAsset = replaceAssetVersion(originalAsset, bumped.version);
+  assertWorkerShape(nextSw, bumped.version);
+
+  writeBothOrRestore(originalSw, nextSw, originalAsset, nextAsset);
+  console.log(
+    `sw.js + js/ap-asset-v.js updated — ap-v${bumped.version}, ` +
+    `${shell.entries.length} launch-shell entries, ${shell.bytes} bytes`,
+  );
 }
 
 main();
