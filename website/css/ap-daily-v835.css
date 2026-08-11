@@ -1,4 +1,4 @@
-/* AstroPrecise launch daily — compact twelve-sign editorial ledger. */
+/* AstroPrecise Daily v835 — twelve-sign field ledger. */
 
 .page-horoscope {
   --daily-void: #020307;
@@ -7,144 +7,182 @@
   --daily-brass: #d8b46a;
   --daily-ember: #ff6428;
   --daily-silver: #b9c8dc;
-  --daily-line: rgba(216, 180, 106, 0.2);
+  --daily-line: rgba(216, 180, 106, 0.22);
+  --daily-line-soft: rgba(185, 200, 220, 0.13);
   background: var(--daily-void);
   color: var(--daily-paper);
   font-family: "Schibsted Grotesk", system-ui, sans-serif;
 }
 
-.page-horoscope #starfield-canvas,
-.page-horoscope .aurora-orb,
-.page-horoscope .dial-intro,
-.page-horoscope .sphere-wrap,
-.page-horoscope .ecliptic-sky-headline,
-.page-horoscope .ecliptic-personal-note,
-.page-horoscope .planet-legend,
-.page-horoscope #sky-board-toggle,
-.page-horoscope .sphere-ctas,
-.page-horoscope #planets-live-strip,
-.page-horoscope #ap-daily-more,
-.page-horoscope #horoscope-ai-panel,
-.page-horoscope #ap-affiliate-slot,
-.page-horoscope #daily-retro-section,
-.page-horoscope .sign-reading-panel__luckies,
-.page-horoscope #srp-energy-wrap,
-.page-horoscope .section[aria-labelledby="deep-reading-closer-heading"] {
-  display: none !important;
+.page-horoscope .ap-symbols {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.page-horoscope .eng-i {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.12em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .page-horoscope #main-content {
   overflow: clip;
-  background:
-    linear-gradient(rgba(216, 180, 106, 0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(216, 180, 106, 0.018) 1px, transparent 1px),
-    var(--daily-void);
+  background-color: var(--daily-void);
+  background-image:
+    linear-gradient(rgba(216, 180, 106, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(216, 180, 106, 0.02) 1px, transparent 1px);
   background-size: 88px 88px;
 }
 
-.page-horoscope .sphere-hero {
-  position: relative;
-  margin: 0;
-  padding: clamp(112px, 12vw, 164px) 0 clamp(64px, 8vw, 104px);
-  border-bottom: 1px solid var(--daily-line);
-  background: #030509;
-  isolation: isolate;
-}
-
-.page-horoscope .sphere-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  background: url("../img/editorial/astronomy-books-editorial.webp") 82% 18% / min(54vw, 760px) auto no-repeat;
-  filter: saturate(0.7) contrast(1.08) brightness(0.72);
-  opacity: 0.72;
-}
-
-.page-horoscope .sphere-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(90deg, #020307 0 34%, rgba(2, 3, 7, 0.68) 66%, #020307 100%),
-    linear-gradient(0deg, #020307 0%, transparent 38%);
-}
-
-.page-horoscope .sphere-hero > .container,
-.page-horoscope main > .container,
+.page-horoscope .container,
 .page-horoscope .ap-more-sky {
   width: min(1180px, calc(100% - 40px));
   margin-inline: auto;
 }
 
-.page-horoscope .sphere-hero__header {
-  max-width: 670px;
-  margin: 0 0 clamp(46px, 7vw, 82px);
-  text-align: left;
+.page-horoscope .daily-room {
+  position: relative;
+  padding: clamp(76px, 8vw, 116px) 0 clamp(64px, 8vw, 104px);
+  border-bottom: 1px solid var(--daily-line);
+  isolation: isolate;
 }
 
-.page-horoscope #today-date-display,
+.page-horoscope .daily-room::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  top: 0;
+  right: 0;
+  width: min(56vw, 820px);
+  height: 560px;
+  background: url("../img/editorial/astronomy-books-editorial.webp") 72% 22% / cover no-repeat;
+  filter: saturate(0.52) contrast(1.14) brightness(0.58);
+  opacity: 0.58;
+}
+
+.page-horoscope .daily-room::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, var(--daily-void) 0 42%, rgba(2, 3, 7, 0.76) 68%, var(--daily-void) 100%);
+}
+
+.page-horoscope .daily-room__inner {
+  position: relative;
+}
+
+.page-horoscope .daily-room__inner::before {
+  content: "AP / DAILY / 12:00 UT";
+  position: absolute;
+  top: -36px;
+  right: 0;
+  color: rgba(216, 180, 106, 0.52);
+  font: 0.55rem/1 "IBM Plex Mono", monospace;
+  letter-spacing: 0.18em;
+}
+
+.page-horoscope .daily-hero {
+  width: min(690px, 100%);
+  margin-bottom: clamp(42px, 6vw, 76px);
+}
+
+.page-horoscope .daily-hero__eyebrow,
 .page-horoscope .sign-picker-primary__lead,
-.page-horoscope .reading-card__label,
-.page-horoscope .ap-more-sky__summary,
+.page-horoscope .daily-reading-status,
 .page-horoscope .sign-card__dates,
-.page-horoscope .sign-card__element-badge {
+.page-horoscope .sign-card__element-badge,
+.page-horoscope .sign-reading-panel__date,
+.page-horoscope .srp-element-text,
+.page-horoscope .srp-guide-link,
+.page-horoscope .srp-moon-label,
+.page-horoscope .srp-ruler-line,
+.page-horoscope .reading-card__label,
+.page-horoscope .daily-eclipse__eyebrow,
+.page-horoscope .ap-more-sky__summary,
+.page-horoscope .sign-reading-panel__method,
+.page-horoscope .daily-evidence__ledger dd,
+.page-horoscope .daily-evidence__action {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.page-horoscope #today-date-display {
-  margin: 0 0 16px;
+.page-horoscope .daily-hero__eyebrow {
+  margin: 0 0 18px;
   color: var(--daily-ember);
   font-size: 0.65rem;
+  line-height: 1.7;
 }
 
-.page-horoscope .sphere-hero__header h1 {
+.page-horoscope .daily-hero h1 {
   max-width: 8ch;
   margin: 0;
   color: var(--daily-paper);
-  font: 500 clamp(4.1rem, 8.6vw, 8rem)/0.83 "Cormorant Garamond", Georgia, serif;
+  font: 500 clamp(4.35rem, 8.5vw, 8rem) / 0.83 "Cormorant Garamond", Georgia, serif;
   letter-spacing: -0.055em;
+  text-wrap: balance;
 }
 
-.page-horoscope .sphere-hero__sub {
-  max-width: 42ch;
+.page-horoscope .daily-hero__sub {
+  max-width: 48ch;
   margin: 28px 0 0;
-  color: rgba(242, 236, 223, 0.72);
-  font-size: clamp(1rem, 1.4vw, 1.16rem);
-  line-height: 1.65;
+  color: rgba(242, 236, 223, 0.76);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.68;
 }
 
-.page-horoscope .sphere-hero__header > p:last-child {
-  max-width: 54ch;
-  margin-left: 0 !important;
-  color: rgba(242, 236, 223, 0.58) !important;
+.page-horoscope .daily-hero__method,
+.page-horoscope .daily-hero__personal {
+  max-width: 58ch;
+  margin: 17px 0 0;
+  color: rgba(185, 200, 220, 0.62);
+  font-size: 0.86rem;
   line-height: 1.55;
 }
 
-.page-horoscope .ap-badge,
-.page-horoscope .sphere-hero__badge-link {
-  color: var(--daily-brass) !important;
-}
-
-.page-horoscope .sign-picker-primary {
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
-
-.page-horoscope .sign-picker-primary__lead {
-  margin: 0 0 18px;
+.page-horoscope .daily-hero__method a,
+.page-horoscope .daily-hero__personal a {
   color: var(--daily-brass);
-  font-size: 0.62rem;
+}
+
+.page-horoscope .sign-picker-primary__head {
+  min-height: 32px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.page-horoscope .sign-picker-primary__lead,
+.page-horoscope .daily-reading-status {
+  margin: 0;
+  color: var(--daily-brass);
+  font-size: 0.6rem;
+  line-height: 1.6;
+}
+
+.page-horoscope .daily-reading-status {
+  color: var(--daily-silver);
+  text-align: right;
+}
+
+.page-horoscope .daily-reading-status.is-error {
+  color: var(--daily-ember);
 }
 
 .page-horoscope .sign-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0;
   border-top: 1px solid var(--daily-line);
   border-left: 1px solid var(--daily-line);
 }
@@ -154,27 +192,39 @@
   min-width: 0;
   min-height: 132px;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 38px minmax(0, 1fr);
   grid-template-rows: 1fr auto auto;
-  gap: 2px 10px;
+  gap: 3px 10px;
   align-items: center;
-  padding: 18px 15px;
-  border: 0 !important;
-  border-right: 1px solid var(--daily-line) !important;
-  border-bottom: 1px solid var(--daily-line) !important;
-  border-radius: 0 !important;
-  background: rgba(5, 7, 11, 0.86) !important;
-  color: var(--daily-paper) !important;
-  box-shadow: none !important;
+  padding: 18px 14px;
+  border: 0;
+  border-right: 1px solid var(--daily-line);
+  border-bottom: 1px solid var(--daily-line);
+  border-radius: 0;
+  background: rgba(5, 7, 11, 0.9);
+  color: var(--daily-paper);
   text-align: left;
-  transform: none !important;
+  cursor: pointer;
+  transition: background-color 180ms ease, box-shadow 180ms ease, color 180ms ease;
 }
 
 .page-horoscope .sign-card:hover,
 .page-horoscope .sign-card.is-active {
   z-index: 1;
-  background: rgba(255, 100, 40, 0.075) !important;
-  box-shadow: inset 3px 0 0 var(--daily-ember) !important;
+  background: #111015;
+  box-shadow: inset 3px 0 0 var(--daily-ember);
+}
+
+.page-horoscope .sign-card[aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--daily-ember);
+  animation: daily-pulse 900ms ease-in-out infinite alternate;
 }
 
 .page-horoscope .sign-card:focus-visible {
@@ -188,39 +238,34 @@
   width: 34px;
   height: 42px;
   color: var(--daily-brass);
-  filter: sepia(0.75) saturate(0.7);
+  filter: sepia(0.72) saturate(0.62);
 }
 
 .page-horoscope .sign-card__name {
   align-self: end;
   color: var(--daily-paper);
-  font: 500 1.45rem/1 "Cormorant Garamond", Georgia, serif;
+  font: 500 1.42rem/1 "Cormorant Garamond", Georgia, serif;
 }
 
-.page-horoscope .sign-card__dates {
-  color: rgba(185, 200, 220, 0.58);
-  font-size: 0.49rem;
-}
-
-.page-horoscope .sign-card__element-badge,
-.page-horoscope .sign-card__your-badge {
-  width: max-content;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  color: rgba(216, 180, 106, 0.72);
+.page-horoscope .sign-card__dates,
+.page-horoscope .sign-card__element-badge {
+  color: rgba(185, 200, 220, 0.62);
   font-size: 0.48rem;
+  overflow-wrap: anywhere;
+}
+
+.page-horoscope .sign-card__element-badge {
+  color: rgba(216, 180, 106, 0.76);
 }
 
 .page-horoscope .sign-reading-panel {
   display: none;
-  margin: clamp(36px, 5vw, 64px) 0 0;
-  scroll-margin-top: 92px;
+  margin-top: clamp(34px, 5vw, 62px);
+  scroll-margin-top: 84px;
   border: 1px solid var(--daily-line);
   border-radius: 8px;
-  background: linear-gradient(145deg, rgba(13, 18, 27, 0.98), rgba(5, 7, 11, 0.98));
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
+  background: var(--daily-raised);
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.42);
 }
 
 .page-horoscope .sign-reading-panel.is-open {
@@ -240,101 +285,129 @@
 }
 
 .page-horoscope .sign-reading-panel__title-group {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 18px;
 }
 
 .page-horoscope .srp-card-thumb {
-  width: 64px;
-  height: 84px;
+  flex: 0 0 auto;
+  width: 68px;
+  height: 92px;
   border: 1px solid var(--daily-line);
   border-radius: 4px;
   object-fit: cover;
-  filter: saturate(0.76) contrast(1.08);
+  filter: saturate(0.68) contrast(1.1);
 }
 
 .page-horoscope .sign-reading-panel__sign-name {
   margin: 0;
   color: var(--daily-paper);
-  font: 500 clamp(2.5rem, 5vw, 4.7rem)/0.88 "Cormorant Garamond", Georgia, serif;
-  letter-spacing: -0.04em;
+  font: 500 clamp(2.7rem, 5vw, 4.9rem) / 0.86 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: -0.045em;
 }
 
 .page-horoscope .sign-reading-panel__date,
+.page-horoscope .srp-element-text,
 .page-horoscope .srp-guide-link,
-.page-horoscope .srp-element-text {
-  color: var(--daily-brass) !important;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.page-horoscope .srp-moon-label,
+.page-horoscope .srp-ruler-line {
+  margin: 7px 0 0;
+  color: var(--daily-brass);
+  font-size: 0.55rem;
+  line-height: 1.6;
+}
+
+.page-horoscope .srp-guide-link {
+  display: inline-block;
 }
 
 .page-horoscope .srp-moon-wrap {
+  min-width: 150px;
   display: grid;
+  align-content: start;
   justify-items: center;
-  gap: 8px;
+  gap: 3px;
+  text-align: center;
 }
 
-.page-horoscope .lunar-cycle-strip {
-  display: none;
+.page-horoscope #srp-moon-canvas {
+  width: 80px;
+  height: 80px;
+}
+
+.page-horoscope .srp-moon-label {
+  color: var(--daily-silver);
 }
 
 .page-horoscope .sign-reading-panel__actions {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 9px;
 }
 
-.page-horoscope .btn,
-.page-horoscope button,
-.page-horoscope input,
-.page-horoscope select {
-  border-radius: 5px !important;
+.page-horoscope .btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid rgba(216, 180, 106, 0.32);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--daily-paper);
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.page-horoscope .btn--primary,
-.page-horoscope .srp-chart-cta__btn,
-.page-horoscope .cta-btn--primary {
-  border: 1px solid var(--daily-ember) !important;
-  background: var(--daily-ember) !important;
-  color: #1b0b03 !important;
-  box-shadow: none !important;
+.page-horoscope .btn--primary {
+  border-color: var(--daily-ember);
+  background: var(--daily-ember);
+  color: #1a0902;
 }
 
-.page-horoscope .btn--outline,
-.page-horoscope .btn--ghost {
-  border: 1px solid rgba(216, 180, 106, 0.26) !important;
-  background: transparent !important;
-  color: var(--daily-paper) !important;
-  box-shadow: none !important;
+.page-horoscope .btn--primary:hover {
+  background: #ff7b46;
+}
+
+.page-horoscope .btn:disabled {
+  cursor: wait;
+  opacity: 0.66;
 }
 
 .page-horoscope .ap-entertainment-note {
   margin: 24px 0 0;
-  color: rgba(185, 200, 220, 0.55);
-  font-size: 0.72rem;
-  line-height: 1.55;
+  padding: 12px 15px;
+  border-left: 2px solid var(--daily-brass);
+  background: rgba(216, 180, 106, 0.06);
+  color: rgba(185, 200, 220, 0.68);
+  font-size: 0.75rem;
+  line-height: 1.6;
 }
 
 .page-horoscope .sign-reading-panel__overview {
-  max-width: 55ch;
-  margin: clamp(28px, 4vw, 46px) 0 10px;
+  max-width: 58ch;
+  margin: clamp(30px, 4vw, 48px) 0 12px;
   color: var(--daily-paper);
-  font: 500 clamp(1.55rem, 3vw, 2.35rem)/1.15 "Cormorant Garamond", Georgia, serif;
+  font: 500 clamp(1.6rem, 3vw, 2.45rem) / 1.14 "Cormorant Garamond", Georgia, serif;
 }
 
 .page-horoscope .srp-sky-facts {
-  color: var(--daily-brass) !important;
-  font-family: "IBM Plex Mono", monospace;
+  max-width: 92ch;
+  margin: 0;
+  color: var(--daily-brass);
+  font: 0.62rem/1.8 "IBM Plex Mono", monospace;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
 .page-horoscope .sign-reading-panel__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
   margin-top: 30px;
   border-top: 1px solid var(--daily-line);
   border-left: 1px solid var(--daily-line);
@@ -342,244 +415,266 @@
 
 .page-horoscope .reading-card {
   min-width: 0;
-  padding: 22px;
-  border: 0 !important;
-  border-right: 1px solid var(--daily-line) !important;
-  border-bottom: 1px solid var(--daily-line) !important;
-  border-radius: 0 !important;
-  background: rgba(2, 3, 7, 0.38) !important;
-  box-shadow: none !important;
+  padding: 24px;
+  border-right: 1px solid var(--daily-line);
+  border-bottom: 1px solid var(--daily-line);
+  background: rgba(2, 3, 7, 0.36);
 }
 
 .page-horoscope .reading-card__icon {
   color: var(--daily-brass);
+  font-size: 1.1rem;
 }
 
 .page-horoscope .reading-card__label {
   display: block;
-  margin: 10px 0;
+  margin: 12px 0 10px;
   color: var(--daily-brass);
-  font-size: 0.56rem;
+  font-size: 0.55rem;
 }
 
 .page-horoscope .reading-card__text {
-  color: rgba(242, 236, 223, 0.72);
-  line-height: 1.65;
+  margin: 0;
+  color: rgba(242, 236, 223, 0.76);
+  font-size: 0.92rem;
+  line-height: 1.68;
 }
 
-.page-horoscope #srp-weekly-wrap,
-.page-horoscope #srp-monthly-wrap {
-  margin-top: 14px !important;
-  border-top: 1px solid rgba(216, 180, 106, 0.14);
-  padding-top: 14px;
+.page-horoscope .sign-reading-panel__method {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--daily-line-soft);
+  color: var(--daily-brass);
+  font-size: 0.55rem;
+  line-height: 1.7;
 }
 
-.page-horoscope #srp-weekly-toggle,
-.page-horoscope #srp-monthly-toggle {
-  width: 100%;
-  justify-content: space-between;
+.page-horoscope .sign-reading-panel__method p {
+  max-width: 84ch;
+  margin: 8px 0 0;
+  color: rgba(185, 200, 220, 0.6);
+  font-family: "Schibsted Grotesk", system-ui, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
-.page-horoscope main > .container[aria-label="The 12 August eclipse"] {
-  margin-top: 0 !important;
-  padding-block: clamp(38px, 5vw, 64px);
+.page-horoscope .daily-eclipse {
+  padding-block: clamp(40px, 6vw, 72px);
 }
 
-.page-horoscope main > .container[aria-label="The 12 August eclipse"] > div {
+.page-horoscope .daily-eclipse__inner {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 20px;
-  padding: 24px !important;
-  border: 1px solid rgba(255, 100, 40, 0.42) !important;
-  border-radius: 5px !important;
-  background: rgba(255, 100, 40, 0.05) !important;
-  text-align: left !important;
+  gap: 18px 32px;
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid rgba(255, 100, 40, 0.44);
+  border-radius: 5px;
+  background: #0c0d12;
 }
 
-.page-horoscope main > .container[aria-label="The 12 August eclipse"] h2,
-.page-horoscope main > .container[aria-label="The 12 August eclipse"] p {
+.page-horoscope .daily-eclipse__inner::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 112px;
+  height: 4px;
+  background: var(--daily-ember);
+}
+
+.page-horoscope .daily-eclipse__eyebrow,
+.page-horoscope .daily-eclipse h2,
+.page-horoscope .daily-eclipse p {
   grid-column: 1;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+  margin: 0;
 }
 
-.page-horoscope main > .container[aria-label="The 12 August eclipse"] a {
+.page-horoscope .daily-eclipse__eyebrow {
+  color: var(--daily-ember);
+  font-size: 0.58rem;
+}
+
+.page-horoscope .daily-eclipse h2,
+.page-horoscope .daily-evidence h2 {
+  color: var(--daily-paper);
+  font: 500 clamp(2.25rem, 4vw, 3.9rem) / 0.96 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: -0.035em;
+}
+
+.page-horoscope .daily-eclipse p:not(.daily-eclipse__eyebrow) {
+  max-width: 66ch;
+  color: rgba(242, 236, 223, 0.68);
+  line-height: 1.62;
+}
+
+.page-horoscope .daily-eclipse .btn {
   grid-column: 2;
   grid-row: 1 / 4;
 }
 
 .page-horoscope .ap-more-sky {
   margin-top: 0;
-  margin-bottom: clamp(64px, 9vw, 112px);
+  margin-bottom: clamp(70px, 9vw, 116px);
   border-top: 1px solid var(--daily-line);
   border-bottom: 1px solid var(--daily-line);
-  background: rgba(5, 7, 11, 0.72);
+  background: rgba(5, 7, 11, 0.8);
 }
 
 .page-horoscope .ap-more-sky__summary {
-  padding: 24px 0;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
   color: var(--daily-brass);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   cursor: pointer;
 }
 
 .page-horoscope .ap-more-sky__body {
-  padding-bottom: 42px;
+  padding: 28px 0 42px;
 }
 
-.page-horoscope .ap-more-sky .section {
-  padding: 34px 0;
-  background: transparent !important;
+.page-horoscope .daily-evidence h2 {
+  max-width: 11ch;
+  margin: 0;
 }
 
-.page-horoscope .section__title {
-  color: var(--daily-paper);
-  font: 500 clamp(2.2rem, 4vw, 3.8rem)/0.95 "Cormorant Garamond", Georgia, serif;
+.page-horoscope .daily-evidence__intro {
+  max-width: 64ch;
+  margin: 18px 0 26px;
+  color: rgba(242, 236, 223, 0.64);
+  line-height: 1.65;
 }
 
-.page-horoscope .section__subtitle {
-  max-width: 58ch;
-  margin-left: 0;
-  color: rgba(242, 236, 223, 0.58);
-  text-align: left;
-}
-
-.page-horoscope #cosmic-status-bar > div {
-  border: 1px solid rgba(216, 180, 106, 0.22) !important;
-  border-radius: 4px !important;
-  background: transparent !important;
-  color: var(--daily-brass) !important;
-}
-
-.page-horoscope .planet-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--daily-line);
-}
-
-.page-horoscope .planet-weather-card {
-  min-width: 0;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: #080c12 !important;
-  box-shadow: none !important;
-}
-
-.page-horoscope .moon-card,
-.page-horoscope .transit-item {
-  border: 1px solid var(--daily-line) !important;
-  border-radius: 5px !important;
-  background: #080c12 !important;
-  box-shadow: none !important;
-}
-
-.page-horoscope .transit-timeline {
+.page-horoscope .daily-evidence__ledger {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--daily-line);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--daily-line);
+  border-left: 1px solid var(--daily-line);
 }
 
-.page-horoscope .transit-item {
-  border: 0 !important;
-  border-radius: 0 !important;
+.page-horoscope .daily-evidence__ledger > div {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.7fr) minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px 18px;
+  border-right: 1px solid var(--daily-line);
+  border-bottom: 1px solid var(--daily-line);
+  background: rgba(2, 3, 7, 0.48);
 }
 
-@media (max-width: 960px) {
-  .page-horoscope .sign-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .page-horoscope .sphere-hero::before {
-    background-position: 112% 12%;
-    background-size: 78vw auto;
-    opacity: 0.48;
-  }
-
-  .page-horoscope .sign-reading-panel__grid,
-  .page-horoscope .planet-grid,
-  .page-horoscope .transit-timeline {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.page-horoscope .daily-evidence__ledger > div:last-child {
+  grid-column: 1 / -1;
 }
 
-@media (max-width: 640px) {
-  .page-horoscope .sphere-hero > .container,
-  .page-horoscope main > .container,
-  .page-horoscope .ap-more-sky {
-    width: min(100% - 24px, 1180px);
-  }
+.page-horoscope .daily-evidence__ledger dt {
+  color: var(--daily-paper);
+  font: 500 1.2rem/1.2 "Cormorant Garamond", Georgia, serif;
+}
 
-  .page-horoscope .sphere-hero {
-    padding-top: 104px;
-  }
+.page-horoscope .daily-evidence__ledger dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--daily-brass);
+  font-size: 0.6rem;
+  line-height: 1.6;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
 
-  .page-horoscope .sphere-hero::before {
-    background-position: 50% 42px;
-    background-size: 124vw auto;
-    opacity: 0.36;
-  }
+.page-horoscope .daily-evidence__action {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 18px;
+  color: var(--daily-ember);
+  font-size: 0.58rem;
+  text-decoration: none;
+}
 
-  .page-horoscope .sphere-hero::after {
-    background: linear-gradient(0deg, #020307 0 54%, rgba(2, 3, 7, 0.4) 78%, #020307 100%);
-  }
+.page-horoscope .toast-container {
+  position: fixed;
+  z-index: 180;
+  right: 16px;
+  bottom: 18px;
+  display: grid;
+  gap: 8px;
+}
 
-  .page-horoscope .sphere-hero__header {
-    min-height: 430px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
+.page-horoscope .toast {
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 13px 16px;
+  border: 1px solid var(--daily-line);
+  border-radius: 5px;
+  background: var(--daily-raised);
+  color: var(--daily-paper);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.46);
+  font-size: 0.8rem;
+}
 
-  .page-horoscope .sphere-hero__header h1 {
-    font-size: clamp(3.8rem, 18vw, 5.3rem);
-  }
+@keyframes daily-pulse {
+  from { opacity: 0.35; transform: scale(0.75); }
+  to { opacity: 1; transform: scale(1); }
+}
 
-  .page-horoscope .sign-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+@media (max-width: 980px) {
+  .page-horoscope .sign-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .page-horoscope .sign-reading-panel__grid { grid-template-columns: 1fr; }
+  .page-horoscope .reading-card { min-height: 0; }
+  .page-horoscope .daily-room::before { width: 72vw; opacity: 0.42; }
+  .page-horoscope .daily-room::after { background: linear-gradient(90deg, var(--daily-void) 0 48%, rgba(2, 3, 7, 0.72) 78%, var(--daily-void)); }
+}
 
-  .page-horoscope .sign-card {
-    min-height: 112px;
-    padding: 14px 12px;
-  }
-
-  .page-horoscope .sign-card__glyph {
-    width: 28px;
-  }
-
-  .page-horoscope .sign-reading-panel__header {
-    grid-template-columns: 1fr;
-  }
-
-  .page-horoscope .srp-moon-wrap {
-    justify-items: start;
-  }
-
-  .page-horoscope .sign-reading-panel__actions,
-  .page-horoscope .sign-reading-panel__grid,
-  .page-horoscope .planet-grid,
-  .page-horoscope .transit-timeline {
-    grid-template-columns: 1fr;
-  }
-
-  .page-horoscope main > .container[aria-label="The 12 August eclipse"] > div {
-    grid-template-columns: 1fr;
-  }
-
-  .page-horoscope main > .container[aria-label="The 12 August eclipse"] a {
-    grid-column: 1;
-    grid-row: auto;
+@media (max-width: 660px) {
+  .page-horoscope .container,
+  .page-horoscope .ap-more-sky { width: min(100% - 24px, 1180px); }
+  .page-horoscope .daily-room { padding: 66px 0 58px; }
+  .page-horoscope .daily-room::before {
     width: 100%;
+    height: 260px;
+    background-position: 66% 14%;
+    opacity: 0.24;
   }
+  .page-horoscope .daily-room::after {
+    background: linear-gradient(0deg, var(--daily-void) 0 70%, rgba(2, 3, 7, 0.62) 92%, var(--daily-void));
+  }
+  .page-horoscope .daily-room__inner::before { top: -28px; }
+  .page-horoscope .daily-hero { margin-bottom: 36px; }
+  .page-horoscope .daily-hero h1 { font-size: clamp(3.9rem, 18vw, 5.25rem); }
+  .page-horoscope .daily-hero__sub { margin-top: 20px; font-size: 0.96rem; }
+  .page-horoscope .sign-picker-primary__head { display: block; min-height: 50px; }
+  .page-horoscope .daily-reading-status { margin-top: 6px; text-align: left; }
+  .page-horoscope .sign-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .page-horoscope .sign-card { min-height: 112px; padding: 14px 12px; }
+  .page-horoscope .sign-card__glyph { width: 30px; }
+  .page-horoscope .sign-reading-panel__inner { padding: 20px 16px; }
+  .page-horoscope .sign-reading-panel__header { grid-template-columns: 1fr; }
+  .page-horoscope .sign-reading-panel__title-group { align-items: flex-start; }
+  .page-horoscope .srp-moon-wrap { min-width: 0; grid-template-columns: auto 1fr; justify-items: start; align-items: center; text-align: left; }
+  .page-horoscope #srp-moon-canvas { grid-row: 1 / 3; }
+  .page-horoscope .sign-reading-panel__actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .page-horoscope .sign-reading-panel__actions .btn:last-child { grid-column: 1 / -1; }
+  .page-horoscope .reading-card { padding: 20px; }
+  .page-horoscope .daily-eclipse__inner { grid-template-columns: 1fr; }
+  .page-horoscope .daily-eclipse .btn { grid-column: 1; grid-row: auto; width: 100%; }
+  .page-horoscope .daily-evidence__ledger { grid-template-columns: 1fr; }
+  .page-horoscope .daily-evidence__ledger > div,
+  .page-horoscope .daily-evidence__ledger > div:last-child { grid-column: auto; }
+  .page-horoscope .daily-evidence__ledger > div { grid-template-columns: 1fr; gap: 6px; }
+  .page-horoscope .daily-evidence__ledger dd { text-align: left; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .page-horoscope *,
   .page-horoscope *::before,
   .page-horoscope *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
   }
 }

@@ -781,7 +781,7 @@ body.page-eclipse h1 em { color: var(--ap-ember); }
   }
   .ap-site-footer__brand p { margin-top: 10px; font-size: 12px; }
   .ap-site-footer__routes {
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
     justify-content: space-between;
   }
   .ap-site-footer__legal {

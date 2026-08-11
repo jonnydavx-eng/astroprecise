@@ -340,6 +340,7 @@ function mount(root, E) {
   let inView = true;
   let raf = 0;
   let lastFrameAt = 0;
+  let loopRunning = false;
 
   function positionVolume(mesh, origin, direction, length, nearRadius, farRadius) {
     if (mesh.geometry) mesh.geometry.dispose();
@@ -447,7 +448,7 @@ function mount(root, E) {
       const label = labelEls[key];
       if (!label) return;
       const p = body.position.clone().project(camera);
-      const visible = p.z > -1 && p.z < 1;
+      const visible = p.z > -1 && p.z < 1 && Math.abs(p.x) <= 1.08 && Math.abs(p.y) <= 1.08;
       label.style.left = `${(p.x * .5 + .5) * rect.width}px`;
       label.style.top = `${(-p.y * .5 + .5) * rect.height}px`;
       label.hidden = !visible;
@@ -462,11 +463,24 @@ function mount(root, E) {
   }
 
   function frame(time) {
+    if (!loopRunning) return;
     if (time - lastFrameAt >= 33) {
       lastFrameAt = time;
       render(time);
     }
     raf = requestAnimationFrame(frame);
+  }
+
+  function startLoop() {
+    if (reducedMotion || loopRunning || document.hidden || !inView) return;
+    loopRunning = true;
+    raf = requestAnimationFrame(frame);
+  }
+
+  function stopLoop() {
+    loopRunning = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
   }
 
   let dragging = false;
@@ -519,13 +533,26 @@ function mount(root, E) {
   resizeObserver.observe(stage);
   const intersectionObserver = new IntersectionObserver((entries) => {
     inView = entries[0] ? entries[0].isIntersecting : true;
-    if (inView) render();
+    if (inView) {
+      render();
+      startLoop();
+    } else {
+      stopLoop();
+    }
   }, { rootMargin: '120px' });
   intersectionObserver.observe(root);
 
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopLoop();
+    else {
+      render();
+      startLoop();
+    }
+  });
+
   setLive();
   resize();
-  if (!reducedMotion) raf = requestAnimationFrame(frame);
+  startLoop();
   if (fallback) fallback.hidden = true;
   root.dataset.ready = 'true';
   window.APEclipseLive = {
@@ -536,16 +563,28 @@ function mount(root, E) {
   };
   document.dispatchEvent(new CustomEvent('ap-eclipse-live-ready', { detail: { state } }));
 
-  setInterval(() => {
+  const liveTimer = setInterval(() => {
     if (mode === 'live') setLive();
   }, 30000);
 
-  window.addEventListener('pagehide', () => {
-    cancelAnimationFrame(raf);
+  function dispose() {
+    stopLoop();
+    clearInterval(liveTimer);
     resizeObserver.disconnect();
     intersectionObserver.disconnect();
     renderer.dispose();
-  }, { once: true });
+  }
+
+  window.addEventListener('pagehide', (event) => {
+    if (event.persisted) stopLoop();
+    else dispose();
+  });
+  window.addEventListener('pageshow', (event) => {
+    if (!event.persisted) return;
+    resize();
+    if (mode === 'live') setLive();
+    startLoop();
+  });
 }
 
 async function boot() {

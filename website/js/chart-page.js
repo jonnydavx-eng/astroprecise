@@ -841,8 +841,6 @@
     renderTabs(chart);
     initTabs();
 
-    if (window.APChartShare) APChartShare.updateShareStrip(chart, null);
-
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -1628,7 +1626,6 @@
     const text = window.APChartShare
       ? APChartShare.bigThreeLine(currentChart)
       : sharePlacementLine(currentChart);
-    if (window.APChartShare) APChartShare.updateShareStrip(currentChart, null);
     // Prefer sharing the generated image (richer than a bare link) on capable devices.
     if (navigator.canShare && navigator.share) {
       try {
@@ -1651,10 +1648,6 @@
       }
     } catch (e) { /* user cancelled */ }
   });
-
-  if (window.APChartShare) {
-    APChartShare.wireCopyButton(function () { return currentChart; }, function () { return null; });
-  }
 
   // Big Three Card → dedicated Sun/Moon/Rising square (no full natal wheel).
   document.getElementById('print-btn')?.addEventListener('click', () => {

@@ -126,6 +126,14 @@ function cssAssetRefs(css) {
   return refs;
 }
 
+function inlineStyleRefs(html) {
+  const refs = [];
+  for (const match of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) {
+    refs.push(...cssAssetRefs(match[1]));
+  }
+  return refs;
+}
+
 function jsImportRefs(js) {
   const refs = [];
   for (const match of js.matchAll(/\bimport\s*\(\s*(["'])(.*?)\1\s*\)/g)) refs.push(match[2]);
@@ -149,7 +157,7 @@ function collectLaunchShell() {
 
     const source = readFileSync(abs, 'utf8');
     const rawRefs = extension === '.html'
-      ? tagAssetRefs(source)
+      ? [...tagAssetRefs(source), ...inlineStyleRefs(source)]
       : extension === '.css'
         ? cssAssetRefs(source)
         : jsImportRefs(source);

@@ -18,6 +18,7 @@
     { href: 'index.html', label: 'Observatory' },
     { href: 'chart.html', label: 'Chart' },
     { href: 'horoscope.html', label: 'Daily' },
+    { href: 'eclipse.html', label: 'Eclipse' },
     { href: 'shop.html', label: 'Shop' },
   ];
   var LEGAL_LINKS = [

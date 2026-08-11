@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" class="ap-enchanted ap-brand-nebula">
+<html lang="en" class="ap-field-instrument">
 <head>
   <meta charset="UTF-8" />
-  <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
+  <meta name="color-scheme" content="dark" />
+  <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Daily horoscope for all 12 signs. Positions are calculated for today at 12:00 UT and interpreted through a solar chart; astrological meaning is offered for reflection and entertainment." />
-  <title>Daily Horoscope — the real sky news | Astro Precise</title>
-<link rel="preload" href="css/main-lite.css" as="style" />
+  <title>Daily Horoscope — calculated from today’s sky | Astro Precise</title>
   <link rel="stylesheet" href="css/fonts.css" />
-<link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="favicon.ico" sizes="48x48">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
-  <meta property="og:title" content="Daily Horoscope — the real sky news | Astro Precise" />
+  <meta property="og:title" content="Daily Horoscope — calculated from today’s sky" />
   <meta property="og:description" content="Positions calculated for today at 12:00 UT, then interpreted through a solar chart for all twelve signs." />
   <meta property="og:url" content="https://astroprecise.app/horoscope.html" />
   <link rel="canonical" href="https://astroprecise.app/horoscope.html" />
@@ -26,15 +25,14 @@
   <meta property="og:image:height" content="1440" />
   <meta property="og:image:alt" content="AstroPrecise daily horoscope field instrument" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Daily Horoscope — the real sky news | Astro Precise" />
+  <meta name="twitter:title" content="Daily Horoscope — calculated from today’s sky" />
   <meta name="twitter:description" content="Positions calculated for today at 12:00 UT, then interpreted through a solar chart for all twelve signs." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#08080b" />
+  <meta name="theme-color" content="#020307" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Astro Precise" />
-  
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -45,97 +43,24 @@
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
-    "description": "Today's readings for all 12 signs. Positions are calculated for the local calendar date at 12:00 UT and interpreted through a solar chart. Free, no account.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Astro Precise",
-      "url": "https://astroprecise.app/"
-    }
+    "description": "Readings for all 12 signs. Positions are calculated for the visitor’s local calendar date at 12:00 UT and interpreted through a solar chart. Astrological meaning is offered for reflection and entertainment.",
+    "dateModified": "2026-08-11",
+    "isPartOf": { "@type": "WebSite", "name": "Astro Precise", "url": "https://astroprecise.app/" }
   }
   </script>
-  <link rel="stylesheet" href="css/horoscope-critical.css" />
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/horoscope-page-deferred.css?v=835" />
   <link rel="stylesheet" href="css/celestial-seals.css?v=835" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=835" id="ap-css-palette-2026" />
-  <style>
-    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-    /* LCP shell — system fonts paint before deferred webfonts */
-    .sphere-hero__header h1 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-style: italic;
-      font-size: clamp(2.9rem, 7vw, 5.4rem);
-      font-weight: 500;
-      line-height: 1.02;
-      letter-spacing: -0.01em;
-      color: #f2ecdf;
-      margin-bottom: 0.6rem;
-      max-width: 14ch;
-    }
-    .sphere-selected-label {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-style: italic;
-    }
-    /* Entertainment / tradition caveat — keeps the astrology "sky" legally
-       separate from the computed astronomy "sky". Engraved brass. */
-    .ap-entertainment-note{
-      margin:var(--space-3,0.75rem) 0 0;
-      padding:0.6rem 0.85rem;
-      border-left:2px solid #d8b46a;
-      background:rgba(216,180,106,0.07);
-      border-radius:4px;
-      font-size:0.72rem;
-      line-height:1.6;
-      color:rgba(242,236,223,0.62);
-    }
-    .ap-computed-sky__intro{max-width:64ch;margin:0 0 1.25rem;color:rgba(242,236,223,.64);line-height:1.65}
-    .ap-computed-sky__ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:0;border-top:1px solid rgba(216,180,106,.2);border-left:1px solid rgba(216,180,106,.2)}
-    .ap-computed-sky__row{display:grid;grid-template-columns:minmax(7rem,.7fr) minmax(0,1fr);gap:1rem;padding:1rem 1.1rem;border-right:1px solid rgba(216,180,106,.2);border-bottom:1px solid rgba(216,180,106,.2);background:rgba(2,3,7,.44)}
-    .ap-computed-sky__row dt{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.25rem;color:#f2ecdf}
-    .ap-computed-sky__row dd{margin:0;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:.65rem;line-height:1.7;letter-spacing:.08em;text-transform:uppercase;color:#d8b46a}
-    .ap-computed-sky__row:last-child{grid-column:1/-1}
-    .ap-computed-sky__action{display:inline-block;margin-top:1.25rem;color:#ff6428;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
-    @media(max-width:640px){.ap-computed-sky__ledger{grid-template-columns:1fr}.ap-computed-sky__row{grid-template-columns:1fr;grid-column:auto}.ap-computed-sky__row dd{text-align:left}}
-  </style>
-  <script>
-  (function () {
-    var ua = navigator.userAgent || '';
-    window.__apHoroscopeAudit = !!(
-      navigator.webdriver ||
-      /\bHeadlessChrome\b/i.test(ua) ||
-      /[?&]lite=1/.test(location.search || '') ||
-      (typeof window.chrome === 'undefined' && /Chrome/i.test(ua))
-    );
-    if (window.__apHoroscopeAudit) window.__apSkipPrivacyBanner = true;
-  })();
-  </script>
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835" />
   <link rel="stylesheet" href="css/ap-daily-v835.css?v=835" />
 </head>
 <body class="page-horoscope ap-daily-ledger ap-no-nav-enter">
-  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
     <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
-    <symbol id="ei-crescent" viewBox="0 0 24 24"><path d="M14.5 3.5a9 9 0 1 0 6.2 11.8A7.2 7.2 0 0 1 14.5 3.5Z"/></symbol>
-    <symbol id="ei-moon0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/></symbol>
-    <symbol id="ei-moon1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
-    <symbol id="ei-moon2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
-    <symbol id="ei-moon3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
-    <symbol id="ei-moon4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6" fill="currentColor" opacity=".85"/><circle cx="12" cy="12" r="7.6"/></symbol>
-    <symbol id="ei-moon5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
-    <symbol id="ei-moon6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
-    <symbol id="ei-moon7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
   </svg>
 
   <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
 
-  <!-- Intro lives only on the homepage (once per session). Internal pages load
-       straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
-
-  <!-- ============================================================
-       NAVIGATION
-  ============================================================ -->
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
@@ -145,11 +70,10 @@
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
+            <a href="index.html" class="navbar__link">Live Sky</a>
             <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="ephemeris.html" class="navbar__link">Sky</a>
-            <a href="horoscope.html" class="navbar__link">Daily</a>
-            <a href="cosmic-story.html" class="navbar__link">Readings</a>
-            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="horoscope.html" class="navbar__link" aria-current="page">Daily</a>
+            <a href="eclipse.html" class="navbar__link">Eclipse</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
@@ -157,9 +81,7 @@
           <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
             <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
           </a>
-          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
-            <span></span><span></span><span></span>
-          </button>
+          <button type="button" class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu"><span></span><span></span><span></span></button>
         </div>
       </div>
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
@@ -167,226 +89,119 @@
   </header>
 
   <main id="main-content">
+    <section class="daily-room" aria-labelledby="page-title">
+      <div class="container daily-room__inner">
+        <header class="daily-hero">
+          <p class="daily-hero__eyebrow" id="today-date-display" aria-live="polite">Positions calculated at 12:00 UT · solar-chart reading</p>
+          <h1 id="page-title">Today, sign by sign</h1>
+          <p class="daily-hero__sub">Choose a Sun sign. We calculate today’s planetary positions at one named instant, then interpret them through a whole-sign solar chart.</p>
+          <p class="daily-hero__method"><a href="why.html">Calculated positions · astrological interpretation</a></p>
+          <p class="daily-hero__personal">This is a collective Sun-sign reading. <a href="chart.html">Cast your full birth chart</a> for your exact degrees and time-dependent angles.</p>
+        </header>
 
-    <!-- Daily sign ledger -->
-    <section class="sphere-hero" aria-labelledby="page-title">
-      <div class="container">
-        <div class="sphere-hero__header">
-          <p class="hero__eyebrow" id="today-date-display" aria-live="polite">POSITIONS CALCULATED FOR TODAY AT 12:00 UT · SOLAR-CHART READING</p>
-          <h1 id="page-title">Your horoscope today</h1>
-          <p class="sphere-hero__sub">Pick your sign. Positions are calculated for today at 12:00 UT, then interpreted through a solar chart.</p>
-          <p style="margin-top:var(--space-2);"><a href="why.html" class="sphere-hero__badge-link"><span class="ap-badge">Calculated positions · astrological interpretation</span></a></p>
-          <p style="margin-top:var(--space-3);font-size:0.95rem;color:var(--silver-dim)">A sign reading is the weather for everyone born under one Sun. <a href="chart.html" style="color:#ff7a45">Your full birth chart is free →</a> — the same engine reads the planets against your exact degrees.</p>
-        </div>
-
-        <!-- Primary sign picker: twelve signs, one selected reading. -->
         <div class="sign-picker-primary" id="sign-picker-primary">
-          <p class="sign-picker-primary__lead">Tap your sign for today&rsquo;s reading</p>
-          <div class="sign-grid" id="sign-grid" role="group" aria-label="Zodiac sign horoscope cards">
-            <button class="sign-card" data-sign="aries" data-element="fire" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:aries" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Aries</span>
-              <span class="sign-card__dates">Mar 21 – Apr 19</span>
-              <span class="sign-card__element-badge" data-element="fire">Fire</span>
-            </button>
-            <button class="sign-card" data-sign="taurus" data-element="earth" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:taurus" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Taurus</span>
-              <span class="sign-card__dates">Apr 20 – May 20</span>
-              <span class="sign-card__element-badge" data-element="earth">Earth</span>
-            </button>
-            <button class="sign-card" data-sign="gemini" data-element="air" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:gemini" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Gemini</span>
-              <span class="sign-card__dates">May 21 – Jun 20</span>
-              <span class="sign-card__element-badge" data-element="air">Air</span>
-            </button>
-            <button class="sign-card" data-sign="cancer" data-element="water" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:cancer" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Cancer</span>
-              <span class="sign-card__dates">Jun 21 – Jul 22</span>
-              <span class="sign-card__element-badge" data-element="water">Water</span>
-            </button>
-            <button class="sign-card" data-sign="leo" data-element="fire" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:leo" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Leo</span>
-              <span class="sign-card__dates">Jul 23 – Aug 22</span>
-              <span class="sign-card__element-badge" data-element="fire">Fire</span>
-            </button>
-            <button class="sign-card" data-sign="virgo" data-element="earth" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:virgo" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Virgo</span>
-              <span class="sign-card__dates">Aug 23 – Sep 22</span>
-              <span class="sign-card__element-badge" data-element="earth">Earth</span>
-            </button>
-            <button class="sign-card" data-sign="libra" data-element="air" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:libra" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Libra</span>
-              <span class="sign-card__dates">Sep 23 – Oct 22</span>
-              <span class="sign-card__element-badge" data-element="air">Air</span>
-            </button>
-            <button class="sign-card" data-sign="scorpio" data-element="water" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:scorpio" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Scorpio</span>
-              <span class="sign-card__dates">Oct 23 – Nov 21</span>
-              <span class="sign-card__element-badge" data-element="water">Water</span>
-            </button>
-            <button class="sign-card" data-sign="sagittarius" data-element="fire" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:sagittarius" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Sagittarius</span>
-              <span class="sign-card__dates">Nov 22 – Dec 21</span>
-              <span class="sign-card__element-badge" data-element="fire">Fire</span>
-            </button>
-            <button class="sign-card" data-sign="capricorn" data-element="earth" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:capricorn" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Capricorn</span>
-              <span class="sign-card__dates">Dec 22 – Jan 19</span>
-              <span class="sign-card__element-badge" data-element="earth">Earth</span>
-            </button>
-            <button class="sign-card" data-sign="aquarius" data-element="air" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:aquarius" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Aquarius</span>
-              <span class="sign-card__dates">Jan 20 – Feb 18</span>
-              <span class="sign-card__element-badge" data-element="air">Air</span>
-            </button>
-            <button class="sign-card" data-sign="pisces" data-element="water" aria-pressed="false">
-              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:pisces" data-seal-lg aria-hidden="true"></span>
-              <span class="sign-card__name">Pisces</span>
-              <span class="sign-card__dates">Feb 19 – Mar 20</span>
-              <span class="sign-card__element-badge" data-element="water">Water</span>
-            </button>
+          <div class="sign-picker-primary__head">
+            <p class="sign-picker-primary__lead">Select one of twelve signs</p>
+            <p class="daily-reading-status" id="daily-reading-status" aria-live="polite"></p>
+          </div>
+          <div class="sign-grid" id="sign-grid" role="group" aria-label="Choose a zodiac sign">
+            <button type="button" class="sign-card" data-sign="aries" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:aries" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Aries</span><span class="sign-card__dates">Mar 21 – Apr 19</span><span class="sign-card__element-badge">Fire</span></button>
+            <button type="button" class="sign-card" data-sign="taurus" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:taurus" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Taurus</span><span class="sign-card__dates">Apr 20 – May 20</span><span class="sign-card__element-badge">Earth</span></button>
+            <button type="button" class="sign-card" data-sign="gemini" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:gemini" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Gemini</span><span class="sign-card__dates">May 21 – Jun 20</span><span class="sign-card__element-badge">Air</span></button>
+            <button type="button" class="sign-card" data-sign="cancer" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:cancer" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Cancer</span><span class="sign-card__dates">Jun 21 – Jul 22</span><span class="sign-card__element-badge">Water</span></button>
+            <button type="button" class="sign-card" data-sign="leo" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:leo" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Leo</span><span class="sign-card__dates">Jul 23 – Aug 22</span><span class="sign-card__element-badge">Fire</span></button>
+            <button type="button" class="sign-card" data-sign="virgo" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:virgo" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Virgo</span><span class="sign-card__dates">Aug 23 – Sep 22</span><span class="sign-card__element-badge">Earth</span></button>
+            <button type="button" class="sign-card" data-sign="libra" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:libra" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Libra</span><span class="sign-card__dates">Sep 23 – Oct 22</span><span class="sign-card__element-badge">Air</span></button>
+            <button type="button" class="sign-card" data-sign="scorpio" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:scorpio" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Scorpio</span><span class="sign-card__dates">Oct 23 – Nov 21</span><span class="sign-card__element-badge">Water</span></button>
+            <button type="button" class="sign-card" data-sign="sagittarius" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:sagittarius" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Sagittarius</span><span class="sign-card__dates">Nov 22 – Dec 21</span><span class="sign-card__element-badge">Fire</span></button>
+            <button type="button" class="sign-card" data-sign="capricorn" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:capricorn" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Capricorn</span><span class="sign-card__dates">Dec 22 – Jan 19</span><span class="sign-card__element-badge">Earth</span></button>
+            <button type="button" class="sign-card" data-sign="aquarius" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:aquarius" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Aquarius</span><span class="sign-card__dates">Jan 20 – Feb 18</span><span class="sign-card__element-badge">Air</span></button>
+            <button type="button" class="sign-card" data-sign="pisces" aria-pressed="false"><span class="sign-card__glyph" data-celestial-seal="zodiac:pisces" data-seal-lg aria-hidden="true"></span><span class="sign-card__name">Pisces</span><span class="sign-card__dates">Feb 19 – Mar 20</span><span class="sign-card__element-badge">Water</span></button>
           </div>
         </div>
 
-        <!-- One product only: sign-ledger first, selected reading directly below. -->
-        <div class="sign-reading-panel sign-reading-panel--hero" id="sign-reading-panel" aria-hidden="true" inert>
+        <article class="sign-reading-panel" id="sign-reading-panel" aria-hidden="true" inert>
           <div class="sign-reading-panel__inner">
-            <div class="sign-reading-panel__header">
+            <header class="sign-reading-panel__header">
               <div class="sign-reading-panel__title-group">
-                <img class="srp-card-thumb" id="srp-card-thumb" src="img/engine/earth.webp" alt="" width="68" height="102" decoding="async" />
+                <img class="srp-card-thumb" id="srp-card-thumb" src="img/engine/earth.webp" alt="" width="68" height="92" decoding="async" />
                 <div>
                   <p class="sign-reading-panel__sign-name" id="srp-sign-name">Daily reading</p>
                   <p class="sign-reading-panel__date" id="srp-date"></p>
-                  <span class="srp-element-text" id="srp-element-text"></span>
-                  <a href="aries.html" class="srp-guide-link" id="srp-guide-link">Full sign guide →</a>
+                  <p class="srp-element-text" id="srp-element-text"></p>
+                  <a href="aries.html" class="srp-guide-link" id="srp-guide-link">Full sign guide &rarr;</a>
                 </div>
               </div>
               <div class="srp-moon-wrap">
-                <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
-                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:#d8b46a;border:1px solid rgba(216, 180, 106,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
-                <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="1" title="Waxing Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon1"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="2" title="First Quarter"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon2"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="3" title="Waxing Gibbous"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon3"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="4" title="Full Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="5" title="Waning Gibbous"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon5"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="6" title="Last Quarter"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon6"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="7" title="Waning Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon7"/></svg></span>
-                </div>
+                <canvas id="srp-moon-canvas" width="80" height="80" aria-hidden="true"></canvas>
+                <span class="srp-moon-label" id="srp-moon-label"></span>
+                <span class="srp-ruler-line" id="srp-ruler-line"></span>
               </div>
               <div class="sign-reading-panel__actions">
-                <button class="btn btn--primary btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">↓ Download Card</button>
-                <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
-                <button class="btn btn--ghost btn--sm" id="srp-close-btn" aria-label="Close reading">✕</button>
+                <button type="button" class="btn btn--primary btn--sm" id="srp-card-btn">Download card</button>
+                <button type="button" class="btn btn--outline btn--sm" id="srp-share-btn">Share reading</button>
+                <button type="button" class="btn btn--ghost btn--sm" id="srp-close-btn">Close</button>
               </div>
-              <a href="chart.html" class="srp-personalise-chip" id="srp-personalise-chip" hidden>Personalise with your birth chart →</a>
-              <div class="srp-chart-cta" id="srp-chart-cta" hidden>
-                <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. In the astrological tradition, your personal birth chart is read as showing how this theme might apply <em>to you specifically</em>.</p>
-                <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Personal Birth Chart →</a>
-              </div>
-            </div>
-            <p class="ap-entertainment-note">Astrological meaning is tradition, offered for reflection and entertainment — not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.</p>
+            </header>
+
+            <p class="ap-entertainment-note">Astrological meaning is tradition, offered for reflection and entertainment — not advice, prediction, or scientific fact. The astronomical positions underneath are computed and checkable.</p>
             <p class="sign-reading-panel__overview" id="srp-overview"></p>
-            <p class="srp-sky-facts" id="srp-sky-facts" style="font-size:0.72rem;color:var(--color-silver-dim);line-height:1.55;margin:0 0 var(--space-3);"></p>
-            <div class="srp-transit-chords" id="srp-transit-chords" hidden>
-              <span class="srp-transit-chords__label">Transits to your chart today</span>
-              <div class="srp-transit-chords__list" id="srp-transit-chords-list" role="list"></div>
-            </div>
+            <p class="srp-sky-facts" id="srp-sky-facts"></p>
             <div class="sign-reading-panel__grid">
-              <div class="reading-card">
-                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
-                <span class="reading-card__label">Love &amp; Relationships</span>
-                <p class="reading-card__text" id="srp-love"></p>
-              </div>
-              <div class="reading-card">
-                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span>
-                <span class="reading-card__label">Career &amp; Purpose</span>
-                <p class="reading-card__text" id="srp-career"></p>
-              </div>
-              <div class="reading-card">
-                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
-                <span class="reading-card__label">Wellbeing &amp; Pace</span>
-                <p class="reading-card__text" id="srp-health"></p>
-              </div>
+              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span><span class="reading-card__label">Love &amp; relationships</span><p class="reading-card__text" id="srp-love"></p></section>
+              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span><span class="reading-card__label">Work &amp; purpose</span><p class="reading-card__text" id="srp-career"></p></section>
+              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span><span class="reading-card__label">Wellbeing &amp; pace</span><p class="reading-card__text" id="srp-health"></p></section>
             </div>
-            <p style="margin-top:var(--space-4);">
-              <span class="ap-badge ap-badge--deterministic">Positions calculated for today at 12:00 UT · interpreted through a solar chart</span>
-            </p>
-            <p id="srp-method-note" style="margin-top:var(--space-2);font-size:0.62rem;color:var(--color-silver-dim);line-height:1.6;"></p>
+            <footer class="sign-reading-panel__method">
+              <span>Positions calculated for today at 12:00 UT · interpreted through a solar chart</span>
+              <p id="srp-method-note"></p>
+            </footer>
           </div>
-        </div>
+        </article>
       </div>
     </section>
 
-    <!-- ECLIPSE BAND — the event CTA, hoisted to the first scroll -->
-    <section class="container" aria-label="The 12 August eclipse" style="margin-top:var(--space-8);">
-      <div style="border:1px solid rgba(230,161,92,.32);border-radius:16px;padding:var(--space-6,1.5rem) var(--space-5,1.25rem);background:rgba(230,161,92,.05);text-align:center;">
-        <p style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver-dim,#8891AA);margin:0 0 0.5rem;">12 August 2026 &middot; partial across the UK &middot; totality in Greenland, Iceland, northern Russia, Spain and a small part of Portugal</p>
-        <h2 class="section__title" style="margin:0 0 0.6rem;">Where does the eclipse land in <em>your</em> chart?</h2>
-        <p style="max-width:52ch;margin:0 auto var(--space-4,1rem);color:var(--silver,#C8D0E8);line-height:1.6;">Free teaser &mdash; the calculation runs in your browser; place search uses Open-Meteo. The Eclipse Night Reading (&#163;2.99, checkout opening soon) maps the night against your birth minute in five concise beats.</p>
-        <a href="eclipse.html" class="btn btn--primary">See your eclipse contact &mdash; free</a>
+    <section class="container daily-eclipse" aria-labelledby="daily-eclipse-title">
+      <div class="daily-eclipse__inner">
+        <p class="daily-eclipse__eyebrow">12 August 2026 · partial across the UK</p>
+        <h2 id="daily-eclipse-title">See the eclipse against your actual chart.</h2>
+        <p>Totality crosses Greenland, Iceland, northern Russia, Spain and a small part of Portugal. Carry a saved chart into the dedicated live eclipse model and contact reading.</p>
+        <a href="eclipse.html" class="btn btn--primary">Open the eclipse model</a>
       </div>
     </section>
 
-    <!-- One collapsed evidence ledger: the calculation beneath the interpretation. -->
     <details class="ap-more-sky" id="ap-daily-weather">
-      <summary class="ap-more-sky__summary">Today&rsquo;s computed sky &middot; evidence ledger</summary>
+      <summary class="ap-more-sky__summary">Today’s computed sky · evidence ledger</summary>
       <div class="ap-more-sky__body">
-        <section class="section" id="daily-weather-section" aria-labelledby="sky-heading">
-          <div class="container">
-            <h2 class="section__title" id="sky-heading">The numbers beneath the reading</h2>
-            <p class="ap-computed-sky__intro">Positions are calculated for today at 12:00 UT. The degrees are astronomical output; the sign reading above is an astrological interpretation offered for reflection and entertainment.</p>
-            <dl class="ap-computed-sky__ledger" id="computed-sky-ledger" aria-live="polite">
-              <div class="ap-computed-sky__row"><dt>☉ Sun</dt><dd id="ap-sky-sun">Open to calculate</dd></div>
-              <div class="ap-computed-sky__row"><dt>☽ Moon</dt><dd id="ap-sky-moon">Open to calculate</dd></div>
-              <div class="ap-computed-sky__row"><dt>☿ Mercury</dt><dd id="ap-sky-mercury">Open to calculate</dd></div>
-              <div class="ap-computed-sky__row"><dt>♀ Venus</dt><dd id="ap-sky-venus">Open to calculate</dd></div>
-              <div class="ap-computed-sky__row"><dt>♂ Mars</dt><dd id="ap-sky-mars">Open to calculate</dd></div>
-              <div class="ap-computed-sky__row"><dt>♃ Jupiter</dt><dd id="ap-sky-jupiter">Open to calculate</dd></div>
-              <div class="ap-computed-sky__row"><dt>♄ Saturn</dt><dd id="ap-sky-saturn">Open to calculate</dd></div>
-            </dl>
-            <a class="ap-computed-sky__action" href="index.html#m=now">Open these bodies in the live Observatory &rarr;</a>
-          </div>
+        <section class="daily-evidence" aria-labelledby="sky-heading">
+          <h2 id="sky-heading">The numbers beneath the reading</h2>
+          <p class="daily-evidence__intro">Degrees below are astronomical output for 12:00 UT. The sign reading above is an astrological interpretation offered for reflection and entertainment.</p>
+          <dl class="daily-evidence__ledger" id="computed-sky-ledger" aria-live="polite">
+            <div><dt>Sun</dt><dd id="ap-sky-sun">Open to calculate</dd></div>
+            <div><dt>Moon</dt><dd id="ap-sky-moon">Open to calculate</dd></div>
+            <div><dt>Mercury</dt><dd id="ap-sky-mercury">Open to calculate</dd></div>
+            <div><dt>Venus</dt><dd id="ap-sky-venus">Open to calculate</dd></div>
+            <div><dt>Mars</dt><dd id="ap-sky-mars">Open to calculate</dd></div>
+            <div><dt>Jupiter</dt><dd id="ap-sky-jupiter">Open to calculate</dd></div>
+            <div><dt>Saturn</dt><dd id="ap-sky-saturn">Open to calculate</dd></div>
+          </dl>
+          <a class="daily-evidence__action" href="index.html#m=now">Open these bodies in the live Observatory &rarr;</a>
         </section>
-
       </div>
     </details>
-
   </main>
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
 
-  <!-- Toast container -->
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <script src="js/raf-core.js" defer></script>
-  <script src="js/content-service.js" defer></script>
   <script src="js/ap-zodiac-constants.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
-  <script src="js/ap-deep-link.js?v=835" defer></script>
-  <script src="js/horoscope-page.js?v=835" defer></script>
-
-  <script src="js/element-seals.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
-  <script src="js/icons.js" defer></script>
-  <script src="js/ap-nav-model-v834.js?v=835"></script>
+  <script src="js/ap-nav-model-v834.js?v=835" defer></script>
   <script src="js/ap-footer-inject.js?v=835" defer></script>
   <script src="js/app.js" defer></script>
-  <script src="js/ap-page-bridge.js" defer></script>
-  <script src="js/profile.js" defer></script>
-  <script src="js/ap-daily-ritual.js" defer></script>
-  <script src="js/ap-personal-memory.js" defer></script>
-  <script src="js/ap-daily-bridge.js" defer></script>
-  <script src="js/ap-sky-time.js" defer></script>
+  <script src="js/horoscope-page.js?v=835" defer></script>
+  <script src="js/ap-daily-ritual.js?v=835" defer></script>
 </body>
 </html>

@@ -22,7 +22,7 @@
 
 (function () {
   var NAV_PRIMARY = [
-    ['index.html', 'Live Sky'],
+    ['index.html', 'Observatory'],
     ['chart.html', 'Birth Chart'],
     ['horoscope.html', 'Daily'],
     ['eclipse.html', 'Eclipse', { badge: '12 Aug' }],

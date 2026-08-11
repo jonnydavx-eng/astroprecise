@@ -7,10 +7,8 @@
  *   Dayparts (local hour):  NIGHT 22–5 · DAWN 5–8 · DAY 8–17 · DUSK 17–22
  *
  *   - Sets document.documentElement.dataset.skytime to the daypart.
- *   - Paints a fixed, pointer-events:none wash over the viewport (z-index 0,
- *     above page backgrounds, below chrome) tinted per daypart.
- *   - Gently shifts --ap-enchant-nebula / --ap-enchant-aurora alphas where the
- *     page's design system already consumes them (no-op where it does not).
+ *   - Sets the shared sky-period token consumed by the authored shell. There is
+ *     no injected viewport overlay: every route keeps the same launch palette.
  *   - Homepage hero only: a tiny "YOUR LOCAL SKY · <DAYPART>" chip under the
  *     sky-panel caption, when that caption exists. Skipped anywhere else.
  *
@@ -23,10 +21,10 @@
   window.__apSkyTimeBooted = true;
 
   var PARTS = {
-    night: { label: 'NIGHT', wash: 'rgba(30,32,64,.14)',  nebula: 'rgba(100,90,180,.12)', aurora: 'rgba(255,90,31,.04)' },
-    dawn:  { label: 'DAWN',  wash: 'rgba(255,170,80,.07)', nebula: 'rgba(216,180,106,.10)', aurora: 'rgba(255,140,60,.06)' },
-    day:   { label: 'DAY',   wash: 'rgba(90,140,220,.06)', nebula: 'rgba(140,170,220,.06)', aurora: 'rgba(255,90,31,.04)' },
-    dusk:  { label: 'DUSK',  wash: 'rgba(255,90,31,.09)',  nebula: 'rgba(255,120,60,.09)',  aurora: 'rgba(255,90,31,.07)' }
+    night: { label: 'NIGHT', nebula: 'rgba(185,200,220,.035)', aurora: 'rgba(216,180,106,.035)' },
+    dawn:  { label: 'DAWN',  nebula: 'rgba(216,180,106,.055)', aurora: 'rgba(255,100,40,.055)' },
+    day:   { label: 'DAY',   nebula: 'rgba(185,200,220,.035)', aurora: 'rgba(216,180,106,.035)' },
+    dusk:  { label: 'DUSK',  nebula: 'rgba(216,180,106,.05)', aurora: 'rgba(255,100,40,.05)' }
   };
 
   function daypart(h) {
@@ -36,20 +34,9 @@
     return 'dusk';
   }
 
-  function paintWash(cfg) {
-    if (!document.body) return;
+  function removeLegacyWash() {
     var ov = document.getElementById('ap-skytime-wash');
-    if (!ov) {
-      ov = document.createElement('div');
-      ov.id = 'ap-skytime-wash';
-      ov.setAttribute('aria-hidden', 'true');
-      ov.style.cssText =
-        'position:fixed;top:0;left:0;right:0;bottom:0;' +
-        'pointer-events:none;z-index:0;' +
-        'background:var(--ap-skytime-wash, rgba(0,0,0,0));' +
-        'transition:background 1.2s ease;';
-      document.body.appendChild(ov);
-    }
+    if (ov) ov.remove();
   }
 
   function paintChip(cfg) {
@@ -74,10 +61,10 @@
       var cfg = PARTS[part];
       var root = document.documentElement;
       root.dataset.skytime = part;
-      root.style.setProperty('--ap-skytime-wash', cfg.wash);
+      if (document.body) document.body.dataset.skyPeriod = part;
       root.style.setProperty('--ap-enchant-nebula', cfg.nebula);
       root.style.setProperty('--ap-enchant-aurora', cfg.aurora);
-      paintWash(cfg);
+      removeLegacyWash();
       paintChip(cfg);
     } catch (e) { /* cosmetic layer — never break the page */ }
   }

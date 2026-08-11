@@ -1,11 +1,11 @@
 /**
- * Hover/touch prefetch for high-traffic nav destinations (chart, horoscope, shop).
+ * Hover/touch prefetch for the five authored launch destinations.
  * Same-origin only; skipped when Save-Data is enabled.
  */
 (function () {
   'use strict';
 
-  var TARGETS = /^(?:\.\/)?(?:chart|horoscope|shop)\.html(?:[?#].*)?$/i;
+  var TARGETS = /^(?:\.\/)?(?:index|chart|horoscope|eclipse|shop)\.html(?:[?#].*)?$/i;
   var prefetched = Object.create(null);
 
   function saveDataEnabled() {
@@ -35,6 +35,7 @@
     try {
       var url = new URL(href, location.href);
       key = url.pathname + url.search;
+      if (url.pathname === location.pathname && url.search === location.search) return;
     } catch (e) {
       return;
     }

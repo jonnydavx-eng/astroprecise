@@ -30,7 +30,7 @@
   <meta name="twitter:title" content="Free birth chart, computed on-device" />
   <meta name="twitter:description" content="Calculate your natal chart in the browser. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#08080b" />
+  <meta name="theme-color" content="#020307" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -71,7 +71,7 @@
   <link rel="stylesheet" href="css/ap-chart-v835.css?v=835" />
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
-  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
     <symbol id="ei-pin" viewBox="0 0 24 24"><path d="M12 21c-4-5.3-6-8.4-6-11a6 6 0 1 1 12 0c0 2.6-2 5.7-6 11Z"/><circle cx="12" cy="10" r="2.2"/></symbol>
@@ -122,8 +122,6 @@
     ============================================================ -->
     <section class="chart-hero chart-hero--compact" aria-labelledby="page-title">
       <div class="chart-hero__cosmic-art" aria-hidden="true"></div>
-      <div class="chart-hero__orb-a" aria-hidden="true"></div>
-      <div class="chart-hero__orb-b" aria-hidden="true"></div>
       <div class="container">
         <p class="chart-hero__eyebrow" aria-hidden="true">FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
         <h1 class="chart-hero__title" id="page-title">Your birth sky, calculated</h1>
@@ -254,7 +252,7 @@
             />
             <input type="hidden" id="time-accuracy-input" value="unknown" />
             <p class="form-hint" id="time-hint">Exact time unlocks Rising, MC and houses. Leave blank if unknown — planetary signs remain precise.
-              <button type="button" id="time-unknown-btn" class="form-inline-action" aria-pressed="true">Keep time unknown</button>
+              <button type="button" id="time-unknown-btn" class="form-inline-action">Choose an approximate time</button>
             </p>
             <p class="form-hint ap-time-status" id="time-accuracy-status" role="status" aria-live="polite">Time unknown · Rising, MC and houses will be withheld.</p>
           </div>
@@ -319,28 +317,28 @@
                       <span class="form-label__optional"> — tap to approximate if exact time is unknown</span>
                     </p>
                     <div class="time-selector" role="group" aria-label="Time of day selector">
-                      <button type="button" class="time-btn" data-time="04:30" aria-label="Dawn, around 4:30 AM">
+                      <button type="button" class="time-btn" data-time="04:30" aria-label="Dawn, around 4:30 AM" aria-pressed="false">
                         <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunrise"/></svg></span>Dawn
                       </button>
-                      <button type="button" class="time-btn" data-time="09:00" aria-label="Morning, around 9:00 AM">
+                      <button type="button" class="time-btn" data-time="09:00" aria-label="Morning, around 9:00 AM" aria-pressed="false">
                         <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunrise"/></svg></span>Morning
                       </button>
-                      <button type="button" class="time-btn" data-time="12:00" aria-label="Noon, 12:00 PM">
+                      <button type="button" class="time-btn" data-time="12:00" aria-label="Noon, 12:00 PM" aria-pressed="false">
                         <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunhigh"/></svg></span>Noon
                       </button>
-                      <button type="button" class="time-btn" data-time="15:30" aria-label="Afternoon, around 3:30 PM">
+                      <button type="button" class="time-btn" data-time="15:30" aria-label="Afternoon, around 3:30 PM" aria-pressed="false">
                         <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunhigh"/></svg></span>Afternoon
                       </button>
-                      <button type="button" class="time-btn" data-time="20:00" aria-label="Evening, around 8:00 PM">
+                      <button type="button" class="time-btn" data-time="20:00" aria-label="Evening, around 8:00 PM" aria-pressed="false">
                         <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunset"/></svg></span>Evening
                       </button>
-                      <button type="button" class="time-btn" data-time="23:30" aria-label="Night, around 11:30 PM">
+                      <button type="button" class="time-btn" data-time="23:30" aria-label="Night, around 11:30 PM" aria-pressed="false">
                         <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span>Night
                       </button>
                     </div>
                   </div>
                   <div class="form-section-label">
-                    <div class="form-section-label__num" aria-hidden="true">☏</div>
+                    <div class="form-section-label__num" aria-hidden="true">2</div>
                     <span class="form-section-label__text">House System</span>
                   </div>
 
@@ -349,11 +347,11 @@
                       <div class="house-card__name">Equal</div>
                       <div class="house-card__desc">Each house spans exactly 30° from your Ascendant. Robust even when your birth time is approximate — the default here.</div>
                     </div>
-                    <div class="house-card" data-value="placidus" tabindex="0" role="radio" aria-checked="false">
+                    <div class="house-card" data-value="placidus" tabindex="-1" role="radio" aria-checked="false">
                       <div class="house-card__name">Placidus</div>
                       <div class="house-card__desc">Time-based divisions. The most popular system in Western astrology today.</div>
                     </div>
-                    <div class="house-card" data-value="whole" tabindex="0" role="radio" aria-checked="false">
+                    <div class="house-card" data-value="whole" tabindex="-1" role="radio" aria-checked="false">
                       <div class="house-card__name">Whole Sign</div>
                       <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
                     </div>
@@ -361,7 +359,7 @@
                   <input type="hidden" id="house-system" value="equal" />
 
                   <div class="form-section-label form-section-label--spaced">
-                    <div class="form-section-label__num" aria-hidden="true">☊</div>
+                    <div class="form-section-label__num" aria-hidden="true">3</div>
                     <span class="form-section-label__text">Lunar Node Model</span>
                   </div>
 
@@ -424,7 +422,7 @@
         <div class="result-header-card animate-in">
           <div class="result-header-inner">
             <div class="result-header-meta">
-              <h2 id="result-name" aria-hidden="true"></h2>
+              <h2 id="result-name"></h2>
               <p id="result-date"></p>
               <span class="result-badge"><span class="eng-star-mark"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
               <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
@@ -649,8 +647,6 @@
   <script src="js/ap-page-bridge.js" defer></script>
   <script src="js/ap-canvas-seals.js" defer></script>
   <script src="js/ap-deep-link.js?v=835" defer></script>
-  <script src="js/ap-sky-bridge.js?v=835" defer></script>
   <script src="js/chart-page.js?v=835" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>
