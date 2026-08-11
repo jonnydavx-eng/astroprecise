@@ -92,10 +92,8 @@
   const tzInput   = document.getElementById('tz-input');
   let activeIdx   = -1;
 
-  const esc = (window.AP_SAFE && window.AP_SAFE.esc)
-    ? s => window.AP_SAFE.esc(s)
-    : s => String(s == null ? '' : s).replace(/[&<>"']/g,
-      ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+    ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
 
   const regionOf = c => c.admin ? `${c.admin}, ${c.country}` : c.country;
 
@@ -255,15 +253,31 @@
     return 1;
   }
 
+  function dominantPlacementValue(positions, lookup) {
+    const counts = Object.create(null);
+    ['Sun','Mercury','Venus','Mars','Jupiter','Saturn'].forEach(function (key) {
+      const position = positions[key];
+      const bucket = position && lookup[position.sign];
+      if (bucket) counts[bucket] = (counts[bucket] || 0) + 1;
+    });
+    return Object.keys(counts).sort(function (a, b) {
+      return counts[b] - counts[a] || a.localeCompare(b);
+    })[0] || null;
+  }
+
+  function hasKnownBirthTime(chart) {
+    return Boolean(chart && chart.timeKnown === true && chart.birthTime);
+  }
+
   function adaptChart(raw, meta) {
     const timeKnown = meta.timeKnown === true;
     const positions = {};
     const planetHouses = {};
     for (const [k, cap] of Object.entries(KEY_MAP)) {
-      // A neutral noon is used internally when time is unknown so the
-      // planetary engine can still run. Never expose its time-dependent
-      // angles as if they were a real birth-time result.
-      if (!timeKnown && (cap === 'Ascendant' || cap === 'Midheaven')) continue;
+      // A neutral noon is used internally when time is unknown so the engine
+      // can still calculate date-based placements. Never expose its Moon or
+      // angles as if noon were the visitor's birth time.
+      if (!timeKnown && ['Moon', 'Ascendant', 'Midheaven'].includes(cap)) continue;
       const p = raw.positions[k];
       if (!p) continue;
       positions[cap] = { lon: p.longitude, sign: p.sign, degree: p.degree, retrograde: p.retrograde };
@@ -279,15 +293,22 @@
       return d ? d.name : s.charAt(0).toUpperCase() + s.slice(1);
     };
     const MAJOR = ['conjunction', 'opposition', 'trine', 'square', 'sextile'];
-    const angleKeys = ['asc', 'mc'];
+    const timeSensitiveKeys = ['moon', 'asc', 'mc'];
     const usableAspect = a => KEY_MAP[a.planet1] && KEY_MAP[a.planet2]
-      && (timeKnown || (!angleKeys.includes(a.planet1) && !angleKeys.includes(a.planet2)));
+      && (timeKnown || (!timeSensitiveKeys.includes(a.planet1) && !timeSensitiveKeys.includes(a.planet2)));
     const renderAspects = raw.aspects
       .filter(a => usableAspect(a) && MAJOR.includes(a.aspect))
       .map(a => ({ planet1: KEY_MAP[a.planet1], planet2: KEY_MAP[a.planet2], aspect: capAspect(a.aspect), orb: a.orb, applying: a.applying }));
     const interpAspects = raw.aspects
       .filter(usableAspect)
       .map(a => ({ planet1: KEY_MAP[a.planet1], planet2: KEY_MAP[a.planet2], aspect: a.aspect, orb: a.orb, applying: a.applying }));
+
+    const dominantElement = timeKnown
+      ? raw.dominantElement
+      : dominantPlacementValue(positions, ELEMENT_MAP);
+    const dominantModality = timeKnown
+      ? raw.dominantModality
+      : dominantPlacementValue(positions, MODALITY_MAP);
 
     return {
       ...meta,
@@ -304,9 +325,9 @@
       timezoneKnown: meta.timezoneKnown === true,
       houseSystem: meta.houseSystem || raw.houseSystem || 'equal',
       angleStatus: timeKnown ? 'computed' : 'withheld_time_unknown',
-      dominant: { element: raw.dominantElement, modality: raw.dominantModality },
-      dominantElement: raw.dominantElement,
-      dominantModality: raw.dominantModality,
+      dominant: { element: dominantElement, modality: dominantModality },
+      dominantElement,
+      dominantModality,
       jd: raw.jd,
     };
   }
@@ -789,7 +810,7 @@
     if (!wrapEl) return;
     // Defense-in-depth: never render a chart whose core points failed to
     // compute (would otherwise throw on chart.positions.Sun.sign below).
-    if (!chart || !chart.positions || !chart.positions.Sun || !chart.positions.Moon) {
+    if (!chart || !chart.positions || !chart.positions.Sun) {
       if (window.AstroApp) AstroApp.showToast('Calculation failed',
         'Could not compute this chart — please check the birth details.', 'error');
       return;
@@ -809,14 +830,14 @@
     if (precisionLabel) {
       const level = chart.timeAccuracy || (chart.birthTime ? 'exact' : 'unknown');
       const labels = {
-        exact: 'Exact time · Rising, MC and houses included',
-        approximate: 'Approximate time · Rising, MC and houses are provisional',
-        unknown: 'Time unknown · Rising, MC and houses withheld',
+        exact: 'Exact time · Moon, Rising, MC and houses included',
+        approximate: 'Approximate time · Moon and angles are provisional',
+        unknown: 'Time unknown · Moon, Rising, MC and houses withheld',
       };
       precisionLabel.dataset.level = level;
       const houseName = HOUSE_SYSTEM_NAMES[chart.houseSystem] || chart.houseSystem || 'Equal';
       precisionLabel.textContent = (labels[level] || labels.unknown) +
-        (chart.houses ? ` · ${houseName} houses` : ` · ${houseName} selected; angles withheld until time is known`);
+        (chart.houses ? ` · ${houseName} houses` : ` · date-based placements only`);
     }
     const eclipseHref = eclipseHandoffHref(chart);
     ['eclipse-handoff', 'eclipse-cta'].forEach(function (id) {
@@ -875,19 +896,22 @@
   function renderBigThree(chart) {
     const el = document.getElementById('big-three');
     if (!el) return;
+    const moon = chart.positions.Moon;
     const items = [
       { key: 'Sun', label: 'Sun', sub: 'Core Identity', sign: chart.positions.Sun.sign, deg: fmtDeg(chart.positions.Sun), seal: 'planet:sun' },
-      { key: 'Moon', label: 'Moon', sub: 'Inner World', sign: chart.positions.Moon.sign, deg: fmtDeg(chart.positions.Moon), seal: 'planet:moon' },
+      moon
+        ? { key: 'Moon', label: 'Moon', sub: 'Inner World', sign: moon.sign, deg: fmtDeg(moon), seal: 'planet:moon' }
+        : { key: 'Moon', label: 'Moon', sub: 'Inner World', withheld: true, reason: 'Add an exact or approximate birth time to place the Moon reliably.' },
       chart.risingSign
         ? { key: 'Rising', label: 'Rising', sub: 'Outward Self', sign: chart.risingSign, deg: (typeof chart.asc === 'number') ? fmtDeg({ degree: chart.asc % 30 }) : '', seal: 'zodiac:' + String(chart.risingSign).toLowerCase() }
-        : { key: 'Rising', label: 'Rising withheld', sub: 'Exact time needed', sign: '—', deg: '', seal: '' },
+        : { key: 'Rising', label: 'Rising', sub: 'Outward Self', withheld: true, reason: 'Add an exact or approximate birth time to calculate angles.' },
     ];
     el.innerHTML = items.map(it => {
-      if (it.key === 'Rising' && !chart.risingSign) {
-        return `<article class="big-three-card big-three-card--withheld" aria-label="Rising sign withheld because birth time is unknown">
-          <p class="big-three-card__planet">Rising · Outward Self</p>
+      if (it.withheld) {
+        return `<article class="big-three-card big-three-card--withheld" aria-label="${esc(it.label)} placement withheld because birth time is unknown">
+          <p class="big-three-card__planet">${esc(it.label)} · ${esc(it.sub)}</p>
           <h3 class="big-three-card__sign">Withheld</h3>
-          <p class="big-three-card__desc">Add an exact or approximate birth time to calculate angles.</p>
+          <p class="big-three-card__desc">${esc(it.reason)}</p>
         </article>`;
       }
       const sealHtml = it.seal
@@ -917,7 +941,7 @@
     if (!el) return;
     const wrap = document.getElementById('natal-wheel-wrap');
     if (!chart.houses) {
-      el.innerHTML = '<div class="ap-withheld-card" role="status"><div><strong>Natal wheel angles withheld</strong><span>Birth time is unknown, so the wheel cannot claim an Ascendant, MC or house cusps. Planetary signs remain available below.</span></div></div>';
+      el.innerHTML = '<div class="ap-withheld-card" role="status"><div><strong>Natal wheel withheld</strong><span>Birth time is unknown, so the wheel cannot claim the Moon, Ascendant, MC or house cusps. Date-based placements remain available below.</span></div></div>';
       el.classList.remove('natal-wheel--loading', 'natal-wheel--loaded');
       if (wrap) {
         wrap.classList.add('natal-wheel-container--withheld');
@@ -1021,10 +1045,10 @@
 
       if (fmt) {
         const chips = [
-          cap(chart.dominantElement) + ' · dominant element',
-          cap(chart.dominantModality) + ' · modality',
-          'Ruler ' + cap(chart.chartRuler || '—'),
-        ];
+          chart.dominantElement ? cap(chart.dominantElement) + ' · dominant element' : '',
+          chart.dominantModality ? cap(chart.dominantModality) + ' · modality' : '',
+          chart.chartRuler ? 'Ruler ' + cap(chart.chartRuler) : '',
+        ].filter(Boolean);
         if (a) {
           ['personality', 'love', 'career', 'challenges', 'lifePurpose'].forEach(function (k) {
             if (a[k]) readText += a[k] + ' ';
@@ -1041,14 +1065,14 @@
         ? `Your chart is weighted toward the ${chart.dominantElement} element and ${chart.dominantModality} modality. ` +
           `Chart ruler ${cap(chart.chartRuler || '—')} steers your ${chart.risingSign} Ascendant — the lens others meet first.`
         : `Your chart is weighted toward the ${chart.dominantElement} element and ${chart.dominantModality} modality. ` +
-          `Birth time is unknown, so time-dependent angles and houses are withheld; the planetary signs above remain calculated from your date and place.`;
+          `Birth time is unknown, so the Moon, angles and houses are withheld; the remaining placements are calculated from your date and place.`;
       blocks.push(analysisSection('Chart emphasis', dominantText, { featured: true, eyebrow: 'Start here' }));
       tocItems.push({ title: 'Chart emphasis' });
       if (!chart.risingSign) {
-        blocks.push(analysisSection('Time-dependent angles withheld',
-          'Birth time is unknown. Your rising sign, career point, houses and angle interpretations are intentionally omitted; add a time and recast when you want that layer.',
+        blocks.push(analysisSection('Time-dependent points withheld',
+          'Birth time is unknown. Your Moon, rising sign, career point, houses and their interpretations are intentionally omitted; add a time and recast when you want that layer.',
           { eyebrow: 'Honest precision' }));
-        tocItems.push({ title: 'Time-dependent angles withheld' });
+        tocItems.push({ title: 'Time-dependent points withheld' });
       }
 
       if (a) {
@@ -1135,7 +1159,7 @@
       const order = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','Lilith','NorthNode','SouthNode'];
       const DISPLAY_NAME = { NorthNode:'North Node', SouthNode:'South Node', Lilith:'Lilith' };
       const renderedPlanets = order.filter(k => chart.positions[k]);
-      pt.innerHTML = renderedPlanets.map(k => {
+      const planetMarkup = renderedPlanets.map(k => {
         const p = chart.positions[k];
         const h = chart.planetHouses[k];
         const label = DISPLAY_NAME[k] || k;
@@ -1151,13 +1175,18 @@
         const dignityMeta = dignity && dignity.status !== 'peregrine'
           ? ' · ' + dignity.label
           : '';
-        return fmt.placement({
+        const placement = fmt.placement({
           title: label + ' in ' + signName,
           meta: meta + dignityMeta,
           text: fullText.trim(),
           icon: planetIcon(k),
         });
-      }).join('');
+        if (k === 'Sun' && !chart.positions.Moon) {
+          return placement + '<div class="ap-withheld-card" role="note"><div><strong>Moon withheld</strong><span>A birth time is needed to place the Moon reliably; the neutral calculation time is not shown as a natal claim.</span></div></div>';
+        }
+        return placement;
+      });
+      pt.innerHTML = planetMarkup.join('');
       if (chart.nodeMode) {
         const modeLabel = chart.nodeMode === 'true' ? 'True (osculating) node' : 'Mean node';
         pt.innerHTML += '<p class="ap-reading-card__meta ap-reading-card__meta--centered">' +
@@ -1187,7 +1216,7 @@
     // Houses
     const ht = document.getElementById('houses-table');
     if (ht && fmt && !chart.houses) {
-      ht.innerHTML = '<div class="ap-withheld-card" role="status"><div><strong>Houses withheld</strong><span>An exact birth time is needed for Ascendant-based houses and angle interpretations. Your planetary signs are still shown in the Planets tab.</span></div></div>';
+      ht.innerHTML = '<div class="ap-withheld-card" role="status"><div><strong>Houses withheld</strong><span>A birth time is needed for Ascendant-based houses and angle interpretations. Date-based placements remain in the Planets tab; the Moon is withheld too.</span></div></div>';
     } else if (ht && fmt) {
       const planetsByHouse = {};
       Object.keys(chart.positions || {}).forEach(function (k) {
@@ -1198,13 +1227,10 @@
       });
       const houseSigns = [];
       const curSys = chart.houseSystem || 'equal';
-      const approxNote = chart.birthTime
-        ? ''
-        : ' <span class="house-system-switch__approx">· approximate without a birth time</span>';
       const switcherHtml =
         '<div class="house-system-switch" role="group" aria-label="House system — the framework that divides your chart into twelve life areas">' +
           '<p class="house-system-switch__label"><span class="house-system-switch__name">' +
-            (HOUSE_SYSTEM_NAMES[curSys] || 'Equal') + ' houses</span> — switchable' + approxNote + '</p>' +
+            (HOUSE_SYSTEM_NAMES[curSys] || 'Equal') + ' houses</span> — switchable</p>' +
           '<div class="house-system-switch__opts">' +
             ['equal', 'placidus', 'whole'].map(function (s) {
               return '<button type="button" class="house-system-switch__btn' +
@@ -1367,84 +1393,62 @@
 
   // ── Action buttons ────────────────────────────────────────────────────────
 
+  function saveDataFor(chart) {
+    const moon = chart.positions.Moon;
+    return {
+      name: chart.name,
+      birthDate: chart.birthDate,
+      birthTime: chart.birthTime,
+      birthCity: chart.city,
+      city: chart.city,
+      lat: chart.lat,
+      lon: chart.lon,
+      tz: chart.tz,
+      houseSystem: chart.houseSystem || 'equal',
+      timeKnown: chart.timeKnown === true,
+      timeAccuracy: chart.timeAccuracy || 'unknown',
+      timezoneKnown: chart.timezoneKnown === true,
+      sunSign: chart.positions.Sun.sign,
+      moonSign: moon ? moon.sign : null,
+      risingSign: chart.risingSign,
+      positions: window.AstroProfile && AstroProfile.packPositionsForSave
+        ? AstroProfile.packPositionsForSave(chart.positions) : null,
+      aspects: (chart.aspects || []).slice(0, 16),
+      engineV: 2,
+    };
+  }
+
   document.getElementById('save-btn')?.addEventListener('click', () => {
-    if (!currentChart) return;
-    if (window.APChartShare) {
-      APChartShare.saveWithFeedback(currentChart, {
-        name: currentChart.name,
-        birthDate: currentChart.birthDate,
-        birthTime: currentChart.birthTime,
-        birthCity: currentChart.city,
-        city: currentChart.city,
-        lat: currentChart.lat,
-        lon: currentChart.lon,
-        tz: currentChart.tz,
-        houseSystem: currentChart.houseSystem || 'equal',
-        timeKnown: currentChart.timeKnown === true,
-        timeAccuracy: currentChart.timeAccuracy || 'unknown',
-        timezoneKnown: currentChart.timezoneKnown === true,
-        sunSign: currentChart.positions.Sun.sign,
-        moonSign: currentChart.positions.Moon.sign,
-        risingSign: currentChart.risingSign,
-        positions: window.AstroProfile && AstroProfile.packPositionsForSave
-          ? AstroProfile.packPositionsForSave(currentChart.positions) : null,
-        aspects: (currentChart.aspects || []).slice(0, 16),
-        engineV: 2,
-      });
-    } else if (window.AstroProfile) {
-      AstroProfile.saveChart({
-        name: currentChart.name,
-        birthDate: currentChart.birthDate,
-        birthTime: currentChart.birthTime,
-        birthCity: currentChart.city,
-        city: currentChart.city,
-        lat: currentChart.lat,
-        lon: currentChart.lon,
-        tz: currentChart.tz,
-        houseSystem: currentChart.houseSystem || 'equal',
-        timeKnown: currentChart.timeKnown === true,
-        timeAccuracy: currentChart.timeAccuracy || 'unknown',
-        timezoneKnown: currentChart.timezoneKnown === true,
-        sunSign: currentChart.positions.Sun.sign,
-        moonSign: currentChart.positions.Moon.sign,
-        risingSign: currentChart.risingSign,
-        positions: AstroProfile.packPositionsForSave
-          ? AstroProfile.packPositionsForSave(currentChart.positions) : null,
-        aspects: (currentChart.aspects || []).slice(0, 16),
-        engineV: 2,
-      });
-      if (window.AstroApp) {
-        AstroApp.showToast('Saved',
-          'Chart saved — view it in My Charts or your Profile.', 'success');
-      }
-      // Toasts are text-only, so also surface the dashboard with a real link —
-      // same chip id/classes ap-chart-share.js showSaveConfirmation() uses,
-      // so the existing .chart-save-confirmation styling applies.
-      const row = document.getElementById('result-actions-row');
-      if (row) {
-        let chip = document.getElementById('chart-save-confirmation');
-        if (!chip) {
-          chip = document.createElement('div');
-          chip.id = 'chart-save-confirmation';
-          chip.className = 'chart-save-confirmation';
-          chip.setAttribute('role', 'status');
-          chip.setAttribute('aria-live', 'polite');
-          row.parentNode.insertBefore(chip, row.nextSibling);
-        }
-        chip.hidden = false;
-        chip.innerHTML = '<span class="chart-save-confirmation__mark eng-star-mark" aria-hidden="true"></span>' +
-          '<span>Saved on this device — <a href="charts.html">open My Charts →</a></span>';
-      }
+    if (!currentChart || !window.AstroProfile) {
+      if (window.AstroApp) AstroApp.showToast('Save unavailable', 'This browser could not open local chart storage.', 'warning');
+      return;
     }
+    AstroProfile.saveChart(saveDataFor(currentChart));
+    if (window.AstroApp) AstroApp.showToast('Saved', 'Chart saved on this device.', 'success');
+
+    const row = document.getElementById('result-actions-row');
+    if (!row) return;
+    let chip = document.getElementById('chart-save-confirmation');
+    if (!chip) {
+      chip = document.createElement('div');
+      chip.id = 'chart-save-confirmation';
+      chip.className = 'chart-save-confirmation';
+      chip.setAttribute('role', 'status');
+      chip.setAttribute('aria-live', 'polite');
+      row.parentNode.insertBefore(chip, row.nextSibling);
+    }
+    chip.hidden = false;
+    chip.innerHTML = '<span class="chart-save-confirmation__mark eng-star-mark" aria-hidden="true"></span>' +
+      '<span>Saved on this device — <a href="charts.html">open My Charts →</a></span>';
   });
 
   // Share Chart → beautiful chart-view link (preferred) or image via Web Share API.
   document.getElementById('share-btn')?.addEventListener('click', async () => {
     if (!currentChart) return;
-    const shareUrl = window.APChartShare
-      ? APChartShare.buildShareUrl(currentChart, null, { interactive: false })
-      : location.href;
-    const text = window.APChartShare
+    const shareUrl = (window.APChartShare
+      ? APChartShare.buildShareUrl(currentChart, null, { interactive: !hasKnownBirthTime(currentChart) })
+      : null) || location.href;
+    const text = window.APChartShare && currentChart.positions.Moon
       ? APChartShare.bigThreeLine(currentChart)
       : sharePlacementLine(currentChart);
     // Prefer sharing the generated image (richer than a bare link) on capable devices.
@@ -1461,7 +1465,7 @@
     try {
       if (navigator.share) {
         await navigator.share({ title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
-      } else if (window.APChartShare) {
+      } else if (window.APChartShare && hasKnownBirthTime(currentChart)) {
         await APChartShare.copyShareLink(currentChart, null);
       } else {
         await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
@@ -1679,7 +1683,7 @@
       return;
     }
     const grad = x.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
-    grad.addColorStop(0, 'rgba(255,255,255,0.18)');
+    grad.addColorStop(0, 'rgba(242,236,223,0.18)');
     var alphaFn = (window.APCanvasSeals && APCanvasSeals.withAlpha) ? APCanvasSeals.withAlpha.bind(APCanvasSeals) : null;
     grad.addColorStop(0.4, alphaFn ? alphaFn(elemCol, 'cc') : elemCol);
     grad.addColorStop(1, alphaFn ? alphaFn(elemCol, '33') : elemCol);
@@ -1688,7 +1692,7 @@
     x.strokeStyle = 'rgba(216,180,106,0.55)';
     x.lineWidth = Math.max(1, r * 0.06);
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(255,255,255,0.28)';
+    x.strokeStyle = 'rgba(242,236,223,0.28)';
     x.lineWidth = Math.max(1, r * 0.05);
     x.beginPath(); x.arc(cx, cy, r * 0.78, Math.PI * 1.15, Math.PI * 1.85); x.stroke();
     x.fillStyle = PAL.parchment;
@@ -2024,15 +2028,16 @@
     y += 52 * S;
     x.fillStyle = PAL.goldPale;
     x.font = `500 ${22 * S}px ${FONT_SANS}`;
+    const moon = chart.positions.Moon;
     x.fillText(
-      `☉ ${chart.positions.Sun.sign}   ·   ☽ ${chart.positions.Moon.sign}   ·   ${chart.risingSign ? '↑ ' + chart.risingSign : 'Rising withheld'}`,
+      `☉ ${chart.positions.Sun.sign}   ·   ${moon ? '☽ ' + moon.sign : 'Moon withheld'}   ·   ${chart.risingSign ? '↑ ' + chart.risingSign : 'Rising withheld'}`,
       W / 2, y);
 
     // Engraved placement row
     y += 56 * S;
     const trio = [
       { sign: chart.positions.Sun.sign,  label: 'SUN' },
-      { sign: chart.positions.Moon.sign, label: 'MOON' },
+      { sign: moon ? moon.sign : null, label: 'MOON' },
       { sign: chart.risingSign,          label: 'RISING' },
     ];
     const orbR = 44 * S;
@@ -2060,7 +2065,11 @@
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${16 * S}px ${FONT_SANS}`;
     x.textAlign = 'center';
-    x.fillText('astroprecise  ·  computed natal plate', W / 2, H - safeBot + 72 * S);
+    x.fillText(
+      hasKnownBirthTime(chart)
+        ? 'astroprecise  ·  computed natal plate'
+        : 'astroprecise  ·  date-based plate · Moon and angles withheld',
+      W / 2, H - safeBot + 72 * S);
 
     return cv;
   }
@@ -2107,7 +2116,7 @@
     y += 100 * S;
     const trio = [
       { key: 'Sun',  sign: chart.positions.Sun.sign,  label: 'SUN',    glyph: '☉' },
-      { key: 'Moon', sign: chart.positions.Moon.sign, label: 'MOON',   glyph: '☽' },
+      { key: 'Moon', sign: chart.positions.Moon ? chart.positions.Moon.sign : null, label: 'MOON', glyph: '☽' },
       { sign: chart.risingSign, label: 'RISING', glyph: '↑' },
     ];
     const orbR = 78 * S;
@@ -2175,7 +2184,9 @@
     drawFrame(x, W, H, 44 * S, 62 * S);
 
     const cityShort = (chart.city || '').split(',')[0];
-    const accLine = 'VSOP87 · ELP2000 · calculated on device';
+    const accLine = hasKnownBirthTime(chart)
+      ? 'VSOP87 · ELP2000 · calculated on device'
+      : 'date-based positions · Moon and angles withheld';
 
     // ── Header (shared) ──
     x.textAlign = 'center';
@@ -2204,7 +2215,7 @@
     y += 78 * S;
     const trio = [
       { sign: chart.positions.Sun.sign,  label: 'SUN' },
-      { sign: chart.positions.Moon.sign, label: 'MOON' },
+      { sign: chart.positions.Moon ? chart.positions.Moon.sign : null, label: 'MOON' },
       { sign: chart.risingSign,          label: 'RISING' },
     ];
     const orbR = 56 * S;
@@ -2300,8 +2311,9 @@
   function sharePlacementLine(chart) {
     const points = [
       `☉ ${chart.positions.Sun.sign}`,
-      `☽ ${chart.positions.Moon.sign}`,
     ];
+    if (chart.positions.Moon) points.push(`☽ ${chart.positions.Moon.sign}`);
+    else points.push('Moon withheld · birth time unknown');
     if (chart.risingSign) points.push(`↑ ${chart.risingSign}`);
     else points.push('Rising withheld · birth time unknown');
     return `${chart.name || 'Birth Chart'}: ${points.join(' · ')}`;
@@ -2402,7 +2414,7 @@
       { fmt: 'square', title: 'Square · 2160×2160', sub: 'High-resolution social plate' },
       { fmt: 'story',  title: 'Story · 2160×3840 HD',  sub: 'IG / WhatsApp stories' },
       { fmt: 'wallpaper', title: 'Phone wallpaper · 1080×1920', sub: 'Lock screen — your chart' },
-      { fmt: 'bigthree',  title: 'Big Three card · 1080×1080', sub: 'Sun, Moon & Rising only' },
+      { fmt: 'bigthree',  title: 'Big Three card · 1080×1080', sub: 'Time-sensitive points are withheld when needed' },
       { fmt: 'square1x', title: 'Square · 1080×1080', sub: 'Smaller file size' },
     ];
     menu.innerHTML = opts.map(o =>
@@ -2514,10 +2526,10 @@
       if (accuracyStatus) {
         accuracyStatus.dataset.level = level;
         accuracyStatus.textContent = level === 'exact'
-          ? 'Exact time · Rising, MC and houses will be calculated.'
+          ? 'Exact time · Moon, Rising, MC and houses will be calculated.'
           : level === 'approximate'
-            ? 'Approximate time · Rising, MC and houses are provisional.'
-            : 'Time unknown · Rising, MC and houses will be withheld.';
+            ? 'Approximate time · Moon and angles are provisional.'
+            : 'Time unknown · Moon, Rising, MC and houses will be withheld.';
       }
       if (timeUnknownBtn) {
         timeUnknownBtn.textContent = level === 'unknown' ? 'Choose an approximate time' : 'Mark time unknown';

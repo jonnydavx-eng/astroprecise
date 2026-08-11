@@ -1,0 +1,148 @@
+/* AstroPrecise v835 — shared legal and consumer-rights reading surface. */
+body.page-legal {
+  margin: 0;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 0%, var(--ap-void-raised) 0%, var(--ap-void-deep) 55%),
+    var(--ap-void-deep);
+  color: var(--ap-paper);
+  font: 400 16px/1.75 var(--ap-body);
+}
+
+.legal-doc,
+.refund-doc {
+  width: min(100% - 40px, 768px);
+  margin: 0 auto;
+  padding: clamp(38px, 6vw, 64px) 0 82px;
+}
+
+.legal-top,
+.refund-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 0 0 24px;
+  border-bottom: 1px solid var(--ap-line);
+  margin-bottom: clamp(34px, 6vw, 54px);
+}
+
+.legal-top a,
+.refund-top a,
+.refund-top span {
+  color: var(--ap-brass);
+  font: 10px/1.5 var(--ap-data);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.legal-top a:hover,
+.refund-top a:hover { color: var(--ap-paper); }
+.legal-brand { display: inline-flex; align-items: center; gap: 9px; }
+.legal-brand span { color: var(--ap-paper); }
+
+.legal-doc h1,
+.refund-doc h1 {
+  max-width: 12ch;
+  margin: 0 0 10px;
+  color: var(--ap-paper);
+  font: italic 500 clamp(44px, 7vw, 64px)/0.96 var(--ap-display);
+  letter-spacing: -0.03em;
+}
+
+.legal-sub {
+  margin: 0 0 34px;
+  color: var(--ap-paper-faint);
+  font: 10px/1.5 var(--ap-data);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.legal-doc h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 38px 0 12px;
+  color: var(--ap-brass);
+  font: 400 11px/1.45 var(--ap-data);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.legal-doc h2::before {
+  content: '';
+  flex: 0 0 18px;
+  height: 1px;
+  background: var(--ap-brass);
+  opacity: 0.5;
+}
+
+.legal-doc p,
+.legal-doc li { color: var(--ap-paper-dim); }
+.legal-doc a { color: var(--ap-brass-bright); text-underline-offset: 3px; text-decoration-color: var(--ap-line-strong); }
+.legal-doc a:hover { text-decoration-color: var(--ap-brass); }
+.legal-doc strong { color: var(--ap-paper); font-weight: 650; }
+.legal-doc ul { padding-left: 22px; }
+.legal-doc li { margin-bottom: 8px; }
+
+.legal-doc .lede,
+.refund-lede {
+  margin: 0 0 34px;
+  padding-left: 18px;
+  border-left: 2px solid var(--ap-line-strong);
+  color: var(--ap-paper);
+  font: italic 500 20px/1.55 var(--ap-display);
+}
+
+.legal-doc .callout,
+.refund-alert {
+  margin: 22px 0;
+  padding: 16px 18px;
+  border: 1px solid var(--ap-line-strong);
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(216, 180, 106, 0.07), transparent);
+}
+
+.legal-foot,
+.refund-disclaimer {
+  margin-top: 52px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ap-line);
+  color: var(--ap-paper-faint);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.legal-doc .eng-i { width: 1em; height: 1em; display: inline-block; vertical-align: -0.12em; fill: none; stroke: currentColor; stroke-width: 1.6; }
+
+.refund-doc { width: min(100% - 40px, 700px); }
+.refund-top { flex-wrap: wrap; }
+.refund-lede { font-size: 21px; }
+.refund-alert {
+  border-color: rgba(255, 100, 40, 0.45);
+  background: rgba(255, 100, 40, 0.06);
+  color: var(--ap-paper);
+  font: 10px/1.7 var(--ap-data);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.refund-list { border-top: 1px solid var(--ap-line); }
+.refund-item { padding: 26px 0 24px; border-bottom: 1px solid var(--ap-line); }
+.refund-item__index {
+  margin: 0 0 10px;
+  color: var(--ap-brass);
+  font: 9px/1.5 var(--ap-data);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.refund-item p:last-child { margin: 0; color: var(--ap-paper-dim); font-size: 16px; line-height: 1.72; }
+.refund-item strong { color: var(--ap-paper); }
+.refund-item a { color: var(--ap-brass-bright); }
+.refund-disclaimer { font: 9px/1.9 var(--ap-data); letter-spacing: 0.13em; text-transform: uppercase; }
+
+@media (max-width: 520px) {
+  .legal-doc,
+  .refund-doc { width: min(100% - 32px, 768px); }
+  .legal-top,
+  .refund-top { align-items: flex-start; }
+}

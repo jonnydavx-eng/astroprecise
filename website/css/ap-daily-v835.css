@@ -205,7 +205,7 @@ body.page-horoscope {
   border-right: 1px solid var(--daily-line);
   border-bottom: 1px solid var(--daily-line);
   border-radius: 0;
-  background: rgba(5, 7, 11, 0.9);
+  background: rgba(2, 3, 7, 0.9);
   color: var(--daily-paper);
   text-align: left;
   cursor: pointer;
@@ -269,7 +269,7 @@ body.page-horoscope {
   border: 1px solid var(--daily-line);
   border-radius: 8px;
   background: var(--daily-raised);
-  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.42);
+  box-shadow: 0 34px 100px rgba(2, 3, 7, 0.42);
 }
 
 .page-horoscope .sign-reading-panel.is-open {
@@ -525,7 +525,7 @@ body.page-horoscope {
   margin-bottom: clamp(70px, 9vw, 116px);
   border-top: 1px solid var(--daily-line);
   border-bottom: 1px solid var(--daily-line);
-  background: rgba(5, 7, 11, 0.8);
+  background: rgba(2, 3, 7, 0.8);
 }
 
 .page-horoscope .ap-more-sky__summary {
@@ -623,7 +623,7 @@ body.page-horoscope {
   border-radius: 5px;
   background: var(--daily-raised);
   color: var(--daily-paper);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.46);
+  box-shadow: 0 18px 48px rgba(2, 3, 7, 0.46);
   font-size: 0.8rem;
 }
 

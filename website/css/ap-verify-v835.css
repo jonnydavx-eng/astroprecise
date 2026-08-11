@@ -1,0 +1,40 @@
+/* AstroPrecise v835 — public plate fingerprint verifier. */
+body.page-verify {
+  min-height: 100vh;
+  background: radial-gradient(1000px 620px at 50% -10%, rgba(216, 180, 106, .08), var(--ap-void-deep) 64%);
+  color: var(--ap-paper);
+}
+.verify-main { min-height: calc(100svh - var(--ap-nav-h)); display: flex; align-items: center; justify-content: center; padding: clamp(28px, 6vw, 76px) 28px; }
+.verify-main .card { width: 100%; max-width: 640px; margin: 0; padding: 30px 30px 26px; border: 1px solid var(--ap-line); border-radius: 8px; background: rgba(13, 18, 27, .78); box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .7); backdrop-filter: blur(14px); }
+.verify-main .kick { margin: 0; color: var(--ap-brass); font: 10px/1.5 var(--ap-data); letter-spacing: .2em; text-transform: uppercase; }
+.verify-main h1 { margin: 8px 0 2px; color: var(--ap-paper); font: 600 34px/1.1 var(--ap-display); letter-spacing: -.01em; }
+.verify-main .series, .verify-main .mono { font-family: var(--ap-data); }
+.verify-main .series { margin: 0; color: var(--ap-paper-faint); font-size: 12px; }
+.verify-main .status { min-height: 16px; margin: 20px 0 6px; color: var(--ap-silver); font: 12px/1.5 var(--ap-data); }
+.verify-main table { width: 100%; margin: 6px 0 2px; border-collapse: collapse; font: 12px/1.4 var(--ap-data); }
+.verify-main td { padding: 4px 0; border-bottom: 1px solid rgba(185, 200, 220, .12); }
+.verify-main td.b { color: var(--ap-paper-faint); text-transform: uppercase; letter-spacing: .06em; font-size: 10px; }
+.verify-main td.v { text-align: right; color: var(--ap-paper); }
+.verify-main td.x { padding-left: 10px; text-align: right; color: var(--ap-paper-faint); font-size: 11px; }
+.verify-main tr { opacity: 0; transform: translateY(3px); transition: opacity .25s, transform .25s; }
+.verify-main tr.in { opacity: 1; transform: none; }
+.verify-main .fp { margin-top: 16px; color: var(--ap-silver); font: 11px/1.5 var(--ap-data); word-break: break-all; }
+.verify-main .fp .lab { color: var(--ap-paper-faint); }
+.verify-main .verdict { display: none; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--ap-line); }
+.verify-main .verdict.show { display: block; }
+.verify-main .vline { display: flex; align-items: center; gap: 10px; color: var(--ap-brass); font: 600 18px/1.4 var(--ap-body); }
+.verify-main .vline.bad { color: var(--ap-ember); }
+.verify-main .tick { width: 22px; height: 22px; border: 1.5px solid currentColor; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+.verify-main .human { margin: 10px 0 0; color: var(--ap-paper-dim); font: 500 16px/1.55 var(--ap-display); }
+.verify-main .foot { margin-top: 18px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; color: var(--ap-paper-faint); font: 10px/1.5 var(--ap-data); }
+.verify-main a { color: var(--ap-silver); }
+.verify-main button { margin: 12px 8px 0 0; padding: 9px 14px; border: 1px solid var(--ap-line-strong); border-radius: 5px; background: transparent; color: var(--ap-brass); font: 12px/1.4 var(--ap-data); letter-spacing: .04em; cursor: pointer; }
+.verify-main button:hover { background: rgba(216, 180, 106, .08); }
+.verify-main button.ghost { border-color: rgba(185, 200, 220, .26); color: var(--ap-paper-faint); }
+.verify-main .note { margin: 10px 0 0; color: var(--ap-paper-faint); font: 10px/1.5 var(--ap-data); }
+
+@media (max-width: 520px) {
+  .verify-main { padding-inline: 16px; }
+  .verify-main .card { padding: 24px 18px 22px; }
+  .verify-main button { width: 100%; margin-right: 0; }
+}

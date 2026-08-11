@@ -15,7 +15,11 @@ const rad = (d) => d * Math.PI / 180;
 function webglAvailable() {
   try {
     const canvas = document.createElement('canvas');
-    return !!(canvas.getContext('webgl2') || canvas.getContext('webgl'));
+    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+    if (!gl) return false;
+    const lose = gl.getExtension && gl.getExtension('WEBGL_lose_context');
+    if (lose && lose.loseContext) lose.loseContext();
+    return true;
   } catch (err) {
     return false;
   }
@@ -341,6 +345,24 @@ function mount(root, E) {
   let raf = 0;
   let lastFrameAt = 0;
   let loopRunning = false;
+  let liveTimer = 0;
+  let failed = false;
+  let disposed = false;
+
+  function showUnavailable(err) {
+    if (failed) return;
+    failed = true;
+    stopLoop();
+    root.dataset.failed = 'true';
+    root.removeAttribute('data-ready');
+    [range, nowButton, eventButton].forEach((control) => { if (control) control.disabled = true; });
+    if (fallback) {
+      fallback.hidden = false;
+      fallback.innerHTML = '<div><strong>Live eclipse geometry is unavailable on this device.</strong><br><span>Use the computed diagram below; the times and safety guidance remain available.</span></div>';
+    }
+    console.warn('[eclipse-live]', err && err.message ? err.message : err || 'renderer stopped');
+    dispose();
+  }
 
   function positionVolume(mesh, origin, direction, length, nearRadius, farRadius) {
     if (mesh.geometry) mesh.geometry.dispose();
@@ -406,6 +428,7 @@ function mount(root, E) {
   }
 
   function setDisplayDate(date, nextMode) {
+    if (failed || disposed) return;
     displayDate = new Date(date);
     mode = nextMode;
     state = computeGeometry(displayDate);
@@ -428,6 +451,7 @@ function mount(root, E) {
   eventButton.addEventListener('click', setGreatest);
 
   function resize() {
+    if (failed || disposed) return;
     const rect = stage.getBoundingClientRect();
     const width = Math.max(1, Math.round(rect.width));
     const height = Math.max(1, Math.round(rect.height));
@@ -456,10 +480,14 @@ function mount(root, E) {
   }
 
   function render(time = 0) {
-    if (!inView) return;
-    if (!reducedMotion) sunMaterial.uniforms.uTime.value = time * .001;
-    renderer.render(scene, camera);
-    updateLabels();
+    if (!inView || failed || disposed) return;
+    try {
+      if (!reducedMotion) sunMaterial.uniforms.uTime.value = time * .001;
+      renderer.render(scene, camera);
+      updateLabels();
+    } catch (err) {
+      showUnavailable(err);
+    }
   }
 
   function frame(time) {
@@ -472,7 +500,7 @@ function mount(root, E) {
   }
 
   function startLoop() {
-    if (reducedMotion || loopRunning || document.hidden || !inView) return;
+    if (failed || disposed || reducedMotion || loopRunning || document.hidden || !inView) return;
     loopRunning = true;
     raf = requestAnimationFrame(frame);
   }
@@ -528,6 +556,10 @@ function mount(root, E) {
     applyCamera();
     render();
   });
+  canvas.addEventListener('webglcontextlost', (event) => {
+    try { event.preventDefault(); } catch (err) { /* context already gone */ }
+    showUnavailable(new Error('WebGL context was lost'));
+  }, false);
 
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(stage);
@@ -553,6 +585,7 @@ function mount(root, E) {
   setLive();
   resize();
   startLoop();
+  if (failed) return;
   if (fallback) fallback.hidden = true;
   root.dataset.ready = 'true';
   window.APEclipseLive = {
@@ -563,16 +596,31 @@ function mount(root, E) {
   };
   document.dispatchEvent(new CustomEvent('ap-eclipse-live-ready', { detail: { state } }));
 
-  const liveTimer = setInterval(() => {
+  liveTimer = setInterval(() => {
     if (mode === 'live') setLive();
   }, 30000);
 
   function dispose() {
+    if (disposed) return;
+    disposed = true;
     stopLoop();
-    clearInterval(liveTimer);
+    if (liveTimer) clearInterval(liveTimer);
+    liveTimer = 0;
     resizeObserver.disconnect();
     intersectionObserver.disconnect();
+    scene.traverse((object) => {
+      if (object.geometry && object.geometry.dispose) object.geometry.dispose();
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.filter(Boolean).forEach((material) => {
+        Object.keys(material).forEach((key) => {
+          const value = material[key];
+          if (value && value.isTexture && value.dispose) value.dispose();
+        });
+        if (material.dispose) material.dispose();
+      });
+    });
     renderer.dispose();
+    if (window.APEclipseLive && window.APEclipseLive.getState) delete window.APEclipseLive;
   }
 
   window.addEventListener('pagehide', (event) => {
@@ -580,7 +628,7 @@ function mount(root, E) {
     else dispose();
   });
   window.addEventListener('pageshow', (event) => {
-    if (!event.persisted) return;
+    if (!event.persisted || failed || disposed) return;
     resize();
     if (mode === 'live') setLive();
     startLoop();

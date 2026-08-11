@@ -82,7 +82,7 @@
        straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
 
   <!-- ============================================================
-       NAVIGATION — Premium
+       LAUNCH HEADER
   ============================================================ -->
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
@@ -93,18 +93,14 @@
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
-            <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="ephemeris.html" class="navbar__link">Sky</a>
+            <a href="index.html" class="navbar__link">Observatory</a>
+            <a href="chart.html" class="navbar__link" aria-current="page">Birth Chart</a>
             <a href="horoscope.html" class="navbar__link">Daily</a>
-            <a href="cosmic-story.html" class="navbar__link">Readings</a>
-            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="eclipse.html" class="navbar__link">Eclipse</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
         <div class="navbar__end">
-          <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
-            <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
-          </a>
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
             <span></span><span></span><span></span>
           </button>
@@ -117,7 +113,7 @@
   <main id="main-content">
 
     <!-- ============================================================
-         HERO — Compact
+         HERO
     ============================================================ -->
     <section class="chart-hero" aria-labelledby="page-title">
       <div class="chart-hero__cosmic-art" aria-hidden="true"></div>
@@ -168,12 +164,11 @@
           which is the buyer's birth minute, full name and home coordinates, on
           a page whose own copy says "Nothing is uploaded, ever."
 
-          preventDefault() in js/chart-page.js is NOT the guarantee. That file
-          is 154 KB, loaded `defer`, and its <script> sits ~28,000 characters
-          after this tag, so the form is interactive before the listener
-          exists and the leak is unconditional if the script is blocked, slow
-          or throws. Dropping the names makes the guarantee structural: with
-          JS off there is nothing to put in the URL.
+          preventDefault() in js/chart-page.js is NOT the guarantee. That
+          deferred file loads after this form, so the form can exist before
+          the listener does and the leak would remain possible if the script
+          were blocked, slow or threw. Dropping the names makes the guarantee
+          structural: with JS off there is nothing to put in the URL.
 
           chart-page.js reads every field by getElementById, never by name, so
           nothing depends on these. The node-mode radios keep their name because
@@ -251,10 +246,10 @@
               aria-describedby="time-hint"
             />
             <input type="hidden" id="time-accuracy-input" value="unknown" />
-            <p class="form-hint" id="time-hint">Exact time unlocks Rising, MC and houses. Leave blank if unknown — planetary signs remain precise.
+            <p class="form-hint" id="time-hint">Exact time unlocks the Moon, Rising, MC and houses. Leave blank if unknown — time-sensitive placements will be withheld.
               <button type="button" id="time-unknown-btn" class="form-inline-action">Choose an approximate time</button>
             </p>
-            <p class="form-hint ap-time-status" id="time-accuracy-status" role="status" aria-live="polite">Time unknown · Rising, MC and houses will be withheld.</p>
+            <p class="form-hint ap-time-status" id="time-accuracy-status" role="status" aria-live="polite">Time unknown · Moon, Rising, MC and houses will be withheld.</p>
           </div>
 
           <details class="chart-form__optional-label" id="group-name-wrap">
@@ -405,7 +400,7 @@
         </div>
         <div class="chart-method-ledger__row">
           <b>03</b>
-          <div><strong>Time honesty</strong><span>No birth time? Planetary signs remain available; Rising, Midheaven and houses are withheld instead of guessed.</span></div>
+          <div><strong>Time honesty</strong><span>No birth time? Date-based placements remain available; Moon, Rising, Midheaven and houses are withheld instead of guessed.</span></div>
         </div>
         <div class="chart-method-ledger__row">
           <b>04</b>
@@ -426,11 +421,11 @@
               <p id="result-date"></p>
               <span class="result-badge"><span class="eng-star-mark"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
               <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
-              <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Rising, MC and houses — signs stay precise without it</span>
+              <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Moon, Rising, MC and houses — time-sensitive points are withheld without it</span>
               <a href="eclipse.html" id="eclipse-handoff" class="result-eclipse-handoff">See where the 12 Aug eclipse lands in this chart &rarr;</a>
             </div>
             <div class="result-actions" id="result-actions-row">
-              <a id="eclipse-cta" href="eclipse.html" class="action-btn action-btn--gold" aria-label="See where the 12 August eclipse lands in this chart — free teaser, prefilled from this chart">
+              <a id="eclipse-cta" href="eclipse.html" class="action-btn action-btn--gold" aria-label="See where the 12 August eclipse lands in this chart, prefilled from this chart">
                 12 Aug eclipse in this chart &rarr;
               </a>
               <button id="poster-btn" class="action-btn action-btn--ghost" aria-haspopup="menu" aria-controls="share-format-menu" aria-expanded="false" aria-label="Export chart artwork as a print plate, square, story, wallpaper, or Big Three card">
@@ -456,26 +451,7 @@
         <!-- Big Three -->
         <section class="big-three-section animate-in animate-in--delay-1" role="group" aria-labelledby="big-three-heading">
           <h2 id="big-three-heading" class="sr-only">Core placements and time-dependent angles</h2>
-          <div id="big-three" class="big-three-grid">
-            <article class="big-three-card big-three-card--skeleton" aria-hidden="true">
-              <p class="big-three-card__planet">Sun · Core Identity</p>
-              <span class="big-three-card__seal" data-celestial-seal="planet:sun" data-seal-lg aria-hidden="true"></span>
-              <h3 class="big-three-card__sign">—</h3>
-              <p class="big-three-card__desc">—</p>
-            </article>
-            <article class="big-three-card big-three-card--skeleton" aria-hidden="true">
-              <p class="big-three-card__planet">Moon · Inner World</p>
-              <span class="big-three-card__seal" data-celestial-seal="planet:moon" data-seal-lg aria-hidden="true"></span>
-              <h3 class="big-three-card__sign">—</h3>
-              <p class="big-three-card__desc">—</p>
-            </article>
-            <article class="big-three-card big-three-card--skeleton" aria-hidden="true">
-              <p class="big-three-card__planet">Rising · Outward Self</p>
-              <span class="big-three-card__seal" data-celestial-seal="zodiac:aries" data-seal-lg aria-hidden="true"></span>
-              <h3 class="big-three-card__sign">—</h3>
-              <p class="big-three-card__desc">—</p>
-            </article>
-          </div>
+          <div id="big-three" class="big-three-grid"></div>
         </section>
 
         <!-- Wheel hero + detail tabs -->
@@ -484,15 +460,6 @@
           <!-- Natal Wheel — centerpiece instrument -->
           <section class="chart-wheel-hero" aria-label="Natal chart wheel diagram">
             <div class="chart-wheel-stage">
-              <div class="chart-wheel-stage__halo" aria-hidden="true"></div>
-              <div class="chart-wheel-stage__meridian" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" focusable="false">
-                  <circle cx="100" cy="100" r="94" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.35"/>
-                  <circle cx="100" cy="100" r="72" fill="none" stroke="currentColor" stroke-width="0.35" stroke-dasharray="2 5" opacity="0.22"/>
-                  <path d="M100 6 L100 194 M6 100 L194 100" stroke="currentColor" stroke-width="0.4" opacity="0.18"/>
-                  <path d="M30 30 L170 170 M170 30 L30 170" stroke="currentColor" stroke-width="0.3" opacity="0.12"/>
-                </svg>
-              </div>
               <div class="chart-wheel-card">
                 <header class="chart-wheel-header">
                   <span class="chart-wheel-header__seal" data-celestial-seal="instrument:chart" aria-hidden="true">
@@ -508,16 +475,7 @@
                   </div>
                 </header>
                 <div class="natal-wheel-container" aria-live="polite" aria-busy="true" id="natal-wheel-wrap">
-                  <div id="natal-wheel" class="natal-wheel-mount" role="img" aria-label="Natal chart wheel — VSOP87 positions on schematic ecliptic rings">
-                    <svg class="ap-wheel-placeholder" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                      <circle cx="300" cy="300" r="296" fill="none" stroke="rgba(168, 176, 188,0.14)" stroke-width="0.75"/>
-                      <circle cx="300" cy="300" r="280" fill="none" stroke="rgba(168, 176, 188,0.22)" stroke-width="1"/>
-                      <circle cx="300" cy="300" r="240" fill="none" stroke="rgba(168, 176, 188,0.14)" stroke-width="0.75"/>
-                      <circle cx="300" cy="300" r="80" fill="none" stroke="rgba(168, 176, 188,0.1)" stroke-width="0.5" stroke-dasharray="3 6"/>
-                      <circle cx="300" cy="300" r="5" fill="rgba(168, 176, 188,0.4)"/>
-                      <path d="M300 20 L300 580 M20 300 L580 300" stroke="rgba(168, 176, 188,0.08)" stroke-width="0.5"/>
-                    </svg>
-                  </div>
+                  <div id="natal-wheel" class="natal-wheel-mount" role="img" aria-label="Natal chart wheel — VSOP87 positions on schematic ecliptic rings"></div>
                 </div>
               </div>
             </div>
@@ -605,19 +563,6 @@
 
       </div><!-- /#chart-result -->
 
-      <!-- Loading -->
-      <div id="chart-loading" class="hidden" aria-live="polite">
-        <div class="spinner" role="status" aria-label="Calculating your birth chart">
-          <div class="spinner__ring spinner__ring--outer"></div>
-          <div class="spinner__ring spinner__ring--mid"></div>
-          <div class="spinner__ring spinner__ring--inner"></div>
-          <div class="spinner__center"></div>
-        </div>
-        <p class="chart-loading__label">
-          Calculating planetary positions…
-        </p>
-      </div>
-
     </div><!-- /.chart-layout -->
 
   </main>
@@ -632,7 +577,6 @@
   <script src="js/ap-zodiac-constants.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
-  <script src="js/ap-safe-dom.js" defer></script>
   <script src="js/reading-format.js" defer></script>
   <script src="js/chart-render.js" defer></script>
   <script src="js/ap-load-interpretations.js" defer></script>
@@ -640,13 +584,10 @@
   <script src="js/ap-chart-share.js" defer></script>
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/icons.js" defer></script>
-  <script src="js/content-service.js" defer></script>
   <script src="js/ap-nav-model-v834.js?v=835" defer></script>
   <script src="js/ap-footer-inject.js?v=835" defer></script>
   <script src="js/app.js" defer></script>
-  <script src="js/ap-page-bridge.js" defer></script>
   <script src="js/ap-canvas-seals.js" defer></script>
-  <script src="js/ap-deep-link.js?v=835" defer></script>
   <script src="js/chart-page.js?v=835" defer></script>
 </body>
 </html>

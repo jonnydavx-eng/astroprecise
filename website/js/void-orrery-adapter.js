@@ -157,7 +157,11 @@
   function webgl2OK() {
     try {
       var c = document.createElement('canvas');
-      return !!(window.WebGL2RenderingContext && c.getContext('webgl2'));
+      var gl = window.WebGL2RenderingContext && c.getContext('webgl2');
+      if (!gl) return false;
+      var lose = gl.getExtension && gl.getExtension('WEBGL_lose_context');
+      if (lose && lose.loseContext) lose.loseContext();
+      return true;
     } catch (e) { return false; }
   }
   function importMapOK() {
