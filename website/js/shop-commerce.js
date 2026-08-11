@@ -913,7 +913,7 @@ window.AstroShop = (() => {
       : `Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}`;
     const trust = pdfOnly
       ? `<ul class="shopc-trust">
-        <li class="shopc-trust__item">${icon('book')} Seven computed chapters · instant unlock</li>
+        <li class="shopc-trust__item">${icon('book')} Seven computed chapters · preview available</li>
         <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
         <li class="shopc-trust__item">${icon('orb')} One-time purchase · no subscription</li>
         <li class="shopc-trust__item">${icon('map')} Readings &amp; plate yours to keep</li>

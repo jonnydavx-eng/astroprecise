@@ -1830,7 +1830,7 @@
       : `<a class="btn--deep" id="deep-cta" href="${esc(shopDeep)}">
            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Notify me — Deep Reading £12
          </a>
-         <p class="deep-teaser__honest">Checkout isn't live yet. Open the shop to join the notify list — no spam, no fake buy button. Sample: <a href="deep-reading.html">read a full sample →</a></p>`;
+         <p class="deep-teaser__honest">Checkout isn't live yet. Open the shop to join the notify list — no spam, no fake buy button. Sample: <a href="sample-reading.html">read the full sample →</a></p>`;
 
     host.innerHTML = `
       <div class="deep-teaser__head">
@@ -1842,7 +1842,7 @@
       <div class="deep-teaser__cta-wrap">
         ${ctaHtml}
         <p class="deep-teaser__sample" style="margin-top:var(--space-3);font-size:0.85rem;">
-          <a href="deep-reading.html" rel="noopener" style="color:var(--gold-light,#d8b46a);">See a full Deep Reading sample →</a>
+          <a href="sample-reading.html" style="color:var(--gold-light,#d8b46a);">Read the full Deep Reading sample →</a>
           &nbsp;·&nbsp; Computed sample (or your saved chart if one is on this device).
         </p>
       </div>`;

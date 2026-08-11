@@ -30,6 +30,10 @@
 .ap-eclipse-contact h2 { margin: 14px 0 18px; }
 .ap-eclipse-contact__grid > div > p:not(.ap-eclipse-kicker) { max-width: 65ch; color: var(--ap-paper-dim); line-height: 1.65; }
 .ap-eclipse-contact form { margin-top: 28px; padding: 22px; border: 1px solid var(--ap-line); border-radius: 8px; background: rgba(13,18,27,.66); }
+.ap-eclipse-contact__saved { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; padding: 12px 14px; border: 1px solid rgba(216,180,106,.28); border-radius: 5px; background: rgba(216,180,106,.045); cursor: pointer; }
+.ap-eclipse-contact__saved[hidden] { display: none; }
+.ap-eclipse-contact__saved input { width: 17px; min-height: 17px; margin: 0; accent-color: var(--ap-ember); }
+.ap-eclipse-contact__saved span { display: inline !important; margin: 0 !important; color: var(--ap-paper) !important; font: 600 12px/1.4 var(--ap-body) !important; letter-spacing: 0 !important; text-transform: none !important; }
 .ap-eclipse-contact__fields { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
 .ap-eclipse-contact label span { display: block; margin-bottom: 7px; color: var(--ap-brass); font: 10px var(--ap-data); letter-spacing: .07em; text-transform: uppercase; }
 .ap-eclipse-contact input, .ap-eclipse-contact select { width: 100%; min-height: 46px; padding: 9px 11px; border: 1px solid var(--ap-line-strong); border-radius: 4px; background: var(--ap-void-deep); color: var(--ap-paper); font-size: 16px; color-scheme: dark; }
@@ -44,6 +48,9 @@
 .ap-eclipse-result li > span { color: var(--ap-brass); font: 10px var(--ap-data); }
 .ap-eclipse-result li strong { color: var(--ap-paper); }
 .ap-eclipse-result li p { margin: 4px 0 0; color: var(--ap-silver); font: 11px var(--ap-data); }
+.ap-eclipse-result li p:not(.ap-eclipse-result__mono) { max-width: 66ch; margin-top: 8px; color: var(--ap-paper-dim); font: 500 16px/1.55 var(--ap-display); }
+.ap-eclipse-result__mono { color: var(--ap-silver) !important; font: 11px/1.6 var(--ap-data) !important; }
+.ap-eclipse-result[data-quiet="true"] { border-color: rgba(216,180,106,.42); }
 #eclipseResultNote { margin: 16px 0; color: var(--ap-paper-dim); font-size: 13px; line-height: 1.6; }
 .ap-eclipse-geometry-plate { margin: 0; border: 1px solid var(--ap-line); border-radius: 8px; overflow: hidden; background: #08090d; }
 .ap-eclipse-geometry-plate img { display: block; width: 100%; height: auto; }

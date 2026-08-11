@@ -5,7 +5,7 @@
   <meta name="color-scheme" content="dark">
   <style>html{background:#08080b}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free natal chart on your device — Meeus/VSOP87, computed to a sixtieth of a degree. The real sky news: weather report of the sky, not prophecy. Private; nothing uploaded (1800–2200 CE)." />
+  <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
   <title>Free Birth Chart — the real sky news | Astro Precise</title>
 <link rel="preload" href="css/main-lite.css" as="style" />
@@ -20,7 +20,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Free birth chart, computed on-device" />
-  <meta property="og:description" content="Your natal chart calculated in your browser with professional-grade astronomy. Nothing uploaded, nothing stored. Free." />
+  <meta property="og:description" content="Calculate your natal chart in the browser. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta property="og:url" content="https://astroprecise.app/chart.html" />
   <link rel="canonical" href="https://astroprecise.app/chart.html" />
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
@@ -29,7 +29,7 @@
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Free birth chart, computed on-device" />
-  <meta name="twitter:description" content="Your natal chart calculated in your browser with professional-grade astronomy. Nothing uploaded, nothing stored. Free." />
+  <meta name="twitter:description" content="Calculate your natal chart in the browser. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#08080b" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -47,7 +47,7 @@
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
-    "description": "Free natal chart calculator — enter your birth date, time and place for a precise birth chart with Sun, Moon, Rising, houses and aspects. All calculations run privately in your browser. Supports saved profiles for personal transits and recommendations.",
+    "description": "Free natal chart calculator with Sun, Moon, Rising, houses and aspects. Birth date, time and chart calculations stay in the browser; place search uses Open-Meteo to resolve coordinates.",
     "dateModified": "2026-06-17",
     "isPartOf": {
       "@type": "WebSite",
@@ -61,8 +61,8 @@
     "@context":"https://schema.org",
     "@type":"FAQPage",
     "mainEntity":[
-      {"@type":"Question","name":"How accurate is the birth chart?","acceptedAnswer":{"@type":"Answer","text":"Positions use the VSOP87 planetary theory and ELP2000 lunar theory with real timezone handling. Accuracy is typically within about a sixtieth of a degree for dates 1800–2200."}},
-      {"@type":"Question","name":"Is my birth data private?","acceptedAnswer":{"@type":"Answer","text":"Yes. All calculations happen in your browser. Nothing is sent to any server. Charts are saved only in your device localStorage."}},
+      {"@type":"Question","name":"How accurate is the birth chart?","acceptedAnswer":{"@type":"Answer","text":"Accuracy varies by body and date. The core planets and luminaries use published astronomical methods; Pluto and Chiron have wider, date-dependent limits. The supported chart range is 1800–2200."}},
+      {"@type":"Question","name":"What leaves my device?","acceptedAnswer":{"@type":"Answer","text":"Birth date, time and chart calculations stay in your browser. Place search sends the place text to Open-Meteo to resolve coordinates. Saved charts remain in local storage on this device."}},
       {"@type":"Question","name":"Can I get a reading for a saved chart?","acceptedAnswer":{"@type":"Answer","text":"Yes. After saving, use the Transits tool for personal forecasts and the Shop for personalised products based on your placements."}}
     ]
   }
@@ -286,10 +286,10 @@
         <p class="chart-hero__subtitle">
           Enter your birth date, place and time. Supported positions are computed in your browser with published astronomical methods; your place is resolved to coordinates, then the chart stays on this device.
         </p>
-        <p class="chart-hero__timecode" aria-hidden="true">VSOP87 + ELP2000 &middot; 1800&ndash;2200 CE &middot; <b>computed on-device</b> &middot; nothing uploaded</p>
+        <p class="chart-hero__timecode" aria-hidden="true">PUBLISHED ASTRONOMICAL METHODS &middot; 1800&ndash;2200 CE &middot; <b>CHART CALCULATION ON-DEVICE</b> &middot; PLACE LOOKUP DISCLOSED</p>
         <p style="margin:1.1rem 0 0;display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center">
           <a href="#chart-form-wrapper" class="btn btn--primary" style="text-decoration:none">CAST MY CHART — FREE ↓</a>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.16em;color:var(--silver-dim)">TAKES ~20 SECONDS · FREE FOREVER · NO SIGN-UP</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.16em;color:var(--silver-dim)">TAKES ~20 SECONDS · FREE TO CAST · NO SIGN-UP</span>
         </p>
       </div>
     </section>
@@ -297,7 +297,7 @@
     <!-- ECLIPSE STRIP — route the funnel's SEO entry into the event -->
     <section class="container" aria-label="The 12 August eclipse" style="margin:1.2rem auto 0;">
       <a href="eclipse.html" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border:1px solid rgba(255,90,31,.4);border-radius:6px;padding:14px 20px;background:linear-gradient(90deg,rgba(255,90,31,.1),rgba(255,90,31,.02));text-decoration:none;color:inherit">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;color:#ff6428">&#9679; THE ECLIPSE — 12 AUG 2026 &middot; PARTIAL ACROSS THE UK · TOTALITY IN GREENLAND, ICELAND &amp; SPAIN</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;color:#ff6428">&#9679; THE ECLIPSE — 12 AUG 2026 &middot; PARTIAL ACROSS THE UK · TOTALITY IN GREENLAND, ICELAND, NORTHERN RUSSIA, SPAIN &amp; A SMALL PART OF PORTUGAL</span>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.14em;color:#d8b46a;white-space:nowrap">WHERE DOES IT LAND IN YOUR CHART &rarr;</span>
       </a>
     </section>
@@ -313,7 +313,7 @@
         <div class="form-glass__header">
           <div class="form-glass__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
           <h2 class="form-glass__title">Cast your chart</h2>
-          <p class="form-glass__sub">Instant on your device. <strong class="form-glass__privacy">Private</strong> — only the place name leaves the browser (for coordinates). No account.</p>
+          <p class="form-glass__sub">Instant on your device. Birth date and time stay in the browser; place search contacts Open-Meteo for coordinates. No account.</p>
           <p class="chart-form__progress" id="chart-form-progress">Date, place, then time — about 20 seconds</p>
         </div>
 
@@ -458,7 +458,7 @@
             </button>
           </div>
           <p class="form-hint" id="submit-hint" style="margin-top:var(--space-3);text-align:center;">
-            Instant, private calculation on your device — only the place name you type is sent, to find its coordinates.
+            The chart calculation stays on your device. Place search sends the place text to Open-Meteo to find coordinates.
           </p>
 
           <!-- ── Advanced options AFTER primary CTA (collapsed by default) ───────────── -->
@@ -556,15 +556,19 @@
         </div>
         <div class="chart-method-ledger__row">
           <b>01</b>
-          <div><strong>Real positions</strong><span>Western tropical, geocentric longitudes from the site’s astronomy engine; the wheel is a schematic drawing of those values.</span></div>
+          <div><strong>Published methods</strong><span>The wheel is a schematic drawing of calculated Western tropical positions, not a sky photograph.</span></div>
         </div>
         <div class="chart-method-ledger__row">
           <b>02</b>
-          <div><strong>Time honesty</strong><span>No birth time? Planetary signs remain available; Rising, Midheaven and houses are withheld instead of guessed.</span></div>
+          <div><strong>Qualified limits</strong><span>Accuracy varies by body and date. Pluto and Chiron carry wider, date-dependent limits within the supported 1800–2200 range.</span></div>
         </div>
         <div class="chart-method-ledger__row">
           <b>03</b>
-          <div><strong>Private by structure</strong><span>Birth fields have no URL names. Only the place search contacts Open-Meteo to resolve coordinates.</span></div>
+          <div><strong>Time honesty</strong><span>No birth time? Planetary signs remain available; Rising, Midheaven and houses are withheld instead of guessed.</span></div>
+        </div>
+        <div class="chart-method-ledger__row">
+          <b>04</b>
+          <div><strong>Place lookup disclosed</strong><span>Birth fields have no URL names. Place search contacts Open-Meteo to resolve coordinates; the chart calculation stays in the browser.</span></div>
         </div>
       </aside>
 
@@ -861,7 +865,7 @@
           </form>
           <p class="email-capture__privacy">
             <svg class="eng-i" viewBox="0 0 24 24" aria-hidden="true"><use href="#ei-lock"/></svg>
-            <span>We'll only email your cosmic weather — no spam, unsubscribe anytime. Your birth data stays on your device.</span>
+            <span>We'll only email your cosmic weather — no spam, unsubscribe anytime. Date, time and chart calculation stay on your device; place search uses Open-Meteo.</span>
           </p>
           <div class="email-capture__done" role="status" aria-live="polite">
             <span aria-hidden="true" style="color:var(--gold);font-size:1.1rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
@@ -886,154 +890,9 @@
 
     </div><!-- /.chart-layout -->
 
-    <!-- ============================================================
-         EDUCATIONAL SECTION
-    ============================================================ -->
-    <section class="edu-section" aria-labelledby="edu-heading">
-      <div class="container">
-        <header class="section-header">
-          <p class="section-header__label">What You'll Discover</p>
-          <h2 class="section-header__title" id="edu-heading">What Is a Natal Chart?</h2>
-          <p class="section-header__subtitle">
-            A natal chart is a snapshot of the sky at the exact moment of your birth.
-            It maps every planet's position in the zodiac and shows which astrological
-            house it occupied from your birthplace.
-          </p>
-        </header>
-        <div class="grid-3">
-          <article class="card card--glow">
-            <div class="card__icon" aria-hidden="true">☉</div>
-            <h3 class="card__title">Sun, Moon &amp; Rising</h3>
-            <p class="card__text">
-              The "big three" describe your core identity (Sun), emotional inner world (Moon),
-              and the mask you present to the world (Ascendant / Rising sign).
-            </p>
-          </article>
-          <article class="card card--glow">
-            <div class="card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-planet"/></svg></div>
-            <h3 class="card__title">10 Planetary Placements</h3>
-            <p class="card__text">
-              Mercury governs communication, Venus love, Mars drive, Jupiter growth, Saturn
-              discipline, Uranus innovation, Neptune dreams, and Pluto transformation.
-            </p>
-          </article>
-          <article class="card card--glow">
-            <div class="card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-house"/></svg></div>
-            <h3 class="card__title">12 Houses</h3>
-            <p class="card__text">
-              Houses represent life areas: identity, money, communication, home, creativity,
-              health, relationships, transformation, philosophy, career, community, and the unconscious.
-            </p>
-          </article>
-        </div>
-        <div class="card" style="margin-top:var(--space-8);">
-          <h3 class="card__title" style="margin-bottom:var(--space-3);">Calculation Accuracy</h3>
-          <p style="margin-bottom:var(--space-3);"><span class="ap-badge">Accurate to about a sixtieth of a degree · 1800–2200 CE</span></p>
-          <p class="card__text">
-            Astro Precise uses the Western tropical zodiac with geocentric ecliptic longitudes. VSOP87-derived mean orbital elements for the outer planets and
-            a full perturbation series for the Sun and Moon, typically placing the
-            supported planetary positions within about a sixtieth of a degree for dates between 1800–2200 CE. The Ascendant is computed from Local
-            Sidereal Time derived from your exact latitude, longitude, and birth time. House
-            cusps follow the selected system (Equal, Placidus, or Whole Sign).
-          </p>
-        </div>
-      </div>
-    </section>
-
   </main>
 
-  <!-- ============================================================
-       FOOTER
-  ============================================================ -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-
-      <div class="footer-inner" data-ap-footer-model="1">
-
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
-          </div>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
-            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
-          <h2 class="footer-nav-col__title">Daily readings</h2>
-          <ul>
-            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
-            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
-            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
-            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
-            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
-            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
-            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
-            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
-            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
-            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
-            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
-            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
-            <li><a href="horoscope.html">All signs →</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-            <li><a href="aries.html">Aries profile</a></li>
-            <li><a href="taurus.html">Taurus profile</a></li>
-            <li><a href="gemini.html">Gemini profile</a></li>
-            <li><a href="cancer.html">Cancer profile</a></li>
-            <li><a href="leo.html">Leo profile</a></li>
-            <li><a href="virgo.html">Virgo profile</a></li>
-            <li><a href="libra.html">Libra profile</a></li>
-            <li><a href="scorpio.html">Scorpio profile</a></li>
-            <li><a href="sagittarius.html">Sagittarius profile</a></li>
-            <li><a href="capricorn.html">Capricorn profile</a></li>
-            <li><a href="aquarius.html">Aquarius profile</a></li>
-            <li><a href="pisces.html">Pisces profile</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
-    </div>
-  </footer>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
 
   <!-- Toast container -->
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>

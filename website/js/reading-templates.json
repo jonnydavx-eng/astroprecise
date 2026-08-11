@@ -143,8 +143,8 @@
   },
   "anchor": {
     "computed": "{date} — the Moon covers {coveragePct} of the Sun across Britain, {peakLocal}. Read from {place}, the eclipse falls at {eclipseDeg}.",
-    "computedNoPlace": "{date} — a total solar eclipse over Iceland and northern Spain, and a deep partial from Britain; the Moon crosses the Sun at {eclipseDeg}.",
-    "serif": "Everything below is computed from that exact moment against the sky you were born under — nothing is invented, and you can check every number."
+    "computedNoPlace": "{date} — totality crosses northern Russia, Greenland, Iceland, Spain and a corner of Portugal; the UK and Ireland see a deep partial eclipse at {eclipseDeg}.",
+    "serif": "The placements and contact distances below are computed from the birth moment; the meaning is a traditional reflection, clearly kept separate from the evidence."
   },
   "governsHouse": " It sits in your {houseNum}th house — {houseMeaning} (houses counted whole-sign from your rising).",
   "questions": {

@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-    var AV = String(window.AP_ASSET_V || '771');
+    var AV = String(window.AP_ASSET_V || '835');
 
     var SIGNS = (function () {
       var Z = window.AP_ZODIAC;
@@ -26,8 +26,6 @@
         pisces:      { name:'Pisces',      dates:'Feb 19 – Mar 20', element:'water' },
       };
     })();
-
-    var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
     var enginesLoading = false;
     var enginesReady = false;
@@ -212,17 +210,11 @@
     }
 
     function getSkyPlanetLons() {
-      if (window.ZodiacSphere && typeof ZodiacSphere.getPlanetLons === 'function') {
-        return ZodiacSphere.getPlanetLons() || {};
-      }
-      if (window.EclipticDialData && typeof EclipticDialData.getPlanetLons === 'function') {
-        return EclipticDialData.getPlanetLons() || {};
-      }
       try {
         var eph = window.AstroEphemeris;
         if (eph && typeof eph.julianDay === 'function' && typeof eph.allPlanetPositions === 'function') {
           var now = new Date();
-          var jd = eph.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 0);
+          var jd = eph.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), 12, 0, 0);
           var positions = eph.allPlanetPositions(jd) || {};
           var out = {};
           Object.keys(positions).forEach(function (name) {
@@ -625,7 +617,8 @@
     function openPanel(signKey) {
       var info = SIGNS[signKey];
       if (!info) return;
-      ensureInterpretations().then(function () {
+      var engineGate = auditPath ? Promise.resolve() : bootEngines();
+      engineGate.then(ensureInterpretations).then(function () {
         renderOpenPanel(signKey, info);
       }).catch(function () {});
     }
@@ -704,30 +697,6 @@
       document.getElementById('srp-love').textContent = data.love || '';
       document.getElementById('srp-career').textContent = data.career || '';
       document.getElementById('srp-health').textContent = data.health || '';
-      document.getElementById('srp-lucky-number').textContent = data.luckyNumber || '—';
-      document.getElementById('srp-lucky-color').textContent = data.luckyColor || '—';
-      document.getElementById('srp-best-day').textContent = data.bestDay || DAYS[(new Date().getDay() + 1) % 7];
-
-      // Energy bar — honest: only a real transit-harmony moodScore drives the gauge.
-      // No pseudo-random fallback; when the engine gives no score we dim the gauge
-      // and show no number rather than fabricate one.
-      var signIdx = SIGN_KEYS.indexOf(signKey);
-      var hasMood = (typeof data.moodScore === 'number') && isFinite(data.moodScore);
-      var energyPct = hasMood ? Math.max(0, Math.min(100, Math.round(data.moodScore))) : null;
-      var pctEl = document.getElementById('srp-energy-pct');
-      var fillEl = document.getElementById('srp-energy-fill');
-      var energyWrap = document.getElementById('srp-energy-wrap');
-      var energyTrack = document.getElementById('srp-energy-track');
-      if (energyWrap) energyWrap.classList.toggle('srp-energy--empty', !hasMood);
-      if (hasMood) {
-        if (pctEl) pctEl.textContent = energyPct + ' / 100'; // a 0–100 gauge, not a % precision claim (matches daily-transit.js)
-        if (energyTrack) energyTrack.setAttribute('aria-valuenow', String(energyPct));
-        if (fillEl) { fillEl.style.width = '0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ fillEl.style.width = energyPct + '%'; }); }); }
-      } else {
-        if (pctEl) pctEl.textContent = '—';
-        if (energyTrack) energyTrack.removeAttribute('aria-valuenow');
-        if (fillEl) fillEl.style.width = '0';
-      }
 
       // Personal transit note when user has a saved chart for a different sign
       var noteEl = document.getElementById('srp-personal-note');
@@ -750,40 +719,9 @@
         }
       }
 
-      mountMomentReturnHook();
-
       // Planetary ruler badge
       var rulerEl = document.getElementById('srp-ruler-badge');
       if (rulerEl) rulerEl.textContent = (PLANETARY_RULERS[signKey] || '') + ' Ruler';
-
-      // Weekly reading
-      var weeklyBody = document.getElementById('srp-weekly-body');
-      if (weeklyBody) weeklyBody.textContent = data.weekly || 'Weekly reading will appear here.';
-      var weeklyToggle = document.getElementById('srp-weekly-toggle');
-      var weeklyChevron = document.getElementById('srp-weekly-chevron');
-      if (weeklyToggle && weeklyBody) {
-        weeklyToggle.setAttribute('aria-expanded', 'false');
-        weeklyBody.classList.remove('is-open');
-        weeklyBody.setAttribute('aria-hidden', 'true');
-        if (weeklyChevron) weeklyChevron.textContent = '▾';
-        weeklyToggle._bound && weeklyToggle.removeEventListener('click', weeklyToggle._bound);
-        weeklyToggle._bound = function() {
-          var open = !weeklyBody.classList.contains('is-open');
-          weeklyBody.classList.toggle('is-open', open);
-          weeklyToggle.setAttribute('aria-expanded', String(open));
-          weeklyBody.setAttribute('aria-hidden', String(!open));
-          if (weeklyChevron) weeklyChevron.textContent = open ? '▴' : '▾';
-        };
-        weeklyToggle.addEventListener('click', weeklyToggle._bound);
-      }
-
-      // Monthly Outlook — fillMonthlyPanel + bindCollapsible live in
-      // horoscope-subscribe.js, which is otherwise only booted by an
-      // IntersectionObserver far down the page. If the reading is opened from
-      // the hero (no scroll), that script may not be loaded yet, leaving the
-      // Monthly accordion dead. Ensure it is booted on demand. The Monthly
-      // button stays hidden until its body actually has content.
-      ensureMonthlyPanel(signKey);
 
       // Moon phase canvas
       try { (function drawMoonPhase() {
@@ -871,8 +809,6 @@
       panel.removeAttribute('aria-label');
       setPanelLocked(panel, true);
       panel.removeAttribute('data-element');
-      var fillEl = document.getElementById('srp-energy-fill');
-      if (fillEl) fillEl.style.width = '0';
       document.querySelectorAll('.sign-card.is-active').forEach(function(c) {
         c.classList.remove('is-active');
       });
@@ -938,13 +874,13 @@
     document.addEventListener('DOMContentLoaded', function () {
       var engineAfterLoad = [];
 
-      // Today's date — the freshness proof for a daily page. The static markup
-      // says "Updated Daily at Midnight UTC"; replace it with the real date.
+      // Use the visitor's local calendar date, while naming the fixed instant
+      // used by the daily calculation.
       var todayEl = document.getElementById('today-date-display');
       if (todayEl) {
         todayEl.textContent = new Date().toLocaleDateString(undefined, {
           weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-        });
+        }) + ' · POSITIONS CALCULATED AT 12:00 UT · SOLAR-CHART READING';
       }
 
       // Retrograde Calendar heading — make the year range track the real clock
@@ -954,11 +890,6 @@
         var yr = new Date().getFullYear();
         retroHeadingEl.textContent = 'Retrograde Calendar ' + yr + '–' + (yr + 1);
       }
-
-      // Personalised "Today, for you" reading (injected on demand, below the
-      // hero, only for visitors with a saved chart — zero cost otherwise).
-      bootPersonalToday();
-      mountMomentReturnHook();
 
       function scheduleEngines() {
         if (auditPath) return;
@@ -1393,12 +1324,6 @@
         water: ['#4A7580', 'rgba(74, 117, 128,0.15)', '#10282e'],
       };
 
-      // Deterministic stone per sign
-      var SIGN_STONES = [
-        'Red Jasper','Emerald','Agate','Moonstone','Sunstone','Peridot',
-        'Opal','Obsidian','Turquoise','Garnet','Amethyst','Aquamarine'
-      ];
-
       function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
         var words = text.split(' ');
         var line = '', lines = 0;
@@ -1451,8 +1376,6 @@
         var info = SIGNS[signKey];
         var data = Interpretations.getDailyHoroscope(info.name, new Date());
         var tint = ELEMENT_CARD_TINTS[info.element] || ['#d8b46a', 'rgba(216,180,106,0.13)', '#1A2230'];
-        var signIdx = SIGN_KEYS.indexOf(signKey);
-        var stone = SIGN_STONES[signIdx] || 'Crystal';
 
         var BASE = 1080;
         var exportW = (window.RafCore && window.RafCore.cardExportSize) ? window.RafCore.cardExportSize() : BASE * 2;
@@ -1547,8 +1470,8 @@
           ctx.fillRect(120, 852, 840, 1);
 
           ctx.fillStyle = '#7E7565';
-          ctx.font = '24px Georgia, serif';
-          ctx.fillText('Lucky Number: ' + (data.luckyNumber || '—') + '  ·  Color: ' + (data.luckyColor || '—') + '  ·  Stone: ' + stone, 540, 884);
+          ctx.font = '20px Georgia, serif';
+          ctx.fillText('REFLECTION & ENTERTAINMENT · NOT ADVICE OR PREDICTION', 540, 884);
 
           ctx.fillStyle = tint[0];
           ctx.font = '600 20px Georgia, serif';

@@ -22,6 +22,7 @@
   ];
   var LEGAL_LINKS = [
     { href: 'privacy.html', label: 'Privacy' },
+    { href: 'terms.html', label: 'Terms' },
     { href: 'refunds.html', label: 'Refunds' },
     { href: 'verify.html', label: 'Verify' },
   ];
@@ -48,7 +49,7 @@
       + '</div>'
       + '<div class="ap-site-footer__colophon">'
       +   '<span>&copy; ' + new Date().getFullYear() + ' AstroPrecise</span>'
-      +   '<span>Browser-computed ephemerides · No account required</span>'
+      +   '<span>Browser-computed ephemerides · No account required · <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">planet textures</a> <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span>'
       + '</div>';
   }
 

@@ -373,7 +373,13 @@ const FinishShader = {
     let cap = pre
       ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.1 : 1.6)
       : (perfTier === 'low' ? 1.25 : perfTier === 'mid' ? 2 : 2.5);
-    if (IS_PHONE) cap = Math.min(cap, 1.6); // v627 — halve fill-rate on real phones the tier heuristic mislabels 'high'
+    if (IS_PHONE) {
+      // Modern high-tier phones can sustain a 2× instrument canvas; forcing every
+      // handset to 1.6× made small worlds and ring edges visibly stair-step on the
+      // S24-class launch target. Constrained tiers keep the conservative budget.
+      const phoneCap = perfTier === 'high' ? 2.0 : perfTier === 'mid' ? 1.6 : 1.25;
+      cap = Math.min(cap, phoneCap);
+    }
     if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(cap);
     const real = window.devicePixelRatio || 1;
     return Math.min(real, cap);
@@ -4912,11 +4918,11 @@ const FinishShader = {
   function wantsSmallTextures() {
     if (perfTier === 'low' || perfTier === 'mid') return true;
     try {
-      const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-      const narrow = window.matchMedia && window.matchMedia('(max-width: 820px)').matches;
-      if (coarse && narrow) return true;                       // touch phone/tablet
-      if ((window.innerWidth || 9999) <= 560) return true;     // very narrow viewport
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return true;
     } catch (e) { /* fall through */ }
+    // A narrow screen is not a weak GPU. High-tier phones receive the full map so
+    // flying from Earth to another world does not end in a blurry 512px portrait.
     return false;
   }
 
@@ -4930,7 +4936,7 @@ const FinishShader = {
     const generation = runtimeGeneration;
     const expectedRenderer = renderer;
     const expectedScene = scene;
-    const file = (wantsSmallTextures() || IS_PHONE) ? 'env_nebula_cool_sm.webp' : 'env_nebula_cool.webp';
+    const file = wantsSmallTextures() ? 'env_nebula_cool_sm.webp' : 'env_nebula_cool.webp';
 
     envIblLoading = true;
     try {

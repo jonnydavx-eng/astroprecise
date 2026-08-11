@@ -87,6 +87,10 @@
     return location.pathname.split('/').pop() || 'index.html';
   }
 
+  function isLaunchRoute() {
+    return /^(?:index|chart|horoscope|shop|eclipse)\.html$/i.test(staticHere());
+  }
+
   function staticLink(row, here, drawer) {
     var href = row[0], label = row[1], meta = row[2] || {};
     var active = href === here;
@@ -104,11 +108,12 @@
     if (!header || header.dataset.apStaticNavReady) return;
     header.dataset.apStaticNavReady = '1';
     var here = staticHere();
+    var launch = isLaunchRoute();
     var desktop = header.querySelector('.navbar__nav');
     var mobile = header.querySelector('.navbar__mobile-menu');
     var toggle = header.querySelector('.navbar__toggle');
     var moreActive = NAV_MORE_EXPLORE.concat(NAV_EXTRAS).some(function (row) { return row[0] === here; });
-    var groups = [
+    var groups = launch ? [] : [
       { label: 'Your astrology', items: NAV_MORE_EXPLORE },
       { label: 'More tools', items: NAV_EXTRAS }
     ];
@@ -117,7 +122,7 @@
         return '<div class="navbar__more-group" role="group" aria-label="' + group.label + '"><p class="navbar__more-label">' + group.label + '</p>' + staticLinks(group.items, here, true) + '</div>';
       }).join('');
       desktop.innerHTML = staticLinks(NAV_PRIMARY, here, false)
-        + '<div class="navbar__more" data-nav-more><button type="button" class="navbar__more-btn' + (moreActive ? ' active' : '') + '" aria-expanded="false" aria-controls="navbar-more-panel-static">More</button><div class="navbar__more-panel" id="navbar-more-panel-static" hidden>' + panel + '</div></div>';
+        + (groups.length ? '<div class="navbar__more" data-nav-more><button type="button" class="navbar__more-btn' + (moreActive ? ' active' : '') + '" aria-expanded="false" aria-controls="navbar-more-panel-static">More</button><div class="navbar__more-panel" id="navbar-more-panel-static" hidden>' + panel + '</div></div>' : '');
     }
     if (mobile) {
       var drawer = '<p class="navbar__drawer-heading">Main</p>' + staticLinks(NAV_PRIMARY, here, true);
@@ -214,8 +219,17 @@
 
   function bootLivingSkyShell() {
     document.querySelectorAll('[data-ap-static-nav]').forEach(renderStaticHeader);
+    if (isLaunchRoute()) {
+      // Launch pages deliberately load shared shell CSS first and authored route
+      // CSS last. Re-appending the shell at 0/320/1200ms caused a visible design
+      // swap and let shared rules override the route after first paint. Their
+      // responsive header is sufficient, so no injected bottom bar either.
+      document.querySelectorAll('.bottom-nav').forEach(function (nav) { nav.remove(); });
+      document.documentElement.style.removeProperty('--bottom-nav-h');
+      return;
+    }
     renderStaticBottomNav();
-    // Deferred page boots may append legacy styles at DOM ready. Keep the shared living-sky system last.
+    // Archive routes still load deferred legacy sheets; keep the shared shell last there.
     setTimeout(promoteLivingSkyStyles, 0);
     setTimeout(promoteLivingSkyStyles, 320);
     setTimeout(promoteLivingSkyStyles, 1200);

@@ -9,6 +9,10 @@
 .ap-live-home .ap-personal-entry__inner { padding-block: clamp(48px, 6vw, 76px); }
 .ap-live-home .coupon,
 .ap-live-home .coupon__card { border-radius: 8px; }
+.ap-live-home .ap-model-stage::before { display: none; }
+.ap-live-home #mladder button,
+.ap-live-home #dock button,
+.ap-live-home #nowBtn { border-radius: 5px; }
 
 .ap-edition-art {
   align-self: start;
@@ -47,6 +51,14 @@
 .ap-proof-ledger p { margin: 8px 0 0; color: var(--ap-paper-dim); font-size: 13px; line-height: 1.6; }
 
 @media (max-width: 700px) {
+  .ap-live-home .ap-model-stage { height: 56svh; min-height: 420px; }
+  .ap-live-home .ap-control-panel { padding-top: 20px; }
+  .ap-live-home .ap-context { display: grid; grid-template-columns: 1fr 1.45fr; gap: 10px 18px; align-items: start; }
+  .ap-live-home .ap-context .ap-panel-label { grid-column: 1 / -1; }
+  .ap-live-home .ap-context h2 { margin: 0; }
+  .ap-live-home #telemetry { min-height: 0; }
+  .ap-live-home #dock { display: flex; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+  .ap-live-home #dock button { flex: 0 0 auto; min-width: 104px; }
   .ap-live-home .ap-live-actions { display: grid; grid-template-columns: 1fr 1fr; }
   .ap-live-home .ap-live-actions a { min-height: 48px; justify-content: center; padding-inline: 10px; text-align: center; }
   .ap-edition-art__actions { grid-template-columns: 1fr; }
@@ -55,4 +67,10 @@
   .ap-proof-ledger__inner { width: min(100% - 32px, 1180px); grid-template-columns: 1fr; }
   .ap-proof-ledger__inner > div { padding: 22px 0; border-left: 0; border-top: 1px solid var(--ap-line); }
   .ap-proof-ledger__inner > div:first-child { border-top: 0; }
+}
+
+@media (max-width: 420px) {
+  .ap-live-home .ap-model-stage { min-height: 390px; }
+  .ap-live-home .ap-context { grid-template-columns: 1fr; }
+  .ap-live-home .ap-context .ap-panel-label { grid-column: auto; }
 }

@@ -18,7 +18,7 @@ const AstroApp = (() => {
   // ── Init ──────────────────────────────────────────────────────────────────
 
   function injectSkipLink() {
-    if (document.getElementById('skip-to-content') || !document.getElementById('main-content')) return;
+    if (document.getElementById('skip-to-content') || document.querySelector('.skip, .skip-link') || !document.getElementById('main-content')) return;
     var a = document.createElement('a');
     a.id = 'skip-to-content';
     a.className = 'skip-link';
@@ -36,9 +36,14 @@ const AstroApp = (() => {
       try { document.fonts.load("16px 'AstroGlyph'").then(function () { window.dispatchEvent(new Event('astroglyph-ready')); }); } catch (e) {}
     }
     injectSkipLink();
-    renderNav();        // canonical site nav on every page — single source of truth
-    injectTopProfile(); // Profile tab — top-right on every page
-    initNavbar();
+    // ap-nav-model owns the authored launch header. Running this legacy nav
+    // renderer as well attached duplicate toggle handlers and could make the
+    // drawer open then immediately close on a single tap.
+    if (!isLaunchCorePage()) {
+      renderNav();
+      injectTopProfile();
+      initNavbar();
+    }
     initToastContainer();
     initScrollAnimations();
     initModalHandlers();
@@ -1087,6 +1092,7 @@ const AstroApp = (() => {
     NAV_BOTTOM_EXTRAS,
     NAV_BOTTOM_ICONS,
     NAV_BOTTOM_LABELS,
+    isLaunchCorePage,
     init,
     showToast,
     showLoading,
@@ -1221,6 +1227,7 @@ window.AstroUI = (() => {
 // rather than hand-edit each one, ensure a consistent Privacy · Terms line
 // exists once per page. Idempotent; skips the legal pages themselves.
 (function injectLegalLinks() {
+  if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   const here = (location.pathname.split('/').pop() || 'index.html');
   if (here === 'privacy.html' || here === 'terms.html') return;
   function place() {
@@ -1288,6 +1295,7 @@ window.AstroUI = (() => {
 
 // ═══ FOOTER GUIDE / TOOL LINKS (site-wide internal links for SEO) ════════
 (function injectGuideLinks() {
+  if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   function place() {
     if (document.querySelector('.ap-guide-links')) return;
     var host = document.querySelector('footer .container') || document.querySelector('footer');
@@ -1633,7 +1641,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'eclipse-reading',
-        available:    true,
+        available:    false,
         featured:     true,
         name:         'Eclipse Night Reading — Digital',
         type:         'digital',
@@ -1642,9 +1650,9 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        '12 Aug 2026',
         marketingLine:'Where the eclipse touches your chart — or we say it doesn’t, before you pay.',
-        previewImage: 'img/eclipse-og.png',
+        previewImage: 'img/editorial/eclipse-launch-2026-v835.webp',
         sampleUrl:    'eclipse.html',
-        blurb:        'On 12 August 2026 the Moon covers 88–96% of the Sun over Britain — a deep partial, and the deepest over southern Britain since 1999. Totality itself falls on Iceland and northern Spain; Britain never gets it. This short reading maps the eclipse against your actual birth chart: where it lands, what it touches, what tradition says it stirs. Five chapters, ≈350 words, computed from your birth minute on this device. If the eclipse barely touches your chart, we tell you before you pay.',
+        blurb:        'On 12 August 2026 the UK and Ireland see roughly 90–96% coverage. Totality crosses northern Russia, Greenland, Iceland, Spain and a small corner of Portugal. This five-beat reading maps the eclipse against your computed birth chart and says plainly when no direct contact is present. Checkout remains closed until delivery is verified.',
         icon:         'sunhigh',
         fulfilUrl:    '',   // Gumroad permalink via js/gumroad-unlock.js (eclipse-reading); '' = dormant
         gumroadSlug:  'eclipse-reading',
@@ -1652,7 +1660,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'eclipse-set',
-        available:    true,
+        available:    false,
         featured:     true,
         name:         'Eclipse Set — Reading + Keepsake',
         type:         'digital',
@@ -1671,18 +1679,18 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'deep-reading',
-        available:    true,
+        available:    false,
         featured:     true,
         name:         'Deep Natal Reading — Digital',
         type:         'digital',
         collection:   'theReading',
         price:        12.00,
         personalized: true,
-        badge:        'Instant unlock',
+        badge:        'Preview',
         marketingLine:'Your whole chart, read properly — seven chapters from your exact birth minute.',
         previewImage: 'img/shop/product-deep-reading.jpg',
         sampleUrl:    'sample-reading.html',
-        blurb:        'Every planet, your tightest aspects with orbs, and this season’s live sky — ≈1,800 words written from your birth minute, unlocked in your browser the moment you pay. Read the full seven-chapter sample first, free; yours is written the same way, from your minute.',
+        blurb:        'Every planet, your tightest aspects with orbs, and this season’s live sky — approximately 1,800 words from your computed birth chart. Read the seven-chapter sample now; checkout and fulfilment stay closed until verified.',
         icon:         'book',
         fulfilUrl:    '',   // Gumroad slug full-reading in gumroad-unlock.js; '' = dormant
         gumroadSlug:  'full-reading',
@@ -1690,7 +1698,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'plate',
-        available:    true,
+        available:    false,
         featured:     true,
         name:         'Numbered Sky Plate',
         type:         'digital',
@@ -1711,7 +1719,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'sky-pass',
-        available:    true,
+        available:    false,
         featured:     true,
         name:         'Sky Pass',
         type:         'digital',
@@ -1735,7 +1743,7 @@ window.AP_MON = Object.assign({
         collection:   'theReading',
         price:        16.00,
         personalized: true,
-        badge:        'Instant PDF',
+        badge:        'Preview',
         marketingLine:'Twelve months of transits — your personal sky forecast.',
         previewImage: 'img/shop/product-year-ahead.jpg',
         blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — an honest forecast drawn from your own placements, not a generic horoscope.',
@@ -1745,7 +1753,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'moment-pack',
-        available:    true,
+        available:    false,
         name:         'Moment Pack — Digital Keepsake',
         type:         'digital',
         collection:   'onYourWall',
@@ -1762,14 +1770,14 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'natal-poster-pdf',
-        available:    true,
+        available:    false,
         featured:     true,
         name:         'Your Natal Sky — Print-at-Home PDF',
         type:         'digital',
         collection:   'onYourWall',
         price:        6.00,
         personalized: true,
-        badge:        'Instant PDF',
+        badge:        'Preview',
         marketingLine:'Your exact sky, ready to print tonight.',
         previewImage: 'img/shop/product-poster-pdf.jpg',
         blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
@@ -1805,7 +1813,7 @@ window.AP_MON = Object.assign({
         collection:   'theReading',
         price:        14.00,
         personalized: true,
-        badge:        'Instant PDF',
+        badge:        'Preview',
         marketingLine:'Your birthday sky — the annual ritual, no subscription.',
         previewImage: 'img/shop/product-solar-return.jpg',
         blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
@@ -2035,6 +2043,7 @@ else AstroApp.init();
   const ACK_KEY = 'ap_privacy_ack';
 
   function showPrivacyBanner() {
+    if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
     var ua = navigator.userAgent || '';
     if (window.__apSkipPrivacyBanner || navigator.webdriver || /\bHeadlessChrome\b/i.test(ua) ||
         /[?&]lite=1/.test(location.search || '') ||
@@ -2133,6 +2142,7 @@ else AstroApp.init();
   }
 
   function initBottomNav() {
+    if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
     if (document.querySelector('.bottom-nav')) return;
     // Structure clean: home uses custom masthead (no .navbar) — still give phone tabs.
     if (!document.querySelector('.navbar, .site-header, #apMasthead, .masthead')) return;
@@ -2882,6 +2892,10 @@ else AstroApp.init();
   }
 
   function boot() {
+    // The five launch routes own their hierarchy, footer and one intentional
+    // conversion surface. Legacy email banners/forms made those pages look like
+    // separate campaigns and could insert a full-width bar after first paint.
+    if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
     resetEmailModalState();
     function injectModalWhenReady() {
       if (document.body.classList.contains('preloader-active')) return;
@@ -2909,6 +2923,7 @@ else AstroApp.init();
 
 // Footer social icons + affiliate ads (all pages that load app.js).
 (function loadAffiliateSocial() {
+  if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   if (document.querySelector('script[data-ap-affiliate-social]')) return;
   var s = document.createElement('script');
   s.src = 'js/affiliate-social.js';
