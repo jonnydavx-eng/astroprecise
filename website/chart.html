@@ -8,7 +8,7 @@
   <meta name="robots" content="index, follow" />
   <title>Free Birth Chart — calculated on your device | Astro Precise</title>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="stylesheet" href="css/fonts.css?v=835" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -85,29 +85,29 @@
   <!-- ============================================================
        LAUNCH HEADER
   ============================================================ -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
             <a href="index.html" class="navbar__link">Observatory</a>
-            <a href="chart.html" class="navbar__link" aria-current="page">Birth Chart</a>
+            <a href="chart.html" class="navbar__link" aria-current="page">Chart</a>
             <a href="horoscope.html" class="navbar__link">Daily</a>
             <a href="eclipse.html" class="navbar__link">Eclipse</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
         <div class="navbar__end">
-          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation">
             <span></span><span></span><span></span>
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
     </nav>
   </header>
 

@@ -7,8 +7,8 @@
 .ap-live-home .ap-live-copy { max-width: 40ch; }
 .ap-live-home .ap-personal-entry { border-top: 1px solid var(--ap-line); }
 .ap-live-home .ap-personal-entry__inner { padding-block: clamp(48px, 6vw, 76px); }
-.ap-live-home .coupon,
-.ap-live-home .coupon__card { border-radius: 8px; }
+.ap-live-home .ap-calc-entry-panel,
+.ap-live-home .ap-calc-entry-panel__body { border-radius: 8px; }
 .ap-live-home .ap-model-stage::before { display: none; }
 .ap-live-home #mladder button,
 .ap-live-home #dock button,

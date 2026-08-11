@@ -122,8 +122,8 @@
     var v = String(variant || '').toLowerCase();
     if (PLANET_SLUG[v]) return planet(v, opts);
     if (ELEMENT_GLYPH[v]) return element(v, opts);
-    for (var sign in SIGN_GLYPH) {
-      if (SIGN_GLYPH[sign] === glyph) return sign(sign, opts);
+    for (var signName in SIGN_GLYPH) {
+      if (SIGN_GLYPH[signName] === glyph) return sign(signName, opts);
     }
     if (window.AstroElementSeals) return AstroElementSeals.seal('all', opts);
     return imgSeal('element', 'all', 'Astrological symbol', v || 'air', opts);

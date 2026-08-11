@@ -1972,7 +1972,9 @@ window.AP_MON = Object.assign({
     });
 
     // Footer support line — appears the moment a tip URL is configured.
-    if (isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
+    const routeKey = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
+    const isLaunchCore = /^(index|chart|horoscope|shop|eclipse)\.html$/.test(routeKey);
+    if (!isLaunchCore && isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
       const host = document.querySelector('.ap-legal-links') || document.querySelector('.footer-legal')
         || document.querySelector('footer .container') || document.querySelector('footer');
       if (host) {

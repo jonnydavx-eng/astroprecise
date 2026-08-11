@@ -4,20 +4,18 @@
   --ap-card-py: 50%;
   --ap-card-rx: 0deg;
   --ap-card-ry: 0deg;
-  --ap-card-reveal-y: 0px;
   --ap-card-lift: 0px;
   --ap-card-glint: 216, 180, 106;
   --ap-card-spark: 242, 236, 223;
   position: relative;
   isolation: isolate;
-  transform: perspective(980px) translate3d(0, calc(var(--ap-card-reveal-y) + var(--ap-card-lift)), 0)
+  transform: perspective(980px) translate3d(0, var(--ap-card-lift), 0)
     rotateX(var(--ap-card-rx)) rotateY(var(--ap-card-ry));
   transform-style: preserve-3d;
   transform-origin: 50% 50%;
   backface-visibility: hidden;
   transition:
     transform 260ms cubic-bezier(.2,.75,.25,1),
-    opacity 420ms ease,
     border-color 220ms ease,
     box-shadow 260ms ease;
 }
@@ -32,21 +30,18 @@
   --ap-card-spark: 216, 180, 106;
 }
 
-[data-ap-mystic-card][data-ap-card-reveal="pending"] {
-  --ap-card-reveal-y: 16px;
-  opacity: 0;
+[data-ap-card-visual] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
 }
 
-[data-ap-mystic-card][data-ap-card-reveal="ready"] {
-  --ap-card-reveal-y: 0px;
-  opacity: 1;
-  transition-delay: var(--ap-card-delay, 0ms);
-}
+.ap-card-art { display: block; }
 
 .ap-mystic-card__sheen {
   position: absolute;
   inset: 0;
-  z-index: 6;
+  z-index: 2;
   overflow: hidden;
   border-radius: inherit;
   pointer-events: none;
@@ -90,48 +85,41 @@
 
 [data-ap-mystic-card].is-ap-card-active {
   --ap-card-lift: -3px;
-  border-color: rgba(216,180,106,.46);
-  box-shadow: 0 20px 54px rgba(0,0,0,.28), 0 0 34px rgba(216,180,106,.055);
+  border-color: rgba(var(--ap-card-glint),.46);
+  box-shadow: 0 20px 54px rgba(0,0,0,.28), 0 0 34px rgba(var(--ap-card-glint),.06);
 }
 
-[data-ap-mystic-card].is-ap-card-active > .ap-mystic-card__sheen::before,
-[data-ap-mystic-card]:focus-within > .ap-mystic-card__sheen::before {
+[data-ap-mystic-card].is-ap-card-active .ap-mystic-card__sheen::before,
+[data-ap-mystic-card]:focus-within .ap-mystic-card__sheen::before {
   opacity: .68;
   transform: rotate(2deg) scale(1.035);
 }
 
-[data-ap-mystic-card].is-ap-card-active > .ap-mystic-card__sheen,
-[data-ap-mystic-card]:focus-visible > .ap-mystic-card__sheen,
-[data-ap-mystic-card]:focus-within > .ap-mystic-card__sheen {
-  opacity: .84;
+[data-ap-mystic-card].is-ap-card-active .ap-mystic-card__sheen,
+[data-ap-mystic-card]:focus-visible .ap-mystic-card__sheen,
+[data-ap-mystic-card]:focus-within .ap-mystic-card__sheen {
+  opacity: .62;
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   [data-ap-mystic-card].is-ap-card-active {
-    transition-duration: 70ms, 220ms, 180ms, 220ms;
+    transition-duration: 70ms, 180ms, 220ms;
     will-change: transform;
   }
 }
 
 @media (hover: none), (pointer: coarse) {
-  [data-ap-mystic-card] > .ap-mystic-card__sheen {
-    opacity: .2;
-    background-position: 42% 36%, 58% 42%;
-  }
-  [data-ap-mystic-card] > .ap-mystic-card__sheen::before { opacity: .24; }
+  .ap-mystic-card__sheen { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-ap-mystic-card],
-  [data-ap-mystic-card][data-ap-card-reveal="pending"],
-  [data-ap-mystic-card][data-ap-card-reveal="ready"] {
+  [data-ap-mystic-card] {
     --ap-card-rx: 0deg;
     --ap-card-ry: 0deg;
-    --ap-card-reveal-y: 0px;
     --ap-card-lift: 0px;
     opacity: 1;
     transform: none;
     transition: border-color 120ms linear;
   }
-  [data-ap-mystic-card] > .ap-mystic-card__sheen { display: none; }
+  .ap-mystic-card__sheen { display: none; }
 }

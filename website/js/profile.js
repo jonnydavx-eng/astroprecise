@@ -12,6 +12,7 @@ window.AstroProfile = (() => {
   const STORAGE_KEY_PREFS    = 'ap_prefs';
   const STORAGE_KEY_COMPARES = 'ap_comparisons';
   const STORAGE_KEY_DASHBOARD = 'ap_profile_v2';
+  const ENGINE_V = 3;
 
   // ── Default Preferences ──────────────────────────────────────────────────
   const DEFAULT_PREFS = {
@@ -111,7 +112,7 @@ window.AstroProfile = (() => {
         id:        crypto.randomUUID ? crypto.randomUUID() : now.toString(36),
         createdAt: now,
         updatedAt: now,
-        engineV:   2,
+        engineV:   ENGINE_V,
         ...chartData,
       });
     }
@@ -244,14 +245,13 @@ window.AstroProfile = (() => {
       sunSign:     E.signOf(raw.positions.sun.longitude),
       moonSign:    E.signOf(raw.positions.moon.longitude),
       risingSign:  timeKnown ? E.signOf(raw.ascendant) : null,
-      engineV:     2,
+      engineV:     ENGINE_V,
     };
   }
 
   // One-time re-derivation after the 2026-06-12 ascendant fix: charts saved
   // before it carry the DESCENDANT as risingSign. Birth data is stored, so we
   // recompute quietly instead of asking anyone to re-enter anything.
-  const ENGINE_V = 3;
   function migrateCharts() {
     const E = window.AstroEphemeris;
     if (!E || !E.calculateNatalChart) { setTimeout(migrateCharts, 300); return; }
@@ -333,8 +333,10 @@ window.AstroProfile = (() => {
     const a    = document.createElement('a');
     a.href     = url;
     a.download = `astroprecise-backup-${Date.now()}.json`;
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   function importData(jsonString) {
@@ -466,6 +468,7 @@ window.AstroProfile = (() => {
   }
 
   return {
+    engineVersion: ENGINE_V,
     getUser, saveUser, isLoggedIn, login, register, logout, updateProfile,
     getCharts, getChart, getActiveChart, saveChart, deleteChart, buildChartData,
     packPositionsForSave, hydrateChartFromSaved,

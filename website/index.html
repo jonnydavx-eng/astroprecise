@@ -7,7 +7,7 @@
   <title>AstroPrecise — the living sky, computed now</title>
   <meta name="description" content="Explore a live 3D solar system, cast a private birth chart and follow the 12 August 2026 eclipse with computed astronomy and clear astrological interpretation.">
   <link rel="canonical" href="https://astroprecise.app/">
-  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="manifest" href="manifest.json">
   <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
 
   <meta property="og:title" content="AstroPrecise — the living sky, computed now">
@@ -118,17 +118,17 @@
           <h2 id="personal-title">The minute you entered the story.</h2>
           <p class="standfirst">Set your birth details once. The chart instrument calculates the positions here, explains the result plainly and keeps the birth moment on this device.</p>
         </div>
-        <div class="coupon">
-          <div class="coupon__tear"><p class="eyebrow">Cast your free chart</p><span class="coupon__perf" aria-hidden="true"></span></div>
-          <div class="coupon__card">
+        <div class="ap-calc-entry-panel">
+          <div class="ap-calc-entry-panel__head"><p class="eyebrow">Calculation room · private on this device</p></div>
+          <div class="ap-calc-entry-panel__body">
             <form id="coupon-form" action="chart.html" method="get">
               <div class="fields">
                 <div class="field-e"><label for="f-date">Birth date</label><input type="date" id="f-date" required min="1800-01-01" max="2200-12-31" autocomplete="bday"></div>
                 <div class="field-e"><label for="f-time">Time <span class="opt">optional</span></label><input type="time" id="f-time"></div>
                 <div class="field-e field--place"><label for="f-place">Birth place</label><input type="text" id="f-place" required placeholder="Town or city" autocomplete="off" aria-describedby="coupon-hint"></div>
               </div>
-              <p class="coupon__hint" id="coupon-hint">A precise time sharpens the Moon; your town fixes the angles and houses. You choose an exact place on the next screen.</p>
-              <div class="coupon__action">
+              <p class="ap-calc-entry-panel__hint" id="coupon-hint">A precise time sharpens the Moon; your town fixes the angles and houses. You choose an exact place on the next screen.</p>
+              <div class="ap-calc-entry-panel__action">
                 <button class="btn-primary" type="submit">Cast my chart — free</button>
                 <span class="action-note">Private · no account · no birth details in the address bar</span>
               </div>
@@ -143,7 +143,7 @@
         <div>
           <p class="eyebrow">Current edition · 12 August 2026</p>
           <h2 class="deck-h" id="edition-title">The shadow reaches Europe.</h2>
-          <p class="sub">Start with the free live instruments. Paid writing and print editions remain clearly marked as previews until checkout is genuinely connected.</p>
+          <p class="sub">Start with the free live instruments. Written and print-ready editions remain clearly marked as previews until checkout is genuinely connected.</p>
           <ol class="contents">
             <li class="item">
               <span class="item__num">01</span>
@@ -159,16 +159,16 @@
             </li>
             <li class="item">
               <span class="item__num">03</span>
-              <h3 class="item__title"><a href="shop.html">Written and printed editions</a></h3>
+              <h3 class="item__title"><a href="shop.html">Written and print-ready editions</a></h3>
               <span class="item__price">Preview</span>
-              <p class="item__desc">Eclipse reading, Deep Reading, numbered Sky Plate and Sky Pass—with published scope and prices, but no fake checkout.</p>
+              <p class="item__desc">Eclipse Night Reading, Eclipse Set, Deep Reading, numbered Sky Plate and Sky Pass—with published scope and prices, but no fake checkout.</p>
             </li>
           </ol>
           <p class="honesty">The astronomy is computed and checkable. Astrology is a cultural language offered for reflection—not scientific fact, advice or prediction.</p>
         </div>
         <aside class="ap-edition-art">
           <figure>
-            <img src="img/editorial/eclipse-launch-2026-v835.webp" width="1600" height="900" loading="lazy" alt="A cinematic field study of the 12 August 2026 solar eclipse">
+            <span class="ap-card-art"><img src="img/editorial/eclipse-launch-2026-v835.webp" width="1600" height="900" loading="lazy" alt="A cinematic field study of the 12 August 2026 solar eclipse"></span>
             <figcaption><span>Editorial artwork · not live data</span><strong>12 August 2026</strong> Totality crosses northern Russia, Greenland, Iceland, Spain and a corner of Portugal; the UK and Ireland see roughly 90–96% coverage low in the west.</figcaption>
           </figure>
           <div class="ap-edition-art__actions">
@@ -213,7 +213,7 @@
         };
         var target = 'chart.html';
         try { sessionStorage.setItem('ap-chart-handoff', JSON.stringify(payload)); }
-        catch (_) { target += '#' + new URLSearchParams(payload).toString(); }
+        catch (_) { target += '?entry=private-reentry'; }
         location.href = target;
       });
     })();

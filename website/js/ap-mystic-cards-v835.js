@@ -6,69 +6,46 @@
   'use strict';
 
   var CARD_SELECTOR = [
-    'body.page-home .edition .item',
     'body.page-home .ap-edition-art figure',
-    'body.page-home .ap-proof-ledger__inner > div',
-    'body.page-shop .ap-product',
-    'body.page-shop .ap-product-ledger > article',
-    'body.page-shop .ap-shop-method li',
-    'body.page-horoscope .sign-card',
-    'body.page-horoscope .sign-reading-panel',
+    'body.page-shop .ap-shop-leads .ap-product',
+    'body.page-horoscope .reading-card',
     'body.page-chart .big-three-card',
     'body.page-chart .pattern-card',
     'body.page-chart .ap-reading-card',
-    'body.page-eclipse .ap-eclipse-guide__grid > article',
     'body.page-eclipse .ap-eclipse-geometry-plate',
-    'body.page-eclipse .ap-eclipse-result'
+    'body.page-eclipse #eclipseContactRows > li'
   ].join(',');
 
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   var saveData = !!(navigator.connection && navigator.connection.saveData);
   var motionAllowed = !reduce && !saveData;
-  var revealObserver = null;
   var mutationObserver = null;
   var activeCard = null;
   var pendingPoint = null;
   var frame = 0;
-  var cardOrder = 0;
-  var CARD_TONES = ['brass', 'silver', 'brass', 'ember'];
-
-  function reveal(card) {
-    card.dataset.apCardReveal = 'ready';
-    var delay = Number.parseInt(card.style.getPropertyValue('--ap-card-delay'), 10) || 0;
-    window.setTimeout(function () {
-      if (document.contains(card)) card.style.setProperty('--ap-card-delay', '0ms');
-    }, delay + 520);
-  }
-
-  if (motionAllowed && 'IntersectionObserver' in window) {
-    revealObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        reveal(entry.target);
-        revealObserver.unobserve(entry.target);
-      });
-    }, { rootMargin: '0px 0px -7% 0px', threshold: 0.08 });
+  function toneFor(card) {
+    if (card.closest('.page-eclipse') || card.classList.contains('ap-product--eclipse')) return 'ember';
+    if (card.closest('.page-chart') || card.closest('.page-horoscope')) return 'silver';
+    return 'brass';
   }
 
   function prepare(card) {
     if (!card || card.nodeType !== 1 || card.dataset.apMysticCard != null) return;
     card.dataset.apMysticCard = '';
-    card.dataset.apCardTone = CARD_TONES[cardOrder % CARD_TONES.length];
-    card.style.setProperty('--ap-card-delay', Math.min(cardOrder % 6, 5) * 45 + 'ms');
-    cardOrder += 1;
+    card.dataset.apCardTone = toneFor(card);
 
-    var sheen = document.createElement('span');
-    sheen.className = 'ap-mystic-card__sheen';
-    sheen.setAttribute('aria-hidden', 'true');
-    card.appendChild(sheen);
-
-    if (revealObserver) {
-      card.dataset.apCardReveal = 'pending';
-      revealObserver.observe(card);
-    } else {
-      reveal(card);
+    // Optical foil belongs to imagery, never over reading copy. Compact result
+    // cards receive depth only; editorial/product figures receive the light field.
+    var visual = card.matches('.ap-card-art, .ap-product__image')
+      ? card
+      : card.querySelector('.ap-card-art, .ap-product__image');
+    if (visual) {
+      visual.dataset.apCardVisual = '';
+      var sheen = document.createElement('span');
+      sheen.className = 'ap-mystic-card__sheen';
+      sheen.setAttribute('aria-hidden', 'true');
+      visual.appendChild(sheen);
     }
   }
 
@@ -129,6 +106,7 @@
   }
 
   function boot() {
+    if (!motionAllowed || !finePointer) return;
     scan(document);
     document.addEventListener('pointermove', onPointerMove, { passive: true });
     document.addEventListener('pointerout', onPointerOut, { passive: true });
@@ -146,15 +124,25 @@
 
   function stop() {
     if (frame) cancelAnimationFrame(frame);
-    if (revealObserver) revealObserver.disconnect();
+    frame = 0;
+    pendingPoint = null;
+    reset(activeCard);
     if (mutationObserver) mutationObserver.disconnect();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
   window.addEventListener('pagehide', function (event) {
-    // A bfcache page is suspended, not destroyed; keep observers alive so
-    // dynamically generated Chart cards still receive the treatment on return.
-    if (!event.persisted) stop();
-  }, { once: true });
+    if (event.persisted) {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      pendingPoint = null;
+      reset(activeCard);
+      return;
+    }
+    stop();
+  });
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted && motionAllowed && finePointer) scan(document);
+  });
 })();
