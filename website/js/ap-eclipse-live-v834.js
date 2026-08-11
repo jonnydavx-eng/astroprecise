@@ -218,6 +218,7 @@ async function mount(root, E) {
   const nowButton = root.querySelector('[data-eclipse-now]');
   const eventButton = root.querySelector('[data-eclipse-event]');
   const playButton = root.querySelector('[data-eclipse-play]');
+  const launchPlayButtons = Array.from(document.querySelectorAll('[data-eclipse-play-launch]'));
   const shareButton = root.querySelector('[data-eclipse-share]');
   const shareStatusEl = root.querySelector('[data-eclipse-share-status]');
   const lensButtons = Array.from(root.querySelectorAll('[data-eclipse-lens]'));
@@ -239,13 +240,17 @@ async function mount(root, E) {
   if (!canvas || !stage || !range || !nowButton || !eventButton || !playButton || lensButtons.length !== 3) {
     throw new Error('Eclipse instrument controls are incomplete');
   }
-  const instrumentControls = [range, nowButton, eventButton, playButton, shareButton, ...lensButtons]
+  const instrumentControls = [range, nowButton, eventButton, playButton, shareButton, ...lensButtons, ...launchPlayButtons]
     .filter(Boolean);
   instrumentControls.forEach((control) => { control.disabled = true; });
   const reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const constrainedRender = (navigator.deviceMemory && navigator.deviceMemory <= 4)
     || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
   const interactionFrameMs = constrainedRender ? 30 : 16;
+  const revealInstrument = () => {
+    if (!window.matchMedia || !window.matchMedia('(max-width: 900px)').matches) return;
+    requestAnimationFrame(() => stage.scrollIntoView({ block: 'start', behavior: reducedMotion ? 'auto' : 'smooth' }));
+  };
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -467,7 +472,10 @@ async function mount(root, E) {
   }
 
   lensButtons.forEach((button) => {
-    button.addEventListener('click', () => setLens(button.dataset.eclipseLens));
+    button.addEventListener('click', () => {
+      setLens(button.dataset.eclipseLens);
+      revealInstrument();
+    });
   });
 
   const moonOrbit = new THREE.LineLoop(
@@ -637,8 +645,13 @@ async function mount(root, E) {
     }
     if (nowButton) nowButton.setAttribute('aria-pressed', mode === 'live' ? 'true' : 'false');
     if (eventButton) eventButton.setAttribute('aria-pressed', mode === 'greatest' ? 'true' : 'false');
-    playButton.setAttribute('aria-pressed', mode === 'passage' ? 'true' : 'false');
-    playButton.textContent = mode === 'passage' ? 'Pause the shadow passage' : 'Play the shadow passage';
+    const playing = mode === 'passage';
+    playButton.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    playButton.textContent = playing ? 'Pause shadow' : 'Play shadow';
+    launchPlayButtons.forEach((button) => {
+      button.setAttribute('aria-pressed', playing ? 'true' : 'false');
+      button.textContent = playing ? 'Pause the 3D shadow' : 'Play the 3D shadow';
+    });
   }
 
   function setDisplayDate(date, nextMode) {
@@ -701,6 +714,7 @@ async function mount(root, E) {
   }
 
   function playPassage() {
+    revealInstrument();
     if (passageFrame) {
       cancelPassage();
       return;
@@ -758,9 +772,17 @@ async function mount(root, E) {
       setDisplayDate(new Date(pendingRangeMs), 'timeline');
     });
   });
-  nowButton.addEventListener('click', () => travelToDate(new Date(), 'live'));
-  eventButton.addEventListener('click', () => travelToDate(new Date(EVENT_MS), 'greatest'));
+  nowButton.addEventListener('click', () => {
+    travelToDate(new Date(), 'live');
+    revealInstrument();
+  });
+  eventButton.addEventListener('click', () => {
+    travelToDate(new Date(EVENT_MS), 'greatest');
+    revealInstrument();
+  });
   playButton.addEventListener('click', playPassage);
+  launchPlayButtons.forEach((button) => button.addEventListener('click', playPassage));
+  range.addEventListener('change', revealInstrument);
 
   function setShareStatus(message) {
     if (!shareStatusEl) return;

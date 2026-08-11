@@ -32,19 +32,6 @@ function degreeText(longitude) {
   return `${degrees}°${String(minutes).padStart(2, '0')}′ ${SIGNS[sign]}`;
 }
 
-function updateCountdown() {
-  const host = byId('countdown');
-  if (!host) return;
-  const remaining = EVENT_UTC_MS - Date.now();
-  if (remaining <= 0) {
-    host.textContent = 'Greatest eclipse has passed · the 3D replay remains available';
-    return;
-  }
-  const days = Math.floor(remaining / 86400000);
-  const hours = Math.floor((remaining % 86400000) / 3600000);
-  const minutes = Math.floor((remaining % 3600000) / 60000);
-  host.textContent = `T−${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m to greatest eclipse`;
-}
 
 function timezoneOffsetMinutes(zone, instant) {
   const parts = {};
@@ -239,8 +226,6 @@ function seedSavedChart(chart) {
 }
 
 async function init() {
-  updateCountdown();
-  setInterval(updateCountdown, 30000);
   const birthDate = byId('dob');
   if (birthDate) {
     const today = new Date();

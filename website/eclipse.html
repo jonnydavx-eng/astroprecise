@@ -23,15 +23,15 @@
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='836';</script>
+  <script>window.AP_ASSET_V='838';</script>
   <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }</script>
   <script src="js/ephemeris.js?v=835" defer></script>
-  <script src="js/ap-nav-model.js?v=835" defer></script>
-  <script type="module" src="js/ap-eclipse-live-v834.js?v=836"></script>
-  <script type="module" src="js/ap-eclipse-contact-v835.js?v=835"></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835">
-  <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=836">
-  <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=836">
+  <script src="js/ap-nav-model.js?v=838" defer></script>
+  <script type="module" src="js/ap-eclipse-live-v834.js?v=838"></script>
+  <script type="module" src="js/ap-eclipse-contact-v835.js?v=838"></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=838">
+  <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=838">
+  <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=838">
   <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=835">
 </head>
 <body class="page-eclipse eclipse-v835">
@@ -53,7 +53,20 @@
         <p class="ap-eclipse-kicker"><span aria-hidden="true"></span> Eclipse edition · 12 August 2026</p>
         <h1>The Moon crosses the Sun.<br><em>Watch the shadow arrive.</em></h1>
         <p>One dedicated 3D instrument for the real Sun–Moon–Earth alignment. Drag the live shadow view immediately below, then use the practical guide for where, when, eye safety and chart contacts.</p>
-        <div class="ap-eclipse-hero__meta"><span id="countdown">Calculating time to greatest eclipse</span><span id="eclipsePoint">Computing eclipse longitude</span></div>
+        <section class="ap-eclipse-mission" aria-label="Eclipse mission clock and viewing times">
+          <div class="ap-eclipse-mission__clock">
+            <p>Global greatest eclipse in</p>
+            <div class="ap-eclipse-countdown" aria-hidden="true"><span><strong data-countdown-days>—</strong><small>Days</small></span><span><strong data-countdown-hours>—</strong><small>Hours</small></span><span><strong data-countdown-minutes>—</strong><small>Minutes</small></span><span><strong data-countdown-seconds>—</strong><small>Seconds</small></span></div>
+            <p class="sr-only" id="countdown" aria-live="polite">Calculating time to greatest eclipse</p>
+          </div>
+          <div class="ap-eclipse-mission__facts">
+            <p><span>Global greatest</span><strong>17:45:51 UTC · 18:45:51 BST</strong></p>
+            <p><span>London partial view</span><strong>18:17 start · ~19:13 maximum · 20:06 end</strong></p>
+            <p class="ap-eclipse-mission__safety"><span>Eye safety</span><strong>Certified eclipse viewers throughout every partial phase</strong></p>
+            <span class="ap-eclipse-mission__point" id="eclipsePoint">Computing eclipse longitude</span>
+          </div>
+          <div class="ap-eclipse-mission__actions"><button type="button" data-eclipse-play-launch aria-pressed="false" disabled>Play the 3D shadow</button><a href="#guide-title">Open the field guide</a></div>
+        </section>
       </div>
     </header>
 
@@ -66,26 +79,36 @@
           <div class="ap-eclipse-live__fallback"><div>Preparing the live eclipse geometry…</div></div>
         </div>
         <aside class="ap-eclipse-live__panel" aria-label="Live eclipse geometry readout">
-          <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Live geometry · preparing</span></div>
-          <p class="ap-eclipse-live__mode" data-eclipse-mode>Live geocentric alignment</p>
-          <p class="ap-eclipse-live__status" data-eclipse-status aria-live="polite">Computing the shadow…</p>
-          <p class="ap-eclipse-live__time" data-eclipse-time>UTC geometry preparing</p>
-          <dl class="ap-eclipse-live__data"><div class="ap-eclipse-live__datum"><dt>Sun–Moon separation</dt><dd data-eclipse-separation>—</dd></div><div class="ap-eclipse-live__datum"><dt>Moon distance</dt><dd data-eclipse-moon-distance>—</dd></div><div class="ap-eclipse-live__datum"><dt>Shadow axis</dt><dd data-eclipse-shadow-offset>—</dd></div><div class="ap-eclipse-live__datum"><dt>Moon / Sun apparent radius</dt><dd data-eclipse-ratio>—</dd></div></dl>
+          <div class="ap-eclipse-live__readout">
+            <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Live geometry · preparing</span></div>
+            <p class="ap-eclipse-live__mode" data-eclipse-mode>Live geocentric alignment</p>
+            <p class="ap-eclipse-live__status" data-eclipse-status aria-live="polite">Computing the shadow…</p>
+            <p class="ap-eclipse-live__time" data-eclipse-time>UTC geometry preparing</p>
+          </div>
+          <details class="ap-eclipse-live__instrument">
+            <summary>Instrument readings</summary>
+            <dl class="ap-eclipse-live__data"><div class="ap-eclipse-live__datum"><dt>Sun–Moon separation</dt><dd data-eclipse-separation>—</dd></div><div class="ap-eclipse-live__datum"><dt>Moon distance</dt><dd data-eclipse-moon-distance>—</dd></div><div class="ap-eclipse-live__datum"><dt>Shadow axis</dt><dd data-eclipse-shadow-offset>—</dd></div><div class="ap-eclipse-live__datum"><dt>Moon / Sun apparent radius</dt><dd data-eclipse-ratio>—</dd></div></dl>
+          </details>
           <div class="ap-eclipse-live__controls">
-            <div class="ap-eclipse-live__actions"><button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="true">Track live now</button><button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="false">Greatest eclipse</button></div>
-            <button class="ap-eclipse-live__button ap-eclipse-live__button--passage" type="button" data-eclipse-play aria-pressed="false">Play the shadow passage</button>
-            <div class="ap-eclipse-live__lens">
-              <span>View</span>
-              <div role="group" aria-label="Choose a view of the eclipse model">
-                <button class="ap-eclipse-live__lens-button" type="button" data-eclipse-lens="system" aria-pressed="true">System</button>
-                <button class="ap-eclipse-live__lens-button" type="button" data-eclipse-lens="shadow" aria-pressed="false">Shadow</button>
-                <button class="ap-eclipse-live__lens-button" type="button" data-eclipse-lens="earth" aria-pressed="false">Earth</button>
+            <div class="ap-eclipse-live__dock" aria-label="Eclipse playback controls">
+              <div class="ap-eclipse-live__actions"><button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="true">Live now</button><button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="false">Maximum</button></div>
+              <button class="ap-eclipse-live__button ap-eclipse-live__button--passage" type="button" data-eclipse-play aria-pressed="false">Play shadow</button>
+              <div class="ap-eclipse-live__lens">
+                <span>View</span>
+                <div role="group" aria-label="Choose a view of the eclipse model">
+                  <button class="ap-eclipse-live__lens-button" type="button" data-eclipse-lens="system" aria-pressed="true">System</button>
+                  <button class="ap-eclipse-live__lens-button" type="button" data-eclipse-lens="shadow" aria-pressed="false">Shadow</button>
+                  <button class="ap-eclipse-live__lens-button" type="button" data-eclipse-lens="earth" aria-pressed="false">Earth</button>
+                </div>
               </div>
             </div>
-            <label class="ap-eclipse-live__control-label" for="eclipse-time-range"><span>Explore the alignment</span><span data-eclipse-range-time>—</span></label>
-            <input class="ap-eclipse-live__range" id="eclipse-time-range" data-eclipse-range type="range" aria-label="Eclipse timeline from three days before to two days after greatest eclipse">
-            <div class="ap-eclipse-live__share"><button type="button" data-eclipse-share>Share this moment</button><span data-eclipse-share-status role="status" aria-live="polite"></span></div>
-            <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection use published Sun–Moon calculations · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · this is not a ground-track map.</p>
+            <details class="ap-eclipse-live__advanced">
+              <summary>Timeline &amp; share</summary>
+              <label class="ap-eclipse-live__control-label" for="eclipse-time-range"><span>Explore the alignment</span><span data-eclipse-range-time>—</span></label>
+              <input class="ap-eclipse-live__range" id="eclipse-time-range" data-eclipse-range type="range" aria-label="Eclipse timeline from three days before to two days after greatest eclipse">
+              <div class="ap-eclipse-live__share"><button type="button" data-eclipse-share>Share this moment</button><span data-eclipse-share-status role="status" aria-live="polite"></span></div>
+              <p class="ap-eclipse-live__scale-note">Angles, timing and shadow intersection use published Sun–Moon calculations · geocentric view · distances compressed · body sizes and visible shadow width enlarged for clarity · this is not a ground-track map.</p>
+            </details>
           </div>
           <div class="ap-eclipse-live__legend" aria-hidden="true"><span><i></i> Alignment axis</span><span><i data-cone="umbra"></i> Umbra</span><span><i data-cone="penumbra"></i> Penumbra</span><span><i data-cone="intercept"></i> Earth intercept</span></div>
         </aside>
@@ -144,6 +167,44 @@
   <script src="js/ap-footer-inject.js?v=835" defer></script>
   <script src="js/ap-nav-prefetch.js?v=835" defer data-ap-nav-prefetch="1"></script>
   <script src="js/ap-mystic-cards-v835.js?v=835" defer></script>
+  <script>
+    (function () {
+      var eventMs = Date.UTC(2026, 7, 12, 17, 45, 51);
+      var host = document.getElementById('countdown');
+      var fields = {
+        days: document.querySelector('[data-countdown-days]'),
+        hours: document.querySelector('[data-countdown-hours]'),
+        minutes: document.querySelector('[data-countdown-minutes]'),
+        seconds: document.querySelector('[data-countdown-seconds]')
+      };
+      var lastSpokenMinute = null;
+      function pad(value) { return String(value).padStart(2, '0'); }
+      function drawCountdown() {
+        var remaining = eventMs - Date.now();
+        if (remaining <= 0) {
+          Object.keys(fields).forEach(function (key) { if (fields[key]) fields[key].textContent = '00'; });
+          if (host && lastSpokenMinute !== -1) host.textContent = 'Greatest eclipse has passed; the 3D replay remains available.';
+          lastSpokenMinute = -1;
+          return;
+        }
+        var days = Math.floor(remaining / 86400000);
+        var hours = Math.floor((remaining % 86400000) / 3600000);
+        var minutes = Math.floor((remaining % 3600000) / 60000);
+        var seconds = Math.floor((remaining % 60000) / 1000);
+        if (fields.days) fields.days.textContent = pad(days);
+        if (fields.hours) fields.hours.textContent = pad(hours);
+        if (fields.minutes) fields.minutes.textContent = pad(minutes);
+        if (fields.seconds) fields.seconds.textContent = pad(seconds);
+        var spokenMinute = Math.floor(remaining / 60000);
+        if (host && spokenMinute !== lastSpokenMinute) {
+          host.textContent = days + ' days, ' + hours + ' hours and ' + minutes + ' minutes to greatest eclipse.';
+          lastSpokenMinute = spokenMinute;
+        }
+      }
+      drawCountdown();
+      setInterval(drawCountdown, 1000);
+    })();
+  </script>
   <script>
     (function () {
       var root = document.getElementById('ap-eclipse-live');

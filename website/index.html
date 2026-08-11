@@ -20,15 +20,15 @@
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='837';</script>
+  <script>window.AP_ASSET_V='838';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=837">
-  <script src="js/void-orrery-adapter.js?v=837" defer></script>
-  <script src="js/ap-nav-model.js?v=835" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=835">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=838">
+  <script src="js/void-orrery-adapter.js?v=838" defer></script>
+  <script src="js/ap-nav-model.js?v=838" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=838">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=838">
   <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=835">
 </head>
 <body class="ap-live-home page-home">
@@ -70,13 +70,20 @@
         <p class="ap-live-copy">A live model of this minute. Fly to any world, cross the Solar System and keep going to the Galaxy—without changing instruments.</p>
         <div class="ap-live-actions">
           <a class="ap-action ap-action--primary" href="chart.html">Cast my chart</a>
-          <a class="ap-action" href="eclipse.html">Open eclipse live</a>
+          <a class="ap-action" href="eclipse.html">Open live eclipse</a>
         </div>
         <p class="ap-live-proof">Live positions · compressed distances · drag to orbit · choose a named destination</p>
       </div>
 
       <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
         <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
+      </div>
+
+      <div class="ap-mobile-flight-deck" aria-label="3D Observatory controls">
+        <p><span>01</span> Choose a destination <small>Then drag the model to orbit</small></p>
+        <label for="mobileWorld"><span>World</span><select id="mobileWorld" disabled><option value="">Solar system</option><option value="sun">Sun</option><option value="mercury">Mercury</option><option value="venus">Venus</option><option value="earth">Earth</option><option value="moon">Moon</option><option value="mars">Mars</option><option value="jupiter">Jupiter</option><option value="saturn">Saturn</option><option value="uranus">Uranus</option><option value="neptune">Neptune</option></select></label>
+        <label for="mobileScale"><span>Scale</span><select id="mobileScale" disabled><option value="EARTH">Earth</option><option value="INNER">Inner system</option><option value="SYSTEM" selected>Solar system</option><option value="OORT">Oort cloud</option><option value="STARS">Nearby stars</option><option value="GALAXY">Galaxy</option><option value="COSMOS">Cosmos</option></select></label>
       </div>
 
       <aside class="ap-control-panel" aria-label="Explore the live sky">
@@ -91,15 +98,15 @@
           <h2 id="sky-focus-title">Solar system</h2>
           <p id="telemetry" aria-live="polite">Every major world is visible. Choose one below, or change scale to travel outward.</p>
         </div>
-        <div class="ap-control-group">
+        <div class="ap-control-group ap-control-group--scale">
           <div class="ap-control-head"><p class="ap-panel-label">Scale</p><span class="ap-control-note">Where am I?</span></div>
           <div id="mladder" role="group" aria-label="Choose spatial scale"></div>
         </div>
-        <div class="ap-control-group">
+        <div class="ap-control-group ap-control-group--worlds">
           <div class="ap-control-head"><p class="ap-panel-label">Worlds</p><span class="ap-control-note">Fly directly</span></div>
           <div id="dock" role="group" aria-label="Choose a named world"></div>
         </div>
-        <div class="ap-control-group">
+        <div class="ap-control-group ap-control-group--time">
           <div class="ap-control-head"><p class="ap-panel-label">Time</p><span class="ap-control-note">1800–2200</span></div>
           <div id="deck">
             <div class="scrubrow">
@@ -220,7 +227,7 @@
     })();
   </script>
   <script src="js/ap-observatory-controls-v835.js?v=835" defer></script>
-  <script src="js/ap-observatory-v834.js?v=836" defer></script>
+  <script src="js/ap-observatory-v834.js?v=838" defer></script>
   <script src="js/ap-nav-prefetch.js?v=835" defer data-ap-nav-prefetch="1"></script>
   <script src="js/ap-sky-time.js?v=835" defer></script>
   <script src="js/ap-footer-inject.js?v=835" defer></script>

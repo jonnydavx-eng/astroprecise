@@ -77,6 +77,8 @@
     var telemetry = byId('telemetry');
     var scaleGroup = byId('mladder');
     var worldGroup = byId('dock');
+    var mobileWorld = byId('mobileWorld');
+    var mobileScale = byId('mobileScale');
     var appliedHash = null;
     var didReady = false;
     var stashed = readStash();
@@ -85,7 +87,7 @@
       if (!stage || !window.matchMedia || !window.matchMedia('(max-width: 700px)').matches) return;
       var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       requestAnimationFrame(function () {
-        stage.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+        stage.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
       });
     }
 
@@ -103,6 +105,7 @@
       } else {
         setPressed(worldGroup, function (button) { return button.dataset.key === ''; });
       }
+      if (mobileWorld) mobileWorld.value = detail && detail.key ? detail.key : '';
     }
 
     function showScale(level) {
@@ -112,6 +115,7 @@
       if (idx < 0) idx = 2;
       if (scaleStatus) scaleStatus.textContent = SCALE_NAMES[idx];
       setPressed(scaleGroup, function (button) { return button.dataset.lv === SCALE_KEYS[idx]; });
+      if (mobileScale) mobileScale.value = SCALE_KEYS[idx];
     }
 
     function setMoment(moment) {
@@ -173,6 +177,8 @@
       showScale('SYSTEM');
       showFocus('Solar system', { key: '' });
       updateClock();
+      if (mobileWorld) mobileWorld.disabled = false;
+      if (mobileScale) mobileScale.disabled = false;
       appliedHash = null;
       applyHash();
     }
@@ -202,6 +208,30 @@
       scaleGroup.addEventListener('click', function (event) {
         var button = event.target.closest('button');
         if (!button) return;
+        revealModelAfterChoice();
+      });
+    }
+
+    if (mobileWorld) {
+      mobileWorld.addEventListener('change', function () {
+        var key = String(mobileWorld.value || '').toLowerCase();
+        if (!key) {
+          if (orrery.flyScale) orrery.flyScale('SYSTEM');
+          showScale('SYSTEM');
+          showFocus('Solar system', { key: '' });
+        } else if (FOCUS[key] && orrery.flyTo && orrery.flyTo(key) !== false) {
+          showFocus(FOCUS[key], { key: key });
+        }
+        revealModelAfterChoice();
+      });
+    }
+
+    if (mobileScale) {
+      mobileScale.addEventListener('change', function () {
+        var key = String(mobileScale.value || 'SYSTEM').toUpperCase();
+        if (orrery.flyScale) orrery.flyScale(key);
+        showScale(key);
+        showFocus(SCALE_NAMES[Math.max(0, SCALE_KEYS.indexOf(key))] || 'Solar system', { key: '' });
         revealModelAfterChoice();
       });
     }

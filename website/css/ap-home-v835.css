@@ -10,6 +10,35 @@
 .ap-live-home .ap-calc-entry-panel,
 .ap-live-home .ap-calc-entry-panel__body { border-radius: 8px; }
 .ap-live-home .ap-model-stage::before { display: none; }
+.ap-mobile-flight-deck { display: none; }
+.ap-model-boot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 9px;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 50%, rgba(216, 180, 106, .07), transparent 34%);
+  color: var(--ap-paper);
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 180ms ease, visibility 180ms ease;
+}
+.ap-model-boot span {
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(216, 180, 106, .25);
+  border-top-color: var(--ap-ember);
+  border-radius: 50%;
+  box-shadow: 0 0 32px rgba(255, 100, 40, .12);
+  animation: ap-model-orbit 1.8s linear infinite;
+}
+.ap-model-boot strong { font: 600 24px/1 var(--ap-display); }
+.ap-model-boot em { color: var(--ap-paper-faint); font: normal 9px/1.5 var(--ap-data); letter-spacing: .12em; text-transform: uppercase; }
+.ap-model-stage.is-model-ready .ap-model-boot { opacity: 0; visibility: hidden; }
+@keyframes ap-model-orbit { to { transform: rotate(1turn); } }
 .ap-live-home #mladder button,
 .ap-live-home #dock button,
 .ap-live-home #nowBtn { border-radius: 5px; }
@@ -52,6 +81,47 @@
 
 @media (max-width: 700px) {
   .ap-live-home .ap-model-stage { height: 56svh; min-height: 420px; }
+  .ap-live-home .ap-mobile-flight-deck {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+    padding: 14px 16px 16px;
+    border-bottom: 1px solid var(--ap-line);
+    background: linear-gradient(180deg, rgba(13, 18, 27, .98), rgba(6, 9, 14, .98));
+    box-shadow: 0 -14px 34px rgba(0, 0, 0, .24);
+  }
+  .ap-live-home .ap-mobile-flight-deck > p {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+    color: var(--ap-paper);
+    font: 600 12px/1.4 var(--ap-body);
+  }
+  .ap-live-home .ap-mobile-flight-deck > p span,
+  .ap-live-home .ap-mobile-flight-deck label > span {
+    color: var(--ap-brass);
+    font: 9px/1.4 var(--ap-data);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .ap-live-home .ap-mobile-flight-deck > p small { margin-left: auto; color: var(--ap-paper-faint); font: 8px/1.4 var(--ap-data); text-transform: uppercase; }
+  .ap-live-home .ap-mobile-flight-deck label { display: grid; gap: 6px; }
+  .ap-live-home .ap-mobile-flight-deck select {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 34px 0 12px;
+    border: 1px solid var(--ap-line-strong);
+    border-radius: 5px;
+    background: var(--ap-void-deep);
+    color: var(--ap-paper);
+    font: 600 14px/1 var(--ap-body);
+    color-scheme: dark;
+  }
+  .ap-live-home .ap-mobile-flight-deck select:disabled { opacity: .5; }
+  .ap-live-home .ap-control-group--scale,
+  .ap-live-home .ap-control-group--worlds { display: none; }
   .ap-live-home .ap-control-panel { padding-top: 20px; }
   .ap-live-home .ap-context { display: grid; grid-template-columns: 1fr 1.45fr; gap: 10px 18px; align-items: start; }
   .ap-live-home .ap-context .ap-panel-label { grid-column: 1 / -1; }

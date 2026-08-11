@@ -9,7 +9,7 @@
  * The historical tools remain directly addressable, but they never leak into
  * the five-route launch shell or reintroduce a second "Explore" entrance.
  *
- * Archive-only bottom tabs: Live Sky · Chart · Daily · Shop.
+ * Mobile launch tabs: Sky · Chart · Daily · Eclipse · Shop.
  *
  * Site spine: Observatory (see) → Chart (cast) → Daily (return) → Eclipse (event) → Shop (keep)
  * index.html is the single live Observatory; Explore is an action inside that scene, not another route.
@@ -38,11 +38,12 @@
     ['charts.html', 'My Charts'],
   ];
 
-  // Archive mobile tabs only; launch routes use the authored responsive header.
+  // Five-route mobile spine. The authored header remains the desktop navigation.
   var NAV_BOTTOM_TABS = [
-    ['index.html', 'Live Sky', 'star4'],
+    ['index.html', 'Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
     ['horoscope.html', 'Daily', 'crescent'],
+    ['eclipse.html', 'Eclipse', 'eclipse'],
     ['shop.html', 'Shop', 'sparkles'],
   ];
 
@@ -53,6 +54,7 @@
     star4: '<path fill="currentColor" d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/>',
     spiral: '<path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 4c4.7 0 8 3.05 8 7.1 0 4.8-4.15 8.4-8.95 8.4C7.1 19.5 4 16.9 4 13.55c0-3.05 2.45-5.45 5.5-5.45 2.55 0 4.5 1.65 4.5 3.75 0 1.7-1.35 3-3 3-1.3 0-2.35-.8-2.35-1.85"/>',
     crescent: '<path fill="currentColor" d="M14.5 3.5a9 9 0 1 0 6.2 11.8A7.2 7.2 0 0 1 14.5 3.5Z"/>',
+    eclipse: '<circle cx="12" cy="12" r="7.3" fill="none" stroke="currentColor" stroke-width="1.55"/><path fill="currentColor" d="M14.9 5.3a7.25 7.25 0 0 0 0 13.4 6.05 6.05 0 0 1 0-13.4Z"/>',
     sparkles: '<path fill="currentColor" d="M8 3.5 9.2 8l4.3 1.2-4.3 1.3L8 15l-1.2-4.5-4.3-1.3L6.8 8 8 3.5Zm8.5 6 1 3.2 3 1-3 1-1 3.3-1-3.3-3-1 3-1 1-3.2Z"/>',
   };
 
@@ -148,6 +150,8 @@
       mobile.classList.toggle('open', open);
       mobile.setAttribute('aria-hidden', open ? 'false' : 'true');
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      if (open) mobile.setAttribute('aria-modal', 'true'); else mobile.removeAttribute('aria-modal');
       document.body.classList.toggle('nav-drawer-open', open);
       if (open) {
         closeMore();
@@ -163,7 +167,7 @@
       mobile.addEventListener('click', function (event) {
         if (event.target.closest('a')) setDrawer(false);
       });
-      var desktopBreakpoint = window.matchMedia && window.matchMedia('(min-width: 761px)');
+      var desktopBreakpoint = window.matchMedia && window.matchMedia('(min-width: 981px)');
       if (desktopBreakpoint) {
         var closeAtBreakpoint = function () { setDrawer(false); };
         if (desktopBreakpoint.addEventListener) desktopBreakpoint.addEventListener('change', closeAtBreakpoint);
@@ -223,12 +227,8 @@
   function bootLivingSkyShell() {
     document.querySelectorAll('[data-ap-static-nav]').forEach(renderStaticHeader);
     if (isLaunchRoute()) {
-      // Launch pages deliberately load shared shell CSS first and authored route
-      // CSS last. Re-appending the shell at 0/320/1200ms caused a visible design
-      // swap and let shared rules override the route after first paint. Their
-      // responsive header is sufficient, so no injected bottom bar either.
-      document.querySelectorAll('.bottom-nav').forEach(function (nav) { nav.remove(); });
-      document.documentElement.style.removeProperty('--bottom-nav-h');
+      // Keep route CSS order stable while adding one thumb-reachable site spine.
+      renderStaticBottomNav();
       return;
     }
     renderStaticBottomNav();

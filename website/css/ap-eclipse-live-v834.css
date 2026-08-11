@@ -409,3 +409,123 @@
 @media (prefers-reduced-motion: reduce) {
   .ap-eclipse-live__body-label { transition: none; }
 }
+/* v838 mission controls: technical depth is available without separating
+   playback from the model it controls. */
+.ap-eclipse-live__readout { min-width: 0; }
+.ap-eclipse-live__instrument,
+.ap-eclipse-live__advanced {
+  border-top: 1px solid rgba(216, 180, 106, .16);
+}
+.ap-eclipse-live__instrument > summary,
+.ap-eclipse-live__advanced > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--ecl-brass);
+  font: 8px/1.2 'IBM Plex Mono', monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+}
+.ap-eclipse-live__instrument > summary::-webkit-details-marker,
+.ap-eclipse-live__advanced > summary::-webkit-details-marker { display: none; }
+.ap-eclipse-live__instrument > summary::after,
+.ap-eclipse-live__advanced > summary::after { content: '+'; font-size: 14px; }
+.ap-eclipse-live__instrument[open] > summary::after,
+.ap-eclipse-live__advanced[open] > summary::after { content: '−'; }
+.ap-eclipse-live__advanced { margin-top: 10px; }
+.ap-eclipse-live__advanced .ap-eclipse-live__scale-note { margin-bottom: 4px; }
+
+@media (max-width: 900px) {
+  .ap-eclipse-live__shell {
+    min-height: 0;
+    overflow: visible;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'dock'
+      'stage'
+      'readout'
+      'instrument'
+      'advanced'
+      'legend';
+  }
+  .ap-eclipse-live__stage {
+    grid-area: stage;
+    height: clamp(420px, 58svh, 540px);
+    min-height: 420px;
+    scroll-margin-top: calc(var(--ap-nav-h, 58px) + 108px);
+    border-top: 1px solid rgba(216, 180, 106, .18);
+  }
+  .ap-eclipse-live__canvas { touch-action: pan-y; }
+  .ap-eclipse-live__panel { display: contents; }
+  .ap-eclipse-live__readout {
+    grid-area: readout;
+    padding: 20px 18px 16px;
+    border-top: 1px solid rgba(216, 180, 106, .18);
+    background: linear-gradient(180deg, rgba(16, 17, 22, .98), rgba(8, 9, 12, .98));
+  }
+  .ap-eclipse-live__live-badge { margin-bottom: 13px; }
+  .ap-eclipse-live__status { min-height: 0; font-size: 25px; }
+  .ap-eclipse-live__time { margin-bottom: 0; }
+  .ap-eclipse-live__instrument {
+    grid-area: instrument;
+    margin: 0;
+    padding: 0 18px;
+    background: #090a0e;
+  }
+  .ap-eclipse-live__controls { display: contents; }
+  .ap-eclipse-live__dock {
+    grid-area: dock;
+    position: sticky;
+    top: var(--ap-nav-h, 58px);
+    z-index: 30;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 9px 10px 10px;
+    border-bottom: 1px solid rgba(216, 180, 106, .3);
+    background: rgba(5, 6, 9, .97);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .32);
+    backdrop-filter: blur(16px);
+  }
+  .ap-eclipse-live__actions { display: contents; }
+  .ap-eclipse-live__dock [data-eclipse-play] { grid-column: 1; grid-row: 1; margin: 0; }
+  .ap-eclipse-live__dock [data-eclipse-now] { grid-column: 2; grid-row: 1; }
+  .ap-eclipse-live__dock [data-eclipse-event] { grid-column: 3; grid-row: 1; }
+  .ap-eclipse-live__dock .ap-eclipse-live__lens {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0;
+  }
+  .ap-eclipse-live__button,
+  .ap-eclipse-live__lens-button { min-height: 42px; }
+  .ap-eclipse-live__advanced {
+    grid-area: advanced;
+    margin: 0;
+    padding: 0 18px;
+    background: #08090c;
+  }
+  .ap-eclipse-live__legend {
+    grid-area: legend;
+    margin: 0;
+    padding: 16px 18px 18px;
+    border-top: 1px solid rgba(216, 180, 106, .16);
+    background: #08090c;
+  }
+}
+
+@media (max-width: 560px) {
+  .ap-eclipse-live { width: calc(100vw - 16px); margin-top: 16px; }
+  .ap-eclipse-live__stage { height: clamp(420px, 58svh, 500px); min-height: 420px; }
+  .ap-eclipse-live__dock { border-radius: 5px 5px 0 0; }
+  .ap-eclipse-live__button { padding-inline: 4px; font-size: 7.5px; letter-spacing: .08em; }
+  .ap-eclipse-live__lens { grid-template-columns: 34px minmax(0, 1fr); }
+}
+.ap-eclipse-live__instrument > summary:focus-visible,
+.ap-eclipse-live__advanced > summary:focus-visible {
+  outline: 2px solid var(--ecl-ember);
+  outline-offset: -2px;
+}
