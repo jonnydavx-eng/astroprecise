@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
+  <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terms of Use | Astro Precise</title>
   <meta name="description" content="Terms of Use for Astro Precise — an informational astronomy/astrology tool. Includes the digital-goods purchase and refund policy." />
@@ -23,13 +23,13 @@
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <link rel="preload" href="fonts/cormorant-garamond-normal-400.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/cinzel-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-  <meta name="theme-color" content="#08080b" />
+  <meta name="theme-color" content="#020307" />
   <!-- Standard tier-C chrome (masthead + footer system), mirroring why.html.
        Links sit BEFORE the page's own <style> so the bespoke legal look wins. -->
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
@@ -37,8 +37,8 @@
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" />
   <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=787" id="ap-css-atlas-tokens" />
-  <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){deferMainCss();});</script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835" />
+  <script src="js/ap-nav-model-v834.js?v=835" defer></script>
   <style>
     /* Critical fonts — block display prevents lede/h1 reflow CLS */
     @font-face{font-family:'Cinzel';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cinzel-normal-400.woff2) format('woff2');}
@@ -46,54 +46,45 @@
     @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-normal-400.woff2) format('woff2');}
     @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cormorant-garamond-normal-600.woff2) format('woff2');}
     @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-italic-400.woff2) format('woff2');}
-    @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:block;src:url(fonts/inter-normal-400.woff2) format('woff2');}
-    :root{ --gold:#d8b46a; --gold-light:#f2ecdf; --ink:#f2ecdf; --dim:rgba(242,236,223,.76); --void:#08080b; }
+    :root{ --gold:#d8b46a; --gold-light:#f2ecdf; --ink:#f2ecdf; --dim:rgba(242,236,223,.76); --void:#020307; }
     *{box-sizing:border-box;}
-    body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#14100a 0%,#08080b 55%,#08080b 100%);
-      color:var(--ink);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.12rem;line-height:1.8;
-      -webkit-font-smoothing:antialiased;padding:calc(var(--nav-height,72px) + 12px) 24px 80px;}
-    .legal-doc{max-width:720px;margin:0 auto;}
+    body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#0d121b 0%,#020307 55%,#020307 100%);
+      color:var(--ink);font-family:var(--ap-body,'Schibsted Grotesk',system-ui,sans-serif);font-size:1rem;line-height:1.75;
+      -webkit-font-smoothing:antialiased;padding:0;}
+    .legal-doc{max-width:768px;margin:0 auto;padding:48px 24px 80px;}
     .legal-top{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-bottom:1px solid rgba(216, 180, 106,.18);margin-bottom:40px;}
-    .legal-top a{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
+    .legal-top a{font-family:var(--ap-data,'IBM Plex Mono',monospace);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
     .legal-top a:hover{color:var(--gold-light);}
     .legal-brand{display:flex;align-items:center;gap:9px;}
-    .legal-brand span{font-family:'Cinzel',serif;letter-spacing:.28em;color:var(--gold-light);font-size:.9rem;}
+    .legal-brand span{font-family:var(--ap-data,'IBM Plex Mono',monospace);letter-spacing:.18em;color:var(--gold-light);font-size:.76rem;}
     /* Scoped to .legal-doc so the injected masthead/footer keep site styling */
     .legal-doc h1{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light);font-size:clamp(1.6rem,4vw,2.3rem);
       text-shadow:0 0 34px rgba(216, 180, 106,.18);margin:0 0 6px;min-height:1.2em;contain:layout style;}
     .legal-sub{font-style:italic;color:var(--dim);margin:0 0 36px;min-height:1.5em;}
-    .legal-doc h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;
+    .legal-doc h2{font-family:var(--ap-data,'IBM Plex Mono',monospace);font-weight:400;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;
       color:var(--gold);margin:38px 0 12px;display:flex;align-items:center;gap:12px;}
     .legal-doc h2::before{content:'';flex:0 0 18px;height:1px;background:var(--gold);opacity:.5;}
     .legal-doc p,.legal-doc li{color:var(--ink);}
     .legal-doc a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(216, 180, 106,.45);}
     .legal-doc a:hover{text-decoration-color:var(--gold);}
     .legal-doc strong{color:var(--gold-light);font-weight:600;}
-    .placeholder{color:#ff7a45;font-family:'Inter',sans-serif;font-size:.85em;}
-    .lede{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--ink);border-left:2px solid rgba(216, 180, 106,.4);padding-left:18px;min-height:12em;contain:layout style;}
+    .placeholder{color:#ff7a45;font-family:var(--ap-body,'Schibsted Grotesk',sans-serif);font-size:.85em;}
+    .lede{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--ink);border-left:2px solid rgba(216, 180, 106,.4);padding-left:18px;}
     .callout{border:1px solid rgba(216, 180, 106,.3);background:linear-gradient(135deg,rgba(216, 180, 106,.06),transparent);
-      border-radius:12px;padding:16px 20px;margin:18px 0;}
-    .legal-footer,.ap-legal-footer{max-width:720px;margin:0 auto;padding:0 0 48px;text-align:center;min-height:168px;contain:layout style;}
-    .ap-social-row{padding:1.25rem 0 0;}
-    .ap-social-row__head{margin-bottom:0.75rem;}
-    .ap-social-row__label{display:block;font-family:Inter,system-ui,sans-serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(242,236,223,.55);}
-    .ap-social-row__note{font-family:Inter,system-ui,sans-serif;font-size:0.58rem;letter-spacing:0.08em;color:rgba(242,236,223,.4);}
-    .ap-social-row__icons{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center;}
-    .ap-social-icon{min-width:44px;min-height:44px;width:44px;height:44px;border-radius:10px;background:rgba(14,11,8,0.72);border:1px solid rgba(168,158,136,0.18);display:inline-flex;align-items:center;justify-content:center;color:#ddd3bf;padding:0;box-sizing:border-box;}
-    .ap-social-icon--soon{opacity:0.42;cursor:default;}
+      border-radius:8px;padding:16px 20px;margin:18px 0;}
     .legal-doc ul{padding-left:22px;} .legal-doc li{margin-bottom:8px;}
     .legal-foot{margin-top:54px;padding-top:22px;border-top:1px solid rgba(216, 180, 106,.18);font-size:.92rem;color:var(--dim);}
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Terms of Use","description":"Terms of Use for Astro Precise — an informational astronomy/astrology tool. Includes the digital-goods purchase and refund policy.","url":"https://astroprecise.app/terms.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
 </head>
-<body>
+<body class="page-legal">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
   </svg>
 
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
@@ -120,12 +111,12 @@
     </div>
 
     <h1>Terms of Use</h1>
-    <p class="legal-sub">Last updated: 1 August 2026</p>
+    <p class="legal-sub">Last updated: 11 August 2026</p>
 
-    <p class="lede">By using Astro Precise you agree to these terms. They are written to be plain and fair.
-      In short: the astronomy is computed honestly and offered for reflection and enjoyment — not as
-      professional advice — and anything you buy is a digital product or a made-to-order print, sold on the
-      clear terms below.</p>
+    <p class="lede">By using AstroPrecise you agree to these terms. They are written to be plain and fair.
+      The astronomy is computed for exploration and the astrological language is offered for reflection and
+      enjoyment, not professional advice. Planned paid editions are clearly marked as previews; checkout is not
+      currently connected.</p>
 
     <h2>Who we are</h2>
     <p>Astro Precise is operated by <strong>Jonathan Davenport</strong>, a sole trader based in
@@ -149,29 +140,18 @@
     </div>
 
     <h2>Who can buy</h2>
-    <p>You must be <strong>18 or over</strong> to buy from us. The free tools are open to everyone.</p>
+    <p>If verified checkout opens, buyers must be <strong>18 or over</strong>. The free tools remain available
+      without a purchase.</p>
 
     <h2>How buying works</h2>
-    <p>The seller of record for digital purchases is <strong>Gumroad</strong>: checkout happens on its secure
-      pages and your card and billing details are collected and processed by Gumroad under its own terms and
-      privacy policy — we never see or store them. Prices are in pounds sterling (GBP) and may change from
-      time to time; <strong>the price shown at checkout is the price you pay</strong>. Prints are fulfilled by
-      our print partners under the shipping terms shown at checkout.</p>
+    <p>There is no live checkout today. A verified checkout will identify the payment provider, final price,
+      taxes, fulfilment format and any provider terms <strong>before</strong> you pay. A catalogue preview or
+      planned price does not create an order.</p>
 
     <h2>Digital content &amp; your cancellation rights</h2>
-    <p>Under regulation 37 of the Consumer Contracts (Information, Cancellation and Additional Charges)
-      Regulations 2013, at checkout you will be asked to give <strong>express consent to immediate
-      delivery</strong> of your digital content and to acknowledge that you <strong>lose the 14-day
-      cancellation right once delivery begins</strong> — for our readings, the moment the content is unlocked
-      or emailed to you. Our <a href="refunds.html">refunds page</a> states the detail in plain English,
-      including our own change-of-mind promise (a refund within 7 days if you have not accessed the content)
-      and your statutory rights for content that is defective, not as described, or not of satisfactory
-      quality — which nothing here reduces.</p>
-
-    <h2>Licence keys</h2>
-    <p>Your licence key is <strong>personal and non-transferable</strong>. Keep it safe: it re-unlocks your
-      reading on your other devices, any time — and if you lose it, contact support and we will help. Keys are
-      revoked if the order is refunded or charged back.</p>
+    <p>The verified checkout and our <a href="refunds.html">refunds page</a> will state when digital delivery
+      begins, what cancellation choice applies and how to request a remedy. Nothing in these terms reduces
+      statutory consumer rights for content that is defective, not as described or not of satisfactory quality.</p>
 
     <h2>Intellectual property</h2>
     <p>The site design, text, generated artwork, readings, prints, and software are owned by
@@ -189,7 +169,7 @@
 
     <h2>Third-party services &amp; affiliate links</h2>
     <p>Some features rely on third parties (place-name geocoding, Open-Meteo for sky-condition forecasts,
-      public space-weather feeds, and — for purchases — Gumroad). Their availability and
+      public space-weather feeds, and a payment provider once checkout is connected). Their availability and
       their own terms are outside our control; our <a href="privacy.html">Privacy Policy</a> lists what each
       receives. Some pages also carry <strong>Amazon affiliate links</strong>: if you buy through one we earn
       a small commission at no extra cost to you, always disclosed beside the link.</p>
@@ -213,14 +193,8 @@
     <p class="legal-foot">Astro Precise &middot; the sky, read honestly.
       &nbsp;<a href="index.html">Return to the sky</a> &middot; <a href="privacy.html">Privacy Policy</a></p>
   </main>
-  <!-- Standard footer system: ap-footer-inject fills .container with the
-       unified footer-nav model; footer-chrome appends the social row. -->
-  <footer class="footer" role="contentinfo">
-    <div class="container"></div>
-  </footer>
-  <script src="js/footer-chrome.js" defer></script>
-  <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js" defer></script>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

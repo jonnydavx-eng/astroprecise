@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
+  <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy | Astro Precise</title>
   <meta name="description" content="How Astro Precise handles your data under the UK GDPR: birth details compute in your browser and never reach us — what we collect, why, and the rights you have." />
@@ -23,22 +23,22 @@
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <link rel="preload" href="fonts/cormorant-garamond-normal-400.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/cinzel-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
-  <meta name="theme-color" content="#08080b" />
+  <meta name="theme-color" content="#020307" />
   <!-- Standard tier-C chrome (masthead + footer system), mirroring why.html.
        Links sit BEFORE the page's own <style> so the bespoke legal look wins. -->
   <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" />
   <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=787" id="ap-css-atlas-tokens" />
-  <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){deferMainCss();});</script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835" />
+  <script src="js/ap-nav-model-v834.js?v=835" defer></script>
   <style>
     /* Critical fonts — block display prevents lede/h1 reflow CLS */
     @font-face{font-family:'Cinzel';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cinzel-normal-400.woff2) format('woff2');}
@@ -46,52 +46,43 @@
     @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-normal-400.woff2) format('woff2');}
     @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cormorant-garamond-normal-600.woff2) format('woff2');}
     @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-italic-400.woff2) format('woff2');}
-    @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:block;src:url(fonts/inter-normal-400.woff2) format('woff2');}
-    :root{ --gold:#d8b46a; --gold-light:#f2ecdf; --ink:#f2ecdf; --dim:rgba(242,236,223,.76); --void:#08080b; }
+    :root{ --gold:#d8b46a; --gold-light:#f2ecdf; --ink:#f2ecdf; --dim:rgba(242,236,223,.76); --void:#020307; }
     *{box-sizing:border-box;}
-    body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#14100a 0%,#08080b 55%,#08080b 100%);
-      color:var(--ink);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.12rem;line-height:1.8;
-      -webkit-font-smoothing:antialiased;padding:calc(var(--nav-height,72px) + 12px) 24px 80px;}
-    .legal-doc{max-width:720px;margin:0 auto;}
+    body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#0d121b 0%,#020307 55%,#020307 100%);
+      color:var(--ink);font-family:var(--ap-body,'Schibsted Grotesk',system-ui,sans-serif);font-size:1rem;line-height:1.75;
+      -webkit-font-smoothing:antialiased;padding:0;}
+    .legal-doc{max-width:768px;margin:0 auto;padding:48px 24px 80px;}
     .legal-top{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-bottom:1px solid rgba(216, 180, 106,.18);margin-bottom:40px;}
-    .legal-top a{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
+    .legal-top a{font-family:var(--ap-data,'IBM Plex Mono',monospace);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
     .legal-top a:hover{color:var(--gold-light);}
     .legal-brand{display:flex;align-items:center;gap:9px;}
-    .legal-brand span{font-family:'Cinzel',serif;letter-spacing:.28em;color:var(--gold-light);font-size:.9rem;}
+    .legal-brand span{font-family:var(--ap-data,'IBM Plex Mono',monospace);letter-spacing:.18em;color:var(--gold-light);font-size:.76rem;}
     /* Scoped to .legal-doc so the injected masthead/footer keep site styling */
     .legal-doc h1{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light);font-size:clamp(1.6rem,4vw,2.3rem);
       text-shadow:0 0 34px rgba(216, 180, 106,.18);margin:0 0 6px;min-height:1.2em;contain:layout style;}
     .legal-sub{font-style:italic;color:var(--dim);margin:0 0 36px;min-height:1.5em;}
-    .legal-doc h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;
+    .legal-doc h2{font-family:var(--ap-data,'IBM Plex Mono',monospace);font-weight:400;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;
       color:var(--gold);margin:38px 0 12px;display:flex;align-items:center;gap:12px;}
     .legal-doc h2::before{content:'';flex:0 0 18px;height:1px;background:var(--gold);opacity:.5;}
     .legal-doc p,.legal-doc li{color:var(--ink);}
     .legal-doc a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(216, 180, 106,.45);}
     .legal-doc a:hover{text-decoration-color:var(--gold);}
     .legal-doc strong{color:var(--gold-light);font-weight:600;}
-    .placeholder{color:#ff7a45;font-family:'Inter',sans-serif;font-size:.85em;}
-    .lede{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--ink);border-left:2px solid rgba(216, 180, 106,.4);padding-left:18px;min-height:19em;contain:layout style;}
-    .legal-footer,.ap-legal-footer{max-width:720px;margin:0 auto;padding:0 0 48px;text-align:center;min-height:168px;contain:layout style;}
-    .ap-social-row{padding:1.25rem 0 0;}
-    .ap-social-row__head{margin-bottom:0.75rem;}
-    .ap-social-row__label{display:block;font-family:Inter,system-ui,sans-serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(242,236,223,.55);}
-    .ap-social-row__note{font-family:Inter,system-ui,sans-serif;font-size:0.58rem;letter-spacing:0.08em;color:rgba(242,236,223,.4);}
-    .ap-social-row__icons{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center;}
-    .ap-social-icon{min-width:44px;min-height:44px;width:44px;height:44px;border-radius:10px;background:rgba(14,11,8,0.72);border:1px solid rgba(168,158,136,0.18);display:inline-flex;align-items:center;justify-content:center;color:#ddd3bf;padding:0;box-sizing:border-box;}
-    .ap-social-icon--soon{opacity:0.42;cursor:default;}
+    .placeholder{color:#ff7a45;font-family:var(--ap-body,'Schibsted Grotesk',sans-serif);font-size:.85em;}
+    .lede{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--ink);border-left:2px solid rgba(216, 180, 106,.4);padding-left:18px;}
     .legal-doc ul{padding-left:22px;} .legal-doc li{margin-bottom:8px;}
     .legal-foot{margin-top:54px;padding-top:22px;border-top:1px solid rgba(216, 180, 106,.18);font-size:.92rem;color:var(--dim);}
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Privacy Policy","description":"How Astro Precise handles your data under the UK GDPR: birth details compute in your browser and never reach us — what we collect, why, and the rights you have.","url":"https://astroprecise.app/privacy.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
 </head>
-<body>
+<body class="page-legal">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
   </svg>
 
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
@@ -118,14 +109,13 @@
     </div>
 
     <h1>Privacy Policy</h1>
-    <p class="legal-sub">Last updated: 9 August 2026</p>
+    <p class="legal-sub">Last updated: 11 August 2026</p>
 
-    <p class="lede">Astro Precise is built privacy-first. Everything you can do here for free &mdash; casting a
-      chart, reading the sky, the 3D model &mdash; is computed and stored <strong>on your own device</strong>,
-      and we never see any of it. There is exactly one exception, and it only happens if you buy something we
-      have to make by hand: then you type your birth details into a form and send them to us on purpose. It is
-      described in full below. This policy explains, in plain English, the little we do collect, the lawful
-      basis for each use, and the rights you have under the UK GDPR.</p>
+    <p class="lede">AstroPrecise is built privacy-first. Birth date, birth time and chart calculations stay
+      <strong>in your browser</strong>. Place search sends only the place text to Open-Meteo so your browser can
+      resolve coordinates and timezone. If you use a contact or availability form, the contact details you
+      deliberately submit leave the device; no chart is attached. Checkout is not currently connected. This
+      policy explains those limited data flows and the rights you have under the UK GDPR.</p>
 
     <h2>Who we are</h2>
     <p>The data controller is <strong>Jonathan Davenport</strong>, trading as
@@ -134,31 +124,19 @@
       rights, email <a href="mailto:contact@astroprecise.app">contact@astroprecise.app</a>.</p>
 
     <h2>What we collect</h2>
-    <p><strong>Birth details you type.</strong> Your birth date, time, and place are used to compute charts and
-      readings <strong>in your browser</strong>, and are saved in your browser&rsquo;s <strong>localStorage</strong>
-      so the site remembers your sky between visits. Nothing you type into the site is transmitted, and a
-      purchase never carries them either &mdash; Gumroad tells us what you bought, not who you are
-      astrologically. The one time your birth details do reach us is when you send them yourself: for a
-      made-to-order item we cannot compute without them, the follow-up form after checkout asks for them
-      directly. That form is hosted by Typeform (see the processor list below), we use what you enter only to
-      make the thing you bought, and it is kept with the order record.</p>
+    <p><strong>Birth details you type.</strong> Birth date, birth time, selected coordinates and the resulting
+      chart are calculated in your browser and may be saved in this browser&rsquo;s <strong>localStorage</strong>.
+      When you search for a place, the place text is sent to Open-Meteo; your name, birth date and birth time are
+      not included in that lookup. Checkout is not connected and no order currently carries chart data.</p>
     <p><strong>Contact form.</strong> If you write to us through the contact form, your <strong>name, email
       address, and message</strong> are delivered to us via our form processor, Formspree. We use them only to
       reply.</p>
-    <p><strong>Purchases.</strong> Checkout is run by <strong>Gumroad</strong>, the seller of record. We receive
-      your <strong>email address and an order ID</strong> so we can deliver your reading or print and support
-      your order. Your payment card and billing details are collected by Gumroad on its own secure pages and are
-      never seen or stored by us. We never receive your birth data with an order.</p>
-    <p><strong>Email signups.</strong> If you join the newsletter or a &ldquo;notify me&rdquo; list (such as the
-      eclipse-launch list), our own Cloudflare Worker stores, in Cloudflare&rsquo;s encrypted key-value storage,
-      the <strong>email address</strong> you submit, a <strong>topic tag</strong> recording which list you
-      joined, the <strong>time</strong>, and <strong>the address of the page you signed up from</strong> (your
-      browser&rsquo;s <code>Referer</code> header &mdash; for example
-      <code>https://astroprecise.app/eclipse.html</code>). Your <strong>IP address</strong> is stored separately
-      as a counter, on its own, for <strong>one hour</strong>, purely to stop one machine flooding the list; it
-      is never stored alongside your email address and it expires by itself. The same Worker sends one
-      notification email to us through <strong>MailChannels</strong>, containing your email address, the tag and
-      that page address.</p>
+    <p><strong>Purchases.</strong> Checkout is not currently connected. Before paid checkout opens, this policy
+      and the checkout itself will identify the payment provider, what it receives and how fulfilment works.</p>
+    <p><strong>Email signups.</strong> If you join an availability or update list, your browser sends the
+      <strong>email address</strong> you enter and a <strong>topic tag</strong> to
+      <code>list.astroprecise.app</code>. Standard security logs may also contain an IP address, time and page
+      referrer. No birth date, birth time, saved chart or reading content is included.</p>
     <p><strong>Usage analytics — we run none.</strong> This site loads <strong>no analytics of any kind</strong>:
       no Google Analytics, no Umami, no Plausible, no tag manager, no tracking pixels, and no advertising or
       cross-site tracking scripts. We do not measure your visit, and we set <strong>no analytics or advertising
@@ -167,8 +145,8 @@
 
     <h2>Lawful bases</h2>
     <ul>
-      <li><strong>Contract</strong> — delivering the reading, print, or key you bought, and handling your order
-        enquiries.</li>
+      <li><strong>Contract</strong> — responding to a service request or, once verified checkout exists,
+        fulfilling an order under the terms shown at that checkout.</li>
       <li><strong>Consent</strong> — marketing and notification emails. You give it when you subscribe, and you
         can withdraw it at any time.</li>
       <li><strong>Legitimate interests</strong> — security and keeping the service reliable (for example the
@@ -177,29 +155,19 @@
     </ul>
 
     <h2>What stays on your device</h2>
-    <p>localStorage on your device holds your birth details, the wallpapers and charts you generate,
-      email-capture intents (so a half-finished signup is not lost), and unlock flags for readings you have
-      bought. These items are <strong>strictly necessary</strong> for the features you use, so no consent banner
-      is required for them. They never leave your device, and clearing your browser&rsquo;s site data removes
-      them completely.</p>
+    <p>localStorage on your device can hold saved charts, preferences and feature state needed to reopen the
+      experience you chose. We hold no copy of that browser storage. Clearing AstroPrecise site data in your
+      browser removes it from that device.</p>
 
     <h2>Third parties &amp; international transfers</h2>
-    <p>Six companies are involved in running this site. This is all of them, and what each one gets:</p>
+    <p>The current site relies on the following services:</p>
     <ul>
-      <li><strong>Gumroad</strong> (US) &mdash; checkout and seller of record. Your email address, your order,
-        and the card details you give it on its own pages.</li>
-      <li><strong>Typeform</strong> (EU/US) &mdash; if you buy something made to order, the form you send us
-        your birth details on is hosted by Typeform, so Typeform sees them. Reading or casting on the free site
-        never touches it; that form is only reached after a purchase.</li>
       <li><strong>Formspree</strong> (US) &mdash; the contact form. Your name, email address and message.</li>
       <li><strong>GitHub</strong> (US) &mdash; hosting. The ordinary server log of your request.</li>
       <li><strong>Cloudflare</strong> (US/global) &mdash; content delivery and security in front of that host,
-        plus our email-signup Worker and the encrypted storage behind it. If the 3D model&rsquo;s graphics
-        library fails to load from this site, the page falls back to a copy on Cloudflare&rsquo;s public
-        <strong>cdnjs</strong> service, which then sees a request from your browser. Nothing about you is
-        attached to it.</li>
-      <li><strong>MailChannels</strong> (US) &mdash; sends the one notification email to us when somebody joins
-        a list, so it handles that email address and the page it was submitted from.</li>
+        and the availability-list endpoint at <code>list.astroprecise.app</code>.</li>
+      <li><strong>Open-Meteo</strong> &mdash; place-name geocoding and, on observing pages, weather data for the
+        location you request.</li>
     </ul>
     <p>That is the whole list. <strong>No analytics, advertising or data-broker company receives anything from
       this site</strong>, because we do not use any. Some of these processors operate outside the UK; where they
@@ -229,15 +197,10 @@
     <h2>How long we keep things</h2>
     <ul>
       <li><strong>Contact enquiries</strong> — 12 months, then deleted.</li>
-      <li><strong>Purchase and order records</strong> — 6 years, to meet UK tax and accounting requirements.</li>
       <li><strong>Marketing list</strong> — your email address, tag and the page you signed up from, until you
         unsubscribe.</li>
-      <li><strong>Signup rate-limit counter</strong> — your IP address, on its own, for <strong>one hour</strong>.
-        It expires by itself and nothing renews it.</li>
-      <li><strong>Birth details sent for a made-to-order item</strong> — only as long as we need them to make
-        and support that order, and deleted sooner if you ask.</li>
-      <li><strong>Eclipse-launch list</strong> — deleted, or re-consented for ongoing news, after the
-        12 August 2026 eclipse.</li>
+      <li><strong>Security logs and rate limits</strong> — for the period needed to protect the service and
+        investigate abuse; these records are not joined to saved chart data.</li>
       <li><strong>localStorage</strong> — until you clear your browser data; we hold no copy.</li>
     </ul>
 
@@ -268,14 +231,8 @@
     <p class="legal-foot">Astro Precise &middot; computed locally, in the old language of the sky.
       &nbsp;<a href="index.html">Return to the sky</a> &middot; <a href="terms.html">Terms of Use</a></p>
   </main>
-  <!-- Standard footer system: ap-footer-inject fills .container with the
-       unified footer-nav model; footer-chrome appends the social row. -->
-  <footer class="footer" role="contentinfo">
-    <div class="container"></div>
-  </footer>
-  <script src="js/footer-chrome.js" defer></script>
-  <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js" defer></script>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

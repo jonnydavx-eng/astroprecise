@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" class="ap-enchanted ap-brand-nebula">
+<html lang="en" class="ap-field-instrument">
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
+  <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
-  <title>Free Birth Chart — the real sky news | Astro Precise</title>
-<link rel="preload" href="css/main-lite.css" as="style" />
+  <title>Free Birth Chart — calculated on your device | Astro Precise</title>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
@@ -47,8 +46,8 @@
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
-    "description": "Free natal chart calculator with Sun, Moon, Rising, houses and aspects. Birth date, time and chart calculations stay in the browser; place search uses Open-Meteo to resolve coordinates.",
-    "dateModified": "2026-06-17",
+    "description": "Free natal chart calculator with calculated planetary positions, aspects, and time-dependent angles when a birth time is supplied. Birth date, time and chart calculations stay in the browser; place search uses Open-Meteo to resolve coordinates.",
+    "dateModified": "2026-08-11",
     "isPartOf": {
       "@type": "WebSite",
       "name": "Astro Precise",
@@ -63,160 +62,11 @@
     "mainEntity":[
       {"@type":"Question","name":"How accurate is the birth chart?","acceptedAnswer":{"@type":"Answer","text":"Accuracy varies by body and date. The core planets and luminaries use published astronomical methods; Pluto and Chiron have wider, date-dependent limits. The supported chart range is 1800–2200."}},
       {"@type":"Question","name":"What leaves my device?","acceptedAnswer":{"@type":"Answer","text":"Birth date, time and chart calculations stay in your browser. Place search sends the place text to Open-Meteo to resolve coordinates. Saved charts remain in local storage on this device."}},
-      {"@type":"Question","name":"Can I get a reading for a saved chart?","acceptedAnswer":{"@type":"Answer","text":"Yes. After saving, use the Transits tool for personal forecasts and the Shop for personalised products based on your placements."}}
+      {"@type":"Question","name":"Can I save the chart?","acceptedAnswer":{"@type":"Answer","text":"Yes. Save it to this device, export the data or artwork, share a private chart link, or carry the chart into the 12 August eclipse contact tool."}}
     ]
   }
   </script>
-  <link rel="stylesheet" href="css/ap-forms.css" />
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/chart.css?v=835" />
-  <link rel="stylesheet" href="css/chart-page-deferred.css?v=835" />
-  <link rel="stylesheet" href="css/ap-reading.css?v=835" />
   <link rel="stylesheet" href="css/celestial-seals.css?v=835" />
-  <style>
-    /* LCP shell — system fonts paint before deferred webfonts (subtitle is LCP element) */
-    .chart-hero__title {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-style: italic;
-      font-size: clamp(2.9rem, 7vw, 5.6rem);
-      font-weight: 500;
-      color: #f2ecdf;
-      line-height: 1.02;
-      margin: 0.35em auto 0.3em;
-      max-width: 14ch;
-    }
-    .chart-hero__subtitle {
-      font-family: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
-      font-size: clamp(0.92rem, 1.4vw, 1.05rem);
-      color: rgba(242, 236, 223, 0.66);
-      line-height: 1.7;
-      max-width: 52ch;
-      margin: 0 auto;
-    }
-    .form-glass__sub {
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      line-height: 1.55;
-      /* Line-clamp (not a hard crop) — localized copy never cut mid-word; floor
-         keeps layout stable. Matches css/chart-critical.css. */
-      display: -webkit-box;
-      -webkit-line-clamp: 5;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      min-height: calc(5 * 1.55em);
-    }
-
-    /* ── Advanced-options accordion (eager — the base .accordion-* rules live
-       in main.css/chart.css which are idle/deferred-loaded, so without these
-       the disclosure paints as an unstyled white button). Scoped to
-       .chart-advanced so no other page is affected; ≥2-class specificity so
-       the later-injected main.css base rules never override them. ── */
-    .chart-advanced .accordion-item {
-      background: var(--ap-void-raised, #1A2230);
-      border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.22));
-      border-radius: var(--radius-lg, 12px);
-      overflow: hidden;
-      transition: border-color 0.2s ease;
-    }
-    .chart-advanced .accordion-item.is-open {
-      border-color: rgba(168, 176, 188, 0.42);
-    }
-    .chart-advanced .accordion-trigger {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-3, 0.75rem);
-      padding: var(--space-4, 1rem) var(--space-5, 1.25rem);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--ap-gold-bright, #7EC8E8);
-      font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
-      font-size: 0.66rem;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      text-align: left;
-      transition: color 0.2s ease;
-    }
-    .chart-advanced .accordion-trigger:hover {
-      color: var(--ap-gold-parchment, #E8EBF0);
-    }
-    .chart-advanced .accordion-trigger:focus-visible {
-      outline: 2px solid var(--ap-focus-ring, #7EC8E8);
-      outline-offset: -2px;
-    }
-    .chart-advanced .accordion-chevron {
-      width: 14px;
-      height: 14px;
-      flex: 0 0 auto;
-      color: var(--ap-gold-core, #A8B0BC);
-      transition: transform 0.25s ease;
-    }
-    .chart-advanced .accordion-item.is-open .accordion-chevron {
-      transform: rotate(180deg);
-      color: var(--ap-gold-bright, #7EC8E8);
-    }
-    .chart-advanced .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease;
-    }
-    .chart-advanced .accordion-item.is-open .accordion-content {
-      max-height: 2200px;
-    }
-    .chart-advanced .accordion-content__inner {
-      padding: var(--space-4, 1rem) var(--space-5, 1.25rem) var(--space-5, 1.25rem);
-      border-top: 1px solid rgba(168, 176, 188, 0.14);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .chart-advanced .accordion-item,
-      .chart-advanced .accordion-trigger,
-      .chart-advanced .accordion-chevron,
-      .chart-advanced .accordion-content {
-        transition: none;
-      }
-    }
-
-    /* Calculate CTA is now ABOVE advanced options — keep in document flow (not sticky). */
-    .page-chart .form-cta {
-      position: static !important;
-      padding: 0.25rem 0 0 !important;
-      background: none !important;
-      margin-top: 0.5rem !important;
-    }
-    .page-chart .btn--sample {
-      opacity: 0.85;
-      font-size: 0.85rem;
-    }
-    /* Force advanced closed unless .is-open (deferred CSS sometimes leaks open panels) */
-    .page-chart .chart-advanced .accordion-content {
-      max-height: 0 !important;
-      overflow: hidden !important;
-    }
-    .page-chart .chart-advanced .accordion-item.is-open .accordion-content {
-      max-height: 2200px !important;
-    }
-
-    /* ── Calculate CTA — clear primary (ember plate, dark ink) ── */
-    .page-chart .btn--calculate {
-      background: var(--ap-cta, #ff5a1f);
-      color: var(--ap-cta-ink, #1a0d05);
-      box-shadow: 0 8px 28px rgba(255, 90, 31, 0.28), 0 0 0 1px rgba(255, 90, 31, 0.45);
-      width: 100%;
-      min-height: 52px;
-      font-weight: 600;
-    }
-    .page-chart .btn--calculate:hover {
-      background: var(--ap-cta-hover, #ff7a45);
-      box-shadow: 0 12px 36px rgba(255, 90, 31, 0.36), 0 0 0 1px rgba(255, 90, 31, 0.55);
-    }
-    .page-chart .btn--calculate .btn-spinner {
-      border-color: rgba(26, 13, 5, 0.3);
-      border-top-color: var(--ap-cta-ink, #1a0d05);
-    }
-  </style>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=835" id="ap-css-palette-2026" />
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=835" />
   <link rel="stylesheet" href="css/ap-chart-v835.css?v=835" />
 </head>
@@ -231,12 +81,6 @@
 
   <!-- Intro lives only on the homepage (once per session). Internal pages load
        straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
-
-  <!-- Cosmic background -->
-  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
-  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
-  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
   <!-- ============================================================
        NAVIGATION — Premium
@@ -282,23 +126,23 @@
       <div class="chart-hero__orb-b" aria-hidden="true"></div>
       <div class="container">
         <p class="chart-hero__eyebrow" aria-hidden="true">FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
-        <h1 class="chart-hero__title" id="page-title">Your natal chart, to the minute</h1>
+        <h1 class="chart-hero__title" id="page-title">Your birth sky, calculated</h1>
         <p class="chart-hero__subtitle">
           Enter your birth date, place and time. Supported positions are computed in your browser with published astronomical methods; your place is resolved to coordinates, then the chart stays on this device.
         </p>
         <p class="chart-hero__timecode" aria-hidden="true">PUBLISHED ASTRONOMICAL METHODS &middot; 1800&ndash;2200 CE &middot; <b>CHART CALCULATION ON-DEVICE</b> &middot; PLACE LOOKUP DISCLOSED</p>
-        <p style="margin:1.1rem 0 0;display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center">
-          <a href="#chart-form-wrapper" class="btn btn--primary" style="text-decoration:none">CAST MY CHART — FREE ↓</a>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.16em;color:var(--silver-dim)">TAKES ~20 SECONDS · FREE TO CAST · NO SIGN-UP</span>
+        <p class="chart-hero__actions">
+          <a href="#chart-form-wrapper" class="btn btn--primary chart-hero__cta">Cast my chart</a>
+          <span class="chart-hero__proof">About 20 seconds · no sign-up</span>
         </p>
       </div>
     </section>
 
     <!-- ECLIPSE STRIP — route the funnel's SEO entry into the event -->
-    <section class="container" aria-label="The 12 August eclipse" style="margin:1.2rem auto 0;">
-      <a href="eclipse.html" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border:1px solid rgba(255,90,31,.4);border-radius:6px;padding:14px 20px;background:linear-gradient(90deg,rgba(255,90,31,.1),rgba(255,90,31,.02));text-decoration:none;color:inherit">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;color:#ff6428">&#9679; THE ECLIPSE — 12 AUG 2026 &middot; PARTIAL ACROSS THE UK · TOTALITY IN GREENLAND, ICELAND, NORTHERN RUSSIA, SPAIN &amp; A SMALL PART OF PORTUGAL</span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.14em;color:#d8b46a;white-space:nowrap">WHERE DOES IT LAND IN YOUR CHART &rarr;</span>
+    <section class="container chart-eclipse-strip" aria-label="The 12 August eclipse">
+      <a href="eclipse.html" class="chart-eclipse-strip__link">
+        <span class="chart-eclipse-strip__fact">The eclipse · 12 Aug 2026 · partial across the UK · totality in Greenland, Iceland, northern Russia, Spain and a small part of Portugal</span>
+        <span class="chart-eclipse-strip__action">Find its contact in your chart &rarr;</span>
       </a>
     </section>
 
@@ -364,7 +208,7 @@
             <p class="form-hint" id="date-hint">Start here — the sky on your day.</p>
           </div>
 
-          <div class="form-group" id="group-city" style="position:relative;">
+          <div class="form-group form-group--city" id="group-city">
             <label for="city-input" class="form-label">
               Birth City <span class="required" aria-hidden="true">*</span>
             </label>
@@ -383,7 +227,7 @@
                 aria-describedby="city-hint"
               />
             </div>
-            <span class="form-group__check" aria-hidden="true" style="right:14px;top:calc(50% + 12px);"></span>
+            <span class="form-group__check" aria-hidden="true"></span>
             <div
               class="autocomplete-dropdown"
               id="city-autocomplete"
@@ -393,14 +237,14 @@
             ></div>
             <p class="form-error-msg" role="alert">Please select a city from the dropdown.</p>
             <p class="form-hint" id="city-hint">Pick a result for precise coordinates — a typed city name alone is not enough.
-              <button type="button" id="geo-btn" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 6px;">◉ or use my current location</button>
+              <button type="button" id="geo-btn" class="form-inline-action">Use my current location</button>
             </p>
           </div>
 
           <div class="form-group" id="group-time">
             <label for="time-input" class="form-label">
               Birth Time
-              <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — optional</span>
+              <span class="form-label__optional"> — optional</span>
             </label>
             <input
               type="time"
@@ -410,10 +254,9 @@
             />
             <input type="hidden" id="time-accuracy-input" value="unknown" />
             <p class="form-hint" id="time-hint">Exact time unlocks Rising, MC and houses. Leave blank if unknown — planetary signs remain precise.
-              <button type="button" id="time-unknown-btn" aria-pressed="true" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 2px;">Keep time unknown</button>
+              <button type="button" id="time-unknown-btn" class="form-inline-action" aria-pressed="true">Keep time unknown</button>
             </p>
             <p class="form-hint ap-time-status" id="time-accuracy-status" role="status" aria-live="polite">Time unknown · Rising, MC and houses will be withheld.</p>
-            <div id="time-accuracy-guide" hidden></div>
           </div>
 
           <details class="chart-form__optional-label" id="group-name-wrap">
@@ -440,11 +283,11 @@
           <input type="hidden" id="tz-input" />
 
           <!-- Submit CTA FIRST (structure clean) — advanced options never push Calculate below the fold -->
-          <div class="form-divider" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
+          <div class="form-divider" aria-hidden="true"><span class="eng-star-mark"></span></div>
 
           <div class="form-cta">
-            <div id="spacetime-summary" hidden style="margin:0 0 18px;padding:14px 20px;border:1px solid rgba(216,180,106,.3);border-radius:6px;background:linear-gradient(135deg,rgba(216,180,106,.08),transparent);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-style:italic;font-size:1.1rem;color:var(--white,#f2ecdf);letter-spacing:0.02em;">
-              <span style="display:block;font-family:var(--font-body,Inter);font-size:0.58rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Your event in spacetime</span>
+            <div id="spacetime-summary" class="spacetime-summary" hidden>
+              <span class="spacetime-summary__label">Your event in spacetime</span>
               <span id="spacetime-summary-txt"></span>
             </div>
             <button type="submit" class="btn--calculate" id="calculate-btn" aria-describedby="submit-hint">
@@ -457,12 +300,12 @@
               Sample Chart (Frida Kahlo)
             </button>
           </div>
-          <p class="form-hint" id="submit-hint" style="margin-top:var(--space-3);text-align:center;">
+          <p class="form-hint form-hint--submit" id="submit-hint">
             The chart calculation stays on your device. Place search sends the place text to Open-Meteo to find coordinates.
           </p>
 
           <!-- ── Advanced options AFTER primary CTA (collapsed by default) ───────────── -->
-          <div class="chart-advanced accordion" id="chart-advanced" style="margin-top:var(--space-6);">
+          <div class="chart-advanced accordion" id="chart-advanced">
             <div class="accordion-item" id="chart-advanced-item">
               <button type="button" class="accordion-trigger" id="chart-advanced-trigger" aria-expanded="false" aria-controls="chart-advanced-panel">
                 <span>Advanced chart options</span>
@@ -470,10 +313,10 @@
               </button>
               <div class="accordion-content" id="chart-advanced-panel" role="region" aria-labelledby="chart-advanced-trigger">
                 <div class="accordion-content__inner">
-                  <div class="chart-form__time-picks" style="margin-bottom:var(--space-6);">
-                    <p class="form-label" style="margin-bottom:var(--space-3);">
+                  <div class="chart-form__time-picks">
+                    <p class="form-label chart-form__time-label">
                       Time of Day
-                      <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — tap to approximate if exact time is unknown</span>
+                      <span class="form-label__optional"> — tap to approximate if exact time is unknown</span>
                     </p>
                     <div class="time-selector" role="group" aria-label="Time of day selector">
                       <button type="button" class="time-btn" data-time="04:30" aria-label="Dawn, around 4:30 AM">
@@ -517,7 +360,7 @@
                   </div>
                   <input type="hidden" id="house-system" value="equal" />
 
-                  <div class="form-section-label" style="margin-top:var(--space-6);">
+                  <div class="form-section-label form-section-label--spaced">
                     <div class="form-section-label__num" aria-hidden="true">☊</div>
                     <span class="form-section-label__text">Lunar Node Model</span>
                   </div>
@@ -538,7 +381,7 @@
                       </span>
                     </label>
                   </div>
-                  <p class="form-hint" style="margin-top:var(--space-2);">
+                  <p class="form-hint form-hint--compact">
                     Black Moon Lilith (mean lunar apogee, ⚸) and the lunar nodes (☊ / ☋) are always included in your chart.
                   </p>
                 </div>
@@ -583,20 +426,17 @@
             <div class="result-header-meta">
               <h2 id="result-name" aria-hidden="true"></h2>
               <p id="result-date"></p>
-              <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
+              <span class="result-badge"><span class="eng-star-mark"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
               <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
               <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Rising, MC and houses — signs stay precise without it</span>
-              <a href="eclipse.html" id="eclipse-handoff" style="display:inline-block;margin-top:0.55rem;font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.16em;color:#ff5a1f;text-decoration:none">&rarr; SEE WHERE THE 12 AUG ECLIPSE LANDS IN THIS CHART</a>
+              <a href="eclipse.html" id="eclipse-handoff" class="result-eclipse-handoff">See where the 12 Aug eclipse lands in this chart &rarr;</a>
             </div>
             <div class="result-actions" id="result-actions-row">
               <a id="eclipse-cta" href="eclipse.html" class="action-btn action-btn--gold" aria-label="See where the 12 August eclipse lands in this chart — free teaser, prefilled from this chart">
                 12 Aug eclipse in this chart &rarr;
               </a>
-              <button id="poster-btn" class="action-btn action-btn--ghost" aria-label="Download your masterpiece chart plate — print, square, story or wallpaper">
-                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Download masterpiece
-              </button>
-              <button id="wallpaper-btn" class="action-btn action-btn--ghost" aria-label="Get a free phone wallpaper of your chart">
-                Free wallpaper
+              <button id="poster-btn" class="action-btn action-btn--ghost" aria-haspopup="menu" aria-label="Export chart artwork as a print plate, square, story, wallpaper, or Big Three card">
+                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Export artwork
               </button>
               <button id="save-btn" class="action-btn action-btn--ghost" aria-label="Save chart to your profile">
                 Save
@@ -609,32 +449,11 @@
                 <div class="result-actions__more-menu" role="group" aria-label="More chart actions">
                   <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">Big Three card</button>
                   <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">Export JSON</button>
-                  <button id="app-btn" class="action-btn action-btn--ghost" aria-label="Open chart in the Astro Precise app">Open in App</button>
                 </div>
               </details>
             </div>
           </div>
         </div>
-
-        <aside class="chart-keepsake-band" aria-label="Keep this sky">
-          <div class="chart-keepsake-band__art" aria-hidden="true">
-            <img src="img/marketing-masterpiece-plate-silver.jpg?v=771" width="96" height="96" alt="" loading="lazy" decoding="async" />
-          </div>
-          <div class="chart-keepsake-band__copy">
-            <p class="chart-keepsake-band__eyebrow">Your sky · keepsake path</p>
-            <p class="chart-keepsake-band__lead">
-              See where the <a href="eclipse.html"><strong>12 Aug eclipse</strong></a> lands in this chart — free,
-              then download a <strong>masterpiece plate</strong> (real degrees + seals + 3D engine texture),
-              freeze any date as a <a href="moment.html">Moment</a>, or open the
-              <a href="shop.html">Shop</a> — readings from £2.99, checkout opens any day.
-            </p>
-            <p class="chart-keepsake-band__honesty">
-              Wheel = your real positions · window = 3D orrery still · free PNG ≠ paid print · not AI art
-            </p>
-          </div>
-        </aside>
-
-        <div id="chart-ai-panel" hidden aria-label="Optional chart insight"></div>
 
         <!-- Big Three -->
         <section class="big-three-section animate-in animate-in--delay-1" role="group" aria-labelledby="big-three-heading">
@@ -686,7 +505,7 @@
                     </span>
                   </span>
                   <div class="chart-wheel-header__text">
-                    <p class="chart-wheel-label"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Natal Wheel</p>
+                <p class="chart-wheel-label"><span class="eng-star-mark"></span>Natal wheel</p>
                     <p class="chart-wheel-sublabel">Engraved ecliptic instrument · ASC at nine o'clock</p>
                   </div>
                 </header>
@@ -702,8 +521,6 @@
                     </svg>
                   </div>
                 </div>
-                <!-- Unique 3D ecliptic instrument (same longitudes as wheel) -->
-                <div id="ap-natal-sphere" class="ap-natal-sphere" hidden></div>
               </div>
             </div>
           </section>
@@ -788,91 +605,6 @@
           </div><!-- /.tabs-card -->
         </div><!-- /.chart-results-grid -->
 
-        <!-- Wallpaper lead magnet — free with email unlock. Sits AFTER the wheel
-             so nothing gates the reading: the visitor sees their chart first,
-             then the "wear your sky" offer. -->
-        <section id="wallpaper-lead" class="wallpaper-lead animate-in animate-in--delay-1" aria-label="Free phone wallpaper of your chart" hidden>
-          <p class="wallpaper-lead__eyebrow">Wear your sky</p>
-          <h3 class="wallpaper-lead__title">Free phone wallpaper of <em>your</em> chart</h3>
-          <p class="wallpaper-lead__sub">Your natal wheel, centred for lock screen — generated from the chart you just cast. Enter your email once to unlock the download; optional birth date stays on this device.</p>
-          <!-- No `name` on either control: a browser serialises only named ones,
-               so a native submit (JS off, or before chart-page.js has bound)
-               cannot turn "optional birth date stays on this device" into
-               GET /chart.html?email=…&birthDate=…  Read by id instead. -->
-          <form id="wallpaper-email-form" class="wallpaper-lead__form" novalidate>
-            <div class="wallpaper-lead__fields">
-              <label class="wallpaper-lead__field">
-                <span class="wallpaper-lead__label">Email</span>
-                <input type="email" id="wallpaper-lead-email" required placeholder="you@example.com" autocomplete="email" class="wallpaper-lead__input" aria-describedby="wallpaper-lead-disclosure">
-              </label>
-              <label class="wallpaper-lead__field wallpaper-lead__field--optional">
-                <span class="wallpaper-lead__label">Birth date <span class="wallpaper-lead__opt">(optional)</span></span>
-                <input type="date" id="wallpaper-lead-birthdate" class="wallpaper-lead__input" aria-label="Birth date optional — stays on your device">
-              </label>
-            </div>
-            <button type="submit" class="wallpaper-lead__download" aria-label="Unlock free phone wallpaper">
-              <svg class="eng-i" aria-hidden="true" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;"><use href="#ei-star4"/></svg>
-              Unlock free wallpaper
-            </button>
-          </form>
-          <div id="wallpaper-unlocked" class="wallpaper-lead__actions" hidden>
-            <button type="button" id="wallpaper-download-btn" class="wallpaper-lead__download" aria-label="Download phone wallpaper PNG">
-              <svg class="eng-i" aria-hidden="true" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;"><use href="#ei-star4"/></svg>
-              Download wallpaper
-            </button>
-          </div>
-          <p class="wallpaper-lead__honest" id="wallpaper-lead-disclosure">1080×1920 PNG · computed in your browser · we only use your email for cosmic weather &amp; shop drops</p>
-        </section>
-
-        <!-- ── WHAT'S NEXT (post-chart guidance) ───────────────────────
-             JS (chart-page.js → renderWhatsNext) fills personalised links
-             to transits, compatibility, and the Instrument. -->
-<section id="chart-whats-next" class="chart-whats-next animate-in" aria-label="Explore your chart further" hidden></section>
-
-        <!-- ── DEEP READING TEASER (real snippets → paywall) ──────────
-             JS (chart-page.js → renderDeepTeaser) fills this with TRUE
-             sentences pulled from THIS chart's interpretations, then a
-             hard-walled locked tail + CTA. Empty until a chart is cast. -->
-        <section id="deep-teaser" class="deep-teaser animate-in" aria-label="Your Deep Reading preview" hidden></section>
-
-        <!-- ── EMAIL CAPTURE (optional · privacy-respecting) ──────────
-             Provider-agnostic + dormant by default. Posts to AP_MON.emailUrl
-             when configured; otherwise saves intent to localStorage only.
-             Never required to use the free chart. -->
-        <section id="email-capture" class="email-capture animate-in" aria-label="Save your chart and cosmic weather" hidden>
-          <div class="email-capture__head">
-            <span class="email-capture__orb" aria-hidden="true">
-              <svg class="eng-i" style="width:34px;height:34px;color:var(--gold);" viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="3" y="5.5" width="18" height="13" rx="2"/>
-                <path d="M3.5 7 12 13l8.5-6"/>
-              </svg>
-            </span>
-            <div>
-              <h3 class="email-capture__title">Unlocked your wallpaper? Stay for cosmic weather</h3>
-              <p class="email-capture__sub">You already joined the list to download — we&apos;ll send monthly transit notes for <em>your</em> chart, deep-reading previews, shop drops &amp; horoscopes when they ship. No extra signup needed if you unlocked above.</p>
-            </div>
-          </div>
-          <form id="email-capture-form" class="email-capture__form" novalidate>
-            <input
-              type="email"
-              id="email-capture-input"
-              class="email-capture__input"
-              placeholder="you@example.com"
-              autocomplete="email"
-              aria-label="Your email address (optional)"
-            />
-            <button type="submit" class="email-capture__btn"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> &#10022; Get updates</button>
-          </form>
-          <p class="email-capture__privacy">
-            <svg class="eng-i" viewBox="0 0 24 24" aria-hidden="true"><use href="#ei-lock"/></svg>
-            <span>We'll only email your cosmic weather — no spam, unsubscribe anytime. Date, time and chart calculation stay on your device; place search uses Open-Meteo.</span>
-          </p>
-          <div class="email-capture__done" role="status" aria-live="polite">
-            <span aria-hidden="true" style="color:var(--gold);font-size:1.1rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
-            <span id="email-capture-done-msg"><strong>We'll let you know.</strong></span>
-          </div>
-        </section>
-
       </div><!-- /#chart-result -->
 
       <!-- Loading -->
@@ -883,7 +615,7 @@
           <div class="spinner__ring spinner__ring--inner"></div>
           <div class="spinner__center"></div>
         </div>
-        <p style="margin-top:var(--space-6);color:var(--silver-dim);text-align:center;">
+        <p class="chart-loading__label">
           Calculating planetary positions…
         </p>
       </div>
@@ -919,173 +651,6 @@
   <script src="js/ap-deep-link.js?v=835" defer></script>
   <script src="js/ap-sky-bridge.js?v=835" defer></script>
   <script src="js/chart-page.js?v=835" defer></script>
-  <script>
-  (function () {
-    function inject(src) {
-      var s = document.createElement('script');
-      s.src = src;
-      s.defer = true;
-      document.body.appendChild(s);
-    }
-    function idle() { /* Launch chart has an authored static field; no ambient injector. */ }
-    window.addEventListener('load', function () {
-      if (window.requestIdleCallback) requestIdleCallback(idle, { timeout: 4000 });
-      else setTimeout(idle, 1200);
-    }, { once: true });
-  })();
-  </script>
-  <script>
-  /* ── Chart page interaction enhancements ── */
-  (function () {
-
-    // NOTE: the advanced-options accordion is owned solely by chart-page.js
-    // (initAdvancedAccordion — handles max-height + the mobile media query). A
-    // second handler used to live here and double-toggled the panel; removed.
-
-    // "Don't know your birth time?" → open Advanced options and jump to the
-    // time-of-day approximations (they're the graceful fallback for the most
-    // common real-world data gap, otherwise buried in the accordion).
-    var accuracyInput = document.getElementById('time-accuracy-input');
-    var accuracyStatus = document.getElementById('time-accuracy-status');
-    function setTimeAccuracy(level) {
-      level = /^(exact|approximate|unknown)$/.test(level) ? level : 'unknown';
-      if (accuracyInput) accuracyInput.value = level;
-      if (accuracyStatus) {
-        accuracyStatus.dataset.level = level;
-        accuracyStatus.textContent = level === 'exact'
-          ? 'Exact time · Rising, MC and houses will be calculated.'
-          : level === 'approximate'
-            ? 'Approximate time · Rising, MC and houses are provisional.'
-            : 'Time unknown · Rising, MC and houses will be withheld.';
-      }
-      if (timeUnknownBtn) {
-        timeUnknownBtn.setAttribute('aria-pressed', level === 'unknown' ? 'true' : 'false');
-        timeUnknownBtn.textContent = level === 'unknown' ? 'Choose an approximate time' : 'Mark time unknown';
-      }
-    }
-    document.addEventListener('ap-time-accuracy', function (ev) {
-      setTimeAccuracy(ev && ev.detail);
-    });
-    var timeUnknownBtn = document.getElementById('time-unknown-btn');
-    if (timeUnknownBtn) {
-      timeUnknownBtn.addEventListener('click', function () {
-        if (document.getElementById('time-input')) document.getElementById('time-input').value = '';
-        setTimeAccuracy('unknown');
-        var item = document.getElementById('chart-advanced-item');
-        var trig = document.getElementById('chart-advanced-trigger');
-        if (item && trig && !item.classList.contains('is-open')) trig.click();
-        var picks = document.querySelector('.chart-form__time-picks') || document.querySelector('.time-selector');
-        if (picks) {
-          var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          picks.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-          var firstBtn = picks.querySelector('.time-btn');
-          if (firstBtn) setTimeout(function () { try { firstBtn.focus({ preventScroll: true }); } catch (e) { firstBtn.focus(); } }, 400);
-        }
-      });
-    }
-
-    // Time-of-day selector
-    document.querySelectorAll('.time-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const timeInput = document.getElementById('time-input');
-        if (timeInput) {
-          timeInput.value = btn.dataset.time;
-          setTimeAccuracy('approximate');
-          timeInput.dispatchEvent(new Event('input'));
-        }
-      });
-    });
-
-    // Clear active time-btn when user types directly
-    const timeInput = document.getElementById('time-input');
-    if (timeInput) {
-      timeInput.addEventListener('input', () => {
-        const val = timeInput.value;
-        const matched = [...document.querySelectorAll('.time-btn')].some(b => b.dataset.time === val);
-        if (!matched) document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-        var preset = document.querySelector('.time-btn.active');
-        setTimeAccuracy(val ? (preset && preset.dataset.time === val ? 'approximate' : 'exact') : 'unknown');
-      });
-      timeInput.addEventListener('change', () => setTimeAccuracy(timeInput.value ? 'exact' : 'unknown'));
-    }
-    setTimeAccuracy((accuracyInput && accuracyInput.value) || (timeInput && timeInput.value ? 'exact' : 'unknown'));
-
-    // House system card selector
-    const houseInput = document.getElementById('house-system');
-    document.querySelectorAll('.house-card').forEach(card => {
-      card.addEventListener('click', () => selectHouseCard(card));
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectHouseCard(card); }
-      });
-    });
-    function selectHouseCard(card) {
-      document.querySelectorAll('.house-card').forEach(c => {
-        c.classList.remove('active');
-        c.setAttribute('aria-checked', 'false');
-      });
-      card.classList.add('active');
-      card.setAttribute('aria-checked', 'true');
-      if (houseInput) houseInput.value = card.dataset.value;
-    }
-
-    // Inline validation
-    function watchField(inputId, groupId) {
-      const input = document.getElementById(inputId);
-      const group = document.getElementById(groupId);
-      if (!input || !group) return;
-      function check() {
-        const filled = input.value.trim() !== '';
-        group.classList.toggle('is-valid', filled);
-        group.classList.remove('is-error');
-      }
-      input.addEventListener('input', check);
-      input.addEventListener('change', check);
-      input.addEventListener('blur', () => {
-        if (input.required && input.value.trim() === '') group.classList.add('is-error');
-      });
-    }
-    watchField('name-input', 'group-name');
-    watchField('date-input', 'group-date-first');
-    watchField('time-input', 'group-time');
-
-    // City validation via custom event
-    document.addEventListener('astro:city-selected', () => {
-      const g = document.getElementById('group-city');
-      if (g) { g.classList.add('is-valid'); g.classList.remove('is-error'); }
-    });
-    const cityInput = document.getElementById('city-input');
-    if (cityInput) {
-      cityInput.addEventListener('input', () => {
-        const g = document.getElementById('group-city');
-        if (g) { g.classList.remove('is-valid'); g.classList.remove('is-error'); }
-      });
-    }
-
-    // Calculate button loading state
-    const calcBtn = document.getElementById('calculate-btn');
-    const form    = document.getElementById('chart-form');
-    if (form && calcBtn) {
-      form.addEventListener('submit', () => {
-        requestAnimationFrame(function () {
-          if (form.querySelector('.form-group.is-error')) {
-            calcBtn.classList.remove('is-loading');
-            calcBtn.disabled = false;
-            return;
-          }
-          calcBtn.classList.add('is-loading');
-          calcBtn.disabled = true;
-          setTimeout(function () {
-            calcBtn.classList.remove('is-loading');
-            calcBtn.disabled = false;
-          }, 8000);
-        });
-      });
-    }
-
-  })();
-  </script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>
