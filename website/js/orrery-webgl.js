@@ -17,7 +17,9 @@
  * Body config + J2000 Kepler elements: js/orbitlab-bodies.js (guides/education).
  * Kepler math helpers: js/orbitlab-orbital-math.js (not used for live positions).
  *
- * If WebGL is unavailable, transparently injects the canvas orrery3d.js fallback.
+ * The flagship Observatory is WebGL-only. If the context is unavailable or is
+ * lost, the owning shell keeps its still/error state; this renderer never swaps
+ * a different model underneath a visitor mid-session.
  * ==========================================================================*/
 
 import * as THREE from 'three';
@@ -123,7 +125,7 @@ const FinishShader = {
 (function () {
   'use strict';
 
-  // ── WebGL capability check → graceful fallback to the canvas orrery ────────
+  // ── WebGL capability check ────────────────────────────────────────────────
   function webglOK() {
     try {
       const c = document.createElement('canvas');
@@ -132,50 +134,10 @@ const FinishShader = {
     } catch (e) { return false; }
   }
 
-  function requestCanvasFallbackScript() {
-    if (typeof window.__loadCanvasOrreryScript === 'function') {
-      return window.__loadCanvasOrreryScript();
-    }
-    if (window.__apOrreryFallbackScriptPromise) return window.__apOrreryFallbackScriptPromise;
-    const version = String(window.AP_ASSET_V || '771');
-    const base = new URL('js/orrery3d.js', document.baseURI);
-    base.searchParams.set('v', version);
-    base.searchParams.set('fallback', 'canvas');
-    const token = 'ap-fallback-' + version + '-' + Date.now();
-    const script = document.createElement('script');
-    script.dataset.apOrreryCanvasFallback = 'true';
-    script.dataset.apAssetV = version;
-    script.dataset.apOrreryFallbackToken = token;
-    script.dataset.apState = 'loading';
-    script.src = base.href;
-    script.async = false;
-    window.__apOrreryFallbackOwner = token;
-    const promise = new Promise((resolve, reject) => {
-      script.onload = () => {
-        if (script.dataset.apState === 'cancelled' || window.__apOrreryFallbackOwner !== token) {
-          reject(new Error('stale canvas fallback load')); return;
-        }
-        if (!window.Orrery3D || typeof window.Orrery3D.init !== 'function') {
-          reject(new Error('canvas fallback unavailable')); return;
-        }
-        script.dataset.apState = 'loaded';
-        resolve(window.Orrery3D);
-      };
-      script.onerror = () => { script.dataset.apState = 'failed'; try { script.remove(); } catch (e) {} reject(new Error('orrery3d.js failed')); };
-      document.head.appendChild(script);
-    });
-    window.__apOrreryFallbackScriptPromise = promise.catch((err) => {
-      if (window.__apOrreryFallbackOwner === token) window.__apOrreryFallbackOwner = null;
-      if (window.__apOrreryFallbackScriptPromise === tracked) window.__apOrreryFallbackScriptPromise = null;
-      throw err;
-    });
-    const tracked = window.__apOrreryFallbackScriptPromise;
-    return tracked;
-  }
-
   if (!webglOK()) {
-    // Fall back to the lightweight canvas version (it defines window.Orrery3D itself)
-    requestCanvasFallbackScript().catch(() => {});
+    // The strict Home adapter treats a missing Orrery3D registration as an honest
+    // unavailable state. Do not inject the retired 2D renderer from this module.
+    window.__apOrreryWebGLUnavailable = true;
     return;
   }
 
@@ -192,7 +154,6 @@ const FinishShader = {
 
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
-  let webglOnlyMode = false;
   let fatalReported = false;
   let envRT = null;
   let envIblLoading = false;
@@ -370,6 +331,13 @@ const FinishShader = {
     catch (e) { return false; }
   })();
 
+  function dataSavingRequested() {
+    try {
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      return !!(connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || '')));
+    } catch (e) { return false; }
+  }
+
   function orreryDPR() {
     const pre = onPreloaderStage();
     let cap = pre
@@ -390,9 +358,11 @@ const FinishShader = {
   function sphereSegs(hero) {
     if (hero) {
       if (onPreloaderStage()) return perfTier === 'high' ? 112 : perfTier === 'mid' ? 64 : 48;
+      if (IS_PHONE) return perfTier === 'high' ? 112 : perfTier === 'mid' ? 88 : 64;
       return perfTier === 'high' ? 144 : perfTier === 'mid' ? 104 : 64;
     }
     if (onPreloaderStage()) return perfTier === 'high' ? 48 : 36;
+    if (IS_PHONE) return perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 40;
     return perfTier === 'high' ? 80 : perfTier === 'mid' ? 64 : 40;
   }
 
@@ -1911,7 +1881,10 @@ const FinishShader = {
         bloomStrength, bloomRadius, bloomThreshold
       );
       composer.addPass(bloomPass);
-      if (perfTier === 'high') {
+      // Radial blur is a full-screen transition pass. Camera easing already carries
+      // the journey on touch devices; omitting this pass there saves fill-rate and
+      // avoids softening the small planet silhouettes the phone needs to keep sharp.
+      if (perfTier === 'high' && !IS_PHONE) {
         radialBlurPass = tryCreateRadialBlurPass(1);
         if (radialBlurPass) composer.addPass(radialBlurPass);
       }
@@ -3953,10 +3926,10 @@ const FinishShader = {
       const outerT = Math.max(0, Math.min(1, (z - 2.2) / 2.8));
       const fogDensity = (perfTier === 'high' ? 0.00020 : 0.00024) + outerT * 0.0007;
       const targetExp = (perfTier === 'high' ? 1.08 : 1.02) - outerT * 0.14;
-      const hemiI = (perfTier === 'high' ? 0.50 : 0.43) * (1 - outerT * 0.24);
-      const sunPtI = (perfTier === 'high' ? 2.1 : 1.75) * (1 - outerT * 0.35);
-      const sunDirI = (perfTier === 'high' ? 1.45 : 1.2) * (1 - outerT * 0.25);
-      const fillI = (perfTier === 'high' ? 0.72 : 0.60) * (1 - outerT * 0.7);
+      const hemiI = (perfTier === 'high' ? 0.40 : 0.34) * (1 - outerT * 0.24);
+      const sunPtI = (perfTier === 'high' ? 2.2 : 1.85) * (1 - outerT * 0.35);
+      const sunDirI = (perfTier === 'high' ? 1.65 : 1.38) * (1 - outerT * 0.25);
+      const fillI = (perfTier === 'high' ? 0.54 : 0.46) * (1 - outerT * 0.7);
       const k = Math.min(1, (dt || 0.016) * 4.2);
       if (scene && scene.fog && !portraitMode) {
         scene.fog.color.setHex(0x040610);
@@ -4028,8 +4001,18 @@ const FinishShader = {
     return BODIES.some((b) => b.id === focusFrameId) ? focusFrameId : null;
   }
 
+  function setGroupAtmosphereStrength(group, factor) {
+    if (!group || !group.userData) return;
+    [group.userData.atmo, group.userData.atmoOuter].forEach((shell) => {
+      const u = shell && shell.material && shell.material.uniforms && shell.material.uniforms.uIntensity;
+      if (!u || shell.userData.baseIntensity == null) return;
+      u.value = shell.userData.baseIntensity * factor;
+    });
+  }
+
   function updateScaleVisualsContinuous(z) {
     const lv = Math.round(z);
+    const portraitId = instrumentPortraitBodyId();
     solarDim = z <= 2 ? 1 : z <= 3.4 ? 0.55 + (3.4 - z) * 0.45 : z <= 4.4 ? 0.12 + (4.4 - z) * 0.43 : 0;
     const showSolar = solarDim > 0.02;
     const showPlanetLabels = showLabels && z <= 2.2;
@@ -4037,15 +4020,26 @@ const FinishShader = {
       const g = meshes[b.id];
       if (!g) return;
       g.visible = showSolar;
+      const systemOverview = instrumentMode && z >= 1.55 && z <= 2.35;
+      const atmosphereFactor = systemOverview
+        ? (portraitId === b.id ? 0.88 : b.id === 'earth' ? 0.38 : 0.24)
+        : 1;
+      setGroupAtmosphereStrength(g, atmosphereFactor);
       if (showSolar) {
         let s = z <= 2 ? 1 : z <= 3 ? 0.45 + (3 - z) * 0.55 : 0.15;
         if (instrumentMode && z <= 2) {
-          s *= z <= 1.6 ? 1.65 : 1.42;
+          const overviewScale = IS_PHONE
+            ? (z <= 1.6 ? 1.46 : 1.28)
+            : (z <= 1.6 ? 1.38 : 1.22);
+          s *= overviewScale;
           // The wide System frame used to leave Mercury and Mars only a few
-          // physical pixels across. Texture detail cannot survive that. Enforce
-          // a modest display-radius floor while retaining honest positions and
-          // the documented exaggerated-size convention.
-          if (z >= 1.7) s = Math.max(s, 0.62 / Math.max(0.01, b.size));
+          // physical pixels across. Keep a restrained display-radius floor, then
+          // recover the generous touch target in resolvePickId without inflating
+          // every visual into the same floating UI orb.
+          if (z >= 1.7) {
+            const minDisplayRadius = IS_PHONE ? 0.50 : 0.44;
+            s = Math.max(s, minDisplayRadius / Math.max(0.01, b.size));
+          }
         }
         if (preloaderCosmicJourney && z >= 1.4 && z <= 2.6) {
           s *= 1.06 + Math.sin((2.6 - z) * 1.8) * 0.04;
@@ -4056,10 +4050,16 @@ const FinishShader = {
         if (luminousHalo) luminousHalo.visible = !crispSystem || selectedPlanetId === b.id;
         const m = g.userData.mesh;
         if (m && m.material) {
-          m.material.transparent = false;
-          m.material.opacity = 1;
-          m.material.depthWrite = true;
-          m.material.needsUpdate = true;
+          // updateScaleVisualsContinuous runs every free-zoom frame. Marking all
+          // planet materials dirty here forced redundant shader/program work and
+          // caused transition hitches; only touch the program when state changed.
+          const stateChanged = m.material.transparent || m.material.opacity !== 1 || !m.material.depthWrite;
+          if (stateChanged) {
+            m.material.transparent = false;
+            m.material.opacity = 1;
+            m.material.depthWrite = true;
+            m.material.needsUpdate = true;
+          }
         }
       }
     });
@@ -4115,7 +4115,6 @@ const FinishShader = {
     // the other bodies, orbit rails and the Sun disc in the same close frame
     // created overlapping silhouettes and made a successful click look broken.
     // The light at the Sun remains active; only its rendered disc is collapsed.
-    const portraitId = instrumentPortraitBodyId();
     if (portraitId) {
       BODIES.forEach((b) => {
         const g = meshes[b.id];
@@ -4918,12 +4917,23 @@ const FinishShader = {
 
   function tuneTexture(t) {
     if (!t || !renderer) return;
-    const systemView = scaleLevel <= 2 && !onPreloaderStage();
-    const maxDim = perfTier === 'low' ? 2048 : perfTier === 'mid' ? 3072 : 4096;
-    const cap = onPreloaderStage() ? Math.min(maxDim, 2048) : (systemView ? maxDim : Math.min(maxDim, 2048));
+    // The maps are equirectangular: a 2048×1024 source gives roughly 1024 useful
+    // texels across a visible hemisphere. Keep that on capable phones, but cap
+    // decoded GPU dimensions on constrained tiers instead of sacrificing every
+    // phone to the visibly soft 512×256 maps.
+    const cap = onPreloaderStage()
+      ? 512
+      : perfTier === 'low'
+        ? 512
+        : perfTier === 'mid'
+          ? (IS_PHONE ? 1024 : 2048)
+          : (IS_PHONE ? 2048 : 4096);
     capTextureSize(t, cap);
     const max = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
-    t.anisotropy = perfTier === 'low' ? Math.min(max, 4) : max;
+    const anisoCap = perfTier === 'low' ? 4 : perfTier === 'mid' ? 8 : (IS_PHONE ? 8 : 12);
+    t.anisotropy = Math.min(max, anisoCap);
+    t.wrapS = THREE.RepeatWrapping;
+    t.wrapT = THREE.ClampToEdgeWrapping;
     t.generateMipmaps = true;
     t.minFilter = THREE.LinearMipmapLinearFilter;
     t.magFilter = THREE.LinearFilter;
@@ -4934,14 +4944,10 @@ const FinishShader = {
   // 512px (_sm) instead of full 2048px. Screen width alone is not a performance
   // signal: high-tier phones keep the 2048px maps for crisp destination portraits.
   function wantsSmallTextures() {
-    if (perfTier === 'low' || perfTier === 'mid') return true;
-    try {
-      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return true;
-    } catch (e) { /* fall through */ }
-    // A narrow screen is not a weak GPU. High-tier phones receive the full map so
-    // flying from Earth to another world does not end in a blurry 512px portrait.
-    return false;
+    // Low-tier / explicit data-saving clients use compact maps. Mid-tier clients
+    // load the full source once and tuneTexture downsizes it to a 1024px GPU map,
+    // preserving close-portrait detail without retaining 2048px textures.
+    return perfTier === 'low' || dataSavingRequested();
   }
 
   // Recover the strongest useful piece from the abandoned orrery-elevate branch:
@@ -4954,7 +4960,11 @@ const FinishShader = {
     const generation = runtimeGeneration;
     const expectedRenderer = renderer;
     const expectedScene = scene;
-    const file = wantsSmallTextures() ? 'env_nebula_cool_sm.webp' : 'env_nebula_cool.webp';
+    // PMREM blurs this source by design, so the compact IBL is visually equivalent
+    // on phones while avoiding a large decode and temporary render target.
+    const file = (IS_PHONE || perfTier !== 'high' || dataSavingRequested())
+      ? 'env_nebula_cool_sm.webp'
+      : 'env_nebula_cool.webp';
 
     envIblLoading = true;
     try {
@@ -5270,13 +5280,23 @@ const FinishShader = {
   function buildInstrumentCosmicVeil() {
     if (!instrumentMode || instrumentCosmicVeil || !scene) return;
     instrumentCosmicVeil = new THREE.Group();
+    // Stable, brand-bound parallax: the same instrument opens on every visit.
+    // Deterministic placement also prevents a reload from looking like a new model.
+    let veilSeed = 0x41c6ce57;
+    const random = () => {
+      veilSeed = (veilSeed + 0x6d2b79f5) | 0;
+      let n = veilSeed;
+      n = Math.imul(n ^ (n >>> 15), n | 1);
+      n ^= n + Math.imul(n ^ (n >>> 7), n | 61);
+      return ((n ^ (n >>> 14)) >>> 0) / 4294967296;
+    };
     const palettes = [
-      ['rgba(201,162,39,0.10)', 'rgba(80,55,20,0.025)'],
-      ['rgba(150,110,190,0.08)', 'rgba(45,35,75,0.02)'],
-      ['rgba(180,130,90,0.07)', 'rgba(55,35,25,0.02)'],
-      ['rgba(120,150,210,0.06)', 'rgba(30,45,80,0.018)'],
+      ['rgba(216,180,106,0.075)', 'rgba(72,52,22,0.018)'],
+      ['rgba(185,200,220,0.060)', 'rgba(28,42,66,0.016)'],
+      ['rgba(255,100,40,0.030)', 'rgba(62,24,12,0.010)'],
     ];
-    const count = perfTier === 'low' ? 8 : perfTier === 'mid' ? 14 : 20;
+    const desktopCount = perfTier === 'low' ? 4 : perfTier === 'mid' ? 7 : 12;
+    const count = IS_PHONE ? Math.min(desktopCount, perfTier === 'high' ? 6 : 4) : desktopCount;
     for (let i = 0; i < count; i++) {
       const pal = palettes[i % palettes.length];
       const tex = galaxySpriteTexture(pal[0], pal[1], 640, 360);
@@ -5285,21 +5305,21 @@ const FinishShader = {
         blending: THREE.AdditiveBlending,
         transparent: true,
         depthWrite: false,
-        opacity: 0.32,
+        opacity: 0.18,
       }));
-      const th = Math.random() * Math.PI * 2;
-      const ph = Math.acos(2 * Math.random() - 1);
-      const r = 720 + Math.random() * 680;
+      const th = random() * Math.PI * 2;
+      const ph = Math.acos(2 * random() - 1);
+      const r = 720 + random() * 680;
       sp.position.set(
         r * Math.sin(ph) * Math.cos(th),
-        (Math.random() - 0.5) * 320,
+        (random() - 0.5) * 320,
         r * Math.sin(ph) * Math.sin(th)
       );
-      const sc = 90 + Math.random() * 140;
-      sp.scale.set(sc * (1.2 + Math.random() * 0.9), sc * (0.75 + Math.random() * 0.35), 1);
-      sp.material.rotation = Math.random() * Math.PI;
-      sp.userData.drift = (Math.random() - 0.5) * 0.00006;
-      sp.userData.baseOpa = 0.22 + Math.random() * 0.14;
+      const sc = 90 + random() * 140;
+      sp.scale.set(sc * (1.2 + random() * 0.9), sc * (0.75 + random() * 0.35), 1);
+      sp.material.rotation = random() * Math.PI;
+      sp.userData.drift = (random() - 0.5) * 0.000035;
+      sp.userData.baseOpa = 0.12 + random() * 0.08;
       sp.material.opacity = sp.userData.baseOpa;
       instrumentCosmicVeil.add(sp);
     }
@@ -5323,7 +5343,7 @@ const FinishShader = {
       hemiLight.color.setHex(free ? 0x5a6a88 : 0x4a5870);
       hemiLight.groundColor.setHex(0x0c0a08);
       hemiLight.intensity = free
-        ? (perfTier === 'high' ? 0.52 : 0.44)
+        ? (perfTier === 'high' ? 0.40 : 0.34)
         : (perfTier === 'high' ? 0.38 : 0.32);
     }
     if (sunPointLight) {
@@ -5339,7 +5359,7 @@ const FinishShader = {
     if (instrumentFillLight) {
       instrumentFillLight.position.copy(camera.position);
       instrumentFillLight.intensity = free
-        ? (perfTier === 'high' ? 0.84 : 0.70)
+        ? (perfTier === 'high' ? 0.54 : 0.46)
         : (perfTier === 'high' ? 0.72 : 0.60);
     }
     if (renderer) {
@@ -5359,8 +5379,8 @@ const FinishShader = {
       const g = meshes[b.id];
       const sh = g && g.userData.mat && g.userData.mat.userData.planetShader;
       if (!sh || !sh.uniforms.uLightWash) return;
-      sh.uniforms.uLightWash.value = 0.12;
-      sh.uniforms.uRimMul.value = 0.18;
+      sh.uniforms.uLightWash.value = 0.045;
+      sh.uniforms.uRimMul.value = 0.065;
     });
   }
 
@@ -5878,6 +5898,9 @@ const FinishShader = {
         uOpacity: { value: hero ? 0.58 : 0.34 },
         uTime: { value: 0 },
         uHero: { value: hero ? 1.0 : 0.0 },
+        // A live astronomical instrument does not need a travelling arcade spark.
+        // Archive/cinematic modes retain it; Home and reduced-motion use still rails.
+        uMotion: { value: (!PRM && !instrumentMode) ? 1.0 : 0.0 },
       },
       vertexShader: `
         varying vec2 vUv;
@@ -5895,6 +5918,7 @@ const FinishShader = {
         uniform float uOpacity;
         uniform float uTime;
         uniform float uHero;
+        uniform float uMotion;
         void main() {
           float angle = vUv.x * 6.2831853;
           float majorTick = pow(max(0.0, cos(angle * 8.0)), 12.0);
@@ -5908,9 +5932,9 @@ const FinishShader = {
           vec3 brightGold = vec3(0.98, 0.84, 0.42);
           vec3 col = mix(darkGold, midGold, baseGlow + engraved * 0.4);
           col = mix(col, brightGold, engraved + uHero * 0.14);
-          float pulse = 0.92 + 0.08 * sin(uTime * 1.4 + angle * 2.5);
+          float pulse = mix(1.0, 0.92 + 0.08 * sin(uTime * 1.4 + angle * 2.5), uMotion);
           float flow = fract(angle * 4.0 - uTime * 0.22);
-          float spark = smoothstep(0.94, 1.0, flow) * smoothstep(1.0, 0.97, flow);
+          float spark = smoothstep(0.94, 1.0, flow) * smoothstep(1.0, 0.97, flow) * uMotion;
           col = mix(col, brightGold, spark * 0.85);
           float depthFade = smoothstep(480.0, 24.0, vDepth);
           float alpha = (baseGlow * 0.55 + engraved + spark * 0.42) * uOpacity * depthFade * pulse;
@@ -5920,7 +5944,9 @@ const FinishShader = {
       transparent: true,
       depthWrite: false,
       side: THREE.DoubleSide,
-      blending: THREE.AdditiveBlending,
+      // Normal blending makes the Home rails read as engraved brass instead of
+      // eight unrelated neon hoops. Cinematic archive modes keep additive light.
+      blending: instrumentMode ? THREE.NormalBlending : THREE.AdditiveBlending,
     });
   }
 
@@ -5928,25 +5954,33 @@ const FinishShader = {
     const rim = new THREE.Color(rimHex || 0x6088b0);
     shader.uniforms.uSunDir = { value: new THREE.Vector3(1, 0, 0) };
     shader.uniforms.uRimTint = { value: rim };
-    shader.uniforms.uLightWash = { value: 0.11 };
-    shader.uniforms.uRimMul = { value: rimMul != null ? rimMul : 0.08 };
+    shader.uniforms.uLightWash = { value: 0.05 };
+    shader.uniforms.uRimMul = { value: rimMul != null ? rimMul : 0.055 };
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>',
+        '#include <common>\n varying vec3 vPlanetWorldNormal;\n varying vec3 vPlanetWorldPos;')
+      .replace('#include <begin_vertex>',
+        '#include <begin_vertex>\n vPlanetWorldNormal = normalize(mat3(modelMatrix) * normal);\n vPlanetWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;');
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>',
-        '#include <common>\n uniform vec3 uSunDir;\n uniform vec3 uRimTint;\n uniform float uLightWash;\n uniform float uRimMul;')
+        '#include <common>\n uniform vec3 uSunDir;\n uniform vec3 uRimTint;\n uniform float uLightWash;\n uniform float uRimMul;\n varying vec3 vPlanetWorldNormal;\n varying vec3 vPlanetWorldPos;')
       .replace('#include <output_fragment>',
         `#include <output_fragment>
         {
-          // v576: 'normal' is VIEW-space here — bring the world-space sun dir into
-          // view space, else the wash terminator rotates with the camera.
-          float ndl = dot(normalize(normal), normalize((viewMatrix * vec4(uSunDir, 0.0)).xyz));
-          float day = smoothstep(-0.14, 0.62, ndl);
-          float twilight = smoothstep(-0.35, 0.08, ndl);
-          float rim = pow(1.0 - max(ndl, 0.0), 2.6);
-          gl_FragColor.rgb += uRimTint * rim * uRimMul * (1.0 + twilight * 0.35);
-          gl_FragColor.rgb *= 0.88 + day * 0.16;
-          gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * vec3(1.05, 1.02, 0.96), day * uLightWash);
-          gl_FragColor.rgb = mix(gl_FragColor.rgb * 0.78, gl_FragColor.rgb, twilight);
-          gl_FragColor.rgb += diffuseColor.rgb * uLightWash * (1.0 - day) * 0.52;
+          vec3 N = normalize(vPlanetWorldNormal);
+          vec3 V = normalize(cameraPosition - vPlanetWorldPos);
+          float ndl = dot(N, normalize(uSunDir));
+          float day = smoothstep(-0.16, 0.58, ndl);
+          float twilight = smoothstep(-0.30, 0.10, ndl);
+          float edge = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 3.2);
+          float litLimb = edge * smoothstep(-0.22, 0.24, ndl);
+          // Preserve a real spherical terminator. The old night-side colour wash
+          // made every small world self-lit and flat; this keeps only a restrained
+          // sun-facing atmospheric rim and a tiny readability floor.
+          gl_FragColor.rgb *= mix(0.84, 1.02, day);
+          gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * vec3(1.035, 1.015, 0.975), day * uLightWash);
+          gl_FragColor.rgb += uRimTint * litLimb * uRimMul * (0.72 + twilight * 0.28);
+          gl_FragColor.rgb += diffuseColor.rgb * (1.0 - day) * uLightWash * 0.10;
         }`);
   }
 
@@ -6001,7 +6035,7 @@ const FinishShader = {
         // totalEmissiveRadiance so the white never reaches the day side.
         mat = new THREE.MeshStandardMaterial({
           color: 0x1a4a78, roughness: 0.78, metalness: 0.0,
-          emissive: 0x0a1420, emissiveIntensity: 0.0, envMapIntensity: 0.48,
+          emissive: 0x0a1420, emissiveIntensity: 0.0, envMapIntensity: 0.42,
         });
         mat.onBeforeCompile = (shader) => { try { injectEarth(shader); } catch (e) { console.warn('[orrery] earth shader patch skipped', e); } };
         earthMat = mat;
@@ -6011,14 +6045,14 @@ const FinishShader = {
         // Gas-giant cloud tops are matte — no clearcoat lacquer on jupiter/saturn
         // (the coat lobe read as a centered plastic blob no base roughness can kill);
         // venus keeps its thick-haze sheen, the ice giants keep a whisper.
-        const clearcoat = (b.id === 'venus' ? 0.32
-          : (b.id === 'uranus' || b.id === 'neptune') ? 0.14 : 0);
-        const giantGlow = b.id === 'venus' ? 0x3a2810
-          : b.id === 'jupiter' ? 0x2a1808 : b.id === 'saturn' ? 0x1e1608 : 0x000000;
-        const giantEmissiveI = b.id === 'venus' ? 0.22
-          : b.id === 'jupiter' ? 0.10 : b.id === 'saturn' ? 0.08
-          : b.id === 'uranus' ? 0.05 : b.id === 'neptune' ? 0.05 : 0;
-        const envI = isGiant ? 0.38 : (b.id === 'venus' ? 0.46 : 0.24);
+        const clearcoat = (b.id === 'venus' ? 0.20
+          : (b.id === 'uranus' || b.id === 'neptune') ? 0.08 : 0);
+        // Only Venus carries a whisper of cloud-deck glow. Self-emissive giants
+        // flatten their terminators and are the main source of the "floating orb"
+        // look; sunlight + IBL now model every other planet.
+        const giantGlow = b.id === 'venus' ? 0x241608 : 0x000000;
+        const giantEmissiveI = b.id === 'venus' ? 0.06 : 0;
+        const envI = isGiant ? 0.28 : (b.id === 'venus' ? 0.34 : 0.18);
         mat = new THREE.MeshPhysicalMaterial({
           color: b.color, roughness: vis.roughness, metalness: vis.metalness,
           clearcoat, clearcoatRoughness: isGiant ? 0.26 : 0.38,
@@ -6026,14 +6060,16 @@ const FinishShader = {
           envMapIntensity: envI,
         });
         const rimHex = vis.rim || b.color;
-        const rimMul = b.id === 'venus' ? 0.20 : (b.id === 'earth' || b.id === 'mars') ? 0.13 : 0.08;
+        const rimMul = b.id === 'venus' ? 0.085 : b.id === 'mars' ? 0.065 : 0.05;
         mat.onBeforeCompile = (shader) => {
           try {
             injectPlanetSunLighting(shader, rimHex, rimMul);
             mat.userData.planetShader = shader;
           } catch (e) { console.warn('[orrery] planet lighting patch skipped', e); }
         };
-        mat.customProgramCacheKey = () => `planet-sun-${b.id}`;
+        // All non-Earth worlds use identical shader source. A shared key avoids
+        // compiling seven duplicate physical programs during the hidden boot.
+        mat.customProgramCacheKey = () => 'planet-sun-v2';
       }
       const segs = sphereSegs(b.hero);
       const mesh = new THREE.Mesh(new THREE.SphereGeometry(b.size, segs, segs), mat);
@@ -6089,17 +6125,27 @@ const FinishShader = {
       // (hero Earth has its own priority-ordered HD swap-in in the b.hero block below)
       if (!b.hero) loadTex(b.tex).then((t) => { if (t) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
 
-      if (vis.atmo) {
+      // Mercury has no meaningful atmosphere; a glow shell around it was both
+      // physically misleading and visually indistinguishable from a UI orb.
+      if (vis.atmo && b.id !== 'mercury') {
         let atmoMat;
         if (b.hero && perfTier !== 'low' && !PRM) {
           atmoMat = earthAtmosphereMaterial({ intensity: 0.9, edge: 5.3, falloff: 1.5, wrap: 0.0 });
           earthAtmoMat = atmoMat;
         } else {
-          const atmoI = vis.atmoI != null ? vis.atmoI : (b.hero ? 1.0 : 0.4);
+          const sourceI = vis.atmoI != null ? vis.atmoI : (b.hero ? 1.0 : 0.4);
+          const atmoMul = b.id === 'mars' ? 0.38
+            : b.id === 'venus' ? 0.62
+            : (b.id === 'jupiter' || b.id === 'saturn') ? 0.55
+            : 0.60;
+          const atmoI = b.hero ? sourceI : sourceI * atmoMul;
           atmoMat = atmosphereMaterial(vis.atmo, atmoI);
         }
         const atmoSegs = Math.max(24, Math.floor(segs * 0.65));
         const atmo = new THREE.Mesh(new THREE.SphereGeometry(b.size * vis.atmoS, atmoSegs, atmoSegs), atmoMat);
+        if (atmoMat.uniforms && atmoMat.uniforms.uIntensity) {
+          atmo.userData.baseIntensity = atmoMat.uniforms.uIntensity.value;
+        }
         group.add(atmo);
         group.userData.atmo = atmo;   // handle so portrait mode can soften the rim
         // Second Earth shell: a faint outer scatter veil (SAME shader, different
@@ -6111,6 +6157,7 @@ const FinishShader = {
             earthAtmosphereMaterial({ intensity: 0.15, edge: 3.4, falloff: 1.3, wrap: 1.0 })
           );
           earthAtmoMatOuter = atmo2.material;
+          atmo2.userData.baseIntensity = atmo2.material.uniforms.uIntensity.value;
           group.add(atmo2);
           group.userData.atmoOuter = atmo2;   // portrait soften handle (outer veil)
         }
@@ -6170,9 +6217,9 @@ const FinishShader = {
         const moonSegs = perfTier === 'high' ? 96 : perfTier === 'mid' ? 64 : 40;
         const moonRad = 0.26;
         const moonMat = new THREE.MeshPhysicalMaterial({
-          color: 0xd8dce6, roughness: 0.92, metalness: 0.03,
-          emissive: 0x707888, emissiveIntensity: 0.22,
-          clearcoat: 0.06, clearcoatRoughness: 0.55, envMapIntensity: 0.14,
+          color: 0xd8dce6, roughness: 0.94, metalness: 0.0,
+          emissive: 0x30343a, emissiveIntensity: 0.03,
+          clearcoat: 0.0, clearcoatRoughness: 0.7, envMapIntensity: 0.10,
         });
         moonMat.onBeforeCompile = (shader) => {
           try {
@@ -6724,11 +6771,7 @@ const FinishShader = {
     if (destroyed) return;
     try { frameBody(t); }
     catch (err) {
-      if (webglOnlyMode) reportWebGLFatal(err);
-      else {
-        console.warn('[orrery] render error — falling back to canvas orrery:', err);
-        fallbackToCanvas(canvas).catch((fallbackErr) => console.warn('[orrery] canvas fallback failed:', fallbackErr));
-      }
+      reportWebGLFatal(err);
     }
     if (!destroyed && running && inView) raf = requestAnimationFrame(frame);
     else raf = null;
@@ -6752,7 +6795,9 @@ const FinishShader = {
         camRadiusTarget = null;
         zoomSettleUntil = Math.max(zoomSettleUntil, performance.now() + 220);
       } else {
-        camRadius += diff * Math.min(1, dt * lerpK);
+        // Exponential damping is frame-rate independent: a 30 Hz phone and a
+        // 120 Hz desktop now follow the same smooth zoom curve.
+        camRadius += diff * (1 - Math.exp(-lerpK * dt));
       }
     }
     // Free-explore: coasting orbit after flick + FOV that tracks flight distance
@@ -6889,7 +6934,7 @@ const FinishShader = {
       if (sunCoronaMat.uniforms.uTimeSlow) sunCoronaMat.uniforms.uTimeSlow.value = sunTSlow;
     }
     const starT = instrumentMode ? t * 0.55 : t;
-    const twinkleAmp = instrumentMode ? 0.22 : 1;
+    const twinkleAmp = instrumentMode ? 0.08 : 1;
     [starField, starFieldFar, milkyWayBand].forEach((shell) => {
       if (!shell || !shell.material || !shell.material.uniforms) return;
       shell.material.uniforms.uTime.value = starT;
@@ -6923,7 +6968,7 @@ const FinishShader = {
     if (scaleLevel <= 2 && orbitLines.length) {
       orbitLines.forEach((o) => {
         if (o.material && o.material.uniforms && o.material.uniforms.uTime) {
-          o.material.uniforms.uTime.value = sunT;
+          o.material.uniforms.uTime.value = (instrumentMode || PRM) ? 0 : sunT;
         }
       });
     }
@@ -7288,8 +7333,9 @@ const FinishShader = {
         if (elapsed >= introMs) finishIntro();
       }
     } else if (!portraitMode && !dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && !masterclassIntroActive && (t - userTouched) > 1200) {
-      if (freeExploreMode) {
-        // Free explore: whisper of spin only — never snap radius/target back to presets.
+      if (freeExploreMode && !instrumentMode) {
+        // Archive free-explore keeps a whisper of drift. The flagship instrument
+        // rests so small bodies do not crawl across sub-pixels and shimmer.
         camAz += 0.010 * dt;
       } else if (focusFrameId === 'aspect' && aspectActive) {
         // Hold the top-down aspect framing with a whisper of az breathing so the
@@ -7942,6 +7988,7 @@ const FinishShader = {
   }
   function pt(e) { const r = canvas.getBoundingClientRect(); return { x: (e.clientX || 0) - r.left, y: (e.clientY || 0) - r.top }; }
   const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  const pickWorld = new THREE.Vector3(), pickProjected = new THREE.Vector3();
   const CAP = { sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', earth: 'Earth', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune' };
   // Geocentric ecliptic longitude (the astrological sign as seen from Earth) — not the helio display angle
   function geoLonOf(id, jd) {
@@ -7955,17 +8002,49 @@ const FinishShader = {
   }
   function resolvePickId(p) {
     const r = canvas.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
     ndc.x = (p.x / r.width) * 2 - 1; ndc.y = -(p.y / r.height) * 2 + 1;
     raycaster.setFromCamera(ndc, camera);
-    const targets = BODIES.map((b) => meshes[b.id] && meshes[b.id].userData.mesh).filter(Boolean);
-    if (sunMesh) targets.push(sunMesh);
-    if (moonMesh) targets.push(moonMesh);
+    const targets = BODIES.map((b) => {
+      const g = meshes[b.id];
+      return g && g.visible && g.userData.mesh && g.userData.mesh.visible ? g.userData.mesh : null;
+    }).filter(Boolean);
+    if (sunMesh && sunMesh.visible) targets.push(sunMesh);
+    if (moonMesh && moonGroup && moonGroup.visible && moonMesh.visible) targets.push(moonMesh);
     const hit = raycaster.intersectObjects(targets, false)[0];
-    if (!hit) return null;
-    if (hit.object === sunMesh) return 'sun';
-    if (hit.object === moonMesh) return 'moon';
-    const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object);
-    return b ? b.id : null;
+    if (hit) {
+      if (hit.object === sunMesh) return 'sun';
+      if (hit.object === moonMesh) return 'moon';
+      const b = BODIES.find((x) => meshes[x.id] && meshes[x.id].userData.mesh === hit.object);
+      if (b) return b.id;
+    }
+
+    // Keep the rendered worlds restrained while preserving a humane touch target.
+    // This screen-space fallback selects the nearest *visible* centre; it never
+    // enlarges geometry, adds a fake orb, or changes an ephemeris position.
+    const maxDistance = IS_PHONE ? 30 : 18;
+    let nearestId = null;
+    let nearestDistance = maxDistance;
+    const consider = (id, object) => {
+      if (!object || !object.visible) return;
+      object.getWorldPosition(pickWorld);
+      pickProjected.copy(pickWorld).project(camera);
+      if (pickProjected.z < -1 || pickProjected.z > 1) return;
+      const sx = (pickProjected.x * 0.5 + 0.5) * r.width;
+      const sy = (-pickProjected.y * 0.5 + 0.5) * r.height;
+      const distance = Math.hypot(sx - p.x, sy - p.y);
+      if (distance <= nearestDistance) {
+        nearestDistance = distance;
+        nearestId = id;
+      }
+    };
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (g && g.visible) consider(b.id, g);
+    });
+    if (moonGroup && moonGroup.visible) consider('moon', moonGroup);
+    if (sunMesh && sunMesh.visible) consider('sun', sunMesh);
+    return nearestId;
   }
   function pick(p) {
     const id = resolvePickId(p);
@@ -7983,12 +8062,7 @@ const FinishShader = {
     if (typeof onPlanetClick === 'function') onPlanetClick(id);
   }
 
-  // ── Fallback: drop to the canvas orrery if anything goes wrong at runtime ──
-  let fellBack = false;
-  let fallbackPromise = null;
-  let fallbackRoot = null;
-  let fallbackWasFull = false;
-  let fallbackWasCanvas = false;
+  // ── Fail closed: the owning shell retains its still/error state ────────────
   function reportWebGLFatal(err) {
     if (fatalReported) return;
     fatalReported = true;
@@ -7999,101 +8073,6 @@ const FinishShader = {
       : 'The real 3D Observatory stopped. No substitute model has been shown.';
     try { document.dispatchEvent(new CustomEvent('ap-orrery-fatal', { detail: { message } })); } catch (_) {}
   }
-  function waitForFallbackFrame() {
-    return new Promise((resolve) => {
-      let done = false;
-      const finish = () => {
-        if (done) return;
-        done = true;
-        document.removeEventListener('ap-orrery-first-frame', finish);
-        resolve();
-      };
-      document.addEventListener('ap-orrery-first-frame', finish, { once: true });
-      requestAnimationFrame(() => requestAnimationFrame(finish));
-      setTimeout(finish, 900);
-    });
-  }
-  function fallbackToCanvas(canvasEl) {
-    if (webglOnlyMode) {
-      const err = new Error('canvas fallback disabled for the flagship Observatory');
-      reportWebGLFatal(err);
-      return Promise.reject(err);
-    }
-    if (window.__orreryPreloaderOwns && !window.__apHeroEntered) {
-      console.warn('[orrery] preloader owns canvas — skipping canvas fallback');
-      return Promise.reject(new Error('canvas fallback blocked during preloader'));
-    }
-    if (fallbackPromise) return fallbackPromise;
-    if (fellBack && window.__orreryReady && window.Orrery3D) return Promise.resolve(window.Orrery3D);
-    fallbackPromise = (async () => {
-      const source = canvasEl || canvas;
-      if (!source || !source.parentNode) throw new Error('canvas fallback unavailable');
-      const parent = source.parentNode;
-      const root = document.documentElement;
-      fallbackRoot = root;
-      fallbackWasFull = !!(root && root.classList.contains('orrery-full'));
-      fallbackWasCanvas = !!(root && root.classList.contains('orrery-canvas'));
-      try {
-        parent.querySelectorAll('.orrery-controls').forEach((el) => el.remove());
-        if (typeof window.__cancelCanvasOrreryScript === 'function') window.__cancelCanvasOrreryScript();
-        if (window.__apOrreryCanvasFallback && window.Orrery3D && typeof window.Orrery3D.destroy === 'function') {
-          window.Orrery3D.destroy();
-        }
-      } catch (e) { /* stale fallback cleanup is best effort */ }
-      // A canvas that has held a WebGL context cannot return a 2D context. Fully
-      // retire the renderer/listeners/resources before replacing it with a fresh node.
-      try { destroy(); } catch (e) { console.warn('[orrery] WebGL cleanup before canvas fallback failed:', e); }
-      const fresh = source.cloneNode(false);
-      parent.replaceChild(fresh, source);
-      fellBack = true;
-      if (root) {
-        root.classList.remove('orrery-full');
-        root.classList.add('orrery-canvas');
-      }
-      window.__orreryReady = false;
-      window.__apOrreryCanvasFallback = false;
-      try { delete window.Orrery3D; } catch (e) { window.Orrery3D = undefined; }
-      await requestCanvasFallbackScript();
-      if (!window.Orrery3D || typeof window.Orrery3D.init !== 'function') {
-        throw new Error('canvas fallback unavailable');
-      }
-      window.Orrery3D.init(fresh, { skipIntro: true, fromLite: true });
-      if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
-      if (typeof window.Orrery3D.whenReady === 'function') await window.Orrery3D.whenReady();
-      await waitForFallbackFrame();
-      window.__orreryReady = true;
-      window.__apOrreryCanvasFallback = true;
-      document.dispatchEvent(new CustomEvent('ap-orrery-engine-replaced', {
-        detail: { engine: 'canvas', api: window.Orrery3D, canvas: fresh }
-      }));
-      document.dispatchEvent(new Event('ap-orrery-ready'));
-      fallbackPromise = null;
-      window.__apOrreryFallbackPromise = null;
-      fallbackRoot = null;
-      fallbackWasFull = false;
-      fallbackWasCanvas = false;
-      return window.Orrery3D;
-    })().catch((err) => {
-      fallbackPromise = null;
-      window.__apOrreryFallbackPromise = null;
-      fellBack = false;
-      window.__orreryReady = false;
-      window.__apOrreryCanvasFallback = false;
-      try {
-        if (window.Orrery3D && typeof window.Orrery3D.destroy === 'function') window.Orrery3D.destroy();
-      } catch (e) {}
-      if (typeof window.__cancelCanvasOrreryScript === 'function') window.__cancelCanvasOrreryScript();
-      if (fallbackRoot) {
-        fallbackRoot.classList.remove('orrery-canvas', 'orrery-full', 'ap-model-revealed');
-      }
-      fallbackRoot = null;
-      fallbackWasFull = false;
-      fallbackWasCanvas = false;
-      throw err;
-    });
-    window.__apOrreryFallbackPromise = fallbackPromise;
-    return fallbackPromise;
-  }
 
   // ── Public API (matches orrery3d.js) ───────────────────────────────────────
   function init(canvasEl, options) {
@@ -8102,7 +8081,8 @@ const FinishShader = {
       canvasEl = options.canvas;
     }
     options = options || {};
-    webglOnlyMode = !!options.webglOnly;
+    // This renderer itself is always single-engine: no canvas substitution is
+    // possible after module selection, regardless of the caller's legacy flags.
     fatalReported = false;
     if (options.spaceFlight) {
       spaceFlightMode = true;
@@ -8141,9 +8121,8 @@ const FinishShader = {
       if (options.date) setDate(options.date instanceof Date ? options.date : new Date(options.date));
     }
     catch (err) {
-      if (webglOnlyMode) throw err;
-      console.warn('[orrery] WebGL init failed — falling back to canvas orrery:', err);
-      return fallbackToCanvas(canvasEl);
+      reportWebGLFatal(err);
+      throw err;
     }
   }
   let webglBooted = false;
@@ -8157,7 +8136,6 @@ const FinishShader = {
     destroyed = false;
     running = true;
     inView = true;
-    fellBack = false;
     webglBooted = false;
     if (!window.AstroEphemeris) throw new Error('AstroEphemeris not loaded');
     canvas = canvasEl; wrap = canvas.parentElement;
@@ -8299,11 +8277,7 @@ const FinishShader = {
     });
     listen(canvas, 'webglcontextlost', (e) => {
       try { e.preventDefault(); } catch (_) {}
-      if (webglOnlyMode) reportWebGLFatal(new Error('WebGL context was lost'));
-      else {
-        console.warn('[orrery] WebGL context lost — falling back to canvas orrery');
-        fallbackToCanvas(canvas).catch((err) => console.warn('[orrery] canvas fallback failed:', err));
-      }
+      reportWebGLFatal(new Error('WebGL context was lost'));
     }, false);
 
     if (instrumentMode) syncPosterSunVisibility();
@@ -9756,7 +9730,6 @@ const FinishShader = {
     webglBooted = false;
     running = false;
     inView = false;
-    fellBack = false;
     window.__apOrreryIBL = false;
   }
 

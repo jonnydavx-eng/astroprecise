@@ -2,7 +2,8 @@
  * Pure eclipse geometry for the v834 shadow instrument.
  * No DOM or Three.js dependency: browser UI and Node proof can share the maths.
  */
-export const EVENT_MS = Date.UTC(2026, 7, 12, 17, 45, 57);
+// NASA GSFC Besselian elements: greatest eclipse 17:45:51 UT.
+export const EVENT_MS = Date.UTC(2026, 7, 12, 17, 45, 51);
 export const RANGE_START_MS = EVENT_MS - 72 * 60 * 60 * 1000;
 export const RANGE_END_MS = EVENT_MS + 48 * 60 * 60 * 1000;
 

@@ -303,7 +303,7 @@
     // dateline, and two counters on one page is how a page looks unfinished.
     // This card carries what that line cannot: when it starts, when it is
     // deepest where you are, and the one safety rule.
-    // 17:46 here is UT (17:47:06 TT minus ΔT 69.1 s = 17:45:57 UT = 18:46 BST).
+    // 17:46 is rounded UT (NASA GSFC: 17:47:06 TDT, ΔT 75.4 s, 17:45:51 UT = 18:46 BST).
     // An earlier version of this comment claimed 17:46 was TD; it is not, and the
     // correction is written out in full in eclipse.html. Either reading moves the
     // Sun about 3 seconds of arc, so the longitude below is unaffected.

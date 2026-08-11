@@ -5,7 +5,7 @@
  */
 import { buildEclipseReading5 } from './eclipse-reading.js';
 
-// 20°02′ Leo — greatest eclipse 12 Aug 2026: 17:47:06 TT = 17:45:57 UT = 18:46 BST
+// 20°02′ Leo — NASA GSFC Besselian greatest eclipse: 17:47:06 TDT = 17:45:51 UT = 18:46 BST
 // (ΔT = 69.1 s, USNO/IERS 2026 prediction). An earlier comment here said "17:46 TD",
 // which was the UT figure under the wrong label — see the long note in eclipse.html.
 // The constant itself is unaffected: 69 s of solar motion is about 3 seconds of arc.

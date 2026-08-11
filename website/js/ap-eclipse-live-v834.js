@@ -227,7 +227,10 @@ async function mount(root, E) {
     earth: root.querySelector('[data-eclipse-label="earth"]'),
   };
 
-  if (!canvas || !stage) return;
+  if (!canvas || !stage || !range || !nowButton || !eventButton) {
+    throw new Error('Eclipse instrument controls are incomplete');
+  }
+  [range, nowButton, eventButton].forEach((control) => { control.disabled = true; });
   const reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -246,6 +249,8 @@ async function mount(root, E) {
   let lastFrameAt = 0;
   let loopRunning = false;
   let liveTimer = 0;
+  let travelFrame = 0;
+  let travelToken = 0;
   let failed = false;
   let disposed = false;
   let cameraRadius = 25;
@@ -541,6 +546,43 @@ async function mount(root, E) {
     render();
   }
 
+  function cancelTravel() {
+    travelToken += 1;
+    if (travelFrame) cancelAnimationFrame(travelFrame);
+    travelFrame = 0;
+  }
+
+  function travelToDate(date, nextMode) {
+    const targetMs = new Date(date).getTime();
+    if (!Number.isFinite(targetMs) || failed || disposed) return;
+    cancelTravel();
+    if (reducedMotion) {
+      setDisplayDate(new Date(targetMs), nextMode);
+      return;
+    }
+    const fromMs = displayDate.getTime();
+    const token = travelToken;
+    const startedAt = performance.now();
+    const duration = 760;
+    let lastPaintAt = 0;
+    const step = (now) => {
+      if (token !== travelToken || failed || disposed) return;
+      const progress = clamp((now - startedAt) / duration, 0, 1);
+      // Smooth cubic time travel: every intermediate frame is still a real,
+      // computed instant rather than an invented spatial tween.
+      const eased = progress < .5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      if (progress >= 1 || now - lastPaintAt >= 30) {
+        lastPaintAt = now;
+        setDisplayDate(new Date(fromMs + (targetMs - fromMs) * eased), nextMode);
+      }
+      if (progress < 1) travelFrame = requestAnimationFrame(step);
+      else travelFrame = 0;
+    };
+    travelFrame = requestAnimationFrame(step);
+  }
+
   function setLive() { setDisplayDate(new Date(), 'live'); }
   function setGreatest() { setDisplayDate(new Date(EVENT_MS), 'greatest'); }
 
@@ -550,6 +592,7 @@ async function mount(root, E) {
   let rangeFrame = 0;
   let pendingRangeMs = RANGE_START_MS;
   range.addEventListener('input', () => {
+    cancelTravel();
     pendingRangeMs = RANGE_START_MS + Number(range.value) * 60000;
     if (rangeFrame) return;
     rangeFrame = requestAnimationFrame(() => {
@@ -557,8 +600,8 @@ async function mount(root, E) {
       setDisplayDate(new Date(pendingRangeMs), 'timeline');
     });
   });
-  nowButton.addEventListener('click', setLive);
-  eventButton.addEventListener('click', setGreatest);
+  nowButton.addEventListener('click', () => travelToDate(new Date(), 'live'));
+  eventButton.addEventListener('click', () => travelToDate(new Date(EVENT_MS), 'greatest'));
 
   function resize() {
     if (failed || disposed) return;
@@ -727,6 +770,7 @@ async function mount(root, E) {
   if (fallback) fallback.hidden = true;
   root.removeAttribute('data-failed');
   root.dataset.ready = 'true';
+  [range, nowButton, eventButton].forEach((control) => { control.disabled = false; });
   window.APEclipseLive = {
     setLive,
     setGreatest,
@@ -745,6 +789,7 @@ async function mount(root, E) {
     stopLoop();
     if (liveTimer) clearInterval(liveTimer);
     liveTimer = 0;
+    cancelTravel();
     if (rangeFrame) cancelAnimationFrame(rangeFrame);
     rangeFrame = 0;
     if (eventRenderFrame) cancelAnimationFrame(eventRenderFrame);

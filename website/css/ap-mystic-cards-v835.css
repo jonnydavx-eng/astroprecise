@@ -9,11 +9,7 @@
   --ap-card-spark: 242, 236, 223;
   position: relative;
   isolation: isolate;
-  transform: perspective(980px) translate3d(0, var(--ap-card-lift), 0)
-    rotateX(var(--ap-card-rx)) rotateY(var(--ap-card-ry));
-  transform-style: preserve-3d;
-  transform-origin: 50% 50%;
-  backface-visibility: hidden;
+  transform: translate3d(0, var(--ap-card-lift), 0);
   transition:
     transform 260ms cubic-bezier(.2,.75,.25,1),
     border-color 220ms ease,
@@ -34,9 +30,17 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  transform: perspective(980px) rotateX(var(--ap-card-rx)) rotateY(var(--ap-card-ry));
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  transition: transform 260ms cubic-bezier(.2,.75,.25,1);
 }
 
 .ap-card-art { display: block; }
+
+/* Product date/proof badges remain ink-sharp above the optical layer. */
+.ap-product__image > span:not(.ap-mystic-card__sheen) { z-index: 3; }
 
 .ap-mystic-card__sheen {
   position: absolute;
@@ -104,6 +108,10 @@
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   [data-ap-mystic-card].is-ap-card-active {
     transition-duration: 70ms, 180ms, 220ms;
+    will-change: transform;
+  }
+  [data-ap-mystic-card].is-ap-card-active [data-ap-card-visual] {
+    transition-duration: 70ms;
     will-change: transform;
   }
 }

@@ -11,7 +11,6 @@
     'body.page-horoscope .reading-card',
     'body.page-chart .big-three-card',
     'body.page-chart .pattern-card',
-    'body.page-chart .ap-reading-card',
     'body.page-eclipse .ap-eclipse-geometry-plate',
     'body.page-eclipse #eclipseContactRows > li'
   ].join(',');
@@ -67,15 +66,20 @@
 
   function paint() {
     frame = 0;
-    if (!pendingPoint || !activeCard || !document.contains(activeCard)) return;
+    if (!pendingPoint || !activeCard) return;
+    if (!document.contains(activeCard)) {
+      activeCard = null;
+      pendingPoint = null;
+      return;
+    }
     var rect = activeCard.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     var x = Math.max(0, Math.min(1, (pendingPoint.x - rect.left) / rect.width));
     var y = Math.max(0, Math.min(1, (pendingPoint.y - rect.top) / rect.height));
     activeCard.style.setProperty('--ap-card-px', (x * 100).toFixed(2) + '%');
     activeCard.style.setProperty('--ap-card-py', (y * 100).toFixed(2) + '%');
-    activeCard.style.setProperty('--ap-card-rx', ((0.5 - y) * 5).toFixed(2) + 'deg');
-    activeCard.style.setProperty('--ap-card-ry', ((x - 0.5) * 6).toFixed(2) + 'deg');
+    activeCard.style.setProperty('--ap-card-rx', ((0.5 - y) * 4).toFixed(2) + 'deg');
+    activeCard.style.setProperty('--ap-card-ry', ((x - 0.5) * 4.8).toFixed(2) + 'deg');
   }
 
   function onPointerMove(event) {

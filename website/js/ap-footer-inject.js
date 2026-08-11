@@ -44,14 +44,14 @@
       +       '<img src="img/logo-mark.svg" width="28" height="28" alt="" decoding="async">'
       +       '<span>AstroPrecise</span>'
       +     '</a>'
-      +     '<p>Computed astronomy, interpreted with care. Birth details stay in this browser; place search contacts Open-Meteo.</p>'
+      +     '<p>Live sky calculations and reflective astrology, without a hidden data trail. Birth details stay on this device; only place search calls Open-Meteo.</p>'
       +   '</div>'
       +   '<nav class="ap-site-footer__routes" aria-label="Core pages">' + linksHtml(CORE_LINKS) + '</nav>'
       +   '<nav class="ap-site-footer__legal" aria-label="Legal and verification">' + linksHtml(LEGAL_LINKS) + '</nav>'
       + '</div>'
       + '<div class="ap-site-footer__colophon">'
       +   '<span>&copy; ' + new Date().getFullYear() + ' AstroPrecise</span>'
-      +   '<span>Browser-computed ephemerides · No account required · <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">planet textures</a> <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span>'
+      +   '<span>Live calculations · No account required · Planet imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span>'
       + '</div>';
   }
 

@@ -1,6 +1,7 @@
 import { buildEclipseReading5 } from './eclipse-reading.js';
 
-const EVENT_UTC_MS = Date.UTC(2026, 7, 12, 17, 45, 57);
+// NASA GSFC Besselian elements: greatest eclipse 17:45:51 UT.
+const EVENT_UTC_MS = Date.UTC(2026, 7, 12, 17, 45, 51);
 const TARGETS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 const SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
 
@@ -252,7 +253,7 @@ async function init() {
       return response.json();
     }),
   ]);
-  const eventJd = engine.julianDay(2026, 8, 12, 17, 45, 57);
+  const eventJd = engine.julianDay(2026, 8, 12, 17, 45, 51);
   const eclipseLongitude = engine.sunPosition(eventJd).lon;
   byId('eclipsePoint').textContent = `Eclipse point · ${degreeText(eclipseLongitude)} · greatest 18:46 BST`;
 

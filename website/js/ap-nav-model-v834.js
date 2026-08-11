@@ -5,17 +5,13 @@
  * OBSERVATORY STRUCTURE (2026-07-10 — the homepage IS the model):
  *   The living orrery is the product; index.html is the Observatory.
  *
- * Primary bar: Observatory · Chart · The Sky · Daily · Shop
- *   Observatory = the full-model homepage (index.html)
- *   Chart       = cast natal (chart.html)
- *   The Sky     = sky instrument / ephemeris (ephemeris.html)
- *   Daily       = horoscope (horoscope.html)
- *   Shop        = keepsakes
+ * Launch bar: Observatory · Chart · Daily · Eclipse · Shop.
+ * The historical tools remain directly addressable, but they never leak into
+ * the five-route launch shell or reintroduce a second "Explore" entrance.
  *
- * Bottom tabs (4): Live Sky · Chart · Daily · Shop
- * More: My Sky hub, Moment, Cosmic Story, Library, Match, tools…
+ * Archive-only bottom tabs: Live Sky · Chart · Daily · Shop.
  *
- * Site spine: Observatory (see) → Chart (cast) → The Sky (instrument) → Keep → Daily → Shop
+ * Site spine: Observatory (see) → Chart (cast) → Daily (return) → Eclipse (event) → Shop (keep)
  * index.html is the single live Observatory; Explore is an action inside that scene, not another route.
  */
 'use strict';
@@ -23,13 +19,13 @@
 (function () {
   var NAV_PRIMARY = [
     ['index.html', 'Observatory'],
-    ['chart.html', 'Birth Chart'],
+    ['chart.html', 'Chart'],
     ['horoscope.html', 'Daily'],
     ['eclipse.html', 'Eclipse', { badge: '12 Aug' }],
     ['shop.html', 'Shop'],
   ];
 
-  // Hub + keep + story + library first in More
+  // Historical direct routes, exposed only on archive pages.
   var NAV_MORE_EXPLORE = [
     ['ephemeris.html', 'Sky tools', { badge: 'Live' }],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
@@ -42,7 +38,7 @@
     ['charts.html', 'My Charts'],
   ];
 
-  // Four tabs only — model + cast + sky + daily (distinct icons)
+  // Archive mobile tabs only; launch routes use the authored responsive header.
   var NAV_BOTTOM_TABS = [
     ['index.html', 'Live Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],

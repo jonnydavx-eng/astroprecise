@@ -241,6 +241,12 @@
   color: var(--ecl-ivory);
 }
 
+.ap-eclipse-live__button:disabled,
+.ap-eclipse-live__range:disabled {
+  cursor: wait;
+  opacity: .42;
+}
+
 .ap-eclipse-live__control-label {
   display: flex;
   justify-content: space-between;
