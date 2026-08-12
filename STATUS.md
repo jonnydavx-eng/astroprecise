@@ -1,7 +1,7 @@
 # STATUS — AstroPrecise
 
-**State:** Live at https://astroprecise.app, serving **ap-v847**. The live 3D Observatory is the homepage. The £7 Your Eclipse Edition checkout is live on Gumroad (`your-eclipse-reading`); licence verification uses product_id `3ZwFjg0IW702KvJ5s97QuQ==`. Buyers copy the licence key from Gumroad **View content**, then paste it on-site.
-Updated: 2026-08-12 (Cloud agent @ Cursor — builder ship; independent verifier minted LIVE)
+**State:** Live at https://astroprecise.app — tip shipping **ap-v849** (cast-first £7 Your Eclipse Edition). Gumroad product `your-eclipse-reading`; licence product_id `3ZwFjg0IW702KvJ5s97QuQ==`. Funnel: free eclipse contact → Buy £7 → View content → paste unlock. Owner must paste Gumroad description from `outreach-exports/gumroad/OWNER-PASTE-NOW.md`.
+Updated: 2026-08-12 (Cloud agent — eclipse-day single-SKU focus)
 
 ## Measured 2026-08-12 — ap-v847 Gumroad product_id hotfix
 
