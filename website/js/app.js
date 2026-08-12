@@ -283,7 +283,7 @@ const AstroApp = (() => {
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
     ['horoscope.html', 'Daily'],
-    ['eclipse.html', 'Eclipse', { badge: '12 Aug' }],
+    ['eclipse.html', 'Eclipse', { badge: 'Replay' }],
     ['shop.html', 'Shop'],
   ];
   const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [

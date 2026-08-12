@@ -18,6 +18,14 @@ const PALETTES = [
   { brass: '#e0bd78', ember: '#9c6846', ink: '#07060b', blue: '#415e78' },
 ];
 
+const GLYPHS = {
+  sun: '☉', moon: '☽', mercury: '☿', venus: '♀', mars: '♂',
+  jupiter: '♃', saturn: '♄', uranus: '♅', neptune: '♆', pluto: '♇',
+  asc: 'Asc', mc: 'MC',
+};
+
+const SIGN_MARKS = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'];
+
 function normaliseLongitude(value) {
   const number = Number(value);
   if (!Number.isFinite(number)) return null;
@@ -41,6 +49,17 @@ function beatText(beat) {
   return [beat.mono, beat.serif, secondary].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
 }
 
+function beatRecord(title, beat) {
+  return {
+    title,
+    mono: beat && beat.mono ? String(beat.mono) : '',
+    serif: beat && beat.serif ? String(beat.serif) : '',
+    secondaryMono: beat && beat.secondary && beat.secondary.mono ? String(beat.secondary.mono) : '',
+    secondarySerif: beat && beat.secondary && beat.secondary.serif ? String(beat.secondary.serif) : '',
+    text: beatText(beat),
+  };
+}
+
 export function buildEclipsePlateModel({ reading, natal, eclipseLongitude }) {
   if (!reading || reading.gateSale || reading.quiet) return null;
   const placements = Object.entries(natal || {})
@@ -51,7 +70,7 @@ export function buildEclipsePlateModel({ reading, natal, eclipseLongitude }) {
 
   const eclipse = normaliseLongitude(eclipseLongitude);
   if (eclipse == null) throw new Error('A computed eclipse longitude is required.');
-  const beats = BEATS.map(([title, key]) => ({ title, text: beatText(reading[key]) }));
+  const beats = BEATS.map(([title, key]) => beatRecord(title, reading[key]));
   if (beats.some((beat) => !beat.text)) throw new Error('The five-beat eclipse reading is incomplete.');
 
   const signature = [
@@ -69,6 +88,7 @@ export function buildEclipsePlateModel({ reading, natal, eclipseLongitude }) {
     seed,
     fingerprint,
     eclipseLongitude: eclipse,
+    contactTarget: reading.contactTarget || null,
     placements: placements.map(([key, longitude]) => ({ key, longitude })),
     beats,
     share: String(reading.share || beatText(reading.contact)),
@@ -121,6 +141,10 @@ function drawHairlineCircle(ctx, x, y, radius, colour, alpha, width = 2) {
   ctx.restore();
 }
 
+function lonToAngle(longitude) {
+  return Math.PI - (normaliseLongitude(longitude) * Math.PI / 180);
+}
+
 export function renderEclipseArtwork(model, canvas = document.createElement('canvas')) {
   if (!model) throw new Error('A direct eclipse-contact model is required.');
   canvas.width = model.width;
@@ -132,45 +156,57 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
 
   const background = ctx.createLinearGradient(0, 0, model.width, model.height);
   background.addColorStop(0, '#020308');
-  background.addColorStop(0.48, ink);
-  background.addColorStop(1, '#0c1118');
+  background.addColorStop(0.42, ink);
+  background.addColorStop(1, '#0a1018');
   ctx.fillStyle = background;
   ctx.fillRect(0, 0, model.width, model.height);
 
-  for (let i = 0; i < 620; i += 1) {
+  for (let i = 0; i < 480; i += 1) {
     const x = random() * model.width;
-    const y = random() * model.height * 0.72;
-    const radius = 0.7 + random() * 2.6;
-    ctx.globalAlpha = 0.16 + random() * 0.58;
-    ctx.fillStyle = random() > 0.84 ? brass : '#e9edf4';
+    const y = random() * model.height * 0.62;
+    const radius = 0.6 + random() * 2.2;
+    ctx.globalAlpha = 0.14 + random() * 0.55;
+    ctx.fillStyle = random() > 0.86 ? brass : '#e9edf4';
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fill();
+    if (random() > 0.97 && radius > 1.8) {
+      ctx.globalAlpha = 0.22;
+      ctx.strokeStyle = '#e9edf4';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x - 9, y);
+      ctx.lineTo(x + 9, y);
+      ctx.moveTo(x, y - 9);
+      ctx.lineTo(x, y + 9);
+      ctx.stroke();
+    }
   }
   ctx.globalAlpha = 1;
 
-  const cx = model.width * 0.5;
-  const cy = 850;
-  const eclipseRadius = 370;
-  const corona = ctx.createRadialGradient(cx, cy, eclipseRadius * 0.72, cx, cy, eclipseRadius * 1.72);
-  corona.addColorStop(0, 'rgba(245,220,157,.96)');
-  corona.addColorStop(0.28, 'rgba(217,182,111,.38)');
+  const ringX = model.width * 0.5;
+  const ringY = 780;
+  const eclipseRadius = 248;
+  const moonShift = ((model.seed % 7) - 3) * 7;
+  const corona = ctx.createRadialGradient(ringX, ringY, eclipseRadius * 0.7, ringX, ringY, eclipseRadius * 2.05);
+  corona.addColorStop(0, 'rgba(245,220,157,.98)');
+  corona.addColorStop(0.22, 'rgba(217,182,111,.42)');
   corona.addColorStop(1, 'rgba(217,182,111,0)');
   ctx.fillStyle = corona;
   ctx.beginPath();
-  ctx.arc(cx, cy, eclipseRadius * 1.72, 0, Math.PI * 2);
+  ctx.arc(ringX, ringY, eclipseRadius * 2.05, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.save();
-  ctx.translate(cx, cy);
+  ctx.translate(ringX, ringY);
   ctx.rotate((model.seed % 360) * Math.PI / 180);
-  for (let i = 0; i < 42; i += 1) {
-    const angle = (i / 42) * Math.PI * 2 + (random() - 0.5) * 0.055;
-    const inner = eclipseRadius * (1.02 + random() * 0.04);
-    const outer = eclipseRadius * (1.18 + random() * 0.44);
-    ctx.strokeStyle = i % 7 === 0 ? brass : '#efe2bd';
-    ctx.globalAlpha = 0.12 + random() * 0.28;
-    ctx.lineWidth = 2 + random() * 5;
+  for (let i = 0; i < 56; i += 1) {
+    const angle = (i / 56) * Math.PI * 2 + (random() - 0.5) * 0.05;
+    const inner = eclipseRadius * (1.01 + random() * 0.03);
+    const outer = eclipseRadius * (1.22 + random() * 0.55);
+    ctx.strokeStyle = i % 8 === 0 ? brass : '#efe2bd';
+    ctx.globalAlpha = 0.1 + random() * 0.32;
+    ctx.lineWidth = 1.5 + random() * 4.5;
     ctx.beginPath();
     ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner);
     ctx.lineTo(Math.cos(angle) * outer, Math.sin(angle) * outer);
@@ -179,83 +215,122 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   ctx.restore();
   ctx.globalAlpha = 1;
 
-  const moon = ctx.createRadialGradient(cx - 100, cy - 120, 25, cx, cy, eclipseRadius);
-  moon.addColorStop(0, '#171c25');
-  moon.addColorStop(0.62, '#07090e');
+  const sunFill = ctx.createRadialGradient(ringX, ringY, 20, ringX, ringY, eclipseRadius);
+  sunFill.addColorStop(0, '#f3e2b0');
+  sunFill.addColorStop(0.55, '#d9b66f');
+  sunFill.addColorStop(1, '#8a5a28');
+  ctx.fillStyle = sunFill;
+  ctx.beginPath();
+  ctx.arc(ringX, ringY, eclipseRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  const moon = ctx.createRadialGradient(ringX - 80 + moonShift, ringY - 90, 18, ringX + moonShift, ringY, eclipseRadius);
+  moon.addColorStop(0, '#1a202b');
+  moon.addColorStop(0.58, '#07090e');
   moon.addColorStop(1, '#010205');
   ctx.fillStyle = moon;
   ctx.beginPath();
-  ctx.arc(cx, cy, eclipseRadius, 0, Math.PI * 2);
+  ctx.arc(ringX + moonShift, ringY, eclipseRadius - 6, 0, Math.PI * 2);
   ctx.fill();
-  drawHairlineCircle(ctx, cx, cy, eclipseRadius + 6, brass, 0.92, 4);
-  drawHairlineCircle(ctx, cx, cy, 560, blue, 0.5, 3);
-  drawHairlineCircle(ctx, cx, cy, 650, brass, 0.28, 2);
+  drawHairlineCircle(ctx, ringX, ringY, eclipseRadius + 8, brass, 0.88, 3);
+
+  const wheelX = model.width * 0.5;
+  const wheelY = 1760;
+  const outerR = 690;
+  const innerR = 248;
+  const planetR = 520;
+  const tickInner = 640;
+  const tickOuter = 678;
+
+  const wheelWash = ctx.createRadialGradient(wheelX, wheelY, innerR, wheelX, wheelY, outerR + 40);
+  wheelWash.addColorStop(0, 'rgba(8,12,20,.55)');
+  wheelWash.addColorStop(1, 'rgba(8,12,20,0)');
+  ctx.fillStyle = wheelWash;
+  ctx.beginPath();
+  ctx.arc(wheelX, wheelY, outerR + 48, 0, Math.PI * 2);
+  ctx.fill();
+
+  drawHairlineCircle(ctx, wheelX, wheelY, outerR, brass, 0.78, 3);
+  drawHairlineCircle(ctx, wheelX, wheelY, tickInner, blue, 0.42, 2);
+  drawHairlineCircle(ctx, wheelX, wheelY, planetR, brass, 0.28, 1.5);
+  drawHairlineCircle(ctx, wheelX, wheelY, innerR, brass, 0.55, 2);
 
   ctx.save();
-  ctx.translate(cx, cy);
+  ctx.translate(wheelX, wheelY);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   for (let sign = 0; sign < 12; sign += 1) {
-    const angle = sign * Math.PI / 6 - Math.PI / 2;
-    const inner = 635;
-    const outer = sign % 3 === 0 ? 684 : 666;
+    const cusp = lonToAngle(sign * 30);
     ctx.strokeStyle = brass;
-    ctx.globalAlpha = sign % 3 === 0 ? 0.62 : 0.3;
-    ctx.lineWidth = sign % 3 === 0 ? 3 : 2;
+    ctx.globalAlpha = sign % 3 === 0 ? 0.7 : 0.28;
+    ctx.lineWidth = sign % 3 === 0 ? 3 : 1.5;
     ctx.beginPath();
-    ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner);
-    ctx.lineTo(Math.cos(angle) * outer, Math.sin(angle) * outer);
+    ctx.moveTo(Math.cos(cusp) * tickInner, Math.sin(cusp) * tickInner);
+    ctx.lineTo(Math.cos(cusp) * tickOuter, Math.sin(cusp) * tickOuter);
     ctx.stroke();
+    const mid = lonToAngle(sign * 30 + 15);
+    const labelR = 708;
+    ctx.globalAlpha = 0.82;
+    ctx.fillStyle = brass;
+    ctx.font = '600 22px ui-monospace, Consolas, monospace';
+    ctx.fillText(SIGN_MARKS[sign], Math.cos(mid) * labelR, Math.sin(mid) * labelR);
   }
 
-  const eclipseAngle = model.eclipseLongitude * Math.PI / 180 - Math.PI / 2;
+  const eclipseAngle = lonToAngle(model.eclipseLongitude);
   ctx.strokeStyle = ember;
-  ctx.globalAlpha = 0.92;
-  ctx.lineWidth = 8;
+  ctx.globalAlpha = 0.95;
+  ctx.lineWidth = 7;
   ctx.beginPath();
-  ctx.moveTo(Math.cos(eclipseAngle) * 420, Math.sin(eclipseAngle) * 420);
-  ctx.lineTo(Math.cos(eclipseAngle) * 705, Math.sin(eclipseAngle) * 705);
+  ctx.moveTo(Math.cos(eclipseAngle) * (innerR + 18), Math.sin(eclipseAngle) * (innerR + 18));
+  ctx.lineTo(Math.cos(eclipseAngle) * (outerR + 18), Math.sin(eclipseAngle) * (outerR + 18));
   ctx.stroke();
+  ctx.fillStyle = ember;
+  ctx.beginPath();
+  ctx.arc(Math.cos(eclipseAngle) * planetR, Math.sin(eclipseAngle) * planetR, 11, 0, Math.PI * 2);
+  ctx.fill();
+
+  model.placements.forEach((placement) => {
+    const angle = lonToAngle(placement.longitude);
+    const x = Math.cos(angle) * planetR;
+    const y = Math.sin(angle) * planetR;
+    const isContact = model.contactTarget && placement.key === model.contactTarget;
+    const glyph = GLYPHS[placement.key] || placement.key.slice(0, 2).toUpperCase();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = isContact ? ember : ink;
+    ctx.beginPath();
+    ctx.arc(x, y, isContact ? 34 : 26, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = isContact ? brass : brass;
+    ctx.lineWidth = isContact ? 3 : 1.5;
+    ctx.globalAlpha = isContact ? 1 : 0.85;
+    ctx.stroke();
+    ctx.fillStyle = isContact ? '#f6efe0' : brass;
+    ctx.font = isContact
+      ? '700 26px "Schibsted Grotesk", Arial, sans-serif'
+      : '600 22px "Schibsted Grotesk", Arial, sans-serif';
+    ctx.fillText(glyph, x, y + 1);
+  });
   ctx.restore();
   ctx.globalAlpha = 1;
 
   ctx.fillStyle = brass;
-  ctx.font = '600 34px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.letterSpacing = '9px';
-  ctx.fillText('ASTROPRECISE / ECLIPSE EDITION', 150, 170);
+  ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
+  ctx.letterSpacing = '8px';
+  ctx.fillText('ASTROPRECISE  /  12 AUGUST 2026', 150, 168);
+  ctx.letterSpacing = '0px';
   ctx.fillStyle = '#f0ece3';
-  ctx.font = '600 112px "Cormorant Garamond", Georgia, serif';
-  ctx.fillText('Your eclipse, precisely.', 150, 1760);
-
-  ctx.fillStyle = '#d7d9df';
-  ctx.font = '500 39px "Schibsted Grotesk", Arial, sans-serif';
-  const summaryBottom = drawWrapped(ctx, model.share, 150, 1860, 1780, 57, 4);
-
-  ctx.strokeStyle = 'rgba(217,182,111,.42)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(150, summaryBottom + 54);
-  ctx.lineTo(model.width - 150, summaryBottom + 54);
-  ctx.stroke();
-
-  let beatY = summaryBottom + 145;
-  model.beats.forEach((beat, index) => {
-    const column = index % 2;
-    const row = Math.floor(index / 2);
-    const x = 150 + column * 1080;
-    const y = beatY + row * 255;
-    ctx.fillStyle = brass;
-    ctx.font = '700 25px "Schibsted Grotesk", Arial, sans-serif';
-    ctx.fillText(`0${index + 1} / ${beat.title.toUpperCase()}`, x, y);
-    ctx.fillStyle = '#c6c8cf';
-    ctx.font = '400 28px "Schibsted Grotesk", Arial, sans-serif';
-    drawWrapped(ctx, beat.text, x, y + 54, 950, 40, 4);
-  });
+  ctx.font = '600 64px "Cormorant Garamond", Georgia, serif';
+  ctx.fillText('Your natal wheel at this eclipse.', 150, 248);
 
   ctx.fillStyle = 'rgba(217,182,111,.78)';
   ctx.font = '600 26px ui-monospace, Consolas, monospace';
-  ctx.fillText(`${model.fingerprint} / 12 AUG 2026 / ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 170);
-  ctx.fillStyle = 'rgba(220,222,228,.58)';
-  ctx.font = '400 22px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText('Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 105);
+  ctx.fillText(`${model.fingerprint}  /  ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 210);
+  ctx.fillStyle = '#d7d9df';
+  ctx.font = '500 32px "Schibsted Grotesk", Arial, sans-serif';
+  drawWrapped(ctx, model.share, 150, model.height - 155, 2100, 42, 2);
+  ctx.fillStyle = 'rgba(220,222,228,.55)';
+  ctx.font = '400 20px "Schibsted Grotesk", Arial, sans-serif';
+  ctx.fillText('Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 72);
   return canvas;
 }
 
@@ -277,9 +352,18 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function beatSectionHtml(beat, index) {
+  const parts = [];
+  if (beat.mono) parts.push(`<p class="ap-eclipse-edition__mono">${escapeHtml(beat.mono)}</p>`);
+  if (beat.serif) parts.push(`<p class="ap-eclipse-edition__serif">${escapeHtml(beat.serif)}</p>`);
+  if (beat.secondaryMono) parts.push(`<p class="ap-eclipse-edition__mono">${escapeHtml(beat.secondaryMono)}</p>`);
+  if (beat.secondarySerif) parts.push(`<p class="ap-eclipse-edition__serif ap-eclipse-edition__secondary">${escapeHtml(beat.secondarySerif)}</p>`);
+  if (!parts.length && beat.text) parts.push(`<p>${escapeHtml(beat.text)}</p>`);
+  return `<section><small>0${index + 1} / ${escapeHtml(beat.title)}</small>${parts.join('')}</section>`;
+}
+
 function fullReadingHtml(model) {
-  return model.beats.map((beat, index) => `
-    <section><small>0${index + 1} / ${escapeHtml(beat.title)}</small><p>${escapeHtml(beat.text)}</p></section>`).join('');
+  return model.beats.map((beat, index) => beatSectionHtml(beat, index)).join('');
 }
 
 function openPrintView(model, canvas) {
@@ -287,7 +371,7 @@ function openPrintView(model, canvas) {
   if (!printWindow) return false;
   const artwork = canvas.toDataURL('image/png');
   printWindow.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Your Eclipse Edition ${escapeHtml(model.fingerprint)}</title><style>
-    @page{size:A4;margin:14mm}*{box-sizing:border-box}body{margin:0;background:#fff;color:#12151b;font:16px/1.55 Georgia,serif}header{border-bottom:1px solid #b99b60;margin-bottom:22px;padding-bottom:14px}h1{font-size:38px;margin:0}small{font:700 10px/1.3 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#765c2b}img{display:block;width:100%;height:auto;page-break-after:always}section{break-inside:avoid;border-top:1px solid #d7d0c1;padding:16px 0}section p{margin:7px 0 0}footer{border-top:1px solid #d7d0c1;margin-top:24px;padding-top:12px;font-size:11px;color:#666}@media print{button{display:none}}</style></head><body>
+    @page{size:A4;margin:14mm}*{box-sizing:border-box}body{margin:0;background:#fff;color:#12151b;font:16px/1.55 Georgia,serif}header{border-bottom:1px solid #b99b60;margin-bottom:22px;padding-bottom:14px}h1{font-size:38px;margin:0}small{font:700 10px/1.3 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#765c2b}img{display:block;width:100%;height:auto;page-break-after:always}section{break-inside:avoid;border-top:1px solid #d7d0c1;padding:16px 0}.ap-eclipse-edition__mono{margin:7px 0 0;font:12px/1.55 ui-monospace,Consolas,monospace;color:#333}.ap-eclipse-edition__serif{margin:8px 0 0;font:italic 17px/1.55 Georgia,serif}footer{border-top:1px solid #d7d0c1;margin-top:24px;padding-top:12px;font-size:11px;color:#666}@media print{button{display:none}}</style></head><body>
     <header><small>AstroPrecise / 12 August 2026</small><h1>Your Eclipse Edition</h1><p>${escapeHtml(model.fingerprint)}</p></header>
     <img src="${artwork}" alt="Personalised eclipse artwork">
     ${fullReadingHtml(model)}
@@ -303,7 +387,7 @@ function renderUnlocked(host, model) {
     <div class="ap-eclipse-edition__head"><span>Edition unlocked</span><strong>${escapeHtml(model.fingerprint)}</strong></div>
     <h3>Your five-beat eclipse edition</h3>
     <div class="ap-eclipse-edition__reading">${fullReadingHtml(model)}</div>
-    <figure class="ap-eclipse-edition__art"><div data-edition-canvas></div><figcaption>Unique 2400 × 3000 artwork derived from this computed chart contact. No birth details are printed into the file.</figcaption></figure>
+    <figure class="ap-eclipse-edition__art"><div data-edition-canvas></div><figcaption>Unique 2400 × 3000 natal-wheel plate from this computed chart contact. No birth details are printed into the file.</figcaption></figure>
     <div class="ap-eclipse-edition__actions"><button type="button" data-edition-download>Download PNG</button><button type="button" data-edition-print>Print / save as PDF</button></div>
     <p class="ap-eclipse-edition__status" data-edition-status role="status">Ready on this device.</p>`;
 
@@ -390,9 +474,9 @@ export function mountEclipseEdition(host, context) {
   host.dataset.paidState = ready ? 'locked' : 'dormant';
   rememberEditionContext(context);
   host.innerHTML = `
-    <div class="ap-eclipse-edition__head"><span>Your Eclipse Edition</span><strong>£7 · instant · live</strong></div>
-    <h3>Keep tonight’s contact as reading and art.</h3>
-    <p>Five authored beats plus unique 2400 × 3000 artwork, generated here from this computed contact. Download a PNG or open print / save-as-PDF. No manual review and no birth data leaves this browser.</p>
+    <div class="ap-eclipse-edition__head"><span>Your Eclipse Edition</span><strong>£7 · instant</strong></div>
+    <h3>Keep this contact as reading and art.</h3>
+    <p>Five authored beats plus unique 2400 × 3000 natal-wheel artwork, generated here from this computed contact. Download a PNG or open print / save-as-PDF. No manual review and no birth data leaves this browser.</p>
     <ul><li>Five-beat personalised contact reading</li><li>Unique high-resolution eclipse artwork</li><li>PNG download + print / save-as-PDF</li><li>Licence unlock via Gumroad View content</li></ul>
     ${ready ? `
       <div class="ap-eclipse-edition__actions"><button type="button" data-edition-buy>Buy Your Eclipse Edition — £7</button></div>

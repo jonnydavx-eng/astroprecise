@@ -118,6 +118,25 @@ export function wholeSignHouse(pointLon, ascLon) {
   return ((ps - as + 12) % 12) + 1;
 }
 
+/** 1 → 1st, 2 → 2nd, 3 → 3rd, 11 → 11th. */
+export function houseOrdinal(n) {
+  const house = Number(n);
+  if (!Number.isInteger(house) || house < 1) return String(n);
+  const j = house % 10;
+  const k = house % 100;
+  if (k >= 11 && k <= 13) return `${house}th`;
+  if (j === 1) return `${house}st`;
+  if (j === 2) return `${house}nd`;
+  if (j === 3) return `${house}rd`;
+  return `${house}th`;
+}
+
+function contactSerifFromAspect(asp) {
+  const note = String(asp && asp.note ? asp.note : '').trim();
+  if (!note) return 'A traditional contact, held as reflection, not as a forecast.';
+  return `${note.charAt(0).toUpperCase()}${note.slice(1)}. Held as reflection, not as a forecast.`;
+}
+
 /** All aspect contacts within orb, sorted tightest first. */
 export function allContacts(eclipseLon, natal, templates) {
   const ASPECTS = { conjunction: 0, sextile: 60, square: 90, trine: 120, opposition: 180 };
@@ -231,7 +250,7 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
   const orbText = fmtOrb(closest.orbDeg);
   const house = wholeSignHouse(closest.lon, natal.asc);
   let contactMono = `This eclipse falls ${orbText} from your natal ${tg.label} (${fmtDeg(closest.lon, signs)}) — ${asp.label}.`;
-  if (house) contactMono += ` ${tg.label} sits in your ${house}ℓ`.replace('ℓ', house === 1 ? 'st' : house === 2 ? 'nd' : house === 3 ? 'rd' : 'th') + ' house (whole-sign).';
+  if (house) contactMono += ` ${tg.label} sits in your ${houseOrdinal(house)} house (whole-sign).`;
   const secondaries = contacts.filter((c) => c !== closest && c.orbDeg <= 3).slice(0, 2);
   const secondary = secondaries.length
     ? { mono: t.secondary.computed.replace('{list}', secondaries.map((c) =>
@@ -244,7 +263,10 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
   const key = `${closest.target}|${closest.aspect}`;
   let governsSerif = t.overrides[key] || t.reflectionFrames[closest.aspect].replace('{theme}', tg.theme);
   if (house && t.houseMeanings[String(house)]) {
-    governsSerif += t.governsHouse.replace('{houseNum}', String(house)).replace('{houseMeaning}', t.houseMeanings[String(house)]);
+    governsSerif += t.governsHouse
+      .replace('{houseOrd}', houseOrdinal(house))
+      .replace('{houseNum}', String(house))
+      .replace('{houseMeaning}', t.houseMeanings[String(house)]);
   }
 
   // BEAT 4 — the question
@@ -253,9 +275,11 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
   const reading = {
     quiet: false, gateSale: false,
     anchor: { mono: anchorMono, serif: t.anchor.serif },
-    contact: { mono: contactMono, serif: null, secondary },
+    contact: { mono: contactMono, serif: contactSerifFromAspect(asp), secondary },
     governs: { serif: governsSerif },
     question, close,
+    contactTarget: closest.target,
+    contactAspect: closest.aspect,
     share: t.shareLine.replace('{orbText}', orbText).replace('{targetLabel}', tg.label),
     legal: t.legalLine,
     houseNote: house ? t.houseSystemNote : null,

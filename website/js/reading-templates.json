@@ -1,5 +1,5 @@
 {
-  "_about": "Astro Precise — the £2.99 Eclipse Night Reading. Honest template library. The engine computes WHERE the 12 Aug 2026 eclipse degree falls against a person's real natal chart; these templates turn that computed contact into words. TYPE LAW: the 'computed' line is fact (render in mono); the 'reflection' line is human meaning (render in warm serif). Everything traditional is framed as reflection, never prediction. Nothing here is fabricated — every number the engine drops in is real; the words only interpret it. Legal 'for reflection/entertainment' line ships with every reading.",
+  "_about": "Astro Precise — the £7 Your Eclipse Edition. Honest template library. The engine computes WHERE the 12 Aug 2026 eclipse degree falls against a person's real natal chart; these templates turn that computed contact into words. TYPE LAW: the 'computed' line is fact (render in mono); the 'reflection' line is human meaning (render in warm serif). Everything traditional is framed as reflection, never prediction. Nothing here is fabricated — every number the engine drops in is real; the words only interpret it. Legal 'for reflection/entertainment' line ships with every reading.",
   "version": "AP-READING-2",
   "voice": "Calm, specific, grown-up. Fact first, then a gentle traditional meaning offered for reflection. No promises about health, money or love. No 'you will'. No fear.",
   "legalLine": "Astronomy is exact; the meaning is tradition, offered for reflection and entertainment — not advice or prediction.",
@@ -95,20 +95,52 @@
     "sextile": "This eclipse gently opens {theme}. A helpful angle is a small door, not a shove — an invitation you can take or leave."
   },
   "overrides": {
-    "sun|conjunction": "This eclipse falls right on your Sun — your core sense of who you are. Of all the contacts, this is the personal one: a traditional marker of a chapter quietly closing so a truer one can begin. Held lightly, it's an invitation to ask what you've outgrown.",
-    "moon|conjunction": "This eclipse falls right on your Moon — your inner tides and what makes you feel safe. Tradition treats this as a tender, emotional reset; be a little gentler with yourself around it than you'd think to be.",
-    "asc|conjunction": "This eclipse falls right on your Ascendant — the face you meet the world with. It's read, traditionally, as a moment when how you show up is ready to shift; nobody else has to notice for it to be real.",
-    "saturn|conjunction": "This eclipse meets your Saturn — your patience and your load. The old reading isn't heavy: it's a moment to set down one thing you've been carrying out of habit rather than need."
+    "sun|conjunction": "This eclipse falls right on your Sun — your core sense of who you are. Of all the contacts, this is the personal one: a traditional marker of a chapter quietly closing so a truer one can begin. Held lightly, it is an invitation to ask what you have outgrown.",
+    "sun|opposition": "This eclipse sits opposite your Sun. Tradition reads a facing like this as a mirror held up to identity — not a verdict, a chance to see how you look from the other side of the room.",
+    "sun|square": "This eclipse squares your Sun. Old language calls that useful friction in the through-line of a life: something in how you recognise yourself is being asked to move, without anyone else having to notice.",
+    "moon|conjunction": "This eclipse falls right on your Moon — your inner tides and what makes you feel safe. Tradition treats this as a tender, emotional reset; be a little gentler with yourself around it than you would think to be.",
+    "moon|opposition": "This eclipse sits opposite your Moon. A facing here is often read as a conversation between what you need and what the world is asking — not a demand to choose, a chance to name both.",
+    "moon|square": "This eclipse squares your Moon. The old shorthand is restlessness in the private rooms: habits of comfort that no longer quite fit, offered for noticing rather than for panic.",
+    "mercury|conjunction": "This eclipse meets your Mercury — how you think, speak and sort the world. Tradition reads a conjunction here as a clean page in the notebook: a good moment to say the thing plainly, or to stop repeating a sentence that has finished.",
+    "mercury|opposition": "This eclipse sits opposite your Mercury. A facing like this is often taken as a second opinion arriving — not to replace your own mind, but to let it hear itself from across the table.",
+    "mercury|square": "This eclipse squares your Mercury. Useful friction in the talking and the thinking: a prompt to check which arguments you are still carrying out of habit.",
+    "venus|conjunction": "This eclipse falls on your Venus — what you love, value and find beautiful. The traditional reading is a quiet audit of affection and taste: what is still yours, and what you have been keeping out of courtesy.",
+    "venus|opposition": "This eclipse sits opposite your Venus. A mirror on the lovely and the valued — a chance to see the relationship, the taste, or the loyalty from the other side, without having to wreck it.",
+    "venus|square": "This eclipse squares your Venus. Old language calls that a productive rub in matters of love and worth: something you care about is asking for a more honest arrangement.",
+    "mars|conjunction": "This eclipse meets your Mars — drive, courage, the way you act. Tradition treats this as heat on the will: a moment to notice where effort is chosen and where it is only leftover momentum.",
+    "mars|opposition": "This eclipse sits opposite your Mars. A facing here is often read as meeting your own force coming the other way — useful, if you let it show you how you push.",
+    "mars|square": "This eclipse squares your Mars. Friction in the engine: the old reading is not a fight to pick, but a check on which battles still deserve you.",
+    "jupiter|conjunction": "This eclipse falls on your Jupiter — growth, meaning, room to expand. Tradition reads a conjunction here as a wide door, not a guarantee: notice where you have been waiting for permission to take up space.",
+    "jupiter|opposition": "This eclipse sits opposite your Jupiter. A facing on faith and appetite — a chance to see whether the big story you tell yourself still fits the life you are actually in.",
+    "jupiter|square": "This eclipse squares your Jupiter. Useful tension in the wish to grow: the old shorthand is to ask which expansion is hunger, and which is habit.",
+    "saturn|conjunction": "This eclipse meets your Saturn — your patience and your load. The old reading is not heavy: it is a moment to set down one thing you have been carrying out of habit rather than need.",
+    "saturn|opposition": "This eclipse sits opposite your Saturn. A facing on duty and time — tradition offers it as a chance to see the structure from outside, and to keep only what still holds.",
+    "saturn|square": "This eclipse squares your Saturn. Friction at the load-bearing wall: not a collapse, a prompt to check which rule you are still obeying after it has finished being useful.",
+    "uranus|conjunction": "This eclipse meets your Uranus — the part that wants air and the unexpected. Tradition reads this as a crack in the routine: not a command to blow up your life, a notice that something wants more room.",
+    "uranus|opposition": "This eclipse sits opposite your Uranus. A facing on freedom — a chance to see whether the rebellion you are still staging is current, or a costume from an earlier year.",
+    "uranus|square": "This eclipse squares your Uranus. Useful static in the wish to break out: the old reading is to name the constraint honestly before you try to leave it.",
+    "neptune|conjunction": "This eclipse falls on your Neptune — dreams, longing, the fog and the music. Tradition treats this as a thinning of the veil, which is also a warning to keep the facts in the other hand.",
+    "neptune|opposition": "This eclipse sits opposite your Neptune. A facing on the ideal — a chance to see the dream from the street, and to keep it without letting it spend you.",
+    "neptune|square": "This eclipse squares your Neptune. Friction between the vision and the day: old language offers it as a prompt to tell the longing from the leak.",
+    "pluto|conjunction": "This eclipse meets your Pluto — what in you is quietly transforming. Tradition reads a conjunction here as a deep, slow turn: not theatre, a composting. Held lightly, it is permission to let one skin finish.",
+    "pluto|opposition": "This eclipse sits opposite your Pluto. A facing on power and the under-storey — a chance to see the intensity from across the room instead of from inside it.",
+    "pluto|square": "This eclipse squares your Pluto. Useful pressure on what is already changing: the old shorthand is not to force a crisis, but to stop pretending the old arrangement is still alive.",
+    "asc|conjunction": "This eclipse falls right on your Ascendant — the face you meet the world with. It is read, traditionally, as a moment when how you show up is ready to shift; nobody else has to notice for it to be real.",
+    "asc|opposition": "This eclipse sits opposite your Ascendant, which is also a conversation with the seventh-house other. Tradition reads a facing here as how you meet people meeting you back — a chance to notice the handshake, not to rewrite your face overnight.",
+    "asc|square": "This eclipse squares your Ascendant. Friction in the way you begin and present: old language offers it as a check on whether the entrance still belongs to the person walking through it.",
+    "mc|conjunction": "This eclipse falls on your career point — direction, work, the public path. Tradition reads a conjunction here as a chapter mark on the skyline, not a job-offer in the post. A good moment to ask whether the hill you are climbing is still the one you mean.",
+    "mc|opposition": "This eclipse sits opposite your career point, facing the private ground of home and origin. The old reading is a balance between the public path and the room you come back to — neither has to win.",
+    "mc|square": "This eclipse squares your career point. Useful friction in vocation and reputation: a prompt to notice which ambition is still chosen, and which is only being performed."
   },
   "emptyState": {
-    "computed": "The eclipse point sits more than {maxOrb}° from every placement in your chart — no close contact tonight.",
+    "computed": "The eclipse point sits more than {maxOrb}° from every placement in your chart — no close contact for this eclipse.",
     "computedNoHard": "No placement in your chart takes a direct hit from this eclipse: nothing of yours sits within {maxOrb}° of the eclipse point, or directly opposite it, or square to it.",
     "nearestSoft": " There is a softer touch nearby — the eclipse point {frame} your {targetLabel}, {orbText} away. That contact is real; it is just a gentle one, and we would rather name it than build a night on it.",
     "nearestWide": " The nearest contact of any kind is {orbText} from your {targetLabel} — real, and too wide to carry a night.",
-    "reflection": "So this one is quiet for you, and quiet is a real reading. Charts are not scored out of ten; the sky simply doesn't reach everybody on the same night, and plenty of places would happily sell you a reading anyway. You still get the eclipse over your own town and the Perseids after dark — and your chart is no less yours for sitting this one out."
+    "reflection": "So this one is quiet for you, and quiet is a real reading. Charts are not scored out of ten; the sky simply does not reach everybody on the same night, and plenty of places would happily sell you a reading anyway. You still get the record of the eclipse over your own town — and your chart is no less yours for sitting this one out."
   },
   "perseid": {
-    "computed": "After the eclipse, the Perseids peak overnight — your darkest window is roughly {darkStart}–{darkEnd}, radiant climbing in the north-east.",
+    "computed": "After the eclipse, the Perseids peaked overnight — the darkest window was roughly {darkStart}–{darkEnd}, radiant climbing in the north-east.",
     "reflection": "An old, unserious tradition worth keeping: the first shooting star you catch is yours to make a wish on."
   },
   "shareLine": "The eclipse landed {orbText} from my {targetLabel}. Check where it falls in yours →",
@@ -143,33 +175,33 @@
   },
   "anchor": {
     "computed": "{date} — the Moon covers {coveragePct} of the Sun across Britain, {peakLocal}. Read from {place}, the eclipse falls at {eclipseDeg}.",
-    "computedNoPlace": "{date} — totality crosses northern Russia, Greenland, Iceland, Spain and a corner of Portugal; the UK and Ireland see a deep partial eclipse at {eclipseDeg}.",
+    "computedNoPlace": "{date} — totality crossed northern Russia, Greenland, Iceland, Spain and a corner of Portugal; the UK and Ireland saw a deep partial eclipse at {eclipseDeg}.",
     "serif": "The placements and contact distances below are computed from the birth moment; the meaning is a traditional reflection, clearly kept separate from the evidence."
   },
-  "governsHouse": " It sits in your {houseNum}th house — {houseMeaning} (houses counted whole-sign from your rising).",
+  "governsHouse": " It sits in your {houseOrd} house — {houseMeaning} (houses counted whole-sign from your rising).",
   "questions": {
-    "sun": "So the question tonight is a quiet one: which version of you is asking to be lived openly now — and what have you outgrown?",
+    "sun": "So the question here is a quiet one: which version of you is asking to be lived openly now — and what have you outgrown?",
     "moon": "So the question the sky hands you is not 'what should you want?' but the quieter one underneath: what do you actually need, before anyone told you what you were supposed to?",
-    "mercury": "So the question tonight: what is waiting to be said plainly — and to whom?",
-    "venus": "So the question tonight: what do you love that you have been treating as optional?",
-    "mars": "So the question tonight: where is your effort going out of habit rather than choice?",
-    "jupiter": "So the question tonight: where are you being invited to grow — and what small door have you not opened?",
-    "saturn": "So the question tonight: which load are you carrying out of habit that was never yours to keep?",
-    "uranus": "So the question tonight: where does your life ask for more room than you have given it?",
-    "neptune": "So the question tonight: which dream have you been calling unrealistic mainly because it matters?",
-    "pluto": "So the question tonight: what is quietly ending so something truer can take its place?",
-    "asc": "So the question tonight: does the way you meet the world still fit the person doing the meeting?",
-    "mc": "So the question tonight: is the direction you are walking still the one you would choose today?"
+    "mercury": "So the question: what is waiting to be said plainly — and to whom?",
+    "venus": "So the question: what do you love that you have been treating as optional?",
+    "mars": "So the question: where is your effort going out of habit rather than choice?",
+    "jupiter": "So the question: where are you being invited to grow — and what small door have you not opened?",
+    "saturn": "So the question: which load are you carrying out of habit that was never yours to keep?",
+    "uranus": "So the question: where does your life ask for more room than you have given it?",
+    "neptune": "So the question: which dream have you been calling unrealistic mainly because it matters?",
+    "pluto": "So the question: what is quietly ending so something truer can take its place?",
+    "asc": "So the question: does the way you meet the world still fit the person doing the meeting?",
+    "mc": "So the question: is the direction you are walking still the one you would choose today?"
   },
   "close": {
-    "computedPerseids": "The same night, the Perseids peak — up to {rate} meteors an hour after midnight, the radiant climbing in the north-east; your darkest window is roughly {darkStart}–{darkEnd}.",
-    "computedNoPerseids": "After the eclipse the sky stays busy — step outside and let it be enough.",
-    "serif": "You don't have to answer any of this tonight. A page is turning; you're allowed to simply go and watch it turn."
+    "computedPerseids": "The same night, the Perseids peaked — up to {rate} meteors an hour after midnight, the radiant climbing in the north-east; the darkest window was roughly {darkStart}–{darkEnd}.",
+    "computedNoPerseids": "After the eclipse the sky stayed busy. This plate is the keepable record of the contact.",
+    "serif": "You do not have to answer any of this now. A page turned; you are allowed to simply keep the record of it."
   },
   "secondary": {
-    "computed": "Also within reach tonight: {list}.",
+    "computed": "Also within reach that night: {list}.",
     "item": "{aspectLabel} to your {targetLabel} ({orbText})",
-    "serif": "Quieter touches, worth a glance — the closest contact above is the one that carries the night."
+    "serif": "Quieter touches, worth a glance — the closest contact above is the one that carries the reading."
   },
   "quietGate": {
     "note": "UI RULE (binding): when quiet:true, the buyer must SEE the quiet verdict before paying — the empty state gates the sale, never surprises after it."

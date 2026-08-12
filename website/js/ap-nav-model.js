@@ -21,7 +21,7 @@
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
     ['horoscope.html', 'Daily'],
-    ['eclipse.html', 'Eclipse', { badge: '12 Aug' }],
+    ['eclipse.html', 'Eclipse', { badge: 'Replay' }],
     ['shop.html', 'Shop'],
   ];
 

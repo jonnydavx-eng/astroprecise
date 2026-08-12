@@ -1033,6 +1033,8 @@ async function mount(root, E) {
   const sharedLens = sharedParams.get('lens');
   if (Number.isFinite(sharedMs) && sharedMs >= RANGE_START_MS && sharedMs <= RANGE_END_MS) {
     setDisplayDate(new Date(sharedMs), 'timeline');
+  } else if (Date.now() >= EVENT_MS) {
+    setGreatest();
   } else setLive();
   setLens(LENS_KEYS.has(sharedLens) ? sharedLens : 'system', false);
   resize();
