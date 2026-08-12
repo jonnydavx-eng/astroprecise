@@ -20,7 +20,7 @@ for (const art of [
 ]) {
   if (!shop.includes(art) || !existsSync('website/' + art)) fails.push('shop missing authored art ' + art);
 }
-if (!/(?:Live · £7|opens its secure Gumroad checkout|checkout is live)/i.test(shop)) fails.push('shop missing clear live-checkout status');
+if (!/(?:12 Aug edition · £7|Buy the £7 edition|your-eclipse-reading)/i.test(shop)) fails.push('shop missing clear £7 checkout status');
 if (!/Cast free contact first|Cast, then unlock|eclipse\.html#contact/i.test(shop)) fails.push('shop missing cast-first funnel into the £7 edition');
 if (!/Two paths\. Free utility first\./i.test(shop)) fails.push('shop missing launch-edition proposition');
 if (!/£7/.test(shop) || !/Free/.test(shop)) {
@@ -40,7 +40,7 @@ if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains ge
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
 if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v849["']/.test(sw)) fails.push('SW tip is not exactly v849');
+if (!/const V\s*=\s*["']ap-v850["']/.test(sw)) fails.push('SW tip is not exactly v850');
 const unlock = readFileSync('website/js/gumroad-unlock.js', 'utf8');
 const bridge = readFileSync('website/js/ap-gumroad-bridge.js', 'utf8');
 if (!/productId:\s*'3ZwFjg0IW702KvJ5s97QuQ=='/.test(unlock)) fails.push('module productId is not the live Gumroad id');

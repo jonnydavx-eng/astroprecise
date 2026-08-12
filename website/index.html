@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#020307">
   <title>AstroPrecise — the living sky, computed now</title>
-  <meta name="description" content="Explore a live 3D solar system, cast a private birth chart and follow the 12 August 2026 eclipse with computed astronomy and clear astrological interpretation.">
+  <meta name="description" content="Explore a live 3D solar system, cast a private birth chart, replay the 12 August 2026 eclipse and keep a personal edition if it contacted your chart.">
   <link rel="canonical" href="https://astroprecise.app/">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
@@ -20,17 +20,17 @@
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='849';</script>
+  <script>window.AP_ASSET_V='850';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
   <link rel="modulepreload" href="js/orrery-webgl.js?v=845">
     <script src="js/void-orrery-adapter.js?v=845" defer></script>
-    <script src="js/ap-nav-model.js?v=849" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=849">
-    <link rel="stylesheet" href="css/ap-home-v835.css?v=849">
+    <script src="js/ap-nav-model.js?v=850" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=850">
+    <link rel="stylesheet" href="css/ap-home-v835.css?v=850">
     <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=845">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=849">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=850">
 </head>
 <body class="ap-live-home page-home">
   <a class="skip" href="#lead">Skip to the Observatory</a>
@@ -71,7 +71,7 @@
         <p class="ap-live-copy">A live model of this minute. Fly to any world, cross the Solar System and keep going to the Galaxy—without changing instruments.</p>
         <div class="ap-live-actions">
           <a class="ap-action ap-action--primary" href="chart.html">Cast my chart</a>
-          <a class="ap-action" href="eclipse.html">Open live eclipse</a>
+          <a class="ap-action" href="eclipse.html">Open the eclipse</a>
         </div>
         <p class="ap-live-proof">Live positions · compressed distances · drag to orbit · choose a named destination</p>
       </div>
@@ -154,15 +154,15 @@
     <section class="edition" aria-labelledby="edition-title">
       <div class="shell edition__grid">
         <div>
-          <p class="eyebrow">Current edition · 12 August 2026</p>
-          <h2 class="deck-h" id="edition-title">The shadow reaches Europe.</h2>
-          <p class="sub">Start with the free live instruments and field guide. When the eclipse touches your chart, the £7 personalised edition unlocks a five-beat reading and unique artwork on this device.</p>
+          <p class="eyebrow">12 August 2026 · archive + edition</p>
+          <h2 class="deck-h" id="edition-title">The shadow has passed. The plate remains.</h2>
+          <p class="sub">Replay the 3D instrument and field guide. If the eclipse touched your chart, the £7 personalised edition unlocks a five-beat reading and unique natal-wheel artwork on this device.</p>
           <ol class="contents">
             <li class="item">
               <span class="item__num">01</span>
-              <h3 class="item__title"><a href="eclipse.html">Live eclipse instrument</a></h3>
+              <h3 class="item__title"><a href="eclipse.html">Eclipse replay</a></h3>
               <span class="item__price">Free</span>
-              <p class="item__desc">A dedicated 3D Sun–Moon–Earth view with live time, shadow-passage replay, System / Shadow / Earth lenses and a shareable computed moment.</p>
+              <p class="item__desc">A dedicated 3D Sun–Moon–Earth view defaulting to greatest eclipse, with shadow-passage replay, System / Shadow / Earth lenses and a shareable computed moment.</p>
             </li>
             <li class="item">
               <span class="item__num">02</span>
@@ -173,8 +173,8 @@
             <li class="item">
               <span class="item__num">03</span>
               <h3 class="item__title"><a href="eclipse.html#contact">Your Eclipse Edition</a></h3>
-              <span class="item__price">£7 · live</span>
-              <p class="item__desc">If the eclipse touches your chart, keep the five-beat reading and unique artwork on this device. Free Field Guide stays free. Cast contact first on the eclipse page.</p>
+              <span class="item__price">£7</span>
+              <p class="item__desc">If the eclipse touched your chart, keep the five-beat reading and unique natal-wheel artwork on this device. Free Field Guide stays free. Cast contact first on the eclipse page.</p>
             </li>
           </ol>
           <p class="honesty">The astronomy is computed and checkable. Astrology is a cultural language offered for reflection—not scientific fact, advice or prediction.</p>
@@ -182,7 +182,7 @@
         <aside class="ap-edition-art">
           <figure>
             <span class="ap-card-art"><img src="img/editorial/eclipse-edition-art-v841.png" width="1122" height="1402" loading="lazy" alt="A premium black and brass eclipse plate with engraved orbital geometry"></span>
-            <figcaption><span>Edition artwork · sample plate</span><strong>Your Eclipse Edition · £7</strong> Five-beat personalised contact reading + unique 2400 × 3000 artwork, unlocked on your device after Gumroad.</figcaption>
+            <figcaption><span>Edition artwork · sample plate</span><strong>Your Eclipse Edition · £7</strong> Five-beat personalised contact reading + unique 2400 × 3000 natal-wheel plate, unlocked on your device after Gumroad.</figcaption>
           </figure>
           <div class="ap-edition-art__actions">
             <a href="eclipse.html#contact">Cast free contact</a>
@@ -231,13 +231,13 @@
       });
     })();
   </script>
-  <script src="js/ap-observatory-controls-v835.js?v=849" defer></script>
-    <script src="js/ap-observatory-v834.js?v=849" defer></script>
+  <script src="js/ap-observatory-controls-v835.js?v=850" defer></script>
+    <script src="js/ap-observatory-v834.js?v=850" defer></script>
     <script src="js/ap-cosmic-flight-tool.js?v=845" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=849" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-sky-time.js?v=849" defer></script>
-    <script src="js/ap-footer-inject.js?v=849" defer></script>
-    <script src="js/ap-mystic-cards-v835.js?v=849" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=850" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-sky-time.js?v=850" defer></script>
+    <script src="js/ap-footer-inject.js?v=850" defer></script>
+    <script src="js/ap-mystic-cards-v835.js?v=850" defer></script>
   <script>
     if ('serviceWorker' in navigator && !/[?&]nosw=1/.test(location.search)) {
       addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }, { once: true });

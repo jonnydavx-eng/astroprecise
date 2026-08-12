@@ -41,7 +41,18 @@ assert.equal(first.height, 3000);
 assert.equal(first.beats.length, 5, 'paid edition must contain exactly five authored beats');
 assert.deepEqual(first.beats.map(({ title }) => title),
   ['Anchor', 'Contact', 'What it touches', 'Reflection', 'Close']);
-assert.ok(first.beats.every(({ text }) => text.length > 20), 'every paid beat must have useful copy');
+assert.ok(direct.contact.serif && direct.contact.serif.length > 20, 'paid contact beat must have a serif reflection');
+assert.equal(direct.contactTarget, 'sun');
+assert.ok(first.placements.length >= 8, 'artwork model must carry natal placements');
+assert.equal(first.contactTarget, 'sun');
+
+const houseNatal = { ...directNatal, asc: eclipseLongitude };
+const houseReading = buildEclipseReading5(eclipseLongitude, houseNatal, templates, { quietGateDeg: 5 });
+assert.equal(houseReading.gateSale, false);
+const houseBlob = JSON.stringify(houseReading);
+assert.equal(houseBlob.includes('1th'), false, 'house ordinal must not print 1th');
+assert.ok(houseBlob.includes('1st'), 'Sun on the Ascendant sign must name the 1st house');
+assert.equal(Object.keys(templates.overrides).length >= 36, true, 'hard-aspect overrides must cover the sale grid');
 assert.equal(first.fingerprint, repeat.fingerprint, 'same computed chart must produce the same artwork ID');
 assert.notEqual(first.fingerprint, changed.fingerprint, 'changed placements must produce different artwork');
 assert.match(first.fingerprint, /^AP26-[0-9A-F]{8}$/);

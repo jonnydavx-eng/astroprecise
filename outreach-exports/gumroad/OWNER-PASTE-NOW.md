@@ -1,7 +1,9 @@
-# Gumroad dashboard — paste tonight (owner)
+# Gumroad dashboard — paste if the live listing still talks like the eclipse is tonight
 
 Product: Your Eclipse Reading + Personalised Art — 12 August 2026  
 Permalink: your-eclipse-reading · £7 · licence keys ON
+
+The 12 August 2026 eclipse has passed. This SKU remains the personal record of that contact.
 
 ## 1. Replace product description
 Paste the HTML from:
@@ -18,7 +20,7 @@ Thank you. Your Eclipse Edition unlocks on AstroPrecise — not as a file downlo
 3. Cast your eclipse contact if the panel is empty.
 4. Paste the licence key under Your Eclipse Edition → Unlock on this device.
 
-You get a five-beat personalised reading + unique 2400×3000 artwork (PNG / print-PDF) on your device.
+You get a five-beat personalised reading + unique 2400×3000 natal-wheel plate (PNG / print-PDF) on your device.
 Birth data never leaves your browser.
 
 Free Field Guide (separate): https://astroprecise.app/shop.html

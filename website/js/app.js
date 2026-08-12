@@ -1655,7 +1655,7 @@ window.AP_MON = Object.assign({
         marketingLine:'Five-beat eclipse-contact reading and unique high-resolution artwork — only for a direct contact.',
         previewImage: 'img/editorial/eclipse-edition-art-v841.png',
         sampleUrl:    'eclipse.html',
-        blurb:        'The free instrument checks the 12 August 2026 eclipse against your computed birth chart first. A direct contact can unlock all five authored beats, a deterministic 2400 × 3000 artwork, PNG download and print/save-as-PDF view. Quiet charts are never sold an edition.',
+        blurb:        'The free instrument checks the 12 August 2026 eclipse against your computed birth chart first. A direct contact can unlock all five authored beats, a deterministic 2400 × 3000 natal-wheel plate, PNG download and print/save-as-PDF view. Quiet charts are never sold an edition.',
         icon:         'sunhigh',
         fulfilUrl:    '',   // Gumroad identifiers live in js/gumroad-unlock.js; placeholders keep this dormant
         gumroadSlug:  'eclipse-edition',

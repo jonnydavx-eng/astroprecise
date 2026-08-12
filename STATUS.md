@@ -1,7 +1,10 @@
 # STATUS — AstroPrecise
 
-**State:** Live at https://astroprecise.app — tip shipping **ap-v849** (cast-first £7 Your Eclipse Edition). Gumroad product `your-eclipse-reading`; licence product_id `3ZwFjg0IW702KvJ5s97QuQ==`. Funnel: free eclipse contact → Buy £7 → View content → paste unlock. Owner must paste Gumroad description from `outreach-exports/gumroad/OWNER-PASTE-NOW.md`.
-Updated: 2026-08-12 (Cloud agent — eclipse-day single-SKU focus)
+**Live (origin, until you push):** https://astroprecise.app still ships **ap-v849**. Gumroad product `your-eclipse-reading`; licence product_id `3ZwFjg0IW702KvJ5s97QuQ==`.
+
+**Local candidate (this machine, not live):** **ap-v850** post-eclipse hub + natal-wheel £7 edition. Measured 2026-08-12 21:47 BST — `node test-eclipse-edition.mjs` and `npm run test:launch` proofs PASS locally. Not pushed.
+
+Updated: 2026-08-12 (Cursor @ BOOK-T1H4NJ753R — post-eclipse hub, not deployed)
 
 ## Measured 2026-08-12 — ap-v847 Gumroad product_id hotfix
 
