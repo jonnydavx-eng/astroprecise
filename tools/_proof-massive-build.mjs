@@ -1,5 +1,5 @@
 /**
- * Static proof: AstroPrecise v837 launch architecture.
+ * Static proof: AstroPrecise v839 launch architecture.
  * Exit 0 only when the flagship 3D, truthful commerce, shared chrome and
  * verification surfaces are wired to the current release contract.
  */
@@ -46,7 +46,7 @@ ok(/<void-orrery[^>]+data-renderer="webgl-only"/i.test(index), 'index requires t
 ok(/id="mladder"/.test(index) && /id="dock"/.test(index), 'index exposes scale and world controls');
 ok(/ap-mystic-cards-v835\.js/.test(index), 'index loads art-only spectral interaction');
 ok(!/ap-sky-news\.js/.test(index), 'index excludes retired sky-news band');
-ok(/js\/ap-nav-model\.js\?v=835/.test(index) && !/ap-nav-model-v834/.test(index), 'index uses the one canonical navigation model');
+ok(/js\/ap-nav-model\.js\?v=838/.test(index) && !/ap-nav-model-v834/.test(index), 'index uses the one canonical navigation model');
 
 const chart = fs.readFileSync(path.join(web, 'chart.html'), 'utf8');
 ok(/id="chart-form"/.test(chart), 'chart keeps the birth-chart calculation form');
@@ -54,7 +54,7 @@ ok(/js\/chart-page\.js\?v=837/.test(chart), 'chart loads the v837 calculation co
 ok(!/ap-natal-sphere/.test(chart), 'chart excludes retired natal-sphere decoration');
 
 const shop = fs.readFileSync(path.join(web, 'shop.html'), 'utf8');
-ok(/Not for sale today/i.test(shop), 'shop states availability truthfully');
+ok(/checkout (?:is not connected yet|remains visibly closed|opens only after)/i.test(shop), 'shop states availability truthfully');
 ok(/Planned £/.test(shop), 'shop labels planned prices');
 ok(!/(?:gumroad|ap-checkout-honest)/i.test(shop), 'shop exposes no dead checkout path');
 ok(/ap-mystic-cards-v835\.js/.test(shop), 'shop loads art-only spectral interaction');
@@ -87,7 +87,7 @@ ok(missingFooters.length === 0, 'all sitemap HTML routes load the compact footer
   + (missingFooters.length ? ': ' + missingFooters.join(', ') : ''));
 
 const eclipse = fs.readFileSync(path.join(web, 'eclipse.html'), 'utf8');
-ok(/ap-eclipse-live-v834\.js\?v=836/.test(eclipse), 'eclipse loads the dedicated v836 3D instrument');
+ok(/ap-eclipse-live-v834\.js\?v=838/.test(eclipse), 'eclipse loads the dedicated v838 3D instrument');
 ok(/class="ap-eclipse-live__canvas"/.test(eclipse), 'eclipse owns one dedicated 3D canvas');
 ok(/data-eclipse-event/.test(eclipse) && /data-eclipse-now/.test(eclipse), 'eclipse exposes live and greatest-event controls');
 ok(/data-eclipse-play/.test(eclipse) && (eclipse.match(/data-eclipse-lens=/g) || []).length === 3,
@@ -106,7 +106,7 @@ ok(!/(?:gumroad|ap-checkout-honest)/i.test(plate), 'natal plate exposes no dead 
 
 const sw = fs.readFileSync(path.join(web, 'sw.js'), 'utf8');
 const versionMatch = sw.match(/const V\s*=\s*"([^"]+)"/);
-ok(versionMatch && versionMatch[1] === 'ap-v837', 'SW release tip ' + (versionMatch && versionMatch[1]));
+ok(versionMatch && versionMatch[1] === 'ap-v839', 'SW release tip ' + (versionMatch && versionMatch[1]));
 
 const verify = fs.readFileSync(path.join(web, 'verify.html'), 'utf8');
 ok(/plate-fingerprint\.js/.test(verify), 'verify imports plate-fingerprint');
