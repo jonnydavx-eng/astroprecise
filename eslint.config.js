@@ -54,12 +54,12 @@ export default [
   {
     files: [
       'website/js/orrery-webgl.js',
-      'website/js/ap-eclipse-page.js',
       'website/js/ap-eclipse-contact-v835.js',
       'website/js/ap-eclipse-geometry-v834.js',
       'website/js/ap-eclipse-live-v834.js',
       'website/js/eclipse-reading.js',
       'website/js/deep-reading.js',
+      'website/js/ap-natal-reading.js',
       'website/js/gumroad-unlock.js',
       'website/js/orbitlab-bodies.js',
       'website/js/orbitlab-orbital-math.js',

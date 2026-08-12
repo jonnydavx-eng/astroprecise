@@ -36,6 +36,7 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border
 @media (max-width:430px){.card{padding:20px 18px}}
 </style>
 <script src="./js/ambience.js"></script>
+<script src="js/void-orrery-adapter.js?v=853"></script>
 </head>
 <body>
 <space-ambience density="200"></space-ambience>
@@ -66,7 +67,7 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border
 <canvas id="cv" width="1200" height="630" role="img" aria-label="Your sky card"></canvas>
 
 <div class="foot" style="margin-top:26px">
-  WHAT'S YOURS? <a href="./index.html#cast">CAST THE FULL CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a> · © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
+  WHAT'S YOURS? <a href="./chart.html">CAST THE FULL CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a> · © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
 
 </div>
@@ -79,7 +80,12 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border
   var MONO = "'IBM Plex Mono', monospace", GRO = "'Schibsted Grotesk', sans-serif";
   function draw() {
     var E = window.VoidEphem;
-    if (!E) { setTimeout(draw, 150); return; }
+    if (!E) {
+      draw.tries = (draw.tries || 0) + 1;
+      if (draw.tries > 40) return;
+      setTimeout(draw, 150);
+      return;
+    }
     var d = new Date($('dob').value + 'T' + ($('tob').value || '12:00') + ':00Z');
     if (isNaN(d.getTime())) d = new Date();
     var rows = E.positions(d).rows;

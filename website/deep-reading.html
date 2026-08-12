@@ -1,34 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Eclipse Edition | AstroPrecise</title>
-  <meta name="description" content="The former Deep Reading route now points to the launch Eclipse Edition.">
-  <meta name="robots" content="noindex, follow">
-  <link rel="canonical" href="https://astroprecise.app/eclipse.html#contact">
-  <link rel="stylesheet" href="./css/fonts.css?v=835">
-  <script>
-  (function () {
-    var target = new URL('./eclipse.html', location.href);
-    target.hash = 'contact';
-    location.replace(target.href);
-  })();
-  </script>
-  <noscript><meta http-equiv="refresh" content="0; url=./eclipse.html#contact"></noscript>
-  <style>
-    :root { color-scheme: dark; }
-    * { box-sizing: border-box; }
-    body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; background: #020307; color: #f2ecdf; font-family: "Schibsted Grotesk", sans-serif; }
-    main { width: min(560px, 100%); padding: 34px; border: 1px solid rgba(216,180,106,.32); border-radius: 8px; background: #0d121b; }
-    p { margin: 0 0 20px; color: #b9c8dc; line-height: 1.65; }
-    a { min-height: 46px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 5px; background: #ff6428; color: #170702; font-weight: 750; text-decoration: none; }
-  </style>
+  <meta name="theme-color" content="#0C1016">
+  <title>Natal Deep Reading — seven chapters on your device | AstroPrecise</title>
+  <meta name="description" content="A seven-chapter natal reading computed in your browser from a saved chart or birth moment. Astronomy first; meaning offered for reflection. Nothing is uploaded.">
+  <link rel="canonical" href="https://astroprecise.app/deep-reading.html">
+  <link rel="stylesheet" href="css/fonts.css?v=853">
+  <script>window.AP_ASSET_V='853';</script>
+  <script src="js/ap-nav-model.js?v=853" defer></script>
+  <script src="js/ephemeris.js?v=853" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=853">
+  <link rel="stylesheet" href="css/ap-natal-reading.css?v=853">
 </head>
-<body>
-  <main>
-    <p>The former Deep Reading preview has been retired for launch. Compute your eclipse contact first; a direct contact can then unlock the one £7 Eclipse Edition.</p>
-    <a href="./eclipse.html#contact">Open the eclipse contact</a>
+<body class="page-natal-reading ap-launch-article">
+  <a class="skip-link" href="#natal-main">Skip to reading</a>
+  <header class="site-header" role="banner" data-ap-static-nav>
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript>
+            <a href="index.html" class="navbar__link">Observatory</a>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="horoscope.html" class="navbar__link">Daily</a>
+            <a href="eclipse.html" class="navbar__link">Eclipse</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
+          </noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="natal-main" class="ap-natal-shell">
+    <p class="ap-natal-kicker">Natal reading · seven chapters · on this device</p>
+    <h1>Your chart, <em>read in full.</em></h1>
+    <p class="ap-natal-lede">The free chart page gives positions and short cards. This page writes seven chapters from the same engine: the sky at first breath, the three lights, the working planets, the hard aspects, the houses, this season’s sky, and a letter to keep. Paid print unlock is not open yet, so the reading itself is here to judge. Birth data never leaves the browser.</p>
+
+    <form id="natalReadingForm" class="ap-natal-form">
+      <label class="ap-natal-saved" id="savedChartOption" hidden><input type="checkbox" id="useSavedChart" checked><span id="savedChartLabel">Use my saved chart</span></label>
+      <div class="ap-natal-form__fields">
+        <label><span>Birth date</span><input type="date" id="dob" required min="1800-01-01" autocomplete="bday"></label>
+        <label><span>Birth time · optional</span><input type="time" id="tob" autocomplete="bday-time"></label>
+        <label><span>Historical time zone</span>
+          <select id="tz">
+            <option value="Europe/London" selected>London / UK</option>
+            <option value="Europe/Paris">Paris / Central Europe</option>
+            <option value="America/New_York">New York / US Eastern</option>
+            <option value="America/Los_Angeles">Los Angeles / US Pacific</option>
+            <option value="Asia/Kolkata">India</option>
+            <option value="Australia/Sydney">Sydney</option>
+            <option value="UTC">UTC / GMT</option>
+          </select>
+        </label>
+      </div>
+      <button type="submit" data-natal-submit disabled>Write my seven chapters</button>
+      <p class="ap-natal-note" id="natalStatus" role="status">Cast a free chart first for angles and houses, or enter a date here. Unknown time withholds the Moon and angles.</p>
+    </form>
+
+    <button type="button" class="ap-natal-print" id="natalPrint" hidden>Print / save as PDF</button>
+    <div id="natalResult" hidden tabindex="-1">
+      <p class="ap-natal-note" id="natalMeta"></p>
+      <div id="natalChapters"></div>
+      <p class="ap-natal-legal" id="natalLegal"></p>
+    </div>
+
+    <p class="ap-natal-also">Also: <a href="eclipse.html#contact">12 August eclipse contact</a> · <a href="chart.html">Free natal chart</a> · <a href="sky-events.html">Sky events</a></p>
   </main>
+
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <script src="js/ap-footer-inject.js?v=853" defer></script>
+  <script type="module" src="js/ap-natal-reading.js?v=853"></script>
 </body>
 </html>

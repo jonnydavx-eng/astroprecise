@@ -1,0 +1,31 @@
+/* Natal seven-chapter reading — void + brass, print as a booklet. */
+.page-natal-reading { background: var(--ap-void-deep, #0c1016); color: var(--ap-paper, #ece6d8); }
+.ap-natal-shell { width: min(760px, calc(100% - 40px)); margin: 0 auto; padding: clamp(48px, 7vw, 88px) 0 120px; }
+.ap-natal-kicker { margin: 0; color: var(--ap-brass, #c2a05e); font: 10px/1.5 var(--ap-data, ui-monospace, monospace); letter-spacing: .11em; text-transform: uppercase; }
+.page-natal-reading h1 { max-width: 14ch; margin: 16px 0 20px; font: 600 clamp(42px, 7vw, 72px)/.92 var(--ap-display, Georgia, serif); letter-spacing: -.03em; }
+.page-natal-reading h1 em { color: var(--ap-brass-bright, #cdae6a); font-weight: 500; }
+.ap-natal-lede { max-width: 62ch; margin: 0 0 28px; color: var(--ap-paper-dim, #b9c8dc); font-size: 17px; line-height: 1.65; }
+.ap-natal-form { display: grid; gap: 14px; margin: 0 0 36px; padding: 22px; border: 1px solid var(--ap-line, rgba(216,180,106,.24)); border-radius: 8px; background: rgba(13,18,27,.72); }
+.ap-natal-form__fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ap-natal-form label span { display: block; margin-bottom: 6px; color: var(--ap-brass, #c2a05e); font: 9px/1.4 var(--ap-data, ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase; }
+.ap-natal-form input, .ap-natal-form select { width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid var(--ap-line, rgba(216,180,106,.24)); border-radius: 4px; background: #05070b; color: inherit; }
+.ap-natal-form button, .ap-natal-print { min-height: 48px; padding: 0 18px; border: 0; border-radius: 4px; background: var(--ap-ember, #ff6428); color: #170702; font: 700 11px/1 var(--ap-data, ui-monospace, monospace); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.ap-natal-print { margin: 0 0 28px; background: transparent; border: 1px solid var(--ap-brass, #c2a05e); color: var(--ap-brass-bright, #cdae6a); }
+.ap-natal-note { margin: 0; color: var(--ap-paper-faint, #8b919c); font-size: 13px; line-height: 1.55; }
+.ap-natal-ch { padding: 28px 0; border-top: 1px solid var(--ap-line, rgba(216,180,106,.18)); }
+.ap-natal-ch__n { margin: 0 0 8px; color: var(--ap-brass, #c2a05e); font: 10px var(--ap-data, ui-monospace, monospace); letter-spacing: .14em; text-transform: uppercase; }
+.ap-natal-ch h2 { margin: 0 0 16px; font: 600 clamp(26px, 4vw, 36px)/1.1 var(--ap-display, Georgia, serif); }
+.ap-natal-ch__mono { margin: 0 0 8px; color: var(--ap-paper, #ece6d8); font: 13px/1.55 var(--ap-data, ui-monospace, monospace); }
+.ap-natal-ch__serif { margin: 14px 0 0; color: var(--ap-paper-dim, #d5cbb8); font: italic 18px/1.6 var(--ap-display, Georgia, serif); }
+.ap-natal-legal { margin: 28px 0 0; color: var(--ap-paper-faint, #8b919c); font-size: 12px; line-height: 1.55; }
+.ap-natal-also { margin: 36px 0 0; }
+.ap-natal-also a { color: var(--ap-brass-bright, #cdae6a); }
+@media (max-width: 700px) {
+  .ap-natal-form__fields { grid-template-columns: 1fr; }
+}
+@media print {
+  .site-header, .ap-site-footer, .bottom-nav, .ap-natal-form, .ap-natal-print, .ap-natal-also { display: none !important; }
+  .page-natal-reading { background: #fff; color: #111; }
+  .ap-natal-ch { break-inside: avoid; }
+  .ap-natal-ch__serif { color: #222; }
+}

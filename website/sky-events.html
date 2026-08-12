@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, follow">
+<meta name="robots" content="index, follow">
 <title>The real sky news — sky events | Astro Precise</title>
 <meta name="description" content="The real sky news: upcoming conjunctions, moons and stations computed in your browser.">
 <link rel="canonical" href="https://astroprecise.app/sky-events.html">
@@ -13,7 +13,7 @@
      were already in this repo and already precached by the service worker —
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css">
+<link rel="stylesheet" href="./css/fonts.css?v=853">
 <style>
 :root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.24);--acc:#d8b46a;--good:rgba(168,214,176,.85)}
 *{box-sizing:border-box}
@@ -34,8 +34,9 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script src="./js/ambience.js"></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
-  <script src="js/ap-nav-model.js?v=835" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=853" />
+  <script src="js/ap-nav-model.js?v=853" defer></script>
+  <script src="js/void-orrery-adapter.js?v=853"></script>
 </head>
 <body class="page-sky-events ap-launch-article">
 <space-ambience density="200"></space-ambience>
@@ -82,18 +83,30 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
 
 <div class="foot" style="margin-top:44px">
   EVERY DATE ABOVE WAS COMPUTED IN YOUR BROWSER JUST NOW · POSITIONS NEVER ROUNDED · MEANINGS ARE FOR REFLECTION, NOT PREDICTION<br>
-  <a href="./index.html#cast">CAST YOUR CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE — YOUR READING</a> · <a href="./sky-card.html">MAKE YOUR SKY CARD</a><br>
+  <a href="./chart.html">CAST YOUR CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE — YOUR READING</a> · <a href="./sky-card.html">MAKE YOUR SKY CARD</a><br>
   © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
 
 </div>
+
+<footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+<script src="js/ap-footer-inject.js?v=853" defer></script>
 
 <script>
 (function () {
   'use strict';
   function go() {
     var E = window.VoidEphem;
-    if (!E) { setTimeout(go, 150); return; }
+    if (!E) {
+      go.tries = (go.tries || 0) + 1;
+      if (go.tries > 40) {
+        var host = document.getElementById('events');
+        if (host) host.innerHTML = '<p class="mono" style="font-size:12px;letter-spacing:.12em;color:var(--faint);padding:30px 0">THE SKY ENGINE DID NOT LOAD. REFRESH, OR OPEN WITH ?nosw=1.</p>';
+        return;
+      }
+      setTimeout(go, 150);
+      return;
+    }
     var now = new Date(), DAY = 86400000;
     var fmt = function (d) { return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); };
     var fmtS = function (d) { return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(); };
@@ -159,7 +172,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     var leRow = E.positions(leDate).rows.find(function (r) { return r.key === 'moon'; });
     ev('LUNAR ECLIPSE · PARTIAL', 'The Moon dims in ' + leRow.sign.name,
       fmtS(leDate) + ' · FULL MOON AT ' + leRow.sign.deg + '° ' + leRow.sign.name.toUpperCase(),
-      "Earth's shadow crosses part of the full Moon — visible wherever the Moon is up, no equipment needed. Sixteen days after the great solar eclipse, the sky answers with its second act.",
+      "Earth's shadow crosses part of the full Moon — visible wherever the Moon is up, no equipment needed. Sixteen days after the 12 August solar eclipse, the sky answers with its second act.",
       'Sun and Moon eclipses arrive in pairs; the old astronomers called it an eclipse season.');
     var eqDate = null;
     for (t = 0; t < 40; t++) {
@@ -182,7 +195,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     var gemDark = 100 - moonIll(new Date(Date.UTC(2026, 11, 13, 23)));
     ev('METEORS · PERSEIDS + GEMINIDS', "The year's two great showers",
       'PERSEIDS 12–13 AUG · SKY ' + perDark + '% DARK — GEMINIDS 13–14 DEC · SKY ' + gemDark + '% DARK',
-      'The Perseids peak the very night of the eclipse — a new-moon sky, ' + perDark + '% dark, up to 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.',
+      'The Perseids peak tonight under the new-moon sky left by the 12 August eclipse — ' + perDark + '% dark, up to 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.',
       'Shooting stars are dust from a comet’s road, burning ninety kilometres up.');
     document.getElementById('events').innerHTML = out.join('');
   }

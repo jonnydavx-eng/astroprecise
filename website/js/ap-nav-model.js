@@ -33,9 +33,11 @@
     ['cosmic-story.html', 'Cosmic Story'],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
+    ['sky-events.html', 'Sky events'],
     ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
     ['profile.html', 'Profile'],
     ['charts.html', 'My Charts'],
+    ['deep-reading.html', 'Natal reading'],
   ];
 
   // Five-route mobile spine. The authored header remains the desktop navigation.
