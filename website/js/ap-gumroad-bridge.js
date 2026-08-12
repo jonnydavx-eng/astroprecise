@@ -1,16 +1,16 @@
 /**
  * Classic-script bridge for Gumroad checkout (window.APGumroad).
- * v841 — separate public permalink and License API product_id, dormant
+ * v846 — separate public permalink and License API product_id, live
  * checkout, single eclipse edition.
  *
- * Owner: replace BOTH placeholders. Checkout uses permalink; license
- * verification uses product_id. One identifier never substitutes for the other.
+ * Checkout uses permalink; licence
+ * verification uses product_id. Both values were verified against the public Gumroad product page.
  */
 (function (w) {
   'use strict';
 
   var PRODUCTS = {
-    'eclipse-edition': { permalink: 'REPLACE_ME', productId: 'REPLACE_ME', price: '£7' },
+    'eclipse-edition': { permalink: 'your-eclipse-reading', productId: '30971', price: '£7' },
   };
 
   function resolveSlug(slug) {

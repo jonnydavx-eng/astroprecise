@@ -26,11 +26,11 @@
 
 // Map the one on-site product to both public and verification identifiers.
 // permalink builds the public checkout URL. productId is sent only to the
-// License API. Checkout stays dormant until BOTH values are real.
+// License API. Checkout is live only when BOTH values are real and verified.
 export const GUMROAD_PRODUCTS = {
   'eclipse-edition': {
-    permalink: 'REPLACE_ME',
-    productId: 'REPLACE_ME',
+    permalink: 'your-eclipse-reading',
+    productId: '30971',
     price: '£7',
   },
 };

@@ -15,7 +15,7 @@ const contactJs = readFileSync('website/js/ap-eclipse-contact-v835.js', 'utf8');
 const sw = readFileSync('website/sw.js', 'utf8');
 
 const fails = [];
-if (!/ap-eclipse-live-v834\.js\?v=842/.test(eclipseHtml)) fails.push('eclipse missing dedicated 3D module');
+if (!/ap-eclipse-live-v834\.js\?v=846/.test(eclipseHtml)) fails.push('eclipse missing dedicated 3D module');
 if (!/class="ap-eclipse-live__canvas"/.test(eclipseHtml)) fails.push('eclipse missing dedicated canvas');
 if (!/data-eclipse-now/.test(eclipseHtml) || !/data-eclipse-event/.test(eclipseHtml)) {
   fails.push('eclipse missing live/greatest controls');
@@ -24,7 +24,7 @@ for (const probe of ['data-eclipse-play', 'data-eclipse-lens="system"', 'data-ec
   'data-eclipse-lens="earth"', 'data-eclipse-share']) {
   if (!eclipseHtml.includes(probe)) fails.push('eclipse missing enhanced 3D control: ' + probe);
 }
-if (!/ap-eclipse-contact-v835\.js\?v=842/.test(eclipseHtml)) fails.push('eclipse missing contact controller');
+if (!/ap-eclipse-contact-v835\.js\?v=846/.test(eclipseHtml)) fails.push('eclipse missing contact controller');
 if (!/id="eclipseContactForm"/.test(eclipseHtml)) fails.push('eclipse missing chart-contact form');
 if (!/id="eclipseEdition"[^>]+hidden/.test(eclipseHtml)) fails.push('eclipse missing gated paid-edition host');
 if (!eclipseHtml.includes('eclipse-geometry.svg')) fails.push('eclipse missing authored geometry plate');
@@ -52,7 +52,7 @@ for (const file of [
 if (!/Date\.UTC\(2026, 7, 12, 17, 45, 51\)/.test(geometryJs)) {
   fails.push('eclipse geometry maximum is not 17:45:51 UTC');
 }
-if (!/const V\s*=\s*["']ap-v845["']/.test(sw)) fails.push('SW tip is not exactly v845');
+if (!/const V\s*=\s*["']ap-v846["']/.test(sw)) fails.push('SW tip is not exactly v846');
 
 // Quiet chart: bodies clustered away from aspect angles to 140.133°.
 const quiet = buildEclipseReading5(140.133, {

@@ -362,7 +362,7 @@ export function mountEclipseEdition(host, context) {
         <button type="submit">Unlock on this device</button>
       </form>
       <p class="ap-eclipse-edition__status" data-edition-status role="status">Checkout and licence verification are ready.</p>` : `
-      <p class="ap-eclipse-edition__status" role="status"><strong>Opening soon.</strong> Checkout remains closed until its public link, product ID and real purchase flow are verified. Your free contact result above remains available.</p>`}`;
+      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is live.</strong> Buy securely through Gumroad, then paste the licence key here to unlock the reading and artwork. Your free contact result above remains available.</p>`}`;
 
   if (!ready) return { state: 'dormant', model };
   const status = host.querySelector('[data-edition-status]');

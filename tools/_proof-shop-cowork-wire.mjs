@@ -1,5 +1,5 @@
 /**
- * Proof: v841 authored shop, Eclipse Field Guide, Your Eclipse Edition, availability list and truthful no-checkout state.
+ * Proof: v846 authored shop, Eclipse Field Guide, Your Eclipse Edition, availability list and live checkout state.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { buildEclipseReading5 } from '../website/js/eclipse-reading.js';
@@ -20,7 +20,7 @@ for (const art of [
 ]) {
   if (!shop.includes(art) || !existsSync('website/' + art)) fails.push('shop missing authored art ' + art);
 }
-if (!/checkout (?:is not connected yet|remains visibly closed|opens only after|remains dormant until)/i.test(shop)) fails.push('shop missing clear no-sale status');
+if (!/(?:checkout is live|opens its secure Gumroad checkout)/i.test(shop)) fails.push('shop missing clear live-checkout status');
 if (!/Two paths\. Free utility first\./i.test(shop)) fails.push('shop missing launch-edition proposition');
 if (!/£7/.test(shop) || !/Free/.test(shop)) {
   fails.push('shop missing GBP 7 Eclipse Edition and free Field Guide prices');
@@ -30,14 +30,15 @@ if (!/Your Eclipse Edition/.test(shop) || !/Eclipse Field Guide/.test(shop)) {
 }
 if (!/list\.astroprecise\.app\/subscribe/.test(shop)) fails.push('shop missing availability-list endpoint');
 if (!/Nothing was saved/.test(shop)) fails.push('shop missing honest subscribe failure state');
-if (/(?:gumroad|ap-checkout-honest|REPLACE_ME)/i.test(shop)) fails.push('shop leaks an unverified checkout path');
+if (/gumroad\.com\/l\/REPLACE_ME|REPLACE_ME/i.test(shop)) fails.push('shop leaks an unverified checkout path');
+if (!/https:\/\/davxplorer3\.gumroad\.com\/l\/your-eclipse-reading/.test(shop)) fails.push('shop missing live Gumroad product path');
 if (!/ap-mystic-cards-v835\.js/.test(shop)) fails.push('shop missing art-only spectral interaction');
 if (!/\.ap-product__stamp/.test(shopCss)) fails.push('shop stamp selector is not class-scoped');
 if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains generic product-image span override');
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
 if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v845["']/.test(sw)) fails.push('SW tip is not exactly v845');
+if (!/const V\s*=\s*["']ap-v846["']/.test(sw)) fails.push('SW tip is not exactly v846');
 
 // Verify exactly two editions referenced in the editions section
 const editionCount = (shop.match(/<article class="ap-product/g) || []).length;
@@ -47,4 +48,4 @@ if (fails.length) {
   console.error('FAIL', fails);
   process.exit(1);
 }
-console.log('PASS Eclipse Field Guide + Your Eclipse Edition shop + availability list + truthful no-checkout state');
+console.log('PASS Eclipse Field Guide + Your Eclipse Edition shop + availability list + live checkout state');

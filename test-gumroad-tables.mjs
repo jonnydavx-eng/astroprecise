@@ -41,23 +41,23 @@ assert.equal(resolveProductSlug('eclipse-edition'), 'eclipse-edition');
 assert.equal(isCheckoutReady('not-a-product'), false);
 assert.equal(BRIDGE.isReady('not-a-product'), false);
 
-// Shipping source is deliberately dormant until BOTH real values are supplied.
-assert.equal(isCheckoutReady('eclipse-edition'), false);
-assert.equal(BRIDGE.isReady('eclipse-edition'), false);
-assert.equal(BRIDGE.anyLive(), false);
-assert.throws(() => openCheckout('eclipse-edition'), /permalink and product_id/);
-let dormantFetchCalled = false;
+// Shipping source is live after both identifiers were verified against the public product page.
+assert.equal(isCheckoutReady('eclipse-edition'), true);
+assert.equal(BRIDGE.isReady('eclipse-edition'), true);
+assert.equal(BRIDGE.anyLive(), true);
+let liveFetchCalled = false;
 const previousFetch = globalThis.fetch;
-globalThis.fetch = async () => { dormantFetchCalled = true; throw new Error('must stay dormant'); };
-assert.deepEqual(await verifyLicense('eclipse-edition', '12345678'), { valid: false });
-assert.equal(dormantFetchCalled, false, 'dormant module must not call Gumroad');
+globalThis.fetch = async () => { liveFetchCalled = true; return { ok: true, json: async () => ({ success: true, purchase: {} }) }; };
+const liveResult = await verifyLicense('eclipse-edition', '12345678');
+assert.equal(liveResult.valid, true);
+assert.equal(liveFetchCalled, true, 'configured module must call Gumroad for licence verification');
 globalThis.fetch = previousFetch;
 
 // Exercise a configured copy of the classic bridge so identifier routing is
 // proven, not just searched for as a string.
 const configuredSource = bridgeSource
-  .replace("permalink: 'REPLACE_ME'", "permalink: 'public-eclipse-slug'")
-  .replace("productId: 'REPLACE_ME'", "productId: 'product_api_123'");
+  .replace("permalink: 'your-eclipse-reading'", "permalink: 'public-eclipse-slug'")
+  .replace("productId: '30971'", "productId: 'product_api_123'");
 const requests = [];
 const configuredWindow = {
   location: { href: '' },
@@ -98,4 +98,4 @@ for (const source of [moduleSource, bridgeSource]) {
     'licence keys must never be accepted from the URL');
 }
 
-console.log('PASS dormant two-identifier Gumroad gate + checkout/licence routing + bad-state rejection');
+console.log('PASS live two-identifier Gumroad gate + checkout/licence routing + bad-state rejection');
