@@ -85,11 +85,22 @@ export async function verifyLicense(slug, licenseKey, { incrementUses = false } 
     increment_uses_count: String(incrementUses),
   });
   const res = await fetch('https://api.gumroad.com/v2/licenses/verify', { method: 'POST', body });
-  if (!res.ok) return { valid: false };
-  const data = await res.json();
+  let data = null;
+  try { data = await res.json(); } catch (_) { data = null; }
+  if (!res.ok) {
+    return { valid: false, reason: data && data.message ? data.message : 'License verification failed.' };
+  }
+  if (!data) return { valid: false, reason: 'License verification failed.' };
   // Reject refunded, chargebacked or disputed purchases
   const purchase = data.purchase || {};
-  const bad = purchase.refunded || purchase.chargebacked || purchase.disputed;
-  const valid = Boolean(data.success) && !bad;
-  return { valid, purchase, uses: data.uses };
+  if (purchase.refunded) return { valid: false, reason: 'Purchase was refunded.', purchase, uses: data.uses };
+  if (purchase.chargebacked) return { valid: false, reason: 'Purchase was chargebacked.', purchase, uses: data.uses };
+  if (purchase.disputed) return { valid: false, reason: 'Purchase was disputed.', purchase, uses: data.uses };
+  const valid = Boolean(data.success);
+  return {
+    valid,
+    reason: valid ? undefined : (data.message || 'License verification failed.'),
+    purchase,
+    uses: data.uses,
+  };
 }

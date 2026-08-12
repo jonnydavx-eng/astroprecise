@@ -60,15 +60,48 @@ for (const contract of [
   "window.open('', '_blank')",
   "print()",
   "No manual review and no birth data leaves this browser",
+  "rememberEditionContext",
+  "loadEditionContext",
+  "Checkout is closed.",
+  "View content",
 ]) {
   assert.ok(editionSource.includes(contract), `edition runtime missing contract: ${contract}`);
 }
+assert.equal(editionSource.includes('<strong>Checkout is live.</strong>'), false,
+  'dormant branch must not claim checkout is live');
 assert.equal(/searchParams|getParameterByName|[?&]license=/.test(editionSource), false,
   'edition must not unlock from a query-string licence');
 
 const contactSource = read('./website/js/ap-eclipse-contact-v835.js');
-assert.ok(contactSource.includes("import { mountEclipseEdition } from './ap-eclipse-edition-v841.js'"));
+assert.ok(contactSource.includes("loadEditionContext"));
+assert.ok(contactSource.includes("mountEclipseEdition"));
 assert.ok(contactSource.includes("['Anchor', reading.anchor]") && contactSource.includes("['Contact', reading.contact]"));
 assert.ok(contactSource.includes("mountEclipseEdition(byId('eclipseEdition')"));
+
+// Same-tab return after Gumroad: pending contact restores without re-casting.
+const store = new Map();
+globalThis.sessionStorage = {
+  getItem: (key) => (store.has(key) ? store.get(key) : null),
+  setItem: (key, value) => { store.set(key, String(value)); },
+  removeItem: (key) => { store.delete(key); },
+};
+const {
+  rememberEditionContext,
+  loadEditionContext,
+  clearEditionContext,
+} = await import('./website/js/ap-eclipse-edition-v841.js');
+assert.equal(rememberEditionContext({
+  reading: direct,
+  natal: directNatal,
+  eclipseLongitude,
+  meta: { label: 'Test contact', timeKnown: true },
+}), true);
+const pending = loadEditionContext();
+assert.ok(pending);
+assert.equal(pending.reading.gateSale, false);
+assert.equal(pending.natal.sun, eclipseLongitude);
+assert.equal(pending.eclipseLongitude, eclipseLongitude);
+clearEditionContext();
+assert.equal(loadEditionContext(), null);
 
 console.log('PASS quiet-sale gate + deterministic five-beat Eclipse Edition + private artwork contract');

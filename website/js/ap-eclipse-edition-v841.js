@@ -335,6 +335,44 @@ function renderUnlocked(host, model) {
   });
 }
 
+const EDITION_PENDING_KEY = 'ap-eclipse-edition-pending';
+
+/** Persist a computed contact so Gumroad checkout return can unlock without re-casting. */
+export function rememberEditionContext(context) {
+  if (!context || !context.reading || context.reading.gateSale || context.reading.quiet) return false;
+  try {
+    sessionStorage.setItem(EDITION_PENDING_KEY, JSON.stringify({
+      at: Date.now(),
+      reading: context.reading,
+      natal: context.natal,
+      eclipseLongitude: context.eclipseLongitude,
+      meta: context.meta || null,
+    }));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+/** Load a pending edition context saved before checkout (same tab/session only). */
+export function loadEditionContext({ maxAgeMs = 6 * 60 * 60 * 1000 } = {}) {
+  try {
+    const raw = sessionStorage.getItem(EDITION_PENDING_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !parsed.reading || !parsed.natal || parsed.eclipseLongitude == null) return null;
+    if (parsed.reading.gateSale || parsed.reading.quiet) return null;
+    if (maxAgeMs && parsed.at && (Date.now() - Number(parsed.at)) > maxAgeMs) return null;
+    return parsed;
+  } catch (_) {
+    return null;
+  }
+}
+
+export function clearEditionContext() {
+  try { sessionStorage.removeItem(EDITION_PENDING_KEY); } catch (_) {}
+}
+
 export function mountEclipseEdition(host, context) {
   if (!host) return { state: 'missing-host' };
   const { reading, natal, eclipseLongitude } = context || {};
@@ -350,6 +388,7 @@ export function mountEclipseEdition(host, context) {
   const model = buildEclipsePlateModel({ reading, natal, eclipseLongitude });
   const ready = isCheckoutReady(EDITION_PRODUCT);
   host.dataset.paidState = ready ? 'locked' : 'dormant';
+  rememberEditionContext(context);
   host.innerHTML = `
     <div class="ap-eclipse-edition__head"><span>Your Eclipse Edition</span><strong>£7 · instant</strong></div>
     <h3>Unlock all five beats and your unique eclipse artwork.</h3>
@@ -361,12 +400,15 @@ export function mountEclipseEdition(host, context) {
         <label><span>Already purchased? Paste the licence key from Gumroad View content</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
         <button type="submit">Unlock on this device</button>
       </form>
-      <p class="ap-eclipse-edition__status" data-edition-status role="status">After purchase, open <strong>View content</strong> on Gumroad, copy the licence key, then paste it here.</p>` : `
-      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is live.</strong> Buy securely through Gumroad, open <strong>View content</strong> to copy your licence key, then paste it here to unlock the reading and artwork. Your free contact result above remains available.</p>`}`;
+      <p class="ap-eclipse-edition__status" data-edition-status role="status">After purchase, open <strong>View content</strong> on Gumroad, copy the licence key, then return here and paste it. This contact is kept in this browser tab so you do not need to re-cast.</p>` : `
+      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is closed.</strong> The public link and product ID are not both configured, so nothing can take payment. Your free contact result above remains available.</p>`}`;
 
   if (!ready) return { state: 'dormant', model };
   const status = host.querySelector('[data-edition-status]');
-  host.querySelector('[data-edition-buy]').addEventListener('click', () => openCheckout(EDITION_PRODUCT));
+  host.querySelector('[data-edition-buy]').addEventListener('click', () => {
+    rememberEditionContext(context);
+    openCheckout(EDITION_PRODUCT);
+  });
   host.querySelector('[data-edition-license-form]').addEventListener('submit', async (event) => {
     event.preventDefault();
     const input = host.querySelector('[data-edition-license]');
@@ -377,10 +419,12 @@ export function mountEclipseEdition(host, context) {
       const result = await verifyLicense(EDITION_PRODUCT, input.value.trim(), { incrementUses: true });
       input.value = '';
       if (!result.valid) {
-        status.textContent = 'That licence could not be verified or is no longer eligible.';
+        status.textContent = result.reason
+          || 'That licence could not be verified or is no longer eligible.';
         button.disabled = false;
         return;
       }
+      clearEditionContext();
       renderUnlocked(host, model);
     } catch (_) {
       status.textContent = 'Licence verification is temporarily unavailable. Nothing has been charged here; try again shortly.';

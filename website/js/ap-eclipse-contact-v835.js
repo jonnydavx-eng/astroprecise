@@ -1,5 +1,5 @@
 import { buildEclipseReading5 } from './eclipse-reading.js';
-import { mountEclipseEdition } from './ap-eclipse-edition-v841.js';
+import { loadEditionContext, mountEclipseEdition } from './ap-eclipse-edition-v841.js';
 
 // NASA GSFC Besselian elements: greatest eclipse 17:45:51 UT.
 const EVENT_UTC_MS = Date.UTC(2026, 7, 12, 17, 45, 51);
@@ -196,6 +196,7 @@ function renderReading(reading, meta, eclipseLongitude) {
     reading,
     natal: meta.natal,
     eclipseLongitude,
+    meta: { label: meta.label, timeKnown: meta.timeKnown, source: meta.source || null },
   });
   result.dataset.quiet = reading.gateSale ? 'true' : 'false';
   result.hidden = false;
@@ -281,6 +282,13 @@ async function init() {
       result.hidden = false;
     }
   });
+
+  const pending = loadEditionContext();
+  if (pending && pending.reading && !pending.reading.gateSale) {
+    const meta = pending.meta || { label: 'Saved eclipse contact', timeKnown: true, source: 'pending' };
+    meta.natal = pending.natal;
+    renderReading(pending.reading, meta, pending.eclipseLongitude);
+  }
 }
 
 init().catch((error) => {

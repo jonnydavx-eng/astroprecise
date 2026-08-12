@@ -54,6 +54,13 @@ globalThis.fetch = async () => { liveFetchCalled = true; return { ok: true, json
 const liveResult = await verifyLicense('eclipse-edition', '12345678');
 assert.equal(liveResult.valid, true);
 assert.equal(liveFetchCalled, true, 'configured module must call Gumroad for licence verification');
+globalThis.fetch = async () => ({
+  ok: false,
+  json: async () => ({ success: false, message: 'That license does not exist for the provided product.' }),
+});
+const failed = await verifyLicense('eclipse-edition', 'BADKEY123456');
+assert.equal(failed.valid, false);
+assert.match(failed.reason || '', /license does not exist/i);
 globalThis.fetch = previousFetch;
 
 // Exercise a configured copy of the classic bridge so identifier routing is
