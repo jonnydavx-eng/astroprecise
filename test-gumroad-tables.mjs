@@ -71,6 +71,10 @@ const configuredSource = bridgeSource
 const requests = [];
 const configuredWindow = {
   location: { href: '' },
+  open: (url, target) => {
+    requests.push({ open: url, target });
+    return { closed: false };
+  },
   fetch: async (url, options) => {
     requests.push({ url, options });
     return { json: async () => ({ success: true, purchase: {} }) };
@@ -80,15 +84,16 @@ new Function('window', 'fetch', configuredSource)(configuredWindow, configuredWi
 const LIVE = configuredWindow.APGumroad;
 assert.equal(LIVE.isReady('eclipse-edition'), true);
 assert.equal(LIVE.openCheckout('eclipse-edition'), true);
-assert.equal(configuredWindow.location.href,
+assert.equal(requests[0].open,
   'https://gumroad.com/l/public-eclipse-slug?wanted=true',
-  'checkout must use the public permalink');
-assert.equal(configuredWindow.location.href.includes('product_api_123'), false);
+  'checkout must use the public permalink in a new tab');
+assert.equal(requests[0].target, '_blank');
+assert.equal(String(requests[0].open).includes('product_api_123'), false);
 assert.deepEqual(await LIVE.verifyLicense('licence-key-123', 'eclipse-edition'), { valid: true });
-assert.equal(requests.length, 1);
-assert.equal(requests[0].url, 'https://api.gumroad.com/v2/licenses/verify');
-assert.match(requests[0].options.body, /product_id=product_api_123/);
-assert.equal(requests[0].options.body.includes('public-eclipse-slug'), false,
+assert.equal(requests.length, 2);
+assert.equal(requests[1].url, 'https://api.gumroad.com/v2/licenses/verify');
+assert.match(requests[1].options.body, /product_id=product_api_123/);
+assert.equal(requests[1].options.body.includes('public-eclipse-slug'), false,
   'licence verification must not use the public permalink');
 
 for (const state of ['refunded', 'disputed', 'chargebacked']) {

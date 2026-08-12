@@ -8,8 +8,8 @@
  *
  * THE HONEST FLOW (birth data never touches Gumroad):
  *   1. The reading is computed ON THE DEVICE from the VSOP87 engine (as today).
- *   2. To reveal it, the buyer taps "Unlock — £7". We open the Gumroad overlay
- *      for that product. Gumroad takes the money + the email; we never see a card.
+ *   2. To reveal it, the buyer taps "Unlock — £7". We open Gumroad checkout in a
+ *      new tab. Gumroad takes the money + the email; we never see a card.
  *   3. Gumroad issues a LICENSE KEY. We verify that key against Gumroad's API and,
  *      if valid, unlock the already-computed reading in place. No account, no wait.
  *
@@ -51,18 +51,18 @@ export function isCheckoutReady(slug) {
 }
 
 /**
- * Open the Gumroad overlay checkout for a product. Requires Gumroad's overlay script
- * on the page once:  <script src="https://gumroad.com/js/gumroad.js"></script>
- * Returns immediately. The buyer manually enters the issued licence key in the
- * on-page form; licence keys are never accepted from a URL or stored in a query string.
+ * Open Gumroad checkout in a new tab so the on-page unlock form stays available.
+ * Returns immediately. The buyer manually pastes the licence key from Gumroad
+ * "View content"; keys are never accepted from a URL or stored in a query string.
  */
 export function openCheckout(slug) {
   const key = resolveProductSlug(slug);
   const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
   if (!isCheckoutReady(slug)) throw new Error(`Set the Gumroad permalink and product_id for "${slug}"`);
-  // Gumroad overlay opens when navigating to the ?wanted=true product URL.
+  // Open Gumroad in a new tab so the eclipse contact + unlock form stay on this page.
   const url = `https://gumroad.com/l/${encodeURIComponent(p.permalink)}?wanted=true`;
-  window.location.href = url; // or use an <a class="gumroad-button" href=...> for the inline overlay
+  const popup = window.open(url, '_blank', 'noopener,noreferrer');
+  if (!popup) window.location.href = url;
 }
 
 /**

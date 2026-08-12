@@ -40,7 +40,7 @@ if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains ge
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
 if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v849["']/.test(sw)) fails.push('SW tip is not exactly v849');
+if (!/const V\s*=\s*["']ap-v850["']/.test(sw)) fails.push('SW tip is not exactly v850');
 const unlock = readFileSync('website/js/gumroad-unlock.js', 'utf8');
 const bridge = readFileSync('website/js/ap-gumroad-bridge.js', 'utf8');
 if (!/productId:\s*'3ZwFjg0IW702KvJ5s97QuQ=='/.test(unlock)) fails.push('module productId is not the live Gumroad id');
@@ -53,6 +53,14 @@ if (!/View content/.test(readFileSync('website/js/ap-eclipse-edition-v841.js', '
 // Verify exactly two editions referenced in the editions section
 const editionCount = (shop.match(/<article class="ap-product/g) || []).length;
 if (editionCount !== 2) fails.push(`shop must have exactly 2 edition articles, found ${editionCount}`);
+
+
+for (const legal of ['website/terms.html', 'website/privacy.html', 'website/refunds.html', 'website/contact.html']) {
+  const html = readFileSync(legal, 'utf8');
+  if (/Paid checkout is not yet active|Checkout is not connected|nothing can currently be purchased|clearly dormant preview/i.test(html)) {
+    fails.push(legal + ' still claims checkout is dormant');
+  }
+}
 
 if (fails.length) {
   console.error('FAIL', fails);

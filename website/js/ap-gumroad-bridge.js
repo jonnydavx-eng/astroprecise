@@ -39,7 +39,8 @@
       console.warn('[APGumroad] permalink and productId are not both set for', slug, '— checkout stays dormant.');
       return false;
     }
-    w.location.href = 'https://gumroad.com/l/' + encodeURIComponent(p.permalink) + '?wanted=true';
+    w.open('https://gumroad.com/l/' + encodeURIComponent(p.permalink) + '?wanted=true', '_blank', 'noopener,noreferrer')
+      || (w.location.href = 'https://gumroad.com/l/' + encodeURIComponent(p.permalink) + '?wanted=true');
     return true;
   }
 
