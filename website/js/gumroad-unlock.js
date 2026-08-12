@@ -30,7 +30,8 @@
 export const GUMROAD_PRODUCTS = {
   'eclipse-edition': {
     permalink: 'your-eclipse-reading',
-    productId: '30971',
+    // License API product_id from the public Gumroad product page (data-page.product.id).
+    productId: '3ZwFjg0IW702KvJ5s97QuQ==',
     price: '£7',
   },
 };

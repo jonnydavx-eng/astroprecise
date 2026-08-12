@@ -358,11 +358,11 @@ export function mountEclipseEdition(host, context) {
     ${ready ? `
       <div class="ap-eclipse-edition__actions"><button type="button" data-edition-buy>Buy Your Eclipse Edition — £7</button></div>
       <form class="ap-eclipse-edition__license" data-edition-license-form>
-        <label><span>Already purchased? Enter the Gumroad licence key</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
+        <label><span>Already purchased? Paste the licence key from Gumroad View content</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
         <button type="submit">Unlock on this device</button>
       </form>
-      <p class="ap-eclipse-edition__status" data-edition-status role="status">Checkout and licence verification are ready.</p>` : `
-      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is live.</strong> Buy securely through Gumroad, then paste the licence key here to unlock the reading and artwork. Your free contact result above remains available.</p>`}`;
+      <p class="ap-eclipse-edition__status" data-edition-status role="status">After purchase, open <strong>View content</strong> on Gumroad, copy the licence key, then paste it here.</p>` : `
+      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is live.</strong> Buy securely through Gumroad, open <strong>View content</strong> to copy your licence key, then paste it here to unlock the reading and artwork. Your free contact result above remains available.</p>`}`;
 
   if (!ready) return { state: 'dormant', model };
   const status = host.querySelector('[data-edition-status]');

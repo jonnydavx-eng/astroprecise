@@ -32,13 +32,22 @@ if (!/list\.astroprecise\.app\/subscribe/.test(shop)) fails.push('shop missing a
 if (!/Nothing was saved/.test(shop)) fails.push('shop missing honest subscribe failure state');
 if (/gumroad\.com\/l\/REPLACE_ME|REPLACE_ME/i.test(shop)) fails.push('shop leaks an unverified checkout path');
 if (!/https:\/\/davxplorer3\.gumroad\.com\/l\/your-eclipse-reading/.test(shop)) fails.push('shop missing live Gumroad product path');
+if (!/View content/.test(shop)) fails.push('shop missing View content licence-key guidance');
 if (!/ap-mystic-cards-v835\.js/.test(shop)) fails.push('shop missing art-only spectral interaction');
 if (!/\.ap-product__stamp/.test(shopCss)) fails.push('shop stamp selector is not class-scoped');
 if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains generic product-image span override');
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
 if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v846["']/.test(sw)) fails.push('SW tip is not exactly v846');
+if (!/const V\s*=\s*["']ap-v847["']/.test(sw)) fails.push('SW tip is not exactly v847');
+const unlock = readFileSync('website/js/gumroad-unlock.js', 'utf8');
+const bridge = readFileSync('website/js/ap-gumroad-bridge.js', 'utf8');
+if (!/productId:\s*'3ZwFjg0IW702KvJ5s97QuQ=='/.test(unlock)) fails.push('module productId is not the live Gumroad id');
+if (!/productId:\s*'3ZwFjg0IW702KvJ5s97QuQ=='/.test(bridge)) fails.push('bridge productId is not the live Gumroad id');
+if (/productId:\s*'30971'/.test(unlock + bridge)) fails.push('stale productId 30971 still present');
+if (!/View content/.test(readFileSync('website/js/ap-eclipse-edition-v841.js', 'utf8'))) {
+  fails.push('paid edition missing View content licence-key guidance');
+}
 
 // Verify exactly two editions referenced in the editions section
 const editionCount = (shop.match(/<article class="ap-product/g) || []).length;

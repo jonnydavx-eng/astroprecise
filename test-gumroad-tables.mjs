@@ -42,6 +42,9 @@ assert.equal(isCheckoutReady('not-a-product'), false);
 assert.equal(BRIDGE.isReady('not-a-product'), false);
 
 // Shipping source is live after both identifiers were verified against the public product page.
+assert.equal(GUMROAD_PRODUCTS['eclipse-edition'].permalink, 'your-eclipse-reading');
+assert.equal(GUMROAD_PRODUCTS['eclipse-edition'].productId, '3ZwFjg0IW702KvJ5s97QuQ==',
+  'License API product_id must match the live Gumroad product page id');
 assert.equal(isCheckoutReady('eclipse-edition'), true);
 assert.equal(BRIDGE.isReady('eclipse-edition'), true);
 assert.equal(BRIDGE.anyLive(), true);
@@ -57,7 +60,7 @@ globalThis.fetch = previousFetch;
 // proven, not just searched for as a string.
 const configuredSource = bridgeSource
   .replace("permalink: 'your-eclipse-reading'", "permalink: 'public-eclipse-slug'")
-  .replace("productId: '30971'", "productId: 'product_api_123'");
+  .replace("productId: '3ZwFjg0IW702KvJ5s97QuQ=='", "productId: 'product_api_123'");
 const requests = [];
 const configuredWindow = {
   location: { href: '' },
