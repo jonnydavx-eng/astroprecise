@@ -42,6 +42,9 @@ assert.equal(isCheckoutReady('not-a-product'), false);
 assert.equal(BRIDGE.isReady('not-a-product'), false);
 
 // Shipping source is live after both identifiers were verified against the public product page.
+assert.equal(GUMROAD_PRODUCTS['eclipse-edition'].permalink, 'your-eclipse-reading');
+assert.equal(GUMROAD_PRODUCTS['eclipse-edition'].productId, '3ZwFjg0IW702KvJ5s97QuQ==',
+  'License API product_id must match the live Gumroad product page id');
 assert.equal(isCheckoutReady('eclipse-edition'), true);
 assert.equal(BRIDGE.isReady('eclipse-edition'), true);
 assert.equal(BRIDGE.anyLive(), true);
@@ -51,13 +54,20 @@ globalThis.fetch = async () => { liveFetchCalled = true; return { ok: true, json
 const liveResult = await verifyLicense('eclipse-edition', '12345678');
 assert.equal(liveResult.valid, true);
 assert.equal(liveFetchCalled, true, 'configured module must call Gumroad for licence verification');
+globalThis.fetch = async () => ({
+  ok: false,
+  json: async () => ({ success: false, message: 'That license does not exist for the provided product.' }),
+});
+const failed = await verifyLicense('eclipse-edition', 'BADKEY123456');
+assert.equal(failed.valid, false);
+assert.match(failed.reason || '', /license does not exist/i);
 globalThis.fetch = previousFetch;
 
 // Exercise a configured copy of the classic bridge so identifier routing is
 // proven, not just searched for as a string.
 const configuredSource = bridgeSource
   .replace("permalink: 'your-eclipse-reading'", "permalink: 'public-eclipse-slug'")
-  .replace("productId: '30971'", "productId: 'product_api_123'");
+  .replace("productId: '3ZwFjg0IW702KvJ5s97QuQ=='", "productId: 'product_api_123'");
 const requests = [];
 const configuredWindow = {
   location: { href: '' },

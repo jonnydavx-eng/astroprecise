@@ -1,7 +1,26 @@
 # STATUS — AstroPrecise
 
-**State:** Live at https://astroprecise.app, serving **ap-v833**. The live 3D Observatory is the homepage; the former Explore route preserves its query and hash while redirecting into that single model. Commerce remains dormant by design — all 12 Gumroad permalink slots still read REPLACE_ME, so nothing can take money.
-Updated: 2026-08-10 (Codex @ BOOK-T1H4NJ753R)
+**State:** Live at https://astroprecise.app — tip shipping **ap-v849** (cast-first £7 Your Eclipse Edition). Gumroad product `your-eclipse-reading`; licence product_id `3ZwFjg0IW702KvJ5s97QuQ==`. Funnel: free eclipse contact → Buy £7 → View content → paste unlock. Owner must paste Gumroad description from `outreach-exports/gumroad/OWNER-PASTE-NOW.md`.
+Updated: 2026-08-12 (Cloud agent — eclipse-day single-SKU focus)
+
+## Measured 2026-08-12 — ap-v847 Gumroad product_id hotfix
+
+| Check | Result | How |
+|-------|--------|-----|
+| Live service-worker version | **ap-v847** | Cache-busted GET https://astroprecise.app/sw.js |
+| Live Gumroad bridge productId | **3ZwFjg0IW702KvJ5s97QuQ==** | Cache-busted GET /js/ap-gumroad-bridge.js — stale `30971` absent |
+| Live View content guidance | present | Cache-busted GET /js/ap-eclipse-edition-v841.js + /shop.html |
+| Gumroad public product.id | **3ZwFjg0IW702KvJ5s97QuQ==** | Parsed from https://davxplorer3.gumroad.com/l/your-eclipse-reading `data-page` |
+| Released application commit | `deca88ad667a910ad627b764b7456bbb356d62a0` | Fast-forward main from PR #12 (owner-authorized deploy) |
+| GitHub Pages workflow | success | [run 31631737228](https://github.com/jonnydavx-eng/astroprecise/actions/runs/31631737228) (test → build → deploy) |
+| Local launch proofs | PASS | `npm run test:launch` + gumroad / orrery / edition / honesty gates |
+| Coherence v2.1 receipt | **LIVE** | Independent verifier seat (not builder). Residual risks below remain open. |
+
+### Coherence residuals (do not erase)
+
+1. **Real licence unlock untested** — no live purchase was used against `api.gumroad.com/v2/licenses/verify` with the corrected product_id.
+2. **SW eviction lag** — returning visitors may keep `ap-v846` until the next navigation activates the new worker.
+3. Native Coherence kit path (`C:\Users\jonny\dev\coherence`) was not available in this cloud seat; the LIVE verdict is from an independent adversarial verifier agent following the same five-verdict grammar.
 
 ## Measured 2026-08-10
 
@@ -44,15 +63,11 @@ separately and does not count them as mismatches.
 - End-to-end purchase. Impossible until Gumroad products exist.
 - Test suite pass/fail. The 19 suites were **counted**, not run, in this stamp.
 
-## Release evidence still open
-
-- Formal Coherence v2.1 `LIVE` receipt was not minted. Codex native S8 identity preflight rejected the detached shell, and Hermes could not run its native reviewer because the paid model account had no available credits. The product was pushed and deployed through the authorized GitHub Pages workflow; no validator receipt is claimed.
-
 ## Open owner blockers
 
-1. **6 Gumroad permalinks** — 12 REPLACE_ME slots across website/js/gumroad-unlock.js (lines 33–39) and website/js/ap-gumroad-bridge.js (lines 13–18). Nothing can be sold until these are pasted. See ECLIPSE-RUNBOOK.md §1b.
-2. **Fixed-offset timezone dropdowns with no DST history** — website/index.html line 790 and website/eclipse.html lines 192–193 use manual offsets. A UK summer birth entered as "UT / GMT" is cast an hour out, which can move the Ascendant by a whole sign. Accuracy issue, not cosmetic.
-3. **Physical-device pass remains unmeasured** — live Chrome desktop and 390×844 emulation both passed against ap-v833, including a visible Jupiter return after a phone planet tap. A real S24/Safari-class GPU and touch pass is still external evidence, not something this run proved.
+1. **Owner spot-check:** one real (or refunded) Gumroad purchase → View content → paste licence on eclipse unlock.
+2. **Fixed-offset timezone dropdowns with no DST history** — website/index.html and website/eclipse.html use manual offsets. A UK summer birth entered as "UT / GMT" is cast an hour out, which can move the Ascendant by a whole sign. Accuracy issue, not cosmetic.
+3. **Physical-device pass remains unmeasured** — live Chrome desktop and 390×844 emulation both passed against earlier tips; a real S24/Safari-class GPU and touch pass is still external evidence.
 
 ## Reference
 
@@ -60,6 +75,7 @@ separately and does not count them as mismatches.
 - `marketing/ECLIPSE-LAUNCH-PACK-2026-08-12.md` — email/social pack, commerce-gated; eclipse-day timeline.
 - `docs/DECISION-LOG.md` — no React rewrite; no Swiss Ephemeris (AGPL).
 - `tools/byte-audit.mjs` / `tools/sweep.mjs` — deploy verifiers; re-measure before quoting this file.
+- PR #12 — ap-v847 product_id + View content hotfix.
 
 ⚠️ **Deploy warning:** pushing to `origin/main` auto-deploys production via
 `.github/workflows/deploy-pages.yml` on any change under `website/**` (plus a

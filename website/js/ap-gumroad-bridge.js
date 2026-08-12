@@ -1,10 +1,11 @@
 /**
  * Classic-script bridge for Gumroad checkout (window.APGumroad).
- * v846 — separate public permalink and License API product_id, live
+ * v847 — separate public permalink and License API product_id, live
  * checkout, single eclipse edition.
  *
- * Checkout uses permalink; licence
- * verification uses product_id. Both values were verified against the public Gumroad product page.
+ * Checkout uses permalink; licence verification uses product_id from the
+ * public Gumroad product page (data-page.product.id). After purchase, buyers
+ * open Gumroad "View content" to copy the licence key, then paste it on-site.
  */
 (function (w) {
   'use strict';
