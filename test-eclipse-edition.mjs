@@ -5,6 +5,7 @@ import {
   ARTWORK_HEIGHT,
   ARTWORK_WIDTH,
   buildEclipsePlateModel,
+  buildEclipsePrintDocument,
 } from './website/js/ap-eclipse-edition-v841.js';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
@@ -53,6 +54,22 @@ const houseBlob = JSON.stringify(houseReading);
 assert.equal(houseBlob.includes('1th'), false, 'house ordinal must not print 1th');
 assert.ok(houseBlob.includes('1st'), 'Sun on the Ascendant sign must name the 1st house');
 assert.equal(Object.keys(templates.overrides).length >= 36, true, 'hard-aspect overrides must cover the sale grid');
+
+const printHtml = buildEclipsePrintDocument(first, {
+  plate: 'data:image/png,plate',
+  disc: 'data:image/png,disc',
+  aspect: 'data:image/png,aspect',
+  wheel: 'data:image/png,wheel',
+  houses: 'data:image/png,houses',
+  geometry: 'data:image/svg+xml,geometry',
+}, { printOnLoad: false });
+assert.ok(printHtml.includes(first.fingerprint));
+assert.ok(printHtml.includes('The contact'));
+assert.ok(printHtml.includes('Natal longitudes used for this plate'));
+assert.ok(printHtml.includes('This booklet is built from your computed chart'));
+assert.ok(printHtml.includes(first.beats[0].text.slice(0, 20)) || printHtml.includes(first.beats[0].mono.slice(0, 12)));
+assert.equal(printHtml.includes('1990-08-12'), false);
+assert.equal(printHtml.includes('print()'), false);
 assert.equal(first.fingerprint, repeat.fingerprint, 'same computed chart must produce the same artwork ID');
 assert.notEqual(first.fingerprint, changed.fingerprint, 'changed placements must produce different artwork');
 assert.match(first.fingerprint, /^AP26-[0-9A-F]{8}$/);

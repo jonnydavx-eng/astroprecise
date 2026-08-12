@@ -207,7 +207,7 @@ for (const probe of ["['eclipse.html', 'Eclipse', 'eclipse']", '(min-width: 981p
 }
 if (!livingCss.includes('repeat(5, minmax(0, 1fr))')) fail('mobile navigation is not five equal tabs');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v850"')) fail('service worker release identity is not ap-v850');
+if (!sw.includes('const V = "ap-v851"')) fail('service worker release identity is not ap-v851');
 ok('shared shell exposes five routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
@@ -232,8 +232,8 @@ const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'u
 const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=850',
-    'css/ap-eclipse-live-v834.css?v=850',
+  'js/ap-eclipse-live-v834.js?v=851',
+    'css/ap-eclipse-live-v834.css?v=851',
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
