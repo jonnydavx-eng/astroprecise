@@ -30,7 +30,7 @@
 export const GUMROAD_PRODUCTS = {
   'eclipse-edition': {
     permalink: 'your-eclipse-reading',
-    productId: '30971',
+    productId: '3ZwFjg0IW702KvJ5s97QuQ==',
     price: '£7',
   },
 };

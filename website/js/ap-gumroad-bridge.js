@@ -10,7 +10,7 @@
   'use strict';
 
   var PRODUCTS = {
-    'eclipse-edition': { permalink: 'your-eclipse-reading', productId: '30971', price: '£7' },
+    'eclipse-edition': { permalink: 'your-eclipse-reading', productId: '3ZwFjg0IW702KvJ5s97QuQ==', price: '£7' },
   };
 
   function resolveSlug(slug) {

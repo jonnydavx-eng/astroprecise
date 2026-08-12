@@ -359,7 +359,8 @@ export function mountEclipseEdition(host, context) {
       <div class="ap-eclipse-edition__actions"><button type="button" data-edition-buy>Buy Your Eclipse Edition — £7</button></div>
       <form class="ap-eclipse-edition__license" data-edition-license-form>
         <label><span>Already purchased? Enter the Gumroad licence key</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
-        <button type="submit">Unlock on this device</button>
+        <p>After payment, Gumroad shows your licence key. Copy it, return here, paste it above, then choose <strong>View content</strong>.</p>
+        <button type="submit">View content</button>
       </form>
       <p class="ap-eclipse-edition__status" data-edition-status role="status">Checkout and licence verification are ready.</p>` : `
       <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is live.</strong> Buy securely through Gumroad, then paste the licence key here to unlock the reading and artwork. Your free contact result above remains available.</p>`}`;
