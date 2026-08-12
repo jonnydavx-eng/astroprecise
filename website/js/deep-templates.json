@@ -64,7 +64,9 @@
   },
   "ch7": {
    "title": "A letter to keep",
-   "body": "If you reread nothing else, reread this. The closest conversation in your chart — {tightPair} — is not a flaw to fix; it is the friction that makes you specific. Your {domElement} nature will keep doing what it does: {domElementLine} Let it. Nothing in your sky needs repairing. It needs living — openly, and in your own order. The sky above tonight is already different from the one on page one; you are allowed to be, too."
+   "body": "If you reread nothing else, reread this. Your Sun is the running engine — {sunTheme}. The closest conversation in your chart — {tightPair} — is not a flaw to fix; it is the friction that makes you specific. Your {domElement} nature keeps doing what it does: {domElementLine} Let it. {ascNote} Nothing in your sky needs repairing. It needs living — openly, and in your own order. The sky above tonight is already different from the one on page one; you are allowed to be, too.",
+   "ascNote": "Your rising sign is the door you meet the world through — {theme}.",
+   "noAscNote": "Your rising sign needs a birth time we do not have, so this letter stays with what can be fixed without one."
   }
  },
  "aspectVerbs": {

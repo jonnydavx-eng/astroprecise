@@ -170,7 +170,7 @@ function renderReading(reading, meta) {
     + '</article>'
   )).join('');
   byId('natalLegal').textContent = reading.legal || '';
-  byId('natalMeta').textContent = `${meta.label}. ${reading.wordCount} words. ${meta.timeKnown ? 'Birth time used.' : 'Birth time unknown — Moon and angles withheld.'} ${reading.houseNote || ''}`;
+  byId('natalMeta').textContent = `${meta.label}. ${reading.wordCount} words. ${meta.timeKnown ? 'Birth time used.' : 'Birth time unknown — Moon approximate (±7°); angles and houses withheld.'} ${reading.houseNote || ''}`;
   byId('natalResult').hidden = false;
   byId('natalPrint').hidden = false;
   try { byId('natalResult').focus({ preventScroll: true }); } catch (_) { byId('natalResult').focus(); }
@@ -180,11 +180,11 @@ async function init() {
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=853').then((response) => {
+    fetch('js/reading-templates.json?v=855').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=853').then((response) => {
+    fetch('js/deep-templates.json?v=855').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),

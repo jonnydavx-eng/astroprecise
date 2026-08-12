@@ -55,7 +55,7 @@ for (const file of [
 if (!/Date\.UTC\(2026, 7, 12, 17, 45, 51\)/.test(geometryJs)) {
   fails.push('eclipse geometry maximum is not 17:45:51 UTC');
 }
-if (!/const V\s*=\s*["']ap-v854["']/.test(sw)) fails.push('SW tip is not exactly v852');
+if (!/const V\s*=\s*["']ap-v855["']/.test(sw)) fails.push('SW tip is not exactly v855');
 if (!/View content/.test(editionJs)) fails.push('paid edition missing View content licence-key guidance');
 if (/<strong>Checkout is live\.<\/strong>/.test(editionJs)) fails.push('dormant edition copy wrongly claims checkout is live');
 if (!/rememberEditionContext|loadEditionContext/.test(editionJs)) fails.push('paid edition missing Gumroad-return context restore');

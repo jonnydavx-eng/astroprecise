@@ -207,7 +207,7 @@ for (const probe of ["['eclipse.html', 'Eclipse', 'eclipse']", '(min-width: 981p
 }
 if (!livingCss.includes('repeat(5, minmax(0, 1fr))')) fail('mobile navigation is not five equal tabs');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v854"')) fail('service worker release identity is not ap-v854');
+if (!sw.includes('const V = "ap-v855"')) fail('service worker release identity is not ap-v855');
 ok('shared shell exposes five routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 

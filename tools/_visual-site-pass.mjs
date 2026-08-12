@@ -33,6 +33,8 @@ const pages = [
   'sky-events.html?nosw=1',
   'deep-reading.html?nosw=1',
   'transits.html?nosw=1',
+  'moment.html?nosw=1',
+  'compatibility.html?nosw=1',
 ];
 
 const views = [

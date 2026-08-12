@@ -136,4 +136,16 @@ assert.equal(pending.eclipseLongitude, eclipseLongitude);
 clearEditionContext();
 assert.equal(loadEditionContext(), null);
 
+const ephemerisSrc = read('./website/js/ephemeris.js');
+const win = {};
+new Function('window', 'console', ephemerisSrc)(win, console);
+const liveLon = win.AstroEphemeris.sunPosition(
+  win.AstroEphemeris.julianDay(2026, 8, 12, 17, 45, 51),
+).lon;
+assert.ok(Math.abs(liveLon - 140.039) < 0.01, 'live eclipse Sun must be ~20°02′ Leo, not the old 20°08′ hardcode');
+
+const natalPage = read('./website/js/ap-natal-reading.js');
+assert.equal(natalPage.includes('Moon and angles withheld'), false);
+assert.ok(natalPage.includes('Moon approximate'));
+
 console.log('PASS quiet-sale gate + deterministic five-beat Eclipse Edition + private artwork contract');

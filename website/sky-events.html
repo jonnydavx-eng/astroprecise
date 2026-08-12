@@ -13,7 +13,7 @@
      were already in this repo and already precached by the service worker —
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css?v=853">
+<link rel="stylesheet" href="./css/fonts.css?v=855">
 <style>
 :root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.24);--acc:#d8b46a;--good:rgba(168,214,176,.85)}
 *{box-sizing:border-box}
@@ -34,9 +34,9 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script src="./js/ambience.js"></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=853" />
-  <script src="js/ap-nav-model.js?v=853" defer></script>
-  <script src="js/void-orrery-adapter.js?v=853"></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=855" />
+  <script src="js/ap-nav-model.js?v=855" defer></script>
+  <script src="js/void-orrery-adapter.js?v=855"></script>
 </head>
 <body class="page-sky-events ap-launch-article">
 <space-ambience density="200"></space-ambience>
@@ -90,7 +90,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
 </div>
 
 <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-<script src="js/ap-footer-inject.js?v=853" defer></script>
+<script src="js/ap-footer-inject.js?v=855" defer></script>
 
 <script>
 (function () {
@@ -127,6 +127,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     };
     var daysAway = function (n) { return n === 1 ? '1 DAY AWAY' : n + ' DAYS AWAY'; };
     var inDays = function (n) { return n === 1 ? 'IN 1 DAY' : 'IN ' + n + ' DAYS'; };
+    var daysWord = function (n) { return n === 1 ? '1 day' : n + ' days'; };
     var KEYS = ['mercury', 'venus', 'mars', 'jupiter', 'saturn'];
     var daily = [];
     for (var t = 0; t <= 400; t++) daily.push(E.positions(new Date(now.getTime() + t * DAY)).rows.filter(function (r) { return KEYS.indexOf(r.key) >= 0; }));
@@ -165,8 +166,8 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
       ev('MERCURY STATION · ' + inDays(flipT), state0 ? 'Mercury stations direct in ' + flipRow.sign.name : 'Mercury stations retrograde in ' + flipRow.sign.name,
         fmt(sd).toUpperCase() + ' · ' + flipRow.sign.deg + '° ' + flipRow.sign.name.toUpperCase(),
         state0
-          ? 'Mercury is retrograde right now and appears to stop and resume forward motion in ' + flipT + ' days. The backward drift is perspective — Earth overtaking a faster inner orbit — and it ends on a computable date.'
-          : 'Mercury runs direct today and appears to stop and reverse in ' + flipT + ' days, at ' + flipRow.sign.deg + '° ' + flipRow.sign.name + '. About three weeks of apparent backward motion follow — the classic re-read-before-you-send season.',
+          ? 'Mercury is retrograde right now and appears to stop and resume forward motion in ' + daysWord(flipT) + '. The backward drift is perspective — Earth overtaking a faster inner orbit — and it ends on a computable date.'
+          : 'Mercury runs direct today and appears to stop and reverse in ' + daysWord(flipT) + ', at ' + flipRow.sign.deg + '° ' + flipRow.sign.name + '. About three weeks of apparent backward motion follow — the classic re-read-before-you-send season.',
         'Retrograde is not a curse; it is geometry with a reputation.');
     }
     var moonIll = function (d) { return Math.round(E.moonPhase(E.jd(d)).illum * 100); };
@@ -195,9 +196,15 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
       'Earth passes directly between Saturn and the Sun — the planet rises at sunset, up all night, as bright as it gets this year. Any small telescope shows the rings.', 'The timekeeper, at its nearest.');
     var perDark = 100 - moonIll(new Date(Date.UTC(2026, 7, 12, 23)));
     var gemDark = 100 - moonIll(new Date(Date.UTC(2026, 11, 13, 23)));
+    var perNow = now.getTime();
+    var perLine = (perNow >= Date.UTC(2026, 7, 12) && perNow < Date.UTC(2026, 7, 14))
+      ? 'The Perseids peak tonight under the new-moon sky left by the 12 August eclipse — ' + perDark + '% dark. Typical published rates are near 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.'
+      : (perNow < Date.UTC(2026, 7, 12))
+        ? 'The Perseids peak 12–13 August under the new-moon sky of the eclipse — ' + perDark + '% dark. Typical published rates are near 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.'
+        : 'The Perseids peaked 12–13 August under the new-moon sky left by the eclipse — ' + perDark + '% dark. Typical published rates were near 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.';
     ev('METEORS · PERSEIDS + GEMINIDS', "The year's two great showers",
       'PERSEIDS 12–13 AUG · SKY ' + perDark + '% DARK — GEMINIDS 13–14 DEC · SKY ' + gemDark + '% DARK',
-      'The Perseids peak tonight under the new-moon sky left by the 12 August eclipse — ' + perDark + '% dark, up to 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.',
+      perLine,
       'Shooting stars are dust from a comet’s road, burning ninety kilometres up.');
     document.getElementById('events').innerHTML = out.join('');
   }

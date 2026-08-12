@@ -41,6 +41,7 @@ const { port } = server.address();
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const page = await browser.newPage({ viewport: { width: 794, height: 1123 } });
 await page.goto(`http://127.0.0.1:${port}/eclipse.html?nosw=1`, { waitUntil: 'domcontentloaded' });
+await page.waitForFunction(() => window.AstroEphemeris && window.AstroEphemeris.sunPosition);
 const html = await page.evaluate(async () => {
   const templates = await fetch('js/reading-templates.json').then((r) => r.json());
   const geometryText = await fetch('img/eclipse-geometry.svg').then((r) => r.text());
@@ -51,7 +52,8 @@ const html = await page.evaluate(async () => {
     buildEclipsePrintDocument,
     cleanGeometrySvg,
   } = await import('./js/ap-eclipse-edition-v841.js');
-  const eclipseLongitude = 140.133;
+  const E = window.AstroEphemeris;
+  const eclipseLongitude = E.sunPosition(E.julianDay(2026, 8, 12, 17, 45, 51)).lon;
   const natal = {
     sun: eclipseLongitude, moon: 18, mercury: 132, venus: 95, mars: 48,
     jupiter: 210, saturn: 320, uranus: 28, neptune: 355, pluto: 250,

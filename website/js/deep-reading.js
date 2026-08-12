@@ -241,12 +241,19 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
 
   // CH7 — a letter to keep (serif only; personalised from computed facts)
   const tight = aspects[0];
+  const sunTheme = `${S[signIndex(natal.sun)]}: ${deep.signThemes[S[signIndex(natal.sun)]]}`;
+  const ascNote = hasAsc
+    ? (deep.chapters.ch7.ascNote || deep.chapters.ch2.asc)
+      .replace('{theme}', `${S[signIndex(natal.asc)]}: ${deep.signThemes[S[signIndex(natal.asc)]]}`)
+    : (deep.chapters.ch7.noAscNote || deep.chapters.ch2.noAsc);
   chapters.push({
     n: 7, title: deep.chapters.ch7.title, mono: [],
     serif: [deep.chapters.ch7.body
+      .replace('{sunTheme}', sunTheme)
       .replace('{tightPair}', tight ? `${label(tight.a)} ${tight.aspect} ${label(tight.b)} (${fmtOrb(tight.orbDeg)})` : 'the quiet evenness of your placements')
       .replace('{domElement}', bal.domEl)
-      .replace('{domElementLine}', deep.elements[bal.domEl])],
+      .replace('{domElementLine}', deep.elements[bal.domEl])
+      .replace('{ascNote}', ascNote)],
   });
 
   const wordCount = chapters.reduce((s, c) =>

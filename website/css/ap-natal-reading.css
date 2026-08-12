@@ -22,6 +22,13 @@
 .ap-natal-also a { color: var(--ap-brass-bright, #cdae6a); }
 @media (max-width: 700px) {
   .ap-natal-form__fields { grid-template-columns: 1fr; }
+  .ap-natal-form { padding-bottom: 12px; }
+  .ap-natal-form button {
+    position: sticky;
+    bottom: calc(12px + var(--bottom-nav-h, 72px));
+    z-index: 3;
+    box-shadow: 0 0 0 8px rgba(12, 16, 22, .92);
+  }
 }
 @media print {
   .site-header, .ap-site-footer, .bottom-nav, .ap-natal-form, .ap-natal-print, .ap-natal-also { display: none !important; }
