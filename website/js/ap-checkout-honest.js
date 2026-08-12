@@ -1,6 +1,7 @@
 /**
  * Honest checkout helpers — never navigate to gumroad.com/l/REPLACE_ME
  * ---------------------------------------------------------------------------
+ * v841 — Uses product_id from APGumroad bridge. Single eclipse edition.
  * Upgrades dead product links to Notify-me / email capture / shop anchors.
  * Works with APGumroad bridge when present; falls back safely.
  */
@@ -70,12 +71,11 @@
   function hardenAllDeadGumroad() {
     document.querySelectorAll('a[href*="gumroad.com/l/"]').forEach(function (a) {
       if (!isDeadPermalink(a.getAttribute('href'))) return;
-      var slug = 'featured';
-      var h = a.getAttribute('href') || '';
-      if (/ECLIPSE/i.test(h) || /eclipse/i.test(a.textContent || '')) slug = 'eclipse-reading';
-      else if (/DEEP|full-reading/i.test(h) || /£12|DEEP/i.test(a.textContent || '')) slug = 'deep-reading';
-      else if (/PLATE/i.test(h) || /£14|PLATE/i.test(a.textContent || '')) slug = 'plate';
-      hardenButton(a, { slug: slug, shopHash: 'shop.html#' + slug });
+      var slug = 'eclipse-edition';
+      var h = (a.getAttribute('href') || '').toUpperCase();
+      var t = (a.textContent || '').toUpperCase();
+      if (/ECLIPSE/i.test(h) || /ECLIPSE/i.test(t)) slug = 'eclipse-edition';
+      hardenButton(a, { slug: slug, shopHash: 'shop.html#eclipse-edition' });
     });
     // seller_id forms
     document.querySelectorAll('input[name="seller_id"][value*="REPLACE"]').forEach(function (inp) {

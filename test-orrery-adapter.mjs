@@ -101,9 +101,9 @@ if (modelOwners.length !== 1 || modelOwners[0] !== 'index.html') {
   fail('general orrery owners must be index.html only: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=838/.test(indexHtml)) fail('Home missing v838 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=838"/.test(indexHtml)) {
-  fail('Home missing exact v838 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=841/.test(indexHtml)) fail('Home missing v841 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=841"/.test(indexHtml)) {
+  fail('Home missing exact v841 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
@@ -133,9 +133,9 @@ ok('Home phone deck exposes every destination without covering the model');
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
-  'css/ap-living-sky-v834.css?v=838',
-  'js/ap-observatory-v834.js?v=838',
-  'js/ap-nav-model.js?v=838',
+  'css/ap-living-sky-v834.css?v=841',
+    'js/ap-observatory-v834.js?v=841',
+    'js/ap-nav-model.js?v=841',
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
@@ -167,7 +167,7 @@ for (const probe of ["['eclipse.html', 'Eclipse', 'eclipse']", '(min-width: 981p
 }
 if (!livingCss.includes('repeat(5, minmax(0, 1fr))')) fail('mobile navigation is not five equal tabs');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v840"')) fail('service worker release identity is not ap-v840');
+if (!sw.includes('const V = "ap-v841"')) fail('service worker release identity is not ap-v840');
 ok('shared shell exposes five routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
@@ -192,8 +192,8 @@ const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'u
 const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=838',
-  'css/ap-eclipse-live-v834.css?v=838',
+  'js/ap-eclipse-live-v834.js?v=841',
+    'css/ap-eclipse-live-v834.css?v=841',
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
