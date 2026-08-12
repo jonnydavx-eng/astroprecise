@@ -17,11 +17,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='849';</script>
-  <script src="js/ap-nav-model.js?v=849" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=849">
-    <link rel="stylesheet" href="css/ap-shop-v835.css?v=849">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=849">
+  <script>window.AP_ASSET_V='850';</script>
+  <script src="js/ap-nav-model.js?v=850" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=850">
+    <link rel="stylesheet" href="css/ap-shop-v835.css?v=850">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=850">
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -56,8 +56,8 @@
           <p class="ap-shop-kicker">Live tonight · one paid edition</p>
           <h1>Your Eclipse Edition.<br><em>£7 · instant · on your device.</em></h1>
           <p class="ap-shop-lede">Cast your free eclipse contact first. If tonight’s eclipse touches your chart, keep the five-beat reading and unique 2400 × 3000 artwork — computed here, unlocked with a Gumroad licence key, never uploaded.</p>
-          <div class="ap-shop-actions"><a class="ap-action ap-action--primary" href="eclipse.html#contact">Cast free contact first</a><a class="ap-action" href="https://davxplorer3.gumroad.com/l/your-eclipse-reading" rel="noopener">Buy the £7 edition</a></div>
-          <p class="ap-shop-status"><span>Live · £7</span> Free Field Guide below. Paid unlock only after a real chart contact — quiet charts stay free.</p>
+          <div class="ap-shop-actions"><a class="ap-action ap-action--primary" href="eclipse.html#contact">Cast free contact first</a><a class="ap-action" href="downloads/astroprecise-eclipse-field-guide-2026.pdf" download>Download Field Guide</a><a class="ap-action" href="eclipse.html#contact">Then unlock £7</a></div>
+          <p class="ap-shop-status"><span>Live · £7</span> Free Field Guide one click away. Paid unlock only after a real chart contact — quiet charts stay free.</p>
         </div>
         <figure class="ap-shop-hero__art">
           <img src="img/editorial/eclipse-edition-art-v841.png" width="1122" height="1402" alt="A black glass and antique brass eclipse plate with engraved orbital arcs">
@@ -88,7 +88,7 @@
         <div><p class="ap-shop-kicker">What you are paying for</p><h2 id="method-title">Calculation stays free.<br><em>Craft is the product.</em></h2></div>
         <ol>
           <li><span>01</span><div><strong>Cast free contact</strong><p>On the eclipse page, compute where tonight lands in your chart. Quiet charts are told so before any payment.</p></div></li>
-          <li><span>02</span><div><strong>Buy only if it touches</strong><p>Pay £7 on Gumroad. Open <strong>View content</strong>, copy the licence key, return to the same AstroPrecise tab.</p></div></li>
+          <li><span>02</span><div><strong>Buy only if it touches</strong><p>Pay £7 on Gumroad (opens in a new tab). Open <strong>View content</strong>, copy the licence key, then return to <a href="eclipse.html#contact">eclipse.html#contact</a>.</p></div></li>
           <li><span>03</span><div><strong>Unlock on this device</strong><p>Paste the key to reveal the five-beat reading and unique artwork. Download PNG or print / save as PDF. Birth data never leaves the browser.</p></div></li>
         </ol>
       </div>
@@ -96,10 +96,10 @@
 
     <section class="ap-shop-notify" id="availability" aria-labelledby="notify-title">
       <div class="ap-shop-shell ap-shop-notify__inner">
-        <div><p class="ap-shop-kicker">Launch updates</p><h2 id="notify-title">Get the eclipse launch note.</h2><p>Optional email updates for the eclipse. No chart data, no forced account and no false countdown.</p></div>
+        <div><p class="ap-shop-kicker">Eclipse notes</p><h2 id="notify-title">Optional notes after tonight.</h2><p>Useful follow-ups for the eclipse window — not a fake countdown. No chart data and no forced account.</p></div>
         <form id="shopNotify" novalidate>
           <label for="shopNotifyEmail">Email address</label>
-          <div><input id="shopNotifyEmail" type="email" required autocomplete="email" placeholder="you@example.com"><button id="shopNotifyBtn" type="submit">Get launch updates</button></div>
+          <div><input id="shopNotifyEmail" type="email" required autocomplete="email" placeholder="you@example.com"><button id="shopNotifyBtn" type="submit">Get eclipse notes</button></div>
           <p id="shopNotifyMsg" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -107,9 +107,9 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=849" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=849" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-mystic-cards-v835.js?v=849" defer></script>
+  <script src="js/ap-footer-inject.js?v=850" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=850" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-mystic-cards-v835.js?v=850" defer></script>
   <script>
     (function () {
       var form = document.getElementById('shopNotify');
@@ -124,8 +124,8 @@
         button.disabled = true; button.textContent = 'Sending…'; message.textContent = '';
         var body = new FormData(); body.append('email', email); body.append('tags', 'checkout-open');
         fetch('https://list.astroprecise.app/subscribe', { method: 'POST', body: body })
-          .then(function (response) { if (!response.ok) throw new Error(String(response.status)); form.innerHTML = '<p class="ap-shop-notify__success" role="status">You&rsquo;re on the launch list. We&rsquo;ll send only useful eclipse updates.</p>'; })
-          .catch(function () { button.disabled = false; button.textContent = 'Get launch updates'; message.textContent = 'That did not send. Nothing was saved—please try again.'; message.dataset.state = 'error'; });
+          .then(function (response) { if (!response.ok) throw new Error(String(response.status)); form.innerHTML = '<p class="ap-shop-notify__success" role="status">You&rsquo;re on the eclipse notes list. We&rsquo;ll send only useful follow-ups.</p>'; })
+          .catch(function () { button.disabled = false; button.textContent = 'Get eclipse notes'; message.textContent = 'That did not send. Nothing was saved—please try again.'; message.dataset.state = 'error'; });
       });
     })();
   </script>

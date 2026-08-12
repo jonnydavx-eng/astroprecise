@@ -1,7 +1,7 @@
 # STATUS — AstroPrecise
 
-**State:** Live at https://astroprecise.app — tip shipping **ap-v849** (cast-first £7 Your Eclipse Edition). Gumroad product `your-eclipse-reading`; licence product_id `3ZwFjg0IW702KvJ5s97QuQ==`. Funnel: free eclipse contact → Buy £7 → View content → paste unlock. Owner must paste Gumroad description from `outreach-exports/gumroad/OWNER-PASTE-NOW.md`.
-Updated: 2026-08-12 (Cloud agent — eclipse-day single-SKU focus)
+**State:** Tip shipping **ap-v850** (legal/contact honesty for live £7 Gumroad; checkout opens in a new tab so unlock UI stays; return path `eclipse.html#contact`). Live may still show ap-v849 until this tip merges and Pages deploys. SKU unchanged: Your Eclipse Edition £7 / productId `3ZwFjg0IW702KvJ5s97QuQ==`. Quiet charts refuse paid unlock. Owner: paste Gumroad receipt + remove empty Field Guide claim (`OWNER-PASTE-NOW.md`).
+Updated: 2026-08-12 (Cloud agent — live-checkout legal honesty)
 
 ## Measured 2026-08-12 — ap-v847 Gumroad product_id hotfix
 
