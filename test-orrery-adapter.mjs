@@ -158,6 +158,7 @@ for (const probe of [
   'Skip intro',
   'btn.dataset.prevLabel = "Replay cosmic flight"',
   'O.isCosmicFlightActive && O.isCosmicFlightActive()',
+  'el.getClientRects().length > 0',
 ]) {
   if (!cosmicJs.includes(probe)) fail('same-model cosmic flight contract missing: ' + probe);
 }

@@ -94,7 +94,7 @@
       var nodes = Array.prototype.slice.call(root.querySelectorAll(
         'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       )).filter(function (el) {
-        return !el.hidden && el.getAttribute("aria-hidden") !== "true";
+        return !el.hidden && el.getAttribute("aria-hidden") !== "true" && el.getClientRects().length > 0;
       });
       if (!nodes.length) return;
       var first = nodes[0];
