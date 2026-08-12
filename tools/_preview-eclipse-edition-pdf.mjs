@@ -14,6 +14,7 @@ const types = {
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
+  '.woff2': 'font/woff2',
   '.svg': 'image/svg+xml',
 };
 
@@ -48,6 +49,7 @@ const html = await page.evaluate(async () => {
     buildEclipsePlateModel,
     renderEclipsePrintAssets,
     buildEclipsePrintDocument,
+    cleanGeometrySvg,
   } = await import('./js/ap-eclipse-edition-v841.js');
   const eclipseLongitude = 140.133;
   const natal = {
@@ -58,8 +60,8 @@ const html = await page.evaluate(async () => {
   const reading = buildEclipseReading5(eclipseLongitude, natal, templates, { quietGateDeg: 5 });
   const model = buildEclipsePlateModel({ reading, natal, eclipseLongitude });
   const images = renderEclipsePrintAssets(model);
-  images.geometry = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(geometryText)}`;
-  return buildEclipsePrintDocument(model, images, { printOnLoad: false, demo: true });
+  images.geometry = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(cleanGeometrySvg(geometryText))}`;
+  return buildEclipsePrintDocument(model, images, { printOnLoad: false, demo: true, fontBase: location.origin + '/' });
 });
 const printPage = await browser.newPage({ viewport: { width: 794, height: 1123 } });
 await printPage.setContent(html, { waitUntil: 'load' });
@@ -69,10 +71,10 @@ await printPage.evaluate(() => Promise.all(
     : new Promise((resolve) => { img.onload = img.onerror = resolve; }))),
 ));
 mkdirSync(outDir, { recursive: true });
-const count = await printPage.locator('article.page').count();
+const count = await printPage.locator('section.sheet').count();
 for (let i = 0; i < count; i += 1) {
   const path = join(outDir, `page-${String(i + 1).padStart(2, '0')}.png`);
-  await printPage.locator('article.page').nth(i).screenshot({ path });
+  await printPage.locator('section.sheet').nth(i).screenshot({ path });
   console.log('WROTE', path);
 }
 await browser.close();

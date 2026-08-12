@@ -105,6 +105,12 @@ export function buildEclipsePlateModel({ reading, natal, eclipseLongitude }) {
     contactHouseOrd: reading.contactHouseOrd || (reading.contactHouse ? houseOrdinal(reading.contactHouse) : null),
     houseMeaning: reading.houseMeaning || null,
     houseNote: reading.houseNote || null,
+    contactMonoCore: reading.contactMonoCore || (beats[1] && beats[1].mono) || '',
+    governsCore: reading.governsCore || (beats[2] && beats[2].serif) || '',
+    governsHouseLine: reading.governsHouseLine || null,
+    secondaryContacts: Array.isArray(reading.secondaryContacts) ? reading.secondaryContacts : [],
+    anchorNoPlace: reading.anchorNoPlace || (beats[0] && beats[0].mono) || '',
+    anchorSerif: reading.anchor && reading.anchor.serif ? reading.anchor.serif : '',
     placements: placements.map(([key, longitude]) => ({
       key,
       longitude,
@@ -356,15 +362,15 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   return canvas;
 }
 
-export function renderEclipseDisc(model, canvas = document.createElement('canvas')) {
+export function renderEclipseDisc(model, canvas = document.createElement('canvas'), { captions = true, portrait = false } = {}) {
   canvas.width = 2000;
-  canvas.height = 1100;
+  canvas.height = portrait ? 2828 : 1100;
   const ctx = canvas.getContext('2d');
   const random = rng(model.seed);
   const { brass, ember, ink } = model.palette;
   ctx.fillStyle = ink;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < 180; i += 1) {
+  for (let i = 0; i < (portrait ? 320 : 180); i += 1) {
     ctx.globalAlpha = 0.12 + random() * 0.5;
     ctx.fillStyle = random() > 0.85 ? brass : '#e9edf4';
     ctx.beginPath();
@@ -373,8 +379,8 @@ export function renderEclipseDisc(model, canvas = document.createElement('canvas
   }
   ctx.globalAlpha = 1;
   const cx = canvas.width * 0.5;
-  const cy = canvas.height * 0.52;
-  const radius = 310;
+  const cy = portrait ? canvas.height * 0.4 : canvas.height * 0.52;
+  const radius = portrait ? 430 : 310;
   const moonShift = ((model.seed % 7) - 3) * 8;
   const corona = ctx.createRadialGradient(cx, cy, radius * 0.7, cx, cy, radius * 2.1);
   corona.addColorStop(0, 'rgba(245,220,157,.98)');
@@ -401,27 +407,36 @@ export function renderEclipseDisc(model, canvas = document.createElement('canvas
   ctx.arc(cx + moonShift, cy, radius - 6, 0, Math.PI * 2);
   ctx.fill();
   drawHairlineCircle(ctx, cx, cy, radius + 8, brass, 0.88, 3);
-  ctx.fillStyle = brass;
-  ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText('12 AUGUST 2026  ·  GREATEST 17:45:51 UTC  ·  ' + (model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`), 64, 64);
-  ctx.fillStyle = ember;
-  ctx.font = '600 22px ui-monospace, Consolas, monospace';
-  ctx.fillText(model.fingerprint, 64, canvas.height - 48);
+  if (portrait) {
+    const fade = ctx.createLinearGradient(0, canvas.height * 0.58, 0, canvas.height);
+    fade.addColorStop(0, 'rgba(5,7,11,0)');
+    fade.addColorStop(1, 'rgba(5,7,11,.94)');
+    ctx.fillStyle = fade;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  if (captions) {
+    ctx.fillStyle = brass;
+    ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
+    ctx.fillText('12 AUGUST 2026  ·  GREATEST 17:45:51 UTC  ·  ' + (model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`), 64, 64);
+    ctx.fillStyle = ember;
+    ctx.font = '600 22px ui-monospace, Consolas, monospace';
+    ctx.fillText(model.fingerprint, 64, canvas.height - 48);
+  }
   return canvas;
 }
 
-export function renderAspectFigure(model, canvas = document.createElement('canvas')) {
-  canvas.width = 2000;
-  canvas.height = 1200;
+export function renderAspectFigure(model, canvas = document.createElement('canvas'), { captions = false } = {}) {
+  canvas.width = 1600;
+  canvas.height = 2400;
   const ctx = canvas.getContext('2d');
   const { brass, ember, ink, blue } = model.palette;
   ctx.fillStyle = ink;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  const cx = 720;
-  const cy = 600;
-  const radius = 420;
+  const cx = canvas.width * 0.5;
+  const cy = canvas.height * 0.5;
+  const radius = 680;
   drawHairlineCircle(ctx, cx, cy, radius, brass, 0.7, 3);
-  drawHairlineCircle(ctx, cx, cy, radius * 0.72, blue, 0.35, 1.5);
+  drawHairlineCircle(ctx, cx, cy, radius * 0.78, blue, 0.35, 1.5);
   ctx.save();
   ctx.translate(cx, cy);
   ctx.textAlign = 'center';
@@ -438,76 +453,90 @@ export function renderAspectFigure(model, canvas = document.createElement('canva
     const mid = lonToAngle(sign * 30 + 15);
     ctx.globalAlpha = 0.85;
     ctx.fillStyle = brass;
-    ctx.font = '600 20px ui-monospace, Consolas, monospace';
-    ctx.fillText(SIGN_MARKS[sign], Math.cos(mid) * (radius + 36), Math.sin(mid) * (radius + 36));
+    ctx.font = '600 22px ui-monospace, Consolas, monospace';
+    ctx.fillText(SIGN_MARKS[sign], Math.cos(mid) * (radius + 40), Math.sin(mid) * (radius + 40));
   }
   const eclipseAngle = lonToAngle(model.eclipseLongitude);
   const contact = (model.placements || []).find((row) => row.key === model.contactTarget);
-  ctx.strokeStyle = ember;
-  ctx.globalAlpha = 0.95;
-  ctx.lineWidth = 6;
+  const aspect = model.contactAspect || 'conjunction';
+  const orbRad = (6 * Math.PI) / 180;
+  ctx.fillStyle = 'rgba(255,100,40,.16)';
   ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(Math.cos(eclipseAngle) * radius, Math.sin(eclipseAngle) * radius);
-  ctx.stroke();
+  ctx.moveTo(Math.cos(eclipseAngle - orbRad) * radius, Math.sin(eclipseAngle - orbRad) * radius);
+  ctx.arc(0, 0, radius, eclipseAngle - orbRad, eclipseAngle + orbRad, false);
+  ctx.lineTo(Math.cos(eclipseAngle + orbRad) * (radius * 0.72), Math.sin(eclipseAngle + orbRad) * (radius * 0.72));
+  ctx.arc(0, 0, radius * 0.72, eclipseAngle + orbRad, eclipseAngle - orbRad, true);
+  ctx.closePath();
+  ctx.fill();
+  if (aspect === 'opposition' && contact) {
+    const contactAngle = lonToAngle(contact.longitude);
+    ctx.strokeStyle = ember;
+    ctx.globalAlpha = 0.95;
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(eclipseAngle) * radius, Math.sin(eclipseAngle) * radius);
+    ctx.lineTo(Math.cos(contactAngle) * radius, Math.sin(contactAngle) * radius);
+    ctx.stroke();
+  } else if (aspect === 'square' && contact) {
+    const contactAngle = lonToAngle(contact.longitude);
+    ctx.strokeStyle = ember;
+    ctx.globalAlpha = 0.95;
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(eclipseAngle) * radius, Math.sin(eclipseAngle) * radius);
+    ctx.lineTo(0, 0);
+    ctx.lineTo(Math.cos(contactAngle) * radius * 0.78, Math.sin(contactAngle) * radius * 0.78);
+    ctx.stroke();
+    ctx.strokeStyle = brass;
+    ctx.lineWidth = 2;
+    const mark = 48;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(eclipseAngle) * mark, Math.sin(eclipseAngle) * mark);
+    ctx.lineTo(Math.cos(eclipseAngle) * mark + Math.cos(contactAngle) * mark, Math.sin(eclipseAngle) * mark + Math.sin(contactAngle) * mark);
+    ctx.lineTo(Math.cos(contactAngle) * mark, Math.sin(contactAngle) * mark);
+    ctx.stroke();
+  } else {
+    ctx.strokeStyle = ember;
+    ctx.globalAlpha = 0.95;
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, eclipseAngle - 0.04, eclipseAngle + 0.04);
+    ctx.stroke();
+    if (contact) {
+      const contactAngle = lonToAngle(contact.longitude);
+      ctx.strokeStyle = brass;
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius * 0.78, contactAngle - 0.05, contactAngle + 0.05);
+      ctx.stroke();
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(contactAngle) * (radius * 0.78 - 18), Math.sin(contactAngle) * (radius * 0.78 - 18));
+      ctx.lineTo(Math.cos(eclipseAngle) * (radius - 18), Math.sin(eclipseAngle) * (radius - 18));
+      ctx.stroke();
+    }
+  }
   ctx.fillStyle = ember;
   ctx.beginPath();
   ctx.arc(Math.cos(eclipseAngle) * radius, Math.sin(eclipseAngle) * radius, 14, 0, Math.PI * 2);
   ctx.fill();
   if (contact) {
     const contactAngle = lonToAngle(contact.longitude);
-    ctx.strokeStyle = brass;
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(Math.cos(contactAngle) * radius * 0.78, Math.sin(contactAngle) * radius * 0.78);
-    ctx.stroke();
+    const cr = aspect === 'conjunction' ? radius * 0.78 : radius * 0.78;
     ctx.fillStyle = ember;
     ctx.beginPath();
-    ctx.arc(Math.cos(contactAngle) * radius * 0.78, Math.sin(contactAngle) * radius * 0.78, 28, 0, Math.PI * 2);
+    ctx.arc(Math.cos(contactAngle) * cr, Math.sin(contactAngle) * cr, 30, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#f6efe0';
-    ctx.font = '700 24px "Schibsted Grotesk", Arial, sans-serif';
-    ctx.fillText(contact.glyph || GLYPHS[contact.key] || '', Math.cos(contactAngle) * radius * 0.78, Math.sin(contactAngle) * radius * 0.78 + 1);
+    ctx.font = '700 26px "Schibsted Grotesk", Arial, sans-serif';
+    ctx.fillText(contact.glyph || GLYPHS[contact.key] || '', Math.cos(contactAngle) * cr, Math.sin(contactAngle) * cr + 1);
   }
   ctx.restore();
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = brass;
-  ctx.font = '600 22px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText('CONTACT GEOMETRY', 1280, 160);
-  ctx.fillStyle = '#f0ece3';
-  ctx.font = '600 42px "Cormorant Garamond", Georgia, serif';
-  const headline = [
-    model.contactLabel || 'Natal point',
-    model.contactAspect || 'contact',
-    model.contactOrb || '',
-  ].filter(Boolean).join(' · ');
-  const lines = [];
-  const words = headline.split(' ');
-  let line = '';
-  ctx.font = '600 36px "Cormorant Garamond", Georgia, serif';
-  words.forEach((word) => {
-    const trial = line ? `${line} ${word}` : word;
-    if (ctx.measureText(trial).width > 640) {
-      lines.push(line);
-      line = word;
-    } else line = trial;
-  });
-  if (line) lines.push(line);
-  lines.forEach((text, index) => ctx.fillText(text, 1280, 230 + index * 48));
-  ctx.fillStyle = '#d7d9df';
-  ctx.font = '400 24px "Schibsted Grotesk", Arial, sans-serif';
-  let y = 230 + lines.length * 48 + 36;
-  const notes = [
-    `Eclipse at ${model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`}`,
-    contact ? `Your ${contact.label} at ${contact.degree}` : '',
-    model.contactHouse ? `Whole-sign house ${model.contactHouse}` : '',
-    'Hard aspects only: conjunction, opposition, square.',
-  ].filter(Boolean);
-  notes.forEach((note) => {
-    ctx.fillText(note, 1280, y);
-    y += 42;
-  });
+  if (captions && model.contactOrb) {
+    ctx.fillStyle = brass;
+    ctx.font = '600 28px ui-monospace, Consolas, monospace';
+    ctx.fillText(model.contactOrb, 64, canvas.height - 48);
+  }
   return canvas;
 }
 
@@ -573,12 +602,6 @@ export function renderNatalWheelFigure(model, canvas = document.createElement('c
     ctx.fillText(placement.glyph || GLYPHS[placement.key] || '', x, y + 1);
   });
   ctx.restore();
-  ctx.fillStyle = brass;
-  ctx.font = '600 24px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText('NATAL WHEEL  ·  ECLIPSE DEGREE MARKED', 64, 56);
-  ctx.fillStyle = ember;
-  ctx.font = '600 20px ui-monospace, Consolas, monospace';
-  ctx.fillText(model.fingerprint, 64, canvas.height - 48);
   return canvas;
 }
 
@@ -589,15 +612,15 @@ export function renderHouseFigure(model, canvas = document.createElement('canvas
     canvas.height = 1;
     return canvas;
   }
-  canvas.width = 2000;
-  canvas.height = 1100;
+  canvas.width = 1600;
+  canvas.height = 2400;
   const ctx = canvas.getContext('2d');
-  const { brass, ember, ink, blue } = model.palette;
+  const { brass, ember, ink } = model.palette;
   ctx.fillStyle = ink;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  const cx = 720;
-  const cy = 560;
-  const radius = 420;
+  const cx = canvas.width * 0.5;
+  const cy = canvas.height * 0.5;
+  const radius = 680;
   ctx.save();
   ctx.translate(cx, cy);
   for (let house = 1; house <= 12; house += 1) {
@@ -607,7 +630,7 @@ export function renderHouseFigure(model, canvas = document.createElement('canvas
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, radius, start, end, true);
     ctx.closePath();
-    ctx.fillStyle = house === Number(model.contactHouse) ? 'rgba(185,93,52,.42)' : 'rgba(72,111,140,.08)';
+    ctx.fillStyle = house === Number(model.contactHouse) ? 'rgba(255,100,40,.42)' : 'rgba(72,111,140,.08)';
     ctx.fill();
     ctx.strokeStyle = brass;
     ctx.globalAlpha = 0.45;
@@ -616,32 +639,19 @@ export function renderHouseFigure(model, canvas = document.createElement('canvas
     const mid = lonToAngle(asc.longitude + (house - 1) * 30 + 15);
     ctx.globalAlpha = house === Number(model.contactHouse) ? 1 : 0.7;
     ctx.fillStyle = house === Number(model.contactHouse) ? ember : brass;
-    ctx.font = '600 22px ui-monospace, Consolas, monospace';
+    ctx.font = '600 28px ui-monospace, Consolas, monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(String(house), Math.cos(mid) * radius * 0.62, Math.sin(mid) * radius * 0.62);
   }
   ctx.restore();
-  ctx.fillStyle = brass;
-  ctx.font = '600 22px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText('WHOLE-SIGN HOUSES', 1280, 180);
-  ctx.fillStyle = '#f0ece3';
-  ctx.font = '600 36px "Cormorant Garamond", Georgia, serif';
-  ctx.fillText(`${houseOrdinal(model.contactHouse)} house`, 1280, 240);
-  ctx.fillStyle = '#d7d9df';
-  ctx.font = '400 24px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText(model.houseMeaning || 'House counted from the Ascendant.', 1280, 300);
-  ctx.fillStyle = blue;
-  ctx.font = '400 20px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText('Houses appear only because a birth time was given.', 1280, 360);
   return canvas;
 }
 
 export function renderEclipsePrintAssets(model) {
   const housesCanvas = renderHouseFigure(model);
   return {
-    plate: renderEclipseArtwork(model).toDataURL('image/png'),
-    disc: renderEclipseDisc(model).toDataURL('image/png'),
+    disc: renderEclipseDisc(model, undefined, { captions: false, portrait: true }).toDataURL('image/png'),
     aspect: renderAspectFigure(model).toDataURL('image/png'),
     wheel: renderNatalWheelFigure(model).toDataURL('image/png'),
     houses: housesCanvas.width > 1 ? housesCanvas.toDataURL('image/png') : '',
@@ -688,114 +698,143 @@ function placementTableHtml(model) {
   return `<table class="placements"><caption>Natal longitudes used for this plate</caption><thead><tr><th>Point</th><th>Ecliptic position</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-function personalLetterHtml(model) {
-  const houseBit = model.contactHouseOrd
-    ? ` Counted whole-sign from your Ascendant, that point sits in your ${model.contactHouseOrd} house${model.houseMeaning ? ` — ${model.houseMeaning}` : ''}.`
-    : ' No birth time was given, so houses are not claimed.';
-  const themeBit = model.contactTheme ? ` Tradition reads that point as ${model.contactTheme}.` : '';
-  return `<p class="letter">This booklet is built from your computed chart. On 12 August 2026 the eclipse sat at ${escapeHtml(model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`)}. It made a ${escapeHtml(model.contactAspect || 'hard aspect')} to your natal ${escapeHtml(model.contactLabel || 'point')} (${escapeHtml(model.contactOrb || 'exact')}).${escapeHtml(themeBit)}${escapeHtml(houseBit)} The five beats that follow keep fact in the narrow type and reflection in the italic. Nothing here is a prediction.</p>`;
+function printFontCss(fontBase) {
+  if (!fontBase) return '';
+  const u = (file) => new URL(file, fontBase).href;
+  return `@font-face{font-family:'Cormorant Garamond';font-weight:600;font-style:normal;src:url('${u('fonts/cormorant-garamond-normal-600.woff2')}') format('woff2')}
+@font-face{font-family:'Cormorant Garamond';font-weight:400;font-style:italic;src:url('${u('fonts/cormorant-garamond-italic-400.woff2')}') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:400;src:url('${u('fonts/ibm-plex-mono-normal-400.woff2')}') format('woff2')}
+@font-face{font-family:'Schibsted Grotesk';font-weight:600;src:url('${u('fonts/schibsted-grotesk-latin-var.woff2')}') format('woff2')}`;
 }
 
-function receiptTableHtml(model) {
-  const rows = [
-    ['Fingerprint', model.fingerprint],
-    ['Eclipse', model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`],
-    ['Contact', [model.contactLabel, model.contactAspect, model.contactOrb].filter(Boolean).join(' · ')],
-    ['House', model.contactHouseOrd ? `${model.contactHouseOrd}${model.houseMeaning ? ` — ${model.houseMeaning}` : ''}` : 'Not claimed — no birth time'],
-  ];
-  return `<table class="placements"><caption>This chart’s eclipse receipt</caption><tbody>${
-    rows.map(([k, v]) => `<tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>`).join('')
-  }</tbody></table>`;
+export function cleanGeometrySvg(svg) {
+  return String(svg || '')
+    .replace(/<text[^>]*>[^<]*CENTRES 33px[^<]*<\/text>/g, '')
+    .replace(/The Moon covers most of your Sun\./g, 'A deep partial from London — not totality.')
+    .replace(/<text[^>]*>ECLIPSE POINT[^<]*<\/text>/g, '')
+    .replace(/at 20 degrees 02 minutes Leo/g, 'from London');
 }
 
-export function buildEclipsePrintDocument(model, images = {}, { printOnLoad = true, demo = false } = {}) {
-  const plate = images.plate || '';
+function secondaryBlockHtml(model) {
+  const rows = model.secondaryContacts || [];
+  if (!rows.length) return '';
+  const items = rows.map((row) => {
+    const note = String(row.note || '').replace(/^./, (ch) => ch.toUpperCase());
+    return `<p class="fact">${escapeHtml(note)}. ${escapeHtml(row.label)} is read here as ${escapeHtml(row.theme)} (${escapeHtml(row.aspectLabel)}, ${escapeHtml(row.orbText)}).</p>`;
+  }).join('');
+  const glance = model.beats[1] && model.beats[1].secondarySerif
+    ? `<p class="reflect">${escapeHtml(model.beats[1].secondarySerif)}</p>`
+    : '';
+  return `${items}${glance}`;
+}
+
+export function buildEclipsePrintDocument(model, images = {}, { printOnLoad = true, demo = false, fontBase = '' } = {}) {
   const disc = images.disc || '';
   const aspect = images.aspect || '';
   const wheel = images.wheel || '';
   const houses = images.houses || '';
   const geometry = images.geometry || '';
-  const houseLine = model.contactHouseOrd
-    ? `The contacted point sits in your ${model.contactHouseOrd} house, counted whole-sign from the Ascendant.`
-    : 'No birth time was available for houses, so none are claimed.';
-  return `<!doctype html><html><head><meta charset="utf-8"><title>Your Eclipse Edition ${escapeHtml(model.fingerprint)}</title>
+  const fp = escapeHtml(model.fingerprint);
+  const contactLabel = escapeHtml(model.contactLabel || 'Natal point');
+  const contactAspect = escapeHtml(model.contactAspect || 'contact');
+  const contactOrb = escapeHtml(model.contactOrb || '');
+  const eclipseDegree = escapeHtml(model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`);
+  const question = escapeHtml((model.beats[3] && model.beats[3].serif) || '');
+  const closeMono = escapeHtml((model.beats[4] && model.beats[4].mono) || '');
+  const closeSerif = escapeHtml((model.beats[4] && model.beats[4].serif) || '');
+  const houseTitle = model.contactHouseOrd
+    ? `${escapeHtml(model.contactHouseOrd)} house`
+    : 'The question';
+  const houseFact = model.contactHouseOrd
+    ? `${escapeHtml(model.houseMeaning || '')}${model.houseNote ? ` · ${escapeHtml(model.houseNote)}` : ''}`
+    : 'No birth time was given, so houses are not claimed.';
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Your Eclipse Edition ${fp}</title>
 <style>
-@page{size:A4;margin:12mm}
+${printFontCss(fontBase)}
+@page{size:A4;margin:0}
 *{box-sizing:border-box}
-body{margin:0;background:#f4efe4;color:#16141a;font:16px/1.55 Georgia,serif}
-.page{page-break-after:always;padding:0 0 8mm}
-.page:last-child{page-break-after:auto}
-.kicker{font:700 10px/1.3 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7a5c28;margin:0 0 8px}
-h1{font:600 34px/1.05 Georgia,serif;margin:0 0 10px}
-h2{font:600 26px/1.1 Georgia,serif;margin:0 0 12px}
-p{margin:0 0 10px}
-.letter{font:18px/1.6 Georgia,serif;color:#1c1914}
-.demo{font:700 11px/1.4 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#7a5c28;border:1px solid #d7c7a1;padding:8px 10px;margin:0 0 14px}
-.mono,.ap-eclipse-edition__mono{font:12px/1.55 ui-monospace,Consolas,monospace;color:#333;margin:7px 0 0}
-.serif,.ap-eclipse-edition__serif{font:italic 17px/1.55 Georgia,serif;color:#1c1914;margin:8px 0 0}
-.ap-eclipse-edition__secondary{opacity:.88}
-.hero img,.figure img{display:block;width:100%;height:auto;border:1px solid #d7c7a1;background:#05070c}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-section.beat{border-top:1px solid #d7c7a1;padding:14px 0}
-section.beat small{font:700 10px/1.3 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7a5c28;display:block;margin:0 0 6px}
-table.placements{width:100%;border-collapse:collapse;font:13px/1.45 Arial,sans-serif;margin:12px 0}
-table.placements th,table.placements td{text-align:left;padding:7px 8px;border-bottom:1px solid #e2d6bc;vertical-align:top}
-table.placements caption{caption-side:top;text-align:left;font:700 10px/1.3 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#7a5c28;padding-bottom:8px}
-table.placements tr.is-contact th,table.placements tr.is-contact td{background:#f3e6cc;font-weight:700}
-.note{font:12px/1.5 Arial,sans-serif;color:#5c564c}
-footer.legal{border-top:1px solid #d7c7a1;margin-top:18px;padding-top:10px;font:11px/1.5 Arial,sans-serif;color:#666}
-@media print{button{display:none} body{background:#fff}}
-</style></head><body>
-<article class="page">
+html,body{margin:0;background:#05070b;color:#f2ecdf}
+.edition{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.sheet{box-sizing:border-box;width:210mm;height:297mm;padding:14mm 14mm 18mm;page-break-after:always;break-after:page;overflow:hidden;position:relative;background:#05070b}
+.sheet:last-child{page-break-after:auto;break-after:auto}
+.sheet--bleed{padding:0}
+.sheet--split{display:grid;grid-template-columns:1.05fr .95fr;gap:8mm;align-items:stretch}
+.sheet--split .plate img{height:210mm;width:100%;object-fit:cover}
+.plate--seal{position:absolute;right:14mm;bottom:22mm;width:52mm}
+.plate--seal img{height:52mm;width:52mm;object-fit:cover;border:.25pt solid #d8b46a}
+.plate img{display:block;width:100%;height:auto;border:.25pt solid #d8b46a;background:#05070b}
+.plate--cover img{height:297mm;width:210mm;object-fit:cover;border:0}
+.plate--wheel img{width:140mm;margin:0 auto}
+.overlay{position:absolute;left:14mm;right:14mm;bottom:16mm}
+.brand{font:600 9pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#d8b46a;margin:0 0 6mm}
+.display{font:600 32pt/1.05 "Cormorant Garamond",Georgia,serif;margin:0 0 5mm;color:#f2ecdf}
+.display--cover{font-size:36pt}
+.fact{font:9.5pt/1.45 "IBM Plex Mono",ui-monospace,monospace;color:#d8b46a;margin:0 0 4mm}
+.fact--caption{color:#b9c8dc}
+.reflect{font:italic 13.5pt/1.45 "Cormorant Garamond",Georgia,serif;color:#f2ecdf;margin:0 0 5mm}
+.reflect--lead{font-size:16.5pt}
+.running{position:absolute;left:14mm;right:14mm;bottom:8mm;font:8pt/1.3 "IBM Plex Mono",ui-monospace,monospace;color:#d8b46a;letter-spacing:.04em}
+.demo{position:absolute;top:10mm;left:14mm;right:14mm;font:700 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#d8b46a;border:.25pt solid #d8b46a;padding:2mm 3mm}
+.legal{font:8pt/1.4 "Schibsted Grotesk",Arial,sans-serif;color:#b9c8dc;border-top:.25pt solid #d8b46a;padding-top:4mm;margin-top:10mm}
+table.placements{width:100%;border-collapse:collapse;font:9pt/1.4 "IBM Plex Mono",ui-monospace,monospace;color:#f2ecdf;margin:4mm 0}
+table.placements caption{caption-side:top;text-align:left;font:600 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#d8b46a;padding-bottom:3mm}
+table.placements th,table.placements td{text-align:left;padding:1.6mm 2mm;border-bottom:.25pt solid rgba(216,180,106,.35);vertical-align:top}
+tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #ff6428;font-weight:700}
+@media print{button{display:none}}
+</style></head><body class="edition">
+<section class="sheet sheet--bleed" data-page="1">
   ${demo ? '<p class="demo">Demo natal — Sun placed on the eclipse degree. Not a personal chart.</p>' : ''}
-  <p class="kicker">AstroPrecise · Your Eclipse Edition · 12 August 2026</p>
-  <h1>${escapeHtml(model.fingerprint)}</h1>
-  <p class="serif">${escapeHtml(model.share)}</p>
-  ${personalLetterHtml(model)}
-  <figure class="hero"><img src="${plate}" alt="Personalised natal-wheel eclipse plate"></figure>
-</article>
-<article class="page">
-  <p class="kicker">The event</p>
-  <h2>The Moon crossed the Sun.</h2>
-  ${beatSectionHtml(model.beats[0], 0)}
-  <div class="grid">
-    <figure class="figure"><img src="${disc}" alt="Diamond-ring eclipse disc for 12 August 2026"></figure>
-    <div>
-      <p class="note">Greatest eclipse 17:45:51 UTC. Totality crossed northern Russia, Greenland, Iceland, Spain and a corner of Portugal. The UK and Ireland saw a deep partial. This page is the keepable record of that geometry against your chart — not a live forecast.</p>
-      <p class="mono">Eclipse longitude ${escapeHtml(model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`)}</p>
-      ${receiptTableHtml(model)}
-    </div>
+  <figure class="plate plate--cover"><img src="${disc}" alt=""></figure>
+  <div class="overlay">
+    <p class="brand">AstroPrecise · Your Eclipse Edition</p>
+    <h1 class="display display--cover">${contactLabel} · ${contactAspect}</h1>
+    <p class="fact">${contactOrb} from natal ${contactLabel} · eclipse ${eclipseDegree} · 12 August 2026</p>
+    <p class="fact">${fp}</p>
   </div>
-  ${geometry ? `<figure class="figure" style="margin-top:16px"><img src="${geometry}" alt="Schematic computed geometry of the 12 August 2026 eclipse"></figure>
-  <p class="note">Computed schematic for a deep partial from London (magnitude 0.91). Distances compressed. This is not a ground-track map and not your local sky unless you were there.</p>` : ''}
-</article>
-<article class="page">
-  <p class="kicker">The contact</p>
-  <h2>${escapeHtml(model.contactLabel || 'Your chart')} · ${escapeHtml(model.contactAspect || 'hard aspect')} · ${escapeHtml(model.contactOrb || '')}</h2>
-  <figure class="figure"><img src="${aspect}" alt="Contact geometry between the eclipse and the natal point"></figure>
-  ${beatSectionHtml(model.beats[1], 1)}
-  <p class="note">${escapeHtml(houseLine)}</p>
-</article>
-<article class="page">
-  <p class="kicker">What it touches</p>
-  ${beatSectionHtml(model.beats[2], 2)}
-  ${beatSectionHtml(model.beats[3], 3)}
-  ${houses ? `<figure class="figure"><img src="${houses}" alt="Whole-sign houses with the contacted house marked"></figure>` : ''}
-  ${model.houseNote ? `<p class="note">${escapeHtml(model.houseNote)}</p>` : ''}
-</article>
-<article class="page">
-  <p class="kicker">Your natal wheel</p>
-  <h2>Every plotted point used for this plate.</h2>
-  ${wheel ? `<figure class="figure"><img src="${wheel}" alt="Natal wheel with the eclipse degree marked"></figure>` : ''}
+</section>
+<section class="sheet" data-page="2">
+  <h1 class="display">The Moon crossed the Sun.</h1>
+  <p class="fact">${escapeHtml(model.anchorNoPlace || (model.beats[0] && model.beats[0].mono) || '')}</p>
+  ${geometry ? `<figure class="plate"><img src="${geometry}" alt="London schematic of the 12 August 2026 eclipse, magnitude 0.91"></figure>` : ''}
+  <p class="fact fact--caption">Greatest 17:45:51 UTC. London schematic: 19:12 BST, magnitude 0.91, about 90% of the solar disc. Distances compressed. Not a ground-track. Not your local sky unless you were there. Eclipse point as computed: ${eclipseDegree}.</p>
+  <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 2 / 6</p>
+</section>
+<section class="sheet sheet--split" data-page="3">
+  <figure class="plate"><img src="${aspect}" alt="Contact geometry between the eclipse and the natal point"></figure>
+  <div class="copy">
+    <h1 class="display">${contactLabel}</h1>
+    <p class="reflect">${escapeHtml((model.beats[1] && model.beats[1].serif) || '')}</p>
+    <p class="fact">${escapeHtml(model.contactMonoCore || '')}</p>
+    ${model.contactTheme ? `<p class="fact">In the tradition we use, ${contactLabel} is ${escapeHtml(model.contactTheme)}.</p>` : ''}
+    <p class="reflect">${escapeHtml(model.governsCore || '')}</p>
+  </div>
+  <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 3 / 6</p>
+</section>
+<section class="sheet ${houses ? 'sheet--split' : ''}" data-page="4">
+  ${houses ? `<figure class="plate"><img src="${houses}" alt="Whole-sign houses with the contacted house marked"></figure>` : ''}
+  <div class="copy">
+    <h1 class="display">${houseTitle}</h1>
+    <p class="fact">${houseFact}</p>
+    <p class="reflect reflect--lead">${question}</p>
+    ${secondaryBlockHtml(model)}
+  </div>
+  <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 4 / 6</p>
+</section>
+<section class="sheet" data-page="5">
+  <h1 class="display">Longitudes used for this plate.</h1>
+  ${wheel ? `<figure class="plate plate--wheel"><img src="${wheel}" alt="Natal wheel with the eclipse degree marked"></figure>` : ''}
   ${placementTableHtml(model)}
-  <p class="note">Highlighted row is the contacted point. Degrees are ecliptic longitude. Birth date, time and place are not printed.</p>
-</article>
-<article class="page">
-  <p class="kicker">Close</p>
-  ${beatSectionHtml(model.beats[4], 4)}
-  ${personalLetterHtml(model)}
-  <footer class="legal">${escapeHtml(model.legal)} · Computed on your device. No birth date, time or place is printed into this file. Fingerprint ${escapeHtml(model.fingerprint)}.</footer>
-</article>
+  <p class="fact fact--caption">Highlighted row is the contacted point. Degrees are ecliptic longitude. Birth date, time and place are not printed.</p>
+  <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 5 / 6</p>
+</section>
+<section class="sheet" data-page="6">
+  <p class="fact">${closeMono}</p>
+  <p class="reflect reflect--lead">${closeSerif}</p>
+  <p class="fact">${escapeHtml(model.anchorSerif || (model.beats[0] && model.beats[0].serif) || '')}</p>
+  <footer class="legal">${escapeHtml(model.legal)} · Computed on this device. No birth date, time or place is in this file. Fingerprint ${fp}. Only conjunction, opposition and square within orb carry the reading.</footer>
+  ${disc ? `<figure class="plate plate--seal"><img src="${disc}" alt=""></figure>` : ''}
+  <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 6 / 6</p>
+</section>
 ${printOnLoad ? `<script>addEventListener('load',()=>setTimeout(()=>print(),250),{once:true})<\/script>` : ''}
 </body></html>`;
 }
@@ -804,20 +843,20 @@ async function loadGeometryDataUrl() {
   try {
     const response = await fetch(new URL('img/eclipse-geometry.svg', document.baseURI));
     if (!response.ok) return '';
-    const text = await response.text();
+    const text = cleanGeometrySvg(await response.text());
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(text)}`;
   } catch (_) {
     return '';
   }
 }
 
-async function openPrintView(model, canvas) {
+async function openPrintView(model) {
   const printWindow = window.open('', '_blank');
   if (!printWindow) return false;
   const images = renderEclipsePrintAssets(model);
-  if (canvas && canvas.toDataURL) images.plate = canvas.toDataURL('image/png');
   images.geometry = await loadGeometryDataUrl();
-  printWindow.document.write(buildEclipsePrintDocument(model, images, { printOnLoad: true }));
+  const fontBase = document.baseURI;
+  printWindow.document.write(buildEclipsePrintDocument(model, images, { printOnLoad: true, fontBase }));
   printWindow.document.close();
   return true;
 }
@@ -855,7 +894,7 @@ function renderUnlocked(host, model) {
 
   host.querySelector('[data-edition-print]').addEventListener('click', async () => {
     status.textContent = 'Preparing the booklet…';
-    const opened = await openPrintView(model, canvas);
+    const opened = await openPrintView(model);
     status.textContent = opened
       ? 'Print view opened. Choose Save as PDF in the print dialog.'
       : 'Allow pop-ups for this click, then try Print / save as PDF again.';
@@ -863,6 +902,32 @@ function renderUnlocked(host, model) {
 }
 
 const EDITION_PENDING_KEY = 'ap-eclipse-edition-pending';
+const EDITION_UNLOCKED_KEY = 'ap-eclipse-edition-unlocked';
+
+function loadUnlockedFingerprints() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(EDITION_UNLOCKED_KEY) || 'null');
+    return Array.isArray(parsed && parsed.fingerprints) ? parsed.fingerprints : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function rememberUnlockedFingerprint(fingerprint) {
+  if (!fingerprint) return;
+  try {
+    const fingerprints = loadUnlockedFingerprints().filter((value) => value !== fingerprint);
+    fingerprints.push(fingerprint);
+    localStorage.setItem(EDITION_UNLOCKED_KEY, JSON.stringify({
+      at: Date.now(),
+      fingerprints: fingerprints.slice(-20),
+    }));
+  } catch (_) {}
+}
+
+function isFingerprintUnlocked(fingerprint) {
+  return Boolean(fingerprint && loadUnlockedFingerprints().includes(fingerprint));
+}
 
 /** Persist a computed contact so Gumroad checkout return can unlock without re-casting. */
 export function rememberEditionContext(context) {
@@ -913,6 +978,10 @@ export function mountEclipseEdition(host, context) {
   }
 
   const model = buildEclipsePlateModel({ reading, natal, eclipseLongitude });
+  if (isFingerprintUnlocked(model.fingerprint)) {
+    renderUnlocked(host, model);
+    return { state: 'unlocked', model };
+  }
   const ready = isCheckoutReady(EDITION_PRODUCT);
   host.dataset.paidState = ready ? 'locked' : 'dormant';
   rememberEditionContext(context);
@@ -944,13 +1013,14 @@ export function mountEclipseEdition(host, context) {
     status.textContent = 'Checking the licence with Gumroad…';
     try {
       const result = await verifyLicense(EDITION_PRODUCT, input.value.trim(), { incrementUses: true });
-      input.value = '';
       if (!result.valid) {
         status.textContent = result.reason
           || 'That licence could not be verified or is no longer eligible.';
         button.disabled = false;
         return;
       }
+      input.value = '';
+      rememberUnlockedFingerprint(model.fingerprint);
       clearEditionContext();
       renderUnlocked(host, model);
     } catch (_) {

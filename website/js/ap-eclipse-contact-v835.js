@@ -243,14 +243,14 @@ async function init() {
   }
   const [engine, templates] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=851').then((response) => {
+    fetch('js/reading-templates.json?v=852').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
   ]);
   const eventJd = engine.julianDay(2026, 8, 12, 17, 45, 51);
   const eclipseLongitude = engine.sunPosition(eventJd).lon;
-  byId('eclipsePoint').textContent = `Eclipse point · ${degreeText(eclipseLongitude)} · greatest 18:46 BST`;
+    byId('eclipsePoint').textContent = `Eclipse point · ${degreeText(eclipseLongitude)} · greatest 17:45:51 UTC (18:46 BST)`;
 
   const hasHandoff = applyChartHandoff(consumeChartHandoff());
   const savedMeta = hasHandoff ? null : seedSavedChart(getActiveChart());

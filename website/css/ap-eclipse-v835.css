@@ -157,11 +157,16 @@
   letter-spacing: .14em;
   text-transform: uppercase;
 }
-.ap-eclipse-countdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.ap-eclipse-countdown span { min-width: 0; padding: 0 10px; border-left: 1px solid var(--ap-line); }
-.ap-eclipse-countdown span:first-child { padding-left: 0; border-left: 0; }
-.ap-eclipse-countdown strong { display: block; color: var(--ap-paper); font: 500 clamp(32px, 3.1vw, 48px)/.9 var(--ap-display); font-variant-numeric: tabular-nums; }
-.ap-eclipse-countdown small { display: block; margin-top: 7px; color: var(--ap-paper-faint); font: 7px/1.3 var(--ap-data); letter-spacing: .1em; text-transform: uppercase; }
+.ap-eclipse-countdown,
+.ap-eclipse-receipt { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ap-eclipse-countdown span,
+.ap-eclipse-receipt span { min-width: 0; padding: 0 10px; border-left: 1px solid var(--ap-line); }
+.ap-eclipse-countdown span:first-child,
+.ap-eclipse-receipt span:first-child { padding-left: 0; border-left: 0; }
+.ap-eclipse-countdown strong,
+.ap-eclipse-receipt strong { display: block; color: var(--ap-paper); font: 500 clamp(32px, 3.1vw, 48px)/.9 var(--ap-display); font-variant-numeric: tabular-nums; }
+.ap-eclipse-countdown small,
+.ap-eclipse-receipt small { display: block; margin-top: 7px; color: var(--ap-paper-faint); font: 7px/1.3 var(--ap-data); letter-spacing: .1em; text-transform: uppercase; }
 .ap-eclipse-mission__facts { padding: 4px 20px; }
 .ap-eclipse-mission__facts p { display: grid; grid-template-columns: minmax(92px, .72fr) minmax(0, 1.28fr); gap: 12px; margin: 0; padding: 12px 0; border-bottom: 1px solid var(--ap-line); }
 .ap-eclipse-mission__facts span { color: var(--ap-paper-faint); font: 8px/1.45 var(--ap-data); letter-spacing: .08em; text-transform: uppercase; }
@@ -201,8 +206,10 @@
   .ap-eclipse-hero .ap-eclipse-page-shell > p:not(.ap-eclipse-kicker) { font-size: 15px; }
   .ap-eclipse-mission { margin-top: 22px; }
   .ap-eclipse-mission__clock { padding-inline: 15px; }
-  .ap-eclipse-countdown span { padding-inline: 7px; }
-  .ap-eclipse-countdown strong { font-size: clamp(31px, 10vw, 40px); }
+  .ap-eclipse-countdown span,
+  .ap-eclipse-receipt span { padding-inline: 7px; }
+  .ap-eclipse-countdown strong,
+  .ap-eclipse-receipt strong { font-size: clamp(31px, 10vw, 40px); }
   .ap-eclipse-mission__facts { padding-inline: 15px; }
   .ap-eclipse-mission__facts p { grid-template-columns: 1fr; gap: 4px; }
   .ap-eclipse-mission__actions { grid-template-columns: 1fr 1fr; }

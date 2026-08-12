@@ -249,9 +249,19 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
   const asp = t.aspects[closest.aspect];
   const orbText = fmtOrb(closest.orbDeg);
   const house = wholeSignHouse(closest.lon, natal.asc);
-  let contactMono = `This eclipse falls ${orbText} from your natal ${tg.label} (${fmtDeg(closest.lon, signs)}) — ${asp.label}.`;
+  const contactMonoCore = `This eclipse falls ${orbText} from your natal ${tg.label} (${fmtDeg(closest.lon, signs)}) — ${asp.label}.`;
+  let contactMono = contactMonoCore;
   if (house) contactMono += ` ${tg.label} sits in your ${houseOrdinal(house)} house (whole-sign).`;
   const secondaries = contacts.filter((c) => c !== closest && c.orbDeg <= 3).slice(0, 2);
+  const secondaryContacts = secondaries.map((c) => ({
+    target: c.target,
+    aspect: c.aspect,
+    orbText: fmtOrb(c.orbDeg),
+    label: t.targets[c.target].label,
+    theme: t.targets[c.target].theme,
+    note: t.aspects[c.aspect].note,
+    aspectLabel: t.aspects[c.aspect].label,
+  }));
   const secondary = secondaries.length
     ? { mono: t.secondary.computed.replace('{list}', secondaries.map((c) =>
         t.secondary.item.replace('{aspectLabel}', t.aspects[c.aspect].label)
@@ -261,13 +271,21 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
 
   // BEAT 3 — what that place governs
   const key = `${closest.target}|${closest.aspect}`;
-  let governsSerif = t.overrides[key] || t.reflectionFrames[closest.aspect].replace('{theme}', tg.theme);
+  const governsCore = t.overrides[key] || t.reflectionFrames[closest.aspect].replace('{theme}', tg.theme);
+  let governsSerif = governsCore;
+  let governsHouseLine = null;
   if (house && t.houseMeanings[String(house)]) {
-    governsSerif += t.governsHouse
+    governsHouseLine = t.governsHouse
       .replace('{houseOrd}', houseOrdinal(house))
       .replace('{houseNum}', String(house))
       .replace('{houseMeaning}', t.houseMeanings[String(house)]);
+    governsSerif += governsHouseLine;
   }
+
+  const anchorNoPlace = t.anchor.computedNoPlace
+    .replace('{date}', L.date || '12 August 2026')
+    .replace('{eclipseDeg}', eclipseDeg)
+    .replace(/\s+,/g, ',').replace(/,\s*,/g, ',').replace(/\s{2,}/g, ' ');
 
   // BEAT 4 — the question
   const question = { serif: t.questions[closest.target] || t.questions.sun };
@@ -287,6 +305,11 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
     contactHouseOrd: house ? houseOrdinal(house) : null,
     houseMeaning: house && t.houseMeanings[String(house)] ? t.houseMeanings[String(house)] : null,
     eclipseDegree: eclipseDeg,
+    contactMonoCore,
+    governsCore,
+    governsHouseLine,
+    secondaryContacts,
+    anchorNoPlace,
     share: t.shareLine.replace('{orbText}', orbText).replace('{targetLabel}', tg.label),
     legal: t.legalLine,
     houseNote: house ? t.houseSystemNote : null,

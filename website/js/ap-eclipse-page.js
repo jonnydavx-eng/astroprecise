@@ -1,4 +1,7 @@
 /**
+ * STALE — not loaded by any HTML. Live contact is ap-eclipse-contact-v835.js.
+ * Do not wire this file. Kept only so agents do not revive the old ecl-form path.
+ *
  * Astro Precise — eclipse hub page controller (ES module)
  * Wires buildEclipseReading5 to a saved chart or a one-shot birth form.
  * Honesty: quiet charts set gateSale and are never sold an edition.

@@ -18,21 +18,21 @@
   {"@context":"https://schema.org","@type":"WebPage","name":"12 August 2026 solar eclipse — replay and personal edition","description":"Archive and replay of the 12 August 2026 total solar eclipse, with a private chart-contact calculator and the £7 Your Eclipse Edition.","url":"https://astroprecise.app/eclipse.html","image":["https://astroprecise.app/img/editorial/eclipse-launch-2026-v835.jpg"]}
   </script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What time is the eclipse in London on 12 August 2026?","acceptedAnswer":{"@type":"Answer","text":"First contact is about 18:17 BST, maximum is about 19:13 and the end is 20:06. Published city tables round maximum by one minute; times vary by location."}},{"@type":"Question","name":"Where is the 12 August 2026 eclipse total?","acceptedAnswer":{"@type":"Answer","text":"The path of totality crosses northern Russia, Greenland, Iceland, Spain and a small corner of northeastern Portugal. The United Kingdom and Ireland see a partial eclipse."}},{"@type":"Question","name":"Is the partial eclipse safe to look at?","acceptedAnswer":{"@type":"Answer","text":"No. In every partial phase use genuine ISO 12312-2 eclipse viewers or an indirect projection method. Proper solar filters must be fitted to the front of phone cameras, cameras, binoculars and telescopes."}}]}
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What time was the eclipse in London on 12 August 2026?","acceptedAnswer":{"@type":"Answer","text":"First contact was about 18:17 BST, maximum about 19:13 and the end 20:06. Published city tables round maximum by one minute; times vary by location."}},{"@type":"Question","name":"Where was the 12 August 2026 eclipse total?","acceptedAnswer":{"@type":"Answer","text":"The path of totality crossed northern Russia, Greenland, Iceland, Spain and a small corner of northeastern Portugal. The United Kingdom and Ireland saw a partial eclipse."}},{"@type":"Question","name":"Is a partial eclipse safe to look at?","acceptedAnswer":{"@type":"Answer","text":"No. In every partial phase use genuine ISO 12312-2 eclipse viewers or an indirect projection method. Proper solar filters must be fitted to the front of phone cameras, cameras, binoculars and telescopes."}}]}
   </script>
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='851';</script>
+  <script>window.AP_ASSET_V='852';</script>
   <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }</script>
   <script src="js/ephemeris.js?v=835" defer></script>
-  <script src="js/ap-nav-model.js?v=851" defer></script>
-    <script type="module" src="js/ap-eclipse-live-v834.js?v=851"></script>
-    <script type="module" src="js/ap-eclipse-contact-v835.js?v=851"></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=851">
-    <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=851">
-    <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=851">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=851">
+  <script src="js/ap-nav-model.js?v=852" defer></script>
+    <script type="module" src="js/ap-eclipse-live-v834.js?v=852"></script>
+    <script type="module" src="js/ap-eclipse-contact-v835.js?v=852"></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=852">
+    <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=852">
+    <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=852">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=852">
 </head>
 <body class="page-eclipse eclipse-v835">
   <a class="skip" href="#eclipse-live-title">Skip to the eclipse instrument</a>
@@ -56,7 +56,7 @@
         <section class="ap-eclipse-mission" aria-label="Eclipse receipt and replay">
           <div class="ap-eclipse-mission__clock">
             <p>Greatest eclipse · 12 August 2026</p>
-            <div class="ap-eclipse-countdown" aria-hidden="true"><span><strong>17</strong><small>Hour UTC</small></span><span><strong>45</strong><small>Minute</small></span><span><strong>51</strong><small>Second</small></span><span><strong>BST</strong><small>18:45:51</small></span></div>
+            <div class="ap-eclipse-receipt" aria-hidden="true"><span><strong>17</strong><small>Hour UTC</small></span><span><strong>45</strong><small>Minute</small></span><span><strong>51</strong><small>Second</small></span><span><strong>BST</strong><small>18:45:51</small></span></div>
             <p class="sr-only">Greatest eclipse was 17:45:51 UTC on 12 August 2026. Replay the 3D shadow below.</p>
           </div>
           <div class="ap-eclipse-mission__facts">
@@ -70,18 +70,18 @@
       </div>
     </header>
 
-    <section class="ap-eclipse-live" id="ap-eclipse-live" data-mode="live" data-ready="false" aria-labelledby="eclipse-live-title">
-      <h2 class="sr-only" id="eclipse-live-title">Live 3D Sun, Moon and Earth shadow instrument</h2>
+    <section class="ap-eclipse-live" id="ap-eclipse-live" data-mode="event" data-ready="false" aria-labelledby="eclipse-live-title">
+      <h2 class="sr-only" id="eclipse-live-title">3D Sun, Moon and Earth shadow instrument</h2>
       <div class="ap-eclipse-live__shell">
         <div class="ap-eclipse-live__stage">
           <canvas class="ap-eclipse-live__canvas" tabindex="0" aria-label="Interactive 3D Sun, Moon and Earth eclipse alignment. Drag to orbit; pinch, use the mouse wheel, or press plus and minus to zoom."></canvas>
           <div class="ap-eclipse-live__labels" aria-hidden="true"><span class="ap-eclipse-live__body-label" data-eclipse-label="sun">Sun</span><span class="ap-eclipse-live__body-label" data-eclipse-label="moon">Moon</span><span class="ap-eclipse-live__body-label" data-eclipse-label="earth">Earth</span></div>
           <div class="ap-eclipse-live__fallback"><div>Preparing the live eclipse geometry…</div></div>
         </div>
-        <aside class="ap-eclipse-live__panel" aria-label="Live eclipse geometry readout">
+        <aside class="ap-eclipse-live__panel" aria-label="Eclipse geometry readout">
           <div class="ap-eclipse-live__readout">
-            <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Live geometry · preparing</span></div>
-            <p class="ap-eclipse-live__mode" data-eclipse-mode>Live geocentric alignment</p>
+            <div class="ap-eclipse-live__live-badge" aria-hidden="true"><span class="ap-eclipse-live__live-dot"></span><span data-eclipse-badge>Geometry · preparing</span></div>
+            <p class="ap-eclipse-live__mode" data-eclipse-mode>Greatest eclipse replay</p>
             <p class="ap-eclipse-live__status" data-eclipse-status aria-live="polite">Computing the shadow…</p>
             <p class="ap-eclipse-live__time" data-eclipse-time>UTC geometry preparing</p>
           </div>
@@ -91,7 +91,7 @@
           </details>
           <div class="ap-eclipse-live__controls">
             <div class="ap-eclipse-live__dock" aria-label="Eclipse playback controls">
-              <div class="ap-eclipse-live__actions"><button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="true">Live now</button><button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="false">Maximum</button></div>
+              <div class="ap-eclipse-live__actions"><button class="ap-eclipse-live__button" type="button" data-eclipse-now aria-pressed="false">Live now</button><button class="ap-eclipse-live__button" type="button" data-eclipse-event aria-pressed="true">Maximum</button></div>
               <button class="ap-eclipse-live__button ap-eclipse-live__button--passage" type="button" data-eclipse-play aria-pressed="false">Play shadow</button>
               <div class="ap-eclipse-live__lens">
                 <span>View</span>
@@ -126,7 +126,7 @@
         <div class="ap-eclipse-guide__grid">
           <article><span>01 · Totality</span><h3>Russia to Greenland to Spain</h3><p>The path crossed northern Russia, Greenland, Iceland and Spain, then clipped a small part of northeastern Portugal. Elsewhere across much of the Northern Hemisphere the eclipse was partial.</p><a href="https://science.nasa.gov/eclipses/future-eclipses/total-solar-eclipse-on-august-12-2026/" rel="noopener">NASA path and overview</a></article>
           <article><span>02 · UK and Ireland</span><h3>90–96% coverage</h3><p>London ran 18:17 · about 19:13 · 20:06 BST for first contact, maximum and end. Published tables round maximum by one minute. The Sun was low in the west.</p><a href="https://www.rmg.co.uk/stories/space-astronomy/how-see-12-august-2026-partial-solar-eclipse" rel="noopener">Royal Observatory guide</a></article>
-          <article><span>03 · What was streamed</span><h3>Greenwich, NASA, ESA</h3><p>The Royal Observatory UK stream ran 18:10–20:00 BST. NASA began at 18:15 BST; ESA joined from Spain at 18:30 BST. The Perseids peaked overnight on 12–13 August under the eclipse’s new Moon.</p><div><a href="https://www.rmg.co.uk/whats-on/online/solar-eclipse-august-2026-uk-live-stream" rel="noopener">Greenwich archive</a><a href="https://www.nasa.gov/live" rel="noopener">NASA Live</a><a href="https://watch.esa.int/three/" rel="noopener">ESA Web TV</a><a href="https://www.rmg.co.uk/stories/space-astronomy/perseid-meteor-shower-guide-uk-when-where-to-see" rel="noopener">Perseids guide</a></div></article>
+          <article><span>03 · What was streamed</span><h3>Greenwich, NASA, ESA</h3><p>The Royal Observatory UK stream ran 18:10–20:00 BST. NASA began at 18:15 BST; ESA joined from Spain at 18:30 BST. The Perseids peaked overnight on 12–13 August under the eclipse’s new Moon.</p><div><a href="https://www.rmg.co.uk/whats-on/online/solar-eclipse-august-2026-uk-live-stream" rel="noopener">Greenwich listing</a><a href="https://science.nasa.gov/eclipses/future-eclipses/total-solar-eclipse-on-august-12-2026/" rel="noopener">NASA eclipse page</a><a href="https://www.rmg.co.uk/stories/space-astronomy/perseid-meteor-shower-guide-uk-when-where-to-see" rel="noopener">Perseids guide</a></div></article>
           <article class="ap-eclipse-guide__safety"><span>04 · Eye safety</span><h3>Glasses stay on for every partial phase.</h3><p>Use genuine ISO 12312-2 eclipse viewers or indirect projection. Phone cameras also need a solar filter over the lens; cameras, binoculars and telescopes need one secured over the front—not at the eyepiece. This remains the rule for every future eclipse.</p><div><a href="https://science.nasa.gov/eclipses/safety/" rel="noopener">NASA eye safety</a><a href="https://eclipse.aas.org/eye-safety" rel="noopener">AAS eye safety</a></div></article>
         </div>
       </div>
@@ -195,9 +195,9 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=851" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=851" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-mystic-cards-v835.js?v=851" defer></script>
+  <script src="js/ap-footer-inject.js?v=852" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=852" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-mystic-cards-v835.js?v=852" defer></script>
   <script>
     (function () {
       var root = document.getElementById('ap-eclipse-live');

@@ -56,7 +56,6 @@ assert.ok(houseBlob.includes('1st'), 'Sun on the Ascendant sign must name the 1s
 assert.equal(Object.keys(templates.overrides).length >= 36, true, 'hard-aspect overrides must cover the sale grid');
 
 const printHtml = buildEclipsePrintDocument(first, {
-  plate: 'data:image/png,plate',
   disc: 'data:image/png,disc',
   aspect: 'data:image/png,aspect',
   wheel: 'data:image/png,wheel',
@@ -64,10 +63,13 @@ const printHtml = buildEclipsePrintDocument(first, {
   geometry: 'data:image/svg+xml,geometry',
 }, { printOnLoad: false });
 assert.ok(printHtml.includes(first.fingerprint));
-assert.ok(printHtml.includes('The contact'));
-assert.ok(printHtml.includes('Natal longitudes used for this plate'));
-assert.ok(printHtml.includes('This booklet is built from your computed chart'));
-assert.ok(printHtml.includes(first.beats[0].text.slice(0, 20)) || printHtml.includes(first.beats[0].mono.slice(0, 12)));
+assert.equal((printHtml.match(/class="sheet/g) || []).length, 6, 'booklet must be six sheets');
+assert.ok(printHtml.includes('Longitudes used for this plate'));
+assert.ok(printHtml.includes('YOUR ECLIPSE EDITION') || printHtml.includes('Your Eclipse Edition'));
+assert.equal(printHtml.includes('This booklet is built from your computed chart'), false);
+assert.equal(printHtml.includes('Check where it falls'), false);
+assert.equal(printHtml.includes('CENTRES 33px'), false);
+assert.ok(printHtml.includes(first.beats[0].mono.slice(0, 12)) || printHtml.includes(first.anchorNoPlace.slice(0, 12)));
 assert.equal(printHtml.includes('1990-08-12'), false);
 assert.equal(printHtml.includes('print()'), false);
 assert.equal(first.fingerprint, repeat.fingerprint, 'same computed chart must produce the same artwork ID');

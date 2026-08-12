@@ -612,7 +612,11 @@ async function mount(root, E) {
 
   function statusFor(next) {
     if (next.umbraHits) return 'The umbra reaches Earth. Totality exists along a narrow track.';
-    if (next.penumbraHits) return 'The penumbra reaches Earth. A partial eclipse is underway.';
+    if (next.penumbraHits) {
+      return mode === 'live' && Date.now() < EVENT_MS + 6 * 60 * 60 * 1000
+        ? 'The penumbra reaches Earth. A partial eclipse is underway.'
+        : 'The penumbra reaches Earth. A partial eclipse was underway at this moment.';
+    }
     return next.date.getTime() < EVENT_MS
       ? 'The Moon’s shadow is closing on Earth.'
       : 'The Moon’s shadow has moved beyond Earth.';

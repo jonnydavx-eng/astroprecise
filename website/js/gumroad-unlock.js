@@ -8,10 +8,11 @@
  *
  * THE HONEST FLOW (birth data never touches Gumroad):
  *   1. The reading is computed ON THE DEVICE from the VSOP87 engine (as today).
- *   2. To reveal it, the buyer taps "Unlock — £7". We open the Gumroad overlay
- *      for that product. Gumroad takes the money + the email; we never see a card.
- *   3. Gumroad issues a LICENSE KEY. We verify that key against Gumroad's API and,
- *      if valid, unlock the already-computed reading in place. No account, no wait.
+ *   2. To reveal it, the buyer taps Buy. We navigate to the Gumroad product page
+ *      (full navigation, not an overlay). Gumroad takes the money + the email.
+ *   3. Gumroad issues a LICENSE KEY. Paste it on return. We verify that key
+ *      against Gumroad's API and, if valid, unlock the already-computed reading.
+ *      Licence keys are never accepted from a URL.
  *
  * PRODUCTS (create these in Gumroad, enable "Generate license keys"):
  *   eclipse-edition  £7
@@ -51,10 +52,10 @@ export function isCheckoutReady(slug) {
 }
 
 /**
- * Open the Gumroad overlay checkout for a product. Requires Gumroad's overlay script
- * on the page once:  <script src="https://gumroad.com/js/gumroad.js"></script>
- * Returns immediately. The buyer manually enters the issued licence key in the
- * on-page form; licence keys are never accepted from a URL or stored in a query string.
+ * Open Gumroad checkout for a product by navigating to the product URL.
+ * Overlay script is not loaded on eclipse.html; this is a full navigation.
+ * The buyer pastes the issued licence key in the on-page form on return.
+ * Licence keys are never accepted from a URL or stored in a query string.
  */
 export function openCheckout(slug) {
   const key = resolveProductSlug(slug);

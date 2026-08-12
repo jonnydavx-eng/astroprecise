@@ -27,7 +27,7 @@
 
   // Historical direct routes, exposed only on archive pages.
   var NAV_MORE_EXPLORE = [
-    ['ephemeris.html', 'Sky tools', { badge: 'Live' }],
+    ['ephemeris.html', 'Sky tools'],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
     ['cosmic-story.html', 'Cosmic Story'],

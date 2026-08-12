@@ -98,7 +98,7 @@ const indexLite = fs.readFileSync(path.join(web, 'index-lite.html'), 'utf8');
 ok(/<meta\s+name="robots"\s+content="noindex, follow"\s*\/?>/.test(indexLite), 'legacy lite redirect cannot compete with the canonical home page');
 
 const eclipse = fs.readFileSync(path.join(web, 'eclipse.html'), 'utf8');
-ok(/ap-eclipse-live-v834\.js\?v=851/.test(eclipse), 'eclipse loads the dedicated v842 3D instrument');
+ok(/ap-eclipse-live-v834\.js\?v=852/.test(eclipse), 'eclipse loads the dedicated v842 3D instrument');
 ok(/class="ap-eclipse-live__canvas"/.test(eclipse), 'eclipse owns one dedicated 3D canvas');
 ok(/data-eclipse-event/.test(eclipse) && /data-eclipse-now/.test(eclipse), 'eclipse exposes live and greatest-event controls');
 ok(/data-eclipse-play/.test(eclipse) && (eclipse.match(/data-eclipse-lens=/g) || []).length === 3,
@@ -118,7 +118,7 @@ ok(!/(?:gumroad|ap-checkout-honest)/i.test(plate), 'natal plate exposes no dead 
 
 const sw = fs.readFileSync(path.join(web, 'sw.js'), 'utf8');
 const versionMatch = sw.match(/const V\s*=\s*"([^"]+)"/);
-ok(versionMatch && versionMatch[1] === 'ap-v851', 'SW release tip ' + (versionMatch && versionMatch[1]));
+ok(versionMatch && versionMatch[1] === 'ap-v852', 'SW release tip ' + (versionMatch && versionMatch[1]));
 
 const verify = fs.readFileSync(path.join(web, 'verify.html'), 'utf8');
 ok(/plate-fingerprint\.js/.test(verify), 'verify imports plate-fingerprint');

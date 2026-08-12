@@ -17,7 +17,8 @@ const types = {
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
-  '.svg': 'image/svg+xml',
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff',
 };
 
 const server = createServer((req, res) => {
@@ -43,7 +44,7 @@ const { port } = server.address();
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const page = await browser.newPage();
 await page.goto(`http://127.0.0.1:${port}/eclipse.html?nosw=1`, { waitUntil: 'domcontentloaded' });
-const html = await page.evaluate(async () => {
+const payload = await page.evaluate(async () => {
   const templates = await fetch('js/reading-templates.json').then((r) => r.json());
   const geometryText = await fetch('img/eclipse-geometry.svg').then((r) => r.text());
   const { buildEclipseReading5 } = await import('./js/eclipse-reading.js');
@@ -51,6 +52,7 @@ const html = await page.evaluate(async () => {
     buildEclipsePlateModel,
     renderEclipsePrintAssets,
     buildEclipsePrintDocument,
+    cleanGeometrySvg,
   } = await import('./js/ap-eclipse-edition-v841.js');
   const eclipseLongitude = 140.133;
   const natal = {
@@ -61,14 +63,15 @@ const html = await page.evaluate(async () => {
   const reading = buildEclipseReading5(eclipseLongitude, natal, templates, { quietGateDeg: 5 });
   const model = buildEclipsePlateModel({ reading, natal, eclipseLongitude });
   const images = renderEclipsePrintAssets(model);
-  images.geometry = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(geometryText)}`;
-  return buildEclipsePrintDocument(model, images, { printOnLoad: false, demo: true });
+  images.geometry = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(cleanGeometrySvg(geometryText))}`;
+  return { html: buildEclipsePrintDocument(model, images, { printOnLoad: false, demo: true, fontBase: location.origin + '/' }), origin: location.origin };
 });
-if (!html || !html.includes('Your Eclipse Edition') || !html.includes('Demo natal')) {
+if (!payload || !payload.html || !payload.html.includes('Your Eclipse Edition') || !payload.html.includes('Demo natal')) {
   await browser.close();
   server.close();
   throw new Error('Print document did not render');
 }
+const html = payload.html;
 const printPage = await browser.newPage();
 await printPage.setContent(html, { waitUntil: 'load' });
 await printPage.evaluate(() => Promise.all(
