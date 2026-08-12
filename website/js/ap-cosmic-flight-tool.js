@@ -12,6 +12,10 @@
   var narrateOn = false;
   var flightMode = "descent"; /* descent | zoom */
   var focusTrapHandler = null;
+  var autoOpening = false;
+  var autoAttempted = false;
+  var autoCloseTimer = null;
+  var AUTO_INTRO_KEY = "ap_cosmic_intro_v847";
 
   function $(id) { return document.getElementById(id); }
 
@@ -64,6 +68,23 @@
       btn.textContent = btn.dataset.prevLabel || "✦ Cosmic flight";
       btn.removeAttribute("aria-busy");
     }
+  }
+
+  function autoIntroSeen() {
+    try { return sessionStorage.getItem(AUTO_INTRO_KEY) === "1"; }
+    catch (e) { return false; }
+  }
+
+  function markAutoIntroSeen() {
+    try { sessionStorage.setItem(AUTO_INTRO_KEY, "1"); }
+    catch (e) { /* storage blocked — this page load still runs only once */ }
+  }
+
+  function setReplayLabel() {
+    var btn = $("ap-cosmic-flight-launch");
+    if (!btn) return;
+    btn.dataset.prevLabel = "Replay cosmic flight";
+    if (!btn.disabled) btn.textContent = "Replay cosmic flight";
   }
 
   function trapFocus(root) {
@@ -246,7 +267,16 @@
     document.body.appendChild(root);
     overlayBuilt = true;
 
-    $("ap-cf-exit").addEventListener("click", closeTool);
+    $("ap-cf-exit").addEventListener("click", function () {
+      if (autoOpening) {
+        var O = window.Orrery3D;
+        var active = O && O.isCosmicFlightActive && O.isCosmicFlightActive();
+        if (active && typeof O.cancelCosmicFlight === "function") O.cancelCosmicFlight(true);
+        else closeTool({ focusLaunch: false });
+      } else {
+        closeTool();
+      }
+    });
     $("ap-cf-replay").addEventListener("click", function () {
       if (booting) return;
       startFlight();
@@ -290,6 +320,18 @@
     document.addEventListener("orrery-journey-end", function (e) {
       if (!open) return;
       var d = e.detail || {};
+      if (autoOpening) {
+        autoOpening = false;
+        var O = window.Orrery3D;
+        if (O && typeof O.snapToNow === "function") O.snapToNow();
+        setReplayLabel();
+        if (autoCloseTimer) clearTimeout(autoCloseTimer);
+        autoCloseTimer = setTimeout(function () {
+          autoCloseTimer = null;
+          closeTool({ focusLaunch: false });
+        }, d.skipped ? 80 : 650);
+        return;
+      }
       if ($("ap-cf-replay")) $("ap-cf-replay").disabled = false;
       setLaunchLoading(false);
       showScaleStrip(true);
@@ -371,6 +413,22 @@
     });
   }
 
+  function syncAutoIntroChrome(active) {
+    var root = $("ap-cosmic-flight");
+    if (!root) return;
+    var mode = root.querySelector(".ap-cf-mode");
+    var narrate = $("ap-cf-narrate");
+    var replay = $("ap-cf-replay");
+    var exit = $("ap-cf-exit");
+    if (mode) mode.hidden = !!active;
+    if (narrate) narrate.hidden = !!active;
+    if (replay) replay.hidden = !!active;
+    if (exit) {
+      exit.textContent = active ? "Skip intro" : "Exit";
+      exit.setAttribute("aria-label", active ? "Skip intro and open the live solar system" : "Exit cosmic flight");
+    }
+  }
+
   function bootAndFly() {
     if (booting) return;
     booting = true;
@@ -410,8 +468,9 @@
     });
   }
 
-  function openTool() {
+  function openTool(options) {
     if (PRM || open) return;
+    options = options && options.auto === true ? options : { auto: false };
     ensureJourneyScripts(function () {
       var root = buildOverlay();
       if (window.ScaleJourney && typeof window.ScaleJourney.rebind === "function") {
@@ -422,14 +481,22 @@
       root.classList.add("is-open");
       document.body.classList.add("ap-cosmic-flight-open");
       open = true;
+      autoOpening = options.auto;
+      if (autoOpening) markAutoIntroSeen();
+      syncAutoIntroChrome(autoOpening);
       trapFocus(root);
       $("ap-cf-exit").focus();
       bootAndFly();
     });
   }
 
-  function closeTool() {
+  function closeTool(options) {
     if (!open) return;
+    options = options || {};
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = null;
+    }
     var O = window.Orrery3D;
     if (O && typeof O.cancelSpaceFlight === "function" && O.isSpaceFlightActive && O.isSpaceFlightActive()) {
       O.cancelSpaceFlight(false);
@@ -449,11 +516,13 @@
     }
     document.body.classList.remove("ap-cosmic-flight-open");
     open = false;
+    autoOpening = false;
     booting = false;
+    syncAutoIntroChrome(false);
     setLaunchLoading(false);
     showScaleStrip(false);
     var launch = $("ap-cosmic-flight-launch");
-    if (launch) launch.focus();
+    if (launch && options.focusLaunch !== false) launch.focus();
     requestAnimationFrame(function () {
       if (O && typeof O.forceResize === "function") O.forceResize();
     });
@@ -462,7 +531,7 @@
   function bindLaunch() {
     var btn = $("ap-cosmic-flight-launch");
     if (!btn) return;
-    btn.addEventListener("click", openTool);
+    btn.addEventListener("click", function () { openTool({ auto: false }); });
     btn.addEventListener("mouseenter", function () {
       ensureJourneyScripts();
       preloadEngine();
@@ -482,6 +551,7 @@
       }
     }
     syncMotionPreference(PRM);
+    if (autoIntroSeen()) setReplayLabel();
     if (motionQuery) {
       var onMotionChange = function (event) { syncMotionPreference(event.matches); };
       if (motionQuery.addEventListener) motionQuery.addEventListener("change", onMotionChange);
@@ -489,11 +559,27 @@
     }
   }
 
+  function scheduleAutoIntro() {
+    if (PRM || autoAttempted || autoIntroSeen()) return;
+    if (!window.Orrery3D || !window.Orrery3D.isWebGL) return;
+    autoAttempted = true;
+    setTimeout(function () {
+      if (!PRM && !open && document.visibilityState !== "hidden") {
+        openTool({ auto: true });
+      }
+    }, 180);
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bindLaunch);
+    document.addEventListener("DOMContentLoaded", function () {
+      bindLaunch();
+      scheduleAutoIntro();
+    });
   } else {
     bindLaunch();
+    scheduleAutoIntro();
   }
+  document.addEventListener("ap-orrery-ready", scheduleAutoIntro, { once: true });
 
   window.APCosmicFlight = {
     open: openTool,

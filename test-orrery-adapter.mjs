@@ -130,7 +130,7 @@ for (const probe of ['.ap-mobile-flight-deck', '.ap-model-stage.is-model-ready .
 }
 ok('Home phone deck exposes every destination without covering the model');
 
-/* 3b. The opt-in movie journey reuses the flagship model and never auto-opens. */
+/* 3b. First-visit movie intro waits for the real frame and reuses the flagship model. */
 const cosmicJs = readFileSync(join(root, 'js', 'ap-cosmic-flight-tool.js'), 'utf8');
 const cosmicCss = readFileSync(join(root, 'css', 'ap-cosmic-flight.css'), 'utf8');
 for (const probe of [
@@ -150,6 +150,14 @@ for (const probe of [
   '}, 600);',
   'prefers-reduced-motion: reduce',
   'motionQuery.addEventListener("change"',
+  'AUTO_INTRO_KEY = "ap_cosmic_intro_v847"',
+  'document.addEventListener("ap-orrery-ready", scheduleAutoIntro',
+  'openTool({ auto: true })',
+  'sessionStorage.getItem(AUTO_INTRO_KEY)',
+  'Replay cosmic flight',
+  'Skip intro',
+  'btn.dataset.prevLabel = "Replay cosmic flight"',
+  'O.isCosmicFlightActive && O.isCosmicFlightActive()',
 ]) {
   if (!cosmicJs.includes(probe)) fail('same-model cosmic flight contract missing: ' + probe);
 }
@@ -159,7 +167,7 @@ if (/cosmic=1|location\.search/.test(cosmicJs)) fail('cosmic flight can still au
 for (const probe of ['.ap-orrery-cosmic-flight', '.ap-cf-toolbar', '@media (max-width: 720px)']) {
   if (!cosmicCss.includes(probe)) fail('cosmic-flight responsive CSS missing: ' + probe);
 }
-ok('cosmic flight is explicit, reduced-motion aware and reuses the one flagship model');
+ok('cosmic flight auto-intro waits for WebGL, is skippable/replayable and reuses the one flagship model');
 
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
