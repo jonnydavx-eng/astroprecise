@@ -243,7 +243,7 @@ async function init() {
   }
   const [engine, templates] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=853').then((response) => {
+    fetch('js/reading-templates.json?v=854').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),

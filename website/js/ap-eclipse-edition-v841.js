@@ -728,6 +728,18 @@ function secondaryBlockHtml(model) {
   return `${items}${glance}`;
 }
 
+function beatsLetterHtml(model) {
+  return (model.beats || []).map((beat, index) => {
+    const serif = beat.serif || '';
+    const mono = index === 0 ? (model.anchorNoPlace || beat.mono || '') : (beat.mono || '');
+    if (!serif && !mono) return '';
+    return `<article class="letter-beat"><small>0${index + 1} · ${escapeHtml(beat.title || '')}</small>`
+      + (mono ? `<p class="fact">${escapeHtml(mono)}</p>` : '')
+      + (serif ? `<p class="reflect">${escapeHtml(serif)}</p>` : '')
+      + '</article>';
+  }).join('');
+}
+
 export function buildEclipsePrintDocument(model, images = {}, { printOnLoad = true, demo = false, fontBase = '' } = {}) {
   const disc = images.disc || '';
   const aspect = images.aspect || '';
@@ -740,8 +752,6 @@ export function buildEclipsePrintDocument(model, images = {}, { printOnLoad = tr
   const contactOrb = escapeHtml(model.contactOrb || '');
   const eclipseDegree = escapeHtml(model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`);
   const question = escapeHtml((model.beats[3] && model.beats[3].serif) || '');
-  const closeMono = escapeHtml((model.beats[4] && model.beats[4].mono) || '');
-  const closeSerif = escapeHtml((model.beats[4] && model.beats[4].serif) || '');
   const houseTitle = model.contactHouseOrd
     ? `${escapeHtml(model.contactHouseOrd)} house`
     : 'The question';
@@ -758,13 +768,18 @@ html,body{margin:0;background:#05070b;color:#f2ecdf}
 .sheet{box-sizing:border-box;width:210mm;height:297mm;padding:14mm 14mm 18mm;page-break-after:always;break-after:page;overflow:hidden;position:relative;background:#05070b}
 .sheet:last-child{page-break-after:auto;break-after:auto}
 .sheet--bleed{padding:0}
-.sheet--split{display:grid;grid-template-columns:1.05fr .95fr;gap:8mm;align-items:stretch}
-.sheet--split .plate img{height:210mm;width:100%;object-fit:cover}
-.plate--seal{position:absolute;right:14mm;bottom:22mm;width:52mm}
-.plate--seal img{height:52mm;width:52mm;object-fit:cover;border:.25pt solid #d8b46a}
+.sheet--stack .plate{margin:0 0 6mm}
+.sheet--stack .plate img{height:108mm;width:100%;object-fit:contain;object-position:center top}
+.plate--seal{position:absolute;right:14mm;bottom:22mm;width:42mm}
+.plate--seal img{height:42mm;width:42mm;object-fit:cover;border:.25pt solid #d8b46a}
 .plate img{display:block;width:100%;height:auto;border:.25pt solid #d8b46a;background:#05070b}
 .plate--cover img{height:297mm;width:210mm;object-fit:cover;border:0}
-.plate--wheel img{width:140mm;margin:0 auto}
+.plate--wheel img{width:148mm;margin:0 auto 4mm}
+.letter-beat{margin:0 0 4.2mm;padding-bottom:3.2mm;border-bottom:.25pt solid rgba(216,180,106,.28)}
+.letter-beat:last-of-type{border-bottom:0}
+.letter-beat small{display:block;margin:0 0 1.4mm;font:700 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#d8b46a}
+.letter-beat .fact{margin:0 0 1.2mm;font-size:8.2pt}
+.letter-beat .reflect{margin:0;font-size:12.2pt;line-height:1.38}
 .overlay{position:absolute;left:14mm;right:14mm;bottom:16mm}
 .brand{font:600 9pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#d8b46a;margin:0 0 6mm}
 .display{font:600 32pt/1.05 "Cormorant Garamond",Georgia,serif;margin:0 0 5mm;color:#f2ecdf}
@@ -775,7 +790,8 @@ html,body{margin:0;background:#05070b;color:#f2ecdf}
 .reflect--lead{font-size:16.5pt}
 .running{position:absolute;left:14mm;right:14mm;bottom:8mm;font:8pt/1.3 "IBM Plex Mono",ui-monospace,monospace;color:#d8b46a;letter-spacing:.04em}
 .demo{position:absolute;top:10mm;left:14mm;right:14mm;font:700 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#d8b46a;border:.25pt solid #d8b46a;padding:2mm 3mm}
-.legal{font:8pt/1.4 "Schibsted Grotesk",Arial,sans-serif;color:#b9c8dc;border-top:.25pt solid #d8b46a;padding-top:4mm;margin-top:10mm}
+.legal{font:8pt/1.4 "Schibsted Grotesk",Arial,sans-serif;color:#b9c8dc;border-top:.25pt solid #d8b46a;padding-top:4mm;margin-top:8mm;max-width:132mm}
+.sheet[data-page="6"]{padding-bottom:26mm}
 table.placements{width:100%;border-collapse:collapse;font:9pt/1.4 "IBM Plex Mono",ui-monospace,monospace;color:#f2ecdf;margin:4mm 0}
 table.placements caption{caption-side:top;text-align:left;font:600 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#d8b46a;padding-bottom:3mm}
 table.placements th,table.placements td{text-align:left;padding:1.6mm 2mm;border-bottom:.25pt solid rgba(216,180,106,.35);vertical-align:top}
@@ -789,6 +805,7 @@ tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #ff6428;font-weight:7
     <p class="brand">AstroPrecise · Your Eclipse Edition</p>
     <h1 class="display display--cover">${contactLabel} · ${contactAspect}</h1>
     <p class="fact">${contactOrb} from natal ${contactLabel} · eclipse ${eclipseDegree} · 12 August 2026</p>
+    ${model.governsCore ? `<p class="reflect">${escapeHtml(model.governsCore)}</p>` : ''}
     <p class="fact">${fp}</p>
   </div>
 </section>
@@ -799,8 +816,8 @@ tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #ff6428;font-weight:7
   <p class="fact fact--caption">Greatest 17:45:51 UTC. London schematic: 19:12 BST, magnitude 0.91, about 90% of the solar disc. Distances compressed. Not a ground-track. Not your local sky unless you were there. Eclipse point as computed: ${eclipseDegree}.</p>
   <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 2 / 6</p>
 </section>
-<section class="sheet sheet--split" data-page="3">
-  <figure class="plate"><img src="${aspect}" alt="Contact geometry between the eclipse and the natal point"></figure>
+<section class="sheet sheet--stack" data-page="3">
+  ${aspect ? `<figure class="plate"><img src="${aspect}" alt="Contact geometry between the eclipse and the natal point"></figure>` : ''}
   <div class="copy">
     <h1 class="display">${contactLabel}</h1>
     <p class="reflect">${escapeHtml((model.beats[1] && model.beats[1].serif) || '')}</p>
@@ -810,7 +827,7 @@ tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #ff6428;font-weight:7
   </div>
   <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 3 / 6</p>
 </section>
-<section class="sheet ${houses ? 'sheet--split' : ''}" data-page="4">
+<section class="sheet ${houses ? 'sheet--stack' : ''}" data-page="4">
   ${houses ? `<figure class="plate"><img src="${houses}" alt="Whole-sign houses with the contacted house marked"></figure>` : ''}
   <div class="copy">
     <h1 class="display">${houseTitle}</h1>
@@ -828,11 +845,10 @@ tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #ff6428;font-weight:7
   <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 5 / 6</p>
 </section>
 <section class="sheet" data-page="6">
-  <p class="fact">${closeMono}</p>
-  <p class="reflect reflect--lead">${closeSerif}</p>
-  <p class="fact">${escapeHtml(model.anchorSerif || (model.beats[0] && model.beats[0].serif) || '')}</p>
+  <p class="brand">The keepable letter</p>
+  <h1 class="display">Five beats, one night.</h1>
+  ${beatsLetterHtml(model)}
   <footer class="legal">${escapeHtml(model.legal)} · Computed on this device. No birth date, time or place is in this file. Fingerprint ${fp}. Only conjunction, opposition and square within orb carry the reading.</footer>
-  ${disc ? `<figure class="plate plate--seal"><img src="${disc}" alt=""></figure>` : ''}
   <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 6 / 6</p>
 </section>
 ${printOnLoad ? `<script>addEventListener('load',()=>setTimeout(()=>print(),250),{once:true})<\/script>` : ''}
@@ -864,12 +880,17 @@ async function openPrintView(model) {
 function renderUnlocked(host, model) {
   host.dataset.paidState = 'unlocked';
   host.innerHTML = `
-    <div class="ap-eclipse-edition__head"><span>Edition unlocked</span><strong>${escapeHtml(model.fingerprint)}</strong></div>
-    <h3>Your five-beat eclipse edition</h3>
-    <div class="ap-eclipse-edition__reading">${fullReadingHtml(model)}</div>
-    <figure class="ap-eclipse-edition__art"><div data-edition-canvas></div><figcaption>Unique 2400 × 3000 natal-wheel plate from this computed chart contact. No birth details are printed into the file.</figcaption></figure>
-    <div class="ap-eclipse-edition__actions"><button type="button" data-edition-download>Download PNG</button><button type="button" data-edition-print>Print / save as PDF</button></div>
-    <p class="ap-eclipse-edition__status" data-edition-status role="status">Ready on this device.</p>`;
+    <div class="ap-eclipse-edition__unlocked">
+      <div class="ap-eclipse-edition__keep">
+        <div class="ap-eclipse-edition__head"><span>Edition unlocked</span><strong>${escapeHtml(model.fingerprint)}</strong></div>
+        <h3>Your five-beat eclipse edition</h3>
+        <p>The booklet is the keepable object. The plate is the picture of the same contact. Nothing here was uploaded.</p>
+        <div class="ap-eclipse-edition__reading">${fullReadingHtml(model)}</div>
+        <div class="ap-eclipse-edition__actions"><button type="button" data-edition-print>Print / save as PDF</button><button type="button" data-edition-download>Download PNG plate</button></div>
+        <p class="ap-eclipse-edition__status" data-edition-status role="status">Ready on this device.</p>
+      </div>
+      <figure class="ap-eclipse-edition__art"><div data-edition-canvas></div><figcaption>Unique 2400 × 3000 natal-wheel plate from this computed chart contact. No birth details are printed into the file.</figcaption></figure>
+    </div>`;
 
   const canvas = renderEclipseArtwork(model);
   canvas.setAttribute('aria-label', 'Personalised eclipse artwork');

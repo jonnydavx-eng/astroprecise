@@ -22,7 +22,7 @@ a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
 a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
 .serif{font-family:Georgia,'Times New Roman',serif;font-style:italic}
-.wrap{max-width:760px;margin:0 auto;padding:0 22px 90px}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px calc(110px + var(--bottom-nav-h, 72px))}
 h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weight:700;letter-spacing:-.015em}
 .event{border-top:1px solid var(--line);padding:34px 0 30px}
 .kick{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
@@ -125,6 +125,8 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     var ev = function (kick, title, meta, body, myth) {
       out.push('<div class="event"><div class="kick">' + kick + '</div><h2>' + title + '</h2><div class="meta">' + meta + '</div><p>' + body + '</p>' + (myth ? '<div class="myth">' + myth + '</div>' : '') + '</div>');
     };
+    var daysAway = function (n) { return n === 1 ? '1 DAY AWAY' : n + ' DAYS AWAY'; };
+    var inDays = function (n) { return n === 1 ? 'IN 1 DAY' : 'IN ' + n + ' DAYS'; };
     var KEYS = ['mercury', 'venus', 'mars', 'jupiter', 'saturn'];
     var daily = [];
     for (var t = 0; t <= 400; t++) daily.push(E.positions(new Date(now.getTime() + t * DAY)).rows.filter(function (r) { return KEYS.indexOf(r.key) >= 0; }));
@@ -137,7 +139,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     }
     if (best) {
       var dd = new Date(now.getTime() + best.t * DAY);
-      ev('NEXT CONJUNCTION · ' + best.t + ' DAYS AWAY', best.a.name + ' meets ' + best.b.name,
+      ev('NEXT CONJUNCTION · ' + daysAway(best.t), best.a.name + ' meets ' + best.b.name,
         fmt(dd).toUpperCase() + ' · CLOSEST APPROACH ' + best.sep.toFixed(1) + '° · IN ' + best.a.sign.name.toUpperCase(),
         'Two wanderers close to ' + best.sep.toFixed(1) + '° apart in the evening sky — near enough to share one field of view. No instrument needed; look ' + (best.a.sign.name === best.b.sign.name ? 'toward ' + best.a.sign.name : 'along the ecliptic') + ' after dusk.',
         'The ancients read meetings like this as council between gods. You get to just watch.');
@@ -148,7 +150,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     var fmDays = Math.max(1, Math.round((fmDate.getTime() - now.getTime()) / DAY));
     var fmRow = E.positions(fmDate).rows.find(function (r) { return r.key === 'moon'; });
     var ELEM = { Aries: 'fire', Leo: 'fire', Sagittarius: 'fire', Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth', Gemini: 'air', Libra: 'air', Aquarius: 'air', Cancer: 'water', Scorpio: 'water', Pisces: 'water' };
-    ev('NEXT FULL MOON · IN ' + fmDays + ' DAYS', 'Full Moon in ' + fmRow.sign.name,
+    ev('NEXT FULL MOON · ' + inDays(fmDays), 'Full Moon in ' + fmRow.sign.name,
       fmt(fmDate).toUpperCase() + ' · ' + fmRow.sign.deg + '° ' + fmRow.sign.name.toUpperCase(),
       'The Moon reaches opposition — Earth exactly between it and the Sun — fully lit at ' + fmRow.sign.deg + '° ' + fmRow.sign.name + '. It rises at sunset and stays up all night.',
       'A full moon in a ' + ELEM[fmRow.sign.name] + ' sign, the old books say: feelings run ' + ({ fire: 'hot and fast', earth: 'deep and steady', air: 'loud and social', water: 'under everything' })[ELEM[fmRow.sign.name]] + '. Weather, not fate.');
@@ -160,7 +162,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     }
     if (flipT) {
       var sd = new Date(now.getTime() + flipT * DAY);
-      ev('MERCURY STATION · IN ' + flipT + ' DAYS', state0 ? 'Mercury stations direct in ' + flipRow.sign.name : 'Mercury stations retrograde in ' + flipRow.sign.name,
+      ev('MERCURY STATION · ' + inDays(flipT), state0 ? 'Mercury stations direct in ' + flipRow.sign.name : 'Mercury stations retrograde in ' + flipRow.sign.name,
         fmt(sd).toUpperCase() + ' · ' + flipRow.sign.deg + '° ' + flipRow.sign.name.toUpperCase(),
         state0
           ? 'Mercury is retrograde right now and appears to stop and resume forward motion in ' + flipT + ' days. The backward drift is perspective — Earth overtaking a faster inner orbit — and it ends on a computable date.'

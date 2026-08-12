@@ -65,7 +65,9 @@ const printHtml = buildEclipsePrintDocument(first, {
 assert.ok(printHtml.includes(first.fingerprint));
 assert.equal((printHtml.match(/class="sheet/g) || []).length, 6, 'booklet must be six sheets');
 assert.ok(printHtml.includes('Longitudes used for this plate'));
-assert.ok(printHtml.includes('YOUR ECLIPSE EDITION') || printHtml.includes('Your Eclipse Edition'));
+assert.ok(printHtml.includes('Five beats, one night'));
+assert.ok(printHtml.includes('The keepable letter'));
+assert.equal(printHtml.includes('sheet--split'), false, 'booklet must not use the empty split-column plates');
 assert.equal(printHtml.includes('This booklet is built from your computed chart'), false);
 assert.equal(printHtml.includes('Check where it falls'), false);
 assert.equal(printHtml.includes('CENTRES 33px'), false);
