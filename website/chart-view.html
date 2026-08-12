@@ -2,251 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Birth Chart — Astro Precise</title>
-  <meta name="description" content="A privately computed natal chart — VSOP87 precision, rendered on your device." />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Astro Precise" />
-  <meta property="og:title" content="Birth Chart — Astro Precise" />
-  <meta property="og:description" content="A natal chart computed with astronomical precision — free, private, beautiful." />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#08080b" />
-  <link rel="icon" href="favicon.ico" sizes="48x48" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=788" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=752" />
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/fonts.css" />
-  <link rel="stylesheet" href="css/chart-critical.css" />
-  <link rel="stylesheet" href="css/ap-page-bridge.css" />
-  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=752" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="refresh" content="0; url=chart.html" />
+  <meta name="color-scheme" content="dark" />
+  <title>Open your private chart — Astro Precise</title>
   <style>
-    .chart-view-loading {
-      font-family: var(--font-mono, ui-monospace, monospace);
-      font-size: 0.85rem;
-      color: var(--ap-text-muted, #8B919C);
-      letter-spacing: 0.08em;
-      text-align: center;
-      padding: 3rem;
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+      color: #eee8dd;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(72, 106, 145, .2), transparent 42%),
+        #08080b;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main { width: min(36rem, 100%); text-align: center; }
+    p { color: #aeb5c0; line-height: 1.65; }
+    a {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      margin-top: .75rem;
+      padding: .8rem 1.2rem;
+      border: 1px solid rgba(238, 232, 221, .35);
+      border-radius: 999px;
+      color: #f3eee4;
+      text-decoration: none;
     }
   </style>
 </head>
-<body class="page-chart-view ap-enchanted ap-nav-enter">
-
-  <a class="skip-link" href="#main-content">Skip to content</a>
-
-  <header class="site-header" role="banner">
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-        </a>
-      </div>
-    </nav>
-  </header>
-
-  <main id="main-content">
-    <section class="chart-view-hero">
-      <p class="eyebrow">Shared natal chart</p>
-      <h1 class="chart-view-hero__title" id="view-name">Birth Chart</h1>
-      <p class="chart-view-hero__meta" id="view-meta"></p>
-    </section>
-
-    <div class="chart-view-stage">
-      <div class="chart-view-wheel-wrap" id="view-wheel-mount">
-        <p class="chart-view-loading" id="view-loading">Computing chart…</p>
-        <div id="natal-wheel" class="natal-wheel-mount" role="img" aria-label="Natal chart wheel" hidden></div>
-      </div>
-    </div>
-
-    <section class="chart-view-cta" id="view-big-three" hidden>
-      <p id="view-summary"></p>
-      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
-        <a href="chart.html" class="btn btn--primary" id="view-full-link">Explore the full chart →</a>
-        <a href="chart.html" class="btn btn--outline">Cast your own free chart</a>
-      </div>
-      <p style="margin-top:1rem;font-size:0.78rem;color:var(--ap-text-faint);">
-        Computed on your device · VSOP87/ELP2000 · Western tropical/geocentric. Positions are calculated; interpretations and schematic rings are presentation layers (not measured photographs).
-      </p>
-    </section>
+<body>
+  <main>
+    <h1>Opening your private chart</h1>
+    <p>AstroPrecise no longer carries birth details in shared web addresses. Cast or reopen the chart privately on this device.</p>
+    <a href="chart.html">Open the chart studio</a>
   </main>
-
-  <footer class="footer" role="contentinfo">
-    <div class="container" style="text-align:center;padding:2rem 1rem;">
-      <p style="font-size:0.75rem;color:var(--ap-text-muted);">
-        <a href="index.html">Astro Precise</a> · Privacy-first astrology
-      </p>
-    </div>
-  </footer>
-
-  
-  <script src="js/chart-render.js" defer></script>
-  <script src="js/ap-nav-model.js"></script>
-  <script src="js/app.js" defer></script>
-  <script src="js/ephemeris.js"></script>
-<script>
-  (function () {
-    'use strict';
-    /* This page IS a shared chart — it has nothing without one. Since
-       2026-08-09 the share builder puts the record after the '#' instead of the
-       '?', so opening a shared chart no longer sends somebody's birth date,
-       time, town and coordinates to a server in the request line, into the
-       access log, or into the Referer of every asset this page loads next. The
-       query is still read, because links minted before that date are out there.
-       Read from the fragment first, fall back to the query. */
-    var q = null;
-    if (location.hash && location.hash.length > 1) {
-      try {
-        var h = new URLSearchParams(location.hash.slice(1));
-        if (h.get('d') && h.get('lat')) q = h;
-      } catch (eH) { /* malformed fragment */ }
-    }
-    var fromQuery = false;
-    if (!q) { q = new URLSearchParams(location.search); fromQuery = !!(q.get('d') && q.get('lat')); }
-    if (!q.get('d') || !q.get('lat')) {
-      document.getElementById('view-loading').textContent = 'No chart data in this link.';
-      return;
-    }
-    if (fromQuery) {
-      // A legacy link has done its job. Do not leave someone else's birth
-      // record in the address bar to be screenshotted or passed on again.
-      try { history.replaceState(null, '', location.pathname + '#' + q.toString()); } catch (eS) {}
-    }
-
-    var name = q.get('n') || 'Birth Chart';
-    document.getElementById('view-name').textContent = name;
-    document.title = name + ' — Astro Precise';
-    document.querySelector('meta[property="og:title"]').content = name + ' — Astro Precise';
-
-    var meta = q.get('c') || 'Birth place';
-    if (q.get('d')) meta += ' · ' + q.get('d');
-    meta += q.get('t') ? ' · time known' : ' · time unknown — angles withheld';
-    meta += ' · ' + (q.get('hs') || 'equal') + ' house system';
-    document.getElementById('view-meta').textContent = meta;
-
-    // Fragment, not query — chart-page.js restoreFromURL reads it. Handing the
-    // record on in a query here would undo the fix one click later.
-    var fullLink = 'chart.html#' + q.toString();
-    document.getElementById('view-full-link').href = fullLink;
-
-    function civilToUT(y, m, d, hh, mm, zone) {
-      function tzOffsetMin(z, utc) {
-        try {
-          var p = {};
-          new Intl.DateTimeFormat('en-GB', { timeZone: z, year: 'numeric', month: '2-digit', day: '2-digit',
-            hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' })
-            .formatToParts(utc).forEach(function (x) { p[x.type] = x.value; });
-          return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - utc.getTime()) / 60000;
-        } catch (e) { return 0; }
-      }
-      var u = new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
-      for (var i = 0; i < 2; i++) u = new Date(Date.UTC(y, m - 1, d, hh, mm, 0) - tzOffsetMin(zone, u) * 60000);
-      return u;
-    }
-
-    function run() {
-      var E = window.AstroEphemeris;
-      if (!E || !E.calculateNatalChart) {
-        document.getElementById('view-loading').textContent = 'Engine loading…';
-        setTimeout(run, 120);
-        return;
-      }
-      var parts = q.get('d').split('-').map(Number);
-      var y = parts[0], m = parts[1], d = parts[2];
-      var timeKnown = !!q.get('t');
-      var timezoneKnown = false;
-      var zoneParam = q.get('tz') || '';
-      try { if (zoneParam) { new Intl.DateTimeFormat('en-US', { timeZone: zoneParam }).format(); timezoneKnown = true; } } catch (e) { timezoneKnown = false; }
-      if (!timezoneKnown) {
-        document.getElementById('view-loading').textContent = 'This link has no recognised timezone. Recast the chart from the calculator to share a precise view.';
-        return;
-      }
-      var hh = 12, mm = 0;
-      if (q.get('t')) {
-        var t = q.get('t').split(':').map(Number);
-        hh = t[0]; mm = t[1] || 0;
-      }
-      var lat = parseFloat(q.get('lat'));
-      var lon = parseFloat(q.get('lon'));
-      var tz = zoneParam;
-      var hs = q.get('hs') || 'equal';
-      var utY = y, utM = m, utD = d, utH = hh, utMin = mm;
-      if (tz) {
-        var u = civilToUT(y, m, d, hh, mm, tz);
-        utY = u.getUTCFullYear(); utM = u.getUTCMonth() + 1; utD = u.getUTCDate();
-        utH = u.getUTCHours(); utMin = u.getUTCMinutes();
-      }
-      var raw;
-      try {
-        raw = E.calculateNatalChart(utY, utM, utD, utH, utMin, lat, lon, hs);
-      } catch (e) {
-        document.getElementById('view-loading').textContent = 'Could not compute this chart.';
-        return;
-      }
-      var angleKeys = { asc: true, mc: true, ascendant: true, midheaven: true };
-      var cleanAspects = (raw.aspects || []).filter(function (a) {
-        var p1 = String(a.planet1 || a.p1 || '').toLowerCase();
-        var p2 = String(a.planet2 || a.p2 || '').toLowerCase();
-        return timeKnown || (!angleKeys[p1] && !angleKeys[p2]);
-      });
-      var chart = {
-        name: name,
-        birthDate: q.get('d'),
-        birthTime: q.get('t') || null,
-        city: q.get('c') || '',
-        lat: lat, lon: lon, tz: tz,
-        houseSystem: hs,
-        positions: raw.positions,
-        houses: timeKnown ? raw.houses : null,
-        planetHouses: timeKnown ? raw.planetHouses : null,
-        aspects: cleanAspects,
-        ascendant: timeKnown ? raw.ascendant : null,
-        risingSign: timeKnown && raw.ascendant != null && window.AstroEphemeris
-          ? AstroEphemeris.signOf(raw.ascendant) : null,
-        timeKnown: timeKnown,
-        timeAccuracy: q.get('a') || (timeKnown ? 'exact' : 'unknown'),
-        timezoneKnown: timezoneKnown,
-        houseSystem: hs,
-      };
-      var loading = document.getElementById('view-loading');
-      if (!timeKnown) {
-        loading.hidden = true;
-        var withheld = document.getElementById('natal-wheel');
-        withheld.hidden = false;
-        withheld.innerHTML = '<div class="ap-withheld-card" role="status"><strong>Natal wheel angles withheld</strong><span>Birth time is unknown. Planetary signs remain available, but Ascendant, MC, houses and angle aspects are intentionally omitted.</span></div>';
-      } else if (window.AstroChartRender && window.AstroChartRender.renderNatalChart) {
-        loading.hidden = true;
-        var mount = document.getElementById('natal-wheel');
-        mount.hidden = false;
-        window.AstroChartRender.renderNatalChart(
-          { positions: chart.positions, houses: chart.houses, aspects: chart.aspects,
-            name: chart.name, risingSign: chart.risingSign, ascendant: chart.ascendant },
-          'natal-wheel',
-          { title: null, wheelOnly: true, showTable: false, showLegend: false });
-      } else {
-        loading.textContent = 'Wheel renderer unavailable.';
-        return;
-      }
-      var sun = (raw.positions.sun && raw.positions.sun.sign) || '—';
-      var moon = (raw.positions.moon && raw.positions.moon.sign) || '—';
-      var rising = chart.risingSign || 'withheld · exact time needed';
-      document.getElementById('view-summary').textContent =
-        'Sun in ' + sun + ' · Moon in ' + moon + ' · Rising ' + rising;
-      document.getElementById('view-big-three').hidden = false;
-      document.body.classList.add('ap-nav-enter--active');
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', run);
-    } else {
-      run();
-    }
-  })();
+  <script>
+    try { history.replaceState(null, '', 'chart.html'); } catch (_) {}
+    location.replace('chart.html');
   </script>
-<script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

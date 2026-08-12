@@ -601,17 +601,9 @@
         shareBtn.className = 'btn btn--outline';
         shareBtn.textContent = 'Share This Reading ↗';
         shareBtn.addEventListener('click', function() {
-          // Was window.location.href, which until 2026-08-09 meant this button
-          // handed over a QUERY string holding both people's birth dates, times
-          // and coordinates — and put them on the wire the moment the recipient
-          // opened it. The reading still travels (that is what the button is
-          // for) but it travels after the '#', where no server ever sees it.
-          var sp1 = readPerson('person1');
-          var sp2 = readPerson('person2');
-          var url = (sp1 && sp2)
-            ? location.origin + location.pathname + '#' +
-              personParams(personParams(new URLSearchParams(), 'p1', sp1), 'p2', sp2).toString()
-            : location.origin + location.pathname;
+          // Share only the public tool URL. The computed result can be shared
+          // as text, but neither person's birth record belongs in an address.
+          var url = location.origin + location.pathname;
           if (navigator.share) {
             navigator.share({ title: 'Our Compatibility Report', url: url }).catch(function(){});
           } else {
@@ -672,7 +664,7 @@
        survive a reload in this tab — and nothing it should not: same tab, same
        origin, never transmitted, gone when the tab closes. Same channel
        index.html and chart.html already use. */
-    function encodeToURL(p1, p2) {
+    function savePairForSession(p1, p2) {
       try {
         sessionStorage.setItem('ap-compat-pair', JSON.stringify({
           q: personParams(personParams(new URLSearchParams(), 'p1', p1), 'p2', p2).toString(),
@@ -690,15 +682,10 @@
           setTimeout(function() { inviteBtn.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Invite Someone'; }, 2200);
           return;
         }
-        // The invite carries Person A's half to somebody else, so it HAS to be
-        // in the link — but it goes after the '#', not the '?'. A fragment is
-        // never sent to the server: it is not in the request line, not in the
-        // access log, and not in the Referer the invitee's browser sends on to
-        // anything else. Same fields, same reader, one character different.
-        var params = personParams(new URLSearchParams(), 'p1', p1);
-        var link = location.origin + location.pathname + '#' + params.toString();
+        // Invite to the clean tool; Person A's details stay on this device.
+        var link = location.origin + location.pathname;
         var inviteText = (p1.name ? p1.name + ' wants' : 'Someone wants') +
-          ' to check your cosmic compatibility. Their half of the chart is already filled in — add yours: ' + link;
+          ' to check your cosmic compatibility. Open the private calculator and enter both charts on your device: ' + link;
         if (navigator.share) {
           navigator.share({ title: 'Cosmic Compatibility', text: inviteText, url: link }).catch(function(){});
         } else {
@@ -710,42 +697,18 @@
       });
     }
 
-    /* Where a pair can legitimately come from, best first.
-       1. sessionStorage — this tab's own last compute (see encodeToURL).
-       2. The fragment — an invite link. Never reaches the server; taken out of
-          the address bar once read so it is not left sitting there.
-       3. LEGACY ONLY: ?p1d=… — an invite minted before 2026-08-09, which people
-          are holding in WhatsApp threads right now. Honoured, then stripped.
-          Reading a query is safe; creating one was the harm. */
-    function fillFromURL() {
-      var params = new URLSearchParams(window.location.search);
-      var fromURL = params.has('p1d');
-
-      if (!fromURL) {
-        var hash = String(window.location.hash || '').replace(/^#/, '');
-        if (hash.indexOf('p1d=') >= 0) {
-          params = new URLSearchParams(hash);
-          fromURL = params.has('p1d');
+    /* A pair can be restored only from this tab's sessionStorage. */
+    function fillFromSession() {
+      var params = new URLSearchParams();
+      try {
+        var raw = sessionStorage.getItem('ap-compat-pair');
+        if (raw) {
+          var saved = JSON.parse(raw);
+          if (saved && saved.q) params = new URLSearchParams(saved.q);
         }
-      }
-
-      if (!fromURL) {
-        try {
-          var raw = sessionStorage.getItem('ap-compat-pair');
-          if (raw) {
-            var saved = JSON.parse(raw);
-            if (saved && saved.q) params = new URLSearchParams(saved.q);
-          }
-        } catch (e) { /* storage blocked or malformed */ }
-      }
+      } catch (e) { /* storage blocked or malformed */ }
 
       if (!params.has('p1d')) return false;
-
-      // Read, then clear. Nothing personal is left in the address bar for a
-      // screenshot, a bookmark, a synced history entry or the next Referer.
-      if (fromURL) {
-        try { history.replaceState(null, '', window.location.pathname); } catch (e2) {}
-      }
 
       function fillPerson(prefix, pfx) {
         var dateEl = document.getElementById(prefix + '-date');
@@ -919,7 +882,7 @@
         }
       } catch(e) {}
 
-      var preloaded = fillFromURL();
+      var preloaded = fillFromSession();
 
       var form = document.getElementById('compat-form');
       if (!form) return;
@@ -967,7 +930,7 @@
           var chart1 = buildChart(E, p1.y, p1.m, p1.d, p1.hh, p1.mm, p1.lat, p1.lon, p1.tz);
           var chart2 = buildChart(E, p2.y, p2.m, p2.d, p2.hh, p2.mm, p2.lat, p2.lon, p2.tz);
           var result = window.Interpretations.calculateCompatibility(chart1, chart2);
-          encodeToURL(p1, p2);
+          savePairForSession(p1, p2);
           showResult(result, p1.name, p2.name, chart1, chart2);
         } catch(err) {
           if (loadEl) loadEl.classList.add('hidden');

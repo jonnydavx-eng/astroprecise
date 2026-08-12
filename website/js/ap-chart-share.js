@@ -1,6 +1,6 @@
 /**
  * Astro Precise — Chart Save & Share
- * Local persistence feedback + clean shareable URLs (chart-view.html).
+ * Local persistence feedback + privacy-safe chart sharing.
  */
 'use strict';
 
@@ -18,49 +18,8 @@ window.APChartShare = (function () {
     return (name || 'chart').replace(/[^\w]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'chart';
   }
 
-  function isValidTimeZone(tz) {
-    if (typeof tz !== 'string' || !tz.trim()) return false;
-    try { new Intl.DateTimeFormat('en-US', { timeZone: tz }).format(); return true; }
-    catch (e) { return false; }
-  }
-
-  function buildParams(chart, input) {
-    var src = chart || {};
-    var inp = input || {};
-    return {
-      n: src.name || inp.name || 'Shared Chart',
-      d: src.birthDate || (inp.y && inp.m && inp.d
-        ? inp.y + '-' + String(inp.m).padStart(2, '0') + '-' + String(inp.d).padStart(2, '0')
-        : ''),
-      t: (src.birthTime != null ? src.birthTime : (inp.timeKnown ? inp.hh + ':' + inp.mm : '')) || '',
-      c: src.city || inp.city || '',
-      lat: src.lat != null ? String(src.lat) : (inp.lat != null ? String(inp.lat) : ''),
-      lon: src.lon != null ? String(src.lon) : (inp.lon != null ? String(inp.lon) : ''),
-      tz: src.tz || inp.tz || '',
-      hs: src.houseSystem || 'equal',
-      a: src.timeAccuracy || inp.timeAccuracy || (src.timeKnown === true || inp.timeKnown ? 'exact' : 'unknown'),
-    };
-  }
-
-  function buildShareUrl(chart, input, opts) {
-    opts = opts || {};
-    var p = buildParams(chart, input);
-    if (!p.d || !p.lat || !isValidTimeZone(p.tz)) return null;
-    var q = new URLSearchParams();
-    Object.keys(p).forEach(function (k) {
-      if (p[k] !== '' && p[k] != null) q.set(k, p[k]);
-    });
-    var base = opts.interactive !== false ? 'chart.html' : 'chart-view.html';
-    /* After the '#', not the '?'. This link is meant to be shared — that is the
-       whole feature — but until 2026-08-09 it was a query, so the moment the
-       recipient opened it their friend's birth date, time, town and coordinates
-       went out in the request line and into the origin's and the CDN's access
-       logs, into the Referer of everything that page then loaded, and into the
-       service worker's cache key. A fragment is never sent to a server. Same
-       fields, same readers (chart-view.html and chart-page.js restoreFromURL
-       both read the fragment first and the query as legacy), one character
-       different. */
-    return location.origin + location.pathname.replace(/[^/]+$/, '') + base + '#' + q.toString();
+  function buildShareUrl() {
+    return location.origin + location.pathname.replace(/[^/]+$/, '') + 'chart.html';
   }
 
   function planetSign(chart, name) {
@@ -113,7 +72,7 @@ window.APChartShare = (function () {
       '<button type="button" class="btn btn--outline btn--sm" id="copy-link-btn">Copy link</button>' +
       '<a class="btn btn--ghost btn--sm" id="open-view-btn" href="#" target="_blank" rel="noopener">Open view</a>' +
       '<button type="button" class="btn btn--ghost btn--sm" id="ai-share-summary-btn">AI summary</button>' +
-      '<p class="chart-share-strip__note" style="flex-basis:100%;margin:0.35rem 0 0;font-size:0.68rem;color:rgba(236,230,216,.55);">This link carries the birth details (name, date, time, place) so the chart can be recomputed — share it only with people you trust.</p>' +
+      '<p class="chart-share-strip__note" style="flex-basis:100%;margin:0.35rem 0 0;font-size:0.68rem;color:rgba(236,230,216,.55);">The link is clean: it contains no name, birth date, time, place or coordinates.</p>' +
       '<textarea id="chart-share-summary" class="ap-ai-ask-input" rows="2" hidden placeholder="Optional share blurb — edit before sending" style="width:100%;margin-top:0.5rem;font-size:0.8rem;"></textarea>';
     var confirm = document.getElementById('chart-save-confirmation');
     if (confirm && confirm.nextSibling) wrap.insertBefore(el, confirm.nextSibling);
@@ -220,34 +179,11 @@ window.APChartShare = (function () {
     bindShareStripActions();
   }
 
-  function restoreFromQuery(form, onReady) {
-    var q = new URLSearchParams(location.search);
-    if (!q.get('d') || !q.get('lat')) return false;
-    var name = document.getElementById('name-input');
-    var date = document.getElementById('date-input');
-    var time = document.getElementById('time-input');
-    var city = document.getElementById('city-input');
-    var lat = document.getElementById('lat-input');
-    var lon = document.getElementById('lon-input');
-    var tz = document.getElementById('tz-input');
-    if (name) name.value = q.get('n') || 'Shared Chart';
-    if (date) date.value = q.get('d');
-    if (time && q.get('t')) time.value = q.get('t');
-    else if (time) time.value = '';
-    if (city) city.value = q.get('c') || '';
-    if (lat) lat.value = q.get('lat');
-    if (lon) lon.value = q.get('lon');
-    if (tz) tz.value = q.get('tz') || '';
-    var hs = document.getElementById('house-system');
-    if (hs && q.get('hs')) hs.value = q.get('hs');
-    var accuracy = document.getElementById('time-accuracy-input');
-    if (accuracy && /^(exact|approximate|unknown)$/.test(q.get('a') || '')) accuracy.value = q.get('a');
-    if (typeof onReady === 'function') onReady(q);
-    return true;
+  function restoreFromQuery() {
+    return false;
   }
 
   return {
-    buildParams: buildParams,
     buildShareUrl: buildShareUrl,
     bigThreeLine: bigThreeLine,
     saveWithFeedback: saveWithFeedback,

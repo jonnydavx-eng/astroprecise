@@ -52,6 +52,19 @@ for (const path of ['./website/transits.html', './website/this-weeks-sky.html'])
 const privacy = read('./website/privacy.html');
 assert.equal(/refine on map|if you use the map|OpenStreetMap\/Carto/i.test(privacy), false);
 assert.equal(/optional map tiles/i.test(read('./website/terms.html')), false);
+assert.ok(privacy.includes('does not create or accept chart links containing birth details'));
+
+const chartView = read('./website/chart-view.html');
+const chartShare = read('./website/js/ap-chart-share.js');
+const compatibility = read('./website/js/compatibility-page.js');
+assert.equal(/location\.(?:search|hash)|new URLSearchParams/.test(chartView), false,
+  'retired shared-chart route must not consume birth data from an address');
+assert.equal(/location\.(?:search|hash)|chart-view\.html|birth details \(name/.test(chartShare), false,
+  'chart share helper must emit a clean public URL only');
+assert.equal(/location\.hash|new URLSearchParams\(window\.location\.search\)/.test(compatibility), false,
+  'compatibility must not restore a birth pair from an address');
+assert.equal(/location\.hash|new URLSearchParams\(location\.search\)[\s\S]{0,120}(?:get\(['"](?:d|date|time|city|lat|lon)|birth)/.test(chartPage), false,
+  'chart page must not restore birth details from an address');
 
 const serviceWorker = read('./website/sw.js');
 assert.ok(serviceWorker.includes('app|chart-page|horoscope-page'), 'chart-page.js must remain release-critical');
@@ -93,6 +106,14 @@ assert.match(productConfig, /catalogueSkus:\s*\['eclipse-edition'\]/);
 assert.match(productConfig, /id:\s*'eclipse-edition'[\s\S]{0,260}price:\s*7\.00/);
 assert.ok(edition.includes('reading.gateSale || reading.quiet'));
 assert.ok(edition.includes('No manual review and no birth data leaves this browser'));
+assert.ok(eclipse.includes('5.1 MB PDF'));
+assert.equal(/2\.7 MB PDF/.test(eclipse), false);
+assert.equal(/personally\s+reviewed|reviewed before they(?:'|&rsquo;)re sent|a human pass/i.test(read('./website/why.html')), false);
+
+const moment = read('./website/moment.html');
+const saturnReturn = read('./website/saturn-return.html');
+assert.equal(/£8|moment-pack|optional pack|pack later|paid keepsakes/i.test(moment), false);
+assert.equal(/full personalised reading|printable PDF|gift readings|written natal reports/i.test(saturnReturn), false);
 for (const source of [gumroad, gumroadBridge, edition]) {
   assert.equal(/handleUnlockOnLoad|searchParams\.get\(['"]license|[?&]license=/.test(source), false,
     'licence key must never be accepted through a URL');

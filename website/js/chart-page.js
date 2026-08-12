@@ -579,49 +579,23 @@
 
   // ── Restoring a complete chart ────────────────────────────────────────────
 
-  /* Where a full chart restore (n, d, t, c, lat, lon, tz, a, hs) comes from,
-     in priority order. Nothing on this route writes birth data into a
-     network-visible query; deliberate shares use a client-only fragment.
-
-       1. sessionStorage['ap-chart-restore'] — what the saved-chart galleries
-          (charts.html, profile.html) now hand over. Same tab, same origin,
-          never transmitted. Read once and deleted.
-       2. location.hash — a chart somebody deliberately SHARED with this person
-          (buildChartShareUrl). Sharing a chart is the feature; sending
-          it to a server on the way is not, and a fragment is never part of the
-          request line or the Referer. Stripped from the address bar on use.
-       3. location.search — LEGACY. A query string reaches the origin and the
-          CDN access logs and becomes a Cache Storage key, which is why nothing
-          mints one now. Reading a link the visitor already holds is harmless;
-          creating it was the harm. Do not reintroduce a query-string handoff. */
+  /* Full chart restores are local-only. Saved-chart galleries hand this page
+     sessionStorage['ap-chart-restore']; it is read once and deleted. Birth
+     details are never accepted from either part of the address bar. */
   function readRestoreParams() {
     try {
       const raw = sessionStorage.getItem('ap-chart-restore');
       if (raw) {
         sessionStorage.removeItem('ap-chart-restore');
-        return { q: new URLSearchParams(raw), fromUrl: false };
+        return new URLSearchParams(raw);
       }
     } catch { /* storage blocked or malformed — fall through */ }
-
-    if (location.hash && location.hash.length > 1) {
-      try {
-        const h = new URLSearchParams(location.hash.slice(1));
-        if (h.get('d') && h.get('lat')) return { q: h, fromUrl: true };
-      } catch { /* malformed fragment — fall through */ }
-    }
-
-    return { q: new URLSearchParams(location.search), fromUrl: true };
+    return null;
   }
 
-  function restoreFromURL() {
-    const { q, fromUrl } = readRestoreParams();
-    if (!q.get('d') || !q.get('lat')) return;
-    // A legacy link has served its purpose the moment it is read. Take it out
-    // of the address bar rather than leave someone's birth record on screen to
-    // be screenshotted, bookmarked or handed on with the next link they click.
-    if (fromUrl) {
-      try { history.replaceState(null, '', location.pathname); } catch { /* pre-history browser */ }
-    }
+  function restoreFromPrivateStorage() {
+    const q = readRestoreParams();
+    if (!q || !q.get('d') || !q.get('lat')) return;
     document.getElementById('name-input').value = q.get('n') || 'Shared Chart';
     openOptionalName();
     const [y, m, d] = q.get('d').split('-').map(Number);
@@ -655,22 +629,9 @@
     form.requestSubmit();
   }
 
-  /* Where the homepage handoff comes from, in priority order. The first two
-     never touch the network; the third is only there so links minted before
-     2026-08-08 keep working.
-
-       1. sessionStorage['ap-chart-handoff'] — what index.html writes. Same
-          tab, same origin, never transmitted. Read once and deleted, so the
-          details do not sit in the tab after they have been used.
-       2. location.hash (#date=&time=&city=) — LEGACY ONLY. Current Home never
-          writes birth details into the address bar, even when storage is blocked.
-       3. location.search (?date=&time=&city=) — LEGACY ONLY. As of 2026-08-09
-          nothing on this site mints one: lifepath.html, profile.html and
-          js/charts-dashboard.js were the last three and now hand over in
-          sessionStorage. A visitor may still have an old link bookmarked.
-          Reading it is safe; the harm was in *creating* it, because a query
-          string is written into the origin's and the CDN's access logs and
-          becomes a Cache Storage key. Do not reintroduce a query handoff. */
+  /* Homepage handoff is local-only. It is consumed once from sessionStorage;
+     storage-blocked visitors re-enter details instead of exposing them in a
+     query string or fragment. */
   function readHandoff() {
     let src = null;
 
@@ -683,29 +644,12 @@
       }
     } catch { /* storage blocked or malformed — fall through */ }
 
-    if (!src && location.hash && location.hash.length > 1) {
-      try {
-        const h = new URLSearchParams(location.hash.slice(1));
-        if (h.get('date') || h.get('time') || h.get('city')) {
-          src = { date: h.get('date'), time: h.get('time'), city: h.get('city') };
-          // Take it out of the address bar: it is used, and a fragment left
-          // lying there gets copied, screenshotted and shared.
-          history.replaceState(null, '', location.pathname + location.search);
-        }
-      } catch { /* malformed fragment — ignore */ }
-    }
-
-    if (!src) {
-      const q = new URLSearchParams(location.search);
-      src = { date: q.get('date'), time: q.get('time'), city: q.get('city') };
-    }
-
-    return src;
+    return src || {};
   }
 
   /* Handoff from the homepage coupon.
-     Distinct from restoreFromURL(), which restores a complete shared chart
-     (?d=&lat=…) and submits it.
+     Distinct from restoreFromPrivateStorage(), which restores a complete
+     locally saved chart and submits it.
 
      Until 2026-08-08 this function read ONLY `date`, so a homepage form that
      collected a town and a time threw both away and made the visitor type them
@@ -724,8 +668,8 @@
          visitor confirms the exact place — which is what the homepage coupon
          promises in so many words.
 
-     Nothing already filled is overwritten: a restored draft or a shared-chart
-     URL always wins over the handoff. */
+     Nothing already filled is overwritten: a restored local draft always wins
+     over the handoff. */
   function prefillFromHandoff() {
     try {
       const routeQuery = new URLSearchParams(location.search);
@@ -1477,27 +1421,8 @@
     };
   }
 
-  function buildChartShareUrl(chart) {
-    if (!chart || !chart.birthDate || chart.lat == null || chart.lon == null || !isValidTimeZone(chart.tz)) {
-      return location.href;
-    }
-    const params = new URLSearchParams();
-    const fields = {
-      n: chart.name || 'Shared Chart',
-      d: chart.birthDate,
-      t: chart.birthTime || '',
-      c: chart.city || '',
-      lat: String(chart.lat),
-      lon: String(chart.lon),
-      tz: chart.tz,
-      hs: chart.houseSystem || 'equal',
-      a: chart.timeAccuracy || (hasKnownBirthTime(chart) ? 'exact' : 'unknown'),
-    };
-    Object.keys(fields).forEach(function (key) {
-      if (fields[key] !== '') params.set(key, fields[key]);
-    });
-    const page = hasKnownBirthTime(chart) ? 'chart-view.html' : 'chart.html';
-    return location.origin + location.pathname.replace(/[^/]+$/, '') + page + '#' + params.toString();
+  function buildChartShareUrl() {
+    return location.origin + location.pathname.replace(/[^/]+$/, '') + 'chart.html';
   }
 
   document.getElementById('save-btn')?.addEventListener('click', () => {
@@ -1524,7 +1449,7 @@
       '<span>Saved on this device — <a href="charts.html">open My Charts →</a></span>';
   });
 
-  // Share Chart → beautiful chart-view link (preferred) or image via Web Share API.
+  // Share Chart → generated image + non-sensitive result summary + clean link.
   document.getElementById('share-btn')?.addEventListener('click', async () => {
     if (!currentChart) return;
     const shareUrl = buildChartShareUrl(currentChart);
@@ -2592,7 +2517,7 @@
   // Run exactly once. This script is `defer`, so when it executes readyState is
   // already 'interactive' — without the guard BOTH the readyState branch and the
   // later DOMContentLoaded listener fired, double-wiring the accordion/node toggle
-  // and calling restoreFromURL()→requestSubmit() twice.
+  // and calling restoreFromPrivateStorage()→requestSubmit() twice.
   let booted = false;
   function initFormInteractions() {
     const accuracyInput = document.getElementById('time-accuracy-input');
@@ -2764,7 +2689,7 @@
     initAdvancedAccordion();
     initPersonalMemory();
     initFormInteractions();
-    restoreFromURL();
+    restoreFromPrivateStorage();
     prefillFromHandoff();
   }
   if (document.readyState === 'loading') {
