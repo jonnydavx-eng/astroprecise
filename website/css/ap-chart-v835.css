@@ -150,7 +150,7 @@ body.page-chart {
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: linear-gradient(90deg, var(--chart-void) 0 43%, rgba(2, 3, 7, 0.78) 68%, var(--chart-void) 100%);
+  background: linear-gradient(90deg, var(--chart-void) 0 38%, rgba(2, 3, 7, 0.62) 68%, var(--chart-void) 100%);
 }
 
 .page-chart .chart-hero__cosmic-art {
@@ -158,8 +158,8 @@ body.page-chart {
   z-index: -2;
   inset: 0 0 0 42%;
   background: url("../img/editorial/natal-plate-editorial.webp") 52% 48% / cover no-repeat;
-  filter: saturate(0.48) contrast(1.16) brightness(0.58);
-  opacity: 0.72;
+  filter: saturate(0.62) contrast(1.1) brightness(0.72);
+  opacity: 0.84;
 }
 
 .page-chart .chart-hero .container {

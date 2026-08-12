@@ -1,25 +1,30 @@
 /**
  * Classic-script bridge for Gumroad checkout (window.APGumroad).
- * v841 — product_id verification, dormant checkout, single eclipse edition.
+ * v841 — separate public permalink and License API product_id, dormant
+ * checkout, single eclipse edition.
  *
- * Owner: replace REPLACE_ME with a real Gumroad product_id.
- * License API verify step uses product_id, not permalink.
+ * Owner: replace BOTH placeholders. Checkout uses permalink; license
+ * verification uses product_id. One identifier never substitutes for the other.
  */
 (function (w) {
   'use strict';
 
   var PRODUCTS = {
-    'eclipse-edition': { productId: 'REPLACE_ME', price: '£7' },
+    'eclipse-edition': { permalink: 'REPLACE_ME', productId: 'REPLACE_ME', price: '£7' },
   };
 
   function resolveSlug(slug) {
     return slug;
   }
 
+  function configured(value) {
+    return !!(value && value !== 'REPLACE_ME' && String(value).indexOf('REPLACE') < 0);
+  }
+
   function isReady(slug) {
     var key = resolveSlug(slug);
     var p = PRODUCTS[key] || PRODUCTS[slug];
-    return !!(p && p.productId && p.productId !== 'REPLACE_ME' && String(p.productId).indexOf('REPLACE') < 0);
+    return !!(p && configured(p.permalink) && configured(p.productId));
   }
 
   function openCheckout(slug) {
@@ -30,10 +35,10 @@
         w.AP_openEmailCapture('shop_gumroad_' + slug);
         return false;
       }
-      console.warn('[APGumroad] productId not set for', slug, '— checkout stays dormant.');
+      console.warn('[APGumroad] permalink and productId are not both set for', slug, '— checkout stays dormant.');
       return false;
     }
-    w.location.href = 'https://gumroad.com/l/' + p.productId + '?wanted=true';
+    w.location.href = 'https://gumroad.com/l/' + encodeURIComponent(p.permalink) + '?wanted=true';
     return true;
   }
 
@@ -47,7 +52,7 @@
   function verifyLicense(licenseKey, slug) {
     var key = resolveSlug(slug);
     var p = PRODUCTS[key] || PRODUCTS[slug];
-    if (!p || !p.productId || p.productId === 'REPLACE_ME') {
+    if (!p || !isReady(slug)) {
       return Promise.resolve({ valid: false, reason: 'Product not configured.' });
     }
     if (!licenseKey || typeof licenseKey !== 'string' || licenseKey.length < 8) {

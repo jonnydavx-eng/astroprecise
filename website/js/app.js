@@ -1452,7 +1452,7 @@ window.AP_MON = Object.assign({
   // Price shown on the chart-page Deep Reading CTA — e.g. '£29'. Blank = no price
   // displayed (honesty: never show a price until the product is live and it matches
   // the storefront listing exactly).
-  deepReadingPrice: '£12',
+  deepReadingPrice: '',
   // Compatibility "Full Synastry" unlock — the compatibility page keeps the top 8
   // cross-chart aspects + category scores + overview FREE; the rest unlock here.
   // A PayPal payment link (PAYPAL-SETUP.md) that redirects back to compatibility.html?unlocked=1.
@@ -1513,15 +1513,7 @@ window.AP_MON = Object.assign({
     // Flip to 'full' when prints, apparel, gifts & jewellery return.
     // Checkout: Gumroad permalinks in js/gumroad-unlock.js (REPLACE_ME = dormant).
     cataloguePhase: 'pdf-only',
-    catalogueSkus:  [
-      'eclipse-reading',
-      'eclipse-set',
-      'deep-reading',
-      'plate',
-      'sky-pass',
-      'natal-poster-pdf',
-      'moment-pack',
-    ],
+    catalogueSkus: ['eclipse-edition'],
 
     // ── COLLECTIONS — the architecture of the sky ─────────────────────────
     // Every piece belongs to one collection. Re-themed from TBP's tree to
@@ -1651,22 +1643,22 @@ window.AP_MON = Object.assign({
         icon:         'book',
       },
       {
-        id:           'eclipse-reading',
+        id:           'eclipse-edition',
         available:    false,
         featured:     true,
-        name:         'Eclipse Night Reading — Digital',
+        name:         'Your Eclipse Edition',
         type:         'digital',
         collection:   'theReading',
-        price:        2.99,
+        price:        7.00,
         personalized: true,
         badge:        '12 Aug 2026',
-        marketingLine:'Where the eclipse touches your chart — or we say it doesn’t, before you pay.',
-        previewImage: 'img/editorial/eclipse-launch-2026-v835.webp',
+        marketingLine:'Five-beat eclipse-contact reading and unique high-resolution artwork — only for a direct contact.',
+        previewImage: 'img/editorial/eclipse-edition-art-v841.png',
         sampleUrl:    'eclipse.html',
-        blurb:        'On 12 August 2026 the UK and Ireland see roughly 90–96% coverage. Totality crosses northern Russia, Greenland, Iceland, Spain and a small corner of Portugal. This five-beat reading maps the eclipse against your computed birth chart and says plainly when no direct contact is present. Checkout remains closed until delivery is verified.',
+        blurb:        'The free instrument checks the 12 August 2026 eclipse against your computed birth chart first. A direct contact can unlock all five authored beats, a deterministic 2400 × 3000 artwork, PNG download and print/save-as-PDF view. Quiet charts are never sold an edition.',
         icon:         'sunhigh',
-        fulfilUrl:    '',   // Gumroad permalink via js/gumroad-unlock.js (eclipse-reading); '' = dormant
-        gumroadSlug:  'eclipse-reading',
+        fulfilUrl:    '',   // Gumroad identifiers live in js/gumroad-unlock.js; placeholders keep this dormant
+        gumroadSlug:  'eclipse-edition',
         detailsForm:  '',
       },
       {

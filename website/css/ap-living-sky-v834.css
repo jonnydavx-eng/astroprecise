@@ -192,7 +192,7 @@ body.ap-live-home { background-attachment: fixed; }
   justify-content: center;
   padding: clamp(30px, 5vw, 76px) clamp(22px, 3.7vw, 58px);
   border-right: 1px solid var(--ap-line);
-  background: linear-gradient(90deg, rgba(5, 7, 11, 0.98), rgba(5, 7, 11, 0.82));
+  background: linear-gradient(90deg, rgba(8, 11, 17, 0.97), rgba(7, 10, 16, 0.79));
 }
 .ap-live-eyebrow, .ap-panel-label, .eyebrow, .lbl, .chap-tag, .chap-note {
   margin: 0;
@@ -249,9 +249,9 @@ body.ap-live-home { background-attachment: fixed; }
   min-height: 520px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 48%, rgba(34, 55, 92, 0.22), transparent 43%),
+    radial-gradient(circle at 50% 48%, rgba(46, 72, 112, 0.32), transparent 45%),
     radial-gradient(circle at 50% 48%, var(--sky-halo), transparent 72%),
-    #020307;
+    #03050a;
 }
 .ap-model-stage::before {
   content: '';
@@ -315,7 +315,7 @@ body.ap-live-home { background-attachment: fixed; }
   overflow: auto;
   padding: clamp(22px, 3vw, 42px) clamp(18px, 2.5vw, 34px);
   border-left: 1px solid var(--ap-line);
-  background: linear-gradient(270deg, rgba(5, 7, 11, 0.98), rgba(8, 12, 19, 0.9));
+  background: linear-gradient(270deg, rgba(8, 11, 17, 0.97), rgba(12, 17, 26, 0.92));
   scrollbar-width: thin;
   scrollbar-color: var(--ap-line-strong) transparent;
 }

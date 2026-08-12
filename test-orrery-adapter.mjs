@@ -82,6 +82,8 @@ if (!/function frameBody\(t\)\s*\{\s*let announceInstrumentFirstFrame = false;/.
   fail('Home first-frame announcement state is scoped inside the render body');
 }
 if (!/if \(composer\) composer\.render\(\);\s*else renderer\.render\(scene, camera\);\s*if \(announceInstrumentFirstFrame\) dispatchOrreryFirstFrame\(\);/.test(W)) {
+  fail('Home announces first frame before the settled buffer is rendered');
+}
 if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 96 : 84;') || !W.includes('camRadius: SYSTEM_CAM_RADIUS, camMin: 48')) {
   fail('System camera no longer frames all eight major worlds');
 }
@@ -91,8 +93,6 @@ if (!W.includes('!portraitMode && !focusFrameId')) {
 if (!W.includes('!dragging && !focusFrameId && !freeExploreMode')) {
   fail('Home resize can still retarget an outer-planet portrait to Earth');
 }
-  fail('Home announces first frame before the settled buffer is rendered');
-}
 
 /* 3. Exactly one general model, with status outside its canvas. */
 const htmlFiles = readdirSync(root).filter((name) => name.endsWith('.html'));
@@ -101,9 +101,9 @@ if (modelOwners.length !== 1 || modelOwners[0] !== 'index.html') {
   fail('general orrery owners must be index.html only: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=841/.test(indexHtml)) fail('Home missing v841 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=841"/.test(indexHtml)) {
-  fail('Home missing exact v841 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=845/.test(indexHtml)) fail('Home missing v845 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=845"/.test(indexHtml)) {
+  fail('Home missing exact v845 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
@@ -129,6 +129,37 @@ for (const probe of ['.ap-mobile-flight-deck', '.ap-model-stage.is-model-ready .
   if (!homeCss.includes(probe)) fail('Home launch-state CSS missing: ' + probe);
 }
 ok('Home phone deck exposes every destination without covering the model');
+
+/* 3b. The opt-in movie journey reuses the flagship model and never auto-opens. */
+const cosmicJs = readFileSync(join(root, 'js', 'ap-cosmic-flight-tool.js'), 'utf8');
+const cosmicCss = readFileSync(join(root, 'css', 'ap-cosmic-flight.css'), 'utf8');
+for (const probe of [
+  'id="ap-cosmic-flight-launch"',
+  'css/ap-cosmic-flight.css?v=845',
+  'js/ap-cosmic-flight-tool.js?v=845',
+]) {
+  if (!indexHtml.includes(probe)) fail('Home cosmic-flight doorway missing: ' + probe);
+}
+for (const probe of [
+  'document.querySelector(".ap-model-stage")',
+  'instrument.classList.add("ap-cf-promoted")',
+  'instrument.classList.remove("ap-cf-promoted")',
+  'O.startCosmicFlight',
+  'O.startSpaceFlight',
+  'window.Orrery3D && window.Orrery3D.isWebGL',
+  '}, 600);',
+  'prefers-reduced-motion: reduce',
+  'motionQuery.addEventListener("change"',
+]) {
+  if (!cosmicJs.includes(probe)) fail('same-model cosmic flight contract missing: ' + probe);
+}
+if (/createElement\(["']canvas["']\)/.test(cosmicJs)) fail('cosmic flight creates a second competing model canvas');
+if (/appendChild\(instrument\)|insertBefore\(instrument/.test(cosmicJs)) fail('cosmic flight disconnects the live custom element');
+if (/cosmic=1|location\.search/.test(cosmicJs)) fail('cosmic flight can still auto-open from the URL');
+for (const probe of ['.ap-orrery-cosmic-flight', '.ap-cf-toolbar', '@media (max-width: 720px)']) {
+  if (!cosmicCss.includes(probe)) fail('cosmic-flight responsive CSS missing: ' + probe);
+}
+ok('cosmic flight is explicit, reduced-motion aware and reuses the one flagship model');
 
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
@@ -167,7 +198,7 @@ for (const probe of ["['eclipse.html', 'Eclipse', 'eclipse']", '(min-width: 981p
 }
 if (!livingCss.includes('repeat(5, minmax(0, 1fr))')) fail('mobile navigation is not five equal tabs');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v841"')) fail('service worker release identity is not ap-v840');
+if (!sw.includes('const V = "ap-v845"')) fail('service worker release identity is not ap-v845');
 ok('shared shell exposes five routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
@@ -192,7 +223,7 @@ const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'u
 const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=841',
+  'js/ap-eclipse-live-v834.js?v=842',
     'css/ap-eclipse-live-v834.css?v=841',
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);

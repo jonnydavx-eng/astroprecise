@@ -16,7 +16,7 @@
  *   - If NO saved chart exists, renders a graceful "cast & save a chart" card —
  *     never fabricates a chart.
  *   - A gentle, privacy-clean visit-streak counter ("Day 7 — seven days running").
- *   - A quiet, dormant-safe tease toward the Deep Reading (reuses AP_MON; no
+ *   - A quiet, free path toward the eclipse-contact instrument (no
  *     invented prices or links).
  *
  * Honesty + determinism rules (website/CLAUDE.md): all positions come from the
@@ -676,9 +676,9 @@
     document.head.appendChild(s);
   }
 
-  // A REAL excerpt of this chart's Deep Reading, tied to today's strongest transit:
+  // A real excerpt from this chart's interpretation engine, tied to today's strongest transit:
   // the first sentence of the genuine interpretation for the natal placement being
-  // aspected. Same engine that writes the paid 13-page PDF — honest by construction.
+  // aspected. This stays free and leads into the launch eclipse instrument.
   function deepTeaserSnippet(reading) {
     var I = window.AstroInterpretations;
     if (!I || typeof I.getPlanetInterpretation !== 'function') return null;
@@ -697,25 +697,15 @@
 
   function renderTease() {
     var reading = _reading;
-    var M = window.AP_MON || {};
-    var url = typeof M.deepReadingUrl === 'string' ? M.deepReadingUrl.trim()
-            : (typeof M.reportUrl === 'string' ? M.reportUrl.trim() : '');
-    var hasUrl = /^https?:\/\//i.test(url);
-    // Price renders ONLY if the owner sets it (honesty — never a fabricated number).
-    var price = typeof M.deepReadingPrice === 'string' ? M.deepReadingPrice.trim() : '';
-    var ctaLink = hasUrl
-      ? ' <a class="dt-tease__link" href="' + esc(url) + '" target="_blank" rel="noopener sponsored" data-mon="report">Unlock your Deep Reading' + (price ? ' — ' + esc(price) : '') + ' →</a>'
-      : ' <a class="dt-tease__link" href="#" data-mon="report" data-mon-mode="hide" style="display:none">Unlock your Deep Reading →</a>';
-    var soon = hasUrl ? '' : '<span class="dt-tease__soon">Full written readings open soon.</span> ';
+    var ctaLink = ' <a class="dt-tease__link" href="eclipse.html#contact">Compare this chart with the eclipse →</a>';
 
     var snip = reading ? deepTeaserSnippet(reading) : null;
     if (snip) {
       return '<div class="dt-tease dt-tease--rich">' +
-        '<p class="dt-tease__eyebrow">From your Deep Reading</p>' +
+        '<p class="dt-tease__eyebrow">From your saved chart</p>' +
         '<p class="dt-tease__excerpt">' + esc(snip.natName) + ' in ' + esc(snip.sign) + ' &mdash; ' + esc(snip.open) + '</p>' +
-        '<p class="dt-tease__lock">Your full reading unpacks how your ' + esc(snip.sign) + ' ' + esc(snip.natName) +
-          ' plays out across love, work and the year ahead&hellip;</p>' +
-        '<p class="dt-tease__cta">' + soon + ctaLink + '</p>' +
+        '<p class="dt-tease__lock">Now see whether the 12 August eclipse makes a direct contact with this chart.</p>' +
+        '<p class="dt-tease__cta">' + ctaLink + '</p>' +
       '</div>';
     }
 
@@ -723,8 +713,7 @@
     if (reading && reading.natal && reading.aspects && reading.aspects.length && !window.AstroInterpretations) {
       ensureInterp(function () { try { refresh(); } catch (e) {} });
     }
-    var line = 'This is the surface. Your Deep Reading goes pages deeper into why ' +
-      'these transits land the way they do.';
+    var line = 'This is today’s surface. Compare the saved chart with the 12 August eclipse.';
     return '<p class="dt-tease">' + line + ctaLink + '</p>';
   }
 

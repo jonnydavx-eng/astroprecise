@@ -1,4 +1,5 @@
 import { buildEclipseReading5 } from './eclipse-reading.js';
+import { mountEclipseEdition } from './ap-eclipse-edition-v841.js';
 
 // NASA GSFC Besselian elements: greatest eclipse 17:45:51 UT.
 const EVENT_UTC_MS = Date.UTC(2026, 7, 12, 17, 45, 51);
@@ -168,16 +169,19 @@ function beatMarkup(number, title, beat) {
   return `<li><span>${String(number).padStart(2, '0')}</span><div><strong>${esc(title)}</strong>${beat.mono ? `<p class="ap-eclipse-result__mono">${esc(beat.mono)}</p>` : ''}${beat.serif ? `<p>${esc(beat.serif)}</p>` : ''}${secondary}</div></li>`;
 }
 
-function renderReading(reading, meta) {
+function renderReading(reading, meta, eclipseLongitude) {
   const result = byId('eclipseResult');
   byId('eclipseResultState').textContent = reading.gateSale ? 'Quiet chart · no direct contact' : 'Direct eclipse contact found';
-  const beats = [
-    ['Anchor', reading.anchor],
-    ['Contact', reading.contact],
-    ['What it touches', reading.governs],
-    ['Reflection', reading.question],
-    ['Close', reading.close],
-  ];
+  const beats = reading.gateSale
+    ? [
+        ['Anchor', reading.anchor],
+        ['Contact', reading.contact],
+        ['Close', reading.close],
+      ]
+    : [
+        ['Anchor', reading.anchor],
+        ['Contact', reading.contact],
+      ];
   let visibleNumber = 0;
   byId('eclipseContactRows').innerHTML = beats.map(([title, beat]) => {
     if (!beat) return '';
@@ -188,6 +192,11 @@ function renderReading(reading, meta) {
     ? 'The supplied birth time was used.'
     : 'Birth time was unknown, so Moon, Ascendant, Midheaven and house claims were withheld.';
   byId('eclipseResultNote').textContent = `${meta.label}. ${timeNote} Placements and distances are computed; the meaning is traditional reflection, not prediction.`;
+  mountEclipseEdition(byId('eclipseEdition'), {
+    reading,
+    natal: meta.natal,
+    eclipseLongitude,
+  });
   result.dataset.quiet = reading.gateSale ? 'true' : 'false';
   result.hidden = false;
   try { result.focus({ preventScroll: true }); } catch (_) { result.focus(); }
@@ -233,7 +242,7 @@ async function init() {
   }
   const [engine, templates] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=835').then((response) => {
+    fetch('js/reading-templates.json?v=841').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
@@ -258,12 +267,17 @@ async function init() {
         timed: meta.timeKnown,
         quietGateDeg: 5,
       });
-      renderReading(reading, meta);
+      renderReading(reading, meta, eclipseLongitude);
     } catch (error) {
       const result = byId('eclipseResult');
       byId('eclipseResultState').textContent = 'Could not compute';
       byId('eclipseContactRows').innerHTML = '';
       byId('eclipseResultNote').textContent = error && error.message ? error.message : 'Check the birth details and try again.';
+      const edition = byId('eclipseEdition');
+      if (edition) {
+        edition.hidden = true;
+        edition.innerHTML = '';
+      }
       result.hidden = false;
     }
   });

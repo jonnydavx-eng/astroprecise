@@ -1,7 +1,7 @@
 /**
  * Astro Precise — eclipse hub page controller (ES module)
  * Wires buildEclipseReading5 to a saved chart or a one-shot birth form.
- * Honesty: quiet charts set gateSale — no primary £2.99 CTA.
+ * Honesty: quiet charts set gateSale and are never sold an edition.
  */
 import { buildEclipseReading5 } from './eclipse-reading.js';
 
@@ -118,28 +118,22 @@ function renderReading(host, reading, meta) {
     html += `<div class="ecl-reading__gate warn" role="status">`;
     // "within the honest orb gate" was both jargon and, alongside a receipt that
     // may name a contact 0°25′ away, untrue. The gate is about DIRECT contacts.
-    html += `<strong>A quiet one — so we won&rsquo;t push the £2.99 Night Reading at you.</strong>`;
-    html += `<p>This eclipse makes no direct contact with your placements. That&rsquo;s a real answer, not a smaller one — and your chart is no less yours for it. The <a href="shop.html#eclipse-set">£6 Eclipse Set</a> is a better fit if you want something for the night, or just keep the free tools. Nothing is on sale yet either way.</p>`;
+    html += `<strong>A quiet one — so there is no paid edition to sell you.</strong>`;
+    html += `<p>This eclipse makes no direct contact with your placements. That&rsquo;s a real answer, not a smaller one. Keep the free result and the field guide.</p>`;
     html += `</div>`;
   }
   html += beatHtml('1 · Anchor', reading.anchor);
   html += beatHtml('2 · Contact', reading.contact);
-  if (!quiet) {
-    html += beatHtml('3 · Governs', reading.governs);
-    html += beatHtml('4 · Question', reading.question);
-  }
-  html += beatHtml('5 · Close', reading.close);
+  if (quiet) html += beatHtml('3 · Close', reading.close);
   if (reading.houseNote) html += `<p class="note">${esc(reading.houseNote)}</p>`;
   if (reading.legal) html += `<p class="note">${esc(reading.legal)}</p>`;
   if (reading.wordCount) html += `<p class="mono ecl-reading__wc">${reading.wordCount} words · computed in your browser</p>`;
 
   html += `<div class="ecl-reading__cta">`;
   if (quiet) {
-    html += `<a class="cta ghost" href="shop.html#eclipse-set">Eclipse Set £6 — notify when unlock opens</a>`;
-    html += `<a class="cta ghost" href="shop.html#eclipse-reading">Night Reading stays secondary</a>`;
+    html += `<a class="cta ghost" href="downloads/astroprecise-eclipse-field-guide-2026.pdf" download>Download the free field guide</a>`;
   } else {
-    html += `<a class="cta" href="shop.html#eclipse-reading">Unlock £2.99 — notify when Gumroad opens</a>`;
-    html += `<a class="cta ghost" href="shop.html#eclipse-set">Or the £6 Set</a>`;
+    html += `<a class="cta" href="eclipse.html#contact">Open Your Eclipse Edition — £7</a>`;
   }
   html += `</div></div>`;
   host.innerHTML = html;

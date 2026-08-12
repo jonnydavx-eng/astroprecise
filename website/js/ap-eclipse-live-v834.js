@@ -254,7 +254,7 @@ async function mount(root, E) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  renderer.toneMappingExposure = 1.16;
   renderer.setClearColor(0x030407, 0);
 
   const scene = new THREE.Scene();
@@ -292,7 +292,7 @@ async function mount(root, E) {
   applyCamera();
 
   scene.add(makeStars());
-  scene.add(new THREE.HemisphereLight(0x77829a, 0x09070a, .72));
+  scene.add(new THREE.HemisphereLight(0x8193b3, 0x09070a, .82));
   const sunlight = new THREE.PointLight(0xffd19a, 44, 70, 1.65);
   sunlight.position.copy(SUN_POS);
   scene.add(sunlight);
@@ -358,7 +358,7 @@ async function mount(root, E) {
     new THREE.MeshBasicMaterial({
       color: 0x6aa8dc,
       transparent: true,
-      opacity: .12,
+      opacity: .17,
       side: THREE.BackSide,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
@@ -379,7 +379,7 @@ async function mount(root, E) {
     if (disposed || failed) { texture.dispose(); return; }
     cloudsMaterial.map = texture;
     cloudsMaterial.alphaMap = texture;
-    cloudsMaterial.opacity = .62;
+    cloudsMaterial.opacity = .68;
     cloudsMaterial.needsUpdate = true;
   });
 

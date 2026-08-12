@@ -360,6 +360,7 @@ window.AstroShop = (() => {
   // graceful "checkout opens once products are connected" pending state instead
   // of erroring or opening a dead link. Do NOT invent URLs.
   const PAYHIP_URLS = {
+    'eclipse-edition':      '',
     'cosmic-story':         '',
     'deep-reading':         '',
     'eclipse-reading':      '',
@@ -878,7 +879,7 @@ window.AstroShop = (() => {
 
   function featuredOrder() {
     return isPdfOnly()
-      ? ['eclipse-reading', 'deep-reading', 'eclipse-set', 'plate', 'sky-pass']
+      ? ['eclipse-edition']
       : ['eclipse-reading', 'deep-reading', 'reading-poster-bundle', 'natal-poster-pdf', 'plate'];
   }
 
@@ -1355,6 +1356,7 @@ window.AstroShop = (() => {
   // field the subscribe worker already understands (same convention as the
   // eclipse-dawn form in eclipse.html).
   const NOTIFY_TAGS = {
+    'eclipse-edition': 'checkout-eclipse-edition',
     'plate':       'shop-natal-plate',
     'eclipse-set': 'shop-eclipse-set',
     'sky-pass':    'shop-sky-pass',

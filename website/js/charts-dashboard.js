@@ -181,25 +181,17 @@
       '</div>';
   }
 
-  // Reading-path strip — shown only when the visitor actually has saved charts
-  // (the warmest Deep Reading prospects). DORMANT-SAFE (same rule as
-  // chart-page.js renderDeepTeaser's sample line): info links only — the
-  // sample artifact and the shop's Deep Reading section — never a buy button,
-  // never a price, no availability claim.
+  // Launch path — saved charts can be carried into the private eclipse contact tool.
   var READING_PATH_ID = 'mc-reading-path';
 
   function readingPathHtml() {
     return '' +
-      '<aside class="glass-card mc-reading-path" id="' + READING_PATH_ID + '" aria-label="The Deep Reading">' +
-        '<p class="mc-reading-path__eyebrow">The Deep Reading</p>' +
-        '<h3 class="mc-reading-path__title">There’s more written in these skies</h3>' +
-        '<p class="mc-reading-path__sub">Any chart you’ve saved can go deeper — the Deep Reading interprets ' +
-          'every planet, all twelve houses and the tightest aspects as one 13-page PDF, ' +
-          'drawn from the same engine as your free chart.</p>' +
+      '<aside class="glass-card mc-reading-path" id="' + READING_PATH_ID + '" aria-label="Eclipse contact">' +
+        '<p class="mc-reading-path__eyebrow">12 August eclipse</p>' +
+        '<h3 class="mc-reading-path__title">Carry this chart into the eclipse</h3>' +
+        '<p class="mc-reading-path__sub">Your saved chart stays on this device while the eclipse instrument checks for a direct conjunction, opposition or square.</p>' +
         '<p class="mc-reading-path__links">' +
-          '<a href="sample-reading.html" target="_blank" rel="noopener">See a real sample reading →</a>' +
-          '<span aria-hidden="true"> · </span>' +
-          '<a href="shop.html#deep-reading">About the Deep Reading →</a>' +
+          '<a href="eclipse.html#contact">Check this chart against the eclipse →</a>' +
         '</p>' +
       '</aside>';
   }

@@ -20,15 +20,16 @@
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='841';</script>
+  <script>window.AP_ASSET_V='845';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=841">
-    <script src="js/void-orrery-adapter.js?v=841" defer></script>
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=845">
+    <script src="js/void-orrery-adapter.js?v=845" defer></script>
     <script src="js/ap-nav-model.js?v=841" defer></script>
     <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=841">
     <link rel="stylesheet" href="css/ap-home-v835.css?v=841">
+    <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=845">
     <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=841">
 </head>
 <body class="ap-live-home page-home">
@@ -93,6 +94,10 @@
           <span id="sky-time-status">Computing UTC</span>
         </div>
         <p class="ap-model-hint">Drag to orbit · world controls directly below on phone</p>
+        <div class="ap-flight-launch">
+          <button class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" type="button">Take the cosmic flight</button>
+          <span>Opt-in cinematic journey · this same live 3D model · stop or exit at any time</span>
+        </div>
         <div class="ap-context">
           <p class="ap-panel-label">Selected view</p>
           <h2 id="sky-focus-title">Solar system</h2>
@@ -151,7 +156,7 @@
         <div>
           <p class="eyebrow">Current edition · 12 August 2026</p>
           <h2 class="deck-h" id="edition-title">The shadow reaches Europe.</h2>
-          <p class="sub">Start with the free live instruments. Written and print-ready editions remain clearly marked as previews until checkout is genuinely connected.</p>
+          <p class="sub">Start with the free live instruments and field guide. The £7 personalised edition remains clearly marked as opening soon until checkout is genuinely verified.</p>
           <ol class="contents">
             <li class="item">
               <span class="item__num">01</span>
@@ -168,16 +173,16 @@
             <li class="item">
               <span class="item__num">03</span>
               <h3 class="item__title"><a href="shop.html">Eclipse Field Guide and Your Eclipse Edition</a></h3>
-                            <span class="item__price">Free + GBP 7</span>
-                            <p class="item__desc">The eight-page Eclipse Field Guide is ready now. Your Eclipse Edition is an instant personalised five-beat eclipse-contact reading with unique high-resolution chart artwork — GBP 7, no manual review.</p>
+              <span class="item__price">Free + £7</span>
+              <p class="item__desc">The eight-page Eclipse Field Guide is ready now. Your Eclipse Edition is an instant personalised five-beat eclipse-contact reading with unique high-resolution chart artwork — £7, no manual review.</p>
             </li>
           </ol>
           <p class="honesty">The astronomy is computed and checkable. Astrology is a cultural language offered for reflection—not scientific fact, advice or prediction.</p>
         </div>
         <aside class="ap-edition-art">
           <figure>
-            <span class="ap-card-art"><img src="img/editorial/eclipse-launch-2026-v835.webp" width="1600" height="900" loading="lazy" alt="A cinematic field study of the 12 August 2026 solar eclipse"></span>
-            <figcaption><span>Editorial artwork · not live data</span><strong>12 August 2026</strong> Totality crosses northern Russia, Greenland, Iceland, Spain and a corner of Portugal; the UK and Ireland see roughly 90–96% coverage low in the west.</figcaption>
+            <span class="ap-card-art"><img src="img/editorial/eclipse-edition-art-v841.png" width="1122" height="1402" loading="lazy" alt="A premium black and brass eclipse plate with engraved orbital geometry"></span>
+            <figcaption><span>Launch artwork · not live data</span><strong>12 August 2026</strong> Totality crosses northern Russia, Greenland, Iceland, Spain and a corner of Portugal; the UK and Ireland see roughly 90–96% coverage low in the west.</figcaption>
           </figure>
           <div class="ap-edition-art__actions">
             <a href="eclipse.html">Open the live eclipse view</a>
@@ -228,6 +233,7 @@
   </script>
   <script src="js/ap-observatory-controls-v835.js?v=841" defer></script>
     <script src="js/ap-observatory-v834.js?v=841" defer></script>
+    <script src="js/ap-cosmic-flight-tool.js?v=845" defer></script>
     <script src="js/ap-nav-prefetch.js?v=841" defer data-ap-nav-prefetch="1"></script>
     <script src="js/ap-sky-time.js?v=841" defer></script>
     <script src="js/ap-footer-inject.js?v=841" defer></script>

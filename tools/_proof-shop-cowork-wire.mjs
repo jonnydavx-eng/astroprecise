@@ -16,12 +16,12 @@ for (const id of ['eclipse-field-guide', 'eclipse-edition']) {
 }
 for (const art of [
   'img/editorial/eclipse-field-guide-cover-final-v836.png',
-  'img/editorial/eclipse-launch-2026-v835.webp',
+  'img/editorial/eclipse-edition-art-v841.png',
 ]) {
   if (!shop.includes(art) || !existsSync('website/' + art)) fails.push('shop missing authored art ' + art);
 }
 if (!/checkout (?:is not connected yet|remains visibly closed|opens only after|remains dormant until)/i.test(shop)) fails.push('shop missing clear no-sale status');
-if (!/Two editions\. Free utility first\./i.test(shop)) fails.push('shop missing launch-edition proposition');
+if (!/Two paths\. Free utility first\./i.test(shop)) fails.push('shop missing launch-edition proposition');
 if (!/£7/.test(shop) || !/Free/.test(shop)) {
   fails.push('shop missing GBP 7 Eclipse Edition and free Field Guide prices');
 }
@@ -30,14 +30,14 @@ if (!/Your Eclipse Edition/.test(shop) || !/Eclipse Field Guide/.test(shop)) {
 }
 if (!/list\.astroprecise\.app\/subscribe/.test(shop)) fails.push('shop missing availability-list endpoint');
 if (!/Nothing was saved/.test(shop)) fails.push('shop missing honest subscribe failure state');
-if (/(?:gumroad|ap-checkout-honest|REPLACE_ME)/i.test(shop)) fails.push('shop contains a dead checkout path');
+if (/(?:gumroad|ap-checkout-honest|REPLACE_ME)/i.test(shop)) fails.push('shop leaks an unverified checkout path');
 if (!/ap-mystic-cards-v835\.js/.test(shop)) fails.push('shop missing art-only spectral interaction');
 if (!/\.ap-product__stamp/.test(shopCss)) fails.push('shop stamp selector is not class-scoped');
 if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains generic product-image span override');
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
-if (!eclipse.includes('shop.html#eclipse-edition')) fails.push('eclipse missing Eclipse Edition Shop link');
+if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v841["']/.test(sw)) fails.push('SW tip is not exactly v841');
+if (!/const V\s*=\s*["']ap-v845["']/.test(sw)) fails.push('SW tip is not exactly v845');
 
 // Verify exactly two editions referenced in the editions section
 const editionCount = (shop.match(/<article class="ap-product/g) || []).length;

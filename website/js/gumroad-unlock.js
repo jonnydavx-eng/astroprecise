@@ -24,36 +24,43 @@
  * below works in either place.
  */
 
-// Map your on-site product slugs to their Gumroad identifiers.
-// product_id is the Gumroad product id (NOT permalink).
+// Map the one on-site product to both public and verification identifiers.
+// permalink builds the public checkout URL. productId is sent only to the
+// License API. Checkout stays dormant until BOTH values are real.
 export const GUMROAD_PRODUCTS = {
-  'eclipse-edition': { productId: 'REPLACE_ME', price: '£7' },
+  'eclipse-edition': {
+    permalink: 'REPLACE_ME',
+    productId: 'REPLACE_ME',
+    price: '£7',
+  },
 };
 
 /** Resolve slug aliases. */
 export function resolveProductSlug(slug) {
   return slug;
 }
-
-/** True when the owner has pasted a real Gumroad product_id (not REPLACE_ME). */
+function configured(value) {
+  return Boolean(value && value !== 'REPLACE_ME' && !String(value).includes('REPLACE'));
+}
+/** True only when the public checkout and License API identifiers are present. */
 export function isCheckoutReady(slug) {
   const key = resolveProductSlug(slug);
   const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
-  return !!(p && p.productId && p.productId !== 'REPLACE_ME' && !String(p.productId).includes('REPLACE'));
+  return Boolean(p && configured(p.permalink) && configured(p.productId));
 }
 
 /**
  * Open the Gumroad overlay checkout for a product. Requires Gumroad's overlay script
  * on the page once:  <script src="https://gumroad.com/js/gumroad.js"></script>
- * Returns immediately; completion is handled on redirect back with ?license= or via
- * the "success" URL you configure in Gumroad to point at your unlock handler.
+ * Returns immediately. The buyer manually enters the issued licence key in the
+ * on-page form; licence keys are never accepted from a URL or stored in a query string.
  */
 export function openCheckout(slug) {
   const key = resolveProductSlug(slug);
   const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
-  if (!isCheckoutReady(slug)) throw new Error(`Set the Gumroad product_id for "${slug}"`);
+  if (!isCheckoutReady(slug)) throw new Error(`Set the Gumroad permalink and product_id for "${slug}"`);
   // Gumroad overlay opens when navigating to the ?wanted=true product URL.
-  const url = `https://gumroad.com/l/${p.productId}?wanted=true`;
+  const url = `https://gumroad.com/l/${encodeURIComponent(p.permalink)}?wanted=true`;
   window.location.href = url; // or use an <a class="gumroad-button" href=...> for the inline overlay
 }
 
@@ -84,18 +91,4 @@ export async function verifyLicense(slug, licenseKey, { incrementUses = false } 
   const bad = purchase.refunded || purchase.chargebacked || purchase.disputed;
   const valid = Boolean(data.success) && !bad;
   return { valid, purchase, uses: data.uses };
-}
-
-/**
- * End-to-end unlock on return from checkout. Call on page load; if a license is
- * present and valid, reveal the reading your engine already computed on-device.
- * @param {(purchase:object)=>void} onUnlock  reveal the computed reading
- * @param {()=>void} [onLocked]               keep it blurred / show the buy button
- */
-export async function handleUnlockOnLoad(slug, onUnlock, onLocked) {
-  const key = new URLSearchParams(location.search).get('license');
-  if (!key) { onLocked?.(); return; }
-  const { valid, purchase } = await verifyLicense(slug, key, { incrementUses: true });
-  if (valid) onUnlock(purchase);
-  else onLocked?.();
 }

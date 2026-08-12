@@ -10,8 +10,9 @@
   z-index: 12000;
   display: flex;
   flex-direction: column;
-  background: #000;
+  background: transparent;
   color: #e8e4dc;
+  pointer-events: none;
 }
 
 #ap-cosmic-flight.is-open {
@@ -24,6 +25,8 @@
 }
 
 .ap-cf-toolbar {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,6 +36,7 @@
   border-bottom: 1px solid rgba(168, 176, 188, 0.18);
   flex-shrink: 0;
   flex-wrap: wrap;
+  pointer-events: auto;
 }
 
 .ap-cf-toolbar__lead {
@@ -111,6 +115,8 @@
 }
 
 .ap-cf-scale-strip {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -119,6 +125,7 @@
   background: rgba(6, 8, 14, 0.94);
   border-top: 1px solid rgba(168, 176, 188, 0.16);
   flex-shrink: 0;
+  pointer-events: auto;
 }
 
 .ap-cf-scale-strip[hidden] {
@@ -155,11 +162,12 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  background: #000;
+  background: transparent;
+  pointer-events: none;
 }
 
-#ap-cosmic-flight-stage .ap-award-orrery-frame,
-#ap-cosmic-flight-stage .orrery-viewport {
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted,
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted .orrery-viewport {
   width: 100%;
   height: 100%;
   max-width: none;
@@ -168,17 +176,39 @@
   aspect-ratio: unset;
 }
 
-#ap-cosmic-flight-stage #orrery-canvas {
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 11999;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  background: #000;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted::before {
+  display: none;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted void-orrery {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted #orrery-canvas {
   width: 100% !important;
   height: 100% !important;
 }
 
-#ap-cosmic-flight-stage .orrery-lite-poster {
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted .orrery-lite-poster {
   display: none !important;
 }
 
-#ap-cosmic-flight-stage .lite-vp-controls,
-#ap-cosmic-flight-stage .orrery-lite-launch {
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted .lite-vp-controls,
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted .orrery-lite-launch {
   display: none !important;
 }
 
@@ -209,6 +239,51 @@
 
 body.ap-cosmic-flight-open {
   overflow: hidden;
+}
+
+/* The fixed stage stays in its original grid cell so the custom element never
+   disconnects. Neutralise ancestor clipping while it is promoted fullscreen. */
+body.ap-cosmic-flight-open .ap-live-stage,
+body.ap-cosmic-flight-open .ap-live-home {
+  transform: none !important;
+  overflow: visible !important;
+}
+
+.ap-control-panel .ap-flight-launch {
+  display: grid;
+  gap: 8px;
+  padding: 15px;
+  border: 1px solid rgba(216, 185, 120, .26);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(216,185,120,.1), rgba(72,93,126,.08));
+}
+
+.ap-control-panel .ap-flight-launch span {
+  color: rgba(220, 222, 228, .62);
+  font: 9px/1.5 var(--ap-data, ui-monospace, monospace);
+  letter-spacing: .04em;
+}
+
+.ap-control-panel .ap-orrery-cosmic-flight {
+  min-height: 48px;
+  padding: 10px 15px;
+  border: 1px solid rgba(216, 185, 120, .62);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(216,185,120,.18), rgba(12,16,22,.95));
+  color: #f0e6d0;
+  font: 700 12px/1.3 var(--ap-body, system-ui, sans-serif);
+  cursor: pointer;
+}
+
+.ap-control-panel .ap-orrery-cosmic-flight:hover,
+.ap-control-panel .ap-orrery-cosmic-flight:focus-visible {
+  border-color: rgba(239, 207, 139, .95);
+  box-shadow: 0 0 22px rgba(216,185,120,.16);
+}
+
+.ap-control-panel .ap-orrery-cosmic-flight:disabled {
+  opacity: .5;
+  cursor: not-allowed;
 }
 
 .ap-award-511 .ap-orrery-cosmic-flight {
@@ -268,6 +343,9 @@ body.ap-cosmic-flight-open {
     right: 0.65rem;
     max-width: none;
   }
+  .ap-cf-mode, .ap-cf-toolbar__actions { width: 100%; }
+  .ap-cf-toolbar__actions { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .ap-cf-btn { min-height: 44px; padding-inline: .55rem; }
 }
 /* #4 (2026-07-05): don't render an empty framed HUD box before narration lands.
    The tagline/title/notes are populated per-scene by scale-journey.js; while a

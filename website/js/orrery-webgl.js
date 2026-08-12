@@ -3967,11 +3967,11 @@ const FinishShader = {
       if (isInstrumentZoomBusy()) return;
       const outerT = Math.max(0, Math.min(1, (z - 2.2) / 2.8));
       const fogDensity = (perfTier === 'high' ? 0.00020 : 0.00024) + outerT * 0.0007;
-      const targetExp = (perfTier === 'high' ? 1.08 : 1.02) - outerT * 0.14;
-      const hemiI = (perfTier === 'high' ? 0.40 : 0.34) * (1 - outerT * 0.24);
-      const sunPtI = (perfTier === 'high' ? 2.2 : 1.85) * (1 - outerT * 0.35);
-      const sunDirI = (perfTier === 'high' ? 1.65 : 1.38) * (1 - outerT * 0.25);
-      const fillI = (perfTier === 'high' ? 0.54 : 0.46) * (1 - outerT * 0.7);
+      const targetExp = (perfTier === 'high' ? 1.14 : 1.08) - outerT * 0.12;
+      const hemiI = (perfTier === 'high' ? 0.46 : 0.39) * (1 - outerT * 0.22);
+      const sunPtI = (perfTier === 'high' ? 2.45 : 2.05) * (1 - outerT * 0.32);
+      const sunDirI = (perfTier === 'high' ? 1.85 : 1.55) * (1 - outerT * 0.23);
+      const fillI = (perfTier === 'high' ? 0.62 : 0.54) * (1 - outerT * 0.66);
       const k = Math.min(1, (dt || 0.016) * 4.2);
       if (scene && scene.fog && !portraitMode) {
         scene.fog.color.setHex(0x040610);
@@ -5471,28 +5471,28 @@ const FinishShader = {
       hemiLight.color.setHex(free ? 0x5a6a88 : 0x4a5870);
       hemiLight.groundColor.setHex(0x0c0a08);
       hemiLight.intensity = free
-        ? (perfTier === 'high' ? 0.40 : 0.34)
-        : (perfTier === 'high' ? 0.38 : 0.32);
+        ? (perfTier === 'high' ? 0.46 : 0.40)
+        : (perfTier === 'high' ? 0.42 : 0.36);
     }
     if (sunPointLight) {
       sunPointLight.intensity = free
-        ? (perfTier === 'high' ? 2.55 : 2.15)
+        ? (perfTier === 'high' ? 2.8 : 2.35)
         : (perfTier === 'high' ? 2.0 : 1.65);
     }
     if (sunDirLight) {
       sunDirLight.intensity = free
-        ? (perfTier === 'high' ? 1.85 : 1.55)
+        ? (perfTier === 'high' ? 2.0 : 1.7)
         : (perfTier === 'high' ? 1.45 : 1.2);
     }
     if (instrumentFillLight) {
       instrumentFillLight.position.copy(camera.position);
       instrumentFillLight.intensity = free
-        ? (perfTier === 'high' ? 0.54 : 0.46)
+        ? (perfTier === 'high' ? 0.62 : 0.54)
         : (perfTier === 'high' ? 0.72 : 0.60);
     }
     if (renderer) {
       instrumentExposure = free
-        ? (perfTier === 'high' ? 1.18 : 1.10)
+        ? (perfTier === 'high' ? 1.24 : 1.16)
         : (perfTier === 'high' ? 0.94 : 0.90);
       renderer.toneMappingExposure = instrumentExposure;
     }
@@ -5507,8 +5507,8 @@ const FinishShader = {
       const g = meshes[b.id];
       const sh = g && g.userData.mat && g.userData.mat.userData.planetShader;
       if (!sh || !sh.uniforms.uLightWash) return;
-      sh.uniforms.uLightWash.value = 0.045;
-      sh.uniforms.uRimMul.value = 0.065;
+      sh.uniforms.uLightWash.value = 0.06;
+      sh.uniforms.uRimMul.value = 0.09;
     });
   }
 

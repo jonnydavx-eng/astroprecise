@@ -1,5 +1,5 @@
 /*
- * Astro Precise — the £2.99 Eclipse Night Reading engine  (reference drop-in)
+ * AstroPrecise — five-beat engine for the £7 Your Eclipse Edition
  * --------------------------------------------------------------------------
  * Pure logic. Give it the computed eclipse longitude + the person's real natal
  * longitudes (from the on-device VSOP87 engine) + the templates JSON, and it
@@ -136,7 +136,7 @@ export function allContacts(eclipseLon, natal, templates) {
 const t_orb = (t, aspect) => t.orbsDeg[aspect];
 
 /**
- * The full five-beat £2.99 reading.
+ * The full five-beat £7 Eclipse Edition reading.
  * @param {number} eclipseLon  ecliptic longitude of the eclipse
  * @param {object} natal       longitudes {sun..pluto, asc?, mc?}
  * @param {object} templates   reading-templates.json (v2)
@@ -170,7 +170,7 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
     .replace('{eclipseDeg}', eclipseDeg).replace(/\s+,/g, ',').replace(/,\s*,/g, ',').replace(/\s{2,}/g, ' ');
 
   // Birth time known? (asc present, or told explicitly). Without it the Moon is
-  // only placeable to ±7°, so — exactly as the Deep Reading does — we bar the
+  // only placeable to ±7°, so we bar the
   // untimed Moon from headlining, from secondaries, and from any tight-orb claim.
   const timed = opts.timed != null ? opts.timed : (natal.asc != null && !Number.isNaN(natal.asc));
   const allC = allContacts(eclipseLon, natal, t);

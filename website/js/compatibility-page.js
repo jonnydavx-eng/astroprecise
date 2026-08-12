@@ -371,18 +371,18 @@
         });
       } else {
         tiles.unshift({
-          tag: 'Shop',
-          title: 'Deep Reading for each chart',
-          desc: 'Thirteen-page PDF readings drawn from the same engine — one for each birth chart in this pairing.',
-          href: 'shop.html#deep-reading',
-          cta: 'Browse readings →',
+          tag: 'Eclipse',
+          title: 'Check either chart against the eclipse',
+          desc: 'Use the private eclipse-contact instrument with either saved birth chart before considering the one launch edition.',
+          href: 'eclipse.html#contact',
+          cta: 'Open eclipse contact →',
         });
       }
       host.innerHTML =
         '<div class="chart-whats-next__head">' +
           '<p class="chart-whats-next__eyebrow">What to explore next</p>' +
           '<h3 class="chart-whats-next__title">Your synastry is calculated — where now?</h3>' +
-          '<p class="chart-whats-next__sub">Free tools build on this pairing; personalised keepsakes ship from the shop when checkout is live.</p>' +
+          '<p class="chart-whats-next__sub">Continue through the free tools; the only launch product appears after a direct eclipse contact.</p>' +
         '</div>' +
         '<div class="chart-whats-next__grid" role="list">' +
         tiles.map(function(s) {

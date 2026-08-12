@@ -60,17 +60,17 @@
           + 'Birth data never uploaded · free chart ↓\n'
           + LINKS,
         pinnedPost:
-          'Mission Control for your sky.\n\n'
-          + 'VSOP87 ephemeris. Computed in your browser. Birth data never uploaded.\n'
-          + 'Free chart · Deep Reading £12 · posters from £6\n\n'
+          'The 12 August eclipse, live and personal.\n\n'
+          + 'Explore the 3D shadow. Download the free eight-page field guide. Check your own chart privately.\n'
+          + 'Direct contact? Your £7 Eclipse Edition adds five authored beats and unique high-resolution artwork. Quiet chart? Keep the free result.\n\n'
           + 'Start here → ' + LINKS,
         bannerHint: 'marketing/social/banner-x-1500x500.jpg',
         avatarHint: 'marketing/social/avatar-400.jpg',
       },
       funnel: [
-        'X post or reply → profile → links.html (never raw Gumroad)',
-        'links.html → chart.html (cast) or email signup',
-        'Email welcome sequence → transits/compat tools → Deep Reading when live',
+        'X post or reply → profile → links.html (never raw checkout)',
+        'links.html → live eclipse, free guide or private chart contact',
+        'Direct contact → one £7 Eclipse Edition; quiet chart → no sale',
       ],
       accountsToEngage: [
         { handle: '@chaninicholas', why: 'Premium astrology audience; transit-focused replies' },
@@ -154,14 +154,12 @@
         {
           id: 'welcome-4',
           delay: 'day 7',
-          subject: 'When you want the whole story, not just the highlights 🌙',
+          subject: 'Does the eclipse actually touch your chart?',
           body:
-            'The free chart gives you the map. Sometimes you want someone to actually read it.\n\n'
-            + 'That\'s the Deep Reading: a written interpretation of YOUR chart — Sun, Moon, Rising, '
-            + 'dominant element and mode, tightest aspects, and what your transits are asking of you. '
-            + 'A one-time PDF, yours to keep — {{deepReadingPrice}} when the shop is open.\n\n'
-            + 'ABOUT THE DEEP READING → {{siteUrl}}/shop.html#deep-reading\n\n'
-            + '(If it\'s not open for purchase yet, you\'ll see an honest note — we never run a fake checkout.)\n\n'
+            'The free eclipse instrument compares the 12 August eclipse with your actual birth chart on your device.\n\n'
+            + 'If it finds a direct conjunction, opposition or square, Your Eclipse Edition unlocks all five authored beats and unique high-resolution artwork for £7. If it finds no direct contact, it tells you to keep the free result.\n\n'
+            + 'CHECK YOUR ECLIPSE CONTACT → {{siteUrl}}/eclipse.html#contact\n\n'
+            + '(Checkout stays visibly closed until the real purchase and licence flow is verified.)\n\n'
             + '— Astro Precise',
         },
         {
@@ -218,8 +216,8 @@
             + '{{transitHighlight}}\n\n'
             + '(Pull this from the live transits page — keep it specific, never generic filler.)\n\n'
             + 'See it on your chart, free: {{siteUrl}}/transits.html\n\n'
-            + 'Want the map reread in depth? The Deep Reading is {{deepReadingPrice}}, one-time: '
-            + '{{siteUrl}}/shop.html#deep-reading\n\n'
+            + 'Check whether the 12 August eclipse makes a direct contact with your chart: '
+            + '{{siteUrl}}/eclipse.html#contact\n\n'
             + '— Astro Precise',
         },
       ],
@@ -316,7 +314,7 @@
         { id: 'x-09', day: 9, text: 'Compatibility isn\'t "are our Suns compatible."\n\nIt\'s two full charts overlaid. Run synastry free → {{linksUrl}}/compatibility.html' },
         { id: 'x-10', day: 10, text: 'Make your lock screen the exact sky you were born under.\n\nCast → Save image → done. Free → {{linksUrl}}' },
         { id: 'x-11', day: 11, text: 'Monthly cosmic weather for YOUR chart — one email, no birth data uploaded.\n\n{{linksUrl}}' },
-        { id: 'x-12', day: 12, text: 'Free chart = the map. Deep Reading = someone reading it for you ({{deepReadingPrice}} when live).\n\nBe first in line → {{linksUrl}}' },
+        { id: 'x-12', day: 12, text: 'A quiet eclipse contact is still a real result — and AstroPrecise will not sell you a smaller answer.\n\nCheck yours privately → {{linksUrl}}/eclipse.html#contact' },
         { id: 'x-13', day: 13, text: 'POV: you cast your actual chart and can\'t un-see it.\n\nMoon explains the feelings. Rising explains first impressions.\n\n→ {{linksUrl}}' },
         { id: 'x-14', day: 14, text: 'Sun = who you are. Moon = how you feel. Rising = how you seem.\n\nBig Three, free → {{linksUrl}}' },
       ],
@@ -356,7 +354,7 @@
         { id: 'mc-x-11', day: 11, text: 'GROUND STATION: your birth data never leaves your device. Local compute only.\n\nNo account. No upload. → {{linksUrl}}' },
         { id: 'mc-x-12', day: 12, text: 'Monthly cosmic weather for YOUR chart — one email. Only your address is ever sent.\n\n{{linksUrl}}' },
         { id: 'mc-x-13', day: 13, text: 'POV: Mission Control just downloaded your full chart.\n\nMoon = 3am spiral. Rising = the misread. → {{linksUrl}}' },
-        { id: 'mc-x-14', day: 14, text: 'Mission Control for your sky.\n\n✦ Real ephemeris\n✦ In-browser compute\n✦ Free chart · £12 reading · posters from £6\n\n{{linksUrl}}' },
+        { id: 'mc-x-14', day: 14, text: 'Mission Control for the eclipse.\n\n✦ Live 3D shadow\n✦ Free eight-page field guide\n✦ Private chart contact · one £7 edition only after a direct hit\n\n{{linksUrl}}' },
       ],
       replyTemplates: [
         { id: 'reply-transit', template: 'Worth checking the actual station dates — Mercury\'s status changes on a schedule, not a vibe. I use live ephemeris for this.' },

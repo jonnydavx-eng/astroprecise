@@ -26,8 +26,10 @@ const SHELL_DOCUMENTS = [
   './offline.html',
 ];
 
-// Pages whose explicit ?v= release tips must move with sw.js. Unversioned legacy
-// assets are allowed; a conflicting explicit release is not.
+// Pages whose explicit ?v= values must never point beyond sw.js. Assets carry
+// their own release tips (for example chart v837 beside launch v842), so older
+// values are intentional. A future value is unsafe because the active worker
+// would not own that release yet.
 const RELEASE_PAGES = [
   './index.html',
   './eclipse.html',
@@ -49,6 +51,11 @@ const RELEASE_PAGES = [
 const REQUIRED_TRANSITIVE = [
   './js/eclipse-reading.js',
   './js/reading-templates.json',
+  // The opt-in cosmic flight injects these classic scripts by string at click
+  // time, so the static import walker cannot discover them. They are small and
+  // make the same-model journey available after an offline refresh.
+  './js/scale-journey-chapters.js',
+  './js/scale-journey.js',
   './css/ap-footer-v835.css',
   // Home imports this through a release-version expression, which the static
   // import walker cannot discover. Adding the module lets the walker include
@@ -72,6 +79,14 @@ const REQUIRED_TRANSITIVE = [
   './assets/textures/venus_sm.webp',
   './img/orrery/env_nebula_cool_sm.webp',
 ];
+
+// Editorial/product artwork appears on the launch pages but is not required to
+// boot either WebGL instrument. Keep it runtime-cached so installation remains
+// atomic and fast; the free guide PDF also remains an explicit user download.
+const RUNTIME_ONLY = new Set([
+  './img/editorial/eclipse-edition-art-v841.png',
+  './img/editorial/eclipse-field-guide-cover-final-v836.png',
+]);
 
 const MAX_SHELL_ENTRIES = 80;
 const MAX_SHELL_BYTES = 3_000_000;
@@ -195,6 +210,7 @@ function collectLaunchShell() {
       const child = localPath(rawRef, rel, extension === '.js');
       if (!child) continue;
       assertFile(child, `reference from ${rel}`);
+      if (RUNTIME_ONLY.has(child)) continue;
       if (!entries.has(child)) entries.add(child);
       if (/\.(?:html|css|js)$/i.test(child) && !scanned.has(child)) queue.push(child);
     }
@@ -256,17 +272,18 @@ function replaceAssetVersion(assetText, version) {
 
 function assertReleaseQueries(version) {
   const conflicts = [];
+  const target = Number.parseInt(version, 10);
   for (const page of RELEASE_PAGES) {
     const html = readFileSync(assertFile(page, 'release route'), 'utf8');
     for (const ref of tagAssetRefs(html)) {
       if (!/\.(?:css|js)(?:[?#]|$)/i.test(ref)) continue;
       const match = ref.match(/[?&]v=(\d+)(?:[&#]|$)/i);
-      if (match && match[1] !== version) conflicts.push(`${page}: ${ref}`);
+      if (match && Number.parseInt(match[1], 10) > target) conflicts.push(`${page}: ${ref}`);
     }
   }
   if (conflicts.length) {
     throw new Error(
-      `explicit route asset version(s) do not match target ${version}:\n${conflicts.join('\n')}`,
+      `explicit route asset version(s) are newer than worker ${version}:\n${conflicts.join('\n')}`,
     );
   }
 }

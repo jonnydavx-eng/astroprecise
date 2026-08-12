@@ -2,12 +2,11 @@
 /* Opt-in fullscreen cosmic flight — start-sequence engine as a functional tool */
 
 (function () {
-  var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  var PRM = !!(motionQuery && motionQuery.matches);
   var AV = String(window.AP_ASSET_V || '771');
   var open = false;
   var booting = false;
-  var homeParent = null;
-  var homeNext = null;
   var scriptsQueued = false;
   var overlayBuilt = false;
   var narrateOn = false;
@@ -316,27 +315,26 @@
   }
 
   function mountInstrument() {
-    var stage = $("ap-cosmic-flight-stage");
-    var frame = document.querySelector(".ap-award-orrery-frame");
-    if (!stage || !frame || frame.parentElement === stage) return;
-    homeParent = frame.parentElement;
-    homeNext = frame.nextSibling;
-    stage.appendChild(frame);
+    var instrument = document.querySelector(".ap-model-stage");
+    if (!instrument) return false;
+    // Keep <void-orrery> connected to its original DOM parent. Moving this
+    // custom element fires disconnectedCallback(), which destroys the live
+    // WebGL singleton and causes the fullscreen flight to flash/restart at
+    // Earth. A promoted fixed-position class gives us the same visual result
+    // without ever replacing the renderer or creating a second canvas.
+    instrument.classList.add("ap-cf-promoted");
     // ap-v722 · A2 honesty: never claim LIVE (orrery-full) until WebGL owns the canvas.
     try {
       if (window.Orrery3D && window.Orrery3D.isWebGL) {
         document.documentElement.classList.add("orrery-full");
       }
     } catch (eFull) { /* optional */ }
+    return true;
   }
 
   function restoreInstrument() {
-    var frame = document.querySelector(".ap-award-orrery-frame");
-    if (!frame || !homeParent) return;
-    if (homeNext) homeParent.insertBefore(frame, homeNext);
-    else homeParent.appendChild(frame);
-    homeParent = null;
-    homeNext = null;
+    var instrument = document.querySelector(".ap-model-stage");
+    if (instrument) instrument.classList.remove("ap-cf-promoted");
   }
 
   function waitOrrery(fn, maxTries) {
@@ -378,9 +376,13 @@
     booting = true;
     setLaunchLoading(true);
 
-    var promote = window.__requestFullOrrery
-      ? window.__requestFullOrrery({ urgent: true, showLoading: false, mode: "webgl" })
-      : Promise.reject(new Error("no loader"));
+    // Current Home boots through <void-orrery>; older builds exposed a loader
+    // helper. Accept either path and reuse the already-running WebGL engine.
+    var promote = window.Orrery3D && window.Orrery3D.isWebGL
+      ? Promise.resolve()
+      : window.__requestFullOrrery
+        ? window.__requestFullOrrery({ urgent: true, showLoading: false, mode: "webgl" })
+        : Promise.resolve();
 
     promote.then(function () {
       waitOrrery(function (err) {
@@ -400,7 +402,7 @@
           window.ScaleJourney.rebind();
         }
         startFlight();
-      });
+      }, 600);
     }).catch(function () {
       booting = false;
       setLaunchLoading(false);
@@ -415,7 +417,7 @@
       if (window.ScaleJourney && typeof window.ScaleJourney.rebind === "function") {
         window.ScaleJourney.rebind();
       }
-      mountInstrument();
+      if (!mountInstrument()) return;
       root.hidden = false;
       root.classList.add("is-open");
       document.body.classList.add("ap-cosmic-flight-open");
@@ -460,11 +462,6 @@
   function bindLaunch() {
     var btn = $("ap-cosmic-flight-launch");
     if (!btn) return;
-    if (PRM) {
-      btn.disabled = true;
-      btn.title = "Cosmic flight is disabled when reduced motion is preferred";
-      return;
-    }
     btn.addEventListener("click", openTool);
     btn.addEventListener("mouseenter", function () {
       ensureJourneyScripts();
@@ -474,8 +471,21 @@
       ensureJourneyScripts();
       preloadEngine();
     }, { once: false });
-    if (/[?&]cosmic=1/.test(location.search)) {
-      setTimeout(openTool, 1200);
+    function syncMotionPreference(reduce) {
+      PRM = !!reduce;
+      btn.disabled = PRM;
+      if (PRM) {
+        btn.title = "Cosmic flight is disabled when reduced motion is preferred";
+        if (open) closeTool();
+      } else {
+        btn.removeAttribute("title");
+      }
+    }
+    syncMotionPreference(PRM);
+    if (motionQuery) {
+      var onMotionChange = function (event) { syncMotionPreference(event.matches); };
+      if (motionQuery.addEventListener) motionQuery.addEventListener("change", onMotionChange);
+      else if (motionQuery.addListener) motionQuery.addListener(onMotionChange);
     }
   }
 

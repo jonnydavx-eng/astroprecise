@@ -270,7 +270,7 @@ const AstroQuiz = (() => {
 
   // ── Build a monetisation-aware route block ─────────────────
   // Honest + dormant-safe: a real chart is always the primary CTA.
-  // Deep Reading / product / email only light up when AP_MON has a URL;
+    // Optional product/email paths only light up when AP_MON has a real URL;
   // otherwise they degrade to email-intent or quietly vanish (data-mon).
   function buildRoutes(arch) {
     const M = window.AP_MON || {};
@@ -302,30 +302,17 @@ const AstroQuiz = (() => {
       </a>
     `);
 
-    // 2) DEEP READING — dormant-safe. Live link if configured, else email-intent.
-    if (isUrl(M.deepReadingUrl)) {
-      rows.push(`
-        <a class="aq-route" href="${esc(M.deepReadingUrl.trim())}" target="_blank" rel="noopener sponsored">
-          <span class="aq-route__icon" aria-hidden="true">❧</span>
-          <span class="aq-route__body">
-            <span class="aq-route__title">Get your Deep Reading</span>
-            <span class="aq-route__sub">A long-form written reading of your whole chart, yours to keep.</span>
-          </span>
-          <span class="aq-route__arrow" aria-hidden="true">→</span>
-        </a>
-      `);
-    } else {
-      rows.push(`
-        <button class="aq-route" id="aq-deep-reading" type="button">
-          <span class="aq-route__icon" aria-hidden="true">❧</span>
-          <span class="aq-route__body">
-            <span class="aq-route__title">Be first to read your Deep Reading</span>
-            <span class="aq-route__sub">Long-form written readings open soon — get told when they do.</span>
-          </span>
-          <span class="aq-route__arrow" aria-hidden="true">→</span>
-        </button>
-      `);
-    }
+    // 2) One focused launch path — calculate before any paid offer appears.
+    rows.push(`
+      <a class="aq-route" href="eclipse.html#contact">
+        <span class="aq-route__icon" aria-hidden="true">❧</span>
+        <span class="aq-route__body">
+          <span class="aq-route__title">Check your eclipse contact</span>
+          <span class="aq-route__sub">A direct contact can open the one £7 Eclipse Edition; a quiet chart stays free.</span>
+        </span>
+        <span class="aq-route__arrow" aria-hidden="true">→</span>
+      </a>
+    `);
 
     // 3) PRODUCT — dormant-safe. Live "Buy" if the product has a fulfilUrl;
     // otherwise route to the shop page (real, pre-launch honest cart).
@@ -491,18 +478,6 @@ const AstroQuiz = (() => {
         </div>
       </div>
     `;
-
-    // Wire deep-reading dormant fallback → focus the email capture.
-    const drBtn = container.querySelector('#aq-deep-reading');
-    if (drBtn) {
-      drBtn.addEventListener('click', () => {
-        const inp = container.querySelector('#aq-email-input');
-        if (inp) { inp.focus(); inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-        if (window.AstroApp && AstroApp.showToast) {
-          AstroApp.showToast('Almost there', 'Deep Readings open soon — leave your email to be first.', 'info');
-        }
-      });
-    }
 
     wireEmailCapture();
 

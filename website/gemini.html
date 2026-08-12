@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Free Gemini horoscope for today, calculated from real planetary positions. Plus the complete Gemini guide: element, ruling planet, love, career, and compatibility." />
   <title>Gemini Horoscope Today — Daily Reading & Sign Guide | Astro Precise</title>
@@ -27,15 +25,12 @@
   <meta name="twitter:title" content="Gemini Horoscope Today | Astro Precise" />
   <meta name="twitter:description" content="Free Gemini horoscope for today, calculated from real planetary positions. Plus the complete Gemini guide: element, ruling planet, love, career, and compatibility." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og/sign-gemini.jpg" />
-  <meta name="theme-color" content="#08080b" />
+  <meta name="theme-color" content="#0C1016" />
   <link rel="preload" href="img/engine/mercury.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <!-- CLS: preload the hero display face (h1) so Cormorant paints from first paint (no late swap). -->
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=788" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/sign-page.css" id="ap-css-sign-page" />
@@ -78,7 +73,7 @@
       content: ''; position: absolute; inset: -6%;
       border-radius: 50%; z-index: 0; pointer-events: none;
       background: radial-gradient(circle at 50% 46%,
-        color-mix(in srgb, var(--sign-elem, #A8B0BC) 26%, transparent) 0%,
+        color-mix(in srgb, var(--sign-elem, #C2A05E) 26%, transparent) 0%,
         rgba(12, 16, 22, 0) 62%);
       filter: blur(6px);
     }
@@ -88,7 +83,7 @@
       object-fit: contain;
       display: block;
       filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.62))
-              drop-shadow(0 0 30px color-mix(in srgb, var(--sign-elem, #A8B0BC) 22%, transparent));
+              drop-shadow(0 0 30px color-mix(in srgb, var(--sign-elem, #C2A05E) 22%, transparent));
     }
     .sign-hero__planet-caption {
       position: absolute; z-index: 2; left: 50%; bottom: -1.4rem;
@@ -96,7 +91,7 @@
       width: max-content; max-width: min(92vw, 300px); text-align: center;
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.62rem; line-height: 1.4; letter-spacing: 0.1em; text-transform: uppercase;
-      color: color-mix(in srgb, var(--gold-vivid, #E6C24A) 78%, #E8EBF0);
+      color: color-mix(in srgb, var(--gold-vivid, #E6C24A) 78%, #ECE6D8);
       opacity: 0.8;
     }
     .sign-hero__figure, figure.sign-hero__planet { margin: 0; }
@@ -165,17 +160,17 @@
       display: flex; gap: var(--space-4); align-items: flex-start;
       padding: var(--space-5);
       background: var(--ap-card-surface, rgba(22, 28, 42, 0.42));
-      border: 1px solid rgba(168, 176, 188, 0.18);
+      border: 1px solid rgba(194, 160, 94, 0.18);
       border-radius: var(--radius-lg);
     }
     .sign-astro__card--element {
-      border-color: color-mix(in srgb, var(--sign-elem, #A8B0BC) 42%, transparent);
+      border-color: color-mix(in srgb, var(--sign-elem, #C2A05E) 42%, transparent);
       background: linear-gradient(180deg, var(--sign-elem-glow, transparent) 0%, var(--ap-card-surface, rgba(22,28,42,0.42)) 70%);
     }
     .sign-astro__seal { flex-shrink: 0; width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center; justify-content: center; }
     .sign-astro__seal .ap-seal { width: 2.4rem; height: 2.4rem; }
-    .sign-astro__seal--element { color: var(--sign-elem, #A8B0BC); font-size: 1.8rem; }
-    .sign-astro__seal--modality { color: var(--color-gold, #A8B0BC); font-size: 1.6rem; }
+    .sign-astro__seal--element { color: var(--sign-elem, #C2A05E); font-size: 1.8rem; }
+    .sign-astro__seal--modality { color: var(--color-gold, #C2A05E); font-size: 1.6rem; }
     .sign-astro__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 4px; }
     .sign-astro__value { font-family: var(--font-display); color: var(--color-gold-pale); font-size: 1.15rem; display: block; }
     .sign-astro__note { font-size: 0.82rem; color: var(--color-silver); line-height: 1.6; margin: var(--space-2) 0 0; }
@@ -188,9 +183,9 @@
     .sign-inchart__row {
       display: flex; gap: var(--space-4); align-items: flex-start;
       padding: var(--space-5);
-      background: rgba(168, 176, 188, 0.05);
-      border: 1px solid rgba(168, 176, 188, 0.16);
-      border-left: 3px solid color-mix(in srgb, var(--sign-elem, #A8B0BC) 55%, transparent);
+      background: rgba(194, 160, 94, 0.05);
+      border: 1px solid rgba(194, 160, 94, 0.16);
+      border-left: 3px solid color-mix(in srgb, var(--sign-elem, #C2A05E) 55%, transparent);
       border-radius: var(--radius-lg);
     }
     .sign-inchart__seal { flex-shrink: 0; width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center; justify-content: center; }
@@ -266,7 +261,7 @@
         </figure>
         <div class="sign-hero__content">
           <span class="sign-hero__glyph sign-hero__seal" data-celestial-seal="zodiac:gemini" data-seal-lg aria-hidden="true"></span>
-          <div class="sign-hero__constellation"><svg viewBox="0 0 320 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-gemini d-gemini"><title id="t-gemini">The constellation of Gemini</title><desc id="d-gemini">Castor and Pollux crown two parallel strings of stars, the celestial twins.</desc><defs><radialGradient id="g-gemini" cx="50%" cy="42%" r="55%"><stop offset="0%" stop-color="#14141C" stop-opacity="0.18"/><stop offset="100%" stop-color="#14141C" stop-opacity="0"/></radialGradient></defs><ellipse cx="160" cy="92" rx="120" ry="70" fill="url(#g-gemini)"/><g stroke="#A8B0BC" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round" fill="none"><polyline points="118,40 122,72 116,108 108,148 96,176"/><polyline points="200,44 196,76 202,110 210,150 222,178"/><line x1="118" y1="40" x2="200" y2="44"/><line x1="122" y1="72" x2="196" y2="76"/><line x1="116" y1="108" x2="202" y2="110"/></g><circle cx="118" cy="40" r="6" fill="#E8EBF0" opacity="0.18"/><circle cx="200" cy="44" r="6" fill="#E8EBF0" opacity="0.18"/><circle cx="118" cy="40" r="3.2" fill="#E8EBF0"/><circle cx="200" cy="44" r="3.0" fill="#E8EBF0"/><circle cx="122" cy="72" r="1.8" fill="#C8CDD6"/><circle cx="116" cy="108" r="1.9" fill="#ffffff"/><circle cx="108" cy="148" r="1.6" fill="#C8CDD6"/><circle cx="96" cy="176" r="1.8" fill="#C8CDD6"/><circle cx="196" cy="76" r="1.7" fill="#C8CDD6"/><circle cx="202" cy="110" r="1.9" fill="#ffffff"/><circle cx="210" cy="150" r="1.6" fill="#C8CDD6"/><circle cx="222" cy="178" r="1.8" fill="#C8CDD6"/><g fill="#C8CDD6" opacity="0.4"><circle cx="60" cy="56" r="0.7"/><circle cx="262" cy="64" r="0.6"/><circle cx="150" cy="28" r="0.6"/><circle cx="170" cy="180" r="0.7"/><circle cx="44" cy="130" r="0.5"/><circle cx="278" cy="140" r="0.7"/><circle cx="240" cy="32" r="0.5"/></g></svg></div>
+          <div class="sign-hero__constellation"><svg viewBox="0 0 320 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-gemini d-gemini"><title id="t-gemini">The constellation of Gemini</title><desc id="d-gemini">Castor and Pollux crown two parallel strings of stars, the celestial twins.</desc><defs><radialGradient id="g-gemini" cx="50%" cy="42%" r="55%"><stop offset="0%" stop-color="#4a2820" stop-opacity="0.18"/><stop offset="100%" stop-color="#4a2820" stop-opacity="0"/></radialGradient></defs><ellipse cx="160" cy="92" rx="120" ry="70" fill="url(#g-gemini)"/><g stroke="#C2A05E" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round" fill="none"><polyline points="118,40 122,72 116,108 108,148 96,176"/><polyline points="200,44 196,76 202,110 210,150 222,178"/><line x1="118" y1="40" x2="200" y2="44"/><line x1="122" y1="72" x2="196" y2="76"/><line x1="116" y1="108" x2="202" y2="110"/></g><circle cx="118" cy="40" r="6" fill="#ffe6b0" opacity="0.18"/><circle cx="200" cy="44" r="6" fill="#ffe6b0" opacity="0.18"/><circle cx="118" cy="40" r="3.2" fill="#ffe6b0"/><circle cx="200" cy="44" r="3.0" fill="#ffe6b0"/><circle cx="122" cy="72" r="1.8" fill="#f7ecc4"/><circle cx="116" cy="108" r="1.9" fill="#ffffff"/><circle cx="108" cy="148" r="1.6" fill="#f7ecc4"/><circle cx="96" cy="176" r="1.8" fill="#f7ecc4"/><circle cx="196" cy="76" r="1.7" fill="#f7ecc4"/><circle cx="202" cy="110" r="1.9" fill="#ffffff"/><circle cx="210" cy="150" r="1.6" fill="#f7ecc4"/><circle cx="222" cy="178" r="1.8" fill="#f7ecc4"/><g fill="#f7ecc4" opacity="0.4"><circle cx="60" cy="56" r="0.7"/><circle cx="262" cy="64" r="0.6"/><circle cx="150" cy="28" r="0.6"/><circle cx="170" cy="180" r="0.7"/><circle cx="44" cy="130" r="0.5"/><circle cx="278" cy="140" r="0.7"/><circle cx="240" cy="32" r="0.5"/></g></svg></div>
           <h1 id="page-title">Gemini</h1>
           <p class="sign-hero__dates">May 21 – June 20</p>
           <p class="sign-hero__keyword" aria-label="Sign keyword">“I think”</p>
@@ -277,8 +272,8 @@
             <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">The Twins</span></div>
           </div>
           <div class="sign-hero__actions">
-            <a href="chart.html" class="btn btn--primary btn--sm">Cast free chart</a>
-            <a href="horoscope.html?sign=gemini" class="btn btn--ghost btn--sm">Daily</a>
+            <a href="horoscope.html?sign=gemini" class="btn btn--primary btn--sm">Open in Daily Hub</a>
+            <a href="chart.html" class="btn btn--outline btn--sm">Birth Chart</a>
           </div>
         </div>
       </div>
@@ -304,7 +299,7 @@
     <section class="section section--alt" aria-labelledby="about-heading">
       <div class="container">
         <h2 class="section__title" id="about-heading">About Gemini</h2>
-        <p class="prose-block"><span class="sign-instrument-note">This profile is a sign overview — your real sky is the free chart (Sun through Pluto + Rising). The planet still above is our 3D orrery plate for this sign&rsquo;s ruler. </span>Gemini is the zodiac's messenger — quick, curious, and permanently in motion between two points. Ruled by Mercury, this sign lives through language, connection, and the exchange of ideas. A Gemini mind runs several threads at once and is bored by anything that runs only one. Variety is not a preference; it is oxygen.</p>
+        <p class="prose-block">Gemini is the zodiac's messenger — quick, curious, and permanently in motion between two points. Ruled by Mercury, this sign lives through language, connection, and the exchange of ideas. A Gemini mind runs several threads at once and is bored by anything that runs only one. Variety is not a preference; it is oxygen.</p>
       </div>
     </section>
 
@@ -387,7 +382,7 @@
         <h2 class="section__title" id="bridge-heading">Your Sun sign is a third of the picture</h2>
         <p class="section__subtitle">Your Sun is one of ten planets the engine computes — Sun through Pluto — plus your Rising and your houses. Cast your free chart to find your real Sun, Moon and Rising.</p>
         <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast My Free Chart</a>
-        <p class="sign-bridge__secondary">…then keep the whole story as a <a href="shop.html#deep-reading">Deep Reading →</a></p>
+        <p class="sign-bridge__secondary">Then compare your chart with the eclipse in the <a href="eclipse.html#contact">Eclipse contact instrument →</a></p>
       </div>
     </section>
 
@@ -514,10 +509,10 @@
       <div class="container" style="text-align:center;">
         <h2 class="section__title" id="cta-heading">Your Sun sign is one placement of many</h2>
         <p class="section__subtitle">Your Sun is one of ten planets — Sun through Pluto — plus your Rising and your houses. Calculate your complete birth chart — free, private, in your browser.</p>
-        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast My Free Chart</a>
+        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Birth Chart</a>
         <div class="sign-cta-row">
-          <a href="moment.html" class="btn btn--outline">Freeze a Moment</a>
-          <a href="horoscope.html" class="btn btn--ghost">Daily sky</a>
+          <a href="eclipse.html#contact" class="btn btn--outline">Check your eclipse contact</a>
+          <a href="shop.html" class="btn btn--outline">Visit the Cosmic Shop</a>
         </div>
       </div>
     </section>
@@ -527,18 +522,18 @@
         <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
         <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
         <ul class="sign-thumb-grid" aria-label="All zodiac signs">
-          <li><a href="aries.html" class="sign-thumb"><img src="img/engine/mars.webp" alt="Aries" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aries</span></a></li>
-          <li><a href="taurus.html" class="sign-thumb"><img src="img/engine/venus.webp" alt="Taurus" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Taurus</span></a></li>
-          <li><a href="gemini.html" class="sign-thumb sign-thumb--current" aria-current="page"><img src="img/engine/mercury.webp" alt="Gemini" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Gemini</span></a></li>
-          <li><a href="cancer.html" class="sign-thumb"><img src="img/engine/moon.webp" alt="Cancer" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Cancer</span></a></li>
-          <li><a href="leo.html" class="sign-thumb"><img src="img/engine/sun.webp" alt="Leo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Leo</span></a></li>
-          <li><a href="virgo.html" class="sign-thumb"><img src="img/engine/mercury.webp" alt="Virgo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Virgo</span></a></li>
-          <li><a href="libra.html" class="sign-thumb"><img src="img/engine/venus.webp" alt="Libra" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Libra</span></a></li>
-          <li><a href="scorpio.html" class="sign-thumb"><img src="img/engine/mars.webp" alt="Scorpio" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Scorpio</span></a></li>
-          <li><a href="sagittarius.html" class="sign-thumb"><img src="img/engine/jupiter.webp" alt="Sagittarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Sagittarius</span></a></li>
-          <li><a href="capricorn.html" class="sign-thumb"><img src="img/engine/saturn.webp" alt="Capricorn" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Capricorn</span></a></li>
-          <li><a href="aquarius.html" class="sign-thumb"><img src="img/engine/saturn.webp" alt="Aquarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aquarius</span></a></li>
-          <li><a href="pisces.html" class="sign-thumb"><img src="img/engine/jupiter.webp" alt="Pisces" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Pisces</span></a></li>
+          <li><a href="aries.html" class="sign-thumb"><img src="assets/images/zodiac-cards/aries.jpg" alt="Aries" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aries</span></a></li>
+          <li><a href="taurus.html" class="sign-thumb"><img src="assets/images/zodiac-cards/taurus.jpg" alt="Taurus" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Taurus</span></a></li>
+          <li><a href="gemini.html" class="sign-thumb sign-thumb--current" aria-current="page"><img src="assets/images/zodiac-cards/gemini.jpg" alt="Gemini" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Gemini</span></a></li>
+          <li><a href="cancer.html" class="sign-thumb"><img src="assets/images/zodiac-cards/cancer.jpg" alt="Cancer" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Cancer</span></a></li>
+          <li><a href="leo.html" class="sign-thumb"><img src="assets/images/zodiac-cards/leo.jpg" alt="Leo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Leo</span></a></li>
+          <li><a href="virgo.html" class="sign-thumb"><img src="assets/images/zodiac-cards/virgo.jpg" alt="Virgo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Virgo</span></a></li>
+          <li><a href="libra.html" class="sign-thumb"><img src="assets/images/zodiac-cards/libra.jpg" alt="Libra" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Libra</span></a></li>
+          <li><a href="scorpio.html" class="sign-thumb"><img src="assets/images/zodiac-cards/scorpio.jpg" alt="Scorpio" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Scorpio</span></a></li>
+          <li><a href="sagittarius.html" class="sign-thumb"><img src="assets/images/zodiac-cards/sagittarius.jpg" alt="Sagittarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Sagittarius</span></a></li>
+          <li><a href="capricorn.html" class="sign-thumb"><img src="assets/images/zodiac-cards/capricorn.jpg" alt="Capricorn" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Capricorn</span></a></li>
+          <li><a href="aquarius.html" class="sign-thumb"><img src="assets/images/zodiac-cards/aquarius.jpg" alt="Aquarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aquarius</span></a></li>
+          <li><a href="pisces.html" class="sign-thumb"><img src="assets/images/zodiac-cards/pisces.jpg" alt="Pisces" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Pisces</span></a></li>
         </ul>
       </div>
     </section>
@@ -580,15 +575,15 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
           <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
-            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Chart</a></li>
             <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+            <li><a href="moment.html"><span aria-hidden="true">✦</span> Moment</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="cosmic-story.html"><span aria-hidden="true">◇</span> Readings</a></li>
+            <li><a href="shop.html"><span aria-hidden="true">★</span> Shop</a></li>
           </ul>
         </div>
         <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
@@ -640,7 +635,6 @@
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/sign-page-boot.js"></script>
   <script src="js/ap-page-boot.js" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
   <script src="js/ap-footer-inject.js?v=835" defer></script>
 </body>
 </html>

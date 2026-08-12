@@ -1,140 +1,101 @@
 /**
- * Regression tests for the two Gumroad product tables — v841.
- * Run: node test-gumroad-tables.mjs
- *
- * Both files declare the same single product. The module
- * (gumroad-unlock.js) and the classic bridge (ap-gumroad-bridge.js)
- * must agree on product_id and price. A half-finished paste across
- * two files is silent and asymmetric: the shop offers a product the
- * eclipse page calls dormant, or vice versa.
- *
- * v841 changes: single eclipse-edition product, product_id not permalink,
- * GBP 7 price, license verification rejects refunded/disputed/chargebacked.
+ * Regression gate for AstroPrecise's one Gumroad product.
+ * Checkout needs the public permalink; licence verification needs product_id.
+ * Neither flow is allowed to become live when only one identifier is configured.
  */
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { GUMROAD_PRODUCTS, resolveProductSlug, isCheckoutReady } from './website/js/gumroad-unlock.js';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  GUMROAD_PRODUCTS,
+  isCheckoutReady,
+  openCheckout,
+  resolveProductSlug,
+  verifyLicense,
+} from './website/js/gumroad-unlock.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
+const moduleSource = readFileSync(join(here, 'website/js/gumroad-unlock.js'), 'utf8');
+const bridgeSource = readFileSync(join(here, 'website/js/ap-gumroad-bridge.js'), 'utf8');
+const dormantWindow = {};
+new Function('window', bridgeSource)(dormantWindow);
+const BRIDGE = dormantWindow.APGumroad;
 
-const win = {};
-new Function('window', readFileSync(join(here, 'website/js/ap-gumroad-bridge.js'), 'utf8'))(win);
-const BRIDGE = win.APGumroad;
+assert.ok(BRIDGE, 'classic bridge must assign window.APGumroad');
+for (const method of ['isReady', 'anyLive', 'openCheckout', 'verifyLicense']) {
+  assert.equal(typeof BRIDGE[method], 'function', `bridge missing ${method}`);
+}
 
-let pass = 0;
-let fail = 0;
-const ok = (name, cond, got) => {
-  if (cond) pass++;
-  else {
-    fail++;
-    console.log(`  ✗ ${name}${got !== undefined ? ' — got ' + got : ''}`);
-  }
+const moduleSlugs = Object.keys(GUMROAD_PRODUCTS).sort();
+const bridgeSlugs = Object.keys(BRIDGE.products).sort();
+assert.deepEqual(moduleSlugs, ['eclipse-edition']);
+assert.deepEqual(bridgeSlugs, moduleSlugs);
+for (const slug of moduleSlugs) {
+  assert.deepEqual(BRIDGE.products[slug], GUMROAD_PRODUCTS[slug], `${slug} tables diverged`);
+  assert.equal(GUMROAD_PRODUCTS[slug].price, '£7');
+  assert.ok(Object.hasOwn(GUMROAD_PRODUCTS[slug], 'permalink'));
+  assert.ok(Object.hasOwn(GUMROAD_PRODUCTS[slug], 'productId'));
+}
+assert.equal(resolveProductSlug('eclipse-edition'), 'eclipse-edition');
+assert.equal(isCheckoutReady('not-a-product'), false);
+assert.equal(BRIDGE.isReady('not-a-product'), false);
+
+// Shipping source is deliberately dormant until BOTH real values are supplied.
+assert.equal(isCheckoutReady('eclipse-edition'), false);
+assert.equal(BRIDGE.isReady('eclipse-edition'), false);
+assert.equal(BRIDGE.anyLive(), false);
+assert.throws(() => openCheckout('eclipse-edition'), /permalink and product_id/);
+let dormantFetchCalled = false;
+const previousFetch = globalThis.fetch;
+globalThis.fetch = async () => { dormantFetchCalled = true; throw new Error('must stay dormant'); };
+assert.deepEqual(await verifyLicense('eclipse-edition', '12345678'), { valid: false });
+assert.equal(dormantFetchCalled, false, 'dormant module must not call Gumroad');
+globalThis.fetch = previousFetch;
+
+// Exercise a configured copy of the classic bridge so identifier routing is
+// proven, not just searched for as a string.
+const configuredSource = bridgeSource
+  .replace("permalink: 'REPLACE_ME'", "permalink: 'public-eclipse-slug'")
+  .replace("productId: 'REPLACE_ME'", "productId: 'product_api_123'");
+const requests = [];
+const configuredWindow = {
+  location: { href: '' },
+  fetch: async (url, options) => {
+    requests.push({ url, options });
+    return { json: async () => ({ success: true, purchase: {} }) };
+  },
 };
+new Function('window', 'fetch', configuredSource)(configuredWindow, configuredWindow.fetch);
+const LIVE = configuredWindow.APGumroad;
+assert.equal(LIVE.isReady('eclipse-edition'), true);
+assert.equal(LIVE.openCheckout('eclipse-edition'), true);
+assert.equal(configuredWindow.location.href,
+  'https://gumroad.com/l/public-eclipse-slug?wanted=true',
+  'checkout must use the public permalink');
+assert.equal(configuredWindow.location.href.includes('product_api_123'), false);
+assert.deepEqual(await LIVE.verifyLicense('licence-key-123', 'eclipse-edition'), { valid: true });
+assert.equal(requests.length, 1);
+assert.equal(requests[0].url, 'https://api.gumroad.com/v2/licenses/verify');
+assert.match(requests[0].options.body, /product_id=product_api_123/);
+assert.equal(requests[0].options.body.includes('public-eclipse-slug'), false,
+  'licence verification must not use the public permalink');
 
-// ── 1. The bridge loaded at all ─────────────────────────────────────────────
-{
-  ok('bridge assigns window.APGumroad', !!BRIDGE);
-  ok('bridge exposes products', !!(BRIDGE && BRIDGE.products));
-  ok('bridge exposes isReady', typeof (BRIDGE && BRIDGE.isReady) === 'function');
-  ok('bridge exposes anyLive', typeof (BRIDGE && BRIDGE.anyLive) === 'function');
-  ok('bridge exposes verifyLicense', typeof (BRIDGE && BRIDGE.verifyLicense) === 'function');
-}
-
-// ── 2. Same products, both directions ───────────────────────────────────────
-const modSlugs = Object.keys(GUMROAD_PRODUCTS).sort();
-const brSlugs = Object.keys(BRIDGE.products).sort();
-{
-  const missingFromBridge = modSlugs.filter((s) => !(s in BRIDGE.products));
-  const missingFromModule = brSlugs.filter((s) => !(s in GUMROAD_PRODUCTS));
-  ok('every module slug exists in the bridge', missingFromBridge.length === 0, missingFromBridge.join(', '));
-  ok('every bridge slug exists in the module', missingFromModule.length === 0, missingFromModule.join(', '));
-  ok('slug lists are identical', modSlugs.join(',') === brSlugs.join(','), `${modSlugs.length} vs ${brSlugs.length}`);
-}
-
-// ── 3. Same product_id and same price for every slug ────────────────────────
-{
-  for (const slug of modSlugs) {
-    const m = GUMROAD_PRODUCTS[slug];
-    const b = BRIDGE.products[slug] || {};
-    ok(`${slug}: productId matches across both files`, m.productId === b.productId,
-      `module "${m.productId}" vs bridge "${b.productId}"`);
-    ok(`${slug}: price matches across both files`, m.price === b.price,
-      `module "${m.price}" vs bridge "${b.price}"`);
-  }
-}
-
-// ── 4. Readiness must never disagree ────────────────────────────────────────
-{
-  let disagreements = 0;
-  for (const slug of [...modSlugs, 'not-a-product', '']) {
-    if (isCheckoutReady(slug) !== BRIDGE.isReady(slug)) {
-      disagreements++;
-      console.log(`  ✗ readiness disagrees for "${slug}": module ${isCheckoutReady(slug)}, bridge ${BRIDGE.isReady(slug)}`);
-    }
-  }
-  ok('module and bridge agree on readiness for every slug', disagreements === 0, disagreements + ' disagreements');
-  ok('an unknown slug is never ready', !isCheckoutReady('not-a-product') && !BRIDGE.isReady('not-a-product'));
-}
-
-// ── 5. Slug resolution and alias agreement ──────────────────────────────────
-{
-  ok('module resolves eclipse-edition to eclipse-edition', resolveProductSlug('eclipse-edition') === 'eclipse-edition');
-  ok('module resolves unknown slug to itself', resolveProductSlug('unknown') === 'unknown');
-}
-
-// ── 6. Prices are the ones the site actually charges ────────────────────────
-{
-  const EXPECTED = {
-    'eclipse-edition': '£7',
+for (const state of ['refunded', 'disputed', 'chargebacked']) {
+  const blockedWindow = {
+    location: { href: '' },
+    fetch: async () => ({ json: async () => ({ success: true, purchase: { [state]: true } }) }),
   };
-  for (const [slug, price] of Object.entries(EXPECTED)) {
-    ok(`${slug} is ${price}`, GUMROAD_PRODUCTS[slug] && GUMROAD_PRODUCTS[slug].price === price,
-      GUMROAD_PRODUCTS[slug] && GUMROAD_PRODUCTS[slug].price);
-  }
-  ok('exactly one product', modSlugs.length === Object.keys(EXPECTED).length,
-    modSlugs.join(', '));
+  new Function('window', 'fetch', configuredSource)(blockedWindow, blockedWindow.fetch);
+  const result = await blockedWindow.APGumroad.verifyLicense('licence-key-123', 'eclipse-edition');
+  assert.equal(result.valid, false, `${state} purchase must be rejected`);
 }
 
-// ── 7. Every price is a well-formed GBP string ──────────────────────────────
-{
-  let malformed = 0;
-  for (const slug of modSlugs) {
-    if (!/^£\d+(\.\d{2})?$/.test(GUMROAD_PRODUCTS[slug].price)) {
-      malformed++;
-      console.log(`  ✗ ${slug} price is not a GBP string — "${GUMROAD_PRODUCTS[slug].price}"`);
-    }
-  }
-  ok('every price is a well-formed GBP string', malformed === 0, malformed + ' malformed');
+for (const source of [moduleSource, bridgeSource]) {
+  assert.ok(source.includes('product_id'), 'licence code must name product_id');
+  assert.ok(source.includes('permalink'), 'checkout code must name permalink');
+  assert.equal(/handleUnlockOnLoad|searchParams\.get\(['"]license|[?&]license=/.test(source), false,
+    'licence keys must never be accepted from the URL');
 }
 
-// ── 8. All dormant or all live — never half ─────────────────────────────────
-{
-  const live = modSlugs.filter((s) => isCheckoutReady(s));
-  const dormant = modSlugs.filter((s) => !isCheckoutReady(s));
-  ok('checkout state is uniform — all dormant or all live',
-    live.length === 0 || dormant.length === 0,
-    `${live.length} live (${live.join(', ')}) vs ${dormant.length} dormant (${dormant.join(', ')})`);
-  ok('anyLive() agrees with the per-product readiness', BRIDGE.anyLive() === (live.length > 0),
-    `anyLive ${BRIDGE.anyLive()}, ${live.length} live`);
-
-  console.log(live.length === 0
-    ? '  · checkout is dormant: no Gumroad product_ids pasted yet (expected before launch)'
-    : dormant.length === 0
-      ? `  · checkout is LIVE for all ${live.length} products`
-      : `  · checkout is HALF live — ${live.join(', ')} buyable, ${dormant.join(', ')} dead`);
-}
-
-// ── 9. License verification uses product_id and rejects bad states ──────────
-{
-  // Verify the module's verifyLicense function exists and uses product_id
-  ok('verifyLicense is exported from module', typeof GUMROAD_PRODUCTS === 'object');
-  ok('eclipse-edition has productId field', !!(GUMROAD_PRODUCTS['eclipse-edition'] && GUMROAD_PRODUCTS['eclipse-edition'].productId));
-  ok('eclipse-edition has no permalink field', !GUMROAD_PRODUCTS['eclipse-edition'].permalink);
-  // Bridge too
-  ok('bridge eclipse-edition has productId', !!(BRIDGE.products['eclipse-edition'] && BRIDGE.products['eclipse-edition'].productId));
-  ok('bridge eclipse-edition has no permalink', !BRIDGE.products['eclipse-edition'].permalink);
-}
-
-console.log(`\ntest-gumroad-tables: ${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+console.log('PASS dormant two-identifier Gumroad gate + checkout/licence routing + bad-state rejection');

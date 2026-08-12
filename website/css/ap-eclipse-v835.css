@@ -61,6 +61,30 @@
 .ap-eclipse-result li p:not(.ap-eclipse-result__mono) { max-width: 66ch; margin-top: 8px; color: var(--ap-paper-dim); font: 500 16px/1.55 var(--ap-display); }
 .ap-eclipse-result__mono { color: var(--ap-silver) !important; font: 11px/1.6 var(--ap-data) !important; }
 .ap-eclipse-result[data-quiet="true"] { border-color: rgba(216,180,106,.42); }
+.ap-eclipse-edition { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--ap-line-strong); }
+.ap-eclipse-edition__head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+.ap-eclipse-edition__head span, .ap-eclipse-edition__quiet > span { color: var(--ap-brass); font: 10px/1.4 var(--ap-data); letter-spacing: .1em; text-transform: uppercase; }
+.ap-eclipse-edition__head strong { color: var(--ap-paper); font: 700 13px/1.4 var(--ap-data); }
+.ap-eclipse-edition h3 { margin: 0; color: var(--ap-paper); font: 600 clamp(25px,3vw,36px)/1.05 var(--ap-display); }
+.ap-eclipse-edition > p, .ap-eclipse-edition__quiet p { max-width: 64ch; margin: 12px 0 0; color: var(--ap-paper-dim); font: 500 15px/1.6 var(--ap-body); }
+.ap-eclipse-edition > ul { display: grid; gap: 7px; margin: 18px 0 0; padding: 0; list-style: none; color: var(--ap-silver); font: 11px/1.5 var(--ap-data); }
+.ap-eclipse-edition > ul li::before { content: "✦"; margin-right: 8px; color: var(--ap-brass); }
+.ap-eclipse-edition__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.ap-eclipse-edition__actions button, .ap-eclipse-edition__license button { min-height: 48px; margin: 0; padding: 10px 16px; border: 1px solid var(--ap-ember); border-radius: 5px; background: var(--ap-ember); color: #170702; font: 700 13px/1.2 var(--ap-body); cursor: pointer; }
+.ap-eclipse-edition__actions button + button { border-color: var(--ap-line-strong); background: transparent; color: var(--ap-paper); }
+.ap-eclipse-edition__license { margin-top: 16px !important; padding: 16px !important; background: rgba(3,5,9,.42) !important; }
+.ap-eclipse-edition__license label span { display: block; margin-bottom: 8px; color: var(--ap-paper-dim); font: 10px/1.45 var(--ap-data); letter-spacing: .04em; text-transform: none; }
+.ap-eclipse-edition__license input { min-height: 48px; }
+.ap-eclipse-edition__status { margin: 14px 0 0 !important; color: var(--ap-paper-faint) !important; font: 11px/1.55 var(--ap-data) !important; }
+.ap-eclipse-edition__status strong { color: var(--ap-brass); }
+.ap-eclipse-edition__quiet { padding: 18px; border: 1px solid rgba(216,180,106,.32); border-radius: 6px; background: rgba(216,180,106,.045); }
+.ap-eclipse-edition__reading { display: grid; gap: 0; margin-top: 20px; }
+.ap-eclipse-edition__reading section { padding: 15px 0; border-top: 1px solid var(--ap-line); }
+.ap-eclipse-edition__reading small { color: var(--ap-brass); font: 10px/1.4 var(--ap-data); letter-spacing: .08em; text-transform: uppercase; }
+.ap-eclipse-edition__reading p { margin: 7px 0 0; color: var(--ap-paper-dim); font: 500 16px/1.55 var(--ap-display); }
+.ap-eclipse-edition__art { margin: 22px 0 0; border: 1px solid var(--ap-line-strong); background: var(--ap-void-deep); }
+.ap-eclipse-edition__art canvas { display: block; width: 100%; height: auto; aspect-ratio: 4/5; }
+.ap-eclipse-edition__art figcaption { padding: 12px 14px; color: var(--ap-paper-faint); font: 10px/1.5 var(--ap-data); }
 #eclipseResultNote { margin: 16px 0; color: var(--ap-paper-dim); font-size: 13px; line-height: 1.6; }
 .ap-eclipse-geometry-plate { margin: 0; border: 1px solid var(--ap-line); border-radius: 8px; overflow: hidden; background: #08090d; }
 .ap-eclipse-geometry-plate img { display: block; width: 100%; height: auto; }
@@ -81,6 +105,9 @@
   .ap-eclipse-guide article:first-child { border-top: 0 !important; }
   .ap-eclipse-contact__fields { grid-template-columns: 1fr; }
   .ap-eclipse-contact form button { width: 100%; }
+  .ap-eclipse-edition__head { align-items: flex-start; flex-direction: column; }
+  .ap-eclipse-edition__actions { display: grid; grid-template-columns: 1fr; }
+  .ap-eclipse-edition__actions button, .ap-eclipse-edition__license button { width: 100%; min-height: 50px; }
   .ap-eclipse-geometry-plate { max-width: 560px; }
 }
 /* v838 eclipse mission clock */

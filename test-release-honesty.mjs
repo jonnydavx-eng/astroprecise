@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const count = (text, pattern) => (text.match(pattern) || []).length;
@@ -58,8 +58,8 @@ assert.ok(serviceWorker.includes('app|chart-page|horoscope-page'), 'chart-page.j
 assert.ok(serviceWorker.includes('if (isCritical ||') && serviceWorker.includes('if (network) return network;'), 'release-critical code must remain network-first');
 
 const runbook = read('./ECLIPSE-RUNBOOK.md');
-assert.ok(runbook.includes('23 suites, must be 23/23'));
-assert.equal(/19 suites|19\/19/.test(runbook), false);
+assert.ok(runbook.includes('25 suites, must be 25/25'));
+assert.equal(/19 suites|19\/19|23 suites|23\/23|24 suites|24\/24/.test(runbook), false);
 
 const mergeNote = read('./MERGE-2026-07-17-COWORK.md');
 assert.equal(/£2\.99[^\n]*£4 archive|£14→£19|prices only rise/i.test(mergeNote), false);
@@ -78,5 +78,36 @@ for (const path of [
 
 const launchPack = read('./marketing/ECLIPSE-LAUNCH-PACK-2026-08-12.md');
 assert.equal(/arcminute|ephemeris/i.test(launchPack), false);
+
+const shop = read('./website/shop.html');
+const eclipse = read('./website/eclipse.html');
+const productConfig = read('./website/js/app.js');
+const edition = read('./website/js/ap-eclipse-edition-v841.js');
+const gumroad = read('./website/js/gumroad-unlock.js');
+const gumroadBridge = read('./website/js/ap-gumroad-bridge.js');
+assert.equal((shop.match(/<article class="ap-product/g) || []).length, 2,
+  'shop must show only the free guide and one paid edition');
+assert.ok(shop.includes('Eight-page PDF · ready now') && shop.includes('Personalised eclipse edition · £7'));
+assert.ok(eclipse.includes('id="eclipseEdition"') && eclipse.includes('id="eclipseContactForm"'));
+assert.match(productConfig, /catalogueSkus:\s*\['eclipse-edition'\]/);
+assert.match(productConfig, /id:\s*'eclipse-edition'[\s\S]{0,260}price:\s*7\.00/);
+assert.ok(edition.includes('reading.gateSale || reading.quiet'));
+assert.ok(edition.includes('No manual review and no birth data leaves this browser'));
+for (const source of [gumroad, gumroadBridge, edition]) {
+  assert.equal(/handleUnlockOnLoad|searchParams\.get\(['"]license|[?&]license=/.test(source), false,
+    'licence key must never be accepted through a URL');
+}
+
+const htmlFiles = readdirSync(new URL('./website/', import.meta.url)).filter((name) => name.endsWith('.html'));
+for (const file of htmlFiles) {
+  const html = read('./website/' + file);
+  assert.equal(/shop\.html#(?:deep-reading|eclipse-reading|eclipse-set)/.test(html), false,
+    `${file} links to a retired product funnel`);
+}
+
+const outreach = read('./website/js/outreach-content.js');
+for (const stale of ['Deep Reading £12', 'posters from £6', 'shop.html#deep-reading', '{{deepReadingPrice}}']) {
+  assert.equal(outreach.includes(stale), false, `outreach content retains stale launch offer: ${stale}`);
+}
 
 console.log('PASS pre-deploy truth and runtime regression checks');

@@ -353,7 +353,7 @@ function inYourChartSection(s) {
     </section>`;
 }
 
-/* LAYER 4 — Closer: honest CTA toward the free chart, then the Deep Reading. */
+/* LAYER 4 — Closer: honest CTA toward the free chart, then the launch eclipse instrument. */
 function chartBridgeSection(s) {
   return `
     <section class="section" aria-labelledby="bridge-heading">
@@ -361,7 +361,7 @@ function chartBridgeSection(s) {
         <h2 class="section__title" id="bridge-heading">Your Sun sign is a third of the picture</h2>
         <p class="section__subtitle">Your Sun is one of ten planets the engine computes — Sun through Pluto — plus your Rising and your houses. Cast your free chart to find your real Sun, Moon and Rising.</p>
         <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast My Free Chart</a>
-        <p class="sign-bridge__secondary">…then keep the whole story as a <a href="shop.html#deep-reading">Deep Reading →</a></p>
+        <p class="sign-bridge__secondary">Then compare your chart with the eclipse in the <a href="eclipse.html#contact">Eclipse contact instrument →</a></p>
       </div>
     </section>`;
 }
@@ -878,7 +878,7 @@ function page(s) {
         <p class="section__subtitle">Your Sun is one of ten planets — Sun through Pluto — plus your Rising and your houses. Calculate your complete birth chart — free, private, in your browser.</p>
         <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Birth Chart</a>
         <div class="sign-cta-row">
-          <a href="shop.html#deep-reading" class="btn btn--outline">Explore Deep Reading</a>
+          <a href="eclipse.html#contact" class="btn btn--outline">Check your eclipse contact</a>
           <a href="shop.html" class="btn btn--outline">Visit the Cosmic Shop</a>
         </div>
       </div>
