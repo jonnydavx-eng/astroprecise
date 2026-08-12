@@ -1,5 +1,5 @@
 /**
- * Static proof: AstroPrecise v839 launch architecture.
+ * Static proof: AstroPrecise v840 launch architecture.
  * Exit 0 only when the flagship 3D, truthful commerce, shared chrome and
  * verification surfaces are wired to the current release contract.
  */
@@ -79,12 +79,18 @@ ok(/ap-footer-inject\.js\?v=835/.test(signGenerator), 'zodiac generator preserve
 
 const sitemap = fs.readFileSync(path.join(web, 'sitemap.xml'), 'utf8');
 const sitemapPages = [...sitemap.matchAll(/https:\/\/astroprecise\.app\/([^<]*\.html)/g)].map((match) => match[1]);
+const standaloneSitemapPages = new Set(['guides/eclipse-field-guide-2026.html']);
 const missingFooters = sitemapPages.filter((page) => {
+  if (standaloneSitemapPages.has(page)) return false;
   const html = fs.readFileSync(path.join(web, page), 'utf8');
   return !/ap-footer-inject\.js/.test(html);
 });
 ok(missingFooters.length === 0, 'all sitemap HTML routes load the compact footer'
   + (missingFooters.length ? ': ' + missingFooters.join(', ') : ''));
+ok(sitemapPages.includes('guides/eclipse-field-guide-2026.html'), 'finished eclipse field guide is discoverable in sitemap');
+
+const indexLite = fs.readFileSync(path.join(web, 'index-lite.html'), 'utf8');
+ok(/<meta\s+name="robots"\s+content="noindex, follow"\s*\/?>/.test(indexLite), 'legacy lite redirect cannot compete with the canonical home page');
 
 const eclipse = fs.readFileSync(path.join(web, 'eclipse.html'), 'utf8');
 ok(/ap-eclipse-live-v834\.js\?v=838/.test(eclipse), 'eclipse loads the dedicated v838 3D instrument');
@@ -106,7 +112,7 @@ ok(!/(?:gumroad|ap-checkout-honest)/i.test(plate), 'natal plate exposes no dead 
 
 const sw = fs.readFileSync(path.join(web, 'sw.js'), 'utf8');
 const versionMatch = sw.match(/const V\s*=\s*"([^"]+)"/);
-ok(versionMatch && versionMatch[1] === 'ap-v839', 'SW release tip ' + (versionMatch && versionMatch[1]));
+ok(versionMatch && versionMatch[1] === 'ap-v840', 'SW release tip ' + (versionMatch && versionMatch[1]));
 
 const verify = fs.readFileSync(path.join(web, 'verify.html'), 'utf8');
 ok(/plate-fingerprint\.js/.test(verify), 'verify imports plate-fingerprint');

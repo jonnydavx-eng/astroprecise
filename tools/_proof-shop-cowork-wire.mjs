@@ -1,5 +1,5 @@
 /**
- * Proof: v839 authored shop, Eclipse Passport, availability list and truthful no-checkout state.
+ * Proof: v840 authored shop, Eclipse Passport, availability list and truthful no-checkout state.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { buildEclipseReading5 } from '../website/js/eclipse-reading.js';
@@ -39,7 +39,7 @@ if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains ge
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
 if (!eclipse.includes('shop.html#eclipse-passport')) fails.push('eclipse missing Passport Shop link');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v839["']/.test(sw)) fails.push('SW tip is not exactly v839');
+if (!/const V\s*=\s*["']ap-v840["']/.test(sw)) fails.push('SW tip is not exactly v840');
 
 if (fails.length) {
   console.error('FAIL', fails);

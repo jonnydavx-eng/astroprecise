@@ -46,7 +46,7 @@ for (const file of [
 if (!/Date\.UTC\(2026, 7, 12, 17, 45, 51\)/.test(geometryJs)) {
   fails.push('eclipse geometry maximum is not 17:45:51 UTC');
 }
-if (!/const V\s*=\s*["']ap-v839["']/.test(sw)) fails.push('SW tip is not exactly v839');
+if (!/const V\s*=\s*["']ap-v840["']/.test(sw)) fails.push('SW tip is not exactly v840');
 
 // Quiet chart: bodies clustered away from aspect angles to 140.133°.
 const quiet = buildEclipseReading5(140.133, {
