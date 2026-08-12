@@ -390,17 +390,17 @@ export function mountEclipseEdition(host, context) {
   host.dataset.paidState = ready ? 'locked' : 'dormant';
   rememberEditionContext(context);
   host.innerHTML = `
-    <div class="ap-eclipse-edition__head"><span>Your Eclipse Edition</span><strong>£7 · instant</strong></div>
-    <h3>Unlock all five beats and your unique eclipse artwork.</h3>
-    <p>The full reading and 2400 × 3000 artwork are generated here from this computed contact. Download a PNG or open a clean print/save-as-PDF view. No manual review and no birth data leaves this browser.</p>
-    <ul><li>Five-beat personalised contact reading</li><li>Unique high-resolution eclipse artwork</li><li>PNG download + print/save-as-PDF view</li></ul>
+    <div class="ap-eclipse-edition__head"><span>Your Eclipse Edition</span><strong>£7 · instant · live</strong></div>
+    <h3>Keep tonight’s contact as reading and art.</h3>
+    <p>Five authored beats plus unique 2400 × 3000 artwork, generated here from this computed contact. Download a PNG or open print / save-as-PDF. No manual review and no birth data leaves this browser.</p>
+    <ul><li>Five-beat personalised contact reading</li><li>Unique high-resolution eclipse artwork</li><li>PNG download + print / save-as-PDF</li><li>Licence unlock via Gumroad View content</li></ul>
     ${ready ? `
       <div class="ap-eclipse-edition__actions"><button type="button" data-edition-buy>Buy Your Eclipse Edition — £7</button></div>
       <form class="ap-eclipse-edition__license" data-edition-license-form>
         <label><span>Already purchased? Paste the licence key from Gumroad View content</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
         <button type="submit">Unlock on this device</button>
       </form>
-      <p class="ap-eclipse-edition__status" data-edition-status role="status">After purchase, open <strong>View content</strong> on Gumroad, copy the licence key, then return here and paste it. This contact is kept in this browser tab so you do not need to re-cast.</p>` : `
+      <p class="ap-eclipse-edition__status" data-edition-status role="status">Pay on Gumroad → open <strong>View content</strong> → copy the licence key → return here and paste. This contact stays in this browser tab.</p>` : `
       <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is closed.</strong> The public link and product ID are not both configured, so nothing can take payment. Your free contact result above remains available.</p>`}`;
 
   if (!ready) return { state: 'dormant', model };

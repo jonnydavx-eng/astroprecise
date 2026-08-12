@@ -173,9 +173,9 @@ ok('cosmic flight auto-intro waits for WebGL, is skippable/replayable and reuses
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
-  'css/ap-living-sky-v834.css?v=848',
-    'js/ap-observatory-v834.js?v=848',
-    'js/ap-nav-model.js?v=848',
+  'css/ap-living-sky-v834.css?v=849',
+    'js/ap-observatory-v834.js?v=849',
+    'js/ap-nav-model.js?v=849',
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
@@ -207,7 +207,7 @@ for (const probe of ["['eclipse.html', 'Eclipse', 'eclipse']", '(min-width: 981p
 }
 if (!livingCss.includes('repeat(5, minmax(0, 1fr))')) fail('mobile navigation is not five equal tabs');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v848"')) fail('service worker release identity is not ap-v848');
+if (!sw.includes('const V = "ap-v849"')) fail('service worker release identity is not ap-v849');
 ok('shared shell exposes five routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
@@ -232,8 +232,8 @@ const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'u
 const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=848',
-    'css/ap-eclipse-live-v834.css?v=848',
+  'js/ap-eclipse-live-v834.js?v=849',
+    'css/ap-eclipse-live-v834.css?v=849',
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
