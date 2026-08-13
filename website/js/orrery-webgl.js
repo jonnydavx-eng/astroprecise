@@ -1,4 +1,3 @@
-// GENERATED — canonical source: OrbitLab js/. Edit there, sync via scripts/sync-to-astroprecise.mjs
 /* ============================================================================
  * orrery-webgl.js — Photoreal WebGL solar system hero (Three.js, no build step)
  * ----------------------------------------------------------------------------
@@ -244,7 +243,8 @@ const FinishShader = {
   let sunVisualsMinimal = false;
   let focusPlanetId = null;
   let focusPlanetUntil = 0;
-  let focusFrameId = null;      // v576: persists past the 2.8s highlight — camera framing ownership
+  let focusFrameId = null;      // committed portrait framing ownership
+  let pendingFocusId = null;    // destination stays contextual until the camera has nearly landed
   let moonFrameActive = false;  // v576: Earth+Moon shared frame from focusPlanet('moon')
   // ── Aspect view (focusAspect) — HONEST geocentric ecliptic zodiac ring ─────────
   // The 3D scene's orbit radii are visually COMPRESSED, so an angle between two scene
@@ -1183,6 +1183,7 @@ const FinishShader = {
     scaleAnimActive = false;
     introActive = false;
     focusFrameId = null;
+    pendingFocusId = null;
     moonFrameActive = false;
     updateScaleVisuals(0);
     updateScaleHUD();
@@ -1683,9 +1684,14 @@ const FinishShader = {
       }
     }
     if (milkyWayBand) {
-      milkyWayBand.visible = true;
+      // This is the nearby sky-dome band seen from inside the solar system, not
+      // the Galaxy model itself. Fade it out before the full galactic disk takes
+      // ownership; otherwise the shell cuts bright parallel rails through the
+      // face-on Milky Way at scale 5.
+      const bandFade = 1 - smoothUnit((z - 4.1) / 0.7);
+      milkyWayBand.visible = bandFade > 0.01;
       if (milkyWayBand.material.uniforms) {
-        milkyWayBand.material.uniforms.uFade.value = nearFade * 0.7;
+        milkyWayBand.material.uniforms.uFade.value = nearFade * 0.7 * bandFade;
         milkyWayBand.material.uniforms.uSizeMul.value = (lv <= 1 ? 1.3 : 1.15);
       }
     }
@@ -1801,6 +1807,7 @@ const FinishShader = {
     daysPerSec = 0;
     flicking = false;
     focusFrameId = null;
+    pendingFocusId = null;
     moonFrameActive = false;
     scaleLevel = 0;
     updateScaleVisuals(0);
@@ -2046,7 +2053,7 @@ const FinishShader = {
 
   function preloadTextures() {
     if (onPreloaderStage()) {
-      return Promise.all(earthTextureFiles().map(requestPreloadTexture)).then(() => {
+      return Promise.all(earthTextureFiles().map((file) => requestPreloadTexture(file))).then(() => {
         markTexturesReady(true);
       }).catch(() => {
         markTexturesReady(false);
@@ -2078,7 +2085,7 @@ const FinishShader = {
     });
     files.push('moon.jpg', 'earth_lights.png', 'earth_specular.jpg');
     if (perfTier !== 'low' && !PRM) files.push('earth_clouds.jpg', 'earth_normal.jpg');
-    return Promise.all(files.map(requestPreloadTexture)).then(() => {
+    return Promise.all(files.map((file) => requestPreloadTexture(file))).then(() => {
       markTexturesReady(true);
     }).catch(() => {
       markTexturesReady(false);
@@ -2170,7 +2177,8 @@ const FinishShader = {
     // Deep-space geometry is not part of the opening System scene. Prepare it
     // only when a journey actually crosses the Oort threshold.
     if (p.id >= 3 && !galaxyBuilt) ensureGalaxyLayers();
-    focusFrameId = null;      // v576: any scale change releases camera framing ownership
+    focusFrameId = null;      // any scale change releases camera framing ownership
+    pendingFocusId = null;
     moonFrameActive = false;
     camRadiusTarget = null;   // cancel free-zoom coast so preset isn't fought mid-lerp
     const prevLevel = scaleLevel;
@@ -2272,6 +2280,7 @@ const FinishShader = {
     opts = opts || {};
     if (opts.keepAspect && focusFrameId === 'aspect') return;
     moonFrameActive = false;
+    pendingFocusId = null;
     if (focusFrameId && focusFrameId !== 'aspect') focusFrameId = null;
     else if (!opts.keepAspect) focusFrameId = null;
     if (scaleAnimActive) {
@@ -3601,6 +3610,7 @@ const FinishShader = {
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     gaiaSamplePoints = new THREE.Points(g, new THREE.PointsMaterial({
+      map: galaxySoftDotTexture(),
       size: perfTier === 'high' ? 0.52 : 0.4,
       vertexColors: true,
       transparent: true,
@@ -3682,6 +3692,7 @@ const FinishShader = {
     g.setAttribute('position', new THREE.BufferAttribute(proj.pos, 3));
     g.setAttribute('color', new THREE.BufferAttribute(proj.col, 3));
     brightGalacticStars = new THREE.Points(g, new THREE.PointsMaterial({
+      map: galaxySoftDotTexture(),
       size: perfTier === 'high' ? 1.35 : 1.05,
       vertexColors: true,
       transparent: true,
@@ -3967,11 +3978,14 @@ const FinishShader = {
       if (isInstrumentZoomBusy()) return;
       const outerT = Math.max(0, Math.min(1, (z - 2.2) / 2.8));
       const fogDensity = (perfTier === 'high' ? 0.00020 : 0.00024) + outerT * 0.0007;
-      const targetExp = (perfTier === 'high' ? 1.14 : 1.08) - outerT * 0.12;
+      const targetExp = (perfTier === 'high' ? 1.16 : 1.10) - outerT * 0.10;
       const hemiI = (perfTier === 'high' ? 0.46 : 0.39) * (1 - outerT * 0.22);
       const sunPtI = (perfTier === 'high' ? 2.45 : 2.05) * (1 - outerT * 0.32);
       const sunDirI = (perfTier === 'high' ? 1.85 : 1.55) * (1 - outerT * 0.23);
-      const fillI = (perfTier === 'high' ? 0.62 : 0.54) * (1 - outerT * 0.66);
+      const portraitLit = !!instrumentPortraitBodyId();
+      const fillI = (portraitLit
+        ? (perfTier === 'high' ? 0.66 : 0.58)
+        : (perfTier === 'high' ? 0.44 : 0.38)) * (1 - outerT * 0.66);
       const k = Math.min(1, (dt || 0.016) * 4.2);
       if (scene && scene.fog && !portraitMode) {
         scene.fog.color.setHex(0x040610);
@@ -4083,14 +4097,8 @@ const FinishShader = {
           const systemScale = IS_PHONE ? 1.28 : 1.22;
           const overviewScale = closeScale + (systemScale - closeScale) * scaleBlend;
           s *= overviewScale;
-          // The wide System frame used to leave Mercury and Mars only a few
-          // physical pixels across. Keep a restrained display-radius floor, then
-          // recover the generous touch target in resolvePickId without inflating
-          // every visual into the same floating UI orb.
-          if (z >= 1.7) {
-            const minDisplayRadius = IS_PHONE ? 0.50 : 0.44;
-            s = Math.max(s, minDisplayRadius / Math.max(0.01, b.size));
-          }
+          // Preserve relative body scale. Touch selection is already enlarged in
+          // screen space by resolvePickId, so geometry must not become UI orbs.
         }
         if (preloaderCosmicJourney && z >= 1.4 && z <= 2.6) {
           s *= 1.06 + Math.sin((2.6 - z) * 1.8) * 0.04;
@@ -4436,12 +4444,23 @@ const FinishShader = {
   function updateEclipseDim(jd) {
     try {
       const E = window.AstroEphemeris;
-      const sunLon = E.sunPosition(jd).lon;
-      const moonLon = E.moonPosition(jd).lon;
+      const sun = E.sunPosition(jd);
+      const moon = E.moonPosition(jd);
+      const sunLon = sun.lon;
+      const moonLon = moon.lon;
       let sep = Math.abs(((moonLon - sunLon + 540) % 360) - 180);
       if (sep > 180) sep = 360 - sep;
-      // dim when Sun–Moon alignment is tight (solar eclipse geometry)
-      eclipseAutoDim = sep < 2.2 ? Math.pow(1 - sep / 2.2, 1.6) : 0;
+      // A longitude conjunction alone is not an eclipse: the Moon can pass
+      // several degrees north or south of the Sun. Use its ecliptic latitude
+      // in the apparent angular separation and limit the visual to a genuine
+      // disc-scale alignment. Dedicated eclipse pages may still set an exact
+      // published magnitude through setEclipse().
+      const latSep = Math.abs(Number(moon.lat) || 0);
+      const apparentSep = Math.hypot(sep, latSep);
+      const eclipseWindowDeg = 0.72;
+      eclipseAutoDim = apparentSep < eclipseWindowDeg
+        ? Math.pow(1 - apparentSep / eclipseWindowDeg, 1.6)
+        : 0;
     } catch (e) { eclipseAutoDim = 0; }
     commitEclipseDim('geometry');
   }
@@ -5080,14 +5099,16 @@ const FinishShader = {
     const push = (name) => { if (name && list.indexOf(name) < 0) list.push(name); };
     const smallRequested = quality === 'small' || (!quality && wantsSmallTextures());
     const mediumRequested = quality === 'medium' || (!quality && wantsMediumTextures());
-    if (smallRequested) push(smallName(webp));
-    else if (mediumRequested) push(mediumName(webp));
-    else push(webp);
-    // Graceful quality ladder. The worker keeps compact maps in the offline shell;
-    // a previously viewed medium map is also available from the runtime cache.
-    if (!smallRequested) push(webp);
-    if (!smallRequested) push(mediumName(webp));
-    push(smallName(webp));
+    // No medium texture bundle ships today. Constrained and mobile clients go
+    // directly to the complete small tier instead of issuing 14 predictable
+    // 404s and then falling through to every full-resolution map.
+    if (smallRequested || mediumRequested) {
+      push(smallName(webp));
+    } else {
+      push(webp);
+      push(mediumName(webp));
+      push(smallName(webp));
+    }
     // Legacy fallbacks (only hit if a .webp is ever missing) — never 404 to black.
     if (smallRequested) {
       const smLegacy = smallName(file);
@@ -5157,7 +5178,10 @@ const FinishShader = {
   }
 
   function upgradeBodyTexture(id) {
-    if (destroyed || perfTier !== 'high' || IS_PHONE || dataSavingRequested()) return Promise.resolve();
+    // High-tier phones start on the medium map for a quick first frame, then the
+    // selected portrait alone may promote to full resolution. The background
+    // queue remains desktop-only below, avoiding an all-planets memory spike.
+    if (destroyed || perfTier !== 'high' || dataSavingRequested()) return Promise.resolve();
     if (id === 'moon') {
       return loadTex('moon.jpg', true, 'full').then((texture) => applyFullBodyTexture('moon', texture));
     }
@@ -5487,13 +5511,13 @@ const FinishShader = {
     if (instrumentFillLight) {
       instrumentFillLight.position.copy(camera.position);
       instrumentFillLight.intensity = free
-        ? (perfTier === 'high' ? 0.62 : 0.54)
-        : (perfTier === 'high' ? 0.72 : 0.60);
+        ? (perfTier === 'high' ? 0.44 : 0.38)
+        : (perfTier === 'high' ? 0.66 : 0.58);
     }
     if (renderer) {
       instrumentExposure = free
-        ? (perfTier === 'high' ? 1.24 : 1.16)
-        : (perfTier === 'high' ? 0.94 : 0.90);
+        ? (perfTier === 'high' ? 1.18 : 1.12)
+        : (perfTier === 'high' ? 1.16 : 1.10);
       renderer.toneMappingExposure = instrumentExposure;
     }
     instrumentIdleAz = camAz;
@@ -5503,12 +5527,14 @@ const FinishShader = {
 
   function tuneInstrumentPlanetReadability() {
     if (!instrumentMode) return;
+    const portraitBody = instrumentPortraitBodyId();
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       const sh = g && g.userData.mat && g.userData.mat.userData.planetShader;
       if (!sh || !sh.uniforms.uLightWash) return;
-      sh.uniforms.uLightWash.value = 0.06;
-      sh.uniforms.uRimMul.value = 0.09;
+      const selectedPortrait = portraitBody === b.id;
+      sh.uniforms.uLightWash.value = selectedPortrait ? 0.08 : 0.04;
+      sh.uniforms.uRimMul.value = selectedPortrait ? 0.14 : 0.07;
     });
   }
 
@@ -6629,7 +6655,6 @@ const FinishShader = {
       } else if (focusPlanetId === b.id && performance.now() < focusPlanetUntil) {
       } else if (focusFrameId && focusFrameId !== 'moon' && focusFrameId !== 'aspect') {
         alpha = focusFrameId === b.id ? 1 : 0;
-        alpha = 1;
       } else if (showLabels && scaleLevel >= 1 && scaleLevel <= 2) {
         // v576: labels live at INNER/SYSTEM scales — the Earth rest frame stays clean
         alpha = 1;
@@ -7342,7 +7367,7 @@ const FinishShader = {
     if (scaleAnimActive) {
       const p = Math.min(1, (t - scaleAnimStart) / scaleAnimDurationMs);
       // Focus fly-tos + journeys use slow-in/out; dial steps stay punchier easeInOut
-      const e = (journeyActive || instrumentMode || focusFrameId)
+      const e = (journeyActive || instrumentMode || focusFrameId || pendingFocusId)
         ? easeJourney(p)
         : easeInOut(p);
       camRadius = scaleAnimFrom.radius + (scaleAnimTo.radius - scaleAnimFrom.radius) * e;
@@ -7368,10 +7393,17 @@ const FinishShader = {
         scaleAnimFrom.tz + (scaleAnimTo.tz - scaleAnimFrom.tz) * e
       );
       const zoomZ = scaleAnimFromLevel + (scaleAnimToLevel - scaleAnimFromLevel) * e;
+      // Do not isolate a named world while it is still a distant speck. Commit
+      // portrait ownership only near landing, when the destination fills enough
+      // of the frame that removing the wider system cannot create a blank flash.
+      if (pendingFocusId && p >= 0.88) {
+        focusFrameId = pendingFocusId;
+        pendingFocusId = null;
+      }
       updateScaleVisualsContinuous(zoomZ);
       const fovFrom = scaleAnimFrom.radius < 12 ? CAM_FOV_CLOSE : (scaleAnimFromLevel >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID);
       const fovTo = moonFrameActive ? CAM_FOV_CLOSE
-        : focusFrameId ? CAM_FOV_MID // v576: planet-focus portraits animate to the mid FOV
+        : (focusFrameId || pendingFocusId) ? CAM_FOV_MID // named-world portrait destination
         : (scaleAnimTo.radius < 12 ? CAM_FOV_CLOSE : (scaleAnimToLevel >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID));
       camera.fov = fovFrom + (fovTo - fovFrom) * e;
       camera.updateProjectionMatrix();
@@ -8351,7 +8383,9 @@ const FinishShader = {
       alpha: true,
       premultipliedAlpha: true,
       powerPreference: preloaderMode ? 'default' : 'high-performance',
-      preserveDrawingBuffer: !preloaderMode,
+      // Retaining every frame is expensive on phones. Capture renders an
+      // explicit frame and does not require a permanently preserved backbuffer.
+      preserveDrawingBuffer: false,
     });
     renderer.setClearColor(0x000000, 0);
     canvas.style.background = 'transparent';
@@ -8971,6 +9005,7 @@ const FinishShader = {
     clearFocusHighlight();
     focusPlanetId = null;
     focusFrameId = null;
+    pendingFocusId = null;
     moonFrameActive = false;
     scaleAnimActive = false;
     introActive = false;
@@ -9201,7 +9236,7 @@ const FinishShader = {
 
     setSelectedPlanet(id);
     setFocusHighlight(id);
-    focusFrameId = id;
+    pendingFocusId = id;
 
     const pos = g.position;
     const inner = (id === 'mercury' || id === 'venus' || id === 'mars');
@@ -9239,6 +9274,52 @@ const FinishShader = {
     } catch (e) { /* optional */ }
   }
 
+  /**
+   * Six-second opening beat for the Observatory: the live System holds, arcs a
+   * few degrees, then settles. It is deliberately shorter and calmer than the
+   * optional cosmic flight, and never runs for reduced-motion visitors.
+   */
+  function startOpeningBeat() {
+    if (destroyed || PRM || !instrumentMode || scaleAnimActive || journeyActive
+      || focusFrameId || pendingFocusId || portraitMode) return false;
+    releaseCameraFraming();
+    if (!allPlanetsBuilt) {
+      buildRemainingPlanets();
+      needRecompute = true;
+      updatePositions();
+    }
+    const system = scalePreset(2);
+    const arc = 8 * D2R;
+    scaleAnimFrom.radius = camRadius;
+    scaleAnimFrom.el = camEl;
+    scaleAnimFrom.az = camAz;
+    scaleAnimFrom.tx = camTarget.x;
+    scaleAnimFrom.ty = camTarget.y;
+    scaleAnimFrom.tz = camTarget.z;
+    scaleAnimTo.radius = system.camRadius;
+    scaleAnimTo.el = system.camEl + 1.5 * D2R;
+    scaleAnimTo.az = camAz + arc;
+    scaleAnimTo.tx = 0;
+    scaleAnimTo.ty = 0;
+    scaleAnimTo.tz = 0;
+    scaleAnimFromLevel = scaleLevel;
+    scaleAnimToLevel = 2;
+    scaleLevel = 2;
+    scaleAnimDurationMs = 6200;
+    scaleAnimSpiralAz = 0;
+    scaleAnimSpiralEl = 0.012;
+    scaleAnimActive = true;
+    scaleAnimStart = performance.now();
+    updateScaleHUD();
+    updateScaleVisualsContinuous(2);
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-opening-beat', {
+        detail: { durationMs: scaleAnimDurationMs, claim: 'computed-now' },
+      }));
+    } catch (_) {}
+    return true;
+  }
+
   function planetPortraitRadius(body, pos, inner, freeFlight) {
     const orbitRadius = Math.max(0.01, Math.hypot(pos.x, pos.z));
     if (inner) {
@@ -9266,6 +9347,7 @@ const FinishShader = {
     flicking = false;
     scrollDriveLocked = true;
     focusFrameId = null;
+    pendingFocusId = null;
     moonFrameActive = false;
 
     if (id === 'earth') {
@@ -9359,7 +9441,7 @@ const FinishShader = {
     scaleAnimTo.tz = pos.z;
 
     setFocusHighlight(id);
-    focusFrameId = id;
+    pendingFocusId = id;
     scaleAnimActive = true;
     scaleAnimStart = performance.now();
     scaleAnimDurationMs = PRM ? 950 : 2100;
@@ -9818,7 +9900,9 @@ const FinishShader = {
     finishPass = null;
     envIblFrozen = false;
     try { renderer && renderer.dispose(); } catch (e) {}
-    try { renderer && renderer.forceContextLoss && renderer.forceContextLoss(); } catch (e) {}
+    // dispose() releases Three.js resources while keeping this canvas reusable.
+    // forceContextLoss() makes the documented destroy() → init(sameCanvas)
+    // lifecycle impossible because the replacement renderer receives null.
     if (gaiaWorker) {
       try { gaiaWorker.terminate(); } catch (e) {}
       gaiaWorker = null;
@@ -9913,6 +9997,7 @@ const FinishShader = {
     trailIdle = 0;
     focusPlanetId = null;
     focusFrameId = null;
+    pendingFocusId = null;
     focusPlanetUntil = 0;
     moonFrameActive = false;
     portraitMode = false;
@@ -10190,6 +10275,7 @@ const FinishShader = {
     },
     isFreeExplore() { return freeExploreMode; },
     getCamRadius() { return camRadius; },
+    startOpeningBeat,
     flyToBody,
     /**
      * Galaxy focus: Sun, named arm, or edge-on / face-on framing (schematic).

@@ -55,6 +55,7 @@ export default [
     files: [
       'website/js/orrery-webgl.js',
       'website/js/ap-eclipse-contact-v835.js',
+      'website/js/ap-eclipse-edition-v841.js',
       'website/js/ap-eclipse-geometry-v834.js',
       'website/js/ap-eclipse-live-v834.js',
       'website/js/eclipse-reading.js',

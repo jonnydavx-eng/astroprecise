@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#020307">
   <title>AstroPrecise — the living sky, computed now</title>
-  <meta name="description" content="Explore a live 3D solar system, cast a private birth chart, replay the 12 August 2026 eclipse and keep a personal edition if it contacted your chart.">
+  <meta name="description" content="Explore the living sky in one live 3D instrument, follow the next verified sky event, cast a private birth chart and keep a personal eclipse edition if it contacted your chart.">
   <link rel="canonical" href="https://astroprecise.app/">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
 
   <meta property="og:title" content="AstroPrecise — the living sky, computed now">
-  <meta property="og:description" content="A live astronomical instrument, private birth-chart calculation and a dedicated 3D eclipse view.">
+  <meta property="og:description" content="One living-sky instrument: observed astronomy, clearly separated astrological meaning, private chart calculation and dedicated eclipse geometry.">
   <meta property="og:url" content="https://astroprecise.app/">
   <meta property="og:image" content="https://astroprecise.app/img/editorial/eclipse-launch-2026-v835.jpg">
   <meta property="og:site_name" content="AstroPrecise">
@@ -20,17 +20,16 @@
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='850';</script>
+  <script>window.AP_ASSET_V='858';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=845">
-    <script src="js/void-orrery-adapter.js?v=845" defer></script>
-    <script src="js/ap-nav-model.js?v=850" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=850">
-    <link rel="stylesheet" href="css/ap-home-v835.css?v=850">
-    <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=845">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=850">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=858">
+    <script src="js/void-orrery-adapter.js?v=858" defer></script>
+    <script src="js/ap-nav-model.js?v=858" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=858">
+    <link rel="stylesheet" href="css/ap-home-v835.css?v=858">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=858">
 </head>
 <body class="ap-live-home page-home">
   <a class="skip" href="#lead">Skip to the Observatory</a>
@@ -47,7 +46,7 @@
             <a href="index.html" class="navbar__link" aria-current="page">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
             <a href="horoscope.html" class="navbar__link">Daily</a>
-            <a href="eclipse.html" class="navbar__link">Eclipse</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
@@ -65,19 +64,20 @@
     <section class="ap-live-stage" id="lead" aria-label="Live sky Observatory">
       <div class="ap-live-intro">
         <div>
-          <p class="ap-live-eyebrow">The living sky · computed now</p>
-          <h1 class="ap-live-heading">The sky is alive.</h1>
+          <p class="ap-live-eyebrow">The Observatory · computed now</p>
+          <h1 class="ap-live-heading">The sky is moving.</h1>
         </div>
-        <p class="ap-live-copy">A live model of this minute. Fly to any world, cross the Solar System and keep going to the Galaxy—without changing instruments.</p>
+        <p class="ap-live-copy">A live model of this minute. Fly to a world, pull back through the Solar System and keep going to the Galaxy—without leaving the instrument.</p>
         <div class="ap-live-actions">
           <a class="ap-action ap-action--primary" href="chart.html">Cast my chart</a>
-          <a class="ap-action" href="eclipse.html">Open the eclipse</a>
+          <a class="ap-action" href="sky-events.html">Explore sky events</a>
         </div>
-        <p class="ap-live-proof">Live positions · compressed distances · drag to orbit · choose a named destination</p>
+        <p class="ap-live-proof"><span>Observed</span> Live positions · compressed distances · drag to orbit · choose a named destination</p>
       </div>
 
       <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
         <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+        <div class="ap-model-vignette" aria-hidden="true"></div>
         <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
       </div>
 
@@ -95,13 +95,14 @@
         </div>
         <p class="ap-model-hint">Drag to orbit · world controls directly below on phone</p>
         <div class="ap-flight-launch">
-          <button class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" type="button">Take the cosmic flight</button>
-          <span>First-visit cinematic intro · this same live 3D model · skip or replay at any time</span>
+          <button class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" type="button">Journey to the edge</button>
+          <span>Optional full-scale flight · press again or Escape to stop</span>
         </div>
         <div class="ap-context">
-          <p class="ap-panel-label">Selected view</p>
-          <h2 id="sky-focus-title">Solar system</h2>
-          <p id="telemetry" aria-live="polite">Every major world is visible. Choose one below, or change scale to travel outward.</p>
+          <div class="ap-context__head"><p class="ap-panel-label">Selected view</p><h2 id="sky-focus-title">Solar system</h2></div>
+          <div class="ap-ledger ap-ledger--observed"><span>Observed</span><p id="telemetry" aria-live="polite">Every major world is visible in one compressed, explorable view.</p></div>
+          <div class="ap-ledger ap-ledger--meaning"><span>In astrology</span><p id="sky-meaning">A chart reads angular relationships among these bodies from Earth. It is a symbolic tradition, not a scientific claim.</p></div>
+          <a class="ap-context__chart" id="sky-chart-link" href="chart.html">Find these positions in my chart</a>
         </div>
         <div class="ap-control-group ap-control-group--scale">
           <div class="ap-control-head"><p class="ap-panel-label">Scale</p><span class="ap-control-note">Where am I?</span></div>
@@ -122,6 +123,17 @@
           </div>
         </div>
       </aside>
+    </section>
+
+    <section class="ap-event-rail" aria-labelledby="event-rail-title">
+      <div class="ap-event-rail__intro">
+        <p class="ap-live-eyebrow">Event atlas · observed sky</p>
+        <h2 id="event-rail-title">What the sky does next.</h2>
+        <a href="sky-events.html">Open the live event ledger</a>
+      </div>
+      <a class="ap-event-ticket" href="sky-events.html#perseids"><span>Now · 12–13 Aug 2026</span><strong>Perseids</strong><p>A moon-dark peak night and the cleanest naked-eye spectacle in the launch window.</p><em>Watch notes →</em></a>
+      <a class="ap-event-ticket ap-event-ticket--next" href="sky-events.html#lunar-eclipse"><span>Next eclipse · 28 Aug 2026</span><strong>Partial lunar eclipse</strong><p>Earth's shadow clips the full Moon—the second act of this eclipse season.</p><em>Event briefing →</em></a>
+      <a class="ap-event-ticket" href="eclipse.html"><span>Archive · 12 Aug 2026</span><strong>Solar eclipse replay</strong><p>Run the dedicated Sun–Moon–Earth geometry and check its contact with your chart.</p><em>Open 3D replay →</em></a>
     </section>
 
     <section class="ap-personal-entry" id="personal" aria-labelledby="personal-title">
@@ -207,7 +219,7 @@
         <a class="ap-site-footer__wordmark" href="index.html"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
         <p>The sky computed here; astrology explained with care. Birth details stay on this device.</p>
       </div>
-      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html" aria-current="page">Observatory</a><a href="chart.html">Chart</a><a href="horoscope.html">Daily</a><a href="eclipse.html">Eclipse</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html" aria-current="page">Observatory</a><a href="chart.html">Chart</a><a href="horoscope.html">Daily</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
       <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
     </div>
     <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" rel="noopener">Solar System Scope</a> / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></span></div>
@@ -231,13 +243,22 @@
       });
     })();
   </script>
-  <script src="js/ap-observatory-controls-v835.js?v=850" defer></script>
-    <script src="js/ap-observatory-v834.js?v=850" defer></script>
-    <script src="js/ap-cosmic-flight-tool.js?v=845" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=850" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-sky-time.js?v=850" defer></script>
-    <script src="js/ap-footer-inject.js?v=850" defer></script>
-    <script src="js/ap-mystic-cards-v835.js?v=850" defer></script>
+  <script src="js/ap-observatory-controls-v835.js?v=858" defer></script>
+    <script src="js/ap-observatory-v834.js?v=858" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=858" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-sky-time.js?v=858" defer></script>
+    <script src="js/ap-footer-inject.js?v=858" defer></script>
+    <script src="js/ap-mystic-cards-v835.js?v=858" defer></script>
+  <script>
+    (function () {
+      var button = document.getElementById('ap-cosmic-flight-launch');
+      var orrery = document.getElementById('orr');
+      if (!button || !orrery) return;
+      button.addEventListener('click', function () {
+        if (orrery.flight) orrery.flight();
+      });
+    })();
+  </script>
   <script>
     if ('serviceWorker' in navigator && !/[?&]nosw=1/.test(location.search)) {
       addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }, { once: true });

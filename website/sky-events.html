@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="index, follow">
-<title>The real sky news — sky events | Astro Precise</title>
-<meta name="description" content="The real sky news: upcoming conjunctions, moons and stations computed in your browser.">
+<meta name="theme-color" content="#03050a">
+<title>Sky Events — what the sky does next | AstroPrecise</title>
+<meta name="description" content="A living event ledger for eclipses, meteor showers, conjunctions, full moons and planetary stations—observed astronomy and astrological tradition kept visibly separate.">
 <link rel="canonical" href="https://astroprecise.app/sky-events.html">
 <!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
      IBM Plex Mono from Google Fonts, which handed Google a request from every
@@ -13,35 +14,43 @@
      were already in this repo and already precached by the service worker —
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css?v=857">
+<link rel="stylesheet" href="./css/fonts.css?v=858">
 <style>
-:root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.24);--acc:#d8b46a;--good:rgba(168,214,176,.85)}
-*{box-sizing:border-box}
-body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;background-image:radial-gradient(1000px 560px at 50% -6%,rgba(255,122,69,.08),transparent 62%);background-attachment:fixed}
-a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
-a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.mono{font-family:'IBM Plex Mono',monospace}
-.serif{font-family:Georgia,'Times New Roman',serif;font-style:italic}
-.wrap{max-width:760px;margin:0 auto;padding:0 22px calc(110px + var(--bottom-nav-h, 72px))}
-h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weight:700;letter-spacing:-.015em;scroll-margin-top:84px}
-.event{border-top:1px solid var(--line);padding:34px 0 30px}
+.ap-events-shell{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:clamp(52px,8vw,110px) 0 calc(90px + var(--bottom-nav-h,0px))}
+.ap-events-hero{display:grid;grid-template-columns:minmax(0,.82fr) minmax(360px,1.18fr);gap:clamp(38px,8vw,110px);align-items:end;padding-bottom:clamp(54px,8vw,94px)}
+.ap-events-kicker,.kick{margin:0 0 13px;color:var(--ap-brass);font:9px/1.5 var(--ap-data);letter-spacing:.18em;text-transform:uppercase}
+.ap-events-hero h1{max-width:9ch;margin:0;color:var(--ap-paper);font:600 clamp(54px,8vw,100px)/.86 var(--ap-display);letter-spacing:-.04em}
+.ap-events-hero__lede{max-width:54ch;margin:24px 0 0;color:var(--ap-paper-dim);font-size:17px;line-height:1.68}
+.ap-events-feature{position:relative;padding:clamp(28px,4vw,48px);border:1px solid rgba(216,180,106,.32);border-radius:4px;background:linear-gradient(150deg,rgba(255,100,40,.075),rgba(16,23,34,.74));box-shadow:0 28px 90px rgba(0,0,0,.3)}
+.ap-events-feature::before{content:'';position:absolute;inset:14px;border:1px solid rgba(216,180,106,.09);pointer-events:none}
+.ap-events-feature time{color:var(--ap-brass);font:10px var(--ap-data);letter-spacing:.1em;text-transform:uppercase}
+.ap-events-feature h2{max-width:12ch;margin:20px 0 16px;color:var(--ap-paper);font:600 clamp(34px,4.6vw,58px)/.94 var(--ap-display)}
+.ap-events-feature p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.65}
+.ap-events-feature a{display:inline-flex;margin-top:23px;color:var(--ap-brass-bright);font:10px var(--ap-data);letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
+.ap-events-intro{display:grid;grid-template-columns:.72fr 1.28fr;gap:30px;padding:0 0 30px;border-bottom:1px solid var(--ap-line-strong)}
+.ap-events-intro h2{margin:0;color:var(--ap-paper);font:600 clamp(34px,5vw,58px)/.96 var(--ap-display)}
+.ap-events-intro p{max-width:58ch;margin:4px 0 0;color:var(--ap-paper-dim);line-height:1.65}
 #events{scroll-margin-top:84px}
-.kick{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
-.event h2{margin:0 0 10px;font-size:clamp(24px,4vw,32px);font-weight:700;line-height:1.15}
-.meta{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:rgba(242,236,223,.85);border:1px solid var(--line);border-radius:10px;background:rgba(242,236,223,.03);padding:12px 16px;margin:0 0 14px;line-height:1.8}
-.event p{margin:0 0 10px;font-size:16.5px;line-height:1.7;color:var(--dim)}
-.myth{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:17px;line-height:1.6;color:rgba(216,180,106,.85)}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:var(--dim);line-height:2.1}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.event{display:grid;grid-template-columns:minmax(180px,.6fr) minmax(0,1.4fr);gap:clamp(22px,5vw,68px);padding:clamp(34px,5vw,58px) 0;border-bottom:1px solid var(--ap-line)}
+.event__head h2{margin:0;color:var(--ap-paper);font:600 clamp(30px,4vw,48px)/.98 var(--ap-display)}
+.meta{margin-top:16px;color:var(--ap-silver);font:10px/1.75 var(--ap-data);letter-spacing:.08em;text-transform:uppercase}
+.event__body{display:grid;gap:13px}
+.event__ledger{display:grid;grid-template-columns:100px 1fr;gap:18px;padding:16px 0;border-top:1px solid rgba(216,180,106,.14)}
+.event__ledger span{color:var(--ap-proof);font:9px/1.5 var(--ap-data);letter-spacing:.12em;text-transform:uppercase}
+.event__ledger p{margin:0;color:var(--ap-paper-dim);font-size:16px;line-height:1.68}
+.event__ledger--meaning span{color:var(--ap-brass)}
+.event__ledger--meaning p{font:500 18px/1.58 var(--ap-display)}
+.foot{margin-top:46px;color:var(--ap-paper-faint);font:9px/2 var(--ap-data);letter-spacing:.12em;text-transform:uppercase}
+.foot a{color:var(--ap-brass-bright)}
+@media(max-width:760px){.ap-events-shell{width:min(100% - 32px,1120px);padding-top:42px}.ap-events-hero,.ap-events-intro,.event{grid-template-columns:1fr}.ap-events-hero{gap:34px}.ap-events-hero h1{font-size:clamp(52px,15vw,76px)}.ap-events-feature{padding:26px 22px}.event{gap:20px}.event__ledger{grid-template-columns:1fr;gap:6px}.event__ledger p{font-size:15px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-<script src="./js/ambience.js?v=857"></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=857" />
-  <script src="js/ap-nav-model.js?v=857" defer></script>
-  <script src="js/void-orrery-adapter.js?v=857"></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=858">
+  <script src="js/ap-nav-model.js?v=858" defer></script>
+  <script src="js/void-orrery-adapter.js?v=858"></script>
 </head>
 <body class="page-sky-events ap-launch-article">
 <a class="skip-link" href="#events">Skip to sky events</a>
-<space-ambience density="200"></space-ambience>
 <header class="site-header" role="banner" data-ap-static-nav>
   <nav class="navbar" aria-label="Main navigation">
     <div class="navbar__inner">
@@ -53,8 +62,8 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
         <noscript>
           <a href="index.html" class="navbar__link">Observatory</a>
           <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="ephemeris.html" class="navbar__link">The Sky</a>
           <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="sky-events.html" class="navbar__link" aria-current="page">Events</a>
           <a href="shop.html" class="navbar__link">Shop</a>
         </noscript>
       </div>
@@ -70,29 +79,25 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
   </nav>
 </header>
-<div class="wrap" style="position:relative;z-index:1">
+<main class="ap-events-shell" id="events-main">
+  <section class="ap-events-hero">
+    <div><p class="ap-events-kicker">Event atlas · updated from this minute</p><h1>What the sky does next.</h1><p class="ap-events-hero__lede">One clear timeline for the phenomena worth looking up for. Physical events are described as astronomy; symbolic traditions are labelled separately.</p></div>
+    <article class="ap-events-feature" id="next-eclipse"><time datetime="2026-08-28">Next eclipse · 28 August 2026</time><h2>Earth's shadow reaches the Moon.</h2><p>A partial lunar eclipse arrives sixteen days after the 12 August solar eclipse. It is safe to watch with the naked eye wherever the Moon is above the horizon.</p><a href="#lunar-eclipse">Read the event briefing →</a></article>
+  </section>
+  <section aria-labelledby="computed-events-title">
+    <header class="ap-events-intro"><h2 id="computed-events-title">The living ledger.</h2><p>Dates below are computed in this browser from the same mean-element orrery maths used by the Observatory. They are degree-class planning cues, not the VSOP87 chart engine or a ground-visibility forecast.</p></header>
+    <div id="events" aria-live="polite"><div class="foot">Computing the next 400 days…</div></div>
+  </section>
 
-
-<div class="launch-article-meta">
-  <span class="kicker">SKY EVENTS · COMPUTED THIS MINUTE</span>
-  <a class="navlink" href="./eclipse.html">12 AUG ECLIPSE →</a>
-</div>
-
-<h1>What the sky does next.</h1>
-<p style="margin:0 0 10px;font-size:18px;line-height:1.65;color:var(--dim)">Every date below is computed in your browser as the page opens, from the same mean-element orrery math the 3D model uses (VoidEphem) — degree-class, not the VSOP87 chart engine. Not an editorial calendar.</p>
-
-<div id="events" aria-live="polite"><div class="mono" style="font-size:10px;letter-spacing:.22em;color:var(--faint);padding:30px 0">COMPUTING THE NEXT 400 DAYS…</div></div>
-
-<div class="foot" style="margin-top:44px">
+<div class="foot">
   EVERY DATE ABOVE WAS COMPUTED IN YOUR BROWSER JUST NOW · ORRERY MEAN ELEMENTS · SEPARATIONS TO 0.1° · MEANINGS ARE FOR REFLECTION, NOT PREDICTION<br>
   <a href="./chart.html">CAST YOUR CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE — YOUR READING</a> · <a href="./sky-card.html">MAKE YOUR SKY CARD</a><br>
   © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
-
-</div>
+</main>
 
 <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-<script src="js/ap-footer-inject.js?v=857" defer></script>
+<script src="js/ap-footer-inject.js?v=858" defer></script>
 
 <script>
 (function () {
@@ -103,7 +108,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
       go.tries = (go.tries || 0) + 1;
       if (go.tries > 40) {
         var host = document.getElementById('events');
-        if (host) host.innerHTML = '<p class="mono" style="font-size:12px;letter-spacing:.12em;color:var(--faint);padding:30px 0">THE SKY ENGINE DID NOT LOAD. REFRESH, OR OPEN WITH ?nosw=1.</p>';
+        if (host) host.innerHTML = '<p class="foot">The sky engine did not load. Refresh, or open with ?nosw=1.</p>';
         return;
       }
       setTimeout(go, 150);
@@ -124,8 +129,8 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
       return target;
     }
     var out = [];
-    var ev = function (kick, title, meta, body, myth) {
-      out.push('<div class="event"><div class="kick">' + kick + '</div><h2>' + title + '</h2><div class="meta">' + meta + '</div><p>' + body + '</p>' + (myth ? '<div class="myth">' + myth + '</div>' : '') + '</div>');
+    var ev = function (kick, title, meta, body, myth, id) {
+      out.push('<article class="event"' + (id ? ' id="' + id + '"' : '') + '><div class="event__head"><div class="kick">' + kick + '</div><h2>' + title + '</h2><div class="meta">' + meta + '</div></div><div class="event__body"><div class="event__ledger"><span>Observed</span><p>' + body + '</p></div>' + (myth ? '<div class="event__ledger event__ledger--meaning"><span>In astrology</span><p>' + myth + '</p></div>' : '') + '</div></article>');
     };
     var daysAway = function (n) { return n === 1 ? '1 DAY AWAY' : n + ' DAYS AWAY'; };
     var inDays = function (n) { return n === 1 ? 'IN 1 DAY' : 'IN ' + n + ' DAYS'; };
@@ -178,7 +183,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     ev('LUNAR ECLIPSE · PARTIAL', 'The Moon dims in ' + leRow.sign.name,
       fmtS(leDate) + ' · FULL MOON AT ' + leRow.sign.deg + '° ' + leRow.sign.name.toUpperCase(),
       "Earth's shadow crosses part of the full Moon — visible wherever the Moon is up, no equipment needed. Sixteen days after the 12 August solar eclipse, the sky answers with its second act.",
-      'Sun and Moon eclipses arrive in pairs; the old astronomers called it an eclipse season.');
+      'Eclipse seasons are traditionally read as paired chapters. Treat that as a reflective language, not a prediction.', 'lunar-eclipse');
     var eqDate = null;
     for (t = 0; t < 40; t++) {
       var d0 = new Date(Date.UTC(2026, 8, 10) + t * DAY);
@@ -207,12 +212,12 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     ev('METEORS · PERSEIDS + GEMINIDS', "The year's two great showers",
       'PERSEIDS 12–13 AUG · SKY ' + perDark + '% DARK — GEMINIDS 13–14 DEC · SKY ' + gemDark + '% DARK',
       perLine,
-      'Shooting stars are dust from a comet’s road, burning ninety kilometres up.');
+      'Meteor showers have no standard natal-chart role here; the wonder is physical dust meeting atmosphere.', 'perseids');
     document.getElementById('events').innerHTML = out.join('');
   }
   go();
 })();
 </script>
-<script src="./js/ap-sky-time.js?v=857" defer></script>
+<script src="./js/ap-sky-time.js?v=858" defer></script>
 </body>
 </html>

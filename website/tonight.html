@@ -328,7 +328,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
-  <script src="js/ephemeris.js"></script>
+  <script src="js/ephemeris.js?v=858"></script>
 <script>
   (function () {
     'use strict';
@@ -596,7 +596,6 @@
     }
     if (audit()) return;
     inject('js/raf-core.js');
-    inject('js/ephemeris.js');
     inject('js/icons.js');
     inject('js/tonight.js');
     function idleCosmos() {

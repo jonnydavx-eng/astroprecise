@@ -7,7 +7,7 @@ const html = readFileSync('website/sky-events.html', 'utf8');
 const adapter = readFileSync('website/js/void-orrery-adapter.js', 'utf8');
 const fails = [];
 
-if (!/void-orrery-adapter\.js\?v=857/.test(html)) fails.push('sky-events must load the adapter for VoidEphem');
+if (!/void-orrery-adapter\.js\?v=858/.test(html)) fails.push('sky-events must load the adapter for VoidEphem');
 if (!/skip-link/.test(html)) fails.push('sky-events missing skip link');
 if (/POSITIONS NEVER ROUNDED/.test(html)) fails.push('sky-events oversells unrounded positions');
 if (!/VoidEphem/.test(html)) fails.push('sky-events must name VoidEphem in the lede');

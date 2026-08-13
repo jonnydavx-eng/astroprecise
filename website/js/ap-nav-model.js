@@ -5,13 +5,13 @@
  * OBSERVATORY STRUCTURE (2026-07-10 — the homepage IS the model):
  *   The living orrery is the product; index.html is the Observatory.
  *
- * Launch bar: Observatory · Chart · Daily · Eclipse · Shop.
+ * Launch bar: Observatory · Chart · Daily · Events · Shop.
  * The historical tools remain directly addressable, but they never leak into
  * the five-route launch shell or reintroduce a second "Explore" entrance.
  *
- * Mobile launch tabs: Sky · Chart · Daily · Eclipse · Shop.
+ * Mobile launch tabs: Sky · Chart · Daily · Events · Shop.
  *
- * Site spine: Observatory (see) → Chart (cast) → Daily (return) → Eclipse (event) → Shop (keep)
+ * Site spine: Observatory (see) → Chart (cast) → Daily (return) → Events (follow) → Shop (keep)
  * index.html is the single live Observatory; Explore is an action inside that scene, not another route.
  */
 'use strict';
@@ -21,7 +21,7 @@
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
     ['horoscope.html', 'Daily'],
-    ['eclipse.html', 'Eclipse', { badge: 'Replay' }],
+    ['sky-events.html', 'Events', { badge: 'Live' }],
     ['shop.html', 'Shop'],
   ];
 
@@ -33,7 +33,7 @@
     ['cosmic-story.html', 'Cosmic Story'],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
-    ['sky-events.html', 'Sky events'],
+    ['eclipse.html', 'Eclipse archive', { badge: '3D' }],
     ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
     ['profile.html', 'Profile'],
     ['charts.html', 'My Charts'],
@@ -45,7 +45,7 @@
     ['index.html', 'Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
     ['horoscope.html', 'Daily', 'crescent'],
-    ['eclipse.html', 'Eclipse', 'eclipse'],
+    ['sky-events.html', 'Events', 'eclipse'],
     ['shop.html', 'Shop', 'sparkles'],
   ];
 
@@ -87,7 +87,7 @@
   }
 
   function isLaunchRoute() {
-    return /^(?:index|chart|horoscope|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(staticHere());
+    return /^(?:index|chart|horoscope|shop|sky-events|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(staticHere());
   }
 
   function staticLink(row, here, drawer) {

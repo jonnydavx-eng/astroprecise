@@ -1,7 +1,7 @@
 /**
  * Real mouse regression for the homepage <void-orrery>.
  *
- * Covers normal drag/wheel input and the release paths that previously left
+ * Covers orbit drag, Shift+drag time scrub, wheel input and the release paths that previously left
  * the model stuck in "grabbing" mode after pointer capture was cancelled.
  *
  * Usage: node tools/_diag-click.mjs [base-url]
@@ -77,7 +77,7 @@ try {
     });
   });
 
-  // A normal held-button drag must still rotate the camera and release cleanly.
+  // A normal held-button drag orbits the camera. Time must remain unchanged.
   const normalBefore = await page.evaluate(() => document.getElementById('orr').getJD());
   await page.mouse.move(point.x, point.y);
   await page.mouse.down();
@@ -87,8 +87,20 @@ try {
     jd: document.getElementById('orr').getJD(),
     cursor: document.querySelector('#orr canvas').style.cursor,
   }));
-  assert(normalAfter.jd !== normalBefore, 'Normal mouse drag did not scrub the model time');
+  assert(normalAfter.jd === normalBefore, 'Normal mouse orbit unexpectedly scrubbed model time');
   assert(normalAfter.cursor === 'grab', 'Normal mouse release did not restore the grab cursor');
+
+  // Time travel is deliberately modified so an accidental orbit gesture cannot
+  // rewrite the selected moment: Shift+drag owns that gesture on desktop.
+  const scrubBefore = normalAfter.jd;
+  await page.mouse.move(point.x, point.y);
+  await page.keyboard.down('Shift');
+  await page.mouse.down();
+  await page.mouse.move(point.x + 110, point.y, { steps: 7 });
+  await page.mouse.up();
+  await page.keyboard.up('Shift');
+  const scrubAfter = await page.evaluate(() => document.getElementById('orr').getJD());
+  assert(scrubAfter !== scrubBefore, 'Shift+drag did not scrub the model time');
   await page.evaluate(() => window.Orrery3D.setSpeed(0));
   await page.waitForTimeout(80);
 
@@ -209,6 +221,7 @@ try {
     result: 'PASS',
     browser: 'bundled Chromium or installed Chrome fallback',
     normalDrag: { before: normalBefore, after: normalAfter.jd },
+    shiftedTimeScrub: { before: scrubBefore, after: scrubAfter },
     pointerCancel: { before: cancelBefore.jd, after: cancelAfter.jd, cursor: cancelAfter.cursor },
     lostCapture: { before: lostCaptureBefore.jd, after: lostCaptureAfter.jd, cursor: lostCaptureAfter.cursor },
     lostButton: { before: lostButtonBefore.jd, after: lostButtonAfter.jd, cursor: lostButtonAfter.cursor },

@@ -22,7 +22,7 @@ for (const art of [
 }
 if (!/(?:12 Aug edition · £7|Buy the £7 edition|your-eclipse-reading)/i.test(shop)) fails.push('shop missing clear £7 checkout status');
 if (!/Cast free contact first|Cast, then unlock|eclipse\.html#contact/i.test(shop)) fails.push('shop missing cast-first funnel into the £7 edition');
-if (!/Two paths\. Free utility first\./i.test(shop)) fails.push('shop missing launch-edition proposition');
+if (!/Free first\.[\s\S]*One paid edition\./i.test(shop)) fails.push('shop missing launch-edition proposition');
 if (!/£7/.test(shop) || !/Free/.test(shop)) {
   fails.push('shop missing GBP 7 Eclipse Edition and free Field Guide prices');
 }
@@ -40,7 +40,7 @@ if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains ge
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
 if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v857["']/.test(sw)) fails.push('SW tip is not exactly v857');
+if (!/const V\s*=\s*["']ap-v858["']/.test(sw)) fails.push('SW tip is not exactly v858');
 if (/tags',\s*'checkout-open'/.test(shop)) fails.push('shop notify tag still says checkout-open');
 if (!/tags',\s*'eclipse-notes'/.test(shop)) fails.push('shop notify tag must match eclipse-notes copy');
 const unlock = readFileSync('website/js/gumroad-unlock.js', 'utf8');
