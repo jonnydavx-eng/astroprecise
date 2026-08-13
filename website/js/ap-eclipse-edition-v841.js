@@ -73,7 +73,7 @@ export function buildEclipsePlateModel({ reading, natal, eclipseLongitude }) {
     .map(([key, value]) => [key, normaliseLongitude(value)])
     .filter(([, value]) => value != null)
     .sort(([a], [b]) => a.localeCompare(b));
-  if (!placements.length) throw new Error('A computed chart is required for eclipse artwork.');
+  if (!placements.length) throw new Error('A computed chart is required for the natal-wheel plate.');
 
   const eclipse = normaliseLongitude(eclipseLongitude);
   if (eclipse == null) throw new Error('A computed eclipse longitude is required.');
@@ -711,8 +711,7 @@ export function cleanGeometrySvg(svg) {
   return String(svg || '')
     .replace(/<text[^>]*>[^<]*CENTRES 33px[^<]*<\/text>/g, '')
     .replace(/The Moon covers most of your Sun\./g, 'A deep partial from London — not totality.')
-    .replace(/<text[^>]*>ECLIPSE POINT[^<]*<\/text>/g, '')
-    .replace(/at 20 degrees 02 minutes Leo/g, 'from London');
+    .replace(/<text[^>]*>ECLIPSE POINT[^<]*<\/text>/g, '');
 }
 
 function secondaryBlockHtml(model) {
@@ -813,7 +812,7 @@ tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #ff6428;font-weight:7
   <h1 class="display">The Moon crossed the Sun.</h1>
   <p class="fact">${escapeHtml(model.anchorNoPlace || (model.beats[0] && model.beats[0].mono) || '')}</p>
   ${geometry ? `<figure class="plate"><img src="${geometry}" alt="London schematic of the 12 August 2026 eclipse, magnitude 0.91"></figure>` : ''}
-  <p class="fact fact--caption">Greatest 17:45:51 UTC. London schematic: 19:12 BST, magnitude 0.91, about 90% of the solar disc. Distances compressed. Not a ground-track. Not your local sky unless you were there. Eclipse point as computed: ${eclipseDegree}.</p>
+  <p class="fact fact--caption">Greatest 17:45:51 UTC. London schematic: about 19:13 BST, magnitude 0.91, about 90% of the solar disc. Distances compressed. Not a ground-track. Not your local sky unless you were there. Eclipse point as computed: ${eclipseDegree}.</p>
   <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 2 / 6</p>
 </section>
 <section class="sheet sheet--stack" data-page="3">
@@ -893,7 +892,7 @@ function renderUnlocked(host, model) {
     </div>`;
 
   const canvas = renderEclipseArtwork(model);
-  canvas.setAttribute('aria-label', 'Personalised eclipse artwork');
+  canvas.setAttribute('aria-label', 'Personalised natal-wheel plate');
   host.querySelector('[data-edition-canvas]').appendChild(canvas);
   const status = host.querySelector('[data-edition-status]');
 
@@ -1010,7 +1009,7 @@ export function mountEclipseEdition(host, context) {
     <div class="ap-eclipse-edition__head"><span>Your Eclipse Edition</span><strong>£7 · instant</strong></div>
     <h3>Keep this contact as reading and art.</h3>
     <p>Five authored beats, a keepable multi-page booklet (print / save as PDF), and unique 2400 × 3000 natal-wheel artwork, generated here from this computed contact. No manual review and no birth data leaves this browser.</p>
-    <ul><li>Five-beat personalised contact reading</li><li>Unique high-resolution eclipse artwork</li><li>PNG download + print / save-as-PDF booklet</li><li>Licence unlock via Gumroad View content</li></ul>
+    <ul><li>Five-beat personalised contact reading</li><li>Unique high-resolution natal-wheel plate</li><li>PNG download + print / save-as-PDF booklet</li><li>Licence unlock via Gumroad View content</li></ul>
     ${ready ? `
       <div class="ap-eclipse-edition__actions"><button type="button" data-edition-buy>Buy Your Eclipse Edition — £7</button></div>
       <form class="ap-eclipse-edition__license" data-edition-license-form>

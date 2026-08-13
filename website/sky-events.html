@@ -13,7 +13,7 @@
      were already in this repo and already precached by the service worker —
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css?v=855">
+<link rel="stylesheet" href="./css/fonts.css?v=856">
 <style>
 :root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.24);--acc:#d8b46a;--good:rgba(168,214,176,.85)}
 *{box-sizing:border-box}
@@ -23,22 +23,24 @@ a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
 .serif{font-family:Georgia,'Times New Roman',serif;font-style:italic}
 .wrap{max-width:760px;margin:0 auto;padding:0 22px calc(110px + var(--bottom-nav-h, 72px))}
-h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weight:700;letter-spacing:-.015em;scroll-margin-top:84px}
 .event{border-top:1px solid var(--line);padding:34px 0 30px}
+#events{scroll-margin-top:84px}
 .kick{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
 .event h2{margin:0 0 10px;font-size:clamp(24px,4vw,32px);font-weight:700;line-height:1.15}
 .meta{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:rgba(242,236,223,.85);border:1px solid var(--line);border-radius:10px;background:rgba(242,236,223,.03);padding:12px 16px;margin:0 0 14px;line-height:1.8}
 .event p{margin:0 0 10px;font-size:16.5px;line-height:1.7;color:var(--dim)}
 .myth{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:17px;line-height:1.6;color:rgba(216,180,106,.85)}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.4);line-height:2.1}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:var(--dim);line-height:2.1}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-<script src="./js/ambience.js"></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=855" />
-  <script src="js/ap-nav-model.js?v=855" defer></script>
-  <script src="js/void-orrery-adapter.js?v=855"></script>
+<script src="./js/ambience.js?v=856"></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=856" />
+  <script src="js/ap-nav-model.js?v=856" defer></script>
+  <script src="js/void-orrery-adapter.js?v=856"></script>
 </head>
 <body class="page-sky-events ap-launch-article">
+<a class="skip-link" href="#events">Skip to sky events</a>
 <space-ambience density="200"></space-ambience>
 <header class="site-header" role="banner" data-ap-static-nav>
   <nav class="navbar" aria-label="Main navigation">
@@ -77,12 +79,12 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
 </div>
 
 <h1>What the sky does next.</h1>
-<p style="margin:0 0 10px;font-size:18px;line-height:1.65;color:var(--dim)">Every date below is computed in your browser as the page opens — dates, signs and separations from the same engine that runs the model. Not an editorial calendar; a calculation.</p>
+<p style="margin:0 0 10px;font-size:18px;line-height:1.65;color:var(--dim)">Every date below is computed in your browser as the page opens, from the same mean-element orrery math the 3D model uses (VoidEphem) — degree-class, not the VSOP87 chart engine. Not an editorial calendar.</p>
 
-<div id="events"><div class="mono" style="font-size:10px;letter-spacing:.22em;color:var(--faint);padding:30px 0">COMPUTING THE NEXT 400 DAYS…</div></div>
+<div id="events" aria-live="polite"><div class="mono" style="font-size:10px;letter-spacing:.22em;color:var(--faint);padding:30px 0">COMPUTING THE NEXT 400 DAYS…</div></div>
 
 <div class="foot" style="margin-top:44px">
-  EVERY DATE ABOVE WAS COMPUTED IN YOUR BROWSER JUST NOW · POSITIONS NEVER ROUNDED · MEANINGS ARE FOR REFLECTION, NOT PREDICTION<br>
+  EVERY DATE ABOVE WAS COMPUTED IN YOUR BROWSER JUST NOW · ORRERY MEAN ELEMENTS · SEPARATIONS TO 0.1° · MEANINGS ARE FOR REFLECTION, NOT PREDICTION<br>
   <a href="./chart.html">CAST YOUR CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE — YOUR READING</a> · <a href="./sky-card.html">MAKE YOUR SKY CARD</a><br>
   © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
@@ -90,7 +92,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
 </div>
 
 <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-<script src="js/ap-footer-inject.js?v=855" defer></script>
+<script src="js/ap-footer-inject.js?v=856" defer></script>
 
 <script>
 (function () {
@@ -148,10 +150,10 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     var mp = E.moonPhase(E.jd(now));
     var fmDate = fullMoonNear(new Date(now.getTime() + mp.daysToFull * DAY));
     if (fmDate.getTime() <= now.getTime()) fmDate = fullMoonNear(new Date(fmDate.getTime() + 29.53 * DAY));
-    var fmDays = Math.max(1, Math.round((fmDate.getTime() - now.getTime()) / DAY));
+    var fmDays = Math.round((fmDate.getTime() - now.getTime()) / DAY);
     var fmRow = E.positions(fmDate).rows.find(function (r) { return r.key === 'moon'; });
     var ELEM = { Aries: 'fire', Leo: 'fire', Sagittarius: 'fire', Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth', Gemini: 'air', Libra: 'air', Aquarius: 'air', Cancer: 'water', Scorpio: 'water', Pisces: 'water' };
-    ev('NEXT FULL MOON · ' + inDays(fmDays), 'Full Moon in ' + fmRow.sign.name,
+    ev('NEXT FULL MOON · ' + (fmDays <= 0 ? 'TONIGHT' : inDays(fmDays)), 'Full Moon in ' + fmRow.sign.name,
       fmt(fmDate).toUpperCase() + ' · ' + fmRow.sign.deg + '° ' + fmRow.sign.name.toUpperCase(),
       'The Moon reaches opposition — Earth exactly between it and the Sun — fully lit at ' + fmRow.sign.deg + '° ' + fmRow.sign.name + '. It rises at sunset and stays up all night.',
       'A full moon in a ' + ELEM[fmRow.sign.name] + ' sign, the old books say: feelings run ' + ({ fire: 'hot and fast', earth: 'deep and steady', air: 'loud and social', water: 'under everything' })[ELEM[fmRow.sign.name]] + '. Weather, not fate.');
@@ -197,7 +199,7 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
     var perDark = 100 - moonIll(new Date(Date.UTC(2026, 7, 12, 23)));
     var gemDark = 100 - moonIll(new Date(Date.UTC(2026, 11, 13, 23)));
     var perNow = now.getTime();
-    var perLine = (perNow >= Date.UTC(2026, 7, 12) && perNow < Date.UTC(2026, 7, 14))
+    var perLine = (perNow >= Date.UTC(2026, 7, 12, 12) && perNow < Date.UTC(2026, 7, 13, 12))
       ? 'The Perseids peak tonight under the new-moon sky left by the 12 August eclipse — ' + perDark + '% dark. Typical published rates are near 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.'
       : (perNow < Date.UTC(2026, 7, 12))
         ? 'The Perseids peak 12–13 August under the new-moon sky of the eclipse — ' + perDark + '% dark. Typical published rates are near 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.'
@@ -211,6 +213,6 @@ h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weigh
   go();
 })();
 </script>
-<script src="./js/ap-sky-time.js" defer></script>
+<script src="./js/ap-sky-time.js?v=856" defer></script>
 </body>
 </html>

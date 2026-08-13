@@ -180,11 +180,11 @@ async function init() {
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=855').then((response) => {
+    fetch('js/reading-templates.json?v=856').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=855').then((response) => {
+    fetch('js/deep-templates.json?v=856').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),
@@ -192,7 +192,10 @@ async function init() {
   const savedMeta = seedSavedChart(getActiveChart());
   const form = byId('natalReadingForm');
   const submit = form.querySelector('[data-natal-submit]');
-  if (submit) submit.disabled = false;
+  if (submit) {
+    submit.disabled = false;
+    submit.setAttribute('aria-busy', 'false');
+  }
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     try {

@@ -243,20 +243,23 @@ async function init() {
   }
   const [engine, templates] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=854').then((response) => {
+    fetch('js/reading-templates.json?v=856').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
   ]);
   const eventJd = engine.julianDay(2026, 8, 12, 17, 45, 51);
   const eclipseLongitude = engine.sunPosition(eventJd).lon;
-    byId('eclipsePoint').textContent = `Eclipse point · ${degreeText(eclipseLongitude)} · greatest 17:45:51 UTC (18:46 BST)`;
+    byId('eclipsePoint').textContent = `Eclipse point · ${degreeText(eclipseLongitude)} · greatest 17:45:51 UTC (18:45:51 BST)`;
 
   const hasHandoff = applyChartHandoff(consumeChartHandoff());
   const savedMeta = hasHandoff ? null : seedSavedChart(getActiveChart());
   const form = byId('eclipseContactForm');
   const submitButton = form.querySelector('[data-eclipse-contact-submit]');
-  if (submitButton) submitButton.disabled = false;
+  if (submitButton) {
+    submitButton.disabled = false;
+    submitButton.setAttribute('aria-busy', 'false');
+  }
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     try {

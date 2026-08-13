@@ -1,5 +1,5 @@
 {
- "_about": "Astro Precise — the £12 Deep Reading (seven chapters). Companion to reading-templates.json. Every chapter opens with mono receipts, then serif meaning the receipts earn. Whole-sign houses only when birth time known. Tradition framed for reflection, never prediction.",
+ "_about": "Astro Precise — seven-chapter natal reading. Companion to reading-templates.json. Every chapter opens with mono receipts, then serif meaning the receipts earn. Whole-sign houses only when birth time known. Tradition framed for reflection, never prediction. Paid print unlock is not open.",
  "version": "AP-DEEP-1",
  "signThemes": {
   "Aries": "direct, first-moving, brave by reflex",
@@ -30,6 +30,7 @@
   "ch1": {
    "title": "The sky at your first breath",
    "serif": "Everything in this reading is built from the positions above — computed from raw astronomy for your exact moment, not looked up, not invented. Where the words go further than the numbers, they say so. That is the whole contract.",
+   "serifNoTime": "Everything in this reading is built from the astronomy of your birth date — computed here, not looked up. Without a birth time the Moon is held approximate (±7°) and angles are withheld. Where the words go further than the numbers, they say so. That is the whole contract.",
    "moonApproxNote": "(birth time unknown — Moon position approximate, ±7°)"
   },
   "ch2": {
@@ -100,13 +101,13 @@
   },
   "uranus": {
    "aries": "Your cohort breaks first and explains afterwards. Your open window sits at the front of things, where nothing has been tried and nobody can tell you how it is done.",
-   "taurus": "Yours are years that rewire what security means: money, land, the body itself. Your refusal shows in what you will not be owned by.",
+   "taurus": "Yours are years that rewire what security means: money, land, the body itself. Your refusal shows in what you refuse to be owned by.",
    "gemini": "Your cohort rewires how people talk to each other. Your window opens in language: new words for things the old words misdescribed.",
-   "cancer": "You come from years that redrew what a household could be. Your freedom lives closest to home; you will not run a family by inherited rules alone.",
+   "cancer": "You come from years that redrew what a household could be. Your freedom lives closest to home; you refuse to run a family by inherited rules alone.",
    "leo": "Your era electrified self-expression. Your window stays open on the stage: you would sooner startle than be ignored, and sooner be honest than either.",
    "virgo": "Yours are years that took method apart: work, health, the shape of a day. Your rebellion is practical, a better way of doing it, quietly installed.",
    "libra": "Your cohort renegotiated partnership itself. Your open window is in how you pair: equal, elective, never assumed.",
-   "scorpio": "You were born into years that dragged the private into daylight. Your refusal lives in the depths; you will not pretend the hidden things are not there.",
+   "scorpio": "You were born into years that dragged the private into daylight. Your refusal lives in the depths; you refuse to pretend the hidden things are not there.",
    "sagittarius": "Your era shook the belief systems. Your window opens outward: you would cross a border, actual or mental, before accepting a doctrine unread.",
    "capricorn": "You arrived in years that cracked the institutions. Your rebellion works from inside structure; you know which wall is load-bearing before you move it.",
    "aquarius": "Uranus stands in its own sign here: the future is a place your cohort is loyal to. The given order was only ever a draft to you, and your window does not close.",
@@ -168,7 +169,7 @@
   "sextile": "This ease never insists; it simply works, whenever you remember to ask.",
   "square": "Much of what you have built, you built because these two would not let each other rest; that is the compliment hidden in the friction.",
   "trine": "An ease so native you may never have clocked it as a gift; name it, and use it on purpose.",
-  "opposition": "You will swing between these poles all your life; the task was never choosing a side, only holding the rope between them."
+  "opposition": "These poles stay in conversation for a lifetime; the task was never choosing a side, only holding the rope between them."
  },
  "elementAbsent": {
   "fire": "No fire in a chart reads, traditionally, not as a missing spark but as ignition held under choice: you do not act on reflex, so when you move, it is decided. People learn that your yes means something.",

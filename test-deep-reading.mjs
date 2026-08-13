@@ -30,6 +30,7 @@ const untimed = buildDeepReading(
 );
 assert.equal(untimed.chapters.length, 7);
 assert.ok(/approximate/i.test(JSON.stringify(untimed)), 'untimed chart must label the Moon as approximate');
+assert.equal(/exact moment/.test(JSON.stringify(untimed.chapters[0])), false, 'untimed chapter 1 must not claim an exact moment');
 assert.equal(/Moon and angles withheld/.test(JSON.stringify(untimed)), false, 'engine must not claim the Moon was withheld');
 assert.ok(reading.chapters[6].serif[0].includes('Leo'), 'timed letter must name the Sun sign');
 assert.ok(untimed.chapters[6].serif[0].includes('Aries'), 'untimed letter must name the Sun sign');

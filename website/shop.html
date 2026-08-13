@@ -17,11 +17,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='850';</script>
-  <script src="js/ap-nav-model.js?v=850" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=850">
-    <link rel="stylesheet" href="css/ap-shop-v835.css?v=850">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=850">
+  <script>window.AP_ASSET_V='856';</script>
+  <script src="js/ap-nav-model.js?v=856" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=856">
+    <link rel="stylesheet" href="css/ap-shop-v835.css?v=856">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=856">
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -107,9 +107,9 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=850" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=850" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-mystic-cards-v835.js?v=850" defer></script>
+  <script src="js/ap-footer-inject.js?v=856" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=856" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-mystic-cards-v835.js?v=856" defer></script>
   <script>
     (function () {
       var form = document.getElementById('shopNotify');
@@ -122,7 +122,7 @@
         var email = (input.value || '').trim();
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { message.textContent = 'Check the email address and try again.'; message.dataset.state = 'error'; return; }
         button.disabled = true; button.textContent = 'Sending…'; message.textContent = '';
-        var body = new FormData(); body.append('email', email); body.append('tags', 'checkout-open');
+        var body = new FormData(); body.append('email', email); body.append('tags', 'eclipse-notes');
         fetch('https://list.astroprecise.app/subscribe', { method: 'POST', body: body })
           .then(function (response) { if (!response.ok) throw new Error(String(response.status)); form.innerHTML = '<p class="ap-shop-notify__success" role="status">You&rsquo;re on the list. We&rsquo;ll send only useful eclipse notes.</p>'; })
           .catch(function () { button.disabled = false; button.textContent = 'Get sky notes'; message.textContent = 'That did not send. Nothing was saved—please try again.'; message.dataset.state = 'error'; });

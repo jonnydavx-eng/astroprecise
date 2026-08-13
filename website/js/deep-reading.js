@@ -1,5 +1,5 @@
 /*
- * Astro Precise — the £12 Deep Reading engine (seven chapters)
+ * Astro Precise — seven-chapter natal reading engine
  * ------------------------------------------------------------
  * Fills the last hollow product (Astrologer-Writer bench order). Pure logic:
  * give it natal longitudes + the two template libraries and it returns seven
@@ -106,7 +106,7 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
         ? `${label(b)} — near ${fmtDegCoarse(natal[b])} ${deep.chapters.ch1.moonApproxNote || '(approximate)'}`
         : `${label(b)} — ${fmtDeg(natal[b], S)}${houseTxt(natal[b])}`),
     ],
-    serif: [deep.chapters.ch1.serif],
+    serif: [timed ? deep.chapters.ch1.serif : (deep.chapters.ch1.serifNoTime || deep.chapters.ch1.serif)],
   });
 
   // CH2 — the three lights

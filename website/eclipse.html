@@ -22,17 +22,17 @@
   </script>
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='854';</script>
+  <link rel="stylesheet" href="css/fonts.css?v=856">
+  <script>window.AP_ASSET_V='856';</script>
   <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }</script>
-  <script src="js/ephemeris.js?v=835" defer></script>
-  <script src="js/ap-nav-model.js?v=854" defer></script>
-    <script type="module" src="js/ap-eclipse-live-v834.js?v=854"></script>
-    <script type="module" src="js/ap-eclipse-contact-v835.js?v=854"></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=854">
-    <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=854">
-    <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=854">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=854">
+  <script src="js/ephemeris.js?v=856" defer></script>
+  <script src="js/ap-nav-model.js?v=856" defer></script>
+    <script type="module" src="js/ap-eclipse-live-v834.js?v=856"></script>
+    <script type="module" src="js/ap-eclipse-contact-v835.js?v=856"></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=856">
+    <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=856">
+    <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=856">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=856">
 </head>
 <body class="page-eclipse eclipse-v835">
   <a class="skip" href="#eclipse-live-title">Skip to the eclipse instrument</a>
@@ -176,7 +176,7 @@
               <label><span>Birth time · optional</span><input type="time" id="tob" autocomplete="bday-time"></label>
               <label><span>Historical time zone</span><select id="tz"><option value="Europe/London" selected>London / UK</option><option value="Europe/Paris">Paris / Central Europe</option><option value="America/New_York">New York / US Eastern</option><option value="America/Los_Angeles">Los Angeles / US Pacific</option><option value="Asia/Kolkata">India</option><option value="Australia/Sydney">Sydney</option><option value="UTC">UTC / GMT</option></select></label>
             </div>
-            <button type="submit" data-eclipse-contact-submit disabled>Read my eclipse contact</button>
+            <button type="submit" data-eclipse-contact-submit disabled aria-busy="true" aria-describedby="eclipseContactStatus">Read my eclipse contact</button>
             <p class="ap-eclipse-contact__note" id="eclipseContactStatus" role="status">No account · no birth data is sent · historical time-zone rules are applied · manual entry has no location, so angles require a saved full chart · if time is unknown, Moon contacts are withheld</p>
           </form>
           <div class="ap-eclipse-result" id="eclipseResult" hidden tabindex="-1" aria-live="polite">
@@ -195,9 +195,9 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=854" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=854" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-mystic-cards-v835.js?v=854" defer></script>
+  <script src="js/ap-footer-inject.js?v=856" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=856" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-mystic-cards-v835.js?v=856" defer></script>
   <script>
     (function () {
       var root = document.getElementById('ap-eclipse-live');

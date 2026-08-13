@@ -40,7 +40,7 @@ if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains ge
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
 if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v855["']/.test(sw)) fails.push('SW tip is not exactly v855');
+if (!/const V\s*=\s*["']ap-v856["']/.test(sw)) fails.push('SW tip is not exactly v856');
 const unlock = readFileSync('website/js/gumroad-unlock.js', 'utf8');
 const bridge = readFileSync('website/js/ap-gumroad-bridge.js', 'utf8');
 if (!/productId:\s*'3ZwFjg0IW702KvJ5s97QuQ=='/.test(unlock)) fails.push('module productId is not the live Gumroad id');
