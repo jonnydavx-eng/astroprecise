@@ -73,6 +73,16 @@ if (!payload || !payload.html || !payload.html.includes('Your Eclipse Edition') 
   server.close();
   throw new Error('Print document did not render');
 }
+if (/20°08/.test(payload.html) || payload.html.includes('140.133')) {
+  await browser.close();
+  server.close();
+  throw new Error('Sample booklet still contains the retired 20°08′ / 140.133 eclipse degree');
+}
+if (!/20°02/.test(payload.html)) {
+  await browser.close();
+  server.close();
+  throw new Error('Sample booklet missing live 20°02 Leo eclipse degree');
+}
 const html = payload.html;
 const printPage = await browser.newPage();
 await printPage.setContent(html, { waitUntil: 'load' });

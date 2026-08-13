@@ -37,4 +37,7 @@ assert.ok(untimed.chapters[6].serif[0].includes('Aries'), 'untimed letter must n
 assert.ok(untimed.chapters[6].serif[0].includes('rising sign'), 'untimed letter must say the rising sign is missing');
 assert.equal(JSON.stringify(untimed.chapters).includes('1st house') || JSON.stringify(untimed).includes('rising sign needs'), true);
 
+const natalCss = readFileSync(new URL('./website/css/ap-natal-reading.css', import.meta.url), 'utf8');
+assert.equal(/position:\s*sticky/.test(natalCss), false, 'natal submit must not be sticky over the bottom nav');
+
 console.log('PASS deep-reading seven chapters + untimed Moon approximate');

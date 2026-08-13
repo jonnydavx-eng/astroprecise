@@ -148,4 +148,13 @@ const natalPage = read('./website/js/ap-natal-reading.js');
 assert.equal(natalPage.includes('Moon and angles withheld'), false);
 assert.ok(natalPage.includes('Moon approximate'));
 
+const editionSrc = read('./website/js/ap-eclipse-edition-v841.js');
+assert.equal(editionSrc.includes('Unique high-resolution eclipse artwork'), false,
+  'locked upsell must not sell eclipse artwork after natal-wheel rebrand');
+assert.ok(editionSrc.includes('Unique high-resolution natal-wheel plate'));
+const gumroadHtml = read('./outreach-exports/gumroad/your-eclipse-edition-description.html');
+assert.equal(/eclipse chart artwork/.test(gumroadHtml), false,
+  'Gumroad HTML must not promise eclipse chart artwork');
+assert.ok(/natal-wheel plate/.test(gumroadHtml));
+
 console.log('PASS quiet-sale gate + deterministic five-beat Eclipse Edition + private artwork contract');

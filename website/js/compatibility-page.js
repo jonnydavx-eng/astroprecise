@@ -417,7 +417,12 @@
                    stats: { harmoniousCount: 0, count: aspCount, ratio: 0.5 } };
       var label = ch.label;
       if (titleEl) titleEl.textContent = personA + ' & ' + personB + ' — ' + label;
-      if (subEl) subEl.textContent = aspCount + ' measured inter-chart aspects · the same two charts always give the same reading';
+      if (subEl) {
+        var noonNote = (result.timeKnown1 === false || result.timeKnown2 === false)
+          ? ' · blank birth time uses noon as a placeholder — rising signs are not exact'
+          : '';
+        subEl.textContent = aspCount + ' measured inter-chart aspects · the same two charts always give the same reading' + noonNote;
+      }
 
       // Build the composite + Davison relationship charts for their tabs.
       try { renderComposite(chart1, chart2); } catch (e) {}
@@ -623,7 +628,8 @@
 
     function readPerson(prefix) {
       var date = (document.getElementById(prefix + '-date') || {}).value || '';
-      var time = (document.getElementById(prefix + '-time') || {}).value || '12:00';
+      var rawTime = (document.getElementById(prefix + '-time') || {}).value || '';
+      var time = rawTime || '12:00';
       var name = (document.getElementById(prefix + '-name') || {}).value || '';
       var lat  = parseFloat((document.getElementById(prefix + '-lat') || {}).value);
       var lon  = parseFloat((document.getElementById(prefix + '-lon') || {}).value);
@@ -631,7 +637,7 @@
       if (!date || isNaN(lat) || isNaN(lon)) return null;
       var parts = date.split('-').map(Number);
       var timeParts = time.split(':').map(Number);
-      return { name, y: parts[0], m: parts[1], d: parts[2], hh: timeParts[0]||12, mm: timeParts[1]||0, lat, lon, tz };
+      return { name, y: parts[0], m: parts[1], d: parts[2], hh: timeParts[0]||12, mm: timeParts[1]||0, lat, lon, tz, timeKnown: !!rawTime };
     }
 
     /* One person as the p1…/p2… key set the invite link and the legacy reader
@@ -639,7 +645,7 @@
     function personParams(params, pfx, p) {
       if (!p) return params;
       params.set(pfx + 'd', p.y + '-' + String(p.m).padStart(2,'0') + '-' + String(p.d).padStart(2,'0'));
-      params.set(pfx + 't', String(p.hh).padStart(2,'0') + ':' + String(p.mm).padStart(2,'0'));
+      if (p.timeKnown) params.set(pfx + 't', String(p.hh).padStart(2,'0') + ':' + String(p.mm).padStart(2,'0'));
       params.set(pfx + 'n', p.name || '');
       params.set(pfx + 'la', p.lat.toFixed(4));
       params.set(pfx + 'lo', p.lon.toFixed(4));
@@ -718,7 +724,7 @@
         var lonEl  = document.getElementById(prefix + '-lon');
         var tzEl   = document.getElementById(prefix + '-tz');
         if (dateEl) dateEl.value = params.get(pfx + 'd') || '';
-        if (timeEl) timeEl.value = params.get(pfx + 't') || '12:00';
+        if (timeEl) timeEl.value = params.get(pfx + 't') || '';
         if (nameEl) nameEl.value = decodeURIComponent(params.get(pfx + 'n') || '');
         if (latEl)  latEl.value  = params.get(pfx + 'la') || '';
         if (lonEl)  lonEl.value  = params.get(pfx + 'lo') || '';
@@ -930,6 +936,8 @@
           var chart1 = buildChart(E, p1.y, p1.m, p1.d, p1.hh, p1.mm, p1.lat, p1.lon, p1.tz);
           var chart2 = buildChart(E, p2.y, p2.m, p2.d, p2.hh, p2.mm, p2.lat, p2.lon, p2.tz);
           var result = window.Interpretations.calculateCompatibility(chart1, chart2);
+          result.timeKnown1 = p1.timeKnown;
+          result.timeKnown2 = p2.timeKnown;
           savePairForSession(p1, p2);
           showResult(result, p1.name, p2.name, chart1, chart2);
         } catch(err) {

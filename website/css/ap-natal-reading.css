@@ -24,9 +24,6 @@
   .ap-natal-form__fields { grid-template-columns: 1fr; }
   .ap-natal-form { padding-bottom: calc(12px + var(--bottom-nav-h, 72px)); }
 }
-@media (prefers-reduced-motion: reduce) {
-  .ap-natal-form button { box-shadow: none; }
-}
 @media print {
   .site-header, .ap-site-footer, .bottom-nav, .ap-natal-form, .ap-natal-print, .ap-natal-also { display: none !important; }
   .page-natal-reading { background: #fff; color: #111; }

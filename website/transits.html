@@ -1090,6 +1090,9 @@
       }
 
       var html = '';
+      if (!birth.timeKnown) {
+        html += '<p class="form-hint" role="status">Birth time was blank — this forecast uses noon as a placeholder. Moon and houses are not exact.</p>';
+      }
       if (insight) html += overviewHtml(insight, chart);
 
       if (aspects.length) {
@@ -1115,7 +1118,8 @@
       e.preventDefault();
       var cityInput = $('transit-city');
       var date = $('natal-date-transit') ? $('natal-date-transit').value : '';
-      var time = ($('natal-time-transit') && $('natal-time-transit').value) || '12:00';
+      var rawTime = $('natal-time-transit') ? $('natal-time-transit').value : '';
+      var time = rawTime || '12:00';
       var lat = $('transit-lat') ? $('transit-lat').value : '';
       var lon = $('transit-lon') ? $('transit-lon').value : '';
       var tz = (cityInput && cityInput.dataset.tz) || ($('transit-tz') && $('transit-tz').value) || '';
@@ -1148,7 +1152,7 @@
         function cast() {
           try {
             runForecast({
-              name: '', date: date, time: time,
+              name: '', date: date, time: time, timeKnown: !!rawTime,
               lat: lat, lon: lon, city: city, tz: tz, houseSystem: 'placidus'
             });
           } catch (err) {
