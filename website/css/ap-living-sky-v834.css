@@ -870,16 +870,13 @@ body .bottom-nav__item--updates { background: rgba(216, 180, 106, 0.07) !importa
 }
 
 @media (max-width: 700px) {
-  html { --bottom-nav-h: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  html { --bottom-nav-h: 0px; }
   .ap-model-stage { scroll-margin-top: calc(var(--ap-nav-h) + 8px); }
   body:has(> nav.bottom-nav) {
     padding-bottom: var(--bottom-nav-h) !important;
   }
   body > nav.bottom-nav.bottom-nav {
-    position: fixed !important;
-    inset: auto 0 0 !important;
-    z-index: 110 !important;
-    display: block !important;
+    display: none !important;
     width: 100% !important;
     height: auto !important;
     min-height: var(--bottom-nav-h) !important;
