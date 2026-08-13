@@ -200,6 +200,7 @@
     orrery.addEventListener('planetfocus', function (event) {
       var detail = event.detail || {};
       showFocus(detail.name || FOCUS[detail.key] || 'Solar system', detail);
+      if (detail.key === 'earth') showScale('EARTH');
     });
 
     orrery.addEventListener('scalechange', function (event) {

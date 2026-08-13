@@ -140,7 +140,7 @@ try {
     cursor: document.querySelector('#orr canvas').style.cursor,
   }));
   await page.mouse.up();
-  assert(cancelBefore.cursor === 'grabbing', 'Pointer down did not enter grabbing mode');
+  assert(cancelBefore.cursor === 'move', 'Pointer down did not enter orbit mode');
   assert(cancelAfter.cursor === 'grab', 'Pointer cancellation left the cursor stuck grabbing');
   assert(cancelAfter.jd === cancelBefore.jd, 'Pointer move after cancellation scrubbed the model time');
 
