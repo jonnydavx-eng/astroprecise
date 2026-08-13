@@ -583,8 +583,8 @@ const FinishShader = {
   // Gaia Sky / NASA SVS flythroughs; ecliptic–galactic tilt ≈ 60.2° (Swinburne cosmos).
   const GALACTIC_TILT_X = 62.87 * D2R;
   const GALACTIC_ECLIPTIC_TILT = 60.2 * D2R;
-  const GALAXY_VIEW_AZ = 0.72;
-  const GALAXY_VIEW_EL = 36 * D2R;
+  const GALAXY_VIEW_AZ = 1.18;
+  const GALAXY_VIEW_EL = 48 * D2R;
   const COSMOS_VIEW_EL = 38 * D2R;
 
   // scale levels 0–6 — zoom dial = space, scroll = time
@@ -605,8 +605,9 @@ const FinishShader = {
       camRadius: 310, camMin: 200, camMax: 520, camEl: 24 * D2R, camAz: -0.5, targetEarth: false,
       honesty: 'Directions schematic · not true 3D distances' },
     { id: 5, name: 'Galaxy', hud: 'Milky Way',
-      // Slightly lower elevation + wider band so free look frames a clean spiral
-      camRadius: 720, camMin: 420, camMax: 1200, camEl: 32 * D2R, camAz: GALAXY_VIEW_AZ, targetEarth: false,
+      // Begin with a readable three-quarter spiral. A shallower view makes the
+      // four arm populations collapse into bright, apparently concentric rails.
+      camRadius: 820, camMin: 460, camMax: 1300, camEl: 48 * D2R, camAz: GALAXY_VIEW_AZ, targetEarth: false,
       honesty: 'Gaia-inspired schematic · 4 arms · distances not to scale' },
     { id: 6, name: 'Cosmos', hud: 'Deep field',
       camRadius: 1850, camMin: 1100, camMax: 3200, camEl: 34 * D2R, camAz: 0.18, targetEarth: false,
@@ -2909,9 +2910,10 @@ const FinishShader = {
     c.width = c.height = 64;
     const x = c.getContext('2d');
     const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
-    g.addColorStop(0, 'rgba(255,255,255,1)');
-    g.addColorStop(0.35, 'rgba(255,255,255,0.65)');
-    g.addColorStop(0.7, 'rgba(255,255,255,0.16)');
+    g.addColorStop(0, 'rgba(255,255,255,0.96)');
+    g.addColorStop(0.14, 'rgba(255,255,255,0.58)');
+    g.addColorStop(0.46, 'rgba(255,255,255,0.18)');
+    g.addColorStop(0.78, 'rgba(255,255,255,0.035)');
     g.addColorStop(1, 'rgba(255,255,255,0)');
     x.fillStyle = g; x.fillRect(0, 0, 64, 64);
     _galaxyDotTex = new THREE.CanvasTexture(c);
@@ -2946,9 +2948,9 @@ const FinishShader = {
     const x = c.getContext('2d');
     const along = x.createLinearGradient(0, 36, 640, 36);
     along.addColorStop(0, 'rgba(200,150,90,0)');
-    along.addColorStop(0.12, 'rgba(255,210,150,0.42)');
-    along.addColorStop(0.5, 'rgba(255,245,215,0.58)');
-    along.addColorStop(0.88, 'rgba(255,210,150,0.42)');
+    along.addColorStop(0.12, 'rgba(255,196,128,0.26)');
+    along.addColorStop(0.5, 'rgba(255,229,188,0.38)');
+    along.addColorStop(0.88, 'rgba(255,196,128,0.26)');
     along.addColorStop(1, 'rgba(200,150,90,0)');
     x.fillStyle = along;
     x.fillRect(0, 0, 640, 72);
@@ -2993,30 +2995,30 @@ const FinishShader = {
     const cx = size / 2, cy = size / 2;
     // Warm core → cool outer (color grade)
     const g = x.createRadialGradient(cx, cy, 0, cx, cy, size * 0.48);
-    g.addColorStop(0, 'rgba(255, 236, 200, 0.55)');
-    g.addColorStop(0.12, 'rgba(255, 210, 160, 0.38)');
-    g.addColorStop(0.28, 'rgba(180, 160, 200, 0.22)');
-    g.addColorStop(0.55, 'rgba(100, 130, 190, 0.14)');
-    g.addColorStop(0.82, 'rgba(60, 90, 150, 0.06)');
+    g.addColorStop(0, 'rgba(255, 226, 180, 0.42)');
+    g.addColorStop(0.12, 'rgba(236, 188, 132, 0.28)');
+    g.addColorStop(0.28, 'rgba(160, 146, 182, 0.17)');
+    g.addColorStop(0.55, 'rgba(86, 112, 168, 0.10)');
+    g.addColorStop(0.82, 'rgba(48, 70, 118, 0.04)');
     g.addColorStop(1, 'rgba(20, 30, 50, 0)');
     x.fillStyle = g;
     x.fillRect(0, 0, size, size);
-    // Soft spiral suggestion (low contrast — points carry structure)
+    // Low-frequency cloudy structure, not literal spiral strokes. Arm shape is
+    // carried by the three-dimensional particle distribution; drawing curves
+    // into this underlay doubles them into conspicuous contour lines.
     x.globalCompositeOperation = 'lighter';
-    for (let arm = 0; arm < 4; arm++) {
-      const phase = arm * (Math.PI * 2 / 4) + 0.4;
-      x.strokeStyle = arm % 2 === 0 ? 'rgba(160, 200, 255, 0.07)' : 'rgba(255, 220, 180, 0.06)';
-      x.lineWidth = 10 + arm * 2;
-      x.beginPath();
-      for (let i = 0; i <= 80; i++) {
-        const t = i / 80;
-        const rad = 20 + t * (size * 0.42);
-        const th = phase + Math.log(Math.max(rad, 24) / 24) / Math.tan(12.8 * Math.PI / 180);
-        const px = cx + Math.cos(th) * rad;
-        const py = cy + Math.sin(th) * rad;
-        if (i === 0) x.moveTo(px, py); else x.lineTo(px, py);
-      }
-      x.stroke();
+    for (let i = 0; i < 110; i++) {
+      const th = Math.random() * Math.PI * 2;
+      const rad = Math.pow(Math.random(), 0.62) * size * 0.4;
+      const rr = 8 + Math.random() * 28;
+      const cloud = x.createRadialGradient(
+        cx + Math.cos(th) * rad, cy + Math.sin(th) * rad, 0,
+        cx + Math.cos(th) * rad, cy + Math.sin(th) * rad, rr
+      );
+      cloud.addColorStop(0, i % 3 === 0 ? 'rgba(188,208,255,0.018)' : 'rgba(255,218,178,0.014)');
+      cloud.addColorStop(1, 'rgba(0,0,0,0)');
+      x.fillStyle = cloud;
+      x.fillRect(cx + Math.cos(th) * rad - rr, cy + Math.sin(th) * rad - rr, rr * 2, rr * 2);
     }
     // Fine grain so it doesn't look like a flat sticker
     x.globalCompositeOperation = 'source-over';
@@ -3149,7 +3151,7 @@ const FinishShader = {
     const diskCount = perfTier === 'low' ? 28000 : perfTier === 'mid' ? 52000 : 88000;
     const bulgeCount = perfTier === 'low' ? 3600 : perfTier === 'mid' ? 6400 : 10500;
     const dustCount = perfTier === 'low' ? 3600 : perfTier === 'mid' ? 7000 : 11000;
-    const barCount = perfTier === 'low' ? 2200 : perfTier === 'mid' ? 3800 : 6200;
+    const barCount = perfTier === 'low' ? 900 : perfTier === 'mid' ? 1600 : 2600;
 
     function fillDiskPoints(count, bulge, bar) {
       const pos = new Float32Array(count * 3);
@@ -3167,30 +3169,44 @@ const FinishShader = {
         col[idx * 3] = 1.0 * w; col[idx * 3 + 1] = 0.9 * w; col[idx * 3 + 2] = 0.68 * w;
       }
       for (let i = 0; i < bar; i++, idx++) {
-        const along = (Math.random() - 0.5) * 92;
-        const across = (Math.random() - 0.5) * 11;
+        const along = (Math.random() - 0.5) * 76;
+        const acrossBell = (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+        const across = acrossBell * 24;
         pos[idx * 3] = along * Math.cos(MILKY_BAR_ANG) - across * Math.sin(MILKY_BAR_ANG);
-        pos[idx * 3 + 1] = (Math.random() - 0.5) * 5.5;
+        pos[idx * 3 + 1] = (Math.random() + Math.random() - 1) * 10;
         pos[idx * 3 + 2] = along * Math.sin(MILKY_BAR_ANG) + across * Math.cos(MILKY_BAR_ANG);
-        const w = 0.52 + Math.random() * 0.48;
-        col[idx * 3] = 1.0 * w; col[idx * 3 + 1] = 0.86 * w; col[idx * 3 + 2] = 0.58 * w;
+        const w = 0.28 + Math.random() * 0.38;
+        col[idx * 3] = 0.94 * w; col[idx * 3 + 1] = 0.68 * w; col[idx * 3 + 2] = 0.42 * w;
       }
       while (idx < count) {
         const arm = MILKY_ARMS[Math.floor(Math.random() * MILKY_ARMS.length)];
-        // Bias samples toward mid-arm (t~0.25–0.7) for thicker readable arms
-        let t = Math.pow(Math.random(), 0.55);
-        if (Math.random() < 0.45) t = 0.22 + Math.random() * 0.55;
-        const rad = MILKY_R0 + t * 560 + (Math.random() - 0.5) * 12;
-        // Tight scatter on-arm (Phase 1 density); rare wider fluff
-        const armScatter = Math.random() < 0.82
-          ? (Math.random() - 0.5) * (0.035 + t * 0.05)
-          : (Math.random() - 0.5) * (0.08 + t * 0.1);
-        const p = milkySpiralXY(arm.phase, rad, armScatter);
-        // Thin disk — kill tall off-plane streaks
-        const diskH = (5.5 + t * 9) * (1 - t * 0.28);
-        const y = (Math.random() - 0.5) * diskH;
-        const interarm = Math.abs(armScatter) > 0.045;
-        const young = t < 0.55 && Math.random() < (interarm ? 0.1 : 0.48);
+        // A real galactic disc is not four mathematical curves. Keep enough
+        // arm-biased stars to describe the spiral, then dissolve the remainder
+        // into a broad exponential field so no camera angle exposes "rails".
+        const onArm = Math.random() < 0.64;
+        let t;
+        let armScatter = 0;
+        let p;
+        if (onArm) {
+          t = Math.pow(Math.random(), 0.8);
+          if (Math.random() < 0.34) t = 0.16 + Math.random() * 0.62;
+          const width = 0.105 + t * 0.14;
+          const bell = (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+          armScatter = bell * width;
+          const radialBell = (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+          const rad = MILKY_R0 + t * 560 + radialBell * (22 + t * 34);
+          p = milkySpiralXY(arm.phase, rad, armScatter);
+        } else {
+          t = Math.pow(Math.random(), 1.18);
+          const rad = MILKY_R0 + t * 560;
+          const th = Math.random() * Math.PI * 2;
+          p = { x: Math.cos(th) * rad, z: Math.sin(th) * rad };
+        }
+        const diskH = (onArm ? 8 + t * 12 : 13 + t * 18) * (1 - t * 0.18);
+        const yBell = (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+        const y = yBell * diskH;
+        const interarm = !onArm || Math.abs(armScatter) > 0.07 + t * 0.06;
+        const young = onArm && t < 0.68 && Math.random() < (interarm ? 0.08 : 0.38);
         const dustLane = interarm && Math.random() < 0.18;
         let r, g, b;
         if (dustLane) {
@@ -3210,7 +3226,7 @@ const FinishShader = {
           b = 0.78 + t * 0.18 + (1 - warm) * 0.08;
         }
         pos[idx * 3] = p.x; pos[idx * 3 + 1] = y; pos[idx * 3 + 2] = p.z;
-        const w = 0.42 + Math.random() * 0.58;
+        const w = onArm ? 0.28 + Math.random() * 0.48 : 0.14 + Math.random() * 0.32;
         col[idx * 3] = r * w; col[idx * 3 + 1] = g * w; col[idx * 3 + 2] = b * w;
         idx++;
       }
@@ -3224,8 +3240,8 @@ const FinishShader = {
         .setAttribute('color', new THREE.BufferAttribute(bulgeOnly.col, 3)),
       new THREE.PointsMaterial({
         map: galaxySoftDotTexture(),
-        size: perfTier === 'high' ? 0.82 : 0.62, vertexColors: true, transparent: true,
-        opacity: 0.92, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+        size: perfTier === 'high' ? 0.62 : 0.5, vertexColors: true, transparent: true,
+        opacity: 0.62, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
       })
     );
     milkyWayBulge.visible = false;
@@ -3238,8 +3254,8 @@ const FinishShader = {
         .setAttribute('color', new THREE.BufferAttribute(disk.col, 3)),
       new THREE.PointsMaterial({
         map: galaxySoftDotTexture(),
-        size: perfTier === 'high' ? 0.72 : perfTier === 'mid' ? 0.56 : 0.48,
-        vertexColors: true, transparent: true, opacity: 0.9,
+        size: perfTier === 'high' ? 0.52 : perfTier === 'mid' ? 0.44 : 0.38,
+        vertexColors: true, transparent: true, opacity: 0.5,
         depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
       })
     );
@@ -3375,8 +3391,8 @@ const FinishShader = {
 
     // Dual-layer core: hot inner + soft outer (both circular sprites)
     galacticCore = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: makeGlowTexture('rgba(255,252,240,0.9)', 'rgba(255,200,120,0.0)'),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.88,
+      map: makeGlowTexture('rgba(255,240,210,0.82)', 'rgba(255,174,92,0.0)'),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.62,
     }));
     galacticCore.scale.set(48, 48, 1);
     galacticCore.position.set(0, 1.8, 0);
@@ -3385,7 +3401,7 @@ const FinishShader = {
 
     galacticCoreRing = new THREE.Sprite(new THREE.SpriteMaterial({
       map: galaxySpriteTexture('rgba(255,220,160,0.28)', 'rgba(180,120,60,0.0)', 512, 512),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.42,
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.26,
     }));
     galacticCoreRing.scale.set(96, 96, 1);
     galacticCoreRing.position.set(0, 1.2, 0);
@@ -3394,7 +3410,7 @@ const FinishShader = {
 
     galacticBar = new THREE.Sprite(new THREE.SpriteMaterial({
       map: galaxyBarTexture(),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.62,
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.3,
     }));
     // Milder aspect — extreme 128×26 billboards shear badly under free look.
     galacticBar.scale.set(96, 38, 1);
@@ -3434,7 +3450,7 @@ const FinishShader = {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
-      opacity: 0.72,
+      opacity: 0.5,
     });
     milkyWaySoftDisk = new THREE.Mesh(softGeo, softMat);
     milkyWaySoftDisk.position.y = -1.2;
@@ -3450,7 +3466,7 @@ const FinishShader = {
       depthWrite: false,
       blending: THREE.NormalBlending,
       side: THREE.DoubleSide,
-      opacity: 0.55,
+      opacity: 0.3,
     });
     milkyWayDustLanes = new THREE.Mesh(dustGeo, dustMat);
     milkyWayDustLanes.position.y = -0.4;
@@ -3467,7 +3483,7 @@ const FinishShader = {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       side: THREE.DoubleSide,
-      opacity: 0.55,
+      opacity: 0.36,
     });
     const coreDisk = new THREE.Mesh(coreGeo, coreMat);
     coreDisk.position.y = 0.4;
@@ -3614,7 +3630,7 @@ const FinishShader = {
       size: perfTier === 'high' ? 0.52 : 0.4,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.62,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       sizeAttenuation: true,
@@ -3622,7 +3638,7 @@ const FinishShader = {
     gaiaSamplePoints.visible = false;
     gaiaSamplePoints.userData.meta = meta || null;
     gaiaSamplePoints.userData.count = count;
-    gaiaSamplePoints.userData.baseOpa = 0.8;
+    gaiaSamplePoints.userData.baseOpa = 0.62;
     milkyWayGroup.add(gaiaSamplePoints);
   }
 
@@ -4218,23 +4234,23 @@ const FinishShader = {
     const galDeep = scaleFade(z, 5.2, 1.1);
     // Free-explore / mobile: brighter, larger points for readability
     const mobileExplore = freeExploreMode && (perfTier === 'low' || isPreloaderMobile());
-    const galBoost = freeExploreMode ? (mobileExplore ? 1.22 : 1.12) : 1;
-    const sizeBoost = freeExploreMode ? (mobileExplore ? 1.28 : 1.1) : 1;
+    const galBoost = freeExploreMode ? (mobileExplore ? 1.1 : 1.05) : 1;
+    const sizeBoost = freeExploreMode ? (mobileExplore ? 1.12 : 1.04) : 1;
     // Phase 3/4 compare: 'stars' = local+catalog only; 'gaia' emphasizes sample layer
     const showMw = galaxyViewMode !== 'stars';
     const showGaia = galaxyViewMode === 'gaia' || galaxyViewMode === 'full';
     if (milkyWayBulge) {
       milkyWayBulge.visible = showMw && galF > 0.02;
       if (milkyWayBulge.material) {
-        milkyWayBulge.material.opacity = 0.92 * galF * galBoost;
-        milkyWayBulge.material.size = (perfTier === 'high' ? 0.88 : 0.68) * sizeBoost;
+        milkyWayBulge.material.opacity = 0.62 * galF * galBoost;
+        milkyWayBulge.material.size = (perfTier === 'high' ? 0.62 : 0.5) * sizeBoost;
       }
     }
     if (milkyWayDisk) {
       milkyWayDisk.visible = showMw && galF > 0.02;
       if (milkyWayDisk.material) {
-        milkyWayDisk.material.opacity = 0.92 * galF * galBoost;
-        milkyWayDisk.material.size = (perfTier === 'high' ? 0.78 : perfTier === 'mid' ? 0.6 : 0.5)
+        milkyWayDisk.material.opacity = 0.5 * galF * galBoost;
+        milkyWayDisk.material.size = (perfTier === 'high' ? 0.52 : perfTier === 'mid' ? 0.44 : 0.38)
           * sizeBoost;
       }
     }
@@ -4246,19 +4262,19 @@ const FinishShader = {
     if (milkyWaySoftDisk) {
       milkyWaySoftDisk.visible = showMw && galF > 0.08;
       if (milkyWaySoftDisk.material) {
-        milkyWaySoftDisk.material.opacity = (freeExploreMode ? 0.62 : 0.72) * galF * galBoost;
+        milkyWaySoftDisk.material.opacity = (freeExploreMode ? 0.44 : 0.5) * galF * galBoost;
       }
     }
     if (milkyWayDustLanes) {
       milkyWayDustLanes.visible = showMw && galF > 0.18;
       if (milkyWayDustLanes.material) {
-        milkyWayDustLanes.material.opacity = (freeExploreMode ? 0.42 : 0.55) * galF;
+        milkyWayDustLanes.material.opacity = (freeExploreMode ? 0.24 : 0.3) * galF;
       }
     }
     const coreDisk = milkyWayGroup && milkyWayGroup.userData && milkyWayGroup.userData.coreDisk;
     if (coreDisk) {
       coreDisk.visible = showMw && galF > 0.18;
-      if (coreDisk.material) coreDisk.material.opacity = 0.5 * galF * galBoost;
+      if (coreDisk.material) coreDisk.material.opacity = 0.36 * galF * galBoost;
     }
     // Arm ribbons stay off (billboard warp). Sparse circular HII OK when not free-explore.
     if (milkyWayArmRibbons) {
@@ -4289,9 +4305,10 @@ const FinishShader = {
       const gShow = showGaia && showMw && galF > 0.1;
       gaiaSamplePoints.visible = gShow;
       if (gaiaSamplePoints.material) {
-        // In 'gaia' mode push sample; in 'full' keep as subtle densification
-        const base = gaiaSamplePoints.userData.baseOpa ?? 0.78;
-        gaiaSamplePoints.material.opacity = base * galF * (galaxyViewMode === 'gaia' ? 1.05 : 0.55);
+        // Gaia is an explicit comparison layer. Stacking its arm-biased sample
+        // over the default disc redraws the same geometry as bright tracks.
+        const base = gaiaSamplePoints.userData.baseOpa ?? 0.62;
+        gaiaSamplePoints.material.opacity = base * galF * (galaxyViewMode === 'gaia' ? 0.95 : 0.1);
         gaiaSamplePoints.material.size = (perfTier === 'high' ? 0.55 : 0.42)
           * (galaxyViewMode === 'gaia' ? 1.15 : 0.9) * sizeBoost;
       }
@@ -4343,27 +4360,28 @@ const FinishShader = {
     }
     if (galacticCore) {
       galacticCore.visible = showMw && galF > 0.2;
-      if (galacticCore.material) galacticCore.material.opacity = 0.72 * galF;
+      if (galacticCore.material) galacticCore.material.opacity = 0.32 * galF;
     }
     if (galacticCoreRing) {
       galacticCoreRing.visible = showMw && galF > 0.3;
-      if (galacticCoreRing.material) galacticCoreRing.material.opacity = 0.32 * galF;
+      if (galacticCoreRing.material) galacticCoreRing.material.opacity = 0.12 * galF;
     }
     if (galacticBar) {
-      // Soft bar glow only; keep low so it doesn't dominate the spiral points
-      galacticBar.visible = showMw && galF > 0.4 && !freeExploreMode;
-      if (galacticBar.material) galacticBar.material.opacity = 0.38 * galF;
+      // The particle bar is dimensional; the old camera-facing sprite produced
+      // a near-white slash through the core, so it stays out of the normal view.
+      galacticBar.visible = false;
+      if (galacticBar.material) galacticBar.material.opacity = 0;
     }
     if (galacticHalo) {
       const haloF = Math.max(galF, z >= 4.8 ? scaleFade(z, 5.4, 1.2) : 0);
       galacticHalo.visible = showMw && haloF > 0.02;
-      if (galacticHalo.material) galacticHalo.material.opacity = (freeExploreMode ? 0.22 : 0.32) * haloF;
+      if (galacticHalo.material) galacticHalo.material.opacity = (freeExploreMode ? 0.08 : 0.1) * haloF;
     }
     if (galacticHaloDisk) {
       const haloF = Math.max(galF, z >= 4.8 ? scaleFade(z, 5.4, 1.2) : 0);
       // Single soft circular halo is enough; second layer fought the disk points
       galacticHaloDisk.visible = showMw && !freeExploreMode && haloF > 0.15;
-      if (galacticHaloDisk.material) galacticHaloDisk.material.opacity = 0.18 * haloF;
+      if (galacticHaloDisk.material) galacticHaloDisk.material.opacity = 0.06 * haloF;
     }
     const cosF = scaleFade(z, 6, 1.1);
     if (cosmicField) {
@@ -7218,7 +7236,7 @@ const FinishShader = {
     // apart over time and read as a "distorted galaxy" (esp. free-explore free look).
     if (milkyWayGroup && (scaleLevel >= 4 || (freeExploreMode && camRadius > 220)) && !PRM) {
       const swirl = freeExploreMode ? 0.55 : 1;
-      milkyWayGroup.rotation.y += dt * 0.0009 * galSwirlMul * swirl;
+      milkyWayGroup.rotation.y += dt * 0.00012 * galSwirlMul * swirl;
       // Hold ecliptic–galactic tilt steady (tiny breathe only outside free-explore)
       milkyWayGroup.rotation.x = GALACTIC_TILT_X + (freeExploreMode ? 0 : Math.sin(t * 0.000028) * 0.006);
       milkyWayGroup.rotation.z = 25 * D2R;
@@ -7252,14 +7270,14 @@ const FinishShader = {
     if (oortShell && oortShell.visible && !PRM) oortShell.rotation.y += dt * 0.0032;
     if (galacticCore && galacticCore.visible && !PRM && galacticCore.material) {
       if (scaleLevel >= 5 || preloaderGalSwirl) {
-        galacticCore.material.opacity = 0.72 + Math.sin(t * 0.0006) * 0.05;
-        const cs = 54 + Math.sin(t * 0.0005) * 1.4;
+        galacticCore.material.opacity = 0.32 + Math.sin(t * 0.0006) * 0.006;
+        const cs = 48 + Math.sin(t * 0.0005) * 0.7;
         galacticCore.scale.set(cs, cs, 1);
       }
     }
     if (galacticCoreRing && galacticCoreRing.visible && !PRM && scaleLevel >= 5 && galacticCoreRing.material) {
       galacticCoreRing.material.rotation += dt * 0.0016;
-      galacticCoreRing.material.opacity = 0.42 + Math.sin(t * 0.0005) * 0.05;
+      galacticCoreRing.material.opacity = 0.12 + Math.sin(t * 0.0005) * 0.003;
     }
     if (localStarsGroup && localStarsGroup.visible && !PRM && scaleLevel >= 4) {
       localStarsGroup.children.forEach((ch) => {
@@ -7273,17 +7291,17 @@ const FinishShader = {
       catalogStarsGroup.material.opacity = catBase * (0.96 + Math.sin(t * 0.0008) * 0.03);
     }
     if (galacticBar && galacticBar.visible && !PRM && scaleLevel >= 5 && galacticBar.material) {
-      galacticBar.material.opacity = 0.58 + Math.sin(t * 0.00045) * 0.04;
+      galacticBar.material.opacity = 0;
     }
     if (galacticHalo && galacticHalo.visible && !PRM) {
       if (preloaderGalSwirl) galacticHalo.rotation.z += dt * 0.008 * galSwirlMul;
       if (scaleLevel >= 5 && galacticHalo.material) {
-        galacticHalo.material.opacity = 0.34 + Math.sin(t * 0.0004) * 0.06;
-        galacticHalo.rotation.y += dt * 0.0009;
+        galacticHalo.material.opacity = 0.1 + Math.sin(t * 0.0004) * 0.002;
+        galacticHalo.rotation.y += dt * 0.00012;
       }
     }
     if (galacticHaloDisk && galacticHaloDisk.visible && !PRM && scaleLevel >= 5 && galacticHaloDisk.material) {
-      galacticHaloDisk.material.opacity = 0.28 + Math.sin(t * 0.00035) * 0.04;
+      galacticHaloDisk.material.opacity = 0.06 + Math.sin(t * 0.00035) * 0.001;
     }
     if (cosmicField && cosmicField.visible && !PRM && (scaleLevel >= 5 || preloaderGalSwirl)) {
       if (preloaderGalSwirl) {
@@ -7585,9 +7603,9 @@ const FinishShader = {
         if (galaxyIdleAz == null) galaxyIdleAz = camAz;
         if (galaxyIdleEl == null) galaxyIdleEl = camEl;
         if (dragging) { galaxyIdleAz = camAz; galaxyIdleEl = camEl; }
-        galaxyIdleAz = GALAXY_VIEW_AZ + Math.sin(t * 0.00007) * 0.2;
-        galaxyIdleEl = GALAXY_VIEW_EL + Math.sin(t * 0.00005) * 0.035;
-        const wantRad = gp.camRadius + Math.sin(t * 0.00004) * 32;
+        galaxyIdleAz = GALAXY_VIEW_AZ + Math.sin(t * 0.00007) * 0.04;
+        galaxyIdleEl = GALAXY_VIEW_EL + Math.sin(t * 0.00005) * 0.012;
+        const wantRad = gp.camRadius + Math.sin(t * 0.00004) * 12;
         let dAz = galaxyIdleAz - camAz;
         dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
         const gk = Math.min(1, dt * 0.85);
