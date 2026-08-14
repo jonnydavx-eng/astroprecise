@@ -708,8 +708,21 @@ const FinishShader = {
   const NATAL_CLOCK_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
   const NATAL_CLOCK_A = 0xD8B46A; // brass — person A
   const NATAL_CLOCK_B = 0xFF6428; // ember — person B
-  const NATAL_CLOCK_RADIAL = { a: 0.97, b: 1.03 }; // display split; lon/lat stay true
+  const NATAL_CLOCK_RADIAL = { a: 0.97, b: 1.03 }; // Pair floor; lon/lat stay true
   const NATAL_CLOCK_LABEL_LIFT = { a: 2.2, b: 3.6 };
+
+  // Same-day Earths sit on nearly the same heliocentric lon. A 3% radial
+  // split (0.97/1.03) at Earth R=9.5 is 0.57, but each natal mesh is
+  // size*0.42 ≈ 0.36 — they still occupy one blob. Widen just enough to
+  // clear both spheres. Display radius only; lon/lat stay true.
+  function natalClockSceneRadius(who, body) {
+    const base = body.R;
+    const meshR = (body.size || 0.5) * 0.42;
+    const pairHalf = base * 0.03;
+    const clearHalf = meshR + 0.08;
+    const half = Math.max(pairHalf, clearHalf);
+    return who === 'b' ? base + half : base - half;
+  }
   let natalClockSpec = { a: null, b: null, focus: null };
   let natalClockGroup = null;     // separate layer; not ghostMeshes
   const natalClockMeshes = { a: {}, b: {} };
@@ -7455,8 +7468,7 @@ const FinishShader = {
       if (hide) { mesh.visible = false; return; }
       try {
         const ll = helioLonLat(b.id, jd);
-        const radius = b.R * (NATAL_CLOCK_RADIAL[who] || 1);
-        mesh.position.copy(scenePos(radius, ll.lon, ll.lat));
+        mesh.position.copy(scenePos(natalClockSceneRadius(who, b), ll.lon, ll.lat));
         mesh.visible = true;
       } catch (e) { mesh.visible = false; }
     });

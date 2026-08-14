@@ -507,12 +507,13 @@
       }
     }
     enableToggles();
-    if (scene.a && scene.a.date) {
-      setPressed('a');
-      var pa = readPerson('person1');
-      enableScrub(!!pa.jd);
-      stamp(minuteLabel(pa));
-    }
+    setPressed('now');
+    enableScrub(false);
+    var pa = readPerson('person1');
+    var pb = readPerson('person2');
+    if (pa.jd && pb.jd) stamp(pa.name + ' and ' + pb.name + ' · both minutes in the live sky');
+    else if (pa.date) stamp(minuteLabel(pa));
+    else if (pb.date) stamp(minuteLabel(pb));
     applyNatalClocks();
     renderAngles();
     paintTelemetry();

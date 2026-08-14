@@ -76,8 +76,8 @@ else {
   else ok('couples sky refuses GMT offsets, withholds noon, and focuses clocks in-scene');
 }
 
-if (!W.includes('NATAL_CLOCK_RADIAL = { a: 0.97, b: 1.03 }')) {
-  fail('natal clocks must radially split A/B without faking longitude');
+if (!W.includes('function natalClockSceneRadius(who, body)') || !W.includes('Math.max(pairHalf, clearHalf)')) {
+  fail('natal clocks must radially split A/B enough to unstack Earth meshes');
 }
 if (!W.includes('who === focus ? 0.92 : 0.42') || !W.includes('return 0.78')) {
   fail('natal clock focus opacity contract missing');

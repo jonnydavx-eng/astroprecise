@@ -183,6 +183,9 @@ ok('house lock colours stay',
   css.includes('#FF6428') && css.includes('#D8B46A') && css.includes('#B04A52'));
 ok('copy withholds the clock when time is blank',
   html.includes('that clock, the Moon, and angles are withheld'));
+ok('hash restore stays Live so both clocks stay equally up',
+  /function applyHash\(\)[\s\S]*setPressed\('now'\)/.test(src) &&
+  !/function applyHash\(\)[\s\S]*setPressed\('a'\)/.test(src));
 ok('couples page does not fly the camera on A/B',
   !src.includes('flyTo') && !src.includes('focusPlanet') && !src.includes('setJD'));
 ok('couples assets stay at 874',
