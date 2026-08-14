@@ -77,6 +77,16 @@
   display: none !important;
 }
 
+html.ap-brand-nebula body.ap-act1-house {
+  background: #020307 !important;
+  background-color: #020307 !important;
+}
+
+html.ap-brand-nebula body.ap-act1-house::before {
+  display: none !important;
+  background: none !important;
+}
+
 .ap-act1-house .tn-hero::before,
 .ap-act1-house .tn-privacy-band::before,
 .ap-act1-house .why-hero::before,
