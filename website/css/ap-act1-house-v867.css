@@ -121,7 +121,12 @@
 .ap-act1-house :is(
   .tn-btn--primary,
   .why-btn:not(.why-btn--ghost),
-  .ap-contact-form button
+  .ap-contact-form button,
+  .ap-eclipse-guide__download-cta,
+  .ap-eclipse-contact form > button,
+  .ap-eclipse-edition__actions button:first-child,
+  .ap-eclipse-edition__license button,
+  .ap-eclipse-mission__actions button
 ) {
   border-color: var(--ap-ember) !important;
   background: var(--ap-ember) !important;
