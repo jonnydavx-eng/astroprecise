@@ -220,9 +220,9 @@ for (const probe of ["['sky-events.html', 'Events', 'eclipse']", '(min-width: 98
   if (!navModel.includes(probe)) fail('four-route mobile navigation missing: ' + probe);
 }
 if (!livingCss.includes('repeat(4, minmax(0, 1fr))')) fail('mobile navigation is not four equal tabs');
-if (navModel.includes("[\'horoscope.html\', \'Daily\']")) fail('Daily must not be a launch route');
-if (navModel.includes("[\'lifepath.html\'")) fail('Life Path must not leak into nav extras');
-if (navModel.includes("[\'synastry.html\'")) fail('Synastry must not leak into nav extras');
+if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a launch route');
+if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
+if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
 if (!sw.includes('const V = "ap-v868"')) fail('service worker release identity is not ap-v868');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
