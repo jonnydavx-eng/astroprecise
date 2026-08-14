@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-05T19:33:34.193Z",
+  "generated": "2026-08-14T22:06:03.844Z",
   "size": 1024,
   "quality": 0.85,
   "stills": [
@@ -144,13 +144,17 @@
       "rulerOfSigns": [
         "Scorpio (modern)"
       ],
-      "kb": 22.7,
+      "kb": 42.3,
       "date": "2026-03-20T12:00:00Z",
-      "frame": "generated",
-      "generated": true,
+      "frame": "map-sphere",
+      "generated": false,
+      "mapSphere": true,
       "overBudget": false,
-      "note": "engine has no Pluto mesh — generated disc; Scorpio falls back to Mars"
+      "note": "real pluto.jpg map on a lit sphere rendered outside the engine (engine has no pluto mesh); unobserved region left black, not painted; Scorpio falls back to Mars"
     }
   ],
-  "totalKB": 833.5
+  "partialRun": [
+    "pluto"
+  ],
+  "totalKB": 853.1
 }

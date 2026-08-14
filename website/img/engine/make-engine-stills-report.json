@@ -545,9 +545,9 @@
       "id": "pluto",
       "ok": true,
       "file": "pluto.webp",
-      "kb": 22.7,
+      "kb": 42.3,
       "date": "2026-03-20T12:00:00Z",
-      "frame": "generated",
+      "frame": "map-sphere",
       "w": 1024,
       "h": 1024,
       "cornerAlphaMax": 0,
@@ -578,28 +578,42 @@
         ]
       },
       "transparentCorners": true,
-      "meanLum": 105,
-      "maxLum": 170,
-      "litSamples": 51,
+      "meanLum": 92,
+      "maxLum": 151,
+      "litSamples": 44,
       "opaqueSamples": 61,
       "lit": true,
       "centerPx": [
-        177,
-        157,
-        133,
+        163,
+        139,
+        120,
         255
-      ]
+      ],
+      "unimagedFracOfDisc": 0.055,
+      "source": "pluto.jpg"
     }
   ],
   "homepageReload": {
-    "ok": true,
-    "heroState": {
-      "isWebGL": true,
-      "isPortraitMode": false,
-      "orreryFull": true
-    },
-    "pageErrorsDuringReload": []
+    "skipped": "no engine portrait in this run — the hero was never entered",
+    "previous": {
+      "skipped": "no engine portrait in this run — the hero was never entered",
+      "previous": {
+        "skipped": "no engine portrait in this run — the hero was never entered",
+        "previous": {
+          "ok": true,
+          "heroState": {
+            "isWebGL": true,
+            "isPortraitMode": false,
+            "orreryFull": true
+          },
+          "pageErrorsDuringReload": []
+        }
+      }
+    }
   },
   "pageErrorsTotal": [],
-  "totalKB": 833.5
+  "totalKB": 853.1,
+  "partialRun": [
+    "pluto"
+  ]
 }
