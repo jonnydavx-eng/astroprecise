@@ -6048,12 +6048,13 @@ const FinishShader = {
     // (C) OCEAN-ONLY GLOSS — invert white-ocean spec mask into low roughness
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <roughnessmap_fragment>',
-        'float roughnessFactor = roughness;\n #ifdef USE_ROUGHNESSMAP\n   vec4 texelRoughness = texture2D( roughnessMap, vRoughnessMapUv );\n   float oceanMask = texelRoughness.g;\n   roughnessFactor = mix( 0.92, 0.16, oceanMask );\n #endif');
+        'float roughnessFactor = roughness;\n #ifdef USE_ROUGHNESSMAP\n   vec4 texelRoughness = texture2D( roughnessMap, vRoughnessMapUv );\n   float oceanMask = texelRoughness.g;\n   float oDayR = smoothstep( -0.05, 0.35, dot( normalize( vObjNormalE ), normalize( uSunDir ) ) );\n   roughnessFactor = mix( 0.92, mix( 0.85, 0.05, oDayR ), oceanMask );\n #endif');
+
 
     // (D) FLUX still: cloud shadows with height, offset along the sun
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <map_fragment>',
-        '#include <map_fragment>\n #ifdef USE_MAP\n   if ( uCloudShadow > 0.5 ) {\n     vec3 sL = normalize( uSunDir );\n     float sDay = smoothstep( -0.05, 0.35, dot( normalize( vObjNormalE ), sL ) );\n     vec2 sUv = vMapUv - vec2( sL.x, sL.z ) * 0.0045;\n     float clSh = texture2D( uCloudTex, sUv ).g;\n     diffuseColor.rgb *= ( 1.0 - clSh * 0.58 * sDay );\n   }\n #endif');
+        '#include <map_fragment>\n #ifdef USE_MAP\n   if ( uCloudShadow > 0.5 ) {\n     vec3 sL = normalize( uSunDir );\n     float sDay = smoothstep( -0.05, 0.35, dot( normalize( vObjNormalE ), sL ) );\n     vec2 sUv = vMapUv - vec2( sL.x, sL.z ) * 0.0045;\n     float clSh = texture2D( uCloudTex, sUv ).g;\n     diffuseColor.rgb *= ( 1.0 - clSh * 0.58 * sDay );\n   }\n   float nNdl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float nDay = smoothstep( -0.12, 0.30, nNdl );\n   diffuseColor.rgb *= mix( vec3( 0.035, 0.04, 0.055 ), vec3( 1.0 ), nDay );\n   float nDusk = pow( clamp( 1.0 - abs( nNdl ), 0.0, 1.0 ), 4.0 ) * smoothstep( -0.12, 0.22, nNdl );\n   diffuseColor.rgb += vec3( 0.55, 0.22, 0.08 ) * nDusk * 0.22;\n #endif');
 
     // (E) TERMINATOR-GATED REAL CITY LIGHTS + warm dusk band (overwrite, never bleed onto day side)
     shader.fragmentShader = shader.fragmentShader
