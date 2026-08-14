@@ -1,0 +1,153 @@
+/* Couples colour lock — Look 14 Aug 2026. Ember, not filled brass. */
+.page-compat {
+  --ap-ember: #FF6428;
+  --ap-void: #020307;
+  --ap-paper: #F2ECDF;
+  background: #020307;
+  color: #F2ECDF;
+}
+.page-compat .ap-live-heading,
+.page-compat .ap-couples-entry h2,
+.page-compat .ap-couples-card h3,
+.page-compat .logo-text,
+.page-compat .logo-text__precise {
+  color: #F2ECDF;
+}
+.page-compat .ap-live-heading { max-width: 9ch; }
+
+.page-compat .btn-primary,
+.page-compat .ap-couples-actions .btn-primary,
+.page-compat .ap-action--primary {
+  background: #FF6428;
+  color: #020307;
+  border-color: #FF6428;
+}
+
+.ap-ab {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+}
+.ap-ab button {
+  flex: 1 1 72px;
+  min-height: 40px;
+  border: 1px solid rgba(242,236,223,.22);
+  border-radius: 3px;
+  background: rgba(2,3,7,.55);
+  color: #F2ECDF;
+  font: 600 12px/1.2 inherit;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.ap-ab button[aria-pressed="true"] {
+  border-color: #FF6428;
+  background: rgba(255,100,40,.16);
+  color: #F2ECDF;
+}
+.ap-ab button:disabled { opacity: .38; cursor: not-allowed; }
+.ap-ab-note {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: .04em;
+  color: rgba(242,236,223,.62);
+}
+.ap-couples-entry {
+  padding: 56px 22px 80px;
+  border-top: 1px solid rgba(242,236,223,.08);
+  background: #020307;
+}
+.ap-couples-entry__inner {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+.ap-couples-entry h2 {
+  margin: 10px 0 12px;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: .95;
+}
+.ap-couples-entry .standfirst {
+  max-width: 54ch;
+  color: rgba(242,236,223,.72);
+}
+.ap-couples-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 28px;
+}
+@media (max-width: 820px) {
+  .ap-couples-grid { grid-template-columns: 1fr; }
+}
+.ap-couples-card {
+  padding: 22px;
+  border: 1px solid rgba(242,236,223,.14);
+  border-radius: 4px;
+  background: linear-gradient(155deg, rgba(13,18,27,.88), rgba(3,5,9,.92));
+}
+.ap-couples-card h3 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #F2ECDF;
+}
+.ap-couples-card .field-e { margin-bottom: 14px; }
+.ap-couples-card label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(242,236,223,.58);
+}
+.ap-couples-card input {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid rgba(242,236,223,.14);
+  border-radius: 3px;
+  background: rgba(2,3,7,.65);
+  color: #F2ECDF;
+  font: 16px/1.3 inherit;
+}
+.ap-couples-actions {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.ap-couples-actions .btn-primary {
+  min-height: 46px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 3px;
+  background: #FF6428;
+  color: #020307;
+  font: 650 14px/1 inherit;
+  letter-spacing: .04em;
+  cursor: pointer;
+}
+.ap-couples-actions .action-note {
+  font-size: 12px;
+  color: rgba(242,236,223,.55);
+}
+#compatError {
+  margin-top: 14px;
+  color: #ef8b8b;
+  font-size: 14px;
+}
+.ap-couples-actions .btn-invite {
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1px solid rgba(255,100,40,.45);
+  border-radius: 3px;
+  background: transparent;
+  color: #F2ECDF;
+  font: 650 14px/1 inherit;
+  letter-spacing: .04em;
+  cursor: pointer;
+}
+.ap-couples-actions .btn-invite:disabled { opacity: .38; cursor: not-allowed; }
