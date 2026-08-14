@@ -52,18 +52,33 @@ function dimensions(file) {
   throw new Error(`${file}: not a JPEG or WebP image`);
 }
 
+/** The library is uniform: every globe map ships 2048×1024 full, 1024×512 medium and
+ *  512×256 small. Pinning the sizes rather than just the 2:1 ratio is deliberate — a map
+ *  re-encoded at half resolution still passes a ratio check, and silently shrinking these
+ *  files is a failure mode that has actually happened here. */
+const TIER_PX = { full: [2048, 1024], md: [1024, 512], sm: [512, 256] };
+
 /** Every map the engine can reach for: the named file plus the tiers it swaps in by
  *  suffix. Missing a tier is a silent black planet on a slow connection. */
 function assertMapTiers(file, { equirect = true } = {}) {
   const stem = file.replace(/\.(jpg|png|webp)$/, '');
   const ext = file.slice(file.lastIndexOf('.'));
-  const tiers = [file, `${stem}.webp`, `${stem}_md.webp`, `${stem}_sm${ext}`, `${stem}_sm.webp`];
-  for (const tier of tiers) {
+  const tiers = [
+    [file, 'full'], [`${stem}.webp`, 'full'], [`${stem}_md.webp`, 'md'],
+    [`${stem}_sm${ext}`, 'sm'], [`${stem}_sm.webp`, 'sm'],
+  ];
+  for (const [tier, step] of tiers) {
     assert.ok(existsSync(new URL(TEX + tier, import.meta.url)), `missing texture tier: ${tier}`);
     const { w, h } = dimensions(tier);
     assert.ok(w > 0 && h > 0, `${tier}: zero-sized image`);
+    const [ew, eh] = TIER_PX[step];
     if (equirect) {
       assert.equal(w, h * 2, `${tier}: equirectangular maps must be 2:1, got ${w}x${h}`);
+      assert.equal(`${w}x${h}`, `${ew}x${eh}`,
+        `${tier} is ${w}x${h}, expected ${ew}x${eh} — has this map been shrunk?`);
+    } else {
+      // Ring strips share the tier widths but keep their own aspect.
+      assert.equal(w, ew, `${tier} is ${w} wide, expected ${ew} — has this map been shrunk?`);
     }
   }
 }
@@ -72,6 +87,13 @@ function assertMapTiers(file, { equirect = true } = {}) {
 const texRefs = [...bodies.matchAll(/\btex:\s*'([^']+)'/g)].map((m) => m[1]);
 assert.ok(texRefs.length >= 8, `expected at least the eight planets to declare a map, saw ${texRefs.length}`);
 for (const file of texRefs) assertMapTiers(file);
+
+// The Moon and the Earth overlays are not in BODIES but ship the same tier set, and the
+// overlays stay Solar System Scope even when the body map under them is replaced. Check
+// them explicitly so a shrink or a missing tier cannot slip through there either.
+for (const file of ['moon.jpg', 'earth_clouds.jpg', 'earth_lights.png', 'earth_normal.jpg', 'earth_specular.jpg']) {
+  assertMapTiers(file);
+}
 
 // Saturn's ring is a strip, not a globe map — it has tiers but no 2:1 rule.
 const ringRefs = [...bodies.matchAll(/\bring:\s*'([^']+)'/g)].map((m) => m[1]);
