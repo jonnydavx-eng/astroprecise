@@ -221,7 +221,7 @@ const FinishShader = {
                             // galactic plane) visible at hero/system scales.
   let sunMaterial = null, sunCoronaGroup = null, sunCoronaMesh = null, sunCoronaMat = null;
   let sunHomeGlareMesh = null, sunHomeGlareMat = null;
-  let sunPromGroup = null, sunPointLight = null, sunDirLight = null, sunDirLightTarget = null, hemiLight = null;
+  let sunPromGroup = null, sunPointLight = null, sunDirLight = null, sunDirLightTarget = null, hemiLight = null, ambientLight = null;
   let instrumentFillLight = null, instrumentFillTarget = null;
   let detailLightingUser = null; // null = auto, true = force detail, false = force cinematic glow
   let instrumentFirstFramePending = false;
@@ -299,8 +299,9 @@ const FinishShader = {
     uNightInt:    { value: 2.05 },  // FLUX still: warmer, brighter city lights
     uTermSharp:   { value: 3.1 },   // FLUX still: soft feathered terminator
     uHasLights:   { value: 0.0 },   // 0 until earth_lights.png loads (no pre-load flash)
-    uCloudShadow: { value: 0.0 },   // high-tier only: 1 when cloud tex present
-    uCloudTex:    { value: null },  // high-tier cloud-shadow sampler
+    uCloudShadow: { value: 0.0 },   // 1 when NASA cloud map is bound
+    uCloudTex:    { value: null },
+    uCloudSpin:   { value: 0.0 },   // longitude drift (replaces sticker spin)
   };
 
   function getPerfTier() {
@@ -938,7 +939,7 @@ const FinishShader = {
     }
     renderer.toneMappingExposure = 1.38 - galaxyT * 0.14 - (1 - earthT) * 0.06;
     if (hemiLight) {
-      hemiLight.intensity = 0.22 + earthT * 0.18;
+      hemiLight.intensity = 0;
       hemiLight.color.setHex(galaxyT > 0.4 ? 0x7080a0 : 0x4a6088);
       hemiLight.groundColor.setHex(0x020408);
     }
@@ -4030,7 +4031,7 @@ const FinishShader = {
       const outerT = Math.max(0, Math.min(1, (z - 2.2) / 2.8));
       const fogDensity = (perfTier === 'high' ? 0.00020 : 0.00024) + outerT * 0.0007;
       const targetExp = (perfTier === 'high' ? 1.16 : 1.10) - outerT * 0.10;
-      const hemiI = (perfTier === 'high' ? 0.46 : 0.39) * (1 - outerT * 0.22);
+      const hemiI = 0;
       const sunPtI = (perfTier === 'high' ? 2.45 : 2.05) * (1 - outerT * 0.32);
       const sunDirI = (perfTier === 'high' ? 1.85 : 1.55) * (1 - outerT * 0.23);
       const portraitLit = !!instrumentPortraitBodyId();
@@ -4083,10 +4084,10 @@ const FinishShader = {
         // v576: at close (Earth) scales, drop the ambient fill so the night limb
         // falls off to darkness instead of glowing eggshell; cooler tint up close.
         hemiLight.color.setHex(galaxyT > 0.35 ? 0x8a9ab8 : (earthT > 0.55 ? 0x46586e : 0x5a6a88));
-        hemiLight.intensity = (perfTier === 'high' ? 0.52 : 0.44) * (0.88 + earthT * 0.14) * (1 - earthT * 0.45);
+        hemiLight.intensity = 0;
       } else {
         hemiLight.color.setHex(galaxyT > 0.35 ? 0x8090b8 : 0x4a6088);
-        hemiLight.intensity = (perfTier === 'high' ? 0.48 : 0.40) * (0.85 + earthT * 0.15);
+        hemiLight.intensity = 0;
       }
     }
     if (bloomPass) {
@@ -5562,9 +5563,7 @@ const FinishShader = {
     if (hemiLight) {
       hemiLight.color.setHex(free ? 0x5a6a88 : 0x4a5870);
       hemiLight.groundColor.setHex(0x0c0a08);
-      hemiLight.intensity = free
-        ? (perfTier === 'high' ? 0.46 : 0.40)
-        : (perfTier === 'high' ? 0.42 : 0.36);
+      hemiLight.intensity = 0;
     }
     if (sunPointLight) {
       sunPointLight.intensity = free
@@ -5920,9 +5919,10 @@ const FinishShader = {
     sunDirLightTarget = new THREE.Object3D();
     scene.add(sunDirLightTarget);
     sunDirLight.target = sunDirLightTarget;
-    hemiLight = new THREE.HemisphereLight(0x7088a8, 0x1a1410, perfTier === 'high' ? 0.48 : 0.40);
+    hemiLight = new THREE.HemisphereLight(0x7088a8, 0x1a1410, 0);
     scene.add(hemiLight);
-    scene.add(new THREE.AmbientLight(0x3a5068, perfTier === 'high' ? 0.20 : 0.16));
+    ambientLight = new THREE.AmbientLight(0x3a5068, 0);
+    scene.add(ambientLight);
     instrumentFillTarget = new THREE.Object3D();
     scene.add(instrumentFillTarget);
     instrumentFillLight = new THREE.DirectionalLight(0x9bb0cf, 0);
@@ -6122,17 +6122,18 @@ const FinishShader = {
     shader.uniforms.uHasLights   = earthUniforms.uHasLights;
     shader.uniforms.uCloudShadow = earthUniforms.uCloudShadow;
     shader.uniforms.uCloudTex    = earthUniforms.uCloudTex;
+    shader.uniforms.uCloudSpin   = earthUniforms.uCloudSpin;
     if (earthMat) earthMat.userData.shader = shader;
 
     // (A) VERTEX — carry the OBJECT-space geometric normal (tilt/camera-independent terminator)
     shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\n varying vec3 vObjNormalE;')
-      .replace('#include <begin_vertex>', '#include <begin_vertex>\n vObjNormalE = normalize( normal );');
+      .replace('#include <common>', '#include <common>\n varying vec3 vObjNormalE;\n varying vec3 vEarthWN;\n varying vec3 vEarthWP;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n vObjNormalE = normalize( normal );\n vEarthWN = normalize( mat3( modelMatrix ) * normal );\n vEarthWP = ( modelMatrix * vec4( position, 1.0 ) ).xyz;');
 
     // (B) FRAGMENT — uniform + varying declarations
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>',
-        '#include <common>\n uniform vec3 uSunDir;\n uniform float uNightInt;\n uniform float uTermSharp;\n uniform float uHasLights;\n uniform float uCloudShadow;\n uniform sampler2D uCloudTex;\n varying vec3 vObjNormalE;');
+        '#include <common>\n uniform vec3 uSunDir;\n uniform float uNightInt;\n uniform float uTermSharp;\n uniform float uHasLights;\n uniform float uCloudShadow;\n uniform sampler2D uCloudTex;\n uniform float uCloudSpin;\n varying vec3 vObjNormalE;\n varying vec3 vEarthWN;\n varying vec3 vEarthWP;');
 
     // (C) OCEAN-ONLY GLOSS — invert white-ocean spec mask into low roughness
     shader.fragmentShader = shader.fragmentShader
@@ -6140,15 +6141,16 @@ const FinishShader = {
         'float roughnessFactor = roughness;\n #ifdef USE_ROUGHNESSMAP\n   vec4 texelRoughness = texture2D( roughnessMap, vRoughnessMapUv );\n   float oceanMask = texelRoughness.g;\n   float oDayR = smoothstep( -0.05, 0.35, dot( normalize( vObjNormalE ), normalize( uSunDir ) ) );\n   roughnessFactor = mix( 0.92, mix( 0.85, 0.05, oDayR ), oceanMask );\n #endif');
 
 
-    // (D) FLUX still: cloud shadows with height, offset along the sun
+    // (D) Height / optical-depth cloud deck. Same NASA map. No 1.015 sticker,
+    // no fixed 0.0045 UV-slide. View parallax + sun-ray self-shadow.
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <map_fragment>',
-        '#include <map_fragment>\n #ifdef USE_MAP\n   if ( uCloudShadow > 0.5 ) {\n     vec3 sL = normalize( uSunDir );\n     float sDay = smoothstep( -0.05, 0.35, dot( normalize( vObjNormalE ), sL ) );\n     vec2 sUv = vMapUv - vec2( sL.x, sL.z ) * 0.0045;\n     float clSh = texture2D( uCloudTex, sUv ).g;\n     diffuseColor.rgb *= ( 1.0 - clSh * 0.58 * sDay );\n   }\n   float nNdl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float nDay = smoothstep( -0.12, 0.30, nNdl );\n   diffuseColor.rgb *= mix( vec3( 0.035, 0.04, 0.055 ), vec3( 1.0 ), nDay );\n   float nDusk = pow( clamp( 1.0 - abs( nNdl ), 0.0, 1.0 ), 4.0 ) * smoothstep( -0.12, 0.22, nNdl );\n   diffuseColor.rgb += vec3( 0.55, 0.22, 0.08 ) * nDusk * 0.22;\n #endif');
+        '#include <map_fragment>\n #ifdef USE_MAP\n   float nNdl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float nDay = smoothstep( -0.12, 0.30, nNdl );\n   if ( uCloudShadow > 0.5 ) {\n     vec3 dN = normalize( vObjNormalE );\n     vec3 dL = normalize( uSunDir );\n     vec3 dV = normalize( cameraPosition - vEarthWP );\n     vec2 dUv = vec2( fract( vMapUv.x + uCloudSpin ), vMapUv.y );\n     float cl0 = texture2D( uCloudTex, dUv ).g;\n     float h = cl0 * 0.016;\n     vec3 Vt = dV - dN * dot( dV, dN );\n     vec2 vUvD = dUv + vec2( Vt.x, Vt.z ) * h;\n     float clH = texture2D( uCloudTex, vUvD ).g;\n     vec3 Lt = dL - dN * dot( dL, dN );\n     vec2 sUv = vUvD - vec2( Lt.x, Lt.z ) * ( 0.008 + h );\n     float clS = texture2D( uCloudTex, sUv ).g;\n     float muL = max( dot( dN, dL ), 0.04 );\n     float selfSh = exp( -clS * ( 0.85 + h * 22.0 ) / muL );\n     float cover = smoothstep( 0.10, 0.70, clH );\n     diffuseColor.rgb *= ( 1.0 - cover * 0.48 * nDay * ( 1.0 - selfSh * 0.55 ) );\n     vec3 cloudCol = vec3( 0.92, 0.95, 0.98 ) * ( 0.50 + 0.50 * selfSh );\n     diffuseColor.rgb = mix( diffuseColor.rgb, cloudCol, cover * nDay );\n   }\n   diffuseColor.rgb *= mix( vec3( 0.035, 0.04, 0.055 ), vec3( 1.0 ), nDay );\n   float nDusk = pow( clamp( 1.0 - abs( nNdl ), 0.0, 1.0 ), 4.0 ) * smoothstep( -0.12, 0.22, nNdl );\n   diffuseColor.rgb += vec3( 0.55, 0.22, 0.08 ) * nDusk * 0.22;\n   vec3 eN = normalize( vEarthWN );\n   vec3 eV = normalize( cameraPosition - vEarthWP );\n   float mu = max( dot( eN, eV ), 0.001 );\n   float od = clamp( pow( 1.0 - mu, 1.45 ) * 1.18, 0.0, 1.0 );\n   float grey = dot( diffuseColor.rgb, vec3( 0.30, 0.54, 0.16 ) );\n   diffuseColor.rgb = mix( diffuseColor.rgb, vec3( grey ), od * 0.58 * nDay );\n   vec3 rayleigh = vec3( 0.16, 0.42, 0.92 );\n   vec3 mie = vec3( 0.88, 0.92, 0.98 );\n   diffuseColor.rgb = mix( diffuseColor.rgb, rayleigh, od * 0.40 * nDay );\n   float hg = pow( max( dot( normalize( uSunDir ), eV ), 0.0 ), 6.0 );\n   diffuseColor.rgb += mie * od * nDay * ( 0.06 + hg * 0.10 );\n #endif');
 
     // (E) TERMINATOR-GATED REAL CITY LIGHTS + warm dusk band (overwrite, never bleed onto day side)
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <emissivemap_fragment>',
-        '#ifdef USE_EMISSIVEMAP\n   vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );\n   float ndl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float dayness = clamp( ndl * uTermSharp * 0.5 + 0.5, 0.0, 1.0 );\n   float nightMask = 1.0 - dayness;\n   float clOcc = ( uCloudShadow > 0.5 ) ? texture2D( uCloudTex, vMapUv ).g : 0.0;\n   nightMask *= ( 1.0 - clOcc * 0.82 );\n   vec3 cityCol = emissiveColor.rgb * vec3( 1.0, 0.68, 0.32 );\n   float lum = dot( cityCol, vec3( 0.30, 0.50, 0.20 ) );\n   float duskBand = pow( clamp( 1.0 - abs( ndl ), 0.0, 1.0 ), 4.5 ) * smoothstep( -0.12, 0.28, ndl );\n   totalEmissiveRadiance = cityCol * nightMask * uNightInt * uHasLights * ( 1.0 + lum * 1.15 ) + vec3( 0.95, 0.38, 0.10 ) * duskBand * 0.42;\n #endif');
+        '#ifdef USE_EMISSIVEMAP\n   vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );\n   float ndl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float dayness = clamp( ndl * uTermSharp * 0.5 + 0.5, 0.0, 1.0 );\n   float nightMask = 1.0 - dayness;\n   float clOcc = ( uCloudShadow > 0.5 ) ? texture2D( uCloudTex, vec2( fract( vMapUv.x + uCloudSpin ), vMapUv.y ) ).g : 0.0;\n   nightMask *= ( 1.0 - clOcc * 0.82 );\n   vec3 cityCol = emissiveColor.rgb * vec3( 1.0, 0.68, 0.32 );\n   float lum = dot( cityCol, vec3( 0.30, 0.50, 0.20 ) );\n   float duskBand = pow( clamp( 1.0 - abs( ndl ), 0.0, 1.0 ), 4.5 ) * smoothstep( -0.12, 0.28, ndl );\n   totalEmissiveRadiance = cityCol * nightMask * uNightInt * uHasLights * ( 1.0 + lum * 1.15 ) + vec3( 0.95, 0.38, 0.10 ) * duskBand * 0.42;\n #endif');
   }
 
   // Dedicated Earth atmosphere: cyan-blue Rayleigh day-limb + terminator sunset band.
@@ -6350,7 +6352,7 @@ const FinishShader = {
         // totalEmissiveRadiance so the white never reaches the day side.
         mat = new THREE.MeshStandardMaterial({
           color: 0x1a4a78, roughness: 0.78, metalness: 0.0,
-          emissive: 0x0a1420, emissiveIntensity: 0.0, envMapIntensity: 0.42,
+          emissive: 0x0a1420, emissiveIntensity: 0.0, envMapIntensity: 0.0,
         });
         mat.onBeforeCompile = (shader) => { try { injectEarth(shader); } catch (e) { console.warn('[orrery] earth shader patch skipped', e); } };
         earthMat = mat;
@@ -6503,30 +6505,17 @@ const FinishShader = {
         }
         // Clouds (high/mid only): a sun-LIT sphere so the night hemisphere self-darkens
         // instead of glowing white over the city lights.
+        earthCloud = null;
         if (perfTier !== 'low' && !PRM) {
-          earthCloud = new THREE.Mesh(
-            new THREE.SphereGeometry(b.size * 1.015, segs, segs),
-            new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0, depthWrite: false, roughness: 1.0, metalness: 0.0 })
-          );
-          if (perfTier === 'high') {
-            // v576: gate cloud brightness by sun direction — the shell must not stay
-            // lit on the night side (the lavender "eggshell" limb ring). uSunW shares
-            // earthUniforms.uSunDirWorld by reference (fed every frame).
-            earthCloud.material.onBeforeCompile = (sh) => { try {
-              sh.uniforms.uSunW = earthUniforms.uSunDirWorld;
-              sh.vertexShader = sh.vertexShader
-                .replace('#include <common>', '#include <common>\n varying vec3 vCN; varying vec3 vCV; varying vec3 vCW;')
-                .replace('#include <begin_vertex>', '#include <begin_vertex>\n vec4 _cmv = modelViewMatrix * vec4(position,1.0);\n vCN = normalize(normalMatrix * normal);\n vCV = normalize(-_cmv.xyz);\n vCW = normalize(mat3(modelMatrix) * normal);');
-              sh.fragmentShader = sh.fragmentShader
-                .replace('#include <common>', '#include <common>\n uniform vec3 uSunW; varying vec3 vCN; varying vec3 vCV; varying vec3 vCW;')
-                .replace('#include <opaque_fragment>', '#include <opaque_fragment>\n {\n   float fres = pow(1.0 - max(dot(normalize(vCN), normalize(vCV)), 0.0), 3.0);\n   float dayM = smoothstep(-0.25, 0.1, dot(normalize(vCW), normalize(uSunW)));\n   gl_FragColor.a *= (0.85 + 0.5 * fres) * mix(0.04, 1.0, dayM);\n   gl_FragColor.rgb += vec3(0.12) * fres * dayM;\n }');
-            } catch (e) { console.warn('[orrery] cloud patch skipped', e); } };
-          }
-          group.add(earthCloud);
-          loadTex('earth_clouds.jpg', false).then((t) => { if (t && earthCloud) { const m = earthCloud.material; m.alphaMap = t; m.map = t; m.opacity = 0.9; m.needsUpdate = true;
-            if (perfTier === 'high') { earthUniforms.uCloudTex.value = t; earthUniforms.uCloudShadow.value = 1.0; if (earthMat) earthMat.needsUpdate = true; }
-          } });
-        } else { earthCloud = null; }
+          // Same NASA cloud map, now a height / optical-depth deck in injectEarth.
+          // No 1.015 sticker sphere.
+          loadTex('earth_clouds.jpg', false).then((t) => {
+            if (!t) return;
+            earthUniforms.uCloudTex.value = t;
+            earthUniforms.uCloudShadow.value = 1.0;
+            if (earthMat) earthMat.needsUpdate = true;
+          });
+        }
         // Moon — detailed regolith, craters, thin exosphere halo
         moonGroup = new THREE.Group(); scene.add(moonGroup);
         const moonSegs = perfTier === 'high' ? 96 : perfTier === 'mid' ? 64 : 40;
@@ -7615,11 +7604,8 @@ const FinishShader = {
           g.userData.mesh.rotation.y = rotationPhaseRad(b.id, jdSpin) + (spinOffset[b.id] || 0);
         }
       });
-      if (earthCloud) {
-        earthCloud.rotation.y = rotationPhaseRad('earth', jdSpin)
-          + ((CLOUD_DRIFT_RAD_PER_DAY * (jdSpin - 2451545.0)) % (2 * Math.PI))
-          + (spinOffset.cloud || 0) + (spinOffset.earth || 0);
-      }
+      earthUniforms.uCloudSpin.value = ((CLOUD_DRIFT_RAD_PER_DAY * (jdSpin - 2451545.0)) / (2 * Math.PI))
+        + ((spinOffset.cloud || 0) + (spinOffset.earth || 0)) / (2 * Math.PI);
       if (moonMesh && moonGroup && moonGroup.userData.lonDeg != null) {
         // (no .visible gate: 3 mults, and the lock must already hold the frame
         // the Moon appears — also lets the T4 self-test run from any view)
@@ -9151,7 +9137,7 @@ const FinishShader = {
     // tight specular blows a distracting white glare into the middle of the disc.
     if (sunPointLight) sunPointLight.intensity = 0.9;
     if (sunDirLight) sunDirLight.intensity = perfTier === 'high' ? 3.0 : 2.6;
-    if (hemiLight) hemiLight.intensity = perfTier === 'high' ? 0.30 : 0.26;
+    if (hemiLight) hemiLight.intensity = 0;
     // Soften the atmosphere fresnel rim (a hard bright outline reads as a sticker
     // edge in a print-grade still). Earth's dedicated Rayleigh shells get their own
     // gentler ratio below (their new hero-rest base is brighter by design).
@@ -9207,7 +9193,7 @@ const FinishShader = {
     if (sunDirLight) { sunDirLight.position.set(0, 0, 0); sunDirLight.intensity = perfTier === 'high' ? 3.0 : 2.6; }
     if (sunDirLightTarget) { sunDirLightTarget.position.copy(moonGroup.position); sunDirLightTarget.updateMatrixWorld(); }
     if (sunPointLight) sunPointLight.intensity = 0.55;
-    if (hemiLight) hemiLight.intensity = 0.05;
+    if (hemiLight) hemiLight.intensity = 0;
     if (moonHaloMesh) moonHaloMesh.visible = false;
   }
 
