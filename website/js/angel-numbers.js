@@ -1,5 +1,5 @@
 /**
- * Astro Precise — Angel Numbers & Synchronicity Clock
+ * AstroPrecise — Angel Numbers & Synchronicity Clock
  * window.AngelNumbers
  *
  * A deterministic numerology reference for repeating / mirror numbers, plus a
@@ -183,7 +183,7 @@
       faq: 'In numerology, 666 is not sinister — 6 is the number of care, home, and responsibility. 666 is commonly read as a nudge to rebalance and return to what matters. It is a reflective symbol, not a warning or prediction.'
     },
     '777': {
-      title: 'Reflection & Wisdom', root: 7, element: 'water', color: '#5c4a6e',
+      title: 'Reflection & Wisdom', root: 7, element: 'water', color: '#A89C84',
       keywords: ['Insight', 'Solitude', 'Learning', 'Depth'],
       meaning: 'Seven is the number of inner work, study, and quiet insight. 777 is often read as a mirror for the contemplative — a cue to trust what you are learning and to make room for stillness.',
       reflection: 'What is the quiet insight you keep noticing but have not acted on?',

@@ -1,6 +1,7 @@
 /**
- * Astro Precise — Moment share-card painter
- * Observatory 2026 tokens only (void #07070A + brass #d8b46a).
+ * AstroPrecise — Moment share-card painter
+ * Act 1 house: void #020307, paper #F2ECDF, mute #A89C84,
+ * with brass reserved for geometry hairlines.
  * Builds square PNG keepsakes: zenith + light-cone story for any civil date.
  * Requires: LightCone, StarCatalog, AstroEphemeris (for JD helpers via caller).
  */
@@ -8,15 +9,15 @@
   'use strict';
 
   var CARD_BASE = 1080;
-  var BRASS = '#d8b46a';
   var BRASS_A55 = 'rgba(216, 180, 106, 0.55)';
   var BRASS_A22 = 'rgba(216, 180, 106, 0.22)';
   var BRASS_A30 = 'rgba(216, 180, 106, 0.30)';
-  var PARCH = '#f2ecdf';
-  var PARCH_DIM = '#ddd3bf';
-  var PARCH_MUTED = '#9a8f7a';
-  var VOID = '#07070A';
-  var GOLD_GLOW = 'rgba(216, 180, 106, 0.55)';
+  var PARCH = '#F2ECDF';
+  var MUTE = '#A89C84';
+  var PARCH_DIM = MUTE;
+  var PARCH_MUTED = MUTE;
+  var VOID = '#020307';
+  var EMBER_GLOW = 'rgba(255, 100, 40, 0.18)';
 
   function cardExportPx() {
     return (global.RafCore && global.RafCore.cardExportSize)
@@ -85,7 +86,7 @@
     var dotX = left + padX;
     x.beginPath();
     x.arc(dotX, y, dotR, 0, Math.PI * 2);
-    x.fillStyle = BRASS;
+    x.fillStyle = MUTE;
     x.fill();
     x.textAlign = 'left';
     x.fillStyle = '#f2ecdf';
@@ -223,7 +224,7 @@
     var cx = CARD_BASE / 2;
 
     x.textAlign = 'center';
-    x.fillStyle = BRASS;
+    x.fillStyle = MUTE;
     x.font = '26px Georgia, "Times New Roman", serif';
     x.fillText('M O M E N T', cx, 118);
 
@@ -240,7 +241,7 @@
       nameSize -= 4;
       x.font = 'bold ' + nameSize + 'px Georgia, "Times New Roman", serif';
     }
-    x.shadowColor = GOLD_GLOW;
+    x.shadowColor = EMBER_GLOW;
     x.shadowBlur = 20;
     x.fillText(title, cx, 250);
     x.shadowBlur = 0;
@@ -252,7 +253,7 @@
     if (whenWhere) x.fillText(whenWhere, cx, 302);
 
     // Zenith star name
-    x.fillStyle = BRASS;
+    x.fillStyle = MUTE;
     x.font = '22px Georgia, "Times New Roman", serif';
     x.fillText('ZENITH STAR', cx, 360);
 
@@ -263,7 +264,7 @@
       starSize -= 4;
       x.font = 'bold ' + starSize + 'px Georgia, "Times New Roman", serif';
     }
-    x.shadowColor = GOLD_GLOW;
+    x.shadowColor = EMBER_GLOW;
     x.shadowBlur = 18;
     x.fillText(s.name.toUpperCase(), cx, 430);
     x.shadowBlur = 0;
@@ -306,7 +307,7 @@
         x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
         if (isHero) {
           x.fillStyle = 'rgba(216, 185, 120, 0.98)';
-          x.shadowColor = GOLD_GLOW;
+          x.shadowColor = EMBER_GLOW;
           x.shadowBlur = 14;
         } else {
           x.fillStyle = 'rgba(190, 178, 152, 0.72)';
@@ -348,7 +349,7 @@
     x.fillStyle = PARCH_MUTED;
     x.font = '18px "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace';
     x.fillText('stars = catalogue · plate = 3D orrery still · free PNG ≠ paid pack', cx, 992);
-    x.fillStyle = BRASS;
+    x.fillStyle = MUTE;
     x.font = '20px Georgia, "Times New Roman", serif';
     x.fillText('astroprecise · moment', cx, 1024);
 
@@ -382,7 +383,7 @@
           if (navigator.canShare({ files: [file] })) {
             await navigator.share({
               files: [file],
-              title: opts.title || 'My Astro Precise Moment',
+              title: opts.title || 'My AstroPrecise Moment',
               text: shareText
             });
             return true;
