@@ -47,6 +47,25 @@ The same rule would move Uranus from 40.29% to 41.04% no-data (its fringe is onl
 of the map). NOT applied: the helm has twice ruled Uranus's coverage edge to be the
 official product. Ask before applying it there.
 
+Where the remaining sawtooth comes from, and why it stops here (2026-08-14):
+Two further attempts, both measured, neither shipped.
+  1. Mask-aware (un-premultiplied) resample. Resizing across a no-data boundary blends
+     black into valid pixels, so the correct method is to resize the premultiplied RGB
+     and the validity mask with the same filter and divide. Built it; the fully-covered
+     interior came back identical (mean difference 0.003/255) and only 7,377 boundary
+     pixels changed — 0.35% of the map. Rendered sawtooth moved 1.64% -> 1.65% of the
+     disc front-on and 5.20% -> 5.26% at 35 deg tilt, i.e. nothing. Not shipped.
+  2. Tighter no-data threshold (channel <= 2 instead of == 0). Gains 244 pixels. Not
+     shipped.
+The residual is real data. Measured just inside the masked edge, the surviving valid
+pixels are bright, not dim (mean max channel 136-210 from +60 to +45 deg), and they are
+spectrally lopsided — 65-96% of them have one channel dominating. They are genuine
+three-band measurements sitting where the three filter mosaics only partly overlap.
+Removing them would be an SNR / spectral-plausibility judgement about what Neptune is
+allowed to look like, not a validity test, so it is not ours to make unilaterally. The
+alternative is masking the coverage boundary at render time, which lives in
+orrery-webgl.js. Both routes are the helm's call; ask before going further.
+
 Native resolution:
 Both official OPAL global maps are only 721x361 (0.5 deg/px). The shipped 2048x1024 tier is
 therefore a ~2.8x upscale of the source — the file is 2K but the detail is not. Verified
