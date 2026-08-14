@@ -126,6 +126,48 @@ for (const file of htmlFiles) {
     `${file} links to a retired product funnel`);
 }
 
+// ── Sky card: one keepable minute, honest about zone, hour and light ────────
+const skyCard = read('./website/sky-card.html');
+const skyCardJs = read('./website/js/ap-sky-card.js');
+const keepMinute = read('./website/js/ap-keep-minute.js');
+assert.ok(skyCard.includes("window.AP_ASSET_V='867'"), 'sky card must declare the release tip');
+assert.equal(/\?v=(?!867\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
+assert.ok(skyCard.includes('data-ap-static-nav') && skyCard.includes('sky-events.html'),
+  'sky card must carry the one house navigation');
+assert.ok(skyCard.includes('Astro<i class="logo-text__precise">Precise</i>'),
+  'the wordmark is one word');
+assert.equal(/#0a0908/i.test(skyCard), false, 'sky card must leave the retired warm surface behind');
+assert.equal(/never rounded|placed exactly/i.test(skyCard), false,
+  'sky card must not claim an exactness it cannot prove');
+assert.equal(/TIME \(UTC\)|clock time read as UTC/i.test(skyCard), false,
+  'a birth clock time is not UTC');
+assert.ok(skyCard.includes("Open-Meteo's public geocoder"),
+  'sky card must say that only the town text is sent');
+assert.equal(/quiz\.html|angel-numbers\.html|name-numerology\.html|lifepath\.html|moment\.html/.test(skyCard), false,
+  'retired rooms stay retired');
+assert.ok(skyCardJs.includes("zone === 'UTC'") && skyCardJs.includes("zone === 'GMT'")
+  && skyCardJs.includes("zone === 'Etc/UTC'") && skyCardJs.includes('Etc\\/'),
+  'sky card must refuse UTC, GMT and Etc/* as a birth zone');
+assert.ok(skyCardJs.includes('sunAltitude('), 'day or night must be computed, never guessed');
+assert.ok(skyCardJs.includes('DAY OR NIGHT NOT STATED') && skyCardJs.includes('NO BIRTH HOUR'),
+  'an unknown hour must withhold the rising sign and the light state');
+assert.ok(skyCardJs.includes("' (ASSUMED)'") && skyCardJs.includes('MOON PLACED FROM '),
+  'an assumed hour must be printed on the card, not applied silently');
+assert.ok(skyCardJs.includes('NOT A CLAIM ABOUT YOUR LIFE'), 'the card must not claim to be true');
+assert.equal(/location\.(?:search|hash)|URLSearchParams/.test(skyCardJs), false,
+  'sky card must not accept a birth minute from an address');
+assert.equal(/location\.(?:search|hash)|URLSearchParams|location\.href\s*=/.test(keepMinute), false,
+  'the keep path must not move a birth minute through a link');
+assert.ok(keepMinute.includes('sessionStorage.setItem'), 'the keep path hands off in this tab only');
+for (const path of ['./website/index.html', './website/chart.html', './website/deep-reading.html']) {
+  const page = read(path);
+  assert.ok(page.includes('href="sky-card.html" data-ap-keep-minute'),
+    `${path} must reach the keep path`);
+  assert.equal(/sky-card\.html\?/.test(page), false,
+    `${path} must not put a birth minute in the keep link`);
+  assert.ok(page.includes('ap-keep-minute.js?v=867'), `${path} must load the keep-path helper`);
+}
+
 const outreach = read('./website/js/outreach-content.js');
 for (const stale of ['Deep Reading £12', 'posters from £6', 'shop.html#deep-reading', '{{deepReadingPrice}}']) {
   assert.equal(outreach.includes(stale), false, `outreach content retains stale launch offer: ${stale}`);
