@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=858">
   <link rel="stylesheet" href="css/ap-home-v835.css?v=858">
   <link rel="stylesheet" href="css/ap-couples-v858.css?v=858">
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=858">
 </head>
 <body class="ap-live-home page-compat">
   <a class="skip" href="#lead">Skip to the sky</a>
@@ -45,6 +46,7 @@
           <noscript>
             <a href="index.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="horoscope.html" class="navbar__link">Daily</a>
             <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
@@ -106,6 +108,10 @@
           <p class="ap-angles-note">Measured ecliptic separation. Not a score.</p>
           <ol id="ap-angles-list"></ol>
         </div>
+        <p class="ap-keep-row">
+          <button type="button" class="btn-invite" id="keep-sky">Keep this sky</button>
+          <span class="action-note">One image of this view · stays on this device</span>
+        </p>
         <p class="ap-model-hint">Drag to orbit · world controls directly below on phone</p>
         <div class="ap-context">
           <div class="ap-context__head"><p class="ap-panel-label">Selected view</p><h2 id="sky-focus-title">Solar system</h2></div>
@@ -137,7 +143,7 @@
       <div class="ap-couples-entry__inner">
         <p class="ap-live-eyebrow">Birth minutes · stay on this device</p>
         <h2 id="minutes-title">Enter both minutes.</h2>
-        <p class="standfirst">Date is required. Time can stay blank; noon is used and rising is not exact. Place can wait. No field is named, so a submit cannot put either birth minute in the address bar.</p>
+        <p class="standfirst">Date is required. Pick a birth place so the minute uses that zone (Europe/London in UK summer, not GMT). Time can stay blank — Moon and angles are then withheld. Place stays on this device. The hash invite never uses a query string.</p>
 
         <form id="compat-form" novalidate aria-label="Two birth minutes">
           <div class="ap-couples-grid">
@@ -158,7 +164,9 @@
               </div>
               <div class="field-e">
                 <label for="person1-city">Birth place <span class="opt">optional</span></label>
-                <input type="text" id="person1-city" placeholder="Town or city" autocomplete="off">
+                <input type="text" id="person1-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="person1-city-drop">
+                <div class="ap-city-drop" id="person1-city-drop" hidden></div>
+                <p class="ap-zone-note" id="person1-zone">Pick a place for a real zone. UK summer is not GMT.</p>
                 <input type="hidden" id="person1-lat">
                 <input type="hidden" id="person1-lon">
                 <input type="hidden" id="person1-tz">
@@ -182,7 +190,9 @@
               </div>
               <div class="field-e">
                 <label for="person2-city">Birth place <span class="opt">optional</span></label>
-                <input type="text" id="person2-city" placeholder="Town or city" autocomplete="off">
+                <input type="text" id="person2-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="person2-city-drop">
+                <div class="ap-city-drop" id="person2-city-drop" hidden></div>
+                <p class="ap-zone-note" id="person2-zone">Pick a place for a real zone. UK summer is not GMT.</p>
                 <input type="hidden" id="person2-lat">
                 <input type="hidden" id="person2-lon">
                 <input type="hidden" id="person2-tz">
@@ -219,5 +229,6 @@
   <script src="js/ap-sky-time.js?v=858" defer></script>
   <script src="js/ap-footer-inject.js?v=858" defer></script>
   <script src="js/ap-couples-sky.js?v=858" defer></script>
+  <script src="js/ap-keep-sky.js?v=858" defer></script>
 </body>
 </html>

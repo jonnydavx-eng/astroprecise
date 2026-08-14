@@ -29,20 +29,26 @@
         f.formatToParts(utcDate).forEach(function(x) { if (x.type !== 'literal') p[x.type] = parseInt(x.value, 10); });
         var local = Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute, p.second);
         return (local - utcDate.getTime()) / 60000;
-      } catch(e) { return 0; }
+      } catch(e) { return null; }
     }
 
     function localToUT(y, m, d, hh, mm, tz) {
+      if (!tz) return null;
+      try { new Intl.DateTimeFormat('en-US', { timeZone: tz }).format(); }
+      catch (e) { return null; }
+      if (tz === 'UTC' || tz === 'GMT' || /^Etc\/GMT/i.test(tz) || tz === 'Etc/UTC') return null;
       var utc = new Date(Date.UTC(y, m-1, d, hh, mm, 0));
       for (var i = 0; i < 2; i++) {
         var off = tzOffsetMinutes(tz, utc);
+        if (off == null) return null;
         utc = new Date(Date.UTC(y, m-1, d, hh, mm, 0) - off * 60000);
       }
       return { y: utc.getUTCFullYear(), m: utc.getUTCMonth()+1, d: utc.getUTCDate(), hh: utc.getUTCHours(), mm: utc.getUTCMinutes() };
     }
 
     function buildChart(E, year, month, day, hour, min, lat, lon, tz) {
-      var ut = localToUT(year, month, day, hour, min, tz || 'UTC');
+      var ut = localToUT(year, month, day, hour, min, tz);
+      if (!ut) return null;
       var raw = E.calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, lat, lon);
       var p = raw.positions;
       return {
@@ -728,7 +734,7 @@
         if (nameEl) nameEl.value = decodeURIComponent(params.get(pfx + 'n') || '');
         if (latEl)  latEl.value  = params.get(pfx + 'la') || '';
         if (lonEl)  lonEl.value  = params.get(pfx + 'lo') || '';
-        if (tzEl)   tzEl.value   = params.get(pfx + 'tz') || 'UTC';
+        if (tzEl)   tzEl.value   = params.get(pfx + 'tz') || '';
         // Show lat/lon in city field as a hint
         var cityEl = document.getElementById(prefix + '-city');
         if (cityEl && params.get(pfx + 'la')) {
@@ -786,7 +792,7 @@
             input.value = city.name + (city.admin ? ', ' + city.admin : '');
             if (latEl) latEl.value = (+city.lat).toFixed(4);
             if (lonEl) lonEl.value = (+city.lon).toFixed(4);
-            if (tzEl)  tzEl.value  = city.tz || 'UTC';
+            if (tzEl)  tzEl.value  = city.tz || '';
             dropdown.classList.remove('open');
           });
           dropdown.appendChild(item);

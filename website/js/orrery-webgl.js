@@ -693,6 +693,10 @@ const FinishShader = {
   // Extra bodies (Pluto) + motion trails (time-scrub)
   let extraBodiesGroup = null;      // holds the dwarf-planet points + their orbit rings
   const extraMeshes = {};           // id → { dot, ring, label }
+  const ghostMeshes = {};           // id → dim live-now sphere (not a second clock)
+  let ghostTodayJd = 0;
+  let lastGhostSampleMs = 0;
+  const GHOST_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
   let trailsGroup = null;           // per-planet motion trails (fade behind moving planets)
   const trailState = {};            // id → { positions: Float32Array, line, head, count }
   let trailsActive = false;         // true only while the visitor is scrubbing time
@@ -1747,6 +1751,16 @@ const FinishShader = {
     camAz = horiz > 1e-6 ? Math.atan2(_camOff.z, _camOff.x) : 0;
   }
 
+  function applyEarthLimbHold() {
+    // Directed Earth pick: hold the FLUX limb (terminator + night lights),
+    // not a generic sphere-center.
+    setEarthTerminatorCamera(2.8, 6 * D2R);
+    if (camera) {
+      camera.fov = CAM_FOV_CLOSE;
+      camera.updateProjectionMatrix();
+    }
+  }
+
   /* v576: Earth+Moon shared frame — camera target rides between the two bodies,
      base azimuth ~43° off the Earth→Moon axis so they sit side by side in shot.
      The off-axis side is chosen SUNWARD so the pair shows lit faces and the sun
@@ -1967,6 +1981,7 @@ const FinishShader = {
     if (destroyed) return;
     initEnvironmentIBL();
     buildRemainingPlanets();
+    buildLiveGhosts();
     upgradeSunVisuals();
     ensureGalaxyLayers();
     if (!asteroidPoints) buildAsteroids();
@@ -7142,6 +7157,69 @@ const FinishShader = {
     updateEclipseDim(jd);
     updateSaturnShadow(jd);
     if (showAspectsHelio) updateHelioAspectLines();
+    updateLiveGhosts();
+  }
+
+  function liveGhostTodayJd() {
+    const E = window.AstroEphemeris;
+    if (!E || !E.julianDay) return 0;
+    const d = new Date();
+    return E.julianDay(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), 0);
+  }
+
+  function buildLiveGhosts() {
+    if (!scene) return;
+    BODIES.forEach((b) => {
+      if (!GHOST_IDS[b.id] || ghostMeshes[b.id]) return;
+      const mat = new THREE.MeshBasicMaterial({
+        color: b.color,
+        transparent: true,
+        opacity: 0.22,
+        depthWrite: false,
+      });
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(b.size * 0.92, 24, 18), mat);
+      mesh.renderOrder = 2;
+      mesh.visible = false;
+      if (b.id === 'saturn') {
+        const ring = new THREE.Mesh(
+          new THREE.RingGeometry(b.size * 1.24, b.size * 2.32, 48),
+          new THREE.MeshBasicMaterial({
+            color: 0xcdba8e,
+            transparent: true,
+            opacity: 0.14,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+          })
+        );
+        ring.rotation.x = Math.PI / 2;
+        mesh.add(ring);
+      }
+      scene.add(mesh);
+      ghostMeshes[b.id] = mesh;
+    });
+  }
+
+  function updateLiveGhosts() {
+    if (!Object.keys(ghostMeshes).length) buildLiveGhosts();
+    const natalJd = baseJd + dayOffset + scrollBias;
+    const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : 0;
+    if (!ghostTodayJd || (now - lastGhostSampleMs) > 2000) {
+      ghostTodayJd = liveGhostTodayJd();
+      lastGhostSampleMs = now;
+    }
+    const hide = !ghostTodayJd || portraitMode || Math.abs(ghostTodayJd - natalJd) < 1.0;
+    BODIES.forEach((b) => {
+      const g = ghostMeshes[b.id];
+      if (!g) return;
+      if (hide) { g.visible = false; return; }
+      try {
+        const ll = helioLonLat(b.id, ghostTodayJd);
+        g.position.copy(scenePos(b.R, ll.lon, ll.lat));
+        g.visible = true;
+      } catch (e) {
+        g.visible = false;
+      }
+    });
   }
 
   // ── Camera ─────────────────────────────────────────────────────────────────
@@ -7648,6 +7726,9 @@ const FinishShader = {
           camera.updateProjectionMatrix();
           updateDomLabels(1);
           updateScaleVisuals(scaleLevel);
+        } else if (focusFrameId === 'earth') {
+          applyEarthLimbHold();
+          updateScaleVisuals(scaleLevel);
         } else if (!freeExploreMode && scalePreset(scaleLevel).targetEarth) {
           const ep = scalePreset(scaleLevel);
           setEarthTerminatorCamera(ep.camRadius, ep.camEl);
@@ -7668,7 +7749,9 @@ const FinishShader = {
       // portrait mode owns camTarget (may be a far planet); the scaleLevel-0 preset
       // otherwise snaps the target back to Earth every frame.
       // Free explore: leave camTarget alone so pan / free zoom stays free.
-      earthTargetVec(camTarget);
+      // Directed Earth pick keeps the FLUX limb (terminator + night lights).
+      if (focusFrameId === 'earth') applyEarthLimbHold();
+      else earthTargetVec(camTarget);
     }
 
     if (masterclassIntroActive && spaceFlightMode && spaceFlightToolActive) {
@@ -9320,21 +9403,27 @@ const FinishShader = {
         scaleAnimFrom.tx = camTarget.x;
         scaleAnimFrom.ty = camTarget.y;
         scaleAnimFrom.tz = camTarget.z;
-        earthTargetVec(camTarget);
+        const saveR = camRadius, saveEl = camEl, saveAz = camAz;
+        const saveTx = camTarget.x, saveTy = camTarget.y, saveTz = camTarget.z;
+        applyEarthLimbHold();
+        scaleAnimTo.radius = camRadius;
+        scaleAnimTo.el = camEl;
+        scaleAnimTo.az = camAz;
         scaleAnimTo.tx = camTarget.x;
         scaleAnimTo.ty = camTarget.y;
         scaleAnimTo.tz = camTarget.z;
-        scaleAnimTo.radius = 6.5;
-        scaleAnimTo.el = 12 * D2R;
-        scaleAnimTo.az = camAz;
+        camRadius = saveR;
+        camEl = saveEl;
+        camAz = saveAz;
+        camTarget.set(saveTx, saveTy, saveTz);
         scaleAnimFromLevel = scaleLevel;
         scaleAnimToLevel = 0;
         scaleLevel = 0;
         scaleAnimActive = true;
         scaleAnimStart = performance.now();
         scaleAnimDurationMs = PRM ? 900 : 1900;
-        scaleAnimSpiralAz = PRM ? 0 : 0.18;
-        scaleAnimSpiralEl = PRM ? 0 : 0.04;
+        scaleAnimSpiralAz = 0;
+        scaleAnimSpiralEl = 0;
         focusFrameId = 'earth';
         updateScaleHUD();
       } else {

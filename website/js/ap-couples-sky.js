@@ -1,10 +1,11 @@
-/* Couples sky — one void-orrery, two birth minutes, minute scrub, real angles. */
-/* Local only. Hash only. No scores. */
+/* Couples sky — one void-orrery, two birth minutes, real IANA zones. */
+/* Local only. Hash only. No scores. Never treat UK summer as UT/GMT. */
 (function () {
   'use strict';
 
   var active = 'now';
   var scrubOffset = 0;
+  var GEO = 'https://geocoding-api.open-meteo.com/v1/search';
 
   var BODIES = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'];
   var ASPECTS = [
@@ -17,26 +18,74 @@
 
   function $(id) { return document.getElementById(id); }
 
-  function jdFromCivil(date, time) {
-    if (!date) return null;
-    var t = time || '12:00';
-    var d = new Date(date + 'T' + t + ':00');
-    if (isNaN(d.getTime())) return null;
-    return d.getTime() / 86400000 + 2440587.5;
+  function isValidTimeZone(tz) {
+    if (typeof tz !== 'string' || !tz.trim()) return false;
+    if (tz === 'UTC' || tz === 'GMT' || tz === 'Etc/UTC' || tz === 'Etc/GMT') return false;
+    try {
+      new Intl.DateTimeFormat('en-US', { timeZone: tz }).format();
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function tzOffsetMinutes(tz, utcDate) {
+    try {
+      var dtf = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+      });
+      var p = {};
+      dtf.formatToParts(utcDate).forEach(function (x) { p[x.type] = x.value; });
+      var asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second);
+      return (asUTC - utcDate.getTime()) / 60000;
+    } catch (e) { return null; }
+  }
+
+  function localToUT(y, m, d, hh, mm, tz) {
+    if (!isValidTimeZone(tz)) return null;
+    var guess = new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
+    var i, off;
+    for (i = 0; i < 2; i++) {
+      off = tzOffsetMinutes(tz, guess);
+      if (off == null) return null;
+      guess = new Date(Date.UTC(y, m - 1, d, hh, mm, 0) - off * 60000);
+    }
+    return {
+      y: guess.getUTCFullYear(), m: guess.getUTCMonth() + 1, d: guess.getUTCDate(),
+      hh: guess.getUTCHours(), mm: guess.getUTCMinutes()
+    };
+  }
+
+  function jdFromUT(ut) {
+    if (!ut) return null;
+    return Date.UTC(ut.y, ut.m - 1, ut.d, ut.hh, ut.mm, 0) / 86400000 + 2440587.5;
   }
 
   function readPerson(prefix) {
     var dateEl = $(prefix + '-date');
     var timeEl = $(prefix + '-time');
     var nameEl = $(prefix + '-name');
+    var tzEl = $(prefix + '-tz');
     var date = dateEl ? dateEl.value : '';
     var time = timeEl ? timeEl.value : '';
+    var tz = tzEl ? (tzEl.value || '').trim() : '';
+    var parts = date ? date.split('-').map(Number) : [];
+    var clock = (time || '12:00').split(':').map(Number);
+    var timeKnown = !!time;
+    var zoneKnown = isValidTimeZone(tz);
+    var ut = null;
+    var jd = null;
+    if (date && parts.length === 3 && zoneKnown) {
+      ut = localToUT(parts[0], parts[1], parts[2], clock[0] || 12, clock[1] || 0, tz);
+      jd = jdFromUT(ut);
+    }
     return {
       name: nameEl && nameEl.value.trim() ? nameEl.value.trim() : (prefix === 'person1' ? 'A' : 'B'),
       date: date,
       time: time,
-      jd: jdFromCivil(date, time),
-      noon: !time
+      tz: zoneKnown ? tz : '',
+      timeKnown: timeKnown,
+      zoneKnown: zoneKnown,
+      jd: jd
     };
   }
 
@@ -62,6 +111,19 @@
     if (note) note.textContent = text;
   }
 
+  function zoneLabel(p) {
+    if (p.zoneKnown) return p.tz;
+    return 'place needed for a real zone';
+  }
+
+  function minuteLabel(p) {
+    if (!p.date) return p.name + ' · date needed';
+    if (!p.zoneKnown) return p.name + ' · ' + p.date + ' · place needed for a real zone (not treated as GMT)';
+    var clock = p.timeKnown ? p.time : '12:00 noon';
+    var extra = p.timeKnown ? '' : ' · Moon and angles withheld';
+    return p.name + ' · ' + p.date + ' ' + clock + ' · ' + p.tz + extra;
+  }
+
   function resetScrub() {
     scrubOffset = 0;
     var el = $('minute-scrub');
@@ -77,32 +139,30 @@
 
   function applySky(jd, label) {
     var o = orrery();
-    if (!jd || !o || !o.setJD) return;
+    if (!jd || !o || !o.setJD) return false;
     o.setJD(jd + scrubOffset / 1440);
     stamp(label);
+    return true;
   }
 
-  function showA() {
-    var p = readPerson('person1');
-    if (!p.jd) return;
+  function showPerson(which) {
+    var p = readPerson(which === 'b' ? 'person2' : 'person1');
     resetScrub();
-    setPressed('a');
+    setPressed(which);
+    if (!p.jd) {
+      enableScrub(false);
+      stamp(minuteLabel(p));
+      renderAngles();
+      return;
+    }
     enableScrub(true);
-    applySky(p.jd, p.name + ' · ' + p.date + ' ' + (p.time || '12:00 noon') + ' · this device zone');
+    applySky(p.jd, minuteLabel(p));
     writeHash();
     renderAngles();
   }
 
-  function showB() {
-    var p = readPerson('person2');
-    if (!p.jd) return;
-    resetScrub();
-    setPressed('b');
-    enableScrub(true);
-    applySky(p.jd, p.name + ' · ' + p.date + ' ' + (p.time || '12:00 noon') + ' · this device zone');
-    writeHash();
-    renderAngles();
-  }
+  function showA() { showPerson('a'); }
+  function showB() { showPerson('b'); }
 
   function showLive() {
     var o = orrery();
@@ -124,18 +184,25 @@
     }
     var p = active === 'b' ? readPerson('person2') : readPerson('person1');
     if (!p.jd) return;
-    var when = p.date + ' ' + (p.time || '12:00');
-    applySky(p.jd, p.name + ' · ' + when + (scrubOffset ? ' · ' + (scrubOffset > 0 ? '+' : '') + scrubOffset + ' min' : '') + ' · this device zone');
+    applySky(p.jd, minuteLabel(p) + (scrubOffset ? ' · ' + (scrubOffset > 0 ? '+' : '') + scrubOffset + ' min' : ''));
   }
 
   function enableToggles() {
     var a = readPerson('person1');
     var b = readPerson('person2');
-    if ($('ab-a')) $('ab-a').disabled = !a.jd;
-    if ($('ab-b')) $('ab-b').disabled = !b.jd;
+    if ($('ab-a')) $('ab-a').disabled = !a.date;
+    if ($('ab-b')) $('ab-b').disabled = !b.date;
     var inv = $('compat-invite-btn');
-    if (inv) inv.disabled = !a.jd;
+    if (inv) inv.disabled = !a.date;
+    paintZone('person1', a);
+    paintZone('person2', b);
     return !!(a.jd && b.jd);
+  }
+
+  function paintZone(prefix, p) {
+    var el = $(prefix + '-zone');
+    if (!el) return;
+    el.textContent = p.zoneKnown ? p.tz : 'Pick a place for a real zone. UK summer is not GMT.';
   }
 
   function sep(a, b) {
@@ -175,9 +242,23 @@
     if (!box || !list) return;
     var a = readPerson('person1');
     var b = readPerson('person2');
+    list.innerHTML = '';
+    if (!a.zoneKnown || !b.zoneKnown) {
+      box.hidden = false;
+      var need = document.createElement('li');
+      need.textContent = 'Angles withheld. Both places need a real zone. Not treated as GMT.';
+      list.appendChild(need);
+      return;
+    }
+    if (!a.timeKnown || !b.timeKnown) {
+      box.hidden = false;
+      var hold = document.createElement('li');
+      hold.textContent = 'Moon and angles withheld. Unknown time is not filled with noon.';
+      list.appendChild(hold);
+      return;
+    }
     if (!a.jd || !b.jd || !window.VoidEphem) {
       box.hidden = true;
-      list.innerHTML = '';
       return;
     }
     var A = lonMap(rowsAt(a.jd));
@@ -199,7 +280,6 @@
       });
     });
     hits.sort(function (x, y) { return x.named.off - y.named.off; });
-    list.innerHTML = '';
     if (!hits.length) {
       box.hidden = false;
       var empty = document.createElement('li');
@@ -216,7 +296,6 @@
     box.hidden = false;
   }
 
-  /* Hash only. Never touch location.search. Browsers do not send # to a server. */
   function sceneFromHash() {
     var raw = (location.hash || '').replace(/^#/, '');
     if (!raw) return { a: null, b: null };
@@ -226,7 +305,9 @@
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
       var time = q.get(prefix + 't') || '';
       if (time && !/^\d{2}:\d{2}$/.test(time)) time = '';
-      return { date: date, time: time, name: q.get(prefix + 'n') || '' };
+      var tz = q.get(prefix + 'z') || '';
+      if (tz && !isValidTimeZone(tz)) tz = '';
+      return { date: date, time: time, name: q.get(prefix + 'n') || '', tz: tz };
     }
     return { a: one('a'), b: one('b') };
   }
@@ -239,11 +320,13 @@
       q.set('a', a.date);
       if (a.time) q.set('at', a.time);
       if (a.name && a.name !== 'A') q.set('an', a.name);
+      if (a.zoneKnown) q.set('az', a.tz);
     }
     if (b.date) {
       q.set('b', b.date);
       if (b.time) q.set('bt', b.time);
       if (b.name && b.name !== 'B') q.set('bn', b.name);
+      if (b.zoneKnown) q.set('bz', b.tz);
     }
     var next = q.toString();
     var hash = next ? '#' + next : '';
@@ -258,11 +341,13 @@
       writeField('person1-date', scene.a.date);
       writeField('person1-time', scene.a.time);
       writeField('person1-name', scene.a.name);
+      writeField('person1-tz', scene.a.tz);
     }
     if (scene.b) {
       writeField('person2-date', scene.b.date);
       writeField('person2-time', scene.b.time);
       writeField('person2-name', scene.b.name);
+      writeField('person2-tz', scene.b.tz);
     }
     enableToggles();
     if (scene.a && scene.a.date) showA();
@@ -276,7 +361,7 @@
   function onInvite() {
     var a = readPerson('person1');
     var btn = $('compat-invite-btn');
-    if (!a.jd) return;
+    if (!a.date) return;
     var link = inviteLink();
     var done = function () {
       if (!btn) return;
@@ -296,17 +381,106 @@
     var err = $('compatError');
     var a = readPerson('person1');
     var b = readPerson('person2');
-    if (!a.jd || !b.jd) {
+    if (!a.date || !b.date) {
       if (err) {
         err.hidden = false;
-        err.textContent = 'Both people need a birth date. Time can stay blank (noon is used).';
+        err.textContent = 'Both people need a birth date.';
       }
       enableToggles();
+      return;
+    }
+    if (!a.zoneKnown || !b.zoneKnown) {
+      if (err) {
+        err.hidden = false;
+        err.textContent = 'Pick both birth places from the list so the minute uses a real zone. UK summer is not GMT.';
+      }
+      enableToggles();
+      showA();
       return;
     }
     if (err) { err.hidden = true; err.textContent = ''; }
     enableToggles();
     showA();
+  }
+
+  function bindCity(prefix) {
+    var input = $(prefix + '-city');
+    var latEl = $(prefix + '-lat');
+    var lonEl = $(prefix + '-lon');
+    var tzEl = $(prefix + '-tz');
+    var drop = $(prefix + '-city-drop');
+    if (!input || !drop) return;
+    var seq = 0;
+    var timer = null;
+
+    function clearPlace() {
+      if (latEl) latEl.value = '';
+      if (lonEl) lonEl.value = '';
+      if (tzEl) tzEl.value = '';
+      enableToggles();
+    }
+
+    function pick(city) {
+      input.value = city.name + (city.admin ? ', ' + city.admin : '');
+      if (latEl) latEl.value = (+city.lat).toFixed(4);
+      if (lonEl) lonEl.value = (+city.lon).toFixed(4);
+      if (tzEl) tzEl.value = city.tz || '';
+      drop.hidden = true;
+      drop.innerHTML = '';
+      enableToggles();
+      writeHash();
+      renderAngles();
+    }
+
+    function render(results) {
+      drop.innerHTML = '';
+      if (!results.length) { drop.hidden = true; return; }
+      results.forEach(function (city) {
+        if (!city.tz || !isValidTimeZone(city.tz)) return;
+        var item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'ap-city-item';
+        item.textContent = city.name + (city.admin ? ', ' + city.admin : '') + ' · ' + city.tz;
+        item.addEventListener('click', function () { pick(city); });
+        drop.appendChild(item);
+      });
+      drop.hidden = !drop.childNodes.length;
+    }
+
+    function search(q) {
+      q = (q || '').trim();
+      if (q.length < 2) { drop.hidden = true; drop.innerHTML = ''; return; }
+      var my = ++seq;
+      fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json')
+        .then(function (r) { return r.ok ? r.json() : { results: [] }; })
+        .then(function (data) {
+          if (my !== seq) return;
+          var rows = (data.results || []).map(function (r) {
+            return {
+              name: r.name,
+              admin: r.admin1 && r.admin1 !== r.name ? r.admin1 : '',
+              country: r.country_code || r.country || '',
+              lat: r.latitude,
+              lon: r.longitude,
+              tz: r.timezone || ''
+            };
+          });
+          render(rows);
+        })
+        .catch(function () {
+          if (my !== seq) return;
+          drop.hidden = true;
+        });
+    }
+
+    input.addEventListener('input', function () {
+      clearPlace();
+      clearTimeout(timer);
+      timer = setTimeout(function () { search(input.value); }, 250);
+    });
+    input.addEventListener('blur', function () {
+      setTimeout(function () { drop.hidden = true; }, 180);
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -321,6 +495,8 @@
       var el = $(id);
       if (el) el.addEventListener('change', function () { enableToggles(); writeHash(); renderAngles(); });
     });
+    bindCity('person1');
+    bindCity('person2');
     applyHash();
     if (!sceneFromHash().a) {
       enableToggles();

@@ -875,6 +875,12 @@
         return this._eclipseK || 0;
       };
 
+      C.prototype.captureStill = function () {
+        var O = this._engine;
+        if (!this._ready || !O || typeof O.captureFrame !== 'function') return null;
+        try { return O.captureFrame({ scale: 2 }); } catch (e) { return null; }
+      };
+
       /* ── natal markers — minimal zodiac-ring DOM overlay ──
        * The engine has no natal-marker API (the native eclipse API is separate;
        * no marker support exists). The adapter draws the ring itself. */

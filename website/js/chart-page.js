@@ -228,11 +228,12 @@
       dtf.formatToParts(utcDate).forEach(x => { p[x.type] = x.value; });
       const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second);
       return (asUTC - utcDate.getTime()) / 60000;
-    } catch (e) { return 0; }
+    } catch (e) { return null; }
   }
 
   function isValidTimeZone(tz) {
     if (typeof tz !== 'string' || !tz.trim()) return false;
+    if (tz === 'UTC' || tz === 'GMT' || /^Etc\/GMT/i.test(tz) || tz === 'Etc/UTC') return false;
     try {
       new Intl.DateTimeFormat('en-US', { timeZone: tz }).format();
       return true;
@@ -240,9 +241,11 @@
   }
 
   function localToUT(y, m, d, hh, mm, tz) {
+    if (!isValidTimeZone(tz)) return null;
     let utc = new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
     for (let i = 0; i < 2; i++) {
       const off = tzOffsetMinutes(tz, utc);
+      if (off == null) return null;
       utc = new Date(Date.UTC(y, m - 1, d, hh, mm, 0) - off * 60000);
     }
     return {
@@ -458,6 +461,9 @@
 
   function calculate(input) {
     const ut = localToUT(input.y, input.m, input.d, input.hh, input.mm, input.tz);
+    if (!ut) {
+      return { error: 'Place needs a real timezone. UK summer is not treated as GMT.' };
+    }
     const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon, input.houseSystem, input.nodeMode);
     return adaptChart(raw, {
       nodeMode: raw.nodeMode,
@@ -487,6 +493,11 @@
           await window.loadInterpretations();
         }
         currentChart = calculate(input);
+        if (currentChart && currentChart.error) {
+          showFormError('city-input', currentChart.error);
+          resetCalcBtn();
+          return;
+        }
         if (window.APCanvasSeals && !window._apSealsPreloaded) {
           window._apSealsPreloaded = true;
           var sealSigns = (window.AP_ZODIAC && AP_ZODIAC.SIGN_ORDER) || [];
