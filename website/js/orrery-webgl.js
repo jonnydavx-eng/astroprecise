@@ -7569,9 +7569,9 @@ const FinishShader = {
         const p = pack.earth.position;
         natalLabelTangent.set(-p.z, 0, p.x);
         if (natalLabelTangent.lengthSq() < 1e-6) natalLabelTangent.set(1, 0, 0);
-        natalLabelTangent.normalize().multiplyScalar(who === 'a' ? -1.4 : 1.4);
+        natalLabelTangent.normalize().multiplyScalar(who === 'a' ? -1.8 : 1.8);
         pack.label.position.copy(p).add(natalLabelTangent);
-        pack.label.position.y += who === 'a' ? 2.05 : 3.05;
+        pack.label.position.y += who === 'a' ? 1.9 : 3.1;
         pack.label.visible = true;
       }
     }

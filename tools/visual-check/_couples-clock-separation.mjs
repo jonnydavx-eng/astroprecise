@@ -69,7 +69,7 @@ try {
     live.a.label[1] - live.b.label[1],
     live.a.label[2] - live.b.label[2]
   );
-  assert(labelGap > 3, `A/B label gap is too small: ${labelGap}`);
+  assert(labelGap > 3.6, `A/B label gap is too small: ${labelGap}`);
 
   assert(near(live.a.bodyOpacity, 0.78) && near(live.b.bodyOpacity, 0.78),
     'live clocks are not equally weighted');
