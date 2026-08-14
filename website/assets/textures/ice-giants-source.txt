@@ -57,6 +57,20 @@ Two further attempts, both measured, neither shipped.
      disc front-on and 5.20% -> 5.26% at 35 deg tilt, i.e. nothing. Not shipped.
   2. Tighter no-data threshold (channel <= 2 instead of == 0). Gains 244 pixels. Not
      shipped.
+All five Neptune tiers carry the mask (verified, not assumed): no-data 17.9 / 18.0 / 17.9 /
+17.1 / 17.6 % and top-of-data +66.6 / +66.4 / +66.4 / +67.4 / +67.4 deg for
+neptune.jpg, .webp, _md.webp, _sm.jpg, _sm.webp. So the fix reaches the phone tier too,
+not just the desktop map.
+
+Delivery caveat, since sw.js was deliberately NOT bumped:
+Of the Neptune tiers only neptune_sm.webp — the phone/low tier — is in the sw.js precache
+list, and sw.js serves non-critical assets stale-while-revalidate (`return cached || await
+networkResponse`). A returning visitor with the ap-v867 cache warm therefore paints the OLD
+unmasked phone tile once, while the fetch handler writes the new one, so it self-heals on
+the next load. Desktop and mid tiers are not precached and pick the fix up immediately.
+If the fix needs to land on the first paint for returning phone visitors, that requires a
+version tip (sw.js V + ap-asset-v.js + the Act 1 ?v= queries together) — not done here.
+
 Checked from two more directions, so "the seam" is not something else in disguise:
   - Longitude wrap seam: rendered the u=0 meridian face-on at 14 deg FOV, beside the u=0.5
     interior for comparison. No visible vertical seam on Neptune. The 87th-percentile
