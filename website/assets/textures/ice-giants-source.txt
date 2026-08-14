@@ -21,6 +21,36 @@ This work used data acquired from the NASA/ESA HST Space Telescope, associated w
 
 Processing: ImageMagick resize only to 2048x1024 (full webp+jpg), 1024x512 (_md webp), 512x256 (_sm webp). No painting, no invented bands.
 
-Coverage note:
-Uranus Cycle 33 color maps (2025a and 2025b) both have a large unobserved / night-side southern region filled with black in the official STScI product, plus a fringe at the coverage edge. That is Hubble's real map, not a convert error. Worlds did not paint the missing hemisphere.
-Neptune 2025b is a full-latitude color mosaic.
+Native resolution:
+Both official OPAL global maps are only 721x361 (0.5 deg/px). The shipped 2048x1024 tier is
+therefore a ~2.8x upscale of the source — the file is 2K but the detail is not. Verified
+against the archive TIFFs at 721x361: correlation 0.9999, mean abs difference 0.35/255, so
+the shipped pixels are faithful to the official product. The soft rainbow striping along the
+coverage edge is per-filter misregistration in the STScI product, magnified by that upscale.
+
+Coverage note (measured from the archive TIFFs, not guessed):
+Uranus 2025a carries data from +90 down to about -19.5 deg latitude only, and rows are fully
+populated only to about -9 deg. 40% of the map area is black. Uranus's southern hemisphere is
+turned away from Earth and in polar night, so Hubble cannot see it. That is Hubble's real map,
+not a convert error. The missing hemisphere was NOT painted in.
+Neptune 2025b is NOT full-latitude (an earlier version of this note claimed it was). It runs
+from about +71 deg down to the south pole, fully populated only below about +58 deg, leaving
+13% of the map black at the north.
+
+On a globe (rendered check, three.js sphere, 2026-08-14):
+Neptune reads fine — one small misregistration patch at the north pole. Uranus does not: the
+unobserved 40% becomes a black southern cap with a hard rainbow band across the middle of the
+disc, which reads as a rendering fault rather than a planet. The pixels are the official
+product, so this is a "which product" decision and not a conversion bug. Left as shipped
+rather than re-authored, because painting the missing hemisphere would be invention and
+swapping the source is the helm's call. The previous Solar System Scope Uranus map is still in
+git history at 5ca7352 if the smooth full-globe map is preferred for Act 1.
+
+Colour note:
+These are narrow/medium-band filter composites, not true-colour photographs. Uranus lands
+close to its familiar pale cyan. Neptune comes out green-dominant (lit-pixel mean RGB
+100/192/156) rather than the iconic deep blue, because F547M dominates the composite. That
+green cast is in the official STScI product and has been left alone — it is also closer to
+the truth than the poster image: Irwin et al. (2024) reprocessed Voyager 2 data and found
+Neptune is a much paler greenish-blue, the deep blue being a contrast-stretch artefact.
+Pushing this map toward Voyager blue would be invention, so it was not done.
