@@ -6235,6 +6235,9 @@ const FinishShader = {
       const mat = g.userData.mat;
       if (mat && mat.userData.planetShader && mat.userData.planetShader.uniforms.uSunDir) {
         mat.userData.planetShader.uniforms.uSunDir.value.copy(_toSun);
+        if (b.id === 'jupiter' && mat.userData.planetShader.uniforms.uBandBoost) {
+          mat.userData.planetShader.uniforms.uBandBoost.value = 0.28;
+        }
       }
     });
     if (moonMesh && moonGroup && moonGroup.visible) {
@@ -8921,12 +8924,12 @@ const FinishShader = {
     const fov = (CAM_FOV_MID || 42) * D2R;
     const radius = body.size * (pid === 'saturn' ? 2.32 : 1);
     const fit = radius / Math.max(0.05, Math.min(0.95, fillFrac)) / Math.tan(fov / 2);
-    const dist = Math.max(radius * (pid === 'saturn' ? 1.12 : 3.2), fit);
+    const dist = Math.max(radius * ((pid === 'saturn' || pid === 'jupiter' || pid === 'mars' || pid === 'venus') ? 1.12 : 3.2), fit);
 
     // Sun-side camera offset: mostly toward the sun, nudged laterally + up so the
     // lit hemisphere faces the lens with a gentle terminator and a 3/4 tilt.
     // Saturn sits a bit higher so the ring plane reads in a fill-the-frame still.
-    const el = (pid === 'saturn' ? 22 : 14) * D2R;
+    const el = (pid === 'saturn' ? 22 : pid === 'jupiter' ? 16 : 14) * D2R;
     const ce = Math.cos(el), se = Math.sin(el);
     _portOff.copy(_portToSun).multiplyScalar(0.90 * ce);
     _portOff.addScaledVector(_portSide, 0.42 * ce);
