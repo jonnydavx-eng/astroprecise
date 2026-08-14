@@ -200,11 +200,16 @@
     if (typeof offsetMin === 'number') scrubOffset = offsetMin;
     var out = {
       a: a && a.timeKnown ? clockEntry(a, 'a') : null,
-      b: b && b.timeKnown ? clockEntry(b, 'b') : null
+      b: b && b.timeKnown ? clockEntry(b, 'b') : null,
+      focus: (which === 'a' || which === 'b') ? which : null
     };
     active = prevActive;
     scrubOffset = prevOff;
     return out;
+  }
+
+  function clockFocus() {
+    return (active === 'a' || active === 'b') ? active : null;
   }
 
   function applyNatalClocks() {
@@ -219,7 +224,7 @@
       return false;
     }
     if (typeof o.setNatalClocks !== 'function') return false;
-    o.setNatalClocks({ a: aClock, b: bClock });
+    o.setNatalClocks({ a: aClock, b: bClock, focus: clockFocus() });
     return true;
   }
 
@@ -250,13 +255,6 @@
     el.textContent = 'One model. Both birth minutes stay in the sky.';
   }
 
-  function focusEarthCamera() {
-    var o = orrery();
-    if (!o) return;
-    if (typeof o.flyTo === 'function') o.flyTo('earth');
-    else if (typeof o.focusPlanet === 'function') o.focusPlanet('earth');
-  }
-
   function showPerson(which) {
     var p = readPerson(which === 'b' ? 'person2' : 'person1');
     resetScrub();
@@ -272,7 +270,6 @@
     enableScrub(true);
     stamp(minuteLabel(p));
     applyNatalClocks();
-    focusEarthCamera();
     writeHash();
     renderAngles();
     paintTelemetry();
@@ -445,6 +442,7 @@
     var tz = q.get(prefix + 'z') || '';
     if (tz && !isValidTimeZone(tz)) tz = '';
     var city = q.get(prefix + 'c') || '';
+    if (city && isValidTimeZone(city)) city = '';
     if (city && !tz) {
       var hit = matchTown(city);
       if (hit) tz = hit.tz;
@@ -468,14 +466,14 @@
       if (a.time) q.set('at', a.time);
       if (a.name && a.name !== 'A') q.set('an', a.name);
       if (a.zoneKnown) q.set('az', a.tz);
-      if (a.city) q.set('ac', a.city);
+      if (a.city && !isValidTimeZone(a.city)) q.set('ac', a.city);
     }
     if (b.date) {
       q.set('b', b.date);
       if (b.time) q.set('bt', b.time);
       if (b.name && b.name !== 'B') q.set('bn', b.name);
       if (b.zoneKnown) q.set('bz', b.tz);
-      if (b.city) q.set('bc', b.city);
+      if (b.city && !isValidTimeZone(b.city)) q.set('bc', b.city);
     }
     var next = q.toString();
     var hash = next ? '#' + next : '';
@@ -491,7 +489,7 @@
       writeField('person1-time', scene.a.time);
       writeField('person1-name', scene.a.name);
       writeField('person1-tz', scene.a.tz);
-      if (scene.a.city) writeField('person1-city', scene.a.city);
+      if (scene.a.city && !isValidTimeZone(scene.a.city)) writeField('person1-city', scene.a.city);
       if (scene.a.tz) {
         var noteA = byId('person1-zone');
         if (noteA) noteA.textContent = scene.a.tz + ' · civil time uses this zone, not GMT.';
@@ -502,7 +500,7 @@
       writeField('person2-time', scene.b.time);
       writeField('person2-name', scene.b.name);
       writeField('person2-tz', scene.b.tz);
-      if (scene.b.city) writeField('person2-city', scene.b.city);
+      if (scene.b.city && !isValidTimeZone(scene.b.city)) writeField('person2-city', scene.b.city);
       if (scene.b.tz) {
         var noteB = byId('person2-zone');
         if (noteB) noteB.textContent = scene.b.tz + ' · civil time uses this zone, not GMT.';
@@ -678,6 +676,7 @@
     function pick(city) {
       if (!city || !isValidTimeZone(city.tz)) return;
       input.value = city.name + (city.admin ? ', ' + city.admin : '');
+      if (isValidTimeZone(input.value)) input.value = city.name;
       if (latEl) latEl.value = (+city.lat).toFixed(4);
       if (lonEl) lonEl.value = (+city.lon).toFixed(4);
       if (tzEl) tzEl.value = city.tz || '';

@@ -74,6 +74,9 @@ assert.equal(/gumroad|catalogueSkus|checkout|sku/i.test(couplesSky), false,
   'couples sky must not add checkout or SKU behavior');
 assert.ok(couplesSky.includes("timeKnown && zoneKnown") || couplesSky.includes("zoneKnown && timeKnown"));
 assert.equal(couplesSky.includes("time || '12:00'"), false);
+assert.equal(/flyTo|focusPlanet/.test(couplesSky), false,
+  'couples A/B must not fly the live camera');
+assert.ok(compatibilityHtml.includes('that clock, the Moon, and angles are withheld'));
 assert.equal(/location\.hash|new URLSearchParams\(location\.search\)[\s\S]{0,120}(?:get\(['"](?:d|date|time|city|lat|lon)|birth)/.test(chartPage), false,
   'chart page must not restore birth details from an address');
 

@@ -64,13 +64,31 @@ else {
     fail('couples sky must not compute a natal JD without a known birth time');
   }
   if (couplesSky.includes("time || '12:00'")) fail('couples sky still fills unknown time with noon');
-  if (!couplesSky.includes('flyTo') && !couplesSky.includes('focusPlanet')) {
-    fail('couples A/B must camera-focus the one model, not swap it');
+  if (couplesSky.includes('flyTo') || couplesSky.includes('focusPlanet')) {
+    fail('couples A/B must focus clocks in-scene, not flyTo/focusPlanet');
+  }
+  if (!couplesSky.includes("focus: clockFocus()") && !couplesSky.includes('focus: clockFocus()')) {
+    fail('couples sky must pass focus a|b|null into setNatalClocks');
   }
   if (!couplesSky.includes('window.APCouplesSky') || !couplesSky.includes('OFFLINE_TOWNS')) {
     fail('couples sky must export APCouplesSky and an IANA offline town list');
   }
-  else ok('couples sky refuses GMT offsets, withholds noon, and focuses the live camera');
+  else ok('couples sky refuses GMT offsets, withholds noon, and focuses clocks in-scene');
+}
+
+if (!W.includes('NATAL_CLOCK_RADIAL = { a: 0.97, b: 1.03 }')) {
+  fail('natal clocks must radially split A/B without faking longitude');
+}
+if (!W.includes('who === focus ? 0.92 : 0.42') || !W.includes('return 0.78')) {
+  fail('natal clock focus opacity contract missing');
+}
+if (!W.includes('Schibsted Grotesk') || !W.includes('sp.scale.set((c.width / c.height) * 3.15, 3.15, 1)')) {
+  fail('natal labels must stay at world scale 3.15 in Schibsted Grotesk');
+}
+if (!W.includes('NATAL_CLOCK_LABEL_LIFT = { a: 2.2, b: 3.6 }')) {
+  fail('natal A/B labels must lift to different points');
+} else {
+  ok('natal clocks split radially, dim the unfocused clock, and keep letter scale 3.15');
 }
 
 for (const probe of [

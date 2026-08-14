@@ -708,7 +708,9 @@ const FinishShader = {
   const NATAL_CLOCK_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
   const NATAL_CLOCK_A = 0xD8B46A; // brass — person A
   const NATAL_CLOCK_B = 0xFF6428; // ember — person B
-  let natalClockSpec = { a: null, b: null };
+  const NATAL_CLOCK_RADIAL = { a: 0.97, b: 1.03 }; // display split; lon/lat stay true
+  const NATAL_CLOCK_LABEL_LIFT = { a: 2.2, b: 3.6 };
+  let natalClockSpec = { a: null, b: null, focus: null };
   let natalClockGroup = null;     // separate layer; not ghostMeshes
   const natalClockMeshes = { a: {}, b: {} };
   let trailsGroup = null;           // per-planet motion trails (fade behind moving planets)
@@ -7285,16 +7287,44 @@ const FinishShader = {
     return who === 'b' ? NATAL_CLOCK_B : NATAL_CLOCK_A;
   }
 
+  function natalClockFocusOf(spec) {
+    const focus = spec && spec.focus;
+    return (focus === 'a' || focus === 'b') ? focus : null;
+  }
+
+  function natalClockOpacity(who) {
+    const focus = natalClockSpec.focus;
+    if (focus === 'a' || focus === 'b') return who === focus ? 0.92 : 0.42;
+    return 0.78;
+  }
+
+  function applyNatalClockOpacity(pack, who) {
+    if (!pack) return;
+    const opacity = natalClockOpacity(who);
+    Object.keys(pack).forEach((k) => {
+      const obj = pack[k];
+      if (!obj || !obj.traverse) return;
+      obj.traverse((o) => {
+        const mats = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+        mats.forEach((m) => {
+          if (!m) return;
+          m.transparent = true;
+          m.opacity = opacity;
+        });
+      });
+    });
+  }
+
   function makeNatalClockLabel(text, hex) {
     const pad = 12, font = 48;
     const c = document.createElement('canvas');
     const x = c.getContext('2d');
     const label = String(text || '').slice(0, 18) || (hex === '#FF6428' ? 'B' : 'A');
-    x.font = '600 ' + font + 'px Inter, system-ui, sans-serif';
+    x.font = '600 ' + font + 'px "Schibsted Grotesk", system-ui, sans-serif';
     const w = Math.max(72, Math.ceil(x.measureText(label).width) + pad * 2);
     c.width = w;
     c.height = font + pad * 2;
-    x.font = '600 ' + font + 'px Inter, system-ui, sans-serif';
+    x.font = '600 ' + font + 'px "Schibsted Grotesk", system-ui, sans-serif';
     x.fillStyle = hex;
     x.textBaseline = 'middle';
     x.textAlign = 'center';
@@ -7425,7 +7455,8 @@ const FinishShader = {
       if (hide) { mesh.visible = false; return; }
       try {
         const ll = helioLonLat(b.id, jd);
-        mesh.position.copy(scenePos(b.R, ll.lon, ll.lat));
+        const radius = b.R * (NATAL_CLOCK_RADIAL[who] || 1);
+        mesh.position.copy(scenePos(radius, ll.lon, ll.lat));
         mesh.visible = true;
       } catch (e) { mesh.visible = false; }
     });
@@ -7454,10 +7485,12 @@ const FinishShader = {
       if (hide || !pack.earth) pack.label.visible = false;
       else {
         const p = pack.earth.position;
-        pack.label.position.set(p.x, p.y + 2.5, p.z);
+        const lift = NATAL_CLOCK_LABEL_LIFT[who] || 2.2;
+        pack.label.position.set(p.x, p.y + lift, p.z);
         pack.label.visible = true;
       }
     }
+    applyNatalClockOpacity(pack, who);
   }
 
   function updateNatalClocks() {
@@ -7483,6 +7516,7 @@ const FinishShader = {
     natalClockSpec = {
       a: oneNatalClock(spec.a, 'A'),
       b: oneNatalClock(spec.b, 'B'),
+      focus: natalClockFocusOf(spec),
     };
     if (!natalClockSpec.a && !natalClockSpec.b) {
       disposeNatalClocks();
@@ -7492,7 +7526,7 @@ const FinishShader = {
   }
 
   function clearNatalClocks() {
-    natalClockSpec = { a: null, b: null };
+    natalClockSpec = { a: null, b: null, focus: null };
     disposeNatalClocks();
   }
 
@@ -7500,6 +7534,7 @@ const FinishShader = {
     return {
       a: natalClockSpec.a ? { jd: natalClockSpec.a.jd, label: natalClockSpec.a.label } : null,
       b: natalClockSpec.b ? { jd: natalClockSpec.b.jd, label: natalClockSpec.b.label } : null,
+      focus: natalClockSpec.focus || null,
     };
   }
 
@@ -10598,7 +10633,7 @@ const FinishShader = {
       delete canvas._orreryVV;
     }
     try { disposeNatalClocks(); } catch (e) {}
-    natalClockSpec = { a: null, b: null };
+    natalClockSpec = { a: null, b: null, focus: null };
     try { disposeAspectView(); } catch (e) {}
     try { disposeHelioAspectLines(); } catch (e) {}
     try { disposePreloaderComets(); } catch (e) {}

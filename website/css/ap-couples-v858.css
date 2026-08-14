@@ -188,6 +188,7 @@
 .ap-city-drop[hidden] { display: none; }
 .ap-city-item {
   text-align: left;
+  min-height: 44px;
   padding: 8px 10px;
   border: 0;
   background: transparent;

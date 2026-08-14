@@ -122,6 +122,10 @@ ok('UTC place cannot mint a clock', noZone.jd == null && noZone.zoneKnown === fa
 
 const clocks = AP.clocksFromPeople(known, unknownTime, 'now', 0);
 ok('only the known minute becomes a natal clock', !!(clocks.a && clocks.a.jd) && clocks.b == null);
+ok('live has no clock focus', clocks.focus == null);
+
+const focused = AP.clocksFromPeople(known, unknownTime, 'a', 0);
+ok('A button is focus only', focused.focus === 'a' && !!(focused.a && focused.a.jd));
 
 const both = AP.clocksFromPeople(
   known,
@@ -138,6 +142,7 @@ const both = AP.clocksFromPeople(
 );
 ok('both known minutes stay in one spec', !!(both.a && both.b && both.a.jd && both.b.jd));
 ok('the two clocks are different minutes', both.a.jd !== both.b.jd);
+ok('live keeps both clocks without a focus', both.focus == null);
 
 const london = AP.matchTown('London');
 ok('London resolves to Europe/London', !!(london && london.tz === 'Europe/London'));
@@ -149,6 +154,10 @@ ok('offline list never includes UTC/GMT',
 const fromHash = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=Ada&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York');
 ok('hash restores both dates', fromHash.a && fromHash.a.date === '1990-06-15' && fromHash.b && fromHash.b.date === '1985-12-03');
 ok('hash keeps IANA zones', fromHash.a.tz === 'Europe/London' && fromHash.b.tz === 'America/New_York');
+ok('hash city is the town, not the zone', fromHash.a.city === 'London' && fromHash.b.city === 'New York');
+
+const tzAsCity = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=Europe/London&ac=Europe/London');
+ok('timezone string is never restored as the city', tzAsCity.a && tzAsCity.a.city === '' && tzAsCity.a.tz === 'Europe/London');
 
 const utcHash = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=UTC&ac=London');
 ok('hash UTC is stripped and London supplies Europe/London',
@@ -168,7 +177,15 @@ ok('no checkout or SKU on the couples page', !/gumroad|catalogueSkus|checkout/i.
 ok('house wordmark splits Precise', html.includes('logo-text__precise'));
 ok('A/B cards keep house brass and ember',
   css.includes('.ap-couples-card--a') && css.includes('#D8B46A') && css.includes('#FF6428'));
-ok('couples assets are cache-busted at 874',
+ok('city items are 44px taps', css.includes('.ap-city-item') && /min-height:\s*44px/.test(css));
+ok('house lock colours stay',
+  css.includes('#020307') && css.includes('#F2ECDF') && css.includes('#A89C84') &&
+  css.includes('#FF6428') && css.includes('#D8B46A') && css.includes('#B04A52'));
+ok('copy withholds the clock when time is blank',
+  html.includes('that clock, the Moon, and angles are withheld'));
+ok('couples page does not fly the camera on A/B',
+  !src.includes('flyTo') && !src.includes('focusPlanet') && !src.includes('setJD'));
+ok('couples assets stay at 874',
   html.includes('ap-couples-sky.js?v=874') && html.includes('ap-couples-v858.css?v=874'));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
