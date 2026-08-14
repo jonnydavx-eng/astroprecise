@@ -97,8 +97,10 @@ if (!W.includes('!dragging && !focusFrameId && !freeExploreMode')) {
 /* 3. Exactly one general model, with status outside its canvas. */
 const htmlFiles = readdirSync(root).filter((name) => name.endsWith('.html'));
 const modelOwners = htmlFiles.filter((name) => /<void-orrery\b/i.test(readFileSync(join(root, name), 'utf8')));
-if (modelOwners.length !== 1 || modelOwners[0] !== 'index.html') {
-  fail('general orrery owners must be index.html only: ' + modelOwners.join(', '));
+const expectedOwners = ['chart.html', 'compatibility.html', 'deep-reading.html', 'index.html', 'shop.html', 'tonight.html'];
+const got = [...modelOwners].sort();
+if (got.join() !== expectedOwners.join()) {
+  fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
 if (!/js\/void-orrery-adapter\.js\?v=862/.test(indexHtml)) fail('Home missing v862 adapter query');
@@ -169,19 +171,21 @@ const navModel = readFileSync(join(root, 'js', 'ap-nav-model.js'), 'utf8');
 for (const probe of [
   "['index.html', 'Observatory']",
   "['chart.html', 'Chart']",
-  "['horoscope.html', 'Daily']",
   "['sky-events.html', 'Events'",
   "['shop.html', 'Shop']",
 ]) {
   if (!navModel.includes(probe)) fail('launch navigation contract missing: ' + probe);
 }
 for (const probe of ["['sky-events.html', 'Events', 'eclipse']", '(min-width: 981px)', 'renderStaticBottomNav();']) {
-  if (!navModel.includes(probe)) fail('five-route mobile navigation missing: ' + probe);
+  if (!navModel.includes(probe)) fail('four-route mobile navigation missing: ' + probe);
 }
-if (!livingCss.includes('repeat(5, minmax(0, 1fr))')) fail('mobile navigation is not five equal tabs');
+if (!livingCss.includes('repeat(4, minmax(0, 1fr))')) fail('mobile navigation is not four equal tabs');
+if (navModel.includes("[\'horoscope.html\', \'Daily\']")) fail('Daily must not be a launch route');
+if (navModel.includes("[\'lifepath.html\'")) fail('Life Path must not leak into nav extras');
+if (navModel.includes("[\'synastry.html\'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
 if (!sw.includes('const V = "ap-v862"')) fail('service worker release identity is not ap-v862');
-ok('shared shell exposes five routes and releases vertical phone scrolling');
+ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
 const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');

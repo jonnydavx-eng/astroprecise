@@ -20,9 +20,9 @@ assert.ok(chartPage.includes("name:'Semi-sextile'"));
 assert.equal(chartPage.includes("name:'Slight angle'"), false);
 assert.ok(chartCss.includes('.ap-reading-card > .ap-reading-card__content:only-child'));
 assert.ok(chartCss.includes('scroll-margin-top:'));
-assert.ok(chartHtml.includes('ap-chart-v835.css?v=862'));
-assert.ok(chartHtml.includes('ap-load-interpretations.js?v=862') && chartHtml.includes('chart-page.js?v=862'));
-assert.ok(chartHtml.includes('reading-format.js?v=862') && chartHtml.includes('chart-render.js?v=862'));
+assert.ok(chartHtml.includes('ap-chart-v835.css?v=863'));
+assert.ok(chartHtml.includes('ap-load-interpretations.js?v=863') && chartHtml.includes('chart-page.js?v=863'));
+assert.ok(chartHtml.includes('reading-format.js?v=863') && chartHtml.includes('chart-render.js?v=863'));
 assert.ok(readingFormat.includes('if (leadHtml) inner += leadHtml;') && !readingFormat.includes('leadHtml && !collapsed'));
 assert.ok(interpretationsLoader.includes('interpretations.js?v='));
 assert.ok(chartPage.includes('degree withheld') && chartPage.includes('Date-reference angle'));
@@ -56,13 +56,13 @@ assert.ok(privacy.includes('does not create or accept chart links containing bir
 
 const chartView = read('./website/chart-view.html');
 const chartShare = read('./website/js/ap-chart-share.js');
-const compatibility = read('./website/js/compatibility-page.js');
+const compatibilityHtml = read('./website/compatibility.html');
 assert.equal(/location\.(?:search|hash)|new URLSearchParams/.test(chartView), false,
   'retired shared-chart route must not consume birth data from an address');
 assert.equal(/location\.(?:search|hash)|chart-view\.html|birth details \(name/.test(chartShare), false,
   'chart share helper must emit a clean public URL only');
-assert.equal(/location\.hash|new URLSearchParams\(window\.location\.search\)/.test(compatibility), false,
-  'compatibility must not restore a birth pair from an address');
+assert.equal(compatibilityHtml.includes('compatibility-page.js'), false,
+  'retired compatibility-page.js must stay deleted');
 assert.equal(/location\.hash|new URLSearchParams\(location\.search\)[\s\S]{0,120}(?:get\(['"](?:d|date|time|city|lat|lon)|birth)/.test(chartPage), false,
   'chart page must not restore birth details from an address');
 
