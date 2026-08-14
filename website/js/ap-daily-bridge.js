@@ -146,7 +146,7 @@ window.APDailyBridge = (function () {
     footer.className = 'dt-bridge-footer';
     footer.style.cssText = 'margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(216,180,106,0.12);display:flex;flex-wrap:wrap;gap:0.5rem;';
     footer.innerHTML =
-      '<a href="horoscope.html" class="btn btn--outline btn--sm">Daily dial</a>' +
+      '<a href="sky-events.html" class="btn btn--outline btn--sm">Sky events</a>' +
       '<a href="ephemeris.html" class="btn btn--outline btn--sm">Live sky</a>' +
       '<a href="chart.html" class="btn btn--ghost btn--sm">Edit chart</a>';
     card.appendChild(footer);

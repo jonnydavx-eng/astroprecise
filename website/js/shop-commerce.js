@@ -940,7 +940,7 @@ window.AstroShop = (() => {
           <h3 class="shop-moment-rail__title">Moment</h3>
           <p class="shop-moment-rail__lead">Freeze any night that mattered — zenith star, light-cone, engine plate. Free private card now; pack when checkout is live.</p>
         </div>
-        <a class="btn btn--outline" href="moment.html">Freeze a Moment</a>
+        <a class="btn btn--outline" href="tonight.html">See tonight’s sky</a>
       </div>`
       : '';
     host.innerHTML = `<div class="container">

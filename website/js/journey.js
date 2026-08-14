@@ -736,12 +736,12 @@ window.AstroJourney = (function () {
       }
     }
 
-    // Horoscope always relevant
+    // The active observing sky is always relevant.
     recs.push({
-      tool:     'horoscope',
-      href:     'horoscope.html',
-      headline: 'Your daily cosmic weather',
-      body:     'The stars speak daily. Check your horoscope to align your energy with the moment.',
+      tool:     'tonight',
+      href:     'tonight.html',
+      headline: 'What is visible tonight',
+      body:     'Check the planets, Moon phase and twilight for the place you choose.',
       urgency:  'low',
       icon:     '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>',
     });

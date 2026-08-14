@@ -34,7 +34,6 @@ const RELEASE_PAGES = [
   './index.html',
   './eclipse.html',
   './chart.html',
-  './horoscope.html',
   './shop.html',
   './privacy.html',
   './terms.html',
@@ -42,7 +41,6 @@ const RELEASE_PAGES = [
   './verify.html',
   './contact.html',
   './sample-reading.html',
-  './natal-plate.html',
 ];
 
 // Runtime references that cannot be derived safely from markup. The Eclipse

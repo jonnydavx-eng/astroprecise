@@ -94,7 +94,7 @@
       '<a class="ap-ev-tools__chip ap-ev-tools__chip--primary" href="index.html">Observatory</a>' +
       '<a class="ap-ev-tools__chip" href="chart.html">Cast chart</a>' +
       '<a class="ap-ev-tools__chip" href="ephemeris.html">Sky instrument</a>' +
-      '<a class="ap-ev-tools__chip" href="horoscope.html">Daily</a>' +
+      '<a class="ap-ev-tools__chip" href="sky-events.html">Events</a>' +
       '<a class="ap-ev-tools__chip" href="mysky.html">My Sky hub</a>' +
       '</nav>'
     );

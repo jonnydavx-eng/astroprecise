@@ -195,8 +195,8 @@
     var tabs = (window.AP_NAV && window.AP_NAV.NAV_BOTTOM_TABS) || [
       ["index.html", "Observatory", "star4"],
       ["chart.html", "Chart", "spiral"],
-      ["ephemeris.html", "The Sky", "telescope"],
-      ["horoscope.html", "Daily", "crescent"],
+      ["sky-events.html", "Events", "crescent"],
+      ["shop.html", "Shop", "sparkles"],
     ];
     var nav = document.createElement("nav");
     nav.className = "bottom-nav";
@@ -207,6 +207,7 @@
       spiral: "◎",
       telescope: "⌖",
       crescent: "☽",
+      sparkles: "✦",
     };
     function icon(id) {
       return (

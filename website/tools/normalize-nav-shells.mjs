@@ -20,7 +20,7 @@ const NAV_HEADER = `<header class="site-header" role="banner">
           <span class="logo-text">AstroPrecise</span>
         </a>
         <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">

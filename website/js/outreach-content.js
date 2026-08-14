@@ -142,8 +142,8 @@
           subject: 'Three free tools you haven\'t tried yet 🔭',
           body:
             'Everything below is free, runs in your browser, and uses real astronomy (VSOP87/ELP2000).\n\n'
-            + '1. YOUR HOROSCOPE — live sky, not a recycled column.\n'
-            + '   {{siteUrl}}/horoscope.html\n\n'
+            + '1. TONIGHT — planets, Moon phase and twilight for your location.\n'
+            + '   {{siteUrl}}/tonight.html\n\n'
             + '2. COMPATIBILITY — two charts, real synastry, shareable private link.\n'
             + '   {{siteUrl}}/compatibility.html\n\n'
             + '3. TRANSITS — what the sky is doing to YOUR chart right now.\n'
@@ -188,7 +188,7 @@
             'You\'re on the daily list.\n\n'
             + 'Each morning: a short note on what the live sky is doing — plain language, no jargon. '
             + 'Computed from real planetary positions, not a recycled column.\n\n'
-            + 'Preview anytime (free, no account): {{siteUrl}}/horoscope.html\n\n'
+            + 'See the current observing sky: {{siteUrl}}/tonight.html\n\n'
             + 'Only your email was sent. Birth data stays in your browser.\n\n'
             + '— Astro Precise',
         },
@@ -200,8 +200,8 @@
           body:
             'You\'re on the monthly list.\n\n'
             + 'Once a month: a longer outlook for your sign — major transits, themes, dates to watch. '
-            + 'Same honest astronomy as the free horoscope page.\n\n'
-            + 'Read this month\'s preview: {{siteUrl}}/horoscope.html\n\n'
+            + 'Astronomical positions and symbolic interpretation remain clearly separated.\n\n'
+            + 'See this week\'s computed sky: {{siteUrl}}/this-weeks-sky.html\n\n'
             + '— Astro Precise',
         },
       ],
@@ -343,7 +343,7 @@
       missionControlSingles: [
         { id: 'mc-x-01', day: 1, text: 'FLIGHT READINESS: knowing only your Sun sign is like launching with one telemetry channel.\n\nMoon = inner weather. Rising = first impression.\n\nAll three free → {{linksUrl}}' },
         { id: 'mc-x-02', day: 2, text: 'PRECESSION ALERT: your magazine zodiac dates are ~2,000 years out of sync with the actual sky.\n\nReal positions at your birth minute → {{linksUrl}}/chart.html' },
-        { id: 'mc-x-03', day: 3, text: 'LIVE TELEMETRY: a horoscope that ignores where the Moon actually is today is a fortune cookie.\n\nToday\'s real sky → {{linksUrl}}/horoscope.html' },
+        { id: 'mc-x-03', day: 3, text: 'LIVE TELEMETRY: the Moon and planets do not hold still.\n\nTonight\\'s observing sky → {{linksUrl}}/tonight.html' },
         { id: 'mc-x-04', day: 4, text: 'ZENITH STAR LOCK: one real named star was directly overhead at your birth place and minute.\n\nFind yours (free) → {{linksUrl}}/ephemeris.html' },
         { id: 'mc-x-05', day: 5, text: 'TELEMETRY NOTE: the 3am-feelings channel is your Moon — not your Sun.\n\nWhat\'s yours? → {{linksUrl}}' },
         { id: 'mc-x-06', day: 6, text: 'MERCURY STATUS: it never moves backward — but the station dates are real.\n\nVerify live → {{linksUrl}}/transits.html' },

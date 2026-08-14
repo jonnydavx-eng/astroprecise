@@ -883,16 +883,6 @@ function page(s) {
       </div>
     </section>
 
-    <section class="section" aria-label="Other zodiac signs">
-      <div class="container">
-        <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
-        <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
-        <ul class="sign-thumb-grid" aria-label="All zodiac signs">
-          ${SIGNS.map(o => `<li><a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}"${o.key === s.key ? ' aria-current="page"' : ''}><img src="assets/images/zodiac-cards/${o.key}.jpg" alt="${o.name}" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.name}</span></a></li>`).join('\n          ')}
-        </ul>
-      </div>
-    </section>
-
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>

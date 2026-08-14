@@ -122,7 +122,7 @@
   <!-- ============================================================
        NAVIGATION — shared masthead (renderNav in app.js fills .navbar__nav)
   ============================================================ -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -130,7 +130,7 @@
           <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="chart.html" class="navbar__link">Chart</a><a href="ephemeris.html" class="navbar__link">Sky</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="cosmic-story.html" class="navbar__link">Readings</a><a href="guides.html" class="navbar__link">Library</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -188,34 +188,11 @@
           <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
             <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
             <li><a href="cosmic-story.html"><span aria-hidden="true">✦</span> Readings</a></li>
             <li><a href="guides.html"><span aria-hidden="true">☰</span> Library</a></li>
             <li><a href="shop.html"><span aria-hidden="true">◇</span> Shop</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
-          <h2 class="footer-nav-col__title">Daily readings</h2>
-          <ul>
-            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
-            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
-            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
-            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
-            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
-            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
-            <li><a href="horoscope.html">All signs →</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-            <li><a href="aries.html">Aries profile</a></li>
-            <li><a href="taurus.html">Taurus profile</a></li>
-            <li><a href="gemini.html">Gemini profile</a></li>
-            <li><a href="cancer.html">Cancer profile</a></li>
-            <li><a href="leo.html">Leo profile</a></li>
-            <li><a href="virgo.html">Virgo profile</a></li>
           </ul>
         </div>
       </div>
