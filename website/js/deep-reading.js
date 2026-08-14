@@ -98,10 +98,17 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
 
   // CH1 — the frame
   const present = BODIES.filter((b) => natal[b] != null && !Number.isNaN(natal[b]));
+  const frameLines = [
+    `Born ${B.dateText || '[date]'}${B.timeText ? ', ' + B.timeText : ' (time unknown — noon local used as a date reference, not a birth hour)'}${B.place ? ', ' + B.place : ''}.`,
+  ];
+  if (B.zone) frameLines.push(`Zone ${B.zone}${B.utcText ? ' · computed from ' + B.utcText : ''}.`);
+  else if (B.utcText) frameLines.push(`Computed from ${B.utcText}.`);
+  if (!timed && deep.chapters.ch1.noonNote) frameLines.push(deep.chapters.ch1.noonNote);
+  if (timed && B.coordsKnown === false && deep.chapters.ch1.noCoordsNote) frameLines.push(deep.chapters.ch1.noCoordsNote);
   chapters.push({
     n: 1, title: deep.chapters.ch1.title,
     mono: [
-      `Born ${B.dateText || '[date]'}${B.timeText ? ', ' + B.timeText : ' (time unknown)'}${B.place ? ', ' + B.place : ''}.`,
+      ...frameLines,
       ...present.map((b) => (b === 'moon' && !timed)
         ? `${label(b)} — near ${fmtDegCoarse(natal[b])} ${deep.chapters.ch1.moonApproxNote || '(approximate)'}`
         : `${label(b)} — ${fmtDeg(natal[b], S)}${houseTxt(natal[b])}`),
