@@ -26,16 +26,18 @@ const SHELL_DOCUMENTS = [
   './offline.html',
 ];
 
-// Pages whose explicit ?v= values must never point beyond sw.js. Assets carry
-// their own release tips (for example chart v837 beside launch v842), so older
-// values are intentional. A future value is unsafe because the active worker
-// would not own that release yet.
+// Act 1 and launch-shell pages share one explicit release tip. Mixed query
+// versions let an old document assemble a new runtime, so generation fails
+// unless every authored ?v= agrees with the worker version being created.
 const RELEASE_PAGES = [
   './index.html',
-  './eclipse.html',
   './chart.html',
-  './horoscope.html',
+  './compatibility.html',
+  './tonight.html',
+  './sky-events.html',
+  './eclipse.html',
   './shop.html',
+  './deep-reading.html',
   './privacy.html',
   './terms.html',
   './refunds.html',
@@ -51,11 +53,6 @@ const RELEASE_PAGES = [
 const REQUIRED_TRANSITIVE = [
   './js/eclipse-reading.js',
   './js/reading-templates.json',
-  // The opt-in cosmic flight injects these classic scripts by string at click
-  // time, so the static import walker cannot discover them. They are small and
-  // make the same-model journey available after an offline refresh.
-  './js/scale-journey-chapters.js',
-  './js/scale-journey.js',
   './css/ap-footer-v835.css',
   // Home imports this through a release-version expression, which the static
   // import walker cannot discover. Adding the module lets the walker include
@@ -278,12 +275,12 @@ function assertReleaseQueries(version) {
     for (const ref of tagAssetRefs(html)) {
       if (!/\.(?:css|js)(?:[?#]|$)/i.test(ref)) continue;
       const match = ref.match(/[?&]v=(\d+)(?:[&#]|$)/i);
-      if (match && Number.parseInt(match[1], 10) > target) conflicts.push(`${page}: ${ref}`);
+      if (match && Number.parseInt(match[1], 10) !== target) conflicts.push(`${page}: ${ref}`);
     }
   }
   if (conflicts.length) {
     throw new Error(
-      `explicit route asset version(s) are newer than worker ${version}:\n${conflicts.join('\n')}`,
+      `explicit route asset version(s) do not match worker ${version}:\n${conflicts.join('\n')}`,
     );
   }
 }

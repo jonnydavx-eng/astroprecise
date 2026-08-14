@@ -1,7 +1,7 @@
 {
   "name": "AstroPrecise — the real sky news",
   "short_name": "AstroPrecise",
-  "description": "The real sky news: free birth chart, live solar system, and tonight’s sky — computed privately in your browser, to the exact minute you were born. No account required.",
+  "description": "Free birth chart, live solar system, and tonight’s sky, computed in your browser. Town search sends only that name to Open-Meteo; birth date and time stay here. No account required.",
   "id": "/",
   "start_url": "index.html?app=1",
   "display": "standalone",

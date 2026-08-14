@@ -1,5 +1,5 @@
 /**
- * Static proof: AstroPrecise v846 launch architecture.
+ * Static proof: AstroPrecise Act 1 launch architecture.
  * Exit 0 only when the flagship 3D, truthful commerce, shared chrome and
  * verification surfaces are wired to the current release contract.
  */
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const web = path.join(root, 'website');
-const RELEASE = '870';
+const RELEASE = '871';
 const ACT_ONE_PAGES = [
   'index.html',
   'chart.html',
@@ -20,6 +20,15 @@ const ACT_ONE_PAGES = [
   'shop.html',
   'deep-reading.html',
 ];
+const PINNED_RELEASE_PAGES = ACT_ONE_PAGES.concat([
+  'privacy.html',
+  'terms.html',
+  'refunds.html',
+  'verify.html',
+  'contact.html',
+  'sample-reading.html',
+  'natal-plate.html',
+]);
 let fails = 0;
 function ok(cond, msg) {
   if (cond) console.log('PASS', msg);
@@ -44,7 +53,6 @@ const mustExist = [
   'guides/eclipse-field-guide-2026.html',
   'js/eclipse-reading.js',
   'js/ap-eclipse-edition-v841.js',
-  'js/ap-cosmic-flight-tool.js',
   'js/plate-fingerprint.js',
   'assets/textures/earth_md.webp',
   'assets/textures/saturn_md.webp',
@@ -68,7 +76,12 @@ const retiredAssets = [
   'css/landing-gate.css',
   'css/lite-critical.css',
   'css/synastry-page.css',
+  'css/ap-cosmic-flight.css',
+  'css/ap-sky-news.css',
+  'css/ap-shop-enchanted.css',
   'js/ap-award-orrery.js',
+  'js/ap-cosmic-flight-tool.js',
+  'js/ap-sky-news.js',
   'js/ap-home-bootstrap.js',
   'js/ap-nav-model-v832.js',
   'js/ap-responsive-nav.js',
@@ -80,6 +93,8 @@ const retiredAssets = [
   'js/home-sign-picker.js',
   'js/lite-shell-boot.js',
   'js/shop-page-boot.js',
+  'js/scale-journey-chapters.js',
+  'js/scale-journey.js',
   'js/synastry-shared.js',
   'js/tool-cards.js',
 ];
@@ -112,6 +127,17 @@ ok(!/ap-sky-news\.js/.test(index), 'index excludes retired sky-news band');
 ok(new RegExp('js/ap-nav-model\\.js\\?v=' + RELEASE).test(index) && !/ap-nav-model-v834/.test(index), 'index uses the one canonical navigation model');
 ok(!/horoscope\.html|quiz\.html|angel-numbers\.html|name-numerology\.html/.test(index), 'index keeps retired rooms off the front path');
 
+const navPrefetch = fs.readFileSync(path.join(web, 'js/ap-nav-prefetch.js'), 'utf8');
+const pageBridge = fs.readFileSync(path.join(web, 'js/ap-page-bridge.js'), 'utf8');
+const appJs = fs.readFileSync(path.join(web, 'js/app.js'), 'utf8');
+ok(/index\|chart\|sky-events\|shop/.test(navPrefetch) && !/horoscope/.test(navPrefetch),
+  'prefetch targets only the four Act 1 destinations');
+ok(!/Daily|Life Path|Quiz|horoscope\.html|lifepath\.html|quiz\.html/.test(pageBridge),
+  'continue toast cannot advertise retired rooms');
+ok(!/\(index\|chart\|horoscope\|shop\|eclipse\)/.test(appJs)
+    && /\(index\|chart\|sky-events\|shop\|eclipse\)/.test(appJs),
+  'runtime launch classification uses Events instead of Daily');
+
 const chart = fs.readFileSync(path.join(web, 'chart.html'), 'utf8');
 ok(/id="chart-form"/.test(chart), 'chart keeps the birth-chart calculation form');
 ok(new RegExp('js/chart-page\\.js\\?v=' + RELEASE).test(chart), 'chart loads the current calculation controller');
@@ -137,6 +163,10 @@ ok(/@media\s*\(max-width:\s*700px\)[\s\S]*grid-template-columns:\s*1fr/.test(foo
 const phoneCss = fs.readFileSync(path.join(web, 'css/ap-phone-pass.css'), 'utf8');
 ok(/\.ap-events-feature p[\s\S]*\.event__ledger p[\s\S]*font-size:\s*16px\s*!important/.test(phoneCss),
   'Events narrative copy keeps the 16px phone floor');
+ok(/page-chart \.form-label[\s\S]*page-compat label[\s\S]*font-size:\s*16px\s*!important/.test(phoneCss),
+  'Act 1 form labels keep the 16px phone floor');
+ok(/\.ap-context__chart[\s\S]*\.ap-site-footer__legal a[\s\S]*\.ap-product__foot a[\s\S]*min-height:\s*44px\s*!important/.test(phoneCss),
+  'Act 1 secondary links keep 44px phone targets');
 const signGenerator = fs.readFileSync(path.join(web, 'tools/generate-sign-pages.mjs'), 'utf8');
 ok(new RegExp('ap-footer-inject\\.js\\?v=' + RELEASE).test(signGenerator), 'zodiac generator preserves the compact footer');
 
@@ -172,11 +202,16 @@ const shortcutNames = JSON.parse(manifest).shortcuts.map((shortcut) => shortcut.
 ok(JSON.stringify(shortcutNames) === JSON.stringify(['Observatory', 'Chart', 'Events', 'Shop']),
   'PWA shortcuts stay on the named Act 1 spine');
 
-for (const page of ACT_ONE_PAGES) {
+for (const page of PINNED_RELEASE_PAGES) {
   const html = fs.readFileSync(path.join(web, page), 'utf8');
   const pins = [...html.matchAll(/[?&]v=(\d+)/g)].map((match) => match[1]);
   ok(pins.length > 0 && pins.every((pin) => pin === RELEASE),
     page + ' uses only cache tip ' + RELEASE);
+  if (ACT_ONE_PAGES.includes(page)) {
+    const inlineVersion = html.match(/AP_ASSET_V\s*=\s*['"](\d+)['"]/);
+    ok(inlineVersion && inlineVersion[1] === RELEASE,
+      page + ' exposes runtime cache tip ' + RELEASE);
+  }
 }
 
 const indexLite = fs.readFileSync(path.join(web, 'index-lite.html'), 'utf8');

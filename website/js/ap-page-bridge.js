@@ -11,14 +11,11 @@
 
   var TOOL_PAGES = {
     'chart.html': 'Chart',
-    'horoscope.html': 'Daily',
     'compatibility.html': 'Match',
     'transits.html': 'Transits',
     'ephemeris.html': 'Sky',
     'shop.html': 'Shop',
-    'lifepath.html': 'Life Path',
     'moonphase.html': 'Moon',
-    'quiz.html': 'Quiz',
     'profile.html': 'Profile',
     'mysky.html': 'My Sky',
     'moment.html': 'Moment',

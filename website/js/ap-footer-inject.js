@@ -18,7 +18,7 @@
     if (document.querySelector('link[href*="ap-living-sky-v834.css"],link[href*="ap-footer-v835.css"]')) return;
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = new URL('css/ap-footer-v835.css?v=870', document.baseURI).href;
+    link.href = new URL('css/ap-footer-v835.css?v=871', document.baseURI).href;
     link.dataset.apFooterStyles = '835';
     (document.head || document.documentElement).appendChild(link);
   }
@@ -55,7 +55,7 @@
       +       '<img src="img/logo-mark.svg" width="28" height="28" alt="" decoding="async">'
       +       '<span>AstroPrecise</span>'
       +     '</a>'
-      +     '<p>The sky computed here; astrology explained with care. Birth details stay on this device.</p>'
+      +     '<p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>'
       +   '</div>'
       +   '<nav class="ap-site-footer__routes" aria-label="Core pages">' + linksHtml(CORE_LINKS) + '</nav>'
       +   '<nav class="ap-site-footer__legal" aria-label="Legal and verification">' + linksHtml(LEGAL_LINKS) + '</nav>'

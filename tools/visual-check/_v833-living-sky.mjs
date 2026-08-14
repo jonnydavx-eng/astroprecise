@@ -1,5 +1,5 @@
 /**
- * AstroPrecise v858 launch contract.
+ * AstroPrecise Act 1 launch contract.
  *
  * The legacy filename is retained because package.json calls it directly. The
  * assertions below describe the current product: one immersive WebGL
@@ -11,7 +11,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const BASE = (process.env.AP_BASE || process.argv[2] || 'http://127.0.0.1:8790').replace(/\/+$/, '');
-const OUT = process.env.AP_VISUAL_OUT || 'C:\\tmp\\astroprecise-v858-visual';
+const OUT = process.env.AP_VISUAL_OUT || '/tmp/astroprecise-act1-visual';
 const WINDOWS_CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const WORLDS = ['System', 'Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
 const SCALES = [
@@ -78,7 +78,7 @@ async function homeGate(browser, viewport, label, mobile) {
   const context = await browser.newContext({ viewport, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const errors = watch(page);
-  await page.goto(`${BASE}/index.html?nosw=1&contract=v858-${label}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.goto(`${BASE}/index.html?nosw=1&contract=act1-${label}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await waitForModel(page);
 
   const state = await page.evaluate(() => {
@@ -122,7 +122,7 @@ async function homeGate(browser, viewport, label, mobile) {
   gate(`${label} WebGL is the only model`, state.engine === 'webgl' && state.modelCount === 1 && state.visibleCanvasCount === 1, JSON.stringify({ engine: state.engine, modelCount: state.modelCount, visibleCanvasCount: state.visibleCanvasCount }));
   gate(`${label} opens directly at System frame`, state.scale === 2 && Number(state.radius) >= 32 && Number(state.radius) <= 160, JSON.stringify({ scale: state.scale, radius: state.radius }));
   gate(`${label} retired doorway absent`, !state.oldThreshold && !state.oldDeck);
-  gate(`${label} v858 living-sky stylesheet loaded`, state.cssLoaded);
+  gate(`${label} living-sky stylesheet loaded`, state.cssLoaded);
   gate(`${label} launch heading`, state.heading === 'The sky is moving.', state.heading || 'missing');
   gate(`${label} no horizontal overflow`, state.overflowX <= 1, `${state.overflowX}px`);
   gate(`${label} model has usable geometry`, state.stage && state.canvas && state.stage.width > 280 && state.stage.height > 340 && state.canvas.width > 280 && state.canvas.height > 340, JSON.stringify({ stage: state.stage, canvas: state.canvas }));
@@ -221,7 +221,7 @@ async function routeGate(browser) {
   for (const [route, bodyClass] of routes) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const errors = watch(page);
-    const response = await page.goto(`${BASE}/${route}?nosw=1&contract=v858-route`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    const response = await page.goto(`${BASE}/${route}?nosw=1&contract=act1-route`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.waitForSelector('h1', { state: 'visible', timeout: 15_000 });
     await page.waitForTimeout(1600);
     const state = await page.evaluate(expected => ({
@@ -268,7 +268,7 @@ async function mobileNavGate(browser) {
   for (const [route, expectedActive] of PRIMARY_ROUTES) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const errors = watch(page);
-    await page.goto(`${BASE}/${route}?nosw=1&contract=v858-nav`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.goto(`${BASE}/${route}?nosw=1&contract=act1-nav`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.waitForSelector('.navbar__toggle', { state: 'visible', timeout: 15_000 });
     const bottomHidden = await page.locator('.bottom-nav').evaluate(nav => getComputedStyle(nav).display === 'none');
     gate(`${route} retired fixed bottom bar stays hidden`, bottomHidden);
@@ -297,7 +297,7 @@ async function planetReturnGate(browser) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const errors = watch(page);
-  await page.goto(`${BASE}/index.html?nosw=1&contract=v858-planet-return`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.goto(`${BASE}/index.html?nosw=1&contract=act1-planet-return`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await waitForModel(page);
   await page.locator('#mobileWorld').selectOption('jupiter');
   await page.waitForFunction(() => document.getElementById('sky-focus-title')?.textContent.trim() === 'Jupiter', null, { timeout: 4_000 });
@@ -337,8 +337,8 @@ try {
 }
 
 if (failures.length) {
-  console.error(`\n${failures.length} v858 launch gate(s) failed:`);
+  console.error(`\n${failures.length} Act 1 launch gate(s) failed:`);
   failures.forEach(failure => console.error(` - ${failure}`));
   process.exit(1);
 }
-console.log(`\nALL V858 LAUNCH GATES PASS · screenshots: ${OUT}`);
+console.log(`\nALL ACT 1 LAUNCH GATES PASS · screenshots: ${OUT}`);
