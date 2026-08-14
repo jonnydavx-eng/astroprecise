@@ -9,7 +9,6 @@ import { writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { CONSTELLATIONS } from './constellations.mjs';
-import { footerBlockHtml } from './footer-model.mjs';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = 'https://astroprecise.app';
@@ -369,7 +368,7 @@ function chartBridgeSection(s) {
 function navShell() {
   return `
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="chart.html" class="navbar__link">Chart</a><a href="ephemeris.html" class="navbar__link">Sky</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="cosmic-story.html" class="navbar__link">Readings</a><a href="guides.html" class="navbar__link">Library</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -717,7 +716,7 @@ function page(s) {
     <symbol id="ei-modality" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></symbol>
   </svg>
 
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
@@ -732,7 +731,7 @@ function page(s) {
     <nav class="sign-breadcrumb" aria-label="Breadcrumb">
       <ol>
         <li><a href="index.html">Home</a></li>
-        <li><a href="horoscope.html">Daily</a></li>
+        <li><a href="guides.html">Sign guides</a></li>
         <li aria-current="page">${s.name}</li>
       </ol>
     </nav>
@@ -758,8 +757,8 @@ function page(s) {
             <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">${s.symbol}</span></div>
           </div>
           <div class="sign-hero__actions">
-            <a href="horoscope.html?sign=${s.key}" class="btn btn--primary btn--sm">Open in Daily Hub</a>
-            <a href="chart.html" class="btn btn--outline btn--sm">Birth Chart</a>
+            <a href="chart.html" class="btn btn--primary btn--sm">Cast a Birth Chart</a>
+            <a href="why.html" class="btn btn--outline btn--sm">Read the Method</a>
           </div>
         </div>
       </div>
@@ -884,19 +883,9 @@ function page(s) {
       </div>
     </section>
 
-    <section class="section" aria-label="Other zodiac signs">
-      <div class="container">
-        <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
-        <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
-        <ul class="sign-thumb-grid" aria-label="All zodiac signs">
-          ${SIGNS.map(o => `<li><a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}"${o.key === s.key ? ' aria-current="page"' : ''}><img src="assets/images/zodiac-cards/${o.key}.jpg" alt="${o.name}" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.name}</span></a></li>`).join('\n          ')}
-        </ul>
-      </div>
-    </section>
-
   </main>
 
-${footerBlockHtml({ footerClass: 'footer' })}
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
 
   <script src="js/content-service.js"></script>
   <script src="js/sign-daily.js"></script>

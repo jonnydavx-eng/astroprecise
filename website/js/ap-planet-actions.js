@@ -5,8 +5,8 @@
 //
 // When a planet is focused in the 3D model, surface a small DOM panel that turns
 // that body into a navigation launchpad: its live sign·degree + quick actions that
-// deep-link the real pages (cast a chart, freeze this sky, today's reading, read
-// the sign it's in, shop this sky).
+// deep-link the active pages (cast a chart, tonight, events, read the sign it's
+// in, shop this sky).
 //
 // Additive + honest-hybrid: listens to the engine's existing `orrery-planet-focus`
 // / `orrery-planet-select` events + `getBodyReadout(id)` — it NEVER touches the
@@ -34,8 +34,8 @@
   function actionsFor(id, r) {
     var acts = [
       { label: 'Cast a chart', hint: 'your natal wheel', href: 'chart.html' },
-      { label: 'Freeze this sky', hint: 'a keepsake moment', href: 'moment.html' },
-      { label: 'Today’s reading', hint: 'the daily sky', href: 'horoscope.html' },
+      { label: 'Visible tonight', hint: 'your observing sky', href: 'tonight.html' },
+      { label: 'Sky events', hint: 'what happens next', href: 'sky-events.html' },
     ];
     // The sign this body sits in right now — a real, live deep link.
     if (r && r.sign) {

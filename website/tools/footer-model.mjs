@@ -18,13 +18,11 @@ export const ZODIAC_SIGNS = [
   { key: 'pisces', name: 'Pisces' },
 ];
 
-/** Spine: Cast → Sky → Keep → Daily → Reading → Shop (keep in sync with ap-footer-inject.js). */
+/** Archive-safe tools column. Retired room links must not re-enter generated footers. */
 const FOOTER_TOOLS = [
   { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
   { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
-  { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">✦</span>' },
-  { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
-  { href: 'cosmic-story.html', label: 'Readings', icon: '<span aria-hidden="true">◇</span>' },
+  { href: 'sample-reading.html', label: 'Sample', icon: '<span aria-hidden="true">◇</span>' },
   { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
 ];
 
@@ -41,36 +39,9 @@ ${items}
         </div>`;
 }
 
-export function footerDailyColHtml() {
-  const items = ZODIAC_SIGNS.map((s) =>
-    `            <li><a href="horoscope.html?sign=${s.key}">${s.name} today</a></li>`
-  ).join('\n');
-  return `
-        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
-          <h2 class="footer-nav-col__title">Daily readings</h2>
-          <ul>
-${items}
-            <li><a href="horoscope.html">All signs →</a></li>
-          </ul>
-        </div>`;
-}
-
-export function footerSignGuidesColHtml() {
-  const items = ZODIAC_SIGNS.map((s) =>
-    `            <li><a href="${s.key}.html">${s.name} profile</a></li>`
-  ).join('\n');
-  return `
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-${items}
-          </ul>
-        </div>`;
-}
-
-/** Tools + Daily readings + Sign guides columns (no brand). */
+/** Tools column only; retired room and Sun-sign listings stay unhooked. */
 export function footerNavHtml() {
-  return footerToolsColHtml() + footerDailyColHtml() + footerSignGuidesColHtml();
+  return footerToolsColHtml();
 }
 
 export function footerBrandColHtml() {

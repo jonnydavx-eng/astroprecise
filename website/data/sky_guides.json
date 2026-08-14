@@ -167,8 +167,8 @@
       "trend_tag": "Seasonal",
       "signals": ["sun-sign", "ingress"],
       "links": [
-        {"href": "horoscope.html", "label": "Daily horoscope", "hook": "Live sky text"},
-        {"href": "cancer.html", "label": "Cancer season", "hook": "Sign deep dive"}
+        {"href": "this-weeks-sky.html", "label": "This week's sky", "hook": "Computed sky briefing"},
+        {"href": "transits.html", "label": "Personal transits", "hook": "Chart-specific view"}
       ]
     },
     {
@@ -191,7 +191,7 @@
       "trend_tag": "Featured reading",
       "signals": ["cosmic-story", "narrative"],
       "links": [
-        {"href": "cosmic-story.html", "label": "Read sample", "hook": "Six-movement story"},
+        {"href": "sample-reading.html", "label": "Read sample", "hook": "Published example"},
         {"href": "shop.html", "label": "Shop editions", "hook": "Keepsake PDF"}
       ]
     },

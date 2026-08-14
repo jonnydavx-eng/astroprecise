@@ -274,7 +274,7 @@
       '<article class="mp-card" id="mp-share-card">' +
         '<div class="mp-card__brand">' +
           '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold-text,#D9BC5C);"></span>' +
-          '<span class="mp-card__brand-name">Astro Precise</span>' +
+          '<span class="mp-card__brand-name">AstroPrecise</span>' +
         '</div>' +
         '<div class="mp-card__moon">' + moonSVG(phase, 120) + '</div>' +
         '<p class="mp-card__phase">' + phase.name + '</p>' +
@@ -289,9 +289,7 @@
       '</article>' +
       '<div class="mp-actions" style="gap:0.6rem;flex-wrap:wrap;">' +
         '<button type="button" class="btn btn--secondary" id="mp-copy-btn">Copy shareable text</button>' +
-        // Bridge to Moment — the visitor has already given a meaningful date;
-        // Moment turns that night into a free keepsake card.
-        '<a class="btn btn--outline" href="moment.html">Freeze this night as a keepsake &rarr;</a>' +
+        '<a class="btn btn--outline" href="tonight.html">See what is visible tonight &rarr;</a>' +
         // Open that calendar day at 12:00 UT in the 3D model (explore #m= receiver).
         (function () {
           try {

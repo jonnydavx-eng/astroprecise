@@ -292,7 +292,6 @@ const AstroApp = (() => {
   const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
     ['ephemeris.html', 'Sky tools'],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
-    ['moment.html', 'Moment', { badge: 'Keep' }],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
@@ -1631,7 +1630,7 @@ window.AP_MON = Object.assign({
         badge:        'Written for you',
         marketingLine:'The story of you — told through the exact sky of your first breath.',
         previewImage: 'img/shop/product-cosmic-story.jpg',
-        sampleUrl:    'cosmic-story.html',
+        sampleUrl:    '',
         blurb:        'Not a report — a story. Your birth chart retold as a flowing personal narrative: the arc of your Sun, Moon and rising sign, the tensions and gifts written into your aspects, and where your planets are quietly leading you. Drawn entirely from your real VSOP87 chart and written for you alone — a keepsake PDF to read and return to.',
         icon:         'book',
       },

@@ -1,11 +1,11 @@
 /**
- * Hover/touch prefetch for the five authored launch destinations.
+ * Hover/touch prefetch for the four active launch destinations.
  * Same-origin only; skipped when Save-Data is enabled.
  */
 (function () {
   'use strict';
 
-  var TARGETS = /^(?:\.\/)?(?:index|chart|horoscope|eclipse|shop)\.html(?:[?#].*)?$/i;
+  var TARGETS = /^(?:\.\/)?(?:index|chart|sky-events|shop)\.html(?:[?#].*)?$/i;
   var prefetched = Object.create(null);
 
   function saveDataEnabled() {

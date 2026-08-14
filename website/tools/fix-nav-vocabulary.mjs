@@ -11,11 +11,10 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Matches js/ap-nav-model.js NAV_PRIMARY noscript fallback */
 const NOSCRIPT_NAV =
-  '<noscript><a href="index.html" class="navbar__link">Home</a>'
+  '<noscript><a href="index.html" class="navbar__link">Observatory</a>'
   + '<a href="chart.html" class="navbar__link">Chart</a>'
-  + '<a href="horoscope.html" class="navbar__link">Daily</a>'
-  + '<a href="compatibility.html" class="navbar__link">Match</a>'
-  + '<a href="ephemeris.html" class="navbar__link">Sky</a></noscript>';
+  + '<a href="sky-events.html" class="navbar__link">Events</a>'
+  + '<a href="shop.html" class="navbar__link">Shop</a></noscript>';
 
 const LEGACY_NOSCRIPT_RE =
   /<noscript><a href="index\.html" class="navbar__link">Home<\/a><a href="chart\.html" class="navbar__link">Chart<\/a><a href="horoscope\.html" class="navbar__link">(?:Horoscope|Daily)<\/a>(?:<a href="compatibility\.html" class="navbar__link">Match<\/a><a href="ephemeris\.html" class="navbar__link">Sky<\/a>)?<\/noscript>/g;

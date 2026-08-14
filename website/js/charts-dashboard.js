@@ -130,10 +130,9 @@
 
   function cardHtml(c, isActive) {
     var initial = (c.name && c.name.trim()) ? c.name.trim().charAt(0).toUpperCase() : '★';
-    // The badge links to the daily loop it powers — horoscope.html reads the
-    // active chart (ap_active_chart) for the personal transit reading.
+    // The badge links to the personal transit view powered by the active chart.
     var activeBadge = isActive
-      ? '<a class="mc-card__active" href="horoscope.html" title="Powers your daily transit reading — open today’s">Today’s chart →</a>'
+      ? '<a class="mc-card__active" href="transits.html" title="Open this chart’s current transits">Current transits →</a>'
       : '';
     return '' +
       '<article class="glass-card mc-card' + (isActive ? ' mc-card--active' : '') + '" data-id="' + esc(c.id) + '">' +
@@ -176,7 +175,7 @@
           'Saved charts power your daily transit reading and let you revisit any chart in one tap.</p>' +
         '<div class="app-empty-state__actions">' +
           '<a class="btn btn--primary btn--lg" href="chart.html">Cast your first chart</a>' +
-          '<a class="btn btn--outline btn--lg" href="horoscope.html">Read today’s horoscope</a>' +
+          '<a class="btn btn--outline btn--lg" href="tonight.html">See tonight’s sky</a>' +
         '</div>' +
       '</div>';
   }
