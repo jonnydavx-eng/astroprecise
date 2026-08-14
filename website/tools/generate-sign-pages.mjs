@@ -425,7 +425,7 @@ function faqSection(s) {
 
 function page(s) {
   const others = SIGN_LIST.filter(o => o.key !== s.key);
-  const title = `${s.name} Horoscope Today — Daily Reading & Sign Guide | AstroPrecise`;
+  const title = `${s.name} Horoscope Today — Daily Reading & Sign Guide | Astro Precise`;
   const desc = `Free ${s.name} horoscope for today, calculated from real planetary positions. Plus the complete ${s.name} guide: element, ruling planet, love, career, and compatibility.`;
   const url = `${BASE_URL}/${s.key}.html`;
 
@@ -443,7 +443,7 @@ function page(s) {
       `${s.name} traits`, `${s.name} compatibility`, `${s.name} love`, `${s.name} career`,
       `${s.element} sign`, `${s.modality} sign`,
     ].join(', '),
-    publisher: { '@type': 'Organization', name: 'AstroPrecise', url: BASE_URL },
+    publisher: { '@type': 'Organization', name: 'Astro Precise', url: BASE_URL },
     about: { '@type': 'Thing', name: `${s.name} (astrology)` },
   };
 
@@ -508,19 +508,19 @@ function page(s) {
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="${s.name} Horoscope Today | AstroPrecise" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="${s.name} Horoscope Today | Astro Precise" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="${s.name} — ${s.dates}, ${/^[AEIOU]/.test(s.element) ? 'an' : 'a'} ${s.element} sign ruled by ${RULER_STILL[s.key].label}, shown as a photoreal render of ${RULER_STILL[s.key].label} on AstroPrecise." />
+  <meta property="og:image:alt" content="${s.name} — ${s.dates}, ${/^[AEIOU]/.test(s.element) ? 'an' : 'a'} ${s.element} sign ruled by ${RULER_STILL[s.key].label}, shown as a photoreal render of ${RULER_STILL[s.key].label} on Astro Precise." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${s.name} Horoscope Today | AstroPrecise" />
+  <meta name="twitter:title" content="${s.name} Horoscope Today | Astro Precise" />
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
-  <meta name="theme-color" content="#020307" />
+  <meta name="theme-color" content="#0C1016" />
   <link rel="preload" href="img/engine/${RULER_STILL[s.key].still}.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <!-- CLS: preload the hero display face (h1) so Cormorant paints from first paint (no late swap). -->
@@ -719,9 +719,9 @@ function page(s) {
   <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         ${navShell()}
     </nav>
@@ -740,7 +740,7 @@ function page(s) {
       <div class="sign-hero__inner">
         <figure class="sign-hero__planet">
           <img class="sign-hero__planet-img" src="img/engine/${RULER_STILL[s.key].still}.webp"
-            alt="${RULER_STILL[s.key].label}, ${RULER_STILL[s.key].rel} — rendered from the AstroPrecise engine"
+            alt="${RULER_STILL[s.key].label}, ${RULER_STILL[s.key].rel} — rendered from the Astro Precise engine"
             width="340" height="340" loading="eager" decoding="async" fetchpriority="high" />
           <figcaption class="sign-hero__planet-caption">${RULER_STILL[s.key].label} · ${RULER_STILL[s.key].rel} · our engine render</figcaption>
         </figure>
@@ -892,7 +892,7 @@ function page(s) {
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/sign-page-boot.js"></script>
   <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=867" defer></script>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
 </body>
 </html>
 `;

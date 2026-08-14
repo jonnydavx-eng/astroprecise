@@ -28,11 +28,11 @@
   <meta name="twitter:description" content="Naked-eye planets, Moon phase, twilight — computed in your browser. Real sky news." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#020307" />
-  <link rel="preload" href="css/main-lite.css?v=867" as="style" />
-  <noscript><link rel="stylesheet" href="css/fonts.css?v=867" /><link rel="stylesheet" href="css/ap-page-bridge.css?v=867" /><link rel="stylesheet" href="css/instrument-panel.css?v=867" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=867" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=867" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=867" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /></noscript>
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=788" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
   <link rel="stylesheet" href="css/main-lite.css?v=867" />
   <script>window.AP_ASSET_V='867';</script>
     <script type="importmap">
@@ -44,10 +44,10 @@
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867" />
   <link rel="stylesheet" href="css/ap-phone-pass.css?v=867">
   <link rel="stylesheet" href="css/ap-home-v835.css?v=867">
-  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css?v=867" />
-  <link rel="stylesheet" href="css/tonight-page.css?v=867" id="ap-css-tonight" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/tonight-page.css" id="ap-css-tonight" />
   <style>
-    body:has(.tn-hero){--tn-gold:#d8b46a;--tn-gold-light:#F2ECDF;--tn-surface:#020307;--tn-border:rgba(216,180,106,.24);background:#020307;color:#F2ECDF;}
+    body:has(.tn-hero){--tn-gold:#d8b46a;--tn-gold-light:#f1eadb;--tn-surface:#0b1018;--tn-border:rgba(216,180,106,.24);background:#020307;color:#f1eadb;}
     body:has(.tn-hero) #starfield-canvas,.aurora-orb{display:none!important;}
     body:has(.tn-hero) .tn-hero{padding:calc(var(--nav-height,72px) + 54px) 0 34px;text-align:left;}
     body:has(.tn-hero) .tn-hero::before{background:radial-gradient(circle at 72% 12%,rgba(216,180,106,.08),transparent 34%);}
@@ -58,10 +58,10 @@
     body:has(.tn-hero) .tn-hero__sub{font-family:'Schibsted Grotesk',system-ui,sans-serif;font-size:clamp(16px,1.5vw,20px);line-height:1.62;max-width:42rem;margin:0 0 20px;color:rgba(241,234,219,.7);}
     body:has(.tn-hero) .tn-privacy-seal{justify-self:start;border-radius:3px;background:transparent;border-color:rgba(216,180,106,.3);}
     body:has(.tn-hero) .tn-locator{max-width:1120px;margin:0 auto 36px;}
-    body:has(.tn-hero) .tn-locator__card{min-height:0;padding:clamp(22px,4vw,44px);border-radius:4px;background:#020307;box-shadow:none;text-align:left;}
+    body:has(.tn-hero) .tn-locator__card{min-height:0;padding:clamp(22px,4vw,44px);border-radius:4px;background:#0b1018;box-shadow:none;text-align:left;}
     body:has(.tn-hero) .tn-locator__buttons{justify-content:flex-start;min-height:0;}
     body:has(.tn-hero) .tn-btn,.tn-city-input{min-height:48px;border-radius:3px;}
-    body:has(.tn-hero) .tn-btn--primary{background:#ff6428;color:#020307;box-shadow:none;}
+    body:has(.tn-hero) .tn-btn--primary{background:#ff6428;color:#090603;box-shadow:none;}
     body:has(.tn-hero) .tn-city-row{max-width:none;margin:0;}
     body:has(.tn-hero) .tn-city-input{background:#020307;border-color:rgba(216,180,106,.25);}
     body:has(.tn-hero) .tn-section{padding:64px 0;border-top:1px solid rgba(216,180,106,.14);}
@@ -72,8 +72,8 @@
     body:has(.tn-hero) #tn-moon-wrap{min-height:0!important;}
     body:has(.tn-hero) .tn-awaiting{max-width:720px;margin:24px auto 0;padding:22px;border:1px solid rgba(216,180,106,.22);color:rgba(241,234,219,.68);font-size:16px;line-height:1.6;}
     body:has(.tn-hero):not(.tn-has-report) .tn-report-section{display:none;}
-    body:has(.tn-hero) .tn-twi-card,body:has(.tn-hero) .tn-planet-card,body:has(.tn-hero) .tn-moon,body:has(.tn-hero) .tn-honesty{border-radius:4px;background:#020307;backdrop-filter:none;}
-    body:has(.tn-hero) .tn-privacy-band{background:#020307;border-top:1px solid rgba(216,180,106,.16);}
+    body:has(.tn-hero) .tn-twi-card,body:has(.tn-hero) .tn-planet-card,body:has(.tn-hero) .tn-moon,body:has(.tn-hero) .tn-honesty{border-radius:4px;background:#0b1018;backdrop-filter:none;}
+    body:has(.tn-hero) .tn-privacy-band{background:#070b11;border-top:1px solid rgba(216,180,106,.16);}
     body:has(.tn-hero) .tn-privacy-band__inner{text-align:left;max-width:860px;}
     body:has(.tn-hero) .tn-privacy-band h2{margin-left:0;}
     body:has(.tn-hero) .tn-privacy-band p{margin-left:0;}
@@ -102,10 +102,9 @@
     body:has(.tn-hero) #tn-twilight{min-height:0;}
     body:has(.tn-hero) #tn-moon-wrap{min-height:0;contain:layout style;}
   </style>
-  <link rel="stylesheet" href="css/ap-act1-house-v867.css?v=867" />
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
-  <script src="js/defer-page-css.js?v=867" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferTonightFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css?v=867';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferTonightFonts();deferPageCss('css/instrument-panel.css?v=867','ap-css-instrument');deferPageCss('css/ap-motion.css?v=867','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css?v=867','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css?v=867','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css?v=867','ap-css-bridge');});</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferTonightFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferTonightFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -113,7 +112,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — What's Visible Tonight","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"A privacy-first tool that computes which naked-eye planets are visible tonight, the Moon's phase and illumination, and sunset and twilight times for your location — entirely in your browser, using real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/tonight.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What planets are visible tonight?","acceptedAnswerNote":"Computed live in the browser.","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise computes which of the five naked-eye planets — Mercury, Venus, Mars, Jupiter and Saturn — are above your horizon and visible after sunset tonight, based on your location and real planetary positions. The answer is calculated on your device and changes daily."}},{"@type":"Question","name":"How is the visibility calculated?","acceptedAnswer":{"@type":"Answer","text":"Each planet's position is found from VSOP87 and ELP2000 astronomical theory, converted to its altitude above your local horizon using your latitude and the local sidereal time. A planet is reported as visible if it rises clear of the horizon during the dark hours after sunset. Times are good approximations for a flat, unobstructed horizon and may vary with terrain, weather and light pollution."}},{"@type":"Question","name":"Is my location sent anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Everything is computed in your browser. Your coordinates are never transmitted to AstroPrecise. If you type a city name to search, only that place name is sent to a public geocoder — never your exact position."}}]}</script>
   </head>
-<body class="ap-no-nav-enter ap-act1-house">
+<body class="ap-no-nav-enter">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -541,7 +540,7 @@
   </script>
 
   <!-- JS — ephemeris/tonight on defer; cosmos + effects idle after load -->
-  <script src="js/profile.js?v=867" defer></script>
+  <script src="js/profile.js" defer></script>
   <script>
   (function () {
     function audit() {
@@ -553,9 +552,9 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    inject('js/raf-core.js?v=867');
-    inject('js/icons.js?v=867');
-    inject('js/tonight.js?v=867');
+    inject('js/raf-core.js');
+    inject('js/icons.js');
+    inject('js/tonight.js');
     function idleCosmos() {
       if (audit()) return;
     }
@@ -565,8 +564,8 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=867" defer></script>
-<script src="js/ap-sky-time.js?v=867" defer></script>
+  <script src="js/ap-page-boot.js" defer></script>
+<script src="js/ap-sky-time.js" defer></script>
   <script src="js/ap-footer-inject.js?v=867" defer></script>
   <script src="js/ap-room-sky.js?v=867" defer></script>
 </body>

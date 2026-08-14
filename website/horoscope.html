@@ -5,9 +5,8 @@
   <meta name="color-scheme" content="dark" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Daily horoscope for all 12 signs. Positions are calculated for today at 12:00 UT and interpreted through a solar chart; astrological meaning is offered for reflection and entertainment." />
-  <meta name="robots" content="noindex, follow" />
   <title>Daily Horoscope — calculated from today’s sky | AstroPrecise</title>
-  <link rel="stylesheet" href="css/fonts.css?v=867" />
+  <link rel="stylesheet" href="css/fonts.css?v=835" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -48,13 +47,11 @@
     "isPartOf": { "@type": "WebSite", "name": "AstroPrecise", "url": "https://astroprecise.app/" }
   }
   </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=867" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867" />
-  <link rel="stylesheet" href="css/ap-daily-v835.css?v=867" />
-  <link rel="stylesheet" href="css/ap-act1-house-v867.css?v=867" />
-  <script>window.AP_ASSET_V='867';</script>
+  <link rel="stylesheet" href="css/celestial-seals.css?v=835" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=838" />
+  <link rel="stylesheet" href="css/ap-daily-v835.css?v=835" />
 </head>
-<body class="page-horoscope ap-daily-ledger ap-no-nav-enter ap-act1-house">
+<body class="page-horoscope ap-daily-ledger ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -74,7 +71,8 @@
           <noscript>
             <a href="index.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="sky-events.html" class="navbar__link">Events</a>
+            <a href="horoscope.html" class="navbar__link" aria-current="page">Daily</a>
+            <a href="eclipse.html" class="navbar__link">Eclipse</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
@@ -85,8 +83,6 @@
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
     </nav>
   </header>
-
-  <aside class="ap-archive-note"><strong>Archive room.</strong> The collective Sun-sign grid is kept off the live path; its meanings are traditional reflection, not measured fact.</aside>
 
   <main id="main-content">
     <section class="daily-room" aria-labelledby="page-title">
@@ -194,14 +190,14 @@
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-  <script src="js/raf-core.js?v=867" defer></script>
-  <script src="js/ap-zodiac-constants.js?v=867" defer></script>
-  <script src="js/ephemeris.js?v=867" defer></script>
-  <script src="js/celestial-seals.js?v=867" defer></script>
-  <script src="js/ap-nav-model.js?v=867" defer></script>
-  <script src="js/ap-footer-inject.js?v=867" defer></script>
-  <script src="js/app.js?v=867" defer></script>
-  <script src="js/horoscope-page.js?v=867" defer></script>
-  <script src="js/ap-daily-ritual.js?v=867" defer></script>
+  <script src="js/raf-core.js" defer></script>
+  <script src="js/ap-zodiac-constants.js" defer></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/celestial-seals.js" defer></script>
+  <script src="js/ap-nav-model.js?v=838" defer></script>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/horoscope-page.js?v=835" defer></script>
+  <script src="js/ap-daily-ritual.js?v=835" defer></script>
 </body>
 </html>

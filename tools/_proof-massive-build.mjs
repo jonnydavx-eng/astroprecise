@@ -65,10 +65,10 @@ ok(/https:\/\/davxplorer3\.gumroad\.com\/l\/your-eclipse-reading/.test(shop), 's
 ok(/ap-mystic-cards-v835\.js/.test(shop), 'shop loads art-only spectral interaction');
 
 const numerology = fs.readFileSync(path.join(web, 'numerology.html'), 'utf8');
-ok(/class="[^"]*\bpage-numerology\b[^"]*"/.test(numerology) && /class="site-header"/.test(numerology),
+ok(/class="page-numerology"/.test(numerology) && /class="site-header"/.test(numerology),
   'numerology uses the shared launch shell');
-ok(/ap-numerology-v835\.css\?v=867/.test(numerology) && /ap-nav-model\.js\?v=867/.test(numerology),
-  'numerology loads the shared visual and release-tip navigation systems');
+ok(/ap-numerology-v835\.css\?v=835/.test(numerology) && /ap-nav-model\.js\?v=835/.test(numerology),
+  'numerology loads the v835 visual and navigation systems');
 ok(!/#6fd8c6|Space Grotesk|class="wrap"/.test(numerology), 'numerology excludes the retired teal mini-site');
 ok((numerology.match(/class="ap-number-route"/g) || []).length === 3, 'numerology exposes three clearly labelled traditions');
 const mysticCards = fs.readFileSync(path.join(web, 'js/ap-mystic-cards-v835.js'), 'utf8');
@@ -80,7 +80,7 @@ ok(/Astronomy computed locally/.test(footerJs), 'shared footer carries the conci
 const footerCss = fs.readFileSync(path.join(web, 'css/ap-footer-v835.css'), 'utf8');
 ok(/@media\s*\(max-width:\s*700px\)[\s\S]*grid-template-columns:\s*1fr/.test(footerCss), 'standalone footer collapses to one column on phones');
 const signGenerator = fs.readFileSync(path.join(web, 'tools/generate-sign-pages.mjs'), 'utf8');
-ok(/ap-footer-inject\.js\?v=867/.test(signGenerator), 'zodiac generator preserves the compact footer');
+ok(/ap-footer-inject\.js\?v=835/.test(signGenerator), 'zodiac generator preserves the compact footer');
 
 const sitemap = fs.readFileSync(path.join(web, 'sitemap.xml'), 'utf8');
 const sitemapPages = [...sitemap.matchAll(/https:\/\/astroprecise\.app\/([^<]*\.html)/g)].map((match) => match[1]);

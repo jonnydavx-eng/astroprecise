@@ -28,27 +28,23 @@
   <meta name="twitter:description" content="Every number is real, labelled measured or computed, and checkable. Real astronomy, private by design, never faked." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#020307" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=867" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=867" id="ap-css-atlas-tokens" />
-  <link rel="preload" href="css/main-lite.css?v=867" as="style" />
-  <link rel="stylesheet" href="css/fonts.css?v=867" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="css/fonts.css?v=867" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=867" />
-  <link rel="stylesheet" href="css/main-lite.css?v=867" />
-  <link rel="stylesheet" href="css/ap-page-bridge.css?v=867" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867" />
-  <link rel="stylesheet" href="css/why-page.css?v=867" />
-  <link rel="stylesheet" href="css/ap-act1-house-v867.css?v=867" />
-  <script>window.AP_ASSET_V='867';</script>
-  <script src="js/defer-page-css.js?v=867" defer></script>
-  <script src="js/ap-nav-model.js?v=867" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){deferPageCss('css/ap-cinematic-2026.css?v=867','ap-css-cinematic');deferMainCss();});</script>
+  <link rel="stylesheet" href="css/ap-palette-2026.css" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=788" id="ap-css-atlas-tokens" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/why-page.css" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferMainCss();});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Why AstroPrecise","description":"Why AstroPrecise is different: every number is real, labelled measured or computed, and checkable. Real VSOP87/ELP2000 astronomy, a privacy-first in-browser engine, deterministic readings, and an honesty rule that never fakes data.","url":"https://astroprecise.app/why.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   </head>
-<body class="ap-act1-house">
+<body>
   <a class="skip-link" href="#main-content">Skip to content</a>
 
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -58,15 +54,15 @@
   <!-- ============================================================
        NAVIGATION
   ============================================================ -->
-  <header class="site-header" role="banner" data-ap-static-nav>
+  <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -168,12 +164,13 @@
     <!-- ═══ DETERMINISM ═══ -->
     <section class="why-section" id="determinism">
       <h2>Determinism</h2>
-      <p>The same birth details produce the same chart and the same mapped traditional
-        interpretation on any device. The selection is deterministic, not pulled from
-        a model that says something different every time you ask.</p>
-      <p>This makes the mapping reproducible; it does not make an astrological
-        interpretation a measured or scientific truth. You can return to it, share it,
-        and see how the same computed chart led to the same passage.</p>
+      <p>The same birth details will always produce the same chart and the same
+        reading — today, next year, on any device. Our interpretations are seeded
+        deterministically, not pulled from a model that says something different
+        every time you ask.</p>
+      <p>This matters more than it sounds. It means your reading is a property of the
+        sky and your moment in it, not an accident of when you clicked. You can
+        return to it, share it, and find it unchanged.</p>
     </section>
 
     <!-- ═══ THE FABRICATION PROBLEM ═══ -->
@@ -228,18 +225,73 @@
 
   </main>
 
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
 
   <!-- Toast container -->
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS -->
-  <script src="js/raf-core.js?v=867"></script>
+  <script src="js/raf-core.js"></script>
 
-  <script src="js/cosmos.js?v=867"></script>
-<script src="js/effects.js?v=867"></script>
-  <script src="js/ap-page-boot.js?v=867" defer></script>
-  <script src="js/ap-footer-inject.js?v=867" defer></script>
-<script src="js/ap-sky-time.js?v=867" defer></script>
+  <script src="js/cosmos.js"></script>
+<script src="js/effects.js"></script>
+  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
+<script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

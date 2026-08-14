@@ -6,7 +6,6 @@
   <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Freeze the real sky of any date — zenith star, light-cone story, free share card. Computed privately in your browser from VSOP87 astronomy. Birth, anniversary, memorial, or any night that mattered." />
-  <meta name="robots" content="noindex, follow" />
   <title>Moment — Freeze any date’s sky | AstroPrecise</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -29,15 +28,15 @@
   <meta name="twitter:description" content="Real zenith star + light-cone story + free share card. Computed in your browser." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og/moment.jpg" />
   <meta name="theme-color" content="#020307" />
-  <link rel="preload" href="css/main-lite.css?v=867" as="style" />
-  <noscript><link rel="stylesheet" href="css/fonts.css?v=867" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=867" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=867" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=867" />
-  <link rel="stylesheet" href="css/main-lite.css?v=867" />
-  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css?v=867" />
-  <link rel="stylesheet" href="css/moment-page.css?v=867" id="ap-css-moment" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=867" id="ap-css-structure-clean" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=788" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/moment-page.css?v=752" id="ap-css-moment" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
   <style>
     body.ap-moment-page{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body.ap-moment-page .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -46,17 +45,15 @@
     body.ap-moment-page .mom-plate{min-height:200px;}
   </style>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
-  <script>window.AP_ASSET_V='867';</script>
-  <script src="js/defer-page-css.js?v=867" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function loadFonts(){if(navigator.webdriver||document.getElementById('ap-css-fonts'))return;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css?v=867';l.id='ap-css-fonts';document.head.appendChild(l);}window.addEventListener('scroll',loadFonts,{once:true,passive:true});window.addEventListener('pointerdown',loadFonts,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(loadFonts,20000);},{once:true});if(typeof deferMainCss==='function')deferMainCss();if(typeof deferPageCss==='function'){deferPageCss('css/ap-page-bridge.css?v=867','ap-css-bridge');deferPageCss('css/ap-motion.css?v=867','ap-css-motion');}});</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function loadFonts(){if(navigator.webdriver||document.getElementById('ap-css-fonts'))return;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';document.head.appendChild(l);}window.addEventListener('scroll',loadFonts,{once:true,passive:true});window.addEventListener('pointerdown',loadFonts,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(loadFonts,20000);},{once:true});if(typeof deferMainCss==='function')deferMainCss();if(typeof deferPageCss==='function'){deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/ap-motion.css','ap-css-motion');}});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — Moment","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Freeze the real sky of any date into a keepsake: zenith star, light-cone story, and free share card. Computed in-browser with VSOP87 astronomy; birth data never leaves your device.","url":"https://astroprecise.app/moment.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867" />
-  <link rel="stylesheet" href="css/ap-act1-house-v867.css?v=867" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
 </head>
-<body class="ap-no-nav-enter ap-moment-page ap-act1-house">
+<body class="ap-no-nav-enter ap-moment-page">
   <a class="skip-link" href="#main-content">Skip to content</a>
 
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -64,7 +61,7 @@
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
-  <header class="site-header" role="banner" data-ap-static-nav>
+  <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -73,9 +70,11 @@
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
-            <a href="index.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="sky-events.html" class="navbar__link">Events</a>
+            <a href="ephemeris.html" class="navbar__link">Sky</a>
+            <a href="horoscope.html" class="navbar__link">Daily</a>
+            <a href="cosmic-story.html" class="navbar__link">Readings</a>
+            <a href="guides.html" class="navbar__link">Library</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
@@ -88,8 +87,6 @@
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
-
-  <aside class="ap-archive-note"><strong>Archive room.</strong> Moment remains a free local study, kept off the live path with no product or checkout.</aside>
 
   <main id="main-content">
     <section class="mom-hero" aria-labelledby="page-title">
@@ -154,8 +151,8 @@
     <!-- Lifestyle teaser AFTER form (v682 form-first — never buries date/place) -->
     <figure class="mom-gallery-teaser mom-hero__gallery mom-hero__gallery--solo" id="mom-gallery-teaser">
       <picture>
-        <source type="image/webp" srcset="img/moment/hero-framed.webp?v=867" />
-        <img src="img/moment/hero-framed.jpg?v=867" width="800" height="600" alt="Framed Moment sky print on a gallery wall — example lifestyle render" decoding="async" loading="lazy" />
+        <source type="image/webp" srcset="img/moment/hero-framed.webp?v=752" />
+        <img src="img/moment/hero-framed.jpg?v=752" width="800" height="600" alt="Framed Moment sky print on a gallery wall — example lifestyle render" decoding="async" loading="lazy" />
       </picture>
       <figcaption>Free card uses the same void-and-silver + engine plate language.</figcaption>
     </figure>
@@ -207,7 +204,7 @@
           <div class="mom-keep">
             <button type="button" class="mom-btn mom-btn--primary" id="mom-share">Share card</button>
             <button type="button" class="mom-btn mom-btn--ghost" id="mom-save">Download PNG</button>
-            <a class="mom-btn mom-btn--ghost" href="tonight.html" id="mom-daily-return" hidden>Return to tonight&apos;s sky →</a>
+            <a class="mom-btn mom-btn--ghost" href="horoscope.html" id="mom-daily-return" hidden>Tomorrow: today&apos;s Daily →</a>
             <a class="mom-btn mom-btn--ghost" href="eclipse.html#contact" id="mom-pack-cta">Explore the eclipse edition</a>
             <a class="mom-btn mom-btn--ghost" href="chart.html">Cast full chart</a>
             <a class="mom-btn mom-btn--ghost" href="index.html#m=now" id="mom-model-link" hidden>Open this night in the 3D model</a>
@@ -216,9 +213,9 @@
             <p><strong>Free now:</strong> this PNG card (zenith + light-cone + engine plate). No account.</p>
             <p><strong>Private by design:</strong> the card is generated and downloaded in this browser.</p>
             <p style="margin:0">
-              <a href="tonight.html">Tonight</a>
-              · <a href="sky-events.html">Events</a>
-              · <a href="why.html">Method</a>
+              <a href="ephemeris.html">Sky</a>
+              · <a href="horoscope.html">Daily</a>
+              · <a href="cosmic-story.html">Readings</a>
             </p>
           </div>
         </div>
@@ -231,29 +228,34 @@
         <li><strong>1 · Live sky</strong> Feel the system moving — home orrery and <a href="ephemeris.html">Sky</a>.</li>
         <li><strong>2 · Chart</strong> Cast <em>your</em> birth sky free on <a href="chart.html">Chart</a>.</li>
         <li><strong>3 · Moment</strong> Keep any date as art (you are here).</li>
-        <li><strong>4 · Tonight</strong> Come back for the computed observing sky on <a href="tonight.html">Tonight</a>.</li>
+        <li><strong>4 · Daily</strong> Come back for today’s sky on <a href="horoscope.html">Daily</a>.</li>
         <li><strong>5 · Eclipse</strong> Replay the 12 August eclipse and keep a personalised edition.</li>
       </ol>
     </section>
   </main>
 
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <footer class="site-footer" role="contentinfo">
+    <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#8B919C);font-size:0.85rem">
+      <p style="margin:0 0 0.5rem"><a href="index.html">Home</a> · <a href="chart.html">Chart</a> · <a href="ephemeris.html">Sky</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
+      <p style="margin:0">© AstroPrecise · entertainment &amp; education · astronomy computed in-browser</p>
+    </div>
+  </footer>
 
   <!-- Chrome boot -->
-  <script src="js/ap-safe-dom.js?v=867" defer></script>
-  <script src="js/ap-page-boot.js?v=867" defer></script>
+  <script src="js/ap-safe-dom.js" defer></script>
+  <script src="js/ap-page-boot.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){if(window.AP_PAGE_BOOT)AP_PAGE_BOOT.load();});</script>
   <!-- Astronomy engines (after chrome) -->
-  <script src="js/raf-core.js?v=867" defer></script>
-  <script src="js/ephemeris.js?v=867" defer></script>
-  <script src="js/starcatalog.js?v=867" defer></script>
-  <script src="js/lightcone.js?v=867" defer></script>
-  <script src="js/ap-deep-link.js?v=867" defer></script>
-  <script src="js/ap-sky-bridge.js?v=867" defer></script>
-  <script src="js/ap-moment-share.js?v=867" defer></script>
-  <script src="js/moment-page.js?v=867" defer></script>
-  <script src="js/cosmos.js?v=867" defer></script>
-<script src="js/ap-sky-time.js?v=867" defer></script>
-  <script src="js/ap-footer-inject.js?v=867" defer></script>
+  <script src="js/raf-core.js" defer></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/starcatalog.js" defer></script>
+  <script src="js/lightcone.js" defer></script>
+  <script src="js/ap-deep-link.js?v=834" defer></script>
+  <script src="js/ap-sky-bridge.js?v=834" defer></script>
+  <script src="js/ap-moment-share.js?v=752" defer></script>
+  <script src="js/moment-page.js?v=834" defer></script>
+  <script src="js/cosmos.js" defer></script>
+<script src="js/ap-sky-time.js" defer></script>
+  <script src="js/ap-footer-inject.js?v=835" defer></script>
 </body>
 </html>

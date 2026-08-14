@@ -268,10 +268,29 @@ const AstroQuiz = (() => {
     });
   }
 
-  // ── Archive routes: free on-site context only ───────────────
-  function buildRoutes() {
+  // ── Build a monetisation-aware route block ─────────────────
+  // Honest + dormant-safe: a real chart is always the primary CTA.
+    // Optional product/email paths only light up when AP_MON has a real URL;
+  // otherwise they degrade to email-intent or quietly vanish (data-mon).
+  function buildRoutes(arch) {
+    const M = window.AP_MON || {};
+    const isUrl = u => typeof u === 'string' && /^https?:\/\//i.test(u.trim());
+
+    // Pick a product whose vibe matches: apparel for fire/air (expressive),
+    // print for earth (lasting), reading for water (inner). Falls back safely.
+    const commerce = (M.commerce && Array.isArray(M.commerce.products)) ? M.commerce.products : [];
+    const prefByElement = {
+      fire: 'sky-tee', air: 'sky-tee',
+      earth: 'natal-poster', water: 'deep-reading',
+    };
+    const wantId = prefByElement[arch.element] || 'natal-poster';
+    const product = commerce.find(p => p.id === wantId)
+      || commerce.find(p => p.id === 'natal-poster')
+      || commerce[0] || null;
+
     const rows = [];
 
+    // 1) PRIMARY — cast the real chart (always live, internal link).
     rows.push(`
       <a class="aq-route aq-route--primary" href="chart.html">
         <span class="aq-route__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
@@ -283,16 +302,37 @@ const AstroQuiz = (() => {
       </a>
     `);
 
+    // 2) One focused launch path — calculate before any paid offer appears.
     rows.push(`
-      <a class="aq-route" href="why.html">
+      <a class="aq-route" href="eclipse.html#contact">
         <span class="aq-route__icon" aria-hidden="true">❧</span>
         <span class="aq-route__body">
-          <span class="aq-route__title">Read the evidence rule</span>
-          <span class="aq-route__sub">See what AstroPrecise computes, what it measures, and what remains interpretation.</span>
+          <span class="aq-route__title">Check your eclipse contact</span>
+          <span class="aq-route__sub">A direct contact can open the one £7 Eclipse Edition; a quiet chart stays free.</span>
         </span>
         <span class="aq-route__arrow" aria-hidden="true">→</span>
       </a>
     `);
+
+    // 3) PRODUCT — dormant-safe. Live "Buy" if the product has a fulfilUrl;
+    // otherwise route to the shop page (real, pre-launch honest cart).
+    if (product) {
+      const live = isUrl(product.fulfilUrl);
+      const href = live ? esc(product.fulfilUrl.trim()) : 'shop.html';
+      const targetAttr = live ? ' target="_blank" rel="noopener sponsored"' : '';
+      const priceTxt = (typeof product.price === 'number')
+        ? '$' + product.price.toFixed(2) : '';
+      rows.push(`
+        <a class="aq-route" href="${href}"${targetAttr}>
+          <span class="aq-route__icon" aria-hidden="true">◈</span>
+          <span class="aq-route__body">
+            <span class="aq-route__title">${esc(product.name)}${priceTxt ? ' · <span class="aq-route__price">' + priceTxt + '</span>' : ''}</span>
+            <span class="aq-route__sub">${live ? 'A piece matched to your archetype — made from your own chart.' : 'A piece matched to your archetype — the shop opens soon.'}</span>
+          </span>
+          <span class="aq-route__arrow" aria-hidden="true">→</span>
+        </a>
+      `);
+    }
 
     return rows.join('');
   }

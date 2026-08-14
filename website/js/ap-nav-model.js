@@ -81,7 +81,7 @@
   }
 
   function isLaunchRoute() {
-    return /^(?:index|chart|shop|sky-events|eclipse|privacy|terms|refunds|verify|contact|sample-reading|quiz|angel-numbers|name-numerology|horoscope|moment|numerology|natal-plate)\.html$/i.test(staticHere());
+    return /^(?:index|chart|shop|sky-events|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(staticHere());
   }
 
   function staticLink(row, here, drawer) {
