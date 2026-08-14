@@ -70,6 +70,15 @@ try {
     live.a.label[2] - live.b.label[2]
   );
   assert(labelGap > 3.6, `A/B label gap is too small: ${labelGap}`);
+  const screenA = live.a.labelScreen;
+  const screenB = live.b.labelScreen;
+  assert(screenA && screenB, 'phone label projections are unavailable');
+  const screenDx = Math.abs(screenA.x - screenB.x);
+  const screenDy = Math.abs(screenA.y - screenB.y);
+  const separatedOnPhone = screenDx > screenA.halfWidth + screenB.halfWidth + 4 ||
+    screenDy > screenA.halfHeight + screenB.halfHeight + 4;
+  assert(separatedOnPhone,
+    `A/B label sprites overlap on phone: dx=${screenDx}, dy=${screenDy}`);
 
   assert(near(live.a.bodyOpacity, 0.78) && near(live.b.bodyOpacity, 0.78),
     'live clocks are not equally weighted');
@@ -85,6 +94,10 @@ try {
     radialRatio: Number((live.b.earthRadius / live.a.earthRadius).toFixed(6)),
     directionDot: Number(dot.toFixed(8)),
     labelGap: Number(labelGap.toFixed(3)),
+    phoneLabelGap: {
+      x: Number(screenDx.toFixed(2)),
+      y: Number(screenDy.toFixed(2)),
+    },
     opacity: {
       live: [live.a.bodyOpacity, live.b.bodyOpacity],
       focusA: [focusA.a.bodyOpacity, focusA.b.bodyOpacity],

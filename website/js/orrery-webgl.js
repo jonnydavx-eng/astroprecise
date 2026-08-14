@@ -7624,6 +7624,22 @@ const FinishShader = {
   }
 
   function natalClockDebug() {
+    const labelScreen = (sprite) => {
+      if (!sprite || !camera || !canvas) return null;
+      const centre = sprite.position.clone().project(camera);
+      const right = new THREE.Vector3(sprite.scale.x * 0.5, 0, 0)
+        .applyQuaternion(camera.quaternion).add(sprite.position).project(camera);
+      const up = new THREE.Vector3(0, sprite.scale.y * 0.5, 0)
+        .applyQuaternion(camera.quaternion).add(sprite.position).project(camera);
+      const width = canvas.clientWidth || 1;
+      const height = canvas.clientHeight || 1;
+      return {
+        x: (centre.x + 1) * width * 0.5,
+        y: (1 - centre.y) * height * 0.5,
+        halfWidth: Math.abs(right.x - centre.x) * width * 0.5,
+        halfHeight: Math.abs(up.y - centre.y) * height * 0.5,
+      };
+    };
     const one = (who) => {
       const pack = natalClockMeshes[who];
       if (!pack || !pack.earth) return null;
@@ -7633,6 +7649,7 @@ const FinishShader = {
         bodyOpacity: pack.earth.material ? pack.earth.material.opacity : null,
         label: pack.label ? pack.label.position.toArray() : null,
         labelDistance: pack.label ? pack.label.position.distanceTo(pack.earth.position) : null,
+        labelScreen: labelScreen(pack.label),
       };
     };
     return { focus: natalClockSpec.focus, a: one('a'), b: one('b') };
