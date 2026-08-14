@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const web = path.join(root, 'website');
-const RELEASE = '869';
+const RELEASE = '870';
 const ACT_ONE_PAGES = [
   'index.html',
   'chart.html',
@@ -134,6 +134,9 @@ ok(!/Daily|Life Path|Quiz|Mission Control|horoscope\.html|lifepath\.html|quiz\.h
   'shared footer keeps retired rooms out of site chrome');
 const footerCss = fs.readFileSync(path.join(web, 'css/ap-footer-v835.css'), 'utf8');
 ok(/@media\s*\(max-width:\s*700px\)[\s\S]*grid-template-columns:\s*1fr/.test(footerCss), 'standalone footer collapses to one column on phones');
+const phoneCss = fs.readFileSync(path.join(web, 'css/ap-phone-pass.css'), 'utf8');
+ok(/\.ap-events-feature p[\s\S]*\.event__ledger p[\s\S]*font-size:\s*16px\s*!important/.test(phoneCss),
+  'Events narrative copy keeps the 16px phone floor');
 const signGenerator = fs.readFileSync(path.join(web, 'tools/generate-sign-pages.mjs'), 'utf8');
 ok(new RegExp('ap-footer-inject\\.js\\?v=' + RELEASE).test(signGenerator), 'zodiac generator preserves the compact footer');
 

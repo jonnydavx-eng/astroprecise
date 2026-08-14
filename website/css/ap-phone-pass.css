@@ -42,6 +42,8 @@
   .tn-section__sub,
   .tn-awaiting,
   .tn-honesty,
+  .ap-events-feature p,
+  .event__ledger p,
   .ap-shop-lede,
   .ap-shop-section-head > p:not(.ap-shop-kicker),
   .ap-product__body > p:not(.ap-product__kind):not(.ap-product__hook),
