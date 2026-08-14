@@ -65,7 +65,7 @@ for (const probe of [
   "focused === who ? 0.92 : 0.42",
   'focused ? (focused === who ? 0.92 : 0.42) : 0.78',
   "natalLabelTangent.normalize().multiplyScalar(who === 'a' ? -1.8 : 1.8)",
-  "pack.label.position.y += who === 'a' ? 1.9 : 3.1",
+  "pack.label.position.y += who === 'a' ? 1.9 : 4.1",
   '__natalClockDebug: natalClockDebug',
 ]) {
   if (!W.includes(probe)) fail('couples clock separation contract missing: ' + probe);

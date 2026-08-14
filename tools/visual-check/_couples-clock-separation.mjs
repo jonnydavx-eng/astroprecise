@@ -78,7 +78,8 @@ try {
   const separatedOnPhone = screenDx > screenA.halfWidth + screenB.halfWidth + 4 ||
     screenDy > screenA.halfHeight + screenB.halfHeight + 4;
   assert(separatedOnPhone,
-    `A/B label sprites overlap on phone: dx=${screenDx}, dy=${screenDy}`);
+    `A/B label sprites overlap on phone: dx=${screenDx}, dy=${screenDy}, ` +
+    `half=${screenA.halfWidth}/${screenA.halfHeight},${screenB.halfWidth}/${screenB.halfHeight}`);
 
   assert(near(live.a.bodyOpacity, 0.78) && near(live.b.bodyOpacity, 0.78),
     'live clocks are not equally weighted');
