@@ -18,6 +18,7 @@ mkdirSync(OUT, { recursive: true });
 const PAGES = [
   { id: 'sky-card', path: '/sky-card.html?nosw=1', wait: '#cv, body' },
   { id: 'chart-keep', path: '/chart.html?nosw=1', wait: '#keep-sky, body' },
+  { id: 'couples-keep', path: '/compatibility.html?nosw=1', wait: '#keep-sky, body' },
 ];
 
 async function launchBrowser() {
@@ -49,8 +50,11 @@ for (const spec of PAGES) {
   const measure = await page.evaluate(() => {
     const px = (v) => (v ? parseFloat(v) : null);
     const copy = document.querySelector('.sky-card-lede, .ap-keep-row .action-note, #keep-sky-caption');
+    const h1 = document.querySelector('h1');
+    const fieldLabel = document.querySelector('.page-sky-card .field span');
+    const word = document.querySelector('.sky-card-word, .logo-text');
     const keep = document.querySelector('#keep-sky, .page-sky-card .btn--draw');
-    const stage = document.querySelector('.ap-room-sky:has(.ap-keep-row) .ap-model-stage, #cv');
+    const stage = document.querySelector('.ap-room-sky:has(.ap-keep-row) .ap-model-stage, .ap-live-home .ap-model-stage, #cv');
     const taps = [];
     document.querySelectorAll('#keep-sky, .ap-keep-row .btn-invite, .page-sky-card .btn, .page-sky-card a:not(.skip)').forEach((el) => {
       const r = el.getBoundingClientRect();
@@ -69,6 +73,9 @@ for (const spec of PAGES) {
       : false;
     return {
       copy: copy ? px(getComputedStyle(copy).fontSize) : null,
+      h1: h1 ? px(getComputedStyle(h1).fontSize) : null,
+      fieldLabel: fieldLabel ? px(getComputedStyle(fieldLabel).fontSize) : null,
+      word: word ? (word.textContent || '').replace(/\s+/g, '') : '',
       keepH: keepBox ? Math.round(keepBox.height) : null,
       scrollW: document.scrollingElement.scrollWidth,
       stage: stageBox ? { w: Math.round(stageBox.width), h: Math.round(stageBox.height) } : null,
@@ -84,8 +91,11 @@ for (const spec of PAGES) {
   const fail = (msg) => { console.error('FAIL', spec.id, msg); fails++; };
   if (measure.scrollW > 392) fail('horizontal overflow ' + measure.scrollW);
   if (measure.copy && measure.copy < 15.5) fail('copy ' + measure.copy + 'px');
+  if (measure.h1 && (measure.h1 < 32 || measure.h1 > 42.5)) fail('H1 ' + measure.h1 + 'px');
+  if (measure.fieldLabel && measure.fieldLabel < 15.5) fail('field label ' + measure.fieldLabel + 'px');
+  if (measure.word && measure.word !== 'AstroPrecise') fail('wordmark ' + measure.word);
   if (measure.tapsUnder44.length) fail('taps <44 ' + JSON.stringify(measure.tapsUnder44));
-  if (spec.id === 'chart-keep') {
+  if (spec.id === 'chart-keep' || spec.id === 'couples-keep') {
     if (!measure.stage || measure.stage.h < 360) fail('stage short ' + JSON.stringify(measure.stage));
     if (measure.overlap) fail('keep row covers the 3D stage');
     if (measure.renderer && measure.renderer !== 'webgl-only') fail('renderer ' + measure.renderer);

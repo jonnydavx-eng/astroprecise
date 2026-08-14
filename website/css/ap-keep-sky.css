@@ -114,6 +114,7 @@
   .ap-keep-row {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
 
   .ap-keep-row .btn-invite,

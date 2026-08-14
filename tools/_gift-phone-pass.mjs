@@ -24,6 +24,10 @@ const sky = readFileSync(join(web, 'sky-card.html'), 'utf8');
 ok(/background:#020307/.test(sky), 'sky-card uses the house void');
 ok(/#FF6428/.test(sky) && /#F2ECDF/.test(sky) && /#D8B46A/.test(sky), 'sky-card names house tokens');
 ok(/min-height:48px/.test(sky) && /font-size:16px/.test(sky), 'sky-card has 16px copy and 48px taps');
+ok(/class="sky-card-word"[^>]*>AstroPrecise</.test(sky), 'sky-card wordmark is AstroPrecise, one word');
+ok(!/Astro Precise/.test(sky), 'sky-card page chrome does not split the wordmark');
+ok(/clamp\(2rem,8\.4vw,2\.55rem\)/.test(sky), 'sky-card H1 matches the Act 1 phone size');
+ok(/\.field span\{[^}]*font-size:16px/.test(sky), 'sky-card field labels are 16px');
 ok(/dob'\)\.value \+ 'T' \+ \(\$\('tob'\)\.value \|\| '12:00'\) \+ ':00Z'/.test(sky),
   'sky-card still reads the clock as UTC');
 ok(/a\.download = 'my-sky-card\.png'/.test(sky), 'sky-card download path is unchanged');
