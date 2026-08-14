@@ -1,7 +1,6 @@
 import { buildDeepReading } from './deep-reading.js';
 
 const TARGETS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
-const REVIEW_KEY = 'ap_natal_print_review';
 const ASSUMED_HOUR = '12:00';
 const byId = (id) => document.getElementById(id);
 const esc = (value) => String(value == null ? '' : value)
@@ -286,31 +285,6 @@ function renderReceipt(meta) {
   )).join('');
 }
 
-function reviewUnlockOn() {
-  try {
-    const params = new URLSearchParams(location.search);
-    if (params.get('reviewUnlock') === '1') {
-      localStorage.setItem(REVIEW_KEY, '1');
-      params.delete('reviewUnlock');
-      const next = location.pathname + (params.toString() ? '?' + params.toString() : '') + location.hash;
-      history.replaceState({}, '', next);
-    }
-    return localStorage.getItem(REVIEW_KEY) === '1';
-  } catch (_) {
-    return false;
-  }
-}
-
-function renderUnlock() {
-  const note = byId('natalUnlockNote');
-  if (!note) return;
-  if (reviewUnlockOn()) {
-    note.textContent = 'Review print unlocked on this device. No checkout ran. No price was charged. Live unlock, Gumroad and a price still need Jonny.';
-    return;
-  }
-  note.textContent = 'Paid print unlock is not open. No price is set. Checkout is not connected. The reading above is here to judge. Any review unlock stays on this device only.';
-}
-
 function renderReading(reading, meta) {
   const host = byId('natalChapters');
   host.innerHTML = reading.chapters.map((chapter) => (
@@ -328,7 +302,6 @@ function renderReading(reading, meta) {
   banner.textContent = withheld;
   renderReceipt(meta);
   byId('natalMeta').textContent = `${meta.label}. ${reading.wordCount} words. ${meta.timeKnown ? 'Birth time used.' : 'Birth time unknown — Moon approximate (±7°); angles and houses withheld.'} ${reading.houseNote || ''}`;
-  renderUnlock();
   byId('natalResult').hidden = false;
   try { byId('natalResult').focus({ preventScroll: true }); } catch (_) { byId('natalResult').focus(); }
 }
@@ -406,7 +379,6 @@ function bindNatalCity() {
 
 async function init() {
   bindNatalCity();
-  renderUnlock();
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),

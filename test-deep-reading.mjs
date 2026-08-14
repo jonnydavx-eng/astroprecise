@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { buildDeepReading } from './website/js/deep-reading.js';
 
 const base = JSON.parse(readFileSync(new URL('./website/js/reading-templates.json', import.meta.url), 'utf8'));
@@ -62,7 +62,7 @@ assert.ok(natalJs.includes("zone === 'Etc/UTC'") && natalJs.includes('Etc\\/'), 
 assert.ok(natalJs.includes('UK summer is not GMT'), 'natal reading must say UK summer is not GMT');
 assert.ok(natalJs.includes('calculateNatalChart'), 'timed charts with coordinates must use the natal engine, not planets-only');
 assert.ok(natalJs.includes('12:00') && natalJs.includes('date reference'), 'unknown hour must use noon as a stated date reference');
-assert.ok(natalJs.includes('ap_natal_print_review') && natalJs.includes('reviewUnlock'), 'review unlock may exist locally');
+assert.equal(/reviewUnlock|ap_natal_print_review/.test(natalJs), false, 'paid unlock must stay closed — no review-unlock wiring');
 assert.equal(/openCheckout|gumroad\.com|GUMROAD_PRODUCTS|fulfilUrl/.test(natalJs), false, 'natal page must not open live checkout');
 assert.equal(/£\d|\$\d|price:\s*['"]/.test(natalJs), false, 'natal page must not invent a price');
 assert.equal(/handleUnlockOnLoad|searchParams\.get\(['"]license|[?&]license=/.test(natalJs), false, 'licence keys must not arrive through a URL');
@@ -75,9 +75,12 @@ assert.equal(/Nothing was uploaded/.test(natalJs), false, 'natal status must not
 assert.ok(/Place search sent only the town name/.test(natalJs), 'natal status must name the geocoder exception');
 assert.ok(natalHtml.includes('class="logo-text">AstroPrecise</span>'), 'wordmark is one word: AstroPrecise');
 assert.equal(/Astro <i|Astro Precise/.test(natalHtml), false, 'wordmark must not split into two words');
-assert.ok(natalHtml.includes('href="sky-card.html"') && natalHtml.includes('href="chart.html"'), 'reading may link to existing keep paths');
+assert.ok(natalHtml.includes('href="sky-card.html"') && natalHtml.includes('href="chart.html"'), 'reading may link to existing keep pages');
+assert.ok(natalHtml.includes('ap-sky-card.js') && natalHtml.includes('ap-keep-minute.js'), 'page must name the missing keep engines rather than invent them');
 assert.equal(/sky-card\.html\?|chart\.html\?/.test(natalHtml), false, 'keep-path links must not carry a birth minute');
-assert.equal(/ap-keep-minute|ap-keep-sky\.js|captureStill/.test(natalHtml + natalJs), false, 'this page must not rewrite sky-card or Observatory still capture');
+assert.equal(/src=["']js\/ap-keep-minute|src=["']js\/ap-sky-card|ap-keep-sky\.js|captureStill/.test(natalHtml + natalJs), false, 'this page must not invent or load missing keep engines');
+assert.equal(existsSync(new URL('./website/js/ap-sky-card.js', import.meta.url)), false, 'ap-sky-card.js is a hole on this branch — do not invent it');
+assert.equal(existsSync(new URL('./website/js/ap-keep-minute.js', import.meta.url)), false, 'ap-keep-minute.js is a hole on this branch — do not invent it');
 assert.equal(/sign up|log in|create an account|chatbot|ask the oracle/i.test(natalHtml), false, 'no account and no AI-chat theatre');
 assert.ok(natalHtml.includes('ap-room-sky') && natalHtml.includes('void-orrery'), 'live sky stays on the page');
 assert.ok(/not behind a paywall/i.test(natalHtml), 'the live sky must be named as free');
