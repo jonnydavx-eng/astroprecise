@@ -14,7 +14,7 @@
       `<a class="ap-finder__link" href="chart.html">Cast natal chart</a>` +
       `<a class="ap-finder__link" href="what-is-my-rising-sign.html">Rising sign guide</a>` +
       `<a class="ap-finder__link" href="transits.html">Current transits</a>` +
-      `<a class="ap-finder__link" href="cosmic-story.html">Cosmic story sample</a>` +
+      `<a class="ap-finder__link" href="sample-reading.html">Published reading sample</a>` +
       `<a class="ap-finder__link" href="guides.html">Sky guides</a>` +
       `</nav></aside>` +
       `<button type="button" id="apFinderFab" class="ap-finder-fab" aria-label="Open chart finder" aria-expanded="false">` +

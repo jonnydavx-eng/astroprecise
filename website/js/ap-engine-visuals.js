@@ -17,16 +17,16 @@
   };
 
   var BODIES = [
-    { id: 'sun', label: 'Sun', src: 'img/engine/sun.webp', href: 'leo.html' },
-    { id: 'mercury', label: 'Mercury', src: 'img/engine/mercury.webp', href: 'gemini.html' },
-    { id: 'venus', label: 'Venus', src: 'img/engine/venus.webp', href: 'taurus.html' },
+    { id: 'sun', label: 'Sun', src: 'img/engine/sun.webp', href: 'index.html#m=now&focus=sun' },
+    { id: 'mercury', label: 'Mercury', src: 'img/engine/mercury.webp', href: 'index.html#m=now&focus=mercury' },
+    { id: 'venus', label: 'Venus', src: 'img/engine/venus.webp', href: 'index.html#m=now&focus=venus' },
     { id: 'earth', label: 'Earth', src: 'img/engine/earth.webp', href: 'index.html#heroChapter' },
     { id: 'moon', label: 'Moon', src: 'img/engine/moon.webp', href: 'moonphase.html' },
-    { id: 'mars', label: 'Mars', src: 'img/engine/mars.webp', href: 'aries.html' },
-    { id: 'jupiter', label: 'Jupiter', src: 'img/engine/jupiter.webp', href: 'sagittarius.html' },
-    { id: 'saturn', label: 'Saturn', src: 'img/engine/saturn.webp', href: 'capricorn.html' },
-    { id: 'uranus', label: 'Uranus', src: 'img/engine/uranus.webp', href: 'aquarius.html' },
-    { id: 'neptune', label: 'Neptune', src: 'img/engine/neptune.webp', href: 'pisces.html' },
+    { id: 'mars', label: 'Mars', src: 'img/engine/mars.webp', href: 'index.html#m=now&focus=mars' },
+    { id: 'jupiter', label: 'Jupiter', src: 'img/engine/jupiter.webp', href: 'index.html#m=now&focus=jupiter' },
+    { id: 'saturn', label: 'Saturn', src: 'img/engine/saturn.webp', href: 'index.html#m=now&focus=saturn' },
+    { id: 'uranus', label: 'Uranus', src: 'img/engine/uranus.webp', href: 'index.html#m=now&focus=uranus' },
+    { id: 'neptune', label: 'Neptune', src: 'img/engine/neptune.webp', href: 'index.html#m=now&focus=neptune' },
   ];
 
   function ensureCss() {

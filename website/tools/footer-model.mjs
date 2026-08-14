@@ -22,7 +22,7 @@ export const ZODIAC_SIGNS = [
 const FOOTER_TOOLS = [
   { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
   { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
-  { href: 'cosmic-story.html', label: 'Readings', icon: '<span aria-hidden="true">◇</span>' },
+  { href: 'sample-reading.html', label: 'Sample', icon: '<span aria-hidden="true">◇</span>' },
   { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
 ];
 
