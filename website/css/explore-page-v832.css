@@ -6,7 +6,7 @@
 :root { color-scheme: dark; }
 
 html, body.page-explore {
-  background: var(--ap-void-deep, #08080b);
+  background: var(--ap-void-deep, #020307);
   min-height: 100%;
 }
 

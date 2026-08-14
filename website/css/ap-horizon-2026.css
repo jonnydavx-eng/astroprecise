@@ -517,7 +517,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .orrery-lite-poster {
   border-radius: 50%;
   overflow: hidden;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 48%, #121826 0%, #08080b 72%);
+  background: radial-gradient(circle at 50% 48%, #121826 0%, #020307 72%);
   box-shadow:
     0 0 0 1px rgba(168, 176, 188, 0.22),
     0 0 48px rgba(111, 160, 216, 0.18),
@@ -4533,7 +4533,7 @@ html.ap-await-webgl:not(.orrery-full) #orrery-lite-poster {
   z-index: 1;
   background:
     url("../img/engine/earth.webp") center / cover no-repeat,
-    radial-gradient(circle at 50% 48%, #121826 0%, #08080b 72%) !important;
+    radial-gradient(circle at 50% 48%, #121826 0%, #020307 72%) !important;
 }
 html.ap-await-webgl:not(.orrery-full) .lite-poster-canvas,
 html.ap-await-webgl:not(.orrery-full) .lite-poster-ring,
@@ -5059,7 +5059,7 @@ html.orrery-full .ap-award-511 #heroChapter {
 .ap-obs-gallery__item img {
   width: 100%; aspect-ratio: 1; object-fit: cover;
   border-radius: 50%; border: 1px solid rgba(168,176,188,0.28);
-  background: #08080b; display: block;
+  background: #020307; display: block;
   box-shadow: 0 12px 32px rgba(0,0,0,0.35);
 }
 .ap-obs-gallery__item span {
@@ -5111,7 +5111,7 @@ html.orrery-full .ap-award-511 #heroChapter {
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid rgba(168, 176, 188, 0.35);
-  background: #08080b;
+  background: #020307;
   display: block;
   margin-bottom: 0.45rem;
 }
@@ -5184,7 +5184,7 @@ html.orrery-full .ap-award-511 #heroChapter {
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid rgba(168, 176, 188, 0.25);
-  background: #08080b;
+  background: #020307;
 }
 .sign-thumb--current img {
   border-color: rgba(168, 176, 188, 0.55);

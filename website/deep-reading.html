@@ -67,16 +67,11 @@
       <div class="ap-natal-form__fields">
         <label><span>Birth date</span><input type="date" id="dob" required min="1800-01-01" autocomplete="bday"></label>
         <label><span>Birth time · optional</span><input type="time" id="tob" autocomplete="bday-time"></label>
-        <label><span>Historical time zone</span>
-          <select id="tz">
-            <option value="Europe/London" selected>London / UK</option>
-            <option value="Europe/Paris">Paris / Central Europe</option>
-            <option value="America/New_York">New York / US Eastern</option>
-            <option value="America/Los_Angeles">Los Angeles / US Pacific</option>
-            <option value="Asia/Kolkata">India</option>
-            <option value="Australia/Sydney">Sydney</option>
-            <option value="UTC">UTC / GMT</option>
-          </select>
+        <label><span>Birth place</span>
+          <input type="text" id="natal-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="natal-city-drop">
+          <div class="ap-city-drop" id="natal-city-drop" hidden></div>
+          <p class="ap-zone-note" id="natal-zone">Pick a place for a real zone. UK summer is not GMT.</p>
+          <input type="hidden" id="tz">
         </label>
       </div>
       <p class="ap-natal-note" id="natalStatus" role="status">Cast a free chart first for angles and houses, or enter a date here. Unknown time keeps the Moon approximate (±7°) and withholds angles and houses.</p>

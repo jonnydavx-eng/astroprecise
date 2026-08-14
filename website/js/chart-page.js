@@ -386,7 +386,8 @@
   }
 
   function readForm() {
-    const name = document.getElementById('name-input').value.trim() || 'Birth Chart';
+    const nameEl = document.getElementById('name-input');
+    const name = ((nameEl && nameEl.value) || '').trim() || 'Birth Chart';
     const date = document.getElementById('date-input').value;
     const timeField = document.getElementById('time-input');
     const timeKnown = !!(timeField && timeField.value);

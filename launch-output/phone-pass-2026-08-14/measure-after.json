@@ -1,0 +1,2700 @@
+[
+  {
+    "id": "home",
+    "path": "/index.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise — the living sky, computed now",
+    "url": "http://127.0.0.1:8790/index.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 10,
+    "pText": "Main",
+    "h1Font": 54.6,
+    "h1Text": "The sky is moving.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 129,
+    "wordmarkH": 28,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 473,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": ".ap-live-stage",
+        "tag": "section",
+        "id": "lead",
+        "w": 390,
+        "h": 1639,
+        "display": "flex",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "hidden"
+      }
+    ],
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ap-cosmic-flight-launch",
+        "text": "JOURNEY TO THE EDGE",
+        "w": 155,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.06)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "nowBtn",
+        "text": "Return to live",
+        "w": 131,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.06)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button.btn-primary",
+        "tag": "button",
+        "id": "",
+        "text": "Cast my chart — free",
+        "w": 320,
+        "h": 46,
+        "min": 46,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Cast my chart",
+        "w": 358,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Explore sky events",
+        "w": 358,
+        "h": 48,
+        "min": 48,
+        "bg": "rgba(216, 180, 106, 0.05)",
+        "color": "rgb(242, 236, 223)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Cast my chart",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 358,
+        "h": 48
+      },
+      {
+        "text": "Cast my chart — free",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 320,
+        "h": 46
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileWorld",
+        "w": 174,
+        "h": 50,
+        "right": 190
+      },
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileScale",
+        "w": 174,
+        "h": 50,
+        "right": 374
+      },
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "scrub",
+        "w": 358,
+        "h": 46,
+        "right": 376
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "f-date",
+        "w": 320,
+        "h": 46,
+        "right": 355
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "f-time",
+        "w": 320,
+        "h": 47,
+        "right": 355
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "f-place",
+        "w": 320,
+        "h": 46,
+        "right": 355
+      }
+    ],
+    "inputOverflow": [],
+    "navTabs": [
+      {
+        "text": "Observatory",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events Live",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "shop.html"
+      },
+      {
+        "text": "Sky",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "shop.html"
+      }
+    ],
+    "hashInvite": null,
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 471,
+      "cw": 780,
+      "ch": 942
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ]
+    }
+  },
+  {
+    "id": "observatory-redirect",
+    "path": "/observatory.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise — the living sky, computed now",
+    "url": "http://127.0.0.1:8790/index.html?nosw=1#lead",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 10,
+    "pText": "Main",
+    "h1Font": 54.6,
+    "h1Text": "The sky is moving.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 129,
+    "wordmarkH": 28,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 473,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": ".ap-live-stage",
+        "tag": "section",
+        "id": "lead",
+        "w": 390,
+        "h": 1639,
+        "display": "flex",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ap-cosmic-flight-launch",
+        "text": "JOURNEY TO THE EDGE",
+        "w": 155,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.06)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "nowBtn",
+        "text": "Return to live",
+        "w": 131,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.06)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button.btn-primary",
+        "tag": "button",
+        "id": "",
+        "text": "Cast my chart — free",
+        "w": 320,
+        "h": 46,
+        "min": 46,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Cast my chart",
+        "w": 358,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Explore sky events",
+        "w": 358,
+        "h": 48,
+        "min": 48,
+        "bg": "rgba(216, 180, 106, 0.05)",
+        "color": "rgb(242, 236, 223)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Cast my chart",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 358,
+        "h": 48
+      },
+      {
+        "text": "Cast my chart — free",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 320,
+        "h": 46
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileWorld",
+        "w": 174,
+        "h": 50,
+        "right": 190
+      },
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileScale",
+        "w": 174,
+        "h": 50,
+        "right": 374
+      },
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "scrub",
+        "w": 358,
+        "h": 46,
+        "right": 376
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "f-date",
+        "w": 320,
+        "h": 46,
+        "right": 355
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "f-time",
+        "w": 320,
+        "h": 47,
+        "right": 355
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "f-place",
+        "w": 320,
+        "h": 46,
+        "right": 355
+      }
+    ],
+    "inputOverflow": [],
+    "navTabs": [
+      {
+        "text": "Observatory",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events Live",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "shop.html"
+      },
+      {
+        "text": "Sky",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "shop.html"
+      }
+    ],
+    "hashInvite": null,
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 471,
+      "cw": 780,
+      "ch": 942
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ]
+    }
+  },
+  {
+    "id": "compatibility",
+    "path": "/compatibility.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise — two birth minutes, one sky",
+    "url": "http://127.0.0.1:8790/compatibility.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 10,
+    "pText": "Your astrology",
+    "h1Font": 54.6,
+    "h1Text": "Two minutes. One sky.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 135,
+    "wordmarkH": 28,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 473,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": ".ap-live-stage",
+        "tag": "section",
+        "id": "lead",
+        "w": 390,
+        "h": 1744,
+        "display": "flex",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ab-a",
+        "text": "A",
+        "w": 114,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(2, 3, 7, 0.55)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ab-b",
+        "text": "B",
+        "w": 114,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(2, 3, 7, 0.55)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ab-now",
+        "text": "LIVE",
+        "w": 114,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(255, 100, 40, 0.16)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "keep-sky",
+        "text": "Keep this sky",
+        "w": 141,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "nowBtn",
+        "text": "Return to live",
+        "w": 131,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.06)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button.btn-primary",
+        "tag": "button",
+        "id": "compat-submit-btn",
+        "text": "Show A in the sky",
+        "w": 192,
+        "h": 46,
+        "min": 46,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "compat-invite-btn",
+        "text": "Copy hash invite",
+        "w": 170,
+        "h": 46,
+        "min": 46,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(242, 236, 223)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Show A in the sky",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)",
+        "w": 192,
+        "h": 46
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileWorld",
+        "w": 174,
+        "h": 50,
+        "right": 190
+      },
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileScale",
+        "w": 174,
+        "h": 50,
+        "right": 374
+      },
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "minute-scrub",
+        "w": 254,
+        "h": 46,
+        "right": 272
+      },
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "scrub",
+        "w": 358,
+        "h": 46,
+        "right": 376
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "person1-name",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "person1-date",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "person1-time",
+        "w": 302,
+        "h": 47,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "person1-city",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "person2-name",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "person2-date",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "person2-time",
+        "w": 302,
+        "h": 47,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "person2-city",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      }
+    ],
+    "inputOverflow": [],
+    "navTabs": [
+      {
+        "text": "Observatory",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events Live",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "shop.html"
+      },
+      {
+        "text": "Sky tools",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "ephemeris.html"
+      },
+      {
+        "text": "My Sky Hub",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "mysky.html"
+      },
+      {
+        "text": "Moment Keep",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "moment.html"
+      },
+      {
+        "text": "Library",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "guides.html"
+      },
+      {
+        "text": "Compatibility Match",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "compatibility.html"
+      },
+      {
+        "text": "Eclipse archive 3D",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "eclipse.html"
+      },
+      {
+        "text": "Your Transits Personal",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "transits.html"
+      },
+      {
+        "text": "Profile",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "profile.html"
+      },
+      {
+        "text": "My Charts",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "charts.html"
+      },
+      {
+        "text": "Natal reading",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "deep-reading.html"
+      },
+      {
+        "text": "Tonight",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "tonight.html"
+      },
+      {
+        "text": "This Week",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "this-weeks-sky.html"
+      },
+      {
+        "text": "Moon Phase",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "moonphase.html"
+      },
+      {
+        "text": "Retrograde",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "retrograde.html"
+      },
+      {
+        "text": "Solar Return",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "solar-return.html"
+      },
+      {
+        "text": "Saturn Return",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "saturn-return.html"
+      },
+      {
+        "text": "Synastry",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "synastry.html"
+      },
+      {
+        "text": "Rising Sign",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "what-is-my-rising-sign.html"
+      },
+      {
+        "text": "Life Path",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "lifepath.html"
+      },
+      {
+        "text": "Accuracy",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "accuracy.html"
+      },
+      {
+        "text": "Why",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "why.html"
+      },
+      {
+        "text": "Sky",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "shop.html"
+      }
+    ],
+    "hashInvite": null,
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 471,
+      "cw": 780,
+      "ch": 942
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 25,
+      "visibleLinks": 25,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ]
+    }
+  },
+  {
+    "id": "chart",
+    "path": "/chart.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "Free Birth Chart — calculated on your device | AstroPrecise",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 10,
+    "pText": "Main",
+    "h1Font": 66.3,
+    "h1Text": "Your birth sky, calculated",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 129,
+    "wordmarkH": 28,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 422,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "keep-sky",
+        "text": "Keep this sky",
+        "w": 141,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "geo-btn",
+        "text": "Use my current location",
+        "w": 200,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "time-unknown-btn",
+        "text": "Choose an approximate time",
+        "w": 237,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "sample-btn",
+        "text": "Sample Chart (Frida Kahlo)",
+        "w": 328,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Dawn",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Morning",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Noon",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Afternoon",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Evening",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Night",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "a.btn",
+        "tag": "a",
+        "id": "",
+        "text": "CAST MY CHART",
+        "w": 366,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "chart-advanced-trigger",
+        "text": "ADVANCED CHART OPTIONS",
+        "w": 326,
+        "h": 52,
+        "min": 52,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button[type=\"submit\"]",
+        "tag": "button",
+        "id": "calculate-btn",
+        "text": "CALCULATE MY CHART",
+        "w": 328,
+        "h": 56,
+        "min": 56,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "CALCULATE MY CHART",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)",
+        "w": 328,
+        "h": 56
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "date-input",
+        "w": 328,
+        "h": 52,
+        "right": 359
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "city-input",
+        "w": 328,
+        "h": 52,
+        "right": 359
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "time-input",
+        "w": 328,
+        "h": 52,
+        "right": 359
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "name-input",
+        "w": 328,
+        "h": 52,
+        "right": 359
+      },
+      {
+        "tag": "input",
+        "type": "radio",
+        "name": "node-mode",
+        "w": 1,
+        "h": 46,
+        "right": 54
+      },
+      {
+        "tag": "input",
+        "type": "radio",
+        "name": "node-mode",
+        "w": 1,
+        "h": 46,
+        "right": 54
+      }
+    ],
+    "inputOverflow": [],
+    "navTabs": [
+      {
+        "text": "Observatory",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events Live",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "shop.html"
+      },
+      {
+        "text": "Sky",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "shop.html"
+      }
+    ],
+    "hashInvite": null,
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 421,
+      "cw": 624,
+      "ch": 673
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ]
+    }
+  },
+  {
+    "id": "tonight",
+    "path": "/tonight.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "The real sky news — what's visible tonight | AstroPrecise",
+    "url": "http://127.0.0.1:8790/tonight.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 10,
+    "pText": "Your astrology",
+    "h1Font": 58,
+    "h1Text": "What's Visible Tonight",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 124,
+    "wordmarkH": 28,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 422,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "nav-toggle",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "tn-geo-btn",
+        "text": "☉ Use my location",
+        "w": 171,
+        "h": 44,
+        "min": 44,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(9, 6, 3)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "TikTok — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Instagram — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Pinterest — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "YouTube — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "X — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Threads — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Reddit — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Facebook — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "LinkedIn — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Bluesky — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button[type=\"submit\"]",
+        "tag": "button",
+        "id": "",
+        "text": "✦ Get updates",
+        "w": 141,
+        "h": 46,
+        "min": 46,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(232, 211, 160)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "nav-toggle",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "✦ Get updates",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(232, 211, 160)",
+        "w": 141,
+        "h": 46
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "tn-city-input",
+        "w": 312,
+        "h": 48,
+        "right": 351
+      },
+      {
+        "tag": "input",
+        "type": "email",
+        "name": "email",
+        "w": 342,
+        "h": 51,
+        "right": 366
+      }
+    ],
+    "inputOverflow": [],
+    "navTabs": [
+      {
+        "text": "Observatory",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events Live",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "shop.html"
+      },
+      {
+        "text": "Sky tools",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "ephemeris.html"
+      },
+      {
+        "text": "My Sky Hub",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "mysky.html"
+      },
+      {
+        "text": "Moment Keep",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "moment.html"
+      },
+      {
+        "text": "Library",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "guides.html"
+      },
+      {
+        "text": "Compatibility Match",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "compatibility.html"
+      },
+      {
+        "text": "Eclipse archive 3D",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "eclipse.html"
+      },
+      {
+        "text": "Your Transits Personal",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "transits.html"
+      },
+      {
+        "text": "My Charts",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "charts.html"
+      },
+      {
+        "text": "Natal reading",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "deep-reading.html"
+      },
+      {
+        "text": "Tonight",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "tonight.html"
+      },
+      {
+        "text": "This Week",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "this-weeks-sky.html"
+      },
+      {
+        "text": "Moon Phase",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "moonphase.html"
+      },
+      {
+        "text": "Retrograde",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "retrograde.html"
+      },
+      {
+        "text": "Solar Return",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "solar-return.html"
+      },
+      {
+        "text": "Saturn Return",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "saturn-return.html"
+      },
+      {
+        "text": "Synastry",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "synastry.html"
+      },
+      {
+        "text": "Rising Sign",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "what-is-my-rising-sign.html"
+      },
+      {
+        "text": "Life Path",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "lifepath.html"
+      },
+      {
+        "text": "Accuracy",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "accuracy.html"
+      },
+      {
+        "text": "Why",
+        "w": 0,
+        "h": 0,
+        "display": "block",
+        "vis": "visible",
+        "href": "why.html"
+      },
+      {
+        "text": "Sky",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "shop.html"
+      }
+    ],
+    "hashInvite": null,
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 421,
+      "cw": 624,
+      "ch": 673
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 25,
+      "visibleLinks": 25,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ]
+    }
+  },
+  {
+    "id": "eclipse",
+    "path": "/eclipse.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "12 August 2026 Eclipse — replay and personal edition | AstroPrecise",
+    "url": "http://127.0.0.1:8790/eclipse.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 10,
+    "pText": "Main",
+    "h1Font": 54.6,
+    "h1Text": "The Moon crossed the Sun.\nEnter the alignment.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 135,
+    "wordmarkH": 28,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-eclipse-live__stage",
+        "tag": "div",
+        "id": "",
+        "w": 372,
+        "h": 490,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 372,
+        "h": 489,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "LIVE NOW",
+        "w": 113,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.03)",
+        "color": "rgba(242, 236, 223, 0.76)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "MAXIMUM",
+        "w": 113,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(255, 90, 31, 0.1)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "PLAY SHADOW",
+        "w": 113,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.03)",
+        "color": "rgba(242, 236, 223, 0.76)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "SYSTEM",
+        "w": 101,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.09)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "SHADOW",
+        "w": 101,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(242, 236, 223, 0.58)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "EARTH",
+        "w": 101,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(242, 236, 223, 0.58)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "",
+        "w": 98,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button[type=\"submit\"]",
+        "tag": "button",
+        "id": "",
+        "text": "Read my eclipse contact",
+        "w": 312,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "PLAY THE 3D SHADOW",
+        "w": 178,
+        "h": 50,
+        "min": 50,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Read my eclipse contact",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 312,
+        "h": 48
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "eclipse-time-range",
+        "w": 336,
+        "h": 46,
+        "right": 365
+      },
+      {
+        "tag": "input",
+        "type": "checkbox",
+        "name": "useSavedChart",
+        "w": 0,
+        "h": 0,
+        "right": 0
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "dob",
+        "w": 312,
+        "h": 46,
+        "right": 351
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "tob",
+        "w": 312,
+        "h": 46,
+        "right": 351
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "eclipse-city",
+        "w": 312,
+        "h": 46,
+        "right": 351
+      }
+    ],
+    "inputOverflow": [],
+    "navTabs": [
+      {
+        "text": "Observatory",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events Live",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "shop.html"
+      },
+      {
+        "text": "Sky",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "shop.html"
+      }
+    ],
+    "hashInvite": null,
+    "overflowers": [],
+    "orrEngine": null,
+    "orrReady": false,
+    "canvas": {
+      "w": 372,
+      "h": 489,
+      "cw": 744,
+      "ch": 980
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ]
+    }
+  },
+  {
+    "id": "shop",
+    "path": "/shop.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise Editions — personalised eclipse reading and art",
+    "url": "http://127.0.0.1:8790/shop.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 10,
+    "pText": "Main",
+    "h1Font": 58.5,
+    "h1Text": "A reading\nyou can see.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 135,
+    "wordmarkH": 28,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 422,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Cast my contact — free",
+        "w": 358,
+        "h": 46,
+        "min": 46,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Download free guide",
+        "w": 358,
+        "h": 46,
+        "min": 46,
+        "bg": "rgba(216, 180, 106, 0.05)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button[type=\"submit\"]",
+        "tag": "button",
+        "id": "shopNotifyBtn",
+        "text": "Get sky notes",
+        "w": 358,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Cast my contact — free",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 358,
+        "h": 46
+      },
+      {
+        "text": "Get sky notes",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 358,
+        "h": 48
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "input",
+        "type": "email",
+        "name": "shopNotifyEmail",
+        "w": 358,
+        "h": 48,
+        "right": 374
+      }
+    ],
+    "inputOverflow": [],
+    "navTabs": [
+      {
+        "text": "Observatory",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events Live",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex",
+        "vis": "visible",
+        "href": "shop.html"
+      },
+      {
+        "text": "Sky",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "index.html"
+      },
+      {
+        "text": "Chart",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "chart.html"
+      },
+      {
+        "text": "Events",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "sky-events.html"
+      },
+      {
+        "text": "Shop",
+        "w": 0,
+        "h": 0,
+        "display": "flex",
+        "vis": "visible",
+        "href": "shop.html"
+      }
+    ],
+    "hashInvite": null,
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 421,
+      "cw": 780,
+      "ch": 842
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ]
+    }
+  }
+]

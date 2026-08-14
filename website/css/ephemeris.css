@@ -9,16 +9,16 @@
    ------------------------------------------------------------ */
 :root {
   /* ── Core surfaces (dark-first) ── */
-  --void:            #08080b;   /* page base — deep blue-black */
+  --void: #020307;   /* page base — deep blue-black */
   --night:           #121826;   /* section/card surface */
   --night-raised:    #1A2230;   /* raised cards / plates */
 
   /* ── Semantic aliases — keep old token names so markup never changes ── */
-  --paper:           #08080b;   /* was warm cream; now the void */
+  --paper: #020307;   /* was warm cream; now the void */
   --paper-leaf:      #121826;   /* was off-white; now night */
   --ink:             #E8EBF0;   /* was dark ink; now warm cream */
   --ink-faded:       #C8CDD6;   /* warm dim parchment (was greyish #A7A395) */
-  --midnight:        #08080b;   /* stays effectively same — dark base */
+  --midnight: #020307;   /* stays effectively same — dark base */
   --warm-midnight:   #121826;   /* dark section bg */
   --paper-on-midnight: #E8EBF0; /* cream on dark — used in footer/night-watch */
 

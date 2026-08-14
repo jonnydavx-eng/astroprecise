@@ -165,7 +165,7 @@
       pointer-events: none;
       border-radius: inherit;
       background:
-        radial-gradient(ellipse 82% 66% at 50% 44%, #121826 0%, #0E141E 52%, #08080b 100%);
+        radial-gradient(ellipse 82% 66% at 50% 44%, #121826 0%, #0E141E 52%, #020307 100%);
       opacity: 1;
       transform: translate3d(var(--space-pan-x, 0px), var(--space-pan-y, 0px), 0) scale(1.08);
       transform-origin: center center;
@@ -986,7 +986,7 @@
       font: inherit;
       width: 100%;
       margin: 0;
-      background-color: #08080b;
+      background-color: #020307;
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center 18%;

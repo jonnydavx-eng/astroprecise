@@ -104,11 +104,19 @@ function transitsNow(engine) {
   };
 }
 
+function validTimeZone(zone) {
+  if (!zone || typeof zone !== 'string' || zone.length > 80) return false;
+  if (zone === 'UTC' || zone === 'GMT' || zone === 'Etc/UTC' || /^Etc\/GMT/i.test(zone)) return false;
+  try { new Intl.DateTimeFormat('en-GB', { timeZone: zone }).format(new Date()); return true; }
+  catch (_) { return false; }
+}
+
 function manualNatal(engine) {
   const dateValue = byId('dob').value;
   const timeValue = byId('tob').value;
-  const zone = byId('tz').value;
+  const zone = ((byId('tz') || {}).value || '').trim();
   if (!dateValue) throw new Error('Enter a birth date or use a saved chart.');
+  if (!validTimeZone(zone)) throw new Error('Pick a birth place so the minute uses a real zone. UK summer is not GMT.');
   const [y, m, d] = dateValue.split('-').map(Number);
   const timeKnown = Boolean(timeValue);
   const [hh, mm] = (timeValue || '12:00').split(':').map(Number);
@@ -124,6 +132,7 @@ function manualNatal(engine) {
     birth: {
       dateText: dateValue,
       timeText: timeKnown ? timeValue : '',
+      place: ((byId('natal-city') || {}).value || '').trim(),
     },
   };
 }
@@ -141,9 +150,17 @@ function seedSavedChart(chart) {
   if (date) byId('dob').value = date;
   const savedTime = chart.birthTime || chart.time || '';
   if (known && savedTime) byId('tob').value = savedTime;
+  const zone = chart.tz || chart.timezone;
+  if (zone && validTimeZone(zone)) {
+    byId('tz').value = zone;
+    const city = byId('natal-city');
+    const note = byId('natal-zone');
+    if (city) city.value = chart.place || chart.city || zone;
+    if (note) note.textContent = zone;
+  }
   function syncManualState() {
     const disabled = checkbox.checked;
-    [byId('dob'), byId('tob'), byId('tz')].forEach((control) => { control.disabled = disabled; });
+    [byId('dob'), byId('tob'), byId('natal-city')].forEach((control) => { if (control) control.disabled = disabled; });
   }
   checkbox.addEventListener('change', syncManualState);
   syncManualState();
@@ -176,7 +193,64 @@ function renderReading(reading, meta) {
   try { byId('natalResult').focus({ preventScroll: true }); } catch (_) { byId('natalResult').focus(); }
 }
 
+function bindNatalCity() {
+  const input = byId('natal-city');
+  const tzEl = byId('tz');
+  const drop = byId('natal-city-drop');
+  const note = byId('natal-zone');
+  if (!input || !drop || !tzEl) return;
+  const GEO = 'https://geocoding-api.open-meteo.com/v1/search';
+  let seq = 0;
+  let timer = null;
+  function pick(city) {
+    input.value = city.name + (city.admin ? ', ' + city.admin : '');
+    tzEl.value = city.tz || '';
+    if (note) note.textContent = city.tz || 'Pick a place for a real zone. UK summer is not GMT.';
+    drop.hidden = true;
+    drop.innerHTML = '';
+  }
+  function render(results) {
+    drop.innerHTML = '';
+    results.forEach((city) => {
+      if (!validTimeZone(city.tz)) return;
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'ap-city-item';
+      item.textContent = city.name + (city.admin ? ', ' + city.admin : '') + ' · ' + city.tz;
+      item.addEventListener('click', () => pick(city));
+      drop.appendChild(item);
+    });
+    drop.hidden = !drop.childNodes.length;
+  }
+  function search(q) {
+    q = (q || '').trim();
+    if (q.length < 2) { drop.hidden = true; drop.innerHTML = ''; return; }
+    const my = ++seq;
+    fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json')
+      .then((r) => r.ok ? r.json() : { results: [] })
+      .then((data) => {
+        if (my !== seq) return;
+        render((data.results || []).map((r) => ({
+          name: r.name,
+          admin: r.admin1 && r.admin1 !== r.name ? r.admin1 : '',
+          lat: r.latitude,
+          lon: r.longitude,
+          tz: r.timezone || '',
+        })));
+      })
+      .catch(() => { if (my === seq) drop.hidden = true; });
+  }
+  input.addEventListener('input', () => {
+    tzEl.value = '';
+    if (note) note.textContent = 'Pick a place for a real zone. UK summer is not GMT.';
+    clearTimeout(timer);
+    timer = setTimeout(() => search(input.value), 250);
+  });
+  input.addEventListener('blur', () => setTimeout(() => { drop.hidden = true; }, 180));
+}
+
 async function init() {
+  bindNatalCity();
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),

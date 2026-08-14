@@ -746,7 +746,7 @@ body.page-eclipse h1 em { color: var(--ap-ember); }
     background: var(--ap-void);
   }
   .ap-live-heading { margin: 10px 0; max-width: 12ch; font-size: clamp(40px, 11vw, 52px); }
-  .ap-live-copy { max-width: 38ch; font-size: 15px; }
+  .ap-live-copy { max-width: 38ch; font-size: 16px; }
   .ap-live-actions { margin-top: 18px; }
   .ap-live-proof { display: none; }
   .ap-model-stage { height: 50svh; min-height: 390px; border-bottom: 1px solid var(--ap-line); }

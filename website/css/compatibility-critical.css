@@ -19,7 +19,7 @@
       z-index: 10001;
       padding: 0.65rem 1.1rem;
       background: var(--gold, #A8B0BC);
-      color: var(--void, #08080b);
+      color: var(--void, #020307);
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
       font-weight: 600;
@@ -64,7 +64,7 @@
 
     /* ---- Compatibility-page design variables ---- */
     :root {
-      --bg: #08080b;
+      --bg: #020307;
       --gold: #A8B0BC;
       --gold-pale: #E8E0D0;
       --white: #E8E0D0;

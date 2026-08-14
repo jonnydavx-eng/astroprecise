@@ -233,7 +233,7 @@ body:has(.tn-hero) .footer-zodiac-strip [data-celestial-seal] {
     }
     /* Primary action = the one terracotta CTA on the page (design-audit fix). */
     body:has(.tn-hero) .tn-btn--primary {
-      background: #6AB0FF;
+      background: #FF6428;
       color: #020307;
       font-weight: 700;
       padding: 0.7rem 1.6rem;
@@ -270,7 +270,7 @@ body:has(.tn-hero) .footer-zodiac-strip [data-celestial-seal] {
       padding: 0.65rem 0.95rem;
       color: var(--color-white, #F8F4EE);
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 16px;
     }
     .tn-city-input:focus { outline: none; border-color: rgba(196, 146, 10, 0.5); }
     .tn-autocomplete {

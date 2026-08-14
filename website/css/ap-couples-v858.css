@@ -31,7 +31,7 @@
 }
 .ap-ab button {
   flex: 1 1 72px;
-  min-height: 40px;
+  min-height: 44px;
   border: 1px solid rgba(242,236,223,.22);
   border-radius: 3px;
   background: rgba(2,3,7,.55);
@@ -104,7 +104,7 @@
 }
 .ap-couples-card input {
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 8px 12px;
   border: 1px solid rgba(242,236,223,.14);
   border-radius: 3px;

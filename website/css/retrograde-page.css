@@ -49,10 +49,10 @@ html.ap-fonts-ready .retro-hero .hero-answer {
 
 /* ── Retrograde page premium overrides (matches transits palette) ── */
     :root {
-      --void: #08080b;
+      --void: #020307;
       --gold: #A8B0BC;
       --gold-light: #E8EBF0;
-      --purple: #5C4A6E;
+      --purple: var(--ap-brass);
       --white: #E8E0D0;
       --silver: #A89E88;
       --silver-dim: #9A9084;

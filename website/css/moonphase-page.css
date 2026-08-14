@@ -52,11 +52,11 @@ body:has(.mp-hero) .moonphase-svg {
 
 /* ── Moon Phase page premium overrides (mirrors transits.html tokens) ── */
     :root {
-      --void: #08080b;
+      --void: #020307;
       --gold: #A8B0BC;
       --gold-text: #D9BC5C;
       --gold-light: #E8EBF0;
-      --purple: #5C4A6E;
+      --purple: var(--ap-brass);
       --white: #E8E0D0;
       --silver: #A89E88;
       --silver-dim: #9A9084;

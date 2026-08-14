@@ -215,7 +215,7 @@
 @media (max-width: 560px) {
   .ap-eclipse-hero { padding-top: 28px; }
   .ap-eclipse-hero h1 { margin-bottom: 16px; }
-  .ap-eclipse-hero .ap-eclipse-page-shell > p:not(.ap-eclipse-kicker) { font-size: 15px; }
+  .ap-eclipse-hero .ap-eclipse-page-shell > p:not(.ap-eclipse-kicker) { font-size: 16px; }
   .ap-eclipse-mission { margin-top: 22px; }
   .ap-eclipse-mission__clock { padding-inline: 15px; }
   .ap-eclipse-countdown span,

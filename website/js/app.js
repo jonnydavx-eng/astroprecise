@@ -40,9 +40,13 @@ const AstroApp = (() => {
     // renderer as well attached duplicate toggle handlers and could make the
     // drawer open then immediately close on a single tap.
     if (!isLaunchCorePage()) {
-      renderNav();
+      // Nav-model already bound the drawer on pages with data-ap-static-nav.
+      // A second initNavbar() opens then immediately closes on one tap.
+      if (!document.querySelector('[data-ap-static-nav-ready]')) {
+        renderNav();
+        initNavbar();
+      }
       injectTopProfile();
-      initNavbar();
     }
     initToastContainer();
     initScrollAnimations();

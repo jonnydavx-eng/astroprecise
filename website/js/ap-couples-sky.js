@@ -346,12 +346,22 @@
       writeField('person1-time', scene.a.time);
       writeField('person1-name', scene.a.name);
       writeField('person1-tz', scene.a.tz);
+      if (scene.a.tz) {
+        writeField('person1-city', scene.a.tz);
+        var noteA = $('person1-zone');
+        if (noteA) noteA.textContent = scene.a.tz;
+      }
     }
     if (scene.b) {
       writeField('person2-date', scene.b.date);
       writeField('person2-time', scene.b.time);
       writeField('person2-name', scene.b.name);
       writeField('person2-tz', scene.b.tz);
+      if (scene.b.tz) {
+        writeField('person2-city', scene.b.tz);
+        var noteB = $('person2-zone');
+        if (noteB) noteB.textContent = scene.b.tz;
+      }
     }
     enableToggles();
     if (scene.a && scene.a.date) showA();

@@ -30,6 +30,7 @@
     <script type="module" src="js/ap-eclipse-live-v834.js?v=858"></script>
     <script type="module" src="js/ap-eclipse-contact-v835.js?v=858"></script>
     <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=858">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=860">
     <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=858">
     <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=858">
     <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=858">
@@ -178,7 +179,7 @@
               <label><span>Birth place</span><input type="text" id="eclipse-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="eclipse-city-drop"><div class="ap-city-drop" id="eclipse-city-drop" hidden></div><p class="ap-zone-note" id="eclipse-zone">Pick a place for a real zone. UK summer is not GMT.</p><input type="hidden" id="tz"></label>
             </div>
             <button type="submit" data-eclipse-contact-submit disabled aria-busy="true" aria-describedby="eclipseContactStatus">Read my eclipse contact</button>
-            <p class="ap-eclipse-contact__note" id="eclipseContactStatus" role="status">No account · no birth data is sent · historical time-zone rules are applied · manual entry has no location, so angles require a saved full chart · if time is unknown, Moon contacts are withheld</p>
+            <p class="ap-eclipse-contact__note" id="eclipseContactStatus" role="status">No account · birth date and time stay here · a place search sends only the town name to a public geocoder · historical time-zone rules are applied · manual entry has no location, so angles require a saved full chart · if time is unknown, Moon contacts are withheld</p>
           </form>
           <div class="ap-eclipse-result" id="eclipseResult" hidden tabindex="-1" aria-live="polite">
             <div class="ap-eclipse-result__head"><span>Computed receipt</span><strong id="eclipseResultState"></strong></div>

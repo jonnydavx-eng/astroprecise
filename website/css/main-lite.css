@@ -76,9 +76,9 @@
   --cyan-dim: rgba(135,147,160,.14);
 
   /* ── Legacy colour aliases (re-mapped warmer) ── */
-  --purple:        var(--violet);
-  --purple-light:  var(--violet-light);
-  --purple-bright: var(--violet-bright);
+  --purple:        var(--ap-brass);
+  --purple-light:  var(--ap-brass-bright);
+  --purple-bright: var(--ap-brass-bright);
   --indigo:        #4a3a5c;
   --blue:          #6a5a52;     /* warmed off slate-blue */
   --danger:        var(--crimson-light);

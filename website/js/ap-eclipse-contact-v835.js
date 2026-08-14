@@ -104,8 +104,10 @@ function chartTimeKnown(chart) {
 }
 
 function manualNatal(engine) {
-  const dateValue = byId('dob').value;
-  const timeValue = byId('tob').value;
+  const dob = byId('dob');
+  const tob = byId('tob');
+  const dateValue = dob ? dob.value : '';
+  const timeValue = tob ? tob.value : '';
   const zone = ((byId('tz') || {}).value || '').trim();
   if (!dateValue) throw new Error('Enter a birth date or use a saved chart.');
   if (!validTimeZone(zone)) throw new Error('Pick a birth place so the minute uses a real zone. UK summer is not GMT.');

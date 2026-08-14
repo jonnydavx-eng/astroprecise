@@ -5,7 +5,7 @@
    remap, which even the deferred horoscope CSS inherits.
    ============================================================ */
 
-body.page-horoscope{ background:#08080b; color:#f2ecdf; }
+body.page-horoscope{ background: #020307; color:#f2ecdf; }
 body.page-horoscope ::selection{ background:#ff5a1f; color:#140b06; }
 
 /* nebula remnants off — the atlas sky is plain ink */

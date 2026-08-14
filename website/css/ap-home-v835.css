@@ -91,7 +91,7 @@
 }
 .ap-live-home .ap-flight-launch span { color: var(--ap-paper-faint); font: 8px/1.45 var(--ap-data); letter-spacing: .05em; text-transform: uppercase; }
 .ap-live-home .ap-orrery-cosmic-flight {
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 13px;
   border: 1px solid var(--ap-line-strong);
   border-radius: 3px;
@@ -118,7 +118,7 @@
 .ap-live-home #mladder,
 .ap-live-home #dock { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
 .ap-live-home #mladder button,
-.ap-live-home #dock button { min-height: 40px; padding: 7px 8px; font-size: 8px; letter-spacing: .045em; }
+.ap-live-home #dock button { min-height: 44px; padding: 7px 8px; font-size: 11px; letter-spacing: .045em; }
 .ap-live-home #dock .world-dot { width: 8px; height: 8px; }
 
 .ap-mobile-flight-deck { display: none; }
@@ -198,7 +198,7 @@
   .ap-live-home .ap-live-stage { height: auto; min-height: 0; max-height: none; display: flex; flex-direction: column; }
   .ap-live-home .ap-live-intro { position: relative; top: auto; left: auto; width: auto; padding: 34px 16px 26px; transform: none; order: 1; }
   .ap-live-home .ap-live-heading { max-width: 8ch; margin: 14px 0 17px; font-size: clamp(48px,14vw,66px); }
-  .ap-live-home .ap-live-copy { max-width: 42ch; font-size: 15px; }
+  .ap-live-home .ap-live-copy { max-width: 42ch; font-size: 16px; }
   .ap-live-home .ap-live-actions { display: grid; grid-template-columns: 1fr 1fr; margin-top: 23px; }
   .ap-live-home .ap-live-actions a { min-height: 48px; padding-inline: 9px; text-align: center; }
   .ap-live-home .ap-live-proof { margin-top: 21px; padding-top: 15px; }

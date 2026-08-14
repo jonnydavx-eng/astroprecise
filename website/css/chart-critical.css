@@ -27,7 +27,7 @@
       z-index: 10001;
       padding: 0.65rem 1.1rem;
       background: var(--gold, #A8B0BC);
-      color: var(--void, #08080b);
+      color: var(--void, #020307);
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
       font-weight: 600;
@@ -899,7 +899,7 @@
 
 /* Keepsake band — post-calc masterpiece path (ap-v649) */
 .chart-keepsake-band{display:flex;align-items:center;gap:1rem;margin:0.85rem 0 1.25rem;padding:0.9rem 1.1rem;border-radius:14px;border:1px solid rgba(168,176,188,.28);background:linear-gradient(145deg,rgba(26,34,48,.75),rgba(12,16,22,.92));box-shadow:0 12px 40px rgba(0,0,0,.28)}
-.chart-keepsake-band__art img{width:72px;height:72px;border-radius:50%;border:1px solid rgba(168,176,188,.35);object-fit:cover;display:block;background:#08080b}
+.chart-keepsake-band__art img{width:72px;height:72px;border-radius:50%;border:1px solid rgba(168,176,188,.35);object-fit:cover;display:block;background: #020307}
 .chart-keepsake-band__eyebrow{margin:0 0 .25rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#A8B0BC}
 .chart-keepsake-band__lead{margin:0;font-size:.92rem;line-height:1.5;color:#C8CDD6}
 .chart-keepsake-band__lead strong{color:#E8EBF0}
