@@ -9147,6 +9147,17 @@ const FinishShader = {
   const _portUp = new THREE.Vector3(0, 1, 0);
   const _portOff = new THREE.Vector3();
 
+  // Scene-level groups a portrait must not include. Returned as a list so the same
+  // set is snapshotted on enter and restored on exit — no guessing which of them
+  // updateScaleVisuals() happens to re-show.
+  function portraitExtraGroups() {
+    return [
+      extraBodiesGroup, trailsGroup, aspectGroup, aspectHelioGroup,
+      natalClockGroup, earthOrbitGroup, galaxyGroup, milkyWayGroup,
+      instrumentCosmicVeil, preloaderComets,
+    ].concat(eccentricGuides || []);
+  }
+
   // Hide every object that is not the framed body (+ its own rings/atmosphere/clouds).
   // Re-run every frame while portraitMode is on so per-frame updaters can't leak
   // distractors back into the still.
@@ -9181,6 +9192,12 @@ const FinishShader = {
     orbitLines.forEach((o) => { if (o) o.visible = false; });
     if (asteroidPoints) asteroidPoints.visible = false;
     if (halleyGroup) halleyGroup.visible = false;
+    // Whole-scene furniture that the per-object list above does not reach.
+    // Pluto's faint orbit ring sits beyond Neptune and reads edge-on as a hairline
+    // streak across an outer-planet portrait; the instrument veil fogs the corners
+    // that have to composite as alpha-0. Visibility is snapshotted in enterPortrait
+    // and restored verbatim in exitPortrait, so this stays reversible.
+    portraitExtraGroups().forEach((g) => { if (g) g.visible = false; });
     // Labels (canvas sprites) — DOM labels handled via updateDomLabels(0)
     Object.keys(labels).forEach((k) => { if (labels[k]) labels[k].visible = false; });
     // Deep-space / starfield / galaxy layers
@@ -9495,6 +9512,9 @@ const FinishShader = {
         dayOffset, daysPerSec,
         focusPlanetId, focusFrameId, moonFrameActive,
         running,
+        clearColor: renderer.getClearColor(new THREE.Color()).getHex(),
+        clearAlpha: renderer.getClearAlpha(),
+        extraGroups: null,
       };
     }
 
@@ -9524,6 +9544,13 @@ const FinishShader = {
     scaleAnimActive = false;
     introActive = false;
 
+    // Snapshotted after the lazy builders above so groups created on demand
+    // (dwarf points, galaxy layers) are covered by the restore.
+    if (portraitRestore && !portraitRestore.extraGroups) {
+      portraitRestore.extraGroups = portraitExtraGroups()
+        .map((g) => (g ? { g, visible: g.visible } : null));
+    }
+
     portraitMode = true;
     portraitId = pid;
     portraitSun = isSun;
@@ -9541,6 +9568,10 @@ const FinishShader = {
     else computePortraitCamera(pid, fillFrac);
     applyPortraitState();
     applyCamera();
+    // Instrument boots clear to an OPAQUE void (0x030408) so the live stage reads as
+    // deep space. A portrait still must composite behind engraved frames, so force a
+    // fully transparent clear for the duration of the capture and restore it on exit.
+    renderer.setClearColor(0x000000, 0);
     // Render straight through the renderer (no composer) so the still is transparent.
     renderer.render(scene, camera);
     return true;
@@ -9594,6 +9625,8 @@ const FinishShader = {
       camTarget.copy(r.camTarget);
       camRadius = r.camRadius; camAz = r.camAz; camEl = r.camEl;
       camera.fov = r.fov; camera.updateProjectionMatrix();
+      if (renderer && r.clearColor != null) renderer.setClearColor(r.clearColor, r.clearAlpha);
+      if (r.extraGroups) r.extraGroups.forEach((e) => { if (e && e.g) e.g.visible = e.visible; });
     }
     // Rebuild the normal scene visibility + lighting for the restored scale.
     needRecompute = true;

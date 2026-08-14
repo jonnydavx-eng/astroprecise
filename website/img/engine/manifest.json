@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-05T19:33:34.193Z",
+  "generated": "2026-08-14T19:37:29.543Z",
   "size": 1024,
   "quality": 0.85,
   "stills": [
@@ -85,11 +85,12 @@
       "rulerOfSigns": [
         "Aquarius (modern)"
       ],
-      "kb": 22.9,
+      "kb": 21.1,
       "date": "2025-11-21T12:00:00Z",
       "frame": "portrait",
       "generated": false,
-      "overBudget": false
+      "overBudget": false,
+      "note": "Hubble OPAL 2025a map; its unobserved southern region is real and is not painted in"
     },
     {
       "id": "neptune",
@@ -97,11 +98,12 @@
       "rulerOfSigns": [
         "Pisces (modern)"
       ],
-      "kb": 26.8,
+      "kb": 23.3,
       "date": "2025-09-23T12:00:00Z",
       "frame": "portrait",
       "generated": false,
-      "overBudget": false
+      "overBudget": false,
+      "note": "Hubble OPAL 2025b map; the saturated fringe on the north limb is the map coverage edge, not a shader artifact. Date chosen as the lowest-fringe longitude of six tested; it cannot be rotated out and is not painted out"
     },
     {
       "id": "sun",
@@ -152,5 +154,12 @@
       "note": "engine has no Pluto mesh — generated disc; Scorpio falls back to Mars"
     }
   ],
-  "totalKB": 833.5
+  "partialRecapture": {
+    "at": "2026-08-14T19:37:29.543Z",
+    "ids": [
+      "uranus",
+      "neptune"
+    ]
+  },
+  "totalKB": 828.2
 }
