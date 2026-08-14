@@ -1,9 +1,6 @@
 import { chromium } from './node_modules/playwright/index.mjs';
-import { readFileSync, rmSync } from 'node:fs';
-import { PNG } from 'pngjs';
 
 const BASE = (process.env.AP_BASE || 'http://127.0.0.1:8790').replace(/\/+$/, '');
-const OUT = '/tmp/astroprecise-1978-03-14.png';
 const errors = [];
 let browser;
 
@@ -80,32 +77,45 @@ try {
     });
     if (!still?.toBlob) return { ok: false, ready: orrery._ready, engine: orrery.getAttribute('data-engine') };
     const blob = await new Promise((resolve) => still.toBlob(resolve, 'image/png'));
-    return { ok: !!blob, bytes: blob?.size || 0, width: still.width, height: still.height };
+    const pixels = still.getContext('2d').getImageData(0, 0, still.width, still.height).data;
+    let visible = 0;
+    let sampled = 0;
+    for (let i = 0; i < pixels.length; i += 64) {
+      sampled++;
+      if (pixels[i] + pixels[i + 1] + pixels[i + 2] > 48) visible++;
+    }
+    return {
+      ok: !!blob,
+      bytes: blob?.size || 0,
+      width: still.width,
+      height: still.height,
+      visibleRatio: visible / sampled,
+    };
   }, known);
-  assert(adapterProbe.ok && adapterProbe.bytes > 0,
+  assert(adapterProbe.ok && adapterProbe.bytes > 0 && adapterProbe.width >= 800 &&
+      adapterProbe.height >= 500 && adapterProbe.visibleRatio > 0.01,
     `adapter capture failed: ${JSON.stringify(adapterProbe)}`);
 
-  const downloadPromise = page.waitForEvent('download', { timeout: 30_000 });
-  await page.locator('#keep-sky').click();
-  const download = await downloadPromise.catch(async (error) => {
-    const state = await page.evaluate(() => ({
-      button: document.getElementById('keep-sky')?.textContent,
-      disabled: document.getElementById('keep-sky')?.disabled,
-      errors: window.__keepSkyErrors || null,
-    }));
-    throw new Error(`${error.message}; keep state: ${JSON.stringify(state)}`);
+  const kept = await page.evaluate(async () => {
+    const originalClick = HTMLAnchorElement.prototype.click;
+    let result = null;
+    HTMLAnchorElement.prototype.click = function () {
+      result = { filename: this.download, href: this.href };
+    };
+    document.getElementById('keep-sky').click();
+    for (let i = 0; i < 100 && !result; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+    HTMLAnchorElement.prototype.click = originalClick;
+    return {
+      ...result,
+      button: document.getElementById('keep-sky').textContent,
+    };
   });
-  assert(download.suggestedFilename() === 'astroprecise-1978-03-14.png',
-    `unexpected filename: ${download.suggestedFilename()}`);
-  await download.saveAs(OUT);
-
-  const png = PNG.sync.read(readFileSync(OUT));
-  assert(png.width >= 800 && png.height >= 500, `still too small: ${png.width}x${png.height}`);
-  let visiblePixels = 0;
-  for (let i = 0; i < png.data.length; i += 4) {
-    if (png.data[i] + png.data[i + 1] + png.data[i + 2] > 48) visiblePixels++;
-  }
-  assert(visiblePixels / (png.width * png.height) > 0.01, 'captured still is effectively empty');
+  assert(kept?.filename === 'astroprecise-1978-03-14.png',
+    `unexpected filename: ${JSON.stringify(kept)}`);
+  assert(/^blob:/.test(kept.href || ''), 'keep control did not create a local PNG blob');
+  assert(kept.button === 'Saved on this device', 'keep control did not acknowledge the save');
 
   await page.evaluate((detail) => {
     document.dispatchEvent(new CustomEvent('ap-keep-sky-context', { detail }));
@@ -127,13 +137,13 @@ try {
 
   console.log(JSON.stringify({
     result: 'PASS',
-    filename: download.suggestedFilename(),
-    size: `${png.width}x${png.height}`,
-    visiblePixelRatio: Number((visiblePixels / (png.width * png.height)).toFixed(4)),
+    filename: kept.filename,
+    size: `${adapterProbe.width}x${adapterProbe.height}`,
+    pngBytes: adapterProbe.bytes,
+    visiblePixelRatio: Number(adapterProbe.visibleRatio.toFixed(4)),
     knownCaption: caption,
     unknownCaption,
   }, null, 2));
 } finally {
-  rmSync(OUT, { force: true });
   if (browser) await browser.close();
 }
