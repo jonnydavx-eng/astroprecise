@@ -46,6 +46,32 @@ rather than re-authored, because painting the missing hemisphere would be invent
 swapping the source is the helm's call. The previous Solar System Scope Uranus map is still in
 git history at 5ca7352 if the smooth full-globe map is preferred for Act 1.
 
+Grid convention — duplicated prime meridian (checked 2026-08-14, left alone deliberately):
+The OPAL maps are 721x361, i.e. longitude 0-360 INCLUSIVE and latitude -90..+90 inclusive.
+Column 0 and column 720 are byte-identical in all 361 rows, so the prime meridian is stored
+twice. Every other map in this folder (Pluto, and the Solar System Scope set) is exclusive.
+Consequence for the shipped 2048-wide resize: u=0 and u=1 land on nearly the same longitude,
+so the wrap seam is unusually SMALL — measured at the 26th percentile (Uranus) and 87th
+(Neptune) of all ordinary column-to-column steps in the image.
+A stricter rebuild was tried and reverted: dropping the duplicate column and resampling
+periodically (half-width wrap padding, so the scaler sees a continuous sphere) is
+geometrically correct but measurably WORSE to look at. The Uranus seam moves to the 96th
+percentile, because the seam then preserves the source's true 0.5 deg step while the interior
+columns have been interpolated down to 0.176 deg. Content was identical either way (black
+fraction 0.402, mean RGB and coverage bounds unchanged), so there was nothing to gain.
+Verdict: no visible seam bug. Do not "fix" this without re-measuring first.
+
+Engine stills are pre-OPAL (checked 2026-08-14):
+img/engine/uranus.webp and img/engine/neptune.webp were captured 2026-07-05, before these
+OPAL maps landed, so they still show the retired Solar System Scope maps and do NOT represent
+what the engine now loads. Proof: the shipped Neptune still is blue-dominant (mean lit RGB
+52/89/164) while neptune.jpg is green-dominant (100/192/156); the shipped Uranus still is 1.5%
+black while the OPAL map on a sphere is about 45% black.
+The reported "polar pinch" at Neptune's north is therefore not a defect in the shipped still —
+it is what a recapture WOULD introduce, because the real scalloped coverage edge crowds into
+the pole where all longitudes converge. It cannot be fixed from this folder: the pixels are the
+official product, and the pole UV handling lives in orrery-webgl.js. Left for the helm.
+
 Colour note:
 These are narrow/medium-band filter composites, not true-colour photographs. Uranus lands
 close to its familiar pale cyan. Neptune comes out green-dominant (lit-pixel mean RGB

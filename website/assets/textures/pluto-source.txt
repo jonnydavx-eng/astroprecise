@@ -34,6 +34,21 @@ southern hemisphere was in polar night during the flyby and was never imaged. Th
 hemisphere was NOT painted in. A globe using this map will show an unlit southern cap —
 that is Pluto as New Horizons actually saw it.
 
+Thin horizontal hairline below/left of the heart (checked 2026-08-14 — official, not ours):
+There is a faint bright hairline crossing the dark Cthulhu Macula terrain south-west of
+Sputnik Planitia. It is in the NASA source. Cropping the same region from the 5926x2963
+original and from the shipped 2048x1024 file gives a mean absolute difference of 1.72/255
+(max 24) — JPEG requantisation only, with no structure added. It is a mosaic seam in the
+official product, where lower-resolution approach imagery meets the high-resolution encounter
+imagery. Leave it: removing it would mean retouching NASA's mosaic.
+
+Wrap convention (correct, unlike the OPAL maps):
+This map is an exclusive 0-360 grid — column 0 and the last column differ about as much as any
+ordinary neighbouring pair (3.83 vs 2.36 at full resolution), so there is no duplicated
+meridian and the texture tiles correctly. The wrap gap in the shipped 2048 file sits at the
+36th percentile of all column-to-column steps, i.e. the seam is unremarkable. A periodic
+resample was tried and moved it to the 46th percentile — no visible gain, so not shipped.
+
 Why the colour mosaic and not the higher-resolution USGS product:
 USGS Astrogeology also publishes a 300 m/px global mosaic
 (https://planetarymaps.usgs.gov/mosaic/Pluto_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif,

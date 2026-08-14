@@ -93,6 +93,11 @@ assert.ok(iceNote.includes('archive.stsci.edu/hlsps/opal'), 'ice-giant note must
 // The note's coverage claims are load-bearing honesty, not decoration.
 assert.ok(/NOT full-latitude/.test(iceNote), 'ice-giant note must not claim Neptune is full-latitude');
 assert.ok(/not paint|NOT painted/i.test(iceNote), 'ice-giant note must record that unobserved regions were left alone');
+// Findings that cost real measurement to establish — losing them invites a repeat.
+assert.ok(/duplicated prime meridian/i.test(iceNote),
+  'ice-giant note must keep the duplicated-meridian finding (721 cols = 0-360 inclusive)');
+assert.ok(/pre-OPAL/i.test(iceNote),
+  'ice-giant note must record that the engine stills predate these maps');
 
 // ── Pluto is the real New Horizons colour mosaic, credited as such ───────────────────
 assertMapTiers('pluto.jpg');
@@ -107,6 +112,8 @@ assert.ok(/Johns Hopkins APL/.test(credits) && /SwRI/.test(credits), 'credits mu
 assert.ok(plutoNote.includes('science.nasa.gov'), 'pluto note must cite the NASA source URL');
 assert.ok(/md5/i.test(plutoNote), 'pluto note must record the source checksum');
 assert.ok(/polar night/.test(plutoNote), 'pluto note must explain the unimaged southern cap');
+assert.ok(/hairline/i.test(plutoNote),
+  'pluto note must record that the hairline seam is in the NASA source, not our convert');
 
 // ── No map is credited to a source it did not come from ─────────────────────────────
 const sssSection = /### Solar System Scope[\s\S]*?(?=\n### )/.exec(credits);
