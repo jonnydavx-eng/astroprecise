@@ -4,7 +4,7 @@
  * The legacy filename is retained because package.json calls it directly. The
  * assertions below describe the current product: one immersive WebGL
  * Observatory, edge controls on desktop, dedicated phone selectors, the
- * five-route launch drawer, and truthful event / eclipse / shop surfaces.
+ * four-route launch drawer, and truthful event / eclipse / shop surfaces.
  */
 import { chromium } from './node_modules/playwright/index.mjs';
 import { existsSync, mkdirSync } from 'node:fs';
@@ -21,7 +21,6 @@ const SCALES = [
 const PRIMARY_ROUTES = [
   ['index.html', 'Observatory'],
   ['chart.html', 'Chart'],
-  ['horoscope.html', 'Daily'],
   ['sky-events.html', 'Events'],
   ['shop.html', 'Shop'],
 ];
@@ -285,7 +284,7 @@ async function mobileNavGate(browser) {
         minTarget: links.length ? Math.min(...links.map(link => link.getBoundingClientRect().height)) : 0,
       };
     });
-    gate(`${route} mobile drawer exposes the five-route spine`, JSON.stringify(state.labels) === JSON.stringify(PRIMARY_ROUTES.map(item => item[1])) && JSON.stringify(state.hrefs) === JSON.stringify(PRIMARY_ROUTES.map(item => item[0])) && state.active === expectedActive, JSON.stringify(state));
+    gate(`${route} mobile drawer exposes the four-route spine`, JSON.stringify(state.labels) === JSON.stringify(PRIMARY_ROUTES.map(item => item[1])) && JSON.stringify(state.hrefs) === JSON.stringify(PRIMARY_ROUTES.map(item => item[0])) && state.active === expectedActive, JSON.stringify(state));
     gate(`${route} mobile drawer targets are touch-sized`, state.minTarget >= 44, `${state.minTarget}px`);
     await page.keyboard.press('Escape');
     gate(`${route} Escape closes the drawer`, !(await page.locator('#nav-mobile-menu').evaluate(element => element.classList.contains('open'))));

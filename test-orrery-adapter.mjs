@@ -22,11 +22,12 @@ const W = readFileSync(enginePath, 'utf8');
 if (!/customElements\.define\(['"]void-orrery['"]/.test(A)) fail('adapter never registers <void-orrery>');
 else ok('registers <void-orrery>');
 for (const name of ['flyTo', 'flyScale', 'setNatal', 'setJD', 'setLive', 'getJD',
-  'setEclipse', 'getEclipse', 'startOpeningBeat', 'flight', 'lookUp', 'setObserver']) {
+  'setEclipse', 'getEclipse', 'startOpeningBeat', 'flight', 'lookUp', 'setObserver',
+  'captureStill']) {
   const re = new RegExp('prototype\\.' + name + '\\s*=\\s*function');
   if (!re.test(A)) fail('adapter missing prototype.' + name);
 }
-ok('all 12 consumer call-names are present');
+ok('all consumer call-names are present');
 
 for (const extra of ['setNatalClocks', 'clearNatalClocks']) {
   const re = new RegExp('prototype\\.' + extra + '\\s*=\\s*function');
@@ -38,6 +39,25 @@ if (!W.includes('function setNatalClocks') || !W.includes('function clearNatalCl
   fail('orrery-webgl.js missing natal-clock engine API');
 } else {
   ok('engine exposes setNatalClocks / clearNatalClocks / getNatalClocks');
+}
+for (const probe of [
+  'function applyAuthoredBirthHourStill(jd)',
+  'function captureBirthHourStill(opts)',
+  "birthHourMarker.name = 'birthHourEarthMarker'",
+  'natalClockGroup.visible = false',
+  'sunMesh.scale.setScalar(0.22)',
+  'instrumentFillLight.intensity = 0',
+  'captureBirthHourStill,',
+]) {
+  if (!W.includes(probe)) fail('birth-hour still contract missing: ' + probe);
+}
+if (!A.includes("opts.mode === 'birth-hour'") || !A.includes('O.captureBirthHourStill')) {
+  fail('adapter does not route authored birth-hour captures');
+} else {
+  ok('authored birth-hour capture hides couples clocks and marks Earth');
+}
+if (!W.includes('type: THREE.UnsignedByteType') || !W.includes('stencilBuffer: false')) {
+  fail('Home-safe UnsignedByte composer target is missing');
 }
 
 const couplesSkyPath = join(root, 'js', 'ap-couples-sky.js');
@@ -94,7 +114,6 @@ for (const probe of [
   'function homeCanvasIntersectsViewport()',
   'function shouldRenderFrame()',
   'webglBooted && running && !destroyed && shouldRenderFrame() && !raf',
-  'if (isLivingSkyHome()) return;',
 ]) {
   if (!A.includes(probe) && !W.includes(probe)) fail('stable Home reveal contract missing: ' + probe);
 }
@@ -124,9 +143,9 @@ if (got.join() !== expectedOwners.join()) {
   fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=862/.test(indexHtml)) fail('Home missing v862 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=862"/.test(indexHtml)) {
-  fail('Home missing exact v862 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=868/.test(indexHtml)) fail('Home missing v868 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=868"/.test(indexHtml)) {
+  fail('Home missing exact v868 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
@@ -169,9 +188,9 @@ ok('opening beat is subtle, reduced-motion safe and yields to user input; full j
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
-  'css/ap-living-sky-v834.css?v=862',
-    'js/ap-observatory-v834.js?v=862',
-    'js/ap-nav-model.js?v=862',
+  'css/ap-living-sky-v834.css?v=867',
+    'js/ap-observatory-v834.js?v=867',
+    'js/ap-nav-model.js?v=867',
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
@@ -201,11 +220,11 @@ for (const probe of ["['sky-events.html', 'Events', 'eclipse']", '(min-width: 98
   if (!navModel.includes(probe)) fail('four-route mobile navigation missing: ' + probe);
 }
 if (!livingCss.includes('repeat(4, minmax(0, 1fr))')) fail('mobile navigation is not four equal tabs');
-if (navModel.includes("[\'horoscope.html\', \'Daily\']")) fail('Daily must not be a launch route');
-if (navModel.includes("[\'lifepath.html\'")) fail('Life Path must not leak into nav extras');
-if (navModel.includes("[\'synastry.html\'")) fail('Synastry must not leak into nav extras');
+if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a launch route');
+if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
+if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v862"')) fail('service worker release identity is not ap-v862');
+if (!sw.includes('const V = "ap-v868"')) fail('service worker release identity is not ap-v868');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
@@ -230,8 +249,8 @@ const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'u
 const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=862',
-    'css/ap-eclipse-live-v834.css?v=862',
+  'js/ap-eclipse-live-v834.js?v=867',
+    'css/ap-eclipse-live-v834.css?v=867',
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];

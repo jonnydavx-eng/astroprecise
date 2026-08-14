@@ -880,10 +880,17 @@
         return this._eclipseK || 0;
       };
 
-      C.prototype.captureStill = function () {
+      C.prototype.captureStill = function (opts) {
         var O = this._engine;
-        if (!this._ready || !O || typeof O.captureFrame !== 'function') return null;
-        try { return O.captureFrame({ scale: 2 }); } catch (e) { return null; }
+        if (!this._ready || !O) return null;
+        opts = opts || {};
+        try {
+          if (opts.mode === 'birth-hour' && typeof O.captureBirthHourStill === 'function') {
+            return O.captureBirthHourStill({ jd: opts.jd, timeKnown: opts.timeKnown, scale: 2 });
+          }
+          if (typeof O.captureFrame === 'function') return O.captureFrame({ scale: 2 });
+        } catch (e) {}
+        return null;
       };
 
       /* ── natal markers — minimal zodiac-ring DOM overlay ──

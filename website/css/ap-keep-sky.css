@@ -8,25 +8,32 @@
 .ap-keep-row .btn-invite {
   min-height: 44px;
   padding: 0 16px;
-  border: 1px solid rgba(255,100,40,.45);
+  border: 1px solid var(--ap-line-strong);
   border-radius: 3px;
   background: transparent;
-  color: #F2ECDF;
+  color: var(--ap-paper);
   font: 650 14px/1 inherit;
   letter-spacing: .04em;
   cursor: pointer;
 }
+.ap-keep-row .btn-invite:disabled {
+  cursor: not-allowed;
+  opacity: .46;
+}
 .ap-keep-row .action-note {
+  flex: 1 1 260px;
+  margin: 0;
   font-size: 12px;
-  color: rgba(242,236,223,.55);
+  line-height: 1.5;
+  color: var(--ap-paper-faint);
 }
 .ap-city-drop {
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-top: 6px;
-  border: 1px solid rgba(242,236,223,.14);
-  background: #020307;
+  border: 1px solid var(--ap-line);
+  background: var(--ap-void);
 }
 .ap-city-drop[hidden] { display: none; }
 .ap-city-item {
@@ -34,14 +41,14 @@
   padding: 8px 10px;
   border: 0;
   background: transparent;
-  color: #F2ECDF;
+  color: var(--ap-paper);
   font: 14px/1.3 inherit;
   cursor: pointer;
 }
 .ap-city-item:hover,
-.ap-city-item:focus { background: rgba(255,100,40,.16); }
+.ap-city-item:focus { background: var(--ap-line); }
 .ap-zone-note {
   margin: 6px 0 0;
   font-size: 12px;
-  color: rgba(242,236,223,.55);
+  color: var(--ap-paper-faint);
 }

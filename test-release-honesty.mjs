@@ -21,7 +21,7 @@ assert.equal(chartPage.includes("name:'Slight angle'"), false);
 assert.ok(chartCss.includes('.ap-reading-card > .ap-reading-card__content:only-child'));
 assert.ok(chartCss.includes('scroll-margin-top:'));
 assert.ok(chartHtml.includes('ap-chart-v835.css?v=867'));
-assert.ok(chartHtml.includes('ap-load-interpretations.js?v=867') && chartHtml.includes('chart-page.js?v=867'));
+assert.ok(chartHtml.includes('ap-load-interpretations.js?v=867') && chartHtml.includes('chart-page.js?v=868'));
 assert.ok(chartHtml.includes('reading-format.js?v=867') && chartHtml.includes('chart-render.js?v=867'));
 assert.ok(readingFormat.includes('if (leadHtml) inner += leadHtml;') && !readingFormat.includes('leadHtml && !collapsed'));
 assert.ok(interpretationsLoader.includes('interpretations.js?v='));
@@ -65,6 +65,21 @@ assert.equal(compatibilityHtml.includes('compatibility-page.js'), false,
   'retired compatibility-page.js must stay deleted');
 assert.equal(/location\.hash|new URLSearchParams\(location\.search\)[\s\S]{0,120}(?:get\(['"](?:d|date|time|city|lat|lon)|birth)/.test(chartPage), false,
   'chart page must not restore birth details from an address');
+
+const keepSky = read('./website/js/ap-keep-sky.js');
+const orreryWebgl = read('./website/js/orrery-webgl.js');
+assert.ok(chartHtml.includes('data-keep-mode="birth-hour"') && chartHtml.includes('id="keep-sky-caption"'));
+assert.ok(chartPage.includes("new CustomEvent('ap-keep-sky-context'"));
+assert.ok(keepSky.includes("'astroprecise-' + date + '.png'"));
+assert.ok(keepSky.includes('birth time unknown') && keepSky.includes('12:00 UTC date reference') &&
+  keepSky.includes('no precise Earth-facing hemisphere is claimed'));
+assert.ok(chartPage.includes("Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2], 12, 0, 0)") &&
+  chartPage.includes("chart.timeKnown === true"),
+  'unknown-time keepsake must use UTC noon while known time keeps the chart JD');
+assert.ok(keepSky.includes('Authored whole-system camera') && keepSky.includes('Earth marked as home'));
+assert.ok(orreryWebgl.includes('function applyAuthoredBirthHourStill(jd)'));
+assert.equal(/checkout|catalogueSkus|gumroad/i.test(keepSky), false,
+  'the still download must not add checkout or SKU behavior');
 
 const serviceWorker = read('./website/sw.js');
 assert.ok(serviceWorker.includes('app|chart-page|horoscope-page'), 'chart-page.js must remain release-critical');
