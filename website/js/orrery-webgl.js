@@ -690,13 +690,17 @@ const FinishShader = {
   // Neptune with a faint orbit ring, tier-gated (high/mid only, off on low/phones).
   // Honest: schematic radius, TRUE heliocentric position. (Chiron was considered but its
   // ephemeris is a bare geocentric mean longitude — not scene-placeable — so it's skipped.)
+  // v869: Pluto is a real textured sphere, not a point sprite. The map is the NASA
+  // New Horizons MVIC global colour mosaic (see assets/textures/pluto-source.txt);
+  // its unobserved southern third is black in the NASA product and stays that way.
+  // siderealPeriodHours is Pluto's real retrograde rotation (-153.2928 h).
   const EXTRA_BODIES = [
-    { id: 'pluto', name: 'Pluto', R: 32.5, size: 0.28, color: 0xbfa98c, minTier: 'mid' },
+    { id: 'pluto', name: 'Pluto', R: 32.5, size: 0.28, color: 0xbfa98c, minTier: 'mid', tex: 'pluto.jpg' },
   ];
 
   // Extra bodies (Pluto) + motion trails (time-scrub)
   let extraBodiesGroup = null;      // holds the dwarf-planet points + their orbit rings
-  const extraMeshes = {};           // id → { dot, ring, label }
+  const extraMeshes = {};           // id → { dot (pole group), mat, mesh, ring, label, b }
   const ghostMeshes = {};           // id → dim live-now sphere (not a second clock)
   let ghostTodayJd = 0;
   let lastGhostSampleMs = 0;
@@ -6351,6 +6355,22 @@ const FinishShader = {
     }
   }
 
+  // Dwarf planets sit beyond the scaleLevel 2 cut that updatePlanetSunLighting()
+  // returns on, so their lit hemisphere is driven separately — otherwise Pluto's
+  // shader would hold whatever sun direction it was compiled with.
+  function updateExtraBodySunLighting() {
+    if (!sunMesh || !extraBodiesGroup || !extraBodiesGroup.visible) return;
+    EXTRA_BODIES.forEach((b) => {
+      const em = extraMeshes[b.id];
+      if (!em || !em.dot || !em.mat) return;
+      _toSun.copy(sunMesh.position).sub(em.dot.position);
+      if (_toSun.lengthSq() < 1e-6) _toSun.set(1, 0, 0);
+      else _toSun.normalize();
+      const shader = em.mat.userData && em.mat.userData.planetShader;
+      if (shader && shader.uniforms.uSunDir) shader.uniforms.uSunDir.value.copy(_toSun);
+    });
+  }
+
   function setOrbitLineOpacity(o, mult) {
     if (!o || !o.material) return;
     const base = o.userData.baseOpacity || 0.3;
@@ -6667,27 +6687,42 @@ const FinishShader = {
     buildTrails();
   }
 
-  // Small dwarf-planet points (Pluto) + faint orbit ring. Tier-gated: skipped entirely on
+  // Dwarf planets (Pluto) + faint orbit ring. Tier-gated: skipped entirely on
   // low tier (phones stay light). Position is set each frame in updatePositions().
+  //
+  // v869: this was an additive point sprite standing in for a body with no map.
+  // A real public-domain NASA map now ships, so the body is a real lit sphere on
+  // the same planet lighting shader as the majors. The sprite is GONE rather than
+  // kept underneath — two draws for one world would double-light the disc.
   function buildExtraBodies() {
     if (extraBodiesGroup || perfTier === 'low' || IS_PHONE) return; // v627 — Pluto off on phones (fill-rate)
     extraBodiesGroup = new THREE.Group();
     extraBodiesGroup.visible = false;
     EXTRA_BODIES.forEach((b) => {
       if (b.minTier === 'high' && perfTier !== 'high') return;
-      // dot — a soft additive point sprite (cheap, reads at System/Oort scale)
-      const c = document.createElement('canvas'); c.width = c.height = 64;
-      const g = c.getContext('2d');
-      const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-      const hex = '#' + b.color.toString(16).padStart(6, '0');
-      grad.addColorStop(0, hex);
-      grad.addColorStop(0.4, hex);
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      g.fillStyle = grad; g.beginPath(); g.arc(32, 32, 32, 0, Math.PI * 2); g.fill();
-      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
-      const dot = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, opacity: 0.92 }));
-      dot.scale.setScalar(b.size * 2.4);
+      const vis = PLANET_VIS[b.id] || { roughness: 0.92, metalness: 0 };
+      const mat = new THREE.MeshPhysicalMaterial({
+        color: b.color, roughness: vis.roughness, metalness: vis.metalness,
+        clearcoat: 0, emissive: 0x000000, envMapIntensity: 0.16,
+      });
+      mat.onBeforeCompile = (shader) => {
+        try {
+          injectPlanetSunLighting(shader, vis.rim || b.color, 0.05);
+          mat.userData.planetShader = shader;
+        } catch (e) { console.warn('[orrery] dwarf lighting patch skipped', e); }
+      };
+      mat.customProgramCacheKey = () => 'planet-sun-v2';
+      // Same two-level frame as the majors: the group carries the IAU pole, the
+      // inner sphere carries the spin phase, so one never contaminates the other.
+      const bodySegs = sphereSegs(false);
+      const sphere = new THREE.Mesh(new THREE.SphereGeometry(b.size, bodySegs, bodySegs), mat);
+      const dot = new THREE.Group();
+      const rmS1 = ROTATION_MODEL[b.id];
+      if (rmS1) poleQuaternion(rmS1.poleScene, dot.quaternion);
+      dot.add(sphere);
+      dot.userData = { b, mat, mesh: sphere };
       extraBodiesGroup.add(dot);
+      loadTex(b.tex).then((t) => { if (t) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
       // faint engraved orbit ring (non-hero styling)
       const rw = 0.02, inner = Math.max(0.01, b.R - rw * 0.5), outer = b.R + rw * 0.5;
       const segs = perfTier === 'high' ? 192 : 128;
@@ -6698,7 +6733,7 @@ const FinishShader = {
       extraBodiesGroup.add(ring);
       const label = makeLabel(b.name); label.visible = false;
       extraBodiesGroup.add(label);
-      extraMeshes[b.id] = { dot, ring, label, b };
+      extraMeshes[b.id] = { dot, mat, ring, label, b };
     });
     scene.add(extraBodiesGroup);
   }
@@ -7713,6 +7748,7 @@ const FinishShader = {
     if (earthAtmoMat) earthAtmoMat.uniforms.uCamPos.value.copy(camera.position);
     if (earthAtmoMatOuter) earthAtmoMatOuter.uniforms.uCamPos.value.copy(camera.position);
     updatePlanetSunLighting();
+    updateExtraBodySunLighting();
     if (scaleLevel <= 2 && orbitLines.length) {
       orbitLines.forEach((o) => {
         if (o.material && o.material.uniforms && o.material.uniforms.uTime) {
@@ -7861,6 +7897,16 @@ const FinishShader = {
           g.userData.mesh.rotation.y = rotationPhaseRad(b.id, jdSpin) + (spinOffset[b.id] || 0);
         }
       });
+      // Dwarf planets ride the same canonical clock. They are not in BODIES, so
+      // they get no scroll-spin absorber — nothing feeds them a spinOffset.
+      if (extraBodiesGroup && extraBodiesGroup.visible) {
+        EXTRA_BODIES.forEach((b) => {
+          const em = extraMeshes[b.id];
+          if (em && em.dot && em.dot.userData.mesh) {
+            em.dot.userData.mesh.rotation.y = rotationPhaseRad(b.id, jdSpin);
+          }
+        });
+      }
       earthUniforms.uCloudSpin.value = ((CLOUD_DRIFT_RAD_PER_DAY * (jdSpin - 2451545.0)) / (2 * Math.PI))
         + ((spinOffset.cloud || 0) + (spinOffset.earth || 0)) / (2 * Math.PI);
       if (moonMesh && moonGroup && moonGroup.userData.lonDeg != null) {
@@ -9238,15 +9284,29 @@ const FinishShader = {
   const _portUp = new THREE.Vector3(0, 1, 0);
   const _portOff = new THREE.Vector3();
 
+  // Portraits frame either a major body (meshes) or a dwarf planet (extraMeshes).
+  // Both carry userData { b, mesh }, so the framing and lighting maths is shared.
+  function portraitBodyGroup(pid) {
+    if (meshes[pid]) return meshes[pid];
+    const em = extraMeshes[pid];
+    return (em && em.dot) || null;
+  }
+  function isExtraBodyId(pid) { return !!(extraMeshes[pid] && extraMeshes[pid].dot); }
+
   // Scene-level groups a portrait must not include. Returned as a list so the same
   // set is snapshotted on enter and restored on exit — no guessing which of them
   // updateScaleVisuals() happens to re-show.
   function portraitExtraGroups() {
-    return [
+    const list = [
       extraBodiesGroup, trailsGroup, aspectGroup, aspectHelioGroup,
       natalClockGroup, earthOrbitGroup, galaxyGroup, milkyWayGroup,
       instrumentCosmicVeil, preloaderComets,
     ].concat(eccentricGuides || []);
+    Object.keys(extraMeshes).forEach((id) => {
+      const em = extraMeshes[id];
+      if (em) list.push(em.dot, em.ring, em.label);
+    });
+    return list;
   }
 
   // Hide every object that is not the framed body (+ its own rings/atmosphere/clouds).
@@ -9289,6 +9349,18 @@ const FinishShader = {
     // that have to composite as alpha-0. Visibility is snapshotted in enterPortrait
     // and restored verbatim in exitPortrait, so this stays reversible.
     portraitExtraGroups().forEach((g) => { if (g) g.visible = false; });
+    // A dwarf-planet portrait needs its own group back — but only the body, never
+    // the orbit ring or the label, and never a second dwarf sharing the frame.
+    if (isExtraBodyId(portraitId) && extraBodiesGroup) {
+      extraBodiesGroup.visible = true;
+      Object.keys(extraMeshes).forEach((id) => {
+        const em = extraMeshes[id];
+        if (!em) return;
+        if (em.dot) em.dot.visible = id === portraitId;
+        if (em.ring) em.ring.visible = false;
+        if (em.label) em.label.visible = false;
+      });
+    }
     // Labels (canvas sprites) — DOM labels handled via updateDomLabels(0)
     Object.keys(labels).forEach((k) => { if (labels[k]) labels[k].visible = false; });
     // Deep-space / starfield / galaxy layers
@@ -9336,7 +9408,7 @@ const FinishShader = {
   function applyPortraitSunLighting() {
     const ids = portraitId === 'earthmoon' ? ['earth'] : [portraitId];
     ids.forEach((pid) => {
-      const g = meshes[pid];
+      const g = portraitBodyGroup(pid);
       if (!g) return;
       // Sun sits at the scene origin; lit hemisphere faces the origin.
       _portToSun.copy(g.position).multiplyScalar(-1);
@@ -9379,7 +9451,7 @@ const FinishShader = {
       }
       pid = 'earth';
     }
-    const g = meshes[pid];
+    const g = portraitBodyGroup(pid);
     if (!g) return;
     const body = g.userData.b;
     _portTarget.copy(g.position);
@@ -9472,7 +9544,7 @@ const FinishShader = {
   // silhouette with only a rim sliver — the exact lit-face bug.
   function applyPortraitLighting() {
     const pid = portraitId === 'earthmoon' ? 'earth' : portraitId;
-    const g = meshes[pid];
+    const g = portraitBodyGroup(pid);
     if (!g) return;
     // Sun sits at the scene origin; keep the sun mesh + point light there.
     if (sunMesh) sunMesh.position.set(0, 0, 0);

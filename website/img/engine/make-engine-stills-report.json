@@ -2,16 +2,15 @@
   "base": "http://localhost:8790",
   "size": 1024,
   "only": [
-    "uranus",
-    "neptune"
+    "pluto"
   ],
   "portraits": [
     {
-      "id": "uranus",
+      "id": "pluto",
       "ok": true,
-      "file": "uranus.webp",
-      "kb": 21.1,
-      "date": "2025-11-21T12:00:00Z",
+      "file": "pluto.webp",
+      "kb": 33.6,
+      "date": "2026-03-20T12:00:00Z",
       "frame": "portrait",
       "w": 1024,
       "h": 1024,
@@ -43,64 +42,15 @@
         ]
       },
       "transparentCorners": true,
-      "meanLum": 198,
-      "maxLum": 229,
-      "litSamples": 68,
+      "meanLum": 113,
+      "maxLum": 184,
+      "litSamples": 54,
       "opaqueSamples": 69,
       "lit": true,
       "centerPx": [
-        226,
-        224,
-        214,
-        255
-      ]
-    },
-    {
-      "id": "neptune",
-      "ok": true,
-      "file": "neptune.webp",
-      "kb": 23.3,
-      "date": "2025-09-23T12:00:00Z",
-      "frame": "portrait",
-      "w": 1024,
-      "h": 1024,
-      "cornerAlphaMax": 0,
-      "corners": {
-        "tl": [
-          0,
-          0,
-          0,
-          0
-        ],
-        "tr": [
-          0,
-          0,
-          0,
-          0
-        ],
-        "bl": [
-          0,
-          0,
-          0,
-          0
-        ],
-        "br": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "transparentCorners": true,
-      "meanLum": 161,
-      "maxLum": 206,
-      "litSamples": 67,
-      "opaqueSamples": 69,
-      "lit": true,
-      "centerPx": [
-        150,
-        203,
-        176,
+        187,
+        170,
+        159,
         255
       ]
     }
@@ -115,5 +65,5 @@
     "pageErrorsDuringReload": []
   },
   "pageErrorsTotal": [],
-  "totalKB": 828.2
+  "totalKB": 839.1
 }

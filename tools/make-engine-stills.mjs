@@ -92,11 +92,11 @@ const JOBS = [
   // EARTH-MOON — flagship composed still: lit Earth + lit Moon sharing the frame.
   { id: 'earth-moon', frame: 'earthmoon', fillFrac: 0.70, date: '2026-03-20T12:00:00Z', altDate: '2026-03-28T12:00:00Z' },
 
-  // PLUTO — low-detail body. The engine has only 8 BODIES (no Pluto mesh), so a
-  // premium textured portrait is impossible. Scorpio falls back to Mars (its
-  // traditional ruler). We emit a dignified generated Pluto disc (see makePlutoStill)
-  // so the library is complete, and note the fallback in the manifest.
-  { id: 'pluto',   frame: 'generated', fillFrac: 0.66, date: '2026-03-20T12:00:00Z', altDate: null, generated: true },
+  // PLUTO — a real textured sphere since v869. The still used to be a procedurally
+  // generated disc because the engine had no Pluto mesh and no licensed map; both
+  // now exist, so this is a genuine engine portrait like every other entry.
+  { id: 'pluto',   frame: 'portrait', fillFrac: 0.66, date: '2026-03-20T12:00:00Z', altDate: '2025-09-23T12:00:00Z',
+    note: 'NASA New Horizons MVIC global colour map; the southern hemisphere was unobserved during the flyby and is black in the NASA product, so it is not painted in' },
 ];
 
 
@@ -192,103 +192,6 @@ async function capturePortrait(page, job, dateIso) {
   }, { id: job.id, frame: job.frame, fillFrac: job.fillFrac, dateIso, size: SIZE, capScale: CAP_SCALE, q: (typeof job.q === 'number' ? job.q : Q) });
 }
 
-/**
- * Pluto: the engine has no Pluto mesh. Generate a dignified, print-grade Pluto disc
- * in-page on a 2D canvas — a lit sphere with Pluto's real tan/charcoal heart-plain
- * tones and a soft terminator — then encode a transparent 1024² webp. Deterministic
- * (seeded), so it's reproducible. Scorpio still falls back to Mars; this only keeps
- * the flagship library complete.
- */
-async function makePlutoStill(page, job) {
-  return page.evaluate(async (args) => {
-    const S = args.size;
-    const c = document.createElement('canvas'); c.width = S; c.height = S;
-    const g = c.getContext('2d');
-    g.clearRect(0, 0, S, S);
-    const cx = S / 2, cy = S / 2;
-    const R = S * (args.fillFrac / 2);
-    // Light comes from upper-left; terminator toward lower-right.
-    const lx = -0.55, ly = -0.5;
-    // seeded mulberry32 for reproducible surface mottle
-    let a = 0x9e3779b9 >>> 0;
-    const rnd = () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-
-    const img = g.createImageData(S, S);
-    const d = img.data;
-    // Pluto palette: pale tan nitrogen plain (Sputnik/Tombaugh) + darker charcoal
-    // Cthulhu-region tones.
-    const light = [206, 184, 156];  // warm tan highlight
-    const mid   = [150, 128, 108];
-    const dark  = [64, 54, 48];     // charcoal shadow
-    for (let y = 0; y < S; y++) {
-      for (let x = 0; x < S; x++) {
-        const dx = (x - cx) / R, dy = (y - cy) / R;
-        const r2 = dx * dx + dy * dy;
-        const i = (y * S + x) * 4;
-        if (r2 > 1) { d[i + 3] = 0; continue; }
-        const dz = Math.sqrt(1 - r2);            // sphere z
-        // lambert with the light dir (normalized)
-        const ll = Math.hypot(lx, ly, 1);
-        const ndotl = Math.max(0, (dx * lx + dy * ly + dz * 1) / ll);
-        const term = Math.pow(ndotl, 0.9);       // soft terminator
-        // low-freq mottle: a couple of value bands to suggest the heart plain
-        const lat = dy, lon = dx;
-        const band = 0.5 + 0.5 * Math.sin(lon * 2.3 + lat * 1.1 + 1.2);
-        const heart = Math.max(0, 1 - Math.hypot(dx - 0.15, dy + 0.1) * 1.6); // bright plain lower-centre
-        let base = [
-          mid[0] + (light[0] - mid[0]) * band,
-          mid[1] + (light[1] - mid[1]) * band,
-          mid[2] + (light[2] - mid[2]) * band,
-        ];
-        base = [
-          base[0] + (light[0] - base[0]) * heart * 0.7,
-          base[1] + (light[1] - base[1]) * heart * 0.7,
-          base[2] + (light[2] - base[2]) * heart * 0.7,
-        ];
-        // fine grain
-        const grain = (rnd() - 0.5) * 10;
-        // shade by terminator toward dark
-        let cr = dark[0] + (base[0] - dark[0]) * term + grain;
-        let cg = dark[1] + (base[1] - dark[1]) * term + grain;
-        let cb = dark[2] + (base[2] - dark[2]) * term + grain;
-        // limb darkening
-        const limb = 0.55 + 0.45 * dz;
-        cr *= limb; cg *= limb; cb *= limb;
-        // soft edge alpha (antialias the disc rim)
-        const edge = Math.min(1, (1 - Math.sqrt(r2)) * R * 0.5);
-        d[i] = Math.max(0, Math.min(255, cr));
-        d[i + 1] = Math.max(0, Math.min(255, cg));
-        d[i + 2] = Math.max(0, Math.min(255, cb));
-        d[i + 3] = Math.round(255 * Math.max(0, Math.min(1, edge)));
-      }
-    }
-    g.putImageData(img, 0, 0);
-
-    // metrics (same shape as capturePortrait)
-    const px = (x, y) => Array.from(g.getImageData(x, y, 1, 1).data);
-    const W = S, H = S;
-    const corners = { tl: px(2, 2), tr: px(W - 3, 2), bl: px(2, H - 3), br: px(W - 3, H - 3) };
-    const cornerAlphaMax = Math.max(corners.tl[3], corners.tr[3], corners.bl[3], corners.br[3]);
-    const x0 = Math.round(W * 0.20), x1 = Math.round(W * 0.80);
-    const y0 = Math.round(H * 0.20), y1 = Math.round(H * 0.80);
-    let sum = 0, n = 0, maxLum = 0, litSamples = 0, opaque = 0;
-    for (let gy = 0; gy < 9; gy++) for (let gx = 0; gx < 9; gx++) {
-      const x = Math.round(x0 + (x1 - x0) * gx / 8), y = Math.round(y0 + (y1 - y0) * gy / 8);
-      const p = px(x, y);
-      if (p[3] < 20) continue;
-      opaque++;
-      const lum = 0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2];
-      sum += lum; n++; if (lum > maxLum) maxLum = lum; if (lum > 60) litSamples++;
-    }
-    return {
-      ok: true, w: W, h: H, dataUrl: c.toDataURL('image/webp', args.q),
-      corners, cornerAlphaMax,
-      meanLum: Math.round(n ? sum / n : 0), maxLum: Math.round(maxLum),
-      opaqueSamples: opaque, litSamples, centerPx: px(W >> 1, H >> 1),
-    };
-  }, { size: SIZE, fillFrac: job.fillFrac, q: Q });
-}
-
 function writeWebp(id, dataUrl) {
   const b64 = dataUrl.replace(/^data:image\/webp;base64,/, '');
   const buf = Buffer.from(b64, 'base64');
@@ -349,7 +252,6 @@ async function main() {
     let usedDate = job.date;
 
     async function runOnce(dateIso) {
-      if (job.generated) return makePlutoStill(page, job);
       const r = await capturePortrait(page, job, dateIso);
       await page.evaluate(() => window.Orrery3D.exitPortrait && window.Orrery3D.exitPortrait());
       return r;
@@ -383,12 +285,11 @@ async function main() {
     });
     const notes = [];
     if (job.note) notes.push(job.note);
-    if (job.generated) notes.push('engine has no Pluto mesh — generated disc; Scorpio falls back to Mars');
     if (kb > 120) notes.push('over 120KB budget: ring/high-frequency detail sets a webp floor at 1024²; lazy-cached (not in install shell)');
     const entry = {
       id: job.id, file, rulerOfSigns: RULER_OF[job.id] || [], kb,
       date: usedDate, frame: job.frame,
-      generated: !!job.generated,
+      generated: false,
       overBudget: kb > 120,
       note: notes.length ? notes.join('; ') : undefined,
     };

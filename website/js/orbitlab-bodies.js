@@ -61,6 +61,17 @@ export const ROTATION_MODEL = {
   saturn:  { poleScene: [ 0.08548, 0.88252, -0.46244], w0eng: 178.934, wdot: 810.7939024,   texOffsetDeg: 0 },
   uranus:  { poleScene: [-0.21200, 0.13436,  0.96799], w0eng:  28.869, wdot: -501.1600928,  texOffsetDeg: 0 },
   neptune: { poleScene: [ 0.35588, 0.88273,  0.30681], w0eng:  48.657, wdot: 536.3128492,   texOffsetDeg: 0 },
+  // Pluto (v869, added with the New Horizons map). Pole from IAU/WGCCRE J2000
+  // a0 = 132.993 deg, d0 = -6.163 deg, run through the same equatorial -> ecliptic
+  // -> scene transform as the rows above (that transform reproduces mercury,
+  // venus, jupiter, saturn, uranus and neptune here to 5 decimal places). The
+  // pole sits BELOW the ecliptic, which is Pluto's ~120 deg obliquity — the
+  // retrograde spin is in the geometry, not a sign hack. wdot is the real IAU
+  // rate. w0eng is NOT calibrated: the engine phase origin is the node
+  // pole x y_hat, not the IAU prime meridian, and no derivation was verified for
+  // Pluto, so the phase is declared illustrative rather than dressed up with the
+  // IAU W0 of 302.695 as if it had been converted.
+  pluto:   { poleScene: [-0.67797, -0.38777, -0.62450], w0eng:   0,     wdot:  56.3625225,  texOffsetDeg: 0 },
 };
 
 /** Moon equirectangular map centering: standard maps are near-side-centered → 0.

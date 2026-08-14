@@ -220,9 +220,12 @@ const RULER_SEAL = {
    our own photoreal 3D render, honest). This is the star of the hero, replacing the
    old painterly zodiac-card JPG. `still` = the engine webp id; `label` = how the body
    is named in the alt/caption (matches the sign's ruler wording).
-   NOTE Scorpio: the engine's Pluto is a bare generated disc (manifest: generated=true),
-   so we anchor Scorpio on MARS — its stronger photoreal render and traditional ruler
-   (the sign data already reads "Pluto & Mars"). The tiny engraved seal elsewhere stays Pluto. */
+   NOTE Scorpio: Pluto used to be a bare generated disc, which is why Scorpio was
+   anchored on MARS. As of v869 the engine renders a real Pluto from the NASA New
+   Horizons map and img/engine/pluto.webp is a genuine engine portrait, so that
+   reason is gone — Scorpio stays on Mars purely as an editorial call (its traditional
+   ruler; the sign data already reads "Pluto & Mars"). Switching the anchor to Pluto
+   is now a content decision, not a graphics limitation. The engraved seal stays Pluto. */
 const RULER_STILL = {
   aries:      { still: 'mars',    label: 'Mars',     rel: 'ruler of Aries' },
   taurus:     { still: 'venus',   label: 'Venus',    rel: 'ruler of Taurus' },

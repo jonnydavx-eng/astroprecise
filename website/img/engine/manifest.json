@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-14T19:37:29.543Z",
+  "generated": "2026-08-14T20:13:55.883Z",
   "size": 1024,
   "quality": 0.85,
   "stills": [
@@ -146,20 +146,19 @@
       "rulerOfSigns": [
         "Scorpio (modern)"
       ],
-      "kb": 22.7,
+      "kb": 33.6,
       "date": "2026-03-20T12:00:00Z",
-      "frame": "generated",
-      "generated": true,
+      "frame": "portrait",
+      "generated": false,
       "overBudget": false,
-      "note": "engine has no Pluto mesh — generated disc; Scorpio falls back to Mars"
+      "note": "NASA New Horizons MVIC global colour map; the southern hemisphere was unobserved during the flyby and is black in the NASA product, so it is not painted in"
     }
   ],
   "partialRecapture": {
-    "at": "2026-08-14T19:37:29.543Z",
+    "at": "2026-08-14T20:13:55.883Z",
     "ids": [
-      "uranus",
-      "neptune"
+      "pluto"
     ]
   },
-  "totalKB": 828.2
+  "totalKB": 839.1
 }
