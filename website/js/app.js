@@ -303,8 +303,7 @@ const AstroApp = (() => {
     ['tonight.html', 'Tonight'], ['this-weeks-sky.html', 'This Week'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
-    ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
-    ['lifepath.html', 'Life Path'],
+    ['what-is-my-rising-sign.html', 'Rising Sign'],
     ['accuracy.html', 'Accuracy'],
     ['why.html', 'Why'],
   ];

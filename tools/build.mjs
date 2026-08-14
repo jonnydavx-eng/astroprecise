@@ -41,7 +41,7 @@ function walk(dir) {
       out.push(...walk(p))
     } else {
       if (SKIP_FILES.has(name) || SKIP_EXT.has(extname(name))) continue
-      if (name.includes('.pre-shell') || name.includes('.pre-redirect')) continue
+      if (name.includes('.pre-shell') || name.includes('.pre-redirect') || name.includes('.pre-guard-bak') || /\.bak(?:$|\.)/.test(name)) continue
       out.push({ p, rel })
     }
   }

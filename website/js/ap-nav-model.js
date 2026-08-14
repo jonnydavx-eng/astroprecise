@@ -7,7 +7,7 @@
  *
  * Launch bar: Observatory · Chart · Events · Shop.
  * The historical tools remain directly addressable, but they never leak into
- * the five-route launch shell or reintroduce a second "Explore" entrance.
+ * the four-route launch shell or reintroduce a second "Explore" entrance.
  *
  * Mobile launch tabs: Sky · Chart · Events · Shop.
  *
@@ -38,7 +38,7 @@
     ['deep-reading.html', 'Natal reading'],
   ];
 
-  // Five-route mobile spine. The authored header remains the desktop navigation.
+  // Four-route mobile spine. The authored header remains the desktop navigation.
   var NAV_BOTTOM_TABS = [
     ['index.html', 'Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
@@ -61,8 +61,7 @@
     ['tonight.html', 'Tonight'], ['this-weeks-sky.html', 'This Week'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
-    ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
-    ['lifepath.html', 'Life Path'],
+    ['what-is-my-rising-sign.html', 'Rising Sign'],
     ['accuracy.html', 'Accuracy'],
     ['why.html', 'Why'],
   ];
@@ -83,7 +82,7 @@
   }
 
   function isLaunchRoute() {
-    return /^(?:index|chart|horoscope|shop|sky-events|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(staticHere());
+    return /^(?:index|chart|shop|sky-events|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(staticHere());
   }
 
   function staticLink(row, here, drawer) {
