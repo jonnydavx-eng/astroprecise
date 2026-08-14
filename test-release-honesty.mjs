@@ -126,6 +126,69 @@ for (const file of htmlFiles) {
     `${file} links to a retired product funnel`);
 }
 
+// ── Sky card: one keepable minute, honest about zone, hour and light ────────
+const skyCard = read('./website/sky-card.html');
+const skyCardJs = read('./website/js/ap-sky-card.js');
+const keepMinute = read('./website/js/ap-keep-minute.js');
+assert.ok(skyCard.includes("window.AP_ASSET_V='867'"), 'sky card must declare the release tip');
+assert.equal(/\?v=(?!867\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
+assert.ok(skyCard.includes('data-ap-static-nav') && skyCard.includes('sky-events.html'),
+  'sky card must carry the one house navigation');
+assert.ok(skyCard.includes('Astro<i class="logo-text__precise">Precise</i>'),
+  'the wordmark is one word');
+assert.equal(/#0a0908/i.test(skyCard), false, 'sky card must leave the retired warm surface behind');
+assert.equal(/never rounded|placed exactly/i.test(skyCard), false,
+  'sky card must not claim an exactness it cannot prove');
+assert.equal(/TIME \(UTC\)|clock time read as UTC/i.test(skyCard), false,
+  'a birth clock time is not UTC');
+assert.ok(skyCard.includes("Open-Meteo's public geocoder"),
+  'sky card must say that only the town text is sent');
+assert.equal(/quiz\.html|angel-numbers\.html|name-numerology\.html|lifepath\.html|moment\.html/.test(skyCard), false,
+  'retired rooms stay retired');
+assert.ok(skyCardJs.includes("zone === 'UTC'") && skyCardJs.includes("zone === 'GMT'")
+  && skyCardJs.includes("zone === 'Etc/UTC'") && skyCardJs.includes('Etc\\/'),
+  'sky card must refuse UTC, GMT and Etc/* as a birth zone');
+assert.ok(skyCardJs.includes('sunAltitude('), 'day or night must be computed, never guessed');
+assert.ok(skyCardJs.includes('DAY OR NIGHT NOT STATED') && skyCardJs.includes('NO BIRTH HOUR'),
+  'an unknown hour must withhold the rising sign and the light state');
+assert.ok(skyCardJs.includes("' (ASSUMED)'") && skyCardJs.includes('MOON PLACED FROM '),
+  'an assumed hour must be printed on the card, not applied silently');
+assert.ok(skyCardJs.includes('NOT A CLAIM ABOUT YOUR LIFE'), 'the card must not claim to be true');
+assert.ok(skyCardJs.includes('function coordinate(') && skyCardJs.includes('not the coordinates'),
+  'a carried minute without coordinates must not be placed at 0, 0');
+assert.equal(/Number\(carried\.(?:lat|lon)\)/.test(skyCardJs), false,
+  'coordinates must go through the empty-value guard');
+assert.equal(/location\.(?:search|hash)|URLSearchParams/.test(skyCardJs), false,
+  'sky card must not accept a birth minute from an address');
+assert.equal(/location\.(?:search|hash)|URLSearchParams|location\.href\s*=/.test(keepMinute), false,
+  'the keep path must not move a birth minute through a link');
+assert.ok(keepMinute.includes('sessionStorage.setItem'), 'the keep path hands off in this tab only');
+// Phone Look 390: the plate reaches the first screen and every tap is 44px.
+assert.ok(skyCard.includes('@media(max-width:700px)'),
+  'sky card must use the living-sky phone band, not 430px');
+assert.match(skyCard, /\.ap-card-canvas\{order:3/,
+  'the plate must sit above the form on a phone — at 390 it was landing at y=927');
+assert.match(skyCard, /\.ap-card-form\{order:5/, 'the form follows the plate on a phone');
+assert.ok(skyCard.includes('min-height:48px;padding:10px') && skyCard.includes('font:16px var(--ap-data)'),
+  'form inputs need a 48px tap and a 16px face');
+assert.ok(skyCard.includes('.ap-card-btn{width:100%}'), 'phone buttons take the full width');
+assert.match(skyCard, /\.ap-card-status,\.ap-zone-note,\.ap-card-ledger p,\.ap-card-foot\{font-size:16px/,
+  'the zone rule, the privacy line and the honesty foot hold the 16px phone floor');
+assert.ok(skyCard.includes('min-width:44px;min-height:44px'),
+  'the house header and footer links need a 44px tap on this page');
+assert.ok(skyCard.includes('ap-card-plate-note'),
+  'a phone must be told the plate lines are repeated below at reading size');
+assert.equal(/Astro\s+Precise/.test(skyCard), false, 'the wordmark is one word, everywhere on the page');
+
+for (const path of ['./website/index.html', './website/chart.html', './website/deep-reading.html']) {
+  const page = read(path);
+  assert.ok(page.includes('href="sky-card.html" data-ap-keep-minute'),
+    `${path} must reach the keep path`);
+  assert.equal(/sky-card\.html\?/.test(page), false,
+    `${path} must not put a birth minute in the keep link`);
+  assert.ok(page.includes('ap-keep-minute.js?v=867'), `${path} must load the keep-path helper`);
+}
+
 const outreach = read('./website/js/outreach-content.js');
 for (const stale of ['Deep Reading £12', 'posters from £6', 'shop.html#deep-reading', '{{deepReadingPrice}}']) {
   assert.equal(outreach.includes(stale), false, `outreach content retains stale launch offer: ${stale}`);
