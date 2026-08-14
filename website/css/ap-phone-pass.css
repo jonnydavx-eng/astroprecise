@@ -2,9 +2,10 @@
    Type floor, 44px taps, stage height, overflow, ember primaries.
    Does not swap WebGL for 2D. */
 
-@media (max-width: 430px) {
+@media (max-width: 700px) {
   /* Act 1 headlines only. Size, not typeface.
-     Beats later atlas / page !important title rules. */
+     Beats later atlas / page !important title rules.
+     700px matches the living-sky mobile layout band. */
   html body.ap-live-home h1.ap-live-heading,
   html body.page-home h1.ap-live-heading,
   html body.page-compat h1.ap-live-heading,
@@ -36,12 +37,23 @@
      drawer headings, kickers, legal, instrument labels. */
   .ap-live-copy,
   .standfirst,
+  .ap-live-home .ap-mobile-flight-deck > p,
+  .ap-live-home label,
   html body.page-chart .chart-hero__subtitle,
+  html body.page-chart .form-glass__sub,
+  html body.page-chart .chart-form__progress,
   .tn-hero__sub,
   .tn-section__sub,
   .tn-awaiting,
   .tn-honesty,
+  .tn-privacy-band p,
+  .tn-privacy-band li,
+  .ap-events-feature p,
+  .event__ledger p,
+  .ap-event-ticket p,
   .ap-shop-lede,
+  .ap-shop-includes li,
+  #shopNotify label,
   .ap-shop-section-head > p:not(.ap-shop-kicker),
   .ap-product__body > p:not(.ap-product__kind):not(.ap-product__hook),
   .ap-shop-method li p,
@@ -50,13 +62,25 @@
   .ap-shop-status,
   .ap-eclipse-hero .ap-eclipse-page-shell > p:not(.ap-eclipse-kicker),
   html body .ap-eclipse-live__chapter p,
+  html body.page-eclipse .ap-zone-note,
+  html body.page-eclipse .ap-eclipse-contact__note,
   .ap-eclipse-guide article p,
   .ap-eclipse-next article p,
   .ap-angles ol,
   .ap-ledger p,
   .ap-site-footer p,
-  .ap-site-footer__brand p {
-    font-size: 16px;
+  .ap-site-footer__brand p,
+  html body.page-chart .form-label,
+  html body.page-compat label,
+  html body.page-compat .ap-ab-note,
+  html body.page-compat .ap-angles-note,
+  html body.page-compat .ap-angles ol,
+  html body.page-compat .ap-zone-note,
+  html body.page-compat .ap-keep-row .action-note,
+  html body.page-natal-reading .ap-natal-lede,
+  html body.page-natal-reading .ap-natal-note,
+  html body.page-natal-reading .ap-zone-note {
+    font-size: 16px !important;
     line-height: 1.5;
   }
 
@@ -93,7 +117,29 @@
   .tn-btn,
   .ap-city-item,
   .ap-eclipse-live__button,
-  .ap-eclipse-live__lens-button {
+  .ap-eclipse-live__lens-button,
+  .navbar__logo,
+  .ap-site-footer__wordmark,
+  .ap-context__chart,
+  .ap-event-rail__intro > a,
+  .ap-site-footer__routes a,
+  .ap-site-footer__legal a,
+  .ap-site-footer__colophon a,
+  .page-shop .ap-product__foot a,
+  .page-shop .ap-key-map a,
+  .ap-eclipse-guide article a,
+  .ap-eclipse-next article a,
+  .ap-events-feature a,
+  .ap-events-shell .foot a,
+  .ap-live-home .item__title a,
+  .ap-natal-also a,
+  .ap-footer-signup__link,
+  .ap-legal-links a,
+  .ap-guide-links a,
+  .ap-support-link,
+  #nowBtn,
+  .ap-minute .scrub,
+  #minute-scrub {
     min-width: 44px !important;
     min-height: 44px !important;
     box-sizing: border-box;
@@ -106,6 +152,45 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .ap-context__chart,
+  .ap-event-rail__intro > a,
+  .ap-site-footer__routes a,
+  .ap-site-footer__legal a,
+  .ap-site-footer__colophon a,
+  .page-shop .ap-product__foot a,
+  .page-shop .ap-key-map a,
+  .ap-eclipse-guide article a,
+  .ap-eclipse-next article a,
+  .ap-events-feature a,
+  .ap-events-shell .foot a {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .navbar__logo,
+  .ap-site-footer__wordmark,
+  .ap-live-home .item__title a,
+  .ap-natal-also a,
+  .ap-footer-signup__link,
+  .ap-legal-links a,
+  .ap-guide-links a,
+  .ap-support-link {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .ap-context__chart,
+  .ap-event-rail__intro > a,
+  .page-shop .ap-product__foot a,
+  .page-shop .ap-key-map a,
+  .ap-eclipse-guide article a,
+  .ap-eclipse-next article a,
+  .ap-events-feature a,
+  .ap-events-shell .foot a {
+    font-size: 16px !important;
+    line-height: 1.35;
   }
 
   .ap-model-stage,

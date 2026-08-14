@@ -263,11 +263,11 @@ async function init() {
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=862').then((response) => {
+    fetch('js/reading-templates.json?v=873').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=862').then((response) => {
+    fetch('js/deep-templates.json?v=873').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),
@@ -292,7 +292,7 @@ async function init() {
         transitDateText: sky.transitDateText,
       });
       renderReading(reading, meta);
-      status.textContent = 'Computed on this device. Nothing was uploaded.';
+      status.textContent = 'Computed on this device. Birth date and time stayed here. Place search sent only the town name.';
     } catch (err) {
       status.textContent = err.message || 'The reading could not be built.';
     }

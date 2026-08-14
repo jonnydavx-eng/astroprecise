@@ -11,14 +11,11 @@
 
   var TOOL_PAGES = {
     'chart.html': 'Chart',
-    'horoscope.html': 'Daily',
     'compatibility.html': 'Match',
     'transits.html': 'Transits',
     'ephemeris.html': 'Sky',
     'shop.html': 'Shop',
-    'lifepath.html': 'Life Path',
     'moonphase.html': 'Moon',
-    'quiz.html': 'Quiz',
     'profile.html': 'Profile',
     'mysky.html': 'My Sky',
     'moment.html': 'Moment',
@@ -31,14 +28,7 @@
   var eventDone = false;
 
   function pageKey() {
-    var p = (location.pathname || '').split('/').pop() || 'index.html';
-    if (p === 'horoscope.html') {
-      try {
-        var sign = new URLSearchParams(location.search || '').get('sign');
-        if (sign) return 'horoscope.html?sign=' + String(sign).toLowerCase();
-      } catch (e) {}
-    }
-    return p;
+    return (location.pathname || '').split('/').pop() || 'index.html';
   }
 
   function currentTool() {

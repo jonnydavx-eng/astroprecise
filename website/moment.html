@@ -50,7 +50,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — Moment","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Freeze the real sky of any date into a keepsake: zenith star, light-cone story, and free share card. Computed in-browser with VSOP87 astronomy; birth data never leaves your device.","url":"https://astroprecise.app/moment.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — Moment","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Freeze the real sky of any date into a keepsake: zenith star, light-cone story, and free share card. Computed in-browser with VSOP87 astronomy. Town search sends only the place name to Open-Meteo; date and time stay on this device.","url":"https://astroprecise.app/moment.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
 </head>
 <body class="ap-no-nav-enter ap-moment-page">
@@ -70,11 +70,9 @@
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
+            <a href="index.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="ephemeris.html" class="navbar__link">Sky</a>
-            <a href="horoscope.html" class="navbar__link">Daily</a>
-            <a href="cosmic-story.html" class="navbar__link">Readings</a>
-            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
@@ -116,7 +114,7 @@
     <section class="mom-studio" aria-labelledby="mom-form-title" id="mom-studio">
       <div class="mom-plate">
         <h2 class="mom-plate__title" id="mom-form-title">Build your Moment</h2>
-        <p class="mom-plate__hint">Date and place are required. Time defaults to noon if you leave it blank (honest on the card).</p>
+        <p class="mom-plate__hint">Date and place are required. Time defaults to noon if you leave it blank (honest on the card). A town search sends only that name to Open-Meteo; the date and time stay here.</p>
         <form id="mom-form" novalidate>
           <div class="mom-grid mom-grid--2">
             <div class="mom-field">
@@ -160,7 +158,7 @@
     <details class="mom-deeper">
       <summary class="mom-deeper__sum">How the free card works</summary>
       <ol class="mom-how__steps">
-        <li><strong>01 · Freeze</strong> Pick occasion, date, place — math runs on your device.</li>
+        <li><strong>01 · Freeze</strong> Pick occasion, date and place. The sky math runs here; town search sends only that name to Open-Meteo.</li>
         <li><strong>02 · See</strong> Real zenith star + light-cone story + 3D engine texture plate.</li>
         <li><strong>03 · Keep</strong> Save the finished PNG on this device. No account or checkout.</li>
       </ol>

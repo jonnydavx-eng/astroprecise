@@ -39,6 +39,18 @@ if (!W.includes('function setNatalClocks') || !W.includes('function clearNatalCl
 } else {
   ok('engine exposes setNatalClocks / clearNatalClocks / getNatalClocks');
 }
+if (!W.includes('mediumName(webp)') || !W.includes("quality === 'medium'")) {
+  fail('textureCandidates must still know the medium tier');
+} else if (/if \(smallRequested \|\| mediumRequested\) \{\s*push\(smallName\(webp\)\);/.test(W)) {
+  fail('medium quality still skips _md.webp and loads _sm only');
+} else {
+  ok('medium texture tier loads _md.webp before _sm.webp');
+}
+if (!W.includes('isLivingSkyHome() ? 0x020307') && !W.includes('isLivingSkyHome() ? 0x020307')) {
+  fail('living-sky fog must use house void #020307');
+} else {
+  ok('living-sky fog uses house void #020307');
+}
 
 const couplesSkyPath = join(root, 'js', 'ap-couples-sky.js');
 if (!existsSync(couplesSkyPath)) fail('js/ap-couples-sky.js missing');
@@ -47,6 +59,15 @@ else {
   if (!couplesSky.includes('setNatalClocks')) fail('couples sky does not call setNatalClocks');
   if (/\.setNatal\s*\(/.test(couplesSky)) fail('couples sky still calls setNatal( for the two clocks');
   else ok('couples sky uses setNatalClocks, not the SVG setNatal overlay');
+  if (!couplesSky.includes('/^Etc\\/GMT/i.test(tz)')) fail('couples sky must refuse Etc/GMT* the same way chart does');
+  if (!couplesSky.includes('timeKnown && zoneKnown') && !couplesSky.includes('zoneKnown && timeKnown')) {
+    fail('couples sky must not compute a natal JD without a known birth time');
+  }
+  if (couplesSky.includes("time || '12:00'")) fail('couples sky still fills unknown time with noon');
+  if (!couplesSky.includes('flyTo') && !couplesSky.includes('focusPlanet')) {
+    fail('couples A/B must camera-focus the one model, not swap it');
+  }
+  else ok('couples sky refuses GMT offsets, withholds noon, and focuses the live camera');
 }
 
 for (const probe of [
@@ -94,7 +115,7 @@ for (const probe of [
   'function homeCanvasIntersectsViewport()',
   'function shouldRenderFrame()',
   'webglBooted && running && !destroyed && shouldRenderFrame() && !raf',
-  'if (isLivingSkyHome()) return;',
+  'if (!instrumentMode || !isLivingSkyHome() || !canvas) return false;',
 ]) {
   if (!A.includes(probe) && !W.includes(probe)) fail('stable Home reveal contract missing: ' + probe);
 }
@@ -102,7 +123,10 @@ if (A.includes('transition:opacity .45s ease')) fail('Home still fades an unsett
 if (!/function frameBody\(t\)\s*\{\s*let announceInstrumentFirstFrame = false;/.test(W)) {
   fail('Home first-frame announcement state is scoped inside the render body');
 }
-if (!/if \(composer\) composer\.render\(\);\s*else renderer\.render\(scene, camera\);\s*if \(announceInstrumentFirstFrame\) dispatchOrreryFirstFrame\(\);/.test(W)) {
+// The post-resize composer frame guard runs between the render and the
+// announcement; what this pins is that nothing announces a first frame before
+// the buffer has actually been rendered.
+if (!/if \(composer\) composer\.render\(\);\s*else renderer\.render\(scene, camera\);\s*(afterComposerFrame\(\);\s*)?if \(announceInstrumentFirstFrame\) dispatchOrreryFirstFrame\(\);/.test(W)) {
   fail('Home announces first frame before the settled buffer is rendered');
 }
 if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 96 : 84;') || !W.includes('camRadius: SYSTEM_CAM_RADIUS, camMin: 48')) {
@@ -124,9 +148,9 @@ if (got.join() !== expectedOwners.join()) {
   fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=862/.test(indexHtml)) fail('Home missing v862 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=862"/.test(indexHtml)) {
-  fail('Home missing exact v862 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=873/.test(indexHtml)) fail('Home missing v873 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=873"/.test(indexHtml)) {
+  fail('Home missing exact v873 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
@@ -169,9 +193,9 @@ ok('opening beat is subtle, reduced-motion safe and yields to user input; full j
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
-  'css/ap-living-sky-v834.css?v=862',
-    'js/ap-observatory-v834.js?v=862',
-    'js/ap-nav-model.js?v=862',
+  'css/ap-living-sky-v834.css?v=873',
+    'js/ap-observatory-v834.js?v=873',
+    'js/ap-nav-model.js?v=873',
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
@@ -201,11 +225,11 @@ for (const probe of ["['sky-events.html', 'Events', 'eclipse']", '(min-width: 98
   if (!navModel.includes(probe)) fail('four-route mobile navigation missing: ' + probe);
 }
 if (!livingCss.includes('repeat(4, minmax(0, 1fr))')) fail('mobile navigation is not four equal tabs');
-if (navModel.includes("[\'horoscope.html\', \'Daily\']")) fail('Daily must not be a launch route');
-if (navModel.includes("[\'lifepath.html\'")) fail('Life Path must not leak into nav extras');
-if (navModel.includes("[\'synastry.html\'")) fail('Synastry must not leak into nav extras');
+if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a launch route');
+if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
+if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v862"')) fail('service worker release identity is not ap-v862');
+if (!sw.includes('const V = "ap-v873"')) fail('service worker release identity is not ap-v873');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
@@ -230,8 +254,8 @@ const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'u
 const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=862',
-    'css/ap-eclipse-live-v834.css?v=862',
+  'js/ap-eclipse-live-v834.js?v=873',
+    'css/ap-eclipse-live-v834.css?v=873',
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];

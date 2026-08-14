@@ -16,19 +16,19 @@
   <meta property="og:image" content="https://astroprecise.app/img/editorial/eclipse-edition-art-v841.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=867">
-  <script>window.AP_ASSET_V='867';</script>
+  <link rel="stylesheet" href="css/fonts.css?v=873">
+  <script>window.AP_ASSET_V='873';</script>
     <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=867">
-  <script src="js/void-orrery-adapter.js?v=867" defer></script>
-  <script src="js/ap-nav-model.js?v=867" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867">
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=867">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=867">
-    <link rel="stylesheet" href="css/ap-shop-v835.css?v=867">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=867">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=873">
+  <script src="js/void-orrery-adapter.js?v=873" defer></script>
+  <script src="js/ap-nav-model.js?v=873" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=873">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=873">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=873">
+    <link rel="stylesheet" href="css/ap-shop-v835.css?v=873">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=873">
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -128,16 +128,16 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=867" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=867" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-mystic-cards-v835.js?v=867" defer></script>
+  <script src="js/ap-footer-inject.js?v=873" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=873" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-mystic-cards-v835.js?v=873" defer></script>
   <script>
     (function () {
       var form = document.getElementById('shopNotify');
       var input = document.getElementById('shopNotifyEmail');
       var button = document.getElementById('shopNotifyBtn');
       var message = document.getElementById('shopNotifyMsg');
-      if (!form) return;
+      if (!form || !input || !button || !message) return;
       form.addEventListener('submit', function (event) {
         event.preventDefault();
         var email = (input.value || '').trim();
@@ -153,6 +153,6 @@
   <script>
     if ('serviceWorker' in navigator && !/[?&]nosw=1/.test(location.search)) addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }, { once: true });
   </script>
-  <script src="js/ap-room-sky.js?v=867" defer></script>
+  <script src="js/ap-room-sky.js?v=873" defer></script>
 </body>
 </html>

@@ -562,9 +562,8 @@
         'Saved Sun &amp; Moon only — cast a full chart for every transit</span></div>';
     }
 
-    // "Show me in the sky" — natal edition. Homepage-only: window.APShowInSky
-    // is exported by home-daily.js (both files load on index; on transits.html
-    // there is no hero orrery, so no button). Draws the TOP transit against the
+    // "Show me in the sky" — natal edition. If a host exports
+    // window.APShowInSky, draw the TOP transit against the
     // saved chart's REAL computed natal longitude on the engine's geocentric
     // zodiac ring. HONESTY: bLon comes from reading.natal (AstroProfile
     // buildChartData positions, or the ap_natal_pins longitudes) — never a sign

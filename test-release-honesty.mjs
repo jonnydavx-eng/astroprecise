@@ -20,9 +20,9 @@ assert.ok(chartPage.includes("name:'Semi-sextile'"));
 assert.equal(chartPage.includes("name:'Slight angle'"), false);
 assert.ok(chartCss.includes('.ap-reading-card > .ap-reading-card__content:only-child'));
 assert.ok(chartCss.includes('scroll-margin-top:'));
-assert.ok(chartHtml.includes('ap-chart-v835.css?v=867'));
-assert.ok(chartHtml.includes('ap-load-interpretations.js?v=867') && chartHtml.includes('chart-page.js?v=867'));
-assert.ok(chartHtml.includes('reading-format.js?v=867') && chartHtml.includes('chart-render.js?v=867'));
+assert.ok(chartHtml.includes('ap-chart-v835.css?v=873'));
+assert.ok(chartHtml.includes('ap-load-interpretations.js?v=873') && chartHtml.includes('chart-page.js?v=873'));
+assert.ok(chartHtml.includes('reading-format.js?v=873') && chartHtml.includes('chart-render.js?v=873'));
 assert.ok(readingFormat.includes('if (leadHtml) inner += leadHtml;') && !readingFormat.includes('leadHtml && !collapsed'));
 assert.ok(interpretationsLoader.includes('interpretations.js?v='));
 assert.ok(chartPage.includes('degree withheld') && chartPage.includes('Date-reference angle'));
@@ -112,6 +112,17 @@ assert.equal(/personally\s+reviewed|reviewed before they(?:'|&rsquo;)re sent|a h
 
 const moment = read('./website/moment.html');
 const saturnReturn = read('./website/saturn-return.html');
+const instrument = read('./website/ephemeris.html');
+const footer = read('./website/js/ap-footer-inject.js');
+const manifest = read('./website/manifest.json');
+const tonight = read('./website/tonight.html');
+assert.ok(moment.includes('A town search sends only that name to Open-Meteo; the date and time stay here.'));
+assert.equal(moment.includes('birth data never leaves your device'), false);
+assert.ok(instrument.includes('A town search sends only that name to Open-Meteo; your birth date and time stay here.'));
+assert.ok(chartHtml.includes('location button sends coordinates to Open-Meteo for timezone lookup only'));
+assert.ok(footer.includes('Town search sends only that name to Open-Meteo; birth date and time stay on this device.'));
+assert.ok(JSON.parse(manifest).description.includes('Town search sends only that name to Open-Meteo'));
+assert.ok(tonight.includes('City search sends only the place name to Open-Meteo'));
 assert.equal(/£8|moment-pack|optional pack|pack later|paid keepsakes/i.test(moment), false);
 assert.equal(/full personalised reading|printable PDF|gift readings|written natal reports/i.test(saturnReturn), false);
 for (const source of [gumroad, gumroadBridge, edition]) {
@@ -129,6 +140,14 @@ for (const file of htmlFiles) {
 const outreach = read('./website/js/outreach-content.js');
 for (const stale of ['Deep Reading £12', 'posters from £6', 'shop.html#deep-reading', '{{deepReadingPrice}}']) {
   assert.equal(outreach.includes(stale), false, `outreach content retains stale launch offer: ${stale}`);
+}
+
+const moonphase = read('./website/js/moonphase.js');
+const outreachPage = read('./website/outreach.html');
+for (const source of [moonphase, outreachPage]) {
+  assert.ok(source.includes("document.execCommand('copy') === true"),
+    'clipboard fallback must verify that copy succeeded');
+  assert.ok(source.includes('Copy failed'), 'clipboard failure must not use success feedback');
 }
 
 console.log('PASS pre-deploy truth and runtime regression checks');

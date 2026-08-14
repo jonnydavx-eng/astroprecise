@@ -21,6 +21,19 @@ This work used data acquired from the NASA/ESA HST Space Telescope, associated w
 
 Processing: ImageMagick resize only to 2048x1024 (full webp+jpg), 1024x512 (_md webp), 512x256 (_sm webp). No painting, no invented bands.
 
-Coverage note:
-Uranus Cycle 33 color maps (2025a and 2025b) both have a large unobserved / night-side southern region filled with black in the official STScI product, plus a fringe at the coverage edge. That is Hubble's real map, not a convert error. Worlds did not paint the missing hemisphere.
-Neptune 2025b is a full-latitude color mosaic.
+Coverage note (re-verified 2026-08-14 against the STScI originals):
+Uranus Cycle 33 color maps (2025a and 2025b) both have a large unobserved / night-side southern region filled with black in the official STScI product, plus a fringe at the coverage edge. Measured on the source TIFF: 141 of 361 latitude rows are fully black, all in the southern half. That is Hubble's real map, not a convert error. Worlds did not paint the missing hemisphere.
+
+Neptune 2025b is NOT a full-latitude mosaic — the earlier line here claiming that was wrong. The source TIFF has 38 of 361 latitude rows fully black at the NORTHERN edge, ringed by a saturated blue/green interpolation fringe where the mosaic runs out of coverage. Both are present in the official product and are reproduced as-is. The fringe shows on the north limb of the Neptune engine still (website/img/engine/neptune.webp); it is the map's coverage edge, not a shader artifact, and it is not painted out.
+
+Rings (checked 2026-08-14, nothing shipped):
+Uranus has real rings, but no clearly licensed public ring map exists to draw them
+from — nothing in this repo, and no NASA/ESA/USGS product equivalent to the Saturn
+ring strip we already ship. docs/MODEL-MASTERPIECE-SPEC-2026-07-10.md (S9) proposes
+building one by reusing saturnRingMaterial with a hand-authored 256x8 mostly-empty
+strip. That is invented art, not a map, so it was NOT done. Uranus stays ringless
+until a real ring product is sourced. Saturn is the only ringed body in the engine
+because saturn_ring.png is the only ring texture that exists here.
+
+Colour note:
+These are OPAL filter composites, not natural-colour photographs. Neptune 2025b reads green-cyan and Uranus reads pale cream-cyan in the official product; the repo copies match the sources to a mean absolute channel difference of ~1.5/255 (resize + webp only). No channel reordering or grading was applied.

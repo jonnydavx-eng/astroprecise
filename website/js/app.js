@@ -70,7 +70,7 @@ const AstroApp = (() => {
   /** Load engine stills module once (shared 3D brand art, no WebGL). */
   function isLaunchCorePage() {
     var key = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
-    return /^(index|chart|horoscope|shop|eclipse)\.html$/.test(key);
+    return /^(index|chart|sky-events|shop|eclipse)\.html$/.test(key);
   }
 
   function ensureEngineVisuals() {
@@ -286,7 +286,7 @@ const AstroApp = (() => {
   const NAV_PRIMARY = _apNav.NAV_PRIMARY || [
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['eclipse.html', 'Eclipse', { badge: 'Replay' }],
+    ['sky-events.html', 'Events', { badge: 'Live' }],
     ['shop.html', 'Shop'],
   ];
   const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
@@ -308,8 +308,9 @@ const AstroApp = (() => {
     ['why.html', 'Why'],
   ];
   const NAV_BOTTOM_TABS = _apNav.NAV_BOTTOM_TABS || [
-    ['index.html', 'Live Sky', 'star4'],
+    ['index.html', 'Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
+    ['sky-events.html', 'Events', 'eclipse'],
     ['shop.html', 'Shop', 'sparkles'],
   ];
   const NAV_DRAWER_SECTIONS = _apNav.NAV_DRAWER_SECTIONS || [
@@ -365,7 +366,7 @@ const AstroApp = (() => {
   }
 
   function isLaunchRoute(here) {
-    return /^(?:index|chart|horoscope|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(
+    return /^(?:index|chart|sky-events|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(
       here || (location.pathname.split('/').pop() || 'index.html')
     );
   }
@@ -1385,8 +1386,8 @@ window.AP_MON = Object.assign({
     adsEnabled: true,
     amazonTag: '',   // alias for affiliateTag; either field works
     pages: [
-      'index.html', 'index-full.html', 'chart.html', 'horoscope.html',
-      'compatibility.html', 'transits.html', 'lifepath.html',
+      'index.html', 'index-full.html', 'chart.html', 'sky-events.html',
+      'compatibility.html', 'transits.html',
       'shop.html', 'ephemeris.html', 'tonight.html',
     ],
     picks: [
@@ -1964,7 +1965,7 @@ window.AP_MON = Object.assign({
 
     // Footer support line — appears the moment a tip URL is configured.
     const routeKey = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
-    const isLaunchCore = /^(index|chart|horoscope|shop|eclipse)\.html$/.test(routeKey);
+    const isLaunchCore = /^(index|chart|sky-events|shop|eclipse)\.html$/.test(routeKey);
     if (!isLaunchCore && isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
       const host = document.querySelector('.ap-legal-links') || document.querySelector('.footer-legal')
         || document.querySelector('footer .container') || document.querySelector('footer');

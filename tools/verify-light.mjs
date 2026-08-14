@@ -11,8 +11,6 @@ import path from 'path';
 const root = path.resolve(import.meta.dirname, '..');
 
 const syntaxFiles = [
-  'website/js/scale-journey.js',
-  'website/js/scale-journey-chapters.js',
   'website/js/orrery-webgl.js',
   'website/js/horoscope-subscribe.js',
   'website/js/app.js',

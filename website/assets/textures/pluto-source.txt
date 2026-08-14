@@ -1,0 +1,34 @@
+Pluto equirectangular colour map — New Horizons (NASA/JHUAPL/SwRI)
+Local texture only. No SKUs.
+
+File: pluto_color_mapmosaic.jpg (5926 x 2963, RGB)
+URL:  https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/p/l/pluto_color_mapmosaic.jpg
+Page: https://science.nasa.gov/resource/pluto-global-color-map/
+      https://www.nasa.gov/image-article/pluto-global-color-map/
+Release: 2017-01-19 ("Pluto Global Color Map")
+Credit: NASA / Johns Hopkins University Applied Physics Laboratory / Southwest Research Institute
+License: Public domain. NASA material is not protected by copyright unless noted
+         (https://www.nasa.gov/nasa-brand-center/images-and-media/).
+
+What it is:
+Global mosaic built from three colour filter images taken by the Ralph/Multispectral
+Visual Imaging Camera (MVIC) during the New Horizons flyby of 2015-07-14, draped on a
+LORRI base. North is up. Sputnik Planitia — the left half of Pluto's "heart" — is at
+the centre of the map; the dark red band across the lower third is Cthulhu Macula.
+
+Processing: LANCZOS resize only to 2048x1024 (full webp + jpg), 1024x512 (_md webp),
+512x256 (_sm webp + jpg). No painting, no colour grading, no channel reordering.
+
+Coverage note:
+Pluto's southern hemisphere was in winter darkness during the flyby, so roughly the
+bottom third of the map is unobserved and is filled with black in the NASA product.
+That black is real missing data and is reproduced as-is — the missing hemisphere is
+not painted in. The far-side (non-encounter) longitudes are also genuinely lower
+resolution than the encounter hemisphere; that softness is the data, not the resize.
+
+A greyscale alternative exists if a panchromatic base is ever wanted:
+  USGS Astrogeology, Pluto New Horizons LORRI-MVIC Global Mosaic 300m (Jul 2017)
+  https://astrogeology.usgs.gov/search/map/pluto_new_horizons_lorri_mvic_global_mosaic_300m
+  Public domain. Not shipped — the colour MVIC mosaic above carries Pluto's real hue.
+
+Pluto has no ring system, so no ring geometry is built for it.
