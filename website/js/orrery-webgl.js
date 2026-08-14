@@ -10658,6 +10658,13 @@ const FinishShader = {
     sunCoronaGroup = null;
     sunCoronaMesh = null;
     sunCoronaMat = null;
+    // Missed until v869. buildSunHomeGlare() early-returns while sunHomeGlareMesh
+    // is truthy, so a stale reference from a destroyed scene left the NEXT sun
+    // with no glare shell — and on the safe composer path (no bloom) that shell is
+    // what carries the sun's light. tuneSunGlowForComposer would then set
+    // .visible = true on a mesh that is no longer in any scene and report success.
+    sunHomeGlareMesh = null;
+    sunHomeGlareMat = null;
     sunPromGroup = null;
     sunPointLight = null;
     sunDirLight = null;

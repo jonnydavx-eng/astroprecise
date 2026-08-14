@@ -31,6 +31,4 @@ A greyscale alternative exists if a panchromatic base is ever wanted:
   https://astrogeology.usgs.gov/search/map/pluto_new_horizons_lorri_mvic_global_mosaic_300m
   Public domain. Not shipped — the colour MVIC mosaic above carries Pluto's real hue.
 
-No real public map of Pluto's ring system exists because Pluto has no rings, and no
-clearly licensed public ring map exists for Uranus either, so no ring geometry is
-built for either body.
+Pluto has no ring system, so no ring geometry is built for it.

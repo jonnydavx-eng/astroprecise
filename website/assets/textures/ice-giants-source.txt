@@ -26,5 +26,14 @@ Uranus Cycle 33 color maps (2025a and 2025b) both have a large unobserved / nigh
 
 Neptune 2025b is NOT a full-latitude mosaic — the earlier line here claiming that was wrong. The source TIFF has 38 of 361 latitude rows fully black at the NORTHERN edge, ringed by a saturated blue/green interpolation fringe where the mosaic runs out of coverage. Both are present in the official product and are reproduced as-is. The fringe shows on the north limb of the Neptune engine still (website/img/engine/neptune.webp); it is the map's coverage edge, not a shader artifact, and it is not painted out.
 
+Rings (checked 2026-08-14, nothing shipped):
+Uranus has real rings, but no clearly licensed public ring map exists to draw them
+from — nothing in this repo, and no NASA/ESA/USGS product equivalent to the Saturn
+ring strip we already ship. docs/MODEL-MASTERPIECE-SPEC-2026-07-10.md (S9) proposes
+building one by reusing saturnRingMaterial with a hand-authored 256x8 mostly-empty
+strip. That is invented art, not a map, so it was NOT done. Uranus stays ringless
+until a real ring product is sourced. Saturn is the only ringed body in the engine
+because saturn_ring.png is the only ring texture that exists here.
+
 Colour note:
 These are OPAL filter composites, not natural-colour photographs. Neptune 2025b reads green-cyan and Uranus reads pale cream-cyan in the official product; the repo copies match the sources to a mean absolute channel difference of ~1.5/255 (resize + webp only). No channel reordering or grading was applied.
