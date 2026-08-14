@@ -16,7 +16,6 @@ const OUT = process.env.AP_PHONE_OUT || '/tmp/gift-phone-pass';
 mkdirSync(OUT, { recursive: true });
 
 const PAGES = [
-  { id: 'sky-card', path: '/sky-card.html?nosw=1', wait: '#cv, body' },
   { id: 'chart-keep', path: '/chart.html?nosw=1', wait: '#keep-sky, body' },
   { id: 'couples-keep', path: '/compatibility.html?nosw=1', wait: '#keep-sky, body' },
 ];

@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, follow">
-<title>The real sky news — sky card | AstroPrecise</title>
+<title>The real sky news — sky card | Astro Precise</title>
 <meta name="description" content="Make the 1200×630 card of the sky when you arrived — Sun, Moon and Venus placed exactly, never rounded, computed on your device. Download the PNG free.">
-<meta name="theme-color" content="#020307">
 <link rel="canonical" href="https://astroprecise.app/sky-card.html">
 <!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
      IBM Plex Mono from Google Fonts, which handed Google a request from every
@@ -16,84 +15,60 @@
      no true italic, so italics here are synthesised; that is the whole cost. -->
 <link rel="stylesheet" href="./css/fonts.css?v=857">
 <style>
-:root{--ink:#F2ECDF;--dim:rgba(242,236,223,.80);--faint:#A89C84;--line2:rgba(216,180,106,.24);--acc:#D8B46A}
+:root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line2:rgba(216,180,106,.24);--acc:#d8b46a}
 *{box-sizing:border-box}
-html,body{margin:0;background:#020307;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--acc);text-decoration:none}a:hover{color:#FF6428}
+body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;background-image:radial-gradient(1000px 560px at 50% -6%,rgba(255,122,69,.08),transparent 62%);background-attachment:fixed}
+a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
-.wrap{max-width:900px;margin:0 auto;padding:0 22px 48px}
-h1{margin:36px 0 12px;font-size:clamp(2rem,8.4vw,2.55rem);line-height:1.12;font-weight:700;letter-spacing:-.015em;max-width:12ch}
-.sky-card-lede{margin:0 0 10px;font-size:16px;line-height:1.55;color:var(--dim);max-width:620px}
-.card{border:1px solid var(--line2);border-radius:4px;background:#020307;padding:24px 26px;margin:22px 0}
-.lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
-.fields{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
-input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radius:3px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:16px;padding:12px;color-scheme:dark;width:100%;min-height:48px;box-sizing:border-box}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px calc(110px + var(--bottom-nav-h, 72px))}
+h1{margin:54px 0 12px;font-size:clamp(32px,6vw,44px);line-height:1.1;font-weight:700;letter-spacing:-.015em}
+.card{border:1px solid var(--line2);border-radius:14px;background:rgba(242,236,223,.04);padding:24px 26px;margin:22px 0}
+.lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
+input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark;width:100%}
 .field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:130px}
-.field span{font-family:'IBM Plex Mono',monospace;font-size:16px;letter-spacing:.08em;color:var(--faint);line-height:1.4}
-.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;background:#F2ECDF;color:#020307;border:0;border-radius:3px;padding:14px 22px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.12em;cursor:pointer}
-.btn--draw{background:#FF6428;color:#170702}
-.btn--ghost{background:transparent;border:1px solid rgba(242,236,223,.35);color:var(--ink)}
-.privacy-note{font-size:16px;letter-spacing:.04em;color:var(--faint);line-height:1.45}
-canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border-radius:4px}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(242,236,223,.55);line-height:1.7}
-.foot a{min-height:44px;display:inline-flex;align-items:center}
-.sky-card-word{white-space:nowrap;color:var(--ink);font-weight:650;letter-spacing:.01em}
-.sky-card-kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
-.sky-card-chrome{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0}
-.sky-card-chrome a,.sky-card-chrome span{min-height:44px;display:inline-flex;align-items:center}
+.field span{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.22em;color:var(--faint)}
+.btn{display:inline-block;background:var(--ink);color:#000;border:0;border-radius:100px;padding:14px 30px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em;cursor:pointer;transition:filter .2s}
+.btn:hover{filter:brightness(1.08)}
+canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border-radius:12px}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.4);line-height:2.1}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media (max-width:700px){
-  .wrap{padding:0 16px calc(36px + env(safe-area-inset-bottom,0px))}
-  h1{margin:22px 0 12px}
-  .card{padding:20px 16px}
-  .fields{gap:18px}
-  .fields,.actions{flex-direction:column}
-  .field{flex:1 1 100%;min-width:100%;width:100%}
-  .btn{width:100%}
-  .sky-card-chrome{flex-direction:column;align-items:flex-start;gap:4px}
-  .sky-card-kicker{min-height:auto;padding:4px 0}
-  .foot{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
-}
+@media (max-width:430px){.card{padding:20px 18px}}
 </style>
 <script src="./js/ambience.js?v=857"></script>
 <script src="js/void-orrery-adapter.js?v=857"></script>
 </head>
-<body class="page-sky-card">
+<body>
 <a class="skip" href="#sky-card-main" style="position:absolute;left:-999px">Skip to sky card</a>
 <space-ambience density="200"></space-ambience>
 <div class="wrap" id="sky-card-main" style="position:relative;z-index:1">
 
-<div class="sky-card-chrome">
-  <a class="sky-card-word" href="./index.html">AstroPrecise</a>
-  <span class="mono sky-card-kicker">Sky card · free · 1200×630</span>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0">
+  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)" href="./index.html">← THE OBSERVATORY</a>
+  <span class="mono" style="font-size:10px;letter-spacing:.26em;color:var(--acc)">THE SKY CARD · FREE · 1200×630</span>
 </div>
 
 <h1>The sky when you arrived.</h1>
-<p class="sky-card-lede">One image: your date, your Sun, Moon and Venus placed from the clock time read as UTC — we do not round — and the wheel of that minute. Computed here, drawn here, downloaded from here — your birth data never leaves this page. For a local-time chart, use the free chart page.</p>
+<p style="margin:0 0 10px;font-size:17px;line-height:1.65;color:var(--dim);max-width:620px">One image: your date, your Sun, Moon and Venus placed from the clock time read as UTC — we do not round — and the wheel of that minute. Computed here, drawn here, downloaded from here — your birth data never leaves this page. For a local-time chart, use the free chart page.</p>
 
 <div class="card">
   <div class="lbl">YOUR MINUTE</div>
-  <div class="fields">
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
     <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" value="1994-03-14"></label>
     <label class="field"><span>TIME (UTC)</span><input type="time" id="tob" value="09:12"></label>
     <label class="field"><span>PLACE (TEXT ON THE CARD ONLY)</span><input type="text" id="place" value="Manchester" maxlength="40"></label>
   </div>
-  <div class="actions">
-    <button class="btn btn--draw" id="drawBtn" type="button">DRAW MY CARD</button>
-    <button class="btn btn--ghost" id="dlBtn" type="button">DOWNLOAD PNG</button>
-    <span class="mono privacy-note">NOTHING UPLOADED · THE PNG IS MADE ON YOUR DEVICE</span>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+    <button class="btn" id="drawBtn" type="button">DRAW MY CARD</button>
+    <button class="btn" id="dlBtn" type="button" style="background:none;border:1px solid rgba(242,236,223,.35);color:var(--ink)">DOWNLOAD PNG</button>
+    <span class="mono" style="font-size:9px;letter-spacing:.16em;color:var(--faint)">NOTHING UPLOADED · THE PNG IS MADE ON YOUR DEVICE</span>
   </div>
 </div>
 
 <canvas id="cv" width="1200" height="630" role="img" aria-label="Your sky card"></canvas>
 
 <div class="foot" style="margin-top:26px">
-  <span>What's yours?</span>
-  <a href="./chart.html">Cast the full chart free</a>
-  <a href="./eclipse.html">The 12 Aug eclipse</a>
-  <span>© MMXXVI AstroPrecise · computed, never fabricated</span>
+  WHAT'S YOURS? <a href="./chart.html">CAST THE FULL CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a> · © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
 
 </div>
