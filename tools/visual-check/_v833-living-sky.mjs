@@ -4,7 +4,7 @@
  * The legacy filename is retained because package.json calls it directly. The
  * assertions below describe the current product: one immersive WebGL
  * Observatory, edge controls on desktop, dedicated phone selectors, the
- * five-route launch drawer, and truthful event / eclipse / shop surfaces.
+ * four-route launch drawer, and truthful event / eclipse / shop surfaces.
  */
 import { chromium } from './node_modules/playwright/index.mjs';
 import { existsSync, mkdirSync } from 'node:fs';
@@ -21,7 +21,6 @@ const SCALES = [
 const PRIMARY_ROUTES = [
   ['index.html', 'Observatory'],
   ['chart.html', 'Chart'],
-  ['horoscope.html', 'Daily'],
   ['sky-events.html', 'Events'],
   ['shop.html', 'Shop'],
 ];
