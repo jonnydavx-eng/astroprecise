@@ -7230,12 +7230,12 @@ const FinishShader = {
   }
 
   function makeNatalClockLabel(text, hex) {
-    const pad = 8, font = 24;
+    const pad = 12, font = 48;
     const c = document.createElement('canvas');
     const x = c.getContext('2d');
     const label = String(text || '').slice(0, 18) || (hex === '#FF6428' ? 'B' : 'A');
     x.font = '600 ' + font + 'px Inter, system-ui, sans-serif';
-    const w = Math.max(36, Math.ceil(x.measureText(label).width) + pad * 2);
+    const w = Math.max(72, Math.ceil(x.measureText(label).width) + pad * 2);
     c.width = w;
     c.height = font + pad * 2;
     x.font = '600 ' + font + 'px Inter, system-ui, sans-serif';
@@ -7249,7 +7249,7 @@ const FinishShader = {
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({
       map: tex, transparent: true, depthTest: false, depthWrite: false, opacity: 0.92,
     }));
-    sp.scale.set((c.width / c.height) * 1.05, 1.05, 1);
+    sp.scale.set((c.width / c.height) * 3.15, 3.15, 1);
     sp.userData.aspect = c.width / c.height;
     return sp;
   }
@@ -7398,7 +7398,7 @@ const FinishShader = {
       if (hide || !pack.earth) pack.label.visible = false;
       else {
         const p = pack.earth.position;
-        pack.label.position.set(p.x, p.y + 1.35, p.z);
+        pack.label.position.set(p.x, p.y + 2.5, p.z);
         pack.label.visible = true;
       }
     }
