@@ -6,6 +6,7 @@
   <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Angel numbers explained — what 1111, 222, 333, 444 and more mean in numerology, plus a live mirror-time clock. Deterministic, computed in your browser." />
+  <meta name="robots" content="noindex, follow" />
   <title>Angel Numbers & 1111 Meaning — Synchronicity Clock | AstroPrecise</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -28,14 +29,16 @@
   <meta name="twitter:description" content="What 1111 and the repeating numbers mean in numerology — a mirror for reflection, fused with the live planetary hour." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#020307" />
-  <link rel="preload" href="css/main-lite.css" as="style" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=788" id="ap-css-atlas-tokens" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/angel-numbers-page.css" id="ap-css-angel" />
+  <link rel="preload" href="css/main-lite.css?v=867" as="style" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=867" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=867" id="ap-css-atlas-tokens" />
+  <noscript><link rel="stylesheet" href="css/fonts.css?v=867" /><link rel="stylesheet" href="css/ap-page-bridge.css?v=867" /></noscript>
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=867" />
+  <link rel="stylesheet" href="css/main-lite.css?v=867" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css?v=867" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867" />
+  <link rel="stylesheet" href="css/angel-numbers-page.css?v=867" id="ap-css-angel" />
+  <link rel="stylesheet" href="css/ap-act1-house-v867.css?v=867" />
   <style>
     body:has(.an-hero){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(.an-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -48,8 +51,10 @@
     body:has(.an-hero) .footer-zodiac-strip{min-height:2.75rem;}
   </style>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
-  <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferAnFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferAnFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
+  <script>window.AP_ASSET_V='867';</script>
+  <script src="js/defer-page-css.js?v=867" defer></script>
+  <script src="js/ap-nav-model.js?v=867" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferAnFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css?v=867';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferAnFonts();deferPageCss('css/ap-motion.css?v=867','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css?v=867','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css?v=867','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css?v=867','ap-css-bridge');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -89,22 +94,22 @@
   </script>
 
   </head>
-<body>
+<body class="ap-act1-house">
   <a class="skip-link" href="#main-content">Skip to content</a>
 
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
 
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -115,6 +120,8 @@
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
+
+  <aside class="ap-archive-note"><strong>Archive room.</strong> Repeating-number meanings are symbolic prompts for reflection, not measured signals or predictions.</aside>
 
   <main id="main-content">
 
@@ -182,7 +189,7 @@
     </section>
 
     <!-- METHOD + HONESTY -->
-    <section class="section" style="background:linear-gradient(180deg,transparent 0%,rgba(92, 74, 110,0.04) 50%,transparent 100%);">
+    <section class="section">
       <div class="container">
         <header class="section-header">
           <p class="eyebrow">The Method</p>
@@ -225,14 +232,13 @@
           <div class="instrument-teaser__badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Go Deeper</div>
           <h2 class="instrument-teaser__title">Numbers Are Only Half the Picture</h2>
           <p class="instrument-teaser__body" style="max-width:580px;margin:0 auto var(--space-6);">
-            Repeating numbers are a mirror for the moment. Your <strong>Life Path number</strong> and your
-            <strong>birth chart</strong> are the deeper, personal layer — computed from your own birth data,
-            deterministically and privately.
+            Repeating numbers are a mirror for reflection. A <strong>birth chart</strong>
+            is a separate instrument built from astronomical positions computed from
+            your own birth data, privately in this browser.
           </p>
           <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
-            <a href="lifepath.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Life Path</a>
-            <a href="name-numerology.html" class="btn btn--outline btn--lg">Name Numerology</a>
-            <a href="chart.html" class="btn btn--outline btn--lg">Birth Chart</a>
+            <a href="chart.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast a Birth Chart</a>
+            <a href="why.html" class="btn btn--outline btn--lg">Read the Method</a>
           </div>
         </div>
       </div>
@@ -240,98 +246,10 @@
 
   </main>
 
-  <footer class="site-footer" role="contentinfo">
-    <div class="container">
-
-      <div class="footer-inner" data-ap-footer-model="1">
-
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
-          </div>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
-            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
-          <h2 class="footer-nav-col__title">Daily readings</h2>
-          <ul>
-            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
-            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
-            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
-            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
-            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
-            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
-            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
-            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
-            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
-            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
-            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
-            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
-            <li><a href="horoscope.html">All signs →</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-            <li><a href="aries.html">Aries profile</a></li>
-            <li><a href="taurus.html">Taurus profile</a></li>
-            <li><a href="gemini.html">Gemini profile</a></li>
-            <li><a href="cancer.html">Cancer profile</a></li>
-            <li><a href="leo.html">Leo profile</a></li>
-            <li><a href="virgo.html">Virgo profile</a></li>
-            <li><a href="libra.html">Libra profile</a></li>
-            <li><a href="scorpio.html">Scorpio profile</a></li>
-            <li><a href="sagittarius.html">Sagittarius profile</a></li>
-            <li><a href="capricorn.html">Capricorn profile</a></li>
-            <li><a href="aquarius.html">Aquarius profile</a></li>
-            <li><a href="pisces.html">Pisces profile</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
-    </div>
-  </footer>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
 
   <!-- JS -->
-  <script src="js/profile.js" defer></script>
+  <script src="js/profile.js?v=867" defer></script>
   <script>
   (function () {
     function audit() {
@@ -344,15 +262,15 @@
       document.body.appendChild(s);
     }
     if (audit()) return;
-    inject('js/raf-core.js');
-    inject('js/icons.js');
-    inject('js/ephemeris.js');
-    inject('js/oracle.js');
-    inject('js/angel-numbers.js');
+    inject('js/raf-core.js?v=867');
+    inject('js/icons.js?v=867');
+    inject('js/ephemeris.js?v=867');
+    inject('js/oracle.js?v=867');
+    inject('js/angel-numbers.js?v=867');
     function idleCosmos() {
       if (audit()) return;
-      inject('js/cosmos.js');
-      inject('js/effects.js');
+      inject('js/cosmos.js?v=867');
+      inject('js/effects.js?v=867');
     }
     window.addEventListener('load', function () {
       if (window.requestIdleCallback) requestIdleCallback(idleCosmos, { timeout: 4000 });
@@ -490,8 +408,8 @@
   })();
   </script>
 
-  <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
+  <script src="js/ap-page-boot.js?v=867" defer></script>
+  <script src="js/ap-footer-inject.js?v=867" defer></script>
+<script src="js/ap-sky-time.js?v=867" defer></script>
 </body>
 </html>

@@ -33,7 +33,6 @@
   "dir": "ltr",
   "scope": "./",
   "shortcuts": [
-    { "name": "Today's Horoscope", "url": "horoscope.html" },
     { "name": "Cast a Chart", "url": "chart.html" },
     { "name": "Current Transits", "url": "transits.html" }
   ]

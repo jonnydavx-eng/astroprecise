@@ -9,7 +9,6 @@ import { writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { CONSTELLATIONS } from './constellations.mjs';
-import { footerBlockHtml } from './footer-model.mjs';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = 'https://astroprecise.app';
@@ -369,7 +368,7 @@ function chartBridgeSection(s) {
 function navShell() {
   return `
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="chart.html" class="navbar__link">Chart</a><a href="ephemeris.html" class="navbar__link">Sky</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="cosmic-story.html" class="navbar__link">Readings</a><a href="guides.html" class="navbar__link">Library</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -426,7 +425,7 @@ function faqSection(s) {
 
 function page(s) {
   const others = SIGN_LIST.filter(o => o.key !== s.key);
-  const title = `${s.name} Horoscope Today — Daily Reading & Sign Guide | Astro Precise`;
+  const title = `${s.name} Horoscope Today — Daily Reading & Sign Guide | AstroPrecise`;
   const desc = `Free ${s.name} horoscope for today, calculated from real planetary positions. Plus the complete ${s.name} guide: element, ruling planet, love, career, and compatibility.`;
   const url = `${BASE_URL}/${s.key}.html`;
 
@@ -444,7 +443,7 @@ function page(s) {
       `${s.name} traits`, `${s.name} compatibility`, `${s.name} love`, `${s.name} career`,
       `${s.element} sign`, `${s.modality} sign`,
     ].join(', '),
-    publisher: { '@type': 'Organization', name: 'Astro Precise', url: BASE_URL },
+    publisher: { '@type': 'Organization', name: 'AstroPrecise', url: BASE_URL },
     about: { '@type': 'Thing', name: `${s.name} (astrology)` },
   };
 
@@ -509,16 +508,16 @@ function page(s) {
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="Astro Precise" />
-  <meta property="og:title" content="${s.name} Horoscope Today | Astro Precise" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="${s.name} Horoscope Today | AstroPrecise" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="${s.name} — ${s.dates}, ${/^[AEIOU]/.test(s.element) ? 'an' : 'a'} ${s.element} sign ruled by ${RULER_STILL[s.key].label}, shown as a photoreal render of ${RULER_STILL[s.key].label} on Astro Precise." />
+  <meta property="og:image:alt" content="${s.name} — ${s.dates}, ${/^[AEIOU]/.test(s.element) ? 'an' : 'a'} ${s.element} sign ruled by ${RULER_STILL[s.key].label}, shown as a photoreal render of ${RULER_STILL[s.key].label} on AstroPrecise." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${s.name} Horoscope Today | Astro Precise" />
+  <meta name="twitter:title" content="${s.name} Horoscope Today | AstroPrecise" />
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
   <meta name="theme-color" content="#0C1016" />
@@ -717,12 +716,12 @@ function page(s) {
     <symbol id="ei-modality" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></symbol>
   </svg>
 
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         ${navShell()}
     </nav>
@@ -732,7 +731,7 @@ function page(s) {
     <nav class="sign-breadcrumb" aria-label="Breadcrumb">
       <ol>
         <li><a href="index.html">Home</a></li>
-        <li><a href="horoscope.html">Daily</a></li>
+        <li><a href="guides.html">Sign guides</a></li>
         <li aria-current="page">${s.name}</li>
       </ol>
     </nav>
@@ -741,7 +740,7 @@ function page(s) {
       <div class="sign-hero__inner">
         <figure class="sign-hero__planet">
           <img class="sign-hero__planet-img" src="img/engine/${RULER_STILL[s.key].still}.webp"
-            alt="${RULER_STILL[s.key].label}, ${RULER_STILL[s.key].rel} — rendered from the Astro Precise engine"
+            alt="${RULER_STILL[s.key].label}, ${RULER_STILL[s.key].rel} — rendered from the AstroPrecise engine"
             width="340" height="340" loading="eager" decoding="async" fetchpriority="high" />
           <figcaption class="sign-hero__planet-caption">${RULER_STILL[s.key].label} · ${RULER_STILL[s.key].rel} · our engine render</figcaption>
         </figure>
@@ -758,8 +757,8 @@ function page(s) {
             <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">${s.symbol}</span></div>
           </div>
           <div class="sign-hero__actions">
-            <a href="horoscope.html?sign=${s.key}" class="btn btn--primary btn--sm">Open in Daily Hub</a>
-            <a href="chart.html" class="btn btn--outline btn--sm">Birth Chart</a>
+            <a href="chart.html" class="btn btn--primary btn--sm">Cast a Birth Chart</a>
+            <a href="why.html" class="btn btn--outline btn--sm">Read the Method</a>
           </div>
         </div>
       </div>
@@ -896,14 +895,14 @@ function page(s) {
 
   </main>
 
-${footerBlockHtml({ footerClass: 'footer' })}
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
 
   <script src="js/content-service.js"></script>
   <script src="js/sign-daily.js"></script>
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/sign-page-boot.js"></script>
   <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=835" defer></script>
+  <script src="js/ap-footer-inject.js?v=867" defer></script>
 </body>
 </html>
 `;

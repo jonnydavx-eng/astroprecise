@@ -292,7 +292,6 @@ const AstroApp = (() => {
   const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
     ['ephemeris.html', 'Sky tools'],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
-    ['moment.html', 'Moment', { badge: 'Keep' }],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],

@@ -30,6 +30,43 @@
   --color-silver: var(--ap-mute);
   --color-silver-dim: var(--ap-mute);
   --color-silver-dark: var(--ap-mute);
+  --aq-gold: var(--ap-mute);
+  --aq-gold-light: var(--ap-paper);
+  --aq-surface: rgba(242, 236, 223, .025);
+  --aq-border: var(--ap-line);
+  --nn-gold: var(--ap-mute);
+  --nn-gold-pale: var(--ap-paper);
+  --nn-white: var(--ap-paper);
+  --nn-ink: var(--ap-paper);
+  --nn-silver: var(--ap-mute);
+  --nn-silver-dim: var(--ap-mute);
+  --nn-surface: rgba(242, 236, 223, .025);
+  --nn-border: var(--ap-line);
+  --an-gold: var(--ap-mute);
+  --an-gold-pale: var(--ap-paper);
+  --an-surface: rgba(242, 236, 223, .025);
+  --an-border: var(--ap-line);
+  --daily-void: var(--ap-void);
+  --daily-raised: var(--ap-void);
+  --daily-paper: var(--ap-paper);
+  --daily-brass: var(--ap-mute);
+  --daily-ember: var(--ap-ember);
+  --daily-silver: var(--ap-mute);
+  --mom-void: var(--ap-void);
+  --mom-raised: var(--ap-void);
+  --mom-brass: var(--ap-mute);
+  --mom-brass-vivid: var(--ap-paper);
+  --mom-parch: var(--ap-paper);
+  --mom-dim: var(--ap-mute);
+  --mom-muted: var(--ap-mute);
+  --mom-cta: var(--ap-ember);
+  --mom-cta-ink: var(--ap-void);
+  --ap-number-void: var(--ap-void);
+  --ap-number-raised: var(--ap-void);
+  --ap-number-paper: var(--ap-paper);
+  --ap-number-brass: var(--ap-mute);
+  --ap-number-ember: var(--ap-ember);
+  --ap-number-silver: var(--ap-mute);
   background: var(--ap-void);
   color: var(--ap-paper);
 }
@@ -141,4 +178,145 @@
   .legal-doc .lede
 ) {
   border-color: var(--ap-line-strong) !important;
+}
+
+.ap-act1-house .ap-archive-note {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 14px 0;
+  border-top: 1px solid var(--ap-line);
+  border-bottom: 1px solid var(--ap-line);
+  color: var(--ap-mute);
+  font: 10px/1.6 var(--ap-data, ui-monospace, monospace);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.ap-act1-house .ap-archive-note strong {
+  color: var(--ap-paper);
+  font-weight: 600;
+}
+
+.ap-act1-house :is(.gradient-text, .aq-result__name) {
+  background: none !important;
+  color: var(--ap-paper) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+.ap-act1-house :is(
+  .aq-card,
+  .aq-cta,
+  .aq-option,
+  .aq-result,
+  .aq-route,
+  .nn-form-card,
+  .nn-card,
+  .nn-lifepath-card,
+  .nn-breakdown,
+  .nn-meaning,
+  .nn-faq__item,
+  .sync-clock-card,
+  .an-number-card,
+  .an-method,
+  .daily-room,
+  .sign-picker-primary,
+  .sign-card,
+  .sign-reading-panel__inner,
+  .reading-card,
+  .daily-eclipse__inner,
+  .daily-evidence,
+  .mom-plate,
+  .mom-gallery-teaser,
+  .mom-deeper,
+  .mom-card-preview,
+  .mom-facts,
+  .mom-spine,
+  .ap-plate-art,
+  .ap-plate-spec__grid > div,
+  .ap-plate-proof__receipt
+) {
+  background: rgba(242, 236, 223, .025) !important;
+  border-color: var(--ap-line) !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.ap-act1-house :is(
+  .aq-hero::before,
+  .nn-hero::before,
+  .an-hero::before,
+  .daily-room::before,
+  .daily-room::after,
+  .mom-hero::before
+) {
+  background: none !important;
+}
+
+.ap-act1-house :is(
+  .aq-hero__eyebrow,
+  .eyebrow,
+  .nn-card__label,
+  .sync-clock__label,
+  .daily-hero__eyebrow,
+  .sign-picker-primary__lead,
+  .reading-card__label,
+  .mom-hero__eyebrow,
+  .mom-fact__k,
+  .ap-plate-kicker,
+  .ap-plate-spec__grid span,
+  .ap-plate-proof dt
+) {
+  color: var(--ap-mute) !important;
+}
+
+.ap-act1-house :is(
+  .aq-hero h1,
+  .aq-card h2,
+  .aq-cta h2,
+  .nn-hero h1,
+  .section-title,
+  .an-hero h1,
+  .daily-hero h1,
+  .sign-reading-panel h2,
+  .mom-hero h1,
+  .mom-plate h2,
+  .mom-reveal h2,
+  .mom-facts h3,
+  .mom-spine h2,
+  .ap-plate-copy h1,
+  .ap-plate-proof h2
+) {
+  color: var(--ap-paper) !important;
+}
+
+.ap-act1-house :is(
+  .aq-option.is-selected,
+  .nn-legend__swatch,
+  .sync-clock-card.is-active,
+  .sign-card[aria-pressed='true']
+) {
+  background: rgba(255, 100, 40, .08) !important;
+  border-color: var(--ap-ember) !important;
+}
+
+.ap-act1-house :is(
+  .aq-card .btn--primary,
+  .aq-cta .btn--primary,
+  .nn-submit-btn,
+  .an-hero .btn--primary,
+  .daily-room .btn--primary,
+  .mom-btn--primary,
+  .ap-plate-actions a:first-child
+) {
+  border-color: var(--ap-ember) !important;
+  background: var(--ap-ember) !important;
+  color: var(--ap-void) !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 600px) {
+  .ap-act1-house .ap-archive-note {
+    width: min(100% - 32px, 1120px);
+  }
 }
