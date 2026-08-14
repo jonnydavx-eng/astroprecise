@@ -77,11 +77,11 @@ else {
 }
 
 const placeNatal = W.slice(W.indexOf('function placeNatalClockWho'), W.indexOf('function updateNatalClocks'));
-if (!placeNatal || placeNatal.includes('scenePos(b.R')) {
+if (!placeNatal || /scenePos\(b\.R[,)]/.test(placeNatal)) {
   fail('placeNatalClockWho still stacks both clocks on scenePos(b.R)');
 }
-if (!W.includes('function natalClockSceneRadius(who, body)') || !W.includes('Math.max(pairHalf, clearHalf)')) {
-  fail('natal clocks must radially split A/B enough to unstack Earth meshes');
+if (!W.includes('NATAL_CLOCK_RADIAL = { a: 0.97, b: 1.03 }') || !placeNatal.includes('b.R * (NATAL_CLOCK_RADIAL[who] || 1)')) {
+  fail('natal clocks must use Pair display split 0.97R / 1.03R');
 }
 if (!W.includes('who === focus ? 0.92 : 0.42') || !W.includes('return 0.78')) {
   fail('natal clock focus opacity contract missing');
