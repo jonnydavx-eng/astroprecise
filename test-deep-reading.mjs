@@ -76,9 +76,8 @@ assert.ok(/Place search sent only the town name/.test(natalJs), 'natal status mu
 assert.ok(natalHtml.includes('class="logo-text">AstroPrecise</span>'), 'wordmark is one word: AstroPrecise');
 assert.equal(/Astro <i|Astro Precise/.test(natalHtml), false, 'wordmark must not split into two words');
 assert.ok(natalHtml.includes('href="sky-card.html"') && natalHtml.includes('href="chart.html"'), 'reading may link to existing keep pages');
-assert.ok(natalHtml.includes('ap-sky-card.js') && natalHtml.includes('ap-keep-minute.js'), 'page must name the missing keep engines rather than invent them');
 assert.equal(/sky-card\.html\?|chart\.html\?/.test(natalHtml), false, 'keep-path links must not carry a birth minute');
-assert.equal(/src=["']js\/ap-keep-minute|src=["']js\/ap-sky-card|ap-keep-sky\.js|captureStill/.test(natalHtml + natalJs), false, 'this page must not invent or load missing keep engines');
+assert.equal(/ap-sky-card\.js|ap-keep-minute\.js|ap-keep-sky\.js|captureStill/.test(natalHtml + natalJs), false, 'this page must not invent or load missing keep engines');
 assert.equal(existsSync(new URL('./website/js/ap-sky-card.js', import.meta.url)), false, 'ap-sky-card.js is a hole on this branch — do not invent it');
 assert.equal(existsSync(new URL('./website/js/ap-keep-minute.js', import.meta.url)), false, 'ap-keep-minute.js is a hole on this branch — do not invent it');
 assert.equal(/sign up|log in|create an account|chatbot|ask the oracle/i.test(natalHtml), false, 'no account and no AI-chat theatre');
