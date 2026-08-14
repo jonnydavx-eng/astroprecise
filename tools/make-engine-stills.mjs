@@ -35,7 +35,7 @@
 import { chromium } from './visual-check/node_modules/playwright/index.mjs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { mkdirSync, writeFileSync, readFileSync, statSync } from 'fs';
+import { mkdirSync, writeFileSync, readFileSync, statSync, existsSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ARGV = process.argv.slice(2);
@@ -105,15 +105,31 @@ const JOBS = [
 ];
 
 
+/**
+ * Wait for the capture API, not for the page's layout state. The original gate also
+ * required the `orrery-full` class on <html>; the launch shell no longer sets it, which
+ * hard-failed every engine portrait at the 45s timeout even though the engine was live
+ * and WebGL was up. captureFrame() renders to its own offscreen buffer, so hero layout
+ * is not a precondition. The class is still waited for briefly and reported, so a real
+ * regression in it stays visible instead of being silently dropped.
+ */
 async function waitForEngine(page) {
   await page.waitForFunction(
     () => window.Orrery3D && window.Orrery3D.isWebGL === true &&
       typeof window.Orrery3D.enterPortrait === 'function' &&
-      typeof window.Orrery3D.captureFrame === 'function' &&
-      document.documentElement.classList.contains('orrery-full'),
+      typeof window.Orrery3D.captureFrame === 'function',
     null, { timeout: 45000 }
   );
+  let orreryFull = true;
+  try {
+    await page.waitForFunction(() => document.documentElement.classList.contains('orrery-full'),
+      null, { timeout: 8000 });
+  } catch (e) {
+    orreryFull = false;
+    console.error('NOTE orrery-full class absent — capturing from the offscreen buffer anyway');
+  }
   await page.evaluate(() => window.Orrery3D.whenEarthReady && window.Orrery3D.whenEarthReady());
+  return { orreryFull };
 }
 
 /**
@@ -331,7 +347,7 @@ async function main() {
 
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
   if (needsEngine) {
-    await waitForEngine(page);
+    report.engineBoot = await waitForEngine(page);
     await sleep(9000); // Earth-dive intro finish + textures load + settle
   }
 
@@ -359,6 +375,21 @@ async function main() {
     if (!res.ok) {
       console.error('FAIL', job.id, res.reason);
       report.portraits.push({ id: job.id, ok: false, reason: res.reason });
+      if (!job.mapSphere) await page.evaluate(() => window.Orrery3D.exitPortrait && window.Orrery3D.exitPortrait());
+      continue;
+    }
+
+    // Refuse to replace a good still with one that fails the transparency contract.
+    // These composite behind engraved frames, so an opaque void is library corruption —
+    // and it happens for real: capturing before the launch shell reaches its hero layout
+    // yields a solid background even though the engine and WebGL are both up.
+    const pre = verdict(res);
+    if (!pre.clean && existsSync(join(OUT, `${job.id}.webp`))) {
+      console.error('REFUSED', job.id, `cornerAlphaMax=${res.cornerAlphaMax} — void is not transparent; keeping the existing still`);
+      report.portraits.push({
+        id: job.id, ok: false,
+        reason: `capture void was opaque (cornerAlphaMax=${res.cornerAlphaMax}); existing still kept`,
+      });
       if (!job.mapSphere) await page.evaluate(() => window.Orrery3D.exitPortrait && window.Orrery3D.exitPortrait());
       continue;
     }
@@ -439,8 +470,11 @@ async function main() {
   if (priorReport && Array.isArray(priorReport.portraits)) {
     report.portraits = mergeById(priorReport.portraits, report.portraits);
     report.partialRun = ONLY.slice();
+    // Keep only the last real reload result, not a chain of skipped-run wrappers.
     if (!needsEngine && priorReport.homepageReload) {
-      report.homepageReload = { ...report.homepageReload, previous: priorReport.homepageReload };
+      const prior = priorReport.homepageReload;
+      const lastReal = prior.skipped ? prior.previous : prior;
+      report.homepageReload = { ...report.homepageReload, previous: lastReal || null };
     }
   }
   const reportPath = join(OUT, 'make-engine-stills-report.json');
