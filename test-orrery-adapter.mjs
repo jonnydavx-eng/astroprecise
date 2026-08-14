@@ -59,6 +59,18 @@ if (!A.includes("opts.mode === 'birth-hour'") || !A.includes('O.captureBirthHour
 if (!W.includes('type: THREE.UnsignedByteType') || !W.includes('stencilBuffer: false')) {
   fail('Home-safe UnsignedByte composer target is missing');
 }
+for (const probe of [
+  'const NATAL_CLOCK_RADIUS = { a: 0.97, b: 1.03 }',
+  'scenePos(b.R * radiusScale, ll.lon, ll.lat)',
+  "focused === who ? 0.92 : 0.42",
+  'focused ? (focused === who ? 0.92 : 0.42) : 0.78',
+  "natalLabelTangent.normalize().multiplyScalar(who === 'a' ? -1.4 : 1.4)",
+  "pack.label.position.y += who === 'a' ? 2.05 : 3.05",
+  '__natalClockDebug: natalClockDebug',
+]) {
+  if (!W.includes(probe)) fail('couples clock separation contract missing: ' + probe);
+}
+ok('couples clocks have radial, focus-opacity and label separation contracts');
 
 const couplesSkyPath = join(root, 'js', 'ap-couples-sky.js');
 if (!existsSync(couplesSkyPath)) fail('js/ap-couples-sky.js missing');
