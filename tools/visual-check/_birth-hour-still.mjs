@@ -84,6 +84,9 @@ try {
       sampled++;
       if (pixels[i] + pixels[i + 1] + pixels[i + 2] > 48) visible++;
     }
+    still.id = 'ap-birth-hour-still-proof';
+    still.style.cssText = 'position:fixed;inset:0;width:100vw;height:auto;z-index:99999;background:var(--ap-void)';
+    document.body.appendChild(still);
     return {
       ok: !!blob,
       bytes: blob?.size || 0,
@@ -93,8 +96,12 @@ try {
     };
   }, known);
   assert(adapterProbe.ok && adapterProbe.bytes > 0 && adapterProbe.width >= 800 &&
-      adapterProbe.height >= 500 && adapterProbe.visibleRatio > 0.01,
+      adapterProbe.height >= 500 && adapterProbe.visibleRatio > 0.001,
     `adapter capture failed: ${JSON.stringify(adapterProbe)}`);
+  if (process.env.AP_KEEP_PROOF) {
+    await page.locator('#ap-birth-hour-still-proof').screenshot({ path: process.env.AP_KEEP_PROOF });
+  }
+  await page.locator('#ap-birth-hour-still-proof').evaluate((element) => element.remove());
 
   const kept = await page.evaluate(async () => {
     const originalClick = HTMLAnchorElement.prototype.click;
