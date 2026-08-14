@@ -1,5 +1,17 @@
 # STATUS — AstroPrecise
 
+**State:** Friday 14 Aug 2026 morning (Europe/London). Live site stays on hold at the current version until Jonny pastes the Gumroad listing. Helm is not shipping.
+
+## 14 Aug note
+- PR #12 (Gumroad product_id) merged 12 Aug.
+- Codex review credits exhausted on that PR.
+- Helm will not push or deploy.
+- Version numbers and live checks below are 12 Aug measurements. Not re-measured this morning.
+
+---
+
+# STATUS — AstroPrecise
+
 **Live (origin, until you push):** https://astroprecise.app still ships **ap-v849**. Gumroad product `your-eclipse-reading`; licence product_id `3ZwFjg0IW702KvJ5s97QuQ==`.
 
 **Local candidate (this machine, not live):** **ap-v850** post-eclipse hub + natal-wheel £7 edition. Measured 2026-08-12 21:47 BST — `node test-eclipse-edition.mjs` and `npm run test:launch` proofs PASS locally. Not pushed.
