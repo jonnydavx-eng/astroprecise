@@ -165,6 +165,10 @@ ok(/\.ap-events-feature p[\s\S]*\.event__ledger p[\s\S]*font-size:\s*16px\s*!imp
   'Events narrative copy keeps the 16px phone floor');
 ok(/page-chart \.form-label[\s\S]*page-compat label[\s\S]*font-size:\s*16px\s*!important/.test(phoneCss),
   'Act 1 form labels keep the 16px phone floor');
+ok(/page-natal-reading h1[\s\S]*font-size:\s*clamp\(2rem/.test(phoneCss),
+  'deep-reading H1 keeps the Act 1 phone size');
+ok(/page-natal-reading \.ap-natal-form label span[\s\S]*font-size:\s*16px\s*!important/.test(phoneCss),
+  'deep-reading form labels keep the 16px phone floor');
 ok(/\.ap-context__chart[\s\S]*\.ap-site-footer__legal a[\s\S]*\.ap-product__foot a[\s\S]*min-height:\s*44px\s*!important/.test(phoneCss),
   'Act 1 secondary links keep 44px phone targets');
 const signGenerator = fs.readFileSync(path.join(web, 'tools/generate-sign-pages.mjs'), 'utf8');
