@@ -52,6 +52,11 @@ About 30% of the map is black south of ~−55° latitude — that hemisphere was
 polar night during the flyby and was never imaged. It was not painted in. Details
 in `assets/textures/pluto-source.txt`.
 
+`img/engine/pluto.webp` is derived from this map: the same mosaic on a lit sphere,
+rendered by `tools/make-engine-stills.mjs`. It replaced a hand-painted procedural
+disc that predated any real Pluto map being in the repo. 5.5% of the visible disc
+carries no data and is left black rather than filled in.
+
 The Sun is rendered procedurally (no asset).
 
 ## 3D engine

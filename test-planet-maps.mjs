@@ -127,6 +127,34 @@ assert.ok(footer.includes('Solar System Scope') && footer.includes('creativecomm
 assert.ok(footer.includes('OPAL'), 'footer must credit Hubble OPAL for the ice giants');
 assert.ok(/NASA\/JHUAPL\/SwRI/.test(footer), 'footer must credit NASA/JHUAPL/SwRI for Pluto');
 
+// ── The engine stills library must not contain an invented body ─────────────────────
+// Pluto's still used to be a hand-painted procedural disc, because no real Pluto map
+// existed. It does now, so a painted stand-in is no longer defensible.
+const stills = JSON.parse(read('./website/img/engine/manifest.json'));
+const plutoStill = stills.stills.find((s) => s.id === 'pluto');
+assert.ok(plutoStill, 'engine stills manifest must list pluto');
+assert.equal(plutoStill.generated, false, 'the pluto still must not be a generated disc');
+assert.equal(plutoStill.mapSphere, true, 'the pluto still must be rendered from a real map');
+assert.match(plutoStill.note || '', /not painted/, 'the pluto still must record that the unobserved region was left alone');
+for (const still of stills.stills) {
+  assert.notEqual(still.generated, true, `${still.id} still is marked generated — nothing in this library may be invented`);
+}
+const plutoStillFile = new URL('./website/img/engine/pluto.webp', import.meta.url);
+assert.ok(existsSync(plutoStillFile), 'the pluto still must exist on disk');
+{
+  const b = bin('./website/img/engine/pluto.webp');
+  assert.equal(b.toString('ascii', 8, 12), 'WEBP', 'the pluto still must be a webp');
+  const w = (b.readUIntLE(24, 3) & 0xffffff) + 1;
+  const h = (b.readUIntLE(27, 3) & 0xffffff) + 1;
+  assert.equal(`${w}x${h}`, '1024x1024', `the pluto still must be 1024 square, got ${w}x${h}`);
+}
+
+// The generator must not carry the old invented-disc code path any more.
+const stillsTool = read('./tools/make-engine-stills.mjs');
+assert.equal(/makePlutoStill/.test(stillsTool), false, 'the invented Pluto disc generator must be gone');
+assert.equal(/bright plain lower-centre/.test(stillsTool), false, 'the invented Pluto "heart" blob must be gone');
+assert.ok(stillsTool.includes('makeMapSphereStill'), 'stills tool must render no-mesh bodies from their real map');
+
 // ── Precache must not point at a texture that does not exist ────────────────────────
 const sw = read('./website/sw.js');
 for (const [, file] of sw.matchAll(/\.\/assets\/textures\/([^']+)'/g)) {
