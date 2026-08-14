@@ -139,6 +139,21 @@ for (const body of ['uranus', 'neptune', 'pluto']) {
   assert.equal(new RegExp(`\\b${body}\\b`, 'i').test(sssSection[0]), false,
     `${body} must not be attributed to Solar System Scope`);
 }
+// Forward guard for the gas giants. Jupiter and Saturn are Solar System Scope maps today.
+// If real Hubble maps land, they will arrive with a provenance note beside them — and at
+// that moment the Solar System Scope attribution becomes false, exactly as it did for the
+// ice giants. This is inert until that note exists, then it fails until credits catch up.
+// `\bsaturn\b` deliberately does not match `saturn_ring`, which stays Solar System Scope.
+if (existsSync(new URL(`${TEX}gas-giants-source.txt`, import.meta.url))) {
+  const gasNote = read(`${TEX}gas-giants-source.txt`);
+  assert.ok(/OPAL|Hubble|NASA/i.test(gasNote), 'gas-giant note must name the programme it came from');
+  assert.ok(/DOI|dx\.doi\.org|10\.\d{4,}/i.test(gasNote), 'gas-giant note must cite a resolvable source identifier');
+  for (const body of ['jupiter', 'saturn']) {
+    assert.equal(new RegExp(`\\b${body}\\b`, 'i').test(sssSection[0]), false,
+      `${body} now has its own provenance note — it must not still be credited to Solar System Scope`);
+  }
+}
+
 // Every map on disk has to be traceable to a named source in CREDITS.md.
 for (const file of [...texRefs, ...ringRefs, 'pluto.jpg', 'moon.jpg']) {
   const stem = file.replace(/\.(jpg|png|webp)$/, '');
