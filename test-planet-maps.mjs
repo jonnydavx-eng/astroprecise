@@ -98,6 +98,23 @@ assert.ok(/duplicated prime meridian/i.test(iceNote),
   'ice-giant note must keep the duplicated-meridian finding (721 cols = 0-360 inclusive)');
 assert.ok(/pre-OPAL/i.test(iceNote),
   'ice-giant note must record that the engine stills predate these maps');
+// The Neptune mask edits an official product, so the rule and its bounds must stay stated,
+// and the fact that Uranus is deliberately excluded must not quietly drift.
+assert.ok(/all-bands-valid mask/i.test(iceNote),
+  'ice-giant note must state the all-bands-valid rule used on Neptune');
+assert.ok(/Uranus is NOT masked/i.test(iceNote),
+  'ice-giant note must record that Uranus was deliberately left unmasked');
+assert.ok(/Nothing is painted in|not filled/i.test(iceNote),
+  'ice-giant note must state that invalid pixels were marked absent, not filled');
+assert.ok(/all\s+three filters have data/i.test(credits),
+  'credits must disclose the Neptune all-bands mask');
+
+// The stills tool must keep refusing to overwrite a good still with an opaque-void capture.
+{
+  const tool = read('./tools/make-engine-stills.mjs');
+  assert.ok(/REFUSED/.test(tool) && /transparen/i.test(tool),
+    'stills tool must refuse captures whose void is not transparent');
+}
 
 // ── Pluto is the real New Horizons colour mosaic, credited as such ───────────────────
 assertMapTiers('pluto.jpg');
