@@ -906,7 +906,7 @@ ${footerBlockHtml({ footerClass: 'footer' })}
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/sign-page-boot.js"></script>
   <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=873" defer></script>
+  <script src="js/ap-footer-inject.js?v=874" defer></script>
 </body>
 </html>
 `;

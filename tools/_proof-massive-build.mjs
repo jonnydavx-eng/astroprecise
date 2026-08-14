@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const web = path.join(root, 'website');
-const RELEASE = '873';
+const RELEASE = '874';
 const ACT_ONE_PAGES = [
   'index.html',
   'chart.html',
@@ -167,6 +167,23 @@ ok(/page-chart \.form-label[\s\S]*page-compat label[\s\S]*font-size:\s*16px\s*!i
   'Act 1 form labels keep the 16px phone floor');
 ok(/\.ap-context__chart[\s\S]*\.ap-site-footer__legal a[\s\S]*\.ap-product__foot a[\s\S]*min-height:\s*44px\s*!important/.test(phoneCss),
   'Act 1 secondary links keep 44px phone targets');
+ok(/html body\.ap-live-home \.ap-model-stage[\s\S]*min-height:\s*420px/.test(phoneCss),
+  'Observatory phone stage keeps a 420px WebGL floor');
+ok(/html body\.page-sky-card/.test(phoneCss) && /background:\s*#020307/.test(phoneCss),
+  'sky-card phone restyle stays on the house void');
+for (const page of ['index.html', 'chart.html', 'compatibility.html', 'tonight.html', 'sky-events.html']) {
+  const html = fs.readFileSync(path.join(web, page), 'utf8');
+  const sheets = [...html.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]*>/gi)].map((match) => match[0]);
+  ok(sheets.length > 0 && /ap-phone-pass\.css/.test(sheets[sheets.length - 1]),
+    page + ' loads the phone pass last');
+}
+const skyCard = fs.readFileSync(path.join(web, 'sky-card.html'), 'utf8');
+ok(/background:#020307/.test(skyCard) && /page-sky-card/.test(skyCard),
+  'sky-card chrome uses the house void');
+ok(/dob'\)\.value \+ 'T' \+ \(\$\('tob'\)\.value \|\| '12:00'\) \+ ':00Z'/.test(skyCard),
+  'sky-card keep/time path is unchanged');
+ok(/data-renderer="webgl-only"/.test(index) && /data-renderer="webgl-only"/.test(chart),
+  'phone pass does not swap the 3D instrument to 2D');
 const signGenerator = fs.readFileSync(path.join(web, 'tools/generate-sign-pages.mjs'), 'utf8');
 ok(new RegExp('ap-footer-inject\\.js\\?v=' + RELEASE).test(signGenerator), 'zodiac generator preserves the compact footer');
 
