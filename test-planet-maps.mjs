@@ -71,16 +71,25 @@ function assertMapTiers(file, { equirect = true } = {}) {
     assert.ok(existsSync(new URL(TEX + tier, import.meta.url)), `missing texture tier: ${tier}`);
     const { w, h } = dimensions(tier);
     assert.ok(w > 0 && h > 0, `${tier}: zero-sized image`);
-    const [ew, eh] = TIER_PX[step];
-    if (equirect) {
-      assert.equal(w, h * 2, `${tier}: equirectangular maps must be 2:1, got ${w}x${h}`);
-      assert.equal(`${w}x${h}`, `${ew}x${eh}`,
-        `${tier} is ${w}x${h}, expected ${ew}x${eh} — has this map been shrunk?`);
-    } else {
-      // Ring strips share the tier widths but keep their own aspect.
-      assert.equal(w, ew, `${tier} is ${w} wide, expected ${ew} — has this map been shrunk?`);
-    }
+    const problem = tierSizeError(tier, w, h, step, equirect);
+    assert.equal(problem, null, problem || '');
   }
+}
+
+/** Returns a message when a tier is the wrong size, or null when it is fine. Split out so
+ *  the shrink guard can be proven against fabricated dimensions — see the self-check at the
+ *  end of this file. Never write a shrunk map into the repo to test this: the body maps are
+ *  locked, other workers watch the tree, and a snapshot could capture the damage. */
+function tierSizeError(tier, w, h, step, equirect) {
+  const [ew, eh] = TIER_PX[step];
+  if (equirect) {
+    if (w !== h * 2) return `${tier}: equirectangular maps must be 2:1, got ${w}x${h}`;
+    if (w !== ew || h !== eh) return `${tier} is ${w}x${h}, expected ${ew}x${eh} — has this map been shrunk?`;
+    return null;
+  }
+  // Ring strips share the tier widths but keep their own aspect.
+  if (w !== ew) return `${tier} is ${w} wide, expected ${ew} — has this map been shrunk?`;
+  return null;
 }
 
 // ── Every body in the config points at a map that is really there ────────────────────
@@ -242,5 +251,22 @@ const sw = read('./website/sw.js');
 for (const [, file] of sw.matchAll(/\.\/assets\/textures\/([^']+)'/g)) {
   assert.ok(existsSync(new URL(TEX + file, import.meta.url)), `sw.js precaches a missing texture: ${file}`);
 }
+
+// ── Self-check: the shrink guard, proven without touching a single map file ──────────
+// The body maps are locked and other workers watch this tree, so the guard is exercised
+// against fabricated dimensions instead of by re-encoding a real map.
+assert.equal(tierSizeError('x.jpg', 2048, 1024, 'full', true), null, 'a correct full tier must pass');
+assert.equal(tierSizeError('x_md.webp', 1024, 512, 'md', true), null, 'a correct medium tier must pass');
+assert.equal(tierSizeError('x_sm.webp', 512, 256, 'sm', true), null, 'a correct small tier must pass');
+assert.match(tierSizeError('x.jpg', 1024, 512, 'full', true) || '', /has this map been shrunk\?/,
+  'a half-size full tier must be caught even though it is still 2:1');
+assert.match(tierSizeError('x_md.webp', 512, 256, 'md', true) || '', /has this map been shrunk\?/,
+  'a half-size medium tier must be caught');
+assert.equal(tierSizeError('ring_md.webp', 1024, 63, 'md', false), null, 'a correct medium ring strip must pass');
+assert.match(tierSizeError('ring_md.webp', 512, 31, 'md', false) || '', /has this map been shrunk\?/,
+  'a shrunk ring strip must be caught on width');
+assert.match(tierSizeError('x.jpg', 2048, 900, 'full', true) || '', /must be 2:1/,
+  'a non-2:1 map must still be caught');
+assert.equal(tierSizeError('ring.png', 2048, 125, 'full', false), null, 'a correct ring strip must pass');
 
 console.log('PASS planet maps present at every tier and credited to their real sources');
