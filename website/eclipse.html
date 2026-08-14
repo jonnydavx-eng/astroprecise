@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=858">
     <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=858">
     <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=858">
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=858">
 </head>
 <body class="page-eclipse eclipse-v835">
   <a class="skip-link" href="#eclipse-live-title">Skip to the eclipse instrument</a>
@@ -174,7 +175,7 @@
             <div class="ap-eclipse-contact__fields">
               <label><span>Birth date</span><input type="date" id="dob" required min="1800-01-01" autocomplete="bday"></label>
               <label><span>Birth time · optional</span><input type="time" id="tob" autocomplete="bday-time"></label>
-              <label><span>Historical time zone</span><select id="tz"><option value="Europe/London" selected>London / UK</option><option value="Europe/Paris">Paris / Central Europe</option><option value="America/New_York">New York / US Eastern</option><option value="America/Los_Angeles">Los Angeles / US Pacific</option><option value="Asia/Kolkata">India</option><option value="Australia/Sydney">Sydney</option><option value="UTC">UTC / GMT</option></select></label>
+              <label><span>Birth place</span><input type="text" id="eclipse-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="eclipse-city-drop"><div class="ap-city-drop" id="eclipse-city-drop" hidden></div><p class="ap-zone-note" id="eclipse-zone">Pick a place for a real zone. UK summer is not GMT.</p><input type="hidden" id="tz"></label>
             </div>
             <button type="submit" data-eclipse-contact-submit disabled aria-busy="true" aria-describedby="eclipseContactStatus">Read my eclipse contact</button>
             <p class="ap-eclipse-contact__note" id="eclipseContactStatus" role="status">No account · no birth data is sent · historical time-zone rules are applied · manual entry has no location, so angles require a saved full chart · if time is unknown, Moon contacts are withheld</p>

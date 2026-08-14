@@ -79,7 +79,11 @@
       jd = jdFromUT(ut);
     }
     return {
-      name: nameEl && nameEl.value.trim() ? nameEl.value.trim() : (prefix === 'person1' ? 'A' : 'B'),
+      name: (function () {
+        var raw = (nameEl && nameEl.value) || '';
+        raw = String(raw).trim();
+        return raw || (prefix === 'person1' ? 'A' : 'B');
+      })(),
       date: date,
       time: time,
       tz: zoneKnown ? tz : '',
@@ -363,16 +367,20 @@
     var btn = $('compat-invite-btn');
     if (!a.date) return;
     var link = inviteLink();
-    var done = function () {
+    var label = function (text) {
       if (!btn) return;
       var old = btn.textContent;
-      btn.textContent = 'Hash link copied';
+      btn.textContent = text;
       setTimeout(function () { btn.textContent = old; }, 2000);
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(link).then(done).catch(done);
+      navigator.clipboard.writeText(link).then(function () {
+        label('Hash link copied');
+      }).catch(function () {
+        label('Could not copy');
+      });
     } else {
-      done();
+      label('Could not copy');
     }
   }
 

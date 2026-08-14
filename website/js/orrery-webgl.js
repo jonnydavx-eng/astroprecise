@@ -4035,9 +4035,7 @@ const FinishShader = {
       const sunPtI = (perfTier === 'high' ? 2.45 : 2.05) * (1 - outerT * 0.32);
       const sunDirI = (perfTier === 'high' ? 1.85 : 1.55) * (1 - outerT * 0.23);
       const portraitLit = !!instrumentPortraitBodyId();
-      const fillI = (portraitLit
-        ? (perfTier === 'high' ? 0.66 : 0.58)
-        : (perfTier === 'high' ? 0.44 : 0.38)) * (1 - outerT * 0.66);
+      const fillI = 0;
       const k = Math.min(1, (dt || 0.016) * 4.2);
       if (scene && scene.fog && !portraitMode) {
         scene.fog.color.setHex(0x040610);
@@ -5577,9 +5575,7 @@ const FinishShader = {
     }
     if (instrumentFillLight) {
       instrumentFillLight.position.copy(camera.position);
-      instrumentFillLight.intensity = free
-        ? (perfTier === 'high' ? 0.44 : 0.38)
-        : (perfTier === 'high' ? 0.66 : 0.58);
+      instrumentFillLight.intensity = 0;
     }
     if (renderer) {
       instrumentExposure = free
@@ -6294,6 +6290,11 @@ const FinishShader = {
             inRing *= 1.0 - cass * 0.96;
             float toward = smoothstep(-0.01, 0.06, tHit);
             gl_FragColor.rgb *= 1.0 - inRing * toward * 0.58;
+            float nightR = 1.0 - day;
+            float latR = abs(dot(N, nR));
+            float belt = smoothstep(0.02, 0.18, latR) * smoothstep(0.72, 0.28, latR);
+            float ringLit = 0.50 + 0.50 * abs(dot(nR, sunR));
+            gl_FragColor.rgb += vec3(0.66, 0.50, 0.26) * nightR * belt * ringLit * 0.22;
           }
         }`);
   }
@@ -6573,7 +6574,13 @@ const FinishShader = {
         const ringMat = saturnRingMaterial();
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = Math.PI / 2; // lay flat, then group tilt gives the iconic angle
+        const ringThick = b.size * 0.014;
+        ring.position.y = ringThick * 0.5;
         group.add(ring);
+        const ringLo = new THREE.Mesh(ringGeo, ringMat);
+        ringLo.rotation.x = Math.PI / 2;
+        ringLo.position.y = -ringThick * 0.5;
+        group.add(ringLo);
         if (b.id === 'saturn') {
           saturnRingMesh = ring;
           saturnShadowBand = new THREE.Mesh(
