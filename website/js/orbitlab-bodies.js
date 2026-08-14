@@ -42,6 +42,30 @@ export const BODIES = [
   { id: 'neptune', name: 'Neptune', R: 29.0, size: 0.64, spin: 0.68, siderealPeriodHours: 16.11, color: 0x6f9fd8, tex: 'neptune.jpg' },
 ];
 
+/**
+ * Dwarf planets — kept OUT of BODIES on purpose. BODIES drives the eight-planet mesh
+ * build, orbit rings, trails and focus targets, so adding Pluto there would silently
+ * put a ninth planet in the scene. The engine renders Pluto from its own EXTRA_BODIES
+ * entry as a sprite point; this export exists so a globe pass has real numbers and a
+ * real map to reach for instead of inventing them.
+ *
+ * R/size/color mirror the engine's existing Pluto point exactly, so wiring the map in
+ * cannot move or resize anything already on screen.
+ *
+ * Real values behind the schematic ones: mean radius 1188.3 km (the radius the USGS/New
+ * Horizons mosaics are projected on), a = 39.48 AU, e = 0.2488, i = 17.16°, period
+ * 90,560 d. Sidereal rotation 6.387230 d = 153.2935 h, positive because the IAU/WGCCRE
+ * pole convention makes Pluto's W increase (wdot = +56.3625225 °/day) — the "retrograde
+ * Pluto" phrasing comes from measuring against the orbit normal instead.
+ *
+ * No ROTATION_MODEL entry is provided: poleScene is derivable from α0 = 132.993°,
+ * δ0 = −6.163°, but w0eng needs the S1 node calibration from the spec and guessing it
+ * would fake a rotation phase. Map first; phase when it can be computed properly.
+ */
+export const DWARF_BODIES = [
+  { id: 'pluto', name: 'Pluto', R: 32.5, size: 0.28, siderealPeriodHours: 153.2935, color: 0xbfa98c, tex: 'pluto.jpg' },
+];
+
 /** TRUE-TIME (S1) — IAU/IAG WGCCRE-derived rotation model in ENGINE SCENE FRAME
  *  (scene = (X_ecl, Z_ecl, −Y_ecl); see TRUE-TIME-EARTH-IMPL-SPEC + s1_compute.py).
  *  poleScene: unit IAU-north pole vector (UNCOMPRESSED — never ×0.35 an axis);
