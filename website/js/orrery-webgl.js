@@ -295,8 +295,8 @@ const FinishShader = {
   const earthUniforms = {
     uSunDir:      { value: new THREE.Vector3(1, 0, 0) }, // OBJECT-space (spinning textured surface)
     uSunDirWorld: { value: new THREE.Vector3(1, 0, 0) }, // WORLD-space (atmosphere shell, no spin)
-    uNightInt:    { value: 1.6 },   // city-light master (tier-tuned at build, live-tunable)
-    uTermSharp:   { value: 4.5 },   // terminator falloff hardness (single softener)
+    uNightInt:    { value: 2.05 },  // FLUX still: warmer, brighter city lights
+    uTermSharp:   { value: 3.1 },   // FLUX still: soft feathered terminator
     uHasLights:   { value: 0.0 },   // 0 until earth_lights.png loads (no pre-load flash)
     uCloudShadow: { value: 0.0 },   // high-tier only: 1 when cloud tex present
     uCloudTex:    { value: null },  // high-tier cloud-shadow sampler
@@ -1161,7 +1161,10 @@ const FinishShader = {
 
   /** v834 flagship: one continuous model opens at System, never an Earth teaser. */
   function isLivingSkyHome() {
-    try { return document.body.classList.contains('ap-live-home'); } catch (e) { return false; }
+    try {
+      return document.body.classList.contains('ap-live-home')
+        || !!document.querySelector('.ap-room-sky');
+    } catch (e) { return false; }
   }
 
   /** Contain the initial Earth without changing the global Earth camera preset. */
@@ -5966,6 +5969,10 @@ const FinishShader = {
         void main() {
           vec4 tex = texture2D(uMap, vUv);
           float density = tex.a > 0.02 ? tex.a : max(tex.r, max(tex.g, tex.b));
+          // Cassini division as an optical gap (not a dark stripe in the 12KB strip).
+          // Radial UV: inner 1.24 Rs -> 0, outer 2.32 Rs -> 1. Cassini 1.95-2.03 Rs.
+          float cassini = smoothstep(0.64, 0.67, vUv.x) * smoothstep(0.75, 0.72, vUv.x);
+          density *= 1.0 - cassini * 0.96;
           if (density < 0.03) discard;
           vec3 base = tex.rgb;
           if (length(base) < 0.05) base = vec3(0.92, 0.86, 0.72);
@@ -6043,15 +6050,15 @@ const FinishShader = {
       .replace('#include <roughnessmap_fragment>',
         'float roughnessFactor = roughness;\n #ifdef USE_ROUGHNESSMAP\n   vec4 texelRoughness = texture2D( roughnessMap, vRoughnessMapUv );\n   float oceanMask = texelRoughness.g;\n   roughnessFactor = mix( 0.92, 0.16, oceanMask );\n #endif');
 
-    // (D) DAY MAP + optional high-tier cloud shadow on the surface
+    // (D) FLUX still: cloud shadows with height, offset along the sun
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <map_fragment>',
-        '#include <map_fragment>\n #ifdef USE_MAP\n   if ( uCloudShadow > 0.5 ) {\n     float cl = texture2D( uCloudTex, vMapUv ).g;\n     diffuseColor.rgb *= ( 1.0 - cl * 0.32 );\n   }\n #endif');
+        '#include <map_fragment>\n #ifdef USE_MAP\n   if ( uCloudShadow > 0.5 ) {\n     vec3 sL = normalize( uSunDir );\n     float sDay = smoothstep( -0.05, 0.35, dot( normalize( vObjNormalE ), sL ) );\n     vec2 sUv = vMapUv - vec2( sL.x, sL.z ) * 0.0045;\n     float clSh = texture2D( uCloudTex, sUv ).g;\n     diffuseColor.rgb *= ( 1.0 - clSh * 0.58 * sDay );\n   }\n #endif');
 
     // (E) TERMINATOR-GATED REAL CITY LIGHTS + warm dusk band (overwrite, never bleed onto day side)
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <emissivemap_fragment>',
-        '#ifdef USE_EMISSIVEMAP\n   vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );\n   float ndl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float dayness = clamp( ndl * uTermSharp * 0.5 + 0.5, 0.0, 1.0 );\n   float nightMask = 1.0 - dayness;\n   vec3 cityCol = emissiveColor.rgb * vec3( 1.0, 0.90, 0.66 );\n   float duskBand = pow( clamp( 1.0 - abs( ndl ), 0.0, 1.0 ), 6.0 ) * smoothstep( -0.05, 0.30, ndl );\n   totalEmissiveRadiance = cityCol * nightMask * uNightInt * uHasLights + vec3( 0.55, 0.22, 0.08 ) * duskBand * 0.30;\n #endif');
+        '#ifdef USE_EMISSIVEMAP\n   vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );\n   float ndl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float dayness = clamp( ndl * uTermSharp * 0.5 + 0.5, 0.0, 1.0 );\n   float nightMask = 1.0 - dayness;\n   float clOcc = ( uCloudShadow > 0.5 ) ? texture2D( uCloudTex, vMapUv ).g : 0.0;\n   nightMask *= ( 1.0 - clOcc * 0.82 );\n   vec3 cityCol = emissiveColor.rgb * vec3( 1.0, 0.68, 0.32 );\n   float lum = dot( cityCol, vec3( 0.30, 0.50, 0.20 ) );\n   float duskBand = pow( clamp( 1.0 - abs( ndl ), 0.0, 1.0 ), 4.5 ) * smoothstep( -0.12, 0.28, ndl );\n   totalEmissiveRadiance = cityCol * nightMask * uNightInt * uHasLights * ( 1.0 + lum * 1.15 ) + vec3( 0.95, 0.38, 0.10 ) * duskBand * 0.42;\n #endif');
   }
 
   // Dedicated Earth atmosphere: cyan-blue Rayleigh day-limb + terminator sunset band.
@@ -6227,7 +6234,7 @@ const FinishShader = {
         });
         mat.onBeforeCompile = (shader) => { try { injectEarth(shader); } catch (e) { console.warn('[orrery] earth shader patch skipped', e); } };
         earthMat = mat;
-        earthUniforms.uNightInt.value = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.6;
+        earthUniforms.uNightInt.value = perfTier === 'low' ? 2.15 : perfTier === 'mid' ? 1.85 : 2.05;
       } else {
         const isGiant = b.id === 'jupiter' || b.id === 'saturn' || b.id === 'uranus' || b.id === 'neptune';
         // Gas-giant cloud tops are matte — no clearcoat lacquer on jupiter/saturn
@@ -6318,7 +6325,7 @@ const FinishShader = {
       if (vis.atmo && b.id !== 'mercury') {
         let atmoMat;
         if (b.hero && perfTier !== 'low' && !PRM) {
-          atmoMat = earthAtmosphereMaterial({ intensity: 0.9, edge: 5.3, falloff: 1.5, wrap: 0.0 });
+          atmoMat = earthAtmosphereMaterial({ intensity: 1.22, edge: 6.0, falloff: 1.9, wrap: 0.28 });
           earthAtmoMat = atmoMat;
         } else {
           const sourceI = vis.atmoI != null ? vis.atmoI : (b.hero ? 1.0 : 0.4);
@@ -6342,7 +6349,7 @@ const FinishShader = {
         if (b.hero && atmoMat === earthAtmoMat) {
           const atmo2 = new THREE.Mesh(
             new THREE.SphereGeometry(b.size * 1.045, atmoSegs, atmoSegs),
-            earthAtmosphereMaterial({ intensity: 0.15, edge: 3.4, falloff: 1.3, wrap: 1.0 })
+            earthAtmosphereMaterial({ intensity: 0.22, edge: 3.6, falloff: 1.45, wrap: 1.0 })
           );
           earthAtmoMatOuter = atmo2.material;
           atmo2.userData.baseIntensity = atmo2.material.uniforms.uIntensity.value;
@@ -6444,7 +6451,7 @@ const FinishShader = {
       }
 
       if (b.ring) {
-        const inner = b.size * 1.28, outer = b.size * 2.02;
+        const inner = b.size * 1.24, outer = b.size * 2.32;
         const ringSegs = perfTier === 'high' ? 256 : perfTier === 'mid' ? 192 : 128;
         const ringGeo = new THREE.RingGeometry(inner, outer, ringSegs, 1);
         // remap UVs so the texture strip maps across the ring radius
