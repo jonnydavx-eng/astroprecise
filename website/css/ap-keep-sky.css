@@ -1,3 +1,6 @@
+/* Keep this sky — local PNG of the 3D view. No account. No product gate.
+   Gift-path phone rules only. Does not redo the Act 1 page pass. */
+
 .ap-keep-row {
   display: flex;
   flex-wrap: wrap;
@@ -5,43 +8,130 @@
   gap: 10px;
   margin: 12px 22px 18px;
 }
-.ap-keep-row .btn-invite {
+
+.ap-keep-row .btn-invite,
+#keep-sky {
+  min-width: 44px;
   min-height: 44px;
   padding: 0 16px;
-  border: 1px solid rgba(255,100,40,.45);
+  border: 1px solid rgba(255, 100, 40, 0.45);
   border-radius: 3px;
   background: transparent;
   color: #F2ECDF;
   font: 650 14px/1 inherit;
-  letter-spacing: .04em;
+  letter-spacing: 0.04em;
   cursor: pointer;
+  box-sizing: border-box;
 }
-.ap-keep-row .action-note {
-  font-size: 12px;
-  color: rgba(242,236,223,.55);
+
+.ap-keep-row .btn-invite:disabled,
+#keep-sky:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
 }
+
+.ap-keep-row .action-note,
+#keep-sky-caption {
+  flex: 1 1 260px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #A89C84;
+}
+
 .ap-city-drop {
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-top: 6px;
-  border: 1px solid rgba(242,236,223,.14);
+  border: 1px solid rgba(242, 236, 223, 0.14);
   background: #020307;
 }
+
 .ap-city-drop[hidden] { display: none; }
+
 .ap-city-item {
+  min-height: 44px;
   text-align: left;
   padding: 8px 10px;
   border: 0;
   background: transparent;
   color: #F2ECDF;
-  font: 14px/1.3 inherit;
+  font: 16px/1.3 inherit;
   cursor: pointer;
 }
+
 .ap-city-item:hover,
-.ap-city-item:focus { background: rgba(255,100,40,.16); }
+.ap-city-item:focus { background: rgba(255, 100, 40, 0.16); }
+
 .ap-zone-note {
   margin: 6px 0 0;
-  font-size: 12px;
-  color: rgba(242,236,223,.55);
+  font-size: 16px;
+  color: #A89C84;
+}
+
+/* Keep control sits under the disc, not on it. */
+.ap-room-sky:has(.ap-keep-row) {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+  background: #020307;
+}
+
+.ap-room-sky:has(.ap-keep-row) .ap-model-stage {
+  position: relative;
+  inset: auto;
+  flex: 0 0 auto;
+  width: 100%;
+  height: min(48svh, 440px);
+  min-height: 380px;
+}
+
+.ap-room-sky:has(.ap-keep-row) .ap-model-stage void-orrery,
+.ap-room-sky:has(.ap-keep-row) .ap-model-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+
+.ap-room-sky:has(.ap-keep-row) .ap-model-vignette {
+  pointer-events: none;
+}
+
+.ap-room-sky:has(.ap-keep-row) .ap-keep-row {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(216, 180, 106, 0.22);
+  background: #020307;
+}
+
+@media (max-width: 700px) {
+  .ap-keep-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ap-keep-row .btn-invite,
+  #keep-sky {
+    width: 100%;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ap-keep-row .action-note,
+  #keep-sky-caption {
+    flex: 0 0 auto;
+    font-size: 16px;
+  }
+
+  .ap-room-sky:has(.ap-keep-row) .ap-model-stage {
+    min-height: 400px;
+  }
 }

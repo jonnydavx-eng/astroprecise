@@ -1,32 +1,36 @@
-/* Phone look pass — 14 Aug 2026.
-   390×844 first. One house. WebGL stays WebGL.
-   Type floor, 44–48px taps, readable stage, no 2D swap.
-   Load this sheet last on the Act 1 rooms. */
+/* Phone pass 14 Aug 2026 — 390x844 Act 1.
+   Type floor, 44px taps, stage height, overflow, ember primaries.
+   Does not swap WebGL for 2D. */
 
-:root {
-  --ap-void: #020307;
-  --ap-paper: #F2ECDF;
-  --ap-mute: #A89C84;
-  --ap-ember: #FF6428;
-  --ap-brass: #D8B46A;
+@media (max-width: 700px) {
+  /* Act 1 headlines only. Size, not typeface.
+     Beats later atlas / page !important title rules.
+     700px matches the living-sky mobile layout band. */
+  html body.ap-live-home h1.ap-live-heading,
+  html body.page-home h1.ap-live-heading,
+  html body.page-compat h1.ap-live-heading,
+  html body h1.ap-live-heading,
+  html body .ap-live-copy h1,
+  html body.page-chart h1.chart-hero__title,
+  html body.page-chart .chart-hero__title,
+  html body .chart-hero h1,
+  html body:has(.tn-hero) .tn-hero h1,
+  html body .tn-hero h1,
+  html body.page-eclipse .ap-eclipse-hero h1,
+  html body .ap-eclipse-hero h1,
+  html body.page-shop h1.shop-hero__title,
+  html body.page-shop .shop-hero__title,
+  html body.page-shop .shop-hero h1,
+  html body .ap-shop-hero h1,
+  html body .ap-shop-hero__copy h1 {
+    font-size: clamp(2rem, 8.4vw, 2.55rem) !important;
+  }
 }
 
 @media (max-width: 980px) {
-  html,
-  body {
-    overflow-x: clip;
-    background: #020307;
-  }
-
-  img,
-  canvas,
-  video,
-  svg {
-    max-width: 100%;
-  }
-
-  .site-header .navbar__inner {
-    padding-top: env(safe-area-inset-top, 0px);
+  .logo-text,
+  .navbar__logo {
+    white-space: nowrap;
   }
 
   /* Readable copy floor. Not chrome: eyebrows, hints, timecodes,
@@ -75,9 +79,7 @@
   html body.page-compat .ap-keep-row .action-note,
   html body.page-natal-reading .ap-natal-lede,
   html body.page-natal-reading .ap-natal-note,
-  html body.page-natal-reading .ap-zone-note,
-  html body.page-sky-card .sky-card-lede,
-  html body.page-sky-card p {
+  html body.page-natal-reading .ap-zone-note {
     font-size: 16px !important;
     line-height: 1.5;
   }
@@ -90,14 +92,14 @@
   .ap-model-status,
   .ap-live-home .ap-flight-launch span,
   .ap-ledger > span {
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.35;
   }
 
   input:not([type='hidden']):not([type='checkbox']):not([type='radio']):not([type='range']),
   select,
   textarea {
-    font-size: 16px !important;
+    font-size: 16px;
     max-width: 100%;
     box-sizing: border-box;
   }
@@ -137,14 +139,7 @@
   .ap-support-link,
   #nowBtn,
   .ap-minute .scrub,
-  #minute-scrub,
-  html body.page-sky-card .btn,
-  html body.page-sky-card a,
-  html body.page-chart .tab-trigger,
-  html body.page-chart .chart-hero__cta,
-  html body.page-chart .btn--primary,
-  html body.page-compat .btn-primary,
-  html body.page-compat .btn-invite {
+  #minute-scrub {
     min-width: 44px !important;
     min-height: 44px !important;
     box-sizing: border-box;
@@ -153,8 +148,7 @@
   .ap-ab button,
   #keep-sky,
   .ap-keep-row .btn-invite,
-  .ap-orrery-cosmic-flight,
-  html body.page-sky-card .btn {
+  .ap-orrery-cosmic-flight {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -182,8 +176,7 @@
   .ap-footer-signup__link,
   .ap-legal-links a,
   .ap-guide-links a,
-  .ap-support-link,
-  html body.page-sky-card a {
+  .ap-support-link {
     display: inline-flex;
     align-items: center;
   }
@@ -200,11 +193,22 @@
     line-height: 1.35;
   }
 
+  .ap-model-stage,
+  .ap-eclipse-live__stage {
+    min-height: 360px;
+  }
+  .ap-room-sky {
+    height: min(50svh, 480px);
+    min-height: 360px;
+  }
+  .ap-room-sky .ap-model-stage {
+    min-height: 360px;
+  }
+
   .btn-primary,
   .btn--primary,
   .ap-action--primary,
-  .tn-btn--primary,
-  html body.page-sky-card .btn--draw {
+  .tn-btn--primary {
     background: #FF6428;
     color: #170702;
     border-color: #FF6428;
@@ -216,307 +220,3 @@
   }
 }
 
-@media (max-width: 700px) {
-  /* Editorial phone titles. Size, not typeface.
-     Beats later atlas / page title rules without shrinking to a floor. */
-  html body.ap-live-home h1.ap-live-heading,
-  html body.page-home h1.ap-live-heading,
-  html body.page-compat h1.ap-live-heading,
-  html body h1.ap-live-heading,
-  html body .ap-live-copy h1,
-  html body.page-chart h1.chart-hero__title,
-  html body.page-chart .chart-hero__title,
-  html body .chart-hero h1,
-  html body:has(.tn-hero) .tn-hero h1,
-  html body .tn-hero h1,
-  html body.page-eclipse .ap-eclipse-hero h1,
-  html body .ap-eclipse-hero h1,
-  html body.page-shop h1.shop-hero__title,
-  html body.page-shop .shop-hero__title,
-  html body.page-shop .shop-hero h1,
-  html body .ap-shop-hero h1,
-  html body .ap-shop-hero__copy h1,
-  html body.page-sky-events .ap-events-hero h1,
-  html body .ap-events-hero h1,
-  html body.page-sky-card h1,
-  html body:has(.tn-hero) .tn-section__title,
-  html body:has(.tn-hero) .tn-privacy-band h2 {
-    font-size: clamp(2.35rem, 10.6vw, 2.85rem) !important;
-    line-height: 0.94 !important;
-    max-width: 11ch;
-  }
-
-  html body.ap-live-home .ap-live-heading,
-  html body.page-compat .ap-live-heading {
-    max-width: 9ch;
-  }
-
-  /* Stage reads as the instrument, not a postage stamp.
-     Controls stay below the disc. Canvas stays WebGL. */
-  html body.ap-live-home .ap-model-stage {
-    position: relative !important;
-    inset: auto !important;
-    height: min(58svh, 520px) !important;
-    min-height: 420px !important;
-    border-top: 1px solid rgba(216, 180, 106, 0.22);
-    border-bottom: 1px solid rgba(216, 180, 106, 0.22);
-  }
-
-  .ap-model-stage,
-  .ap-eclipse-live__stage {
-    min-height: 380px;
-  }
-
-  .ap-room-sky {
-    height: min(48svh, 440px) !important;
-    min-height: 380px !important;
-    background: #020307;
-  }
-
-  .ap-room-sky .ap-model-stage {
-    min-height: 380px !important;
-  }
-
-  .ap-model-stage void-orrery,
-  .ap-room-sky void-orrery,
-  .ap-eclipse-live__stage canvas,
-  .ap-model-stage canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    touch-action: pan-y !important;
-  }
-
-  .ap-model-vignette {
-    pointer-events: none;
-  }
-
-  html body.ap-live-home .ap-live-intro {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    width: auto !important;
-    transform: none !important;
-    padding: 28px 16px 22px;
-    background: #020307;
-  }
-
-  html body.ap-live-home .ap-live-actions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  html body.ap-live-home .ap-live-actions a,
-  html body.page-chart .chart-hero__cta,
-  html body.page-compat .btn-primary,
-  .btn-primary,
-  .btn--primary,
-  .ap-action--primary,
-  .tn-btn--primary {
-    min-height: 48px !important;
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-  }
-
-  html body.ap-live-home .ap-mobile-flight-deck {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 14px 16px 16px;
-    background: #020307;
-  }
-
-  html body.ap-live-home .ap-mobile-flight-deck select {
-    min-height: 48px !important;
-    font-size: 16px !important;
-  }
-
-  html body.ap-live-home .ap-control-panel {
-    position: relative !important;
-    top: auto !important;
-    right: auto !important;
-    width: auto !important;
-    transform: none !important;
-    max-height: none !important;
-    background: #020307 !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    border: 0 !important;
-    padding: 18px 16px 28px;
-  }
-
-  .ap-keep-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    margin-inline: 16px;
-  }
-
-  .ap-keep-row .btn-invite,
-  #keep-sky {
-    width: 100%;
-    min-height: 48px !important;
-  }
-
-  .ap-keep-row .action-note {
-    font-size: 16px !important;
-    line-height: 1.45;
-  }
-
-  /* One house on leftover Tonight raised plates. */
-  html body:has(.tn-hero),
-  html body:has(.tn-hero) .tn-locator__card,
-  html body:has(.tn-hero) .tn-twi-card,
-  html body:has(.tn-hero) .tn-planet-card,
-  html body:has(.tn-hero) .tn-moon,
-  html body:has(.tn-hero) .tn-honesty,
-  html body:has(.tn-hero) .tn-privacy-band {
-    background: #020307 !important;
-    color: #F2ECDF;
-  }
-
-  html body:has(.tn-hero) .tn-hero > .container {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0 !important;
-  }
-
-  html body:has(.tn-hero) .tn-hero__moon {
-    width: 120px !important;
-    height: 120px !important;
-    margin: 0 0 20px !important;
-  }
-
-  html body:has(.tn-hero) .tn-city-row,
-  html body:has(.tn-hero) .tn-locator__buttons {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    width: 100%;
-  }
-
-  html body.page-sky-events .ap-events-hero,
-  html body.page-sky-events .ap-events-intro,
-  html body.page-sky-events .event,
-  html body.page-sky-events .event__ledger {
-    grid-template-columns: 1fr !important;
-  }
-
-  html body.page-sky-events .ap-events-shell {
-    width: min(100% - 32px, 1120px);
-    padding-top: 36px;
-  }
-
-  html body.page-sky-events .ap-events-feature a {
-    width: 100%;
-    min-height: 48px !important;
-    padding: 12px 0;
-    justify-content: flex-start;
-  }
-
-  html body.page-compat .ap-couples-grid,
-  html body.page-compat .ap-ab {
-    grid-template-columns: 1fr;
-  }
-
-  html body.page-compat .ap-ab {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  html body.page-compat .ap-couples-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  html body.page-compat .ap-couples-actions .btn-primary,
-  html body.page-compat .ap-couples-actions .btn-invite {
-    width: 100%;
-    min-height: 48px !important;
-  }
-
-  html body.page-chart .chart-hero {
-    padding: 56px 0 36px;
-  }
-
-  html body.page-chart .form-glass,
-  html body.page-chart .container,
-  html body.page-chart .chart-layout {
-    width: min(100% - 24px, 1180px);
-  }
-
-  html body.page-chart .time-selector,
-  html body.page-chart .tabs-nav,
-  html body.page-chart .result-actions {
-    grid-template-columns: 1fr !important;
-  }
-
-  html body.page-chart .tab-trigger {
-    min-height: 48px !important;
-  }
-
-  .ap-site-footer__inner,
-  .ap-site-footer__colophon {
-    width: min(100% - 32px, 1180px) !important;
-  }
-
-  .ap-site-footer__inner {
-    grid-template-columns: 1fr !important;
-    gap: 18px !important;
-  }
-
-  .ap-site-footer__routes,
-  .ap-site-footer__legal {
-    grid-template-columns: 1fr 1fr !important;
-    justify-content: start !important;
-    gap: 4px 16px !important;
-  }
-
-  .ap-site-footer__routes a,
-  .ap-site-footer__legal a {
-    min-height: 44px !important;
-    align-items: center;
-  }
-
-  html body.page-sky-card {
-    background: #020307 !important;
-    color: #F2ECDF;
-  }
-
-  html body.page-sky-card .wrap {
-    padding: 0 16px calc(36px + env(safe-area-inset-bottom, 0px));
-  }
-
-  html body.page-sky-card .card {
-    padding: 20px 16px;
-  }
-
-  html body.page-sky-card .field {
-    flex: 1 1 100%;
-    min-width: 100%;
-    width: 100%;
-  }
-
-  html body.page-sky-card .btn {
-    width: 100%;
-    min-height: 48px !important;
-    font-size: 14px !important;
-    letter-spacing: 0.12em;
-  }
-}
-
-@media (max-width: 420px) {
-  html body.ap-live-home .ap-model-stage,
-  .ap-room-sky,
-  .ap-room-sky .ap-model-stage {
-    min-height: 400px !important;
-  }
-
-  html body.ap-live-home .ap-mobile-flight-deck {
-    grid-template-columns: 1fr;
-  }
-}

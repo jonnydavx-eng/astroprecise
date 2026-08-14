@@ -14,33 +14,42 @@
      were already in this repo and already precached by the service worker —
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css?v=874">
+<link rel="stylesheet" href="./css/fonts.css?v=857">
 <style>
 :root{--ink:#F2ECDF;--dim:rgba(242,236,223,.80);--faint:#A89C84;--line2:rgba(216,180,106,.24);--acc:#D8B46A}
 *{box-sizing:border-box}
-body{margin:0;background:#020307;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+html,body{margin:0;background:#020307;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--acc);text-decoration:none}a:hover{color:#FF6428}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
 .wrap{max-width:900px;margin:0 auto;padding:0 22px 48px}
-h1{margin:36px 0 12px;font-size:clamp(32px,6vw,44px);line-height:1.1;font-weight:700;letter-spacing:-.015em}
-.sky-card-lede{margin:0 0 10px;font-size:17px;line-height:1.65;color:var(--dim);max-width:620px}
+h1{margin:36px 0 12px;font-size:clamp(2.35rem,10.6vw,2.85rem);line-height:1.05;font-weight:700;letter-spacing:-.015em;max-width:11ch}
+.sky-card-lede{margin:0 0 10px;font-size:16px;line-height:1.55;color:var(--dim);max-width:620px}
 .card{border:1px solid var(--line2);border-radius:4px;background:#020307;padding:24px 26px;margin:22px 0}
 .lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
+.fields{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
 input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radius:3px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:16px;padding:12px;color-scheme:dark;width:100%;min-height:48px;box-sizing:border-box}
 .field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:130px}
 .field span{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:var(--faint)}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;background:#F2ECDF;color:#020307;border:0;border-radius:3px;padding:14px 22px;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;cursor:pointer}
+.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;background:#F2ECDF;color:#020307;border:0;border-radius:3px;padding:14px 22px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.12em;cursor:pointer}
 .btn--draw{background:#FF6428;color:#170702}
 .btn--ghost{background:transparent;border:1px solid rgba(242,236,223,.35);color:var(--ink)}
+.privacy-note{font-size:16px;letter-spacing:.04em;color:var(--faint);line-height:1.45}
 canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border-radius:4px}
 .foot{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(242,236,223,.55);line-height:1.7}
+.foot a{min-height:44px;display:inline-flex;align-items:center}
 .sky-card-chrome{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0}
 .sky-card-chrome a,.sky-card-chrome span{min-height:44px;display:inline-flex;align-items:center}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media (max-width:430px){.card{padding:20px 16px}.sky-card-chrome{padding-top:18px}.card .field{flex:1 1 100%;min-width:100%;width:100%}}
+@media (max-width:700px){
+  .wrap{padding:0 16px calc(36px + env(safe-area-inset-bottom,0px))}
+  .card{padding:20px 16px}
+  .fields,.actions{flex-direction:column}
+  .field{flex:1 1 100%;min-width:100%;width:100%}
+  .btn{width:100%}
+}
 </style>
-<link rel="stylesheet" href="css/ap-phone-pass.css?v=874">
 <script src="./js/ambience.js?v=857"></script>
 <script src="js/void-orrery-adapter.js?v=857"></script>
 </head>
@@ -59,15 +68,15 @@ canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border
 
 <div class="card">
   <div class="lbl">YOUR MINUTE</div>
-  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+  <div class="fields">
     <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" value="1994-03-14"></label>
     <label class="field"><span>TIME (UTC)</span><input type="time" id="tob" value="09:12"></label>
     <label class="field"><span>PLACE (TEXT ON THE CARD ONLY)</span><input type="text" id="place" value="Manchester" maxlength="40"></label>
   </div>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+  <div class="actions">
     <button class="btn btn--draw" id="drawBtn" type="button">DRAW MY CARD</button>
     <button class="btn btn--ghost" id="dlBtn" type="button">DOWNLOAD PNG</button>
-    <span class="mono" style="font-size:12px;letter-spacing:.08em;color:var(--faint)">NOTHING UPLOADED · THE PNG IS MADE ON YOUR DEVICE</span>
+    <span class="mono privacy-note">NOTHING UPLOADED · THE PNG IS MADE ON YOUR DEVICE</span>
   </div>
 </div>
 
