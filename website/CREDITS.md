@@ -16,6 +16,16 @@ Files: `assets/textures/{mercury,venus,earth,earth_clouds,earth_lights,earth_nor
 earth_specular,mars,jupiter,saturn,saturn_ring,moon}.*`. Maps were
 downscaled/recompressed for web delivery; no other changes.
 
+**Jupiter and Saturn — owner-managed, do not let this section overwrite it.** This
+branch carries the July Solar System Scope encodes for both (verified byte-identical
+to base; no `assets/textures/gas-giants-source.txt` present here), which is why they
+are listed above. The project owner reports restored **Hubble OPAL** encodes for
+Jupiter and Saturn. If this branch merges into a tree that has those maps, keep that
+tree's Hubble OPAL attribution and remove `jupiter,saturn` from the Solar System Scope
+list above — this branch could not verify OPAL for them and deliberately does not
+claim it either way. `test-planet-maps.mjs` enforces the move automatically as soon as
+`gas-giants-source.txt` exists. `saturn_ring` stays Solar System Scope regardless.
+
 **Attribution requirement:** CC BY 4.0 requires visible credit. The site footer
 (`js/ap-footer-inject.js`) carries it:
 > "Planet textures © Solar System Scope, CC BY 4.0."

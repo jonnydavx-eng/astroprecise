@@ -57,6 +57,14 @@ Two further attempts, both measured, neither shipped.
      disc front-on and 5.20% -> 5.26% at 35 deg tilt, i.e. nothing. Not shipped.
   2. Tighter no-data threshold (channel <= 2 instead of == 0). Gains 244 pixels. Not
      shipped.
+Checked from two more directions, so "the seam" is not something else in disguise:
+  - Longitude wrap seam: rendered the u=0 meridian face-on at 14 deg FOV, beside the u=0.5
+    interior for comparison. No visible vertical seam on Neptune. The 87th-percentile
+    wrap statistic is a 2.27/255 step, which is real but invisible.
+  - Pole convergence: rendered the north pole dead-on. The no-data cap is clean, with no
+    pinwheel or star artefact where all longitudes meet. The pole is fine.
+What is left is the scalloped boundary of the no-data cap, and that boundary is data.
+
 The residual is real data. Measured just inside the masked edge, the surviving valid
 pixels are bright, not dim (mean max channel 136-210 from +60 to +45 deg), and they are
 spectrally lopsided — 65-96% of them have one channel dominating. They are genuine
