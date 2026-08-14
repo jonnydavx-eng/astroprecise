@@ -4545,6 +4545,7 @@ const FinishShader = {
     const saturnPos = meshes.saturn.position;
     const sunPos = sunMesh.position;
     const lit = new THREE.Vector3().subVectors(sunPos, saturnPos).normalize();
+    const sb = meshes.saturn.userData && meshes.saturn.userData.b;
     const ringMat = saturnRingMesh.material;
     if (ringMat && ringMat.uniforms) {
       ringMat.uniforms.uSunDir.value.copy(lit);
@@ -4553,7 +4554,6 @@ const FinishShader = {
       // planet's shadow across the rings (view-independent → survives portrait
       // capture, unlike the old flat shadow-band plane below).
       ringMat.uniforms.uPlanetC.value.copy(saturnPos);
-      const sb = meshes.saturn.userData && meshes.saturn.userData.b;
       if (sb && ringMat.uniforms.uPlanetR) ringMat.uniforms.uPlanetR.value = sb.size;
     } else if (ringMat) ringMat.opacity = 0.9 - eclipseDim * 0.1;
     // The globe shadow is now cast physically inside the ring shader (uPlanetC/uPlanetR
@@ -4562,6 +4562,21 @@ const FinishShader = {
     // rectangles on the disc, so it was hidden in portraits anyway); it's retired here to
     // avoid a double shadow. Kept allocated but permanently hidden for a minimal diff.
     if (saturnShadowBand) saturnShadowBand.visible = false;
+    const satMat = meshes.saturn.userData && meshes.saturn.userData.mat;
+    const ps = satMat && satMat.userData && satMat.userData.planetShader;
+    if (ps && ps.uniforms && ps.uniforms.uRingShadow) {
+      saturnRingMesh.updateWorldMatrix(true, false);
+      const n = ps.uniforms.uRingN.value;
+      n.set(0, 0, 1).transformDirection(saturnRingMesh.matrixWorld).normalize();
+      ps.uniforms.uRingShadow.value = 1.0;
+      ps.uniforms.uBandBoost.value = 0.24;
+      ps.uniforms.uPlanetC.value.copy(saturnPos);
+      const sz = (sb && sb.size) || 1.05;
+      ps.uniforms.uPlanetR.value = sz;
+      ps.uniforms.uRingInner.value = sz * 1.24;
+      ps.uniforms.uRingOuter.value = sz * 2.32;
+      if (ps.uniforms.uSunDir) ps.uniforms.uSunDir.value.copy(lit);
+    }
   }
 
   // Shared GLSL noise helpers — 3D FBM fireball (Sangil Lee / Altered Qualia pattern, tier-scaled).
@@ -5983,7 +5998,7 @@ const FinishShader = {
           // to how sun-aligned this fragment's view ray is.
           vec3 viewDir = normalize(cameraPosition - vWorldPos);
           float backscatter = pow(clamp(dot(viewDir, sun) * 0.5 + 0.5, 0.0, 1.0), 2.0);
-          float scatterGain = 1.0 + backscatter * 0.26;
+          float scatterGain = 1.0 + backscatter * 0.36;
           vec3 col = base * lit * scatterGain;
           // (c) Tame the inner-ring bloom clip: the brightest ring texels (inner B-ring)
           // read near paper-white. A soft top-end rolloff (Reinhard-ish) preserves the
@@ -6152,6 +6167,13 @@ const FinishShader = {
     shader.uniforms.uRimTint = { value: rim };
     shader.uniforms.uLightWash = { value: 0.05 };
     shader.uniforms.uRimMul = { value: rimMul != null ? rimMul : 0.055 };
+    shader.uniforms.uRingShadow = { value: 0.0 };
+    shader.uniforms.uRingN = { value: new THREE.Vector3(0, 1, 0) };
+    shader.uniforms.uRingInner = { value: 0.0 };
+    shader.uniforms.uRingOuter = { value: 0.0 };
+    shader.uniforms.uPlanetC = { value: new THREE.Vector3() };
+    shader.uniforms.uPlanetR = { value: 1.0 };
+    shader.uniforms.uBandBoost = { value: 0.0 };
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>',
         '#include <common>\n varying vec3 vPlanetWorldNormal;\n varying vec3 vPlanetWorldPos;')
@@ -6159,7 +6181,7 @@ const FinishShader = {
         '#include <begin_vertex>\n vPlanetWorldNormal = normalize(mat3(modelMatrix) * normal);\n vPlanetWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;');
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>',
-        '#include <common>\n uniform vec3 uSunDir;\n uniform vec3 uRimTint;\n uniform float uLightWash;\n uniform float uRimMul;\n varying vec3 vPlanetWorldNormal;\n varying vec3 vPlanetWorldPos;')
+        '#include <common>\n uniform vec3 uSunDir;\n uniform vec3 uRimTint;\n uniform float uLightWash;\n uniform float uRimMul;\n uniform float uRingShadow;\n uniform vec3 uRingN;\n uniform float uRingInner;\n uniform float uRingOuter;\n uniform vec3 uPlanetC;\n uniform float uPlanetR;\n uniform float uBandBoost;\n varying vec3 vPlanetWorldNormal;\n varying vec3 vPlanetWorldPos;')
       .replace('#include <output_fragment>',
         `#include <output_fragment>
         {
@@ -6177,6 +6199,26 @@ const FinishShader = {
           gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * vec3(1.035, 1.015, 0.975), day * uLightWash);
           gl_FragColor.rgb += uRimTint * litLimb * uRimMul * (0.72 + twilight * 0.28);
           gl_FragColor.rgb += diffuseColor.rgb * (1.0 - day) * uLightWash * 0.10;
+          if (uBandBoost > 0.01) {
+            float luma = dot(gl_FragColor.rgb, vec3(0.30, 0.54, 0.16));
+            gl_FragColor.rgb = mix(vec3(luma), gl_FragColor.rgb, 1.0 + uBandBoost);
+          }
+          if (uRingShadow > 0.5) {
+            vec3 sunR = normalize(uSunDir);
+            vec3 relR = vPlanetWorldPos - uPlanetC;
+            vec3 nR = normalize(uRingN);
+            float den = dot(sunR, nR);
+            float tHit = -dot(relR, nR) / (abs(den) < 1e-5 ? 1e-5 : den);
+            vec3 hit = relR + sunR * tHit;
+            float rr = length(hit);
+            float inRing = smoothstep(uRingInner * 0.98, uRingInner, rr) * smoothstep(uRingOuter, uRingOuter * 0.96, rr);
+            float span = max(uRingOuter - uRingInner, 0.001);
+            float cass = smoothstep(uRingInner + span * 0.64, uRingInner + span * 0.67, rr)
+                       * smoothstep(uRingInner + span * 0.75, uRingInner + span * 0.72, rr);
+            inRing *= 1.0 - cass * 0.96;
+            float toward = smoothstep(-0.01, 0.06, tHit);
+            gl_FragColor.rgb *= 1.0 - inRing * toward * 0.58;
+          }
         }`);
   }
 
@@ -8816,13 +8858,14 @@ const FinishShader = {
 
     // Fit distance: half-height of the body should span fillFrac of the frame.
     const fov = (CAM_FOV_MID || 42) * D2R;
-    const radius = body.size;
+    const radius = body.size * (pid === 'saturn' ? 2.32 : 1);
     const fit = radius / Math.max(0.05, Math.min(0.95, fillFrac)) / Math.tan(fov / 2);
-    const dist = Math.max(radius * 3.2, fit);
+    const dist = Math.max(radius * (pid === 'saturn' ? 1.12 : 3.2), fit);
 
     // Sun-side camera offset: mostly toward the sun, nudged laterally + up so the
     // lit hemisphere faces the lens with a gentle terminator and a 3/4 tilt.
-    const el = 14 * D2R;
+    // Saturn sits a bit higher so the ring plane reads in a fill-the-frame still.
+    const el = (pid === 'saturn' ? 22 : 14) * D2R;
     const ce = Math.cos(el), se = Math.sin(el);
     _portOff.copy(_portToSun).multiplyScalar(0.90 * ce);
     _portOff.addScaledVector(_portSide, 0.42 * ce);
