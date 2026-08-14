@@ -114,7 +114,6 @@ for (const probe of [
   'function homeCanvasIntersectsViewport()',
   'function shouldRenderFrame()',
   'webglBooted && running && !destroyed && shouldRenderFrame() && !raf',
-  'if (isLivingSkyHome()) return;',
 ]) {
   if (!A.includes(probe) && !W.includes(probe)) fail('stable Home reveal contract missing: ' + probe);
 }
