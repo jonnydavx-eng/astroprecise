@@ -1857,12 +1857,26 @@ const FinishShader = {
 
   function ensureComposer() {
     if (composer || PRM || perfTier === 'low' || !renderer || !scene || !camera) return;
-    // The flagship Home canvas is continuously resized by its responsive shell.
-    // Chromium can resolve the multisampled HalfFloat composer target to an empty
-    // frame after that resize, while the underlying scene keeps rendering. Keep
-    // Home on the stable direct WebGL path; dedicated full-screen tools retain FX.
-    if (isLivingSkyHome()) return;
     try {
+      if (isLivingSkyHome()) {
+        // Home-safe cinematic grade. Chromium can resolve a multisampled
+        // HalfFloat composer target to an empty frame after the Home shell
+        // resizes. Use a non-MSAA, non-HalfFloat target and attach only the
+        // finish pass (dither + vignette + whisper grade) + OutputPass.
+        // Dedicated tools keep the HalfFloat / MSAA / bloom path below.
+        const target = new THREE.WebGLRenderTarget(1, 1, {
+          type: THREE.UnsignedByteType,
+          depthBuffer: true,
+          stencilBuffer: false,
+        });
+        composer = new EffectComposer(renderer, target);
+        composer.addPass(new RenderPass(scene, camera));
+        finishPass = tryCreateFinishPass();
+        if (finishPass) composer.addPass(finishPass);
+        composer.addPass(new OutputPass());
+        resize();
+        return;
+      }
       // EffectComposer renders through its own targets, so the renderer's canvas
       // antialias flag no longer protects small planet silhouettes. Give the
       // composer a multisampled HDR target on WebGL2: 4x on desktop, 2x on phones.
