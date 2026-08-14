@@ -89,8 +89,11 @@ if (!W.includes('who === focus ? 0.92 : 0.42') || !W.includes('return 0.78')) {
 if (!W.includes('Schibsted Grotesk') || !W.includes('sp.scale.set((c.width / c.height) * 3.15, 3.15, 1)')) {
   fail('natal labels must stay at world scale 3.15 in Schibsted Grotesk');
 }
-if (!W.includes('NATAL_CLOCK_LABEL_LIFT = { a: 2.2, b: 3.6 }')) {
-  fail('natal A/B labels must lift to different points');
+if (/p\.y \+ 2\.5/.test(placeNatal) || /position\.set\(p\.x,\s*p\.y \+ 2\.5,\s*p\.z\)/.test(placeNatal)) {
+  fail('natal A/B letters still share earth + (0, 2.5, 0)');
+}
+if (!W.includes('NATAL_CLOCK_LABEL_OFFSET') || !placeNatal.includes('p.x + off.x') || !placeNatal.includes('p.z + off.z')) {
+  fail('natal A/B letters must use a who-offset, not the same earth lift');
 } else {
   ok('natal clocks split radially, dim the unfocused clock, and keep letter scale 3.15');
 }

@@ -709,7 +709,7 @@ const FinishShader = {
   const NATAL_CLOCK_A = 0xD8B46A; // brass — person A
   const NATAL_CLOCK_B = 0xFF6428; // ember — person B
   const NATAL_CLOCK_RADIAL = { a: 0.97, b: 1.03 }; // display split; lon/lat stay true
-  const NATAL_CLOCK_LABEL_LIFT = { a: 2.2, b: 3.6 };
+  const NATAL_CLOCK_LABEL_OFFSET = { a: { x: -1.6, y: 2.2, z: 0.4 }, b: { x: 1.6, y: 3.6, z: -0.4 } };
   let natalClockSpec = { a: null, b: null, focus: null };
   let natalClockGroup = null;     // separate layer; not ghostMeshes
   const natalClockMeshes = { a: {}, b: {} };
@@ -7484,8 +7484,8 @@ const FinishShader = {
       if (hide || !pack.earth) pack.label.visible = false;
       else {
         const p = pack.earth.position;
-        const lift = NATAL_CLOCK_LABEL_LIFT[who] || 2.2;
-        pack.label.position.set(p.x, p.y + lift, p.z);
+        const off = NATAL_CLOCK_LABEL_OFFSET[who] || { x: 0, y: 2.2, z: 0 };
+        pack.label.position.set(p.x + off.x, p.y + off.y, p.z + off.z);
         pack.label.visible = true;
       }
     }
