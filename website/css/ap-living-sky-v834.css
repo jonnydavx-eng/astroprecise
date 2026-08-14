@@ -2,16 +2,18 @@
    One real model, one interaction grammar, one visual language. */
 :root {
   color-scheme: dark;
-  --ap-void: #070a10;
-  --ap-void-deep: #03050a;
+  --ap-void: #020307;
+  --ap-void-deep: #020307;
   --ap-void-raised: #101722;
   --ap-void-soft: #172231;
-  --ap-paper: #f7f0e3;
-  --ap-paper-dim: rgba(247, 240, 227, 0.78);
-  --ap-paper-faint: rgba(247, 240, 227, 0.56);
-  --ap-brass: #ddb96e;
+  --ap-paper: #F2ECDF;
+  --ap-paper-dim: rgba(242, 236, 223, 0.78);
+  --ap-paper-faint: rgba(242, 236, 223, 0.56);
+  --ap-brass: #D8B46A;
   --ap-brass-bright: #f4d9a1;
-  --ap-ember: #ff6428;
+  --ap-ember: #FF6428;
+  --ap-mute: #A89C84;
+  --ap-danger: #B04A52;
   --ap-silver: #c5d0dc;
   --ap-proof: #abd9b4;
   --ap-line: rgba(216, 180, 106, 0.18);
@@ -23,12 +25,12 @@
   --ap-data: 'IBM Plex Mono', ui-monospace, monospace;
   --ap-caps: 'Cinzel', Georgia, serif;
   --ap-nav-h: 64px;
-  --sky-halo: rgba(221, 185, 110, 0.085);
+  --sky-halo: rgba(216, 180, 106, 0.085);
 }
 body[data-sky-period='dawn'] { --sky-halo: rgba(255, 122, 69, 0.15); }
 body[data-sky-period='day'] { --sky-halo: rgba(197, 208, 220, 0.11); }
 body[data-sky-period='dusk'] { --sky-halo: rgba(255, 112, 56, 0.14); }
-body[data-sky-period='night'] { --sky-halo: rgba(221, 185, 110, 0.075); }
+body[data-sky-period='night'] { --sky-halo: rgba(216, 180, 106, 0.075); }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { background: var(--ap-void-deep); scroll-behavior: smooth; }
@@ -61,7 +63,7 @@ button, a { touch-action: manipulation; }
   z-index: 80;
   min-height: var(--ap-nav-h);
   border-bottom: 1px solid var(--ap-line);
-  background: rgba(3, 5, 10, 0.84);
+  background: rgba(2, 3, 7, 0.84);
   backdrop-filter: blur(18px);
 }
 .navbar, .navbar__inner { width: 100%; }
@@ -149,7 +151,7 @@ button, a { touch-action: manipulation; }
   padding: 18px;
   border: 1px solid var(--ap-line-strong);
   border-radius: 8px;
-  background: rgba(7, 10, 16, 0.98);
+  background: rgba(2, 3, 7, 0.98);
   box-shadow: var(--ap-shadow);
 }
 .navbar__more-label, .navbar__drawer-heading {
@@ -192,7 +194,7 @@ body.ap-live-home { background-attachment: fixed; }
   justify-content: center;
   padding: clamp(30px, 5vw, 76px) clamp(22px, 3.7vw, 58px);
   border-right: 1px solid var(--ap-line);
-  background: linear-gradient(90deg, rgba(8, 11, 17, 0.97), rgba(7, 10, 16, 0.79));
+  background: linear-gradient(90deg, rgba(2, 3, 7, 0.97), rgba(2, 3, 7, 0.79));
 }
 .ap-live-eyebrow, .ap-panel-label, .eyebrow, .lbl, .chap-tag, .chap-note {
   margin: 0;
@@ -251,7 +253,7 @@ body.ap-live-home { background-attachment: fixed; }
   background:
     radial-gradient(circle at 50% 48%, rgba(46, 72, 112, 0.32), transparent 45%),
     radial-gradient(circle at 50% 48%, var(--sky-halo), transparent 72%),
-    #03050a;
+    #020307;
 }
 .ap-model-stage::before {
   content: '';

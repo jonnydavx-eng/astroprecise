@@ -24,7 +24,7 @@
 .ap-shop-section-head > p:last-child { max-width: 52ch; margin: 6px 0 0; color: var(--ap-paper-dim); line-height: 1.65; }
 .ap-shop-leads { display: grid; grid-template-columns: 7fr 5fr; gap: 16px; }
 .ap-product { display: grid; border: 1px solid var(--ap-line); border-radius: 4px; overflow: hidden; background: rgba(13,18,27,.66); }
-.ap-product__image { position: relative; display: block; min-height: 300px; overflow: hidden; background: #05070b; }
+.ap-product__image { position: relative; display: block; min-height: 300px; overflow: hidden; background: #020307; }
 .ap-product__image img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 280ms ease; }
 .ap-product__image:hover img { transform: scale(1.018); }
 .ap-product--eclipse .ap-product__image img { object-position: center 42%; }

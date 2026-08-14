@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0C1016">
+  <meta name="theme-color" content="#020307">
   <title>Natal Deep Reading — seven chapters on your device | AstroPrecise</title>
   <meta name="description" content="A seven-chapter natal reading computed in your browser from a saved chart or birth moment. Astronomy first; meaning offered for reflection. Nothing is uploaded.">
   <link rel="canonical" href="https://astroprecise.app/deep-reading.html">
@@ -13,21 +13,26 @@
   <script src="js/ephemeris.js?v=857" defer></script>
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=857">
   <link rel="stylesheet" href="css/ap-natal-reading.css?v=857">
+  <script type="importmap">
+    { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+  </script>
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=858">
+  <script src="js/void-orrery-adapter.js?v=858" defer></script>
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=858">
 </head>
 <body class="page-natal-reading ap-launch-article">
   <a class="skip-link" href="#natal-main">Skip to reading</a>
   <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
             <a href="index.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="horoscope.html" class="navbar__link">Daily</a>
             <a href="eclipse.html" class="navbar__link">Eclipse</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
@@ -41,6 +46,16 @@
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
+
+  <section class="ap-room-sky" aria-label="Live sky">
+    <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
+      <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+      <div class="ap-model-vignette" aria-hidden="true"></div>
+      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
+    </div>
+  </section>
+
+
 
   <main id="natal-main" class="ap-natal-shell">
     <p class="ap-natal-kicker">Natal reading · seven chapters · on this device</p>
@@ -81,5 +96,6 @@
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
   <script src="js/ap-footer-inject.js?v=857" defer></script>
   <script type="module" src="js/ap-natal-reading.js?v=857"></script>
+  <script src="js/ap-room-sky.js?v=858" defer></script>
 </body>
 </html>

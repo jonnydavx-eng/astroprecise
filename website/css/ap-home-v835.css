@@ -243,3 +243,21 @@
   .ap-model-boot span { animation: none; border-top-color: var(--ap-line-strong); }
   .ap-event-ticket { transition: none; }
 }
+
+/* Shared sky on tool rooms. Same void-orrery, a band, not a page takeover. */
+.ap-room-sky {
+  position: relative;
+  height: min(56vh, 520px);
+  min-height: 320px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--ap-line, rgba(216,180,106,.2));
+  background: #020307;
+}
+.ap-room-sky .ap-model-stage {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  background:
+    radial-gradient(circle at 56% 48%, rgba(82, 107, 142, .18), transparent 42%),
+    #020307;
+}

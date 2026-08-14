@@ -7,7 +7,7 @@
 :root {
   /* ── Jet · Silver · Aurora enchanted layer ── */
   --ap-enchant-void:     #000000;
-  --ap-enchant-deep:    #08080b;
+  --ap-enchant-deep:    #020307;
   --ap-enchant-indigo:  #101014;
   --ap-enchant-twilight:#18181E;
   --ap-enchant-nebula:  rgba(100, 90, 180, 0.10);
@@ -28,17 +28,17 @@
 
 html.ap-enchanted,
 body.ap-enchanted {
-  --ap-void-deep:   #08080b;
+  --ap-void-deep:   #020307;
   --ap-void-mid:    #101014;
   --ap-void-raised: #18181E;
-  --void:           #08080b;
-  --bg:             #08080b;
+  --void:           #020307;
+  --bg:             #020307;
   --bg-2:           #101014;
   --bg-3:           #18181E;
   --ap-link:        #7EC8E8;
   --gold:           #A8B0BC;
   --brass:          #A8B0BC;
-  background-color: #08080b;
+  background-color: #020307;
 }
 
 body.ap-enchanted::before {
@@ -46,7 +46,7 @@ body.ap-enchanted::before {
     radial-gradient(ellipse 120% 80% at 50% -20%, var(--ap-enchant-nebula) 0%, transparent 55%),
     radial-gradient(ellipse 90% 60% at 85% 40%, var(--ap-enchant-aurora) 0%, transparent 50%),
     radial-gradient(ellipse 70% 50% at 10% 70%, rgba(139, 124, 224, 0.04) 0%, transparent 45%),
-    linear-gradient(180deg, #000 0%, #08080b 45%, #101014 100%);
+    linear-gradient(180deg, #000 0%, #020307 45%, #101014 100%);
 }
 
 /* Subtle star-dust overlay — cool starlight, PRM-safe */

@@ -5,13 +5,13 @@
  * OBSERVATORY STRUCTURE (2026-07-10 — the homepage IS the model):
  *   The living orrery is the product; index.html is the Observatory.
  *
- * Launch bar: Observatory · Chart · Daily · Events · Shop.
+ * Launch bar: Observatory · Chart · Events · Shop.
  * The historical tools remain directly addressable, but they never leak into
  * the five-route launch shell or reintroduce a second "Explore" entrance.
  *
- * Mobile launch tabs: Sky · Chart · Daily · Events · Shop.
+ * Mobile launch tabs: Sky · Chart · Events · Shop.
  *
- * Site spine: Observatory (see) → Chart (cast) → Daily (return) → Events (follow) → Shop (keep)
+ * Site spine: Observatory (see) → Chart (cast) → Events (follow) → Shop (keep)
  * index.html is the single live Observatory; Explore is an action inside that scene, not another route.
  */
 'use strict';
@@ -20,7 +20,6 @@
   var NAV_PRIMARY = [
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['horoscope.html', 'Daily'],
     ['sky-events.html', 'Events', { badge: 'Live' }],
     ['shop.html', 'Shop'],
   ];
@@ -30,7 +29,6 @@
     ['ephemeris.html', 'Sky tools'],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
-    ['cosmic-story.html', 'Cosmic Story'],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['eclipse.html', 'Eclipse archive', { badge: '3D' }],
@@ -44,7 +42,6 @@
   var NAV_BOTTOM_TABS = [
     ['index.html', 'Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
-    ['horoscope.html', 'Daily', 'crescent'],
     ['sky-events.html', 'Events', 'eclipse'],
     ['shop.html', 'Shop', 'sparkles'],
   ];
@@ -65,10 +62,9 @@
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
-    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
     ['lifepath.html', 'Life Path'],
-    ['quiz.html', 'Cosmic Quiz'], ['accuracy.html', 'Accuracy'],
-    ['why.html', 'Why'], ['links.html', 'Links'],
+    ['accuracy.html', 'Accuracy'],
+    ['why.html', 'Why'],
   ];
 
   window.AP_NAV = {

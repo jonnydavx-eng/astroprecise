@@ -282,7 +282,6 @@ const AstroApp = (() => {
   const NAV_PRIMARY = _apNav.NAV_PRIMARY || [
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['horoscope.html', 'Daily'],
     ['eclipse.html', 'Eclipse', { badge: 'Replay' }],
     ['shop.html', 'Shop'],
   ];
@@ -290,7 +289,6 @@ const AstroApp = (() => {
     ['ephemeris.html', 'Sky tools'],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
-    ['cosmic-story.html', 'Cosmic Story'],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
@@ -302,15 +300,13 @@ const AstroApp = (() => {
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
-    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
     ['lifepath.html', 'Life Path'],
-    ['quiz.html', 'Cosmic Quiz'], ['accuracy.html', 'Accuracy'],
-    ['why.html', 'Why'], ['links.html', 'Links'],
+    ['accuracy.html', 'Accuracy'],
+    ['why.html', 'Why'],
   ];
   const NAV_BOTTOM_TABS = _apNav.NAV_BOTTOM_TABS || [
     ['index.html', 'Live Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
-    ['horoscope.html', 'Daily', 'crescent'],
     ['shop.html', 'Shop', 'sparkles'],
   ];
   const NAV_DRAWER_SECTIONS = _apNav.NAV_DRAWER_SECTIONS || [
@@ -1269,12 +1265,9 @@ window.AstroUI = (() => {
   // top-bar lean at its hardcoded core. Footer guide-links cover desktop discovery.
   var EXTRAS = [
     { href: 'charts.html', label: 'My Charts' },
-    { href: 'quiz.html', label: 'Cosmic Quiz' },
     { href: 'tonight.html', label: "Tonight's Sky" },
     { href: 'moonphase.html', label: 'Moon Phase' },
     { href: 'retrograde.html', label: 'Retrograde' },
-    { href: 'angel-numbers.html', label: 'Angel Numbers' },
-    { href: 'name-numerology.html', label: 'Name Numerology' },
     { href: 'what-is-my-rising-sign.html', label: 'Rising Sign' },
     { href: 'synastry.html', label: 'Synastry' },
     { href: 'solar-return.html', label: 'Solar Return' },
@@ -1313,12 +1306,9 @@ window.AstroUI = (() => {
     if (!host) return;
     var links = [
       ['what-is-my-rising-sign.html', 'Rising sign'],
-      ['quiz.html', 'Cosmic archetype quiz'],
       ['tonight.html', 'Tonight’s sky'],
       ['moonphase.html', 'Moon phase'],
       ['retrograde.html', 'Mercury retrograde'],
-      ['angel-numbers.html', 'Angel numbers'],
-      ['name-numerology.html', 'Name numerology'],
       ['synastry.html', 'Synastry'],
       ['solar-return.html', 'Solar return'],
       ['charts.html', 'My charts'],

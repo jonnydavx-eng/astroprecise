@@ -29,7 +29,6 @@
   var CORE_LINKS = [
     { href: 'index.html', label: 'Observatory' },
     { href: 'chart.html', label: 'Chart' },
-    { href: 'horoscope.html', label: 'Daily' },
     { href: 'sky-events.html', label: 'Events' },
     { href: 'shop.html', label: 'Shop' },
   ];

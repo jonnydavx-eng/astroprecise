@@ -104,7 +104,7 @@
   --gradient-amethyst: linear-gradient(135deg, #4c4439, #75654f);
   --gradient-lapis:    linear-gradient(135deg, #3f3530, #5a4a52);
   --gradient-ritual:   linear-gradient(135deg, #6e1a26, #b04a52);
-  --gradient-cosmic:   linear-gradient(180deg, #08080b 0%, #121826 100%);
+  --gradient-cosmic:   linear-gradient(180deg, #020307 0%, #121826 100%);
   --gradient-hero:     linear-gradient(160deg, #1A2230 0%, #121826 58%, rgba(168, 176, 188, 0.22) 100%);
 
   /* ── Typography ── */
@@ -202,7 +202,7 @@
 
 html {
   font-size: 16px;
-  background: #08080b;   /* first paint = warm void, before any canvas/JS — kills the nav flash */
+  background: #020307;   /* first paint = warm void, before any canvas/JS — kills the nav flash */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -909,7 +909,7 @@ body:has(#starfield-canvas) .lib__banner {
 
 .btn--gold {
   background: var(--gradient-gold);
-  color: #08080b;
+  color: #020307;
   font-weight: 700;
   box-shadow: 0 0 20px rgba(168, 176, 188, 0.45);
 }
@@ -917,7 +917,7 @@ body:has(#starfield-canvas) .lib__banner {
 .btn--gold:hover {
   box-shadow: 0 0 36px rgba(168, 176, 188, 0.65);
   transform: translateY(-2px);
-  color: #08080b;
+  color: #020307;
 }
 
 .btn--ghost {
@@ -1618,7 +1618,7 @@ button .eng-i, a .eng-i { margin-right: 0.35em; }
   z-index: 10001;
   padding: 0.65rem 1.1rem;
   background: var(--gold, #A8B0BC);
-  color: var(--void, #08080b);
+  color: var(--void, #020307);
   font-family: var(--font-body, system-ui, sans-serif);
   font-size: 0.875rem;
   font-weight: 600;

@@ -25,7 +25,6 @@
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
     ['ephemeris.html', 'The Sky'],
-    ['horoscope.html', 'Daily'],
     ['shop.html', 'Shop'],
   ];
 
@@ -35,7 +34,6 @@
     ['explore.html', 'Full 3D Observatory'],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
-    ['cosmic-story.html', 'Cosmic Story'],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
@@ -48,7 +46,6 @@
     ['index.html', 'Observatory', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
     ['ephemeris.html', 'The Sky', 'telescope'],
-    ['horoscope.html', 'Daily', 'crescent'],
   ];
 
   var NAV_EXTRAS = [
@@ -57,10 +54,9 @@
     ['catalogue.html', 'Lookbook'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
-    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
     ['lifepath.html', 'Life Path'],
-    ['quiz.html', 'Cosmic Quiz'], ['accuracy.html', 'Accuracy'],
-    ['why.html', 'Why'], ['links.html', 'Links'],
+    ['accuracy.html', 'Accuracy'],
+    ['why.html', 'Why'],
   ];
 
   window.AP_NAV = {
