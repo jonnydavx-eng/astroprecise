@@ -71,9 +71,30 @@ try {
   assert(captureProbe.ok && captureProbe.width > 0 && captureProbe.height > 0,
     `engine capture failed: ${JSON.stringify(captureProbe)}`);
 
+  const adapterProbe = await page.evaluate(async (detail) => {
+    const orrery = document.getElementById('orr');
+    const still = orrery.captureStill({
+      mode: 'birth-hour',
+      jd: detail.jd,
+      timeKnown: detail.timeKnown,
+    });
+    if (!still?.toBlob) return { ok: false, ready: orrery._ready, engine: orrery.getAttribute('data-engine') };
+    const blob = await new Promise((resolve) => still.toBlob(resolve, 'image/png'));
+    return { ok: !!blob, bytes: blob?.size || 0, width: still.width, height: still.height };
+  }, known);
+  assert(adapterProbe.ok && adapterProbe.bytes > 0,
+    `adapter capture failed: ${JSON.stringify(adapterProbe)}`);
+
   const downloadPromise = page.waitForEvent('download', { timeout: 30_000 });
   await page.locator('#keep-sky').click();
-  const download = await downloadPromise;
+  const download = await downloadPromise.catch(async (error) => {
+    const state = await page.evaluate(() => ({
+      button: document.getElementById('keep-sky')?.textContent,
+      disabled: document.getElementById('keep-sky')?.disabled,
+      errors: window.__keepSkyErrors || null,
+    }));
+    throw new Error(`${error.message}; keep state: ${JSON.stringify(state)}`);
+  });
   assert(download.suggestedFilename() === 'astroprecise-1978-03-14.png',
     `unexpected filename: ${download.suggestedFilename()}`);
   await download.saveAs(OUT);
