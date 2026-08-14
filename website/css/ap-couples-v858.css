@@ -84,7 +84,7 @@
   padding: 22px;
   border: 1px solid rgba(242,236,223,.14);
   border-radius: 4px;
-  background: linear-gradient(155deg, rgba(13,18,27,.88), rgba(3,5,9,.92));
+  background: #020307;
 }
 .ap-couples-card h3 {
   margin: 0 0 16px;
@@ -151,3 +151,11 @@
   cursor: pointer;
 }
 .ap-couples-actions .btn-invite:disabled { opacity: .38; cursor: not-allowed; }
+
+.ap-minute { margin: 0 0 16px; }
+.ap-minute__row { display: flex; align-items: center; gap: 10px; }
+.ap-minute .scrub { flex: 1; }
+.ap-angles { margin: 0 0 16px; }
+.ap-angles-note { margin: 4px 0 8px; font-size: 12px; color: rgba(242,236,223,.55); }
+.ap-angles ol { margin: 0; padding: 0 0 0 18px; font-size: 13px; line-height: 1.45; color: #F2ECDF; }
+.ap-angles li { margin: 0 0 6px; }

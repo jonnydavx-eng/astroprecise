@@ -220,6 +220,7 @@ const FinishShader = {
   let milkyWayBand = null;  // v577: faint great-circle band of points (a whisper of the
                             // galactic plane) visible at hero/system scales.
   let sunMaterial = null, sunCoronaGroup = null, sunCoronaMesh = null, sunCoronaMat = null;
+  let sunHomeGlareMesh = null, sunHomeGlareMat = null;
   let sunPromGroup = null, sunPointLight = null, sunDirLight = null, sunDirLightTarget = null, hemiLight = null;
   let instrumentFillLight = null, instrumentFillTarget = null;
   let detailLightingUser = null; // null = auto, true = force detail, false = force cinematic glow
@@ -5915,8 +5916,64 @@ const FinishShader = {
   }
 
   // Real bloom replaces the outer fake corona; keep a subtle inner halo on all tiers.
+  function makeSunHomeGlareMaterial() {
+    return new THREE.ShaderMaterial({
+      uniforms: {},
+      vertexShader: `varying vec3 vN; varying vec3 vV;
+        void main(){
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vN = normalize(normalMatrix * normal);
+          vV = normalize(-mv.xyz);
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: `varying vec3 vN; varying vec3 vV;
+        void main(){
+          float facing = max(dot(normalize(vN), normalize(vV)), 0.0);
+          float rim = 1.0 - facing;
+          float fade = 1.0 - smoothstep(0.86, 1.0, rim);
+          float a = pow(rim, 0.95) * fade * 0.48;
+          vec3 col = mix(vec3(1.0, 0.70, 0.22), vec3(1.0, 0.93, 0.74), fade);
+          gl_FragColor = vec4(col, clamp(a, 0.0, 0.58));
+        }`,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true,
+      depthWrite: false,
+    });
+  }
+
+  function buildSunHomeGlare() {
+    if (sunHomeGlareMesh || !sunMesh) return;
+    const segs = perfTier === 'high' ? 64 : 40;
+    sunHomeGlareMat = makeSunHomeGlareMaterial();
+    sunHomeGlareMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(SUN_SIZE * 3.6, segs, segs),
+      sunHomeGlareMat
+    );
+    sunHomeGlareMesh.renderOrder = 8;
+    sunMesh.add(sunHomeGlareMesh);
+  }
+
   function tuneSunGlowForComposer(tier) {
     if (instrumentMode) return;
+    // Home-safe composer has no bloom. Billboard glow reads as a flat sprite.
+    // Hide sprites. Disc shader + 3D corona + a larger 3D glare shell carry it.
+    if (isLivingSkyHome() || (composer && !bloomPass)) {
+      if (sunGlow.length) {
+        sunGlow.forEach((sp) => { if (sp) sp.visible = false; });
+      }
+      if (sunCoronaGroup) {
+        sunCoronaGroup.children.forEach((sp) => { sp.visible = false; });
+      }
+      if (sunCoronaMesh) sunCoronaMesh.visible = true;
+      buildSunHomeGlare();
+      if (sunHomeGlareMesh) sunHomeGlareMesh.visible = true;
+      if (sunMaterial && sunMaterial.uniforms) {
+        if (sunMaterial.uniforms.uGain) sunMaterial.uniforms.uGain.value = 0.64;
+        if (sunMaterial.uniforms.uGran) sunMaterial.uniforms.uGran.value = 1.32;
+      }
+      return;
+    }
     // With real bloom active, retire the god-ray corona entirely — the soft glow layers
     // + UnrealBloom carry the sun's light, and the discrete rays only read as a hard
     // 12-spoke artifact over the bloom. (On low/PRM tiers the corona stays, now rotated right.)
@@ -8924,7 +8981,7 @@ const FinishShader = {
     const fov = (CAM_FOV_MID || 42) * D2R;
     const radius = body.size * (pid === 'saturn' ? 2.32 : 1);
     const fit = radius / Math.max(0.05, Math.min(0.95, fillFrac)) / Math.tan(fov / 2);
-    const dist = Math.max(radius * ((pid === 'saturn' || pid === 'jupiter' || pid === 'mars' || pid === 'venus') ? 1.12 : 3.2), fit);
+    const dist = Math.max(radius * ((pid === 'saturn' || pid === 'jupiter' || pid === 'mars' || pid === 'venus' || pid === 'mercury') ? 1.12 : 3.2), fit);
 
     // Sun-side camera offset: mostly toward the sun, nudged laterally + up so the
     // lit hemisphere faces the lens with a gentle terminator and a 3/4 tilt.
