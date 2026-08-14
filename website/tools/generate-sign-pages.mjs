@@ -369,7 +369,7 @@ function chartBridgeSection(s) {
 function navShell() {
   return `
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="chart.html" class="navbar__link">Chart</a><a href="ephemeris.html" class="navbar__link">Sky</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="cosmic-story.html" class="navbar__link">Readings</a><a href="guides.html" class="navbar__link">Library</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -903,7 +903,7 @@ ${footerBlockHtml({ footerClass: 'footer' })}
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/sign-page-boot.js"></script>
   <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=835" defer></script>
+  <script src="js/ap-footer-inject.js?v=869" defer></script>
 </body>
 </html>
 `;

@@ -34,7 +34,7 @@
   "scope": "./",
   "shortcuts": [
     { "name": "Observatory", "url": "index.html" },
-    { "name": "Cast a Chart", "url": "chart.html" },
+    { "name": "Chart", "url": "chart.html" },
     { "name": "Events", "url": "sky-events.html" },
     { "name": "Shop", "url": "shop.html" }
   ]

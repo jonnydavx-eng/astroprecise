@@ -9,6 +9,17 @@ import { fileURLToPath } from 'url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const web = path.join(root, 'website');
+const RELEASE = '869';
+const ACT_ONE_PAGES = [
+  'index.html',
+  'chart.html',
+  'compatibility.html',
+  'tonight.html',
+  'sky-events.html',
+  'eclipse.html',
+  'shop.html',
+  'deep-reading.html',
+];
 let fails = 0;
 function ok(cond, msg) {
   if (cond) console.log('PASS', msg);
@@ -24,7 +35,6 @@ const mustExist = [
   'css/ap-living-sky-v834.css',
   'css/ap-eclipse-live-v834.css',
   'css/ap-footer-v835.css',
-  'css/ap-numerology-v835.css',
   'img/editorial/eclipse-launch-2026-v835.webp',
   'img/editorial/eclipse-edition-art-v841.png',
   'img/editorial/eclipse-field-guide-cover-final-v836.png',
@@ -43,6 +53,54 @@ for (const file of mustExist) {
   ok(fs.existsSync(path.join(web, file)), 'exists ' + file);
 }
 
+const retiredAssets = [
+  'css/ap-launch-unified-v832.css',
+  'css/ap-living-sky-v833.css',
+  'css/ap-observatory-home.css',
+  'css/compatibility-critical.css',
+  'css/compatibility-page-deferred.css',
+  'css/explore-page-v832.css',
+  'css/explore-page.css',
+  'css/horoscope-critical.css',
+  'css/horoscope-page-deferred.css',
+  'css/horoscope-personal.css',
+  'css/index-home.css',
+  'css/landing-gate.css',
+  'css/lite-critical.css',
+  'css/synastry-page.css',
+  'js/ap-award-orrery.js',
+  'js/ap-home-bootstrap.js',
+  'js/ap-nav-model-v832.js',
+  'js/ap-responsive-nav.js',
+  'js/compatibility-page.js',
+  'js/explore-boot-v832.js',
+  'js/explore-boot.js',
+  'js/home-daily.js',
+  'js/home-match.js',
+  'js/home-sign-picker.js',
+  'js/lite-shell-boot.js',
+  'js/shop-page-boot.js',
+  'js/synastry-shared.js',
+  'js/tool-cards.js',
+];
+const shippingSources = [];
+function collectShippingSources(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const file = path.join(dir, entry.name);
+    if (entry.isDirectory()) collectShippingSources(file);
+    else if (file.endsWith('.html') || (file.startsWith(path.join(web, 'js') + path.sep) && file.endsWith('.js'))) {
+      shippingSources.push(file);
+    }
+  }
+}
+collectShippingSources(web);
+for (const asset of retiredAssets) {
+  const leaf = path.basename(asset);
+  const references = shippingSources.filter((file) => fs.readFileSync(file, 'utf8').includes(leaf));
+  ok(!fs.existsSync(path.join(web, asset)) && references.length === 0,
+    'retired asset is absent and unreferenced: ' + asset);
+}
+
 const index = fs.readFileSync(path.join(web, 'index.html'), 'utf8');
 ok(/The sky is moving\./i.test(index), 'index launch brand line');
 ok(/<void-orrery[^>]+data-renderer="webgl-only"/i.test(index), 'index requires the real WebGL Observatory');
@@ -51,12 +109,12 @@ ok(/id="ap-cosmic-flight-launch"/.test(index) && /if \(orrery\.flight\)/.test(in
   'index exposes the opt-in same-model journey without an auto-opening overlay');
 ok(/ap-mystic-cards-v835\.js/.test(index), 'index loads art-only spectral interaction');
 ok(!/ap-sky-news\.js/.test(index), 'index excludes retired sky-news band');
-ok(/js\/ap-nav-model\.js\?v=868/.test(index) && !/ap-nav-model-v834/.test(index), 'index uses the one canonical navigation model');
+ok(new RegExp('js/ap-nav-model\\.js\\?v=' + RELEASE).test(index) && !/ap-nav-model-v834/.test(index), 'index uses the one canonical navigation model');
 ok(!/horoscope\.html|quiz\.html|angel-numbers\.html|name-numerology\.html/.test(index), 'index keeps retired rooms off the front path');
 
 const chart = fs.readFileSync(path.join(web, 'chart.html'), 'utf8');
 ok(/id="chart-form"/.test(chart), 'chart keeps the birth-chart calculation form');
-ok(/js\/chart-page\.js\?v=868/.test(chart), 'chart loads the current calculation controller');
+ok(new RegExp('js/chart-page\\.js\\?v=' + RELEASE).test(chart), 'chart loads the current calculation controller');
 ok(!/ap-natal-sphere/.test(chart), 'chart excludes retired natal-sphere decoration');
 ok(!/horoscope\.html|quiz\.html/.test(chart), 'chart keeps Daily and quiz off the front path');
 
@@ -66,23 +124,30 @@ ok(/£7|Free\b/.test(shop), 'shop labels edition prices');
 ok(/https:\/\/davxplorer3\.gumroad\.com\/l\/your-eclipse-reading/.test(shop), 'shop exposes the verified Gumroad checkout path');
 ok(/ap-mystic-cards-v835\.js/.test(shop), 'shop loads art-only spectral interaction');
 
-const numerology = fs.readFileSync(path.join(web, 'numerology.html'), 'utf8');
-ok(/class="page-numerology"/.test(numerology) && /class="site-header"/.test(numerology),
-  'numerology uses the shared launch shell');
-ok(/ap-numerology-v835\.css\?v=835/.test(numerology) && /ap-nav-model\.js\?v=835/.test(numerology),
-  'numerology loads the v835 visual and navigation systems');
-ok(!/#6fd8c6|Space Grotesk|class="wrap"/.test(numerology), 'numerology excludes the retired teal mini-site');
-ok((numerology.match(/class="ap-number-route"/g) || []).length === 3, 'numerology exposes three clearly labelled traditions');
 const mysticCards = fs.readFileSync(path.join(web, 'js/ap-mystic-cards-v835.js'), 'utf8');
-ok(/page-numerology \.ap-number-route__visual/.test(mysticCards), 'numerology cards use the shared spectral interaction');
+ok(/page-shop/.test(mysticCards), 'shop cards use the shared spectral interaction');
 
 const footerJs = fs.readFileSync(path.join(web, 'js/ap-footer-inject.js'), 'utf8');
-ok(/ap-footer-v835\.css\?v=868/.test(footerJs), 'shared footer self-loads its standalone styles');
+ok(new RegExp('ap-footer-v835\\.css\\?v=' + RELEASE).test(footerJs), 'shared footer self-loads its standalone styles');
 ok(/Astronomy computed locally/.test(footerJs), 'shared footer carries the concise launch colophon');
+ok(!/Daily|Life Path|Quiz|Mission Control|horoscope\.html|lifepath\.html|quiz\.html|angel-numbers\.html/i.test(footerJs),
+  'shared footer keeps retired rooms out of site chrome');
 const footerCss = fs.readFileSync(path.join(web, 'css/ap-footer-v835.css'), 'utf8');
 ok(/@media\s*\(max-width:\s*700px\)[\s\S]*grid-template-columns:\s*1fr/.test(footerCss), 'standalone footer collapses to one column on phones');
 const signGenerator = fs.readFileSync(path.join(web, 'tools/generate-sign-pages.mjs'), 'utf8');
-ok(/ap-footer-inject\.js\?v=835/.test(signGenerator), 'zodiac generator preserves the compact footer');
+ok(new RegExp('ap-footer-inject\\.js\\?v=' + RELEASE).test(signGenerator), 'zodiac generator preserves the compact footer');
+
+const htmlFiles = fs.readdirSync(web).filter((name) => name.endsWith('.html'));
+const staleNoscriptPages = htmlFiles.filter((name) => {
+  const html = fs.readFileSync(path.join(web, name), 'utf8');
+  const navFallbacks = [...html.matchAll(/<noscript[\s\S]*?<\/noscript>/gi)]
+    .map((match) => match[0])
+    .filter((block) => /navbar__link/.test(block));
+  return navFallbacks.some((block) =>
+    /Daily|Life Path|Quiz|Mission Control|horoscope\.html|lifepath\.html|quiz\.html|angel-numbers\.html/i.test(block));
+});
+ok(staleNoscriptPages.length === 0, 'no-script navigation keeps retired rooms off the front path'
+  + (staleNoscriptPages.length ? ': ' + staleNoscriptPages.join(', ') : ''));
 
 const sitemap = fs.readFileSync(path.join(web, 'sitemap.xml'), 'utf8');
 const sitemapPages = [...sitemap.matchAll(/https:\/\/astroprecise\.app\/([^<]*\.html)/g)].map((match) => match[1]);
@@ -100,13 +165,22 @@ for (const retired of ['horoscope.html', 'quiz.html', 'angel-numbers.html', 'nam
 }
 const manifest = fs.readFileSync(path.join(web, 'manifest.json'), 'utf8');
 ok(!/horoscope\.html/.test(manifest), 'PWA shortcuts must not reopen Daily');
-ok(/sky-events\.html/.test(manifest) && /chart\.html/.test(manifest), 'PWA shortcuts stay on the Act 1 spine');
+const shortcutNames = JSON.parse(manifest).shortcuts.map((shortcut) => shortcut.name);
+ok(JSON.stringify(shortcutNames) === JSON.stringify(['Observatory', 'Chart', 'Events', 'Shop']),
+  'PWA shortcuts stay on the named Act 1 spine');
+
+for (const page of ACT_ONE_PAGES) {
+  const html = fs.readFileSync(path.join(web, page), 'utf8');
+  const pins = [...html.matchAll(/[?&]v=(\d+)/g)].map((match) => match[1]);
+  ok(pins.length > 0 && pins.every((pin) => pin === RELEASE),
+    page + ' uses only cache tip ' + RELEASE);
+}
 
 const indexLite = fs.readFileSync(path.join(web, 'index-lite.html'), 'utf8');
 ok(/<meta\s+name="robots"\s+content="noindex, follow"\s*\/?>/.test(indexLite), 'legacy lite redirect cannot compete with the canonical home page');
 
 const eclipse = fs.readFileSync(path.join(web, 'eclipse.html'), 'utf8');
-ok(/ap-eclipse-live-v834\.js\?v=868/.test(eclipse), 'eclipse loads the dedicated 3D instrument');
+ok(new RegExp('ap-eclipse-live-v834\\.js\\?v=' + RELEASE).test(eclipse), 'eclipse loads the dedicated 3D instrument');
 ok(/class="ap-eclipse-live__canvas"/.test(eclipse), 'eclipse owns one dedicated 3D canvas');
 ok(/data-eclipse-event/.test(eclipse) && /data-eclipse-now/.test(eclipse), 'eclipse exposes live and greatest-event controls');
 ok(/data-eclipse-play/.test(eclipse) && (eclipse.match(/data-eclipse-lens=/g) || []).length === 3,
@@ -126,7 +200,7 @@ ok(!/(?:gumroad|ap-checkout-honest)/i.test(plate), 'natal plate exposes no dead 
 
 const sw = fs.readFileSync(path.join(web, 'sw.js'), 'utf8');
 const versionMatch = sw.match(/const V\s*=\s*"([^"]+)"/);
-ok(versionMatch && versionMatch[1] === 'ap-v868', 'SW release tip ' + (versionMatch && versionMatch[1]));
+ok(versionMatch && versionMatch[1] === 'ap-v' + RELEASE, 'SW release tip ' + (versionMatch && versionMatch[1]));
 
 const verify = fs.readFileSync(path.join(web, 'verify.html'), 'utf8');
 ok(/plate-fingerprint\.js/.test(verify), 'verify imports plate-fingerprint');

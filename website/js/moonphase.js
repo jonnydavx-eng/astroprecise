@@ -325,31 +325,40 @@
   }
 
   function copyToClipboard(text, btn) {
-    var done = function () {
+    var setStatus = function (label) {
       if (!btn) return;
       var old = btn.textContent;
-      btn.textContent = 'Copied!';
+      btn.textContent = label;
       setTimeout(function () { btn.textContent = old; }, 1800);
     };
+    var done = function () { setStatus('Copied!'); };
+    var failed = function () { setStatus('Copy failed'); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text, done); });
+      navigator.clipboard.writeText(text).then(done, function () {
+        if (fallbackCopy(text)) done();
+        else failed();
+      });
     } else {
-      fallbackCopy(text, done);
+      if (fallbackCopy(text)) done();
+      else failed();
     }
   }
-  function fallbackCopy(text, done) {
+  function fallbackCopy(text) {
+    var ta = null;
     try {
-      var ta = document.createElement('textarea');
+      ta = document.createElement('textarea');
       ta.value = text;
       ta.setAttribute('readonly', '');
       ta.style.position = 'absolute';
       ta.style.left = '-9999px';
       document.body.appendChild(ta);
       ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      done();
-    } catch (e) { /* clipboard unavailable; silently ignore */ }
+      return document.execCommand('copy') === true;
+    } catch (e) {
+      return false;
+    } finally {
+      if (ta && ta.parentNode) ta.parentNode.removeChild(ta);
+    }
   }
 
   // ── Compatibility (two birth Moons, honest resonance note) ──────────────────
