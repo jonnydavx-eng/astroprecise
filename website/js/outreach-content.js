@@ -343,7 +343,7 @@
       missionControlSingles: [
         { id: 'mc-x-01', day: 1, text: 'FLIGHT READINESS: knowing only your Sun sign is like launching with one telemetry channel.\n\nMoon = inner weather. Rising = first impression.\n\nAll three free → {{linksUrl}}' },
         { id: 'mc-x-02', day: 2, text: 'PRECESSION ALERT: your magazine zodiac dates are ~2,000 years out of sync with the actual sky.\n\nReal positions at your birth minute → {{linksUrl}}/chart.html' },
-        { id: 'mc-x-03', day: 3, text: 'LIVE TELEMETRY: the Moon and planets do not hold still.\n\nTonight\\'s observing sky → {{linksUrl}}/tonight.html' },
+        { id: 'mc-x-03', day: 3, text: 'LIVE TELEMETRY: the Moon and planets do not hold still.\n\nTonight’s observing sky → {{linksUrl}}/tonight.html' },
         { id: 'mc-x-04', day: 4, text: 'ZENITH STAR LOCK: one real named star was directly overhead at your birth place and minute.\n\nFind yours (free) → {{linksUrl}}/ephemeris.html' },
         { id: 'mc-x-05', day: 5, text: 'TELEMETRY NOTE: the 3am-feelings channel is your Moon — not your Sun.\n\nWhat\'s yours? → {{linksUrl}}' },
         { id: 'mc-x-06', day: 6, text: 'MERCURY STATUS: it never moves backward — but the station dates are real.\n\nVerify live → {{linksUrl}}/transits.html' },
