@@ -17,20 +17,21 @@
 .ap-card-form{display:grid;gap:15px;margin:34px 0 0;padding:clamp(20px,3vw,26px);border:1px solid var(--ap-line);border-radius:4px;background:rgba(16,23,34,.72)}
 .ap-card-form__fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
 .ap-card-form label span{display:block;margin-bottom:6px;color:var(--ap-brass);font:9px/1.4 var(--ap-data);letter-spacing:.13em;text-transform:uppercase}
-.ap-card-form input{width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep);color:inherit;font:15px var(--ap-data)}
+.ap-card-form input{width:100%;min-height:48px;padding:10px;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep);color:inherit;font:16px var(--ap-data)}
 .ap-city-drop{display:flex;flex-direction:column;gap:2px;margin-top:6px;border:1px solid var(--ap-line);background:var(--ap-void-deep)}
 .ap-city-drop[hidden]{display:none}
-.ap-city-item{padding:9px 10px;border:0;background:transparent;color:inherit;font:14px/1.3 var(--ap-body);text-align:left;cursor:pointer}
+.ap-city-item{display:flex;align-items:center;min-height:44px;padding:9px 10px;border:0;background:transparent;color:inherit;font:15px/1.3 var(--ap-body);text-align:left;cursor:pointer}
 .ap-city-item:hover,.ap-city-item:focus{background:rgba(255,100,40,.16)}
 .ap-zone-note{margin:6px 0 0;color:var(--ap-paper-faint);font-size:12px;line-height:1.5}
 .ap-card-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
-.ap-card-btn{min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ember);color:#170702;font:700 11px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;cursor:pointer}
+.ap-card-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ember);color:#170702;font:700 12px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;cursor:pointer}
 .ap-card-btn--quiet{background:transparent;border:1px solid var(--ap-brass);color:var(--ap-brass-bright)}
 .ap-card-btn[disabled]{opacity:.45;cursor:not-allowed}
 .ap-card-status{margin:0;color:var(--ap-paper-dim);font-size:13px;line-height:1.6}
 .ap-card-status[data-state='refused']{color:var(--ap-danger)}
 .ap-card-canvas{margin:26px 0 0}
 .ap-card-canvas canvas{display:block;width:100%;height:auto;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep)}
+.ap-card-plate-note{display:none;margin:10px 0 0;color:var(--ap-paper-faint);font-size:16px;line-height:1.5}
 .ap-card-ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 30px;margin:28px 0 0;padding-top:22px;border-top:1px solid var(--ap-line)}
 .ap-card-ledger div{padding:12px 0;border-bottom:1px solid rgba(216,180,106,.1)}
 .ap-card-ledger span{display:block;margin-bottom:6px;color:var(--ap-proof);font:9px/1.5 var(--ap-data);letter-spacing:.13em;text-transform:uppercase}
@@ -38,10 +39,38 @@
 .ap-card-ledger p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.6}
 .ap-card-foot{margin:34px 0 0;color:var(--ap-paper-faint);font-size:13px;line-height:1.7}
 .ap-card-foot a{color:var(--ap-brass-bright)}
-@media(max-width:760px){
-  .ap-card-shell{width:min(100% - 32px,1000px);padding-top:38px}
+/* Phone band matches the living-sky mobile layout (700px), not 430px: at 390
+   the card was landing at y=927, so the first screen showed a headline and a
+   form and never the thing being kept. Order puts the plate directly under the
+   title; the lede and the form follow it. Body copy holds the 16px floor —
+   the zone rule, the privacy line and the honesty foot are the last text that
+   should need pinching to read. */
+@media(max-width:700px){
+  .ap-card-shell{display:flex;flex-direction:column;width:min(100% - 32px,1000px);padding-top:26px}
+  .ap-card-kicker{order:1;margin-bottom:10px;font-size:11px}
+  .ap-card-shell h1{order:2;font-size:clamp(32px,9.2vw,38px);line-height:.98}
+  .ap-card-canvas{order:3;margin-top:20px}
+  .ap-card-plate-note{display:block}
+  .ap-card-lede{order:4;margin-top:24px;font-size:16px}
+  .ap-card-form{order:5;margin-top:22px}
+  .ap-card-ledger{order:6;grid-template-columns:1fr}
+  .ap-card-foot{order:7}
   .ap-card-form__fields{grid-template-columns:1fr}
-  .ap-card-ledger{grid-template-columns:1fr}
+  .ap-card-actions{flex-direction:column;align-items:stretch}
+  .ap-card-btn{width:100%}
+  .ap-card-status,.ap-zone-note,.ap-card-ledger p,.ap-card-foot{font-size:16px;line-height:1.55}
+  .ap-card-ledger span{font-size:11px}
+  .ap-card-foot a{display:inline-flex;align-items:center;min-height:44px}
+  /* The shared header and footer chrome still ship 28px and 18px targets on
+     every route; scoped here so this page meets the 44px floor without
+     reaching into the house sheets that the site-wide phone pass owns. */
+  .page-sky-card .navbar__logo,
+  .page-sky-card .ap-site-footer__wordmark,
+  .page-sky-card .ap-site-footer__routes a,
+  .page-sky-card .ap-site-footer__legal a,
+  .page-sky-card .ap-site-footer__colophon a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+  .page-sky-card .ap-site-footer__legal a,
+  .page-sky-card .ap-site-footer__colophon a{font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -103,6 +132,7 @@
 
   <div class="ap-card-canvas">
     <canvas id="skyCard" width="1200" height="630" role="img" aria-label="A sky card for one birth minute. The reading below the card repeats everything printed on it."></canvas>
+    <p class="ap-card-plate-note">The plate is a 1200 × 630 image, so its lines are small on a phone. Every one of them is repeated in the reading below, at reading size.</p>
   </div>
 
   <div class="ap-card-ledger" id="skyCardLedger" aria-live="polite"></div>

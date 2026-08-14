@@ -291,15 +291,21 @@
     ctx.restore();
   }
 
-  function placeholder(message) {
+  /* The empty plate is the first thing a phone sees, at roughly a third of its
+     drawn width, so its type is set to survive that reduction. The keepsake
+     itself keeps the smaller engraved scale. */
+  function placeholder(message, detail) {
     if (!ctx) return;
     plate();
     ctx.fillStyle = BRASS;
-    ctx.font = '500 13px ' + DATA;
-    tracked('SKY CARD', 76, 96, 3.4);
+    ctx.font = '500 22px ' + DATA;
+    tracked('SKY CARD', 76, 120, 5);
+    ctx.fillStyle = PAPER;
+    ctx.font = '600 62px ' + DISPLAY;
+    ctx.fillText(message, 76, 230);
     ctx.fillStyle = MUTE;
-    ctx.font = '400 26px ' + DISPLAY;
-    ctx.fillText(message, 76, 150);
+    ctx.font = '400 30px ' + DATA;
+    ctx.fillText(detail || 'Nothing is computed until you ask for it.', 76, 300);
   }
 
   function drawCard(minute) {
@@ -440,7 +446,7 @@
       say(minute.error, 'refused');
       if (downloadBtn) downloadBtn.disabled = true;
       drawn = null;
-      placeholder('Nothing computed yet.');
+      placeholder('Nothing computed yet.', 'The card waits for a date and a real place.');
       return;
     }
     drawn = minute;
@@ -610,7 +616,7 @@
   function boot() {
     if (!canvas || !ctx || !form) return;
     bindCitySearch();
-    placeholder('Enter a date and a town, then draw the card.');
+    placeholder('Your minute goes here.', 'Enter a date and a town, then draw the card.');
 
     form.addEventListener('submit', function (event) {
       event.preventDefault();
@@ -638,7 +644,7 @@
         : Promise.resolve(null);
       return fonts.then(function () {
         if (ready) draw();
-        else placeholder('Enter a date and a town, then draw the card.');
+        else placeholder('Your minute goes here.', 'Enter a date and a town, then draw the card.');
       });
     }).catch(function (err) {
       say(err.message || 'The sky card could not start.', 'refused');

@@ -163,6 +163,23 @@ assert.equal(/location\.(?:search|hash)|URLSearchParams/.test(skyCardJs), false,
 assert.equal(/location\.(?:search|hash)|URLSearchParams|location\.href\s*=/.test(keepMinute), false,
   'the keep path must not move a birth minute through a link');
 assert.ok(keepMinute.includes('sessionStorage.setItem'), 'the keep path hands off in this tab only');
+// Phone Look 390: the plate reaches the first screen and every tap is 44px.
+assert.ok(skyCard.includes('@media(max-width:700px)'),
+  'sky card must use the living-sky phone band, not 430px');
+assert.match(skyCard, /\.ap-card-canvas\{order:3/,
+  'the plate must sit above the form on a phone — at 390 it was landing at y=927');
+assert.match(skyCard, /\.ap-card-form\{order:5/, 'the form follows the plate on a phone');
+assert.ok(skyCard.includes('min-height:48px;padding:10px') && skyCard.includes('font:16px var(--ap-data)'),
+  'form inputs need a 48px tap and a 16px face');
+assert.ok(skyCard.includes('.ap-card-btn{width:100%}'), 'phone buttons take the full width');
+assert.match(skyCard, /\.ap-card-status,\.ap-zone-note,\.ap-card-ledger p,\.ap-card-foot\{font-size:16px/,
+  'the zone rule, the privacy line and the honesty foot hold the 16px phone floor');
+assert.ok(skyCard.includes('min-width:44px;min-height:44px'),
+  'the house header and footer links need a 44px tap on this page');
+assert.ok(skyCard.includes('ap-card-plate-note'),
+  'a phone must be told the plate lines are repeated below at reading size');
+assert.equal(/Astro\s+Precise/.test(skyCard), false, 'the wordmark is one word, everywhere on the page');
+
 for (const path of ['./website/index.html', './website/chart.html', './website/deep-reading.html']) {
   const page = read(path);
   assert.ok(page.includes('href="sky-card.html" data-ap-keep-minute'),
