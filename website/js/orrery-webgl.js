@@ -4072,7 +4072,9 @@ const FinishShader = {
     const detail = syncDetailLighting();
     if (scene && scene.fog && !portraitMode) {
       scene.fog.density = 0.00045 + galaxyT * 0.00085;
-      if (isAwardMode()) {
+      if (isLivingSkyHome()) {
+        scene.fog.color.set(0x020307);
+      } else if (isAwardMode()) {
         scene.fog.color.set(z >= 5.2 ? 0x0c1016 : z >= 4 ? 0x121826 : z >= 3 ? 0x1a2230 : 0x0c1016);
       } else {
         scene.fog.color.set(z >= 5.2 ? 0x04020c : z >= 4 ? 0x06041a : z >= 3 ? 0x050c18 : 0x050406);
@@ -5172,10 +5174,12 @@ const FinishShader = {
     const push = (name) => { if (name && list.indexOf(name) < 0) list.push(name); };
     const smallRequested = quality === 'small' || (!quality && wantsSmallTextures());
     const mediumRequested = quality === 'medium' || (!quality && wantsMediumTextures());
-    // No medium texture bundle ships today. Constrained and mobile clients go
-    // directly to the complete small tier instead of issuing 14 predictable
-    // 404s and then falling through to every full-resolution map.
-    if (smallRequested || mediumRequested) {
+    // Medium maps (_md.webp) ship for the classical planets. Phone / constrained
+    // boots request that tier once and settle; they must not skip to _sm only.
+    if (smallRequested) {
+      push(smallName(webp));
+    } else if (mediumRequested) {
+      push(mediumName(webp));
       push(smallName(webp));
     } else {
       push(webp);
@@ -8902,7 +8906,7 @@ const FinishShader = {
     renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.08;
 
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(isAwardMode() ? 0x0c1016 : 0x050406, 0.00045);
+    scene.fog = new THREE.FogExp2(isLivingSkyHome() ? 0x020307 : (isAwardMode() ? 0x0c1016 : 0x050406), 0.00045);
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
     runtimeGeneration += 1;

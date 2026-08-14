@@ -30,20 +30,20 @@
   <meta name="theme-color" content="#020307" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=788" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
-  <link rel="stylesheet" href="css/main-lite.css?v=867" />
-  <script>window.AP_ASSET_V='867';</script>
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=868" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=868" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=868" />
+  <link rel="stylesheet" href="css/main-lite.css?v=868" />
+  <script>window.AP_ASSET_V='868';</script>
     <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=867">
-  <script src="js/void-orrery-adapter.js?v=867" defer></script>
-  <script src="js/ap-nav-model.js?v=867" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867" />
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=867">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=867">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=868">
+  <script src="js/void-orrery-adapter.js?v=868" defer></script>
+  <script src="js/ap-nav-model.js?v=868" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=868" />
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=868">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=868">
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/tonight-page.css" id="ap-css-tonight" />
   <style>
@@ -286,7 +286,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
-  <script src="js/ephemeris.js?v=867"></script>
+  <script src="js/ephemeris.js?v=868"></script>
 <script>
   (function () {
     'use strict';
@@ -374,16 +374,29 @@
         if (!acEl.contains(e.target) && e.target !== cityInput) closeAc();
       });
 
+      var searchSeq = 0;
       function doSearch(q) {
-        if (!window.AstroApp || typeof AstroApp.searchPlaces !== 'function') {
-          statusEl.innerHTML = 'Place search is still loading&hellip; try again in a moment.';
-          return;
+        var my = ++searchSeq;
+        var tries = 0;
+        function run() {
+          if (my !== searchSeq) return;
+          if (!window.AstroApp || typeof AstroApp.searchPlaces !== 'function') {
+            tries += 1;
+            if (tries > 40) {
+              if (statusEl) statusEl.innerHTML = 'Place search did not load. Refresh, or open with ?nosw=1.';
+              return;
+            }
+            setTimeout(run, 150);
+            return;
+          }
+          AstroApp.searchPlaces(q).then(function (out) {
+            if (my !== searchSeq) return;
+            acItems = out.results || [];
+            acActive = acItems.length ? 0 : -1;
+            paintAc();
+          }).catch(function () { if (my === searchSeq) closeAc(); });
         }
-        AstroApp.searchPlaces(q).then(function (out) {
-          acItems = out.results || [];
-          acActive = acItems.length ? 0 : -1;
-          paintAc();
-        }).catch(function () { closeAc(); });
+        run();
       }
 
       function paintAc() {
@@ -540,7 +553,7 @@
   </script>
 
   <!-- JS — ephemeris/tonight on defer; cosmos + effects idle after load -->
-  <script src="js/profile.js" defer></script>
+  <script src="js/profile.js?v=868" defer></script>
   <script>
   (function () {
     function audit() {
@@ -552,9 +565,9 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    inject('js/raf-core.js');
-    inject('js/icons.js');
-    inject('js/tonight.js');
+    inject('js/raf-core.js?v=868');
+    inject('js/icons.js?v=868');
+    inject('js/tonight.js?v=868');
     function idleCosmos() {
       if (audit()) return;
     }
@@ -564,9 +577,9 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=867" defer></script>
-  <script src="js/ap-room-sky.js?v=867" defer></script>
+  <script src="js/ap-page-boot.js?v=868" defer></script>
+<script src="js/ap-sky-time.js?v=868" defer></script>
+  <script src="js/ap-footer-inject.js?v=868" defer></script>
+  <script src="js/ap-room-sky.js?v=868" defer></script>
 </body>
 </html>

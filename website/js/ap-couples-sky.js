@@ -20,7 +20,7 @@
 
   function isValidTimeZone(tz) {
     if (typeof tz !== 'string' || !tz.trim()) return false;
-    if (tz === 'UTC' || tz === 'GMT' || tz === 'Etc/UTC' || tz === 'Etc/GMT') return false;
+    if (tz === 'UTC' || tz === 'GMT' || tz === 'Etc/UTC' || /^Etc\/GMT/i.test(tz)) return false;
     try {
       new Intl.DateTimeFormat('en-US', { timeZone: tz }).format();
       return true;
@@ -71,13 +71,13 @@
     var tz = tzEl ? (tzEl.value || '').trim() : '';
     var city = cityEl ? (cityEl.value || '').trim() : '';
     var parts = date ? date.split('-').map(Number) : [];
-    var clock = (time || '12:00').split(':').map(Number);
-    var timeKnown = !!time;
+    var clock = time ? time.split(':').map(Number) : [];
+    var timeKnown = !!(time && clock.length >= 2);
     var zoneKnown = isValidTimeZone(tz);
     var ut = null;
     var jd = null;
-    if (date && parts.length === 3 && zoneKnown) {
-      ut = localToUT(parts[0], parts[1], parts[2], clock[0] || 12, clock[1] || 0, tz);
+    if (date && parts.length === 3 && zoneKnown && timeKnown) {
+      ut = localToUT(parts[0], parts[1], parts[2], clock[0] || 0, clock[1] || 0, tz);
       jd = jdFromUT(ut);
     }
     return {
@@ -121,9 +121,9 @@
   function minuteLabel(p) {
     if (!p.date) return p.name + ' · date needed';
     if (!p.zoneKnown) return p.name + ' · ' + p.date + ' · place needed for a real zone (not treated as GMT)';
-    var clock = p.timeKnown ? p.time : '12:00 noon';
-    var extra = p.timeKnown ? '' : ' · Moon and angles withheld';
-    return p.name + ' · ' + p.date + ' ' + clock + ' · ' + p.tz + extra;
+    var clock = p.timeKnown ? p.time : 'time unknown';
+    var extra = p.timeKnown ? '' : ' · Moon and angles withheld · not filled with noon';
+    return p.name + ' · ' + p.date + ' · ' + clock + ' · ' + p.tz + extra;
   }
 
   function resetScrub() {
@@ -151,12 +151,14 @@
     if (!o) return false;
     var a = readPerson('person1');
     var b = readPerson('person2');
-    if (!a.jd || !b.jd) {
+    var aClock = a.timeKnown ? clockEntry(a, 'a') : null;
+    var bClock = b.timeKnown ? clockEntry(b, 'b') : null;
+    if (!aClock && !bClock) {
       if (typeof o.clearNatalClocks === 'function') o.clearNatalClocks();
       return false;
     }
     if (typeof o.setNatalClocks !== 'function') return false;
-    o.setNatalClocks({ a: clockEntry(a, 'a'), b: clockEntry(b, 'b') });
+    o.setNatalClocks({ a: aClock, b: bClock });
     return true;
   }
 
@@ -168,6 +170,13 @@
     if (a.jd && b.jd) {
       el.textContent = 'One model. Both birth minutes stay in the sky.';
     }
+  }
+
+  function focusEarthCamera() {
+    var o = orrery();
+    if (!o) return;
+    if (typeof o.flyTo === 'function') o.flyTo('earth');
+    else if (typeof o.focusPlanet === 'function') o.focusPlanet('earth');
   }
 
   function showPerson(which) {
@@ -184,6 +193,7 @@
     enableScrub(true);
     stamp(minuteLabel(p));
     applyNatalClocks();
+    focusEarthCamera();
     writeHash();
     renderAngles();
     paintTelemetry();
@@ -514,15 +524,43 @@
       drop.hidden = !drop.childNodes.length;
     }
 
+    function offlineRows(q) {
+      var list = (window.AstroApp && AstroApp.CITIES)
+        || (window.AstroEphemeris && AstroEphemeris.CITIES)
+        || [];
+      var needle = q.toLowerCase();
+      return list.filter(function (c) {
+        return c && c.name && c.name.toLowerCase().indexOf(needle) >= 0 && isValidTimeZone(c.tz);
+      }).slice(0, 6).map(function (c) {
+        return {
+          name: c.name,
+          admin: c.admin || '',
+          country: c.country || '',
+          lat: c.lat,
+          lon: c.lon,
+          tz: c.tz || ''
+        };
+      });
+    }
+
     function search(q) {
       q = (q || '').trim();
       if (q.length < 2) { drop.hidden = true; drop.innerHTML = ''; return; }
       var my = ++seq;
+      function show(rows) {
+        if (my !== seq) return;
+        render(rows || []);
+      }
+      if (window.AstroApp && typeof AstroApp.searchPlaces === 'function') {
+        AstroApp.searchPlaces(q).then(function (out) {
+          show((out && out.results) || []);
+        }).catch(function () { show(offlineRows(q)); });
+        return;
+      }
       fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json')
         .then(function (r) { return r.ok ? r.json() : { results: [] }; })
         .then(function (data) {
-          if (my !== seq) return;
-          var rows = (data.results || []).map(function (r) {
+          show((data.results || []).map(function (r) {
             return {
               name: r.name,
               admin: r.admin1 && r.admin1 !== r.name ? r.admin1 : '',
@@ -531,13 +569,9 @@
               lon: r.longitude,
               tz: r.timezone || ''
             };
-          });
-          render(rows);
+          }));
         })
-        .catch(function () {
-          if (my !== seq) return;
-          drop.hidden = true;
-        });
+        .catch(function () { show(offlineRows(q)); });
     }
 
     input.addEventListener('input', function () {

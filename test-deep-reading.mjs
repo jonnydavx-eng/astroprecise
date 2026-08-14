@@ -47,4 +47,9 @@ assert.ok(natalJs.includes("zone === 'UTC'") && natalJs.includes("zone === 'GMT'
 assert.ok(natalJs.includes('UK summer is not GMT'), 'natal reading must say UK summer is not GMT');
 assert.equal(/option value="UTC"/.test(readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8')), false, 'deep-reading must not offer UTC/GMT');
 assert.ok(readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8').includes('natal-city'), 'deep-reading must collect a city for IANA');
+const natalHtml = readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8');
+assert.equal(/never leaves the browser/i.test(natalHtml), false, 'deep-reading must not claim nothing leaves the browser');
+assert.ok(/Place search sends only the town name/i.test(natalHtml), 'deep-reading must disclose the public geocoder');
+assert.equal(/Nothing was uploaded/.test(natalJs), false, 'natal status must not claim a total upload blackout');
+assert.ok(/Place search sent only the town name/.test(natalJs), 'natal status must name the geocoder exception');
 console.log('PASS deep-reading seven chapters + untimed Moon approximate + IANA TZ');

@@ -132,6 +132,21 @@
       }
       return;
     }
+    items = (items || []).filter((c) => c && isValidTimeZone(c.tz));
+    dropdown._items = items;
+    if (!items.length) {
+      if (state === 'empty' || state === 'results') {
+        dropdown.innerHTML = '<div class="autocomplete-note">No places with a real zone matched — try the nearest larger town. UTC/GMT are refused.</div>';
+        dropdown.hidden = false;
+        cityInput.setAttribute('aria-expanded', 'true');
+      } else {
+        dropdown.innerHTML = '';
+        dropdown.hidden = true;
+        cityInput.setAttribute('aria-expanded', 'false');
+      }
+      dropdown._items = [];
+      return;
+    }
     const note = source === 'offline'
       ? '<div class="autocomplete-note">Offline — built-in city list only</div>' : '';
     dropdown.innerHTML = items.map((c, i) =>
@@ -149,11 +164,17 @@
     searchSeq += 1;
     if (searchTimer) clearTimeout(searchTimer);
     searchTimer = 0;
+    if (!c || !isValidTimeZone(c.tz)) {
+      tzInput.value = '';
+      cityInput.dataset.coordinatesLocked = 'false';
+      if (window.AstroApp) AstroApp.showToast('Place needs a real zone', 'UTC/GMT are refused. Pick a named town.', 'warning');
+      return;
+    }
     cityInput.value = c.admin ? `${c.name}, ${c.admin}, ${c.country}` : `${c.name}, ${c.country}`;
     cityInput.dataset.coordinatesLocked = 'true';
     latInput.value  = c.lat;
     lonInput.value  = c.lon;
-    tzInput.value   = c.tz || '';
+    tzInput.value   = c.tz;
     dropdown.innerHTML = '';
     dropdown.hidden = true;
     cityInput.setAttribute('aria-expanded', 'false');
@@ -581,9 +602,16 @@
         clearTimeout(timer);
         if (r2.ok) {
           const j = await r2.json();
-          if (j.timezone) tzInput.value = j.timezone;
+          if (j.timezone && isValidTimeZone(j.timezone)) tzInput.value = j.timezone;
+          else tzInput.value = '';
         }
       } catch (e) { /* timezone lookup failed — leave tz blank, never fake it */ }
+      if (!isValidTimeZone(tzInput.value)) {
+        tzInput.value = '';
+        document.dispatchEvent(new CustomEvent('astro:city-selected'));
+        window.AstroApp?.showToast('Location set', 'Coordinates locked. Pick a named town for a real zone — UTC/GMT are refused.', 'warning');
+        return;
+      }
       document.dispatchEvent(new CustomEvent('astro:city-selected'));
       window.AstroApp?.showToast('Location set', 'Using your current position — fine for "born near where you live now".', 'success');
     }, () => window.AstroApp?.showToast('Declined', 'Location permission declined — search by name instead.', 'warning'));
@@ -1484,7 +1512,10 @@
         await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
         if (window.AstroApp) AstroApp.showToast('Link copied', 'Share link copied to clipboard.', 'success');
       }
-    } catch (e) { /* user cancelled */ }
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      if (window.AstroApp) AstroApp.showToast('Copy failed', 'Select and copy the link manually.', 'warning');
+    }
   });
 
   // Big Three Card → dedicated Sun/Moon/Rising square (no full natal wheel).

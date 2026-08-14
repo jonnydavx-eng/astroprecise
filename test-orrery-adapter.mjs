@@ -39,6 +39,18 @@ if (!W.includes('function setNatalClocks') || !W.includes('function clearNatalCl
 } else {
   ok('engine exposes setNatalClocks / clearNatalClocks / getNatalClocks');
 }
+if (!W.includes('mediumName(webp)') || !W.includes("quality === 'medium'")) {
+  fail('textureCandidates must still know the medium tier');
+} else if (/if \(smallRequested \|\| mediumRequested\) \{\s*push\(smallName\(webp\)\);/.test(W)) {
+  fail('medium quality still skips _md.webp and loads _sm only');
+} else {
+  ok('medium texture tier loads _md.webp before _sm.webp');
+}
+if (!W.includes('isLivingSkyHome() ? 0x020307') && !W.includes('isLivingSkyHome() ? 0x020307')) {
+  fail('living-sky fog must use house void #020307');
+} else {
+  ok('living-sky fog uses house void #020307');
+}
 
 const couplesSkyPath = join(root, 'js', 'ap-couples-sky.js');
 if (!existsSync(couplesSkyPath)) fail('js/ap-couples-sky.js missing');
@@ -47,6 +59,15 @@ else {
   if (!couplesSky.includes('setNatalClocks')) fail('couples sky does not call setNatalClocks');
   if (/\.setNatal\s*\(/.test(couplesSky)) fail('couples sky still calls setNatal( for the two clocks');
   else ok('couples sky uses setNatalClocks, not the SVG setNatal overlay');
+  if (!couplesSky.includes('/^Etc\\/GMT/i.test(tz)')) fail('couples sky must refuse Etc/GMT* the same way chart does');
+  if (!couplesSky.includes('timeKnown && zoneKnown') && !couplesSky.includes('zoneKnown && timeKnown')) {
+    fail('couples sky must not compute a natal JD without a known birth time');
+  }
+  if (couplesSky.includes("time || '12:00'")) fail('couples sky still fills unknown time with noon');
+  if (!couplesSky.includes('flyTo') && !couplesSky.includes('focusPlanet')) {
+    fail('couples A/B must camera-focus the one model, not swap it');
+  }
+  else ok('couples sky refuses GMT offsets, withholds noon, and focuses the live camera');
 }
 
 for (const probe of [

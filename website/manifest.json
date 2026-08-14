@@ -33,8 +33,9 @@
   "dir": "ltr",
   "scope": "./",
   "shortcuts": [
-    { "name": "Today's Horoscope", "url": "horoscope.html" },
+    { "name": "Observatory", "url": "index.html" },
     { "name": "Cast a Chart", "url": "chart.html" },
-    { "name": "Current Transits", "url": "transits.html" }
+    { "name": "Events", "url": "sky-events.html" },
+    { "name": "Shop", "url": "shop.html" }
   ]
 }

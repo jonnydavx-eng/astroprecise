@@ -95,6 +95,8 @@ window.APChartShare = (function () {
           var text = summary + '\n' + url;
           navigator.clipboard.writeText(text).then(function () {
             if (window.AstroApp) AstroApp.showToast('Copied', 'Summary + link copied.', 'success');
+          }).catch(function () {
+            if (window.AstroApp) AstroApp.showToast('Copy failed', 'Select and copy the link manually.', 'warning');
           });
           return;
         }

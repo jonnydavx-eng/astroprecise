@@ -8,7 +8,7 @@
 
   document.documentElement.classList.add('ap-enchanted', 'ap-brand-nebula');
 
-if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '835';
+if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '868';
   var AV = window.AP_ASSET_V;
 
   // Client error beacon (session buffer; optional future Sentry DSN via meta)
@@ -122,7 +122,7 @@ if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '835';
     for (var i = 0; i < CHAIN.length; i++) {
       if (scriptLoaded(CHAIN[i])) continue;
       var s = document.createElement('script');
-      s.src = CHAIN[i];
+      s.src = CHAIN[i] + '?v=' + AV;
       s.async = false;
       document.body.appendChild(s);
     }

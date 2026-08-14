@@ -51,12 +51,14 @@ ok(/id="ap-cosmic-flight-launch"/.test(index) && /if \(orrery\.flight\)/.test(in
   'index exposes the opt-in same-model journey without an auto-opening overlay');
 ok(/ap-mystic-cards-v835\.js/.test(index), 'index loads art-only spectral interaction');
 ok(!/ap-sky-news\.js/.test(index), 'index excludes retired sky-news band');
-ok(/js\/ap-nav-model\.js\?v=867/.test(index) && !/ap-nav-model-v834/.test(index), 'index uses the one canonical navigation model');
+ok(/js\/ap-nav-model\.js\?v=868/.test(index) && !/ap-nav-model-v834/.test(index), 'index uses the one canonical navigation model');
+ok(!/horoscope\.html|quiz\.html|angel-numbers\.html|name-numerology\.html/.test(index), 'index keeps retired rooms off the front path');
 
 const chart = fs.readFileSync(path.join(web, 'chart.html'), 'utf8');
 ok(/id="chart-form"/.test(chart), 'chart keeps the birth-chart calculation form');
-ok(/js\/chart-page\.js\?v=867/.test(chart), 'chart loads the current calculation controller');
+ok(/js\/chart-page\.js\?v=868/.test(chart), 'chart loads the current calculation controller');
 ok(!/ap-natal-sphere/.test(chart), 'chart excludes retired natal-sphere decoration');
+ok(!/horoscope\.html|quiz\.html/.test(chart), 'chart keeps Daily and quiz off the front path');
 
 const shop = fs.readFileSync(path.join(web, 'shop.html'), 'utf8');
 ok(/(?:12 Aug edition · £7|Buy the £7 edition|your-eclipse-reading)/i.test(shop), 'shop states £7 edition availability truthfully');
@@ -75,7 +77,7 @@ const mysticCards = fs.readFileSync(path.join(web, 'js/ap-mystic-cards-v835.js')
 ok(/page-numerology \.ap-number-route__visual/.test(mysticCards), 'numerology cards use the shared spectral interaction');
 
 const footerJs = fs.readFileSync(path.join(web, 'js/ap-footer-inject.js'), 'utf8');
-ok(/ap-footer-v835\.css\?v=835/.test(footerJs), 'shared footer self-loads its standalone styles');
+ok(/ap-footer-v835\.css\?v=868/.test(footerJs), 'shared footer self-loads its standalone styles');
 ok(/Astronomy computed locally/.test(footerJs), 'shared footer carries the concise launch colophon');
 const footerCss = fs.readFileSync(path.join(web, 'css/ap-footer-v835.css'), 'utf8');
 ok(/@media\s*\(max-width:\s*700px\)[\s\S]*grid-template-columns:\s*1fr/.test(footerCss), 'standalone footer collapses to one column on phones');
@@ -93,12 +95,18 @@ const missingFooters = sitemapPages.filter((page) => {
 ok(missingFooters.length === 0, 'all sitemap HTML routes load the compact footer'
   + (missingFooters.length ? ': ' + missingFooters.join(', ') : ''));
 ok(sitemapPages.includes('guides/eclipse-field-guide-2026.html'), 'finished eclipse field guide is discoverable in sitemap');
+for (const retired of ['horoscope.html', 'quiz.html', 'angel-numbers.html', 'name-numerology.html', 'numerology.html']) {
+  ok(!sitemapPages.includes(retired), 'retired room stays off sitemap: ' + retired);
+}
+const manifest = fs.readFileSync(path.join(web, 'manifest.json'), 'utf8');
+ok(!/horoscope\.html/.test(manifest), 'PWA shortcuts must not reopen Daily');
+ok(/sky-events\.html/.test(manifest) && /chart\.html/.test(manifest), 'PWA shortcuts stay on the Act 1 spine');
 
 const indexLite = fs.readFileSync(path.join(web, 'index-lite.html'), 'utf8');
 ok(/<meta\s+name="robots"\s+content="noindex, follow"\s*\/?>/.test(indexLite), 'legacy lite redirect cannot compete with the canonical home page');
 
 const eclipse = fs.readFileSync(path.join(web, 'eclipse.html'), 'utf8');
-ok(/ap-eclipse-live-v834\.js\?v=867/.test(eclipse), 'eclipse loads the dedicated 3D instrument');
+ok(/ap-eclipse-live-v834\.js\?v=868/.test(eclipse), 'eclipse loads the dedicated 3D instrument');
 ok(/class="ap-eclipse-live__canvas"/.test(eclipse), 'eclipse owns one dedicated 3D canvas');
 ok(/data-eclipse-event/.test(eclipse) && /data-eclipse-now/.test(eclipse), 'eclipse exposes live and greatest-event controls');
 ok(/data-eclipse-play/.test(eclipse) && (eclipse.match(/data-eclipse-lens=/g) || []).length === 3,
@@ -118,7 +126,7 @@ ok(!/(?:gumroad|ap-checkout-honest)/i.test(plate), 'natal plate exposes no dead 
 
 const sw = fs.readFileSync(path.join(web, 'sw.js'), 'utf8');
 const versionMatch = sw.match(/const V\s*=\s*"([^"]+)"/);
-ok(versionMatch && versionMatch[1] === 'ap-v867', 'SW release tip ' + (versionMatch && versionMatch[1]));
+ok(versionMatch && versionMatch[1] === 'ap-v868', 'SW release tip ' + (versionMatch && versionMatch[1]));
 
 const verify = fs.readFileSync(path.join(web, 'verify.html'), 'utf8');
 ok(/plate-fingerprint\.js/.test(verify), 'verify imports plate-fingerprint');

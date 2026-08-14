@@ -2,9 +2,10 @@
    Type floor, 44px taps, stage height, overflow, ember primaries.
    Does not swap WebGL for 2D. */
 
-@media (max-width: 430px) {
+@media (max-width: 700px) {
   /* Act 1 headlines only. Size, not typeface.
-     Beats later atlas / page !important title rules. */
+     Beats later atlas / page !important title rules.
+     700px matches the living-sky mobile layout band. */
   html body.ap-live-home h1.ap-live-heading,
   html body.page-home h1.ap-live-heading,
   html body.page-compat h1.ap-live-heading,
@@ -55,8 +56,16 @@
   .ap-angles ol,
   .ap-ledger p,
   .ap-site-footer p,
-  .ap-site-footer__brand p {
-    font-size: 16px;
+  .ap-site-footer__brand p,
+  html body.page-compat .ap-ab-note,
+  html body.page-compat .ap-angles-note,
+  html body.page-compat .ap-angles ol,
+  html body.page-compat .ap-zone-note,
+  html body.page-compat .ap-keep-row .action-note,
+  html body.page-natal-reading .ap-natal-lede,
+  html body.page-natal-reading .ap-natal-note,
+  html body.page-natal-reading .ap-zone-note {
+    font-size: 16px !important;
     line-height: 1.5;
   }
 
@@ -93,7 +102,10 @@
   .tn-btn,
   .ap-city-item,
   .ap-eclipse-live__button,
-  .ap-eclipse-live__lens-button {
+  .ap-eclipse-live__lens-button,
+  #nowBtn,
+  .ap-minute .scrub,
+  #minute-scrub {
     min-width: 44px !important;
     min-height: 44px !important;
     box-sizing: border-box;

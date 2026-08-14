@@ -14,7 +14,7 @@
      were already in this repo and already precached by the service worker —
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css?v=867">
+<link rel="stylesheet" href="./css/fonts.css?v=868">
 <style>
 .ap-events-shell{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:clamp(52px,8vw,110px) 0 calc(90px + var(--bottom-nav-h,0px))}
 .ap-events-hero{display:grid;grid-template-columns:minmax(0,.82fr) minmax(360px,1.18fr);gap:clamp(38px,8vw,110px);align-items:end;padding-bottom:clamp(54px,8vw,94px)}
@@ -45,11 +45,11 @@
 @media(max-width:760px){.ap-events-shell{width:min(100% - 32px,1120px);padding-top:42px}.ap-events-hero,.ap-events-intro,.event{grid-template-columns:1fr}.ap-events-hero{gap:34px}.ap-events-hero h1{font-size:clamp(52px,15vw,76px)}.ap-events-feature{padding:26px 22px}.event{gap:20px}.event__ledger{grid-template-columns:1fr;gap:6px}.event__ledger p{font-size:15px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-  <script>window.AP_ASSET_V='867';</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867">
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=867">
-  <script src="js/ap-nav-model.js?v=867" defer></script>
-  <script src="js/void-orrery-adapter.js?v=867"></script>
+  <script>window.AP_ASSET_V='868';</script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=868">
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=868">
+  <script src="js/ap-nav-model.js?v=868" defer></script>
+  <script src="js/void-orrery-adapter.js?v=868"></script>
 </head>
 <body class="page-sky-events ap-launch-article">
 <a class="skip-link" href="#events">Skip to sky events</a>
@@ -98,7 +98,7 @@
 </main>
 
 <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-<script src="js/ap-footer-inject.js?v=867" defer></script>
+<script src="js/ap-footer-inject.js?v=868" defer></script>
 
 <script>
 (function () {
@@ -137,13 +137,22 @@
     var inDays = function (n) { return n === 1 ? 'IN 1 DAY' : 'IN ' + n + ' DAYS'; };
     var daysWord = function (n) { return n === 1 ? '1 day' : n + ' days'; };
     var KEYS = ['mercury', 'venus', 'mars', 'jupiter', 'saturn'];
+    var rowOf = function (rows, key) {
+      if (!rows) return null;
+      for (var ri = 0; ri < rows.length; ri++) if (rows[ri] && rows[ri].key === key) return rows[ri];
+      return null;
+    };
     var daily = [];
-    for (var t = 0; t <= 400; t++) daily.push(E.positions(new Date(now.getTime() + t * DAY)).rows.filter(function (r) { return KEYS.indexOf(r.key) >= 0; }));
+    for (var t = 0; t <= 400; t++) daily.push(E.positions(new Date(now.getTime() + t * DAY)).rows);
     var best = null;
     for (var i = 0; i < KEYS.length; i++) for (var k = i + 1; k < KEYS.length; k++) {
       for (t = 1; t < 400; t++) {
-        var s0 = sep2(daily[t - 1][i].lon, daily[t - 1][k].lon), s1 = sep2(daily[t][i].lon, daily[t][k].lon), s2 = sep2(daily[Math.min(t + 1, 400)][i].lon, daily[Math.min(t + 1, 400)][k].lon);
-        if (s1 <= s0 && s1 <= s2 && s1 < 2.5 && (!best || t < best.t)) { best = { t: t, a: daily[t][i], b: daily[t][k], sep: s1 }; break; }
+        var a0 = rowOf(daily[t - 1], KEYS[i]), b0 = rowOf(daily[t - 1], KEYS[k]);
+        var a1 = rowOf(daily[t], KEYS[i]), b1 = rowOf(daily[t], KEYS[k]);
+        var a2 = rowOf(daily[Math.min(t + 1, 400)], KEYS[i]), b2 = rowOf(daily[Math.min(t + 1, 400)], KEYS[k]);
+        if (!a0 || !b0 || !a1 || !b1 || !a2 || !b2) continue;
+        var s0 = sep2(a0.lon, b0.lon), s1 = sep2(a1.lon, b1.lon), s2 = sep2(a2.lon, b2.lon);
+        if (s1 <= s0 && s1 <= s2 && s1 < 2.5 && (!best || t < best.t)) { best = { t: t, a: a1, b: b1, sep: s1 }; break; }
       }
     }
     if (best) {
@@ -157,17 +166,22 @@
     var fmDate = fullMoonNear(new Date(now.getTime() + mp.daysToFull * DAY));
     if (fmDate.getTime() <= now.getTime()) fmDate = fullMoonNear(new Date(fmDate.getTime() + 29.53 * DAY));
     var fmDays = Math.round((fmDate.getTime() - now.getTime()) / DAY);
-    var fmRow = E.positions(fmDate).rows.find(function (r) { return r.key === 'moon'; });
+    var fmRow = rowOf(E.positions(fmDate).rows, 'moon');
     var ELEM = { Aries: 'fire', Leo: 'fire', Sagittarius: 'fire', Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth', Gemini: 'air', Libra: 'air', Aquarius: 'air', Cancer: 'water', Scorpio: 'water', Pisces: 'water' };
-    ev('NEXT FULL MOON · ' + (fmDays <= 0 ? 'TONIGHT' : inDays(fmDays)), 'Full Moon in ' + fmRow.sign.name,
-      fmt(fmDate).toUpperCase() + ' · ' + fmRow.sign.deg + '° ' + fmRow.sign.name.toUpperCase(),
-      'The Moon reaches opposition — Earth exactly between it and the Sun — fully lit at ' + fmRow.sign.deg + '° ' + fmRow.sign.name + '. It rises at sunset and stays up all night.',
-      'A full moon in a ' + ELEM[fmRow.sign.name] + ' sign, the old books say: feelings run ' + ({ fire: 'hot and fast', earth: 'deep and steady', air: 'loud and social', water: 'under everything' })[ELEM[fmRow.sign.name]] + '. Weather, not fate.');
-    var state0 = E.positions(now).rows.find(function (r) { return r.key === 'mercury'; }).retro;
+    if (fmRow && fmRow.sign) {
+      ev('NEXT FULL MOON · ' + (fmDays <= 0 ? 'TONIGHT' : inDays(fmDays)), 'Full Moon in ' + fmRow.sign.name,
+        fmt(fmDate).toUpperCase() + ' · ' + fmRow.sign.deg + '° ' + fmRow.sign.name.toUpperCase(),
+        'The Moon reaches opposition — Earth exactly between it and the Sun — fully lit at ' + fmRow.sign.deg + '° ' + fmRow.sign.name + '. It rises at sunset and stays up all night.',
+        'A full moon in a ' + ELEM[fmRow.sign.name] + ' sign, the old books say: feelings run ' + ({ fire: 'hot and fast', earth: 'deep and steady', air: 'loud and social', water: 'under everything' })[ELEM[fmRow.sign.name]] + '. Weather, not fate.');
+    }
+    var mercury0 = rowOf(E.positions(now).rows, 'mercury');
+    var state0 = mercury0 ? mercury0.retro : null;
     var flipT = null, flipRow = null;
-    for (t = 1; t <= 200; t++) {
-      var r = E.positions(new Date(now.getTime() + t * DAY)).rows.find(function (q) { return q.key === 'mercury'; });
-      if (r.retro !== state0) { flipT = t; flipRow = r; break; }
+    if (state0 != null) {
+      for (t = 1; t <= 200; t++) {
+        var r = rowOf(E.positions(new Date(now.getTime() + t * DAY)).rows, 'mercury');
+        if (r && r.retro !== state0) { flipT = t; flipRow = r; break; }
+      }
     }
     if (flipT) {
       var sd = new Date(now.getTime() + flipT * DAY);
@@ -180,11 +194,13 @@
     }
     var moonIll = function (d) { return Math.round(E.moonPhase(E.jd(d)).illum * 100); };
     var leDate = fullMoonNear(new Date(Date.UTC(2026, 7, 28)));
-    var leRow = E.positions(leDate).rows.find(function (r) { return r.key === 'moon'; });
-    ev('LUNAR ECLIPSE · PARTIAL', 'The Moon dims in ' + leRow.sign.name,
-      fmtS(leDate) + ' · FULL MOON AT ' + leRow.sign.deg + '° ' + leRow.sign.name.toUpperCase(),
-      "Earth's shadow crosses part of the full Moon — visible wherever the Moon is up, no equipment needed. Sixteen days after the 12 August solar eclipse, the sky answers with its second act.",
-      'Eclipse seasons are traditionally read as paired chapters. Treat that as a reflective language, not a prediction.', 'lunar-eclipse');
+    var leRow = rowOf(E.positions(leDate).rows, 'moon');
+    if (leRow && leRow.sign) {
+      ev('LUNAR ECLIPSE · PARTIAL', 'The Moon dims in ' + leRow.sign.name,
+        fmtS(leDate) + ' · FULL MOON AT ' + leRow.sign.deg + '° ' + leRow.sign.name.toUpperCase(),
+        "Earth's shadow crosses part of the full Moon — visible wherever the Moon is up, no equipment needed. Sixteen days after the 12 August solar eclipse, the sky answers with its second act.",
+        'Eclipse seasons are traditionally read as paired chapters. Treat that as a reflective language, not a prediction.', 'lunar-eclipse');
+    }
     var eqDate = null;
     for (t = 0; t < 40; t++) {
       var d0 = new Date(Date.UTC(2026, 8, 10) + t * DAY);
@@ -214,11 +230,12 @@
       'PERSEIDS 12–13 AUG · SKY ' + perDark + '% DARK — GEMINIDS 13–14 DEC · SKY ' + gemDark + '% DARK',
       perLine,
       'Meteor showers have no standard natal-chart role here; the wonder is physical dust meeting atmosphere.', 'perseids');
-    document.getElementById('events').innerHTML = out.join('');
+    var host = document.getElementById('events');
+    if (host) host.innerHTML = out.join('');
   }
   go();
 })();
 </script>
-<script src="./js/ap-sky-time.js?v=867" defer></script>
+<script src="./js/ap-sky-time.js?v=868" defer></script>
 </body>
 </html>
