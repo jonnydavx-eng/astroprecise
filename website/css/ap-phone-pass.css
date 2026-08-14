@@ -22,8 +22,11 @@
   html body.page-shop .shop-hero__title,
   html body.page-shop .shop-hero h1,
   html body .ap-shop-hero h1,
-  html body .ap-shop-hero__copy h1 {
+  html body .ap-shop-hero__copy h1,
+  html body.page-natal-reading h1,
+  html body.page-natal-reading .ap-natal-shell h1 {
     font-size: clamp(2rem, 8.4vw, 2.55rem) !important;
+    line-height: 1.12 !important;
   }
 }
 
@@ -79,7 +82,9 @@
   html body.page-compat .ap-keep-row .action-note,
   html body.page-natal-reading .ap-natal-lede,
   html body.page-natal-reading .ap-natal-note,
-  html body.page-natal-reading .ap-zone-note {
+  html body.page-natal-reading .ap-zone-note,
+  html body.page-natal-reading .ap-natal-form label span,
+  html body.page-natal-reading .ap-natal-ch__mono {
     font-size: 16px !important;
     line-height: 1.5;
   }
@@ -152,6 +157,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+
+  html body.page-compat .ap-ab {
+    gap: 12px;
   }
 
   .ap-context__chart,

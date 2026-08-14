@@ -19,10 +19,46 @@
 .ap-natal-ch__serif { margin: 14px 0 0; color: var(--ap-paper-dim, #d5cbb8); font: italic 18px/1.6 var(--ap-display, Georgia, serif); }
 .ap-natal-legal { margin: 28px 0 0; color: var(--ap-paper-faint, #8b919c); font-size: 12px; line-height: 1.55; }
 .ap-natal-also { margin: 36px 0 0; }
+.ap-natal-also p { margin: 0 0 8px; color: var(--ap-paper-faint, #8b919c); font-size: 13px; }
 .ap-natal-also a { color: var(--ap-brass-bright, #cdae6a); }
 @media (max-width: 700px) {
-  .ap-natal-form__fields { grid-template-columns: 1fr; }
-  .ap-natal-form { padding-bottom: calc(12px + var(--bottom-nav-h, 72px)); }
+  .ap-natal-shell {
+    width: min(760px, calc(100% - 32px));
+    padding-top: 28px;
+  }
+  .page-natal-reading h1 {
+    max-width: 12ch;
+    margin: 12px 0 16px;
+  }
+  .ap-natal-lede { margin-bottom: 22px; }
+  .ap-natal-form {
+    gap: 18px;
+    padding: 18px 16px calc(16px + var(--bottom-nav-h, 72px));
+  }
+  .ap-natal-form__fields {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .ap-natal-form label span {
+    margin-bottom: 8px;
+    letter-spacing: .08em;
+  }
+  .ap-natal-form .ap-city-item {
+    min-height: 44px;
+    padding: 12px 14px;
+    font-size: 16px;
+  }
+  .ap-natal-form button {
+    width: 100%;
+    font-size: 13px;
+  }
+  .ap-natal-also {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .ap-natal-also p { font-size: 12px; }
 }
 @media print {
   .site-header, .ap-site-footer, .bottom-nav, .ap-natal-form, .ap-natal-print, .ap-natal-also { display: none !important; }
