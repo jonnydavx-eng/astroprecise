@@ -95,7 +95,7 @@ node tools/generate-sw-precache.mjs        # regenerates precache + bumps ap-vNN
 # bump the void-orrery-adapter.js?v=NNN tags on:
 #   deep-time.html  eclipse.html  index.html  natal-plate.html  sky-card.html  sky-events.html
 cd /c/Users/jonny/OneDrive/astroprecise
-for t in test-*.mjs tools/_proof-*.mjs ephemeris-package/test/smoke.test.mjs; do node "$t" || echo "FAIL: $t"; done   # 25 suites, must be 25/25
+for t in test-*.mjs tools/_proof-*.mjs ephemeris-package/test/smoke.test.mjs; do node "$t" || echo "FAIL: $t"; done   # 26 suites, must be 26/26
 git add -A && git commit -m "…" && git push origin main
 # ~10 min later verify:
 curl -s "https://astroprecise.app/sw.js?cb=$(date +%s)" | grep -o 'ap-v[0-9]*' | head -1

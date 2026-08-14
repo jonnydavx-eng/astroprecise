@@ -64,10 +64,16 @@ else {
     fail('couples sky must not compute a natal JD without a known birth time');
   }
   if (couplesSky.includes("time || '12:00'")) fail('couples sky still fills unknown time with noon');
-  if (!couplesSky.includes('flyTo') && !couplesSky.includes('focusPlanet')) {
-    fail('couples A/B must camera-focus the one model, not swap it');
+  if (couplesSky.includes('flyTo') || couplesSky.includes('focusPlanet') || couplesSky.includes('focusEarthCamera')) {
+    fail('couples A/B must focus clocks in-scene, not flyTo/focusPlanet');
   }
-  else ok('couples sky refuses GMT offsets, withholds noon, and focuses the live camera');
+  if (!couplesSky.includes("focus: clockFocus()") && !couplesSky.includes('focus: clockFocus()')) {
+    fail('couples sky must pass focus a|b|null into setNatalClocks');
+  }
+  if (!couplesSky.includes('window.APCouplesSky') || !couplesSky.includes('OFFLINE_TOWNS')) {
+    fail('couples sky must export APCouplesSky and an IANA offline town list');
+  }
+  else ok('couples sky refuses GMT offsets, withholds noon, and focuses clocks in-scene');
 }
 
 for (const probe of [

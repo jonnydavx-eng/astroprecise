@@ -63,6 +63,20 @@ assert.equal(/location\.(?:search|hash)|chart-view\.html|birth details \(name/.t
   'chart share helper must emit a clean public URL only');
 assert.equal(compatibilityHtml.includes('compatibility-page.js'), false,
   'retired compatibility-page.js must stay deleted');
+assert.ok(compatibilityHtml.includes('data-renderer="webgl-only"'),
+  'couples page must stay strict WebGL');
+assert.equal(/Birth place <span class="opt">optional<\/span>/.test(compatibilityHtml), false,
+  'couples birth place must not be labelled optional — a real IANA zone is required');
+assert.ok(compatibilityHtml.includes('id="keep-sky"') && !/id="keep-sky"[^>]*data-keep-mode/.test(compatibilityHtml),
+  'couples Keep this sky must stay the current-view path, not chart birth-hour');
+const couplesSky = read('./website/js/ap-couples-sky.js');
+assert.equal(/gumroad|catalogueSkus|checkout|sku/i.test(couplesSky), false,
+  'couples sky must not add checkout or SKU behavior');
+assert.ok(couplesSky.includes("timeKnown && zoneKnown") || couplesSky.includes("zoneKnown && timeKnown"));
+assert.equal(couplesSky.includes("time || '12:00'"), false);
+assert.equal(/flyTo|focusPlanet/.test(couplesSky), false,
+  'couples A/B must not fly the live camera');
+assert.ok(compatibilityHtml.includes('that clock, the Moon, and angles are withheld'));
 assert.equal(/location\.hash|new URLSearchParams\(location\.search\)[\s\S]{0,120}(?:get\(['"](?:d|date|time|city|lat|lon)|birth)/.test(chartPage), false,
   'chart page must not restore birth details from an address');
 
@@ -71,8 +85,8 @@ assert.ok(serviceWorker.includes('app|chart-page|horoscope-page'), 'chart-page.j
 assert.ok(serviceWorker.includes('if (isCritical ||') && serviceWorker.includes('if (network) return network;'), 'release-critical code must remain network-first');
 
 const runbook = read('./ECLIPSE-RUNBOOK.md');
-assert.ok(runbook.includes('25 suites, must be 25/25'));
-assert.equal(/19 suites|19\/19|23 suites|23\/23|24 suites|24\/24/.test(runbook), false);
+assert.ok(runbook.includes('26 suites, must be 26/26'));
+assert.equal(/19 suites|19\/19|23 suites|23\/23|24 suites|24\/24|25 suites|25\/25/.test(runbook), false);
 
 const mergeNote = read('./MERGE-2026-07-17-COWORK.md');
 assert.equal(/£2\.99[^\n]*£4 archive|£14→£19|prices only rise/i.test(mergeNote), false);
