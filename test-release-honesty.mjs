@@ -71,7 +71,8 @@ const orreryWebgl = read('./website/js/orrery-webgl.js');
 assert.ok(chartHtml.includes('data-keep-mode="birth-hour"') && chartHtml.includes('id="keep-sky-caption"'));
 assert.ok(chartPage.includes("new CustomEvent('ap-keep-sky-context'"));
 assert.ok(keepSky.includes("'astroprecise-' + date + '.png'"));
-assert.ok(keepSky.includes('birth time unknown') && keepSky.includes('no precise Earth-facing hemisphere is claimed'));
+assert.ok(keepSky.includes('birth time unknown') && keepSky.includes('12:00 local date reference') &&
+  keepSky.includes('no precise Earth-facing hemisphere is claimed'));
 assert.ok(keepSky.includes('Authored whole-system camera') && keepSky.includes('Earth marked as home'));
 assert.ok(orreryWebgl.includes('function applyAuthoredBirthHourStill(jd)'));
 assert.equal(/checkout|catalogueSkus|gumroad/i.test(keepSky), false,

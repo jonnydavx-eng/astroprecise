@@ -33,8 +33,12 @@
         context.birthTime + ' local' + zone + ' · ' + place +
         (utc ? ' · computed at ' + utc : '') + ' · Earth marked as home.';
     }
+    var referenceZone = context.timezone ? ' (' + context.timezone + ')' : '';
+    var referenceUtc = utcMinute(context.jd);
     return 'Authored whole-system camera · ' + date + ' · ' + place +
-      ' · birth time unknown. Positions use a 12:00 UTC date reference; no precise Earth-facing hemisphere is claimed. Earth is marked as home.';
+      ' · birth time unknown. Positions use a 12:00 local date reference' + referenceZone +
+      (referenceUtc ? ', computed at ' + referenceUtc : '') +
+      '; no precise Earth-facing hemisphere is claimed. Earth is marked as home.';
   }
 
   function setBirthContext(detail) {

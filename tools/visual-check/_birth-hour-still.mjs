@@ -137,7 +137,10 @@ try {
   });
   const unknownCaption = await page.locator('#keep-sky-caption').innerText();
   assert(unknownCaption.includes('birth time unknown'), 'unknown-time disclosure missing');
-  assert(unknownCaption.includes('12:00 UTC date reference'), 'date-reference disclosure missing');
+  assert(unknownCaption.includes('12:00 local date reference (Europe/London)'),
+    'date-reference disclosure missing');
+  assert(unknownCaption.includes('computed at 1978-03-14 12:00 UTC'),
+    'unknown-time UTC reference missing');
   assert(unknownCaption.includes('no precise Earth-facing hemisphere is claimed'),
     'Earth-facing honesty disclosure missing');
   assert(errors.length === 0, errors.join('\n'));
