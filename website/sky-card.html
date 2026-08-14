@@ -4,151 +4,118 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, follow">
-<title>The real sky news — sky card | Astro Precise</title>
-<meta name="description" content="Make the 1200×630 card of the sky when you arrived — Sun, Moon and Venus placed exactly, never rounded, computed on your device. Download the PNG free.">
+<meta name="theme-color" content="#020307">
+<title>Sky card — the minute you arrived | AstroPrecise</title>
+<meta name="description" content="A keepable 1200 × 630 card of one birth minute: the real timezone of the birth town, Sun, Moon and Venus, and the rising sign when the hour is known. Computed and downloaded on your device.">
 <link rel="canonical" href="https://astroprecise.app/sky-card.html">
-<!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
-     IBM Plex Mono from Google Fonts, which handed Google a request from every
-     reader while privacy.html said the site's fonts were its own. Both files
-     were already in this repo and already precached by the service worker —
-     this page had simply never been cut over. The variable Schibsted file has
-     no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css?v=857">
+<link rel="stylesheet" href="./css/fonts.css?v=867">
 <style>
-:root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line2:rgba(216,180,106,.24);--acc:#d8b46a}
-*{box-sizing:border-box}
-body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;background-image:radial-gradient(1000px 560px at 50% -6%,rgba(255,122,69,.08),transparent 62%);background-attachment:fixed}
-a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
-a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.mono{font-family:'IBM Plex Mono',monospace}
-.wrap{max-width:900px;margin:0 auto;padding:0 22px calc(110px + var(--bottom-nav-h, 72px))}
-h1{margin:54px 0 12px;font-size:clamp(32px,6vw,44px);line-height:1.1;font-weight:700;letter-spacing:-.015em}
-.card{border:1px solid var(--line2);border-radius:14px;background:rgba(242,236,223,.04);padding:24px 26px;margin:22px 0}
-.lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
-input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark;width:100%}
-.field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:130px}
-.field span{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.22em;color:var(--faint)}
-.btn{display:inline-block;background:var(--ink);color:#000;border:0;border-radius:100px;padding:14px 30px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em;cursor:pointer;transition:filter .2s}
-.btn:hover{filter:brightness(1.08)}
-canvas{width:100%;height:auto;display:block;border:1px solid var(--line2);border-radius:12px}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:rgba(242,236,223,.4);line-height:2.1}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media (max-width:430px){.card{padding:20px 18px}}
+.ap-card-shell{width:min(1000px,calc(100% - 40px));margin:0 auto;padding:clamp(44px,7vw,92px) 0 calc(84px + var(--bottom-nav-h,0px))}
+.ap-card-kicker{margin:0 0 13px;color:var(--ap-brass);font:9px/1.5 var(--ap-data);letter-spacing:.18em;text-transform:uppercase}
+.ap-card-shell h1{max-width:16ch;margin:0;color:var(--ap-paper);font:600 clamp(42px,7vw,76px)/.9 var(--ap-display);letter-spacing:-.03em}
+.ap-card-lede{max-width:58ch;margin:22px 0 0;color:var(--ap-paper-dim);font-size:17px;line-height:1.66}
+.ap-card-form{display:grid;gap:15px;margin:34px 0 0;padding:clamp(20px,3vw,26px);border:1px solid var(--ap-line);border-radius:4px;background:rgba(16,23,34,.72)}
+.ap-card-form__fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.ap-card-form label span{display:block;margin-bottom:6px;color:var(--ap-brass);font:9px/1.4 var(--ap-data);letter-spacing:.13em;text-transform:uppercase}
+.ap-card-form input{width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep);color:inherit;font:15px var(--ap-data)}
+.ap-city-drop{display:flex;flex-direction:column;gap:2px;margin-top:6px;border:1px solid var(--ap-line);background:var(--ap-void-deep)}
+.ap-city-drop[hidden]{display:none}
+.ap-city-item{padding:9px 10px;border:0;background:transparent;color:inherit;font:14px/1.3 var(--ap-body);text-align:left;cursor:pointer}
+.ap-city-item:hover,.ap-city-item:focus{background:rgba(255,100,40,.16)}
+.ap-zone-note{margin:6px 0 0;color:var(--ap-paper-faint);font-size:12px;line-height:1.5}
+.ap-card-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
+.ap-card-btn{min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ember);color:#170702;font:700 11px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;cursor:pointer}
+.ap-card-btn--quiet{background:transparent;border:1px solid var(--ap-brass);color:var(--ap-brass-bright)}
+.ap-card-btn[disabled]{opacity:.45;cursor:not-allowed}
+.ap-card-status{margin:0;color:var(--ap-paper-dim);font-size:13px;line-height:1.6}
+.ap-card-status[data-state='refused']{color:var(--ap-danger)}
+.ap-card-canvas{margin:26px 0 0}
+.ap-card-canvas canvas{display:block;width:100%;height:auto;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep)}
+.ap-card-ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 30px;margin:28px 0 0;padding-top:22px;border-top:1px solid var(--ap-line)}
+.ap-card-ledger div{padding:12px 0;border-bottom:1px solid rgba(216,180,106,.1)}
+.ap-card-ledger span{display:block;margin-bottom:6px;color:var(--ap-proof);font:9px/1.5 var(--ap-data);letter-spacing:.13em;text-transform:uppercase}
+.ap-card-ledger div[data-withheld] span{color:var(--ap-danger)}
+.ap-card-ledger p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.6}
+.ap-card-foot{margin:34px 0 0;color:var(--ap-paper-faint);font-size:13px;line-height:1.7}
+.ap-card-foot a{color:var(--ap-brass-bright)}
+@media(max-width:760px){
+  .ap-card-shell{width:min(100% - 32px,1000px);padding-top:38px}
+  .ap-card-form__fields{grid-template-columns:1fr}
+  .ap-card-ledger{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-<script src="./js/ambience.js?v=857"></script>
-<script src="js/void-orrery-adapter.js?v=857"></script>
+<script>window.AP_ASSET_V='867';</script>
+<link rel="stylesheet" href="css/ap-living-sky-v834.css?v=867">
+<link rel="stylesheet" href="css/ap-phone-pass.css?v=867">
+<script src="js/ap-nav-model.js?v=867" defer></script>
+<script src="js/ap-zodiac-constants.js?v=867" defer></script>
+<script src="js/ephemeris.js?v=867" defer></script>
+<script src="js/ap-sky-card.js?v=867" defer></script>
 </head>
-<body>
-<a class="skip" href="#sky-card-main" style="position:absolute;left:-999px">Skip to sky card</a>
-<space-ambience density="200"></space-ambience>
-<div class="wrap" id="sky-card-main" style="position:relative;z-index:1">
+<body class="page-sky-card ap-launch-article">
+<a class="skip-link" href="#sky-card-main">Skip to the sky card</a>
+<header class="site-header" role="banner" data-ap-static-nav>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+        <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+        <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
+      </a>
+      <div class="navbar__nav" role="group" aria-label="Primary">
+        <noscript>
+          <a href="index.html" class="navbar__link">Observatory</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="sky-events.html" class="navbar__link">Events</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
+        </noscript>
+      </div>
+      <div class="navbar__end">
+        <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+  </nav>
+</header>
 
-<div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0">
-  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)" href="./index.html">← THE OBSERVATORY</a>
-  <span class="mono" style="font-size:10px;letter-spacing:.26em;color:var(--acc)">THE SKY CARD · FREE · 1200×630</span>
-</div>
+<main class="ap-card-shell" id="sky-card-main">
+  <p class="ap-card-kicker">Sky card · free · 1200 × 630 · optional</p>
+  <h1>The sky at the minute you arrived.</h1>
+  <p class="ap-card-lede">One image to keep: the date, the town, the clock time in that town's real timezone, and where the Sun, Moon and Venus stood. The card is drawn on this device and downloaded from here. Play stays free — the live sky and the free chart are not behind this.</p>
 
-<h1>The sky when you arrived.</h1>
-<p style="margin:0 0 10px;font-size:17px;line-height:1.65;color:var(--dim);max-width:620px">One image: your date, your Sun, Moon and Venus placed from the clock time read as UTC — we do not round — and the wheel of that minute. Computed here, drawn here, downloaded from here — your birth data never leaves this page. For a local-time chart, use the free chart page.</p>
+  <form class="ap-card-form" id="skyCardForm" novalidate>
+    <div class="ap-card-form__fields">
+      <label><span>Birth date</span><input type="date" id="dob" required min="1800-01-01" max="2200-12-31" autocomplete="bday"></label>
+      <label><span>Birth time · optional</span><input type="time" id="tob" autocomplete="bday-time"></label>
+      <label><span>Birth town</span>
+        <input type="text" id="sky-card-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="sky-card-city-drop">
+        <div class="ap-city-drop" id="sky-card-city-drop" hidden></div>
+        <p class="ap-zone-note" id="sky-card-zone">Pick a town from the list so the minute uses that town's real zone. UTC and GMT are refused as birth zones — UK summer is not GMT.</p>
+      </label>
+    </div>
+    <p class="ap-card-status" id="skyCardStatus" role="status">Nothing has been computed yet. Only the town text you type is sent to Open-Meteo's public geocoder to find its coordinates and zone; the date and time never leave this page.</p>
+    <div class="ap-card-actions">
+      <button class="ap-card-btn" type="submit" id="skyCardDraw">Draw my card</button>
+      <button class="ap-card-btn ap-card-btn--quiet" type="button" id="skyCardDownload" disabled>Download PNG</button>
+    </div>
+  </form>
 
-<div class="card">
-  <div class="lbl">YOUR MINUTE</div>
-  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
-    <label class="field"><span>DATE OF BIRTH</span><input type="date" id="dob" value="1994-03-14"></label>
-    <label class="field"><span>TIME (UTC)</span><input type="time" id="tob" value="09:12"></label>
-    <label class="field"><span>PLACE (TEXT ON THE CARD ONLY)</span><input type="text" id="place" value="Manchester" maxlength="40"></label>
+  <div class="ap-card-canvas">
+    <canvas id="skyCard" width="1200" height="630" role="img" aria-label="A sky card for one birth minute. The reading below the card repeats everything printed on it."></canvas>
   </div>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-    <button class="btn" id="drawBtn" type="button">DRAW MY CARD</button>
-    <button class="btn" id="dlBtn" type="button" style="background:none;border:1px solid rgba(242,236,223,.35);color:var(--ink)">DOWNLOAD PNG</button>
-    <span class="mono" style="font-size:9px;letter-spacing:.16em;color:var(--faint)">NOTHING UPLOADED · THE PNG IS MADE ON YOUR DEVICE</span>
-  </div>
-</div>
 
-<canvas id="cv" width="1200" height="630" role="img" aria-label="Your sky card"></canvas>
+  <div class="ap-card-ledger" id="skyCardLedger" aria-live="polite"></div>
 
-<div class="foot" style="margin-top:26px">
-  WHAT'S YOURS? <a href="./chart.html">CAST THE FULL CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a> · © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
-</div>
+  <p class="ap-card-foot">
+    Positions come from the same in-browser engine as the <a href="chart.html">free chart</a>; the <a href="deep-reading.html">seven-chapter natal reading</a> reads the same minute in words. Nothing here is a claim about your life — astrology is a symbolic tradition offered for reflection, and the astronomy is computed so you can check it.<br>
+    &copy; 2026 AstroPrecise · computed on this device, never fabricated
+  </p>
+</main>
 
-</div>
-
-<script>
-(function () {
-  'use strict';
-  var $ = function (id) { return document.getElementById(id); };
-  var cv = $('cv'), ctx = cv.getContext('2d');
-  var MONO = "'IBM Plex Mono', monospace", GRO = "'Schibsted Grotesk', sans-serif";
-  function draw() {
-    var E = window.VoidEphem;
-    if (!E) {
-      draw.tries = (draw.tries || 0) + 1;
-      if (draw.tries > 40) return;
-      setTimeout(draw, 150);
-      return;
-    }
-    var d = new Date($('dob').value + 'T' + ($('tob').value || '12:00') + ':00Z');
-    if (isNaN(d.getTime())) d = new Date();
-    var rows = E.positions(d).rows;
-    var place = ($('place').value || '').toUpperCase();
-    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 1200, 630);
-    var seed = 630630, rand = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-    for (var i = 0; i < 190; i++) {
-      ctx.globalAlpha = 0.15 + rand() * 0.6;
-      ctx.fillStyle = '#e9f2f6';
-      ctx.beginPath(); ctx.arc(rand() * 1200, rand() * 630, 0.5 + rand() * 1.6, 0, 7); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = '#d8b46a'; ctx.font = '500 13px ' + MONO;
-    ctx.fillText('T H E   S K Y   W H E N   I   A R R I V E D', 64, 78);
-    ctx.fillStyle = '#f2ecdf'; ctx.font = '700 52px ' + GRO;
-    var dateLine = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-    ctx.fillText(dateLine, 64, 150);
-    ctx.fillStyle = 'rgba(242,236,223,.65)'; ctx.font = '400 15px ' + MONO;
-    ctx.fillText((place ? place + ' · ' : '') + ($('tob').value || '12:00') + ' UTC', 64, 186);
-    var posText = function (r) { return r.sign.deg + '°' + String(r.sign.min).padStart(2, '0') + '′ ' + r.sign.name.toUpperCase() + (r.retro ? ' ℞' : ''); };
-    ['sun', 'moon', 'venus'].forEach(function (k, idx) {
-      var r = rows.find(function (q) { return q.key === k; }), y = 258 + idx * 40;
-      ctx.fillStyle = '#d8b46a'; ctx.font = '400 22px ' + GRO; ctx.fillText(r.glyph, 64, y);
-      ctx.fillStyle = 'rgba(242,236,223,.6)'; ctx.font = '400 17px ' + MONO; ctx.fillText(r.name.toUpperCase(), 104, y);
-      ctx.fillStyle = '#f2ecdf'; ctx.fillText(posText(r), 240, y);
-    });
-    var cx = 824 + 130, cy = 315, pt = function (lon, R) { var a = (180 - lon) * Math.PI / 180; return [cx + R * Math.cos(a), cy - R * Math.sin(a)]; };
-    ctx.strokeStyle = 'rgba(216,180,106,.7)'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(cx, cy, 238, 0, 7); ctx.stroke();
-    ctx.strokeStyle = 'rgba(216,180,106,.3)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(cx, cy, 214, 0, 7); ctx.stroke();
-    ctx.strokeStyle = 'rgba(216,180,106,.18)';
-    ctx.beginPath(); ctx.arc(cx, cy, 120, 0, 7); ctx.stroke();
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    E.SIGNS.forEach(function (s, i) {
-      var p = pt(i * 30 + 15, 226);
-      ctx.fillStyle = 'rgba(216,180,106,.75)'; ctx.font = '400 17px ' + GRO;
-      ctx.fillText(s[1], p[0], p[1]);
-    });
-    rows.slice().sort(function (a, b) { return a.lon - b.lon; }).forEach(function (r, i) {
-      var R = i % 2 ? 148 : 184, g = pt(r.lon, R), dd = pt(r.lon, 214);
-      ctx.fillStyle = '#e9f2f6'; ctx.beginPath(); ctx.arc(dd[0], dd[1], 3, 0, 7); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font = '400 24px ' + GRO; ctx.fillText(r.glyph, g[0], g[1]);
-    });
-    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-    ctx.strokeStyle = 'rgba(216,180,106,.3)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(64, 568); ctx.lineTo(1136, 568); ctx.stroke();
-    ctx.fillStyle = '#f2ecdf'; ctx.font = '700 22px ' + GRO; ctx.fillText('ASTROPRECISE', 64, 602);
-    ctx.fillStyle = '#d8b46a'; ctx.fillText('.APP', 64 + ctx.measureText('ASTROPRECISE').width, 602);
-    ctx.fillStyle = 'rgba(242,236,223,.55)'; ctx.font = '400 12px ' + MONO;
-    ctx.textAlign = 'right';
-    ctx.fillText("WHAT'S YOURS? · FREE · NO ACCOUNT · COMPUTED, NEVER FABRICATED", 1136, 600);
-    ctx.textAlign = 'left';
-  }
-  $('drawBtn').addEventListener('click', draw);
-  $('dlBtn').addEventListener('click', function () {
-    var a = document.createElement('a');
-    a.download = 'my-sky-card.png'; a.href = cv.toDataURL('image/png'); a.click();
-  });
-  draw();
-})();
-</script>
-<script src="./js/ap-sky-time.js" defer></script>
+<footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+<script src="js/ap-footer-inject.js?v=867" defer></script>
+<script src="js/ap-sky-time.js?v=867" defer></script>
 </body>
 </html>
