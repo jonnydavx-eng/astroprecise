@@ -67,7 +67,8 @@
   --ap-number-brass: var(--ap-mute);
   --ap-number-ember: var(--ap-ember);
   --ap-number-silver: var(--ap-mute);
-  background: var(--ap-void);
+  background: #020307 !important;
+  background-color: #020307 !important;
   color: var(--ap-paper);
 }
 
