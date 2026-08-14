@@ -509,6 +509,11 @@
         } catch (e) {}
         this._applyEclipse(); // veil + exposure reach the new engine
         this._renderNatal();  // DOM overlay survives engine swaps by construction
+        try {
+          if (this._natalClocks && O && typeof O.setNatalClocks === 'function') {
+            O.setNatalClocks(this._natalClocks);
+          }
+        } catch (e) {}
       };
 
       C.prototype._awaitFirstFrame = function (done) {
@@ -942,6 +947,31 @@
           show = idx >= 1 && idx <= 3;
         }
         this._natalLayer.style.opacity = show ? '1' : '0';
+      };
+
+
+      /* ── natal clocks — WebGL only; never the SVG setNatal overlay ── */
+      C.prototype.setNatalClocks = function (spec) {
+        this._natalClocks = spec || null;
+        var self = this;
+        function apply() {
+          var O = self._engine;
+          if (!O || typeof O.setNatalClocks !== 'function') return;
+          try { O.setNatalClocks(self._natalClocks); } catch (e) {}
+        }
+        if (!this._ready) { this._queue.push(apply); return; }
+        apply();
+      };
+      C.prototype.clearNatalClocks = function () {
+        this._natalClocks = null;
+        var self = this;
+        function apply() {
+          var O = self._engine;
+          if (!O || typeof O.clearNatalClocks !== 'function') return;
+          try { O.clearNatalClocks(); } catch (e) {}
+        }
+        if (!this._ready) { this._queue.push(apply); return; }
+        apply();
       };
 
       /* ── opening beat / flight / lookUp / setObserver ── */

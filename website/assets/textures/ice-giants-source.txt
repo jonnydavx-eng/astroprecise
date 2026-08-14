@@ -1,0 +1,26 @@
+Ice giant equirectangular maps — Hubble OPAL (NASA/ESA HST)
+Local texture replacement only. No SKUs.
+
+Uranus
+  File: hlsp_opal_hst_wfc3-uvis_uranus-2025a_f657n-f547m-f467m_v1_globalmap.tif
+  URL:  https://archive.stsci.edu/hlsps/opal/cycle33/uranus/hlsp_opal_hst_wfc3-uvis_uranus-2025a_f657n-f547m-f467m_v1_globalmap.tif
+  Cycle 33, 2025a color (F657N red / F547M green / F467M blue)
+
+Neptune
+  File: hlsp_opal_hst_wfc3-uvis_neptune-2025b_f467m-f547m-f657n_v1_globalmap.tif
+  URL:  https://archive.stsci.edu/hlsps/opal/cycle32/neptune/hlsp_opal_hst_wfc3-uvis_neptune-2025b_f467m-f547m-f657n_v1_globalmap.tif
+  Cycle 32, 2025b color (F467M / F547M / F657N)
+
+DOI: 10.17909/T9G593
+https://dx.doi.org/10.17909/T9G593
+Program page: https://archive.stsci.edu/hlsp/opal
+License: CC BY 4.0
+
+Credit:
+This work used data acquired from the NASA/ESA HST Space Telescope, associated with OPAL program (PI: Simon, GO13937), and archived by the Space Telescope Science Institute, which is operated by the Association of Universities for Research in Astronomy, Inc., under NASA contract NAS 5-26555. All maps are available at http://dx.doi.org/10.17909/T9G593.
+
+Processing: ImageMagick resize only to 2048x1024 (full webp+jpg), 1024x512 (_md webp), 512x256 (_sm webp). No painting, no invented bands.
+
+Coverage note:
+Uranus Cycle 33 color maps (2025a and 2025b) both have a large unobserved / night-side southern region filled with black in the official STScI product, plus a fringe at the coverage edge. That is Hubble's real map, not a convert error. Worlds did not paint the missing hemisphere.
+Neptune 2025b is a full-latitude color mosaic.

@@ -3,6 +3,9 @@
   --ap-ember: #FF6428;
   --ap-void: #020307;
   --ap-paper: #F2ECDF;
+  --ap-mute: #A89C84;
+  --ap-brass: #D8B46A;
+  --ap-danger: #B04A52;
   background: #020307;
   color: #F2ECDF;
 }
@@ -42,9 +45,17 @@
   cursor: pointer;
 }
 .ap-ab button[aria-pressed="true"] {
-  border-color: #FF6428;
-  background: rgba(255,100,40,.16);
+  background: transparent;
   color: #F2ECDF;
+}
+.ap-ab button#ab-a[aria-pressed="true"] {
+  border-color: #D8B46A;
+}
+.ap-ab button#ab-b[aria-pressed="true"] {
+  border-color: #FF6428;
+}
+.ap-ab button#ab-now[aria-pressed="true"] {
+  border-color: #A89C84;
 }
 .ap-ab button:disabled { opacity: .38; cursor: not-allowed; }
 .ap-ab-note {
@@ -136,7 +147,7 @@
 }
 #compatError {
   margin-top: 14px;
-  color: #ef8b8b;
+  color: #B04A52;
   font-size: 14px;
 }
 .ap-couples-actions .btn-invite {

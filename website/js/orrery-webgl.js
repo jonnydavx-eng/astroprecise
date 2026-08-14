@@ -698,6 +698,12 @@ const FinishShader = {
   let ghostTodayJd = 0;
   let lastGhostSampleMs = 0;
   const GHOST_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
+  const NATAL_CLOCK_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
+  const NATAL_CLOCK_A = 0xD8B46A; // brass — person A
+  const NATAL_CLOCK_B = 0xFF6428; // ember — person B
+  let natalClockSpec = { a: null, b: null };
+  let natalClockGroup = null;     // separate layer; not ghostMeshes
+  const natalClockMeshes = { a: {}, b: {} };
   let trailsGroup = null;           // per-planet motion trails (fade behind moving planets)
   const trailState = {};            // id → { positions: Float32Array, line, head, count }
   let trailsActive = false;         // true only while the visitor is scrubbing time
@@ -7154,6 +7160,7 @@ const FinishShader = {
     updateSaturnShadow(jd);
     if (showAspectsHelio) updateHelioAspectLines();
     updateLiveGhosts();
+    updateNatalClocks();
   }
 
   function liveGhostTodayJd() {
@@ -7216,6 +7223,228 @@ const FinishShader = {
         g.visible = false;
       }
     });
+  }
+
+  function natalClockColor(who) {
+    return who === 'b' ? NATAL_CLOCK_B : NATAL_CLOCK_A;
+  }
+
+  function makeNatalClockLabel(text, hex) {
+    const pad = 8, font = 24;
+    const c = document.createElement('canvas');
+    const x = c.getContext('2d');
+    const label = String(text || '').slice(0, 18) || (hex === '#FF6428' ? 'B' : 'A');
+    x.font = '600 ' + font + 'px Inter, system-ui, sans-serif';
+    const w = Math.max(36, Math.ceil(x.measureText(label).width) + pad * 2);
+    c.width = w;
+    c.height = font + pad * 2;
+    x.font = '600 ' + font + 'px Inter, system-ui, sans-serif';
+    x.fillStyle = hex;
+    x.textBaseline = 'middle';
+    x.textAlign = 'center';
+    x.shadowColor = 'rgba(2,3,7,0.9)';
+    x.shadowBlur = 8;
+    x.fillText(label, c.width / 2, c.height / 2);
+    const tex = new THREE.CanvasTexture(c);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: tex, transparent: true, depthTest: false, depthWrite: false, opacity: 0.92,
+    }));
+    sp.scale.set((c.width / c.height) * 1.05, 1.05, 1);
+    sp.userData.aspect = c.width / c.height;
+    return sp;
+  }
+
+  function natalHairline(radius, color) {
+    const pts = [];
+    for (let d = 0; d <= 360; d += 8) {
+      const a = d * D2R;
+      pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, -Math.sin(a) * radius));
+    }
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({
+      color, transparent: true, opacity: 0.55, depthWrite: false,
+    });
+    const line = new THREE.Line(geo, mat);
+    line.renderOrder = 3;
+    return line;
+  }
+
+  function disposeNatalClockObject(obj) {
+    if (!obj || !obj.traverse) return;
+    obj.traverse((o) => {
+      if (o.geometry) { try { o.geometry.dispose(); } catch (e) {} }
+      const mats = o.material ? (Array.isArray(o.material) ? o.material : [o.material]) : [];
+      mats.forEach((m) => {
+        if (!m) return;
+        if (m.map) { try { m.map.dispose(); } catch (e) {} }
+        try { m.dispose(); } catch (e) {}
+      });
+    });
+    if (obj.parent) obj.parent.remove(obj);
+  }
+
+  function disposeNatalClocks() {
+    ['a', 'b'].forEach((who) => {
+      const pack = natalClockMeshes[who];
+      Object.keys(pack).forEach((k) => {
+        disposeNatalClockObject(pack[k]);
+        delete pack[k];
+      });
+    });
+    if (natalClockGroup) {
+      disposeNatalClockObject(natalClockGroup);
+      natalClockGroup = null;
+    }
+  }
+
+  function ensureNatalClockGroup() {
+    if (!scene) return null;
+    if (natalClockGroup) return natalClockGroup;
+    natalClockGroup = new THREE.Group();
+    natalClockGroup.name = 'natalClocks';
+    scene.add(natalClockGroup);
+    return natalClockGroup;
+  }
+
+  function ensureNatalClockWho(who) {
+    const grp = ensureNatalClockGroup();
+    if (!grp) return null;
+    const pack = natalClockMeshes[who];
+    if (pack.earth) return pack;
+    const color = natalClockColor(who);
+    BODIES.forEach((b) => {
+      if (!NATAL_CLOCK_IDS[b.id]) return;
+      const mat = new THREE.MeshBasicMaterial({
+        color, transparent: true, opacity: 0.78, depthWrite: false,
+      });
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(b.size * 0.42, 18, 14), mat);
+      mesh.renderOrder = 3;
+      mesh.visible = false;
+      if (b.id === 'saturn') {
+        const ring = new THREE.Mesh(
+          new THREE.RingGeometry(b.size * 0.58, b.size * 1.05, 40),
+          new THREE.MeshBasicMaterial({
+            color, transparent: true, opacity: 0.32, side: THREE.DoubleSide, depthWrite: false,
+          })
+        );
+        ring.rotation.x = Math.PI / 2;
+        mesh.add(ring);
+      }
+      mesh.add(natalHairline(b.size * 0.72, color));
+      grp.add(mesh);
+      pack[b.id] = mesh;
+    });
+    const moon = new THREE.Mesh(
+      new THREE.SphereGeometry(0.14, 12, 10),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.7, depthWrite: false })
+    );
+    moon.visible = false;
+    moon.renderOrder = 3;
+    grp.add(moon);
+    pack.moon = moon;
+    return pack;
+  }
+
+  function setNatalClockLabel(who, text) {
+    const pack = natalClockMeshes[who];
+    if (!pack) return;
+    const hex = who === 'b' ? '#FF6428' : '#D8B46A';
+    const next = String(text || (who === 'b' ? 'B' : 'A')).slice(0, 18);
+    if (pack.label && pack._labelText === next) return;
+    if (pack.label) disposeNatalClockObject(pack.label);
+    pack.label = makeNatalClockLabel(next, hex);
+    pack._labelText = next;
+    const grp = ensureNatalClockGroup();
+    if (grp) grp.add(pack.label);
+  }
+
+  function placeNatalClockWho(who, spec) {
+    const pack = ensureNatalClockWho(who);
+    if (!pack) return;
+    const hide = !spec || !Number.isFinite(spec.jd) || portraitMode;
+    const jd = spec && spec.jd;
+    BODIES.forEach((b) => {
+      const mesh = pack[b.id];
+      if (!mesh) return;
+      if (hide) { mesh.visible = false; return; }
+      try {
+        const ll = helioLonLat(b.id, jd);
+        mesh.position.copy(scenePos(b.R, ll.lon, ll.lat));
+        mesh.visible = true;
+      } catch (e) { mesh.visible = false; }
+    });
+    if (pack.moon) {
+      if (hide) { pack.moon.visible = false; }
+      else {
+        try {
+          const E = window.AstroEphemeris;
+          if (!E || !E.moonPosition || !pack.earth) { pack.moon.visible = false; }
+          else {
+            const m = E.moonPosition(jd);
+            const earthPos = pack.earth.position;
+            const dir = rect(m.lon, m.lat, 1);
+            pack.moon.position.set(
+              earthPos.x + dir.x * 1.7,
+              earthPos.y + dir.z * 0.6,
+              earthPos.z - dir.y * 1.7
+            );
+            pack.moon.visible = true;
+          }
+        } catch (e) { pack.moon.visible = false; }
+      }
+    }
+    if (spec && spec.label) setNatalClockLabel(who, spec.label);
+    if (pack.label) {
+      if (hide || !pack.earth) pack.label.visible = false;
+      else {
+        const p = pack.earth.position;
+        pack.label.position.set(p.x, p.y + 1.35, p.z);
+        pack.label.visible = true;
+      }
+    }
+  }
+
+  function updateNatalClocks() {
+    if (!natalClockSpec.a && !natalClockSpec.b) {
+      if (natalClockGroup) natalClockGroup.visible = false;
+      return;
+    }
+    if (!scene) return;
+    ensureNatalClockGroup();
+    if (natalClockGroup) natalClockGroup.visible = !portraitMode;
+    placeNatalClockWho('a', natalClockSpec.a);
+    placeNatalClockWho('b', natalClockSpec.b);
+  }
+
+  function oneNatalClock(entry, fallback) {
+    if (!entry || !Number.isFinite(+entry.jd)) return null;
+    const label = (entry.label != null && String(entry.label).trim()) ? String(entry.label).trim() : fallback;
+    return { jd: +entry.jd, label: label.slice(0, 18) };
+  }
+
+  function setNatalClocks(spec) {
+    spec = spec || {};
+    natalClockSpec = {
+      a: oneNatalClock(spec.a, 'A'),
+      b: oneNatalClock(spec.b, 'B'),
+    };
+    if (!natalClockSpec.a && !natalClockSpec.b) {
+      disposeNatalClocks();
+      return;
+    }
+    updateNatalClocks();
+  }
+
+  function clearNatalClocks() {
+    natalClockSpec = { a: null, b: null };
+    disposeNatalClocks();
+  }
+
+  function getNatalClocks() {
+    return {
+      a: natalClockSpec.a ? { jd: natalClockSpec.a.jd, label: natalClockSpec.a.label } : null,
+      b: natalClockSpec.b ? { jd: natalClockSpec.b.jd, label: natalClockSpec.b.label } : null,
+    };
   }
 
   // ── Camera ─────────────────────────────────────────────────────────────────
@@ -10168,6 +10397,8 @@ const FinishShader = {
       delete canvas._orreryIO;
       delete canvas._orreryVV;
     }
+    try { disposeNatalClocks(); } catch (e) {}
+    natalClockSpec = { a: null, b: null };
     try { disposeAspectView(); } catch (e) {}
     try { disposeHelioAspectLines(); } catch (e) {}
     try { disposePreloaderComets(); } catch (e) {}
@@ -10314,6 +10545,7 @@ const FinishShader = {
   window.Orrery3D = {
     init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays, getDayOffset, setTimelineDays, snapToNow,
     setEclipse, getEclipse,
+    setNatalClocks, clearNatalClocks, getNatalClocks,
     goTo: setDate,
     get onScrub() { return onScrub; },
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },

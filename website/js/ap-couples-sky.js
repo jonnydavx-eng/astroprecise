@@ -1,4 +1,4 @@
-/* Couples sky — one void-orrery, two birth minutes, real IANA zones. */
+/* Couples sky — two natal clocks in one live WebGL sky. */
 /* Local only. Hash only. No scores. Never treat UK summer as UT/GMT. */
 (function () {
   'use strict';
@@ -16,7 +16,7 @@
     { name: 'opposition', deg: 180, orb: 8 }
   ];
 
-  function $(id) { return document.getElementById(id); }
+  function byId(id) { return document.getElementById(id); }
 
   function isValidTimeZone(tz) {
     if (typeof tz !== 'string' || !tz.trim()) return false;
@@ -61,13 +61,15 @@
   }
 
   function readPerson(prefix) {
-    var dateEl = $(prefix + '-date');
-    var timeEl = $(prefix + '-time');
-    var nameEl = $(prefix + '-name');
-    var tzEl = $(prefix + '-tz');
+    var dateEl = byId(prefix + '-date');
+    var timeEl = byId(prefix + '-time');
+    var nameEl = byId(prefix + '-name');
+    var tzEl = byId(prefix + '-tz');
+    var cityEl = byId(prefix + '-city');
     var date = dateEl ? dateEl.value : '';
     var time = timeEl ? timeEl.value : '';
     var tz = tzEl ? (tzEl.value || '').trim() : '';
+    var city = cityEl ? (cityEl.value || '').trim() : '';
     var parts = date ? date.split('-').map(Number) : [];
     var clock = (time || '12:00').split(':').map(Number);
     var timeKnown = !!time;
@@ -86,6 +88,7 @@
       })(),
       date: date,
       time: time,
+      city: city,
       tz: zoneKnown ? tz : '',
       timeKnown: timeKnown,
       zoneKnown: zoneKnown,
@@ -94,30 +97,25 @@
   }
 
   function writeField(id, value) {
-    var el = $(id);
+    var el = byId(id);
     if (el && value) el.value = value;
   }
 
-  function orrery() { return $('orr'); }
+  function orrery() { return byId('orr'); }
 
   function setPressed(which) {
     active = which;
     ['ab-a', 'ab-b', 'ab-now'].forEach(function (id) {
-      var btn = $(id);
+      var btn = byId(id);
       if (btn) btn.setAttribute('aria-pressed', id === 'ab-' + which ? 'true' : 'false');
     });
   }
 
   function stamp(text) {
-    var el = $('sky-time-status');
+    var el = byId('sky-time-status');
     if (el) el.textContent = text;
-    var note = $('ap-ab-note');
+    var note = byId('ap-ab-note');
     if (note) note.textContent = text;
-  }
-
-  function zoneLabel(p) {
-    if (p.zoneKnown) return p.tz;
-    return 'place needed for a real zone';
   }
 
   function minuteLabel(p) {
@@ -130,23 +128,46 @@
 
   function resetScrub() {
     scrubOffset = 0;
-    var el = $('minute-scrub');
+    var el = byId('minute-scrub');
     if (el) el.value = '0';
-    var lab = $('minute-scrub-label');
+    var lab = byId('minute-scrub-label');
     if (lab) lab.textContent = 'Birth minute';
   }
 
   function enableScrub(on) {
-    var el = $('minute-scrub');
+    var el = byId('minute-scrub');
     if (el) el.disabled = !on;
   }
 
-  function applySky(jd, label) {
+  function clockEntry(p, which) {
+    if (!p.jd) return null;
+    var jd = p.jd;
+    if (active === which && scrubOffset) jd += scrubOffset / 1440;
+    return { jd: jd, label: p.name };
+  }
+
+  function applyNatalClocks() {
     var o = orrery();
-    if (!jd || !o || !o.setJD) return false;
-    o.setJD(jd + scrubOffset / 1440);
-    stamp(label);
+    if (!o) return false;
+    var a = readPerson('person1');
+    var b = readPerson('person2');
+    if (!a.jd || !b.jd) {
+      if (typeof o.clearNatalClocks === 'function') o.clearNatalClocks();
+      return false;
+    }
+    if (typeof o.setNatalClocks !== 'function') return false;
+    o.setNatalClocks({ a: clockEntry(a, 'a'), b: clockEntry(b, 'b') });
     return true;
+  }
+
+  function paintTelemetry() {
+    var el = byId('telemetry');
+    if (!el) return;
+    var a = readPerson('person1');
+    var b = readPerson('person2');
+    if (a.jd && b.jd) {
+      el.textContent = 'One model. Both birth minutes stay in the sky.';
+    }
   }
 
   function showPerson(which) {
@@ -156,13 +177,16 @@
     if (!p.jd) {
       enableScrub(false);
       stamp(minuteLabel(p));
+      applyNatalClocks();
       renderAngles();
       return;
     }
     enableScrub(true);
-    applySky(p.jd, minuteLabel(p));
+    stamp(minuteLabel(p));
+    applyNatalClocks();
     writeHash();
     renderAngles();
+    paintTelemetry();
   }
 
   function showA() { showPerson('a'); }
@@ -175,36 +199,42 @@
     enableScrub(false);
     setPressed('now');
     stamp('Live sky · now');
+    applyNatalClocks();
+    paintTelemetry();
   }
 
   function onScrub() {
-    var el = $('minute-scrub');
+    var el = byId('minute-scrub');
     if (!el) return;
     scrubOffset = parseInt(el.value, 10) || 0;
-    var lab = $('minute-scrub-label');
+    var lab = byId('minute-scrub-label');
     if (lab) {
       if (!scrubOffset) lab.textContent = 'Birth minute';
       else lab.textContent = (scrubOffset > 0 ? '+' : '') + scrubOffset + ' min';
     }
+    if (active !== 'a' && active !== 'b') return;
     var p = active === 'b' ? readPerson('person2') : readPerson('person1');
     if (!p.jd) return;
-    applySky(p.jd, minuteLabel(p) + (scrubOffset ? ' · ' + (scrubOffset > 0 ? '+' : '') + scrubOffset + ' min' : ''));
+    applyNatalClocks();
+    stamp(minuteLabel(p) + (scrubOffset ? ' · ' + (scrubOffset > 0 ? '+' : '') + scrubOffset + ' min' : ''));
   }
 
   function enableToggles() {
     var a = readPerson('person1');
     var b = readPerson('person2');
-    if ($('ab-a')) $('ab-a').disabled = !a.date;
-    if ($('ab-b')) $('ab-b').disabled = !b.date;
-    var inv = $('compat-invite-btn');
+    if (byId('ab-a')) byId('ab-a').disabled = !a.date;
+    if (byId('ab-b')) byId('ab-b').disabled = !b.date;
+    var inv = byId('compat-invite-btn');
     if (inv) inv.disabled = !a.date;
     paintZone('person1', a);
     paintZone('person2', b);
+    applyNatalClocks();
+    paintTelemetry();
     return !!(a.jd && b.jd);
   }
 
   function paintZone(prefix, p) {
-    var el = $(prefix + '-zone');
+    var el = byId(prefix + '-zone');
     if (!el) return;
     el.textContent = p.zoneKnown ? p.tz : 'Pick a place for a real zone. UK summer is not GMT.';
   }
@@ -241,8 +271,8 @@
   }
 
   function renderAngles() {
-    var box = $('ap-angles');
-    var list = $('ap-angles-list');
+    var box = byId('ap-angles');
+    var list = byId('ap-angles-list');
     if (!box || !list) return;
     var a = readPerson('person1');
     var b = readPerson('person2');
@@ -311,7 +341,8 @@
       if (time && !/^\d{2}:\d{2}$/.test(time)) time = '';
       var tz = q.get(prefix + 'z') || '';
       if (tz && !isValidTimeZone(tz)) tz = '';
-      return { date: date, time: time, name: q.get(prefix + 'n') || '', tz: tz };
+      var city = q.get(prefix + 'c') || '';
+      return { date: date, time: time, name: q.get(prefix + 'n') || '', tz: tz, city: city };
     }
     return { a: one('a'), b: one('b') };
   }
@@ -325,12 +356,14 @@
       if (a.time) q.set('at', a.time);
       if (a.name && a.name !== 'A') q.set('an', a.name);
       if (a.zoneKnown) q.set('az', a.tz);
+      if (a.city) q.set('ac', a.city);
     }
     if (b.date) {
       q.set('b', b.date);
       if (b.time) q.set('bt', b.time);
       if (b.name && b.name !== 'B') q.set('bn', b.name);
       if (b.zoneKnown) q.set('bz', b.tz);
+      if (b.city) q.set('bc', b.city);
     }
     var next = q.toString();
     var hash = next ? '#' + next : '';
@@ -346,9 +379,9 @@
       writeField('person1-time', scene.a.time);
       writeField('person1-name', scene.a.name);
       writeField('person1-tz', scene.a.tz);
+      if (scene.a.city) writeField('person1-city', scene.a.city);
       if (scene.a.tz) {
-        writeField('person1-city', scene.a.tz);
-        var noteA = $('person1-zone');
+        var noteA = byId('person1-zone');
         if (noteA) noteA.textContent = scene.a.tz;
       }
     }
@@ -357,14 +390,22 @@
       writeField('person2-time', scene.b.time);
       writeField('person2-name', scene.b.name);
       writeField('person2-tz', scene.b.tz);
+      if (scene.b.city) writeField('person2-city', scene.b.city);
       if (scene.b.tz) {
-        writeField('person2-city', scene.b.tz);
-        var noteB = $('person2-zone');
+        var noteB = byId('person2-zone');
         if (noteB) noteB.textContent = scene.b.tz;
       }
     }
     enableToggles();
-    if (scene.a && scene.a.date) showA();
+    if (scene.a && scene.a.date) {
+      setPressed('a');
+      var pa = readPerson('person1');
+      enableScrub(!!pa.jd);
+      stamp(minuteLabel(pa));
+    }
+    applyNatalClocks();
+    renderAngles();
+    paintTelemetry();
   }
 
   function inviteLink() {
@@ -374,7 +415,7 @@
 
   function onInvite() {
     var a = readPerson('person1');
-    var btn = $('compat-invite-btn');
+    var btn = byId('compat-invite-btn');
     if (!a.date) return;
     var link = inviteLink();
     var label = function (text) {
@@ -396,7 +437,7 @@
 
   function onSubmit(event) {
     event.preventDefault();
-    var err = $('compatError');
+    var err = byId('compatError');
     var a = readPerson('person1');
     var b = readPerson('person2');
     if (!a.date || !b.date) {
@@ -413,20 +454,28 @@
         err.textContent = 'Pick both birth places from the list so the minute uses a real zone. UK summer is not GMT.';
       }
       enableToggles();
-      showA();
       return;
     }
     if (err) { err.hidden = true; err.textContent = ''; }
     enableToggles();
-    showA();
+    var o = orrery();
+    if (o && o.setLive) o.setLive();
+    setPressed('now');
+    resetScrub();
+    enableScrub(false);
+    stamp(a.name + ' and ' + b.name + ' · both minutes in the live sky');
+    applyNatalClocks();
+    writeHash();
+    renderAngles();
+    paintTelemetry();
   }
 
   function bindCity(prefix) {
-    var input = $(prefix + '-city');
-    var latEl = $(prefix + '-lat');
-    var lonEl = $(prefix + '-lon');
-    var tzEl = $(prefix + '-tz');
-    var drop = $(prefix + '-city-drop');
+    var input = byId(prefix + '-city');
+    var latEl = byId(prefix + '-lat');
+    var lonEl = byId(prefix + '-lon');
+    var tzEl = byId(prefix + '-tz');
+    var drop = byId(prefix + '-city-drop');
     if (!input || !drop) return;
     var seq = 0;
     var timer = null;
@@ -502,15 +551,15 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    var form = $('compat-form');
+    var form = byId('compat-form');
     if (form) form.addEventListener('submit', onSubmit);
-    if ($('ab-a')) $('ab-a').addEventListener('click', showA);
-    if ($('ab-b')) $('ab-b').addEventListener('click', showB);
-    if ($('ab-now')) $('ab-now').addEventListener('click', showLive);
-    if ($('compat-invite-btn')) $('compat-invite-btn').addEventListener('click', onInvite);
-    if ($('minute-scrub')) $('minute-scrub').addEventListener('input', onScrub);
+    if (byId('ab-a')) byId('ab-a').addEventListener('click', showA);
+    if (byId('ab-b')) byId('ab-b').addEventListener('click', showB);
+    if (byId('ab-now')) byId('ab-now').addEventListener('click', showLive);
+    if (byId('compat-invite-btn')) byId('compat-invite-btn').addEventListener('click', onInvite);
+    if (byId('minute-scrub')) byId('minute-scrub').addEventListener('input', onScrub);
     ['person1-date', 'person1-time', 'person1-name', 'person2-date', 'person2-time', 'person2-name'].forEach(function (id) {
-      var el = $(id);
+      var el = byId(id);
       if (el) el.addEventListener('change', function () { enableToggles(); writeHash(); renderAngles(); });
     });
     bindCity('person1');
@@ -521,6 +570,7 @@
       setPressed('now');
       enableScrub(false);
     }
+    document.addEventListener('ap-orrery-ready', function () { applyNatalClocks(); });
     if (!window.VoidEphem) {
       var n = 0;
       var t = setInterval(function () {

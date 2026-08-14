@@ -28,6 +28,27 @@ for (const name of ['flyTo', 'flyScale', 'setNatal', 'setJD', 'setLive', 'getJD'
 }
 ok('all 12 consumer call-names are present');
 
+for (const extra of ['setNatalClocks', 'clearNatalClocks']) {
+  const re = new RegExp('prototype\\.' + extra + '\\s*=\\s*function');
+  if (!re.test(A)) fail('adapter missing prototype.' + extra);
+}
+ok('natal-clock adapter methods are present');
+
+if (!W.includes('function setNatalClocks') || !W.includes('function clearNatalClocks') || !W.includes('function getNatalClocks')) {
+  fail('orrery-webgl.js missing natal-clock engine API');
+} else {
+  ok('engine exposes setNatalClocks / clearNatalClocks / getNatalClocks');
+}
+
+const couplesSkyPath = join(root, 'js', 'ap-couples-sky.js');
+if (!existsSync(couplesSkyPath)) fail('js/ap-couples-sky.js missing');
+else {
+  const couplesSky = readFileSync(couplesSkyPath, 'utf8');
+  if (!couplesSky.includes('setNatalClocks')) fail('couples sky does not call setNatalClocks');
+  if (/\.setNatal\s*\(/.test(couplesSky)) fail('couples sky still calls setNatal( for the two clocks');
+  else ok('couples sky uses setNatalClocks, not the SVG setNatal overlay');
+}
+
 for (const probe of [
   'function setEclipse(k)',
   'function getEclipse()',
