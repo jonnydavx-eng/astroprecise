@@ -35,10 +35,19 @@ programme page https://archive.stsci.edu/hlsp/opal
 
 Honest caveats, because these are science maps and not poster art: both are
 narrow/medium-band filter composites rather than true colour, both have real
-unobserved regions left black (Uranus ~40% of map area, Neptune ~13%), and the
+unobserved regions left black (Uranus ~40% of map area, Neptune ~18%), and the
 official products are only 721×361 — the shipped 2048×1024 tier is an upscale.
 Neptune reads green rather than Voyager blue; that is the real product and is left
 alone. Details and measurements in `assets/textures/ice-giants-source.txt`.
+
+**One documented edit, Neptune only:** pixels where only some of the three filters
+have coverage were composited by the archive into saturated pure-blue/pure-green
+artefacts along the coverage edge. Those are not measurements, so they are marked
+as no-data rather than shown as atmosphere — a pixel counts as valid only where all
+three filters have data. That moves 5.78% of the map to no-data (12.4% → 18.2%) and
+leaves the well-observed disc bit-identical. Nothing was painted in; invalid pixels
+are marked absent. Uranus is deliberately NOT masked. Full rule, thresholds and
+measurements in `assets/textures/ice-giants-source.txt`.
 
 ### Pluto — NASA / Johns Hopkins APL / SwRI (public domain)
 
