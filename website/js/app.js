@@ -364,7 +364,7 @@ const AstroApp = (() => {
   }
 
   function isLaunchRoute(here) {
-    return /^(?:index|chart|horoscope|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(
+    return /^(?:index|chart|shop|sky-events|eclipse|privacy|terms|refunds|verify|contact|sample-reading|quiz|angel-numbers|name-numerology|horoscope|moment|numerology|natal-plate)\.html$/i.test(
       here || (location.pathname.split('/').pop() || 'index.html')
     );
   }
