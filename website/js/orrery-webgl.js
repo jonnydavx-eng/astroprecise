@@ -239,6 +239,9 @@ const FinishShader = {
   let bloomPass = null;
   let radialBlurPass = null;
   let finishPass = null;      // static dither + vignette + whisper grade (last before OutputPass)
+  let composerSafeTarget = false;   // one-way downgrade set by the post-resize frame guard
+  let composerVerifyPending = 0;    // frames to wait before checking the post-resize frame
+  let cinematicComposerRequested = false;   // init({ cinematicComposer: true })
   let perfTier = 'high';
   let allPlanetsBuilt = false;
   let sunVisualsMinimal = false;
@@ -1882,15 +1885,28 @@ const FinishShader = {
     introBeginTimer = later(begin, 1200);
   }
 
+  // The multisampled HalfFloat composer target is the one Chromium can resolve to
+  // an empty frame after the drawing buffer is resized. It is now OPT-IN: a
+  // surface asks for it with <void-orrery data-composer="cinematic"> or
+  // init({ cinematicComposer: true }). Everything else gets the plain
+  // UnsignedByte, non-MSAA target Home already used.
+  //
+  // The old gate was `isLivingSkyHome()` — body.ap-live-home or a .ap-room-sky
+  // section. Every shipping surface happens to carry one of those, so the safe
+  // path was already universal in practice, but it was universal by accident: a
+  // new 3D page that forgot the class would silently inherit the fragile target.
+  function usesCinematicComposer() {
+    if (composerSafeTarget) return false;   // the frame guard already downgraded this session
+    if (cinematicComposerRequested) return true;
+    try { return !!document.querySelector('[data-composer="cinematic"]'); } catch (e) { return false; }
+  }
+
   function ensureComposer() {
     if (composer || PRM || perfTier === 'low' || !renderer || !scene || !camera) return;
     try {
-      if (isLivingSkyHome()) {
-        // Home-safe cinematic grade. Chromium can resolve a multisampled
-        // HalfFloat composer target to an empty frame after the Home shell
-        // resizes. Use a non-MSAA, non-HalfFloat target and attach only the
+      if (!usesCinematicComposer()) {
+        // Safe cinematic grade: a non-MSAA, non-HalfFloat target carrying only the
         // finish pass (dither + vignette + whisper grade) + OutputPass.
-        // Dedicated tools keep the HalfFloat / MSAA / bloom path below.
         const target = new THREE.WebGLRenderTarget(1, 1, {
           type: THREE.UnsignedByteType,
           depthBuffer: true,
@@ -1901,6 +1917,7 @@ const FinishShader = {
         finishPass = tryCreateFinishPass();
         if (finishPass) composer.addPass(finishPass);
         composer.addPass(new OutputPass());
+        tuneSunGlowForComposer(perfTier);
         resize();
         return;
       }
@@ -8206,6 +8223,7 @@ const FinishShader = {
 
     if (composer) composer.render();
     else renderer.render(scene, camera);
+    afterComposerFrame();
     if (announceInstrumentFirstFrame) dispatchOrreryFirstFrame();
   }
 
@@ -8254,6 +8272,76 @@ const FinishShader = {
     if (idx >= 0) composer.passes.splice(idx, 1);
     try { radialBlurPass.dispose(); } catch (e) { /* optional */ }
     radialBlurPass = null;
+  }
+
+  // ── Post-resize composer frame guard ────────────────────────────────────────
+  // Some Chromium/ANGLE builds resolve a multisampled HalfFloat composer target
+  // to an entirely empty frame once the stage has been resized — the stage stays
+  // black until something forces another rebuild. Home dodged this by opening on
+  // a plain UnsignedByte target, but eclipse/couples/chart/tonight and any other
+  // surface on the cinematic target were left exposed.
+  //
+  // Rather than downgrade every page pre-emptively, verify the first settled
+  // frame after each resize and degrade only if the driver actually failed:
+  //   cinematic target → safe target → no composer (straight renderer.render).
+  // The readback is one row of the default framebuffer, taken only in the frame
+  // after a resize, and a blank row is confirmed against a direct render so a
+  // genuinely empty patch of sky is never mistaken for a broken composer.
+  function disposeComposer() {
+    if (!composer) return;
+    composer.passes.forEach((p) => { try { p.dispose && p.dispose(); } catch (e) { /* optional */ } });
+    try { composer.dispose(); } catch (e) { /* optional */ }
+    composer = null;
+    bloomPass = null;
+    radialBlurPass = null;
+    finishPass = null;
+  }
+
+  // Peak channel value across the central 60% of the middle scanline of the
+  // default framebuffer. The edges are skipped because the finish pass vignettes
+  // them toward black, which would read as a false blank.
+  function midRowPeak() {
+    if (!renderer) return -1;
+    const gl = renderer.getContext();
+    const w = renderer.domElement.width | 0;
+    const h = renderer.domElement.height | 0;
+    if (!gl || w < 16 || h < 8) return -1;
+    const x0 = Math.round(w * 0.2);
+    const span = Math.max(8, Math.round(w * 0.6));
+    try {
+      renderer.setRenderTarget(null);
+      const row = new Uint8Array(span * 4);
+      gl.readPixels(x0, h >> 1, span, 1, gl.RGBA, gl.UNSIGNED_BYTE, row);
+      let peak = 0;
+      for (let i = 0; i < row.length; i++) { if (row[i] > peak) peak = row[i]; }
+      return peak;
+    } catch (e) {
+      return -1;
+    }
+  }
+
+  function verifyComposerFrame() {
+    if (!composer || !renderer || !scene || !camera || destroyed || portraitMode) return;
+    if (midRowPeak() !== 0) return;
+    // The composer produced nothing. Prove the scene itself is not simply empty
+    // at this framing before blaming the target.
+    try { renderer.render(scene, camera); } catch (e) { return; }
+    if (midRowPeak() < 8) return;
+    if (!composerSafeTarget) {
+      console.warn('[orrery] composer resolved an empty frame after resize — rebuilding on the safe target');
+      composerSafeTarget = true;
+      disposeComposer();
+      ensureComposer();
+    } else {
+      console.warn('[orrery] safe composer still empty after resize — rendering without post-processing');
+      disposeComposer();
+    }
+    tuneSunGlowForComposer(perfTier);
+    if (composer) composer.render(); else renderer.render(scene, camera);
+  }
+
+  function afterComposerFrame() {
+    if (composerVerifyPending > 0 && --composerVerifyPending === 0) verifyComposerFrame();
   }
 
   function tryCreateRadialBlurPass(aspect) {
@@ -8330,6 +8418,8 @@ const FinishShader = {
     if (composer) {
       composer.setPixelRatio(dpr);
       composer.setSize(w, h);
+      // Re-check the composer output once the resized target has settled.
+      composerVerifyPending = 2;
     }
     if (bloomPass) bloomPass.resolution.set(w, h);
     if (radialBlurPass) radialBlurPass.uniforms.uAspect.value = w / Math.max(h, 1);
@@ -8828,6 +8918,7 @@ const FinishShader = {
     // This renderer itself is always single-engine: no canvas substitution is
     // possible after module selection, regardless of the caller's legacy flags.
     fatalReported = false;
+    if (options.cinematicComposer) cinematicComposerRequested = true;
     if (options.spaceFlight) {
       spaceFlightMode = true;
       masterclassMode = true;
@@ -10783,6 +10874,10 @@ const FinishShader = {
       }
     },
     isWebGL: true,
+    // Read-only introspection for the resize proof: a run with no composer in the
+    // pipeline (low tier / reduced motion) is not testing the composer.
+    hasComposer: () => !!composer,
+    usesCinematicComposer: () => !!composer && !!bloomPass,
     getMasterclassZoom: () => masterclassZoom,
     setMasterclassZoom,
     setMasterclassMode,

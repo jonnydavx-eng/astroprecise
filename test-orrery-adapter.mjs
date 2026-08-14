@@ -123,7 +123,10 @@ if (A.includes('transition:opacity .45s ease')) fail('Home still fades an unsett
 if (!/function frameBody\(t\)\s*\{\s*let announceInstrumentFirstFrame = false;/.test(W)) {
   fail('Home first-frame announcement state is scoped inside the render body');
 }
-if (!/if \(composer\) composer\.render\(\);\s*else renderer\.render\(scene, camera\);\s*if \(announceInstrumentFirstFrame\) dispatchOrreryFirstFrame\(\);/.test(W)) {
+// The post-resize composer frame guard runs between the render and the
+// announcement; what this pins is that nothing announces a first frame before
+// the buffer has actually been rendered.
+if (!/if \(composer\) composer\.render\(\);\s*else renderer\.render\(scene, camera\);\s*(afterComposerFrame\(\);\s*)?if \(announceInstrumentFirstFrame\) dispatchOrreryFirstFrame\(\);/.test(W)) {
   fail('Home announces first frame before the settled buffer is rendered');
 }
 if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 96 : 84;') || !W.includes('camRadius: SYSTEM_CAM_RADIUS, camMin: 48')) {
@@ -222,9 +225,9 @@ for (const probe of ["['sky-events.html', 'Events', 'eclipse']", '(min-width: 98
   if (!navModel.includes(probe)) fail('four-route mobile navigation missing: ' + probe);
 }
 if (!livingCss.includes('repeat(4, minmax(0, 1fr))')) fail('mobile navigation is not four equal tabs');
-if (navModel.includes("[\'horoscope.html\', \'Daily\']")) fail('Daily must not be a launch route');
-if (navModel.includes("[\'lifepath.html\'")) fail('Life Path must not leak into nav extras');
-if (navModel.includes("[\'synastry.html\'")) fail('Synastry must not leak into nav extras');
+if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a launch route');
+if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
+if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
 if (!sw.includes('const V = "ap-v872"')) fail('service worker release identity is not ap-v872');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
