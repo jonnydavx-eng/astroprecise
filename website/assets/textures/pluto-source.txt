@@ -1,0 +1,67 @@
+Pluto equirectangular map — New Horizons global colour mosaic (NASA / JHUAPL / SwRI)
+Local texture replacement only. No SKUs.
+
+Pluto
+  Product: "Pluto Global Color Map" (JPL Photojournal PIA11707), released 2017-01-19
+  File:    pluto_color_mapmosaic.jpg
+  URL:     https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/p/l/pluto_color_mapmosaic.jpg
+  Pages:   https://science.nasa.gov/resource/pluto-global-color-map/
+           https://www.jpl.nasa.gov/images/pia11707-pluto-color-map/
+  Source md5: b9750ba31744cd4948f998439b3c47db  (3,972,946 bytes, 5926x2963)
+
+Instrument: Ralph / Multispectral Visible Imaging Camera (MVIC), three colour filters,
+New Horizons Pluto flyby 2015-07-14. Mosaic assembled by JHUAPL / SwRI.
+
+License: NASA imagery — public domain. Credit required as
+"NASA / Johns Hopkins APL / SwRI".
+
+Projection: equirectangular, native 5926x2963 (exactly 2:1). Longitude runs 0-360 with
+0 deg at the left edge, so IAU longitude 180 lands at map centre — Sputnik Planitia (the
+left lobe of the "heart") sits at the centre, which matches the NASA caption and the USGS
+mosaic convention. Verified from the pixels, not assumed.
+
+Processing: ffmpeg lanczos resize only. No painting, no colour grading, no invented terrain.
+  pluto.jpg      ffmpeg -i src -vf scale=2048:1024:flags=lanczos -pix_fmt yuvj444p -q:v 2
+  pluto.webp     ffmpeg -i src -vf scale=2048:1024:flags=lanczos -c:v libwebp -quality 86 -compression_level 6
+  pluto_md.webp  ffmpeg -i src -vf scale=1024:512:flags=lanczos  -c:v libwebp -quality 84 -compression_level 6
+  pluto_sm.jpg   ffmpeg -i src -vf scale=512:256:flags=lanczos   -pix_fmt yuvj420p -q:v 4
+  pluto_sm.webp  ffmpeg -i src -vf scale=512:256:flags=lanczos   -c:v libwebp -quality 82 -compression_level 6
+
+Coverage note (measured, not guessed):
+Everything south of about -55 deg latitude is black, and rows are only fully populated from
++90 down to about -29 deg. 30% of the map area carries no data. That is real: Pluto's
+southern hemisphere was in polar night during the flyby and was never imaged. The missing
+hemisphere was NOT painted in. A globe using this map will show an unlit southern cap —
+that is Pluto as New Horizons actually saw it.
+
+Thin horizontal cut below the heart (checked twice, 2026-08-14 — official, not ours):
+There is a sharp horizontal discontinuity crossing the terrain south of Sputnik Planitia,
+plus a fainter hairline through the dark Cthulhu Macula.
+Located precisely: the strongest row-to-row step in the region sits at y=685 of 1024, i.e.
+latitude -30.4 deg. That is the same latitude where full-longitude coverage ends (rows are
+only fully populated from +90 down to about -29), so the cut IS the official mosaic's
+coverage boundary — below it the product carries partial then no data.
+Proved it is not ours, two ways:
+  - Region diff between the shipped 2048x1024 file and the 5926x2963 original resized the
+    same way: 1.72/255 mean, max 24 — JPEG requantisation, no structure added.
+  - Row-step comparison at the cut: the source steps 17.51 and ours 17.44. Across the whole
+    region our largest excess over the source is 0.5/255, spread evenly, with no localised
+    jump anywhere. A convert artefact would show as one row where ours steps and the source
+    does not. There is none.
+Leave it: removing it would mean retouching NASA's mosaic, and it marks a real edge of
+coverage rather than hiding one.
+
+Wrap convention (correct, unlike the OPAL maps):
+This map is an exclusive 0-360 grid — column 0 and the last column differ about as much as any
+ordinary neighbouring pair (3.83 vs 2.36 at full resolution), so there is no duplicated
+meridian and the texture tiles correctly. The wrap gap in the shipped 2048 file sits at the
+36th percentile of all column-to-column steps, i.e. the seam is unremarkable. A periodic
+resample was tried and moved it to the 46th percentile — no visible gain, so not shipped.
+
+Why the colour mosaic and not the higher-resolution USGS product:
+USGS Astrogeology also publishes a 300 m/px global mosaic
+(https://planetarymaps.usgs.gov/mosaic/Pluto_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif,
+296 MB, public domain, LORRI + MVIC). It is far sharper but single-band panchromatic —
+grayscale only. Using it would mean either a grey Pluto or inventing a colour tint, so the
+real MVIC colour mosaic was chosen instead. The USGS grayscale mosaic and its matching DEM
+remain the right source if a height/detail pass is ever wanted.
