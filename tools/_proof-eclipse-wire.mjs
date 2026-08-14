@@ -55,7 +55,7 @@ for (const file of [
 if (!/Date\.UTC\(2026, 7, 12, 17, 45, 51\)/.test(geometryJs)) {
   fails.push('eclipse geometry maximum is not 17:45:51 UTC');
 }
-if (!/const V\s*=\s*["']ap-v874["']/.test(sw)) fails.push('SW tip is not exactly ap-v874');
+if (!/const V\s*=\s*["']ap-v873["']/.test(sw)) fails.push('SW tip is not exactly ap-v873');
 if (/Unique high-resolution eclipse artwork/.test(editionJs)) fails.push('locked upsell still sells eclipse artwork');
 if (!/Unique high-resolution natal-wheel plate/.test(editionJs)) fails.push('locked upsell missing natal-wheel plate');
 if (!/aria-describedby="eclipseContactStatus"/.test(eclipseHtml)) fails.push('contact submit missing status describedby');
