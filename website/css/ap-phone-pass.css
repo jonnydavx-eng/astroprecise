@@ -49,7 +49,7 @@
   .ap-shop-notify p,
   .ap-shop-status,
   .ap-eclipse-hero .ap-eclipse-page-shell > p:not(.ap-eclipse-kicker),
-  .ap-eclipse-live__chapter p,
+  html body .ap-eclipse-live__chapter p,
   .ap-eclipse-guide article p,
   .ap-eclipse-next article p,
   .ap-angles ol,
@@ -134,3 +134,4 @@
     overflow: visible;
   }
 }
+

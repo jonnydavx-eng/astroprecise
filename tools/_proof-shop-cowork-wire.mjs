@@ -40,7 +40,7 @@ if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains ge
 if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
 if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
 if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v863["']/.test(sw)) fails.push('SW tip is not exactly v862');
+if (!/const V\s*=\s*["']ap-v864["']/.test(sw)) fails.push('SW tip is not exactly v862');
 if (/tags',\s*'checkout-open'/.test(shop)) fails.push('shop notify tag still says checkout-open');
 if (!/tags',\s*'eclipse-notes'/.test(shop)) fails.push('shop notify tag must match eclipse-notes copy');
 const unlock = readFileSync('website/js/gumroad-unlock.js', 'utf8');

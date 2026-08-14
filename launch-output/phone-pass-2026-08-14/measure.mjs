@@ -14,7 +14,6 @@ mkdirSync(SHOTS, { recursive: true });
 
 const PAGES = [
   { id: 'home', path: '/index.html?nosw=1', wait: '#orr, .ap-model-stage, body' },
-  { id: 'observatory-redirect', path: '/observatory.html?nosw=1', wait: 'body' },
   { id: 'compatibility', path: '/compatibility.html?nosw=1', wait: 'body' },
   { id: 'chart', path: '/chart.html?nosw=1', wait: 'body' },
   { id: 'tonight', path: '/tonight.html?nosw=1', wait: 'body' },
@@ -59,6 +58,22 @@ const TAP_SELECTORS = [
   'a.btn',
 ];
 
+const COPY_SELECTORS = [
+  '.ap-live-copy',
+  '.standfirst',
+  '.chart-hero__subtitle',
+  '.tn-hero__sub',
+  '.tn-section__sub',
+  '.tn-honesty',
+  '.ap-shop-lede',
+  '.ap-eclipse-live__chapter p',
+  '.ap-eclipse-guide article p',
+  'main .lede',
+  'main .ap-lede',
+  '.ap-product__body > p',
+  'main p',
+];
+
 function rgbTuple(bg) {
   const m = String(bg).match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
   if (!m) return null;
@@ -69,9 +84,9 @@ function looksBlueOrPurple(bg) {
   const t = rgbTuple(bg);
   if (!t) return false;
   const [r, g, b] = t;
-  if (r + g + b < 40) return false; // near-void
-  if (b > r + 25 && b > g + 10) return true; // blue-leaning
-  if (r > 80 && b > 80 && g < r - 20 && g < b - 20) return true; // purple
+  if (r + g + b < 40) return false;
+  if (b > r + 25 && b > g + 10) return true;
+  if (r > 80 && b > 80 && g < r - 20 && g < b - 20) return true;
   return false;
 }
 
@@ -116,11 +131,22 @@ for (const spec of PAGES) {
     errors.push(`goto: ${e.message}`);
   }
 
-  const measure = await page.evaluate(({ STAGE_SELECTORS, TAP_SELECTORS }) => {
+  const measure = await page.evaluate(({ STAGE_SELECTORS, TAP_SELECTORS, COPY_SELECTORS }) => {
     const cs = (el) => (el ? getComputedStyle(el) : null);
     const px = (v) => (v ? parseFloat(v) : null);
     const body = document.body;
-    const p = document.querySelector('p, .ap-live-copy, .lede, .ap-lede, main p');
+    const chromeRe = /skip|sr-only|visually-hidden|eyebrow|kicker|timecode|hint|chrome|nav|logo|dock|ledger/i;
+    let copy = null;
+    for (const sel of COPY_SELECTORS) {
+      const found = Array.from(document.querySelectorAll(sel)).find((el) => {
+        const t = (el.innerText || '').replace(/\s+/g, ' ').trim();
+        if (t.length < 24) return false;
+        if (chromeRe.test(el.className || '') || chromeRe.test(el.id || '')) return false;
+        const r = el.getBoundingClientRect();
+        return r.width > 40 && r.height > 8;
+      });
+      if (found) { copy = found; break; }
+    }
     const h1 = document.querySelector('h1, .ap-live-heading');
     const wordmark = document.querySelector('.logo-text, .navbar__logo, [aria-label*="AstroPrecise"]');
     const wordmarkText = wordmark ? (wordmark.innerText || wordmark.textContent || '').replace(/\s+/g, ' ').trim() : '';
@@ -144,6 +170,10 @@ for (const spec of PAGES) {
         });
       });
     }
+    const primaryStage = stages.find((s) =>
+      (s.sel === '.ap-model-stage' || s.sel === '#orr' || s.sel === '.ap-eclipse-live__stage') &&
+      s.h > 0 && s.display !== 'none'
+    ) || stages.find((s) => s.tag === 'canvas' && s.h > 0) || null;
 
     const taps = [];
     const seen = new Set();
@@ -199,21 +229,6 @@ for (const spec of PAGES) {
       });
     });
 
-    const navTabs = [];
-    document.querySelectorAll('.bottom-nav a, .ap-bottom-nav a, #bottom-nav a, [data-ap-tab], .ap-mobile-nav a, nav.ap-tabs a, .navbar__nav a.navbar__link').forEach((el) => {
-      const r = el.getBoundingClientRect();
-      const st = getComputedStyle(el);
-      navTabs.push({
-        text: (el.innerText || el.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim().slice(0, 40),
-        w: Math.round(r.width),
-        h: Math.round(r.height),
-        display: st.display,
-        vis: st.visibility,
-        href: el.getAttribute('href') || '',
-      });
-    });
-
-    const hashInvite = document.querySelector('.ap-hash-invite, #hash-invite, [data-hash-invite], .hash-invite, #compat-invite, .ap-invite');
     const overflowers = [];
     const vw = window.innerWidth;
     document.querySelectorAll('body *').forEach((el) => {
@@ -230,7 +245,7 @@ for (const spec of PAGES) {
     overflowers.sort((a, b) => b.w - a.w);
 
     const bodyCs = cs(body);
-    const pCs = cs(p);
+    const copyCs = cs(copy);
     const h1Cs = cs(h1);
 
     return {
@@ -238,10 +253,10 @@ for (const spec of PAGES) {
       url: location.href,
       bodyFont: bodyCs ? px(bodyCs.fontSize) : null,
       bodyColor: bodyCs ? bodyCs.color : null,
-      pFont: pCs ? px(pCs.fontSize) : null,
-      pText: p ? (p.innerText || '').slice(0, 80) : '',
+      pFont: copyCs ? px(copyCs.fontSize) : null,
+      pText: copy ? (copy.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 80) : '',
       h1Font: h1Cs ? px(h1Cs.fontSize) : null,
-      h1Text: h1 ? (h1.innerText || '').slice(0, 80) : '',
+      h1Text: h1 ? (h1.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 80) : '',
       wordmarkText,
       wordmarkLines,
       wordmarkW: wordmarkBox ? Math.round(wordmarkBox.width) : null,
@@ -251,32 +266,25 @@ for (const spec of PAGES) {
       innerW: window.innerWidth,
       innerH: window.innerHeight,
       stages,
+      primaryStage,
       taps: taps.slice(0, 40),
       smallestTap: taps[0] || null,
       tapsUnder44: taps.filter((t) => t.min < 44).slice(0, 20),
       primaries,
       inputs,
       inputOverflow: inputs.filter((i) => i.w > vw + 2 || i.right > vw + 4),
-      navTabs,
-      hashInvite: hashInvite ? {
-        sel: hashInvite.id || hashInvite.className,
-        text: (hashInvite.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 120),
-        w: Math.round(hashInvite.getBoundingClientRect().width),
-        h: Math.round(hashInvite.getBoundingClientRect().height),
-      } : null,
       overflowers: overflowers.slice(0, 12),
       orrEngine: document.getElementById('orr')?.getAttribute('data-engine') || null,
       orrReady: document.getElementById('orr')?._ready === true,
       canvas: (() => {
-        const c = document.querySelector('#orr canvas, .ap-model-stage canvas, canvas');
+        const c = document.querySelector('#orr canvas, .ap-model-stage canvas, .ap-eclipse-live__stage canvas, canvas');
         if (!c) return null;
         const r = c.getBoundingClientRect();
         return { w: Math.round(r.width), h: Math.round(r.height), cw: c.width, ch: c.height };
       })(),
     };
-  }, { STAGE_SELECTORS, TAP_SELECTORS });
+  }, { STAGE_SELECTORS, TAP_SELECTORS, COPY_SELECTORS });
 
-  // leftover blue/purple on primaries
   if (measure && measure.primaries) {
     measure.bluePrimaries = measure.primaries.filter((p) => looksBlueOrPurple(p.bg));
   }
@@ -290,7 +298,7 @@ for (const spec of PAGES) {
     if (await toggle.count()) {
       await toggle.click({ timeout: 4000 });
       await page.waitForTimeout(450);
-      drawer = await page.evaluate(() => {
+      const snap = async () => page.evaluate(() => {
         const menu = document.getElementById('nav-mobile-menu');
         const tog = document.querySelector('.navbar__toggle');
         if (!menu) return { missing: true };
@@ -312,6 +320,16 @@ for (const spec of PAGES) {
           first: links.slice(0, 4),
         };
       });
+      const openSnap = await snap();
+      await page.waitForTimeout(1100);
+      const staySnap = await snap();
+      drawer = {
+        ...openSnap,
+        stayedOpen: !!(staySnap && staySnap.openClass && staySnap.expanded === 'true' && staySnap.h > 80 && staySnap.visibleLinks > 0),
+        stayH: staySnap ? staySnap.h : 0,
+        stayExpanded: staySnap ? staySnap.expanded : null,
+        stayVisibleLinks: staySnap ? staySnap.visibleLinks : 0,
+      };
       await page.screenshot({ path: join(SHOTS, `${spec.id}-drawer.png`), fullPage: false }).catch(() => {});
     }
   } catch (e) {
@@ -327,7 +345,8 @@ for (const spec of PAGES) {
     ...measure,
   });
   await context.close();
-  console.log(`measured ${spec.id} status=${status} scrollW=${measure?.scrollW} body=${measure?.bodyFont} p=${measure?.pFont} h1=${measure?.h1Font} stageH=${measure?.stages?.[0]?.h} taps<44=${measure?.tapsUnder44?.length}`);
+  const stg = measure?.primaryStage;
+  console.log(`measured ${spec.id} status=${status} scrollW=${measure?.scrollW} body=${measure?.bodyFont} copy=${measure?.pFont} h1=${measure?.h1Font} stage=${stg ? (stg.w + 'x' + stg.h) : 'none'} taps<44=${measure?.tapsUnder44?.length} drawerStay=${measure?.drawer?.stayedOpen} orr=${measure?.orrEngine}`);
 }
 
 await browser.close();
