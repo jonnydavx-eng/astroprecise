@@ -1574,6 +1574,8 @@ const FinishShader = {
     if (!introActive) return;
     if (preloaderIntroWatchdog) { clearTimeout(preloaderIntroWatchdog); preloaderIntroWatchdog = null; }
     introActive = false;
+    applyCrossingAtmo(0);
+    applyCrossingSun(0);
     syncPreloaderIntroClass(false);
     syncHeroReplayClass(false);
     updateScaleHUD();
@@ -6829,6 +6831,79 @@ const FinishShader = {
     }
   }
 
+  function crossingSmooth(a, b, x) {
+    const t = Math.max(0, Math.min(1, (x - a) / Math.max(1e-6, b - a)));
+    return t * t * (3 - 2 * t);
+  }
+
+  function applyCrossingAtmo(falloff) {
+    const f = Math.max(0, Math.min(1, falloff));
+    if (earthAtmoMat && earthAtmoMat.uniforms && earthAtmoMat.uniforms.uIntensity) {
+      earthAtmoMat.uniforms.uIntensity.value = 1.22 * (1 - f);
+    }
+    if (earthAtmoMatOuter && earthAtmoMatOuter.uniforms && earthAtmoMatOuter.uniforms.uIntensity) {
+      earthAtmoMatOuter.uniforms.uIntensity.value = 0.22 * (1 - f);
+    }
+  }
+
+  function applyCrossingSun(star) {
+    const s = Math.max(0, Math.min(1, star));
+    if (sunMesh) sunMesh.scale.setScalar(Math.max(0.14, 1 - s * 0.78));
+    if (sunGlow && sunGlow.length) {
+      sunGlow.forEach((sp, i) => {
+        if (!sp.material) return;
+        const base = i === 0 ? 0.22 : i === 1 ? 0.10 : 0.04;
+        sp.material.opacity = base * (1 - s * 0.62);
+        sp.userData.baseOpa = sp.material.opacity;
+      });
+    }
+  }
+
+  // Authored Earth → system shot. Holds and beats, not a scale-preset lerp.
+  function applyAuthoredEarthSystemCrossing(p) {
+    const end = scalePreset(2);
+    const earthPos = meshes.earth ? meshes.earth.position : ORIGIN;
+    let atmoF = 0, sunStar = 0, expos = perfTier === 'high' ? 1.26 : 1.18;
+
+    if (p < 0.14) {
+      setEarthTerminatorCamera(2.35, 4 * D2R);
+    } else if (p < 0.36) {
+      const e = crossingSmooth(0.14, 0.36, p);
+      setEarthTerminatorCamera(2.35 + 3.05 * e, (4 + 6 * e) * D2R);
+      atmoF = e * 0.78;
+      expos = (perfTier === 'high' ? 1.26 : 1.18) - e * 0.24;
+    } else if (p < 0.48) {
+      setEarthTerminatorCamera(5.4, 10 * D2R);
+      atmoF = 0.78 + crossingSmooth(0.36, 0.48, p) * 0.14;
+      sunStar = 0.10;
+      expos = perfTier === 'high' ? 1.02 : 0.96;
+    } else if (p < 0.78) {
+      const e = crossingSmooth(0.48, 0.78, p);
+      setEarthTerminatorCamera(5.4 + 2.8 * e, (10 + 6 * e) * D2R);
+      const termAz = camAz, termEl = camEl, termRad = camRadius;
+      const pull = e * e * (3 - 2 * e);
+      camTarget.lerpVectors(earthPos, ORIGIN, pull);
+      camRadius = termRad + (end.camRadius - termRad) * pull;
+      camEl = termEl + (end.camEl - termEl) * e;
+      camAz = termAz * (1 - e) + end.camAz * e;
+      atmoF = 0.92 + e * 0.08;
+      sunStar = 0.10 + e * 0.90;
+      expos = (perfTier === 'high' ? 1.02 : 0.96) + e * 0.10;
+    } else {
+      camTarget.copy(ORIGIN);
+      camRadius = end.camRadius;
+      camEl = end.camEl;
+      camAz = end.camAz;
+      atmoF = 1;
+      sunStar = 0;
+      expos = perfTier === 'high' ? 1.12 : 1.06;
+    }
+
+    applyCrossingAtmo(atmoF);
+    applyCrossingSun(sunStar);
+    if (renderer && !instrumentMode) renderer.toneMappingExposure = expos;
+  }
+
   function applyIntroVisuals(p, t) {
     const p0 = onPreloaderStage() ? 0.18 : 0.18;
     if (p < p0) {
@@ -7594,21 +7669,8 @@ const FinishShader = {
             camEl = termEl + (end.camEl - termEl) * e;
             camAz = termAz * (1 - e) + end.camAz * e;
           }
-        } else if (p < 0.18) {
-          setEarthTerminatorCamera(2.35, 4 * D2R);
-        } else if (p < 0.55) {
-          const e = easeInOut((p - 0.18) / 0.37);
-          setEarthTerminatorCamera(2.35 + (6.5 - 2.35) * e, (4 * D2R) + (12 * D2R - 4 * D2R) * e);
-        } else {                                 // STAGE 2 hero replay — Earth → system overview
-          const e = easeOutCubic((p - 0.55) / 0.45);
-          const earthPos = meshes.earth.position;
-          const end = scalePreset(2);
-          setEarthTerminatorCamera(6.5, 11 * D2R);
-          const termAz = camAz, termEl = camEl, termRad = camRadius;
-          camTarget.lerpVectors(earthPos, ORIGIN, e);
-          camRadius = termRad + (end.camRadius - termRad) * e;
-          camEl = termEl + (end.camEl - termEl) * e;
-          camAz = termAz * (1 - e) + end.camAz * e;
+        } else {
+          applyAuthoredEarthSystemCrossing(p);
         }
         if (bloomPass && composer && !instrumentMode) {
           if (p < 0.55) {
@@ -7620,9 +7682,8 @@ const FinishShader = {
             bloomPass.threshold = perfTier === 'mid' ? 0.88 - e2 * 0.04 : 0.84 - e2 * 0.04;
           }
         }
-        if (!onPreloaderStage() && renderer && !instrumentMode) {
-          renderer.toneMappingExposure = (perfTier === 'high' ? 1.12 : 1.08) + Math.min(p, 0.55) * 0.06;
-        }
+        // Home crossing exposure is authored in applyAuthoredEarthSystemCrossing.
+
         applyIntroVisuals(p, t);
         if (window.__orreryPreloaderOwns) updateIntroProgress(p);
         updateDomLabels(p);
