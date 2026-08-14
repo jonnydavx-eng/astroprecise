@@ -8,7 +8,7 @@
  * New Horizons.
  */
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const bin = (path) => readFileSync(new URL(path, import.meta.url));
@@ -139,18 +139,39 @@ for (const body of ['uranus', 'neptune', 'pluto']) {
   assert.equal(new RegExp(`\\b${body}\\b`, 'i').test(sssSection[0]), false,
     `${body} must not be attributed to Solar System Scope`);
 }
-// Forward guard for the gas giants. Jupiter and Saturn are Solar System Scope maps today.
-// If real Hubble maps land, they will arrive with a provenance note beside them — and at
-// that moment the Solar System Scope attribution becomes false, exactly as it did for the
-// ice giants. This is inert until that note exists, then it fails until credits catch up.
-// `\bsaturn\b` deliberately does not match `saturn_ring`, which stays Solar System Scope.
-if (existsSync(new URL(`${TEX}gas-giants-source.txt`, import.meta.url))) {
-  const gasNote = read(`${TEX}gas-giants-source.txt`);
-  assert.ok(/OPAL|Hubble|NASA/i.test(gasNote), 'gas-giant note must name the programme it came from');
-  assert.ok(/DOI|dx\.doi\.org|10\.\d{4,}/i.test(gasNote), 'gas-giant note must cite a resolvable source identifier');
-  for (const body of ['jupiter', 'saturn']) {
+/**
+ * Forward guard, so a real map can never sit under the wrong credit.
+ *
+ * Maps arrive in batches, each with a `*-source.txt` note beside it. The moment such a
+ * note exists for a body, crediting that body to Solar System Scope becomes false — which
+ * is exactly how the ice-giant credit went stale and had to be fixed. Keyed on the note
+ * filename rather than its prose, because notes mention other bodies in passing (the
+ * ice-giant note says Uranus's south is "turned away from Earth", which a content scan
+ * would read as an Earth claim).
+ *
+ * Word boundaries matter here and are deliberate: `\bearth\b` does not match
+ * `earth_clouds`/`earth_lights`/`earth_normal`/`earth_specular`, and `\bsaturn\b` does not
+ * match `saturn_ring`. Those overlays and the ring stay Solar System Scope even when the
+ * body map underneath them does not.
+ */
+const NOTE_BODIES = {
+  'ice-giants-source.txt': ['uranus', 'neptune'],
+  'pluto-source.txt': ['pluto'],
+  'gas-giants-source.txt': ['jupiter', 'saturn'],
+  'nasa-rocky-source.txt': ['mercury', 'venus', 'earth', 'moon', 'mars'],
+};
+for (const note of readdirSync(new URL(TEX, import.meta.url)).filter((f) => f.endsWith('-source.txt'))) {
+  const bodies = NOTE_BODIES[note];
+  assert.ok(bodies, `unknown provenance note ${note} — add it to NOTE_BODIES so the bodies it covers `
+    + 'are checked against the Solar System Scope credit');
+  const noteText = read(TEX + note);
+  assert.ok(/OPAL|Hubble|NASA|USGS|New Horizons/i.test(noteText),
+    `${note} must name the programme or archive its maps came from`);
+  assert.ok(/DOI|dx\.doi\.org|10\.\d{4,}|https?:\/\//i.test(noteText),
+    `${note} must cite a resolvable source URL or identifier`);
+  for (const body of bodies) {
     assert.equal(new RegExp(`\\b${body}\\b`, 'i').test(sssSection[0]), false,
-      `${body} now has its own provenance note — it must not still be credited to Solar System Scope`);
+      `${body} has a provenance note (${note}) — it must not still be credited to Solar System Scope`);
   }
 }
 

@@ -16,15 +16,26 @@ Files: `assets/textures/{mercury,venus,earth,earth_clouds,earth_lights,earth_nor
 earth_specular,mars,jupiter,saturn,saturn_ring,moon}.*`. Maps were
 downscaled/recompressed for web delivery; no other changes.
 
-**Jupiter and Saturn — owner-managed, do not let this section overwrite it.** This
-branch carries the July Solar System Scope encodes for both (verified byte-identical
-to base; no `assets/textures/gas-giants-source.txt` present here), which is why they
-are listed above. The project owner reports restored **Hubble OPAL** encodes for
-Jupiter and Saturn. If this branch merges into a tree that has those maps, keep that
-tree's Hubble OPAL attribution and remove `jupiter,saturn` from the Solar System Scope
-list above — this branch could not verify OPAL for them and deliberately does not
-claim it either way. `test-planet-maps.mjs` enforces the move automatically as soon as
-`gas-giants-source.txt` exists. `saturn_ring` stays Solar System Scope regardless.
+**Owner-managed bodies — do not let this section overwrite their credit.** The project
+owner reports replacement maps that have not reached this branch:
+
+| Bodies | Owner's source | Note file expected |
+|---|---|---|
+| Jupiter, Saturn | Hubble OPAL (larger encodes) | `gas-giants-source.txt` |
+| Mercury, Venus, Earth, Moon, Mars | NASA / USGS | `nasa-rocky-source.txt` |
+
+All of those maps are byte-identical to base here and neither note file exists on this
+branch, so they are listed above under Solar System Scope because that is what the
+files here actually are. **This branch deliberately claims nothing about the owner's
+versions either way** — it could not verify them. On merge into a tree that has them,
+keep that tree's attribution and remove those body names from the Solar System Scope
+list above.
+
+`test-planet-maps.mjs` enforces the move automatically: as soon as a `*-source.txt`
+note appears for a body, that body must leave this section. It spares the pieces that
+stay Solar System Scope even when the body map underneath changes — `saturn_ring`, and
+the Earth overlays `earth_clouds`, `earth_lights`, `earth_normal` and `earth_specular`,
+which the owner confirms were not part of the rocky-map write.
 
 **Attribution requirement:** CC BY 4.0 requires visible credit. The site footer
 (`js/ap-footer-inject.js`) carries it:
