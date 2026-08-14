@@ -704,6 +704,7 @@ const FinishShader = {
   let natalClockSpec = { a: null, b: null };
   let natalClockGroup = null;     // separate layer; not ghostMeshes
   const natalClockMeshes = { a: {}, b: {} };
+  let birthHourMarker = null;     // capture-only EARTH label for the authored whole-system still
   let trailsGroup = null;           // per-planet motion trails (fade behind moving planets)
   const trailState = {};            // id → { positions: Float32Array, line, head, count }
   let trailsActive = false;         // true only while the visitor is scrubbing time
@@ -6936,6 +6937,148 @@ const FinishShader = {
     }
   }
 
+  function cssToken(name) {
+    try { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    catch (e) { return ''; }
+  }
+
+  function ensureBirthHourMarker() {
+    if (birthHourMarker || !scene) return birthHourMarker;
+    const markerCanvas = document.createElement('canvas');
+    markerCanvas.width = 384;
+    markerCanvas.height = 192;
+    const ctx = markerCanvas.getContext('2d');
+    if (!ctx) return null;
+    const brass = cssToken('--ap-brass');
+    const paper = cssToken('--ap-paper');
+    if (!brass || !paper) return null;
+
+    ctx.clearRect(0, 0, markerCanvas.width, markerCanvas.height);
+    ctx.strokeStyle = brass;
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(72, 72, 30, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(72, 22);
+    ctx.lineTo(72, 42);
+    ctx.stroke();
+    ctx.fillStyle = paper;
+    ctx.font = '600 34px "Schibsted Grotesk", system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('EARTH', 122, 70);
+    ctx.fillStyle = brass;
+    ctx.font = '500 20px "IBM Plex Mono", ui-monospace, monospace';
+    ctx.fillText('HOME', 122, 108);
+
+    const texture = new THREE.CanvasTexture(markerCanvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.minFilter = THREE.LinearFilter;
+    const material = new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+      opacity: 0.92,
+    });
+    birthHourMarker = new THREE.Sprite(material);
+    birthHourMarker.name = 'birthHourEarthMarker';
+    birthHourMarker.scale.set(11, 5.5, 1);
+    birthHourMarker.renderOrder = 30;
+    birthHourMarker.visible = false;
+    scene.add(birthHourMarker);
+    return birthHourMarker;
+  }
+
+  // Authored gift frame: one fixed whole-system camera at an explicit JD.
+  // Planet angles and rotations come from the same ephemeris/true-time spine as
+  // the Observatory. Scene radii and body sizes remain the documented compressed
+  // orrery convention; the small EARTH · HOME label is an identifier, not a pin.
+  function applyAuthoredBirthHourStill(jd) {
+    if (!Number.isFinite(jd) || !scene || !camera) return false;
+    if (!allPlanetsBuilt) buildRemainingPlanets();
+
+    dayOffset = jd - baseJd;
+    scrollBias = 0;
+    daysPerSec = 0;
+    flicking = false;
+    needRecompute = false;
+    updatePositions();
+
+    BODIES.forEach((body) => {
+      const group = meshes[body.id];
+      if (!group) return;
+      group.visible = true;
+      if (group.userData && group.userData.mesh) {
+        group.userData.mesh.rotation.y = rotationPhaseRad(body.id, jd);
+        if (group.userData.focusRing) group.userData.focusRing.visible = false;
+      }
+      if (labels[body.id]) labels[body.id].visible = false;
+    });
+    earthUniforms.uCloudSpin.value = (CLOUD_DRIFT_RAD_PER_DAY * (jd - 2451545.0)) / (2 * Math.PI);
+
+    orbitLines.forEach((line) => { if (line) line.visible = true; });
+    eccentricGuides.forEach((line) => { if (line) line.visible = false; });
+    Object.keys(velocityArrows).forEach((id) => {
+      if (velocityArrows[id]) velocityArrows[id].visible = false;
+    });
+    Object.keys(ghostMeshes).forEach((id) => {
+      if (ghostMeshes[id]) ghostMeshes[id].visible = false;
+    });
+    if (moonGroup) moonGroup.visible = false;
+    if (earthOrbitGroup) earthOrbitGroup.visible = false;
+    if (asteroidPoints) asteroidPoints.visible = false;
+    if (extraBodiesGroup) extraBodiesGroup.visible = false;
+    if (halleyGroup) halleyGroup.visible = false;
+    if (trailsGroup) trailsGroup.visible = false;
+    if (aspectGroup) aspectGroup.visible = false;
+    if (aspectHelioGroup) aspectHelioGroup.visible = false;
+    if (natalClockGroup) natalClockGroup.visible = false;
+    if (sunFocusRing) sunFocusRing.visible = false;
+    if (moonFocusRing) moonFocusRing.visible = false;
+
+    if (starField) starField.visible = true;
+    if (starFieldFar) starFieldFar.visible = true;
+    if (milkyWayBand) milkyWayBand.visible = true;
+    if (sunMesh) {
+      sunMesh.visible = true;
+      sunMesh.scale.setScalar(0.22);
+    }
+    sunGlow.forEach((sprite, index) => {
+      if (!sprite) return;
+      sprite.visible = index === 0;
+      if (sprite.material) sprite.material.opacity = index === 0 ? 0.08 : 0;
+    });
+    if (sunCoronaGroup) sunCoronaGroup.visible = false;
+    if (sunCoronaMesh) sunCoronaMesh.visible = false;
+    if (sunPromGroup) sunPromGroup.visible = false;
+    if (sunHomeGlareMesh) sunHomeGlareMesh.visible = false;
+    if (instrumentFillLight) instrumentFillLight.intensity = 0;
+
+    const marker = ensureBirthHourMarker();
+    if (marker && meshes.earth) {
+      marker.position.copy(meshes.earth.position);
+      marker.position.y += 4.2;
+      marker.visible = true;
+    }
+
+    scaleLevel = 2;
+    scaleAnimActive = false;
+    introActive = false;
+    focusFrameId = null;
+    pendingFocusId = null;
+    moonFrameActive = false;
+    camTarget.copy(ORIGIN);
+    camRadius = scalePreset(2).camRadius;
+    camEl = 38 * D2R;
+    camAz = -0.72;
+    camera.fov = CAM_FOV_WIDE;
+    camera.updateProjectionMatrix();
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.08 : 1.02;
+    applyCamera();
+    return true;
+  }
+
   // Authored Earth → system shot. Holds and beats, not a scale-preset lerp.
   function applyAuthoredEarthSystemCrossing(p) {
     const end = scalePreset(2);
@@ -10465,6 +10608,7 @@ const FinishShader = {
     hemiLight = null;
     instrumentFillLight = null;
     instrumentFillTarget = null;
+    birthHourMarker = null;
     sunFocusRing = null;
     moonFocusRing = null;
     saturnRingMesh = null;
@@ -10540,6 +10684,121 @@ const FinishShader = {
     running = false;
     inView = false;
     window.__apOrreryIBL = false;
+  }
+
+  function captureFrame(opts) {
+    if (!renderer || !canvas) return null;
+    opts = opts || {};
+    const mult = opts.scale || 2;
+    const box = (window.RafCore && window.RafCore.canvasCssSize)
+      ? window.RafCore.canvasCssSize(canvas, 560)
+      : { w: canvas.clientWidth || 560, h: canvas.clientHeight || canvas.clientWidth || 560 };
+    const cssW = box.w;
+    const cssH = box.h;
+    const exportDpr = Math.min(orreryDPR() * mult, 3);
+    try {
+      renderer.setPixelRatio(exportDpr);
+      renderer.setSize(cssW, cssH, false);
+      applyCamera();
+      // Portrait stills must be TRUE-transparent for compositing behind engraved
+      // frames. The bloom/OutputPass composer bakes a constant background alpha
+      // (~92) across the frame, so portrait mode renders straight through the
+      // renderer (setClearColor 0,0 + premultiplied alpha → genuine alpha-0 void).
+      if (composer && !portraitMode) {
+        composer.setPixelRatio(exportDpr);
+        composer.setSize(cssW, cssH);
+        composer.render();
+      } else {
+        renderer.render(scene, camera);
+      }
+      const off = document.createElement('canvas');
+      off.width = Math.round(cssW * exportDpr);
+      off.height = Math.round(cssH * exportDpr);
+      const octx = off.getContext('2d');
+      octx.drawImage(canvas, 0, 0, off.width, off.height);
+      return off;
+    } finally {
+      resize();
+    }
+  }
+
+  function captureBirthHourStill(opts) {
+    opts = opts || {};
+    const jd = Number(opts.jd);
+    if (!Number.isFinite(jd) || !renderer || !canvas || !scene || !camera) return null;
+    if (!allPlanetsBuilt) buildRemainingPlanets();
+
+    const visibility = new Map();
+    scene.traverse((object) => { visibility.set(object, object.visible); });
+    const bodyRotations = new Map();
+    BODIES.forEach((body) => {
+      const mesh = meshes[body.id] && meshes[body.id].userData && meshes[body.id].userData.mesh;
+      if (mesh) bodyRotations.set(mesh, mesh.rotation.y);
+    });
+    const sunScale = sunMesh ? sunMesh.scale.clone() : null;
+    const glowOpacity = sunGlow.map((sprite) => sprite && sprite.material ? sprite.material.opacity : null);
+    const previous = {
+      dayOffset,
+      scrollBias,
+      daysPerSec,
+      flicking,
+      needRecompute,
+      scaleLevel,
+      scaleAnimActive,
+      introActive,
+      focusFrameId,
+      pendingFocusId,
+      moonFrameActive,
+      camTarget: camTarget.clone(),
+      camRadius,
+      camEl,
+      camAz,
+      camRadiusTarget,
+      fov: camera.fov,
+      exposure: renderer.toneMappingExposure,
+      cloudSpin: earthUniforms.uCloudSpin.value,
+      domLabelsVisibility: domLabelLayer ? domLabelLayer.style.visibility : '',
+    };
+
+    try {
+      if (domLabelLayer) domLabelLayer.style.visibility = 'hidden';
+      if (!applyAuthoredBirthHourStill(jd)) return null;
+      return captureFrame({ scale: opts.scale || 2 });
+    } finally {
+      dayOffset = previous.dayOffset;
+      scrollBias = previous.scrollBias;
+      daysPerSec = previous.daysPerSec;
+      flicking = previous.flicking;
+      scaleLevel = previous.scaleLevel;
+      scaleAnimActive = previous.scaleAnimActive;
+      introActive = previous.introActive;
+      focusFrameId = previous.focusFrameId;
+      pendingFocusId = previous.pendingFocusId;
+      moonFrameActive = previous.moonFrameActive;
+      camTarget.copy(previous.camTarget);
+      camRadius = previous.camRadius;
+      camEl = previous.camEl;
+      camAz = previous.camAz;
+      camRadiusTarget = previous.camRadiusTarget;
+      camera.fov = previous.fov;
+      camera.updateProjectionMatrix();
+      renderer.toneMappingExposure = previous.exposure;
+      earthUniforms.uCloudSpin.value = previous.cloudSpin;
+      updatePositions();
+      bodyRotations.forEach((rotation, mesh) => { mesh.rotation.y = rotation; });
+      visibility.forEach((visible, object) => { object.visible = visible; });
+      if (birthHourMarker && !visibility.has(birthHourMarker)) birthHourMarker.visible = false;
+      if (sunMesh && sunScale) sunMesh.scale.copy(sunScale);
+      sunGlow.forEach((sprite, index) => {
+        if (sprite && sprite.material && glowOpacity[index] != null) {
+          sprite.material.opacity = glowOpacity[index];
+        }
+      });
+      if (instrumentFillLight) instrumentFillLight.intensity = 0;
+      if (domLabelLayer) domLabelLayer.style.visibility = previous.domLabelsVisibility;
+      needRecompute = previous.needRecompute;
+      applyCamera();
+    }
   }
 
   window.Orrery3D = {
@@ -10710,41 +10969,8 @@ const FinishShader = {
     forceResize,
     containEarthFrame,
     refreshTextures,
-    captureFrame(opts) {
-      if (!renderer || !canvas) return null;
-      opts = opts || {};
-      const mult = opts.scale || 2;
-      const box = (window.RafCore && window.RafCore.canvasCssSize)
-        ? window.RafCore.canvasCssSize(canvas, 560)
-        : { w: canvas.clientWidth || 560, h: canvas.clientHeight || canvas.clientWidth || 560 };
-      const cssW = box.w;
-      const cssH = box.h;
-      const exportDpr = Math.min(orreryDPR() * mult, 3);
-      try {
-        renderer.setPixelRatio(exportDpr);
-        renderer.setSize(cssW, cssH, false);
-        applyCamera();
-        // Portrait stills must be TRUE-transparent for compositing behind engraved
-        // frames. The bloom/OutputPass composer bakes a constant background alpha
-        // (~92) across the frame, so portrait mode renders straight through the
-        // renderer (setClearColor 0,0 + premultiplied alpha → genuine alpha-0 void).
-        if (composer && !portraitMode) {
-          composer.setPixelRatio(exportDpr);
-          composer.setSize(cssW, cssH);
-          composer.render();
-        } else {
-          renderer.render(scene, camera);
-        }
-        const off = document.createElement('canvas');
-        off.width = Math.round(cssW * exportDpr);
-        off.height = Math.round(cssH * exportDpr);
-        const octx = off.getContext('2d');
-        octx.drawImage(canvas, 0, 0, off.width, off.height);
-        return off;
-      } finally {
-        resize();
-      }
-    },
+    captureFrame,
+    captureBirthHourStill,
     isWebGL: true,
     getMasterclassZoom: () => masterclassZoom,
     setMasterclassZoom,

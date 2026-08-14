@@ -479,6 +479,21 @@
     });
   }
 
+  function publishKeepSkyContext(chart) {
+    if (!chart || !Number.isFinite(Number(chart.jd)) || !chart.birthDate) return;
+    document.dispatchEvent(new CustomEvent('ap-keep-sky-context', {
+      detail: {
+        jd: Number(chart.jd),
+        birthDate: chart.birthDate,
+        birthTime: chart.birthTime || null,
+        timeKnown: chart.timeKnown === true,
+        timeAccuracy: chart.timeAccuracy || (chart.timeKnown ? 'exact' : 'unknown'),
+        place: chart.city || '',
+        timezone: chart.tz || ''
+      }
+    }));
+  }
+
   form.addEventListener('submit', ev => {
     ev.preventDefault();
     const input = readForm();
@@ -505,6 +520,7 @@
           window.APCanvasSeals.preload(sealSigns);
         }
         renderResults(currentChart);
+        publishKeepSkyContext(currentChart);
         // No updateShareURL() here any more. It used to replaceState() the
         // whole birth record — name, date, time, town, lat, lon, tz — into the
         // address bar on every calculation. Sharing never needed it: the Share
