@@ -71,8 +71,11 @@ const orreryWebgl = read('./website/js/orrery-webgl.js');
 assert.ok(chartHtml.includes('data-keep-mode="birth-hour"') && chartHtml.includes('id="keep-sky-caption"'));
 assert.ok(chartPage.includes("new CustomEvent('ap-keep-sky-context'"));
 assert.ok(keepSky.includes("'astroprecise-' + date + '.png'"));
-assert.ok(keepSky.includes('birth time unknown') && keepSky.includes('12:00 local date reference') &&
+assert.ok(keepSky.includes('birth time unknown') && keepSky.includes('12:00 UTC date reference') &&
   keepSky.includes('no precise Earth-facing hemisphere is claimed'));
+assert.ok(chartPage.includes("Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2], 12, 0, 0)") &&
+  chartPage.includes("chart.timeKnown === true"),
+  'unknown-time keepsake must use UTC noon while known time keeps the chart JD');
 assert.ok(keepSky.includes('Authored whole-system camera') && keepSky.includes('Earth marked as home'));
 assert.ok(orreryWebgl.includes('function applyAuthoredBirthHourStill(jd)'));
 assert.equal(/checkout|catalogueSkus|gumroad/i.test(keepSky), false,

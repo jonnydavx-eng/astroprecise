@@ -127,7 +127,7 @@ try {
   await page.evaluate((detail) => {
     document.dispatchEvent(new CustomEvent('ap-keep-sky-context', { detail }));
   }, {
-    jd: Date.UTC(1978, 2, 14, 3, 0) / 86400000 + 2440587.5,
+    jd: Date.UTC(1978, 2, 14, 12, 0) / 86400000 + 2440587.5,
     birthDate: '1978-03-14',
     birthTime: null,
     timeKnown: false,
@@ -137,10 +137,7 @@ try {
   });
   const unknownCaption = await page.locator('#keep-sky-caption').innerText();
   assert(unknownCaption.includes('birth time unknown'), 'unknown-time disclosure missing');
-  assert(unknownCaption.includes('12:00 local date reference (Asia/Tokyo)'),
-    'date-reference disclosure missing');
-  assert(unknownCaption.includes('computed at 1978-03-14 03:00 UTC'),
-    'unknown-time UTC reference missing');
+  assert(unknownCaption.includes('12:00 UTC date reference'), 'UTC date-reference disclosure missing');
   assert(unknownCaption.includes('no precise Earth-facing hemisphere is claimed'),
     'Earth-facing honesty disclosure missing');
   assert(errors.length === 0, errors.join('\n'));

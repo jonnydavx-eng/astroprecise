@@ -481,9 +481,13 @@
 
   function publishKeepSkyContext(chart) {
     if (!chart || !Number.isFinite(Number(chart.jd)) || !chart.birthDate) return;
+    const dateParts = String(chart.birthDate).split('-').map(Number);
+    const referenceJd = chart.timeKnown === true
+      ? Number(chart.jd)
+      : Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2], 12, 0, 0) / 86400000 + 2440587.5;
     document.dispatchEvent(new CustomEvent('ap-keep-sky-context', {
       detail: {
-        jd: Number(chart.jd),
+        jd: referenceJd,
         birthDate: chart.birthDate,
         birthTime: chart.birthTime || null,
         timeKnown: chart.timeKnown === true,
