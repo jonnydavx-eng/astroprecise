@@ -22,17 +22,28 @@
  * After the run it reloads the homepage normally and asserts the hero still renders
  * with zero page errors and isPortraitMode()===false (enterPortrait must not leak).
  *
- * Run:  node make-engine-stills.mjs [http://localhost:8790]
+ * Bodies with no engine mesh (Pluto) are shot by makeMapSphereStill instead: the real
+ * archived map on a lit three.js sphere, rendered alongside the engine rather than
+ * inside it. Nothing in this library is painted.
+ *
+ * Run:  node make-engine-stills.mjs [http://localhost:8790] [--only=pluto[,mars]]
+ *       --only re-shoots just those ids and merges them into the existing
+ *       manifest/report, leaving the other stills untouched.
  * Out:  website/img/engine/<id>.webp  +  website/img/engine/manifest.json
  *       + a JSON report to stdout.
  */
 import { chromium } from './visual-check/node_modules/playwright/index.mjs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { mkdirSync, writeFileSync, statSync } from 'fs';
+import { mkdirSync, writeFileSync, readFileSync, statSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BASE = process.argv[2] || 'http://localhost:8790';
+const ARGV = process.argv.slice(2);
+// --only=pluto[,mars] regenerates just those stills and merges them into the existing
+// manifest/report, so re-shooting one body cannot churn the other twelve.
+const ONLY = (ARGV.find((a) => a.startsWith('--only=')) || '').slice('--only='.length)
+  .split(',').map((s) => s.trim()).filter(Boolean);
+const BASE = ARGV.find((a) => !a.startsWith('--')) || 'http://localhost:8790';
 const OUT = join(__dirname, '..', 'website', 'img', 'engine');
 mkdirSync(OUT, { recursive: true });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -82,11 +93,15 @@ const JOBS = [
   // EARTH-MOON — flagship composed still: lit Earth + lit Moon sharing the frame.
   { id: 'earth-moon', frame: 'earthmoon', fillFrac: 0.70, date: '2026-03-20T12:00:00Z', altDate: '2026-03-28T12:00:00Z' },
 
-  // PLUTO — low-detail body. The engine has only 8 BODIES (no Pluto mesh), so a
-  // premium textured portrait is impossible. Scorpio falls back to Mars (its
-  // traditional ruler). We emit a dignified generated Pluto disc (see makePlutoStill)
-  // so the library is complete, and note the fallback in the manifest.
-  { id: 'pluto',   frame: 'generated', fillFrac: 0.66, date: '2026-03-20T12:00:00Z', altDate: null, generated: true },
+  // PLUTO — the engine still has only 8 BODIES (no Pluto mesh), so enterPortrait()
+  // cannot frame it and a real map is the only honest route. Rendered outside the
+  // engine from the New Horizons colour mosaic (see makeMapSphereStill) rather than
+  // painted. Scorpio still falls back to Mars (its traditional ruler).
+  // turnDeg/tiltDeg put Sputnik Planitia on the lens with the IAU north tilted toward
+  // it, which is how New Horizons actually saw Pluto and which leaves the hemisphere
+  // the flyby never imaged behind the lower limb — hidden by curvature, not painted.
+  { id: 'pluto',   frame: 'map-sphere', fillFrac: 0.66, date: '2026-03-20T12:00:00Z', altDate: null,
+    mapSphere: true, tex: 'pluto.jpg', turnDeg: -90, tiltDeg: 22 },
 ];
 
 
@@ -177,82 +192,69 @@ async function capturePortrait(page, job, dateIso) {
 }
 
 /**
- * Pluto: the engine has no Pluto mesh. Generate a dignified, print-grade Pluto disc
- * in-page on a 2D canvas — a lit sphere with Pluto's real tan/charcoal heart-plain
- * tones and a soft terminator — then encode a transparent 1024² webp. Deterministic
- * (seeded), so it's reproducible. Scorpio still falls back to Mars; this only keeps
- * the flagship library complete.
+ * Bodies the engine has no mesh for (Pluto) still get a REAL still: the archived
+ * equirectangular map on a lit three.js sphere, rendered in-page beside the engine
+ * rather than inside it, so no engine change is needed. Same output contract as
+ * capturePortrait — transparent void, sun from upper-left, 1024² webp — so the
+ * library stays uniform and verdict() applies unchanged.
+ *
+ * Honesty: nothing is painted. Where the source map has no data (Pluto's southern
+ * hemisphere was in polar night during the 2015 flyby) the sphere renders black, and
+ * the framing simply puts that region behind the limb instead of inventing terrain to
+ * fill it. unimagedFracOfDisc is measured and reported so the gap stays visible in the
+ * record. This replaced a hand-painted procedural disc with an invented "heart" blob,
+ * which predated any real Pluto map being in the repo.
  */
-async function makePlutoStill(page, job) {
+async function makeMapSphereStill(page, job) {
   return page.evaluate(async (args) => {
-    const S = args.size;
-    const c = document.createElement('canvas'); c.width = S; c.height = S;
-    const g = c.getContext('2d');
-    g.clearRect(0, 0, S, S);
-    const cx = S / 2, cy = S / 2;
-    const R = S * (args.fillFrac / 2);
-    // Light comes from upper-left; terminator toward lower-right.
-    const lx = -0.55, ly = -0.5;
-    // seeded mulberry32 for reproducible surface mottle
-    let a = 0x9e3779b9 >>> 0;
-    const rnd = () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const THREE = await import('/js/vendor/three/three.module.min.js');
+    const SS = args.size * 2;                    // supersample, then downscale
+    const gl = document.createElement('canvas');
+    gl.width = gl.height = SS;
+    const renderer = new THREE.WebGLRenderer({ canvas: gl, antialias: true, alpha: true });
+    renderer.setClearAlpha(0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    const img = g.createImageData(S, S);
-    const d = img.data;
-    // Pluto palette: pale tan nitrogen plain (Sputnik/Tombaugh) + darker charcoal
-    // Cthulhu-region tones.
-    const light = [206, 184, 156];  // warm tan highlight
-    const mid   = [150, 128, 108];
-    const dark  = [64, 54, 48];     // charcoal shadow
-    for (let y = 0; y < S; y++) {
-      for (let x = 0; x < S; x++) {
-        const dx = (x - cx) / R, dy = (y - cy) / R;
-        const r2 = dx * dx + dy * dy;
-        const i = (y * S + x) * 4;
-        if (r2 > 1) { d[i + 3] = 0; continue; }
-        const dz = Math.sqrt(1 - r2);            // sphere z
-        // lambert with the light dir (normalized)
-        const ll = Math.hypot(lx, ly, 1);
-        const ndotl = Math.max(0, (dx * lx + dy * ly + dz * 1) / ll);
-        const term = Math.pow(ndotl, 0.9);       // soft terminator
-        // low-freq mottle: a couple of value bands to suggest the heart plain
-        const lat = dy, lon = dx;
-        const band = 0.5 + 0.5 * Math.sin(lon * 2.3 + lat * 1.1 + 1.2);
-        const heart = Math.max(0, 1 - Math.hypot(dx - 0.15, dy + 0.1) * 1.6); // bright plain lower-centre
-        let base = [
-          mid[0] + (light[0] - mid[0]) * band,
-          mid[1] + (light[1] - mid[1]) * band,
-          mid[2] + (light[2] - mid[2]) * band,
-        ];
-        base = [
-          base[0] + (light[0] - base[0]) * heart * 0.7,
-          base[1] + (light[1] - base[1]) * heart * 0.7,
-          base[2] + (light[2] - base[2]) * heart * 0.7,
-        ];
-        // fine grain
-        const grain = (rnd() - 0.5) * 10;
-        // shade by terminator toward dark
-        let cr = dark[0] + (base[0] - dark[0]) * term + grain;
-        let cg = dark[1] + (base[1] - dark[1]) * term + grain;
-        let cb = dark[2] + (base[2] - dark[2]) * term + grain;
-        // limb darkening
-        const limb = 0.55 + 0.45 * dz;
-        cr *= limb; cg *= limb; cb *= limb;
-        // soft edge alpha (antialias the disc rim)
-        const edge = Math.min(1, (1 - Math.sqrt(r2)) * R * 0.5);
-        d[i] = Math.max(0, Math.min(255, cr));
-        d[i + 1] = Math.max(0, Math.min(255, cg));
-        d[i + 2] = Math.max(0, Math.min(255, cb));
-        d[i + 3] = Math.round(255 * Math.max(0, Math.min(1, edge)));
-      }
-    }
-    g.putImageData(img, 0, 0);
+    const tex = await new Promise((res, rej) =>
+      new THREE.TextureLoader().load('/assets/textures/' + args.tex, res, undefined, rej));
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
 
-    // metrics (same shape as capturePortrait)
-    const px = (x, y) => Array.from(g.getImageData(x, y, 1, 1).data);
-    const W = S, H = S;
+    const scene = new THREE.Scene();
+    // fillFrac sets the disc's share of the frame: half-angle = atan(1/dist) must equal
+    // fillFrac/2 of the vertical FOV.
+    const fov = 30;
+    const cam = new THREE.PerspectiveCamera(fov, 1, 0.1, 100);
+    const halfFov = (fov / 2) * Math.PI / 180;
+    cam.position.set(0, 0, 1 / Math.sin(halfFov * args.fillFrac));
+    // Sun from upper-left, matching every other still in the library.
+    const sun = new THREE.DirectionalLight(0xfff4e2, 3.0);
+    sun.position.set(-0.55, 0.5, 1);
+    scene.add(sun);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.06));   // lifts the night limb only
+
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 192, 96),
+      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.92, metalness: 0 }));
+    mesh.rotation.set(args.tiltDeg * Math.PI / 180, args.turnDeg * Math.PI / 180, 0);
+    scene.add(mesh);
+    renderer.render(scene, cam);
+
+    // Downscale to the final square, preserving transparency.
+    const fin = document.createElement('canvas');
+    fin.width = fin.height = args.size;
+    const fx = fin.getContext('2d');
+    fx.imageSmoothingEnabled = true;
+    fx.imageSmoothingQuality = 'high';
+    fx.clearRect(0, 0, args.size, args.size);
+    fx.drawImage(gl, 0, 0, SS, SS, 0, 0, args.size, args.size);
+
+    const W = args.size, H = args.size;
+    const all = fx.getImageData(0, 0, W, H).data;
+    const px = (x, y) => { const i = (y * W + x) * 4; return [all[i], all[i + 1], all[i + 2], all[i + 3]]; };
     const corners = { tl: px(2, 2), tr: px(W - 3, 2), bl: px(2, H - 3), br: px(W - 3, H - 3) };
     const cornerAlphaMax = Math.max(corners.tl[3], corners.tr[3], corners.bl[3], corners.br[3]);
+
     const x0 = Math.round(W * 0.20), x1 = Math.round(W * 0.80);
     const y0 = Math.round(H * 0.20), y1 = Math.round(H * 0.80);
     let sum = 0, n = 0, maxLum = 0, litSamples = 0, opaque = 0;
@@ -264,13 +266,23 @@ async function makePlutoStill(page, job) {
       const lum = 0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2];
       sum += lum; n++; if (lum > maxLum) maxLum = lum; if (lum > 60) litSamples++;
     }
+    // How much of the visible disc carries no data — the gap, measured not hidden.
+    let disc = 0, black = 0;
+    for (let i = 0; i < W * H; i++) {
+      if (all[i * 4 + 3] < 20) continue;
+      disc++;
+      const lum = 0.2126 * all[i * 4] + 0.7152 * all[i * 4 + 1] + 0.0722 * all[i * 4 + 2];
+      if (lum < 12) black++;
+    }
     return {
-      ok: true, w: W, h: H, dataUrl: c.toDataURL('image/webp', args.q),
+      ok: true, w: W, h: H, dataUrl: fin.toDataURL('image/webp', args.q),
       corners, cornerAlphaMax,
       meanLum: Math.round(n ? sum / n : 0), maxLum: Math.round(maxLum),
       opaqueSamples: opaque, litSamples, centerPx: px(W >> 1, H >> 1),
+      unimagedFracOfDisc: disc ? +(black / disc).toFixed(3) : null,
     };
-  }, { size: SIZE, fillFrac: job.fillFrac, q: Q });
+  }, { size: SIZE, fillFrac: job.fillFrac, q: (typeof job.q === 'number' ? job.q : Q),
+       tex: job.tex, turnDeg: job.turnDeg, tiltDeg: job.tiltDeg });
 }
 
 function writeWebp(id, dataUrl) {
@@ -287,7 +299,28 @@ function verdict(res) {
   return { clean, lit };
 }
 
+/** Replace entries by id, keeping every other entry (and its order) untouched. */
+function mergeById(existing, fresh) {
+  const out = existing.slice();
+  for (const item of fresh) {
+    const at = out.findIndex((e) => e.id === item.id);
+    if (at >= 0) out[at] = item; else out.push(item);
+  }
+  return out;
+}
+
+function readJson(file, fallback) {
+  try { return JSON.parse(readFileSync(join(OUT, file), 'utf8')); } catch (e) { return fallback; }
+}
+
 async function main() {
+  const jobs = ONLY.length ? JOBS.filter((j) => ONLY.includes(j.id)) : JOBS;
+  if (!jobs.length) { console.error('no jobs match --only=' + ONLY.join(',')); process.exit(2); }
+  // Only engine portraits need the homepage orrery booted; a map-sphere still does not.
+  const needsEngine = jobs.some((j) => !j.mapSphere);
+  const priorManifest = ONLY.length ? readJson('manifest.json', null) : null;
+  const priorReport = ONLY.length ? readJson('make-engine-stills-report.json', null) : null;
+
   const report = { base: BASE, size: SIZE, portraits: [], homepageReload: null };
   const manifest = { generated: new Date().toISOString(), size: SIZE, quality: Q, stills: [] };
   const browser = await chromium.launch({ headless: true, args: ['--enable-unsafe-swiftshader'] });
@@ -297,16 +330,18 @@ async function main() {
   page.on('pageerror', (e) => { pageErrors.push(e.message); console.error('pageerror:', e.message); });
 
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
-  await waitForEngine(page);
-  await sleep(9000); // Earth-dive intro finish + textures load + settle
+  if (needsEngine) {
+    await waitForEngine(page);
+    await sleep(9000); // Earth-dive intro finish + textures load + settle
+  }
 
   // Track earthmoon capture so moon + earth-moon reuse one shot per date.
-  for (const job of JOBS) {
+  for (const job of jobs) {
     let res = null;
     let usedDate = job.date;
 
     async function runOnce(dateIso) {
-      if (job.generated) return makePlutoStill(page, job);
+      if (job.mapSphere) return makeMapSphereStill(page, job);
       const r = await capturePortrait(page, job, dateIso);
       await page.evaluate(() => window.Orrery3D.exitPortrait && window.Orrery3D.exitPortrait());
       return r;
@@ -324,7 +359,7 @@ async function main() {
     if (!res.ok) {
       console.error('FAIL', job.id, res.reason);
       report.portraits.push({ id: job.id, ok: false, reason: res.reason });
-      await page.evaluate(() => window.Orrery3D.exitPortrait && window.Orrery3D.exitPortrait());
+      if (!job.mapSphere) await page.evaluate(() => window.Orrery3D.exitPortrait && window.Orrery3D.exitPortrait());
       continue;
     }
 
@@ -337,14 +372,20 @@ async function main() {
       cornerAlphaMax: res.cornerAlphaMax, corners: res.corners, transparentCorners: clean,
       meanLum: res.meanLum, maxLum: res.maxLum, litSamples: res.litSamples,
       opaqueSamples: res.opaqueSamples, lit, centerPx: res.centerPx,
+      unimagedFracOfDisc: res.unimagedFracOfDisc,
+      source: job.mapSphere ? job.tex : 'engine portrait',
     });
     const notes = [];
-    if (job.generated) notes.push('engine has no Pluto mesh — generated disc; Scorpio falls back to Mars');
+    if (job.mapSphere) {
+      notes.push(`real ${job.tex} map on a lit sphere rendered outside the engine (engine has no ${job.id} mesh); `
+        + 'unobserved region left black, not painted; Scorpio falls back to Mars');
+    }
     if (kb > 120) notes.push('over 120KB budget: ring/high-frequency detail sets a webp floor at 1024²; lazy-cached (not in install shell)');
     manifest.stills.push({
       id: job.id, file, rulerOfSigns: RULER_OF[job.id] || [], kb,
       date: usedDate, frame: job.frame,
-      generated: !!job.generated,
+      generated: false,          // nothing in this library is invented any more
+      mapSphere: !!job.mapSphere,
       overBudget: kb > 120,
       note: notes.length ? notes.join('; ') : undefined,
     });
@@ -354,7 +395,12 @@ async function main() {
     await sleep(200);
   }
 
-  // Total library size.
+  // A partial run keeps every still it did not re-shoot, in place and unedited.
+  if (priorManifest && Array.isArray(priorManifest.stills)) {
+    manifest.stills = mergeById(priorManifest.stills, manifest.stills);
+    manifest.partialRun = ONLY.slice();
+  }
+  // Total library size, measured from disk so a partial run still reports the truth.
   let totalKB = 0;
   for (const s of manifest.stills) { try { totalKB += statSync(join(OUT, s.file)).size; } catch (e) {} }
   manifest.totalKB = +(totalKB / 1024).toFixed(1);
@@ -362,6 +408,10 @@ async function main() {
 
   // ── Non-leak check: reload the homepage normally, confirm the hero still works ──
   const errorsBeforeReload = pageErrors.length;
+  if (!needsEngine) {
+    report.homepageReload = { skipped: 'no engine portrait in this run — the hero was never entered' };
+    console.error('RELOAD skipped (no engine job)');
+  } else {
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
   try {
     await waitForEngine(page);
@@ -381,10 +431,18 @@ async function main() {
     report.homepageReload = { ok: false, reason: e.message, pageErrorsDuringReload: pageErrors.slice(errorsBeforeReload) };
     console.error('RELOAD FAIL', e.message);
   }
+  }
 
   report.pageErrorsTotal = pageErrors;
   report.totalKB = manifest.totalKB;
   await browser.close();
+  if (priorReport && Array.isArray(priorReport.portraits)) {
+    report.portraits = mergeById(priorReport.portraits, report.portraits);
+    report.partialRun = ONLY.slice();
+    if (!needsEngine && priorReport.homepageReload) {
+      report.homepageReload = { ...report.homepageReload, previous: priorReport.homepageReload };
+    }
+  }
   const reportPath = join(OUT, 'make-engine-stills-report.json');
   writeFileSync(reportPath, JSON.stringify(report, null, 2));
   console.log(JSON.stringify(report, null, 2));
