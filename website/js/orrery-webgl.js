@@ -6458,8 +6458,8 @@ const FinishShader = {
         const moonRad = 0.26;
         const moonMat = new THREE.MeshPhysicalMaterial({
           color: 0xd8dce6, roughness: 0.94, metalness: 0.0,
-          emissive: 0x30343a, emissiveIntensity: 0.03,
-          clearcoat: 0.0, clearcoatRoughness: 0.7, envMapIntensity: 0.10,
+          emissive: 0x000000, emissiveIntensity: 0.0,
+          clearcoat: 0.0, clearcoatRoughness: 0.7, envMapIntensity: 0.06,
         });
         moonMat.onBeforeCompile = (shader) => {
           try {
@@ -6472,7 +6472,7 @@ const FinishShader = {
         moonGroup.add(moonMesh);
         const moonBump = makeMoonBumpTexture();
         moonMat.bumpMap = moonBump;
-        moonMat.bumpScale = perfTier === 'high' ? 0.045 : 0.032;
+        moonMat.bumpScale = perfTier === 'high' ? 0.068 : 0.048;
         moonMat.needsUpdate = true;
         addMoonSurfaceCrater(moonMesh, moonRad);
         if (perfTier !== 'low' && !PRM) {
@@ -8957,8 +8957,8 @@ const FinishShader = {
     const fov = (CAM_FOV_MID || 42) * D2R;
     const ff = Math.max(0.05, Math.min(0.95, fillFrac));
     const fit = moonRad / ff / Math.tan(fov / 2);
-    const dist = Math.max(moonRad * 3.2, fit);
-    const el = 12 * D2R;
+    const dist = Math.max(moonRad * 1.12, fit);
+    const el = 14 * D2R;
     const ce = Math.cos(el), se = Math.sin(el);
     _portOff.copy(_portToSun).multiplyScalar(0.92 * ce);
     _portOff.addScaledVector(_portSide, 0.36 * ce);
@@ -9063,8 +9063,9 @@ const FinishShader = {
     }
     if (sunDirLight) { sunDirLight.position.set(0, 0, 0); sunDirLight.intensity = perfTier === 'high' ? 3.0 : 2.6; }
     if (sunDirLightTarget) { sunDirLightTarget.position.copy(moonGroup.position); sunDirLightTarget.updateMatrixWorld(); }
-    if (sunPointLight) sunPointLight.intensity = 0.9;
-    if (hemiLight) hemiLight.intensity = perfTier === 'high' ? 0.22 : 0.18;
+    if (sunPointLight) sunPointLight.intensity = 0.55;
+    if (hemiLight) hemiLight.intensity = 0.05;
+    if (moonHaloMesh) moonHaloMesh.visible = false;
   }
 
   // Capture-only: dress the sun itself for its hero portrait. It is the light source,
@@ -9211,6 +9212,7 @@ const FinishShader = {
     // Saturn's ring shadow is now cast in the ring shader (view-independent), so the
     // retired flat shadow-band plane stays hidden on exit — nothing to restore.
     if (saturnShadowBand) saturnShadowBand.visible = false;
+    if (moonHaloMesh) moonHaloMesh.visible = true;
     if (r) {
       scaleLevel = r.scaleLevel;
       showOrbits = r.showOrbits;
