@@ -154,6 +154,10 @@ assert.ok(skyCardJs.includes('DAY OR NIGHT NOT STATED') && skyCardJs.includes('N
 assert.ok(skyCardJs.includes("' (ASSUMED)'") && skyCardJs.includes('MOON PLACED FROM '),
   'an assumed hour must be printed on the card, not applied silently');
 assert.ok(skyCardJs.includes('NOT A CLAIM ABOUT YOUR LIFE'), 'the card must not claim to be true');
+assert.ok(skyCardJs.includes('function coordinate(') && skyCardJs.includes('not the coordinates'),
+  'a carried minute without coordinates must not be placed at 0, 0');
+assert.equal(/Number\(carried\.(?:lat|lon)\)/.test(skyCardJs), false,
+  'coordinates must go through the empty-value guard');
 assert.equal(/location\.(?:search|hash)|URLSearchParams/.test(skyCardJs), false,
   'sky card must not accept a birth minute from an address');
 assert.equal(/location\.(?:search|hash)|URLSearchParams|location\.href\s*=/.test(keepMinute), false,

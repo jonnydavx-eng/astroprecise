@@ -31,10 +31,17 @@
   var GEOCODER = 'https://geocoding-api.open-meteo.com/v1/search';
   var ASSUMED_HOUR = '12:00';
 
+  /* U+FE0E after every glyph. The zodiac code points default to emoji
+     presentation, so without the text selector Chrome paints ♈–♓ as round
+     colour badges from the system emoji font and the plate stops being an
+     engraving. Same reason the orrery's own sign table carries it. */
+  var TEXT = '\uFE0E';
   var GLYPH = {
     sun: '\u2609', moon: '\u263D', mercury: '\u263F', venus: '\u2640', mars: '\u2642',
     jupiter: '\u2643', saturn: '\u2644', uranus: '\u2645', neptune: '\u2646', pluto: '\u2647',
   };
+  var SIGN_GLYPHS = ['\u2648', '\u2649', '\u264A', '\u264B', '\u264C', '\u264D',
+    '\u264E', '\u264F', '\u2650', '\u2651', '\u2652', '\u2653'];
   var WHEEL_BODIES = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
   var LIGHTS = [['sun', 'Sun'], ['moon', 'Moon'], ['venus', 'Venus']];
 
@@ -230,7 +237,6 @@
   }
 
   function wheel(chart, cx, cy) {
-    var signs = (window.AP_ZODIAC && window.AP_ZODIAC.SIGN_GLYPH_BY_INDEX) || [];
     var point = function (lon, r) {
       var a = (180 - lon) * RAD;
       return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
@@ -256,8 +262,8 @@
       ctx.stroke();
       var mark = point(s * 30 + 15, 187);
       ctx.fillStyle = 'rgba(216,180,106,.8)';
-      ctx.font = '400 15px ' + GLYPHS;
-      ctx.fillText(signs[s] || '', mark[0], mark[1]);
+      ctx.font = '400 16px ' + GLYPHS;
+      ctx.fillText(SIGN_GLYPHS[s] + TEXT, mark[0], mark[1]);
     }
     var ordered = WHEEL_BODIES
       .filter(function (key) { return chart.positions[key]; })
@@ -265,14 +271,22 @@
     ordered.forEach(function (key, index) {
       var lon = chart.positions[key].longitude;
       var tick = point(lon, 176);
-      var seat = point(lon, index % 2 ? 128 : 152);
-      ctx.fillStyle = MUTE;
+      var seat = point(lon, index % 2 ? 130 : 154);
+      // A leader line from the degree tick to the glyph: on a keepsake it must
+      // be unambiguous which body sits at which longitude.
+      ctx.strokeStyle = 'rgba(216,180,106,.3)';
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.arc(tick[0], tick[1], 2.6, 0, Math.PI * 2);
+      ctx.moveTo(tick[0], tick[1]);
+      ctx.lineTo(seat[0], seat[1]);
+      ctx.stroke();
+      ctx.fillStyle = BRASS;
+      ctx.beginPath();
+      ctx.arc(tick[0], tick[1], 2.4, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = key === 'sun' || key === 'moon' ? PAPER : MUTE;
+      ctx.fillStyle = key === 'sun' || key === 'moon' || key === 'venus' ? PAPER : MUTE;
       ctx.font = '400 22px ' + GLYPHS;
-      ctx.fillText(GLYPH[key] || '', seat[0], seat[1]);
+      ctx.fillText((GLYPH[key] || '') + TEXT, seat[0], seat[1]);
     });
     ctx.restore();
   }
@@ -326,7 +340,7 @@
       var y = 330 + index * 42;
       ctx.fillStyle = BRASS;
       ctx.font = '400 24px ' + GLYPHS;
-      ctx.fillText(GLYPH[row[0]], 76, y);
+      ctx.fillText(GLYPH[row[0]] + TEXT, 76, y);
       ctx.fillStyle = MUTE;
       ctx.font = '400 14px ' + DATA;
       ctx.fillText(row[1].toUpperCase(), 118, y);
@@ -389,6 +403,7 @@
       ['The three lights', LIGHTS.map(function (row) {
         return row[1] + ' ' + formatPosition(positions[row[0]]);
       }).join(' \u00B7 ')],
+      ['The ring', 'A zodiac wheel of ecliptic longitudes for that minute \u2014 schematic, not a photograph of the sky, and not to scale.'],
     ];
     if (minute.timeKnown && positions.asc) {
       rows.push(['Rising', formatPosition(positions.asc) + ' \u2014 from the hour and the town.']);
@@ -549,22 +564,38 @@
     }
   }
 
+  /* An empty field is not a coordinate. Number('') is 0, and 0/0 is a real
+     point in the Gulf of Guinea — carrying a minute over from a page that
+     holds a zone but no coordinates (the natal reading) once produced a card
+     that printed "Manchester" and computed its horizon and rising sign off
+     the coast of Africa. */
+  function coordinate(value, limit) {
+    if (value === '' || value === null || value === undefined) return null;
+    var number = Number(value);
+    if (!Number.isFinite(number) || Math.abs(number) > limit) return null;
+    return number;
+  }
+
   function seed() {
     var carried = consumeHandoff() || savedChart();
     if (!carried) return false;
     if (carried.date) byId('dob').value = String(carried.date).slice(0, 10);
     if (carried.time) byId('tob').value = String(carried.time).slice(0, 5);
-    var lat = Number(carried.lat);
-    var lon = Number(carried.lon);
-    var complete = validTimeZone(carried.zone) && Number.isFinite(lat) && Number.isFinite(lon);
     if (carried.place && cityInput) cityInput.value = carried.place;
-    if (complete) {
+    var lat = coordinate(carried.lat, 90);
+    var lon = coordinate(carried.lon, 180);
+    var zoned = validTimeZone(carried.zone);
+    if (zoned && lat !== null && lon !== null) {
       place = { name: carried.place || carried.zone, lat: lat, lon: lon, tz: carried.zone };
       if (zoneNote) zoneNote.textContent = carried.zone + ' \u00B7 ' + lat.toFixed(2) + ', ' + lon.toFixed(2);
-    } else if (carried.place) {
-      resetZone('The town came over as text only. Pick it from the list to fix the zone and coordinates.');
+      return Boolean(carried.date);
     }
-    return complete && Boolean(carried.date);
+    if (zoned) {
+      resetZone('The date and hour came over, but not the coordinates. Pick the town from the list so the horizon and the rising sign come from the right place \u2014 ' + carried.zone + ' alone cannot place them.');
+    } else if (carried.place) {
+      resetZone('The town came over as text only. Pick it from the list to fix its zone and coordinates.');
+    }
+    return false;
   }
 
   // ── boot ──────────────────────────────────────────────────────────────────
