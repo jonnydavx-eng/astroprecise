@@ -11,7 +11,7 @@ body.ap-moment-page {
   --mom-parch: var(--ap-text-primary, #E8EBF0);
   --mom-dim: var(--ap-text-secondary, #C8CDD6);
   --mom-muted: var(--ap-text-muted, #8B919C);
-  --mom-cta: var(--ap-cta, #6AB0FF);
+  --mom-cta: var(--ap-cta, #FF6428);
   --mom-cta-ink: var(--ap-cta-ink, #1F1206);
   --mom-rim: var(--ap-gold-a16, rgba(168, 176, 188, 0.16));
 }
@@ -63,7 +63,7 @@ body.ap-moment-page {
   font-size: 0.88rem;
 }
 .mom-hero__jump a {
-  color: var(--ap-aurora, #7EC8E8);
+  color: var(--ap-aurora, #d8b46a);
   text-decoration: none;
   border-bottom: 1px solid rgba(126, 200, 232, 0.35);
 }

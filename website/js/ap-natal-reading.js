@@ -29,6 +29,7 @@ function timezoneOffsetMinutes(zone, instant) {
 }
 
 function civilToUTC(y, m, d, hh, mm, zone) {
+  if (!validTimeZone(zone)) return null;
   const civilMs = Date.UTC(y, m - 1, d, hh, mm, 0);
   let utcMs = civilMs;
   for (let i = 0; i < 3; i += 1) utcMs = civilMs - timezoneOffsetMinutes(zone, new Date(utcMs)) * 60000;
@@ -121,6 +122,7 @@ function manualNatal(engine) {
   const timeKnown = Boolean(timeValue);
   const [hh, mm] = (timeValue || '12:00').split(':').map(Number);
   const instant = civilToUTC(y, m, d, hh, mm, zone);
+  if (!instant) throw new Error('Place needs a real timezone. UK summer is not treated as GMT.');
   const jd = engine.julianDay(
     instant.getUTCFullYear(), instant.getUTCMonth() + 1, instant.getUTCDate(),
     instant.getUTCHours(), instant.getUTCMinutes(), instant.getUTCSeconds(),
@@ -203,9 +205,16 @@ function bindNatalCity() {
   let seq = 0;
   let timer = null;
   function pick(city) {
+    if (!validTimeZone(city.tz)) {
+      tzEl.value = '';
+      if (note) note.textContent = 'Pick a place for a real zone. UK summer is not GMT.';
+      drop.hidden = true;
+      drop.innerHTML = '';
+      return;
+    }
     input.value = city.name + (city.admin ? ', ' + city.admin : '');
-    tzEl.value = city.tz || '';
-    if (note) note.textContent = city.tz || 'Pick a place for a real zone. UK summer is not GMT.';
+    tzEl.value = city.tz;
+    if (note) note.textContent = city.tz;
     drop.hidden = true;
     drop.innerHTML = '';
   }
@@ -254,11 +263,11 @@ async function init() {
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=857').then((response) => {
+    fetch('js/reading-templates.json?v=860').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=857').then((response) => {
+    fetch('js/deep-templates.json?v=860').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),

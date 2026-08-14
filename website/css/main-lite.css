@@ -79,8 +79,8 @@
   --purple:        var(--ap-brass);
   --purple-light:  var(--ap-brass-bright);
   --purple-bright: var(--ap-brass-bright);
-  --indigo:        #4a3a5c;
-  --blue:          #6a5a52;     /* warmed off slate-blue */
+  --indigo:        #020307;
+  --blue:          #A89C84;     /* house mute */
   --danger:        var(--crimson-light);
   --success:       var(--teal);
   --lapis:         #5a4a52;     /* legacy 'lapis' kept as a warm taupe-mauve */
@@ -1228,7 +1228,7 @@ body:has(#starfield-canvas) .lib__banner {
 .orb--purple {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(92, 74, 110, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(216, 180, 106, 0.25) 0%, transparent 70%);
 }
 
 .orb--gold {

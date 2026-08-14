@@ -2604,4 +2604,4 @@
    link underline (owner screenshot). Pin no-underline on the text so it can
    never happen, whatever the load order. */
 .tool-card, .tool-card__title, .tool-card__desc, .tool-card__label, .tool-card__arrow { text-decoration: none !important; }
-.tool-card__arrow { color: var(--brass-bright, #7EC8E8); }
+.tool-card__arrow { color: var(--brass-bright, #f0d59d); }

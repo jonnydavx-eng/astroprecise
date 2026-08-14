@@ -77,8 +77,8 @@
   --purple:        var(--ap-brass);
   --purple-light:  var(--ap-brass-bright);
   --purple-bright: var(--ap-brass-bright);
-  --indigo:        #4a3a5c;
-  --blue:          #6a5a52;     /* warmed off slate-blue */
+  --indigo:        #020307;
+  --blue:          #A89C84;     /* house mute */
   --danger:        var(--crimson-light);
   --success:       var(--teal);
   --lapis:         #5a4a52;     /* legacy 'lapis' kept as a warm taupe-mauve */
@@ -870,7 +870,7 @@ body:has(#starfield-canvas) .lib__banner {
 }
 
 .btn--primary {
-  background: var(--ap-cta, #6AB0FF);
+  background: var(--ap-cta, #FF6428);
   color: var(--ap-cta-ink, #1F1206);
   border-radius: 6px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
@@ -879,7 +879,7 @@ body:has(#starfield-canvas) .lib__banner {
 }
 
 .btn--primary:hover {
-  background: var(--ap-cta-hover, #7EC8E8);
+  background: var(--ap-cta-hover, #ff7a45);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.16);
   transform: translateY(-1px);
   color: var(--ap-cta-ink, #1F1206);
@@ -907,7 +907,7 @@ body:has(#starfield-canvas) .lib__banner {
 
 .btn--gold {
   background: var(--gradient-gold);
-  color: #08080b;
+  color: #020307;
   font-weight: 700;
   box-shadow: 0 0 20px rgba(168, 176, 188, 0.45);
 }
@@ -915,7 +915,7 @@ body:has(#starfield-canvas) .lib__banner {
 .btn--gold:hover {
   box-shadow: 0 0 36px rgba(168, 176, 188, 0.65);
   transform: translateY(-2px);
-  color: #08080b;
+  color: #020307;
 }
 
 .btn--ghost {
@@ -1864,12 +1864,12 @@ button.sign-card[data-sign],
 
 .autocomplete-option:hover,
 .autocomplete-option.is-selected {
-  background: rgba(92, 74, 110, 0.15);
+  background: rgba(216, 180, 106, 0.15);
   color: var(--white);
 }
 
 .autocomplete-option:active {
-  background: rgba(92, 74, 110, 0.25);
+  background: rgba(216, 180, 106, 0.25);
 }
 
 .autocomplete-note {
@@ -1934,7 +1934,7 @@ button.sign-card[data-sign],
   margin: 0 auto;
   border-radius: 50%;
   box-shadow:
-    0 0 60px rgba(92, 74, 110, 0.3),
+    0 0 60px rgba(216, 180, 106, 0.3),
     0 0 120px rgba(168, 176, 188, 0.08);
 }
 
@@ -1976,7 +1976,7 @@ button.sign-card[data-sign],
   background: var(--gradient-primary);
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 0 16px rgba(92, 74, 110, 0.4);
+  box-shadow: 0 0 16px rgba(216, 180, 106, 0.4);
 }
 
 .chart-panel {
@@ -2075,7 +2075,7 @@ button.sign-card[data-sign],
 }
 
 .data-table tr:hover td {
-  background: rgba(92, 74, 110, 0.06);
+  background: rgba(216, 180, 106, 0.06);
   color: var(--white);
 }
 
@@ -2144,7 +2144,7 @@ button.sign-card[data-sign],
 
 .transit-item:hover {
   border-color: var(--border-glow);
-  box-shadow: 0 0 24px rgba(92, 74, 110, 0.12);
+  box-shadow: 0 0 24px rgba(216, 180, 106, 0.12);
 }
 
 .transit-item::before {
@@ -2156,7 +2156,7 @@ button.sign-card[data-sign],
   height: 10px;
   border-radius: 50%;
   background: var(--gradient-primary);
-  box-shadow: 0 0 8px rgba(92, 74, 110, 0.6);
+  box-shadow: 0 0 8px rgba(216, 180, 106, 0.6);
 }
 
 .transit-item__date {
@@ -2306,7 +2306,7 @@ button.sign-card[data-sign],
   border-radius: 50%;
   background: var(--gradient-primary);
   border: 2px solid var(--border-glow);
-  box-shadow: 0 0 20px rgba(92, 74, 110, 0.35);
+  box-shadow: 0 0 20px rgba(216, 180, 106, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2366,7 +2366,7 @@ button.sign-card[data-sign],
 }
 
 .profile-nav__link.active {
-  background: rgba(92, 74, 110, 0.12);
+  background: rgba(216, 180, 106, 0.12);
   color: var(--white);
   border-left-color: var(--purple-light);
 }
@@ -2432,7 +2432,7 @@ button.sign-card[data-sign],
 .horoscope-period-tab.is-active {
   background: var(--gradient-primary);
   color: #fff;
-  box-shadow: 0 0 12px rgba(92, 74, 110, 0.4);
+  box-shadow: 0 0 12px rgba(216, 180, 106, 0.4);
 }
 
 .horoscope-reading {
@@ -2457,12 +2457,12 @@ button.sign-card[data-sign],
   letter-spacing: 0.06em;
 }
 
-.aspect-tag--conjunction  { background: rgba(92, 74, 110, 0.2); color: var(--purple-bright); border: 1px solid rgba(92, 74, 110, 0.3); }
+.aspect-tag--conjunction  { background: rgba(216, 180, 106, 0.2); color: var(--purple-bright); border: 1px solid rgba(216, 180, 106, 0.3); }
 .aspect-tag--sextile      { background: rgba(95, 163, 154, 0.15); color: var(--blue); border: 1px solid rgba(95, 163, 154, 0.25); }
 .aspect-tag--trine        { background: rgba(120, 140, 70, 0.15); color: #9db36a; border: 1px solid rgba(120, 140, 70, 0.25); }
 .aspect-tag--square       { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
 .aspect-tag--opposition   { background: rgba(245, 158, 11, 0.15); color: var(--gold-light); border: 1px solid rgba(245, 158, 11, 0.25); }
-.aspect-tag--quincunx     { background: rgba(122, 100, 150, 0.15); color: var(--purple-light); border: 1px solid rgba(122, 100, 150, 0.25); }
+.aspect-tag--quincunx     { background: rgba(216, 180, 106, 0.15); color: var(--purple-light); border: 1px solid rgba(216, 180, 106, 0.25); }
 
 /* Planet tags */
 .planet-tag {
@@ -2723,14 +2723,14 @@ button.sign-card[data-sign],
 }
 
 .chip--interactive:hover {
-  background: rgba(92, 74, 110, 0.15);
+  background: rgba(216, 180, 106, 0.15);
   border-color: var(--border-glow);
   color: var(--white);
 }
 
 .chip--active {
-  background: rgba(92, 74, 110, 0.2);
-  border-color: rgba(92, 74, 110, 0.4);
+  background: rgba(216, 180, 106, 0.2);
+  border-color: rgba(216, 180, 106, 0.4);
   color: var(--purple-bright);
 }
 
@@ -2832,8 +2832,8 @@ button.sign-card[data-sign],
 }
 
 .divider--glow {
-  border-top-color: rgba(92, 74, 110, 0.25);
-  box-shadow: 0 1px 8px rgba(92, 74, 110, 0.1);
+  border-top-color: rgba(216, 180, 106, 0.25);
+  box-shadow: 0 1px 8px rgba(216, 180, 106, 0.1);
 }
 
 .divider--with-text {
@@ -2905,7 +2905,7 @@ button.sign-card[data-sign],
   max-width: 560px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(92, 74, 110, 0.12);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(216, 180, 106, 0.12);
   animation: modal-enter var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
@@ -3027,7 +3027,7 @@ button.sign-card[data-sign],
   background: var(--gradient-primary);
   color: #fff;
   border-bottom-color: transparent;
-  box-shadow: 0 0 12px rgba(92, 74, 110, 0.4);
+  box-shadow: 0 0 12px rgba(216, 180, 106, 0.4);
 }
 
 /* Skip link — visible on keyboard focus */
@@ -3243,7 +3243,7 @@ button.sign-card[data-sign],
 .planet-icon--jupiter { background: rgba(180, 120, 60, 0.1);  border-color: rgba(180, 120, 60, 0.25); }
 .planet-icon--saturn  { background: rgba(212, 175, 116, 0.1); border-color: rgba(212, 175, 116, 0.25); }
 .planet-icon--uranus  { background: rgba(95, 163, 154, 0.1);  border-color: rgba(95, 163, 154, 0.25); }
-.planet-icon--neptune { background: rgba(126, 107, 176, 0.1);  border-color: rgba(126, 107, 176, 0.25); }
+.planet-icon--neptune { background: rgba(216, 180, 106, 0.1);  border-color: rgba(216, 180, 106, 0.25); }
 .planet-icon--pluto   { background: rgba(154, 111, 176, 0.1);  border-color: rgba(154, 111, 176, 0.25); }
 
 /* Element color indicators */
@@ -3593,8 +3593,8 @@ button.sign-card[data-sign],
 
 /* Sun sign highlight card */
 .sun-sign-card {
-  background: linear-gradient(135deg, rgba(92, 74, 110, 0.15) 0%, rgba(126, 107, 176, 0.1) 100%);
-  border: 1px solid rgba(92, 74, 110, 0.3);
+  background: linear-gradient(135deg, rgba(216, 180, 106, 0.15) 0%, rgba(216, 180, 106, 0.1) 100%);
+  border: 1px solid rgba(216, 180, 106, 0.3);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
   display: flex;
@@ -3716,8 +3716,8 @@ button.sign-card[data-sign],
 }
 
 .sign-picker-item.is-active {
-  background: rgba(92, 74, 110, 0.2);
-  border-color: rgba(92, 74, 110, 0.5);
+  background: rgba(216, 180, 106, 0.2);
+  border-color: rgba(216, 180, 106, 0.5);
 }
 
 .sign-picker-item__glyph {
@@ -3795,8 +3795,8 @@ button.sign-card[data-sign],
 }
 
 .alert--info {
-  background: rgba(126, 107, 176, 0.1);
-  border-color: rgba(126, 107, 176, 0.25);
+  background: rgba(216, 180, 106, 0.1);
+  border-color: rgba(216, 180, 106, 0.25);
   color: #a5b4fc;
 }
 
@@ -4324,7 +4324,7 @@ button.sign-card[data-sign],
 
 .feature-card--highlighted {
   border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(92, 74, 110, 0.12);
+  box-shadow: 0 0 40px rgba(216, 180, 106, 0.12);
 }
 
 .feature-card__text {
@@ -4533,7 +4533,7 @@ button.sign-card[data-sign],
 
 .testimonial-card--featured {
   border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(92, 74, 110, 0.1);
+  box-shadow: 0 0 40px rgba(216, 180, 106, 0.1);
 }
 
 .testimonial-card:hover {
@@ -4600,7 +4600,7 @@ button.sign-card[data-sign],
    51. App Download Section
    ========================================================================== */
 .app-download-section {
-  background: linear-gradient(180deg, transparent 0%, rgba(92, 74, 110, 0.06) 50%, transparent 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(216, 180, 106, 0.06) 50%, transparent 100%);
 }
 
 .app-download-inner {
@@ -4707,7 +4707,7 @@ button.sign-card[data-sign],
    52. Newsletter
    ========================================================================== */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(92, 74, 110, 0.08) 0%, rgba(126, 107, 176, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(216, 180, 106, 0.08) 0%, rgba(216, 180, 106, 0.06) 100%);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -4772,7 +4772,7 @@ button.sign-card[data-sign],
 
 .newsletter-input:focus {
   border-color: var(--border-glow);
-  box-shadow: 0 0 0 3px rgba(92, 74, 110, 0.15);
+  box-shadow: 0 0 0 3px rgba(216, 180, 106, 0.15);
 }
 
 .newsletter-submit {
@@ -4798,7 +4798,7 @@ button.sign-card[data-sign],
 }
 
 .ap-email-cta--banner {
-  background: linear-gradient(135deg, rgba(168, 176, 188, 0.1) 0%, rgba(16, 21, 32, 0.92) 48%, rgba(92, 74, 110, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(168, 176, 188, 0.1) 0%, rgba(16, 21, 32, 0.92) 48%, rgba(216, 180, 106, 0.08) 100%);
   border-top: 1px solid rgba(168, 176, 188, 0.22);
   border-bottom: 1px solid rgba(168, 176, 188, 0.12);
   padding: var(--space-12) 0;
@@ -5338,7 +5338,7 @@ body.has-email-sticky { padding-bottom: 72px; }
 .orb--purple {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(92, 74, 110, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(216, 180, 106, 0.25) 0%, transparent 70%);
 }
 
 .orb--gold {

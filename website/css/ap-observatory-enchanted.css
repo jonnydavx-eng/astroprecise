@@ -14,7 +14,7 @@
   --ap-enchant-aurora:  rgba(126, 200, 232, 0.08);
   --ap-enchant-star:    rgba(232, 235, 240, 0.4);
 
-  --ap-enchant-gold:       #7EC8E8;
+  --ap-enchant-gold: #d8b46a;
   --ap-enchant-gold-soft:  rgba(126, 200, 232, 0.16);
   --ap-enchant-gold-glow:  0 0 32px rgba(126, 200, 232, 0.14), 0 0 64px rgba(106, 176, 255, 0.08);
   --ap-enchant-gold-ring:  0 0 0 1px rgba(200, 205, 214, 0.22), inset 0 1px 0 rgba(232, 235, 240, 0.06);
@@ -35,7 +35,7 @@ body.ap-enchanted {
   --bg:             #020307;
   --bg-2:           #101014;
   --bg-3:           #18181E;
-  --ap-link:        #7EC8E8;
+  --ap-link: #d8b46a;
   --gold:           #A8B0BC;
   --brass:          #A8B0BC;
   background-color: #020307;

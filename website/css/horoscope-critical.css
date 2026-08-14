@@ -156,7 +156,7 @@
       max-width: 500px; margin: 0 auto; line-height: 1.6;
     }
     /* On-system cool-void backdrop — engine/engraved only, no photographic sky.
-       Deep base #08080b well lifting to mid #121826 at the dial centre; the
+       Deep base #020307 well lifting to mid #121826 at the dial centre; the
        canvas starfield paints over this once zodiac-sphere.js hydrates. */
     .sphere-space-bg {
       position: absolute;
@@ -800,7 +800,7 @@
     .srp-chart-cta__btn {
       display: inline-block; padding: 0.6rem 1.6rem;
       background: linear-gradient(135deg, #A8B0BC 0%, #E8EBF0 100%);
-      color: #08080b; font-weight: 700; font-size: 0.85rem;
+      color: #020307; font-weight: 700; font-size: 0.85rem;
       letter-spacing: 0.04em; border-radius: 999px;
       text-decoration: none; transition: box-shadow .15s, transform .15s;
       box-shadow: 0 0 16px rgba(168, 176, 188,0.2);
@@ -1114,7 +1114,7 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       background: #A8B0BC;
-      color: #08080b;
+      color: #020307;
       padding: 2px 10px;
       border-radius: 999px;
       font-weight: 700;

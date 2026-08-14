@@ -267,7 +267,7 @@
       letter-spacing: 0.01em;
     }
     .chart-handoff-note__mark {
-      color: var(--ap-gold-bright, #7EC8E8);
+      color: var(--ap-gold-bright, #f0d59d);
       margin-right: 0.4em;
       font-weight: 600;
     }
@@ -938,7 +938,7 @@
 
 /* Masterpiece primary = terracotta CTA token */
 #result-actions-row .action-btn--primary {
-  background: var(--ap-cta, #6AB0FF) !important;
+  background: var(--ap-cta, #FF6428) !important;
   color: var(--ap-cta-ink, #1F1206) !important;
   border-color: transparent !important;
   font-weight: 600;

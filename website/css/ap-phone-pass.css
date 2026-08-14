@@ -2,21 +2,56 @@
    Type floor, 44px taps, stage height, overflow, ember primaries.
    Does not swap WebGL for 2D. */
 
+@media (max-width: 430px) {
+  /* Act 1 headlines only. Size, not typeface.
+     Beats later atlas / page !important title rules. */
+  html body.ap-live-home h1.ap-live-heading,
+  html body.page-home h1.ap-live-heading,
+  html body.page-compat h1.ap-live-heading,
+  html body h1.ap-live-heading,
+  html body .ap-live-copy h1,
+  html body.page-chart h1.chart-hero__title,
+  html body.page-chart .chart-hero__title,
+  html body .chart-hero h1,
+  html body:has(.tn-hero) .tn-hero h1,
+  html body .tn-hero h1,
+  html body.page-eclipse .ap-eclipse-hero h1,
+  html body .ap-eclipse-hero h1,
+  html body.page-shop h1.shop-hero__title,
+  html body.page-shop .shop-hero__title,
+  html body.page-shop .shop-hero h1,
+  html body .ap-shop-hero h1,
+  html body .ap-shop-hero__copy h1 {
+    font-size: clamp(2rem, 8.4vw, 2.55rem) !important;
+  }
+}
+
 @media (max-width: 980px) {
   .logo-text,
   .navbar__logo {
     white-space: nowrap;
   }
 
-  p:not(.eyebrow):not(.ap-live-eyebrow):not(.ap-model-hint):not(.sr-only):not(.navbar__drawer-heading):not(.navbar__more-label):not(.ap-shop-kicker):not(.chart-hero__eyebrow):not(.chart-hero__timecode):not(.chart-form__progress):not(.ap-eclipse-live__time):not(.ap-panel-label):not(.ap-live-proof):not(.form-label):not(.chart-form__time-label):not(.tn-hero__eyebrow):not(.ap-legal-links):not(.ap-guide-links),
-  main li,
+  /* Readable copy floor. Not chrome: eyebrows, hints, timecodes,
+     drawer headings, kickers, legal, instrument labels. */
   .ap-live-copy,
   .standfirst,
+  html body.page-chart .chart-hero__subtitle,
   .tn-hero__sub,
   .tn-section__sub,
-  .tn-locator__status,
   .tn-awaiting,
-  .form-hint,
+  .tn-honesty,
+  .ap-shop-lede,
+  .ap-shop-section-head > p:not(.ap-shop-kicker),
+  .ap-product__body > p:not(.ap-product__kind):not(.ap-product__hook),
+  .ap-shop-method li p,
+  .ap-key-map p,
+  .ap-shop-notify p,
+  .ap-shop-status,
+  .ap-eclipse-hero .ap-eclipse-page-shell > p:not(.ap-eclipse-kicker),
+  .ap-eclipse-live__chapter p,
+  .ap-eclipse-guide article p,
+  .ap-eclipse-next article p,
   .ap-angles ol,
   .ap-ledger p,
   .ap-site-footer p,

@@ -41,3 +41,10 @@ const natalCss = readFileSync(new URL('./website/css/ap-natal-reading.css', impo
 assert.equal(/position:\s*sticky/.test(natalCss), false, 'natal submit must not be sticky over the bottom nav');
 
 console.log('PASS deep-reading seven chapters + untimed Moon approximate');
+
+const natalJs = readFileSync(new URL('./website/js/ap-natal-reading.js', import.meta.url), 'utf8');
+assert.ok(natalJs.includes("zone === 'UTC'") && natalJs.includes("zone === 'GMT'"), 'natal reading must refuse UTC/GMT');
+assert.ok(natalJs.includes('UK summer is not GMT'), 'natal reading must say UK summer is not GMT');
+assert.equal(/option value="UTC"/.test(readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8')), false, 'deep-reading must not offer UTC/GMT');
+assert.ok(readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8').includes('natal-city'), 'deep-reading must collect a city for IANA');
+console.log('PASS deep-reading seven chapters + untimed Moon approximate + IANA TZ');

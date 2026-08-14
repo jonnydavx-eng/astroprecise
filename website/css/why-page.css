@@ -105,7 +105,7 @@
       display: inline-block; text-decoration: none;
       font-family: 'Inter', sans-serif; font-size: 0.78rem;
       letter-spacing: 0.14em; text-transform: uppercase;
-      color: #08080b; background: linear-gradient(160deg, #d8b46a, #A8B0BC);
+      color: #020307; background: linear-gradient(160deg, #d8b46a, #A8B0BC);
       padding: 0.85rem 1.8rem; border-radius: 999px; font-weight: 600;
       transition: filter 0.3s, transform 0.3s;
     }

@@ -37,7 +37,7 @@
   grid-column: 1 / -1;
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--ap-aurora, #7EC8E8);
+  color: var(--ap-aurora, #d8b46a);
 }
 #ap-planet-actions .ap-pa__title {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -106,7 +106,7 @@
 #ap-planet-hint.ap-planet-hint.is-on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 #ap-planet-hint .ap-planet-hint__dot {
   width: 7px; height: 7px; border-radius: 50%; flex: 0 0 auto;
-  background: var(--ap-aurora, #7EC8E8); box-shadow: 0 0 8px 1px var(--ap-aurora, #7EC8E8);
+  background: var(--ap-aurora, #d8b46a); box-shadow: 0 0 8px 1px var(--ap-aurora, #d8b46a);
   animation: ap-ph-pulse 2s ease-in-out infinite;
 }
 #ap-planet-hint .ap-planet-hint__text { min-width: 0; }

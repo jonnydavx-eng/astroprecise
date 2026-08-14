@@ -74,7 +74,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(92, 74, 110,0.18) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(216, 180, 106,0.18) 0%, transparent 70%);
       pointer-events: none;
       transition: background 0.6s ease;
     }

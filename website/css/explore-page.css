@@ -182,7 +182,7 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   border-bottom: 1px solid rgba(200, 205, 214, 0.14);
 }
 .explore-legend__ladder li { padding: 0.14rem 0; }
-.explore-legend__ladder b { color: var(--ap-brass-bright, #7EC8E8); font-weight: 600; }
+.explore-legend__ladder b { color: var(--ap-brass-bright, #f0d59d); font-weight: 600; }
 .explore-legend__ladder em { font-style: italic; color: rgba(232, 235, 240, 0.92); }
 .explore-legend__foot {
   font-size: 0.76rem;

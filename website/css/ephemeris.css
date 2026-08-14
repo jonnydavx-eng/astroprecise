@@ -24,9 +24,9 @@
 
   /* ── Accent palette (brightened for dark bg) ── */
   --meridian:        #6FA0D8;   /* links — brighter blue for AA on dark */
-  --terracotta:      #6AB0FF;   /* CTA — brightened rust */
+  --terracotta:      #FF6428;   /* CTA — house ember */
   --brass:           #A8B0BC;   /* accents/marks — brightened gold */
-  --brass-bright:    #7EC8E8;   /* small brass UI on void — AA (= --ap-gold-bright) */
+  --brass-bright: #f0d59d;   /* small brass UI on void — AA (= --ap-gold-bright) */
   --brass-vivid:     #C8CDD6;   /* hover/emphasis brass (= --ap-gold-vivid) */
   --sage:            #8FB36B;   /* verify dots */
   --rose:            #D4A882;   /* hero eyebrow */

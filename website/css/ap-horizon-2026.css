@@ -209,7 +209,7 @@ body.ap-award-511::after {
 
 .ap-award-511 .display-accent {
   font-style: italic;
-  color: var(--ap-aurora, #7EC8E8);
+  color: var(--ap-aurora, #d8b46a);
   font-weight: 400;
 }
 
@@ -1714,7 +1714,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   font-variant-emoji: text;
   font-size: 1.7rem;
   line-height: 1;
-  color: var(--brass-bright, #7EC8E8);
+  color: var(--brass-bright, #f0d59d);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -4748,7 +4748,7 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .orrery-earth-loader {
 /* Hover / focus lifts the glyph to bright brass. */
 .ap-award-511 #heroChapter .lite-vp-btn:hover .lite-vp-glyph,
 .ap-award-511 #heroChapter .lite-vp-btn:focus-visible .lite-vp-glyph {
-  color: var(--brass-bright, #7EC8E8);
+  color: var(--brass-bright, #f0d59d);
 }
 
 /* Selected chip: vivid brass glyph with a soft brass halo — unmistakable. */
@@ -4808,7 +4808,7 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .orrery-earth-loader {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--brass-vivid, #7EC8E8);
+  background: var(--brass-vivid, #f0d59d);
   box-shadow: 0 0 10px rgba(168, 176, 188, 0.55);
   animation: ap-live-pulse 2.2s ease-in-out infinite;
 }
