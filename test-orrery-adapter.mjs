@@ -64,7 +64,7 @@ else {
     fail('couples sky must not compute a natal JD without a known birth time');
   }
   if (couplesSky.includes("time || '12:00'")) fail('couples sky still fills unknown time with noon');
-  if (couplesSky.includes('flyTo') || couplesSky.includes('focusPlanet')) {
+  if (couplesSky.includes('flyTo') || couplesSky.includes('focusPlanet') || couplesSky.includes('focusEarthCamera')) {
     fail('couples A/B must focus clocks in-scene, not flyTo/focusPlanet');
   }
   if (!couplesSky.includes("focus: clockFocus()") && !couplesSky.includes('focus: clockFocus()')) {
@@ -76,6 +76,10 @@ else {
   else ok('couples sky refuses GMT offsets, withholds noon, and focuses clocks in-scene');
 }
 
+const placeNatal = W.slice(W.indexOf('function placeNatalClockWho'), W.indexOf('function updateNatalClocks'));
+if (!placeNatal || placeNatal.includes('scenePos(b.R')) {
+  fail('placeNatalClockWho still stacks both clocks on scenePos(b.R)');
+}
 if (!W.includes('function natalClockSceneRadius(who, body)') || !W.includes('Math.max(pairHalf, clearHalf)')) {
   fail('natal clocks must radially split A/B enough to unstack Earth meshes');
 }
