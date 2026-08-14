@@ -28,14 +28,7 @@
   var eventDone = false;
 
   function pageKey() {
-    var p = (location.pathname || '').split('/').pop() || 'index.html';
-    if (p === 'horoscope.html') {
-      try {
-        var sign = new URLSearchParams(location.search || '').get('sign');
-        if (sign) return 'horoscope.html?sign=' + String(sign).toLowerCase();
-      } catch (e) {}
-    }
-    return p;
+    return (location.pathname || '').split('/').pop() || 'index.html';
   }
 
   function currentTool() {

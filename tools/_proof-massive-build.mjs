@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const web = path.join(root, 'website');
-const RELEASE = '871';
+const RELEASE = '872';
 const ACT_ONE_PAGES = [
   'index.html',
   'chart.html',
