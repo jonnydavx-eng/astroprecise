@@ -872,8 +872,8 @@ body:has(#starfield-canvas) .lib__banner {
 }
 
 .btn--primary {
-  background: var(--ap-cta, #6AB0FF);
-  color: var(--ap-cta-ink, #1F1206);
+  background: var(--ap-cta, #FF6428);
+  color: var(--ap-cta-ink, #020307);
   border-radius: 6px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
   letter-spacing: 0.08em;
@@ -881,10 +881,10 @@ body:has(#starfield-canvas) .lib__banner {
 }
 
 .btn--primary:hover {
-  background: var(--ap-cta-hover, #7EC8E8);
+  background: var(--ap-cta-hover, #FF6428);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.16);
   transform: translateY(-1px);
-  color: var(--ap-cta-ink, #1F1206);
+  color: var(--ap-cta-ink, #020307);
 }
 
 .btn--primary:active {
