@@ -8,7 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-horoscope.mjs && node test-compat.mjs && node test-content-bank.mjs && node test-art-themes.mjs && node test-weekly-sky.mjs && node test-ap-sky-bridge.mjs && node test-eclipse-geometry.mjs && node test-orrery-adapter.mjs && node test-gumroad-tables.mjs && node test-eclipse-edition.mjs && node test-deep-reading.mjs && node test-interpretations-patterns.mjs && node test-release-honesty.mjs && npm --prefix ephemeris-package test",
+    "test": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-horoscope.mjs && node test-compat.mjs && node test-couples-sky.mjs && node test-content-bank.mjs && node test-art-themes.mjs && node test-weekly-sky.mjs && node test-ap-sky-bridge.mjs && node test-eclipse-geometry.mjs && node test-orrery-adapter.mjs && node test-gumroad-tables.mjs && node test-eclipse-edition.mjs && node test-deep-reading.mjs && node test-interpretations-patterns.mjs && node test-release-honesty.mjs && npm --prefix ephemeris-package test",
     "test:engine": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs",
     "test:ui": "node tools/_diag-click.mjs && node tools/visual-check/_v833-living-sky.mjs",
     "test:focus": "node tools/visual-check/_v833-living-sky.mjs",

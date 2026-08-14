@@ -97,6 +97,12 @@
   border-radius: 4px;
   background: #020307;
 }
+.ap-couples-card--a {
+  box-shadow: inset 3px 0 0 #D8B46A;
+}
+.ap-couples-card--b {
+  box-shadow: inset 3px 0 0 #FF6428;
+}
 .ap-couples-card h3 {
   margin: 0 0 16px;
   font-size: 15px;
@@ -190,7 +196,14 @@
   cursor: pointer;
 }
 .ap-city-item:hover,
-.ap-city-item:focus { background: rgba(255,100,40,.16); }
+.ap-city-item:focus,
+.ap-city-item.is-selected { background: rgba(255,100,40,.16); }
+.ap-city-note {
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: rgba(242,236,223,.55);
+}
 .ap-zone-note {
   margin: 6px 0 0;
   font-size: 12px;

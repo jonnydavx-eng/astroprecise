@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=873">
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=873">
   <link rel="stylesheet" href="css/ap-home-v835.css?v=873">
-  <link rel="stylesheet" href="css/ap-couples-v858.css?v=873">
+  <link rel="stylesheet" href="css/ap-couples-v858.css?v=874">
   <link rel="stylesheet" href="css/ap-keep-sky.css?v=873">
 </head>
 <body class="ap-live-home page-compat">
@@ -41,7 +41,7 @@
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
-          <span class="logo-text">AstroPrecise</span>
+          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
@@ -92,8 +92,8 @@
         </div>
         <p class="ap-ab-note" id="ap-ab-note">Live sky until both dates are set</p>
         <div class="ap-ab" role="group" aria-label="Whose minute the panel names">
-          <button type="button" id="ab-a" disabled aria-pressed="false">A</button>
-          <button type="button" id="ab-b" disabled aria-pressed="false">B</button>
+          <button type="button" id="ab-a" disabled aria-pressed="false" aria-label="A's minute">A</button>
+          <button type="button" id="ab-b" disabled aria-pressed="false" aria-label="B's minute">B</button>
           <button type="button" id="ab-now" aria-pressed="true">Live</button>
         </div>
         <div class="ap-minute">
@@ -143,11 +143,11 @@
       <div class="ap-couples-entry__inner">
         <p class="ap-live-eyebrow">Birth minutes · stay on this device</p>
         <h2 id="minutes-title">Enter both minutes.</h2>
-        <p class="standfirst">Date is required. Pick a birth place so the minute uses that zone (Europe/London in UK summer, not GMT). Time can stay blank — Moon and angles are then withheld. Searching a town sends only that name to a public geocoder. The hash invite never uses a query string.</p>
+        <p class="standfirst">Date and a picked birth place are required for a civil minute. The place supplies a real IANA zone (Europe/London in UK summer, not GMT). Time can stay blank — Moon and angles are then withheld, and no noon is invented. Searching a town sends only that name to a public geocoder. The hash invite never uses a query string.</p>
 
         <form id="compat-form" novalidate aria-label="Two birth minutes">
           <div class="ap-couples-grid">
-            <fieldset class="ap-couples-card" style="border:0;margin:0;">
+            <fieldset class="ap-couples-card ap-couples-card--a" style="border:0;margin:0;">
               <legend class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person A</legend>
               <h3>Person A</h3>
               <div class="field-e">
@@ -163,9 +163,9 @@
                 <input type="time" id="person1-time">
               </div>
               <div class="field-e">
-                <label for="person1-city">Birth place <span class="opt">optional</span></label>
-                <input type="text" id="person1-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="person1-city-drop">
-                <div class="ap-city-drop" id="person1-city-drop" hidden></div>
+                <label for="person1-city">Birth place</label>
+                <input type="text" id="person1-city" placeholder="Town or city" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="person1-city-drop" aria-expanded="false">
+                <div class="ap-city-drop" id="person1-city-drop" hidden role="listbox" aria-label="Places with a real time zone"></div>
                 <p class="ap-zone-note" id="person1-zone">Pick a place for a real zone. UK summer is not GMT.</p>
                 <input type="hidden" id="person1-lat">
                 <input type="hidden" id="person1-lon">
@@ -173,7 +173,7 @@
               </div>
             </fieldset>
 
-            <fieldset class="ap-couples-card" style="border:0;margin:0;">
+            <fieldset class="ap-couples-card ap-couples-card--b" style="border:0;margin:0;">
               <legend class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person B</legend>
               <h3>Person B</h3>
               <div class="field-e">
@@ -189,9 +189,9 @@
                 <input type="time" id="person2-time">
               </div>
               <div class="field-e">
-                <label for="person2-city">Birth place <span class="opt">optional</span></label>
-                <input type="text" id="person2-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="person2-city-drop">
-                <div class="ap-city-drop" id="person2-city-drop" hidden></div>
+                <label for="person2-city">Birth place</label>
+                <input type="text" id="person2-city" placeholder="Town or city" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="person2-city-drop" aria-expanded="false">
+                <div class="ap-city-drop" id="person2-city-drop" hidden role="listbox" aria-label="Places with a real time zone"></div>
                 <p class="ap-zone-note" id="person2-zone">Pick a place for a real zone. UK summer is not GMT.</p>
                 <input type="hidden" id="person2-lat">
                 <input type="hidden" id="person2-lon">
@@ -228,7 +228,7 @@
   <script src="js/ap-nav-prefetch.js?v=873" defer data-ap-nav-prefetch="1"></script>
   <script src="js/ap-sky-time.js?v=873" defer></script>
   <script src="js/ap-footer-inject.js?v=873" defer></script>
-  <script src="js/ap-couples-sky.js?v=873" defer></script>
+  <script src="js/ap-couples-sky.js?v=874" defer></script>
   <script src="js/ap-keep-sky.js?v=873" defer></script>
 </body>
 </html>

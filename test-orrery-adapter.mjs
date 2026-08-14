@@ -67,6 +67,9 @@ else {
   if (!couplesSky.includes('flyTo') && !couplesSky.includes('focusPlanet')) {
     fail('couples A/B must camera-focus the one model, not swap it');
   }
+  if (!couplesSky.includes('window.APCouplesSky') || !couplesSky.includes('OFFLINE_TOWNS')) {
+    fail('couples sky must export APCouplesSky and an IANA offline town list');
+  }
   else ok('couples sky refuses GMT offsets, withholds noon, and focuses the live camera');
 }
 
@@ -229,7 +232,7 @@ if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a 
 if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
 if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v873"')) fail('service worker release identity is not ap-v873');
+if (!sw.includes('const V = "ap-v874"')) fail('service worker release identity is not ap-v874');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
