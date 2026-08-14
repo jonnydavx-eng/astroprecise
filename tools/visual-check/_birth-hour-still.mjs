@@ -60,6 +60,17 @@ try {
   assert(caption.includes('computed at 1978-03-14 14:00 UTC'), 'computed UTC minute missing');
   assert(await page.locator('#keep-sky').isEnabled(), 'keep button did not enable');
 
+  const captureProbe = await page.evaluate((jd) => {
+    try {
+      const still = window.Orrery3D.captureBirthHourStill({ jd, scale: 2 });
+      return { ok: !!still, width: still?.width || 0, height: still?.height || 0 };
+    } catch (error) {
+      return { ok: false, error: String(error?.stack || error) };
+    }
+  }, known.jd);
+  assert(captureProbe.ok && captureProbe.width > 0 && captureProbe.height > 0,
+    `engine capture failed: ${JSON.stringify(captureProbe)}`);
+
   const downloadPromise = page.waitForEvent('download', { timeout: 30_000 });
   await page.locator('#keep-sky').click();
   const download = await downloadPromise;
