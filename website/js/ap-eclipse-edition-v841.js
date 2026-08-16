@@ -850,7 +850,7 @@ tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #ff6428;font-weight:7
   <footer class="legal">${escapeHtml(model.legal)} · Computed on this device. No birth date, time or place is in this file. Fingerprint ${fp}. Only conjunction, opposition and square within orb carry the reading.</footer>
   <p class="running">ASTROPRECISE · 12 AUG 2026 · ${fp} · 6 / 6</p>
 </section>
-${printOnLoad ? `<script>addEventListener('load',()=>setTimeout(()=>print(),250),{once:true})<\/script>` : ''}
+${printOnLoad ? `<script>addEventListener('load',()=>setTimeout(()=>print(),250),{once:true})</script>` : ''}
 </body></html>`;
 }
 

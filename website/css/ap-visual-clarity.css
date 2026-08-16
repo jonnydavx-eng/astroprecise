@@ -5,15 +5,15 @@
   --ap-vc-cream: #E8EBF0;
   --ap-vc-cream-dim: #C8CDD6;
   --ap-vc-muted: #8B919C;
-  --ap-vc-accent: #7EC8E8;
-  --ap-vc-brass: #7EC8E8;
+  --ap-vc-accent: #d8b46a;
+  --ap-vc-brass: #d8b46a;
   --ap-vc-sun: #E8DCC8;
-  --ap-vc-void: #08080b;
+  --ap-vc-void: #020307;
   --ap-vc-raised: #18181E;
-  --ap-vc-cta: #6AB0FF;
+  --ap-vc-cta: #FF6428;
   --ap-vc-cta-ink: #050508;
   --ap-vc-rim: rgba(200, 205, 214, 0.18);
-  --ap-vc-rim-strong: rgba(126, 200, 232, 0.4);
+  --ap-vc-rim-strong: rgba(216, 180, 106, 0.4);
 }
 
 body.ap-enchanted,
@@ -135,7 +135,7 @@ body .ap-ev__btn--primary,
 body button[type="submit"].primary,
 body .chart-cta-primary,
 body a.btn-primary {
-  background: linear-gradient(135deg, #4A90E0 0%, #7EC8E8 48%, #C8D8E8 100%) !important;
+  background: linear-gradient(135deg, #b08a43 0%, #d8b46a 48%, #f0d59d 100%) !important;
   color: var(--ap-vc-cta-ink) !important;
   border: none !important;
   box-shadow: 0 4px 20px rgba(126, 200, 232, 0.3) !important;

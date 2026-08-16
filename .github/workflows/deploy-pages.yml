@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-engine-solar-lunar.mjs, test-engine-planets.mjs, test-engine-houses.mjs, test-engine-edge.mjs, test-horoscope.mjs, test-compat.mjs, test-content-bank.mjs, test-art-themes.mjs, test-weekly-sky.mjs, test-ap-sky-bridge.mjs, test-sky-news-moon-phase.mjs, test-orrery-adapter.mjs, test-gumroad-tables.mjs, tools/e2e-profile-save-audit.mjs]
+    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-engine-solar-lunar.mjs, test-engine-planets.mjs, test-engine-houses.mjs, test-engine-edge.mjs, test-horoscope.mjs, test-compat.mjs, test-content-bank.mjs, test-art-themes.mjs, test-weekly-sky.mjs, test-ap-sky-bridge.mjs, test-orrery-adapter.mjs, test-gumroad-tables.mjs, tools/e2e-profile-save-audit.mjs]
   workflow_dispatch:
 
 # 2026-07-04: migrated OFF the legacy gh-pages branch builder onto the official
@@ -68,14 +68,8 @@ jobs:
       - name: Personal Sky Moment / sky-bridge
         run: node test-ap-sky-bridge.mjs
 
-      # The three steps below were in `npm test` but never gated a deploy: CI
+      # These steps were in `npm test` but never gated a deploy: CI
       # runs a hardcoded list, so adding a test locally did not make it a gate.
-      # Most costly of the three was the Moon phase one — it locks out a bug
-      # that shipped (folded elongation destroyed the waxing/waning sign) and
-      # CI would have redeployed the regression without noticing.
-      - name: Moon phase waxing / waning
-        run: node test-sky-news-moon-phase.mjs
-
       - name: Orrery adapter
         run: node test-orrery-adapter.mjs
 

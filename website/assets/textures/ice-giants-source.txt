@@ -1,0 +1,167 @@
+Ice giant equirectangular maps — Hubble OPAL (NASA/ESA HST)
+Local texture replacement only. No SKUs.
+
+Uranus
+  File: hlsp_opal_hst_wfc3-uvis_uranus-2025a_f657n-f547m-f467m_v1_globalmap.tif
+  URL:  https://archive.stsci.edu/hlsps/opal/cycle33/uranus/hlsp_opal_hst_wfc3-uvis_uranus-2025a_f657n-f547m-f467m_v1_globalmap.tif
+  Cycle 33, 2025a color (F657N red / F547M green / F467M blue)
+
+Neptune
+  File: hlsp_opal_hst_wfc3-uvis_neptune-2025b_f467m-f547m-f657n_v1_globalmap.tif
+  URL:  https://archive.stsci.edu/hlsps/opal/cycle32/neptune/hlsp_opal_hst_wfc3-uvis_neptune-2025b_f467m-f547m-f657n_v1_globalmap.tif
+  Cycle 32, 2025b color (F467M / F547M / F657N)
+
+DOI: 10.17909/T9G593
+https://dx.doi.org/10.17909/T9G593
+Program page: https://archive.stsci.edu/hlsp/opal
+License: CC BY 4.0
+
+Credit:
+This work used data acquired from the NASA/ESA HST Space Telescope, associated with OPAL program (PI: Simon, GO13937), and archived by the Space Telescope Science Institute, which is operated by the Association of Universities for Research in Astronomy, Inc., under NASA contract NAS 5-26555. All maps are available at http://dx.doi.org/10.17909/T9G593.
+
+Processing: ImageMagick resize only to 2048x1024 (full webp+jpg), 1024x512 (_md webp), 512x256 (_sm webp). No painting, no invented bands.
+
+NEPTUNE ONLY — all-bands-valid mask (2026-08-14). Uranus is NOT masked.
+The reported "polar pinch / jagged blue-green wrap seam" at Neptune's north was a real
+defect, and it was not a resize artefact: it is the RGB composite of pixels where only
+SOME of the three filters have coverage. Measured in the archive TIFF, between about
++72 and +44 degrees latitude there is a broad band where one or two channels are exactly
+0 while another carries signal — at +67 deg that is 67% of the row. Composited to RGB
+those become saturated pure-blue / pure-green pixels, which is the sawtooth. They are
+not measurements of Neptune; they are compositing artefacts.
+Rule applied: a pixel is valid only where all three filters have data. Any pixel with a
+channel of exactly 0, that is not already fully no-data, is set to no-data (black).
+  - Exactly 0 is a safe no-data marker here: it occurs only in that +72..+44 transition
+    band and never below +40 deg, where the minimum non-zero channel is 13 and rises to
+    76 by +30 deg. So the rule cannot reach genuinely dark methane-band pixels.
+  - Nothing is painted in. Invalid pixels are marked absent, not filled.
+  - 5.78% of the map moves from partial-channel composite to no-data. Total no-data goes
+    12.44% -> 18.2%; the top of valid data moves +71.3 -> +66.6 deg; the south pole
+    coverage is unchanged.
+  - The well-observed disc is untouched: south of +40 deg the masked source is
+    bit-identical to the original (0 differing samples), and after the identical resize
+    the shipped file differs from the unmasked one by 0.68/255 mean (JPEG only).
+  - The resize method was deliberately left exactly as it was, so this change is the mask
+    and nothing else. Longitude seam unchanged at the 87th percentile.
+The same rule would move Uranus from 40.29% to 41.04% no-data (its fringe is only 0.75%
+of the map). NOT applied: the helm has twice ruled Uranus's coverage edge to be the
+official product. Ask before applying it there.
+
+Where the remaining sawtooth comes from, and why it stops here (2026-08-14):
+Two further attempts, both measured, neither shipped.
+  1. Mask-aware (un-premultiplied) resample. Resizing across a no-data boundary blends
+     black into valid pixels, so the correct method is to resize the premultiplied RGB
+     and the validity mask with the same filter and divide. Built it; the fully-covered
+     interior came back identical (mean difference 0.003/255) and only 7,377 boundary
+     pixels changed — 0.35% of the map. Rendered sawtooth moved 1.64% -> 1.65% of the
+     disc front-on and 5.20% -> 5.26% at 35 deg tilt, i.e. nothing. Not shipped.
+  2. Tighter no-data threshold (channel <= 2 instead of == 0). Gains 244 pixels. Not
+     shipped.
+All five Neptune tiers carry the mask (verified, not assumed): no-data 17.9 / 18.0 / 17.9 /
+17.1 / 17.6 % and top-of-data +66.6 / +66.4 / +66.4 / +67.4 / +67.4 deg for
+neptune.jpg, .webp, _md.webp, _sm.jpg, _sm.webp. So the fix reaches the phone tier too,
+not just the desktop map.
+
+Delivery caveat, since sw.js was deliberately NOT bumped:
+Of the Neptune tiers only neptune_sm.webp — the phone/low tier — is in the sw.js precache
+list, and sw.js serves non-critical assets stale-while-revalidate (`return cached || await
+networkResponse`). A returning visitor whose cache is already warm at the current version
+therefore paints the OLD unmasked phone tile once, while the fetch handler writes the new
+one, so it self-heals on the next load. Desktop and mid tiers are not precached and pick the
+fix up immediately.
+If the fix needs to land on the first paint for returning phone visitors, that requires a
+version tip (sw.js V + ap-asset-v.js + the Act 1 ?v= queries together) — deliberately NOT
+done here, and no version number is quoted in this note so it cannot go stale against
+whatever tip the tree is on.
+
+Checked from two more directions, so "the seam" is not something else in disguise:
+  - Longitude wrap seam: rendered the u=0 meridian face-on at 14 deg FOV, beside the u=0.5
+    interior for comparison. No visible vertical seam on Neptune. The 87th-percentile
+    wrap statistic is a 2.27/255 step, which is real but invisible.
+  - Pole convergence: rendered the north pole dead-on. The no-data cap is clean, with no
+    pinwheel or star artefact where all longitudes meet. The pole is fine.
+What is left is the scalloped boundary of the no-data cap, and that boundary is data.
+
+The residual is real data. Measured just inside the masked edge, the surviving valid
+pixels are bright, not dim (mean max channel 136-210 from +60 to +45 deg), and they are
+spectrally lopsided — 65-96% of them have one channel dominating. They are genuine
+three-band measurements sitting where the three filter mosaics only partly overlap.
+Removing them would be an SNR / spectral-plausibility judgement about what Neptune is
+allowed to look like, not a validity test, so it is not ours to make unilaterally. The
+alternative is masking the coverage boundary at render time, which lives in
+orrery-webgl.js. Both routes are the helm's call; ask before going further.
+
+Native resolution:
+Both official OPAL global maps are only 721x361 (0.5 deg/px). The shipped 2048x1024 tier is
+therefore a ~2.8x upscale of the source — the file is 2K but the detail is not. Verified
+against the archive TIFFs at 721x361: correlation 0.9999, mean abs difference 0.35/255, so
+the shipped pixels are faithful to the official product. The soft rainbow striping along the
+coverage edge is per-filter misregistration in the STScI product, magnified by that upscale.
+
+Coverage note (measured from the archive TIFFs, not guessed):
+Uranus 2025a carries data from +90 down to about -19.5 deg latitude only, and rows are fully
+populated only to about -9 deg. 40% of the map area is black. Uranus's southern hemisphere is
+turned away from Earth and in polar night, so Hubble cannot see it. That is Hubble's real map,
+not a convert error. The missing hemisphere was NOT painted in.
+Neptune 2025b is NOT full-latitude (an earlier version of this note claimed it was). It runs
+from about +71 deg down to the south pole, fully populated only below about +58 deg, leaving
+13% of the map black at the north.
+
+On a globe (rendered check, three.js sphere, 2026-08-14):
+Neptune reads fine — one small misregistration patch at the north pole. Uranus does not: the
+unobserved 40% becomes a black southern cap with a hard rainbow band across the middle of the
+disc, which reads as a rendering fault rather than a planet. The pixels are the official
+product, so this is a "which product" decision and not a conversion bug. Left as shipped
+rather than re-authored, because painting the missing hemisphere would be invention and
+swapping the source is the helm's call. The previous Solar System Scope Uranus map is still in
+git history at 5ca7352 if the smooth full-globe map is preferred for Act 1.
+
+Grid convention — duplicated prime meridian (checked 2026-08-14, left alone deliberately):
+The OPAL maps are 721x361, i.e. longitude 0-360 INCLUSIVE and latitude -90..+90 inclusive.
+Column 0 and column 720 are byte-identical in all 361 rows, so the prime meridian is stored
+twice. Every other map in this folder (Pluto, and the Solar System Scope set) is exclusive.
+Consequence for the shipped 2048-wide resize: u=0 and u=1 land on nearly the same longitude,
+so the wrap seam is unusually SMALL — measured at the 26th percentile (Uranus) and 87th
+(Neptune) of all ordinary column-to-column steps in the image.
+A stricter rebuild was tried and reverted: dropping the duplicate column and resampling
+periodically (half-width wrap padding, so the scaler sees a continuous sphere) is
+geometrically correct but measurably WORSE to look at. The Uranus seam moves to the 96th
+percentile, because the seam then preserves the source's true 0.5 deg step while the interior
+columns have been interpolated down to 0.176 deg. Content was identical either way (black
+fraction 0.402, mean RGB and coverage bounds unchanged), so there was nothing to gain.
+Verdict: no visible seam bug. Do not "fix" this without re-measuring first.
+
+Neptune still recapture was attempted and REFUSED (2026-08-14):
+With the mask in place a recapture does render cleanly — the sawtooth is gone — but the
+capture came back with an opaque void (cornerAlphaMax 255) instead of the transparent
+background every still in this library needs for compositing. Cause: the launch shell no
+longer sets the `orrery-full` class, and portrait isolation depends on that hero layout
+state; the engine and WebGL are both live regardless. make-engine-stills.mjs now refuses
+to overwrite a good still with one that fails the transparency check, so the stale July
+still is intentionally still in place. Recapture needs a machine where the shell reaches
+its hero layout. Do not hand-key the background transparent: Neptune's no-data cap is
+legitimately black and a colour key would delete it.
+
+Engine stills on this tree were recaptured from the OPAL maps (2026-08-14) and still
+show the pre-mask Neptune fringe. A post-mask recapture was REFUSED because the void came
+back opaque. The shipped Neptune still therefore does NOT yet show the all-bands-valid map.
+Do not hand-key the background transparent: Neptune's no-data cap is legitimately black.
+The residual scalloped coverage edge is data, not a shader artefact. Left for the helm.
+
+Colour note:
+These are narrow/medium-band filter composites, not true-colour photographs. Uranus lands
+close to its familiar pale cyan. Neptune comes out green-dominant (lit-pixel mean RGB
+100/192/156) rather than the iconic deep blue, because F547M dominates the composite. That
+green cast is in the official STScI product and has been left alone — it is also closer to
+the truth than the poster image: Irwin et al. (2024) reprocessed Voyager 2 data and found
+Neptune is a much paler greenish-blue, the deep blue being a contrast-stretch artefact.
+Pushing this map toward Voyager blue would be invention, so it was not done.
+
+Rings (checked 2026-08-14, nothing shipped):
+Uranus has real rings, but no clearly licensed public ring map exists to draw them
+from — nothing in this repo, and no NASA/ESA/USGS product equivalent to the Saturn
+ring strip we already ship. docs/MODEL-MASTERPIECE-SPEC-2026-07-10.md (S9) proposes
+building one by reusing saturnRingMaterial with a hand-authored 256x8 mostly-empty
+strip. That is invented art, not a map, so it was NOT done. Uranus stays ringless
+until a real ring product is sourced. Saturn is the only ringed body in the engine
+because saturn_ring.png is the only ring texture that exists here.

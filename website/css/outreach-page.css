@@ -43,7 +43,7 @@ html.ap-fonts-ready .ot h1 {
 }
 
 body {
-  background: var(--ap-void-deep, #08080b);
+  background: var(--ap-void-deep, #020307);
   color: var(--ap-text-primary, #E8E0D0);
 }
 

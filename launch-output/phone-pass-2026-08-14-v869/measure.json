@@ -1,0 +1,222 @@
+[
+  {
+    "id": "home",
+    "path": "/index.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise — the living sky, computed now",
+    "url": "http://127.0.0.1:8790/index.html?nosw=1",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 473,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": ".ap-live-stage",
+        "tag": "section",
+        "id": "lead",
+        "w": 390,
+        "h": 1621,
+        "display": "flex",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "primaryStage": {
+      "sel": ".ap-model-stage",
+      "tag": "div",
+      "id": "",
+      "w": 390,
+      "h": 473,
+      "display": "block",
+      "vis": "visible"
+    },
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 471,
+      "cw": 780,
+      "ch": 942
+    },
+    "webgl": {
+      "ok": true,
+      "lost": false,
+      "vendor": "WebKit",
+      "renderer": "WebKit WebGL"
+    },
+    "bodyIds": [
+      "mercury",
+      "venus",
+      "earth",
+      "mars",
+      "jupiter",
+      "saturn",
+      "uranus",
+      "neptune",
+      "pluto"
+    ],
+    "pluto": {
+      "inGetPlanets": true,
+      "planet": {
+        "id": "pluto",
+        "name": "Pluto",
+        "size": 0.28,
+        "R": 32.5,
+        "lon": 304.3535805457035,
+        "tex": "pluto.jpg"
+      },
+      "extraBodies": [],
+      "extraHasPluto": false,
+      "sceneWalked": false,
+      "sceneHits": [],
+      "domLabels": []
+    }
+  },
+  {
+    "id": "compatibility",
+    "path": "/compatibility.html?nosw=1#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=A&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York&bn=B",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise — two birth minutes, one sky",
+    "url": "http://127.0.0.1:8790/compatibility.html?nosw=1#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=A&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York&bn=B",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 473,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": ".ap-live-stage",
+        "tag": "section",
+        "id": "lead",
+        "w": 390,
+        "h": 2378,
+        "display": "flex",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "primaryStage": {
+      "sel": ".ap-model-stage",
+      "tag": "div",
+      "id": "",
+      "w": 390,
+      "h": 473,
+      "display": "block",
+      "vis": "visible"
+    },
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 471,
+      "cw": 780,
+      "ch": 942
+    },
+    "webgl": {
+      "ok": true,
+      "lost": false,
+      "vendor": "WebKit",
+      "renderer": "WebKit WebGL"
+    },
+    "bodyIds": [
+      "mercury",
+      "venus",
+      "earth",
+      "mars",
+      "jupiter",
+      "saturn",
+      "uranus",
+      "neptune",
+      "pluto"
+    ],
+    "pluto": {
+      "inGetPlanets": true,
+      "planet": {
+        "id": "pluto",
+        "name": "Pluto",
+        "size": 0.28,
+        "R": 32.5,
+        "lon": 304.3535805457035,
+        "tex": "pluto.jpg"
+      },
+      "extraBodies": [],
+      "extraHasPluto": false,
+      "sceneWalked": false,
+      "sceneHits": [],
+      "domLabels": []
+    }
+  }
+]

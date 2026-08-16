@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
+  <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -57,19 +57,31 @@
     var O = window.AP_OUTREACH;
     if (!O) return;
 
-    function toast() {
+    function toast(message) {
       var t = document.getElementById('toast');
+      t.textContent = message;
       t.classList.add('show');
       setTimeout(function () { t.classList.remove('show'); }, 1400);
     }
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      var copied = false;
+      try { copied = document.execCommand('copy') === true; } catch (e) {}
+      document.body.removeChild(ta);
+      return copied;
+    }
     function copy(text) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(toast);
+        navigator.clipboard.writeText(text).then(function () {
+          toast('Copied');
+        }, function () {
+          toast(fallbackCopy(text) ? 'Copied' : 'Copy failed');
+        });
       } else {
-        var ta = document.createElement('textarea');
-        ta.value = text; document.body.appendChild(ta); ta.select();
-        try { document.execCommand('copy'); toast(); } catch (e) {}
-        document.body.removeChild(ta);
+        toast(fallbackCopy(text) ? 'Copied' : 'Copy failed');
       }
     }
     function btn(label, text) {

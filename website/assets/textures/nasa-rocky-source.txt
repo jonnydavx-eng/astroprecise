@@ -1,0 +1,64 @@
+Rocky-body equirectangular maps — NASA / USGS hosted products
+Local texture replacement only. No SKUs. No push. No sw.js bump.
+
+Mercury
+  File: Mercury_MESSENGER_ClrMosaic_global_665m_v3.tif (23054 x 11527, RGB)
+  URL:  https://planetarymaps.usgs.gov/mosaic/Mercury_MESSENGER_ClrMosaic_global_665m_v3.tif
+  Page: https://astrogeology.usgs.gov/search/map/mercury_messenger_mdis_global_color_mosaic_665m
+  Product: MESSENGER MDIS Global Color Mosaic 665m, edition 3
+  Credit: NASA / Johns Hopkins APL / Carnegie Institution of Washington /
+          Arizona State University / USGS Astrogeology
+  License: Public domain (USGS/NASA PDS)
+  Bands: 1000 nm / 750 nm / 430 nm in R/G/B. Enhanced colour, not naked-eye.
+  Coverage note: The official mosaic has small black rectangular data-gap tiles
+  and a south-polar fringe. Those are in the USGS product and were not painted.
+
+Venus
+  File: Venus_Magellan_C3-MDIR_ClrTopo_Global_Mosaic_6600m.tif (5761 x 2880, RGB)
+  URL:  https://planetarymaps.usgs.gov/mosaic/Venus_Magellan_C3-MDIR_ClrTopo_Global_Mosaic_6600m.tif
+  Page: https://astrogeology.usgs.gov/search/map/venus_magellan_global_c3_mdir_colorized_topographic_mosaic_6600m
+  Product: Magellan C3-MIDR radar mosaic with colorized GTDR topography, 6600m
+  Credit: NASA / JPL / USGS Astrogeology (Magellan SAR + altimetry)
+  License: Public domain (USGS/NASA PDS)
+  Honesty: Venus has no optical global surface map — the cloud deck hides it.
+  This is the official radar + elevation-colour product, not a photograph.
+
+Earth
+  File: world.topo.bathy.200407.3x5400x2700.jpg (5400 x 2700, RGB)
+  URL:  https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73751/world.topo.bathy.200407.3x5400x2700.jpg
+  Page: https://visibleearth.nasa.gov/images/73751/july-blue-marble-next-generation-w-topography-and-bathymetry
+  Product: Blue Marble Next Generation, July 2004, with topography and bathymetry
+  Credit: NASA Earth Observatory / NASA GSFC (Reto Stöckli and team). Public domain.
+  Cloud-free monthly composite (MODIS). earth_clouds / lights / normal / specular
+  overlays were not touched.
+
+Moon
+  File: lroc_color_16bit_srgb_4k.tif (4096 x 2048, 16-bit sRGB)
+  URL:  https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_16bit_srgb_4k.tif
+  Page: https://svs.gsfc.nasa.gov/4720  (CGI Moon Kit, NASA SVS ID 4720)
+  Product: 2025 LROC WAC color map (643 / 566 / 415 nm), 0° longitude centre
+  Credit: NASA Scientific Visualization Studio / LRO LROC (ASU) / LOLA
+  License: Public domain (NASA)
+  Coverage note: LROC WAC source covers 70°N–70°S. The official SVS product
+  fills the poles with LOLA LDAM albedo and inpaints small dropouts. That fill
+  is in the NASA file; nothing further was painted here.
+
+Mars
+  File: Mars_Viking_ClrMosaic_global_925m.tif (23059 x 11530, RGB)
+  URL:  https://planetarymaps.usgs.gov/mosaic/Mars_Viking_ClrMosaic_global_925m.tif
+  Page: https://astrogeology.usgs.gov/search/map/mars_viking_global_color_mosaic_925m
+  Product: Viking Orbiter global color mosaic, 925 m/pixel
+  Credit: NASA / JPL / USGS Astrogeology
+  License: Public domain (USGS/NASA PDS)
+  Honesty: Official product synthesizes green from red+violet (Viking green
+  coverage is incomplete). ~98% red / ~95% violet coverage; gaps interpolated
+  in the USGS mosaic, not by us.
+
+Processing: LANCZOS resize only to 2048x1024 (full webp + jpg), 1024x512
+(_md webp), 512x256 (_sm webp + jpg). No painting, no colour grading, no
+channel reordering, no invented SKUs.
+
+Not in this lane (left untouched):
+  earth_clouds, earth_lights, earth_normal, earth_specular,
+  saturn_ring, uranus, neptune, pluto, jupiter, saturn body files.
+  Pluto is not added to the mesh.

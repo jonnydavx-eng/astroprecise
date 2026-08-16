@@ -6,7 +6,7 @@
  * element's exact public surface:
  *
  *   flyTo(key) flyScale(level) setNatal(rows) setJD(jd) setLive() getJD()
- *   setEclipse(k[,instant]) getEclipse() flight() lookUp() setObserver(lat,lon)
+ *   setEclipse(k[,instant]) getEclipse() startOpeningBeat() flight() lookUp() setObserver(lat,lon)
  *   events: planetfocus {key,name,glyph} · scalechange {level}
  *   attrs:  start-focus start-radius motion orbits data-wheel
  *   global: window.VoidEphem (byte-identical ephemeris utilities)
@@ -509,6 +509,11 @@
         } catch (e) {}
         this._applyEclipse(); // veil + exposure reach the new engine
         this._renderNatal();  // DOM overlay survives engine swaps by construction
+        try {
+          if (this._natalClocks && O && typeof O.setNatalClocks === 'function') {
+            O.setNatalClocks(this._natalClocks);
+          }
+        } catch (e) {}
       };
 
       C.prototype._awaitFirstFrame = function (done) {
@@ -875,6 +880,19 @@
         return this._eclipseK || 0;
       };
 
+      C.prototype.captureStill = function (opts) {
+        var O = this._engine;
+        if (!this._ready || !O) return null;
+        opts = opts || {};
+        try {
+          if (opts.mode === 'birth-hour' && typeof O.captureBirthHourStill === 'function') {
+            return O.captureBirthHourStill({ jd: opts.jd, timeKnown: opts.timeKnown, scale: 2 });
+          }
+          if (typeof O.captureFrame === 'function') return O.captureFrame({ scale: 2 });
+        } catch (e) {}
+        return null;
+      };
+
       /* ── natal markers — minimal zodiac-ring DOM overlay ──
        * The engine has no natal-marker API (the native eclipse API is separate;
        * no marker support exists). The adapter draws the ring itself. */
@@ -938,7 +956,42 @@
         this._natalLayer.style.opacity = show ? '1' : '0';
       };
 
-      /* ── flight / lookUp / setObserver ── */
+
+      /* ── natal clocks — WebGL only; never the SVG setNatal overlay ── */
+      C.prototype.setNatalClocks = function (spec) {
+        this._natalClocks = spec || null;
+        var self = this;
+        function apply() {
+          var O = self._engine;
+          if (!O || typeof O.setNatalClocks !== 'function') return;
+          try { O.setNatalClocks(self._natalClocks); } catch (e) {}
+        }
+        if (!this._ready) { this._queue.push(apply); return; }
+        apply();
+      };
+      C.prototype.clearNatalClocks = function () {
+        this._natalClocks = null;
+        var self = this;
+        function apply() {
+          var O = self._engine;
+          if (!O || typeof O.clearNatalClocks !== 'function') return;
+          try { O.clearNatalClocks(); } catch (e) {}
+        }
+        if (!this._ready) { this._queue.push(apply); return; }
+        apply();
+      };
+
+      /* ── opening beat / flight / lookUp / setObserver ── */
+      C.prototype.startOpeningBeat = function () {
+        var self = this;
+        function go() {
+          var O = self._engine;
+          if (!O || typeof O.startOpeningBeat !== 'function') return false;
+          try { return O.startOpeningBeat() !== false; } catch (e) { return false; }
+        }
+        if (!this._ready) { this._queue.push(go); return true; }
+        return go();
+      };
       C.prototype.flight = function () {
         var self = this;
         function go() {

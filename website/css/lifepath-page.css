@@ -65,7 +65,7 @@ html.ap-audit-path .lp-result-skel-panel {
 }
 /* ── CSS Variables ── */
     :root {
-      --lp-bg: #08080b;
+      --lp-bg: #020307;
       --lp-gold: var(--gold, #A8B0BC);
       --lp-gold-pale: #e8c96a;
       --lp-white: #f0e8d8;
@@ -267,14 +267,14 @@ html.ap-audit-path .lp-result-skel-panel {
       .lp-form-card { padding: var(--space-7) var(--space-5); }
     }
 
-    /* Submit button — gradient gold, large */
+    /* Submit button — ember fill, large */
     .lp-submit-btn {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: linear-gradient(135deg, #A8B0BC 0%, #e8c96a 50%, #A8B0BC 100%);
+      background: #FF6428;
       background-size: 200% 100%;
-      color: #08080b;
+      color: #170702;
       font-family: var(--font-display);
       font-size: 1.05rem;
       font-weight: 700;
@@ -285,14 +285,14 @@ html.ap-audit-path .lp-result-skel-panel {
       cursor: pointer;
       transition: background-position 0.4s ease, transform 0.2s ease, box-shadow 0.2s ease;
       box-shadow:
-        0 4px 20px rgba(196,146,10,0.4),
+        0 4px 20px rgba(255,100,40,0.4),
         0 1px 0 rgba(255,255,255,0.15) inset;
     }
     .lp-submit-btn:hover {
       background-position: 100% 0;
       transform: translateY(-2px);
       box-shadow:
-        0 8px 32px rgba(196,146,10,0.5),
+        0 8px 32px rgba(255,100,40,0.5),
         0 1px 0 rgba(255,255,255,0.2) inset;
     }
     .lp-submit-btn:active { transform: translateY(0); }
@@ -718,7 +718,7 @@ html.ap-audit-path .lp-result-skel-panel {
       font-family: var(--font-display);
       font-size: 1.1rem;
       font-weight: 700;
-      color: #08080b;
+      color: #020307;
       box-shadow: 0 0 20px rgba(196,146,10,0.35), 0 2px 8px rgba(0,0,0,0.4);
       position: relative;
       z-index: 1;

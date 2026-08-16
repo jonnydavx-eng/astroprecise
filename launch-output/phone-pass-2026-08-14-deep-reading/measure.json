@@ -1,0 +1,255 @@
+{
+  "id": "deep-reading",
+  "path": "/deep-reading.html?nosw=1",
+  "status": 200,
+  "errors": [],
+  "title": "Natal Deep Reading — seven chapters on your device | AstroPrecise",
+  "url": "http://127.0.0.1:8790/deep-reading.html?nosw=1",
+  "bodyFont": 16,
+  "bodyColor": "rgb(242, 236, 223)",
+  "pFont": 16,
+  "pSel": "ap-natal-lede",
+  "pText": "The free chart page gives positions and short cards. This page writes seven chap",
+  "h1Font": 42,
+  "h1Text": "Your chart, read in full.",
+  "wordmarkText": "AstroPrecise",
+  "wordmarkLines": 1,
+  "wordmarkW": 129,
+  "wordmarkH": 44,
+  "scrollW": 390,
+  "clientW": 390,
+  "innerW": 390,
+  "innerH": 844,
+  "stages": [
+    {
+      "sel": ".ap-model-stage",
+      "tag": "div",
+      "id": "",
+      "w": 390,
+      "h": 422,
+      "display": "block",
+      "vis": "visible"
+    },
+    {
+      "sel": "#orr",
+      "tag": "void-orrery",
+      "id": "orr",
+      "w": 390,
+      "h": 421,
+      "display": "block",
+      "vis": "visible"
+    },
+    {
+      "sel": "void-orrery",
+      "tag": "void-orrery",
+      "id": "orr",
+      "w": 390,
+      "h": 421,
+      "display": "block",
+      "vis": "visible"
+    },
+    {
+      "sel": ".ap-room-sky",
+      "tag": "section",
+      "id": "",
+      "w": 390,
+      "h": 473,
+      "display": "block",
+      "vis": "visible"
+    },
+    {
+      "sel": "canvas",
+      "tag": "canvas",
+      "id": "",
+      "w": 390,
+      "h": 421,
+      "display": "block",
+      "vis": "visible"
+    }
+  ],
+  "primaryStage": {
+    "sel": ".ap-model-stage",
+    "tag": "div",
+    "id": "",
+    "w": 390,
+    "h": 422,
+    "display": "block",
+    "vis": "visible"
+  },
+  "taps": [
+    {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    {
+      "sel": ".ap-natal-also a",
+      "tag": "a",
+      "id": "",
+      "text": "12 August eclipse contact",
+      "w": 188,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(244, 217, 161)"
+    },
+    {
+      "sel": ".ap-natal-also a",
+      "tag": "a",
+      "id": "",
+      "text": "Free natal chart",
+      "w": 116,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(244, 217, 161)"
+    },
+    {
+      "sel": ".ap-natal-also a",
+      "tag": "a",
+      "id": "",
+      "text": "Sky events",
+      "w": 81,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(244, 217, 161)"
+    },
+    {
+      "sel": ".navbar__logo",
+      "tag": "a",
+      "id": "",
+      "text": "AstroPrecise",
+      "w": 129,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(242, 236, 223)"
+    },
+    {
+      "sel": "button[type=\"submit\"]",
+      "tag": "button",
+      "id": "",
+      "text": "WRITE MY SEVEN CHAPTERS",
+      "w": 304,
+      "h": 48,
+      "min": 48,
+      "bg": "rgb(255, 100, 40)",
+      "color": "rgb(23, 7, 2)"
+    }
+  ],
+  "smallestTap": {
+    "sel": ".navbar__toggle",
+    "tag": "button",
+    "id": "",
+    "text": "Open navigation",
+    "w": 44,
+    "h": 44,
+    "min": 44,
+    "bg": "rgba(216, 180, 106, 0.04)",
+    "color": "rgb(216, 180, 106)"
+  },
+  "tapsUnder44": [],
+  "primaries": [
+    {
+      "text": "WRITE MY SEVEN CHAPTERS",
+      "bg": "rgb(255, 100, 40)",
+      "color": "rgb(23, 7, 2)",
+      "w": 304,
+      "h": 48
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "input",
+      "type": "checkbox",
+      "name": "useSavedChart",
+      "w": 0,
+      "h": 0,
+      "right": 0
+    },
+    {
+      "tag": "input",
+      "type": "date",
+      "name": "dob",
+      "w": 304,
+      "h": 44,
+      "right": 347
+    },
+    {
+      "tag": "input",
+      "type": "time",
+      "name": "tob",
+      "w": 304,
+      "h": 44,
+      "right": 347
+    },
+    {
+      "tag": "input",
+      "type": "text",
+      "name": "natal-city",
+      "w": 304,
+      "h": 44,
+      "right": 347
+    }
+  ],
+  "inputOverflow": [],
+  "overflowers": [],
+  "orrEngine": "webgl",
+  "orrReady": true,
+  "canvas": {
+    "w": 390,
+    "h": 421,
+    "cw": 780,
+    "ch": 842
+  },
+  "webgl": {
+    "ok": true,
+    "lost": false,
+    "vendor": "WebKit",
+    "renderer": "WebKit WebGL"
+  },
+  "bluePrimaries": [],
+  "drawer": {
+    "expanded": "true",
+    "openClass": true,
+    "display": "block",
+    "w": 390,
+    "h": 786,
+    "linkCount": 23,
+    "visibleLinks": 23,
+    "minLinkH": 44,
+    "first": [
+      {
+        "text": "Observatory",
+        "w": 354,
+        "h": 44
+      },
+      {
+        "text": "Chart",
+        "w": 354,
+        "h": 44
+      },
+      {
+        "text": "Events Live",
+        "w": 354,
+        "h": 44
+      },
+      {
+        "text": "Shop",
+        "w": 354,
+        "h": 44
+      }
+    ],
+    "stayedOpen": true,
+    "stayH": 786,
+    "stayExpanded": "true",
+    "stayVisibleLinks": 23
+  }
+}

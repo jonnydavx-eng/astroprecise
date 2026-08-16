@@ -17,16 +17,16 @@
   };
 
   var BODIES = [
-    { id: 'sun', label: 'Sun', src: 'img/engine/sun.webp', href: 'leo.html' },
-    { id: 'mercury', label: 'Mercury', src: 'img/engine/mercury.webp', href: 'gemini.html' },
-    { id: 'venus', label: 'Venus', src: 'img/engine/venus.webp', href: 'taurus.html' },
+    { id: 'sun', label: 'Sun', src: 'img/engine/sun.webp', href: 'index.html' },
+    { id: 'mercury', label: 'Mercury', src: 'img/engine/mercury.webp', href: 'index.html' },
+    { id: 'venus', label: 'Venus', src: 'img/engine/venus.webp', href: 'index.html' },
     { id: 'earth', label: 'Earth', src: 'img/engine/earth.webp', href: 'index.html#heroChapter' },
     { id: 'moon', label: 'Moon', src: 'img/engine/moon.webp', href: 'moonphase.html' },
-    { id: 'mars', label: 'Mars', src: 'img/engine/mars.webp', href: 'aries.html' },
-    { id: 'jupiter', label: 'Jupiter', src: 'img/engine/jupiter.webp', href: 'sagittarius.html' },
-    { id: 'saturn', label: 'Saturn', src: 'img/engine/saturn.webp', href: 'capricorn.html' },
-    { id: 'uranus', label: 'Uranus', src: 'img/engine/uranus.webp', href: 'aquarius.html' },
-    { id: 'neptune', label: 'Neptune', src: 'img/engine/neptune.webp', href: 'pisces.html' },
+    { id: 'mars', label: 'Mars', src: 'img/engine/mars.webp', href: 'index.html' },
+    { id: 'jupiter', label: 'Jupiter', src: 'img/engine/jupiter.webp', href: 'index.html' },
+    { id: 'saturn', label: 'Saturn', src: 'img/engine/saturn.webp', href: 'index.html' },
+    { id: 'uranus', label: 'Uranus', src: 'img/engine/uranus.webp', href: 'index.html' },
+    { id: 'neptune', label: 'Neptune', src: 'img/engine/neptune.webp', href: 'index.html' },
   ];
 
   function ensureCss() {
@@ -94,7 +94,7 @@
       '<a class="ap-ev-tools__chip ap-ev-tools__chip--primary" href="index.html">Observatory</a>' +
       '<a class="ap-ev-tools__chip" href="chart.html">Cast chart</a>' +
       '<a class="ap-ev-tools__chip" href="ephemeris.html">Sky instrument</a>' +
-      '<a class="ap-ev-tools__chip" href="horoscope.html">Daily</a>' +
+      '<a class="ap-ev-tools__chip" href="sky-events.html">Events</a>' +
       '<a class="ap-ev-tools__chip" href="mysky.html">My Sky hub</a>' +
       '</nav>'
     );
@@ -161,7 +161,7 @@
     /* Launch core is intentionally sparse: these routes already have a single
        obvious job. Injecting the generic model/tool promotion made them read as
        unrelated sites and duplicated navigation below the real content. */
-    if (/^(chart|horoscope|shop|catalogue)\.html$/.test(key)) return true;
+    if (/^(index|chart|sky-events|shop|eclipse|tonight|compatibility|deep-reading|horoscope|catalogue)\.html$/.test(key)) return true;
     if (/^(privacy|terms|404|offline|phone|audit|index-classic|index-ephemeris|auth-redirect|sample-reading)/.test(key)) {
       // sample-reading is a print-like document — keep clean
       return true;

@@ -22,25 +22,27 @@
   </script>
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=857">
-  <script>window.AP_ASSET_V='857';</script>
+  <link rel="stylesheet" href="css/fonts.css?v=876">
+  <script>window.AP_ASSET_V='876';</script>
   <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }</script>
-  <script src="js/ephemeris.js?v=857" defer></script>
-  <script src="js/ap-nav-model.js?v=857" defer></script>
-    <script type="module" src="js/ap-eclipse-live-v834.js?v=857"></script>
-    <script type="module" src="js/ap-eclipse-contact-v835.js?v=857"></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=857">
-    <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=857">
-    <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=857">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=857">
+  <script src="js/ephemeris.js?v=876" defer></script>
+  <script src="js/ap-nav-model.js?v=876" defer></script>
+    <script type="module" src="js/ap-eclipse-live-v834.js?v=876"></script>
+    <script type="module" src="js/ap-eclipse-contact-v835.js?v=876"></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=876">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=876">
+    <link rel="stylesheet" href="css/ap-eclipse-live-v834.css?v=876">
+    <link rel="stylesheet" href="css/ap-eclipse-v835.css?v=876">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=876">
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=876">
 </head>
 <body class="page-eclipse eclipse-v835">
-  <a class="skip" href="#eclipse-live-title">Skip to the eclipse instrument</a>
+  <a class="skip-link" href="#eclipse-live-title">Skip to the eclipse instrument</a>
   <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home"><span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span><span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span></a>
-        <div class="navbar__nav" role="group" aria-label="Primary"><noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="eclipse.html" class="navbar__link" aria-current="page">Eclipse</a><a href="shop.html" class="navbar__link">Shop</a></noscript></div>
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home"><span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span><span class="logo-text">AstroPrecise</span></a>
+        <div class="navbar__nav" role="group" aria-label="Primary"><noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript></div>
         <div class="navbar__end"><button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button></div>
       </div>
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
@@ -51,12 +53,12 @@
     <header class="ap-eclipse-hero">
       <div class="ap-eclipse-page-shell">
         <p class="ap-eclipse-kicker"><span aria-hidden="true"></span> Eclipse archive · 12 August 2026</p>
-        <h1>The Moon crossed the Sun.<br><em>Replay the shadow. Keep the plate.</em></h1>
+        <h1>The Moon crossed the Sun.<br><em>Enter the alignment.</em></h1>
         <p>The 12 August 2026 total solar eclipse has passed. The 3D instrument below defaults to greatest eclipse; Live now is the sky clock, not a claim that the eclipse is still happening. Cast your chart contact and, if it was a hard hit, keep the £7 five-beat reading and natal-wheel plate.</p>
         <section class="ap-eclipse-mission" aria-label="Eclipse receipt and replay">
           <div class="ap-eclipse-mission__clock">
             <p>Greatest eclipse · 12 August 2026</p>
-            <div class="ap-eclipse-receipt" aria-hidden="true"><span><strong>17</strong><small>Hour UTC</small></span><span><strong>45</strong><small>Minute</small></span><span><strong>51</strong><small>Second</small></span><span><strong>BST</strong><small>18:45:51</small></span></div>
+            <div class="ap-eclipse-receipt" aria-hidden="true"><span><strong>17</strong><small>Hour UTC</small></span><span><strong>45</strong><small>Minute</small></span><span><strong>51</strong><small>Second</small></span><span><strong>12 Aug</strong><small>2026 archive</small></span></div>
             <p class="sr-only">Greatest eclipse was 17:45:51 UTC on 12 August 2026. Replay the 3D shadow below.</p>
           </div>
           <div class="ap-eclipse-mission__facts">
@@ -71,7 +73,7 @@
     </header>
 
     <section class="ap-eclipse-live" id="ap-eclipse-live" data-mode="event" data-ready="false" aria-labelledby="eclipse-live-title">
-      <h2 class="sr-only" id="eclipse-live-title">3D Sun, Moon and Earth shadow instrument</h2>
+      <div class="ap-eclipse-live__chapter"><span>01 · 3D geometry</span><h2 id="eclipse-live-title">Move through the shadow.</h2><p>Choose Maximum, press Play shadow, then switch System / Shadow / Earth to understand the same alignment from three viewpoints.</p></div>
       <div class="ap-eclipse-live__shell">
         <div class="ap-eclipse-live__stage">
           <canvas class="ap-eclipse-live__canvas" tabindex="0" aria-label="Interactive 3D Sun, Moon and Earth eclipse alignment. Drag to orbit; pinch, use the mouse wheel, or press plus and minus to zoom."></canvas>
@@ -137,14 +139,14 @@
         <header>
           <p class="ap-eclipse-kicker">What the sky does next</p>
           <h2 id="next-eclipses-title">The next eclipses.</h2>
-          <p>Dates hand-checked against published tables (July 2026). The 3D instrument above replays 12 August 2026 — it is not a lunar-eclipse viewer.</p>
+          <p>Dates hand-checked against published tables (July 2026). The 3D instrument above replays 12 August 2026; the living event ledger tracks what follows.</p>
         </header>
         <div class="ap-eclipse-next__grid">
           <article>
             <span>28 August 2026</span>
             <h3>Partial lunar eclipse</h3>
-            <p>The Full Moon in Pisces clips Earth’s shadow, visible wherever the Moon is above the horizon that night. Lunar eclipses are traditionally read as culminations. Watch it in the sky — this page does not sell a second edition for it yet.</p>
-            <a href="sky-events.html">Sky events</a>
+            <p>The Full Moon clips Earth’s shadow, visible wherever the Moon is above the horizon that night. Safe to watch with the naked eye. No second paid edition is being sold.</p>
+            <a href="sky-events.html#lunar-eclipse">Event briefing</a>
             <a href="transits.html">Upcoming eclipses</a>
           </article>
           <article>
@@ -174,10 +176,10 @@
             <div class="ap-eclipse-contact__fields">
               <label><span>Birth date</span><input type="date" id="dob" required min="1800-01-01" autocomplete="bday"></label>
               <label><span>Birth time · optional</span><input type="time" id="tob" autocomplete="bday-time"></label>
-              <label><span>Historical time zone</span><select id="tz"><option value="Europe/London" selected>London / UK</option><option value="Europe/Paris">Paris / Central Europe</option><option value="America/New_York">New York / US Eastern</option><option value="America/Los_Angeles">Los Angeles / US Pacific</option><option value="Asia/Kolkata">India</option><option value="Australia/Sydney">Sydney</option><option value="UTC">UTC / GMT</option></select></label>
+              <label><span>Birth place</span><input type="text" id="eclipse-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="eclipse-city-drop"><div class="ap-city-drop" id="eclipse-city-drop" hidden></div><p class="ap-zone-note" id="eclipse-zone">Pick a place for a real zone. UK summer is not GMT.</p><input type="hidden" id="tz"></label>
             </div>
             <button type="submit" data-eclipse-contact-submit disabled aria-busy="true" aria-describedby="eclipseContactStatus">Read my eclipse contact</button>
-            <p class="ap-eclipse-contact__note" id="eclipseContactStatus" role="status">No account · no birth data is sent · historical time-zone rules are applied · manual entry has no location, so angles require a saved full chart · if time is unknown, Moon contacts are withheld</p>
+            <p class="ap-eclipse-contact__note" id="eclipseContactStatus" role="status">No account · birth date and time stay here · a place search sends only the town name to a public geocoder · historical time-zone rules are applied · manual entry has no location, so angles require a saved full chart · if time is unknown, Moon contacts are withheld</p>
           </form>
           <div class="ap-eclipse-result" id="eclipseResult" hidden tabindex="-1" aria-live="polite">
             <div class="ap-eclipse-result__head"><span>Computed receipt</span><strong id="eclipseResultState"></strong></div>
@@ -195,9 +197,9 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=857" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=857" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-mystic-cards-v835.js?v=857" defer></script>
+  <script src="js/ap-footer-inject.js?v=876" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=876" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-mystic-cards-v835.js?v=876" defer></script>
   <script>
     (function () {
       var root = document.getElementById('ap-eclipse-live');

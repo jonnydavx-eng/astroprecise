@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#020307">
-  <title>Your Eclipse Edition £7 — AstroPrecise</title>
-    <meta name="description" content="Cast your free 12 August 2026 eclipse contact, then unlock Your Eclipse Edition — £7 five-beat reading and unique natal-wheel artwork on your device.">
+  <title>AstroPrecise Editions — personalised eclipse reading and art</title>
+    <meta name="description" content="Cast your eclipse contact free, then unlock the £7 AstroPrecise Eclipse Edition: a five-beat personalised reading and unique natal-wheel artwork generated on your device.">
   <link rel="canonical" href="https://astroprecise.app/shop.html">
   <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
   <meta property="og:site_name" content="AstroPrecise">
@@ -16,12 +16,19 @@
   <meta property="og:image" content="https://astroprecise.app/img/editorial/eclipse-edition-art-v841.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=835">
-  <script>window.AP_ASSET_V='857';</script>
-  <script src="js/ap-nav-model.js?v=857" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=857">
-    <link rel="stylesheet" href="css/ap-shop-v835.css?v=857">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=857">
+  <link rel="stylesheet" href="css/fonts.css?v=876">
+  <script>window.AP_ASSET_V='876';</script>
+    <script type="importmap">
+    { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+  </script>
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=876">
+  <script src="js/void-orrery-adapter.js?v=876" defer></script>
+  <script src="js/ap-nav-model.js?v=876" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=876">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=876">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=876">
+    <link rel="stylesheet" href="css/ap-shop-v835.css?v=876">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=876">
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -41,26 +48,37 @@
   <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home"><span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span><span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span></a>
-        <div class="navbar__nav" role="group" aria-label="Primary"><noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="eclipse.html" class="navbar__link">Eclipse</a><a href="shop.html" class="navbar__link" aria-current="page">Shop</a></noscript></div>
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home"><span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span><span class="logo-text">AstroPrecise</span></a>
+        <div class="navbar__nav" role="group" aria-label="Primary"><noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link" aria-current="page">Shop</a></noscript></div>
         <div class="navbar__end"><button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button></div>
       </div>
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
     </nav>
   </header>
 
+  <section class="ap-room-sky" aria-label="Live sky">
+    <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
+      <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+      <div class="ap-model-vignette" aria-hidden="true"></div>
+      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
+    </div>
+  </section>
+
+
+
   <main id="shop-main">
     <section class="ap-shop-hero">
       <div class="ap-shop-shell ap-shop-hero__grid">
         <div class="ap-shop-hero__copy">
-          <p class="ap-shop-kicker">12 Aug edition · still open</p>
-          <h1>Your Eclipse Edition.<br><em>£7 · instant · on your device.</em></h1>
-          <p class="ap-shop-lede">The eclipse has passed. Cast your free chart contact first. If 12 August touched your chart, keep the five-beat reading and unique 2400 × 3000 natal-wheel plate — computed here, unlocked with a Gumroad licence key, never uploaded.</p>
-          <div class="ap-shop-actions"><a class="ap-action ap-action--primary" href="eclipse.html#contact">Cast free contact first</a></div>
-          <p class="ap-shop-status"><span>12 Aug edition · £7</span> Free Field Guide below. Paid unlock only after a real chart contact — quiet charts stay free.</p>
+          <p class="ap-shop-kicker">One paid edition · free calculation first</p>
+          <h1>A reading<br>you can <em>see.</em></h1>
+          <p class="ap-shop-lede">If the 12 August eclipse made a close contact with your chart, AstroPrecise turns that computed geometry into a five-beat interpretation and a unique 2400 × 3000 natal-wheel plate. Birth data stays on this device. The reading and plate are generated here after you unlock.</p>
+          <ul class="ap-shop-includes" aria-label="Edition contents"><li>Five-beat personalised contact reading</li><li>Unique high-resolution natal-wheel artwork</li><li>PNG download and print / save as PDF</li></ul>
+          <div class="ap-shop-actions"><a class="ap-action ap-action--primary" href="eclipse.html#contact">Cast my contact — free</a><a class="ap-action" href="#eclipse-field-guide">Download free guide</a></div>
+          <p class="ap-shop-status"><span>12 Aug edition · £7</span> You see the free result before payment. Quiet charts are never pushed into a purchase. Birth data stays on this device.</p>
         </div>
         <figure class="ap-shop-hero__art">
-          <img src="img/editorial/eclipse-edition-art-v841.png" width="1122" height="1402" alt="A black glass and antique brass eclipse plate with engraved orbital arcs">
+          <img src="img/editorial/eclipse-edition-art-v841.png" width="1122" height="1402" alt="A black and antique-brass natal-wheel eclipse plate with engraved orbital arcs">
           <figcaption>Sample natal-wheel plate · each purchased edition generates a different plate from the computed contact</figcaption>
         </figure>
       </div>
@@ -68,7 +86,7 @@
 
     <section class="ap-shop-editions" id="editions" aria-labelledby="editions-title">
           <div class="ap-shop-shell">
-            <header class="ap-shop-section-head"><p class="ap-shop-kicker">The 12 August set</p><h2 id="editions-title">Two paths. Free utility first.</h2><p>Download the Field Guide as the archive. Open the eclipse instrument to see if 12 August touched your chart — then keep the £7 edition if it did.</p></header>
+            <header class="ap-shop-section-head"><p class="ap-shop-kicker">The 12 August set</p><h2 id="editions-title">Free first.<br>One paid edition.</h2><p>Keep the Field Guide at no charge. Run the eclipse instrument to see whether 12 August touched your chart. The £7 edition appears only after that computed contact.</p></header>
 
             <div class="ap-shop-leads">
               <article class="ap-product ap-product--eclipse" id="eclipse-field-guide">
@@ -77,7 +95,7 @@
               </article>
               <article class="ap-product ap-product--deep" id="eclipse-edition">
                 <a class="ap-product__image" href="eclipse.html#contact"><img src="img/editorial/eclipse-edition-art-v841.png" width="1122" height="1402" loading="lazy" alt="A premium black and brass eclipse plate with a luminous corona and precise orbital geometry"><span class="ap-product__stamp">12 Aug edition · £7</span></a>
-                <div class="ap-product__body"><p class="ap-product__kind">Personalised eclipse edition · £7</p><h3>Your Eclipse Edition</h3><p class="ap-product__hook">Five-beat reading. Natal-wheel plate. One moment.</p><p>If the eclipse made a tight contact with your chart, unlock a five-beat personalised reading plus unique high-resolution natal-wheel artwork generated on your device. Download PNG or print / save as PDF. Instant — no manual review. Cast free on the eclipse page before you buy.</p><div class="ap-product__foot"><strong>£7</strong><a href="eclipse.html#contact">Cast, then unlock</a></div></div>
+                <div class="ap-product__body"><p class="ap-product__kind">Personalised eclipse edition · £7</p><h3>Your Eclipse Edition</h3><p class="ap-product__hook">Five-beat reading. Natal-wheel plate. One moment.</p><p>If the eclipse made a tight contact with your chart, unlock a five-beat personalised reading plus unique high-resolution natal-wheel artwork generated on this device. Birth data stays here. Download PNG or print / save as PDF. Instant — no manual review. Cast free on the eclipse page before you buy.</p><div class="ap-product__foot"><strong>£7</strong><a href="eclipse.html#contact">Cast, then unlock</a></div></div>
               </article>
             </div>
           </div>
@@ -86,11 +104,14 @@
     <section class="ap-shop-method" aria-labelledby="method-title">
       <div class="ap-shop-shell ap-shop-method__grid">
         <div><p class="ap-shop-kicker">What you are paying for</p><h2 id="method-title">Calculation stays free.<br><em>Craft is the product.</em></h2></div>
-        <ol>
-          <li><span>01</span><div><strong>Cast free contact</strong><p>On the eclipse page, compute where 12 August landed in your chart. Quiet charts are told so before any payment.</p></div></li>
-          <li><span>02</span><div><strong>Buy only if it touches</strong><p>Pay £7 on Gumroad at <a href="https://davxplorer3.gumroad.com/l/your-eclipse-reading">davxplorer3.gumroad.com/l/your-eclipse-reading</a>. Open <strong>View content</strong>, copy the licence key, return to the same AstroPrecise tab.</p></div></li>
-          <li><span>03</span><div><strong>Unlock on this device</strong><p>Paste the key to reveal the five-beat reading and unique artwork. Download PNG or print / save as PDF. Birth data never leaves the browser.</p></div></li>
-        </ol>
+        <div class="ap-shop-method__steps">
+          <ol>
+            <li><span>01</span><div><strong>Cast free contact</strong><p>On the eclipse page, compute where 12 August landed in your chart. Quiet charts are told so before any payment.</p></div></li>
+            <li><span>02</span><div><strong>Buy only if it touches</strong><p>Pay £7 on Gumroad. In the receipt, choose <strong>View content</strong> and copy the licence key shown there.</p></div></li>
+            <li><span>03</span><div><strong>Return and unlock</strong><p>Paste that key into your Eclipse Edition panel. The licence unlocks on this device. Your five-beat reading and unique artwork appear here; download PNG or print / save as PDF.</p></div></li>
+          </ol>
+          <aside class="ap-key-map" aria-label="Where to find the Gumroad licence key"><span>Receipt → View content → Licence key</span><p>The purchase email is a receipt, not the reading itself. The key inside <strong>View content</strong> unlocks your already-computed result at AstroPrecise.</p><a href="https://davxplorer3.gumroad.com/l/your-eclipse-reading">Open the £7 Gumroad listing →</a></aside>
+        </div>
       </div>
     </section>
 
@@ -107,16 +128,16 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=857" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=857" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-mystic-cards-v835.js?v=857" defer></script>
+  <script src="js/ap-footer-inject.js?v=876" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=876" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-mystic-cards-v835.js?v=876" defer></script>
   <script>
     (function () {
       var form = document.getElementById('shopNotify');
       var input = document.getElementById('shopNotifyEmail');
       var button = document.getElementById('shopNotifyBtn');
       var message = document.getElementById('shopNotifyMsg');
-      if (!form) return;
+      if (!form || !input || !button || !message) return;
       form.addEventListener('submit', function (event) {
         event.preventDefault();
         var email = (input.value || '').trim();
@@ -132,5 +153,6 @@
   <script>
     if ('serviceWorker' in navigator && !/[?&]nosw=1/.test(location.search)) addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }, { once: true });
   </script>
+  <script src="js/ap-room-sky.js?v=876" defer></script>
 </body>
 </html>

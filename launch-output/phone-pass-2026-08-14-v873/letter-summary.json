@@ -1,0 +1,76 @@
+{
+  "page": "compatibility.html",
+  "viewport": [
+    390,
+    844
+  ],
+  "hash": "#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=A&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York&bn=B",
+  "orrReady": true,
+  "engine": "webgl",
+  "webgl": true,
+  "A": {
+    "who": "A",
+    "visible": true,
+    "parent": "natalClocks",
+    "worldScale": [
+      3.15,
+      3.15
+    ],
+    "canvasPx": [
+      72,
+      72
+    ],
+    "texAvg": {
+      "r": 191,
+      "g": 159,
+      "b": 94
+    },
+    "cssFromCorners": {
+      "w": 23.43,
+      "h": 23.41
+    },
+    "cssFromScale": {
+      "w": 23.32,
+      "h": 23.32
+    }
+  },
+  "B": {
+    "who": "B",
+    "visible": true,
+    "parent": "natalClocks",
+    "worldScale": [
+      3.15,
+      3.15
+    ],
+    "canvasPx": [
+      72,
+      72
+    ],
+    "texAvg": {
+      "r": 229,
+      "g": 90,
+      "b": 37
+    },
+    "cssFromCorners": {
+      "w": 26.71,
+      "h": 26.69
+    },
+    "cssFromScale": {
+      "w": 26.63,
+      "h": 26.63
+    }
+  },
+  "verdict": {
+    "band": "22-28 CSS px",
+    "A_inBand": true,
+    "B_inBand": true,
+    "readsAsType": true,
+    "note": "Both natalClocks sprites are 3.15 world units on 72x72 letter canvases. Brass A ~23.4 CSS px, ember B ~26.7 CSS px. In band; glyphs read as type."
+  },
+  "swV": "ap-v873",
+  "shippingFilesChanged": false,
+  "shots": {
+    "compatibility": "C:\\\\Users\\\\jonny\\\\OneDrive\\\\astroprecise\\\\launch-output\\\\phone-pass-2026-08-14-v873\\\\shots-after\\\\compatibility.png",
+    "clocks": "C:\\\\Users\\\\jonny\\\\OneDrive\\\\astroprecise\\\\launch-output\\\\phone-pass-2026-08-14-v873\\\\shots-after\\\\compatibility-clocks.png"
+  }
+}

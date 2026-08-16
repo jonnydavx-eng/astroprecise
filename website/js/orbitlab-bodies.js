@@ -30,6 +30,8 @@ export const ORBITAL_ELEMENTS = {
  * Bodies rendered in the heliocentric scene.
  * siderealPeriodHours — equatorial rotation (Earth=24, Venus retrograde = negative).
  * spin — legacy visual multiplier; overridden at runtime by siderealSpinRadPerSec().
+ * tex: mercury/venus/earth/mars body maps are NASA/USGS (see assets/textures/nasa-rocky-source.txt).
+ * Moon map is NASA LRO (not a heliocentric body in this list). Filenames unchanged. Pluto not added.
  */
 export const BODIES = [
   { id: 'mercury', name: 'Mercury', R: 5.0,  size: 0.30, spin: 0.18, siderealPeriodHours: 1407.6, color: 0x9a8f86, tex: 'mercury.jpg' },
@@ -51,7 +53,11 @@ export const BODIES = [
  *  texOffsetDeg: empirical map-centering correction (calibrated per spec §1).
  *  Earth uses GMST (IAU 1982) directly instead of w0eng — its node IS the equinox.
  *  Honesty: Earth/Moon/Mars/Mercury/Venus phases real; gas-giant feature phases
- *  illustrative (rate + pole true; map snapshots uncalibratable). */
+ *  illustrative (rate + pole true; Hubble OPAL 2025a snapshots uncalibratable).
+ *  Jupiter/Saturn maps are Cycle 32 F395N-F502N-F631N (resize only; Saturn
+ *  equator black is the official ring-plane mask). Pluto map is the NASA New
+ *  Horizons mosaic (south of ~30 deg S is black in the official product —
+ *  unpainted); rate + pole true; spin phase illustrative. */
 export const ROTATION_MODEL = {
   mercury: { poleScene: [ 0.09138, 0.99247,  0.08160], w0eng: 111.274, wdot:  6.1385108,   texOffsetDeg: 0 },
   venus:   { poleScene: [ 0.01869, 0.99977, -0.01087], w0eng: 222.551, wdot: -1.4813688,   texOffsetDeg: 0 },
@@ -61,6 +67,17 @@ export const ROTATION_MODEL = {
   saturn:  { poleScene: [ 0.08548, 0.88252, -0.46244], w0eng: 178.934, wdot: 810.7939024,   texOffsetDeg: 0 },
   uranus:  { poleScene: [-0.21200, 0.13436,  0.96799], w0eng:  28.869, wdot: -501.1600928,  texOffsetDeg: 0 },
   neptune: { poleScene: [ 0.35588, 0.88273,  0.30681], w0eng:  48.657, wdot: 536.3128492,   texOffsetDeg: 0 },
+  // Pluto (v869, added with the New Horizons map). Pole from IAU/WGCCRE J2000
+  // a0 = 132.993 deg, d0 = -6.163 deg, run through the same equatorial -> ecliptic
+  // -> scene transform as the rows above (that transform reproduces mercury,
+  // venus, jupiter, saturn, uranus and neptune here to 5 decimal places). The
+  // pole sits BELOW the ecliptic, which is Pluto's ~120 deg obliquity — the
+  // retrograde spin is in the geometry, not a sign hack. wdot is the real IAU
+  // rate. w0eng is NOT calibrated: the engine phase origin is the node
+  // pole x y_hat, not the IAU prime meridian, and no derivation was verified for
+  // Pluto, so the phase is declared illustrative rather than dressed up with the
+  // IAU W0 of 302.695 as if it had been converted.
+  pluto:   { poleScene: [-0.67797, -0.38777, -0.62450], w0eng:   0,     wdot:  56.3625225,  texOffsetDeg: 0 },
 };
 
 /** Moon equirectangular map centering: standard maps are near-side-centered → 0.

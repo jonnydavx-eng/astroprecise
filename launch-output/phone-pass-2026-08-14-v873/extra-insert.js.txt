@@ -1,0 +1,196 @@
+  if (measure) {
+    measure.plutoWebgl = await page.evaluate(() => {
+      const orr = document.getElementById('orr');
+      const canvas = document.querySelector('#orr canvas, .ap-model-stage canvas, .ap-eclipse-live__stage canvas, canvas');
+      let webgl = null;
+      if (canvas) {
+        try {
+          const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+          webgl = {
+            ok: !!(gl && !gl.isContextLost()),
+            lost: !!(gl && gl.isContextLost()),
+            vendor: gl ? (gl.getParameter(gl.VENDOR) || '') : '',
+            renderer: gl ? (gl.getParameter(gl.RENDERER) || '') : '',
+          };
+        } catch (e) { webgl = { error: String(e.message || e) }; }
+      }
+      const O = window.Orrery3D;
+      const planets = (O && typeof O.getPlanets === 'function') ? O.getPlanets() : [];
+      const plutoPlanet = planets.find((p) => p && p.id === 'pluto') || null;
+      const extraBodies = (O && typeof O.getExtraBodies === 'function') ? O.getExtraBodies() : null;
+      let sceneHits = [];
+      let sceneWalked = false;
+      try {
+        const root = (orr && orr._engine) || O || null;
+        const scene = root && (root.scene || root._scene);
+        if (scene && typeof scene.traverse === 'function') {
+          sceneWalked = true;
+          scene.traverse((o) => {
+            const n = (o.name || '') + '';
+            const bid = (o.userData && o.userData.b && o.userData.b.id) || '';
+            const uid = (o.userData && o.userData.id) || '';
+            if (/pluto/i.test(n) || /pluto/i.test(bid) || /pluto/i.test(uid)) {
+              sceneHits.push({
+                name: n,
+                type: o.type,
+                vis: o.visible,
+                id: bid || uid || '',
+                kids: o.children ? o.children.length : 0,
+              });
+            }
+          });
+        }
+      } catch (e) { sceneHits = { error: String(e.message || e) }; }
+      return {
+        webgl,
+        bodyIds: planets.map((p) => p && p.id).filter(Boolean),
+        inGetPlanets: !!plutoPlanet,
+        planet: plutoPlanet ? { id: plutoPlanet.id, name: plutoPlanet.name, size: plutoPlanet.size, R: plutoPlanet.R, lon: plutoPlanet.lon, tex: plutoPlanet.tex } : null,
+        extraHasPluto: Array.isArray(extraBodies) && extraBodies.indexOf('pluto') !== -1,
+        sceneWalked,
+        sceneHits,
+        orrEngine: orr ? orr.getAttribute('data-engine') : null,
+        orrReady: !!(orr && orr._ready === true),
+      };
+    }).catch((e) => ({ error: e.message }));
+  }
+
+  if (spec.id === 'compatibility' && measure) {
+    measure.letters = await page.evaluate(async () => {
+      const orr = document.getElementById('orr');
+      const O = window.Orrery3D;
+      const stage = document.querySelector('.ap-model-stage');
+      const canvas = document.querySelector('#orr canvas, .ap-model-stage canvas');
+      const stageR = stage ? stage.getBoundingClientRect() : null;
+      const canvasR = canvas ? canvas.getBoundingClientRect() : null;
+      const specClocks = (() => {
+        try { return O && typeof O.getNatalClocks === 'function' ? O.getNatalClocks() : null; }
+        catch (e) { return { error: String(e) }; }
+      })();
+      let camRadius = null, scaleLevel = null, portrait = null;
+      try { portrait = O && typeof O.isPortraitMode === 'function' ? O.isPortraitMode() : null; } catch (e) {}
+      try { camRadius = O && typeof O.getCamRadius === 'function' ? O.getCamRadius() : null; } catch (e) {}
+      try { scaleLevel = O && typeof O.getScaleLevel === 'function' ? O.getScaleLevel() : null; } catch (e) {}
+      const THREE = await import('/js/vendor/three/three.module.min.js');
+      const sprites = [];
+      const cameras = [];
+      const natalGroups = [];
+      const orig = THREE.Object3D.prototype.updateMatrixWorld;
+      THREE.Object3D.prototype.updateMatrixWorld = function patched(force) {
+        const t = this.type || '';
+        const n = (this.name || '') + '';
+        if (n === 'natalClocks' || /natal/i.test(n)) natalGroups.push(this);
+        if (t === 'Sprite') sprites.push(this);
+        if (t === 'PerspectiveCamera' || t === 'Camera') cameras.push(this);
+        return orig.apply(this, arguments);
+      };
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      THREE.Object3D.prototype.updateMatrixWorld = orig;
+      const uniq = (arr) => Array.from(new Set(arr));
+      const spr = uniq(sprites);
+      const cams = uniq(cameras);
+      function canvasLetter(img) {
+        if (!img || !img.getContext) return null;
+        try {
+          const x = img.getContext('2d');
+          const w = img.width, h = img.height;
+          const data = x.getImageData(0, 0, w, h).data;
+          let r = 0, g = 0, b = 0, n = 0, lit = 0;
+          for (let i = 0; i < data.length; i += 4) {
+            const a = data[i + 3];
+            if (a < 20) continue;
+            lit++;
+            if (data[i] + data[i + 1] + data[i + 2] < 30) continue;
+            r += data[i]; g += data[i + 1]; b += data[i + 2]; n++;
+          }
+          const avg = n ? { r: Math.round(r / n), g: Math.round(g / n), b: Math.round(b / n) } : null;
+          let who = null;
+          if (avg) {
+            if (avg.r > avg.g + 30 && avg.g < 160) who = 'B';
+            else if (avg.r > 160 && avg.g > 120 && avg.b < 160) who = 'A';
+          }
+          return { w, h, lit, avg, who };
+        } catch (e) { return { error: String(e.message || e) }; }
+      }
+      function project(vec, camera, rect) {
+        const v = vec.clone().project(camera);
+        return {
+          x: (v.x * 0.5 + 0.5) * rect.width + rect.left,
+          y: (-v.y * 0.5 + 0.5) * rect.height + rect.top,
+        };
+      }
+      const camera = cams[0] || null;
+      const rect = canvasR || stageR || { left: 0, top: 0, width: 390, height: 471 };
+      const letterSprites = [];
+      for (const s of spr) {
+        const parentName = (s.parent && s.parent.name) || '';
+        const map = s.material && s.material.map;
+        const img = map && map.image;
+        const tex = canvasLetter(img);
+        const isNatalParent = /natal/i.test(parentName);
+        const scaleY = s.scale ? s.scale.y : null;
+        const looksNatal = isNatalParent || (tex && tex.who) || (scaleY && Math.abs(scaleY - 3.15) < 0.05);
+        if (!looksNatal && !isNatalParent) continue;
+        s.updateMatrixWorld(true);
+        const pos = new THREE.Vector3();
+        s.getWorldPosition(pos);
+        const sx = s.scale.x, sy = s.scale.y;
+        let css = null;
+        if (camera) {
+          camera.updateMatrixWorld(true);
+          const dist = camera.position.distanceTo(pos);
+          const vFov = camera.fov * Math.PI / 180;
+          const worldH = 2 * Math.tan(vFov / 2) * dist;
+          const cssH = (sy / worldH) * rect.height;
+          const cssW = (sx / worldH) * rect.height;
+          const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0).normalize();
+          const up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1).normalize();
+          const hw = sx / 2, hh = sy / 2;
+          const worldCorners = [
+            pos.clone().addScaledVector(right, -hw).addScaledVector(up, -hh),
+            pos.clone().addScaledVector(right, hw).addScaledVector(up, -hh),
+            pos.clone().addScaledVector(right, hw).addScaledVector(up, hh),
+            pos.clone().addScaledVector(right, -hw).addScaledVector(up, hh),
+          ];
+          const pts = worldCorners.map((p) => project(p, camera, rect));
+          const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y);
+          css = {
+            fromScale: { w: cssW, h: cssH },
+            fromCorners: { w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) },
+            dist,
+            fov: camera.fov,
+          };
+        }
+        letterSprites.push({
+          parent: parentName,
+          visible: s.visible,
+          worldScale: { x: sx, y: sy },
+          tex,
+          css,
+        });
+      }
+      const byWho = {};
+      for (const L of letterSprites) {
+        const who = L.tex && L.tex.who;
+        if (who) byWho[who] = L;
+      }
+      const band = (h) => h >= 22 && h <= 28;
+      const aH = byWho.A && byWho.A.css ? byWho.A.css.fromCorners.h : null;
+      const bH = byWho.B && byWho.B.css ? byWho.B.css.fromCorners.h : null;
+      return {
+        orrReady: !!(orr && orr._ready === true),
+        engine: orr ? orr.getAttribute('data-engine') : null,
+        webgl: !!(canvas && (canvas.getContext('webgl2') || canvas.getContext('webgl'))),
+        portrait, camRadius, scaleLevel, specClocks,
+        aTime: (document.getElementById('person1-time') || {}).value || '',
+        bTime: (document.getElementById('person2-time') || {}).value || '',
+        spriteHook: { sprites: spr.length, cameras: cams.length, natalGroups: uniq(natalGroups).length },
+        A: byWho.A || null,
+        B: byWho.B || null,
+        aCssPx: aH,
+        bCssPx: bH,
+        inBand: { A: aH != null && band(aH), B: bH != null && band(bH) },
+        readsAsType: aH != null && bH != null && band(aH) && band(bH),
+      };
+    }).catch((e) => ({ error: e.message }));
+  }

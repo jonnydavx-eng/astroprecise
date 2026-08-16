@@ -1,0 +1,57 @@
+NOT PR 18. Local tree has no gift.html. This is the existing old sky-card page at tip ap-v874.
+Measured http://127.0.0.1:8790/sky-card.html?nosw=1
+Playwright 390x844 isMobile+hasTouch dpr=2. Shipping files not edited. Tip not bumped. Not pushed.
+
+TITLE
+The real sky news — sky card | Astro Precise
+
+COPY
+17px Schibsted Grotesk / 400 / line-height 28.05 / color rgba(242,236,223,0.8)
+Box 346x196. Above the 16px floor used on the chrome pages.
+Lede: "One image: your date, your Sun, Moon and Venus placed from the clock time read as UTC — we do not round — and the wheel of that minute. Computed here, drawn here, downloaded from here — your birth data never leaves this page. For a local-time chart, use the free chart page."
+
+H1
+"The sky when you arrived."
+32px / 700 / Schibsted Grotesk / rgb(242,236,223)
+Wraps to 2 lines on 346px content (box 346x70, line-height 35.2).
+
+TAPS
+Primary DRAW MY CARD 161x42 min=42 — UNDER 44.
+DOWNLOAD PNG 163x44 min=44 — on the line.
+place input 308x43 min=43 — UNDER 44.
+dob 147x45, tob 147x46 — ok.
+Text links well under 44:
+  CAST THE FULL CHART FREE 159x11
+  <- THE OBSERVATORY 139x13
+  THE 12 AUG ECLIPSE 338x29
+Skip link exists, off-canvas (left:-999px).
+Date+time sit on one row; place full-width; the two buttons stack.
+
+STAGE
+#cv canvas 346x183 CSS, intrinsic 1200x630. OG-card preview, not an orrery / no .ap-model-stage.
+VoidEphem true; card draws (THE SKY WHEN I ARRIVED / 14 March 1994 / MANCHESTER · 09:12 UTC / Sun Moon Venus + wheel).
+Canvas top=794 so first 844 viewport only shows the top ~50px of the card.
+
+OVERFLOW
+None. scrollW=390 = innerW. overflowers=[]. inputOverflow=[].
+
+DRAWER
+Missing. No navbar, no .navbar__toggle, no #nav-mobile-menu, no bottom-nav.
+Chrome-less page: skip + <- THE OBSERVATORY only.
+
+WORDMARK
+No navbar / .logo-text wordmark.
+Canvas paints ASTROPRECISE.APP as ONE WORD (ASTROPRECISE cream, .APP gold).
+Footer legal line: ASTRO PRECISE (two words).
+Document title: Astro Precise (two words).
+
+BLUE PRIMARIES
+None. DRAW MY CARD fill is cream ink rgb(242, 236, 223) on black text.
+DOWNLOAD PNG is outline cream, no fill.
+Accent is gold #d8b46a. bluePrimaries=[] blueTaps=[].
+
+OTHER
+fonts.css?v=874. ambience.js and void-orrery-adapter.js still ?v=857.
+No gift.html, no gift links, no gift mention in the served HTML.
+Date field renders 14/03/1994 (en-GB).
+Artifacts: launch-output/phone-pass-2026-08-14-skycard/{measure.json,summary.json,measure.mjs,shots/skycard.png,skycard-full.png,skycard-stage.png}

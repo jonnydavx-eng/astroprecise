@@ -1,0 +1,60 @@
+HOUSE GIFT SKY-CARD (PR 18), not the old real-sky-news card.
+Measured http://127.0.0.1:8790/sky-card.html?nosw=1
+Playwright Chromium 390x844 isMobile+hasTouch dpr=2. Reused existing 8790 (serving website/).
+Shipping files not edited. sw.js still ap-v874. Not bumped. Not committed. Not pushed.
+
+IDENTITY
+Title: Sky card — the minute you arrived | AstroPrecise
+H1: The sky at the minute you arrived.
+Not "The real sky news — sky card | Astro Precise". Not "The sky when you arrived."
+House chrome present (navbar + footer + drawer). Kicker: SKY CARD · FREE · 1200 × 630 · OPTIONAL.
+
+COPY
+16px Schibsted Grotesk / 400 / line-height 26.56 / color rgba(242,236,223,0.78)
+Box 358x159. On the 16px floor.
+Lede: "One image to keep: the date, the town, the clock time in that town's real timezone, and where the Sun, Moon and Venus stood. The card is drawn on this device and downloaded from here. Play stays free — the live sky and the free chart are not behind this."
+
+H1
+"The sky at the minute you arrived."
+35.88px / 600 / Cormorant Garamond / rgb(242,236,223)
+Box 274x70, line-height 35.16 — wraps to 2 visual lines (max-width 16ch).
+
+TAPS
+None under 44 among painted targets.
+DRAW MY CARD #skyCardDraw 316x48 min=48
+DOWNLOAD PNG 316x48 min=48
+place input #sky-card-city 316x48 min=48
+dob 316x48, tob 316x48
+nav toggle 44x44, wordmark 129x44
+foot "free chart" 73x44, "seven-chapter natal reading" 208x44
+footer Observatory 81x44, Chart 44x44
+Drawer Observatory/Chart 354x44 each (22 drawer links, minLinkH=44, linksUnder44=[])
+DOM-only 0x0 (not painted, not counted as tap fails): desktop .navbar__link and .bottom-nav__item.
+
+STAGE
+#skyCard canvas 358x189 CSS, intrinsic 1200x630. Card plate, not an orrery.
+top=202 bottom=391 — fully inside the first 844 viewport.
+Empty-state plate visible in fold: SKY CARD / Your minute goes here.
+
+OVERFLOW
+None. scrollW=390 = innerW. overflowers=[].
+
+DRAWER / NAVBAR
+Present. .navbar + .navbar__toggle + #nav-mobile-menu.
+Drawer opens and stays open (h=786, 22 visible links, aria-expanded=true).
+bottom-nav node exists in DOM but items measure 0x0 on this pass (not painted in the fold shot).
+
+WORDMARK
+AstroPrecise ONE WORD in navbar (.logo-text Astro+Precise), document title, and footer wordmark.
+No "Astro Precise" two-word brand on this page.
+
+BLUE / PURPLE PRIMARIES
+None. DRAW MY CARD fill is ember rgb(255, 100, 40) on rgb(23, 7, 2).
+DOWNLOAD PNG is outline brass, no fill.
+Accent gold #d8b46a. bluePurplePrimaries=[].
+
+OTHER
+sw.js V = ap-v874 (unchanged).
+git porcelain: only ?? launch-output/phone-pass-2026-08-14-skycard-fold/
+Zero shipping files changed.
+Artifacts: launch-output/phone-pass-2026-08-14-skycard-fold/{measure.json,summary.json,measure.mjs,FINDINGS.txt,shots/sky-card.png,sky-card-full.png,sky-card-drawer.png}

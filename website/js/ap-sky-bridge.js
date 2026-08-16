@@ -216,7 +216,6 @@
         '</p>' +
         '<div class="ap-sky-bridge__actions">' +
           '<a href="' + esc(link) + '" class="btn btn--primary btn--sm" data-ap-model-link="chart-cast">See your sky in the model</a>' +
-          '<a href="moment.html" class="btn btn--outline btn--sm">Freeze as Moment</a>' +
         '</div>' +
       '</div>';
     host.hidden = false;

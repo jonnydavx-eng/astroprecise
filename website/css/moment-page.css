@@ -4,14 +4,14 @@
    ========================================================================== */
 
 body.ap-moment-page {
-  --mom-void: var(--ap-void-deep, #08080b);
+  --mom-void: var(--ap-void-deep, #020307);
   --mom-raised: var(--ap-void-raised, #1A2230);
   --mom-brass: var(--ap-gold-core, #A8B0BC);
   --mom-brass-vivid: var(--ap-gold-vivid, #C8CDD6);
   --mom-parch: var(--ap-text-primary, #E8EBF0);
   --mom-dim: var(--ap-text-secondary, #C8CDD6);
   --mom-muted: var(--ap-text-muted, #8B919C);
-  --mom-cta: var(--ap-cta, #6AB0FF);
+  --mom-cta: var(--ap-cta, #FF6428);
   --mom-cta-ink: var(--ap-cta-ink, #1F1206);
   --mom-rim: var(--ap-gold-a16, rgba(168, 176, 188, 0.16));
 }
@@ -63,7 +63,7 @@ body.ap-moment-page {
   font-size: 0.88rem;
 }
 .mom-hero__jump a {
-  color: var(--ap-aurora, #7EC8E8);
+  color: var(--ap-aurora, #d8b46a);
   text-decoration: none;
   border-bottom: 1px solid rgba(126, 200, 232, 0.35);
 }
@@ -103,7 +103,7 @@ body.ap-moment-page {
   border: 2px solid var(--mom-rim);
   box-shadow: 0 0 0 6px rgba(168, 176, 188, 0.08), 0 18px 40px rgba(0, 0, 0, 0.4);
   display: inline-block;
-  background: #08080b;
+  background: #020307;
 }
 .mom-hero__engine figcaption {
   margin-top: 0.5rem;
@@ -226,7 +226,7 @@ body.ap-moment-page {
   border: 1px solid var(--mom-rim);
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4);
   display: block;
-  background: #08080b;
+  background: #020307;
 }
 .mom-hero__gallery figcaption {
   margin-top: 0.45rem;
@@ -284,7 +284,7 @@ body.ap-moment-page {
   border: 1px solid var(--mom-rim);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
   display: block;
-  background: #08080b;
+  background: #020307;
 }
 .mom-gallery-teaser figcaption {
   margin-top: 0.45rem;

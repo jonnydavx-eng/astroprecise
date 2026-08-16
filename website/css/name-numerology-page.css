@@ -131,16 +131,16 @@ body:has(.nn-hero) .eng-i {
       font-size: 1rem;
       letter-spacing: 0.06em;
       font-weight: 600;
-      color: #08080b;
-      background: linear-gradient(135deg, #A8B0BC 0%, #E8EBF0 100%);
+      color: #170702;
+      background: #FF6428;
       border: none;
       border-radius: 999px;
       padding: 0.85rem 2.2rem;
       cursor: pointer;
       transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 0 18px rgba(168, 176, 188,0.22);
+      box-shadow: 0 0 18px rgba(255, 100, 40,0.22);
     }
-    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(168, 176, 188,0.45); }
+    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(255, 100, 40,0.45); }
     .nn-form-hint {
       font-size: 0.68rem;
       color: var(--nn-silver-dim);
@@ -212,7 +212,7 @@ body:has(.nn-hero) .eng-i {
       font-size: 0.55rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #08080b;
+      color: #020307;
       background: var(--nn-gold);
       border-radius: 999px;
       padding: 2px 9px;
@@ -503,7 +503,7 @@ body:has(.nn-hero) .eng-i {
       border-radius: 999px;
       /* Terracotta — reserved for the single primary action on the page */
       color: #FBEFE6;
-      background: linear-gradient(135deg, #6AB0FF 0%, #E4996F 100%);
+      background: linear-gradient(135deg, #FF6428 0%, #E4996F 100%);
       box-shadow:
         0 10px 26px rgba(106,176,255,0.34),
         0 0 0 1px rgba(106,176,255,0.35) inset;

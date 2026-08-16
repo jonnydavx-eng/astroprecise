@@ -1,6 +1,6 @@
 {
- "_about": "Astro Precise — seven-chapter natal reading. Companion to reading-templates.json. Every chapter opens with mono receipts, then serif meaning the receipts earn. Whole-sign houses only when birth time known. Tradition framed for reflection, never prediction. Paid print unlock is not open.",
- "version": "AP-DEEP-1",
+ "_about": "AstroPrecise — seven-chapter natal reading, the word half of the night you were born. Companion to reading-templates.json. Every chapter opens with mono receipts, then serif meaning the receipts earn. Whole-sign houses only when birth time and town coordinates are known. Noon local is a date reference, never a faked hour. Tradition framed for reflection, never prediction. Paid print unlock is not open.",
+ "version": "AP-DEEP-2",
  "signThemes": {
   "Aries": "direct, first-moving, brave by reflex",
   "Taurus": "steady, sensual, loyal to what lasts",
@@ -28,10 +28,12 @@
  },
  "chapters": {
   "ch1": {
-   "title": "The sky at your first breath",
-   "serif": "Everything in this reading is built from the positions above — computed from raw astronomy for your exact moment, not looked up, not invented. Where the words go further than the numbers, they say so. That is the whole contract.",
-   "serifNoTime": "Everything in this reading is built from the astronomy of your birth date — computed here, not looked up. Without a birth time the Moon is held approximate (±7°) and angles are withheld. Where the words go further than the numbers, they say so. That is the whole contract.",
-   "moonApproxNote": "(birth time unknown — Moon position approximate, ±7°)"
+   "title": "The sky on the night you were born",
+   "serif": "Everything in this reading is built from the positions above — computed from raw astronomy for your birth minute in that town’s real zone, not looked up, not invented. The live sky on this page is tonight. These numbers are that night. Where the words go further than the numbers, they say so. That is the whole contract.",
+   "serifNoTime": "Everything in this reading is built from the astronomy of your birth date — computed here, not looked up. Without a birth time we do not invent an hour: noon in the chosen zone is a date reference only, the Moon is held approximate (±7°), and the rising sign is withheld. Where the words go further than the numbers, they say so. That is the whole contract.",
+   "moonApproxNote": "(birth time unknown — Moon position approximate, ±7°)",
+   "noonNote": "Noon local is a date reference so the Sun and slower planets can be placed for that day. It is not your birth hour.",
+   "noCoordsNote": "The hour is known, but this chart has no usable town coordinates, so the rising sign is withheld rather than guessed."
   },
   "ch2": {
    "title": "The three lights",
@@ -65,7 +67,7 @@
   },
   "ch7": {
    "title": "A letter to keep",
-   "body": "If you reread nothing else, reread this. Your Sun is the running engine — {sunTheme}. The closest conversation in your chart — {tightPair} — is not a flaw to fix; it is the friction that makes you specific. Your {domElement} nature keeps doing what it does: {domElementLine} Let it. {ascNote} Nothing in your sky needs repairing. It needs living — openly, and in your own order. The sky above tonight is already different from the one on page one; you are allowed to be, too.",
+   "body": "If you reread nothing else, reread this. The night you were born is a computed sky, not a verdict. Your Sun is the running engine — {sunTheme}. The closest conversation in your chart — {tightPair} — is not a flaw to fix; it is the friction that makes you specific. Your {domElement} nature keeps doing what it does: {domElementLine} Let it. {ascNote} Nothing in your sky needs repairing. It needs living — openly, and in your own order. The sky above tonight is already different from the one on page one; you are allowed to be, too.",
    "ascNote": "Your rising sign is the door you meet the world through — {theme}.",
    "noAscNote": "Your rising sign needs a birth time we do not have, so this letter stays with what can be fixed without one."
   }

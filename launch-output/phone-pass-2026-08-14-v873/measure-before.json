@@ -1,0 +1,2940 @@
+[
+  {
+    "id": "home",
+    "path": "/index.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise — the living sky, computed now",
+    "url": "http://127.0.0.1:8790/index.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 16,
+    "pText": "A live model of this minute. Fly to a world, pull back through the Solar System ",
+    "h1Font": 32.76,
+    "h1Text": "The sky is moving.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 129,
+    "wordmarkH": 44,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 473,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": ".ap-live-stage",
+        "tag": "section",
+        "id": "lead",
+        "w": 390,
+        "h": 1658,
+        "display": "flex",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "primaryStage": {
+      "sel": ".ap-model-stage",
+      "tag": "div",
+      "id": "",
+      "w": 390,
+      "h": 473,
+      "display": "block",
+      "vis": "visible"
+    },
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ap-cosmic-flight-launch",
+        "text": "JOURNEY TO THE EDGE",
+        "w": 155,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.06)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "nowBtn",
+        "text": "Return to live",
+        "w": 131,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.06)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button.btn-primary",
+        "tag": "button",
+        "id": "",
+        "text": "Cast my chart — free",
+        "w": 320,
+        "h": 46,
+        "min": 46,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Cast my chart",
+        "w": 358,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Explore sky events",
+        "w": 358,
+        "h": 48,
+        "min": 48,
+        "bg": "rgba(216, 180, 106, 0.05)",
+        "color": "rgb(242, 236, 223)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Cast my chart",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 358,
+        "h": 48
+      },
+      {
+        "text": "Cast my chart — free",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 320,
+        "h": 46
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileWorld",
+        "w": 174,
+        "h": 50,
+        "right": 190
+      },
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileScale",
+        "w": 174,
+        "h": 50,
+        "right": 374
+      },
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "scrub",
+        "w": 358,
+        "h": 46,
+        "right": 376
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "f-date",
+        "w": 320,
+        "h": 46,
+        "right": 355
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "f-time",
+        "w": 320,
+        "h": 47,
+        "right": 355
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "f-place",
+        "w": 320,
+        "h": 46,
+        "right": 355
+      }
+    ],
+    "inputOverflow": [],
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 471,
+      "cw": 780,
+      "ch": 942
+    },
+    "webgl": {
+      "ok": true,
+      "lost": false,
+      "vendor": "WebKit",
+      "renderer": "WebKit WebGL"
+    },
+    "couples": null,
+    "pluto": {
+      "inGetPlanets": false,
+      "planet": null,
+      "extraBodies": [
+        "pluto"
+      ],
+      "extraHasPluto": true,
+      "sceneWalked": false,
+      "sceneHits": [],
+      "bodyIds": [
+        "mercury",
+        "venus",
+        "earth",
+        "mars",
+        "jupiter",
+        "saturn",
+        "uranus",
+        "neptune"
+      ]
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ],
+      "stayedOpen": true,
+      "stayH": 786,
+      "stayExpanded": "true",
+      "stayVisibleLinks": 4
+    }
+  },
+  {
+    "id": "compatibility",
+    "path": "/compatibility.html?nosw=1#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=A&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York&bn=B",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise — two birth minutes, one sky",
+    "url": "http://127.0.0.1:8790/compatibility.html?nosw=1#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=A&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York&bn=B",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 16,
+    "pText": "The same live model as the Observatory. Both birth minutes sit in the same live ",
+    "h1Font": 32.76,
+    "h1Text": "Two minutes. One sky.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 135,
+    "wordmarkH": 44,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 473,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": ".ap-live-stage",
+        "tag": "section",
+        "id": "lead",
+        "w": 390,
+        "h": 2383,
+        "display": "flex",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 471,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "primaryStage": {
+      "sel": ".ap-model-stage",
+      "tag": "div",
+      "id": "",
+      "w": 390,
+      "h": 473,
+      "display": "block",
+      "vis": "visible"
+    },
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ab-a",
+        "text": "A",
+        "w": 114,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ab-b",
+        "text": "B",
+        "w": 114,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(2, 3, 7, 0.55)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "ab-now",
+        "text": "LIVE",
+        "w": 114,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(2, 3, 7, 0.55)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "keep-sky",
+        "text": "Keep this sky",
+        "w": 141,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "nowBtn",
+        "text": "Return to live",
+        "w": 131,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.06)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button.btn-primary",
+        "tag": "button",
+        "id": "compat-submit-btn",
+        "text": "Show both in the sky",
+        "w": 218,
+        "h": 46,
+        "min": 46,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "compat-invite-btn",
+        "text": "Copy hash invite",
+        "w": 170,
+        "h": 46,
+        "min": 46,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(242, 236, 223)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Show both in the sky",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)",
+        "w": 218,
+        "h": 46
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileWorld",
+        "w": 174,
+        "h": 50,
+        "right": 190
+      },
+      {
+        "tag": "select",
+        "type": "select-one",
+        "name": "mobileScale",
+        "w": 174,
+        "h": 50,
+        "right": 374
+      },
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "minute-scrub",
+        "w": 254,
+        "h": 44,
+        "right": 272
+      },
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "scrub",
+        "w": 358,
+        "h": 46,
+        "right": 376
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "person1-name",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "person1-date",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "person1-time",
+        "w": 302,
+        "h": 47,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "person1-city",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "person2-name",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "person2-date",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "person2-time",
+        "w": 302,
+        "h": 47,
+        "right": 346
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "person2-city",
+        "w": 302,
+        "h": 46,
+        "right": 346
+      }
+    ],
+    "inputOverflow": [],
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 471,
+      "cw": 780,
+      "ch": 942
+    },
+    "webgl": {
+      "ok": true,
+      "lost": false,
+      "vendor": "WebKit",
+      "renderer": "WebKit WebGL"
+    },
+    "couples": {
+      "aDate": "1990-06-15",
+      "bDate": "1985-12-03",
+      "aTime": "14:22",
+      "bTime": "08:40",
+      "aTz": "Europe/London",
+      "bTz": "America/New_York",
+      "taps": [
+        {
+          "id": "ab-a",
+          "text": "A",
+          "w": 114,
+          "h": 44,
+          "min": 44,
+          "disabled": false,
+          "pressed": "true",
+          "overflow": "visible"
+        },
+        {
+          "id": "ab-b",
+          "text": "B",
+          "w": 114,
+          "h": 44,
+          "min": 44,
+          "disabled": false,
+          "pressed": "false",
+          "overflow": "visible"
+        },
+        {
+          "id": "ab-now",
+          "text": "LIVE",
+          "w": 114,
+          "h": 44,
+          "min": 44,
+          "disabled": false,
+          "pressed": "false",
+          "overflow": "visible"
+        },
+        {
+          "id": "keep-sky",
+          "text": "Keep this sky",
+          "w": 141,
+          "h": 44,
+          "min": 44,
+          "disabled": false,
+          "pressed": null,
+          "overflow": "visible"
+        },
+        {
+          "id": "compat-submit-btn",
+          "text": "Show both in the sky",
+          "w": 218,
+          "h": 46,
+          "min": 46,
+          "disabled": false,
+          "pressed": null,
+          "overflow": "visible"
+        }
+      ],
+      "specClocks": {
+        "a": {
+          "jd": 2448058.0569444443,
+          "label": "A"
+        },
+        "b": {
+          "jd": 2446403.0694444445,
+          "label": "B"
+        }
+      },
+      "portrait": false,
+      "orrReady": true,
+      "engine": "webgl",
+      "stage": {
+        "w": 390,
+        "h": 473,
+        "top": 352
+      }
+    },
+    "pluto": {
+      "inGetPlanets": false,
+      "planet": null,
+      "extraBodies": [
+        "pluto"
+      ],
+      "extraHasPluto": true,
+      "sceneWalked": false,
+      "sceneHits": [],
+      "bodyIds": [
+        "mercury",
+        "venus",
+        "earth",
+        "mars",
+        "jupiter",
+        "saturn",
+        "uranus",
+        "neptune"
+      ]
+    },
+    "bluePrimaries": [],
+    "letters": {
+      "spriteHook": {
+        "sprites": 42,
+        "cameras": 1,
+        "natalGroups": 1
+      },
+      "letterSprites": [
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 11.28
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11160,
+            "avg": {
+              "r": 255,
+              "g": 209,
+              "b": 122
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.33,
+              "h": 87.98
+            },
+            "fromCorners": {
+              "w": 29.35,
+              "h": 87.98
+            },
+            "center": {
+              "x": 193.1,
+              "y": 589.4
+            },
+            "dist": 95.687,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 12.69
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11059,
+            "avg": {
+              "r": 255,
+              "g": 209,
+              "b": 122
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.34,
+              "h": 99.01
+            },
+            "fromCorners": {
+              "w": 29.36,
+              "h": 99.01
+            },
+            "center": {
+              "x": 193.3,
+              "y": 588.3
+            },
+            "dist": 95.655,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 14.100000000000001
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 10768,
+            "avg": {
+              "r": 255,
+              "g": 209,
+              "b": 122
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.32,
+              "h": 109.97
+            },
+            "fromCorners": {
+              "w": 29.35,
+              "h": 109.97
+            },
+            "center": {
+              "x": 193.8,
+              "y": 587.1
+            },
+            "dist": 95.692,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 11.28
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 10988,
+            "avg": {
+              "r": 255,
+              "g": 207,
+              "b": 120
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.29,
+              "h": 87.88
+            },
+            "fromCorners": {
+              "w": 29.32,
+              "h": 87.88
+            },
+            "center": {
+              "x": 194.6,
+              "y": 586.2
+            },
+            "dist": 95.79,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 12.69
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11075,
+            "avg": {
+              "r": 255,
+              "g": 208,
+              "b": 121
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.25,
+              "h": 98.73
+            },
+            "fromCorners": {
+              "w": 29.28,
+              "h": 98.73
+            },
+            "center": {
+              "x": 195.4,
+              "y": 585.7
+            },
+            "dist": 95.93,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 14.100000000000001
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11123,
+            "avg": {
+              "r": 255,
+              "g": 207,
+              "b": 120
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.21,
+              "h": 109.52
+            },
+            "fromCorners": {
+              "w": 29.23,
+              "h": 109.52
+            },
+            "center": {
+              "x": 196.2,
+              "y": 585.7
+            },
+            "dist": 96.084,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 11.28
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11253,
+            "avg": {
+              "r": 255,
+              "g": 208,
+              "b": 121
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.16,
+              "h": 87.49
+            },
+            "fromCorners": {
+              "w": 29.19,
+              "h": 87.49
+            },
+            "center": {
+              "x": 196.7,
+              "y": 586.1
+            },
+            "dist": 96.221,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 12.69
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 10854,
+            "avg": {
+              "r": 255,
+              "g": 207,
+              "b": 119
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.14,
+              "h": 98.33
+            },
+            "fromCorners": {
+              "w": 29.16,
+              "h": 98.33
+            },
+            "center": {
+              "x": 196.9,
+              "y": 587
+            },
+            "dist": 96.314,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 14.100000000000001
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11052,
+            "avg": {
+              "r": 255,
+              "g": 208,
+              "b": 121
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.13,
+              "h": 109.22
+            },
+            "fromCorners": {
+              "w": 29.15,
+              "h": 109.22
+            },
+            "center": {
+              "x": 196.7,
+              "y": 588.1
+            },
+            "dist": 96.346,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 11.28
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 10879,
+            "avg": {
+              "r": 255,
+              "g": 207,
+              "b": 119
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.14,
+              "h": 87.41
+            },
+            "fromCorners": {
+              "w": 29.16,
+              "h": 87.41
+            },
+            "center": {
+              "x": 196.2,
+              "y": 589.3
+            },
+            "dist": 96.309,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 12.69
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 10920,
+            "avg": {
+              "r": 255,
+              "g": 208,
+              "b": 120
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.17,
+              "h": 98.44
+            },
+            "fromCorners": {
+              "w": 29.19,
+              "h": 98.44
+            },
+            "center": {
+              "x": 195.4,
+              "y": 590.2
+            },
+            "dist": 96.211,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 14.100000000000001
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11046,
+            "avg": {
+              "r": 255,
+              "g": 208,
+              "b": 121
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.21,
+              "h": 109.53
+            },
+            "fromCorners": {
+              "w": 29.23,
+              "h": 109.53
+            },
+            "center": {
+              "x": 194.6,
+              "y": 590.7
+            },
+            "dist": 96.071,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 11.28
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11076,
+            "avg": {
+              "r": 255,
+              "g": 209,
+              "b": 122
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.26,
+              "h": 87.77
+            },
+            "fromCorners": {
+              "w": 29.28,
+              "h": 87.77
+            },
+            "center": {
+              "x": 193.8,
+              "y": 590.7
+            },
+            "dist": 95.918,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 3.7600000000000002,
+            "y": 12.69
+          },
+          "tex": {
+            "w": 72,
+            "h": 288,
+            "lit": 11070,
+            "avg": {
+              "r": 255,
+              "g": 207,
+              "b": 120
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 29.3,
+              "h": 98.88
+            },
+            "fromCorners": {
+              "w": 29.32,
+              "h": 98.88
+            },
+            "center": {
+              "x": 193.3,
+              "y": 590.3
+            },
+            "dist": 95.78,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": true,
+          "worldScale": {
+            "x": 10.809999999999999,
+            "y": 10.809999999999999
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 119791,
+            "avg": {
+              "r": 225,
+              "g": 178,
+              "b": 82
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 84.04,
+              "h": 84.04
+            },
+            "fromCorners": {
+              "w": 84.11,
+              "h": 84.04
+            },
+            "center": {
+              "x": 195,
+              "y": 588.2
+            },
+            "dist": 96,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 12.525500000000001,
+            "y": 12.525500000000001
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 112118,
+            "avg": {
+              "r": 196,
+              "g": 139,
+              "b": 60
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 97.37,
+              "h": 97.37
+            },
+            "fromCorners": {
+              "w": 97.45,
+              "h": 97.37
+            },
+            "center": {
+              "x": 195,
+              "y": 588.2
+            },
+            "dist": 96,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 20.62125,
+            "y": 20.62125
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 114299,
+            "avg": {
+              "r": 173,
+              "g": 125,
+              "b": 61
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 160.31,
+              "h": 160.31
+            },
+            "fromCorners": {
+              "w": 160.44,
+              "h": 160.31
+            },
+            "center": {
+              "x": 195,
+              "y": 588.2
+            },
+            "dist": 96,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 1.05,
+            "y": 1.05
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 85795,
+            "avg": {
+              "r": 167,
+              "g": 109,
+              "b": 57
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 8.43,
+              "h": 8.43
+            },
+            "fromCorners": {
+              "w": 8.44,
+              "h": 8.43
+            },
+            "center": {
+              "x": 224.6,
+              "y": 599.3
+            },
+            "dist": 92.986,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 1.8900000000000001,
+            "y": 1.8900000000000001
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 84683,
+            "avg": {
+              "r": 171,
+              "g": 107,
+              "b": 54
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 14.26,
+              "h": 14.26
+            },
+            "fromCorners": {
+              "w": 14.3,
+              "h": 14.29
+            },
+            "center": {
+              "x": 147,
+              "y": 578.7
+            },
+            "dist": 98.908,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 1.836,
+            "y": 1.836
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 76324,
+            "avg": {
+              "r": 171,
+              "g": 141,
+              "b": 73
+            },
+            "who": "A"
+          },
+          "css": {
+            "fromScale": {
+              "w": 13.85,
+              "h": 13.85
+            },
+            "fromCorners": {
+              "w": 13.89,
+              "h": 13.88
+            },
+            "center": {
+              "x": 147,
+              "y": 578.7
+            },
+            "dist": 98.908,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 2.975,
+            "y": 2.975
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 96248,
+            "avg": {
+              "r": 170,
+              "g": 110,
+              "b": 56
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 23.66,
+              "h": 23.66
+            },
+            "fromCorners": {
+              "w": 23.79,
+              "h": 23.77
+            },
+            "center": {
+              "x": 122.6,
+              "y": 598.3
+            },
+            "dist": 93.849,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 1.47,
+            "y": 1.47
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 96213,
+            "avg": {
+              "r": 171,
+              "g": 112,
+              "b": 58
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 12.71,
+              "h": 12.71
+            },
+            "fromCorners": {
+              "w": 12.77,
+              "h": 12.76
+            },
+            "center": {
+              "x": 244.7,
+              "y": 630.3
+            },
+            "dist": 86.327,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 4.375,
+            "y": 4.375
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 85645,
+            "avg": {
+              "r": 166,
+              "g": 109,
+              "b": 57
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 33.16,
+              "h": 33.16
+            },
+            "fromCorners": {
+              "w": 33.69,
+              "h": 33.66
+            },
+            "center": {
+              "x": 325.6,
+              "y": 584
+            },
+            "dist": 98.463,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 3.6750000000000003,
+            "y": 3.6750000000000003
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 76710,
+            "avg": {
+              "r": 172,
+              "g": 108,
+              "b": 55
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 34.48,
+              "h": 34.48
+            },
+            "fromCorners": {
+              "w": 34.94,
+              "h": 34.92
+            },
+            "center": {
+              "x": 110.3,
+              "y": 672.4
+            },
+            "dist": 79.55,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 2.31,
+            "y": 2.31
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 105197,
+            "avg": {
+              "r": 171,
+              "g": 113,
+              "b": 58
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 22.25,
+              "h": 22.25
+            },
+            "fromCorners": {
+              "w": 22.74,
+              "h": 22.72
+            },
+            "center": {
+              "x": 314.9,
+              "y": 685
+            },
+            "dist": 77.477,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "",
+          "visible": false,
+          "worldScale": {
+            "x": 2.24,
+            "y": 2.24
+          },
+          "tex": {
+            "w": 640,
+            "h": 640,
+            "lit": 92948,
+            "avg": {
+              "r": 167,
+              "g": 110,
+              "b": 58
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 21.95,
+              "h": 21.95
+            },
+            "fromCorners": {
+              "w": 22.66,
+              "h": 22.64
+            },
+            "center": {
+              "x": 42.7,
+              "y": 700.2
+            },
+            "dist": 76.16,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "natalClocks",
+          "visible": true,
+          "worldScale": {
+            "x": 3.15,
+            "y": 3.15
+          },
+          "tex": {
+            "w": 72,
+            "h": 72,
+            "lit": 1171,
+            "avg": {
+              "r": 191,
+              "g": 159,
+              "b": 94
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 23.32,
+              "h": 23.32
+            },
+            "fromCorners": {
+              "w": 23.43,
+              "h": 23.41
+            },
+            "center": {
+              "x": 141,
+              "y": 551.5
+            },
+            "dist": 100.797,
+            "fov": 35.00000000001034
+          }
+        },
+        {
+          "parent": "natalClocks",
+          "visible": true,
+          "worldScale": {
+            "x": 3.15,
+            "y": 3.15
+          },
+          "tex": {
+            "w": 72,
+            "h": 72,
+            "lit": 1311,
+            "avg": {
+              "r": 229,
+              "g": 90,
+              "b": 37
+            },
+            "who": "B"
+          },
+          "css": {
+            "fromScale": {
+              "w": 26.63,
+              "h": 26.63
+            },
+            "fromCorners": {
+              "w": 26.71,
+              "h": 26.69
+            },
+            "center": {
+              "x": 243.4,
+              "y": 597.4
+            },
+            "dist": 88.273,
+            "fov": 35.00000000001034
+          }
+        }
+      ]
+    },
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 23,
+      "visibleLinks": 23,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ],
+      "stayedOpen": true,
+      "stayH": 786,
+      "stayExpanded": "true",
+      "stayVisibleLinks": 23
+    }
+  },
+  {
+    "id": "chart",
+    "path": "/chart.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "Free Birth Chart — calculated on your device | AstroPrecise",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 16,
+    "pText": "Enter your birth date, place and time. Supported positions are computed in your ",
+    "h1Font": 32.76,
+    "h1Text": "Your birth sky, calculated",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 129,
+    "wordmarkH": 44,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 422,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "primaryStage": {
+      "sel": ".ap-model-stage",
+      "tag": "div",
+      "id": "",
+      "w": 390,
+      "h": 422,
+      "display": "block",
+      "vis": "visible"
+    },
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "keep-sky",
+        "text": "Keep this sky",
+        "w": 141,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "geo-btn",
+        "text": "Use my current location",
+        "w": 156,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "time-unknown-btn",
+        "text": "Choose an approximate time",
+        "w": 184,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "sample-btn",
+        "text": "Sample Chart (Frida Kahlo)",
+        "w": 328,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Dawn",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Morning",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Noon",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Afternoon",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Evening",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Night",
+        "w": 143,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(2, 3, 7)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "a.btn",
+        "tag": "a",
+        "id": "",
+        "text": "CAST MY CHART",
+        "w": 366,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "chart-advanced-trigger",
+        "text": "ADVANCED CHART OPTIONS",
+        "w": 326,
+        "h": 52,
+        "min": 52,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button[type=\"submit\"]",
+        "tag": "button",
+        "id": "calculate-btn",
+        "text": "CALCULATE MY CHART",
+        "w": 328,
+        "h": 56,
+        "min": 56,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "CALCULATE MY CHART",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(2, 3, 7)",
+        "w": 328,
+        "h": 56
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "date-input",
+        "w": 328,
+        "h": 52,
+        "right": 359
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "city-input",
+        "w": 328,
+        "h": 52,
+        "right": 359
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "time-input",
+        "w": 328,
+        "h": 52,
+        "right": 359
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "name-input",
+        "w": 328,
+        "h": 52,
+        "right": 359
+      },
+      {
+        "tag": "input",
+        "type": "radio",
+        "name": "node-mode",
+        "w": 1,
+        "h": 46,
+        "right": 54
+      },
+      {
+        "tag": "input",
+        "type": "radio",
+        "name": "node-mode",
+        "w": 1,
+        "h": 46,
+        "right": 54
+      }
+    ],
+    "inputOverflow": [],
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 421,
+      "cw": 624,
+      "ch": 673
+    },
+    "webgl": {
+      "ok": true,
+      "lost": false,
+      "vendor": "WebKit",
+      "renderer": "WebKit WebGL"
+    },
+    "couples": null,
+    "pluto": {
+      "inGetPlanets": false,
+      "planet": null,
+      "extraBodies": [
+        "pluto"
+      ],
+      "extraHasPluto": true,
+      "sceneWalked": false,
+      "sceneHits": [],
+      "bodyIds": [
+        "mercury",
+        "venus",
+        "earth",
+        "mars",
+        "jupiter",
+        "saturn",
+        "uranus",
+        "neptune"
+      ]
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ],
+      "stayedOpen": true,
+      "stayH": 786,
+      "stayExpanded": "true",
+      "stayVisibleLinks": 4
+    }
+  },
+  {
+    "id": "tonight",
+    "path": "/tonight.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "The real sky news — what's visible tonight | AstroPrecise",
+    "url": "http://127.0.0.1:8790/tonight.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 16,
+    "pText": "Tonight's real sky news: which naked-eye planets are above your horizon after su",
+    "h1Font": 32.76,
+    "h1Text": "What's Visible Tonight",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 124,
+    "wordmarkH": 44,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 422,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "primaryStage": {
+      "sel": ".ap-model-stage",
+      "tag": "div",
+      "id": "",
+      "w": 390,
+      "h": 422,
+      "display": "block",
+      "vis": "visible"
+    },
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "nav-toggle",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "tn-geo-btn",
+        "text": "☉ Use my location",
+        "w": 171,
+        "h": 44,
+        "min": 44,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(9, 6, 3)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "TikTok — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Instagram — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Pinterest — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "YouTube — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "X — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Threads — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Reddit — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Facebook — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "LinkedIn — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "Bluesky — coming soon",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.035)",
+        "color": "rgba(242, 236, 223, 0.74)"
+      },
+      {
+        "sel": "button[type=\"submit\"]",
+        "tag": "button",
+        "id": "",
+        "text": "✦ Get updates",
+        "w": 141,
+        "h": 46,
+        "min": 46,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(232, 211, 160)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "nav-toggle",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "✦ Get updates",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(232, 211, 160)",
+        "w": 141,
+        "h": 46
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "tn-city-input",
+        "w": 312,
+        "h": 48,
+        "right": 351
+      },
+      {
+        "tag": "input",
+        "type": "email",
+        "name": "email",
+        "w": 342,
+        "h": 51,
+        "right": 366
+      }
+    ],
+    "inputOverflow": [],
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 421,
+      "cw": 624,
+      "ch": 673
+    },
+    "webgl": {
+      "ok": true,
+      "lost": false,
+      "vendor": "WebKit",
+      "renderer": "WebKit WebGL"
+    },
+    "couples": null,
+    "pluto": {
+      "inGetPlanets": false,
+      "planet": null,
+      "extraBodies": [
+        "pluto"
+      ],
+      "extraHasPluto": true,
+      "sceneWalked": false,
+      "sceneHits": [],
+      "bodyIds": [
+        "mercury",
+        "venus",
+        "earth",
+        "mars",
+        "jupiter",
+        "saturn",
+        "uranus",
+        "neptune"
+      ]
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 23,
+      "visibleLinks": 23,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ],
+      "stayedOpen": true,
+      "stayH": 786,
+      "stayExpanded": "true",
+      "stayVisibleLinks": 23
+    }
+  },
+  {
+    "id": "eclipse",
+    "path": "/eclipse.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "12 August 2026 Eclipse — replay and personal edition | AstroPrecise",
+    "url": "http://127.0.0.1:8790/eclipse.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 16,
+    "pText": "Choose Maximum, press Play shadow, then switch System / Shadow / Earth to unders",
+    "h1Font": 32.76,
+    "h1Text": "The Moon crossed the Sun. Enter the alignment.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 135,
+    "wordmarkH": 44,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-eclipse-live__stage",
+        "tag": "div",
+        "id": "",
+        "w": 372,
+        "h": 490,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 372,
+        "h": 489,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "primaryStage": {
+      "sel": ".ap-eclipse-live__stage",
+      "tag": "div",
+      "id": "",
+      "w": 372,
+      "h": 490,
+      "display": "block",
+      "vis": "visible"
+    },
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "LIVE NOW",
+        "w": 113,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.03)",
+        "color": "rgba(242, 236, 223, 0.76)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "MAXIMUM",
+        "w": 113,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(255, 90, 31, 0.1)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "PLAY SHADOW",
+        "w": 113,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(242, 236, 223, 0.03)",
+        "color": "rgba(242, 236, 223, 0.76)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "SYSTEM",
+        "w": 101,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.09)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "SHADOW",
+        "w": 101,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(242, 236, 223, 0.58)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "EARTH",
+        "w": 101,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(242, 236, 223, 0.58)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "",
+        "w": 98,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "button[type=\"submit\"]",
+        "tag": "button",
+        "id": "",
+        "text": "Read my eclipse contact",
+        "w": 312,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "button",
+        "tag": "button",
+        "id": "",
+        "text": "PLAY THE 3D SHADOW",
+        "w": 178,
+        "h": 50,
+        "min": 50,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Read my eclipse contact",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 312,
+        "h": 48
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "input",
+        "type": "range",
+        "name": "eclipse-time-range",
+        "w": 336,
+        "h": 46,
+        "right": 365
+      },
+      {
+        "tag": "input",
+        "type": "checkbox",
+        "name": "useSavedChart",
+        "w": 0,
+        "h": 0,
+        "right": 0
+      },
+      {
+        "tag": "input",
+        "type": "date",
+        "name": "dob",
+        "w": 312,
+        "h": 46,
+        "right": 351
+      },
+      {
+        "tag": "input",
+        "type": "time",
+        "name": "tob",
+        "w": 312,
+        "h": 46,
+        "right": 351
+      },
+      {
+        "tag": "input",
+        "type": "text",
+        "name": "eclipse-city",
+        "w": 312,
+        "h": 46,
+        "right": 351
+      }
+    ],
+    "inputOverflow": [],
+    "overflowers": [],
+    "orrEngine": null,
+    "orrReady": false,
+    "canvas": {
+      "w": 372,
+      "h": 489,
+      "cw": 744,
+      "ch": 980
+    },
+    "webgl": {
+      "ok": true,
+      "lost": false,
+      "vendor": "WebKit",
+      "renderer": "WebKit WebGL"
+    },
+    "couples": null,
+    "pluto": {
+      "inGetPlanets": false,
+      "planet": null,
+      "extraBodies": null,
+      "extraHasPluto": false,
+      "sceneWalked": false,
+      "sceneHits": [],
+      "bodyIds": []
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ],
+      "stayedOpen": true,
+      "stayH": 786,
+      "stayExpanded": "true",
+      "stayVisibleLinks": 4
+    }
+  },
+  {
+    "id": "shop",
+    "path": "/shop.html?nosw=1",
+    "status": 200,
+    "errors": [],
+    "title": "AstroPrecise Editions — personalised eclipse reading and art",
+    "url": "http://127.0.0.1:8790/shop.html?nosw=1",
+    "bodyFont": 16,
+    "bodyColor": "rgb(242, 236, 223)",
+    "pFont": 16,
+    "pText": "If the 12 August eclipse made a close contact with your chart, AstroPrecise turn",
+    "h1Font": 32.76,
+    "h1Text": "A reading you can see.",
+    "wordmarkText": "AstroPrecise",
+    "wordmarkLines": 1,
+    "wordmarkW": 135,
+    "wordmarkH": 44,
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "innerH": 844,
+    "stages": [
+      {
+        "sel": ".ap-model-stage",
+        "tag": "div",
+        "id": "",
+        "w": 390,
+        "h": 422,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "#orr",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "void-orrery",
+        "tag": "void-orrery",
+        "id": "orr",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      },
+      {
+        "sel": "canvas",
+        "tag": "canvas",
+        "id": "",
+        "w": 390,
+        "h": 421,
+        "display": "block",
+        "vis": "visible"
+      }
+    ],
+    "primaryStage": {
+      "sel": ".ap-model-stage",
+      "tag": "div",
+      "id": "",
+      "w": 390,
+      "h": 422,
+      "display": "block",
+      "vis": "visible"
+    },
+    "taps": [
+      {
+        "sel": ".navbar__toggle",
+        "tag": "button",
+        "id": "",
+        "text": "Open navigation",
+        "w": 44,
+        "h": 44,
+        "min": 44,
+        "bg": "rgba(216, 180, 106, 0.04)",
+        "color": "rgb(216, 180, 106)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Cast my contact — free",
+        "w": 358,
+        "h": 46,
+        "min": 46,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      },
+      {
+        "sel": "a.ap-action",
+        "tag": "a",
+        "id": "",
+        "text": "Download free guide",
+        "w": 358,
+        "h": 46,
+        "min": 46,
+        "bg": "rgba(216, 180, 106, 0.05)",
+        "color": "rgb(242, 236, 223)"
+      },
+      {
+        "sel": "button[type=\"submit\"]",
+        "tag": "button",
+        "id": "shopNotifyBtn",
+        "text": "Get sky notes",
+        "w": 358,
+        "h": 48,
+        "min": 48,
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)"
+      }
+    ],
+    "smallestTap": {
+      "sel": ".navbar__toggle",
+      "tag": "button",
+      "id": "",
+      "text": "Open navigation",
+      "w": 44,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(216, 180, 106, 0.04)",
+      "color": "rgb(216, 180, 106)"
+    },
+    "tapsUnder44": [],
+    "primaries": [
+      {
+        "text": "Cast my contact — free",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 358,
+        "h": 46
+      },
+      {
+        "text": "Get sky notes",
+        "bg": "rgb(255, 100, 40)",
+        "color": "rgb(23, 7, 2)",
+        "w": 358,
+        "h": 48
+      }
+    ],
+    "inputs": [
+      {
+        "tag": "input",
+        "type": "email",
+        "name": "shopNotifyEmail",
+        "w": 358,
+        "h": 48,
+        "right": 374
+      }
+    ],
+    "inputOverflow": [],
+    "overflowers": [],
+    "orrEngine": "webgl",
+    "orrReady": true,
+    "canvas": {
+      "w": 390,
+      "h": 421,
+      "cw": 780,
+      "ch": 842
+    },
+    "webgl": {
+      "ok": true,
+      "lost": false,
+      "vendor": "WebKit",
+      "renderer": "WebKit WebGL"
+    },
+    "couples": null,
+    "pluto": {
+      "inGetPlanets": false,
+      "planet": null,
+      "extraBodies": [
+        "pluto"
+      ],
+      "extraHasPluto": true,
+      "sceneWalked": false,
+      "sceneHits": [],
+      "bodyIds": [
+        "mercury",
+        "venus",
+        "earth",
+        "mars",
+        "jupiter",
+        "saturn",
+        "uranus",
+        "neptune"
+      ]
+    },
+    "bluePrimaries": [],
+    "drawer": {
+      "expanded": "true",
+      "openClass": true,
+      "display": "block",
+      "w": 390,
+      "h": 786,
+      "linkCount": 4,
+      "visibleLinks": 4,
+      "minLinkH": 44,
+      "first": [
+        {
+          "text": "Observatory",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Chart",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Events Live",
+          "w": 354,
+          "h": 44
+        },
+        {
+          "text": "Shop",
+          "w": 354,
+          "h": 44
+        }
+      ],
+      "stayedOpen": true,
+      "stayH": 786,
+      "stayExpanded": "true",
+      "stayVisibleLinks": 4
+    }
+  }
+]

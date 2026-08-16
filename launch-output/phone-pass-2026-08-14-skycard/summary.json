@@ -1,0 +1,177 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "swV": "ap-v874",
+  "notPr18": true,
+  "identity": "old-news-card",
+  "page": "sky-card.html",
+  "title": "The real sky news — sky card | Astro Precise",
+  "status": 200,
+  "copy": 17,
+  "copyText": "One image: your date, your Sun, Moon and Venus placed from the clock time read as UTC — we do not round — and the wheel of that minute. Computed here, drawn her",
+  "h1": 32,
+  "h1Text": "The sky when you arrived.",
+  "h1Lines": 1,
+  "smallestTap": {
+    "sel": ".wrap a",
+    "tag": "a",
+    "id": "",
+    "text": "CAST THE FULL CHART FREE",
+    "w": 159,
+    "h": 11,
+    "min": 11,
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(216, 180, 106)"
+  },
+  "tapsUnder44": 4,
+  "tapsUnder44List": [
+    {
+      "sel": ".wrap a",
+      "tag": "a",
+      "id": "",
+      "text": "CAST THE FULL CHART FREE",
+      "w": 159,
+      "h": 11,
+      "min": 11,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(216, 180, 106)"
+    },
+    {
+      "sel": "a.mono",
+      "tag": "a",
+      "id": "",
+      "text": "← THE OBSERVATORY",
+      "w": 139,
+      "h": 13,
+      "min": 13,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(242, 236, 223, 0.65)"
+    },
+    {
+      "sel": ".wrap a",
+      "tag": "a",
+      "id": "",
+      "text": "THE 12 AUG ECLIPSE",
+      "w": 338,
+      "h": 29,
+      "min": 29,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(216, 180, 106)"
+    },
+    {
+      "sel": "button",
+      "tag": "button",
+      "id": "drawBtn",
+      "text": "DRAW MY CARD",
+      "w": 161,
+      "h": 42,
+      "min": 42,
+      "bg": "rgb(242, 236, 223)",
+      "color": "rgb(0, 0, 0)"
+    }
+  ],
+  "stage": "346x183",
+  "stageH": 183,
+  "stageNote": "2D #cv sky-card canvas (1200x630 intrinsic), not a 3D orrery stage",
+  "overflow": 0,
+  "overflowers": [],
+  "scrollW": 390,
+  "inputOverflow": [],
+  "drawer": {
+    "missing": true,
+    "reason": "no .navbar__toggle — this page has no site chrome drawer"
+  },
+  "wordmarkPresent": false,
+  "wordmarkText": "",
+  "wordmarkLines": 0,
+  "wordmarkOneWord": false,
+  "titleTwoWordBrand": true,
+  "astroHits": [
+    {
+      "text": "· © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED",
+      "tag": "div",
+      "twoWords": true,
+      "oneWord": true,
+      "w": 346,
+      "h": 54,
+      "lines": 1
+    },
+    {
+      "text": "(function () { 'use strict'; var $ = function (id) { return document.getElementById(id); }; var cv = $('cv'), ctx = cv.g",
+      "tag": "script",
+      "twoWords": false,
+      "oneWord": true,
+      "w": 0,
+      "h": 0,
+      "lines": 0
+    }
+  ],
+  "chrome": {
+    "navbar": false,
+    "toggle": false,
+    "mobileMenu": false,
+    "bottomNav": false,
+    "logo": false
+  },
+  "giftMarkers": {
+    "hasGiftHtmlPath": false,
+    "hasGiftInTitle": false,
+    "hasGiftInBody": false,
+    "hasKeepPath": false,
+    "hasYourMinute": true,
+    "hasSkyWhenYouArrived": true,
+    "hasRealSkyNews": true,
+    "hasDrawMyCard": true,
+    "hasDownloadPng": true,
+    "hasUtcTime": true,
+    "has1200x630": true
+  },
+  "primaries": [
+    {
+      "text": "DRAW MY CARD",
+      "id": "drawBtn",
+      "cls": "btn",
+      "bg": "rgb(242, 236, 223)",
+      "color": "rgb(0, 0, 0)",
+      "w": 161,
+      "h": 42
+    },
+    {
+      "text": "DOWNLOAD PNG",
+      "id": "dlBtn",
+      "cls": "btn",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(242, 236, 223)",
+      "w": 163,
+      "h": 44
+    }
+  ],
+  "bluePurplePrimaries": [],
+  "orr": null,
+  "orrReady": false,
+  "webgl": false,
+  "canvas2d": {
+    "ok": true
+  },
+  "canvas": {
+    "w": 390,
+    "h": 844,
+    "cw": 780,
+    "ch": 1688,
+    "id": ""
+  },
+  "fails": {
+    "copyLt16": false,
+    "tapLt44": true,
+    "overflow": false,
+    "collapsedStage": true
+  },
+  "shippingFilesChanged": false,
+  "cssChanged": false,
+  "bumped": false,
+  "pushed": false,
+  "committed": false,
+  "verdict": "FINDINGS — local old news card (NOT PR 18). See fails. sw.js still ap-v874. No shipping edit."
+}

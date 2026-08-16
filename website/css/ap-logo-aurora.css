@@ -14,7 +14,7 @@
 .logo-text__precise,
 .logo-text i,
 .wordmark-precise {
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #d8b46a) !important;
   font-style: normal !important;
   font-weight: 500;
   background: linear-gradient(
@@ -77,7 +77,7 @@
 }
 .masthead-logo .logo-mark [fill="#7EC8E8"],
 .masthead-logo .logo-mark [fill="#A8B0BC"] {
-  fill: var(--ap-aurora, #7EC8E8) !important;
+  fill: var(--ap-aurora, #d8b46a) !important;
 }
 .masthead-logo .logo-mark [fill="#E8EBF0"] {
   fill: var(--ap-silver-bright, #E8EBF0) !important;
@@ -137,8 +137,8 @@
   .wordmark-precise,
   .logo-text__precise,
   .logo-text i {
-    -webkit-text-fill-color: var(--ap-aurora, #7EC8E8);
+    -webkit-text-fill-color: var(--ap-aurora, #d8b46a);
     background: none;
-    color: var(--ap-aurora, #7EC8E8) !important;
+    color: var(--ap-aurora, #d8b46a) !important;
   }
 }

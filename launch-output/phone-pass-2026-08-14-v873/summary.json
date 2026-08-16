@@ -1,0 +1,155 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "swV": "ap-v873",
+  "shippingFilesChanged": false,
+  "cssChanged": false,
+  "pages": [
+    {
+      "id": "home",
+      "status": 200,
+      "copy": 16,
+      "h1": 32.76,
+      "stage": "390x473",
+      "tapsUnder44": 0,
+      "overflow": 0,
+      "scrollW": 390,
+      "drawerStay": true,
+      "webgl": true,
+      "orr": "webgl",
+      "plutoExtra": true,
+      "plutoInPlanets": false
+    },
+    {
+      "id": "compatibility",
+      "status": 200,
+      "copy": 16,
+      "h1": 32.76,
+      "stage": "390x473",
+      "tapsUnder44": 0,
+      "overflow": 0,
+      "scrollW": 390,
+      "drawerStay": true,
+      "webgl": true,
+      "orr": "webgl",
+      "plutoExtra": true,
+      "plutoInPlanets": false
+    },
+    {
+      "id": "chart",
+      "status": 200,
+      "copy": 16,
+      "h1": 32.76,
+      "stage": "390x422",
+      "tapsUnder44": 0,
+      "overflow": 0,
+      "scrollW": 390,
+      "drawerStay": true,
+      "webgl": true,
+      "orr": "webgl",
+      "plutoExtra": true,
+      "plutoInPlanets": false
+    },
+    {
+      "id": "tonight",
+      "status": 200,
+      "copy": 16,
+      "h1": 32.76,
+      "stage": "390x422",
+      "tapsUnder44": 0,
+      "overflow": 0,
+      "scrollW": 390,
+      "drawerStay": true,
+      "webgl": true,
+      "orr": "webgl",
+      "plutoExtra": true,
+      "plutoInPlanets": false
+    },
+    {
+      "id": "eclipse",
+      "status": 200,
+      "copy": 16,
+      "h1": 32.76,
+      "stage": "372x490",
+      "tapsUnder44": 0,
+      "overflow": 0,
+      "scrollW": 390,
+      "drawerStay": true,
+      "webgl": true,
+      "orr": null,
+      "plutoExtra": false,
+      "plutoInPlanets": false
+    },
+    {
+      "id": "shop",
+      "status": 200,
+      "copy": 16,
+      "h1": 32.76,
+      "stage": "390x422",
+      "tapsUnder44": 0,
+      "overflow": 0,
+      "scrollW": 390,
+      "drawerStay": true,
+      "webgl": true,
+      "orr": "webgl",
+      "plutoExtra": true,
+      "plutoInPlanets": false
+    }
+  ],
+  "couples": {
+    "hashApplied": true,
+    "a": {
+      "date": "1990-06-15",
+      "time": "14:22",
+      "tz": "Europe/London",
+      "jd": 2448058.0569444443
+    },
+    "b": {
+      "date": "1985-12-03",
+      "time": "08:40",
+      "tz": "America/New_York",
+      "jd": 2446403.0694444445
+    },
+    "letters": [
+      {
+        "who": "A",
+        "h": 23.41,
+        "w": 23.43,
+        "texAvg": {
+          "r": 191,
+          "g": 159,
+          "b": 94
+        },
+        "inBand": true
+      },
+      {
+        "who": "B",
+        "h": 26.69,
+        "w": 26.71,
+        "texAvg": {
+          "r": 229,
+          "g": 90,
+          "b": 37
+        },
+        "inBand": true
+      }
+    ],
+    "band": "22-28 CSS px",
+    "A_inBand": true,
+    "B_inBand": true
+  },
+  "pluto": {
+    "extraHasPluto": [
+      "home",
+      "compatibility",
+      "chart",
+      "tonight",
+      "shop"
+    ],
+    "webglOk": true,
+    "note": "Pluto is an extra body (not in getPlanets 8). WebGL context stays ok/not-lost on every page that mounts the orrery."
+  },
+  "verdict": "PASS — no CSS fails. website/css/ap-phone-pass.css untouched. sw.js still ap-v873. pins still ?v=873."
+}

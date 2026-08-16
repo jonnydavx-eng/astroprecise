@@ -21,7 +21,7 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ap-aurora, #7EC8E8);
+  color: var(--ap-aurora, #d8b46a);
   user-select: none;
 }
 .ap-more-sky__summary::-webkit-details-marker { display: none; }

@@ -3,32 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0C1016">
-  <title>Natal Deep Reading — seven chapters on your device | AstroPrecise</title>
-  <meta name="description" content="A seven-chapter natal reading computed in your browser from a saved chart or birth moment. Astronomy first; meaning offered for reflection. Nothing is uploaded.">
+  <meta name="theme-color" content="#020307">
+  <title>Natal reading — the night you were born, in words | AstroPrecise</title>
+  <meta name="description" content="Seven chapters from a real computed chart: date, place, and an honest timezone. Unknown birth time is disclosed, not faked. The live sky stays free. Birth date and time stay on this device; place search sends only the town name.">
   <link rel="canonical" href="https://astroprecise.app/deep-reading.html">
-  <link rel="stylesheet" href="css/fonts.css?v=857">
-  <script>window.AP_ASSET_V='857';</script>
-  <script src="js/ap-nav-model.js?v=857" defer></script>
-  <script src="js/ephemeris.js?v=857" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=857">
-  <link rel="stylesheet" href="css/ap-natal-reading.css?v=857">
+  <link rel="stylesheet" href="css/fonts.css?v=876">
+  <script>window.AP_ASSET_V='876';</script>
+  <script src="js/ap-nav-model.js?v=876" defer></script>
+  <script src="js/ephemeris.js?v=876" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=876">
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=876">
+  <link rel="stylesheet" href="css/ap-natal-reading.css?v=876">
+  <script type="importmap">
+    { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+  </script>
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=876">
+  <script src="js/void-orrery-adapter.js?v=876" defer></script>
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=876">
 </head>
 <body class="page-natal-reading ap-launch-article">
   <a class="skip-link" href="#natal-main">Skip to reading</a>
   <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          <span class="logo-text">AstroPrecise</span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
             <a href="index.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="horoscope.html" class="navbar__link">Daily</a>
-            <a href="eclipse.html" class="navbar__link">Eclipse</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
@@ -42,44 +48,71 @@
     </nav>
   </header>
 
+  <section class="ap-room-sky" aria-label="Live sky">
+    <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
+      <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+      <div class="ap-model-vignette" aria-hidden="true"></div>
+      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
+    </div>
+  </section>
+
   <main id="natal-main" class="ap-natal-shell">
-    <p class="ap-natal-kicker">Natal reading · seven chapters · on this device</p>
-    <h1>Your chart, <em>read in full.</em></h1>
-    <p class="ap-natal-lede">The free chart page gives positions and short cards. This page writes seven chapters from the same engine: the sky at first breath, the three lights, the shape of the chart, where the weight falls, the long arcs, this season’s sky, and a letter to keep. Paid print unlock is not open yet, so the reading itself is here to judge. Birth data never leaves the browser.</p>
+    <p class="ap-natal-kicker">The night you were born · reading half · on this device</p>
+    <h1>The sky that night, <em>read in full.</em></h1>
+    <p class="ap-natal-lede">Play stays free. The live sky above is not behind a paywall, an account, or a chat. This page is the other half of that night: seven chapters written from a real computed chart — date, place, and an honest timezone. Unknown birth time is disclosed, not filled in. Place search sends only the town name to a public geocoder. Birth date and time stay here.</p>
+
+    <div class="ap-natal-ledger" aria-label="What is computed and what is offered">
+      <div>
+        <span>Observed</span>
+        <p>Planetary longitudes from the in-browser engine. Rising sign and houses only when the hour and the town’s coordinates are both known. The live sky above is this minute, not the birth minute.</p>
+      </div>
+      <div class="ap-natal-ledger--meaning">
+        <span>Meaning</span>
+        <p>Tradition, offered for reflection — never a prediction, never a verdict, never an AI conversation. Astronomy first; words only as far as the numbers earn.</p>
+      </div>
+    </div>
 
     <form id="natalReadingForm" class="ap-natal-form">
       <label class="ap-natal-saved" id="savedChartOption" hidden><input type="checkbox" id="useSavedChart" checked><span id="savedChartLabel">Use my saved chart</span></label>
       <div class="ap-natal-form__fields">
-        <label><span>Birth date</span><input type="date" id="dob" required min="1800-01-01" autocomplete="bday"></label>
+        <label><span>Birth date</span><input type="date" id="dob" required min="1800-01-01" max="2200-12-31" autocomplete="bday"></label>
         <label><span>Birth time · optional</span><input type="time" id="tob" autocomplete="bday-time"></label>
-        <label><span>Historical time zone</span>
-          <select id="tz">
-            <option value="Europe/London" selected>London / UK</option>
-            <option value="Europe/Paris">Paris / Central Europe</option>
-            <option value="America/New_York">New York / US Eastern</option>
-            <option value="America/Los_Angeles">Los Angeles / US Pacific</option>
-            <option value="Asia/Kolkata">India</option>
-            <option value="Australia/Sydney">Sydney</option>
-            <option value="UTC">UTC / GMT</option>
-          </select>
+        <label><span>Birth place</span>
+          <input type="text" id="natal-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="natal-city-drop">
+          <div class="ap-city-drop" id="natal-city-drop" hidden></div>
+          <p class="ap-zone-note" id="natal-zone">Pick a town from the list so the minute uses that town’s real zone. UTC and GMT are refused — UK summer is not GMT.</p>
+          <input type="hidden" id="tz">
+          <input type="hidden" id="natal-lat">
+          <input type="hidden" id="natal-lon">
         </label>
       </div>
-      <p class="ap-natal-note" id="natalStatus" role="status">Cast a free chart first for angles and houses, or enter a date here. Unknown time keeps the Moon approximate (±7°) and withholds angles and houses.</p>
+      <p class="ap-natal-note" id="natalStatus" role="status">Cast a free chart first, or enter a date and town here. Without a birth time we compute the date at 12:00 in the chosen zone as a date reference, not a birth hour. The Moon is held approximate (±7°). Angles and houses are withheld.</p>
       <button type="submit" data-natal-submit disabled aria-busy="true" aria-describedby="natalStatus">Write my seven chapters</button>
     </form>
 
-    <button type="button" class="ap-natal-print" id="natalPrint" hidden>Print / save as PDF</button>
     <div id="natalResult" hidden tabindex="-1">
+      <p class="ap-natal-withheld" id="natalWithheld" hidden></p>
+      <div class="ap-natal-receipt" id="natalReceipt"></div>
       <p class="ap-natal-note" id="natalMeta"></p>
       <div id="natalChapters"></div>
       <p class="ap-natal-legal" id="natalLegal"></p>
+      <p class="ap-natal-note" id="natalUnlockNote">Paid print unlock is not open. No price is set. Checkout is not connected. The reading above is here to judge.</p>
+      <button type="button" class="ap-natal-print" id="natalPrint">Print / save as PDF</button>
     </div>
 
-    <p class="ap-natal-also">Also: <a href="eclipse.html#contact">12 August eclipse contact</a> · <a href="chart.html">Free natal chart</a> · <a href="sky-events.html">Sky events</a></p>
+    <p class="ap-natal-also">Keep, on pages that already exist: <a href="sky-card.html" data-ap-keep-minute>Sky card</a> · <a href="chart.html">Chart’s live-sky still</a>. This reading does not recapture those images. The live sky above stays free.</p>
+    <nav class="ap-natal-also" aria-label="Also on this site">
+      <p>Also</p>
+      <a href="eclipse.html#contact">12 August eclipse contact</a>
+      <a href="chart.html">Free natal chart</a>
+      <a href="sky-events.html">Sky events</a>
+    </nav>
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=857" defer></script>
-  <script type="module" src="js/ap-natal-reading.js?v=857"></script>
+  <script src="js/ap-footer-inject.js?v=876" defer></script>
+  <script type="module" src="js/ap-natal-reading.js?v=876"></script>
+  <script src="js/ap-room-sky.js?v=876" defer></script>
+  <script src="js/ap-keep-minute.js?v=876" defer></script>
 </body>
 </html>

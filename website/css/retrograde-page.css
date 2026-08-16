@@ -49,10 +49,10 @@ html.ap-fonts-ready .retro-hero .hero-answer {
 
 /* ── Retrograde page premium overrides (matches transits palette) ── */
     :root {
-      --void: #08080b;
+      --void: #020307;
       --gold: #A8B0BC;
       --gold-light: #E8EBF0;
-      --purple: #5C4A6E;
+      --purple: var(--ap-brass);
       --white: #E8E0D0;
       --silver: #A89E88;
       --silver-dim: #9A9084;
@@ -74,7 +74,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(92, 74, 110,0.18) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(216, 180, 106,0.18) 0%, transparent 70%);
       pointer-events: none;
       transition: background 0.6s ease;
     }

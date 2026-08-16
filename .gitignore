@@ -49,3 +49,7 @@ tools/visual-check/out/
 
 # Stray audit-suite copy inside the served website dir (2026-07-10: 227MB, must never deploy — see docs/ORBITLAB-INTEGRATION-MASTERPLAN-2026-07-09.md)
 website/tools/visual-check/
+
+# NASA + planet-map SOURCE textures (raw .tif, hundreds of MB — source only, never deploy)
+_nasa_src/
+tools/_tmp-pluto/

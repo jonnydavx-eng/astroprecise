@@ -3,8 +3,8 @@
 
 
 /* ==========================================================================
-   AstroPrecise — Premium Cosmic Design System v2
-   Void black + luminous gold + electric violet + cosmic cyan
+   AstroPrecise — Ephemeris Observatory Design System v858
+   Astronomical black + parchment + brass + restrained ember
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -16,16 +16,16 @@
   --bg:    var(--ap-void-deep);
   --bg-2:  var(--ap-void-mid);
   --bg-3:  var(--ap-void-raised);
-  --hermetic: #1a1428;       /* deep violet-indigo for subtle mystery */
+  --hermetic: #17130f;
 
   /* ── Engraved / Plate surfaces (less glass, more ancient metal/parchment) ── */
-  --glass:         rgba(22, 28, 42, 0.58);   /* warm plate — translucent so the one sky shows through */
-  --glass-2:       rgba(16, 21, 32, 0.80);
-  --glass-3:       rgba(12, 16, 24, 0.92);
-  --glass-bg:      rgba(22, 28, 42, 0.58);
-  --surface:       rgba(22, 28, 42, 0.56);
-  --surface-2:     rgba(16, 21, 32, 0.80);
-  --surface-hover: rgba(28, 35, 50, 0.80);
+  --glass:         rgba(15, 21, 31, 0.62);
+  --glass-2:       rgba(10, 15, 23, 0.84);
+  --glass-3:       rgba(6, 9, 15, 0.94);
+  --glass-bg:      rgba(15, 21, 31, 0.62);
+  --surface:       rgba(15, 21, 31, 0.60);
+  --surface-2:     rgba(10, 15, 23, 0.84);
+  --surface-hover: rgba(23, 31, 44, 0.82);
 
   /* ── Borders — hairline gold engravings ── */
   --border:         rgba(168, 176, 188, 0.16);
@@ -47,8 +47,8 @@
   --rim-light:      inset 0 1px 0 rgba(232, 224, 208, 0.08);
   --shadow-raised:  0 1px 2px rgba(0,0,0,0.16), 0 10px 30px rgba(0,0,0,0.16);
   --shadow-overlay: 0 8px 32px rgba(0,0,0,0.34), 0 0 30px rgba(176,74,82,0.06);
-  --surface-raised: linear-gradient(158deg, rgba(22, 28, 42,0.52), rgba(16, 21, 32,0.64));
-  --surface-overlay: rgba(22, 28, 42,0.90);
+  --surface-raised: linear-gradient(158deg, rgba(15,21,31,.58), rgba(8,12,19,.72));
+  --surface-overlay: rgba(8,12,19,.93);
 
   /* ── Primary ancient gold (preloader + Celestia match) ── */
   --gold:        var(--ap-gold-core);
@@ -60,27 +60,27 @@
   --hermetic-gold: var(--ap-gold-core);
 
   /* ── Muted warm accents (less electric violet/cyan for mystical edge) ── */
-  --violet:        #5C4A6E;      /* subdued deep violet */
-  --violet-light:  #8A7A9A;
-  --violet-bright: #A89E88;      /* shift toward parchment */
-  --synchro-violet: #4A3A5A;
+  --violet:        #6f6558;
+  --violet-light:  #a99a86;
+  --violet-bright: #d5c3a3;
+  --synchro-violet: #51483d;
 
   /* ── Warm ritual accents ── */
   --crimson:        #6e1a26;
   --crimson-light:  #b04a52;
   --amber:          #C98E27;
-  --teal:           #3f7d76;     /* muted for observatory */
+  --teal:           #66836e;
 
   /* ── Legacy / subtle cosmic (use sparingly) ── */
-  --cyan:     #4A7A8A;  /* desaturated */
-  --cyan-dim: rgba(74, 122, 138, 0.15);
+  --cyan:     #8793a0;
+  --cyan-dim: rgba(135,147,160,.14);
 
   /* ── Legacy colour aliases (re-mapped warmer) ── */
-  --purple:        var(--violet);
-  --purple-light:  var(--violet-light);
-  --purple-bright: var(--violet-bright);
-  --indigo:        #4a3a5c;
-  --blue:          #6a5a52;     /* warmed off slate-blue */
+  --purple:        var(--ap-brass);
+  --purple-light:  var(--ap-brass-bright);
+  --purple-bright: var(--ap-brass-bright);
+  --indigo:        #020307;
+  --blue:          #A89C84;     /* house mute */
   --danger:        var(--crimson-light);
   --success:       var(--teal);
   --lapis:         #5a4a52;     /* legacy 'lapis' kept as a warm taupe-mauve */
@@ -98,20 +98,20 @@
   --gold-bright: var(--ap-gold-bright);
 
   /* ── Gradients — warmer, engraved feel (gold/black dominant) ── */
-  --gradient-primary:  linear-gradient(135deg, #5C4A6E 0%, #4A3A5A 50%, #A8B0BC 100%);
+  --gradient-primary:  linear-gradient(135deg, #4c4439 0%, #7d6b52 52%, #c8b88f 100%);
   --gradient-gold:     linear-gradient(135deg, #E8EBF0, #A8B0BC);
-  --gradient-violet:   linear-gradient(135deg, #5C4A6E, #4A3A5A);
-  --gradient-amethyst: linear-gradient(135deg, #5C4A6E, #4A3A5A);
+  --gradient-violet:   linear-gradient(135deg, #4c4439, #75654f);
+  --gradient-amethyst: linear-gradient(135deg, #4c4439, #75654f);
   --gradient-lapis:    linear-gradient(135deg, #3f3530, #5a4a52);
   --gradient-ritual:   linear-gradient(135deg, #6e1a26, #b04a52);
-  --gradient-cosmic:   linear-gradient(180deg, #08080b 0%, #121826 100%);
+  --gradient-cosmic:   linear-gradient(180deg, #020307 0%, #121826 100%);
   --gradient-hero:     linear-gradient(160deg, #1A2230 0%, #121826 58%, rgba(168, 176, 188, 0.22) 100%);
 
   /* ── Typography ── */
   --font-display: 'Cormorant Garamond', serif;
   --font-heading: 'Cormorant Garamond', serif;
-  --font-body:    'Inter', sans-serif;
-  --font-sans:    'Inter', sans-serif;   /* alias */
+  --font-body:    'Schibsted Grotesk', system-ui, sans-serif;
+  --font-sans:    'Schibsted Grotesk', system-ui, sans-serif;
   --font-mono:    'IBM Plex Mono', ui-monospace, monospace;
 
   /* ── Spacing scale ── */
@@ -131,11 +131,11 @@
   --space-24: 6rem;
 
   /* ── Border radii ── */
-  --radius-sm:   6px;
-  --radius-md:   10px;
-  --radius-lg:   14px;
-  --radius-xl:   20px;
-  --radius-2xl:  28px;
+  --radius-sm:   3px;
+  --radius-md:   4px;
+  --radius-lg:   5px;
+  --radius-xl:   6px;
+  --radius-2xl:  8px;
   --radius-full: 9999px;
 
   /* ── Layout ── */
@@ -202,7 +202,7 @@
 
 html {
   font-size: 16px;
-  background: #08080b;   /* first paint = warm void, before any canvas/JS — kills the nav flash */
+  background: #020307;   /* first paint = warm void, before any canvas/JS — kills the nav flash */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -872,8 +872,8 @@ body:has(#starfield-canvas) .lib__banner {
 }
 
 .btn--primary {
-  background: var(--ap-cta, #6AB0FF);
-  color: var(--ap-cta-ink, #1F1206);
+  background: var(--ap-cta, #FF6428);
+  color: var(--ap-cta-ink, #020307);
   border-radius: 6px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
   letter-spacing: 0.08em;
@@ -881,10 +881,10 @@ body:has(#starfield-canvas) .lib__banner {
 }
 
 .btn--primary:hover {
-  background: var(--ap-cta-hover, #7EC8E8);
+  background: var(--ap-cta-hover, #FF6428);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.16);
   transform: translateY(-1px);
-  color: var(--ap-cta-ink, #1F1206);
+  color: var(--ap-cta-ink, #020307);
 }
 
 .btn--primary:active {
@@ -909,7 +909,7 @@ body:has(#starfield-canvas) .lib__banner {
 
 .btn--gold {
   background: var(--gradient-gold);
-  color: #08080b;
+  color: #020307;
   font-weight: 700;
   box-shadow: 0 0 20px rgba(168, 176, 188, 0.45);
 }
@@ -917,7 +917,7 @@ body:has(#starfield-canvas) .lib__banner {
 .btn--gold:hover {
   box-shadow: 0 0 36px rgba(168, 176, 188, 0.65);
   transform: translateY(-2px);
-  color: #08080b;
+  color: #020307;
 }
 
 .btn--ghost {
@@ -1228,7 +1228,7 @@ body:has(#starfield-canvas) .lib__banner {
 .orb--purple {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(92, 74, 110, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(216, 180, 106, 0.25) 0%, transparent 70%);
 }
 
 .orb--gold {
@@ -1618,7 +1618,7 @@ button .eng-i, a .eng-i { margin-right: 0.35em; }
   z-index: 10001;
   padding: 0.65rem 1.1rem;
   background: var(--gold, #A8B0BC);
-  color: var(--void, #08080b);
+  color: var(--void, #020307);
   font-family: var(--font-body, system-ui, sans-serif);
   font-size: 0.875rem;
   font-weight: 600;

@@ -1,0 +1,23 @@
+Fix ONE stale test in this repo. Do not push. Do not invent SKUs. Do not touch maps, shop, gumroad, sw.js, or orrery-webgl.js.
+
+Repo: C:\Users\jonny\OneDrive\astroprecise
+
+Failing file: test-deep-reading.mjs around line 80.
+
+Exact fail:
+  AssertionError: this page must not invent or load missing keep engines
+  true !== false
+  assert.equal(/ap-sky-card\.js|ap-keep-minute\.js|ap-keep-sky\.js|captureStill/.test(natalHtml + natalJs), false, ...)
+
+Cause: website/deep-reading.html now loads js/ap-keep-minute.js on purpose (gift keep path). Those files exist: website/js/ap-keep-minute.js, ap-sky-card.js, ap-keep-sky.js.
+
+What to do:
+- Update the test so it no longer forbids real keep engines.
+- The page MUST still not invent engines that do not exist.
+- Paid print unlock must stay closed (no price, no checkout).
+- Prefer editing only test-deep-reading.mjs.
+- Do not change deep-reading.html unless the test cannot be made honest without it.
+- Do not bump ap-v876.
+- Do not git push. You may commit locally only if the test passes, with a short message.
+
+Done when: node test-deep-reading.mjs passes, and npm test gets past deep-reading (or you report the next fail). Print the new assert and the test output.

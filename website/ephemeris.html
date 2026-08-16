@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
+  <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="The Sky Tonight — live Moon phase, planet positions, and today's sky mood. Add your birth details for your personal chart layer. Free, computed on your device." />
   <meta name="robots" content="index, follow" />
-  <title>The Sky | Astro Precise</title>
+  <title>The Sky | AstroPrecise</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -15,8 +15,8 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Astro Precise" />
-  <meta property="og:title" content="The Sky | Astro Precise" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="The Sky | AstroPrecise" />
   <meta property="og:description" content="What's in the sky tonight — Moon, planets, and a plain-language read of today's sky. Personalise with your birth details when you're ready." />
   <meta property="og:url" content="https://astroprecise.app/ephemeris.html" />
   <link rel="canonical" href="https://astroprecise.app/ephemeris.html" />
@@ -25,10 +25,10 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="The Sky | Astro Precise" />
+  <meta name="twitter:title" content="The Sky | AstroPrecise" />
   <meta name="twitter:description" content="What's in the sky tonight — Moon, planets, and a plain-language read of today's sky. Personalise with your birth details when you're ready." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#08080b" />
+  <meta name="theme-color" content="#020307" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   
@@ -36,7 +36,7 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Astro Precise — Sky",
+    "name": "AstroPrecise — Sky",
     "url": "https://astroprecise.app/ephemeris.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
@@ -45,7 +45,7 @@
     "description": "What's in the sky tonight — Moon, planets, and today's sky mood. Personalise with your birth details for Sun, Moon, Rising, and deeper readings. Computed locally.",
     "isPartOf": {
       "@type": "WebSite",
-      "name": "Astro Precise",
+      "name": "AstroPrecise",
       "url": "https://astroprecise.app/"
     }
   }
@@ -68,7 +68,7 @@
   <link rel="stylesheet" href="css/ap-ai-panel.css?v=752" />
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferInstrumentFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferInstrumentFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=874" />
 </head>
 <body class="page-instrument ap-cinematic-2026 ap-no-nav-enter">
 
@@ -84,16 +84,16 @@
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
             <a href="chart.html" class="navbar__link">Chart</a>
             <a href="ephemeris.html" class="navbar__link">Sky</a>
-            <a href="horoscope.html" class="navbar__link">Daily</a>
-            <a href="cosmic-story.html" class="navbar__link">Readings</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
+            <a href="index.html" class="navbar__link">Observatory</a>
             <a href="guides.html" class="navbar__link">Library</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
@@ -142,9 +142,8 @@
             <nav class="sky-tools-row" aria-label="Related tools">
               <button type="button" class="sky-tools-row__link sky-tools-row__btn" id="ev-example">Example chart</button>
               <a href="tonight.html" class="sky-tools-row__link">What&rsquo;s visible tonight</a>
-              <a href="horoscope.html" class="sky-tools-row__link">Daily horoscope</a>
               <a href="chart.html" class="sky-tools-row__link">Birth chart</a>
-              <a href="moment.html" class="sky-tools-row__link">Moment</a>
+              <a href="eclipse.html" class="sky-tools-row__link">Eclipse</a>
               <a href="transits.html" class="sky-tools-row__link">Your transits</a>
               <a href="compatibility.html" class="sky-tools-row__link">Match</a>
             </nav>
@@ -164,11 +163,12 @@
                 <label class="form-label" for="ev-city">Birth place <span class="required">*</span></label>
                 <input type="text" id="ev-city" class="form-input" placeholder="Town or city&hellip;" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="ev-city-dd" aria-expanded="false" />
                 <div class="autocomplete-dropdown" id="ev-city-dd" role="listbox" hidden></div>
+                <p class="sky-birth-panel__note">A town search sends only that name to Open-Meteo; your birth date and time stay here.</p>
               </div>
               <div class="full sky-birth-panel__actions">
                 <button type="button" class="glow-btn" id="ev-set">Save &amp; personalise</button>
               </div>
-              <p class="sky-birth-panel__note">Unlocks your Sun, Moon, Rising, zenith star, echo dates, and the daimon. Birth data stays on this device.</p>
+              <p class="sky-birth-panel__note">Unlocks your Sun, Moon, Rising, zenith star, echo dates, and the daimon.</p>
             </div>
           </div>
         </div>
@@ -179,8 +179,8 @@
       <div class="instrument-wrap sky-jump-nav__inner">
         <a href="#sky-tonight" class="sky-jump-nav__link">Tonight</a>
         <a href="chart.html" class="sky-jump-nav__link" id="sky-jump-cast">Cast</a>
-        <a href="moment.html" class="sky-jump-nav__link">Keep</a>
-        <a href="horoscope.html" class="sky-jump-nav__link">Daily</a>
+        <a href="shop.html" class="sky-jump-nav__link">Shop</a>
+        <a href="sky-events.html" class="sky-jump-nav__link">Events</a>
       </div>
     </nav>
 
@@ -222,7 +222,6 @@
           <h3 class="sky-panel__title">Full natal signature</h3>
           <div id="natal-sig-grid"></div>
           <div class="sky-natal-links">
-            <a id="natal-lifepath-link" href="lifepath.html" class="glow-btn sky-natal-links__btn">Life Path &rarr;</a>
             <a href="chart.html" class="glow-btn sky-natal-links__btn">Cast full chart &rarr;</a>
           </div>
         </div>
@@ -310,7 +309,7 @@
         <div class="glass-card glass-card--gold-rim" style="margin-top:1.5rem;">
           <label class="form-label" for="alive-text" style="margin-bottom:0.5rem;display:block;">
             What is alive in you right now?
-            <span style="font-weight:400;color:var(--silver-dim);letter-spacing:normal;font-size:0.78em;text-transform:none;"> &mdash; feeds the reading; never leaves your device</span>
+            <span style="font-weight:400;color:var(--silver-dim);letter-spacing:normal;font-size:0.78em;text-transform:none;"> &mdash; feeds the reading in this tab; birth date and time stay here</span>
           </label>
           <textarea id="alive-text" class="form-input" placeholder="A sentence or a page. The daimon reads it either way."></textarea>
           <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;">
@@ -519,9 +518,9 @@
       <div class="footer-inner" data-ap-footer-model="1">
 
         <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
             <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+            <span class="footer-brand__logo-text">Astro<i class="logo-text__precise">Precise</i></span>
           </a>
           <p class="footer-brand__tagline">
             A precision instrument wearing the skin of an astrology site.
@@ -552,52 +551,16 @@
           <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
-            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
             <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
             <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
             <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
-          <h2 class="footer-nav-col__title">Daily readings</h2>
-          <ul>
-            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
-            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
-            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
-            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
-            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
-            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
-            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
-            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
-            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
-            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
-            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
-            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
-            <li><a href="horoscope.html">All signs →</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-            <li><a href="aries.html">Aries profile</a></li>
-            <li><a href="taurus.html">Taurus profile</a></li>
-            <li><a href="gemini.html">Gemini profile</a></li>
-            <li><a href="cancer.html">Cancer profile</a></li>
-            <li><a href="leo.html">Leo profile</a></li>
-            <li><a href="virgo.html">Virgo profile</a></li>
-            <li><a href="libra.html">Libra profile</a></li>
-            <li><a href="scorpio.html">Scorpio profile</a></li>
-            <li><a href="sagittarius.html">Sagittarius profile</a></li>
-            <li><a href="capricorn.html">Capricorn profile</a></li>
-            <li><a href="aquarius.html">Aquarius profile</a></li>
-            <li><a href="pisces.html">Pisces profile</a></li>
-          </ul>
-        </div>
       </div>
 
       <div class="footer-legal">
-        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p>&copy; 2026 AstroPrecise &middot; Town search sends only that name to Open-Meteo &middot; Birth date and time stay here &middot; No account required</p>
         <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
@@ -613,7 +576,7 @@
   <script src="js/fieldweather.js" defer></script>
   <script src="js/oracle.js" defer></script>
   <script src="js/profile.js" defer></script>
-  <script src="js/ap-nav-model.js?v=835" defer></script>
+  <script src="js/ap-nav-model.js?v=874" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ephemeris-lazy-modules.js" defer></script>
 
@@ -786,6 +749,6 @@
   })();
   </script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=835" defer></script>
+  <script src="js/ap-footer-inject.js?v=874" defer></script>
 </body>
 </html>

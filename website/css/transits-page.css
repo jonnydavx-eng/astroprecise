@@ -103,7 +103,7 @@ html.ap-fonts-ready .page-transits .transits-hero h1 {
     0 0 14px -4px var(--c1);
 }
 .page-transits .ap-orb__glyph {
-  position: relative; z-index: 1; color: #08080b; font-style: normal;
+  position: relative; z-index: 1; color: #020307; font-style: normal;
   font-family: 'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
   font-variant-emoji: text;
   font-size: 1em; line-height: 1;
@@ -199,10 +199,10 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
 
 /* ── Transits page premium overrides (scoped — wins over deferred main.css) ── */
 .page-transits {
-  --void: #08080b;
+  --void: #020307;
   --gold: #A8B0BC;
   --gold-light: #E8EBF0;
-  --purple: #5C4A6E;
+  --purple: var(--ap-brass);
   --white: #E8E0D0;
   --silver: #A89E88;
   --silver-dim: #9A9084;
@@ -223,7 +223,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(92, 74, 110,0.18) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(216, 180, 106,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
     .transits-hero__eyebrow {
@@ -427,7 +427,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       font-family: var(--font-display, 'Cinzel', serif);
       font-size: 0.72rem;
       font-weight: 700;
-      color: #7EC8E8;
+      color: #d8b46a;
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -604,7 +604,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
     .eclipse-card--solar { border-color: rgba(168, 176, 188,0.28); }
-    .eclipse-card--lunar { border-color: rgba(92, 74, 110,0.35); }
+    .eclipse-card--lunar { border-color: rgba(216, 180, 106,0.35); }
     .eclipse-type {
       display: block;
       font-size: 0.62rem;
@@ -674,7 +674,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
     .autocomplete-item:last-child { border-bottom: none; }
     .autocomplete-item:hover,
     .autocomplete-item.highlighted {
-      background: rgba(92, 74, 110,0.18);
+      background: rgba(216, 180, 106,0.18);
       color: var(--white);
     }
     .autocomplete-item .city-country { color: var(--silver); font-size: 0.78rem; }
@@ -712,8 +712,8 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
     .ptf-keywords { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
     .ptf-keyword {
       font-size: 0.6rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--gold-light); background: rgba(92, 74, 110,0.12);
-      border: 1px solid rgba(92, 74, 110,0.3); border-radius: 999px; padding: 0.25rem 0.7rem;
+      color: var(--gold-light); background: rgba(216, 180, 106,0.12);
+      border: 1px solid rgba(216, 180, 106,0.3); border-radius: 999px; padding: 0.25rem 0.7rem;
     }
     /* Aspect quality accent inside the transit-item date row */
     .ptf-quality { font-weight: 700; }

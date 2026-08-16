@@ -1,0 +1,93 @@
+{
+  "viewport": [
+    390,
+    844
+  ],
+  "swV": "ap-v874",
+  "page": "deep-reading.html",
+  "status": 200,
+  "copy": 16,
+  "copyText": "The free chart page gives positions and short cards. This page writes seven chap",
+  "h1": 42,
+  "h1Text": "Your chart, read in full.",
+  "smallestTap": {
+    "sel": ".navbar__toggle",
+    "tag": "button",
+    "id": "",
+    "text": "Open navigation",
+    "w": 44,
+    "h": 44,
+    "min": 44,
+    "bg": "rgba(216, 180, 106, 0.04)",
+    "color": "rgb(216, 180, 106)"
+  },
+  "tapsUnder44": 0,
+  "tapsUnder44List": [],
+  "stage": "390x422",
+  "stageH": 422,
+  "overflow": 0,
+  "scrollW": 390,
+  "inputOverflow": [],
+  "drawerStay": true,
+  "drawer": {
+    "expanded": "true",
+    "openClass": true,
+    "display": "block",
+    "w": 390,
+    "h": 786,
+    "linkCount": 23,
+    "visibleLinks": 23,
+    "minLinkH": 44,
+    "first": [
+      {
+        "text": "Observatory",
+        "w": 354,
+        "h": 44
+      },
+      {
+        "text": "Chart",
+        "w": 354,
+        "h": 44
+      },
+      {
+        "text": "Events Live",
+        "w": 354,
+        "h": 44
+      },
+      {
+        "text": "Shop",
+        "w": 354,
+        "h": 44
+      }
+    ],
+    "stayedOpen": true,
+    "stayH": 786,
+    "stayExpanded": "true",
+    "stayVisibleLinks": 23
+  },
+  "wordmarkText": "AstroPrecise",
+  "wordmarkLines": 1,
+  "wordmarkOneWord": true,
+  "primaries": [
+    {
+      "text": "WRITE MY SEVEN CHAPTERS",
+      "bg": "rgb(255, 100, 40)",
+      "color": "rgb(23, 7, 2)",
+      "w": 304,
+      "h": 48
+    }
+  ],
+  "bluePurplePrimaries": [],
+  "orr": "webgl",
+  "orrReady": true,
+  "webgl": true,
+  "fails": {
+    "copyLt16": false,
+    "tapLt44": false,
+    "overflow": false,
+    "collapsedStage": false
+  },
+  "shippingFilesChanged": false,
+  "cssChanged": false,
+  "verdict": "PASS — no CSS fails. website/css/ap-phone-pass.css untouched. sw.js still ap-v874. pins still ?v=874."
+}

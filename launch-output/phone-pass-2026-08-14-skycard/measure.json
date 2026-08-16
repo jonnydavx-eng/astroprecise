@@ -1,0 +1,296 @@
+{
+  "id": "sky-card",
+  "path": "/sky-card.html?nosw=1",
+  "status": 200,
+  "errors": [],
+  "notPr18": true,
+  "note": "Local website/sky-card.html is the older real-sky-news card. PR 18 gift moment (cursor/sky-card-keep-path-7fca) is NOT in this tree. No gift.html.",
+  "title": "The real sky news — sky card | Astro Precise",
+  "url": "http://127.0.0.1:8790/sky-card.html?nosw=1",
+  "bodyFont": 16,
+  "bodyColor": "rgb(242, 236, 223)",
+  "pFont": 17,
+  "pSel": "P",
+  "pText": "One image: your date, your Sun, Moon and Venus placed from the clock time read as UTC — we do not round — and the wheel of that minute. Computed here, drawn her",
+  "h1Font": 32,
+  "h1Text": "The sky when you arrived.",
+  "h1Lines": 1,
+  "wordmarkText": "",
+  "wordmarkLines": 0,
+  "wordmarkW": null,
+  "wordmarkH": null,
+  "wordmarkPresent": false,
+  "titleHasTwoWordBrand": true,
+  "titleHasOneWordBrand": false,
+  "astroHits": [
+    {
+      "text": "· © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED",
+      "tag": "div",
+      "twoWords": true,
+      "oneWord": true,
+      "w": 346,
+      "h": 54,
+      "lines": 1
+    },
+    {
+      "text": "(function () { 'use strict'; var $ = function (id) { return document.getElementById(id); }; var cv = $('cv'), ctx = cv.g",
+      "tag": "script",
+      "twoWords": false,
+      "oneWord": true,
+      "w": 0,
+      "h": 0,
+      "lines": 0
+    }
+  ],
+  "chrome": {
+    "navbar": false,
+    "toggle": false,
+    "mobileMenu": false,
+    "bottomNav": false,
+    "logo": false
+  },
+  "giftMarkers": {
+    "hasGiftHtmlPath": false,
+    "hasGiftInTitle": false,
+    "hasGiftInBody": false,
+    "hasKeepPath": false,
+    "hasYourMinute": true,
+    "hasSkyWhenYouArrived": true,
+    "hasRealSkyNews": true,
+    "hasDrawMyCard": true,
+    "hasDownloadPng": true,
+    "hasUtcTime": true,
+    "has1200x630": true
+  },
+  "identity": "old-news-card",
+  "scrollW": 390,
+  "clientW": 390,
+  "innerW": 390,
+  "innerH": 844,
+  "stages": [
+    {
+      "sel": "#cv",
+      "tag": "canvas",
+      "id": "cv",
+      "w": 346,
+      "h": 183,
+      "display": "block",
+      "vis": "visible"
+    },
+    {
+      "sel": "canvas",
+      "tag": "canvas",
+      "id": "",
+      "w": 390,
+      "h": 844,
+      "display": "block",
+      "vis": "visible"
+    },
+    {
+      "sel": "canvas",
+      "tag": "canvas",
+      "id": "cv",
+      "w": 346,
+      "h": 183,
+      "display": "block",
+      "vis": "visible"
+    }
+  ],
+  "primaryStage": {
+    "sel": "#cv",
+    "tag": "canvas",
+    "id": "cv",
+    "w": 346,
+    "h": 183,
+    "display": "block",
+    "vis": "visible"
+  },
+  "taps": [
+    {
+      "sel": ".wrap a",
+      "tag": "a",
+      "id": "",
+      "text": "CAST THE FULL CHART FREE",
+      "w": 159,
+      "h": 11,
+      "min": 11,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(216, 180, 106)"
+    },
+    {
+      "sel": "a.mono",
+      "tag": "a",
+      "id": "",
+      "text": "← THE OBSERVATORY",
+      "w": 139,
+      "h": 13,
+      "min": 13,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(242, 236, 223, 0.65)"
+    },
+    {
+      "sel": ".wrap a",
+      "tag": "a",
+      "id": "",
+      "text": "THE 12 AUG ECLIPSE",
+      "w": 338,
+      "h": 29,
+      "min": 29,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(216, 180, 106)"
+    },
+    {
+      "sel": "button",
+      "tag": "button",
+      "id": "drawBtn",
+      "text": "DRAW MY CARD",
+      "w": 161,
+      "h": 42,
+      "min": 42,
+      "bg": "rgb(242, 236, 223)",
+      "color": "rgb(0, 0, 0)"
+    },
+    {
+      "sel": "button",
+      "tag": "button",
+      "id": "dlBtn",
+      "text": "DOWNLOAD PNG",
+      "w": 163,
+      "h": 44,
+      "min": 44,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(242, 236, 223)"
+    }
+  ],
+  "smallestTap": {
+    "sel": ".wrap a",
+    "tag": "a",
+    "id": "",
+    "text": "CAST THE FULL CHART FREE",
+    "w": 159,
+    "h": 11,
+    "min": 11,
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(216, 180, 106)"
+  },
+  "tapsUnder44": [
+    {
+      "sel": ".wrap a",
+      "tag": "a",
+      "id": "",
+      "text": "CAST THE FULL CHART FREE",
+      "w": 159,
+      "h": 11,
+      "min": 11,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(216, 180, 106)"
+    },
+    {
+      "sel": "a.mono",
+      "tag": "a",
+      "id": "",
+      "text": "← THE OBSERVATORY",
+      "w": 139,
+      "h": 13,
+      "min": 13,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgba(242, 236, 223, 0.65)"
+    },
+    {
+      "sel": ".wrap a",
+      "tag": "a",
+      "id": "",
+      "text": "THE 12 AUG ECLIPSE",
+      "w": 338,
+      "h": 29,
+      "min": 29,
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(216, 180, 106)"
+    },
+    {
+      "sel": "button",
+      "tag": "button",
+      "id": "drawBtn",
+      "text": "DRAW MY CARD",
+      "w": 161,
+      "h": 42,
+      "min": 42,
+      "bg": "rgb(242, 236, 223)",
+      "color": "rgb(0, 0, 0)"
+    }
+  ],
+  "primaries": [
+    {
+      "text": "DRAW MY CARD",
+      "id": "drawBtn",
+      "cls": "btn",
+      "bg": "rgb(242, 236, 223)",
+      "color": "rgb(0, 0, 0)",
+      "w": 161,
+      "h": 42
+    },
+    {
+      "text": "DOWNLOAD PNG",
+      "id": "dlBtn",
+      "cls": "btn",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(242, 236, 223)",
+      "w": 163,
+      "h": 44
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "input",
+      "type": "date",
+      "name": "dob",
+      "w": 147,
+      "h": 45,
+      "right": 188
+    },
+    {
+      "tag": "input",
+      "type": "time",
+      "name": "tob",
+      "w": 147,
+      "h": 46,
+      "right": 349
+    },
+    {
+      "tag": "input",
+      "type": "text",
+      "name": "place",
+      "w": 308,
+      "h": 43,
+      "right": 349
+    }
+  ],
+  "inputOverflow": [],
+  "overflowers": [],
+  "orrEngine": null,
+  "orrReady": false,
+  "canvas": {
+    "w": 390,
+    "h": 844,
+    "cw": 780,
+    "ch": 1688,
+    "id": ""
+  },
+  "webgl": {
+    "ok": false,
+    "lost": false,
+    "vendor": "",
+    "renderer": ""
+  },
+  "canvas2d": {
+    "ok": true
+  },
+  "h1Count": 1,
+  "buttonCount": 2,
+  "linkCount": 4,
+  "bluePrimaries": [],
+  "drawer": {
+    "missing": true,
+    "reason": "no .navbar__toggle — this page has no site chrome drawer"
+  }
+}

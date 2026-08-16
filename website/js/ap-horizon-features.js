@@ -14,7 +14,7 @@
       `<a class="ap-finder__link" href="chart.html">Cast natal chart</a>` +
       `<a class="ap-finder__link" href="what-is-my-rising-sign.html">Rising sign guide</a>` +
       `<a class="ap-finder__link" href="transits.html">Current transits</a>` +
-      `<a class="ap-finder__link" href="cosmic-story.html">Cosmic story sample</a>` +
+      `<a class="ap-finder__link" href="sample-reading.html">Published reading sample</a>` +
       `<a class="ap-finder__link" href="guides.html">Sky guides</a>` +
       `</nav></aside>` +
       `<button type="button" id="apFinderFab" class="ap-finder-fab" aria-label="Open chart finder" aria-expanded="false">` +
@@ -193,10 +193,10 @@
     if (!document.querySelector("#apMasthead, .masthead")) return;
 
     var tabs = (window.AP_NAV && window.AP_NAV.NAV_BOTTOM_TABS) || [
-      ["index.html", "Observatory", "star4"],
+      ["index.html", "Sky", "star4"],
       ["chart.html", "Chart", "spiral"],
-      ["ephemeris.html", "The Sky", "telescope"],
-      ["horoscope.html", "Daily", "crescent"],
+      ["sky-events.html", "Events", "eclipse"],
+      ["shop.html", "Shop", "sparkles"],
     ];
     var nav = document.createElement("nav");
     nav.className = "bottom-nav";

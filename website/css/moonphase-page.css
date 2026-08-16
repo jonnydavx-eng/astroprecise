@@ -52,11 +52,11 @@ body:has(.mp-hero) .moonphase-svg {
 
 /* ── Moon Phase page premium overrides (mirrors transits.html tokens) ── */
     :root {
-      --void: #08080b;
+      --void: #020307;
       --gold: #A8B0BC;
       --gold-text: #D9BC5C;
       --gold-light: #E8EBF0;
-      --purple: #5C4A6E;
+      --purple: var(--ap-brass);
       --white: #E8E0D0;
       --silver: #A89E88;
       --silver-dim: #9A9084;
@@ -77,7 +77,7 @@ body:has(.mp-hero) .moonphase-svg {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(92, 74, 110,0.18) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(216, 180, 106,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
     .mp-hero__eyebrow {
@@ -202,7 +202,7 @@ body:has(.mp-hero) .moonphase-svg {
       position: relative;
       max-width: 460px; margin: 0 auto; text-align: center;
       background:
-        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(92, 74, 110,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(216, 180, 106,0.22) 0%, transparent 70%),
         linear-gradient(160deg, rgba(20,24,58,0.92) 0%, rgba(16, 21, 32,0.96) 100%);
       border: 1px solid var(--ip-border-rim, var(--border));
       border-radius: var(--radius-2xl);

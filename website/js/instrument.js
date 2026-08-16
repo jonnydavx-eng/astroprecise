@@ -1493,23 +1493,10 @@
          current one, with a fragment fallback where storage is blocked (a
          fragment is not part of the request line either). */
       const lpDate = event_.dt.split('T')[0];
-      link.href = 'lifepath.html';
-      link.textContent = 'Life Path ' + lp + ' — ' + title + ' →';
-      if (!link.dataset.apLpBound) {
-        link.dataset.apLpBound = '1';
-        const stashLp = () => {
-          try {
-            sessionStorage.setItem('ap-lifepath-handoff', JSON.stringify({
-              date: link.dataset.apLpDate || '', ts: Date.now(),
-            }));
-            link.href = 'lifepath.html';
-          } catch (e) {
-            link.href = 'lifepath.html#date=' + encodeURIComponent(link.dataset.apLpDate || '');
-          }
-        };
-        link.addEventListener('click', stashLp);
-        link.addEventListener('auxclick', stashLp);
-      }
+      link.removeAttribute('href');
+      link.setAttribute('role', 'text');
+      link.textContent = 'Life Path ' + lp + ' — ' + title;
+      link.hidden = true;
       link.dataset.apLpDate = lpDate;
     }
 

@@ -40,9 +40,13 @@ const AstroApp = (() => {
     // renderer as well attached duplicate toggle handlers and could make the
     // drawer open then immediately close on a single tap.
     if (!isLaunchCorePage()) {
-      renderNav();
+      // Nav-model already bound the drawer on pages with data-ap-static-nav.
+      // A second initNavbar() opens then immediately closes on one tap.
+      if (!document.querySelector('[data-ap-static-nav-ready]')) {
+        renderNav();
+        initNavbar();
+      }
       injectTopProfile();
-      initNavbar();
     }
     initToastContainer();
     initScrollAnimations();
@@ -66,7 +70,7 @@ const AstroApp = (() => {
   /** Load engine stills module once (shared 3D brand art, no WebGL). */
   function isLaunchCorePage() {
     var key = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
-    return /^(index|chart|horoscope|shop|eclipse)\.html$/.test(key);
+    return /^(index|chart|sky-events|shop|eclipse|tonight|compatibility|deep-reading)\.html$/.test(key);
   }
 
   function ensureEngineVisuals() {
@@ -282,15 +286,12 @@ const AstroApp = (() => {
   const NAV_PRIMARY = _apNav.NAV_PRIMARY || [
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['horoscope.html', 'Daily'],
-    ['eclipse.html', 'Eclipse', { badge: 'Replay' }],
+    ['sky-events.html', 'Events', { badge: 'Live' }],
     ['shop.html', 'Shop'],
   ];
   const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
     ['ephemeris.html', 'Sky tools'],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
-    ['moment.html', 'Moment', { badge: 'Keep' }],
-    ['cosmic-story.html', 'Cosmic Story'],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
@@ -301,16 +302,14 @@ const AstroApp = (() => {
     ['tonight.html', 'Tonight'], ['this-weeks-sky.html', 'This Week'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
-    ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
-    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
-    ['lifepath.html', 'Life Path'],
-    ['quiz.html', 'Cosmic Quiz'], ['accuracy.html', 'Accuracy'],
-    ['why.html', 'Why'], ['links.html', 'Links'],
+    ['what-is-my-rising-sign.html', 'Rising Sign'],
+    ['accuracy.html', 'Accuracy'],
+    ['why.html', 'Why'],
   ];
   const NAV_BOTTOM_TABS = _apNav.NAV_BOTTOM_TABS || [
-    ['index.html', 'Live Sky', 'star4'],
+    ['index.html', 'Sky', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
-    ['horoscope.html', 'Daily', 'crescent'],
+    ['sky-events.html', 'Events', 'eclipse'],
     ['shop.html', 'Shop', 'sparkles'],
   ];
   const NAV_DRAWER_SECTIONS = _apNav.NAV_DRAWER_SECTIONS || [
@@ -366,7 +365,7 @@ const AstroApp = (() => {
   }
 
   function isLaunchRoute(here) {
-    return /^(?:index|chart|horoscope|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(
+    return /^(?:index|chart|sky-events|shop|eclipse|privacy|terms|refunds|verify|contact|sample-reading|natal-plate)\.html$/i.test(
       here || (location.pathname.split('/').pop() || 'index.html')
     );
   }
@@ -1254,6 +1253,7 @@ window.AstroUI = (() => {
       + '<a href="terms.html">Terms</a>'
       + ' <span class="ap-footer-sep" aria-hidden="true">&middot;</span> '
       + '<a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Planet textures &copy; Solar System Scope</a>'
+      + ' · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" target="_blank" rel="noopener noreferrer">Hubble OPAL</a> / STScI (Uranus south unobserved in the source)'
       + ' <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" class="ap-legal-links__cc">CC&nbsp;BY&nbsp;4.0</a>';
     host.appendChild(p);
   }
@@ -1269,12 +1269,9 @@ window.AstroUI = (() => {
   // top-bar lean at its hardcoded core. Footer guide-links cover desktop discovery.
   var EXTRAS = [
     { href: 'charts.html', label: 'My Charts' },
-    { href: 'quiz.html', label: 'Cosmic Quiz' },
     { href: 'tonight.html', label: "Tonight's Sky" },
     { href: 'moonphase.html', label: 'Moon Phase' },
     { href: 'retrograde.html', label: 'Retrograde' },
-    { href: 'angel-numbers.html', label: 'Angel Numbers' },
-    { href: 'name-numerology.html', label: 'Name Numerology' },
     { href: 'what-is-my-rising-sign.html', label: 'Rising Sign' },
     { href: 'synastry.html', label: 'Synastry' },
     { href: 'solar-return.html', label: 'Solar Return' },
@@ -1313,12 +1310,9 @@ window.AstroUI = (() => {
     if (!host) return;
     var links = [
       ['what-is-my-rising-sign.html', 'Rising sign'],
-      ['quiz.html', 'Cosmic archetype quiz'],
       ['tonight.html', 'Tonight’s sky'],
       ['moonphase.html', 'Moon phase'],
       ['retrograde.html', 'Mercury retrograde'],
-      ['angel-numbers.html', 'Angel numbers'],
-      ['name-numerology.html', 'Name numerology'],
       ['synastry.html', 'Synastry'],
       ['solar-return.html', 'Solar return'],
       ['charts.html', 'My charts'],
@@ -1392,8 +1386,8 @@ window.AP_MON = Object.assign({
     adsEnabled: true,
     amazonTag: '',   // alias for affiliateTag; either field works
     pages: [
-      'index.html', 'index-full.html', 'chart.html', 'horoscope.html',
-      'compatibility.html', 'transits.html', 'lifepath.html',
+      'index.html', 'index-full.html', 'chart.html', 'sky-events.html',
+      'compatibility.html', 'transits.html',
       'shop.html', 'ephemeris.html', 'tonight.html',
     ],
     picks: [
@@ -1638,7 +1632,7 @@ window.AP_MON = Object.assign({
         badge:        'Written for you',
         marketingLine:'The story of you — told through the exact sky of your first breath.',
         previewImage: 'img/shop/product-cosmic-story.jpg',
-        sampleUrl:    'cosmic-story.html',
+        sampleUrl:    '',
         blurb:        'Not a report — a story. Your birth chart retold as a flowing personal narrative: the arc of your Sun, Moon and rising sign, the tensions and gifts written into your aspects, and where your planets are quietly leading you. Drawn entirely from your real VSOP87 chart and written for you alone — a keepsake PDF to read and return to.',
         icon:         'book',
       },
@@ -1971,7 +1965,7 @@ window.AP_MON = Object.assign({
 
     // Footer support line — appears the moment a tip URL is configured.
     const routeKey = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
-    const isLaunchCore = /^(index|chart|horoscope|shop|eclipse)\.html$/.test(routeKey);
+    const isLaunchCore = /^(index|chart|sky-events|shop|eclipse)\.html$/.test(routeKey);
     if (!isLaunchCore && isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
       const host = document.querySelector('.ap-legal-links') || document.querySelector('.footer-legal')
         || document.querySelector('footer .container') || document.querySelector('footer');

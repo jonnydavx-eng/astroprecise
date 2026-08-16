@@ -1,0 +1,52 @@
+Gas giant equirectangular maps — Hubble OPAL (NASA/ESA HST)
+Local texture replacement only. No SKUs.
+
+Jupiter
+  File: hlsp_opal_hst_wfc3-uvis_jupiter-2025a_f395n-f502n-f631n_v1_globalmap.tif
+  URL:  https://archive.stsci.edu/hlsps/opal/cycle32/jupiter/hlsp_opal_hst_wfc3-uvis_jupiter-2025a_f395n-f502n-f631n_v1_globalmap.tif
+  Cycle 32, 2025a color (F395N / F502N / F631N)
+  Source size: 3600 x 1800 RGB TIFF
+
+Saturn
+  File: hlsp_opal_hst_wfc3-uvis_saturn-2025a_f395n-f502n-f631n_v1_globalmap.tif
+  URL:  https://archive.stsci.edu/hlsps/opal/cycle32/saturn/hlsp_opal_hst_wfc3-uvis_saturn-2025a_f395n-f502n-f631n_v1_globalmap.tif
+  Cycle 32, 2025a color (F395N / F502N / F631N)
+  Source size: 1800 x 900 RGB TIFF
+
+DOI: 10.17909/T9G593
+https://dx.doi.org/10.17909/T9G593
+Program page: https://archive.stsci.edu/hlsp/opal
+License: CC BY 4.0
+
+Credit:
+This work used data acquired from the NASA/ESA HST Space Telescope, associated with OPAL program (PI: Simon, GO13937), and archived by the Space Telescope Science Institute, which is operated by the Association of Universities for Research in Astronomy, Inc., under NASA contract NAS 5-26555. All maps are available at http://dx.doi.org/10.17909/T9G593.
+
+Processing: LANCZOS resize only to 2048x1024 (full webp+jpg), 1024x512 (_md webp),
+512x256 (_sm webp + jpg). No painting, no colour grading, no channel reordering.
+Jupiter is a downsample from 3600x1800. Saturn is a modest upsample from 1800x900
+so the rung sizes match the rest of the texture set.
+
+Coverage note (measured 2026-08-14 on the STScI TIFFs):
+Jupiter 2025a has 100 of 1800 latitude rows fully black — 36 at the north edge
+and 64 at the south edge. That is Hubble's polar coverage gap in the official
+product, not a convert error. Worlds did not paint the missing poles.
+
+Saturn 2025a has 39 of 900 latitude rows fully black — 34 at the north edge and
+5 at the south edge — plus a black equatorial strip in the official mosaic where
+the ring plane occults / is masked. Both are in the STScI product and are
+reproduced as-is. The equatorial black is the map's ring-plane mask, not a
+shader artifact, and it is not painted out.
+
+Rings (checked 2026-08-14, nothing swapped):
+saturn_ring.* is left as the existing Solar System Scope strip. The OPAL Saturn
+globalmap is a planet-body mosaic, not a ring-plane texture. No clearly licensed
+NASA/ESA/USGS ring-plane map (a thin radial strip the engine can drape) was
+found as a drop-in replacement, so the ring file was not invented or replaced.
+
+Colour note:
+These are OPAL filter composites (F395N / F502N / F631N), not natural-colour
+photographs. Jupiter reads ochre/cream with a terracotta Great Red Spot; Saturn
+reads pale pink-tan in the north and yellow-green in the south in the official
+product. No channel reordering or grading was applied.
+
+Uranus / Neptune / Pluto / Earth / Moon / Mercury / Venus were not touched.

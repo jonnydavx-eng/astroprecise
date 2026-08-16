@@ -20,9 +20,9 @@ assert.ok(chartPage.includes("name:'Semi-sextile'"));
 assert.equal(chartPage.includes("name:'Slight angle'"), false);
 assert.ok(chartCss.includes('.ap-reading-card > .ap-reading-card__content:only-child'));
 assert.ok(chartCss.includes('scroll-margin-top:'));
-assert.ok(chartHtml.includes('ap-chart-v835.css?v=837'));
-assert.ok(chartHtml.includes('ap-load-interpretations.js?v=837') && chartHtml.includes('chart-page.js?v=837'));
-assert.ok(chartHtml.includes('reading-format.js?v=837') && chartHtml.includes('chart-render.js?v=837'));
+assert.ok(chartHtml.includes('ap-chart-v835.css?v=876'));
+assert.ok(chartHtml.includes('ap-load-interpretations.js?v=876') && chartHtml.includes('chart-page.js?v=876'));
+assert.ok(chartHtml.includes('reading-format.js?v=876') && chartHtml.includes('chart-render.js?v=876'));
 assert.ok(readingFormat.includes('if (leadHtml) inner += leadHtml;') && !readingFormat.includes('leadHtml && !collapsed'));
 assert.ok(interpretationsLoader.includes('interpretations.js?v='));
 assert.ok(chartPage.includes('degree withheld') && chartPage.includes('Date-reference angle'));
@@ -56,13 +56,27 @@ assert.ok(privacy.includes('does not create or accept chart links containing bir
 
 const chartView = read('./website/chart-view.html');
 const chartShare = read('./website/js/ap-chart-share.js');
-const compatibility = read('./website/js/compatibility-page.js');
+const compatibilityHtml = read('./website/compatibility.html');
 assert.equal(/location\.(?:search|hash)|new URLSearchParams/.test(chartView), false,
   'retired shared-chart route must not consume birth data from an address');
 assert.equal(/location\.(?:search|hash)|chart-view\.html|birth details \(name/.test(chartShare), false,
   'chart share helper must emit a clean public URL only');
-assert.equal(/location\.hash|new URLSearchParams\(window\.location\.search\)/.test(compatibility), false,
-  'compatibility must not restore a birth pair from an address');
+assert.equal(compatibilityHtml.includes('compatibility-page.js'), false,
+  'retired compatibility-page.js must stay deleted');
+assert.ok(compatibilityHtml.includes('data-renderer="webgl-only"'),
+  'couples page must stay strict WebGL');
+assert.equal(/Birth place <span class="opt">optional<\/span>/.test(compatibilityHtml), false,
+  'couples birth place must not be labelled optional — a real IANA zone is required');
+assert.ok(compatibilityHtml.includes('id="keep-sky"') && !/id="keep-sky"[^>]*data-keep-mode/.test(compatibilityHtml),
+  'couples Keep this sky must stay the current-view path, not chart birth-hour');
+const couplesSky = read('./website/js/ap-couples-sky.js');
+assert.equal(/gumroad|catalogueSkus|checkout|sku/i.test(couplesSky), false,
+  'couples sky must not add checkout or SKU behavior');
+assert.ok(couplesSky.includes("timeKnown && zoneKnown") || couplesSky.includes("zoneKnown && timeKnown"));
+assert.equal(couplesSky.includes("time || '12:00'"), false);
+assert.equal(/flyTo|focusPlanet/.test(couplesSky), false,
+  'couples A/B must not fly the live camera');
+assert.ok(/blank time withholds that clock/i.test(compatibilityHtml) || compatibilityHtml.includes('that clock, the Moon, and angles are withheld'));
 assert.equal(/location\.hash|new URLSearchParams\(location\.search\)[\s\S]{0,120}(?:get\(['"](?:d|date|time|city|lat|lon)|birth)/.test(chartPage), false,
   'chart page must not restore birth details from an address');
 
@@ -71,8 +85,8 @@ assert.ok(serviceWorker.includes('app|chart-page|horoscope-page'), 'chart-page.j
 assert.ok(serviceWorker.includes('if (isCritical ||') && serviceWorker.includes('if (network) return network;'), 'release-critical code must remain network-first');
 
 const runbook = read('./ECLIPSE-RUNBOOK.md');
-assert.ok(runbook.includes('25 suites, must be 25/25'));
-assert.equal(/19 suites|19\/19|23 suites|23\/23|24 suites|24\/24/.test(runbook), false);
+assert.ok(runbook.includes('27 suites, must be 27/27'));
+assert.equal(/19 suites|19\/19|23 suites|23\/23|24 suites|24\/24|25 suites|25\/25|26 suites|26\/26/.test(runbook), false);
 
 const mergeNote = read('./MERGE-2026-07-17-COWORK.md');
 assert.equal(/£2\.99[^\n]*£4 archive|£14→£19|prices only rise/i.test(mergeNote), false);
@@ -112,6 +126,17 @@ assert.equal(/personally\s+reviewed|reviewed before they(?:'|&rsquo;)re sent|a h
 
 const moment = read('./website/moment.html');
 const saturnReturn = read('./website/saturn-return.html');
+const instrument = read('./website/ephemeris.html');
+const footer = read('./website/js/ap-footer-inject.js');
+const manifest = read('./website/manifest.json');
+const tonight = read('./website/tonight.html');
+assert.ok(moment.includes('A town search sends only that name to Open-Meteo; the date and time stay here.'));
+assert.equal(moment.includes('birth data never leaves your device'), false);
+assert.ok(instrument.includes('A town search sends only that name to Open-Meteo; your birth date and time stay here.'));
+assert.ok(chartHtml.includes('location button sends coordinates to Open-Meteo for timezone lookup only'));
+assert.ok(footer.includes('Town search sends only that name to Open-Meteo; birth date and time stay on this device.'));
+assert.ok(JSON.parse(manifest).description.includes('Town search sends only that name to Open-Meteo'));
+assert.ok(tonight.includes('City search sends only the place name to Open-Meteo'));
 assert.equal(/£8|moment-pack|optional pack|pack later|paid keepsakes/i.test(moment), false);
 assert.equal(/full personalised reading|printable PDF|gift readings|written natal reports/i.test(saturnReturn), false);
 for (const source of [gumroad, gumroadBridge, edition]) {
@@ -126,9 +151,80 @@ for (const file of htmlFiles) {
     `${file} links to a retired product funnel`);
 }
 
+// ── Sky card: one keepable minute, honest about zone, hour and light ────────
+const skyCard = read('./website/sky-card.html');
+const skyCardJs = read('./website/js/ap-sky-card.js');
+const keepMinute = read('./website/js/ap-keep-minute.js');
+assert.ok(skyCard.includes("window.AP_ASSET_V='876'"), 'sky card must declare the release tip');
+assert.equal(/\?v=(?!876\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
+assert.ok(skyCard.includes('data-ap-static-nav') && skyCard.includes('sky-events.html'),
+  'sky card must carry the one house navigation');
+assert.ok(skyCard.includes('Astro<i class="logo-text__precise">Precise</i>'),
+  'the wordmark is one word');
+assert.equal(/#0a0908/i.test(skyCard), false, 'sky card must leave the retired warm surface behind');
+assert.equal(/never rounded|placed exactly/i.test(skyCard), false,
+  'sky card must not claim an exactness it cannot prove');
+assert.equal(/TIME \(UTC\)|clock time read as UTC/i.test(skyCard), false,
+  'a birth clock time is not UTC');
+assert.ok(skyCard.includes("Open-Meteo's public geocoder"),
+  'sky card must say that only the town text is sent');
+assert.equal(/quiz\.html|angel-numbers\.html|name-numerology\.html|lifepath\.html|moment\.html/.test(skyCard), false,
+  'retired rooms stay retired');
+assert.ok(skyCardJs.includes("zone === 'UTC'") && skyCardJs.includes("zone === 'GMT'")
+  && skyCardJs.includes("zone === 'Etc/UTC'") && skyCardJs.includes('Etc\\/'),
+  'sky card must refuse UTC, GMT and Etc/* as a birth zone');
+assert.ok(skyCardJs.includes('sunAltitude('), 'day or night must be computed, never guessed');
+assert.ok(skyCardJs.includes('DAY OR NIGHT NOT STATED') && skyCardJs.includes('NO BIRTH HOUR'),
+  'an unknown hour must withhold the rising sign and the light state');
+assert.ok(skyCardJs.includes("' (ASSUMED)'") && skyCardJs.includes('MOON PLACED FROM '),
+  'an assumed hour must be printed on the card, not applied silently');
+assert.ok(skyCardJs.includes('NOT A CLAIM ABOUT YOUR LIFE'), 'the card must not claim to be true');
+assert.ok(skyCardJs.includes('function coordinate(') && skyCardJs.includes('not the coordinates'),
+  'a carried minute without coordinates must not be placed at 0, 0');
+assert.equal(/Number\(carried\.(?:lat|lon)\)/.test(skyCardJs), false,
+  'coordinates must go through the empty-value guard');
+assert.equal(/location\.(?:search|hash)|URLSearchParams/.test(skyCardJs), false,
+  'sky card must not accept a birth minute from an address');
+assert.equal(/location\.(?:search|hash)|URLSearchParams|location\.href\s*=/.test(keepMinute), false,
+  'the keep path must not move a birth minute through a link');
+assert.ok(keepMinute.includes('sessionStorage.setItem'), 'the keep path hands off in this tab only');
+// Phone Look 390: the plate reaches the first screen and every tap is 44px.
+assert.ok(skyCard.includes('@media(max-width:700px)'),
+  'sky card must use the living-sky phone band, not 430px');
+assert.match(skyCard, /\.ap-card-canvas\{order:3/,
+  'the plate must sit above the form on a phone — at 390 it was landing at y=927');
+assert.match(skyCard, /\.ap-card-form\{order:5/, 'the form follows the plate on a phone');
+assert.ok(skyCard.includes('min-height:48px;padding:10px') && skyCard.includes('font:16px var(--ap-data)'),
+  'form inputs need a 48px tap and a 16px face');
+assert.ok(skyCard.includes('.ap-card-btn{width:100%}'), 'phone buttons take the full width');
+assert.match(skyCard, /\.ap-card-status,\.ap-zone-note,\.ap-card-ledger p,\.ap-card-foot\{font-size:16px/,
+  'the zone rule, the privacy line and the honesty foot hold the 16px phone floor');
+assert.ok(skyCard.includes('min-width:44px;min-height:44px'),
+  'the house header and footer links need a 44px tap on this page');
+assert.ok(skyCard.includes('ap-card-plate-note'),
+  'a phone must be told the plate lines are repeated below at reading size');
+assert.equal(/Astro\s+Precise/.test(skyCard), false, 'the wordmark is one word, everywhere on the page');
+
+for (const path of ['./website/index.html', './website/chart.html', './website/deep-reading.html']) {
+  const page = read(path);
+  assert.ok(page.includes('href="sky-card.html" data-ap-keep-minute'),
+    `${path} must reach the keep path`);
+  assert.equal(/sky-card\.html\?/.test(page), false,
+    `${path} must not put a birth minute in the keep link`);
+  assert.ok(page.includes('ap-keep-minute.js?v=876'), `${path} must load the keep-path helper`);
+}
+
 const outreach = read('./website/js/outreach-content.js');
 for (const stale of ['Deep Reading £12', 'posters from £6', 'shop.html#deep-reading', '{{deepReadingPrice}}']) {
   assert.equal(outreach.includes(stale), false, `outreach content retains stale launch offer: ${stale}`);
+}
+
+const moonphase = read('./website/js/moonphase.js');
+const outreachPage = read('./website/outreach.html');
+for (const source of [moonphase, outreachPage]) {
+  assert.ok(source.includes("document.execCommand('copy') === true"),
+    'clipboard fallback must verify that copy succeeded');
+  assert.ok(source.includes('Copy failed'), 'clipboard failure must not use success feedback');
 }
 
 console.log('PASS pre-deploy truth and runtime regression checks');

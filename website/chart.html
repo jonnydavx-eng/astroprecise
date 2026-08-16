@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
-  <title>Free Birth Chart — calculated on your device | Astro Precise</title>
-  <script>window.AP_ASSET_V='838';</script>
+  <title>Free Birth Chart — calculated on your device | AstroPrecise</title>
+  <script>window.AP_ASSET_V='876';</script>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/fonts.css?v=835" />
+  <link rel="stylesheet" href="css/fonts.css?v=876" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -17,7 +17,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:site_name" content="AstroPrecise" />
   <meta property="og:title" content="Free birth chart, computed on-device" />
   <meta property="og:description" content="Calculate your natal chart in the browser. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta property="og:url" content="https://astroprecise.app/chart.html" />
@@ -34,13 +34,13 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Astro Precise — Birth Chart Calculator",
+    "name": "AstroPrecise — Birth Chart Calculator",
     "url": "https://astroprecise.app/chart.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
@@ -50,7 +50,7 @@
     "dateModified": "2026-08-11",
     "isPartOf": {
       "@type": "WebSite",
-      "name": "Astro Precise",
+      "name": "AstroPrecise",
       "url": "https://astroprecise.app/"
     }
   }
@@ -66,9 +66,17 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=835" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=838" />
-  <link rel="stylesheet" href="css/ap-chart-v835.css?v=837" />
+  <link rel="stylesheet" href="css/celestial-seals.css?v=876" />
+    <script type="importmap">
+    { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+  </script>
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=876">
+  <script src="js/void-orrery-adapter.js?v=876" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=876" />
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=876">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=876">
+  <link rel="stylesheet" href="css/ap-chart-v835.css?v=876" />
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=876">
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
@@ -96,8 +104,7 @@
           <noscript>
             <a href="index.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link" aria-current="page">Chart</a>
-            <a href="horoscope.html" class="navbar__link">Daily</a>
-            <a href="eclipse.html" class="navbar__link">Eclipse</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
@@ -111,13 +118,27 @@
     </nav>
   </header>
 
+  <section class="ap-room-sky" aria-label="Live sky">
+    <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
+      <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+      <div class="ap-model-vignette" aria-hidden="true"></div>
+      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
+    </div>
+    <p class="ap-keep-row">
+      <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
+      <span class="action-note" id="keep-sky-caption">Cast the chart to prepare its whole-system birth-hour frame.</span>
+    </p>
+  </section>
+
+
+
   <main id="main-content">
 
     <!-- ============================================================
          HERO
     ============================================================ -->
     <section class="chart-hero" aria-labelledby="page-title">
-      <div class="chart-hero__cosmic-art" aria-hidden="true"></div>
+
       <div class="container">
         <p class="chart-hero__eyebrow" aria-hidden="true">FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
         <h1 class="chart-hero__title" id="page-title">Your birth sky, calculated</h1>
@@ -230,7 +251,7 @@
               hidden
             ></div>
             <p class="form-error-msg" role="alert">Please select a city from the dropdown.</p>
-            <p class="form-hint" id="city-hint">Pick a result for precise coordinates — a typed city name alone is not enough.
+            <p class="form-hint" id="city-hint">Pick a result for precise coordinates — a typed city name alone is not enough. The location button sends coordinates to Open-Meteo for timezone lookup only.
               <button type="button" id="geo-btn" class="form-inline-action">Use my current location</button>
             </p>
           </div>
@@ -425,7 +446,8 @@
               <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Moon, Rising, MC and houses — time-sensitive points are withheld without it</span>
               <a href="eclipse.html#contact" id="eclipse-handoff" class="result-eclipse-handoff">See where the 12 Aug eclipse landed in this chart &rarr;</a>
               <a href="deep-reading.html" class="result-eclipse-handoff">Open the seven-chapter natal reading &rarr;</a>
-              <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (±7°) and still withholds angles.</small>
+              <a href="sky-card.html" data-ap-keep-minute class="result-eclipse-handoff">Keep this minute as a sky card &rarr;</a>
+              <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (±7°) and still withholds angles. The sky card is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
             </div>
             <div class="result-actions" id="result-actions-row">
               <a id="eclipse-cta" href="eclipse.html#contact" class="action-btn action-btn--gold" aria-label="See where the 12 August eclipse landed in this chart, prefilled from this chart">
@@ -576,20 +598,23 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS — chart core first; starfield/effects idle -->
-  <script src="js/raf-core.js" defer></script>
-  <script src="js/ap-zodiac-constants.js" defer></script>
-  <script src="js/ephemeris.js" defer></script>
-  <script src="js/celestial-seals.js" defer></script>
-  <script src="js/reading-format.js?v=837" defer></script>
-  <script src="js/chart-render.js?v=837" defer></script>
-  <script src="js/ap-load-interpretations.js?v=837" defer></script>
-  <script src="js/profile.js" defer></script>
-  <script src="js/ap-personal-memory.js" defer></script>
-  <script src="js/icons.js" defer></script>
-  <script src="js/ap-nav-model.js?v=838" defer></script>
-  <script src="js/ap-footer-inject.js?v=835" defer></script>
-  <script src="js/app.js" defer></script>
-  <script src="js/ap-canvas-seals.js" defer></script>
-  <script src="js/chart-page.js?v=837" defer></script>
+  <script src="js/raf-core.js?v=876" defer></script>
+  <script src="js/ap-zodiac-constants.js?v=876" defer></script>
+  <script src="js/ephemeris.js?v=876" defer></script>
+  <script src="js/celestial-seals.js?v=876" defer></script>
+  <script src="js/reading-format.js?v=876" defer></script>
+  <script src="js/chart-render.js?v=876" defer></script>
+  <script src="js/ap-load-interpretations.js?v=876" defer></script>
+  <script src="js/profile.js?v=876" defer></script>
+  <script src="js/ap-personal-memory.js?v=876" defer></script>
+  <script src="js/icons.js?v=876" defer></script>
+  <script src="js/ap-nav-model.js?v=876" defer></script>
+  <script src="js/ap-footer-inject.js?v=876" defer></script>
+  <script src="js/app.js?v=876" defer></script>
+  <script src="js/ap-canvas-seals.js?v=876" defer></script>
+  <script src="js/chart-page.js?v=876" defer></script>
+  <script src="js/ap-room-sky.js?v=876" defer></script>
+  <script src="js/ap-keep-sky.js?v=876" defer></script>
+  <script src="js/ap-keep-minute.js?v=876" defer></script>
 </body>
 </html>

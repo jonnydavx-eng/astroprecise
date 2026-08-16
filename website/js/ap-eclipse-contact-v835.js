@@ -104,10 +104,13 @@ function chartTimeKnown(chart) {
 }
 
 function manualNatal(engine) {
-  const dateValue = byId('dob').value;
-  const timeValue = byId('tob').value;
-  const zone = byId('tz').value;
+  const dob = byId('dob');
+  const tob = byId('tob');
+  const dateValue = dob ? dob.value : '';
+  const timeValue = tob ? tob.value : '';
+  const zone = ((byId('tz') || {}).value || '').trim();
   if (!dateValue) throw new Error('Enter a birth date or use a saved chart.');
+  if (!validTimeZone(zone)) throw new Error('Pick a birth place so the minute uses a real zone. UK summer is not GMT.');
   const [y, m, d] = dateValue.split('-').map(Number);
   const timeKnown = Boolean(timeValue);
   const [hh, mm] = (timeValue || '12:00').split(':').map(Number);
@@ -126,6 +129,7 @@ function manualNatal(engine) {
 
 function validTimeZone(zone) {
   if (!zone || typeof zone !== 'string' || zone.length > 80) return false;
+  if (zone === 'UTC' || zone === 'GMT' || zone === 'Etc/UTC' || /^Etc\/GMT/i.test(zone)) return false;
   try { new Intl.DateTimeFormat('en-GB', { timeZone: zone }).format(new Date()); return true; }
   catch (_) { return false; }
 }
@@ -151,10 +155,12 @@ function applyChartHandoff(handoff) {
   if (!handoff) return false;
   byId('dob').value = handoff.dob;
   byId('tob').value = handoff.tob;
-  if (handoff.tzname) {
-    const select = byId('tz');
-    if (![...select.options].some((item) => item.value === handoff.tzname)) select.add(new Option(handoff.tzname, handoff.tzname));
-    select.value = handoff.tzname;
+  if (handoff.tzname && validTimeZone(handoff.tzname)) {
+    byId('tz').value = handoff.tzname;
+    const city = byId('eclipse-city');
+    const note = byId('eclipse-zone');
+    if (city) city.value = handoff.tzname;
+    if (note) note.textContent = handoff.tzname;
   }
   const status = byId('eclipseContactStatus');
   if (status) status.textContent = 'Your just-cast birth moment carried here privately. Manual entry compares planets; use a saved full chart for angles.';
@@ -221,21 +227,81 @@ function seedSavedChart(chart) {
   const savedTime = chart.birthTime || chart.time || '';
   if (known && savedTime) byId('tob').value = savedTime;
   const zone = chart.tz || chart.timezone;
-  if (zone) {
-    const select = byId('tz');
-    if (![...select.options].some((item) => item.value === zone)) select.add(new Option(zone, zone));
-    select.value = zone;
+  if (zone && validTimeZone(zone)) {
+    byId('tz').value = zone;
+    const city = byId('eclipse-city');
+    const note = byId('eclipse-zone');
+    if (city) city.value = zone;
+    if (note) note.textContent = zone;
   }
   function syncManualState() {
     const disabled = checkbox.checked;
-    [byId('dob'), byId('tob'), byId('tz')].forEach((control) => { control.disabled = disabled; });
+    [byId('dob'), byId('tob'), byId('eclipse-city')].forEach((control) => { if (control) control.disabled = disabled; });
   }
   checkbox.addEventListener('change', syncManualState);
   syncManualState();
   return { natal, timeKnown: known, label: chart.name || date || 'Saved chart', source: 'saved' };
 }
 
+
+function bindEclipseCity() {
+  const input = byId('eclipse-city');
+  const tzEl = byId('tz');
+  const drop = byId('eclipse-city-drop');
+  const note = byId('eclipse-zone');
+  if (!input || !drop || !tzEl) return;
+  const GEO = 'https://geocoding-api.open-meteo.com/v1/search';
+  let seq = 0;
+  let timer = null;
+  function pick(city) {
+    input.value = city.name + (city.admin ? ', ' + city.admin : '');
+    tzEl.value = city.tz || '';
+    if (note) note.textContent = city.tz || 'Pick a place for a real zone. UK summer is not GMT.';
+    drop.hidden = true;
+    drop.innerHTML = '';
+  }
+  function render(results) {
+    drop.innerHTML = '';
+    results.forEach((city) => {
+      if (!validTimeZone(city.tz)) return;
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'ap-city-item';
+      item.textContent = city.name + (city.admin ? ', ' + city.admin : '') + ' · ' + city.tz;
+      item.addEventListener('click', () => pick(city));
+      drop.appendChild(item);
+    });
+    drop.hidden = !drop.childNodes.length;
+  }
+  function search(q) {
+    q = (q || '').trim();
+    if (q.length < 2) { drop.hidden = true; drop.innerHTML = ''; return; }
+    const my = ++seq;
+    fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json')
+      .then((r) => r.ok ? r.json() : { results: [] })
+      .then((data) => {
+        if (my !== seq) return;
+        render((data.results || []).map((r) => ({
+          name: r.name,
+          admin: r.admin1 && r.admin1 !== r.name ? r.admin1 : '',
+          lat: r.latitude,
+          lon: r.longitude,
+          tz: r.timezone || '',
+        })));
+      })
+      .catch(() => { if (my === seq) drop.hidden = true; });
+  }
+  input.addEventListener('input', () => {
+    tzEl.value = '';
+    if (note) note.textContent = 'Pick a place for a real zone. UK summer is not GMT.';
+    clearTimeout(timer);
+    timer = setTimeout(() => search(input.value), 250);
+  });
+  input.addEventListener('blur', () => setTimeout(() => { drop.hidden = true; }, 180));
+}
+
 async function init() {
+  bindEclipseCity();
   const birthDate = byId('dob');
   if (birthDate) {
     const today = new Date();
@@ -243,7 +309,7 @@ async function init() {
   }
   const [engine, templates] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=857').then((response) => {
+    fetch('js/reading-templates.json?v=876').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),

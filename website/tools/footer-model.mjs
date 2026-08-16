@@ -1,6 +1,6 @@
 /**
- * AstroPrecise — unified footer nav model (index-full Daily readings / Sign guides split).
- * Used by generate-sign-pages.mjs and mirrored in js/ap-footer-inject.js.
+ * AstroPrecise — archive-page fallback footer.
+ * Used by generated sign pages when JavaScript cannot mount the compact footer.
  */
 
 export const ZODIAC_SIGNS = [
@@ -18,13 +18,11 @@ export const ZODIAC_SIGNS = [
   { key: 'pisces', name: 'Pisces' },
 ];
 
-/** Spine: Cast → Sky → Keep → Daily → Reading → Shop (keep in sync with ap-footer-inject.js). */
+/** Keep the fallback chrome on the same four-route Act 1 spine as ap-footer-inject.js. Retired room links must not re-enter generated footers. */
 const FOOTER_TOOLS = [
+  { href: 'index.html', label: 'Observatory', icon: '<span aria-hidden="true">✦</span>' },
   { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
-  { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
-  { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">✦</span>' },
-  { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
-  { href: 'cosmic-story.html', label: 'Readings', icon: '<span aria-hidden="true">◇</span>' },
+  { href: 'sky-events.html', label: 'Events', icon: '<span aria-hidden="true">☽</span>' },
   { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
 ];
 
@@ -41,36 +39,9 @@ ${items}
         </div>`;
 }
 
-export function footerDailyColHtml() {
-  const items = ZODIAC_SIGNS.map((s) =>
-    `            <li><a href="horoscope.html?sign=${s.key}">${s.name} today</a></li>`
-  ).join('\n');
-  return `
-        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
-          <h2 class="footer-nav-col__title">Daily readings</h2>
-          <ul>
-${items}
-            <li><a href="horoscope.html">All signs →</a></li>
-          </ul>
-        </div>`;
-}
-
-export function footerSignGuidesColHtml() {
-  const items = ZODIAC_SIGNS.map((s) =>
-    `            <li><a href="${s.key}.html">${s.name} profile</a></li>`
-  ).join('\n');
-  return `
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-${items}
-          </ul>
-        </div>`;
-}
-
-/** Tools + Daily readings + Sign guides columns (no brand). */
+/** Tools column only; retired room and Sun-sign listings stay unhooked. */
 export function footerNavHtml() {
-  return footerToolsColHtml() + footerDailyColHtml() + footerSignGuidesColHtml();
+  return footerToolsColHtml();
 }
 
 export function footerBrandColHtml() {
@@ -79,9 +50,9 @@ export function footerBrandColHtml() {
   ).join('\n');
   return `
         <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
             <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
           </a>
           <p class="footer-brand__tagline">
             A precision instrument wearing the skin of an astrology site.
@@ -101,7 +72,7 @@ ${seals}
 export function footerLegalHtml() {
   return `
       <div class="footer-legal">
-        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p>&copy; 2026 AstroPrecise &middot; Astronomy computed locally &middot; No accounts required</p>
         <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>`;
 }

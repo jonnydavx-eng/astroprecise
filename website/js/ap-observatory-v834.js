@@ -1,4 +1,4 @@
-/* AstroPrecise v834 — one Observatory state controller.
+/* AstroPrecise v858 — one Observatory state controller.
    State spine: time -> scale -> selected object -> interpretation. */
 (function () {
   'use strict';
@@ -82,6 +82,14 @@
     var appliedHash = null;
     var didReady = false;
     var stashed = readStash();
+    var hasExplicitOpening = !!(location.hash || stashed);
+    var userTookControl = false;
+
+    function markUserControl() { userTookControl = true; }
+    if (stage) {
+      stage.addEventListener('pointerdown', markUserControl, { passive: true });
+      stage.addEventListener('wheel', markUserControl, { passive: true });
+    }
 
     function revealModelAfterChoice() {
       if (!stage || !window.matchMedia || !window.matchMedia('(max-width: 700px)').matches) return;
@@ -181,11 +189,18 @@
       if (mobileScale) mobileScale.disabled = false;
       appliedHash = null;
       applyHash();
+      if (!hasExplicitOpening && !userTookControl && orrery.startOpeningBeat) {
+        var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduced) setTimeout(function () {
+          if (!userTookControl && !location.hash) orrery.startOpeningBeat();
+        }, 260);
+      }
     }
 
     orrery.addEventListener('planetfocus', function (event) {
       var detail = event.detail || {};
       showFocus(detail.name || FOCUS[detail.key] || 'Solar system', detail);
+      if (detail.key === 'earth') showScale('EARTH');
     });
 
     orrery.addEventListener('scalechange', function (event) {
@@ -200,6 +215,7 @@
       worldGroup.addEventListener('click', function (event) {
         var button = event.target.closest('button');
         if (!button) return;
+        markUserControl();
         revealModelAfterChoice();
       });
     }
@@ -208,12 +224,14 @@
       scaleGroup.addEventListener('click', function (event) {
         var button = event.target.closest('button');
         if (!button) return;
+        markUserControl();
         revealModelAfterChoice();
       });
     }
 
     if (mobileWorld) {
       mobileWorld.addEventListener('change', function () {
+        markUserControl();
         var key = String(mobileWorld.value || '').toLowerCase();
         if (!key) {
           if (orrery.flyScale) orrery.flyScale('SYSTEM');
@@ -228,6 +246,7 @@
 
     if (mobileScale) {
       mobileScale.addEventListener('change', function () {
+        markUserControl();
         var key = String(mobileScale.value || 'SYSTEM').toUpperCase();
         if (orrery.flyScale) orrery.flyScale(key);
         showScale(key);
@@ -238,6 +257,7 @@
 
     var nowButton = byId('nowBtn');
     if (nowButton) nowButton.addEventListener('click', function () {
+      markUserControl();
       updateClock();
       appliedHash = null;
       if (location.hash) history.replaceState(null, '', location.pathname + location.search);
@@ -245,6 +265,7 @@
 
     var scrub = byId('scrub');
     if (scrub) scrub.addEventListener('input', function () {
+      markUserControl();
       if (liveStatus) {
         liveStatus.textContent = 'Selected moment';
         liveStatus.classList.remove('ap-model-status__live');

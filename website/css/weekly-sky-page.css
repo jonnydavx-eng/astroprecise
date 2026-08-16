@@ -39,7 +39,7 @@
   color: var(--ap-text-secondary, #C8CDD6);
   text-wrap: balance;
 }
-.wk-hero__sub em { color: var(--ap-gold-bright, #7EC8E8); font-style: normal; }
+.wk-hero__sub em { color: var(--ap-gold-bright, #f0d59d); font-style: normal; }
 
 .wk-privacy-seal {
   display: inline-flex;
@@ -71,7 +71,7 @@
   font: inherit;
   font-size: 0.9rem;
   cursor: pointer;
-  color: var(--ap-gold-bright, #7EC8E8);
+  color: var(--ap-gold-bright, #f0d59d);
   background: transparent;
   border: 1px solid var(--ap-card-border-strong, rgba(168, 176, 188, 0.28));
   transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
@@ -144,7 +144,7 @@
   width: 2.1rem;
   min-height: 2.1rem;
   font-size: 1.35rem;
-  color: var(--ap-gold-bright, #7EC8E8);
+  color: var(--ap-gold-bright, #f0d59d);
 }
 /* Belt-and-braces: never let a seal exceed its orb slot, whatever loads first */
 .wk-event__orb .ap-seal,
@@ -165,7 +165,7 @@
 }
 .wk-event__time {
   font-size: 0.78rem;
-  color: var(--ap-gold-bright, #7EC8E8);
+  color: var(--ap-gold-bright, #f0d59d);
   border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.16));
   border-radius: 999px;
   padding: 0.1rem 0.55rem;
@@ -204,7 +204,7 @@
   padding: 0.4rem 0.9rem;
   background: var(--ap-card-surface, rgba(22, 28, 42, 0.5));
 }
-.wk-moonstrip__chip strong { color: var(--ap-gold-bright, #7EC8E8); font-weight: 600; }
+.wk-moonstrip__chip strong { color: var(--ap-gold-bright, #f0d59d); font-weight: 600; }
 
 /* Honesty panel */
 .wk-honesty {
@@ -225,7 +225,7 @@
   margin: 0 0 0.6rem;
 }
 .wk-honesty p:last-child { margin-bottom: 0; }
-.wk-honesty strong { color: var(--ap-gold-bright, #7EC8E8); }
+.wk-honesty strong { color: var(--ap-gold-bright, #f0d59d); }
 
 @media (max-width: 560px) {
   .wk-event { padding: 0.7rem 0.75rem; }

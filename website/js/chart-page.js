@@ -132,6 +132,21 @@
       }
       return;
     }
+    items = (items || []).filter((c) => c && isValidTimeZone(c.tz));
+    dropdown._items = items;
+    if (!items.length) {
+      if (state === 'empty' || state === 'results') {
+        dropdown.innerHTML = '<div class="autocomplete-note">No places with a real zone matched — try the nearest larger town. UTC/GMT are refused.</div>';
+        dropdown.hidden = false;
+        cityInput.setAttribute('aria-expanded', 'true');
+      } else {
+        dropdown.innerHTML = '';
+        dropdown.hidden = true;
+        cityInput.setAttribute('aria-expanded', 'false');
+      }
+      dropdown._items = [];
+      return;
+    }
     const note = source === 'offline'
       ? '<div class="autocomplete-note">Offline — built-in city list only</div>' : '';
     dropdown.innerHTML = items.map((c, i) =>
@@ -149,11 +164,17 @@
     searchSeq += 1;
     if (searchTimer) clearTimeout(searchTimer);
     searchTimer = 0;
+    if (!c || !isValidTimeZone(c.tz)) {
+      tzInput.value = '';
+      cityInput.dataset.coordinatesLocked = 'false';
+      if (window.AstroApp) AstroApp.showToast('Place needs a real zone', 'UTC/GMT are refused. Pick a named town.', 'warning');
+      return;
+    }
     cityInput.value = c.admin ? `${c.name}, ${c.admin}, ${c.country}` : `${c.name}, ${c.country}`;
     cityInput.dataset.coordinatesLocked = 'true';
     latInput.value  = c.lat;
     lonInput.value  = c.lon;
-    tzInput.value   = c.tz || '';
+    tzInput.value   = c.tz;
     dropdown.innerHTML = '';
     dropdown.hidden = true;
     cityInput.setAttribute('aria-expanded', 'false');
@@ -228,11 +249,12 @@
       dtf.formatToParts(utcDate).forEach(x => { p[x.type] = x.value; });
       const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second);
       return (asUTC - utcDate.getTime()) / 60000;
-    } catch (e) { return 0; }
+    } catch (e) { return null; }
   }
 
   function isValidTimeZone(tz) {
     if (typeof tz !== 'string' || !tz.trim()) return false;
+    if (tz === 'UTC' || tz === 'GMT' || /^Etc\/GMT/i.test(tz) || tz === 'Etc/UTC') return false;
     try {
       new Intl.DateTimeFormat('en-US', { timeZone: tz }).format();
       return true;
@@ -240,9 +262,11 @@
   }
 
   function localToUT(y, m, d, hh, mm, tz) {
+    if (!isValidTimeZone(tz)) return null;
     let utc = new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
     for (let i = 0; i < 2; i++) {
       const off = tzOffsetMinutes(tz, utc);
+      if (off == null) return null;
       utc = new Date(Date.UTC(y, m - 1, d, hh, mm, 0) - off * 60000);
     }
     return {
@@ -383,7 +407,8 @@
   }
 
   function readForm() {
-    const name = document.getElementById('name-input').value.trim() || 'Birth Chart';
+    const nameEl = document.getElementById('name-input');
+    const name = ((nameEl && nameEl.value) || '').trim() || 'Birth Chart';
     const date = document.getElementById('date-input').value;
     const timeField = document.getElementById('time-input');
     const timeKnown = !!(timeField && timeField.value);
@@ -458,6 +483,9 @@
 
   function calculate(input) {
     const ut = localToUT(input.y, input.m, input.d, input.hh, input.mm, input.tz);
+    if (!ut) {
+      return { error: 'Place needs a real timezone. UK summer is not treated as GMT.' };
+    }
     const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon, input.houseSystem, input.nodeMode);
     return adaptChart(raw, {
       nodeMode: raw.nodeMode,
@@ -470,6 +498,25 @@
       city: input.city, lat: input.lat, lon: input.lon, tz: input.tz,
       timezoneKnown: input.timezoneKnown === true,
     });
+  }
+
+  function publishKeepSkyContext(chart) {
+    if (!chart || !Number.isFinite(Number(chart.jd)) || !chart.birthDate) return;
+    const dateParts = String(chart.birthDate).split('-').map(Number);
+    const referenceJd = chart.timeKnown === true
+      ? Number(chart.jd)
+      : Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2], 12, 0, 0) / 86400000 + 2440587.5;
+    document.dispatchEvent(new CustomEvent('ap-keep-sky-context', {
+      detail: {
+        jd: referenceJd,
+        birthDate: chart.birthDate,
+        birthTime: chart.birthTime || null,
+        timeKnown: chart.timeKnown === true,
+        timeAccuracy: chart.timeAccuracy || (chart.timeKnown ? 'exact' : 'unknown'),
+        place: chart.city || '',
+        timezone: chart.tz || ''
+      }
+    }));
   }
 
   form.addEventListener('submit', ev => {
@@ -487,12 +534,18 @@
           await window.loadInterpretations();
         }
         currentChart = calculate(input);
+        if (currentChart && currentChart.error) {
+          showFormError('city-input', currentChart.error);
+          resetCalcBtn();
+          return;
+        }
         if (window.APCanvasSeals && !window._apSealsPreloaded) {
           window._apSealsPreloaded = true;
           var sealSigns = (window.AP_ZODIAC && AP_ZODIAC.SIGN_ORDER) || [];
           window.APCanvasSeals.preload(sealSigns);
         }
         renderResults(currentChart);
+        publishKeepSkyContext(currentChart);
         // No updateShareURL() here any more. It used to replaceState() the
         // whole birth record — name, date, time, town, lat, lon, tz — into the
         // address bar on every calculation. Sharing never needed it: the Share
@@ -569,9 +622,16 @@
         clearTimeout(timer);
         if (r2.ok) {
           const j = await r2.json();
-          if (j.timezone) tzInput.value = j.timezone;
+          if (j.timezone && isValidTimeZone(j.timezone)) tzInput.value = j.timezone;
+          else tzInput.value = '';
         }
       } catch (e) { /* timezone lookup failed — leave tz blank, never fake it */ }
+      if (!isValidTimeZone(tzInput.value)) {
+        tzInput.value = '';
+        document.dispatchEvent(new CustomEvent('astro:city-selected'));
+        window.AstroApp?.showToast('Location set', 'Coordinates locked. Pick a named town for a real zone — UTC/GMT are refused.', 'warning');
+        return;
+      }
       document.dispatchEvent(new CustomEvent('astro:city-selected'));
       window.AstroApp?.showToast('Location set', 'Using your current position — fine for "born near where you live now".', 'success');
     }, () => window.AstroApp?.showToast('Declined', 'Location permission declined — search by name instead.', 'warning'));
@@ -1472,7 +1532,10 @@
         await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
         if (window.AstroApp) AstroApp.showToast('Link copied', 'Share link copied to clipboard.', 'success');
       }
-    } catch (e) { /* user cancelled */ }
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      if (window.AstroApp) AstroApp.showToast('Copy failed', 'Select and copy the link manually.', 'warning');
+    }
   });
 
   // Big Three Card → dedicated Sun/Moon/Rising square (no full natal wheel).

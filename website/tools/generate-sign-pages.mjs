@@ -220,9 +220,12 @@ const RULER_SEAL = {
    our own photoreal 3D render, honest). This is the star of the hero, replacing the
    old painterly zodiac-card JPG. `still` = the engine webp id; `label` = how the body
    is named in the alt/caption (matches the sign's ruler wording).
-   NOTE Scorpio: the engine's Pluto is a bare generated disc (manifest: generated=true),
-   so we anchor Scorpio on MARS — its stronger photoreal render and traditional ruler
-   (the sign data already reads "Pluto & Mars"). The tiny engraved seal elsewhere stays Pluto. */
+   NOTE Scorpio: Pluto used to be a bare generated disc, which is why Scorpio was
+   anchored on MARS. As of v869 the engine renders a real Pluto from the NASA New
+   Horizons map and img/engine/pluto.webp is a genuine engine portrait, so that
+   reason is gone — Scorpio stays on Mars purely as an editorial call (its traditional
+   ruler; the sign data already reads "Pluto & Mars"). Switching the anchor to Pluto
+   is now a content decision, not a graphics limitation. The engraved seal stays Pluto. */
 const RULER_STILL = {
   aries:      { still: 'mars',    label: 'Mars',     rel: 'ruler of Aries' },
   taurus:     { still: 'venus',   label: 'Venus',    rel: 'ruler of Taurus' },
@@ -369,7 +372,7 @@ function chartBridgeSection(s) {
 function navShell() {
   return `
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="chart.html" class="navbar__link">Chart</a><a href="ephemeris.html" class="navbar__link">Sky</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="cosmic-story.html" class="navbar__link">Readings</a><a href="guides.html" class="navbar__link">Library</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -732,7 +735,6 @@ function page(s) {
     <nav class="sign-breadcrumb" aria-label="Breadcrumb">
       <ol>
         <li><a href="index.html">Home</a></li>
-        <li><a href="horoscope.html">Daily</a></li>
         <li aria-current="page">${s.name}</li>
       </ol>
     </nav>
@@ -903,7 +905,7 @@ ${footerBlockHtml({ footerClass: 'footer' })}
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/sign-page-boot.js"></script>
   <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=835" defer></script>
+  <script src="js/ap-footer-inject.js?v=874" defer></script>
 </body>
 </html>
 `;

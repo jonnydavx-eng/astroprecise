@@ -18,7 +18,7 @@
     if (document.querySelector('link[href*="ap-living-sky-v834.css"],link[href*="ap-footer-v835.css"]')) return;
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = new URL('css/ap-footer-v835.css?v=835', document.baseURI).href;
+    link.href = new URL('css/ap-footer-v835.css?v=876', document.baseURI).href;
     link.dataset.apFooterStyles = '835';
     (document.head || document.documentElement).appendChild(link);
   }
@@ -29,8 +29,7 @@
   var CORE_LINKS = [
     { href: 'index.html', label: 'Observatory' },
     { href: 'chart.html', label: 'Chart' },
-    { href: 'horoscope.html', label: 'Daily' },
-    { href: 'eclipse.html', label: 'Eclipse' },
+    { href: 'sky-events.html', label: 'Events' },
     { href: 'shop.html', label: 'Shop' },
   ];
   var LEGAL_LINKS = [
@@ -56,14 +55,14 @@
       +       '<img src="img/logo-mark.svg" width="28" height="28" alt="" decoding="async">'
       +       '<span>AstroPrecise</span>'
       +     '</a>'
-      +     '<p>The sky computed here; astrology explained with care. Birth details stay on this device.</p>'
+      +     '<p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>'
       +   '</div>'
       +   '<nav class="ap-site-footer__routes" aria-label="Core pages">' + linksHtml(CORE_LINKS) + '</nav>'
       +   '<nav class="ap-site-footer__legal" aria-label="Legal and verification">' + linksHtml(LEGAL_LINKS) + '</nav>'
       + '</div>'
       + '<div class="ap-site-footer__colophon">'
       +   '<span>&copy; ' + new Date().getFullYear() + ' AstroPrecise</span>'
-      +   '<span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> / <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span>'
+      +   '<span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" target="_blank" rel="noopener noreferrer">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · Pluto: <a href="https://science.nasa.gov/resource/pluto-global-color-map/" target="_blank" rel="noopener noreferrer">NASA/JHUAPL/SwRI</a></span>'
       + '</div>';
   }
 

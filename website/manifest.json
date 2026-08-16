@@ -1,13 +1,13 @@
 {
-  "name": "Astro Precise — the real sky news",
-  "short_name": "Astro Precise",
-  "description": "The real sky news: free birth chart, live solar system, and tonight’s sky — computed privately in your browser, to the exact minute you were born. No account required.",
+  "name": "AstroPrecise — the real sky news",
+  "short_name": "AstroPrecise",
+  "description": "Free birth chart, live solar system, and tonight’s sky, computed in your browser. Town search sends only that name to Open-Meteo; birth date and time stay here. No account required.",
   "id": "/",
   "start_url": "index.html?app=1",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#08080b",
-  "theme_color": "#08080b",
+  "background_color": "#020307",
+  "theme_color": "#020307",
   "icons": [
     {
       "src": "img/icon-192.png",
@@ -33,8 +33,9 @@
   "dir": "ltr",
   "scope": "./",
   "shortcuts": [
-    { "name": "Today's Horoscope", "url": "horoscope.html" },
-    { "name": "Cast a Chart", "url": "chart.html" },
-    { "name": "Current Transits", "url": "transits.html" }
+    { "name": "Observatory", "url": "index.html" },
+    { "name": "Chart", "url": "chart.html" },
+    { "name": "Events", "url": "sky-events.html" },
+    { "name": "Shop", "url": "shop.html" }
   ]
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#08080b}</style>
+  <style>html{background:#020307}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="This week's sky: exact Moon phases, planet sign changes, retrograde stations and exact aspects — computed in your browser from real astronomy." />
   <title>This Week's Sky — Moon Phases, Ingresses &amp; Stations</title>
@@ -14,8 +14,8 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Astro Precise" />
-  <meta property="og:title" content="This Week's Sky | Astro Precise" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="This Week's Sky | AstroPrecise" />
   <meta property="og:description" content="The week's Moon phases, planet sign changes, retrograde stations and exact aspects — dated, honest, and computed in your browser from real astronomy." />
   <meta property="og:url" content="https://astroprecise.app/this-weeks-sky.html" />
   <link rel="canonical" href="https://astroprecise.app/this-weeks-sky.html" />
@@ -24,10 +24,10 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="This Week's Sky | Astro Precise" />
+  <meta name="twitter:title" content="This Week's Sky | AstroPrecise" />
   <meta name="twitter:description" content="The week's Moon phases, ingresses, stations and exact aspects — computed in your browser from real astronomy." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#08080b" />
+  <meta name="theme-color" content="#020307" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/weekly-sky-page.css" /></noscript>
   <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
@@ -58,10 +58,10 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Astro Precise — This Week's Sky","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"isAccessibleForFree":true,"description":"A privacy-first weekly sky calendar: exact Moon phases, planet sign ingresses, retrograde stations and exact aspects, computed entirely in your browser from real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/this-weeks-sky.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — This Week's Sky","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"isAccessibleForFree":true,"description":"A privacy-first weekly sky calendar: exact Moon phases, planet sign ingresses, retrograde stations and exact aspects, computed entirely in your browser from real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/this-weeks-sky.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How are this week's sky events computed?","acceptedAnswer":{"@type":"Answer","text":"Every event is solved numerically in your browser from the VSOP87 planetary theory and the ELP2000 lunar theory — the week is scanned for Moon-phase instants, sign ingresses, retrograde stations and exact aspects, then each event time is refined by bisection. Nothing is fetched from a server and nothing about you is sent anywhere."}},{"@type":"Question","name":"How accurate are the event times?","acceptedAnswer":{"@type":"Answer","text":"Moon-phase instants are good to a few minutes. Ingress and station times for the outer planets ride truncated series, so they are shown as approximate — right to within hours, occasionally a day for Pluto. The week itself is anchored to UTC so every visitor sees the same list; only the displayed clock times are converted to your local zone."}},{"@type":"Question","name":"Why does a week sometimes look quiet?","acceptedAnswer":{"@type":"Answer","text":"Because some weeks are quiet. The page reports what the sky is actually doing rather than padding the list with minor contacts — if there is no ingress, station or tight aspect, it says so."}}]}</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=834" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=874" />
 </head>
 <body class="ap-no-nav-enter page-weekly-sky">
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -82,12 +82,12 @@
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -190,7 +190,7 @@
         </p>
         <p style="display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap;margin:0;">
           <a class="btn btn--primary" href="chart.html">Cast your free chart</a>
-          <a class="btn btn--outline" href="horoscope.html">Today's reading &rarr;</a>
+          <a class="btn btn--outline" href="tonight.html">Tonight's sky &rarr;</a>
         </p>
       </div>
     </section>
@@ -206,7 +206,7 @@
       <div class="footer-inner" data-ap-footer-model="1">
 
         <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
             <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
             <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
           </a>
@@ -239,52 +239,16 @@
           <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
-            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
             <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
             <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
             <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
-          <h2 class="footer-nav-col__title">Daily readings</h2>
-          <ul>
-            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
-            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
-            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
-            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
-            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
-            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
-            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
-            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
-            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
-            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
-            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
-            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
-            <li><a href="horoscope.html">All signs →</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-            <li><a href="aries.html">Aries profile</a></li>
-            <li><a href="taurus.html">Taurus profile</a></li>
-            <li><a href="gemini.html">Gemini profile</a></li>
-            <li><a href="cancer.html">Cancer profile</a></li>
-            <li><a href="leo.html">Leo profile</a></li>
-            <li><a href="virgo.html">Virgo profile</a></li>
-            <li><a href="libra.html">Libra profile</a></li>
-            <li><a href="scorpio.html">Scorpio profile</a></li>
-            <li><a href="sagittarius.html">Sagittarius profile</a></li>
-            <li><a href="capricorn.html">Capricorn profile</a></li>
-            <li><a href="aquarius.html">Aquarius profile</a></li>
-            <li><a href="pisces.html">Pisces profile</a></li>
-          </ul>
-        </div>
       </div>
 
       <div class="footer-legal">
-        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
         <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
@@ -471,6 +435,6 @@
   </script>
   <script src="js/ap-page-boot.js" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=835" defer></script>
+  <script src="js/ap-footer-inject.js?v=874" defer></script>
 </body>
 </html>

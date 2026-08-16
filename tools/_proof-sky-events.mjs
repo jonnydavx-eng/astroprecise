@@ -7,12 +7,14 @@ const html = readFileSync('website/sky-events.html', 'utf8');
 const adapter = readFileSync('website/js/void-orrery-adapter.js', 'utf8');
 const fails = [];
 
-if (!/void-orrery-adapter\.js\?v=857/.test(html)) fails.push('sky-events must load the adapter for VoidEphem');
+if (!/void-orrery-adapter\.js\?v=874/.test(html)) fails.push('sky-events must load the adapter for VoidEphem');
 if (!/skip-link/.test(html)) fails.push('sky-events missing skip link');
 if (/POSITIONS NEVER ROUNDED/.test(html)) fails.push('sky-events oversells unrounded positions');
 if (!/VoidEphem/.test(html)) fails.push('sky-events must name VoidEphem in the lede');
 if (/<void-orrery/.test(html)) fails.push('sky-events must not mount a WebGL orrery');
 if (!/window\.VoidEphem/.test(html)) fails.push('sky-events must compute from VoidEphem');
+if (!/var rowOf = function/.test(html)) fails.push('sky-events must look up planets by key, not filtered-array index');
+if (/\.find\([^\n]*\)\.retro/.test(html)) fails.push('sky-events still unwraps a find() without a null guard');
 if (/index\.html#cast/.test(html)) fails.push('sky-events still points at the retired #cast hash');
 if (!/chart\.html/.test(html)) fails.push('sky-events must send chart casting to chart.html');
 if (!/ap-footer-inject\.js/.test(html)) fails.push('sky-events must load the compact footer');

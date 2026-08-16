@@ -1,0 +1,105 @@
+{
+  "page": "compatibility.html",
+  "viewport": [
+    390,
+    844
+  ],
+  "hash": "#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=A&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York&bn=B",
+  "orrReady": true,
+  "engine": "webgl",
+  "webgl": true,
+  "portrait": false,
+  "scaleLevel": 2,
+  "camRadius": 96,
+  "stage": {
+    "w": 390,
+    "h": 473,
+    "top": 352,
+    "left": 0
+  },
+  "canvas": {
+    "w": 390,
+    "h": 471,
+    "cw": 780,
+    "ch": 942
+  },
+  "spec": {
+    "a": {
+      "jd": 2448058.0569444443,
+      "label": "A"
+    },
+    "b": {
+      "jd": 2446403.0694444445,
+      "label": "B"
+    }
+  },
+  "A": {
+    "who": "A",
+    "visible": true,
+    "parent": "natalClocks",
+    "worldScale": [
+      3.15,
+      3.15
+    ],
+    "canvasPx": [
+      72,
+      72
+    ],
+    "texAvg": {
+      "r": 191,
+      "g": 159,
+      "b": 94
+    },
+    "cssFromCorners": {
+      "w": 23.43,
+      "h": 23.41
+    },
+    "cssFromScale": {
+      "w": 23.32,
+      "h": 23.32
+    },
+    "dist": 100.797,
+    "fov": 35
+  },
+  "B": {
+    "who": "B",
+    "visible": true,
+    "parent": "natalClocks",
+    "worldScale": [
+      3.15,
+      3.15
+    ],
+    "canvasPx": [
+      72,
+      72
+    ],
+    "texAvg": {
+      "r": 229,
+      "g": 90,
+      "b": 37
+    },
+    "cssFromCorners": {
+      "w": 26.71,
+      "h": 26.69
+    },
+    "cssFromScale": {
+      "w": 26.63,
+      "h": 26.63
+    },
+    "dist": 88.273,
+    "fov": 35
+  },
+  "verdict": {
+    "band": "22-28 CSS px",
+    "A_inBand": true,
+    "B_inBand": true,
+    "readsAsType": true,
+    "note": "Both natalClocks sprites are 3.15 world units on 72x72 letter canvases. Projected CSS boxes sit in the 22-28px type band. Screenshot confirms crisp A/B glyphs, not colour blobs."
+  },
+  "swV": "ap-v867",
+  "shippingFilesChanged": false,
+  "shots": {
+    "compatibility": "C:\\\\Users\\\\jonny\\\\OneDrive\\\\astroprecise\\\\launch-output\\\\phone-pass-2026-08-14-v867\\\\compatibility.png",
+    "clocks": "C:\\\\Users\\\\jonny\\\\OneDrive\\\\astroprecise\\\\launch-output\\\\phone-pass-2026-08-14-v867\\\\compatibility-clocks.png"
+  }
+}
