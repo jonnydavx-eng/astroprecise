@@ -1,6 +1,6 @@
 # STATUS — AstroPrecise
 
-**State:** Friday 14 Aug 2026 night (Europe/London). Local only. Live site stays as-is. Do not push.
+**State:** Sunday 16 Aug 2026. Backlog pushed to origin/main (`b5deaa7`) — GitHub Pages deploy auto-running; live will reach ap-v876.
 
 ## Now
 - Local tip: `cba32b4` on `main`, tracking `origin/audit-improve-20260814`, ahead 23. Not pushed. Live site stays as-is.
