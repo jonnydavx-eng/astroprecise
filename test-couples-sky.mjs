@@ -189,7 +189,7 @@ ok('hash restore stays Live so both clocks stay equally up',
 ok('couples page does not fly the camera on A/B',
   !src.includes('flyTo') && !src.includes('focusPlanet') && !src.includes('setJD'));
 ok('couples assets stay at 876',
-  html.includes('ap-couples-sky.js?v=876') && html.includes('ap-couples-v858.css?v=876'));
+  html.includes('ap-couples-sky.js?v=880') && html.includes('ap-couples-v858.css?v=880'));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

@@ -133,6 +133,28 @@ const FinishShader = {
   const TEX = 'assets/textures/';
   const ORRERY_ENV_TEX = 'img/orrery/';
   const D2R = Math.PI / 180;
+  // Cool lunar void — sky/fog clear toward the cooler chrome night (visual wave).
+  // Prefer an exposed CSS token when present; otherwise the authored #05080F.
+  const COOL_LUNAR_VOID = 0x05080F;
+  // Drag elevation envelope: intentional observatory tilt — never flop under the ecliptic.
+  const CAM_EL_DRAG_MIN = 6 * D2R;
+  const CAM_EL_DRAG_MAX = 58 * D2R;
+
+  function coolLunarVoidHex() {
+    try {
+      const raw = (typeof cssToken === 'function' ? cssToken('--ap-lunar-void') : '')
+        || (typeof getComputedStyle === 'function'
+          ? getComputedStyle(document.documentElement).getPropertyValue('--ap-lunar-void').trim()
+          : '');
+      const hex = String(raw || '').replace(/^#/, '');
+      if (/^[0-9a-fA-F]{6}$/.test(hex)) return parseInt(hex, 16);
+    } catch (e) { /* token optional */ }
+    return COOL_LUNAR_VOID;
+  }
+
+  function clampCamElevation(el) {
+    return Math.max(CAM_EL_DRAG_MIN, Math.min(CAM_EL_DRAG_MAX, el));
+  }
 
   function isAwardMode() {
     return !!(document.body && document.body.classList.contains('ap-award-511'));
@@ -945,17 +967,18 @@ const FinishShader = {
     if (!spaceFlightMode || !renderer) return;
     const earthT = Math.max(0, Math.min(1, (1.6 - z) / 1.6));
     const galaxyT = Math.max(0, Math.min(1, (z - 3.8) / 1.2));
-    const sky = earthT > 0.5 ? 0x03050c : 0x010108;
+    const voidHex = coolLunarVoidHex();
+    const sky = earthT > 0.5 ? voidHex : 0x03060c;
     renderer.setClearColor(sky, 1);
     if (scene.fog && !portraitMode) {
       scene.fog.color.setHex(sky);
       scene.fog.density = 0.00045 + galaxyT * 0.0007;
     }
-    renderer.toneMappingExposure = 1.38 - galaxyT * 0.14 - (1 - earthT) * 0.06;
+    renderer.toneMappingExposure = 1.42 - galaxyT * 0.14 - (1 - earthT) * 0.05;
     if (hemiLight) {
       hemiLight.intensity = 0;
-      hemiLight.color.setHex(galaxyT > 0.4 ? 0x7080a0 : 0x4a6088);
-      hemiLight.groundColor.setHex(0x020408);
+      hemiLight.color.setHex(galaxyT > 0.4 ? 0x6a7e9a : 0x4e6280);
+      hemiLight.groundColor.setHex(0x05080f);
     }
 
     if (bloomPass) {
@@ -3893,8 +3916,10 @@ const FinishShader = {
   }
 
   function syncPlanetShaderDetail(detail) {
-    const wash = detail ? 0.03 : 0.11;
-    const rim = detail ? 0.04 : 0.08;
+    // Cool-night readability: slightly stronger wash/rim on the cooler void so
+    // planets stay legible without cartoon neon fill.
+    const wash = detail ? 0.04 : 0.14;
+    const rim = detail ? 0.05 : 0.10;
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       const sh = g && g.userData.mat && g.userData.mat.userData.planetShader;
@@ -4040,10 +4065,10 @@ const FinishShader = {
     syncSunGlowProfile(detail);
     syncPlanetShaderDetail(detail);
     if (sunPointLight) {
-      sunPointLight.intensity = detail ? 2.2 : (perfTier === 'high' ? 4.3 : 3.6);
+      sunPointLight.intensity = detail ? 2.35 : (perfTier === 'high' ? 4.15 : 3.45);
     }
     if (sunDirLight) {
-      sunDirLight.intensity = detail ? 1.7 : (perfTier === 'high' ? 2.7 : 2.25);
+      sunDirLight.intensity = detail ? 1.85 : (perfTier === 'high' ? 2.55 : 2.15);
     }
     return detail;
   }
@@ -4066,7 +4091,7 @@ const FinishShader = {
       const fillI = 0;
       const k = Math.min(1, (dt || 0.016) * 4.2);
       if (scene && scene.fog && !portraitMode) {
-        scene.fog.color.setHex(0x040610);
+        scene.fog.color.setHex(coolLunarVoidHex());
         scene.fog.density += (fogDensity - scene.fog.density) * k;
       }
       if (renderer) {
@@ -4074,7 +4099,8 @@ const FinishShader = {
         renderer.toneMappingExposure = instrumentExposure;
       }
       if (hemiLight) {
-        hemiLight.color.setHex(0x4a5870);
+        hemiLight.color.setHex(0x546880);
+        hemiLight.groundColor.setHex(0x05080f);
         hemiLight.intensity += (hemiI - hemiLight.intensity) * k;
       }
       if (sunPointLight) {
@@ -4092,29 +4118,32 @@ const FinishShader = {
     const galaxyT = Math.max(0, Math.min(1, (z - 3.8) / 1.2));
     const earthT = Math.max(0, Math.min(1, (2.2 - z) / 2.2));
     const detail = syncDetailLighting();
+    const voidHex = coolLunarVoidHex();
     if (scene && scene.fog && !portraitMode) {
-      scene.fog.density = 0.00045 + galaxyT * 0.00085;
+      scene.fog.density = 0.00042 + galaxyT * 0.00080;
       if (isLivingSkyHome()) {
-        scene.fog.color.set(0x020307);
+        scene.fog.color.setHex(voidHex);
       } else if (isAwardMode()) {
-        scene.fog.color.set(z >= 5.2 ? 0x0c1016 : z >= 4 ? 0x121826 : z >= 3 ? 0x1a2230 : 0x0c1016);
+        scene.fog.color.setHex(z >= 5.2 ? voidHex : z >= 4 ? 0x0a1018 : z >= 3 ? 0x121a26 : voidHex);
       } else {
-        scene.fog.color.set(z >= 5.2 ? 0x04020c : z >= 4 ? 0x06041a : z >= 3 ? 0x050c18 : 0x050406);
+        scene.fog.color.setHex(z >= 5.2 ? 0x04060c : z >= 4 ? 0x060a12 : z >= 3 ? 0x080e16 : voidHex);
       }
     }
     if (renderer) {
-      let exp = 1.32 - galaxyT * 0.16 - (1 - earthT) * 0.08;
-      if (detail) exp -= 0.12;
+      // Cooler void needs a touch more exposure so bodies stay readable, not neon.
+      let exp = 1.36 - galaxyT * 0.14 - (1 - earthT) * 0.06;
+      if (detail) exp -= 0.10;
       renderer.toneMappingExposure = exp;
     }
     if (hemiLight) {
       if (isAwardMode()) {
-        // v576: at close (Earth) scales, drop the ambient fill so the night limb
-        // falls off to darkness instead of glowing eggshell; cooler tint up close.
-        hemiLight.color.setHex(galaxyT > 0.35 ? 0x8a9ab8 : (earthT > 0.55 ? 0x46586e : 0x5a6a88));
+        // Cool lunar fill tint; intensity stays off so the night limb stays dark.
+        hemiLight.color.setHex(galaxyT > 0.35 ? 0x7a8eaa : (earthT > 0.55 ? 0x42566c : 0x546880));
+        hemiLight.groundColor.setHex(0x05080f);
         hemiLight.intensity = 0;
       } else {
-        hemiLight.color.setHex(galaxyT > 0.35 ? 0x8090b8 : 0x4a6088);
+        hemiLight.color.setHex(galaxyT > 0.35 ? 0x6e82a0 : 0x4e6280);
+        hemiLight.groundColor.setHex(0x05080f);
         hemiLight.intensity = 0;
       }
     }
@@ -5585,26 +5614,27 @@ const FinishShader = {
     syncSceneStarfield(2);
     // Free-explore: brighter, less fog so the live sky reads as a viewer (not a dark void).
     const free = freeExploreMode;
+    const voidHex = coolLunarVoidHex();
     if (scene && scene.fog) {
-      scene.fog.color.setHex(free ? 0x050812 : 0x040610);
+      scene.fog.color.setHex(voidHex);
       scene.fog.density = free
         ? (perfTier === 'high' ? 0.00010 : 0.00014)
-        : (perfTier === 'high' ? 0.00020 : 0.00024);
+        : (perfTier === 'high' ? 0.00018 : 0.00022);
     }
     if (hemiLight) {
-      hemiLight.color.setHex(free ? 0x5a6a88 : 0x4a5870);
-      hemiLight.groundColor.setHex(0x0c0a08);
+      hemiLight.color.setHex(free ? 0x5e7290 : 0x546880);
+      hemiLight.groundColor.setHex(0x05080f);
       hemiLight.intensity = 0;
     }
     if (sunPointLight) {
       sunPointLight.intensity = free
-        ? (perfTier === 'high' ? 2.8 : 2.35)
-        : (perfTier === 'high' ? 2.0 : 1.65);
+        ? (perfTier === 'high' ? 3.05 : 2.55)
+        : (perfTier === 'high' ? 2.2 : 1.85);
     }
     if (sunDirLight) {
       sunDirLight.intensity = free
-        ? (perfTier === 'high' ? 2.0 : 1.7)
-        : (perfTier === 'high' ? 1.45 : 1.2);
+        ? (perfTier === 'high' ? 2.15 : 1.85)
+        : (perfTier === 'high' ? 1.55 : 1.3);
     }
     if (instrumentFillLight) {
       instrumentFillLight.position.copy(camera.position);
@@ -5612,8 +5642,8 @@ const FinishShader = {
     }
     if (renderer) {
       instrumentExposure = free
-        ? (perfTier === 'high' ? 1.18 : 1.12)
-        : (perfTier === 'high' ? 1.16 : 1.10);
+        ? (perfTier === 'high' ? 1.22 : 1.16)
+        : (perfTier === 'high' ? 1.18 : 1.12);
       renderer.toneMappingExposure = instrumentExposure;
     }
     instrumentIdleAz = camAz;
@@ -5629,8 +5659,8 @@ const FinishShader = {
       const sh = g && g.userData.mat && g.userData.mat.userData.planetShader;
       if (!sh || !sh.uniforms.uLightWash) return;
       const selectedPortrait = portraitBody === b.id;
-      sh.uniforms.uLightWash.value = selectedPortrait ? 0.08 : 0.04;
-      sh.uniforms.uRimMul.value = selectedPortrait ? 0.14 : 0.07;
+      sh.uniforms.uLightWash.value = selectedPortrait ? 0.10 : 0.055;
+      sh.uniforms.uRimMul.value = selectedPortrait ? 0.16 : 0.09;
     });
   }
 
@@ -5940,21 +5970,21 @@ const FinishShader = {
         sunGlow.push(sp);
       });
     }
-    sunPointLight = new THREE.PointLight(0xfff4e0, perfTier === 'high' ? 4.3 : 3.6, 0, 1.55);
+    sunPointLight = new THREE.PointLight(0xfff2e6, perfTier === 'high' ? 4.15 : 3.45, 0, 1.55);
     sunMesh.add(sunPointLight);
-    sunDirLight = new THREE.DirectionalLight(0xfff8ec, perfTier === 'high' ? 2.7 : 2.25);
+    sunDirLight = new THREE.DirectionalLight(0xf5f0e4, perfTier === 'high' ? 2.55 : 2.15);
     sunDirLight.position.set(0, 0, 0);
     scene.add(sunDirLight);
     sunDirLightTarget = new THREE.Object3D();
     scene.add(sunDirLightTarget);
     sunDirLight.target = sunDirLightTarget;
-    hemiLight = new THREE.HemisphereLight(0x7088a8, 0x1a1410, 0);
+    hemiLight = new THREE.HemisphereLight(0x6a7e9a, 0x05080f, 0);
     scene.add(hemiLight);
-    ambientLight = new THREE.AmbientLight(0x3a5068, 0);
+    ambientLight = new THREE.AmbientLight(0x2c3a4c, 0);
     scene.add(ambientLight);
     instrumentFillTarget = new THREE.Object3D();
     scene.add(instrumentFillTarget);
-    instrumentFillLight = new THREE.DirectionalLight(0x9bb0cf, 0);
+    instrumentFillLight = new THREE.DirectionalLight(0x8ea2be, 0);
     instrumentFillLight.target = instrumentFillTarget;
     scene.add(instrumentFillLight);
   }
@@ -7002,31 +7032,52 @@ const FinishShader = {
   function ensureBirthHourMarker() {
     if (birthHourMarker || !scene) return birthHourMarker;
     const markerCanvas = document.createElement('canvas');
-    markerCanvas.width = 384;
-    markerCanvas.height = 192;
+    markerCanvas.width = 512;
+    markerCanvas.height = 256;
     const ctx = markerCanvas.getContext('2d');
     if (!ctx) return null;
-    const brass = cssToken('--ap-brass');
-    const paper = cssToken('--ap-paper');
-    if (!brass || !paper) return null;
+    const brass = cssToken('--ap-brass') || '#d8b46a';
+    const paper = cssToken('--ap-paper') || '#f2ecdf';
+    const silver = cssToken('--ap-silver') || '#b9c8dc';
 
     ctx.clearRect(0, 0, markerCanvas.width, markerCanvas.height);
+    // Soft lunar glow behind the mark so Earth reads on cool-night stills / Keep captures.
+    const glow = ctx.createRadialGradient(96, 96, 6, 96, 96, 78);
+    glow.addColorStop(0, 'rgba(185, 200, 220, 0.62)');
+    glow.addColorStop(0.4, 'rgba(216, 180, 106, 0.34)');
+    glow.addColorStop(1, 'rgba(5, 8, 15, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(96, 96, 78, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = brass;
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.arc(96, 96, 40, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = silver;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(96, 96, 27, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = brass;
+    ctx.beginPath();
+    ctx.arc(96, 96, 9, 0, Math.PI * 2);
+    ctx.fill();
     ctx.strokeStyle = brass;
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.arc(72, 72, 30, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(72, 22);
-    ctx.lineTo(72, 42);
+    ctx.moveTo(96, 24);
+    ctx.lineTo(96, 48);
     ctx.stroke();
     ctx.fillStyle = paper;
-    ctx.font = '600 34px "Schibsted Grotesk", system-ui, sans-serif';
+    ctx.font = '700 44px "Schibsted Grotesk", system-ui, sans-serif';
     ctx.textBaseline = 'middle';
-    ctx.fillText('EARTH', 122, 70);
+    ctx.fillText('EARTH', 168, 86);
     ctx.fillStyle = brass;
-    ctx.font = '500 20px "IBM Plex Mono", ui-monospace, monospace';
-    ctx.fillText('HOME', 122, 108);
+    ctx.font = '600 24px "IBM Plex Mono", ui-monospace, monospace';
+    ctx.fillText('HOME', 168, 134);
 
     const texture = new THREE.CanvasTexture(markerCanvas);
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -7036,11 +7087,11 @@ const FinishShader = {
       transparent: true,
       depthTest: false,
       depthWrite: false,
-      opacity: 0.92,
+      opacity: 1,
     });
     birthHourMarker = new THREE.Sprite(material);
     birthHourMarker.name = 'birthHourEarthMarker';
-    birthHourMarker.scale.set(11, 5.5, 1);
+    birthHourMarker.scale.set(16.5, 8.25, 1);
     birthHourMarker.renderOrder = 30;
     birthHourMarker.visible = false;
     scene.add(birthHourMarker);
@@ -7115,7 +7166,7 @@ const FinishShader = {
     const marker = ensureBirthHourMarker();
     if (marker && meshes.earth) {
       marker.position.copy(meshes.earth.position);
-      marker.position.y += 4.2;
+      marker.position.y += 5.6;
       marker.visible = true;
     }
 
@@ -7765,7 +7816,7 @@ const FinishShader = {
       if (Math.abs(orbitVelAz) > 1e-5 || Math.abs(orbitVelEl) > 1e-5) {
         camAz += orbitVelAz * dt;
         camEl += orbitVelEl * dt;
-        camEl = Math.max(-1.35, Math.min(1.48, camEl));
+        camEl = clampCamElevation(camEl);
         orbitVelAz *= Math.pow(0.08, dt); // longer cinematic coast
         orbitVelEl *= Math.pow(0.10, dt);
         if (Math.abs(orbitVelAz) < 1e-4) orbitVelAz = 0;
@@ -8914,7 +8965,7 @@ const FinishShader = {
         const elGain = freeExploreMode ? 0.012 : 0.008;
         camAz -= dx * orbitGain;
         camEl += dy * elGain;
-        camEl = Math.max(-1.35, Math.min(1.48, camEl));
+        camEl = clampCamElevation(camEl);
         if (freeExploreMode) {
           // Build inertia from recent drag deltas (rad/s-ish)
           orbitVelAz = orbitVelAz * 0.55 + (-dx * orbitGain) * 55;
@@ -8938,7 +8989,7 @@ const FinishShader = {
           scrubVel = scrubVel * 0.6 + dx * 0.4;
         }
         camEl += dy * 0.008;
-        camEl = Math.max(-1.3, Math.min(1.45, camEl));
+        camEl = clampCamElevation(camEl);
       }
       lastX = p.x;
       lastY = p.y;
@@ -9220,7 +9271,8 @@ const FinishShader = {
     renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.08;
 
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(isLivingSkyHome() ? 0x020307 : (isAwardMode() ? 0x0c1016 : 0x050406), 0.00045);
+    // Cool lunar void for living-sky home (ap-v880); other skins share the same night.
+    scene.fog = new THREE.FogExp2(isLivingSkyHome() ? COOL_LUNAR_VOID : coolLunarVoidHex(), 0.00042);
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
     runtimeGeneration += 1;
@@ -9268,7 +9320,7 @@ const FinishShader = {
       settleToSystemHeroFrame(false);
       showOrbits = true;
       showLabels = true;
-      renderer.setClearColor(0x030408, 1);
+      renderer.setClearColor(COOL_LUNAR_VOID, 1);
       tuneInstrumentSpace();
       ensureComposer();
     } else if (window.__orbitlabSpaceFlight) {

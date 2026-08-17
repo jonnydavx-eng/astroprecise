@@ -17,6 +17,8 @@
   --ap-void-mid: #0a0e15;
   --ap-void-raised: #0d121b;
   --ap-void-soft: #131b28;
+  /* Cool lunar void — 3D sky/fog clear (orrery-webgl cool-night pass). */
+  --ap-lunar-void: #05080F;
   --ap-jet: var(--ap-void-deep);
   --ap-jet-soft: var(--ap-void);
   --ap-jet-base: var(--ap-void);
