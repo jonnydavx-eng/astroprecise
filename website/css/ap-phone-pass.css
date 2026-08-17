@@ -207,11 +207,11 @@
     min-height: 360px;
   }
   .ap-room-sky {
-    height: min(32svh, 280px);
-    min-height: 168px;
+    height: min(22svh, 200px);
+    min-height: 140px;
   }
   .ap-room-sky .ap-model-stage {
-    min-height: 160px;
+    min-height: 140px;
   }
 
   .btn-primary,

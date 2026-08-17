@@ -1,6 +1,6 @@
 # STATUS — AstroPrecise
 
-**State (2026-08-17 ~19:55 BOOK-T1H4NJ753R):** live still `ap-v876`. Local tip **ap-v885** — sitting on the house, canvas clear, chart/reading sky is a band. Not pushed. Not a 10 until Jonny sits with it.
+**State (2026-08-17 ~20:45 BOOK-T1H4NJ753R):** live still `ap-v876`. Local tip **ap-v888** — sitting handoff, share-as-image, sky-card share, Earth crop. Not a 10 until owner eye. Not pushed.
 
 ## Now
 - Product is the sitting: sky → minute → seven chapters → keep

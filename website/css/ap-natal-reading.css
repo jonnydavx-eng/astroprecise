@@ -6,7 +6,7 @@
 .ap-natal-shell {
   width: min(760px, calc(100% - 40px));
   margin: 0 auto;
-  padding: clamp(48px, 7vw, 88px) 0 calc(140px + var(--bottom-nav-h, 72px));
+  padding: 28px 0 calc(80px + var(--bottom-nav-h, 72px));
 }
 .ap-natal-kicker {
   margin: 0;
@@ -16,9 +16,9 @@
   text-transform: uppercase;
 }
 .page-natal-reading h1 {
-  max-width: 14ch;
-  margin: 16px 0 20px;
-  font: 600 clamp(42px, 7vw, 72px)/.92 var(--ap-display, Georgia, serif);
+  max-width: 16ch;
+  margin: 10px 0 14px;
+  font: 600 clamp(32px, 6vw, 48px)/.98 var(--ap-display, Georgia, serif);
   letter-spacing: -.03em;
 }
 .page-natal-reading h1 em {

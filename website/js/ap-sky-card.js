@@ -67,6 +67,7 @@
   var statusEl = byId('skyCardStatus');
   var ledgerEl = byId('skyCardLedger');
   var downloadBtn = byId('skyCardDownload');
+  var shareBtn = byId('skyCardShare');
   var zoneNote = byId('sky-card-zone');
   var cityInput = byId('sky-card-city');
   var cityDrop = byId('sky-card-city-drop');
@@ -459,6 +460,7 @@
     if (minute.error) {
       say(minute.error, 'refused');
       if (downloadBtn) downloadBtn.disabled = true;
+      if (shareBtn) shareBtn.disabled = true;
       drawn = null;
       placeholder('Nothing computed yet.', 'The card waits for a date and a real place.');
       return;
@@ -467,6 +469,7 @@
     drawCard(minute);
     renderLedger(minute);
     if (downloadBtn) downloadBtn.disabled = false;
+    if (shareBtn) shareBtn.disabled = false;
     say('Computed on this device from ' + minute.utText + ' UT. Nothing was uploaded'
       + (minute.timeKnown ? '' : '; the hour is unknown, so the card says so and withholds the rising sign and the houses') + '.');
   }
@@ -646,6 +649,26 @@
         document.body.appendChild(link);
         link.click();
         link.remove();
+      });
+    }
+    if (shareBtn) {
+      shareBtn.addEventListener('click', function () {
+        if (!drawn || !canvas) return;
+        canvas.toBlob(function (blob) {
+          if (!blob) return;
+          var file = new File([blob], 'astroprecise-sky-card-' + drawn.isoDate + '.png', { type: 'image/png' });
+          var text = 'My sky card · AstroPrecise';
+          if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], title: 'Sky card — AstroPrecise', text: text }).catch(function () {});
+            return;
+          }
+          if (navigator.share) {
+            navigator.share({ title: 'Sky card — AstroPrecise', text: text }).catch(function () {});
+            return;
+          }
+          // Fallback: download
+          if (downloadBtn) downloadBtn.click();
+        }, 'image/png');
       });
     }
 

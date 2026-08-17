@@ -107,20 +107,30 @@
     var btn = document.getElementById('keep-sky');
     if (!btn || btn.dataset.keepMode !== 'birth-hour') return;
     var note = document.getElementById('keep-sky-caption');
-    var valid = detail && Number.isFinite(Number(detail.jd)) &&
+    var dated = detail && Number.isFinite(Number(detail.jd)) &&
       /^\d{4}-\d{2}-\d{2}$/.test(String(detail.birthDate || ''));
+    var valid = dated && detail.timeKnown === true;
     birthContext = valid ? {
       jd: Number(detail.jd),
       birthDate: String(detail.birthDate),
       birthTime: detail.birthTime ? String(detail.birthTime) : null,
-      timeKnown: detail.timeKnown === true,
+      timeKnown: true,
       timeAccuracy: detail.timeAccuracy ? String(detail.timeAccuracy) : '',
       place: detail.place ? String(detail.place) : '',
       timezone: detail.timezone ? String(detail.timezone) : ''
     } : null;
     btn.disabled = !birthContext;
     btn.setAttribute('aria-disabled', birthContext ? 'false' : 'true');
-    if (note) note.textContent = caption(birthContext);
+    if (note) {
+      note.textContent = dated && !valid
+        ? caption({
+          jd: Number(detail.jd),
+          birthDate: String(detail.birthDate),
+          place: detail.place ? String(detail.place) : '',
+          timeKnown: false
+        })
+        : caption(birthContext);
+    }
   }
 
   function keep() {

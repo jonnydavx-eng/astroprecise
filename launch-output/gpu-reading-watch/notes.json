@@ -4,9 +4,9 @@
     "url": "http://127.0.0.1:8790/index.html?nosw=1",
     "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\gpu-reading-watch\\home.png",
     "title": "AstroPrecise — the night you were born, read here",
-    "h1": "Moon in Libra",
-    "kicker": "Tonight · Sun in Leo",
-    "body": "The sky is doing you a favor today.",
+    "h1": "Sit with the sky first",
+    "kicker": "The night you were born",
+    "body": "Earth now, then the minute you arrived, then seven chapters you can keep.",
     "webgl": true,
     "quality": {
       "perfTier": "high",
@@ -14,7 +14,7 @@
       "composer": true,
       "cinematic": false,
       "samples": 4,
-      "camRadius": 4.296060934597366,
+      "camRadius": 2.05,
       "systemCamRadius": 76,
       "maps": {
         "mercury": {
@@ -75,7 +75,7 @@
       "composer": true,
       "cinematic": false,
       "samples": 4,
-      "camRadius": 4.5,
+      "camRadius": 2.05,
       "systemCamRadius": 76,
       "maps": {
         "mercury": {
@@ -136,7 +136,7 @@
       "composer": true,
       "cinematic": false,
       "samples": 4,
-      "camRadius": 4.5,
+      "camRadius": 2.05,
       "systemCamRadius": 76,
       "maps": {
         "mercury": {
@@ -187,9 +187,9 @@
     "url": "http://127.0.0.1:8790/index.html?nosw=1",
     "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\gpu-reading-watch\\home-phone.png",
     "title": "AstroPrecise — the night you were born, read here",
-    "h1": "Moon in Libra",
-    "kicker": "Tonight · Sun in Leo",
-    "body": "The sky is doing you a favor today.",
+    "h1": "Sit with the sky first",
+    "kicker": "The night you were born",
+    "body": "Earth now, then the minute you arrived, then seven chapters you can keep.",
     "webgl": true,
     "quality": {
       "perfTier": "high",
@@ -197,7 +197,7 @@
       "composer": true,
       "cinematic": false,
       "samples": 4,
-      "camRadius": 2.8,
+      "camRadius": 2.05,
       "systemCamRadius": 88,
       "maps": {
         "mercury": {

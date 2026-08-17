@@ -1798,14 +1798,30 @@ const FinishShader = {
     camAz = horiz > 1e-6 ? Math.atan2(_camOff.z, _camOff.x) : 0;
   }
 
+  function syncEarthSittingBodyVisibility() {
+    // Earth sitting (home / room-sky): hide outer worlds so Saturn cannot peek
+    // in a wide short band. Restore as soon as orbits/instrument open.
+    const sitting = focusFrameId === 'earth' && scaleLevel <= 0 && !showOrbits && !introActive;
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
+      if (b.id === 'earth' || b.id === 'sun') {
+        g.visible = true;
+        return;
+      }
+      g.visible = !sitting;
+    });
+    if (moonGroup) moonGroup.visible = !sitting;
+  }
+
   function applyEarthLimbHold() {
-    // Directed Earth pick: hold the FLUX limb (terminator + night lights),
-    // not a generic sphere-center.
-    setEarthTerminatorCamera(2.8, 6 * D2R);
+    // Directed Earth pick: fill the limb; 2.05 + hide outer worlds kills Saturn peek.
+    setEarthTerminatorCamera(2.05, 6 * D2R);
     if (camera) {
       camera.fov = CAM_FOV_CLOSE;
       camera.updateProjectionMatrix();
     }
+    syncEarthSittingBodyVisibility();
   }
 
   /* v576: Earth+Moon shared frame — camera target rides between the two bodies,
@@ -2162,14 +2178,18 @@ const FinishShader = {
     // phones and constrained devices receive the crisp medium tier without a
     // second visible startup swap.
     if (instrumentMode) {
+      const earthStart = selectedPlanetId === 'earth';
       const critical = earthTextureFiles().concat('moon.jpg');
-      BODIES.forEach((b) => {
-        if (b.tex) critical.push(b.tex);
-        if (b.ring) critical.push(b.ring);
-      });
+      if (!earthStart) {
+        BODIES.forEach((b) => {
+          if (b.tex) critical.push(b.tex);
+          if (b.ring) critical.push(b.ring);
+        });
+      }
       const startupQuality = instrumentStartupTextureQuality();
       return Promise.all(Array.from(new Set(critical)).map((file) => requestPreloadTexture(file, startupQuality))).then(() => {
         markTexturesReady(false);
+        if (earthStart) preloadDeferredTextures();
       }).catch(() => {
         markTexturesReady(false);
       });
@@ -4200,7 +4220,9 @@ const FinishShader = {
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
-      g.visible = showSolar;
+      const sittingHide = focusFrameId === 'earth' && scaleLevel <= 0 && !showOrbits && !introActive
+        && b.id !== 'earth' && b.id !== 'sun';
+      g.visible = showSolar && !sittingHide;
       const overviewIn = smoothUnit((z - 1.25) / 0.55);
       const overviewOut = 1 - smoothUnit((z - 2.25) / 0.75);
       const overviewAmount = instrumentMode ? overviewIn * overviewOut : 0;
@@ -4249,7 +4271,8 @@ const FinishShader = {
       if (sunCoronaMesh) sunCoronaMesh.visible = showSolar && z <= 2.4;
     }
     const earthDetailZ = preloaderCosmicJourney ? 1.52 : 1.2;
-    if (moonGroup) moonGroup.visible = showSolar && z <= earthDetailZ;
+    const sittingHide = focusFrameId === 'earth' && scaleLevel <= 0 && !showOrbits && !introActive;
+    if (moonGroup) moonGroup.visible = showSolar && z <= earthDetailZ && !sittingHide;
     if (earthCloud) earthCloud.visible = showSolar && z <= earthDetailZ;
     if (earthOrbitGroup) {
       earthOrbitGroup.visible = showSolar && z <= earthDetailZ;
@@ -8277,6 +8300,9 @@ const FinishShader = {
       }
     } else if (moonFrameActive && !introActive && !portraitMode) {
       syncMoonFrameTarget();
+    } else if (focusFrameId === 'earth' && !introActive && !portraitMode && !scaleAnimActive && !dragging) {
+      // Keep Earth limb filled on home/chart until the user drags (Saturn peek fix).
+      applyEarthLimbHold();
     } else if (!freeExploreMode && scalePreset(scaleLevel).targetEarth && !introActive && !portraitMode) {
       // portrait mode owns camTarget (may be a far planet); the scaleLevel-0 preset
       // otherwise snaps the target back to Earth every frame.
@@ -8468,9 +8494,10 @@ const FinishShader = {
     updatePlanetTrails();
     if (instrumentMode) {
       stabilizeInstrumentSunFrame();
-      const startupVisualsSettled = texturesReady
-        && !envIblLoading
-        && instrumentSunRevealT() >= 0.999;
+      const earthStart = selectedPlanetId === 'earth' && focusFrameId === 'earth';
+      const startupVisualsSettled = earthStart
+        ? (texturesReady && instrumentSunRevealT() >= 0.999)
+        : (texturesReady && !envIblLoading && instrumentSunRevealT() >= 0.999);
       if (instrumentFirstFramePending && startupVisualsSettled) {
         instrumentStableFrames += 1;
         if (instrumentStableFrames >= INSTRUMENT_FIRST_FRAME_FRAMES) {
@@ -9330,11 +9357,22 @@ const FinishShader = {
       applyIntroVisuals(0, 0);
       applyCamera();
     } else if (window.__orbitlabInstrument) {
-      scaleLevel = 2;
       introActive = false;
-      settleToSystemHeroFrame(false);
-      showOrbits = true;
-      showLabels = true;
+      if (selectedPlanetId === 'earth') {
+        scaleLevel = 0;
+        showOrbits = false;
+        showLabels = false;
+        setSelectedPlanet('earth');
+        focusFrameId = 'earth';
+        updateScaleVisuals(0);
+        applyEarthLimbHold();
+        applyCamera();
+      } else {
+        scaleLevel = 2;
+        settleToSystemHeroFrame(false);
+        showOrbits = true;
+        showLabels = true;
+      }
       renderer.setClearColor(COOL_LUNAR_VOID, 1);
       tuneInstrumentSpace();
       ensureComposer();
@@ -11178,6 +11216,7 @@ const FinishShader = {
       showOrbits = !!b;
       updateScaleVisuals(scaleLevel);
       if (instrumentMode) tuneInstrumentOrbits();
+      syncEarthSittingBodyVisibility();
     },
     setShowLabels(b) { showLabels = !!b; updateScaleVisuals(scaleLevel); },
     getSpeed() { return daysPerSec; },
@@ -11362,6 +11401,7 @@ const FinishShader = {
     getCamRadius() { return camRadius; },
     startOpeningBeat,
     flyToBody,
+    applyEarthLimbHold,
     /**
      * Galaxy focus: Sun, named arm, or edge-on / face-on framing (schematic).
      * @param {string} feature 'sun' | arm name | 'edge' | 'face'

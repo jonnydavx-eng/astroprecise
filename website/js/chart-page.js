@@ -886,6 +886,7 @@
     renderWheel(chart);
     renderTabs(chart);
     initTabs();
+    writeSittingHandoff(chart);
 
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     wrapEl.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
@@ -914,6 +915,39 @@
      the tab closes. `from=chart` stays in the query: it names the route, not a
      person. Where storage is blocked, the visitor re-enters the details rather
      than leaking a birth moment into a request URL. */
+  function writeSittingHandoff(chart) {
+    if (!chart) return;
+    try {
+      sessionStorage.setItem('ap-sitting-handoff', JSON.stringify({
+        name: chart.name || '',
+        birthDate: chart.birthDate || '',
+        birthTime: chart.birthTime || '',
+        city: chart.city || '',
+        place: chart.city || '',
+        lat: chart.lat,
+        lon: chart.lon,
+        tz: chart.tz || '',
+        timezone: chart.tz || '',
+        timeKnown: chart.timeKnown === true,
+        timeAccuracy: chart.timeAccuracy || 'unknown',
+        houseSystem: chart.houseSystem || 'equal',
+        ts: Date.now(),
+      }));
+    } catch (e) { /* storage blocked — visitor re-enters */ }
+  }
+
+  function openSitting() {
+    if (!currentChart) return;
+    writeSittingHandoff(currentChart);
+    // Also save locally so deep-reading's saved-chart path stays warm.
+    try {
+      if (window.AstroProfile && typeof AstroProfile.saveChart === 'function') {
+        AstroProfile.saveChart(saveDataFor(currentChart));
+      }
+    } catch (e) { /* optional */ }
+    window.location.href = 'deep-reading.html?from=chart';
+  }
+
   function eclipseHandoffHref(chart) {
     const target = 'eclipse.html?from=chart';
     try {
@@ -1392,6 +1426,147 @@
     const tabsRoot = document.querySelector('.chart-detail-tabs') || document;
     if (!wheel || !wheel.querySelector('svg')) return;
     AstroChartRender.linkWheelAndTables(wheel, tabsRoot);
+    wireWheelReadingSelect(wheel);
+  }
+
+  let wheelReadingWired = false;
+  function wireWheelReadingSelect(wheel) {
+    if (wheelReadingWired) return;
+    wheelReadingWired = true;
+    const panel = document.getElementById('chart-wheel-reading');
+    const titleEl = document.getElementById('chart-wheel-reading-title');
+    const metaEl = document.getElementById('chart-wheel-reading-meta');
+    const bodyEl = document.getElementById('chart-wheel-reading-body');
+    const openBtn = document.getElementById('chart-wheel-reading-open');
+    const clearBtn = document.getElementById('chart-wheel-reading-clear');
+    let lastTarget = null;
+
+    function syncWheelCardReadingClass() {
+      const card = document.querySelector('.chart-wheel-card');
+      if (!card || !panel) return;
+      card.classList.toggle('chart-wheel-card--has-reading', !panel.hidden);
+    }
+
+    function keepWheelInView() {
+      const wrap = document.getElementById('natal-wheel-wrap');
+      if (!wrap || typeof wrap.scrollIntoView !== 'function') return;
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
+
+    function hidePanel() {
+      if (!panel) return;
+      panel.hidden = true;
+      lastTarget = null;
+      syncWheelCardReadingClass();
+    }
+
+    function showPanel(title, meta, body, target) {
+      if (!panel || !titleEl || !bodyEl) return;
+      titleEl.textContent = title || '';
+      if (metaEl) metaEl.textContent = meta || '';
+      bodyEl.textContent = body || '';
+      panel.hidden = false;
+      lastTarget = target;
+      syncWheelCardReadingClass();
+      keepWheelInView();
+    }
+
+    function cardReadingText(card) {
+      if (!card) return '';
+      const bits = [];
+      card.querySelectorAll('.ap-reading__lead, .ap-reading-lead, .ap-reading-card__lead, .ap-reading-card__body').forEach(function (n) {
+        const t = (n.textContent || '').replace(/\s+/g, ' ').trim();
+        if (t) bits.push(t);
+      });
+      const joined = bits.join(' ').trim();
+      if (joined.length <= 420) return joined;
+      return joined.slice(0, 419).trim() + '…';
+    }
+
+    function openPlanetReading(planet) {
+      selectChartTab('tab-planets');
+      const card = document.querySelector('#planets-table .ap-reading-card--placement[data-planet="' + CSS.escape(planet) + '"]');
+      if (!card) {
+        showPanel(bodyLabel(planet), 'Reading not ready yet', 'Calculate the chart, then click again.', null);
+        return;
+      }
+      const h = card.querySelector('.ap-reading-card__title');
+      const meta = card.querySelector('.ap-reading-card__meta');
+      showPanel(
+        (h && h.textContent.trim()) || bodyLabel(planet),
+        meta ? meta.textContent.trim() : '',
+        cardReadingText(card) || 'Open the Planets tab for the full placement reading.',
+        card
+      );
+      card.classList.add('is-linked-active');
+    }
+
+    function openAspectReading(detail) {
+      selectChartTab('tab-aspects');
+      const key = detail.aspectKey || '';
+      const card = key
+        ? document.querySelector('#aspects-table .ap-reading-card--aspect[data-aspect-key="' + CSS.escape(key) + '"]')
+        : null;
+      const p1 = (detail.planets && detail.planets[0]) || '';
+      const p2 = (detail.planets && detail.planets[1]) || '';
+      if (!card) {
+        showPanel(
+          bodyLabel(p1) + ' · ' + bodyLabel(p2),
+          detail.orb ? detail.orb + '° off exact' : '',
+          'This contact is on the wheel; open Aspects for the full reading.',
+          null
+        );
+        return;
+      }
+      const h = card.querySelector('.ap-reading-card__title');
+      const meta = card.querySelector('.ap-reading-card__meta');
+      showPanel(
+        (h && h.textContent.trim()) || (bodyLabel(p1) + ' · ' + bodyLabel(p2)),
+        meta ? meta.textContent.trim() : (detail.orb ? detail.orb + '° off exact' : ''),
+        cardReadingText(card) || 'Open Aspects for the full contact reading.',
+        card
+      );
+      card.classList.add('is-linked-active');
+    }
+
+    // Listen on the mount so re-rendered SVGs still bubble here.
+    wheel.addEventListener('ap:wheel-select', function (ev) {
+      const d = ev.detail || {};
+      if (d.kind === 'clear') {
+        hidePanel();
+        return;
+      }
+      if (d.kind === 'planet' && d.planet) {
+        openPlanetReading(d.planet);
+        return;
+      }
+      if (d.kind === 'aspect') {
+        openAspectReading(d);
+      }
+    });
+    wheel.addEventListener('ap:wheel-clear', hidePanel);
+
+    if (openBtn) {
+      openBtn.addEventListener('click', function () {
+        openSitting();
+      });
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        const svg = wheel.querySelector('svg');
+        if (svg) {
+          svg.removeAttribute('data-wheel-pin');
+          svg.querySelectorAll('.aspect-line, .planet-glyph').forEach(function (n) {
+            n.classList.remove('is-highlight', 'is-active', 'is-dimmed');
+          });
+          svg.dispatchEvent(new CustomEvent('ap:wheel-clear', { bubbles: true }));
+        }
+        document.querySelectorAll('.is-linked-active').forEach(function (n) {
+          n.classList.remove('is-linked-active');
+        });
+        hidePanel();
+      });
+    }
   }
 
   function analysisSection(title, html, opts) {
@@ -1419,6 +1594,12 @@
   // ── Tabs ──────────────────────────────────────────────────────────────────
 
   let tabsInit = false;
+  let activateChartTabBtn = null;
+  function selectChartTab(panelId) {
+    if (!activateChartTabBtn) return;
+    const btn = document.querySelector('.chart-detail-tabs [aria-controls="' + panelId + '"]');
+    if (btn) activateChartTabBtn(btn, false);
+  }
   function initTabs() {
     if (tabsInit) return;
     tabsInit = true;
@@ -1437,6 +1618,7 @@
       });
       if (moveFocus) btn.focus();
     }
+    activateChartTabBtn = activateTab;
 
     tabs.forEach(function (btn, index) {
       btn.tabIndex = btn.getAttribute('aria-selected') === 'true' ? 0 : -1;
@@ -1484,6 +1666,15 @@
   function buildChartShareUrl() {
     return location.origin + location.pathname.replace(/[^/]+$/, '') + 'chart.html';
   }
+
+  document.getElementById('sitting-cta')?.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    openSitting();
+  });
+  document.getElementById('sitting-link-strip')?.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    openSitting();
+  });
 
   document.getElementById('save-btn')?.addEventListener('click', () => {
     if (!currentChart || !window.AstroProfile) {
@@ -2225,7 +2416,7 @@
     x.beginPath(); x.moveTo(W * 0.2, H - 88 * S); x.lineTo(W * 0.8, H - 88 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${17 * S}px ${FONT_SANS}`;
-    x.fillText('astroprecise  ·  wear your sky', W / 2, H - 58 * S);
+    x.fillText('astroprecise  ·  the night you were born', W / 2, H - 58 * S);
 
     return cv;
   }

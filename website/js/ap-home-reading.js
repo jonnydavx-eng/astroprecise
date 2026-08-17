@@ -1,6 +1,6 @@
 /**
- * Home reading plate — sky-now (or natal, if a saved chart has longitudes).
- * Uses AstroOracle.getDailyInsight. Never invents a birth minute or a LIVE badge.
+ * Home sitting plate — invitation first.
+ * Sky-now signs may caption the source line. They must not replace the sitting.
  */
 (function () {
   'use strict';
@@ -46,54 +46,42 @@
     return chart && chart.positions ? chart : null;
   }
 
-  function firstSentence(text) {
-    var raw = String(text || '').replace(/\s+/g, ' ').trim();
-    if (!raw) return '';
-    var cut = raw.search(/[.!?](\s|$)/);
-    if (cut < 0) return raw.length > 220 ? raw.slice(0, 217) + '…' : raw;
-    return raw.slice(0, cut + 1);
-  }
-
   function paint(insight, natal) {
     var kicker = $('ap-reading-kicker');
     var title = $('ap-reading-title');
     var body = $('ap-reading-body');
     var source = $('ap-reading-source');
-    if (!insight) return;
+    var moon = insight && insight.meta && insight.meta.moonSign;
+    var sun = insight && insight.meta && insight.meta.sunSign;
 
-    var moon = insight.meta && insight.meta.moonSign;
-    var sun = insight.meta && insight.meta.sunSign;
-    var mode = insight.meta && insight.meta.mode;
-
-    if (kicker) {
-      if (mode === 'natal' && natal) kicker.textContent = 'Your sky tonight';
-      else if (sun) kicker.textContent = 'Tonight · Sun in ' + sun;
-      else kicker.textContent = 'The night you were born';
-    }
-    if (title) {
-      if (moon) title.textContent = 'Moon in ' + moon;
-      else title.textContent = insight.headline || 'Sit with the sky first';
-    }
+    if (kicker) kicker.textContent = natal ? 'Your minute is on this device' : 'The night you were born';
+    if (title) title.textContent = natal ? 'Sit with the hour you arrived' : 'Sit with the sky first';
     if (body) {
-      var line = firstSentence(insight.body);
-      body.textContent = line || body.textContent;
+      body.textContent = natal
+        ? 'The chart is already here. Open the seven chapters, or keep a still of that hour.'
+        : 'Earth now, then the minute you arrived, then seven chapters you can keep.';
     }
     if (source) {
-      source.textContent = mode === 'natal'
+      var signs = [];
+      if (moon) signs.push('Moon in ' + moon);
+      if (sun) signs.push('Sun in ' + sun);
+      source.textContent = natal
         ? 'From the chart saved on this device. Astrology is symbolic, not a scientific claim.'
-        : 'Sky now, computed here. Cast a chart to read this hour against your birth.';
+        : (signs.length ? signs.join(' · ') + '. Computed here. Cast a chart to read this hour against your birth.'
+          : 'Positions computed on this device. Astrology is offered for reflection, not as fact.');
     }
   }
 
   function run() {
+    var natal = savedChart();
+    paint(null, natal);
     loadScript(oracleSrc).then(function () {
       if (!window.AstroOracle || typeof window.AstroOracle.getDailyInsight !== 'function') return;
-      var natal = savedChart();
       var insight = window.AstroOracle.getDailyInsight(natal, new Date());
       paint(insight, natal);
     }).catch(function () {
       var source = $('ap-reading-source');
-      if (source) source.textContent = 'The reading engine is unavailable. The model above is still the live sky.';
+      if (source) source.textContent = 'The reading engine is unavailable. The model below is still the live sky.';
     });
   }
 

@@ -7,7 +7,7 @@
   <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
   <title>Your minute — free birth chart, then the sitting | AstroPrecise</title>
-  <script>window.AP_ASSET_V='876';</script>
+  <script>window.AP_ASSET_V='888';</script>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/fonts.css?v=880" />
 <link rel="manifest" href="manifest.json" />
@@ -70,12 +70,12 @@
     <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=883">
-  <script src="js/void-orrery-adapter.js?v=880" defer></script>
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=888">
+  <script src="js/void-orrery-adapter.js?v=888" defer></script>
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880" />
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
   <link rel="stylesheet" href="css/ap-home-v835.css?v=885">
-  <link rel="stylesheet" href="css/ap-chart-v835.css?v=880" />
+  <link rel="stylesheet" href="css/ap-chart-v835.css?v=888" />
   <link rel="stylesheet" href="css/ap-keep-sky.css?v=880">
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
@@ -124,10 +124,6 @@
       <div class="ap-model-vignette" aria-hidden="true"></div>
       <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Opening the night</strong><em>Your minute is below</em></div>
     </div>
-    <p class="ap-keep-row">
-      <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
-      <span class="action-note" id="keep-sky-caption">Begin with your minute to keep that hour’s still. The live sky stays free.</span>
-    </p>
   </section>
 
 
@@ -143,13 +139,12 @@
         <p class="chart-hero__eyebrow" aria-hidden="true">THE NIGHT YOU WERE BORN · ON THIS DEVICE</p>
         <h1 class="chart-hero__title" id="page-title">Your minute, then the sitting</h1>
         <p class="chart-hero__subtitle">
-          Date, town, and the hour if you have it. The chart is the receipt. The seven chapters are the sitting. Keep a card if you want — the live sky stays free.
+          Date, town, and the hour if you have it. The chart is the receipt. The seven chapters are the sitting.
         </p>
-        <p class="chart-hero__timecode" aria-hidden="true">PUBLISHED ASTRONOMICAL METHODS &middot; 1800&ndash;2200 CE &middot; <b>ON THIS DEVICE</b> &middot; UNKNOWN TIME IS SAID, NOT FAKED</p>
         <p class="chart-hero__actions">
-          <a href="#chart-form-wrapper" class="btn btn--primary chart-hero__cta">Begin with my minute</a>
-          <a href="deep-reading.html" class="btn btn--ghost chart-hero__cta">Open the seven chapters</a>
-          <span class="chart-hero__proof">No account · the minute never goes in the link</span>
+          <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
+          <span class="action-note" id="keep-sky-caption">Cast with a clock time to keep that hour’s still.</span>
+          <a href="deep-reading.html" class="chart-hero__proof">Seven chapters if the minute is already here</a>
         </p>
       </div>
     </section>
@@ -445,33 +440,34 @@
               <span class="result-badge"><span class="eng-star-mark"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
               <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
               <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Moon, Rising, MC and houses — time-sensitive points are withheld without it</span>
-              <a href="eclipse.html#contact" id="eclipse-handoff" class="result-eclipse-handoff">See where the 12 Aug eclipse landed in this chart &rarr;</a>
+              <a href="eclipse.html#contact" id="eclipse-handoff" class="result-eclipse-handoff result-eclipse-handoff--quiet">See where the 12 Aug eclipse landed &rarr;</a>
               <nav class="ap-keep-path-strip" aria-label="Keep this sky">
                 <p class="ap-keep-path-strip__label">Keep this sky</p>
                 <a href="#keep-sky">3D still</a>
                 <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
                 <a href="sky-card.html" data-ap-keep-minute>Sky card</a>
                 <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
-                <a href="deep-reading.html">Seven-chapter reading</a>
+                <a href="deep-reading.html" id="sitting-link-strip">Seven-chapter sitting</a>
               </nav>
               <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (&plusmn;7&deg;) and still withholds angles. Keep is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
             </div>
             <div class="result-actions" id="result-actions-row">
-              <a id="eclipse-cta" href="eclipse.html#contact" class="action-btn action-btn--gold" aria-label="See where the 12 August eclipse landed in this chart, prefilled from this chart">
-                12 Aug eclipse in this chart &rarr;
-              </a>
+              <button type="button" id="sitting-cta" class="action-btn action-btn--ember" aria-label="Open the seven-chapter sitting for this minute">
+                Open the sitting &rarr;
+              </button>
+              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share a personalised chart image">
+                Share this sky
+              </button>
               <button id="poster-btn" class="action-btn action-btn--ghost" aria-haspopup="menu" aria-controls="share-format-menu" aria-expanded="false" aria-label="Export chart artwork as a print plate, square, story, wallpaper, or Big Three card">
                 <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Export artwork
               </button>
               <button id="save-btn" class="action-btn action-btn--ghost" aria-label="Save chart on this device">
                 Save
               </button>
-              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share this chart">
-                Share link
-              </button>
               <details class="result-actions__more">
                 <summary class="result-actions__more-toggle">More</summary>
                 <div class="result-actions__more-menu" role="group" aria-label="More chart actions">
+                  <a id="eclipse-cta" href="eclipse.html#contact" class="action-btn action-btn--ghost" aria-label="See where the 12 August eclipse landed in this chart">12 Aug eclipse</a>
                   <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">Big Three card</button>
                   <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">Export JSON</button>
                 </div>
@@ -507,8 +503,19 @@
                   </div>
                 </header>
                 <div class="natal-wheel-container" aria-live="polite" aria-busy="true" id="natal-wheel-wrap">
-                  <div id="natal-wheel" class="natal-wheel-mount" role="img" aria-label="Natal chart wheel — VSOP87 positions on schematic ecliptic rings"></div>
+                  <div id="natal-wheel" class="natal-wheel-mount" role="img" aria-label="Natal chart wheel — VSOP87 positions on schematic ecliptic rings. Click a planet or aspect for its reading."></div>
                 </div>
+                <aside id="chart-wheel-reading" class="chart-wheel-reading" hidden aria-live="polite">
+                  <p class="chart-wheel-reading__kicker">From the wheel</p>
+                  <h3 class="chart-wheel-reading__title" id="chart-wheel-reading-title"></h3>
+                  <p class="chart-wheel-reading__meta" id="chart-wheel-reading-meta"></p>
+                  <p class="chart-wheel-reading__body" id="chart-wheel-reading-body"></p>
+                  <div class="chart-wheel-reading__actions">
+                    <button type="button" class="chart-wheel-reading__open" id="chart-wheel-reading-open">Open the sitting</button>
+                    <button type="button" class="chart-wheel-reading__clear" id="chart-wheel-reading-clear">Clear</button>
+                  </div>
+                </aside>
+                <p class="chart-wheel-hint">Click a planet or aspect line · Esc clears</p>
               </div>
             </div>
           </section>
@@ -610,7 +617,7 @@
   <script src="js/ephemeris.js?v=880" defer></script>
   <script src="js/celestial-seals.js?v=880" defer></script>
   <script src="js/reading-format.js?v=880" defer></script>
-  <script src="js/chart-render.js?v=880" defer></script>
+  <script src="js/chart-render.js?v=888" defer></script>
   <script src="js/ap-load-interpretations.js?v=880" defer></script>
   <script src="js/profile.js?v=880" defer></script>
   <script src="js/ap-personal-memory.js?v=880" defer></script>
@@ -619,7 +626,7 @@
   <script src="js/ap-footer-inject.js?v=880" defer></script>
   <script src="js/app.js?v=880" defer></script>
   <script src="js/ap-canvas-seals.js?v=880" defer></script>
-  <script src="js/chart-page.js?v=880" defer></script>
+  <script src="js/chart-page.js?v=888" defer></script>
   <script src="js/ap-room-sky.js?v=880" defer></script>
   <script src="js/ap-keep-sky.js?v=880" defer></script>
   <script src="js/ap-keep-minute.js?v=880" defer></script>

@@ -1,0 +1,49 @@
+[
+  {
+    "name": "01-home",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\01-home.png",
+    "url": "http://127.0.0.1:8790/index.html?nosw=1"
+  },
+  {
+    "name": "02-chart-form",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\02-chart-form.png",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+  },
+  {
+    "name": "03-chart-result-top",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\03-chart-result-top.png",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+  },
+  {
+    "name": "04-wheel-before-click",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\04-wheel-before-click.png",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+  },
+  {
+    "name": "click-state",
+    "panelHidden": false,
+    "title": "Sun in Cancer",
+    "body": "The Sun in Cancer makes home, family, and emotional safety the foundation of your identity. Your nurturing instinct is a defining quality — you create belonging wherever you go. De",
+    "active": 1,
+    "dimmed": 13,
+    "hasReadingClass": true,
+    "wheelVisible": true,
+    "panelVisible": true,
+    "bothInView": true
+  },
+  {
+    "name": "05-wheel-after-sun-click",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\05-wheel-after-sun-click.png",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+  },
+  {
+    "name": "06-wheel-phone",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\06-wheel-phone.png",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+  },
+  {
+    "name": "07-home-phone",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\07-home-phone.png",
+    "url": "http://127.0.0.1:8790/index.html?nosw=1"
+  }
+]

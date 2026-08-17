@@ -59,21 +59,22 @@
     Libra:'LI', Scorpio:'SC', Sagittarius:'SG', Capricorn:'CP', Aquarius:'AQ', Pisces:'PI'
   };
 
-  // Observatory Palette 2026 — COOL void + engraved brass (DESIGN.md tokens).
-  // Kept the WARM.* name to minimise churn; the VALUES are the live cool tokens
-  // from css/ap-palette-2026.css (canvas/SVG can't read CSS vars, so mirror them).
+  // Observatory Visual Wave 2026-08 — cool lunar night.
+  // Kept the WARM.* name to minimise churn; VALUES mirror css/ap-palette-2026.css
+  // (SVG can't read CSS vars). Copper #B86B4A never paints the wheel — CTA only.
   const WARM = {
-    void:      '#07070A',   // --ap-void-deep
-    plate:     '#1A2230',   // --ap-void-raised
-    gold:      '#d8b46a',   // silver chrome (was brass)
-    goldDim:   '#6A7078',   // silver shadow
-    parchment: '#f2ecdf',   // starlight text
-    silver:    '#ddd3bf',   // --ap-text-secondary
-    silverDim: '#9a8f7a',   // --ap-text-muted
-    hairline:  'rgba(216,180,106,0.22)',   // brass hairline
-    mauve:     '#4A7580',   // was oxblood — now the water element accent (faint nebula rim)
-    synastry:  '#B87898',
-    transit:   '#9DB88A'
+    void:      '#05080F',   // --ap-void-deep
+    plate:     '#141E2E',   // --ap-void-raised
+    gold:      '#8FA3B8',   // instrument silver (was brass)
+    goldDim:   '#5C6B7A',   // silver shadow
+    parchment: '#E6ECF2',   // --ap-paper
+    silver:    '#8A97A8',   // --ap-mute
+    silverDim: '#6E7A88',
+    hairline:  'rgba(143,163,184,0.28)',
+    mauve:     '#3A5560',   // faint rim — not purple
+    synastry:  '#9AB0C4',
+    transit:   '#7EB8A8',   // --ap-proof
+    proof:     '#7EB8A8'
   };
 
   // ─── Zodiac data (AP_ZODIAC) ───────────────────────────────────────────────
@@ -85,18 +86,17 @@
   // Element fill colors — the four semantic element accents (DESIGN.md).
   // These are deliberately NOT flattened to brass; zodiac keeps its element hue.
   const ELEMENT_FILL = {
-    fire:  '#B85A42',   // --ap-element-fire
-    earth: '#5A7A48',   // --ap-element-earth
-    air:   '#8A7A6A',   // --ap-element-air (muted taupe — replaces retired lilac)
-    water: '#4A7580'    // --ap-element-water
+    fire:  '#8F5E4A',
+    earth: '#5A6E5C',
+    air:   '#6E7E90',
+    water: '#4A6570'
   };
 
-  // Text/stroke accent per element — a lightened tint of the same accent.
   const ELEMENT_TEXT = {
-    fire:  '#D07E63',
-    earth: '#7E9E68',
-    air:   '#A89A88',
-    water: '#6E9AA5'
+    fire:  '#B88872',
+    earth: '#849688',
+    air:   '#9AABBA',
+    water: '#7A96A0'
   };
 
   const SIGN_ELEMENT = (Z && Z.SIGN_ELEMENT) || {
@@ -147,13 +147,12 @@
   const displayBodyName = name => BODY_DISPLAY[name] || String(name || '');
 
 
-  // Planet marker tints — atlas family: warm brass/parchment with ember node
-  // accents; Neptune keeps a deep sea-teal (planet realism, not brand ice).
+  // Cool-night planet markers — readable on #05080F; never CTA copper.
   const PLANET_COLORS = {
-    Sun:'#e8d3a0',      Moon:'#C6BCA4',    Mercury:'#BFB39A', Venus:'#C89BA2',
-    Mars:'#B85A42',     Jupiter:'#d8b46a', Saturn:'#C8A86B',  Uranus:'#A6B8A6',
-    Neptune:'#527a72',  Pluto:'#8A7A6A',   Chiron:'#8E9E78',  Lilith:'#8E86A0',
-    NorthNode:'#ff7a45', SouthNode:'#a08a52', Ascendant:'#f2ecdf', Midheaven:'#f2ecdf'
+    Sun:'#D6CDB8',      Moon:'#E6ECF2',    Mercury:'#A8B6C4', Venus:'#B5A4A8',
+    Mars:'#A8725C',     Jupiter:'#C5D4E0', Saturn:'#8A97A8',  Uranus:'#7EB8A8',
+    Neptune:'#5A8488',  Pluto:'#6A7888',   Chiron:'#8A9A88',  Lilith:'#7A8490',
+    NorthNode:'#A88870', SouthNode:'#6E7A88', Ascendant:'#E6ECF2', Midheaven:'#C5D4E0'
   };
 
   const PLANET_ORDER = [
@@ -168,18 +167,17 @@
   // Colours unchanged (already warm/on-brand); opacity cascade lives in
   // ASPECT_OPACITY below (majors ~0.75–0.85, minors ~0.38–0.45).
   const ASPECT_STYLE = {
-    Conjunction:     { color:'#f2ecdf', width:1.8, dash:null  },   /* parchment (neutral) */
-    Opposition:      { color:'#C25A4E', width:1.8, dash:null  },   /* muted red — element-fire family */
-    Trine:           { color:'#4A7580', width:1.8, dash:null  },   /* water accent (harmonious) */
-    Square:          { color:'#B0703E', width:1.8, dash:null  },   /* muted amber, clear of the terracotta CTA */
-    Sextile:         { color:'#5A7A48', width:1.2, dash:null  },   /* earth/sage accent */
-    // Minor aspects — gray dashed, deliberately recessive
-    Quincunx:        { color:'#6B7280', width:0.6, dash:'3,3' },
-    SemiSquare:      { color:'#6B7280', width:0.6, dash:'3,3' },
-    Semisextile:     { color:'#6B7280', width:0.6, dash:'3,3' },
-    Sesquiquadrate:  { color:'#6B7280', width:0.6, dash:'3,3' },
-    Quintile:        { color:'#6B7280', width:0.6, dash:'3,3' },
-    BiQuintile:      { color:'#6B7280', width:0.6, dash:'3,3' }
+    Conjunction:     { color:'#E6ECF2', width:1.8, dash:null  },
+    Opposition:      { color:'#A8725C', width:1.8, dash:null  },
+    Trine:           { color:'#7EB8A8', width:1.8, dash:null  },
+    Square:          { color:'#8F6E55', width:1.8, dash:null  },
+    Sextile:         { color:'#5A6E5C', width:1.2, dash:null  },
+    Quincunx:        { color:'#6B7888', width:0.6, dash:'3,3' },
+    SemiSquare:      { color:'#6B7888', width:0.6, dash:'3,3' },
+    Semisextile:     { color:'#6B7888', width:0.6, dash:'3,3' },
+    Sesquiquadrate:  { color:'#6B7888', width:0.6, dash:'3,3' },
+    Quintile:        { color:'#6B7888', width:0.6, dash:'3,3' },
+    BiQuintile:      { color:'#6B7888', width:0.6, dash:'3,3' }
   };
 
   const ASPECT_OPACITY = {
@@ -357,7 +355,7 @@
     const neb = el('radialGradient', { id: idPrefix + 'nebula', cx: '50%', cy: '48%', r: '58%' });
     [[0,   WARM.plate, 0.95],
      [0.55, WARM.void,  1],
-     [0.88, '#121826', 0.6],
+     [0.88, WARM.void, 0.85],
      [1,   WARM.mauve, 0.10]
     ].forEach(([o, c, op]) => {
       neb.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c, 'stop-opacity': op }));
@@ -366,7 +364,7 @@
 
     // Engraved outer ring gradient
     const ringG = el('linearGradient', { id: idPrefix + 'ringG', x1: '0%', y1: '0%', x2: '100%', y2: '100%' });
-    [[0, '#f2ecdf'], [0.45, WARM.gold], [1, WARM.goldDim]].forEach(([o, c]) => {
+    [[0, WARM.parchment], [0.45, WARM.gold], [1, WARM.goldDim]].forEach(([o, c]) => {
       ringG.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c }));
     });
     defs.appendChild(ringG);
@@ -663,7 +661,7 @@
       g.appendChild(el('line', {
         x1: p1.x.toFixed(2), y1: p1.y.toFixed(2),
         x2: p2.x.toFixed(2), y2: p2.y.toFixed(2),
-        stroke: isAngle ? WARM.gold : 'rgba(190,178,152,0.30)',
+        stroke: isAngle ? WARM.gold : 'rgba(143,163,184,0.30)',
         'stroke-width': isAngle ? '2' : '0.8',
         opacity: isAngle ? '1' : '0.75'
       }));
@@ -730,10 +728,16 @@
     const glyphs = svg.querySelectorAll('.planet-glyph');
     const planetSet = o.planets ? new Set(o.planets.filter(Boolean)) : null;
     const hasFocus = !!(o.aspectKey || (planetSet && planetSet.size));
+    const planetFocus = !!(planetSet && planetSet.size && !o.aspectKey);
 
     lines.forEach(l => {
-      const match = o.aspectKey && l.getAttribute('data-aspect-key') === o.aspectKey;
-      l.classList.toggle('is-highlight', !!match);
+      const matchKey = o.aspectKey && l.getAttribute('data-aspect-key') === o.aspectKey;
+      const matchPlanet = planetFocus && (
+        planetSet.has(l.getAttribute('data-planet1')) ||
+        planetSet.has(l.getAttribute('data-planet2'))
+      );
+      const match = !!(matchKey || matchPlanet);
+      l.classList.toggle('is-highlight', match);
       l.classList.toggle('is-dimmed', hasFocus && !match);
     });
     glyphs.forEach(gn => {
@@ -836,30 +840,103 @@
   function wireAspectHover(svg) {
     const lines = svg.querySelectorAll('.aspect-line');
     if (!lines.length) return;
-    const focusLine = (line) => {
+    const pinned = () => svg.getAttribute('data-wheel-pin') === '1';
+    const focusLine = (line, pin) => {
       highlightOnWheel(svg, {
         aspectKey: line.getAttribute('data-aspect-key'),
         planets: [line.getAttribute('data-planet1'), line.getAttribute('data-planet2')]
       });
+      if (pin) svg.setAttribute('data-wheel-pin', '1');
       svg.dispatchEvent(new CustomEvent('ap:wheel-highlight', {
         bubbles: true,
         detail: {
           aspectKey: line.getAttribute('data-aspect-key'),
-          planets: [line.getAttribute('data-planet1'), line.getAttribute('data-planet2')]
+          planets: [line.getAttribute('data-planet1'), line.getAttribute('data-planet2')],
+          pinned: !!pin
         }
       }));
+      if (pin) {
+        svg.dispatchEvent(new CustomEvent('ap:wheel-select', {
+          bubbles: true,
+          detail: {
+            kind: 'aspect',
+            aspectKey: line.getAttribute('data-aspect-key'),
+            planets: [line.getAttribute('data-planet1'), line.getAttribute('data-planet2')],
+            aspectName: line.getAttribute('data-aspect-name') || '',
+            orb: line.getAttribute('data-aspect-orb') || ''
+          }
+        }));
+      }
     };
     const reset = () => {
+      if (pinned()) return;
       clearWheelHighlight(svg);
       hidePopover();
       svg.dispatchEvent(new CustomEvent('ap:wheel-clear', { bubbles: true }));
     };
     lines.forEach(line => {
-      line.addEventListener('mouseenter', () => { focusLine(line); showPopover(line); });
+      line.addEventListener('mouseenter', () => { focusLine(line, false); showPopover(line); });
       line.addEventListener('mouseleave', reset);
-      // Keyboard a11y preserved: focus/blur drive the same highlight (popover too).
-      line.addEventListener('focus', () => { focusLine(line); showPopover(line); });
+      line.addEventListener('focus', () => { focusLine(line, false); showPopover(line); });
       line.addEventListener('blur', reset);
+      line.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        focusLine(line, true);
+        showPopover(line);
+      });
+      line.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        ev.preventDefault();
+        focusLine(line, true);
+        showPopover(line);
+      });
+    });
+  }
+
+  function wirePlanetSelect(svg) {
+    const glyphs = svg.querySelectorAll('.planet-glyph');
+    if (!glyphs.length) return;
+    glyphs.forEach(gn => {
+      const name = gn.getAttribute('data-planet');
+      if (!name) return;
+      gn.setAttribute('tabindex', '0');
+      gn.setAttribute('role', 'button');
+      gn.setAttribute('aria-label', displayBodyName(name) + ' — open reading');
+      gn.style.cursor = 'pointer';
+      const select = () => {
+        svg.setAttribute('data-wheel-pin', '1');
+        highlightOnWheel(svg, { planets: [name] });
+        hidePopover();
+        svg.dispatchEvent(new CustomEvent('ap:wheel-highlight', {
+          bubbles: true,
+          detail: { planets: [name], pinned: true }
+        }));
+        svg.dispatchEvent(new CustomEvent('ap:wheel-select', {
+          bubbles: true,
+          detail: { kind: 'planet', planets: [name], planet: name }
+        }));
+      };
+      gn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        select();
+      });
+      gn.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        ev.preventDefault();
+        select();
+      });
+    });
+    svg.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Escape') return;
+      svg.removeAttribute('data-wheel-pin');
+      clearWheelHighlight(svg);
+      hidePopover();
+      svg.dispatchEvent(new CustomEvent('ap:wheel-clear', { bubbles: true }));
+      svg.dispatchEvent(new CustomEvent('ap:wheel-select', {
+        bubbles: true,
+        detail: { kind: 'clear' }
+      }));
     });
   }
 
@@ -1053,7 +1130,7 @@
         const rTxt = el('text', {
           x: orp.x.toFixed(2), y: orp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-          fill: '#C25A4E',
+          fill: '#A8725C',
           'font-size': '11',
           'font-family': 'serif, system-ui',
           'font-weight': '600',
@@ -1491,6 +1568,7 @@
     if (showAsp) drawAspectLines(svg, aspects, positions, ascLon, prefix);
     drawPlanets(svg, positions, ascLon, prefix, { showDegrees: showDeg, compact });
     drawCenter(svg, chartData.name || 'Natal Chart', prefix);
+    wirePlanetSelect(svg);
 
     container.appendChild(svg);
 

@@ -13,13 +13,13 @@
   <script src="js/ephemeris.js?v=880" defer></script>
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880">
   <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-  <link rel="stylesheet" href="css/ap-natal-reading.css?v=880">
+  <link rel="stylesheet" href="css/ap-natal-reading.css?v=885">
   <link rel="stylesheet" href="css/ap-keep-sky.css?v=880">
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
   <link rel="modulepreload" href="js/orrery-webgl.js?v=883">
-  <script src="js/void-orrery-adapter.js?v=880" defer></script>
+  <script src="js/void-orrery-adapter.js?v=885" defer></script>
   <link rel="stylesheet" href="css/ap-home-v835.css?v=885">
 </head>
 <body class="page-natal-reading ap-launch-article">
@@ -60,18 +60,6 @@
   <main id="natal-main" class="ap-natal-shell">
     <p class="ap-natal-kicker">The night you were born · seven chapters · on this device</p>
     <h1>Sit with the hour you arrived.</h1>
-    <p class="ap-natal-lede">This is the sitting. Seven chapters from a real computed chart — date, town, and an honest zone. If the hour is missing we say so, and we do not invent noon as a birth time. The live sky above is not behind a paywall. Place search sends only the town name. Birth date and time stay here.</p>
-
-    <div class="ap-natal-ledger" aria-label="What is computed and what is offered">
-      <div>
-        <span>Observed</span>
-        <p>Planetary longitudes from the in-browser engine. Rising sign and houses only when the hour and the town’s coordinates are both known. The live sky above is this minute, not the birth minute.</p>
-      </div>
-      <div class="ap-natal-ledger--meaning">
-        <span>Meaning</span>
-        <p>Tradition, offered for reflection — never a prediction, never a verdict, never an AI conversation. Astronomy first; words only as far as the numbers earn.</p>
-      </div>
-    </div>
 
     <form id="natalReadingForm" class="ap-natal-form">
       <label class="ap-natal-saved" id="savedChartOption" hidden><input type="checkbox" id="useSavedChart" checked><span id="savedChartLabel">Use my saved chart</span></label>
@@ -87,7 +75,8 @@
           <input type="hidden" id="natal-lon">
         </label>
       </div>
-      <p class="ap-natal-note" id="natalStatus" role="status">Cast a free chart first, or enter a date and town here. Without a birth time we compute the date at 12:00 in the chosen zone as a date reference, not a birth hour. The Moon is held approximate (±7°). Angles and houses are withheld.</p>
+      <p class="ap-natal-lede">Seven chapters from a real computed chart. If the hour is missing we say so. The live sky above is not behind a paywall.</p>
+      <p class="ap-natal-note" id="natalStatus" role="status">Date and town. Time if you have it. Without a time we use 12:00 as a date reference, not a birth hour.</p>
       <button type="submit" data-natal-submit disabled aria-busy="true" aria-describedby="natalStatus">Begin the sitting</button>
     </form>
 
@@ -120,7 +109,7 @@
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
   <script src="js/ap-footer-inject.js?v=880" defer></script>
-  <script type="module" src="js/ap-natal-reading.js?v=880"></script>
+  <script type="module" src="js/ap-natal-reading.js?v=888"></script>
   <script src="js/ap-room-sky.js?v=880" defer></script>
   <script src="js/ap-keep-minute.js?v=880" defer></script>
 </body>

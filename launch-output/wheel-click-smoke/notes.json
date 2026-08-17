@@ -1,0 +1,13 @@
+{
+  "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887",
+  "steps": [
+    "wheel rendered",
+    {
+      "selected": "Sun",
+      "title": "Sun in Cancer",
+      "bodyLen": 420,
+      "coolVoid": true
+    }
+  ],
+  "ok": true
+}

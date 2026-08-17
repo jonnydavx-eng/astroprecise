@@ -94,8 +94,8 @@
   inset: auto;
   flex: 0 0 auto;
   width: 100%;
-  height: min(28svh, 240px);
-  min-height: 160px;
+  height: min(22svh, 200px);
+  min-height: 140px;
 }
 
 .ap-room-sky:has(.ap-keep-row) .ap-model-stage void-orrery,

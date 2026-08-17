@@ -24,8 +24,8 @@
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=883">
-    <script src="js/void-orrery-adapter.js?v=883" defer></script>
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=888">
+    <script src="js/void-orrery-adapter.js?v=888" defer></script>
     <script src="js/ap-nav-model.js?v=884" defer></script>
     <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=883">
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
@@ -64,14 +64,15 @@
   <main id="main-content">
     <section class="ap-live-stage" id="lead" aria-label="Live sky Observatory">
       <div class="ap-live-intro ap-reading-plate">
-        <p class="ap-reading-kicker" id="ap-reading-kicker">The night you were born</p>
-        <h1 class="ap-live-heading" id="ap-reading-title">Sit with the sky first</h1>
-        <p class="ap-live-copy" id="ap-reading-body">This is a sitting. Earth now, then the minute you arrived, then seven chapters you can keep. The instrument waits.</p>
-        <p class="ap-reading-source" id="ap-reading-source">Positions computed on this device. Astrology is offered for reflection, not as fact.</p>
-        <div class="ap-live-actions">
+        <div class="ap-reading-plate__copy">
+          <p class="ap-reading-kicker" id="ap-reading-kicker">The night you were born</p>
+          <h1 class="ap-live-heading" id="ap-reading-title">Sit with the sky first</h1>
+          <p class="ap-live-copy" id="ap-reading-body">Earth now, then the minute you arrived, then seven chapters you can keep.</p>
+          <p class="ap-reading-source" id="ap-reading-source">Positions computed on this device. Astrology is offered for reflection, not as fact.</p>
+        </div>
+        <div class="ap-reading-plate__act">
           <a class="ap-action ap-action--primary" href="chart.html">Begin with my minute</a>
-          <a class="ap-action ap-action--ghost" href="deep-reading.html">Open the seven chapters</a>
-          <button type="button" class="ap-action ap-action--ghost" id="ap-open-instrument">Use the instrument</button>
+          <p class="ap-reading-more"><a href="deep-reading.html">Seven chapters</a> if the minute is already here.</p>
         </div>
       </div>
       <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
@@ -93,7 +94,7 @@
             <span id="sky-scale-status">Solar system</span>
             <span id="sky-time-status">Computing UTC</span>
           </div>
-          <p class="ap-model-hint">Drag to orbit · scales and worlds below the disc</p>
+          <p class="ap-model-hint">Drag to orbit · <button type="button" class="ap-hint-link" id="ap-open-instrument">use the instrument</button></p>
           <div class="ap-control-group ap-control-group--scale">
             <div class="ap-control-head"><p class="ap-panel-label">Scale</p><span class="ap-control-note">Earth · Inner · System</span></div>
             <div id="mladder" role="group" aria-label="Choose spatial scale"></div>
@@ -133,17 +134,6 @@
       </aside>
     </section>
 
-    <section class="ap-event-rail ap-reading-path" aria-labelledby="event-rail-title">
-      <div class="ap-event-rail__intro">
-        <p class="ap-live-eyebrow">The sitting</p>
-        <h2 id="event-rail-title">Chart. Reading. Keep.</h2>
-        <a href="deep-reading.html">Start with the seven chapters</a>
-      </div>
-      <a class="ap-event-ticket" href="chart.html"><span>01 · Minute</span><strong>Your birth sky</strong><p>Date, place, and the hour if you have it. Positions stay on this device. Unknown time is said, not faked.</p><em>Begin with my minute →</em></a>
-      <a class="ap-event-ticket ap-event-ticket--next" href="deep-reading.html"><span>02 · Sitting</span><strong>Seven chapters</strong><p>The night you were born, read in full. Sun, Moon, the weight of the chart, then this season.</p><em>Open the reading →</em></a>
-      <a class="ap-event-ticket" href="sky-card.html" data-ap-keep-minute><span>03 · Keep</span><strong>Card and still</strong><p>A card of that minute, and a 3D still of the system that hour. Optional. Play stays free.</p><em>Keep this sky →</em></a>
-    </section>
-
     <section class="ap-personal-entry" id="personal" aria-labelledby="personal-title">
       <div class="ap-personal-entry__inner">
         <div>
@@ -170,6 +160,17 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <section class="ap-event-rail ap-reading-path" aria-labelledby="event-rail-title">
+      <div class="ap-event-rail__intro">
+        <p class="ap-live-eyebrow">The sitting</p>
+        <h2 id="event-rail-title">Chart. Reading. Keep.</h2>
+        <a href="deep-reading.html">Start with the seven chapters</a>
+      </div>
+      <a class="ap-event-ticket" href="chart.html"><span>01 · Minute</span><strong>Your birth sky</strong><p>Date, place, and the hour if you have it. Positions stay on this device. Unknown time is said, not faked.</p><em>Begin with my minute →</em></a>
+      <a class="ap-event-ticket ap-event-ticket--next" href="deep-reading.html"><span>02 · Sitting</span><strong>Seven chapters</strong><p>The night you were born, read in full. Sun, Moon, the weight of the chart, then this season.</p><em>Open the reading →</em></a>
+      <a class="ap-event-ticket" href="sky-card.html" data-ap-keep-minute><span>03 · Keep</span><strong>Card and still</strong><p>A card of that minute, and a 3D still of the system that hour. Optional. Play stays free.</p><em>Keep this sky →</em></a>
     </section>
 
     <section class="edition" aria-labelledby="edition-title">
@@ -254,7 +255,7 @@
   </script>
   <script src="js/ap-observatory-controls-v835.js?v=880" defer></script>
     <script src="js/ap-observatory-v834.js?v=883" defer></script>
-    <script src="js/ap-home-reading.js?v=884" defer></script>
+    <script src="js/ap-home-reading.js?v=885" defer></script>
     <script src="js/ap-nav-prefetch.js?v=880" defer data-ap-nav-prefetch="1"></script>
     <script src="js/ap-sky-time.js?v=880" defer></script>
     <script src="js/ap-footer-inject.js?v=880" defer></script>

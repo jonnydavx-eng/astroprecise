@@ -54,6 +54,18 @@ if (!W.includes('const COOL_LUNAR_VOID = 0x05080F')) {
 } else {
   ok('living-sky fog uses cool lunar void #05080F');
 }
+if (!W.includes('setEarthTerminatorCamera(2.05, 6 * D2R)') || !W.includes('applyEarthLimbHold,')) {
+  fail('Earth limb hold must be 2.05 and public for adapter snap');
+}
+if (!W.includes('syncEarthSittingBodyVisibility') || !W.includes("const sitting = focusFrameId === 'earth'")) {
+  fail('Earth sitting must hide outer worlds that peek in wide bands');
+}
+if (!W.includes("const earthStart = selectedPlanetId === 'earth'") || !A.includes('O.applyEarthLimbHold()')) {
+  fail('Earth-start must snap limb + earth-only texture gate');
+}
+if (W.includes('setEarthTerminatorCamera(2.8, 6 * D2R)') || W.includes('setEarthTerminatorCamera(2.15, 6 * D2R)')) {
+  fail('Earth limb hold still uses a Saturn-peek radius');
+}
 if (!W.includes('function clampCamElevation(el)') || !W.includes('const CAM_EL_DRAG_MIN')) {
   fail('drag elevation clamp missing');
 } else {
@@ -114,7 +126,7 @@ else {
   if (!indexKeepHtml.includes('ap-home-keep.js?v=880')) {
     fail('Home must load ap-home-keep.js to publish birth-hour context');
   }
-  if (!indexKeepHtml.includes('ap-reading-room') || !indexKeepHtml.includes('ap-home-reading.js?v=884')) {
+  if (!indexKeepHtml.includes('ap-reading-room') || !indexKeepHtml.includes('ap-home-reading.js?v=885')) {
     fail('Home must open as a reading room and load ap-home-reading.js');
   }
   if (!indexKeepHtml.includes('start-radius="8"') || !indexKeepHtml.includes('start-focus="earth"')) {
@@ -252,9 +264,9 @@ if (got.join() !== expectedOwners.join()) {
   fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=883/.test(indexHtml)) fail('Home missing v883 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=883"/.test(indexHtml)) {
-  fail('Home missing exact v883 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=888/.test(indexHtml)) fail('Home missing v887 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=888"/.test(indexHtml)) {
+  fail('Home missing exact v887 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
@@ -333,7 +345,7 @@ if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a 
 if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
 if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v885"')) fail('service worker release identity is not ap-v885');
+if (!sw.includes('const V = "ap-v888"')) fail('service worker release identity is not ap-v888');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 

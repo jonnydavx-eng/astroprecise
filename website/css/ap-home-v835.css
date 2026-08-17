@@ -662,6 +662,37 @@
   color: var(--ap-paper);
 }
 
+.ap-reading-room .ap-reading-more {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ap-mute, var(--ap-paper-faint));
+}
+.ap-reading-room .ap-reading-more a {
+  color: var(--ap-paper);
+  text-underline-offset: 3px;
+}
+.ap-reading-room .ap-hint-link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ap-paper);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.ap-reading-room:not(.is-instrument-open) .ap-model-status {
+  display: none;
+}
+.ap-reading-room .ap-personal-entry__inner {
+  padding-block: 36px;
+}
+.ap-reading-room .edition {
+  display: none;
+}
+
 @media (min-width: 701px) {
   .ap-reading-room .ap-live-stage {
     display: flex;
@@ -670,42 +701,47 @@
     min-height: 720px;
     max-height: none;
   }
+  .ap-reading-room .ap-live-intro {
+    position: relative;
+    top: auto;
+    left: auto;
+    z-index: 6;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.6fr);
+    align-items: end;
+    gap: 16px 28px;
+    width: auto;
+    padding: 14px 22px 12px;
+    border: 0;
+    background: var(--ap-void-deep);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    pointer-events: auto;
+    flex: 0 0 auto;
+  }
+  .ap-reading-room .ap-reading-source { margin-top: 8px; }
   .ap-reading-room .ap-model-stage {
     position: relative;
     inset: auto;
     flex: 1 1 auto;
     height: auto;
-    min-height: 480px;
+    min-height: 420px;
   }
-  .ap-reading-room .ap-live-intro {
-    position: absolute;
-    z-index: 6;
-    top: 88px;
-    left: 22px;
-    width: min(420px, 40vw);
-    padding: 0;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    pointer-events: none;
-  }
-  .ap-reading-room .ap-live-intro .ap-action { pointer-events: auto; }
   .ap-reading-room .ap-live-heading {
-    max-width: 14ch;
-    margin: 0 0 14px;
-    font-size: clamp(40px, 5.4vw, 72px);
+    max-width: 18ch;
+    margin: 0 0 10px;
+    font-size: clamp(32px, 4vw, 48px);
     font-weight: 600;
     font-style: italic;
-    line-height: 0.96;
+    line-height: 1;
     letter-spacing: -0.03em;
     color: var(--ap-paper);
   }
   .ap-reading-room .ap-live-copy {
-    max-width: 38ch;
-    font-size: 18px;
-    line-height: 1.55;
+    max-width: 46ch;
+    font-size: 17px;
+    line-height: 1.5;
     color: var(--ap-paper-dim);
   }
   .ap-reading-room .ap-live-actions {
@@ -713,17 +749,22 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
-    margin-top: 22px;
+    margin-top: 16px;
   }
   .ap-reading-room .ap-control-panel {
     position: relative;
     z-index: 5;
+    display: block;
     max-height: none;
-    padding: 16px clamp(16px, 2.4vw, 32px) 18px;
+    padding: 8px 22px;
     opacity: 1;
     overflow: visible;
     pointer-events: auto;
     flex: 0 0 auto;
+  }
+  .ap-reading-room:not(.is-instrument-open) .ap-control-group,
+  .ap-reading-room:not(.is-instrument-open) .ap-glass-hud__meta {
+    display: none;
   }
 }
 
@@ -748,21 +789,29 @@
     pointer-events: auto;
   }
   .ap-reading-room .ap-live-heading {
-    font-size: clamp(32px, 10vw, 44px);
+    font-size: clamp(28px, 8vw, 38px);
     font-style: italic;
   }
   .ap-reading-room .ap-live-copy { font-size: 16px; }
   .ap-reading-room .ap-live-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .ap-reading-room .ap-action--primary {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
   .ap-reading-room .ap-model-stage {
     position: relative;
     order: 1;
     inset: auto;
-    height: 48svh;
-    min-height: 280px;
+    height: 42svh;
+    min-height: 240px;
   }
   .ap-reading-room .ap-mobile-flight-deck {
     order: 2;
     display: grid;
+  }
+  .ap-reading-room:not(.is-instrument-open) .ap-mobile-flight-deck {
+    display: none;
   }
   .ap-reading-room .ap-control-panel {
     order: 3;
@@ -771,13 +820,22 @@
     overflow: visible;
     pointer-events: auto;
   }
+  .ap-reading-room:not(.is-instrument-open) .ap-control-group,
+  .ap-reading-room:not(.is-instrument-open) .ap-glass-hud__meta {
+    display: none;
+  }
+}
+
+.ap-room-sky .orrery-dom-label,
+.ap-reading-room .orrery-dom-label {
+  display: none !important;
 }
 
 /* Shared sky on tool rooms. A band — the sitting form stays on the first screen. */
 .ap-room-sky {
   position: relative;
-  height: min(32vh, 280px);
-  min-height: 168px;
+  height: min(22vh, 200px);
+  min-height: 140px;
   overflow: hidden;
   border-bottom: 1px solid var(--ap-line, rgba(185, 200, 220, .2));
   background: var(--ap-void-deep);

@@ -428,8 +428,10 @@
             self.insertBefore(cv, self._ph || null);
             var api = (self._engineKind === 'canvas' ? runningEngine : window.Orrery3D) || runningEngine;
             if (!api || typeof api.init !== 'function') throw new Error('Orrery3D missing');
+            var earthStart = String(self.getAttribute('start-focus') || self.getAttribute('startfocus') || '').toLowerCase() === 'earth';
+            var roomSky = !!(self.closest && self.closest('.ap-room-sky'));
             var options = self._engineKind === 'webgl'
-              ? { instrument: true, freeExplore: true, webglOnly: self._strict3D, showOrbits: true, showLabels: true, selectedPlanet: 'sun' }
+              ? { instrument: true, freeExplore: true, webglOnly: self._strict3D, showOrbits: !(earthStart || roomSky), showLabels: !(earthStart || roomSky), selectedPlanet: earthStart ? 'earth' : 'sun' }
               : { skipIntro: true, fromLite: true };
             if (self._strict3D) self._armWatchdog();
             var res = api.init(cv, options);
@@ -467,16 +469,30 @@
         if (this.getAttribute('orbits') === 'off') {
           try { if (O.setShowOrbits) O.setShowOrbits(false); } catch (e) {}
         }
-        // start-radius wins over start-focus (legacy frames the focus body FROM
-        // that radius; the engine's scale presets are the honest equivalent).
+        // Radius sets the scale. Focus still flies there — otherwise Earth-start
+        // with start-radius="8" left Saturn in frame and never framed Earth.
         var sr = parseFloat(this.getAttribute('start-radius') || this.getAttribute('startradius'));
         var sf = this.getAttribute('start-focus') || this.getAttribute('startfocus');
         if (!isNaN(sr)) {
           this._applyScaleIndex(radiusToLevel(sr), false);
-        } else if (sf) {
+        }
+        if (sf) {
           this._suppressFocusKey = String(sf).toLowerCase();
           this._suppressFocusUntil = Date.now() + 1500;
-          this._engineFlyTo(sf);
+          var key = String(sf).toLowerCase();
+          if (key === 'earth' && O.applyEarthLimbHold) {
+            try {
+              if (O.setScaleLevel) O.setScaleLevel(0, false);
+              O.applyEarthLimbHold();
+              if (O.setShowOrbits) O.setShowOrbits(false);
+              if (O.setShowLabels) O.setShowLabels(false);
+            } catch (e) {}
+          } else {
+            this._engineFlyTo(sf);
+          }
+        }
+        if (sf === 'earth' || (this.closest && this.closest('.ap-room-sky'))) {
+          try { if (O.setShowOrbits) O.setShowOrbits(false); } catch (e) {}
         }
         // state captured while unready, then the queued consumer calls, in order
         this._reapplyState();

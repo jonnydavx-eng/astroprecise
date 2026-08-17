@@ -89,6 +89,20 @@ function computeNatal(engine, instant, lat, lon, timeKnown) {
   return natalFromPositions(engine.allPlanetPositions(jd), null, false);
 }
 
+function getSittingHandoff() {
+  try {
+    const raw = sessionStorage.getItem('ap-sitting-handoff');
+    if (!raw) return null;
+    sessionStorage.removeItem('ap-sitting-handoff');
+    const data = JSON.parse(raw);
+    if (!data || !(data.birthDate || data.date)) return null;
+    if (data.ts && (Date.now() - Number(data.ts)) > 6 * 60 * 60 * 1000) return null;
+    return data;
+  } catch (_) {
+    return null;
+  }
+}
+
 function getActiveChart() {
   try {
     const charts = JSON.parse(localStorage.getItem('ap_charts') || '[]');
@@ -98,6 +112,39 @@ function getActiveChart() {
   } catch (_) {
     return null;
   }
+}
+
+function seedHandoffForm(chart) {
+  if (!chart) return false;
+  const date = chart.birthDate || chart.date;
+  const zone = chart.tz || chart.timezone;
+  if (!date || !validTimeZone(zone)) return false;
+  byId('dob').value = date;
+  const known = chartTimeKnown(chart);
+  const savedTime = chart.birthTime || chart.time || '';
+  if (known && savedTime) byId('tob').value = savedTime;
+  else byId('tob').value = '';
+  byId('tz').value = zone;
+  const city = byId('natal-city');
+  const note = byId('natal-zone');
+  const lat = Number(chart.lat);
+  const lon = Number(chart.lon);
+  if (city) city.value = chart.place || chart.city || zone;
+  if (note) {
+    note.textContent = Number.isFinite(lat) && Number.isFinite(lon)
+      ? `${zone} · ${lat.toFixed(2)}, ${lon.toFixed(2)}`
+      : zone;
+  }
+  if (Number.isFinite(lat)) byId('natal-lat').value = String(lat);
+  if (Number.isFinite(lon)) byId('natal-lon').value = String(lon);
+  const box = byId('useSavedChart');
+  if (box) box.checked = false;
+  const option = byId('savedChartOption');
+  if (option) {
+    option.hidden = false;
+    byId('savedChartLabel').textContent = `Just cast · ${chart.name || date}`;
+  }
+  return true;
 }
 
 function chartTimeKnown(chart) {
@@ -391,6 +438,7 @@ async function init() {
       return response.json();
     }),
   ]);
+  const handoff = getSittingHandoff();
   const savedChart = getActiveChart();
   const savedMeta = seedSavedChart(savedChart);
   const form = byId('natalReadingForm');
@@ -398,6 +446,13 @@ async function init() {
   if (submit) {
     submit.disabled = false;
     submit.setAttribute('aria-busy', 'false');
+  }
+  if (handoff && seedHandoffForm(handoff)) {
+    queueMicrotask(function () { form.requestSubmit(); });
+  } else if (savedMeta) {
+    const box = byId('useSavedChart');
+    if (box) box.checked = true;
+    queueMicrotask(function () { form.requestSubmit(); });
   }
   form.addEventListener('submit', (event) => {
     event.preventDefault();
