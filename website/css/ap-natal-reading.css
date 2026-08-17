@@ -227,7 +227,13 @@
     align-items: flex-start;
     gap: 10px;
   }
-  .ap-natal-also p { font-size: 12px; }
+  .ap-natal-also p { font-size: 16px; line-height: 1.5; }
+  .ap-natal-also a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
 }
 @media print {
   .site-header,
