@@ -7,17 +7,40 @@
   {
     "name": "02-chart-form",
     "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\02-chart-form.png",
-    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=889"
+  },
+  {
+    "name": "02-first-screen",
+    "eclipseVisible": false,
+    "keepVisible": false,
+    "heroActionsVisible": false,
+    "titleVisible": true,
+    "formVisible": true,
+    "formTop": 337,
+    "skyH": 128,
+    "skyOverflow": "hidden"
   },
   {
     "name": "03-chart-result-top",
     "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\03-chart-result-top.png",
-    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=889"
+  },
+  {
+    "name": "03-result-first-screen",
+    "nameVisible": true,
+    "wheelVisible": true,
+    "sittingVisible": true,
+    "badgeVisible": false,
+    "exportVisible": false,
+    "moreOpen": false,
+    "eclipseStripVisible": false,
+    "wheelTop": 179,
+    "sittingTop": 82
   },
   {
     "name": "04-wheel-before-click",
     "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\04-wheel-before-click.png",
-    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=889"
   },
   {
     "name": "click-state",
@@ -34,12 +57,34 @@
   {
     "name": "05-wheel-after-sun-click",
     "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\05-wheel-after-sun-click.png",
-    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=889"
+  },
+  {
+    "name": "06a-phone-form",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\06a-phone-form.png",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=889"
+  },
+  {
+    "name": "06a-phone-form",
+    "formVisible": true,
+    "dateVisible": true,
+    "eclipseVisible": false,
+    "keepVisible": false,
+    "dateTop": 374,
+    "skyH": 96
   },
   {
     "name": "06-wheel-phone",
     "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\score-look\\06-wheel-phone.png",
-    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=887"
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1&v=889"
+  },
+  {
+    "name": "06-phone-result",
+    "wheelVisible": true,
+    "sittingVisible": true,
+    "badgeVisible": false,
+    "exportVisible": false,
+    "tabsVisible": false
   },
   {
     "name": "07-home-phone",

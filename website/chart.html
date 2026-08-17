@@ -7,7 +7,7 @@
   <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
   <title>Your minute — free birth chart, then the sitting | AstroPrecise</title>
-  <script>window.AP_ASSET_V='888';</script>
+  <script>window.AP_ASSET_V='889';</script>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/fonts.css?v=880" />
 <link rel="manifest" href="manifest.json" />
@@ -75,7 +75,7 @@
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880" />
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
   <link rel="stylesheet" href="css/ap-home-v835.css?v=885">
-  <link rel="stylesheet" href="css/ap-chart-v835.css?v=888" />
+  <link rel="stylesheet" href="css/ap-chart-v835.css?v=889" />
   <link rel="stylesheet" href="css/ap-keep-sky.css?v=880">
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
@@ -118,9 +118,9 @@
     </nav>
   </header>
 
-  <section class="ap-room-sky" aria-label="Live sky">
-    <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
-      <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+  <section class="ap-room-sky ap-earth-band" aria-label="Earth now">
+    <div class="ap-model-stage" role="group" aria-label="Earth in the live sky" aria-busy="true">
+      <void-orrery id="orr" start-radius="2" start-focus="earth" data-wheel="off" data-renderer="webgl-only" aria-label="Earth in the living sky"></void-orrery>
       <div class="ap-model-vignette" aria-hidden="true"></div>
       <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Opening the night</strong><em>Your minute is below</em></div>
     </div>
@@ -141,16 +141,11 @@
         <p class="chart-hero__subtitle">
           Date, town, and the hour if you have it. The chart is the receipt. The seven chapters are the sitting.
         </p>
-        <p class="chart-hero__actions">
-          <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
-          <span class="action-note" id="keep-sky-caption">Cast with a clock time to keep that hour’s still.</span>
-          <a href="deep-reading.html" class="chart-hero__proof">Seven chapters if the minute is already here</a>
-        </p>
       </div>
     </section>
 
-    <!-- ECLIPSE STRIP — route the funnel's SEO entry into the event -->
-    <section class="container chart-eclipse-strip" aria-label="The 12 August eclipse and natal reading">
+    <!-- ECLIPSE STRIP — kept for SEO copy; first screen never shows it. -->
+    <section class="container chart-eclipse-strip" hidden aria-hidden="true" aria-label="The 12 August eclipse and natal reading">
       <a href="eclipse.html#contact" class="chart-eclipse-strip__link">
         <span class="chart-eclipse-strip__fact">The eclipse · 12 Aug 2026 · has passed · partial across the UK · totality in Greenland, Iceland, northern Russia, Spain and a small part of Portugal</span>
         <span class="chart-eclipse-strip__action">See where it landed in your chart &rarr;</span>
@@ -431,61 +426,17 @@
       ============================================================ -->
       <div id="chart-result" class="hidden" aria-live="polite" aria-label="Birth chart results">
 
-        <!-- Result Header -->
-        <div class="result-header-card animate-in">
-          <div class="result-header-inner">
-            <div class="result-header-meta">
-              <h2 id="result-name"></h2>
-              <p id="result-date"></p>
-              <span class="result-badge"><span class="eng-star-mark"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
-              <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
-              <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Moon, Rising, MC and houses — time-sensitive points are withheld without it</span>
-              <a href="eclipse.html#contact" id="eclipse-handoff" class="result-eclipse-handoff result-eclipse-handoff--quiet">See where the 12 Aug eclipse landed &rarr;</a>
-              <nav class="ap-keep-path-strip" aria-label="Keep this sky">
-                <p class="ap-keep-path-strip__label">Keep this sky</p>
-                <a href="#keep-sky">3D still</a>
-                <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
-                <a href="sky-card.html" data-ap-keep-minute>Sky card</a>
-                <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
-                <a href="deep-reading.html" id="sitting-link-strip">Seven-chapter sitting</a>
-              </nav>
-              <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (&plusmn;7&deg;) and still withholds angles. Keep is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
-            </div>
-            <div class="result-actions" id="result-actions-row">
-              <button type="button" id="sitting-cta" class="action-btn action-btn--ember" aria-label="Open the seven-chapter sitting for this minute">
-                Open the sitting &rarr;
-              </button>
-              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share a personalised chart image">
-                Share this sky
-              </button>
-              <button id="poster-btn" class="action-btn action-btn--ghost" aria-haspopup="menu" aria-controls="share-format-menu" aria-expanded="false" aria-label="Export chart artwork as a print plate, square, story, wallpaper, or Big Three card">
-                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Export artwork
-              </button>
-              <button id="save-btn" class="action-btn action-btn--ghost" aria-label="Save chart on this device">
-                Save
-              </button>
-              <details class="result-actions__more">
-                <summary class="result-actions__more-toggle">More</summary>
-                <div class="result-actions__more-menu" role="group" aria-label="More chart actions">
-                  <a id="eclipse-cta" href="eclipse.html#contact" class="action-btn action-btn--ghost" aria-label="See where the 12 August eclipse landed in this chart">12 Aug eclipse</a>
-                  <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">Big Three card</button>
-                  <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">Export JSON</button>
-                </div>
-              </details>
-            </div>
+        <header class="chart-sitting-hero animate-in">
+          <div class="chart-sitting-hero__id result-header-meta">
+            <h2 id="result-name"></h2>
+            <p id="result-date"></p>
           </div>
-        </div>
+          <button type="button" id="sitting-cta" class="action-btn action-btn--ember" aria-label="Open the seven-chapter sitting for this minute">
+            Open the sitting
+          </button>
+        </header>
 
-        <!-- Big Three -->
-        <section class="big-three-section animate-in animate-in--delay-1" role="group" aria-labelledby="big-three-heading">
-          <h2 id="big-three-heading" class="sr-only">Core placements and time-dependent angles</h2>
-          <div id="big-three" class="big-three-grid"></div>
-        </section>
-
-        <!-- Wheel hero + detail tabs -->
-        <div class="chart-results-grid animate-in animate-in--delay-2">
-
-          <!-- Natal Wheel — centerpiece instrument -->
+        <div class="chart-results-grid animate-in">
           <section class="chart-wheel-hero" aria-label="Natal chart wheel diagram">
             <div class="chart-wheel-stage">
               <div class="chart-wheel-card">
@@ -498,8 +449,8 @@
                     </span>
                   </span>
                   <div class="chart-wheel-header__text">
-                <p class="chart-wheel-label"><span class="eng-star-mark"></span>Natal wheel</p>
-                    <p class="chart-wheel-sublabel">Engraved ecliptic instrument · ASC at nine o'clock</p>
+                    <p class="chart-wheel-label"><span class="eng-star-mark"></span>Natal wheel</p>
+                    <p class="chart-wheel-sublabel">Click a body · the sitting is the next door</p>
                   </div>
                 </header>
                 <div class="natal-wheel-container" aria-live="polite" aria-busy="true" id="natal-wheel-wrap">
@@ -519,8 +470,52 @@
               </div>
             </div>
           </section>
+        </div>
 
-          <!-- Tabs -->
+        <section class="big-three-section animate-in animate-in--delay-1" role="group" aria-labelledby="big-three-heading">
+          <h2 id="big-three-heading" class="sr-only">Core placements and time-dependent angles</h2>
+          <div id="big-three" class="big-three-grid"></div>
+        </section>
+
+        <details class="chart-sitting-more">
+          <summary class="chart-sitting-more__sum">Chart details &amp; export</summary>
+          <div class="chart-sitting-more__body">
+            <span class="result-badge"><span class="eng-star-mark"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
+            <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
+            <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Moon, Rising, MC and houses — time-sensitive points are withheld without it</span>
+            <a href="eclipse.html#contact" id="eclipse-handoff" class="result-eclipse-handoff result-eclipse-handoff--quiet">See where the 12 Aug eclipse landed &rarr;</a>
+            <nav class="ap-keep-path-strip" aria-label="Keep this sky">
+              <p class="ap-keep-path-strip__label">Keep this sky</p>
+              <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
+              <span class="action-note" id="keep-sky-caption">Cast with a clock time to keep that hour’s still.</span>
+              <a href="sky-card.html" data-ap-keep-minute>Sky card</a>
+              <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
+              <a href="deep-reading.html" id="sitting-link-strip">Seven-chapter sitting</a>
+            </nav>
+            <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (&plusmn;7&deg;) and still withholds angles. Keep is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
+            <div class="result-actions" id="result-actions-row">
+              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share a personalised chart image">
+                Share this sky
+              </button>
+              <button id="poster-btn" class="action-btn action-btn--ghost" aria-haspopup="menu" aria-controls="share-format-menu" aria-expanded="false" aria-label="Export chart artwork as a print plate, square, story, wallpaper, or Big Three card">
+                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Export artwork
+              </button>
+              <button id="save-btn" class="action-btn action-btn--ghost" aria-label="Save chart on this device">
+                Save
+              </button>
+              <details class="result-actions__more">
+                <summary class="result-actions__more-toggle">More</summary>
+                <div class="result-actions__more-menu" role="group" aria-label="More chart actions">
+                  <a id="eclipse-cta" href="eclipse.html#contact" class="action-btn action-btn--ghost" aria-label="See where the 12 August eclipse landed in this chart">12 Aug eclipse</a>
+                  <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">Big Three card</button>
+                  <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">Export JSON</button>
+                </div>
+              </details>
+            </div>
+          </div>
+        </details>
+
+        <div class="chart-detail-wrap animate-in animate-in--delay-2">
           <div class="tabs-card chart-detail-tabs">
             <div class="tabs-nav" role="tablist" aria-label="Chart detail sections">
               <button
@@ -598,7 +593,7 @@
             </div>
 
           </div><!-- /.tabs-card -->
-        </div><!-- /.chart-results-grid -->
+        </div><!-- /.chart-detail-wrap -->
 
       </div><!-- /#chart-result -->
 

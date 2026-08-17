@@ -29,7 +29,7 @@
     <script src="js/ap-nav-model.js?v=884" defer></script>
     <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=883">
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-    <link rel="stylesheet" href="css/ap-home-v835.css?v=885">
+    <link rel="stylesheet" href="css/ap-home-v835.css?v=889">
     <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=880">
     <link rel="stylesheet" href="css/ap-keep-sky.css?v=880">
 </head>
@@ -62,23 +62,17 @@
   </header>
 
   <main id="main-content">
-    <section class="ap-live-stage" id="lead" aria-label="Live sky Observatory">
-      <div class="ap-live-intro ap-reading-plate">
-        <div class="ap-reading-plate__copy">
-          <p class="ap-reading-kicker" id="ap-reading-kicker">The night you were born</p>
-          <h1 class="ap-live-heading" id="ap-reading-title">Sit with the sky first</h1>
-          <p class="ap-live-copy" id="ap-reading-body">Earth now, then the minute you arrived, then seven chapters you can keep.</p>
-          <p class="ap-reading-source" id="ap-reading-source">Positions computed on this device. Astrology is offered for reflection, not as fact.</p>
-        </div>
-        <div class="ap-reading-plate__act">
-          <a class="ap-action ap-action--primary" href="chart.html">Begin with my minute</a>
-          <p class="ap-reading-more"><a href="deep-reading.html">Seven chapters</a> if the minute is already here.</p>
-        </div>
-      </div>
-      <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
-        <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+    <section class="ap-live-stage" id="lead" aria-label="The night you were born">
+      <div class="ap-model-stage" role="group" aria-label="Live Earth now" aria-busy="true">
+        <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only" aria-label="Live Earth"></void-orrery>
         <div class="ap-model-vignette" aria-hidden="true"></div>
         <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Opening the night</strong><em>Earth as it is now · computed here</em></div>
+      </div>
+      <div class="ap-live-intro">
+        <p class="ap-reading-kicker" id="ap-reading-kicker">The night you were born</p>
+        <h1 class="ap-live-heading" id="ap-reading-title">Sit with the sky first</h1>
+        <p class="ap-live-copy" id="ap-reading-body">Earth now. Then the minute you arrived.</p>
+        <a class="ap-action ap-action--primary" href="chart.html">Begin with my minute</a>
       </div>
 
       <div class="ap-mobile-flight-deck" aria-label="3D Observatory controls">
@@ -255,7 +249,7 @@
   </script>
   <script src="js/ap-observatory-controls-v835.js?v=880" defer></script>
     <script src="js/ap-observatory-v834.js?v=883" defer></script>
-    <script src="js/ap-home-reading.js?v=885" defer></script>
+    <script src="js/ap-home-reading.js?v=889" defer></script>
     <script src="js/ap-nav-prefetch.js?v=880" defer data-ap-nav-prefetch="1"></script>
     <script src="js/ap-sky-time.js?v=880" defer></script>
     <script src="js/ap-footer-inject.js?v=880" defer></script>

@@ -632,197 +632,208 @@
 
 .ap-reading-path .ap-event-ticket em { color: var(--ap-ember); }
 
-/* Reading room — G: sitting line + Earth + glass HUD below the disc.
-   Intro lives outside .ap-model-stage so the canvas stays unobstructed. */
-.ap-reading-room .ap-reading-kicker {
-  margin: 0 0 10px;
-  font-family: var(--ap-sans, inherit);
-  font-size: 12px;
+/* ── FIRST SCREEN LAW (home) ─────────────────────────────────────────
+   Kill the reading-room slab: night fills the viewport; copy sits ON it;
+   one copper CTA; phone 390 full-bleed. Later rules in this sheet win. */
+.ap-live-home.ap-reading-room {
+  --ap-void: #05080F;
+  --ap-void-deep: #05080F;
+  --ap-silver: #8FA3B8;
+  --ap-ember: #B86B4A;
+  background: #05080F;
+}
+.ap-live-home.ap-reading-room .site-header {
+  position: absolute !important; /* beats living-sky sticky !important */
+  top: 0 !important;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.ap-live-home.ap-reading-room #main-content {
+  margin-top: 0;
+  padding-top: 0;
+}
+.ap-live-home.ap-reading-room .ap-live-stage {
+  position: relative;
+  display: block;
+  height: 100svh;
+  min-height: 100svh;
+  max-height: 100svh;
+  margin-top: 0;
+  overflow: hidden;
+  border-bottom: 0;
+  background: #05080F;
+  isolation: isolate;
+}
+.ap-live-home.ap-reading-room .ap-model-stage {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0;
+  flex: none !important;
+  order: unset !important;
+  width: 100%;
+  height: 100% !important;
+  min-height: 0 !important;
+  border: 0;
+  background: #05080F;
+}
+.ap-live-home.ap-reading-room .ap-model-stage void-orrery,
+.ap-live-home.ap-reading-room .ap-model-stage void-orrery canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.ap-live-home.ap-reading-room .ap-model-vignette {
+  background: linear-gradient(
+    0deg,
+    rgba(5, 8, 15, 0.72) 0%,
+    rgba(5, 8, 15, 0.18) 28%,
+    transparent 48%
+  );
+}
+.ap-live-home.ap-reading-room .ap-live-intro {
+  position: absolute !important;
+  z-index: 4;
+  top: auto !important;
+  right: auto !important;
+  bottom: clamp(40px, 10vh, 88px) !important;
+  left: clamp(20px, 5vw, 56px) !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  width: min(340px, calc(100% - 40px)) !important;
+  margin: 0;
+  padding: 0 !important;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  pointer-events: none;
+  transform: none;
+  order: unset !important;
+  grid-template-columns: none !important;
+}
+.ap-live-home.ap-reading-room .ap-reading-kicker {
+  margin: 0 0 12px;
+  font-family: var(--ap-body);
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ap-silver);
+  color: #8FA3B8;
+  text-shadow: 0 2px 18px rgba(5, 8, 15, 0.9);
 }
-.ap-reading-room .ap-reading-source {
-  max-width: 36ch;
-  margin: 14px 0 0;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--ap-mute, var(--ap-paper-faint));
+.ap-live-home.ap-reading-room .ap-live-heading {
+  max-width: 12ch;
+  margin: 0 0 12px;
+  font-family: var(--ap-display);
+  font-size: clamp(34px, 6vw, 52px);
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: #E6ECF2;
+  text-shadow: 0 8px 36px rgba(5, 8, 15, 0.85);
 }
-.ap-reading-room .ap-action--ghost {
-  margin-left: 10px;
-  color: var(--ap-paper);
-  background: transparent;
-  border: 1px solid var(--ap-silver-a28, rgba(143, 163, 184, 0.28));
+.ap-live-home.ap-reading-room .ap-live-copy {
+  max-width: 28ch;
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: rgba(230, 236, 242, 0.78);
+  text-shadow: 0 4px 20px rgba(5, 8, 15, 0.9);
 }
-.ap-reading-room .ap-action--ghost:hover,
-.ap-reading-room .ap-action--ghost:focus-visible {
-  border-color: var(--ap-brass-bright);
-  color: var(--ap-paper);
+.ap-live-home.ap-reading-room .ap-reading-source,
+.ap-live-home.ap-reading-room .ap-reading-more,
+.ap-live-home.ap-reading-room .ap-reading-plate__act > :not(.ap-action--primary) {
+  display: none !important;
 }
-
-.ap-reading-room .ap-reading-more {
-  margin: 10px 0 0;
+.ap-live-home.ap-reading-room .ap-live-intro .ap-action--primary {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid #B86B4A;
+  border-radius: 3px;
+  background: #B86B4A;
+  color: #05080F;
   font-size: 14px;
-  line-height: 1.5;
-  color: var(--ap-mute, var(--ap-paper-faint));
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  box-shadow: none;
 }
-.ap-reading-room .ap-reading-more a {
-  color: var(--ap-paper);
-  text-underline-offset: 3px;
+.ap-live-home.ap-reading-room .ap-live-intro .ap-action--primary:hover,
+.ap-live-home.ap-reading-room .ap-live-intro .ap-action--primary:focus-visible {
+  filter: brightness(1.06);
+}
+/* First screen: no HUD / flight deck competing with the night. */
+.ap-live-home.ap-reading-room:not(.is-instrument-open) .ap-control-panel,
+.ap-live-home.ap-reading-room:not(.is-instrument-open) .ap-mobile-flight-deck {
+  display: none !important;
+}
+.ap-live-home.ap-reading-room.is-instrument-open .ap-control-panel {
+  display: block;
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: min(42vh, 360px);
+  overflow: auto;
 }
 .ap-reading-room .ap-hint-link {
   display: inline;
   padding: 0;
   border: 0;
   background: none;
-  color: var(--ap-paper);
+  color: #E6ECF2;
   font: inherit;
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.ap-reading-room:not(.is-instrument-open) .ap-model-status {
-  display: none;
-}
-.ap-reading-room .ap-personal-entry__inner {
-  padding-block: 36px;
-}
-.ap-reading-room .edition {
-  display: none;
-}
-
-@media (min-width: 701px) {
-  .ap-reading-room .ap-live-stage {
-    display: flex;
-    flex-direction: column;
-    height: calc(100svh - var(--ap-nav-h, 64px));
-    min-height: 720px;
-    max-height: none;
-  }
-  .ap-reading-room .ap-live-intro {
-    position: relative;
-    top: auto;
-    left: auto;
-    z-index: 6;
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.6fr);
-    align-items: end;
-    gap: 16px 28px;
-    width: auto;
-    padding: 14px 22px 12px;
-    border: 0;
-    background: var(--ap-void-deep);
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    pointer-events: auto;
-    flex: 0 0 auto;
-  }
-  .ap-reading-room .ap-reading-source { margin-top: 8px; }
-  .ap-reading-room .ap-model-stage {
-    position: relative;
-    inset: auto;
-    flex: 1 1 auto;
-    height: auto;
-    min-height: 420px;
-  }
-  .ap-reading-room .ap-live-heading {
-    max-width: 18ch;
-    margin: 0 0 10px;
-    font-size: clamp(32px, 4vw, 48px);
-    font-weight: 600;
-    font-style: italic;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    color: var(--ap-paper);
-  }
-  .ap-reading-room .ap-live-copy {
-    max-width: 46ch;
-    font-size: 17px;
-    line-height: 1.5;
-    color: var(--ap-paper-dim);
-  }
-  .ap-reading-room .ap-live-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    margin-top: 16px;
-  }
-  .ap-reading-room .ap-control-panel {
-    position: relative;
-    z-index: 5;
-    display: block;
-    max-height: none;
-    padding: 8px 22px;
-    opacity: 1;
-    overflow: visible;
-    pointer-events: auto;
-    flex: 0 0 auto;
-  }
-  .ap-reading-room:not(.is-instrument-open) .ap-control-group,
-  .ap-reading-room:not(.is-instrument-open) .ap-glass-hud__meta {
-    display: none;
-  }
-}
+.ap-reading-room .ap-personal-entry__inner { padding-block: 36px; }
+.ap-reading-room .edition { display: none; }
 
 @media (max-width: 700px) {
-  .ap-reading-room .ap-live-stage {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    min-height: calc(100svh - var(--ap-nav-h, 64px));
+  .ap-live-home.ap-reading-room .ap-live-stage {
+    height: 100svh;
+    min-height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
   }
-  .ap-reading-room .ap-live-intro {
-    position: relative;
-    order: 0;
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
-    z-index: 2;
+  .ap-live-home.ap-reading-room .ap-model-stage {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+  .ap-live-home.ap-reading-room .ap-live-intro {
+    bottom: max(28px, env(safe-area-inset-bottom, 0px) + 20px) !important;
+    left: 20px !important;
+    width: calc(100% - 40px) !important;
+  }
+  .ap-live-home.ap-reading-room .ap-live-heading {
+    font-size: clamp(32px, 9vw, 42px);
+  }
+  .ap-live-home.ap-reading-room .ap-live-copy { font-size: 15px; }
+  .ap-live-home.ap-reading-room .ap-live-intro .ap-action--primary {
     width: auto;
-    padding: 18px 16px 14px;
-    background: var(--ap-void-deep);
-    pointer-events: auto;
+    min-width: min(100%, 260px);
   }
-  .ap-reading-room .ap-live-heading {
-    font-size: clamp(28px, 8vw, 38px);
-    font-style: italic;
-  }
-  .ap-reading-room .ap-live-copy { font-size: 16px; }
-  .ap-reading-room .ap-live-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-  .ap-reading-room .ap-action--primary {
-    width: 100%;
-    min-height: 48px;
-    justify-content: center;
-  }
-  .ap-reading-room .ap-model-stage {
-    position: relative;
-    order: 1;
-    inset: auto;
-    height: 42svh;
-    min-height: 240px;
-  }
-  .ap-reading-room .ap-mobile-flight-deck {
-    order: 2;
-    display: grid;
-  }
-  .ap-reading-room:not(.is-instrument-open) .ap-mobile-flight-deck {
-    display: none;
-  }
-  .ap-reading-room .ap-control-panel {
-    order: 3;
-    max-height: none;
-    opacity: 1;
-    overflow: visible;
-    pointer-events: auto;
-  }
-  .ap-reading-room:not(.is-instrument-open) .ap-control-group,
-  .ap-reading-room:not(.is-instrument-open) .ap-glass-hud__meta {
-    display: none;
+}
+
+@media (max-width: 420px) {
+  .ap-live-home.ap-reading-room .ap-model-stage {
+    height: 100% !important;
+    min-height: 0 !important;
   }
 }
 

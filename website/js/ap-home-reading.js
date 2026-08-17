@@ -58,8 +58,8 @@
     if (title) title.textContent = natal ? 'Sit with the hour you arrived' : 'Sit with the sky first';
     if (body) {
       body.textContent = natal
-        ? 'The chart is already here. Open the seven chapters, or keep a still of that hour.'
-        : 'Earth now, then the minute you arrived, then seven chapters you can keep.';
+        ? 'Your minute is already here.'
+        : 'Earth now. Then the minute you arrived.';
     }
     if (source) {
       var signs = [];
