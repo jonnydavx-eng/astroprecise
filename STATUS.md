@@ -1,25 +1,20 @@
 # STATUS — AstroPrecise
 
-**State:** Sunday 16 Aug 2026. Backlog pushed to origin/main (`b5deaa7`) — GitHub Pages deploy auto-running; live will reach ap-v876.
+**State (measured 2026-08-17 ~07:40 BOOK-T1H4NJ753R):** live `https://astroprecise.app/sw.js` is `ap-v876`. Local `main` tracks `origin/main`, ahead 1 (`95fb07f` repo-guard snap after ship `b5deaa7`). Working tree clean.
 
 ## Now
-- Local tip: `cba32b4` on `main`, tracking `origin/audit-improve-20260814`, ahead 23. Not pushed. Live site stays as-is.
-- Measured while writing this: machine HEAD is `11f9f0d` (repo-guard autosnapshot after `cba32b4`), ahead 24. Still not pushed.
-- Runtime: `AP_ASSET_V=874`, `sw.js` `ap-v874`
-- Product: one house, live 3D Observatory on index, couples two clocks, real planet maps in progress
-- Next product / gift: night-you-were-born = sky-card + deep-reading + one Observatory still (solar-system-that-hour, Earth marked, no HUD). Plan: `NIGHT-YOU-WERE-BORN.md`
-- Shop hold: Eclipse Edition £7 test only. No new SKUs. No live checkout.
-- Overnight 14–15 Aug: Cursor PRs in flight — 17 birth-hour still, 18 gift/sky-card, plus couples, phone, maps, leftover house-fit. Fold into local when they land. No push.
+- Product on the house: one Observatory on index, couples two clocks, sky-card + deep-reading + keep-sky stills shipped in `b5deaa7`.
+- Next product (your words): Night you were born — sky card + seven-chapter reading + one Observatory still (solar system that hour, Earth marked, no HUD). Plan: `NIGHT-YOU-WERE-BORN.md`.
+- Shop hold: Eclipse Edition £7 test only. No new SKUs. No live checkout. No Stripe.
+- Leftover Cursor PRs 16–23: close without merge after `gh auth login`. Do not start a new cloud job.
 
 ## Retired (off the front path)
 quiz, angel numbers, name numerology, sun-sign grid, Daily, `moment.html`, natal-plate
 
 ## Hard rules
-no React, WebGL only, no gate on the sky, no UFO brand
+no React, WebGL only, no gate on the sky, no UFO brand, no merch
 
 ## Not current truth
-Do not treat `CATALOGUE.md`, `SHOP-AUDIT.md`, or `MONETIZATION.md` as current. They still list invented / old SKUs and checkout paths. No new SKUs.
+`CATALOGUE.md`, `SHOP-AUDIT.md`, `MONETIZATION.md`
 
-Older 8–12 Aug stamps in git history (ap-v813 / v833 / v847 / v849 / v850 live-or-local claims) are superseded.
-
-⚠️ **Deploy warning:** pushing to `origin/main` auto-deploys production via `.github/workflows/deploy-pages.yml` on changes under `website/**` (plus a named list including `tools/build.mjs` and most root test suites). Do not push without the owner's say-so.
+Pushing `origin/main` auto-deploys. Do not push without the owner.
