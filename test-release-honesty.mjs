@@ -155,8 +155,8 @@ for (const file of htmlFiles) {
 const skyCard = read('./website/sky-card.html');
 const skyCardJs = read('./website/js/ap-sky-card.js');
 const keepMinute = read('./website/js/ap-keep-minute.js');
-assert.ok(skyCard.includes("window.AP_ASSET_V='876'"), 'sky card must declare the release tip');
-assert.equal(/\?v=(?!876\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
+assert.ok(skyCard.includes("window.AP_ASSET_V='877'"), 'sky card must declare the release tip');
+assert.equal(/\?v=(?!877\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
 assert.ok(skyCard.includes('data-ap-static-nav') && skyCard.includes('sky-events.html'),
   'sky card must carry the one house navigation');
 assert.ok(skyCard.includes('Astro<i class="logo-text__precise">Precise</i>'),
@@ -211,7 +211,7 @@ for (const path of ['./website/index.html', './website/chart.html', './website/d
     `${path} must reach the keep path`);
   assert.equal(/sky-card\.html\?/.test(page), false,
     `${path} must not put a birth minute in the keep link`);
-  assert.ok(page.includes('ap-keep-minute.js?v=876'), `${path} must load the keep-path helper`);
+  assert.ok(page.includes('ap-keep-minute.js?v=877'), `${path} must load the keep-path helper`);
 }
 
 const outreach = read('./website/js/outreach-content.js');
