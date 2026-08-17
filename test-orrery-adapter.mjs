@@ -68,6 +68,54 @@ if (!A.includes("opts.mode === 'birth-hour'") || !A.includes('O.captureBirthHour
 } else {
   ok('authored birth-hour capture hides couples clocks and marks Earth');
 }
+
+/* Keep path → applyAuthoredBirthHourStill + home Keep load (Agent D gift path). */
+const keepSkyPath = join(root, 'js', 'ap-keep-sky.js');
+const homeKeepPath = join(root, 'js', 'ap-home-keep.js');
+const chartPagePath = join(root, 'js', 'chart-page.js');
+const chartHtmlPath = join(root, 'chart.html');
+if (!existsSync(keepSkyPath)) fail('js/ap-keep-sky.js missing');
+else {
+  const keepSky = readFileSync(keepSkyPath, 'utf8');
+  const homeKeep = existsSync(homeKeepPath) ? readFileSync(homeKeepPath, 'utf8') : '';
+  const chartPage = existsSync(chartPagePath) ? readFileSync(chartPagePath, 'utf8') : '';
+  const chartHtml = existsSync(chartHtmlPath) ? readFileSync(chartHtmlPath, 'utf8') : '';
+  const indexKeepHtml = readFileSync(join(root, 'index.html'), 'utf8');
+  if (!keepSky.includes("mode: 'birth-hour'") || !keepSky.includes('birthContext.jd')) {
+    fail('Keep path does not pass birth-hour jd into captureStill');
+  }
+  if (!keepSky.includes('stampSurfaceA') || !keepSky.includes("SURFACE_A = 'SCHEMATIC'")) {
+    fail('Keep PNG must stamp Surface A SCHEMATIC (never a live badge)');
+  }
+  if (/['\"]LIVE['\"]|LIVE ·|LIVE badge/.test(keepSky)) {
+    fail('Keep path must never label a still with a LIVE badge');
+  }
+  if (!chartPage.includes('ap-keep-sky-context') || !chartPage.includes('publishKeepSkyContext')) {
+    fail('chart-page must publish birth jd on ap-keep-sky-context');
+  }
+  if (!chartHtml.includes('data-keep-mode="birth-hour"') || !chartHtml.includes('ap-keep-sky.js?v=878')) {
+    fail('chart.html must host birth-hour Keep control on tip ap-v878');
+  }
+  if (!indexKeepHtml.includes('id="keep-sky"') || !indexKeepHtml.includes('data-keep-mode="birth-hour"')) {
+    fail('Home Observatory must host birth-hour Keep control');
+  }
+  if (!indexKeepHtml.includes('ap-keep-sky.js?v=878') || !indexKeepHtml.includes('ap-keep-sky.css?v=878')) {
+    fail('Home must load ap-keep-sky.js + ap-keep-sky.css on tip ap-v878');
+  }
+  if (!indexKeepHtml.includes('ap-home-keep.js?v=878')) {
+    fail('Home must load ap-home-keep.js to publish birth-hour context');
+  }
+  if (!homeKeep.includes('ap-sky-ready') || !homeKeep.includes('ap-keep-sky-context')) {
+    fail('ap-home-keep must listen for ap-sky-ready and dispatch ap-keep-sky-context');
+  }
+  if (!homeKeep.includes('timeKnown') || homeKeep.includes("12:00") || homeKeep.includes("'noon'")) {
+    fail('home Keep must not invent noon when the birth minute is unknown');
+  }
+  if (!W.includes('if (!applyAuthoredBirthHourStill(jd)) return null;')) {
+    fail('captureBirthHourStill must call applyAuthoredBirthHourStill(jd)');
+  }
+  ok('Keep path wires birth jd → captureBirthHourStill → applyAuthoredBirthHourStill + home Keep + SCHEMATIC stamp');
+}
 if (!W.includes('type: THREE.UnsignedByteType') || !W.includes('stencilBuffer: false')) {
   fail('Home-safe UnsignedByte composer target is missing');
 }
@@ -255,7 +303,7 @@ if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a 
 if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
 if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v876"')) fail('service worker release identity is not ap-v876');
+if (!sw.includes('const V = "ap-v878"')) fail('service worker release identity is not ap-v878');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 

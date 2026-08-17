@@ -110,6 +110,68 @@
   background: #020307;
 }
 
+/* Home Observatory: Keep sits under the context ledger, never on the canvas. */
+.ap-control-panel .ap-keep-row--home {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(216, 180, 106, 0.18);
+}
+
+.ap-control-panel .ap-keep-row--home .btn-invite,
+.ap-control-panel .ap-keep-row--home #keep-sky {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ap-control-panel .ap-keep-row--home #keep-sky-caption {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #A89C84;
+}
+
+/* One quiet keep path: 3D still · sky card · seven-chapter reading */
+.ap-keep-path-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 14px 0 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #A89C84;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.ap-keep-path-strip__label {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #A89C84;
+  font: 650 11px/1.4 inherit;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ap-keep-path-strip a {
+  color: #D8B46A;
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ap-keep-path-strip a:hover,
+.ap-keep-path-strip a:focus {
+  text-decoration: underline;
+}
+
+.ap-keep-path-strip__sep {
+  color: rgba(168, 156, 132, 0.7);
+  user-select: none;
+}
+
 @media (max-width: 700px) {
   .ap-keep-row {
     flex-direction: column;
@@ -134,5 +196,15 @@
 
   .ap-room-sky:has(.ap-keep-row) .ap-model-stage {
     min-height: 400px;
+  }
+
+  .ap-keep-path-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .ap-keep-path-strip__sep {
+    display: none;
   }
 }

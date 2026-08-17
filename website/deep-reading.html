@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=876">
   <link rel="stylesheet" href="css/ap-phone-pass.css?v=876">
   <link rel="stylesheet" href="css/ap-natal-reading.css?v=876">
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=878">
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
@@ -100,7 +101,15 @@
       <button type="button" class="ap-natal-print" id="natalPrint">Print / save as PDF</button>
     </div>
 
-    <p class="ap-natal-also">Keep, on pages that already exist: <a href="sky-card.html" data-ap-keep-minute>Sky card</a> · <a href="chart.html">Chart’s live-sky still</a>. This reading does not recapture those images. The live sky above stays free.</p>
+    <nav class="ap-keep-path-strip ap-natal-also" aria-label="Keep this sky">
+      <p class="ap-keep-path-strip__label">Keep this sky</p>
+      <a href="chart.html#keep-sky">3D still</a>
+      <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
+      <a href="sky-card.html" data-ap-keep-minute>Sky card</a>
+      <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
+      <a href="#natalResult">Seven-chapter reading</a>
+    </nav>
+    <p class="ap-natal-also">Quiet links to pages that already exist &mdash; this reading does not recapture those images. The live sky above stays free.</p>
     <nav class="ap-natal-also" aria-label="Also on this site">
       <p>Also</p>
       <a href="eclipse.html#contact">12 August eclipse contact</a>
@@ -113,6 +122,6 @@
   <script src="js/ap-footer-inject.js?v=876" defer></script>
   <script type="module" src="js/ap-natal-reading.js?v=876"></script>
   <script src="js/ap-room-sky.js?v=876" defer></script>
-  <script src="js/ap-keep-minute.js?v=876" defer></script>
+  <script src="js/ap-keep-minute.js?v=878" defer></script>
 </body>
 </html>
