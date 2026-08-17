@@ -13,37 +13,37 @@
 
 html:root{
   /* jet void → v4 night ink, warmed (dawn, not terminal) */
-  --ap-jet-soft:#020307; --ap-jet-base:#0c0b09; --ap-jet-mid:#100f0c;
+  --ap-jet-soft:#05080F; --ap-jet-base:#0c0b09; --ap-jet-mid:#100f0c;
   --ap-jet-raised:#151310; --ap-jet-elevated:#1b1915;
 
   /* silver → warm paper */
-  --ap-silver-bright:#f2ecdf;
+  --ap-silver-bright:#E6ECF2;
   --ap-silver:#ddd3bf;
   --ap-silver-dim:rgba(242,236,223,.74);
   --ap-silver-faint:rgba(242,236,223,.56);
-  --ap-chrome:#d8b46a;
+  --ap-chrome:#8FA3B8;
   --ap-silver-a08:rgba(242,236,223,.08); --ap-silver-a12:rgba(242,236,223,.12);
   --ap-silver-a18:rgba(242,236,223,.18); --ap-silver-a28:rgba(242,236,223,.28);
   --ap-silver-a40:rgba(242,236,223,.40); --ap-silver-a55:rgba(242,236,223,.55);
 
   /* aurora ice → signal ember */
-  --ap-aurora:#ff5a1f; --ap-aurora-bright:#ff7a45; --ap-aurora-deep:#d84815;
-  --ap-aurora-violet:#d8b46a;
+  --ap-aurora:#ff5a1f; --ap-aurora-bright:#C87D5C; --ap-aurora-deep:#d84815;
+  --ap-aurora-violet:#8FA3B8;
   --ap-aurora-a10:rgba(255,90,31,.10); --ap-aurora-a16:rgba(255,90,31,.16);
   --ap-aurora-a28:rgba(255,90,31,.28); --ap-aurora-a40:rgba(255,90,31,.40);
 
   /* gold aliases → engraved brass */
   --ap-gold-ink:#8a7648; --ap-gold-shadow:#a08a52;
-  --ap-gold-core:#d8b46a; --ap-gold-bright:#ff5a1f;
-  --ap-gold-vivid:#f2ecdf; --ap-gold-parchment:#f2ecdf;
-  --gold:#d8b46a; --gold-light:#f2ecdf; --gold-pale:#e8d3a0;
+  --ap-gold-core:#8FA3B8; --ap-gold-bright:#ff5a1f;
+  --ap-gold-vivid:#E6ECF2; --ap-gold-parchment:#E6ECF2;
+  --gold:#8FA3B8; --gold-light:#E6ECF2; --gold-pale:#e8d3a0;
 
   /* primary CTA → ember with dark ink (contrast-safe) */
-  --ap-cta:#ff5a1f; --ap-cta-hover:#ff7a45; --ap-cta-ink:#1a0d05;
+  --ap-cta:#ff5a1f; --ap-cta-hover:#C87D5C; --ap-cta-ink:#1a0d05;
   --ap-focus-ring:#ff5a1f;
 
   /* enchanted layer → warm starfield */
-  --ap-enchant-void:#020307; --ap-enchant-deep:#020307;
+  --ap-enchant-void:#05080F; --ap-enchant-deep:#05080F;
   --ap-enchant-indigo:#0f0f14; --ap-enchant-twilight:#14141a;
   --ap-enchant-nebula:rgba(216,180,106,.07);
   --ap-enchant-aurora:rgba(255,90,31,.05);
@@ -52,7 +52,7 @@ html:root{
   --ap-enchant-gold-soft:rgba(255,90,31,.14);
   --ap-enchant-gold-glow:0 0 32px rgba(255,90,31,.12), 0 0 64px rgba(216,180,106,.07);
   --ap-enchant-gold-ring:0 0 0 1px rgba(216,180,106,.22), inset 0 1px 0 rgba(242,236,223,.06);
-  --ap-enchant-sun:#f2ecdf;
+  --ap-enchant-sun:#E6ECF2;
 
   /* main-lite surfaces → warm plates on ink */
   --glass:rgba(242,236,223,.035); --glass-2:rgba(242,236,223,.05);
@@ -70,10 +70,10 @@ html:root{
   --shimmer-line:linear-gradient(90deg, transparent, rgba(216,180,106,.5), rgba(255,90,31,.28), transparent);
 
   /* text + type */
-  --white:#f2ecdf;
+  --white:#E6ECF2;
   --silver:#ddd3bf; --silver-dim:rgba(242,236,223,.74);
   --silver-dark:rgba(242,236,223,.56);
-  --ap-text-primary:#f2ecdf; --ap-text-secondary:rgba(242,236,223,.78);
+  --ap-text-primary:#E6ECF2; --ap-text-secondary:rgba(242,236,223,.78);
   --font-body:'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-mono:'IBM Plex Mono', ui-monospace, monospace;

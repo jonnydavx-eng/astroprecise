@@ -524,7 +524,7 @@ function page(s) {
   <meta name="twitter:title" content="${s.name} Horoscope Today | Astro Precise" />
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="theme-color" content="#05080F" />
   <link rel="preload" href="img/engine/${RULER_STILL[s.key].still}.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <!-- CLS: preload the hero display face (h1) so Cormorant paints from first paint (no late swap). -->

@@ -1,26 +1,26 @@
 /* AstroPrecise shop — house lock 14 Aug 2026. Ember CTA, brass hairline, live sky held. */
 .page-shop,
 .shop-v835 {
-  --ap-void: #020307;
-  --ap-void-deep: #020307;
-  --ap-void-raised: #020307;
-  --ap-paper: #F2ECDF;
+  --ap-void: #05080F;
+  --ap-void-deep: #05080F;
+  --ap-void-raised: #05080F;
+  --ap-paper: #E6ECF2;
   --ap-paper-dim: rgba(242, 236, 223, 0.78);
   --ap-paper-faint: rgba(242, 236, 223, 0.56);
   --ap-mute: #A89C84;
-  --ap-ember: #FF6428;
-  --ap-brass: #D8B46A;
-  --ap-brass-bright: #D8B46A;
+  --ap-ember: #B86B4A;
+  --ap-brass: #8FA3B8;
+  --ap-brass-bright: #8FA3B8;
   --ap-danger: #B04A52;
   --ap-line: rgba(216, 180, 106, 0.18);
   --ap-line-strong: rgba(216, 180, 106, 0.36);
-  background: #020307;
-  color: #F2ECDF;
+  background: var(--ap-void, #05080F);
+  color: #E6ECF2;
 }
 
 .page-shop .logo-text,
 .page-shop .logo-text__precise {
-  color: #F2ECDF;
+  color: #E6ECF2;
   font-style: normal;
 }
 
@@ -46,12 +46,12 @@
 .ap-shop-hero h1 {
   max-width: 9ch;
   margin: 18px 0 24px;
-  color: #F2ECDF;
+  color: #E6ECF2;
   font: 600 clamp(56px, 7.3vw, 100px)/.86 var(--ap-display);
   letter-spacing: -.04em;
 }
 .ap-shop-hero h1 em {
-  color: #F2ECDF;
+  color: #E6ECF2;
   font-weight: 500;
 }
 .ap-shop-lede {
@@ -77,7 +77,7 @@
   height: 1px;
   margin-right: 9px;
   margin-bottom: 4px;
-  background: #D8B46A;
+  background: #8FA3B8;
   vertical-align: middle;
 }
 .ap-shop-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
@@ -87,13 +87,13 @@
   border-radius: 3px;
   border: 1px solid rgba(216, 180, 106, 0.36);
   background: transparent;
-  color: #F2ECDF;
+  color: #E6ECF2;
 }
 .page-shop .ap-action--primary,
 .page-shop .ap-shop-actions .ap-action--primary {
-  background: #FF6428;
-  color: #020307;
-  border-color: #FF6428;
+  background: #B86B4A;
+  color: #05080F;
+  border-color: #B86B4A;
 }
 .ap-shop-status {
   max-width: 54ch;
@@ -105,7 +105,7 @@
 .ap-shop-status span {
   display: inline-block;
   margin-right: 8px;
-  color: #FF6428;
+  color: #B86B4A;
   font: 11px var(--ap-data);
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -117,7 +117,7 @@
   border: 1px solid rgba(216, 180, 106, 0.18);
   border-radius: 4px;
   overflow: hidden;
-  background: #020307;
+  background: var(--ap-void, #05080F);
   box-shadow: 0 32px 100px rgba(0, 0, 0, .34);
 }
 .ap-shop-hero__art img {
@@ -148,7 +148,7 @@
 .ap-shop-method h2,
 .ap-shop-notify h2 {
   margin: 0;
-  color: #F2ECDF;
+  color: #E6ECF2;
   font: 600 clamp(38px, 5vw, 64px)/.98 var(--ap-display);
 }
 .ap-shop-section-head > p:last-child {
@@ -164,14 +164,14 @@
   border: 1px solid rgba(216, 180, 106, 0.18);
   border-radius: 4px;
   overflow: hidden;
-  background: #020307;
+  background: var(--ap-void, #05080F);
 }
 .ap-product__image {
   position: relative;
   display: block;
   min-height: 300px;
   overflow: hidden;
-  background: #020307;
+  background: var(--ap-void, #05080F);
 }
 .ap-product__image img {
   display: block;
@@ -192,7 +192,7 @@
   border: 1px solid rgba(216, 180, 106, 0.44);
   border-radius: 999px;
   background: rgba(2, 3, 7, .82);
-  color: #F2ECDF;
+  color: #E6ECF2;
   font: 11px var(--ap-data);
   letter-spacing: .06em;
 }
@@ -207,12 +207,12 @@
 .ap-product h3,
 .ap-product-ledger h3 {
   margin: 0;
-  color: #F2ECDF;
+  color: #E6ECF2;
   font: 600 clamp(28px, 3vw, 40px)/1 var(--ap-display);
 }
 .ap-product__hook {
   margin: 13px 0 8px !important;
-  color: #F2ECDF;
+  color: #E6ECF2;
   font: italic 500 21px/1.35 var(--ap-display);
 }
 .ap-product__body > p:not(.ap-product__kind):not(.ap-product__hook) {
@@ -232,17 +232,17 @@
 }
 .ap-product__foot strong,
 .ap-product-ledger > article > strong {
-  color: #F2ECDF;
+  color: #E6ECF2;
   font: 12px var(--ap-data);
 }
 .ap-product__foot a {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  color: #F2ECDF;
+  color: #E6ECF2;
   font-size: 16px;
 }
-.ap-product--deep .ap-product__foot a { color: #FF6428; }
+.ap-product--deep .ap-product__foot a { color: #B86B4A; }
 .ap-product-ledger {
   margin-top: 16px;
   display: grid;
@@ -257,7 +257,7 @@
   gap: 18px;
   padding: 18px;
   border-left: 1px solid rgba(216, 180, 106, 0.18);
-  background: #020307;
+  background: var(--ap-void, #05080F);
 }
 .ap-product-ledger article:first-child { border-left: 0; }
 .ap-product-ledger img {
@@ -282,7 +282,7 @@
   letter-spacing: .08em;
   text-transform: uppercase;
 }
-.ap-product__proof:hover { color: #F2ECDF; }
+.ap-product__proof:hover { color: #E6ECF2; }
 
 .ap-shop-method {
   padding: clamp(56px, 8vw, 96px) 0;
@@ -295,7 +295,7 @@
 }
 .ap-shop-method h2 { margin-top: 16px; }
 .ap-shop-method h2 em {
-  color: #F2ECDF;
+  color: #E6ECF2;
   font-weight: 500;
 }
 .ap-shop-method__steps { min-width: 0; }
@@ -316,7 +316,7 @@
   color: #A89C84;
   font: 11px var(--ap-data);
 }
-.ap-shop-method strong { color: #F2ECDF; font-size: 16px; }
+.ap-shop-method strong { color: #E6ECF2; font-size: 16px; }
 .ap-shop-method li p {
   margin: 5px 0 0;
   color: rgba(242, 236, 223, 0.78);
@@ -328,11 +328,11 @@
   padding: 22px;
   border: 1px solid rgba(216, 180, 106, 0.32);
   border-radius: 4px;
-  background: #020307;
+  background: var(--ap-void, #05080F);
 }
 .ap-key-map > span {
   display: block;
-  color: #F2ECDF;
+  color: #E6ECF2;
   font: 11px/1.5 var(--ap-data);
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -347,7 +347,7 @@
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  color: #FF6428;
+  color: #B86B4A;
   font: 16px var(--ap-body);
   text-decoration: none;
 }
@@ -355,7 +355,7 @@
 .ap-shop-notify {
   padding: clamp(48px, 7vw, 76px) 0;
   border-top: 1px solid rgba(216, 180, 106, 0.18);
-  background: #020307;
+  background: var(--ap-void, #05080F);
 }
 .ap-shop-notify__inner {
   display: grid;
@@ -387,17 +387,17 @@
   border: 1px solid rgba(216, 180, 106, 0.36);
   border-right: 0;
   border-radius: 3px 0 0 3px;
-  background: #020307;
-  color: #F2ECDF;
+  background: var(--ap-void, #05080F);
+  color: #E6ECF2;
   font-size: 16px;
 }
 .ap-shop-notify button {
   min-height: 48px;
   padding: 0 18px;
-  border: 1px solid #FF6428;
+  border: 1px solid #B86B4A;
   border-radius: 0 3px 3px 0;
-  background: #FF6428;
-  color: #020307;
+  background: #B86B4A;
+  color: #05080F;
   font-weight: 700;
   cursor: pointer;
 }
@@ -440,6 +440,6 @@
     border: 1px solid rgba(216, 180, 106, 0.36);
     border-radius: 3px;
   }
-  .ap-shop-notify button { border-color: #FF6428; }
+  .ap-shop-notify button { border-color: #B86B4A; }
 }
 @media (prefers-reduced-motion: reduce) { .ap-product__image img { transition: none; } }

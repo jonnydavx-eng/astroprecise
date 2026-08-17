@@ -1,11 +1,11 @@
 /* AstroPrecise Daily v835 — twelve-sign field ledger. */
 
 .page-horoscope {
-  --daily-void: #020307;
+  --daily-void: #05080F;
   --daily-raised: #0d121b;
-  --daily-paper: #f2ecdf;
-  --daily-brass: #d8b46a;
-  --daily-ember: #ff6428;
+  --daily-paper: #E6ECF2;
+  --daily-brass: #8FA3B8;
+  --daily-ember: #B86B4A;
   --daily-silver: #b9c8dc;
   --daily-line: rgba(216, 180, 106, 0.22);
   --daily-line-soft: rgba(185, 200, 220, 0.13);

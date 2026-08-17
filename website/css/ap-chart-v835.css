@@ -1,11 +1,11 @@
 /* AstroPrecise Chart v835 — one engraved calculation room. */
 
 .page-chart {
-  --chart-void: #020307;
+  --chart-void: #05080F;
   --chart-raised: #0d121b;
-  --chart-paper: #f2ecdf;
-  --chart-brass: #d8b46a;
-  --chart-ember: #ff6428;
+  --chart-paper: #E6ECF2;
+  --chart-brass: #8FA3B8;
+  --chart-ember: #B86B4A;
   --chart-silver: #b9c8dc;
   --chart-line: rgba(216, 180, 106, 0.22);
   --chart-line-strong: rgba(216, 180, 106, 0.42);

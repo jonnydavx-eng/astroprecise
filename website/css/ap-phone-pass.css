@@ -218,9 +218,9 @@
   .btn--primary,
   .ap-action--primary,
   .tn-btn--primary {
-    background: #FF6428;
+    background: #B86B4A;
     color: #170702;
-    border-color: #FF6428;
+    border-color: #B86B4A;
   }
 
   body:has(.tn-hero) .site-header {
