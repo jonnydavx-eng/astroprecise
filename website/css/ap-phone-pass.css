@@ -80,11 +80,22 @@
   html body.page-compat .ap-angles ol,
   html body.page-compat .ap-zone-note,
   html body.page-compat .ap-keep-row .action-note,
+  html body.page-chart #keep-sky-caption,
+  html body.page-chart .ap-keep-row .action-note,
   html body.page-natal-reading .ap-natal-lede,
   html body.page-natal-reading .ap-natal-note,
   html body.page-natal-reading .ap-zone-note,
   html body.page-natal-reading .ap-natal-form label span,
-  html body.page-natal-reading .ap-natal-ch__mono {
+  html body.page-natal-reading .ap-natal-ch__mono,
+  html body.page-natal-reading .ap-natal-also,
+  html body.page-natal-reading .ap-natal-also p,
+  html body.ap-live-home .ap-calc-entry-panel__hint,
+  html body.page-sky-card .ap-card-lede,
+  html body.page-sky-card .ap-card-status,
+  html body.page-sky-card .ap-zone-note,
+  html body.page-sky-card .ap-card-ledger p,
+  html body.page-sky-card .ap-card-foot,
+  html body.page-sky-card .ap-card-plate-note {
     font-size: 16px !important;
     line-height: 1.5;
   }
@@ -115,6 +126,9 @@
   .ap-ab button,
   #keep-sky,
   .ap-keep-row .btn-invite,
+  a[data-ap-keep-minute],
+  .page-sky-card .ap-card-btn,
+  .page-sky-card .ap-city-item,
   .ap-live-home #dock button,
   .ap-live-home #mladder button,
   .navbar__mobile-menu .navbar__link,
@@ -138,6 +152,7 @@
   .ap-events-shell .foot a,
   .ap-live-home .item__title a,
   .ap-natal-also a,
+  .page-chart .result-eclipse-handoff,
   .ap-footer-signup__link,
   .ap-legal-links a,
   .ap-guide-links a,
@@ -153,6 +168,9 @@
   .ap-ab button,
   #keep-sky,
   .ap-keep-row .btn-invite,
+  a[data-ap-keep-minute],
+  .page-sky-card .ap-card-btn,
+  .page-chart .result-eclipse-handoff,
   .ap-orrery-cosmic-flight {
     display: inline-flex;
     align-items: center;
@@ -182,6 +200,7 @@
   .ap-site-footer__wordmark,
   .ap-live-home .item__title a,
   .ap-natal-also a,
+  a[data-ap-keep-minute],
   .ap-footer-signup__link,
   .ap-legal-links a,
   .ap-guide-links a,
@@ -213,14 +232,29 @@
   .ap-room-sky .ap-model-stage {
     min-height: 360px;
   }
+  /* Keep row under the disc: stage must not collapse at 390. */
+  .ap-room-sky:has(.ap-keep-row) {
+    height: auto;
+    min-height: 0;
+  }
+  .ap-room-sky:has(.ap-keep-row) .ap-model-stage {
+    min-height: 400px;
+  }
+
+  /* Overlay trap: DOM planet labels never steal canvas pointer events. */
+  #orrery-dom-labels,
+  .orrery-dom-labels,
+  .orrery-dom-label {
+    pointer-events: none !important;
+  }
 
   .btn-primary,
   .btn--primary,
   .ap-action--primary,
   .tn-btn--primary {
-    background: #FF6428;
+    background: var(--ap-ember, #FF6428);
     color: #170702;
-    border-color: #FF6428;
+    border-color: var(--ap-ember, #FF6428);
   }
 
   body:has(.tn-hero) .site-header {

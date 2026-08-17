@@ -20,7 +20,7 @@
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=876">
-  <script>window.AP_ASSET_V='876';</script>
+  <script>window.AP_ASSET_V='878';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
@@ -28,9 +28,10 @@
     <script src="js/void-orrery-adapter.js?v=876" defer></script>
     <script src="js/ap-nav-model.js?v=876" defer></script>
     <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=876">
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=876">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=878">
     <link rel="stylesheet" href="css/ap-home-v835.css?v=876">
     <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=876">
+    <link rel="stylesheet" href="css/ap-keep-sky.css?v=878">
 </head>
 <body class="ap-live-home page-home">
   <a class="skip" href="#lead">Skip to the Observatory</a>
@@ -103,6 +104,11 @@
           <div class="ap-ledger ap-ledger--observed"><span>Observed</span><p id="telemetry" aria-live="polite">Every major world is visible in one compressed, explorable view.</p></div>
           <div class="ap-ledger ap-ledger--meaning"><span>In astrology</span><p id="sky-meaning">A chart reads angular relationships among these bodies from Earth. It is a symbolic tradition, not a scientific claim.</p></div>
           <a class="ap-context__chart" id="sky-chart-link" href="chart.html">Find these positions in my chart</a>
+          <a class="ap-context__chart" href="sky-card.html" data-ap-keep-minute>Keep this sky · card</a>
+          <div class="ap-keep-row ap-keep-row--home">
+            <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
+            <span class="action-note" id="keep-sky-caption">Needs a birth minute from your chart. Cast with a clock time to keep that hour&rsquo;s still &mdash; the live sky above stays free.</span>
+          </div>
         </div>
         <div class="ap-control-group ap-control-group--scale">
           <div class="ap-control-head"><p class="ap-panel-label">Scale</p><span class="ap-control-note">Where am I?</span></div>
@@ -158,7 +164,7 @@
                 <span class="action-note">Private · no account · no birth details in the address bar</span>
               </div>
             </form>
-            <p class="ap-calc-entry-panel__hint">Optional: <a href="sky-card.html" data-ap-keep-minute>keep that minute as a sky card</a> — one free image drawn on this device. Play stays free; the live sky above is not behind it.</p>
+            <p class="ap-calc-entry-panel__hint">Optional: <a href="sky-card.html" data-ap-keep-minute>Keep this sky</a> — one free card drawn on this device. Play stays free; the live sky above is not behind it.</p>
           </div>
         </div>
       </div>
@@ -250,7 +256,9 @@
     <script src="js/ap-sky-time.js?v=876" defer></script>
     <script src="js/ap-footer-inject.js?v=876" defer></script>
     <script src="js/ap-mystic-cards-v835.js?v=876" defer></script>
-    <script src="js/ap-keep-minute.js?v=876" defer></script>
+    <script src="js/ap-keep-sky.js?v=878" defer></script>
+    <script src="js/ap-home-keep.js?v=878" defer></script>
+    <script src="js/ap-keep-minute.js?v=878" defer></script>
   <script>
     (function () {
       var button = document.getElementById('ap-cosmic-flight-launch');

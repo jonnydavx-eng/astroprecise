@@ -71,12 +71,12 @@
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
   <link rel="modulepreload" href="js/orrery-webgl.js?v=876">
-  <script src="js/void-orrery-adapter.js?v=876" defer></script>
+  <script src="js/void-orrery-adapter.js?v=878" defer></script>
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=876" />
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=876">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=878">
   <link rel="stylesheet" href="css/ap-home-v835.css?v=876">
   <link rel="stylesheet" href="css/ap-chart-v835.css?v=876" />
-  <link rel="stylesheet" href="css/ap-keep-sky.css?v=876">
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=878">
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
@@ -445,9 +445,15 @@
               <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
               <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Moon, Rising, MC and houses — time-sensitive points are withheld without it</span>
               <a href="eclipse.html#contact" id="eclipse-handoff" class="result-eclipse-handoff">See where the 12 Aug eclipse landed in this chart &rarr;</a>
-              <a href="deep-reading.html" class="result-eclipse-handoff">Open the seven-chapter natal reading &rarr;</a>
-              <a href="sky-card.html" data-ap-keep-minute class="result-eclipse-handoff">Keep this minute as a sky card &rarr;</a>
-              <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (±7°) and still withholds angles. The sky card is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
+              <nav class="ap-keep-path-strip" aria-label="Keep this sky">
+                <p class="ap-keep-path-strip__label">Keep this sky</p>
+                <a href="#keep-sky">3D still</a>
+                <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
+                <a href="sky-card.html" data-ap-keep-minute>Sky card</a>
+                <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
+                <a href="deep-reading.html">Seven-chapter reading</a>
+              </nav>
+              <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (&plusmn;7&deg;) and still withholds angles. Keep is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
             </div>
             <div class="result-actions" id="result-actions-row">
               <a id="eclipse-cta" href="eclipse.html#contact" class="action-btn action-btn--gold" aria-label="See where the 12 August eclipse landed in this chart, prefilled from this chart">
@@ -614,7 +620,7 @@
   <script src="js/ap-canvas-seals.js?v=876" defer></script>
   <script src="js/chart-page.js?v=876" defer></script>
   <script src="js/ap-room-sky.js?v=876" defer></script>
-  <script src="js/ap-keep-sky.js?v=876" defer></script>
-  <script src="js/ap-keep-minute.js?v=876" defer></script>
+  <script src="js/ap-keep-sky.js?v=878" defer></script>
+  <script src="js/ap-keep-minute.js?v=878" defer></script>
 </body>
 </html>

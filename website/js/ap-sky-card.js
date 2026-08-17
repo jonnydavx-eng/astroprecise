@@ -11,7 +11,7 @@
  *     it was computed from, so the moment on the plate can be checked.
  *   · An unknown hour is never quietly turned into noon. The card is still
  *     drawn, but it says which hour was assumed, that the Moon may be a sign
- *     out, and that the rising sign is missing rather than guessed.
+ *     out, and that the rising sign and houses are missing rather than guessed.
  *   · Day or night is computed from the Sun's altitude at that place, never
  *     inferred from the clock, and only stated when the hour is known. Nothing
  *     is captioned "night" unless the Sun really was below the horizon.
@@ -368,10 +368,23 @@
       ctx.fillText('MISSING \u2014 NO BIRTH HOUR', 208, 456);
     }
 
+    ctx.font = '400 14px ' + DATA;
+    ctx.fillStyle = MUTE;
+    ctx.fillText('HOUSES', 118, 492);
+    if (minute.timeKnown && positions.asc) {
+      ctx.fillStyle = PAPER;
+      ctx.font = '400 15px ' + DATA;
+      ctx.fillText('FROM THE HOUR AND THE TOWN', 208, 492);
+    } else {
+      ctx.fillStyle = DANGER;
+      ctx.font = '400 15px ' + DATA;
+      ctx.fillText('MISSING \u2014 NO BIRTH HOUR', 208, 492);
+    }
+
     if (!minute.timeKnown) {
       ctx.fillStyle = 'rgba(168,156,132,.85)';
       ctx.font = '400 12px ' + DATA;
-      ctx.fillText('MOON PLACED FROM ' + ASSUMED_HOUR + ' LOCAL \u00B7 UP TO A SIGN OUT', 76, 492);
+      ctx.fillText('MOON PLACED FROM ' + ASSUMED_HOUR + ' LOCAL \u00B7 UP TO A SIGN OUT', 76, 528);
     }
 
     wheel(minute.chart, 928, 300);
@@ -413,9 +426,10 @@
     ];
     if (minute.timeKnown && positions.asc) {
       rows.push(['Rising', formatPosition(positions.asc) + ' \u2014 from the hour and the town.']);
+      rows.push(['Houses', 'From the hour and the town \u2014 the same angles that place the rising sign.']);
     } else {
-      rows.push(['Rising missing', 'The rising sign needs the hour. This card was drawn from ' + ASSUMED_HOUR
-        + ' local, stated on the plate, so the rising sign is withheld rather than guessed and the Moon may be a sign out.', true]);
+      rows.push(['Rising and houses missing', 'The rising sign and the houses need the hour. This card was drawn from '
+        + ASSUMED_HOUR + ' local, stated on the plate, so rising and houses are withheld rather than guessed and the Moon may be a sign out.', true]);
     }
     rows.push(['What this is not', 'A computed sky, not a verdict. The astronomy can be checked; the meaning is a symbolic tradition offered for reflection.']);
 
@@ -454,7 +468,7 @@
     renderLedger(minute);
     if (downloadBtn) downloadBtn.disabled = false;
     say('Computed on this device from ' + minute.utText + ' UT. Nothing was uploaded'
-      + (minute.timeKnown ? '' : '; the hour is unknown, so the card says so and withholds the rising sign') + '.');
+      + (minute.timeKnown ? '' : '; the hour is unknown, so the card says so and withholds the rising sign and the houses') + '.');
   }
 
   // ── town search (only the typed town leaves this page) ─────────────────────

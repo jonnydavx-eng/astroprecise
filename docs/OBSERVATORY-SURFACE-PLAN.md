@@ -1,135 +1,127 @@
-# Observatory Surface Plan — rewrite of the R3F brief
+# Observatory Surface Plan — cloud-first · build · then shop products
 
-**For:** Jonny · AstroPrecise · measured tip ap-v876 · 2026-08-17  
-**Supersedes:** the React Three Fiber / Zustand / glassmorphic paste (sensor · tilt_plate · filter_wheel). That brief was the wrong product.  
-**Owner law (unchanged):** no React · WebGL only · one WebGL context per page · no gate on the live sky · no UFO brand · no new SKUs · no live checkout until you say · Night you were born is the gift path (`NIGHT-YOU-WERE-BORN.md`).
+**For:** Jonny · AstroPrecise · tip ap-v876 · revised 2026-08-17  
+**Supersedes:** earlier §5–§6 order in this file, and the React Three Fiber paste.  
+**Owner law:** no React · WebGL only · one WebGL context per page · no gate on the live sky · no UFO brand · **no new SKUs and no live checkout until the 3D gift is built and you have looked** · Night you were born (`NIGHT-YOU-WERE-BORN.md`).
 
-This is the same *job* as that paste — full-viewport 3D stage, guided camera, spatial HUD, buried tools on the surface — done on the house that already ships.
+**Sequence (this is the law of the plan):**
 
----
-
-## What stays, what dies
-
-| R3F paste | AstroPrecise rewrite |
-|---|---|
-| `components/3d/Stage3D.tsx` + R3F Canvas | Surface C on `index.html` — existing `orrery-webgl.js` + `void-orrery-adapter.js` |
-| React OrbitControls | Existing orbit / focus / scale journey in `orrery-webgl.js` (damped; polar clamp already the right idea — tighten if a spin still inverts) |
-| Zustand camera store | Thin page controller on `window` (or one module) — same fields, no React store |
-| GSAP / react-spring camera | Existing interruptible camera owner in `void-orrery-adapter.js` + `focusPlanet` / authored stills |
-| `@react-three/drei` Html pins | DOM overlay pins (`.orrery-dom-labels` must stay `pointer-events: none` except the pin hit targets) |
-| Glass SpatialHUD as React | Glass CSS tokens (`--ap-*`) + existing nav / observatory controls — no second IA |
-| Draco / KTX2 / detect-gpu | Keep current texture pipeline; throttle bloom/AA from existing device class checks — do not add a second loader stack without measuring |
-| Nodes: sensor / tilt_plate / filter_wheel | Wrong domain. Real nodes below. |
-
-Do not create `components/`. Do not open a Vite/React app beside `website/`.
-
----
-
-## 1. Core 3D stage (Surface C)
-
-**Owner:** `website/index.html` + `website/js/orrery-webgl.js`.
-
-- Full-viewport canvas behind UI (`z-0` / existing shell). One context only.
-- Camera: keep damped orbit; constrain polar so the user cannot flip under the ecliptic into nausea.
-- Lighting: keep True-Time / honesty rules — do not invent fake “LIVE” HDR that lies about the sky.
-- Loading: existing preloader / wireframe path — holographic skeleton only if it does not claim live positions before the engine is ready.
-- Receiver for `#m=` / focus stays `APDeepLink` / `APSkyBridge` → this page. Emitters never mount a second WebGL.
-
-Honesty: Surface C may say live VSOP87 when the engine is running. Stills and posters stay SCHEMATIC (Surface A). See `docs/MODEL-SURFACE-CONTRACT.md`.
-
----
-
-## 2. Spatial nodes & camera rig (real product nodes)
-
-**Not** hardware calibration. Nodes are the house’s real instruments.
-
-| `activeNode` | Meaning | Camera / UI |
-|---|---|---|
-| `null` | Free play | Default system / Earth rest |
-| `earth` | Home marked | Earth focus, limb / terminator honesty |
-| `system_hour` | Birth-minute still | Authored “solar system that hour”, Earth marked, **no HUD in the frame** |
-| `chart` | Free positions | Hand off or overlay chart minute — no second canvas |
-| `reading` | Deep reading | Drawer / panel — engine may idle or hold still |
-| `sky_card` | Keepable card | 2D card path — do not mount WebGL on the card page |
-| `couples` | Two clocks | Separate product — do not fold into the gift |
-
-**Store shape (vanilla module, not Zustand):**
-
-```js
-// conceptual — one module, e.g. website/js/ap-observatory-rig.js
-{
-  activeNode: null | 'earth' | 'system_hour' | 'chart' | 'reading' | 'sky_card' | 'couples',
-  cameraTarget: [x, y, z],
-  cameraPosition: [x, y, z],
-  momentUtc: string | null   // birth / keep minute when set
-}
+```
+1. Cloud agents build the 3D / Keep path (local PRs, fold in, no push)
+2. You look on laptop + phone
+3. Shop research (major) — already started in parallel as research only
+4. Products / SKUs — ONLY after step 2, chosen to fit the finished 3D design
 ```
 
-Click pin → set `activeNode` → existing camera transition (60 FPS lerp already owned by the orrery). Do not add a second animation library unless the current owner cannot land cleanly.
-
-Pins: DOM chips with a quiet pulse. Hover = glance status (body name, honest label). Click = focus. Overlay trap rule stands: labels must not steal canvas pointer events except the pin itself.
+Research may run beside the build. Listing, pricing, Gumroad paste, and new products may not.
 
 ---
 
-## 3. Spatial HUD (glass, house tokens)
+## Phase 0 — Cloud agents first (armed)
 
-**Top bar:** AstroPrecise wordmark · mode presets that map to real engine modes (e.g. System / Inner / Earth) · optional Cmd+K only if it searches real house routes (chart, reading, sky-card, eclipse) — not a fake command palette.
+Owner has asked for cloud credits to start here. Spawn **three** non-overlapping cloud agents. Fold PRs into local. **Do not push `origin/main`.** Close leftover PRs 16–23 without merge after `gh auth login`.
 
-**Bottom dock (floating glass, `--ap-*`):**
+| Agent | Job | Exact scope | Forbidden |
+|---|---|---|---|
+| **A — Sky-card / Keep path** | House-fit sky card + quiet Keep links from Observatory / Chart / Deep reading | `website/sky-card.html`, `website/js/ap-sky-card.js`, keep links on `index.html` / `chart.html` / `deep-reading.html`, IANA honesty | No React · no shop · no SKUs · no push · no second WebGL |
+| **B — Birth-hour still wire** | Wire Keep → existing authored still (Earth marked, no HUD in frame) | Call existing `applyAuthoredBirthHourStill(jd)` in `orrery-webgl.js` (~7054); `ap-keep-sky.js` caption + SCHEMATIC honesty on saved PNG | Do **not** rebuild the camera · no HUD in still · no React · no push |
+| **C — Shop research only** | Major market / packaging research for what could sell **after** the gift exists | New doc only: `docs/SHOP-RESEARCH-2026-08.md` (competitors, price bands, formats that fit a 3D keep object, what to retire) | **No code** · **no SKUs** · **no Gumroad edits** · **no shop.html product invent** · no Stripe |
 
-| Control | Does |
+### Agent A brief (paste into Cursor Cloud)
+
+```
+AstroPrecise website/ only. No React. No push.
+House-fit sky-card.html to the home look (nav, tokens, IANA place, refuse UTC/GMT as birth zone).
+Add quiet Keep-this-sky links from index Observatory, chart, deep-reading — no new folder.
+Honesty: unknown time must say what is missing.
+PR only. Do not invent SKUs. Do not edit shop products.
+```
+
+### Agent B brief
+
+```
+AstroPrecise website/ only. No React. No push.
+applyAuthoredBirthHourStill(jd) already exists in orrery-webgl.js — wire the Keep path to call it with the birth JD.
+Still: Earth marked, no HUD/nav in the saved frame. Caption: date, place, time, camera.
+Saved PNG is Surface A — SCHEMATIC or no LIVE badge (MODEL-SURFACE-CONTRACT).
+Do not rebuild the camera. Do not add a second WebGL context.
+PR only.
+```
+
+### Agent C brief
+
+```
+Research only. Write docs/SHOP-RESEARCH-2026-08.md.
+Question: after Night-you-were-born (3D still + sky card + deep reading) exists, what should AstroPrecise sell?
+Cover: comparable digital birth-sky / natal gifts, price bands, print vs digital vs combo, what fits a full-viewport Observatory brand, what to do with Eclipse £7.
+Do NOT invent SKUs, edit Gumroad, edit shop.html commerce, or recommend checkout now.
+End with: "Products wait until Jonny has looked at the built Keep path."
+```
+
+Polar clamp note for whoever touches camera later: `clampCamToLevel()` clamps **radius only**; elevation clamps live in drag handlers — tighten there if needed, not by assuming level-clamp owns elevation.
+
+---
+
+## Phase 1 — Local fold + look (after cloud PRs)
+
+1. Fold A + B into local tip. Bump `sw.js` `V` + `?v=` together if assets change.  
+2. `npm test` / `npm run test:ui` as needed.  
+3. You look: laptop + phone 390. Free play must still work without paying.  
+4. Only then open Phase 3 product decisions.
+
+Hard stops: no React tree · leftover rooms stay off front path · no push without you.
+
+---
+
+## Phase 2 — Shop research (major, parallel, non-shipping)
+
+Agent C owns the research file. Local may deepen it. Required sections in `docs/SHOP-RESEARCH-2026-08.md`:
+
+1. **What exists today** — Eclipse £7 Gumroad only; natal reading has no SKU; quiet charts unsold; `CATALOGUE.md` / `SHOP-AUDIT.md` / `MONETIZATION.md` are not truth.  
+2. **Comparables** — birth chart / sky gift / digital still + reading products (price, format, promise, honesty failures to avoid).  
+3. **Fit to the new 3D design** — score each candidate against the Keep object (still + card + reading), Observatory brand, no merch, no UFO.  
+4. **Eclipse £7** — keep as test, retire, or fold into the gift later — recommendation only, no listing change.  
+5. **Price bands** — direction only; no Gumroad SKU text.  
+6. **Explicit wait gate** — “No product goes live until the Keep path is built and Jonny has looked.”
+
+Research may recommend. It may not ship.
+
+---
+
+## Phase 3 — Products after the product (owner gate)
+
+**Trigger:** Phase 1 look done. Keep path yields still + card + reading for one birth minute.
+
+Then, and only then:
+
+1. Pick **one** primary paid object that matches the finished 3D design (not a catalogue dump).  
+2. You paste Gumroad / listing copy (owner-only).  
+3. Shop page shows only what is real. No invented SKUs.  
+4. Eclipse £7 handled per research + your call.  
+5. Couples stays a separate product — do not fold into the gift SKU.
+
+Until Phase 3 trigger: shop hold stands.
+
+---
+
+## Surface / engine (unchanged architecture)
+
+| Job | House |
 |---|---|
-| Keep this sky | Still + sky-card + reading path (`NIGHT-YOU-WERE-BORN.md`) |
-| Chart minute | Free positions for the held moment |
-| Deep reading | Seven chapters |
-| Couples | Two clocks — separate entry |
-| Reset view | Clear focus / return to default |
+| Full-viewport 3D | Surface C · `index.html` · `orrery-webgl.js` |
+| Camera / focus | Existing adapter owner + `focusPlanet` / authored still |
+| Keep PNG | `ap-keep-sky.js` · Surface A honesty |
+| Nodes | `earth` · `system_hour` · `chart` · `reading` · `sky_card` · `couples` — not lab hardware |
+| HUD | Glass `--ap-*` · house language (System / Inner / Earth) — after Keep path works |
 
-**Right drawer:** Opens only when a node needs precision inputs (place, IANA zone, time honesty). Must not cover the focal mesh. Refuse UTC/GMT-as-birth-zone per gift plan.
-
-No exploded view / X-ray / measurement grid unless they mean real ephemeris scale journey — rename to house language (System · Inner · Earth), never lab-instrument cosplay.
-
----
-
-## 4. Asset & performance
-
-- One WebGL context. Prefer OrbitLab math as engine source of truth when syncing.
-- Textures: current WebP / existing pipeline first. Draco/KTX2 only if measured need (size or GPU) — not as fashion.
-- Throttle bloom / AA / particle density on weak GPUs using the device class you already have; prove with `npm run test:ui`, not Cursor’s browser.
-- Cache bust: bump `website/sw.js` `V` + matching `?v=` together.
-
----
-
-## 5. Build order (Act 1 — local, no push)
-
-1. House-fit sky card (IANA, honesty, same nav).  
-2. Authored `system_hour` still + keep filename + caption (Earth marked, no HUD).  
-3. One Keep path from Observatory / Chart / Deep reading — no new folder.  
-4. Wire `activeNode` + pins on index only — one stage.  
-5. Phone 390 pass.  
-6. You look. Shop / new SKU only if you say.
-
-Hard stops: no React · no second brand · no inventing SKUs · no push to `origin/main` without you · leftover rooms stay off the front path.
-
----
-
-## 6. Cloud agents (when you arm them)
-
-Standing STATUS said: no new cloud job until you say. If you arm cloud credits later, spawn **at most two** agents with **non-overlapping** scopes:
-
-| Agent | Exact scope | Forbidden |
-|---|---|---|
-| A — Keep path / sky-card house-fit | `sky-card.html`, keep links, IANA honesty | No React · no shop SKUs · no push |
-| B — `system_hour` still | Authored camera in `orrery-webgl.js` / keep-sky caption | No React · no second canvas · no HUD in still |
-
-Fold PRs into local. Close leftover 16–23 without merge after `gh auth login`. Do not burn credits on R3F scaffolds.
+Full mapping from the dead R3F paste: earlier “What stays, what dies” table still applies. Do not create `components/`.
 
 ---
 
 ## Done when
 
-- Free play on index still works without paying.  
-- Keep path yields still + card + reading for one birth minute.  
-- One WebGL context; surfaces A/B/C honesty intact.  
-- You have looked on phone and laptop.  
-- No React tree exists under `website/`.
+- Cloud A + B folded; Keep path works free-to-play.  
+- You have looked.  
+- Shop research file exists and names what fits the **built** 3D gift.  
+- No new SKU until that look.  
+- No React under `website/`.
