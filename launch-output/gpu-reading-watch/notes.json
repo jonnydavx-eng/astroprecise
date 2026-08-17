@@ -14,7 +14,7 @@
       "composer": true,
       "cinematic": false,
       "samples": 4,
-      "camRadius": 2.05,
+      "camRadius": 2.18,
       "systemCamRadius": 76,
       "maps": {
         "mercury": {
@@ -75,7 +75,7 @@
       "composer": true,
       "cinematic": false,
       "samples": 4,
-      "camRadius": 2.05,
+      "camRadius": 2.18,
       "systemCamRadius": 76,
       "maps": {
         "mercury": {
@@ -136,7 +136,7 @@
       "composer": true,
       "cinematic": false,
       "samples": 4,
-      "camRadius": 2.05,
+      "camRadius": 2.18,
       "systemCamRadius": 76,
       "maps": {
         "mercury": {
@@ -197,7 +197,7 @@
       "composer": true,
       "cinematic": false,
       "samples": 4,
-      "camRadius": 2.05,
+      "camRadius": 2.18,
       "systemCamRadius": 88,
       "maps": {
         "mercury": {

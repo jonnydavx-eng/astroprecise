@@ -161,8 +161,8 @@ for (const file of htmlFiles) {
 const skyCard = read('./website/sky-card.html');
 const skyCardJs = read('./website/js/ap-sky-card.js');
 const keepMinute = read('./website/js/ap-keep-minute.js');
-assert.ok(skyCard.includes("window.AP_ASSET_V='888'"), 'sky card must declare the release tip');
-assert.equal(/\?v=(?!888\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
+assert.ok(skyCard.includes("window.AP_ASSET_V='890'"), 'sky card must declare the release tip');
+assert.equal(/\?v=(?!890\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
 assert.ok(skyCardJs.includes('skyCardShare') && skyCardJs.includes('navigator.share'),
   'sky card must offer a share sheet for the PNG');
 assert.ok(skyCard.includes('data-ap-static-nav') && skyCard.includes('sky-events.html'),
@@ -235,9 +235,9 @@ assert.equal(/LIVE/.test(read('./website/js/ap-keep-sky.js').split('stampSurface
   'Keep stamp path must not introduce a LIVE badge');
 assert.ok(read('./website/js/ap-keep-sky.js').includes("SURFACE_A = 'SCHEMATIC'"),
   'Keep PNG must stamp Surface A SCHEMATIC');
-assert.ok(read('./website/js/ap-asset-v.js').includes("AP_ASSET_V = '888'"),
-  'shared asset tip must be 888');
-assert.ok(serviceWorker.includes('const V = "ap-v888"'), 'service worker tip must be ap-v888');
+assert.ok(read('./website/js/ap-asset-v.js').includes("AP_ASSET_V = '890'"),
+  'shared asset tip must be 890');
+assert.ok(serviceWorker.includes('const V = "ap-v890"'), 'service worker tip must be ap-v890');
 
 const outreach = read('./website/js/outreach-content.js');
 for (const stale of ['Deep Reading £12', 'posters from £6', 'shop.html#deep-reading', '{{deepReadingPrice}}']) {

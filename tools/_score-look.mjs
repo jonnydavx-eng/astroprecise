@@ -20,7 +20,7 @@ await page.goto(BASE + '/index.html?nosw=1', { waitUntil: 'domcontentloaded', ti
 await page.waitForTimeout(2500);
 await shot('01-home');
 
-await page.goto(BASE + '/chart.html?nosw=1&v=889', { waitUntil: 'domcontentloaded', timeout: 45000 });
+await page.goto(BASE + '/chart.html?nosw=1&v=890', { waitUntil: 'domcontentloaded', timeout: 45000 });
 await page.waitForTimeout(2500);
 await shot('02-chart-form');
 notes.push({
@@ -109,7 +109,7 @@ notes.push({ name: 'click-state', ...after });
 await shot('05-wheel-after-sun-click');
 
 await page.setViewportSize({ width: 390, height: 844 });
-await page.goto(BASE + '/chart.html?nosw=1&v=889', { waitUntil: 'domcontentloaded', timeout: 45000 });
+await page.goto(BASE + '/chart.html?nosw=1&v=890', { waitUntil: 'domcontentloaded', timeout: 45000 });
 await page.waitForTimeout(600);
 await shot('06a-phone-form');
 notes.push({

@@ -1815,11 +1815,19 @@ const FinishShader = {
   }
 
   function applyEarthLimbHold() {
-    // Directed Earth pick: fill the limb; 2.05 + hide outer worlds kills Saturn peek.
-    setEarthTerminatorCamera(2.05, 6 * D2R);
+    // Fill the limb without crushing Blue Marble into soft mips (2.05 → 2.18).
+    setEarthTerminatorCamera(2.18, 6 * D2R);
     if (camera) {
       camera.fov = CAM_FOV_CLOSE;
       camera.updateProjectionMatrix();
+    }
+    // Punchier contrast on the first-screen sit — ACES was flattening clouds to mud.
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.28 : 1.18;
+    if (earthAtmoMat && earthAtmoMat.uniforms && earthAtmoMat.uniforms.uIntensity) {
+      earthAtmoMat.uniforms.uIntensity.value = 1.05;
+    }
+    if (earthAtmoMatOuter && earthAtmoMatOuter.uniforms && earthAtmoMatOuter.uniforms.uIntensity) {
+      earthAtmoMatOuter.uniforms.uIntensity.value = 0.14;
     }
     syncEarthSittingBodyVisibility();
   }
@@ -6238,11 +6246,12 @@ const FinishShader = {
         'float roughnessFactor = roughness;\n #ifdef USE_ROUGHNESSMAP\n   vec4 texelRoughness = texture2D( roughnessMap, vRoughnessMapUv );\n   float oceanMask = texelRoughness.g;\n   float oDayR = smoothstep( -0.05, 0.35, dot( normalize( vObjNormalE ), normalize( uSunDir ) ) );\n   roughnessFactor = mix( 0.92, mix( 0.85, 0.05, oDayR ), oceanMask );\n #endif');
 
 
-    // (D) Height / optical-depth cloud deck. Same NASA map. No 1.015 sticker,
-    // no fixed 0.0045 UV-slide. View parallax + sun-ray self-shadow.
+    // (D) Height / optical-depth cloud deck. Same NASA map. No 1.015 sticker.
+    // Sitting close-up: sharper cover + less limb grey/Rayleigh so Blue Marble
+    // stays land/ocean, not a marble wash.
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <map_fragment>',
-        '#include <map_fragment>\n #ifdef USE_MAP\n   float nNdl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float nDay = smoothstep( -0.12, 0.30, nNdl );\n   if ( uCloudShadow > 0.5 ) {\n     vec3 dN = normalize( vObjNormalE );\n     vec3 dL = normalize( uSunDir );\n     vec3 dV = normalize( cameraPosition - vEarthWP );\n     vec2 dUv = vec2( fract( vMapUv.x + uCloudSpin ), vMapUv.y );\n     float cl0 = texture2D( uCloudTex, dUv ).g;\n     float h = cl0 * 0.016;\n     vec3 Vt = dV - dN * dot( dV, dN );\n     vec2 vUvD = dUv + vec2( Vt.x, Vt.z ) * h;\n     float clH = texture2D( uCloudTex, vUvD ).g;\n     vec3 Lt = dL - dN * dot( dL, dN );\n     vec2 sUv = vUvD - vec2( Lt.x, Lt.z ) * ( 0.008 + h );\n     float clS = texture2D( uCloudTex, sUv ).g;\n     float muL = max( dot( dN, dL ), 0.04 );\n     float selfSh = exp( -clS * ( 0.85 + h * 22.0 ) / muL );\n     float cover = smoothstep( 0.10, 0.70, clH );\n     diffuseColor.rgb *= ( 1.0 - cover * 0.48 * nDay * ( 1.0 - selfSh * 0.55 ) );\n     vec3 cloudCol = vec3( 0.92, 0.95, 0.98 ) * ( 0.50 + 0.50 * selfSh );\n     diffuseColor.rgb = mix( diffuseColor.rgb, cloudCol, cover * nDay );\n   }\n   diffuseColor.rgb *= mix( vec3( 0.035, 0.04, 0.055 ), vec3( 1.0 ), nDay );\n   float nDusk = pow( clamp( 1.0 - abs( nNdl ), 0.0, 1.0 ), 4.0 ) * smoothstep( -0.12, 0.22, nNdl );\n   diffuseColor.rgb += vec3( 0.55, 0.22, 0.08 ) * nDusk * 0.22;\n   vec3 eN = normalize( vEarthWN );\n   vec3 eV = normalize( cameraPosition - vEarthWP );\n   float mu = max( dot( eN, eV ), 0.001 );\n   float od = clamp( pow( 1.0 - mu, 1.45 ) * 1.18, 0.0, 1.0 );\n   float grey = dot( diffuseColor.rgb, vec3( 0.30, 0.54, 0.16 ) );\n   diffuseColor.rgb = mix( diffuseColor.rgb, vec3( grey ), od * 0.58 * nDay );\n   vec3 rayleigh = vec3( 0.16, 0.42, 0.92 );\n   vec3 mie = vec3( 0.88, 0.92, 0.98 );\n   diffuseColor.rgb = mix( diffuseColor.rgb, rayleigh, od * 0.40 * nDay );\n   float hg = pow( max( dot( normalize( uSunDir ), eV ), 0.0 ), 6.0 );\n   diffuseColor.rgb += mie * od * nDay * ( 0.06 + hg * 0.10 );\n #endif');
+        '#include <map_fragment>\n #ifdef USE_MAP\n   float nNdl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float nDay = smoothstep( -0.12, 0.30, nNdl );\n   if ( uCloudShadow > 0.5 ) {\n     vec3 dN = normalize( vObjNormalE );\n     vec3 dL = normalize( uSunDir );\n     vec3 dV = normalize( cameraPosition - vEarthWP );\n     vec2 dUv = vec2( fract( vMapUv.x + uCloudSpin ), vMapUv.y );\n     float cl0 = texture2D( uCloudTex, dUv ).g;\n     float h = cl0 * 0.012;\n     vec3 Vt = dV - dN * dot( dV, dN );\n     vec2 vUvD = dUv + vec2( Vt.x, Vt.z ) * h;\n     float clH = texture2D( uCloudTex, vUvD ).g;\n     vec3 Lt = dL - dN * dot( dL, dN );\n     vec2 sUv = vUvD - vec2( Lt.x, Lt.z ) * ( 0.006 + h );\n     float clS = texture2D( uCloudTex, sUv ).g;\n     float muL = max( dot( dN, dL ), 0.04 );\n     float selfSh = exp( -clS * ( 0.70 + h * 18.0 ) / muL );\n     float cover = smoothstep( 0.28, 0.78, clH );\n     diffuseColor.rgb *= ( 1.0 - cover * 0.28 * nDay * ( 1.0 - selfSh * 0.45 ) );\n     vec3 cloudCol = vec3( 0.96, 0.98, 1.0 ) * ( 0.62 + 0.38 * selfSh );\n     diffuseColor.rgb = mix( diffuseColor.rgb, cloudCol, cover * cover * nDay * 0.88 );\n   }\n   diffuseColor.rgb *= mix( vec3( 0.028, 0.032, 0.048 ), vec3( 1.0 ), nDay );\n   float nDusk = pow( clamp( 1.0 - abs( nNdl ), 0.0, 1.0 ), 4.0 ) * smoothstep( -0.12, 0.22, nNdl );\n   diffuseColor.rgb += vec3( 0.55, 0.22, 0.08 ) * nDusk * 0.16;\n   vec3 eN = normalize( vEarthWN );\n   vec3 eV = normalize( cameraPosition - vEarthWP );\n   float mu = max( dot( eN, eV ), 0.001 );\n   float od = clamp( pow( 1.0 - mu, 1.65 ) * 0.95, 0.0, 1.0 );\n   float grey = dot( diffuseColor.rgb, vec3( 0.30, 0.54, 0.16 ) );\n   diffuseColor.rgb = mix( diffuseColor.rgb, vec3( grey ), od * 0.22 * nDay );\n   vec3 rayleigh = vec3( 0.14, 0.38, 0.88 );\n   vec3 mie = vec3( 0.90, 0.94, 0.99 );\n   diffuseColor.rgb = mix( diffuseColor.rgb, rayleigh, od * 0.16 * nDay );\n   float hg = pow( max( dot( normalize( uSunDir ), eV ), 0.0 ), 6.0 );\n   diffuseColor.rgb += mie * od * nDay * ( 0.04 + hg * 0.08 );\n #endif');
 
     // (E) TERMINATOR-GATED REAL CITY LIGHTS + warm dusk band (overwrite, never bleed onto day side)
     shader.fragmentShader = shader.fragmentShader

@@ -54,8 +54,8 @@ if (!W.includes('const COOL_LUNAR_VOID = 0x05080F')) {
 } else {
   ok('living-sky fog uses cool lunar void #05080F');
 }
-if (!W.includes('setEarthTerminatorCamera(2.05, 6 * D2R)') || !W.includes('applyEarthLimbHold,')) {
-  fail('Earth limb hold must be 2.05 and public for adapter snap');
+if (!W.includes('setEarthTerminatorCamera(2.18, 6 * D2R)') || !W.includes('applyEarthLimbHold,')) {
+  fail('Earth limb hold must be 2.18 and public for adapter snap');
 }
 if (!W.includes('syncEarthSittingBodyVisibility') || !W.includes("const sitting = focusFrameId === 'earth'")) {
   fail('Earth sitting must hide outer worlds that peek in wide bands');
@@ -63,8 +63,8 @@ if (!W.includes('syncEarthSittingBodyVisibility') || !W.includes("const sitting 
 if (!W.includes("const earthStart = selectedPlanetId === 'earth'") || !A.includes('O.applyEarthLimbHold()')) {
   fail('Earth-start must snap limb + earth-only texture gate');
 }
-if (W.includes('setEarthTerminatorCamera(2.8, 6 * D2R)') || W.includes('setEarthTerminatorCamera(2.15, 6 * D2R)')) {
-  fail('Earth limb hold still uses a Saturn-peek radius');
+if (W.includes('setEarthTerminatorCamera(2.8, 6 * D2R)') || W.includes('setEarthTerminatorCamera(2.05, 6 * D2R)')) {
+  fail('Earth limb hold still uses a Saturn-peek or soft-mip radius');
 }
 if (!W.includes('function clampCamElevation(el)') || !W.includes('const CAM_EL_DRAG_MIN')) {
   fail('drag elevation clamp missing');
