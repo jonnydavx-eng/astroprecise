@@ -330,27 +330,35 @@ const FinishShader = {
     uCloudSpin:   { value: 0.0 },   // longitude drift (replaces sticker spin)
   };
 
-  function getPerfTier() {
-    try {
-      if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
-      if (navigator.deviceMemory != null && navigator.deviceMemory <= 4) return 'low';
-      if (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4) return 'low';
-      if (navigator.deviceMemory != null && navigator.deviceMemory <= 6) return 'mid';
-      if (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 6) return 'mid';
-    } catch (e) { /* fall through */ }
-    return 'high';
-  }
-
   // v627 phone gate — most phones report no deviceMemory/hardwareConcurrency so
-  // getPerfTier() returns 'high'; this coarse+narrow check is what actually protects
-  // real phones from the DPR-2.5 fill-rate overload + per-frame trail cost that read
-  // as flicker. Evaluated once at module init.
+  // getPerfTier() would otherwise return 'high'; this coarse+narrow check is what
+  // actually protects real phones from the DPR-2.5 fill-rate overload + per-frame
+  // trail cost that read as flicker. Evaluated once at module init.
   const IS_PHONE = (function () {
     try { return !!(window.matchMedia && matchMedia('(pointer: coarse)').matches && matchMedia('(max-width: 820px)').matches); }
     catch (e) { return false; }
   })();
 
-  const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 96 : 84;
+  function getPerfTier() {
+    try {
+      // Do not inherit RafCore.tier. That probe treats every 4-core report as
+      // low, which skipped the composer and pinned the instrument at DPR 1.25
+      // on ordinary laptops. The Observatory uses its own, less punitive probe.
+      const mem = navigator.deviceMemory;
+      const cores = navigator.hardwareConcurrency;
+      if (mem != null && mem <= 2) return 'low';
+      if (cores != null && cores <= 2) return 'low';
+      if (IS_PHONE && mem != null && mem <= 4) return 'low';
+      if (mem != null && mem <= 4) return 'mid';
+      if (IS_PHONE && cores != null && cores <= 4) return 'mid';
+      if (IS_PHONE && mem != null && mem <= 6) return 'mid';
+    } catch (e) { /* fall through */ }
+    return 'high';
+  }
+
+  // Closer System default so Earth/inner worlds occupy more than a handful of
+  // pixels, while Neptune (R=29) still clears a 44° vertical FOV.
+  const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 88 : 76;
   function dataSavingRequested() {
     try {
       const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -361,17 +369,18 @@ const FinishShader = {
   function orreryDPR() {
     const pre = onPreloaderStage();
     let cap = pre
-      ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.1 : 1.6)
-      : (perfTier === 'low' ? 1.25 : perfTier === 'mid' ? 2 : 2.5);
+      ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.25 : 1.6)
+      : (perfTier === 'low' ? (IS_PHONE ? 1.25 : 1.5) : 2.5);
     if (IS_PHONE) {
-      // Modern high-tier phones can sustain a 2× instrument canvas; forcing every
-      // handset to 1.6× made small worlds and ring edges visibly stair-step on the
-      // S24-class launch target. Constrained tiers keep the conservative budget.
-      const phoneCap = perfTier === 'high' ? 2.0 : perfTier === 'mid' ? 1.6 : 1.25;
+      const phoneCap = perfTier === 'high' ? 2.0 : perfTier === 'mid' ? 1.75 : 1.25;
       cap = Math.min(cap, phoneCap);
     }
-    if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(cap);
     const real = window.devicePixelRatio || 1;
+    // Desktop instrument: never sit at 1× when the OS reports 100% scaling.
+    // Do not delegate to RafCore.hdDPR — that helper still clamps 4-core hosts to 1.25.
+    if (!IS_PHONE && !pre && perfTier !== 'low' && !dataSavingRequested()) {
+      return Math.min(Math.max(real, 1.5), cap);
+    }
     return Math.min(real, cap);
   }
 
@@ -1916,8 +1925,9 @@ const FinishShader = {
   // The multisampled HalfFloat composer target is the one Chromium can resolve to
   // an empty frame after the drawing buffer is resized. It is now OPT-IN: a
   // surface asks for it with <void-orrery data-composer="cinematic"> or
-  // init({ cinematicComposer: true }). Everything else gets the plain
-  // UnsignedByte, non-MSAA target Home already used.
+  // init({ cinematicComposer: true }). Home stays on UnsignedByte + WebGL2 MSAA
+  // (4× desktop / 2× phone). The empty-frame guard rebuilds that target with
+  // samples = 0, then may drop the composer.
   //
   // The old gate was `isLivingSkyHome()` — body.ap-live-home or a .ap-room-sky
   // section. Every shipping surface happens to carry one of those, so the safe
@@ -1929,17 +1939,26 @@ const FinishShader = {
     try { return !!document.querySelector('[data-composer="cinematic"]'); } catch (e) { return false; }
   }
 
+  function applyComposerSamples(target, requested) {
+    if (!target || !renderer || !renderer.capabilities.isWebGL2) return;
+    const gl = renderer.getContext();
+    const supported = gl && gl.getParameter ? Number(gl.getParameter(gl.MAX_SAMPLES)) || requested : requested;
+    target.samples = Math.max(0, Math.min(requested, supported));
+  }
+
   function ensureComposer() {
     if (composer || PRM || perfTier === 'low' || !renderer || !scene || !camera) return;
     try {
       if (!usesCinematicComposer()) {
-        // Safe cinematic grade: a non-MSAA, non-HalfFloat target carrying only the
-        // finish pass (dither + vignette + whisper grade) + OutputPass.
+        // Sharp Home path: UnsignedByte + MSAA + finish pass. No HalfFloat.
         const target = new THREE.WebGLRenderTarget(1, 1, {
           type: THREE.UnsignedByteType,
           depthBuffer: true,
           stencilBuffer: false,
         });
+        if (!composerSafeTarget) {
+          applyComposerSamples(target, IS_PHONE || perfTier === 'mid' ? 2 : 4);
+        }
         composer = new EffectComposer(renderer, target);
         composer.addPass(new RenderPass(scene, camera));
         finishPass = tryCreateFinishPass();
@@ -1949,22 +1968,12 @@ const FinishShader = {
         resize();
         return;
       }
-      // EffectComposer renders through its own targets, so the renderer's canvas
-      // antialias flag no longer protects small planet silhouettes. Give the
-      // composer a multisampled HDR target on WebGL2: 4x on desktop, 2x on phones.
-      // This is the edge-quality fix; increasing DPR would spend much more fill
-      // rate while leaving the post-process target aliased.
       const target = new THREE.WebGLRenderTarget(1, 1, {
         type: THREE.HalfFloatType,
         depthBuffer: true,
         stencilBuffer: false,
       });
-      if (renderer.capabilities.isWebGL2) {
-        const gl = renderer.getContext();
-        const requested = IS_PHONE || perfTier === 'mid' ? 2 : 4;
-        const supported = gl && gl.getParameter ? Number(gl.getParameter(gl.MAX_SAMPLES)) || requested : requested;
-        target.samples = Math.max(0, Math.min(requested, supported));
-      }
+      applyComposerSamples(target, IS_PHONE || perfTier === 'mid' ? 2 : 4);
       composer = new EffectComposer(renderer, target);
       composer.addPass(new RenderPass(scene, camera));
       const bloomStrength = perfTier === 'mid' ? 0.18 : 0.22;
@@ -5120,12 +5129,14 @@ const FinishShader = {
     const compactTexture = onPreloaderStage() || dataSavingRequested();
     const cap = compactTexture
       ? 512
-      : perfTier === 'low' || perfTier === 'mid'
+      : perfTier === 'low'
         ? 1024
-        : (IS_PHONE ? 2048 : 4096);
+        : (IS_PHONE && perfTier !== 'high')
+          ? 1024
+          : (perfTier === 'high' && !IS_PHONE ? 4096 : 2048);
     capTextureSize(t, cap);
     const max = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
-    const anisoCap = perfTier === 'low' ? 4 : perfTier === 'mid' ? 8 : (IS_PHONE ? 8 : 12);
+    const anisoCap = perfTier === 'low' ? 8 : 16;
     t.anisotropy = Math.min(max, anisoCap);
     t.wrapS = THREE.RepeatWrapping;
     t.wrapT = THREE.ClampToEdgeWrapping;
@@ -5306,10 +5317,12 @@ const FinishShader = {
   }
 
   function upgradeBodyTexture(id) {
-    // High-tier phones start on the medium map for a quick first frame, then the
-    // selected portrait alone may promote to full resolution. The background
-    // queue remains desktop-only below, avoiding an all-planets memory spike.
-    if (destroyed || perfTier !== 'high' || dataSavingRequested()) return Promise.resolve();
+    // Cold boot stays on the medium set. After the first settled frame, mid and
+    // high desktops (and high-tier phones) promote to the full maps so the
+    // owner is not left on _md/_sm for the rest of the session.
+    if (destroyed || dataSavingRequested()) return Promise.resolve();
+    if (perfTier === 'low') return Promise.resolve();
+    if (IS_PHONE && perfTier !== 'high') return Promise.resolve();
     if (id === 'moon') {
       return loadTex('moon.jpg', true, 'full').then((texture) => applyFullBodyTexture('moon', texture));
     }
@@ -5329,7 +5342,9 @@ const FinishShader = {
   }
 
   function scheduleFullTextureUpgrades() {
-    if (fullTextureUpgradeScheduled || destroyed || perfTier !== 'high' || IS_PHONE || dataSavingRequested()) return;
+    if (fullTextureUpgradeScheduled || destroyed || dataSavingRequested()) return;
+    if (perfTier === 'low') return;
+    if (IS_PHONE && perfTier !== 'high') return;
     fullTextureUpgradeScheduled = true;
     const queue = BODIES.map((b) => b.id).concat('moon');
     const next = () => {
@@ -11264,6 +11279,33 @@ const FinishShader = {
     refreshTextures,
     captureFrame,
     captureBirthHourStill,
+    getVisualQuality() {
+      const dpr = renderer ? renderer.getPixelRatio() : 0;
+      const rt = composer && (composer.renderTarget1 || composer.writeBuffer);
+      const maps = {};
+      BODIES.forEach((b) => {
+        const mat = meshes[b.id] && meshes[b.id].userData && meshes[b.id].userData.mesh
+          && meshes[b.id].userData.mesh.material;
+        const tex = mat && mat.map;
+        const img = tex && tex.image;
+        const src = img && (img.currentSrc || img.src || '');
+        maps[b.id] = {
+          src: src ? String(src).split('/').pop() : '',
+          aniso: tex ? tex.anisotropy : 0,
+          w: img && img.width ? img.width : 0,
+        };
+      });
+      return {
+        perfTier,
+        dpr,
+        composer: !!composer,
+        cinematic: !!(composer && bloomPass),
+        samples: rt && rt.samples != null ? rt.samples : 0,
+        camRadius,
+        systemCamRadius: SYSTEM_CAM_RADIUS,
+        maps,
+      };
+    },
     isWebGL: true,
     // Read-only introspection for the resize proof: a run with no composer in the
     // pipeline (low tier / reduced motion) is not testing the composer.

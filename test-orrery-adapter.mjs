@@ -114,6 +114,12 @@ else {
   if (!indexKeepHtml.includes('ap-home-keep.js?v=880')) {
     fail('Home must load ap-home-keep.js to publish birth-hour context');
   }
+  if (!indexKeepHtml.includes('ap-reading-room') || !indexKeepHtml.includes('ap-home-reading.js?v=884')) {
+    fail('Home must open as a reading room and load ap-home-reading.js');
+  }
+  if (!indexKeepHtml.includes('start-radius="8"') || !indexKeepHtml.includes('start-focus="earth"')) {
+    fail('Home must open on Earth, not the System poster');
+  }
   if (!homeKeep.includes('ap-sky-ready') || !homeKeep.includes('ap-keep-sky-context')) {
     fail('ap-home-keep must listen for ap-sky-ready and dispatch ap-keep-sky-context');
   }
@@ -127,6 +133,21 @@ else {
 }
 if (!W.includes('type: THREE.UnsignedByteType') || !W.includes('stencilBuffer: false')) {
   fail('Home-safe UnsignedByte composer target is missing');
+}
+if (!W.includes('function applyComposerSamples') || !W.includes('if (!composerSafeTarget)')) {
+  fail('Home-safe composer must attach MSAA before the empty-frame guard strips it');
+}
+if (W.includes("hardwareConcurrency <= 4) return 'low'")) {
+  fail('4-core laptops still forced onto the low/DPR-1.25 path');
+}
+if (W.includes("if (window.RafCore && window.RafCore.tier) return window.RafCore.tier")) {
+  fail('instrument still inherits RafCore.tier and can skip the composer on 4-core hosts');
+}
+if (W.includes("perfTier !== 'high' || IS_PHONE || dataSavingRequested()) return")) {
+  fail('full texture upgrades still high-desktop-only');
+}
+if (!W.includes('Math.max(real, 1.5)') || !W.includes('getVisualQuality()')) {
+  fail('desktop DPR floor or getVisualQuality introspection missing');
 }
 
 const couplesSkyPath = join(root, 'js', 'ap-couples-sky.js');
@@ -212,7 +233,7 @@ if (!/function frameBody\(t\)\s*\{\s*let announceInstrumentFirstFrame = false;/.
 if (!/if \(composer\) composer\.render\(\);\s*else renderer\.render\(scene, camera\);\s*(afterComposerFrame\(\);\s*)?if \(announceInstrumentFirstFrame\) dispatchOrreryFirstFrame\(\);/.test(W)) {
   fail('Home announces first frame before the settled buffer is rendered');
 }
-if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 96 : 84;') || !W.includes('camRadius: SYSTEM_CAM_RADIUS, camMin: 48')) {
+if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 88 : 76;') || !W.includes('camRadius: SYSTEM_CAM_RADIUS, camMin: 48')) {
   fail('System camera no longer frames all eight major worlds');
 }
 if (!W.includes('!portraitMode && !focusFrameId')) {
@@ -231,9 +252,9 @@ if (got.join() !== expectedOwners.join()) {
   fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=880/.test(indexHtml)) fail('Home missing v876 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=880"/.test(indexHtml)) {
-  fail('Home missing exact v876 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=883/.test(indexHtml)) fail('Home missing v883 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=883"/.test(indexHtml)) {
+  fail('Home missing exact v883 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
@@ -276,9 +297,9 @@ ok('opening beat is subtle, reduced-motion safe and yields to user input; full j
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
-  'css/ap-living-sky-v834.css?v=880',
-    'js/ap-observatory-v834.js?v=880',
-    'js/ap-nav-model.js?v=880',
+  'css/ap-living-sky-v834.css?v=883',
+    'js/ap-observatory-v834.js?v=883',
+    'js/ap-nav-model.js?v=884',
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
@@ -312,7 +333,7 @@ if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a 
 if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
 if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v880"')) fail('service worker release identity is not ap-v880');
+if (!sw.includes('const V = "ap-v885"')) fail('service worker release identity is not ap-v885');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
@@ -337,8 +358,8 @@ const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'u
 const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=880',
-    'css/ap-eclipse-live-v834.css?v=880',
+  'js/ap-eclipse-live-v834.js?v=883',
+    'css/ap-eclipse-live-v834.css?v=883',
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];

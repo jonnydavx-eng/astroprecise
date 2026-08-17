@@ -227,9 +227,9 @@ assert.equal(/LIVE/.test(read('./website/js/ap-keep-sky.js').split('stampSurface
   'Keep stamp path must not introduce a LIVE badge');
 assert.ok(read('./website/js/ap-keep-sky.js').includes("SURFACE_A = 'SCHEMATIC'"),
   'Keep PNG must stamp Surface A SCHEMATIC');
-assert.ok(read('./website/js/ap-asset-v.js').includes("AP_ASSET_V = '880'"),
-  'shared asset tip must be 880');
-assert.ok(serviceWorker.includes('const V = "ap-v880"'), 'service worker tip must be ap-v880');
+assert.ok(read('./website/js/ap-asset-v.js').includes("AP_ASSET_V = '885'"),
+  'shared asset tip must be 885');
+assert.ok(serviceWorker.includes('const V = "ap-v885"'), 'service worker tip must be ap-v885');
 
 const outreach = read('./website/js/outreach-content.js');
 for (const stale of ['Deep Reading £12', 'posters from £6', 'shop.html#deep-reading', '{{deepReadingPrice}}']) {

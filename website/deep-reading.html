@@ -18,9 +18,9 @@
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=880">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=883">
   <script src="js/void-orrery-adapter.js?v=880" defer></script>
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=880">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=885">
 </head>
 <body class="page-natal-reading ap-launch-article">
   <a class="skip-link" href="#natal-main">Skip to reading</a>
@@ -51,16 +51,16 @@
 
   <section class="ap-room-sky" aria-label="Live sky">
     <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
-      <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+      <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
       <div class="ap-model-vignette" aria-hidden="true"></div>
-      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
+      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Opening the night</strong><em>The sitting is below</em></div>
     </div>
   </section>
 
   <main id="natal-main" class="ap-natal-shell">
-    <p class="ap-natal-kicker">The night you were born · reading half · on this device</p>
-    <h1>The sky that night, <em>read in full.</em></h1>
-    <p class="ap-natal-lede">Play stays free. The live sky above is not behind a paywall, an account, or a chat. This page is the other half of that night: seven chapters written from a real computed chart — date, place, and an honest timezone. Unknown birth time is disclosed, not filled in. Place search sends only the town name to a public geocoder. Birth date and time stay here.</p>
+    <p class="ap-natal-kicker">The night you were born · seven chapters · on this device</p>
+    <h1>Sit with the hour you arrived.</h1>
+    <p class="ap-natal-lede">This is the sitting. Seven chapters from a real computed chart — date, town, and an honest zone. If the hour is missing we say so, and we do not invent noon as a birth time. The live sky above is not behind a paywall. Place search sends only the town name. Birth date and time stay here.</p>
 
     <div class="ap-natal-ledger" aria-label="What is computed and what is offered">
       <div>
@@ -88,7 +88,7 @@
         </label>
       </div>
       <p class="ap-natal-note" id="natalStatus" role="status">Cast a free chart first, or enter a date and town here. Without a birth time we compute the date at 12:00 in the chosen zone as a date reference, not a birth hour. The Moon is held approximate (±7°). Angles and houses are withheld.</p>
-      <button type="submit" data-natal-submit disabled aria-busy="true" aria-describedby="natalStatus">Write my seven chapters</button>
+      <button type="submit" data-natal-submit disabled aria-busy="true" aria-describedby="natalStatus">Begin the sitting</button>
     </form>
 
     <div id="natalResult" hidden tabindex="-1">

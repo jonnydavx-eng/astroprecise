@@ -1,0 +1,246 @@
+[
+  {
+    "name": "home",
+    "url": "http://127.0.0.1:8790/index.html?nosw=1",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\gpu-reading-watch\\home.png",
+    "title": "AstroPrecise — the night you were born, read here",
+    "h1": "Moon in Libra",
+    "kicker": "Tonight · Sun in Leo",
+    "body": "The sky is doing you a favor today.",
+    "webgl": true,
+    "quality": {
+      "perfTier": "high",
+      "dpr": 1.5,
+      "composer": true,
+      "cinematic": false,
+      "samples": 4,
+      "camRadius": 4.296060934597366,
+      "systemCamRadius": 76,
+      "maps": {
+        "mercury": {
+          "src": "mercury.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "venus": {
+          "src": "venus.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "earth": {
+          "src": "earth.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "mars": {
+          "src": "mars.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "jupiter": {
+          "src": "jupiter.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "saturn": {
+          "src": "saturn.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "uranus": {
+          "src": "uranus.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "neptune": {
+          "src": "neptune.webp",
+          "aniso": 16,
+          "w": 2048
+        }
+      }
+    }
+  },
+  {
+    "name": "chart",
+    "url": "http://127.0.0.1:8790/chart.html?nosw=1",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\gpu-reading-watch\\chart.png",
+    "title": "Your minute — free birth chart, then the sitting | AstroPrecise",
+    "h1": "Your minute, then the sitting",
+    "kicker": "",
+    "body": "",
+    "webgl": true,
+    "quality": {
+      "perfTier": "high",
+      "dpr": 1.5,
+      "composer": true,
+      "cinematic": false,
+      "samples": 4,
+      "camRadius": 4.5,
+      "systemCamRadius": 76,
+      "maps": {
+        "mercury": {
+          "src": "mercury.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "venus": {
+          "src": "venus.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "earth": {
+          "src": "earth.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "mars": {
+          "src": "mars.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "jupiter": {
+          "src": "jupiter.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "saturn": {
+          "src": "saturn.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "uranus": {
+          "src": "uranus.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "neptune": {
+          "src": "neptune.webp",
+          "aniso": 16,
+          "w": 2048
+        }
+      }
+    }
+  },
+  {
+    "name": "reading",
+    "url": "http://127.0.0.1:8790/deep-reading.html?nosw=1",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\gpu-reading-watch\\reading.png",
+    "title": "Natal reading — the night you were born, in words | AstroPrecise",
+    "h1": "Sit with the hour you arrived.",
+    "kicker": "",
+    "body": "",
+    "webgl": true,
+    "quality": {
+      "perfTier": "high",
+      "dpr": 1.5,
+      "composer": true,
+      "cinematic": false,
+      "samples": 4,
+      "camRadius": 4.5,
+      "systemCamRadius": 76,
+      "maps": {
+        "mercury": {
+          "src": "mercury.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "venus": {
+          "src": "venus.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "earth": {
+          "src": "earth.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "mars": {
+          "src": "mars.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "jupiter": {
+          "src": "jupiter.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "saturn": {
+          "src": "saturn.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "uranus": {
+          "src": "uranus.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "neptune": {
+          "src": "neptune.webp",
+          "aniso": 16,
+          "w": 2048
+        }
+      }
+    }
+  },
+  {
+    "name": "home-phone",
+    "url": "http://127.0.0.1:8790/index.html?nosw=1",
+    "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\launch-output\\gpu-reading-watch\\home-phone.png",
+    "title": "AstroPrecise — the night you were born, read here",
+    "h1": "Moon in Libra",
+    "kicker": "Tonight · Sun in Leo",
+    "body": "The sky is doing you a favor today.",
+    "webgl": true,
+    "quality": {
+      "perfTier": "high",
+      "dpr": 1.5,
+      "composer": true,
+      "cinematic": false,
+      "samples": 4,
+      "camRadius": 2.8,
+      "systemCamRadius": 88,
+      "maps": {
+        "mercury": {
+          "src": "mercury.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "venus": {
+          "src": "venus.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "earth": {
+          "src": "earth.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "mars": {
+          "src": "mars.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "jupiter": {
+          "src": "jupiter.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "saturn": {
+          "src": "saturn.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "uranus": {
+          "src": "uranus.webp",
+          "aniso": 16,
+          "w": 2048
+        },
+        "neptune": {
+          "src": "neptune.webp",
+          "aniso": 16,
+          "w": 2048
+        }
+      }
+    }
+  }
+]

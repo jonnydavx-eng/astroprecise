@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
-  <title>Free Birth Chart — calculated on your device | AstroPrecise</title>
+  <title>Your minute — free birth chart, then the sitting | AstroPrecise</title>
   <script>window.AP_ASSET_V='876';</script>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/fonts.css?v=880" />
@@ -70,11 +70,11 @@
     <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=880">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=883">
   <script src="js/void-orrery-adapter.js?v=880" defer></script>
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880" />
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=880">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=885">
   <link rel="stylesheet" href="css/ap-chart-v835.css?v=880" />
   <link rel="stylesheet" href="css/ap-keep-sky.css?v=880">
 </head>
@@ -120,13 +120,13 @@
 
   <section class="ap-room-sky" aria-label="Live sky">
     <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
-      <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+      <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
       <div class="ap-model-vignette" aria-hidden="true"></div>
-      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
+      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Opening the night</strong><em>Your minute is below</em></div>
     </div>
     <p class="ap-keep-row">
       <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
-      <span class="action-note" id="keep-sky-caption">Cast the chart to prepare its whole-system birth-hour frame.</span>
+      <span class="action-note" id="keep-sky-caption">Begin with your minute to keep that hour’s still. The live sky stays free.</span>
     </p>
   </section>
 
@@ -140,15 +140,16 @@
     <section class="chart-hero" aria-labelledby="page-title">
 
       <div class="container">
-        <p class="chart-hero__eyebrow" aria-hidden="true">FREE BIRTH CHART · NO ACCOUNT · COMPUTED ON YOUR DEVICE</p>
-        <h1 class="chart-hero__title" id="page-title">Your birth sky, calculated</h1>
+        <p class="chart-hero__eyebrow" aria-hidden="true">THE NIGHT YOU WERE BORN · ON THIS DEVICE</p>
+        <h1 class="chart-hero__title" id="page-title">Your minute, then the sitting</h1>
         <p class="chart-hero__subtitle">
-          Enter your birth date, place and time. Supported positions are computed in your browser with published astronomical methods; your place is resolved to coordinates, then the chart stays on this device.
+          Date, town, and the hour if you have it. The chart is the receipt. The seven chapters are the sitting. Keep a card if you want — the live sky stays free.
         </p>
-        <p class="chart-hero__timecode" aria-hidden="true">PUBLISHED ASTRONOMICAL METHODS &middot; 1800&ndash;2200 CE &middot; <b>CHART CALCULATION ON-DEVICE</b> &middot; PLACE LOOKUP DISCLOSED</p>
+        <p class="chart-hero__timecode" aria-hidden="true">PUBLISHED ASTRONOMICAL METHODS &middot; 1800&ndash;2200 CE &middot; <b>ON THIS DEVICE</b> &middot; UNKNOWN TIME IS SAID, NOT FAKED</p>
         <p class="chart-hero__actions">
-          <a href="#chart-form-wrapper" class="btn btn--primary chart-hero__cta">Cast my chart</a>
-          <span class="chart-hero__proof">About 20 seconds · no sign-up</span>
+          <a href="#chart-form-wrapper" class="btn btn--primary chart-hero__cta">Begin with my minute</a>
+          <a href="deep-reading.html" class="btn btn--ghost chart-hero__cta">Open the seven chapters</a>
+          <span class="chart-hero__proof">No account · the minute never goes in the link</span>
         </p>
       </div>
     </section>
@@ -306,7 +307,7 @@
               <span id="spacetime-summary-txt"></span>
             </div>
             <button type="submit" class="btn--calculate" id="calculate-btn" aria-describedby="submit-hint">
-              <span class="btn-idle"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Chart</span>
+              <span class="btn-idle"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Read this minute</span>
               <span class="btn-loading" aria-hidden="true">
                 <span class="btn-spinner"></span>Calculating…
               </span>

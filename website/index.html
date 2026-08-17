@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#05080F">
-  <title>AstroPrecise — the living sky, computed now</title>
-  <meta name="description" content="Explore the living sky in one live 3D instrument, follow the next verified sky event, cast a private birth chart and keep a personal eclipse edition if it contacted your chart.">
+  <title>AstroPrecise — the night you were born, read here</title>
+  <meta name="description" content="Sit with the live sky, then a free natal chart and a seven-chapter reading from the hour you arrived. Computed on this device. The sky stays free.">
   <link rel="canonical" href="https://astroprecise.app/">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
 
-  <meta property="og:title" content="AstroPrecise — the living sky, computed now">
-  <meta property="og:description" content="One living-sky instrument: observed astronomy, clearly separated astrological meaning, private chart calculation and dedicated eclipse geometry.">
+  <meta property="og:title" content="AstroPrecise — the night you were born, read here">
+  <meta property="og:description" content="A sitting with the real sky: chart, seven-chapter reading, and a keepable still. Play stays free.">
   <meta property="og:url" content="https://astroprecise.app/">
   <meta property="og:image" content="https://astroprecise.app/img/editorial/eclipse-launch-2026-v835.jpg">
   <meta property="og:site_name" content="AstroPrecise">
@@ -24,16 +24,16 @@
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=880">
-    <script src="js/void-orrery-adapter.js?v=880" defer></script>
-    <script src="js/ap-nav-model.js?v=880" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=883">
+    <script src="js/void-orrery-adapter.js?v=883" defer></script>
+    <script src="js/ap-nav-model.js?v=884" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=883">
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-    <link rel="stylesheet" href="css/ap-home-v835.css?v=880">
+    <link rel="stylesheet" href="css/ap-home-v835.css?v=885">
     <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=880">
     <link rel="stylesheet" href="css/ap-keep-sky.css?v=880">
 </head>
-<body class="ap-live-home page-home">
+<body class="ap-live-home page-home ap-reading-room">
   <a class="skip" href="#lead">Skip to the Observatory</a>
 
   <header class="site-header" role="banner" data-ap-static-nav>
@@ -63,23 +63,27 @@
 
   <main id="main-content">
     <section class="ap-live-stage" id="lead" aria-label="Live sky Observatory">
-      <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
-        <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
-        <div class="ap-model-vignette" aria-hidden="true"></div>
-        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
-        <div class="ap-live-intro">
-          <h1 class="ap-live-heading">AstroPrecise</h1>
-          <p class="ap-live-copy">A live solar-system instrument — System, Inner, Earth.</p>
-          <div class="ap-live-actions">
-            <a class="ap-action ap-action--primary" href="chart.html">Cast my chart</a>
-          </div>
+      <div class="ap-live-intro ap-reading-plate">
+        <p class="ap-reading-kicker" id="ap-reading-kicker">The night you were born</p>
+        <h1 class="ap-live-heading" id="ap-reading-title">Sit with the sky first</h1>
+        <p class="ap-live-copy" id="ap-reading-body">This is a sitting. Earth now, then the minute you arrived, then seven chapters you can keep. The instrument waits.</p>
+        <p class="ap-reading-source" id="ap-reading-source">Positions computed on this device. Astrology is offered for reflection, not as fact.</p>
+        <div class="ap-live-actions">
+          <a class="ap-action ap-action--primary" href="chart.html">Begin with my minute</a>
+          <a class="ap-action ap-action--ghost" href="deep-reading.html">Open the seven chapters</a>
+          <button type="button" class="ap-action ap-action--ghost" id="ap-open-instrument">Use the instrument</button>
         </div>
+      </div>
+      <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
+        <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
+        <div class="ap-model-vignette" aria-hidden="true"></div>
+        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Opening the night</strong><em>Earth as it is now · computed here</em></div>
       </div>
 
       <div class="ap-mobile-flight-deck" aria-label="3D Observatory controls">
         <p><span>01</span> Choose a destination <small>Then drag the model to orbit</small></p>
         <label for="mobileWorld"><span>World</span><select id="mobileWorld" disabled><option value="">Solar system</option><option value="sun">Sun</option><option value="mercury">Mercury</option><option value="venus">Venus</option><option value="earth">Earth</option><option value="moon">Moon</option><option value="mars">Mars</option><option value="jupiter">Jupiter</option><option value="saturn">Saturn</option><option value="uranus">Uranus</option><option value="neptune">Neptune</option></select></label>
-        <label for="mobileScale"><span>Scale</span><select id="mobileScale" disabled><option value="EARTH">Earth</option><option value="INNER">Inner system</option><option value="SYSTEM" selected>Solar system</option><option value="OORT">Oort cloud</option><option value="STARS">Nearby stars</option><option value="GALAXY">Galaxy</option><option value="COSMOS">Cosmos</option></select></label>
+        <label for="mobileScale"><span>Scale</span><select id="mobileScale" disabled><option value="EARTH" selected>Earth</option><option value="INNER">Inner system</option><option value="SYSTEM">Solar system</option><option value="OORT">Oort cloud</option><option value="STARS">Nearby stars</option><option value="GALAXY">Galaxy</option><option value="COSMOS">Cosmos</option></select></label>
       </div>
 
       <aside class="ap-control-panel" aria-label="Explore the live sky">
@@ -111,8 +115,8 @@
         </div>
         <div class="ap-glass-hud__meta">
           <div class="ap-context">
-            <div class="ap-context__head"><p class="ap-panel-label">Selected view</p><h2 id="sky-focus-title">Solar system</h2></div>
-            <div class="ap-ledger ap-ledger--observed"><span>Observed</span><p id="telemetry" aria-live="polite">Every major world is visible in one compressed, explorable view.</p></div>
+            <div class="ap-context__head"><p class="ap-panel-label">Selected view</p><h2 id="sky-focus-title">Earth</h2></div>
+            <div class="ap-ledger ap-ledger--observed"><span>Observed</span><p id="telemetry" aria-live="polite">Earth as computed now. Distances in the model are schematic; longitudes are live.</p></div>
             <div class="ap-ledger ap-ledger--meaning"><span>In astrology</span><p id="sky-meaning">A chart reads angular relationships among these bodies from Earth. It is a symbolic tradition, not a scientific claim.</p></div>
             <a class="ap-context__chart" id="sky-chart-link" href="chart.html">Find these positions in my chart</a>
             <a class="ap-context__chart" href="sky-card.html" data-ap-keep-minute>Keep this sky · card</a>
@@ -129,26 +133,26 @@
       </aside>
     </section>
 
-    <section class="ap-event-rail" aria-labelledby="event-rail-title">
+    <section class="ap-event-rail ap-reading-path" aria-labelledby="event-rail-title">
       <div class="ap-event-rail__intro">
-        <p class="ap-live-eyebrow">Event atlas · observed sky</p>
-        <h2 id="event-rail-title">What the sky does next.</h2>
-        <a href="sky-events.html">Open the live event ledger</a>
+        <p class="ap-live-eyebrow">The sitting</p>
+        <h2 id="event-rail-title">Chart. Reading. Keep.</h2>
+        <a href="deep-reading.html">Start with the seven chapters</a>
       </div>
-      <a class="ap-event-ticket" href="sky-events.html#perseids"><span>Now · 12–13 Aug 2026</span><strong>Perseids</strong><p>A moon-dark peak night and the cleanest naked-eye spectacle in the launch window.</p><em>Watch notes →</em></a>
-      <a class="ap-event-ticket ap-event-ticket--next" href="sky-events.html#lunar-eclipse"><span>Next eclipse · 28 Aug 2026</span><strong>Partial lunar eclipse</strong><p>Earth's shadow clips the full Moon—the second act of this eclipse season.</p><em>Event briefing →</em></a>
-      <a class="ap-event-ticket" href="eclipse.html"><span>Archive · 12 Aug 2026</span><strong>Solar eclipse replay</strong><p>Run the dedicated Sun–Moon–Earth geometry and check its contact with your chart.</p><em>Open 3D replay →</em></a>
+      <a class="ap-event-ticket" href="chart.html"><span>01 · Minute</span><strong>Your birth sky</strong><p>Date, place, and the hour if you have it. Positions stay on this device. Unknown time is said, not faked.</p><em>Begin with my minute →</em></a>
+      <a class="ap-event-ticket ap-event-ticket--next" href="deep-reading.html"><span>02 · Sitting</span><strong>Seven chapters</strong><p>The night you were born, read in full. Sun, Moon, the weight of the chart, then this season.</p><em>Open the reading →</em></a>
+      <a class="ap-event-ticket" href="sky-card.html" data-ap-keep-minute><span>03 · Keep</span><strong>Card and still</strong><p>A card of that minute, and a 3D still of the system that hour. Optional. Play stays free.</p><em>Keep this sky →</em></a>
     </section>
 
     <section class="ap-personal-entry" id="personal" aria-labelledby="personal-title">
       <div class="ap-personal-entry__inner">
         <div>
-          <p class="ap-live-eyebrow">Your sky, interpreted</p>
+          <p class="ap-live-eyebrow">Begin the sitting</p>
           <h2 id="personal-title">The minute you entered the story.</h2>
-          <p class="standfirst">Set your birth details once. The chart instrument calculates the positions here, explains the result plainly and keeps the birth moment on this device.</p>
+          <p class="standfirst">Give the date and the town. The hour if you have it. Then the chart, then seven chapters, then a card you can keep. Nothing leaves this device except the town name for the zone.</p>
         </div>
         <div class="ap-calc-entry-panel">
-          <div class="ap-calc-entry-panel__head"><p class="eyebrow">Calculation room · private on this device</p></div>
+          <div class="ap-calc-entry-panel__head"><p class="eyebrow">Your minute · private on this device</p></div>
           <div class="ap-calc-entry-panel__body">
             <form id="coupon-form" action="chart.html" method="get">
               <div class="fields">
@@ -158,7 +162,7 @@
               </div>
               <p class="ap-calc-entry-panel__hint" id="coupon-hint">A precise time sharpens the Moon; your town fixes the angles and houses. You choose an exact place on the next screen.</p>
               <div class="ap-calc-entry-panel__action">
-                <button class="btn-primary" type="submit">Cast my chart — free</button>
+                <button class="btn-primary" type="submit">Begin with my minute</button>
                 <span class="action-note">Private · no account · no birth details in the address bar</span>
               </div>
             </form>
@@ -171,7 +175,7 @@
     <section class="edition" aria-labelledby="edition-title">
       <div class="shell edition__grid">
         <div>
-          <p class="eyebrow">12 August 2026 · archive + edition</p>
+          <p class="eyebrow">Also here · eclipse archive</p>
           <h2 class="deck-h" id="edition-title">The shadow has passed. The plate remains.</h2>
           <p class="sub">Replay the 3D instrument and field guide. If the eclipse touched your chart, the £7 personalised edition unlocks a five-beat reading and unique natal-wheel artwork on this device.</p>
           <ol class="contents">
@@ -211,9 +215,9 @@
 
     <section class="ap-proof-ledger" aria-label="How AstroPrecise works">
       <div class="ap-proof-ledger__inner">
-        <div><span>01 · Live model</span><strong>One renderer</strong><p>The Observatory is the site’s single general-purpose 3D sky.</p></div>
-        <div><span>02 · Private calculation</span><strong>In this browser</strong><p>Birth moments stay local; place-name lookup alone contacts Open-Meteo.</p></div>
-        <div><span>03 · Honest language</span><strong>Fact and meaning separated</strong><p>Computed astronomy is distinguished from astrological interpretation.</p></div>
+        <div><span>01 · The sky</span><strong>You can hold it</strong><p>One live 3D sky. Play is free. Nothing here is a substitute model.</p></div>
+        <div><span>02 · The sitting</span><strong>Seven chapters</strong><p>A natal reading from the minute you give, written on this device.</p></div>
+        <div><span>03 · The keep</span><strong>Optional</strong><p>A card and a still of that hour. The live sky is never behind it.</p></div>
       </div>
     </section>
   </main>
@@ -249,7 +253,8 @@
     })();
   </script>
   <script src="js/ap-observatory-controls-v835.js?v=880" defer></script>
-    <script src="js/ap-observatory-v834.js?v=880" defer></script>
+    <script src="js/ap-observatory-v834.js?v=883" defer></script>
+    <script src="js/ap-home-reading.js?v=884" defer></script>
     <script src="js/ap-nav-prefetch.js?v=880" defer data-ap-nav-prefetch="1"></script>
     <script src="js/ap-sky-time.js?v=880" defer></script>
     <script src="js/ap-footer-inject.js?v=880" defer></script>

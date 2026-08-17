@@ -26,15 +26,16 @@
 
   // Historical direct routes, exposed only on archive pages.
   var NAV_MORE_EXPLORE = [
-    ['ephemeris.html', 'Sky tools'],
-    ['mysky.html', 'My Sky', { badge: 'Hub' }],
-    ['guides.html', 'Library'],
+    ['deep-reading.html', 'Natal reading'],
+    ['sky-card.html', 'Sky card'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
-    ['eclipse.html', 'Eclipse archive', { badge: '3D' }],
     ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
+    ['tonight.html', 'Tonight'],
+    ['eclipse.html', 'Eclipse archive', { badge: '3D' }],
+    ['ephemeris.html', 'Sky tools'],
+    ['guides.html', 'Library'],
     ['profile.html', 'Profile'],
     ['charts.html', 'My Charts'],
-    ['deep-reading.html', 'Natal reading'],
   ];
 
   // Four-route mobile spine. The authored header remains the desktop navigation.

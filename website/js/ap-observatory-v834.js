@@ -166,6 +166,10 @@
       } else if (state.scale != null && orrery.flyScale) {
         orrery.flyScale(state.scale);
         showScale(state.scale);
+      } else if (document.body && document.body.classList.contains('ap-reading-room')) {
+        if (orrery.flyTo) orrery.flyTo('earth');
+        showScale('EARTH');
+        showFocus('Earth', { key: 'earth' });
       } else {
         showScale('SYSTEM');
         showFocus('Solar system', { key: '' });
@@ -182,8 +186,13 @@
         stage.classList.add('is-model-ready');
         stage.setAttribute('aria-busy', 'false');
       }
-      showScale('SYSTEM');
-      showFocus('Solar system', { key: '' });
+      if (document.body && document.body.classList.contains('ap-reading-room')) {
+        showScale('EARTH');
+        showFocus('Earth', { key: 'earth' });
+      } else {
+        showScale('SYSTEM');
+        showFocus('Solar system', { key: '' });
+      }
       updateClock();
       if (mobileWorld) mobileWorld.disabled = false;
       if (mobileScale) mobileScale.disabled = false;
@@ -191,7 +200,8 @@
       applyHash();
       if (!hasExplicitOpening && !userTookControl && orrery.startOpeningBeat) {
         var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!reduced) setTimeout(function () {
+        var readingRoom = document.body && document.body.classList.contains('ap-reading-room');
+        if (!reduced && !readingRoom) setTimeout(function () {
           if (!userTookControl && !location.hash) orrery.startOpeningBeat();
         }, 260);
       }

@@ -549,6 +549,76 @@
   .ap-proof-ledger__inner > div:first-child { border-top: 0; }
 }
 
+/* Sky-first: first screen is the model. The button farm is a tray, not half the page. */
+@media (min-width: 701px) {
+  .ap-live-home .ap-live-stage {
+    display: block;
+    height: calc(100svh - var(--ap-nav-h, 64px));
+    min-height: calc(100svh - var(--ap-nav-h, 64px));
+    max-height: calc(100svh - var(--ap-nav-h, 64px));
+  }
+  .ap-live-home .ap-model-stage {
+    position: absolute;
+    inset: 0;
+    flex: none;
+    height: 100%;
+    min-height: 0;
+  }
+  .ap-live-home .ap-live-intro {
+    top: 18px;
+    left: 22px;
+    width: min(260px, 34vw);
+  }
+  .ap-live-home .ap-live-heading {
+    margin: 0 0 6px;
+    font-size: clamp(20px, 2.2vw, 28px);
+    letter-spacing: 0;
+  }
+  .ap-live-home .ap-live-copy {
+    max-width: 26ch;
+    font-size: 14px;
+  }
+  .ap-live-home .ap-live-actions { display: none; }
+  .ap-live-home .ap-control-panel {
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: auto;
+    max-height: 52px;
+    padding: 8px 20px 10px;
+    overflow: hidden;
+    grid-template-columns: none;
+    transition: max-height 200ms ease;
+  }
+  .ap-live-home .ap-control-panel:hover,
+  .ap-live-home .ap-control-panel:focus-within {
+    max-height: min(38vh, 340px);
+    overflow: auto;
+  }
+  .ap-live-home .ap-glass-hud__meta { display: none; }
+  .ap-live-home .ap-control-panel:hover .ap-glass-hud__meta,
+  .ap-live-home .ap-control-panel:focus-within .ap-glass-hud__meta {
+    display: block;
+  }
+  .ap-live-home .ap-model-hint {
+    margin: 0;
+    font-size: 13px;
+  }
+  .ap-live-home .ap-control-group,
+  .ap-live-home .ap-model-status {
+    display: none;
+  }
+  .ap-live-home .ap-control-panel:hover .ap-control-group,
+  .ap-live-home .ap-control-panel:focus-within .ap-control-group,
+  .ap-live-home .ap-control-panel:hover .ap-model-status,
+  .ap-live-home .ap-control-panel:focus-within .ap-model-status {
+    display: block;
+  }
+}
+
 @media (max-width: 420px) {
   .ap-live-home .ap-model-stage { min-height: 390px; height: 56svh; }
   .ap-live-home .ap-mobile-flight-deck > p small { display: none; }
@@ -560,11 +630,154 @@
   .ap-event-ticket { transition: none; }
 }
 
-/* Shared sky on tool rooms. Same void-orrery, a band, not a page takeover. */
+.ap-reading-path .ap-event-ticket em { color: var(--ap-ember); }
+
+/* Reading room — G: sitting line + Earth + glass HUD below the disc.
+   Intro lives outside .ap-model-stage so the canvas stays unobstructed. */
+.ap-reading-room .ap-reading-kicker {
+  margin: 0 0 10px;
+  font-family: var(--ap-sans, inherit);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ap-silver);
+}
+.ap-reading-room .ap-reading-source {
+  max-width: 36ch;
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ap-mute, var(--ap-paper-faint));
+}
+.ap-reading-room .ap-action--ghost {
+  margin-left: 10px;
+  color: var(--ap-paper);
+  background: transparent;
+  border: 1px solid var(--ap-silver-a28, rgba(143, 163, 184, 0.28));
+}
+.ap-reading-room .ap-action--ghost:hover,
+.ap-reading-room .ap-action--ghost:focus-visible {
+  border-color: var(--ap-brass-bright);
+  color: var(--ap-paper);
+}
+
+@media (min-width: 701px) {
+  .ap-reading-room .ap-live-stage {
+    display: flex;
+    flex-direction: column;
+    height: calc(100svh - var(--ap-nav-h, 64px));
+    min-height: 720px;
+    max-height: none;
+  }
+  .ap-reading-room .ap-model-stage {
+    position: relative;
+    inset: auto;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 480px;
+  }
+  .ap-reading-room .ap-live-intro {
+    position: absolute;
+    z-index: 6;
+    top: 88px;
+    left: 22px;
+    width: min(420px, 40vw);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    pointer-events: none;
+  }
+  .ap-reading-room .ap-live-intro .ap-action { pointer-events: auto; }
+  .ap-reading-room .ap-live-heading {
+    max-width: 14ch;
+    margin: 0 0 14px;
+    font-size: clamp(40px, 5.4vw, 72px);
+    font-weight: 600;
+    font-style: italic;
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    color: var(--ap-paper);
+  }
+  .ap-reading-room .ap-live-copy {
+    max-width: 38ch;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ap-paper-dim);
+  }
+  .ap-reading-room .ap-live-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .ap-reading-room .ap-control-panel {
+    position: relative;
+    z-index: 5;
+    max-height: none;
+    padding: 16px clamp(16px, 2.4vw, 32px) 18px;
+    opacity: 1;
+    overflow: visible;
+    pointer-events: auto;
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .ap-reading-room .ap-live-stage {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100svh - var(--ap-nav-h, 64px));
+  }
+  .ap-reading-room .ap-live-intro {
+    position: relative;
+    order: 0;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    z-index: 2;
+    width: auto;
+    padding: 18px 16px 14px;
+    background: var(--ap-void-deep);
+    pointer-events: auto;
+  }
+  .ap-reading-room .ap-live-heading {
+    font-size: clamp(32px, 10vw, 44px);
+    font-style: italic;
+  }
+  .ap-reading-room .ap-live-copy { font-size: 16px; }
+  .ap-reading-room .ap-live-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .ap-reading-room .ap-model-stage {
+    position: relative;
+    order: 1;
+    inset: auto;
+    height: 48svh;
+    min-height: 280px;
+  }
+  .ap-reading-room .ap-mobile-flight-deck {
+    order: 2;
+    display: grid;
+  }
+  .ap-reading-room .ap-control-panel {
+    order: 3;
+    max-height: none;
+    opacity: 1;
+    overflow: visible;
+    pointer-events: auto;
+  }
+}
+
+/* Shared sky on tool rooms. A band — the sitting form stays on the first screen. */
 .ap-room-sky {
   position: relative;
-  height: min(56vh, 520px);
-  min-height: 320px;
+  height: min(32vh, 280px);
+  min-height: 168px;
   overflow: hidden;
   border-bottom: 1px solid var(--ap-line, rgba(185, 200, 220, .2));
   background: var(--ap-void-deep);
