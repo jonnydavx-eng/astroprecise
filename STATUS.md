@@ -5,6 +5,7 @@
 ## Now
 - Product on the house: one Observatory on index, couples two clocks, sky-card + deep-reading + keep-sky stills shipped in `b5deaa7`.
 - Next product (your words): Night you were born — sky card + seven-chapter reading + one Observatory still (solar system that hour, Earth marked, no HUD). Plan: `NIGHT-YOU-WERE-BORN.md`.
+- R3F paste rewritten onto the house (no React): `docs/OBSERVATORY-SURFACE-PLAN.md` (2026-08-17).
 - Shop hold: Eclipse Edition £7 test only. No new SKUs. No live checkout. No Stripe.
 - Leftover Cursor PRs 16–23: close without merge after `gh auth login`. Do not start a new cloud job.
 
