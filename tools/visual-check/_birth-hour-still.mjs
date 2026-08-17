@@ -56,6 +56,10 @@ try {
   assert(caption.includes('London, United Kingdom'), 'birth place missing');
   assert(caption.includes('computed at 1978-03-14 14:00 UTC'), 'computed UTC minute missing');
   assert(await page.locator('#keep-sky').isEnabled(), 'keep button did not enable');
+  assert(await page.evaluate(() => window.APKeepSky &&
+    window.APKeepSky.SURFACE_A === 'SCHEMATIC' &&
+    typeof window.APKeepSky.stampSurfaceA === 'function'),
+    'Keep Surface A stamp API missing');
 
   const captureProbe = await page.evaluate((jd) => {
     try {
@@ -76,6 +80,7 @@ try {
       timeKnown: detail.timeKnown,
     });
     if (!still?.toBlob) return { ok: false, ready: orrery._ready, engine: orrery.getAttribute('data-engine') };
+    window.APKeepSky.stampSurfaceA(still, detail);
     const blob = await new Promise((resolve) => still.toBlob(resolve, 'image/png'));
     const pixels = still.getContext('2d').getImageData(0, 0, still.width, still.height).data;
     let visible = 0;
@@ -93,8 +98,10 @@ try {
       width: still.width,
       height: still.height,
       visibleRatio: visible / sampled,
+      stamped: window.APKeepSky.SURFACE_A === 'SCHEMATIC',
     };
   }, known);
+  assert(adapterProbe.stamped, 'Surface A SCHEMATIC stamp was not applied');
   assert(adapterProbe.ok && adapterProbe.bytes > 0 && adapterProbe.width >= 800 &&
       adapterProbe.height >= 500 && adapterProbe.visibleRatio > 0.001,
     `adapter capture failed: ${JSON.stringify(adapterProbe)}`);
