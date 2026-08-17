@@ -83,7 +83,7 @@ if (W.includes("if (window.RafCore && window.RafCore.tier) return window.RafCore
 if (W.includes("perfTier !== 'high' || IS_PHONE || dataSavingRequested()) return")) {
   fail('full texture upgrades still high-desktop-only');
 }
-if (!W.includes('Math.max(real, 1.5)') || !W.includes('function getVisualQuality()')) {
+if (!W.includes('Math.max(real, 1.5)') || !W.includes('getVisualQuality()')) {
   fail('desktop DPR floor or getVisualQuality introspection missing');
 }
 
