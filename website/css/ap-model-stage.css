@@ -20,7 +20,7 @@ body.ap-mysky-page,
 body.ap-no-nav-enter,
 body.ap-award-511,
 body.page-explore {
-  background-color: var(--ap-jet-soft, #020307) !important;
+  background-color: var(--ap-jet-soft, #05080F) !important;
   background-image:
     radial-gradient(ellipse 85% 55% at 72% 42%, rgba(126, 200, 232, 0.06) 0%, transparent 55%),
     radial-gradient(ellipse 40% 30% at 15% 80%, rgba(139, 124, 224, 0.04) 0%, transparent 50%) !important;
@@ -405,7 +405,7 @@ body.page-guides,
 body.page-compat,
 body.page-quiz,
 body.page-explore {
-  background-color: var(--ap-jet-soft, #020307) !important;
+  background-color: var(--ap-jet-soft, #05080F) !important;
 }
 body.page-sign .sign-hero,
 body.page-ephemeris .ephemeris-hero,
@@ -491,7 +491,7 @@ body [style*="#7EC8E8"] {
 /* ── Home body: kill black voids (user full-page shots) ── */
 body.ap-award-511 .ap-chapter,
 body.ap-award-511 .department.ap-chapter {
-  background-color: #020307 !important;
+  background-color: #05080F !important;
   color: #E8EBF0 !important;
   padding-block: clamp(2.5rem, 5vw, 4rem) !important;
   min-height: 0 !important;

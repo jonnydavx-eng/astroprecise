@@ -1,14 +1,14 @@
 /* AstroPrecise compact footer — self-contained for legacy and launch pages. */
 .ap-site-footer {
-  --ap-footer-paper: #f2ecdf;
-  --ap-footer-paper-dim: rgba(242, 236, 223, .76);
-  --ap-footer-paper-faint: rgba(242, 236, 223, .52);
-  --ap-footer-brass: #d8b46a;
+  --ap-footer-paper: #E6ECF2;
+  --ap-footer-paper-dim: rgba(230, 236, 242, .76);
+  --ap-footer-paper-faint: rgba(230, 236, 242, .52);
+  --ap-footer-brass: #8FA3B8;
   position: relative;
   z-index: 2;
   box-sizing: border-box;
-  border-top: 1px solid rgba(216, 180, 106, .18);
-  background: #020307;
+  border-top: 1px solid rgba(143, 163, 184, .18);
+  background: var(--ap-void, #05080F);
   color: var(--ap-footer-paper-dim);
   font-family: 'Schibsted Grotesk', 'Segoe UI', sans-serif;
 }
@@ -86,7 +86,7 @@
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  border-top: 1px solid rgba(216, 180, 106, .10);
+  border-top: 1px solid rgba(143, 163, 184, .10);
   color: var(--ap-footer-paper-faint);
   font: 10px/1.5 'IBM Plex Mono', Consolas, monospace;
 }

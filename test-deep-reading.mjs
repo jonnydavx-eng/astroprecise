@@ -50,8 +50,8 @@ assert.ok(timedNoCoords.chapters[0].mono.some((line) => /no usable town coordina
 
 const natalCss = readFileSync(new URL('./website/css/ap-natal-reading.css', import.meta.url), 'utf8');
 assert.equal(/position:\s*sticky/.test(natalCss), false, 'natal submit must not be sticky over the bottom nav');
-assert.ok(natalCss.includes('#020307') && natalCss.includes('#F2ECDF') && natalCss.includes('#A89C84'));
-assert.ok(natalCss.includes('#FF6428') && natalCss.includes('#D8B46A'));
+assert.ok(natalCss.includes('#05080F') && natalCss.includes('#E6ECF2') && natalCss.includes('#A89C84'));
+assert.ok(natalCss.includes('#B86B4A') && natalCss.includes('#8FA3B8'));
 assert.equal(/#c2a05e|#cdae6a|#b9c8dc|#8b919c/i.test(natalCss), false, 'natal CSS must not keep retired palette fallbacks');
 
 console.log('PASS deep-reading seven chapters + untimed Moon approximate');

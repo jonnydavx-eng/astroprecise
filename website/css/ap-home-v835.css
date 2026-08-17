@@ -16,7 +16,7 @@
   display: block;
   overflow: hidden;
   border-bottom: 1px solid var(--ap-line);
-  background: #020307;
+  background: var(--ap-void, #05080F);
   isolation: isolate;
 }
 .ap-live-home .ap-model-stage {
@@ -26,7 +26,7 @@
   background:
     radial-gradient(circle at 56% 48%, rgba(82, 107, 142, .18), transparent 42%),
     radial-gradient(circle at 54% 50%, var(--sky-halo), transparent 68%),
-    #020307;
+    #05080F;
 }
 .ap-live-home .ap-model-stage::before { display: none; }
 .ap-model-vignette {
@@ -251,7 +251,7 @@
   min-height: 320px;
   overflow: hidden;
   border-bottom: 1px solid var(--ap-line, rgba(216,180,106,.2));
-  background: #020307;
+  background: var(--ap-void, #05080F);
 }
 .ap-room-sky .ap-model-stage {
   position: absolute;
@@ -259,5 +259,5 @@
   min-height: 0;
   background:
     radial-gradient(circle at 56% 48%, rgba(82, 107, 142, .18), transparent 42%),
-    #020307;
+    #05080F;
 }
