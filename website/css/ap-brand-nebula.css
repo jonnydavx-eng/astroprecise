@@ -5,7 +5,7 @@
  */
 
 html.ap-brand-nebula {
-  --ap-nebula-violet: #d8b46a;
+  --ap-nebula-violet: #8FA3B8;
   --ap-nebula-cyan: #3dd6ff;
   --ap-nebula-magenta: #c45bff;
   --ap-glass: rgba(8, 10, 18, 0.72);
@@ -122,7 +122,7 @@ html.ap-brand-nebula body.ap-observatory-home #castDock {
 
 html.ap-brand-nebula .eyebrow-rose,
 html.ap-brand-nebula .hero-copy .eyebrow-rose {
-  color: var(--ap-aurora, #d8b46a) !important;
+  color: var(--ap-aurora, #8FA3B8) !important;
   font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
   font-size: 0.72rem !important;
   letter-spacing: 0.2em !important;

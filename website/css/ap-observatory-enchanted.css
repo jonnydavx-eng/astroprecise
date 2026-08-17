@@ -7,14 +7,14 @@
 :root {
   /* ── Jet · Silver · Aurora enchanted layer ── */
   --ap-enchant-void:     #000000;
-  --ap-enchant-deep:    #020307;
+  --ap-enchant-deep:    #05080F;
   --ap-enchant-indigo:  #101014;
   --ap-enchant-twilight:#18181E;
   --ap-enchant-nebula:  rgba(100, 90, 180, 0.10);
   --ap-enchant-aurora:  rgba(126, 200, 232, 0.08);
   --ap-enchant-star:    rgba(232, 235, 240, 0.4);
 
-  --ap-enchant-gold: #d8b46a;
+  --ap-enchant-gold: #8FA3B8;
   --ap-enchant-gold-soft:  rgba(126, 200, 232, 0.16);
   --ap-enchant-gold-glow:  0 0 32px rgba(126, 200, 232, 0.14), 0 0 64px rgba(106, 176, 255, 0.08);
   --ap-enchant-gold-ring:  0 0 0 1px rgba(200, 205, 214, 0.22), inset 0 1px 0 rgba(232, 235, 240, 0.06);
@@ -28,17 +28,17 @@
 
 html.ap-enchanted,
 body.ap-enchanted {
-  --ap-void-deep:   #020307;
+  --ap-void-deep:   #05080F;
   --ap-void-mid:    #101014;
   --ap-void-raised: #18181E;
-  --void:           #020307;
-  --bg:             #020307;
+  --void:           #05080F;
+  --bg:             #05080F;
   --bg-2:           #101014;
   --bg-3:           #18181E;
-  --ap-link: #d8b46a;
+  --ap-link: #8FA3B8;
   --gold:           #A8B0BC;
   --brass:          #A8B0BC;
-  background-color: #020307;
+  background-color: #05080F;
 }
 
 body.ap-enchanted::before {
@@ -46,7 +46,7 @@ body.ap-enchanted::before {
     radial-gradient(ellipse 120% 80% at 50% -20%, var(--ap-enchant-nebula) 0%, transparent 55%),
     radial-gradient(ellipse 90% 60% at 85% 40%, var(--ap-enchant-aurora) 0%, transparent 50%),
     radial-gradient(ellipse 70% 50% at 10% 70%, rgba(139, 124, 224, 0.04) 0%, transparent 45%),
-    linear-gradient(180deg, #000 0%, #020307 45%, #101014 100%);
+    linear-gradient(180deg, #000 0%, #05080F 45%, #101014 100%);
 }
 
 /* Subtle star-dust overlay — cool starlight, PRM-safe */

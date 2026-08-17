@@ -47,11 +47,11 @@
 
   /* Canvas cannot read CSS custom properties, so the house tokens are repeated
      here as literals. Keep them in step with css/ap-living-sky-v834.css. */
-  var VOID = '#020307';
-  var PAPER = '#F2ECDF';
+  var VOID = '#05080F';
+  var PAPER = '#E6ECF2';
   var MUTE = '#A89C84';
-  var EMBER = '#FF6428';
-  var BRASS = '#D8B46A';
+  var EMBER = '#B86B4A';
+  var BRASS = '#8FA3B8';
   var DANGER = '#B04A52';
   var SILVER = '#C5D0DC';
 

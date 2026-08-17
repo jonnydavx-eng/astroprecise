@@ -176,11 +176,11 @@ ok('keep-sky stays current-view, not birth-hour',
 ok('no checkout or SKU on the couples page', !/gumroad|catalogueSkus|checkout/i.test(html + src));
 ok('house wordmark splits Precise', html.includes('logo-text__precise'));
 ok('A/B cards keep house brass and ember',
-  css.includes('.ap-couples-card--a') && css.includes('#D8B46A') && css.includes('#FF6428'));
+  css.includes('.ap-couples-card--a') && css.includes('#8FA3B8') && css.includes('#B86B4A'));
 ok('city items are 44px taps', css.includes('.ap-city-item') && /min-height:\s*44px/.test(css));
 ok('house lock colours stay',
-  css.includes('#020307') && css.includes('#F2ECDF') && css.includes('#A89C84') &&
-  css.includes('#FF6428') && css.includes('#D8B46A') && css.includes('#B04A52'));
+  css.includes('#05080F') && css.includes('#E6ECF2') && css.includes('#A89C84') &&
+  css.includes('#B86B4A') && css.includes('#8FA3B8') && css.includes('#B04A52'));
 ok('copy withholds the clock when time is blank',
   /blank time withholds that clock/i.test(html) || html.includes('that clock, the Moon, and angles are withheld'));
 ok('hash restore stays Live so both clocks stay equally up',
@@ -188,8 +188,8 @@ ok('hash restore stays Live so both clocks stay equally up',
   !/function applyHash\(\)[\s\S]*setPressed\('a'\)/.test(src));
 ok('couples page does not fly the camera on A/B',
   !src.includes('flyTo') && !src.includes('focusPlanet') && !src.includes('setJD'));
-ok('couples assets stay at 876',
-  html.includes('ap-couples-sky.js?v=876') && html.includes('ap-couples-v858.css?v=876'));
+ok('couples assets stay at 880',
+  html.includes('ap-couples-sky.js?v=880') && html.includes('ap-couples-v858.css?v=880'));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

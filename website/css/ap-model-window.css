@@ -129,7 +129,7 @@ html.ap-model-revealed .ap-mw-plate {
   display: inline-flex !important;
   align-items: center !important;
   gap: 0.45em !important;
-  color: var(--ap-aurora, #d8b46a) !important;
+  color: var(--ap-aurora, #8FA3B8) !important;
   opacity: 0;
   transition: opacity 0.5s ease 0.2s;
 }
@@ -139,7 +139,7 @@ html.orrery-full .ap-mw-live { opacity: 1; }
   width: 6px !important;
   height: 6px !important;
   border-radius: 50% !important;
-  background: var(--ap-aurora, #d8b46a) !important;
+  background: var(--ap-aurora, #8FA3B8) !important;
   box-shadow: 0 0 8px rgba(126, 200, 232, 0.7) !important;
   animation: apMwPulse 2.4s ease-in-out infinite; /* ~0.4Hz — calm, ≤2Hz */
 }

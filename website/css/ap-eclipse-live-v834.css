@@ -1,8 +1,8 @@
 /* AstroPrecise v834 — dedicated live eclipse shadow instrument */
 .ap-eclipse-live {
-  --ecl-ivory: #f2ecdf;
-  --ecl-brass: #d8b46a;
-  --ecl-ember: #ff6428;
+  --ecl-ivory: #E6ECF2;
+  --ecl-brass: #8FA3B8;
+  --ecl-ember: #B86B4A;
   --ecl-void: #050609;
   --ecl-panel: #0c0d11;
   width: min(1180px, calc(100vw - 32px));

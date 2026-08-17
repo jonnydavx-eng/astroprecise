@@ -20,9 +20,9 @@ assert.ok(chartPage.includes("name:'Semi-sextile'"));
 assert.equal(chartPage.includes("name:'Slight angle'"), false);
 assert.ok(chartCss.includes('.ap-reading-card > .ap-reading-card__content:only-child'));
 assert.ok(chartCss.includes('scroll-margin-top:'));
-assert.ok(chartHtml.includes('ap-chart-v835.css?v=876'));
-assert.ok(chartHtml.includes('ap-load-interpretations.js?v=876') && chartHtml.includes('chart-page.js?v=876'));
-assert.ok(chartHtml.includes('reading-format.js?v=876') && chartHtml.includes('chart-render.js?v=876'));
+assert.ok(chartHtml.includes('ap-chart-v835.css?v=880'));
+assert.ok(chartHtml.includes('ap-load-interpretations.js?v=880') && chartHtml.includes('chart-page.js?v=880'));
+assert.ok(chartHtml.includes('reading-format.js?v=880') && chartHtml.includes('chart-render.js?v=880'));
 assert.ok(readingFormat.includes('if (leadHtml) inner += leadHtml;') && !readingFormat.includes('leadHtml && !collapsed'));
 assert.ok(interpretationsLoader.includes('interpretations.js?v='));
 assert.ok(chartPage.includes('degree withheld') && chartPage.includes('Date-reference angle'));
@@ -155,8 +155,8 @@ for (const file of htmlFiles) {
 const skyCard = read('./website/sky-card.html');
 const skyCardJs = read('./website/js/ap-sky-card.js');
 const keepMinute = read('./website/js/ap-keep-minute.js');
-assert.ok(skyCard.includes("window.AP_ASSET_V='878'"), 'sky card must declare the release tip');
-assert.equal(/\?v=(?!878\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
+assert.ok(skyCard.includes("window.AP_ASSET_V='880'"), 'sky card must declare the release tip');
+assert.equal(/\?v=(?!880\b)\d+/.test(skyCard), false, 'sky card must pin exactly one release tip');
 assert.ok(skyCard.includes('data-ap-static-nav') && skyCard.includes('sky-events.html'),
   'sky card must carry the one house navigation');
 assert.ok(skyCard.includes('Astro<i class="logo-text__precise">Precise</i>'),
@@ -211,25 +211,25 @@ for (const path of ['./website/index.html', './website/chart.html', './website/d
     `${path} must reach the keep path`);
   assert.equal(/sky-card\.html\?/.test(page), false,
     `${path} must not put a birth minute in the keep link`);
-  assert.ok(page.includes('ap-keep-minute.js?v=878'), `${path} must load the keep-path helper`);
+  assert.ok(page.includes('ap-keep-minute.js?v=880'), `${path} must load the keep-path helper`);
   assert.ok(/Keep this sky/i.test(page), `${path} must offer a quiet Keep this sky link`);
   assert.ok(page.includes('ap-keep-path-strip') || path.includes('index.html'),
     `${path} must present the one keep path strip (or home Keep control)`);
 }
 
 const homeKeepPage = read('./website/index.html');
-assert.ok(homeKeepPage.includes('ap-keep-sky.js?v=878') && homeKeepPage.includes('ap-keep-sky.css?v=878'),
+assert.ok(homeKeepPage.includes('ap-keep-sky.js?v=880') && homeKeepPage.includes('ap-keep-sky.css?v=880'),
   'home must load Keep script and styles');
-assert.ok(homeKeepPage.includes('ap-home-keep.js?v=878'), 'home must load the Keep context bridge');
+assert.ok(homeKeepPage.includes('ap-home-keep.js?v=880'), 'home must load the Keep context bridge');
 assert.ok(homeKeepPage.includes('id="keep-sky"') && homeKeepPage.includes('data-keep-mode="birth-hour"'),
   'home must host birth-hour Keep on the live orrery');
 assert.equal(/LIVE/.test(read('./website/js/ap-keep-sky.js').split('stampSurfaceA')[1] || ''), false,
   'Keep stamp path must not introduce a LIVE badge');
 assert.ok(read('./website/js/ap-keep-sky.js').includes("SURFACE_A = 'SCHEMATIC'"),
   'Keep PNG must stamp Surface A SCHEMATIC');
-assert.ok(read('./website/js/ap-asset-v.js').includes("AP_ASSET_V = '878'"),
-  'shared asset tip must be 878');
-assert.ok(serviceWorker.includes('const V = "ap-v878"'), 'service worker tip must be ap-v878');
+assert.ok(read('./website/js/ap-asset-v.js').includes("AP_ASSET_V = '880'"),
+  'shared asset tip must be 880');
+assert.ok(serviceWorker.includes('const V = "ap-v880"'), 'service worker tip must be ap-v880');
 
 const outreach = read('./website/js/outreach-content.js');
 for (const stale of ['Deep Reading £12', 'posters from £6', 'shop.html#deep-reading', '{{deepReadingPrice}}']) {

@@ -1,22 +1,23 @@
 /* ========================================================================== 
-   AstroPrecise — Field Instrument palette (launch system, 2026-08-11)
+   AstroPrecise — Lunar night + instrument silver (visual wave 2026-08)
 
-   This is the compatibility source of truth for old route styles.  Historic
-   names such as gold, aurora and cyan deliberately resolve into the same
-   blackened-brass instrument language used by ap-living-sky-v834.css.
-   Astronomical colour belongs inside the renderers; site chrome stays quiet.
+   LOCKED tokens (Observatory visual wave). Site chrome stays quiet: cool void,
+   instrument silver metal, copper action, proof teal. No purple glow, cream
+   terracotta, or acid green. Astronomical colour belongs in the renderers.
    ========================================================================== */
 
 :root {
   color-scheme: dark;
 
-  /* Canonical surfaces */
-  --ap-void: #020307;
-  --ap-void-deep: #020307;
-  --ap-void-base: #020307;
-  --ap-void-mid: #0a0e15;
-  --ap-void-raised: #0d121b;
-  --ap-void-soft: #131b28;
+  /* Canonical surfaces — lunar night */
+  --ap-void: #05080F;
+  --ap-void-deep: #05080F;
+  --ap-void-base: #05080F;
+  --ap-void-mid: #0C1422;
+  --ap-void-raised: #141E2E;
+  --ap-void-soft: #1A2538;
+  /* Cool lunar void — 3D sky/fog clear (orrery-webgl cool-night pass). */
+  --ap-lunar-void: #05080F;
   --ap-jet: var(--ap-void-deep);
   --ap-jet-soft: var(--ap-void);
   --ap-jet-base: var(--ap-void);
@@ -25,38 +26,38 @@
   --ap-jet-elevated: var(--ap-void-soft);
 
   /* Canonical text and instrument metals */
-  --ap-paper: #f2ecdf;
-  --ap-paper-dim: rgba(242, 236, 223, 0.72);
-  --ap-paper-faint: rgba(242, 236, 223, 0.48);
-  --ap-brass: #d8b46a;
-  --ap-brass-bright: #f0d59d;
-  --ap-ember: #ff6428;
-  --ap-silver: #b9c8dc;
-  --ap-proof: #a8d6b0;
+  --ap-paper: #E6ECF2;
+  --ap-paper-dim: rgba(230, 236, 242, 0.72);
+  --ap-paper-faint: rgba(230, 236, 242, 0.48);
+  --ap-brass: #8FA3B8;
+  --ap-brass-bright: #C5D4E0;
+  --ap-ember: #B86B4A;
+  --ap-silver: #8FA3B8;
+  --ap-proof: #7EB8A8;
 
-  --ap-silver-bright: var(--ap-paper);
-  --ap-silver-dim: rgba(185, 200, 220, 0.68);
-  --ap-silver-faint: rgba(185, 200, 220, 0.45);
+  --ap-silver-bright: var(--ap-brass-bright);
+  --ap-silver-dim: rgba(143, 163, 184, 0.68);
+  --ap-silver-faint: rgba(143, 163, 184, 0.45);
   --ap-chrome: var(--ap-silver);
-  --ap-silver-a08: rgba(185, 200, 220, 0.08);
-  --ap-silver-a12: rgba(185, 200, 220, 0.12);
-  --ap-silver-a18: rgba(185, 200, 220, 0.18);
-  --ap-silver-a28: rgba(185, 200, 220, 0.28);
-  --ap-silver-a40: rgba(185, 200, 220, 0.40);
-  --ap-silver-a55: rgba(185, 200, 220, 0.55);
+  --ap-silver-a08: rgba(143, 163, 184, 0.08);
+  --ap-silver-a12: rgba(143, 163, 184, 0.12);
+  --ap-silver-a18: rgba(143, 163, 184, 0.18);
+  --ap-silver-a28: rgba(143, 163, 184, 0.28);
+  --ap-silver-a40: rgba(143, 163, 184, 0.40);
+  --ap-silver-a55: rgba(143, 163, 184, 0.55);
 
-  --ap-brass-a06: rgba(216, 180, 106, 0.06);
-  --ap-brass-a08: rgba(216, 180, 106, 0.08);
-  --ap-brass-a12: rgba(216, 180, 106, 0.12);
-  --ap-brass-a18: rgba(216, 180, 106, 0.18);
-  --ap-brass-a28: rgba(216, 180, 106, 0.28);
-  --ap-brass-a40: rgba(216, 180, 106, 0.40);
-  --ap-brass-a55: rgba(216, 180, 106, 0.55);
+  --ap-brass-a06: rgba(143, 163, 184, 0.06);
+  --ap-brass-a08: rgba(143, 163, 184, 0.08);
+  --ap-brass-a12: rgba(143, 163, 184, 0.12);
+  --ap-brass-a18: rgba(143, 163, 184, 0.18);
+  --ap-brass-a28: rgba(143, 163, 184, 0.28);
+  --ap-brass-a40: rgba(143, 163, 184, 0.40);
+  --ap-brass-a55: rgba(143, 163, 184, 0.55);
 
-  /* Historical aurora/cyan aliases: telemetry silver, never interface blue. */
+  /* Historical aurora/cyan aliases: instrument silver, never interface blue. */
   --ap-aurora: var(--ap-brass);
   --ap-aurora-bright: var(--ap-brass-bright);
-  --ap-aurora-deep: #b08a43;
+  --ap-aurora-deep: #6B7F94;
   --ap-aurora-violet: var(--ap-silver);
   --ap-aurora-a10: var(--ap-brass-a08);
   --ap-aurora-a16: var(--ap-brass-a18);
@@ -70,9 +71,9 @@
   --ap-cyan-a28: var(--ap-silver-a28);
   --ap-cyan-a40: var(--ap-silver-a40);
 
-  /* Historical gold aliases: aged brass. */
-  --ap-gold-ink: #8f6f36;
-  --ap-gold-shadow: #b08a43;
+  /* Historical gold aliases: instrument silver. */
+  --ap-gold-ink: #5A6E82;
+  --ap-gold-shadow: #6B7F94;
   --ap-gold-core: var(--ap-brass);
   --ap-gold-bright: var(--ap-brass-bright);
   --ap-gold-vivid: var(--ap-brass-bright);
@@ -85,25 +86,25 @@
   --ap-gold-a28: var(--ap-brass-a28);
   --ap-gold-a40: var(--ap-brass-a40);
   --ap-gold-a55: var(--ap-brass-a55);
-  --ap-sun-glint: #f5d58f;
+  --ap-sun-glint: #C5D4E0;
 
-  /* Semantic accents. Ember is action/event; green is verified proof. */
+  /* Semantic accents. Copper is action/event; proof teal is verified. */
   --ap-element-fire: var(--ap-ember);
-  --ap-element-fire-glow: rgba(255, 100, 40, 0.12);
+  --ap-element-fire-glow: rgba(184, 107, 74, 0.12);
   --ap-element-earth: var(--ap-proof);
-  --ap-element-earth-glow: rgba(168, 214, 176, 0.10);
+  --ap-element-earth-glow: rgba(126, 184, 168, 0.10);
   --ap-element-air: var(--ap-silver);
   --ap-element-air-glow: var(--ap-silver-a12);
   --ap-element-water: var(--ap-silver);
   --ap-element-water-glow: var(--ap-silver-a12);
   --ap-obs-violet: var(--ap-brass-a06);
-  --ap-obs-burgundy: rgba(255, 100, 40, 0.035);
+  --ap-obs-burgundy: rgba(184, 107, 74, 0.035);
   --ap-obs-violet-strong: var(--ap-brass-a12);
 
   /* Panels, copy and focus */
   --ap-ip-void: var(--ap-void-deep);
-  --ap-ip-surface: rgba(13, 18, 27, 0.82);
-  --ap-ip-surface-deep: rgba(2, 3, 7, 0.88);
+  --ap-ip-surface: rgba(20, 30, 46, 0.82);
+  --ap-ip-surface-deep: rgba(5, 8, 15, 0.88);
   --ap-ip-border: var(--ap-brass-a18);
   --ap-ip-border-rim: var(--ap-brass-a28);
   --ap-ip-engrave-line: var(--ap-brass-a18);
@@ -119,20 +120,20 @@
   --ap-link-hover: var(--ap-paper);
   --ap-link-active: var(--ap-ember);
   --ap-focus-ring: var(--ap-ember);
-  --ap-focus-shadow: 0 0 0 3px rgba(255, 100, 40, 0.24);
+  --ap-focus-shadow: 0 0 0 3px rgba(184, 107, 74, 0.24);
 
   /* Actions are solid instrument controls, not gradients. */
   --ap-cta: var(--ap-ember);
-  --ap-cta-hover: #ff7a45;
-  --ap-cta-ink: #170702;
+  --ap-cta-hover: #C87D5C;
+  --ap-cta-ink: #140A08;
   --ap-cta-grad: var(--ap-ember);
 
   --ap-line: var(--ap-brass-a18);
   --ap-line-strong: var(--ap-brass-a40);
   --ap-hairline: var(--ap-brass-a12);
   --ap-rim-light: var(--ap-brass-a18);
-  --ap-rim-shadow: inset 0 1px 0 rgba(242, 236, 223, 0.05);
-  --ap-card-surface: rgba(13, 18, 27, 0.76);
+  --ap-rim-shadow: inset 0 1px 0 rgba(230, 236, 242, 0.05);
+  --ap-card-surface: rgba(20, 30, 46, 0.76);
   --ap-card-border: var(--ap-line);
   --ap-card-border-strong: var(--ap-line-strong);
   --ap-shadow-card: 0 18px 54px rgba(0, 0, 0, 0.42);

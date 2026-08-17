@@ -334,7 +334,7 @@ abbr.ap-gloss {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ap-aurora, #d8b46a);
+  color: var(--ap-aurora, #8FA3B8);
   padding: 2px 6px;
   border-radius: 999px;
   border: 1px solid rgba(126, 200, 232, 0.35);
