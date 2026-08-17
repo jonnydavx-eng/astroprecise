@@ -1,5 +1,7 @@
-/* AstroPrecise v858 — Living Sky system
-   One real model, one interaction grammar, one visual language. */
+/* AstroPrecise ap-v880 — Living Sky system
+   One real model, one interaction grammar, one visual language.
+   Cloud G: glass HUD uses void-raised + silver hairlines. Palette hex
+   ownership stays with Agent F — only line aliases and glass helpers here. */
 :root {
   color-scheme: dark;
   --ap-void: #020307;
@@ -16,8 +18,13 @@
   --ap-danger: #B04A52;
   --ap-silver: #c5d0dc;
   --ap-proof: #abd9b4;
-  --ap-line: rgba(216, 180, 106, 0.18);
-  --ap-line-strong: rgba(216, 180, 106, 0.36);
+  --ap-silver-a08: rgba(185, 200, 220, 0.08);
+  --ap-silver-a12: rgba(185, 200, 220, 0.12);
+  --ap-silver-a18: rgba(185, 200, 220, 0.18);
+  --ap-silver-a28: rgba(185, 200, 220, 0.28);
+  --ap-silver-a40: rgba(185, 200, 220, 0.40);
+  --ap-line: var(--ap-silver-a18);
+  --ap-line-strong: var(--ap-silver-a28);
   --ap-shadow: 0 28px 80px rgba(0, 0, 0, 0.44);
   --ap-radius: 4px;
   --ap-display: 'Cormorant Garamond', Georgia, serif;
@@ -25,7 +32,7 @@
   --ap-data: 'IBM Plex Mono', ui-monospace, monospace;
   --ap-caps: 'Cinzel', Georgia, serif;
   --ap-nav-h: 64px;
-  --sky-halo: rgba(216, 180, 106, 0.085);
+  --sky-halo: rgba(185, 200, 220, 0.085);
 }
 body[data-sky-period='dawn'] { --sky-halo: rgba(255, 122, 69, 0.15); }
 body[data-sky-period='day'] { --sky-halo: rgba(197, 208, 220, 0.11); }
@@ -316,10 +323,22 @@ body.ap-live-home { background-attachment: fixed; }
   min-width: 0;
   overflow: auto;
   padding: clamp(22px, 3vw, 42px) clamp(18px, 2.5vw, 34px);
-  border-left: 1px solid var(--ap-line);
-  background: linear-gradient(270deg, rgba(8, 11, 17, 0.97), rgba(12, 17, 26, 0.92));
+  border-left: 1px solid var(--ap-silver-a18, var(--ap-line));
+  background:
+    linear-gradient(270deg,
+      color-mix(in srgb, var(--ap-void-raised) 88%, transparent),
+      color-mix(in srgb, var(--ap-void-deep) 92%, transparent));
+  backdrop-filter: blur(16px) saturate(0.88);
+  -webkit-backdrop-filter: blur(16px) saturate(0.88);
+  box-shadow: inset 0 1px 0 var(--ap-silver-a12, rgba(185, 200, 220, 0.12));
   scrollbar-width: thin;
   scrollbar-color: var(--ap-line-strong) transparent;
+}
+/* Labels over the canvas must never steal pointer events from the model. */
+.orrery-dom-labels,
+#orrery-dom-labels,
+.orrery-dom-label {
+  pointer-events: none !important;
 }
 .ap-context { padding-bottom: 22px; border-bottom: 1px solid var(--ap-line); }
 .ap-context h2 {

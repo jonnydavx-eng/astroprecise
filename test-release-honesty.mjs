@@ -211,7 +211,7 @@ for (const path of ['./website/index.html', './website/chart.html', './website/d
     `${path} must reach the keep path`);
   assert.equal(/sky-card\.html\?/.test(page), false,
     `${path} must not put a birth minute in the keep link`);
-  assert.ok(page.includes('ap-keep-minute.js?v=876'), `${path} must load the keep-path helper`);
+  assert.ok(page.includes('ap-keep-minute.js?v=880'), `${path} must load the keep-path helper`);
 }
 
 const outreach = read('./website/js/outreach-content.js');

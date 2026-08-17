@@ -174,9 +174,9 @@ if (got.join() !== expectedOwners.join()) {
   fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=876/.test(indexHtml)) fail('Home missing v876 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=876"/.test(indexHtml)) {
-  fail('Home missing exact v876 WebGL modulepreload');
+if (!/js\/void-orrery-adapter\.js\?v=880/.test(indexHtml)) fail('Home missing v880 adapter query');
+if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=880"/.test(indexHtml)) {
+  fail('Home missing exact v880 WebGL modulepreload');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
@@ -219,9 +219,9 @@ ok('opening beat is subtle, reduced-motion safe and yields to user input; full j
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
-  'css/ap-living-sky-v834.css?v=876',
-    'js/ap-observatory-v834.js?v=876',
-    'js/ap-nav-model.js?v=876',
+  'css/ap-living-sky-v834.css?v=880',
+    'js/ap-observatory-v834.js?v=880',
+    'js/ap-nav-model.js?v=880',
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
@@ -255,7 +255,7 @@ if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a 
 if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
 if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v876"')) fail('service worker release identity is not ap-v876');
+if (!sw.includes('const V = "ap-v880"')) fail('service worker release identity is not ap-v880');
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 
