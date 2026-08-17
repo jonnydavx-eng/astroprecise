@@ -9271,8 +9271,8 @@ const FinishShader = {
     renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.08;
 
     scene = new THREE.Scene();
-    // Cool lunar void for living-sky home and award/legacy skins alike (ap-v880).
-    scene.fog = new THREE.FogExp2(isLivingSkyHome() ? COOL_LUNAR_VOID : COOL_LUNAR_VOID, 0.00042);
+    // Cool lunar void for living-sky home (ap-v880); other skins share the same night.
+    scene.fog = new THREE.FogExp2(isLivingSkyHome() ? COOL_LUNAR_VOID : coolLunarVoidHex(), 0.00042);
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
     runtimeGeneration += 1;
