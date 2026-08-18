@@ -1,0 +1,1868 @@
+/* Lite hero LCP shell — layout-stable; system fonts until optional full stack loads */
+:root {
+  --void: #08080b;
+  --void-base: #08080b;
+  --bg: #08080b;
+  --white: #E8EBF0;
+  --silver: #C8CDD6;
+  --silver-dim: #8B919C;
+  --silver-dark: #968B74;
+  --silver-cool: #A6AEB8;
+  --gold-hero: #A8B0BC;
+  --gold-bright: #7EC8E8;
+  --gold-vivid: #C8CDD6;
+  --gold-hero-light: #E8EBF0;
+  --glass-border-glow: rgba(168, 176, 188, 0.55);
+  --ap-void-mid: #121826;
+  --ap-void-raised: #1A2230;
+  --ap-card-surface: linear-gradient(165deg, rgba(26, 34, 48, 0.62) 0%, rgba(12, 16, 22, 0.40) 100%);
+  --ap-card-border: rgba(168, 176, 188, 0.16);
+  --ap-card-border-strong: rgba(168, 176, 188, 0.28);
+  --ap-shadow-card: 0 10px 36px rgba(0, 0, 0, 0.32);
+  --ap-shadow-raised: 0 16px 52px rgba(0, 0, 0, 0.40);
+  --ap-rim-shadow: inset 0 1px 0 rgba(232, 235, 240, 0.06);
+  --ap-glow-gold: radial-gradient(ellipse 160% 130% at 50% 22%, rgba(168, 176, 188, 0.10) 0%, transparent 68%);
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --nav-height: 72px;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-full: 999px;
+  --space-12: 3rem;
+  --crimson-light: #d25a62;
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  background: #08080b;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link — app.js injects before main.css idle-loads on lite shell */
+.skip-link {
+  position: absolute;
+  top: -120px;
+  left: var(--space-4);
+  z-index: 10001;
+  padding: 0.65rem 1.1rem;
+  background: var(--gold-hero);
+  color: var(--void);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+#main-content:focus {
+  outline: none;
+}
+
+#starfield-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  max-height: 100vh;
+}
+
+.site-header {
+  position: relative;
+  z-index: 20;
+  height: var(--nav-height);
+}
+
+.navbar,
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  height: var(--nav-height);
+  padding: 0 var(--space-4);
+}
+
+.navbar__inner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+.navbar__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--white);
+  text-decoration: none;
+}
+
+.navbar__logo-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.navbar__toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.navbar__toggle span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--white);
+  border-radius: 1px;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+  transform-origin: center;
+}
+
+.navbar__toggle.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+  background: var(--white);
+}
+
+.navbar__toggle.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.navbar__toggle.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+  background: var(--white);
+}
+
+.navbar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.navbar__mobile-menu {
+  display: none;
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.97);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(168, 176, 188, 0.12);
+  flex-direction: column;
+  padding: var(--space-6);
+  padding-bottom: max(var(--space-6), env(safe-area-inset-bottom));
+  gap: var(--space-2);
+  z-index: 10150;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.navbar__mobile-menu.open {
+  display: flex;
+}
+
+.navbar__mobile-menu .navbar__link {
+  min-height: 44px;
+  width: 100%;
+  color: var(--silver);
+}
+
+.navbar__drawer-heading {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-hero);
+  margin: var(--space-2) var(--space-2) var(--space-1);
+  font-weight: 700;
+}
+
+.navbar__drawer-divider {
+  height: 1px;
+  margin: var(--space-3) var(--space-2);
+  background: linear-gradient(90deg, transparent, rgba(168, 176, 188, 0.28), transparent);
+  flex-shrink: 0;
+  border: none;
+}
+
+.navbar__mobile-menu .navbar__link:hover,
+.navbar__mobile-menu .navbar__link.active,
+.navbar__mobile-menu .navbar__link:focus-visible {
+  color: var(--gold-hero-light);
+  background: rgba(22, 28, 42, 0.58);
+  border-left: 2px solid var(--gold-hero);
+  padding-left: calc(var(--space-3) - 2px);
+}
+
+.ap-nav-updates-mobile {
+  width: 100%;
+  text-align: left;
+  background: rgba(168, 176, 188, 0.08);
+  border: 1px solid rgba(168, 176, 188, 0.2);
+  color: var(--gold-hero);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--white);
+}
+
+/* Brand wordmark accent — brass-italic "Precise" (matches homepage masthead) */
+.logo-text__precise {
+  font-style: italic;
+  font-weight: 300;
+  background: none;
+  -webkit-text-fill-color: var(--ap-gold-core, #A8B0BC);
+  color: var(--ap-gold-core, #A8B0BC);
+}
+
+.navbar__nav {
+  display: none;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.navbar__link {
+  color: var(--silver);
+  text-decoration: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  padding: 0.45rem 0.35rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.navbar__link--cta {
+  color: var(--gold-hero);
+  font-weight: 600;
+}
+
+/* Desktop "More" flyout — static shell before main.css */
+.navbar__more {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.navbar__more-btn {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver);
+  background: none;
+  border: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 4px;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.navbar__more-btn::after {
+  content: '\25BE';
+  margin-left: 4px;
+  font-size: 0.7em;
+  opacity: 0.7;
+}
+
+.navbar__more-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  max-width: min(320px, 90vw);
+  max-height: min(70vh, 480px);
+  overflow-y: auto;
+  background: rgba(8, 6, 10, 0.98);
+  border: 1px solid rgba(168, 176, 188, 0.28);
+  border-radius: 12px;
+  padding: var(--space-3);
+  z-index: 10200;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+}
+
+.navbar__more.is-open .navbar__more-panel,
+.navbar__more-panel:not([hidden]) {
+  display: block;
+}
+
+.navbar__more-panel .navbar__link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: 0.72rem;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 6px;
+}
+
+@media (min-width: 720px) {
+  .navbar__nav { display: flex; }
+  .navbar__toggle { display: none; }
+}
+
+@media (max-width: 719px) {
+  .navbar__nav { display: none !important; }
+  .navbar__toggle { display: flex; }
+}
+
+/* app.js footer / bottom-nav injects — critical contrast before main.css idle-loads */
+.ap-legal-links,
+.ap-guide-links {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  margin-top: 10px;
+  font-family: var(--font-body);
+  text-align: center;
+  line-height: 1.9;
+  color: var(--silver-dim);
+}
+
+.ap-legal-links {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ap-legal-links a,
+.ap-guide-links a {
+  color: var(--gold-bright);
+  text-decoration: underline;
+  text-decoration-color: rgba(212, 184, 74, 0.45);
+  text-underline-offset: 2px;
+}
+
+.ap-legal-links a:hover,
+.ap-guide-links a:hover {
+  color: var(--gold-hero-light);
+  text-decoration-color: var(--gold-bright);
+}
+
+.ap-legal-links__cc { margin-left: 0.35em; }
+
+.ap-footer-sep {
+  opacity: 0.55;
+  color: var(--silver-dim);
+}
+
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 8990;
+  background: rgba(16, 21, 32, 0.96);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(168, 176, 188, 0.22);
+  padding: 4px 0 max(4px, env(safe-area-inset-bottom));
+}
+
+.bottom-nav__shell {
+  display: flex;
+  align-items: stretch;
+  max-width: 100%;
+}
+
+.bottom-nav__tabs {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-width: 0;
+  padding: 0 4px;
+}
+
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 12px 6px;
+  text-decoration: none;
+  color: var(--silver);
+  border-radius: 8px;
+  min-width: 52px;
+  min-height: 48px;
+  flex-shrink: 0;
+}
+
+.bottom-nav__icon { font-size: 1.15rem; line-height: 1; }
+
+.bottom-nav__label {
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.bottom-nav__item.is-active {
+  color: var(--white);
+}
+
+.bottom-nav__item--updates {
+  border: none;
+  background: rgba(168, 176, 188, 0.12);
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--gold-hero);
+  min-width: 58px;
+  border-radius: 12px;
+  margin: 4px 0;
+}
+
+.bottom-nav__pinned {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 6px 0 4px;
+  border-left: 1px solid rgba(168, 176, 188, 0.28);
+  background: rgba(168, 176, 188, 0.06);
+}
+
+@media (max-width: 1023px) {
+  .bottom-nav,
+  .ap-lite-bottom-placeholder {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 8990;
+    background: rgba(16, 21, 32, 0.96);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border-top: 1px solid rgba(168, 176, 188, 0.22);
+    padding: 4px 0 max(4px, env(safe-area-inset-bottom));
+  }
+  body:has(.bottom-nav) .ap-lite-bottom-placeholder {
+    display: none !important;
+  }
+  body {
+    padding-bottom: calc(var(--bottom-nav-h, 72px) + env(safe-area-inset-bottom, 0px));
+  }
+  body.nav-drawer-open .bottom-nav,
+  body.nav-drawer-open .ap-lite-bottom-placeholder {
+    display: none !important;
+  }
+}
+
+main, #main-content {
+  position: relative;
+  z-index: 1;
+}
+
+html.ap-lite-hero .page-home .site-header {
+  background: transparent;
+  border-bottom: 1px solid transparent;
+}
+
+html.ap-lite-hero .hero {
+  min-height: auto;
+  padding-top: 0;
+  padding-bottom: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+html.ap-lite-hero .hero__stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-4);
+}
+
+html.ap-lite-hero .hero__content {
+  order: 1;
+  position: relative;
+  z-index: 2;
+  max-width: none;
+  text-align: center;
+  pointer-events: auto;
+  align-self: center;
+}
+
+html.ap-lite-hero .hero__text {
+  position: relative;
+  text-align: center;
+  padding: var(--space-6) var(--space-5);
+  border-radius: var(--radius-xl);
+  background: rgba(7, 5, 9, 0.30);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+/* Single atmospheric gold-glow wash behind the hero copy (CSS-only, ~10% peak,
+   no paint cost — it's a static radial-gradient layer, pointer-events none). */
+html.ap-lite-hero .hero__text::before {
+  content: '';
+  position: absolute;
+  inset: -8% -6%;
+  z-index: -1;
+  background: var(--ap-glow-gold);
+  pointer-events: none;
+}
+
+html.ap-lite-hero .hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-vivid);
+  margin-bottom: var(--space-5);
+  opacity: 0.92;
+}
+
+/* Hero title glow + gold shimmer FROZEN (calming pass). Both infinite keyframes
+   (hero-h1-glow pulse, hero-gold-shimmer background sweep) deleted; the title now
+   carries a single STILL gold text-shadow and the emphasis word is a still gold
+   gradient (no background-position animation). */
+
+html.ap-lite-hero .hero__h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.2vw, 3.15rem);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: 0.015em;
+  color: #f5f0e8;
+  margin-bottom: var(--space-5);
+  text-shadow:
+    0 2px 22px rgba(5, 4, 6, 0.92),
+    0 1px 6px rgba(5, 4, 6, 0.78),
+    0 0 22px rgba(168, 176, 188, 0.18);
+  text-wrap: balance;
+}
+
+html.ap-lite-hero .hero__h1 em:not(.hero-gold-shimmer) {
+  font-style: italic;
+  color: var(--gold-hero-light);
+}
+
+html.ap-lite-hero .hero__h1 em.hero-gold-shimmer {
+  font-style: italic;
+  background: linear-gradient(120deg, #f0e8d8 0%, #e6c24a 38%, #fff4dc 62%, #A8B0BC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* animation:none with this higher-specificity (html.ap-lite-hero …) selector
+     also FREEZES the duplicate infinite hero-gold-shimmer that orrery-visual.css
+     idle-loads later — the shimmer stays a still gold gradient regardless of
+     stylesheet load order. */
+  animation: none;
+}
+
+html.ap-lite-hero .hero__subtitle {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #d8d4cc;
+  max-width: 420px;
+  margin: 0 auto var(--space-8);
+}
+
+html.ap-lite-hero .hero__cta-form {
+  display: flex;
+  gap: var(--space-3);
+  align-items: stretch;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+  justify-content: center;
+}
+
+html.ap-lite-hero .hero__date-input {
+  flex: 1;
+  min-width: 180px;
+  height: 56px;
+  padding: 0 var(--space-5);
+  background: rgba(18, 15, 11, 0.7);
+  border: 1px solid var(--ap-card-border-strong);
+  border-radius: var(--radius-lg);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  -webkit-appearance: none;
+  color-scheme: dark;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+html.ap-lite-hero .hero__date-input:focus,
+html.ap-lite-hero .hero__date-input:focus-visible {
+  outline: none;
+  border-color: var(--gold-vivid);
+  box-shadow: 0 0 0 3px rgba(230, 194, 74, 0.25), 0 6px 24px rgba(230, 194, 74, 0.18);
+}
+
+html.ap-lite-hero .hero__cast-btn {
+  height: 56px;
+  padding: 0 var(--space-7);
+  background: linear-gradient(135deg, var(--gold-vivid) 0%, #d4b84a 45%, #a8841e 100%);
+  border: none;
+  border-radius: var(--radius-lg);
+  color: #0d0a07;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  transition: filter var(--transition-fast), box-shadow var(--transition-base), transform var(--transition-fast);
+}
+
+html.ap-lite-hero .hero__cast-btn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 8px 22px rgba(168, 176, 188, 0.30);
+}
+
+html.ap-lite-hero .hero__cast-btn:active {
+  transform: translateY(1px);
+}
+
+html.ap-lite-hero .hero__cast-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--void), 0 0 0 4px var(--gold-vivid);
+}
+
+/* Magnetic pull toward the cursor (fine-pointer + non-reduced-motion only).
+   Uses the independent `translate` property so it composes with the :active
+   transform; --mx/--my are driven by js/ap-magnetic.js, default 0. */
+@media (prefers-reduced-motion: no-preference) and (pointer: fine) {
+  html.ap-lite-hero .hero__cast-btn {
+    translate: var(--mx, 0px) var(--my, 0px);
+    transition: filter var(--transition-fast), box-shadow var(--transition-base),
+      transform var(--transition-fast), translate 200ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+  html.ap-lite-hero .hero__cast-btn:hover { will-change: translate; }
+}
+
+html.ap-lite-hero .hero__trust {
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Trust row → three barely-there outline pills (transparent fill, hairline gold
+   border, small caps). Echoed by the manifesto beats below. */
+html.ap-lite-hero .hero__trust-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.34rem 0.7rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver);
+  background: transparent;
+  border: 1px solid rgba(168, 176, 188, 0.16);
+  border-radius: var(--radius-full);
+}
+
+html.ap-lite-hero .hero__trust-dot {
+  display: none;
+}
+
+html.ap-lite-hero .hero__secondary {
+  margin-bottom: var(--space-6);
+}
+
+/* First-run "3 easy steps" guide — JS shows it only to new visitors (no saved
+   chart, not dismissed). Light, cohesive, on the new card surface. */
+html.ap-lite-hero .hero__firstrun {
+  max-width: 30rem;
+  margin: var(--space-3) 0 var(--space-5);
+  padding: 0.85rem 1rem 0.9rem;
+  background: var(--ap-card-surface, rgba(15, 11, 8, 0.5));
+  border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.16));
+  border-radius: 14px;
+  box-shadow: var(--ap-shadow-card, 0 10px 36px rgba(0, 0, 0, 0.32));
+}
+html.ap-lite-hero .hero__firstrun-lead {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  color: var(--gold-vivid, #E6C24A);
+  margin: 0 0 0.55rem;
+}
+html.ap-lite-hero .hero__firstrun-spark { margin-right: 0.2em; opacity: 0.9; }
+html.ap-lite-hero .hero__firstrun-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+html.ap-lite-hero .hero__firstrun-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--silver, #B0A48C);
+}
+html.ap-lite-hero .hero__firstrun-steps b {
+  flex: 0 0 1.45rem;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 50%;
+  border: 1px solid var(--ap-card-border-strong, rgba(168, 176, 188, 0.28));
+  color: var(--gold-vivid, #E6C24A);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+html.ap-lite-hero .hero__firstrun-dismiss {
+  margin-top: 0.7rem;
+  min-height: 40px;
+  padding: 0.45rem 1rem;
+  background: none;
+  border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.16));
+  border-radius: var(--radius-full);
+  color: var(--silver, #B0A48C);
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+html.ap-lite-hero .hero__firstrun-dismiss:hover,
+html.ap-lite-hero .hero__firstrun-dismiss:focus-visible {
+  color: var(--gold-vivid, #E6C24A);
+  border-color: var(--ap-card-border-strong, rgba(168, 176, 188, 0.28));
+}
+
+@media (max-width: 520px) {
+  html.ap-lite-hero .hero__cast-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Orrery — reserve final dimensions before orrery-visual.css idle-loads */
+html.ap-lite-hero .hero__orrery-layer {
+  order: 2;
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+html.ap-lite-hero .hero__orrery-wrap {
+  position: relative;
+  width: 100%;
+  max-width: min(92vw, 640px);
+  margin: 0 auto;
+  pointer-events: auto;
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+  background: var(--ap-card-surface);
+  border: 1px solid var(--ap-card-border);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  /* Raised card shadow + an outer gold rim-glow halo so the live instrument
+     reads as a luminous jewel. */
+  box-shadow:
+    var(--ap-shadow-raised),
+    0 0 0 1px rgba(168, 176, 188, 0.20),
+    0 0 64px rgba(168, 176, 188, 0.14);
+}
+
+html.ap-lite-hero .hero__orrery-ring {
+  position: relative;
+  width: min(100%, 720px);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+html.ap-lite-hero .orrery-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: visible;
+}
+
+/* Optional Seedance cinematic backdrop (js/ap-seedance.js). INACTIVE by default
+   (display:none, no src) so the page is identical to today; the boot script adds
+   .is-active / .is-playing only once a clip is configured + the device qualifies.
+   Sits BEHIND the orrery instrument (z-index:0) with pointer-events:none so it
+   never touches the drag layer; a ring mask shows it as ambient motion around the
+   jewel and fades it at the edges so it blends into the dock below. */
+html.ap-lite-hero .orrery-seedance {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, transparent 34%, #000 47%, #000 63%, transparent 84%);
+  mask-image: radial-gradient(circle at 50% 45%, transparent 34%, #000 47%, #000 63%, transparent 84%);
+}
+html.ap-lite-hero .orrery-seedance.is-active { display: block; }
+html.ap-lite-hero .orrery-seedance.is-playing { opacity: 0.45; }
+@media (prefers-reduced-motion: reduce) {
+  html.ap-lite-hero .orrery-seedance { display: none !important; }
+}
+
+/* Hands-on instrument: drag to explore, wheel/pinch to zoom, hover to illuminate. */
+html.ap-lite-hero .orrery-viewport.orrery-grabbable { cursor: grab; }
+html.ap-lite-hero .orrery-viewport.orrery-grabbing { cursor: grabbing; }
+html.ap-lite-hero .orrery-viewport.orrery-hovering { cursor: pointer; }
+@media (prefers-reduced-motion: reduce) {
+  html.ap-lite-hero .orrery-viewport.orrery-grabbable { cursor: default; }
+}
+
+html.ap-lite-hero #orrery-canvas {
+  display: block;
+  width: min(92vw, 640px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+html.ap-lite-hero:not(.orrery-full) .orrery-lite-poster {
+  display: block;
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  pointer-events: none;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 48%, #14304a 0%, #080f18 72%);
+}
+
+html.ap-lite-hero:not(.orrery-full) .lite-poster-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+html.ap-lite-hero:not(.orrery-full) .orrery-console__deck {
+  display: none;
+}
+
+html.ap-lite-hero:not(.orrery-full) .orrery-lite-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.65rem 0.75rem 0.75rem;
+  min-height: 3.25rem;
+  border-top: 1px solid rgba(168, 176, 188, 0.12);
+}
+
+/* No-JS / no-awaken fallback: force the title visible at rest (so it never
+   hides if the entrance can't run). When html.ap-awaken is set (pre-paint), this
+   steps aside and the hero plays its one-shot "awakening" entrance below. */
+html.ap-lite-hero:not(.orrery-full):not(.ap-awaken) .hero__h1,
+html.ap-lite-hero:not(.orrery-full):not(.ap-awaken) .hero__entrance {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* ── Hero "awakening" — one elegant one-shot staggered entrance on load.
+   transform/opacity only (GPU), fill both (guaranteed visible end-state),
+   0 CLS (no layout props animate). Gated by html.ap-awaken so JS-off shows
+   the hero at rest; fully disabled under reduced-motion. ── */
+@keyframes ap-hero-rise {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes ap-hero-instrument-in {
+  from { opacity: 0; transform: scale(0.965); }
+  to   { opacity: 1; transform: scale(1); }
+}
+html.ap-awaken.ap-lite-hero .hero__eyebrow,
+html.ap-awaken.ap-lite-hero .hero__h1,
+html.ap-awaken.ap-lite-hero .hero__subtitle,
+html.ap-awaken.ap-lite-hero .hero__cta-form,
+html.ap-awaken.ap-lite-hero .hero__trust {
+  animation: ap-hero-rise 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+html.ap-awaken.ap-lite-hero .hero__eyebrow  { animation-delay: 40ms; }
+html.ap-awaken.ap-lite-hero .hero__h1       { animation-delay: 110ms; }
+html.ap-awaken.ap-lite-hero .hero__subtitle { animation-delay: 210ms; }
+html.ap-awaken.ap-lite-hero .hero__cta-form { animation-delay: 300ms; }
+html.ap-awaken.ap-lite-hero .hero__trust    { animation-delay: 400ms; }
+html.ap-awaken.ap-lite-hero .hero__orrery-layer {
+  animation: ap-hero-instrument-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.ap-awaken.ap-lite-hero .hero__eyebrow,
+  html.ap-awaken.ap-lite-hero .hero__h1,
+  html.ap-awaken.ap-lite-hero .hero__subtitle,
+  html.ap-awaken.ap-lite-hero .hero__cta-form,
+  html.ap-awaken.ap-lite-hero .hero__trust,
+  html.ap-awaken.ap-lite-hero .hero__orrery-layer {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Guaranteed visible end-state — JS adds .ap-awoken ~1.3s after load (after the
+   entrance has played, or as recovery if it stalled). Content is never hidden. */
+html.ap-awoken.ap-lite-hero .hero__eyebrow,
+html.ap-awoken.ap-lite-hero .hero__h1,
+html.ap-awoken.ap-lite-hero .hero__subtitle,
+html.ap-awoken.ap-lite-hero .hero__cta-form,
+html.ap-awoken.ap-lite-hero .hero__trust,
+html.ap-awoken.ap-lite-hero .hero__orrery-layer {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.hero__full-link {
+  color: var(--gold-bright);
+  text-decoration: underline;
+  text-decoration-color: rgba(212, 184, 74, 0.45);
+  text-underline-offset: 2px;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero__full-link:hover,
+.hero__full-link:focus-visible {
+  color: var(--gold-hero-light);
+  text-decoration-color: var(--gold-bright);
+}
+.hero__full-link:focus-visible {
+  outline: 2px solid var(--gold-vivid);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+html.ap-lite-hero:not(.orrery-full) .orrery-lite-poster {
+  background: radial-gradient(circle at 50% 48%, #0a1218 0%, #060a10 72%);
+  box-shadow:
+    0 0 0 1px rgba(168, 176, 188, 0.18),
+    0 0 58px rgba(80, 150, 230, 0.22),
+    inset 0 0 36px rgba(0, 0, 0, 0.28);
+}
+
+.lite-poster-ring {
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  border: 1px dashed rgba(168, 176, 188, 0.22);
+  box-shadow: inset 0 0 24px rgba(168, 176, 188, 0.06);
+  opacity: 0.78;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.lite-poster-logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16%;
+  height: 16%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  z-index: 4;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+html.ap-lite-hero.orrery-poster-ready .lite-poster-logo {
+  background: url('../img/logo-mark.svg') center / contain no-repeat;
+  opacity: 0.92;
+}
+
+html.ap-lite-hero:not(.orrery-full) .orrery-lite-poster[data-lite-focus="earth"] .lite-poster-logo {
+  opacity: 0.12;
+  transform: translate(-50%, -50%) scale(0.72);
+}
+
+/* Planet picker — always visible on lite poster */
+html.ap-lite-hero .lite-vp-controls {
+  position: absolute;
+  top: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  max-width: 96%;
+  padding: 0.28rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 176, 188, 0.28);
+  background: rgba(5, 4, 6, 0.48);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+  opacity: 1;
+}
+
+html.ap-lite-hero .lite-vp-btn {
+  font-family: var(--font-body);
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.32rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 176, 188, 0.22);
+  background: rgba(12, 16, 24, 0.55);
+  color: rgba(232, 224, 208, 0.82);
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1;
+  transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+html.ap-lite-hero .lite-vp-btn:hover,
+html.ap-lite-hero .lite-vp-btn:focus-visible {
+  border-color: rgba(168, 176, 188, 0.48);
+  color: #f0e8d8;
+  background: rgba(168, 176, 188, 0.1);
+  outline: none;
+}
+
+html.ap-lite-hero .lite-vp-btn.active {
+  border-color: rgba(168, 176, 188, 0.62);
+  color: var(--gold-hero-light);
+  background: rgba(168, 176, 188, 0.16);
+  box-shadow: 0 0 12px rgba(168, 176, 188, 0.14);
+}
+
+html.ap-lite-hero .lite-vp-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.lite-poster-vignette {
+  position: absolute;
+  inset: -2%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 48%, transparent 62%, rgba(5, 4, 6, 0.2) 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.orrery-lite-chip {
+  margin: 0;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(168, 158, 136, 0.82);
+  text-align: center;
+}
+
+.orrery-lite-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.orrery-lite-date {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: rgba(168, 176, 188, 0.88);
+}
+
+.orrery-lite-now {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 176, 188, 0.4);
+  background: rgba(12, 10, 7, 0.85);
+  color: #f0e8d8;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.orrery-lite-scrub input[type="range"] {
+  width: 100%;
+  accent-color: #A8B0BC;
+}
+
+.orrery-lite-launch {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+  z-index: 8;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 176, 188, 0.55);
+  background: rgba(8, 6, 4, 0.88);
+  color: #f0e8d8;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Observatory split — desktop lobby layout */
+@media (min-width: 900px) {
+  html.ap-lite-hero .hero__stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: var(--space-10);
+    padding: var(--space-8) var(--space-6);
+    min-height: calc(100vh - var(--nav-height, 72px) - 8rem);
+  }
+  html.ap-lite-hero .hero__content {
+    order: 1;
+    text-align: left;
+    align-self: center;
+    justify-self: start;
+    max-width: 540px;
+  }
+  html.ap-lite-hero .hero__text { text-align: left; }
+  html.ap-lite-hero .hero__subtitle { margin-left: 0; margin-right: 0; }
+  html.ap-lite-hero .hero__cta-form,
+  html.ap-lite-hero .hero__trust,
+  html.ap-lite-hero .hero__secondary { justify-content: flex-start; text-align: left; }
+  html.ap-lite-hero .hero__orrery-layer {
+    order: 2;
+    align-self: center;
+  }
+  html.ap-lite-hero .hero__orrery-wrap { max-width: min(100%, 640px); }
+}
+
+/* Alignment Lock — poster mark gleam (one-shot) */
+@keyframes ap-lock-gleam {
+  0%   { opacity: 0.45; filter: brightness(0.75); transform: translate(-50%, -50%) scale(0.9); }
+  45%  { opacity: 1; filter: brightness(1.4) drop-shadow(0 0 10px rgba(168, 176, 188, 0.55)); transform: translate(-50%, -50%) scale(1.05); }
+  100% { opacity: 0.92; filter: brightness(1); transform: translate(-50%, -50%) scale(1); }
+}
+.lite-poster-logo.ap-alignment-lock--pulse {
+  animation: ap-lock-gleam 1.35s cubic-bezier(0.22, 0.62, 0.36, 1) forwards;
+}
+.navbar__logo-icon img {
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+.navbar__logo:hover .navbar__logo-icon img,
+.navbar__logo:focus-visible .navbar__logo-icon img {
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(168, 176, 188, 0.4));
+  transform: scale(1.04);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.ap-lite-hero .hero__h1 {
+    animation: none;
+    text-shadow: 0 2px 22px rgba(5, 4, 6, 0.92), 0 1px 6px rgba(5, 4, 6, 0.78);
+  }
+  html.ap-lite-hero .hero__h1 em.hero-gold-shimmer {
+    animation: none;
+    -webkit-text-fill-color: var(--gold-hero-light);
+    background: none;
+  }
+  .lite-poster-logo { animation: none; opacity: 0.92; transform: translate(-50%, -50%); }
+  .navbar__logo-icon img { transition: none; }
+}
+
+/* Instrument rail — lobby navigation */
+.ap-lite-rail {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-4);
+}
+.ap-lite-rail__eyebrow {
+  margin: 0 0 var(--space-4);
+  text-align: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-hero);
+  opacity: 0.85;
+}
+/* Observatory — feature card (Chart) + compact 5-tool grid. */
+.ap-lite-rail__track {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+.ap-lite-rail__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.ap-lite-rail__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-2);
+  min-height: 44px;
+  border: 1px solid var(--ap-card-border);
+  border-radius: var(--radius-xl);
+  background: var(--ap-card-surface);
+  box-shadow: var(--ap-shadow-card);
+  color: var(--silver);
+  text-decoration: none;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.ap-lite-rail__tile:hover,
+.ap-lite-rail__tile:focus-visible {
+  border-color: var(--ap-card-border-strong);
+  color: var(--gold-hero-light);
+  transform: translateY(-2px);
+  box-shadow: var(--ap-shadow-raised);
+}
+.ap-lite-rail__tile:focus-visible {
+  outline: 2px solid var(--gold-vivid);
+  outline-offset: 2px;
+}
+/* Feature tile (Chart) — larger seal + a descriptive line, eyebrow accent. */
+.ap-lite-rail__tile--feature {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6);
+  text-transform: none;
+  letter-spacing: normal;
+  text-align: left;
+}
+.ap-lite-rail__tile--feature .ap-lite-rail__seal {
+  width: 3.4rem;
+  height: 3.8rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+.ap-lite-rail__feature-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.ap-lite-rail__tile--feature .ap-lite-rail__name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--white);
+  text-align: left;
+}
+.ap-lite-rail__desc {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--silver-dim);
+}
+.ap-lite-rail__glyph {
+  font-size: 1.15rem;
+  color: var(--gold-vivid);
+  line-height: 1;
+}
+.ap-lite-rail__seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.4rem;
+  margin-bottom: 0.35rem;
+}
+.ap-lite-rail__seal .ap-seal { width: 100%; height: 100%; }
+.ap-lite-rail__name { text-align: center; }
+
+@media (min-width: 720px) {
+  .ap-lite-rail__track {
+    grid-template-columns: 1.4fr 1fr;
+    align-items: stretch;
+  }
+  .ap-lite-rail__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+  }
+}
+
+/* Lite footer — floating top rim-light + hairline. */
+.ap-lite-footer {
+  position: relative;
+  border-top: 1px solid rgba(168, 176, 188, 0.12);
+  box-shadow: var(--ap-rim-shadow), 0 -24px 48px rgba(0, 0, 0, 0.28);
+  padding: var(--space-8) var(--space-4) var(--space-10);
+  text-align: center;
+}
+.ap-lite-footer__inner {
+  max-width: 520px;
+  margin: 0 auto;
+}
+.ap-lite-footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--gold-hero);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-3);
+}
+.ap-lite-footer__tagline {
+  margin: 0 0 var(--space-3);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--silver-dim);
+}
+.ap-lite-footer__badge {
+  margin: 0;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-dark);
+}
+
+/* Live sky dock — bridges hero orrery to the page */
+.hero__sky-dock {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-6);
+}
+/* Cosmic Snapshot — the live sky promoted to a full-width first-fold insight
+   card. Scoped under html.ap-lite-hero .hero__sky-dock so it outranks the
+   .hero .hero__sky-dock .live-sky-section-inner rule (0,3,0) that index-home.css
+   idle-injects after this sheet. */
+html.ap-lite-hero .hero__sky-dock .live-sky-dock-panel {
+  padding: var(--space-6) var(--space-8) var(--space-5);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--ap-card-border);
+  background: var(--ap-card-surface);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--ap-rim-shadow, inset 0 1px 0 rgba(239, 227, 192, 0.06)), var(--ap-shadow-card);
+}
+.live-sky-dock__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-4);
+  position: relative;
+  overflow: hidden;
+  min-height: 2.1rem;
+}
+/* Live-sky meteors REMOVED (calming pass): the .live-sky-meteor streaks were
+   decorative shooting-star elements that animated across the sky-dock header
+   forever (ap-meteor-pass). They are pointer-events:none, position:absolute,
+   default opacity:0, inside an overflow:hidden + min-height head — never load-
+   bearing — so hiding them shifts no layout and stops the perpetual motion. */
+.live-sky-meteor {
+  display: none;
+}
+.live-sky-label {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+html.ap-lite-hero .live-sky-label__text {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--gold-vivid);
+}
+.live-sky-stamp {
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver-dark);
+}
+#live-sky-strip {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: 0 0 var(--space-2);
+  scrollbar-width: none;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#live-sky-strip::-webkit-scrollbar { display: none; }
+/* Desktop: lay the live planet pills out as an even grid (insight-card feel);
+   mobile keeps the horizontal scroll strip below. */
+@media (min-width: 720px) {
+  html.ap-lite-hero #live-sky-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-3);
+    overflow-x: visible;
+    flex-wrap: nowrap;
+  }
+  html.ap-lite-hero #live-sky-strip .sky-pill {
+    flex-shrink: 1;
+    width: 100%;
+  }
+}
+.sky-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: linear-gradient(145deg, rgba(22, 28, 42, 0.88), rgba(10, 9, 8, 0.82));
+  border: 1px solid rgba(168, 176, 188, 0.16);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  appearance: none;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+.sky-pill:hover {
+  border-color: rgba(168, 176, 188, 0.38);
+  transform: translateY(-2px);
+}
+.sky-pill--retro { border-color: rgba(176, 74, 82, 0.3); }
+.sky-pill--focus {
+  border-color: rgba(168, 176, 188, 0.65);
+  box-shadow: 0 0 18px rgba(168, 176, 188, 0.22);
+}
+.sky-pill__glyph { font-size: 1.1rem; line-height: 1; }
+.sky-pill__info { display: flex; flex-direction: column; gap: 1px; }
+.sky-pill__name {
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+  font-weight: 600;
+}
+.sky-pill__placement {
+  font-size: 0.8rem;
+  color: var(--white);
+  font-family: var(--font-display);
+}
+.sky-pill__degree {
+  font-size: 0.62rem;
+  font-family: 'Courier New', monospace;
+  color: var(--gold-bright);
+}
+.sky-pill__retro { font-size: 0.6rem; color: var(--crimson-light); }
+.sky-loading-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid rgba(168, 176, 188, 0.16);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  color: var(--silver-dim);
+}
+.sky-loading-pill__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid rgba(168, 176, 188, 0.35);
+  border-top-color: var(--gold-hero);
+  animation: ap-spin 0.8s linear infinite;
+}
+@keyframes ap-spin { to { transform: rotate(360deg); } }
+.live-sky-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(168, 176, 188, 0.1);
+}
+html.ap-lite-hero .hero__sky-dock .live-sky-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-vivid);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(168, 176, 188, 0.22);
+  background: rgba(168, 176, 188, 0.06);
+}
+html.ap-lite-hero .hero__sky-dock .live-sky-action:hover { border-color: rgba(168, 176, 188, 0.45); color: var(--gold-hero-light); }
+html.ap-lite-hero .hero__sky-dock .live-sky-action:focus-visible {
+  outline: 2px solid var(--gold-vivid);
+  outline-offset: 2px;
+}
+.live-sky-note {
+  text-align: center;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--silver-dim);
+  margin: 0.6rem 0 0;
+}
+.sky-dock-fallback {
+  font-size: 0.78rem;
+  color: var(--silver-dim);
+  padding: var(--space-2) var(--space-4);
+}
+@media (max-width: 640px) {
+  #live-sky-strip { justify-content: flex-start; }
+}
+
+/* How it works — lite lobby */
+.ap-lite-steps {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4) var(--space-6);
+  text-align: center;
+}
+.ap-lite-steps__eyebrow {
+  margin: 0 0 var(--space-3);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-vivid);
+  opacity: 0.92;
+}
+.ap-lite-steps__title {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 1.65rem);
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.04em;
+  text-wrap: balance;
+}
+
+/* Tabular figures so the live time / sky readouts hold a fixed width as their
+   digits tick, instead of jittering with proportional numerals. Id selectors so
+   this wins over the later .orrery-lite-date rule in orrery-visual.css. */
+html.ap-lite-hero #lite-date-display,
+html.ap-lite-hero #live-sky-stamp {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+.ap-lite-steps__sub {
+  margin: 0 auto var(--space-8);
+  max-width: 520px;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--silver-dim);
+}
+.ap-lite-steps__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  text-align: left;
+}
+/* Subtle decorative connector line behind the step number-circles (desktop
+   only, aria-hidden). Sits behind the cards so it reads as a flow line. */
+.ap-lite-steps__connector {
+  display: none;
+}
+@media (min-width: 721px) {
+  .ap-lite-steps__connector {
+    display: block;
+    position: absolute;
+    top: calc(var(--space-6) + 22px);
+    left: 16.66%;
+    right: 16.66%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(168, 176, 188, 0.22), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+.ap-lite-step {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-6) var(--space-5);
+  border: 1px solid var(--ap-card-border);
+  border-radius: var(--radius-xl);
+  background: var(--ap-card-surface);
+  box-shadow: var(--ap-shadow-card);
+}
+.ap-lite-step__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.ap-lite-step__num {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(168, 176, 188, 0.4);
+  background: rgba(7, 5, 9, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--gold-hero-light);
+}
+.ap-lite-step__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.02em;
+}
+.ap-lite-step__text {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--silver-dim);
+}
+.ap-lite-steps__cta {
+  display: inline-block;
+  margin-top: var(--space-8);
+  padding: 14px 32px;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #0a0805;
+  background: linear-gradient(135deg, var(--gold-vivid) 0%, #d4b84a 45%, #a8841e 100%);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(168, 176, 188, 0.16);
+  transition: filter var(--transition-fast), box-shadow var(--transition-base), transform var(--transition-fast);
+}
+.ap-lite-steps__cta:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 10px 28px rgba(168, 176, 188, 0.24);
+}
+.ap-lite-steps__cta:active { transform: translateY(1px); }
+.ap-lite-steps__cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--void), 0 0 0 4px var(--gold-vivid);
+}
+@media (max-width: 720px) {
+  .ap-lite-steps__grid { grid-template-columns: 1fr; text-align: left; }
+  .ap-lite-steps__connector { display: none; }
+}
+
+/* Manifesto — pre-footer editorial block with a top hairline rule. */
+.ap-lite-manifesto {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-4) var(--space-8);
+  text-align: center;
+  border: none;
+  position: relative;
+}
+.ap-lite-manifesto::before {
+  content: '';
+  display: block;
+  width: min(120px, 40%);
+  height: 1px;
+  margin: 0 auto var(--space-8);
+  background: linear-gradient(90deg, transparent, rgba(168, 176, 188, 0.28), transparent);
+}
+.ap-lite-manifesto p {
+  margin: 0 0 var(--space-6);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--silver-dim);
+  font-style: italic;
+}
+.ap-lite-manifesto strong { color: var(--gold-hero-light); font-style: normal; }
+.ap-lite-manifesto__beats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+/* Beats echo the hero trust pills (transparent fill, hairline gold border). */
+.ap-lite-manifesto__beats span {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver);
+  background: transparent;
+  padding: 0.34rem 0.7rem;
+  border: 1px solid rgba(168, 176, 188, 0.16);
+  border-radius: var(--radius-full);
+}
+/* Deeper-page link — the consolidated cosmic-story / philosophy essays now live
+   in full on why.html; this carries the depth without bloating the home. */
+.ap-lite-manifesto__more {
+  margin: var(--space-6) 0 0;
+}
+.ap-lite-manifesto__more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-vivid);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(230, 194, 74, 0.32);
+  padding: 0 0 2px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.ap-lite-manifesto__more a:hover,
+.ap-lite-manifesto__more a:focus-visible {
+  color: var(--gold-hero-light);
+  border-color: var(--gold-vivid);
+}
+.ap-lite-manifesto__more a:focus-visible {
+  outline: 2px solid var(--gold-vivid);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Footer quick links */
+.ap-lite-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.ap-lite-footer__nav a {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+  text-decoration: none;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.ap-lite-footer__nav a:hover,
+.ap-lite-footer__nav a:focus-visible {
+  color: var(--gold-vivid);
+  text-decoration: underline;
+  text-decoration-color: var(--gold-vivid);
+}
+
+/* Footer zodiac strip — eager flex (deferred celestial-seals.css loads later) */
+.footer-zodiac-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-start;
+  line-height: 0;
+}
+.footer-zodiac-strip > span { display: inline-flex; }
+

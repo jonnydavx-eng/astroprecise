@@ -1,0 +1,267 @@
+/* ============================================================
+   AP v4 ATLAS — chart.html plate layer
+   Requires css/ap-atlas-tokens.css linked before this file.
+   Page-specific plates only; the palette itself is the token
+   remap, which even the deferred chart CSS inherits.
+   ============================================================ */
+
+/* ── BASE ── */
+body.page-chart{ background:#08080b; color:#f2ecdf; }
+body.page-chart ::selection{ background:#ff5a1f; color:#140b06; }
+
+/* nebula remnants off — the atlas sky is plain ink */
+body.page-chart .aurora-orb{ display:none !important; }
+body.page-chart .chart-hero__cosmic-art,
+body.page-chart .chart-hero__orb-a,
+body.page-chart .chart-hero__orb-b{ display:none !important; }
+
+/* ── HERO — chapter plate ── */
+body.page-chart .chart-hero.chart-hero--compact{
+  background:transparent;
+  border-bottom:1px solid rgba(216,180,106,.16);
+  padding:clamp(3rem,6vw,5.5rem) 0 clamp(2.2rem,4vw,3.4rem);
+  position:relative;
+}
+body.page-chart .chart-hero .container{ position:relative; }
+body.page-chart .chart-hero__eyebrow{
+  font-family:'IBM Plex Mono', ui-monospace, monospace !important;
+  font-size:.66rem; letter-spacing:.3em; text-transform:uppercase;
+  color:#d8b46a !important;
+  display:flex; align-items:center; justify-content:center; gap:16px;
+}
+body.page-chart .chart-hero__eyebrow::before,
+body.page-chart .chart-hero__eyebrow::after{
+  content:""; height:1px; width:min(72px,12vw); background:rgba(216,180,106,.32);
+}
+body.page-chart .chart-hero__title{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-style:italic; font-weight:500 !important;
+  font-size:clamp(2.9rem, 7vw, 5.6rem) !important;
+  line-height:1.02; letter-spacing:-.01em;
+  color:#f2ecdf !important;
+  margin:.35em auto .3em;
+  max-width:14ch;
+}
+body.page-chart .chart-hero__subtitle{
+  font-family:'Schibsted Grotesk', system-ui, sans-serif !important;
+  font-size:clamp(.92rem, 1.4vw, 1.05rem) !important;
+  color:rgba(242,236,223,.66) !important;
+  line-height:1.7; max-width:52ch;
+}
+body.page-chart .chart-hero__timecode{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.22em; text-transform:uppercase;
+  color:rgba(242,236,223,.42);
+  margin:1.6rem auto 0; text-align:center;
+}
+body.page-chart .chart-hero__timecode b{ color:#ff5a1f; font-weight:400; }
+
+/* ── FORM PLATE ── */
+body.page-chart .form-glass.form-glass{
+  background:linear-gradient(168deg, rgba(242,236,223,.045), rgba(242,236,223,.015));
+  border:1px solid rgba(216,180,106,.22);
+  border-radius:6px;
+  box-shadow:inset 0 1px 0 rgba(242,236,223,.05), 0 24px 60px rgba(0,0,0,.4);
+}
+body.page-chart .form-glass__title{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+body.page-chart .form-glass__privacy{ color:#d8b46a; }
+body.page-chart .chart-form__progress{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+  color:rgba(242,236,223,.42);
+}
+body.page-chart .form-section-label__num{
+  border-color:rgba(216,180,106,.4); color:#d8b46a;
+  font-family:'IBM Plex Mono', monospace;
+}
+body.page-chart .form-section-label__text{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing:.22em; text-transform:uppercase; font-size:.64rem;
+  color:rgba(242,236,223,.66);
+}
+body.page-chart .form-label{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(242,236,223,.62);
+}
+body.page-chart .form-label .required{ color:#ff5a1f; }
+body.page-chart .form-input{
+  background:rgba(8,8,11,.55); border:1px solid rgba(216,180,106,.18);
+  color:#f2ecdf; border-radius:4px;
+  font-family:'Schibsted Grotesk', system-ui, sans-serif;
+}
+body.page-chart .form-input:focus{
+  border-color:#ff5a1f; outline:none;
+  box-shadow:0 0 0 3px rgba(255,90,31,.18);
+}
+body.page-chart .form-hint{ color:rgba(242,236,223,.48); }
+body.page-chart .form-hint button{ color:#d8b46a !important; }
+body.page-chart .form-group.is-valid .form-group__check{ border-color:#a8d6b0; }
+body.page-chart .form-group.is-valid .form-group__check::after{ border-color:#a8d6b0; }
+
+/* calculate CTA — ember plate, dark ink */
+body.page-chart .btn--calculate.btn--calculate{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing:.14em; text-transform:uppercase; font-size:.78rem;
+  border-radius:4px;
+}
+body.page-chart .btn--sample.btn--sample{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(242,236,223,.6);
+}
+body.page-chart .btn--sample:hover{ color:#ff7a45; }
+
+/* advanced accordion — engraved drawer */
+body.page-chart .chart-advanced .accordion-item.accordion-item{
+  background:rgba(242,236,223,.02); border:1px solid rgba(216,180,106,.18); border-radius:6px;
+}
+body.page-chart .chart-advanced .accordion-item.is-open{ border-color:rgba(216,180,106,.4); }
+body.page-chart .house-card.house-card,
+body.page-chart .time-btn.time-btn,
+body.page-chart .node-toggle__pill{
+  background:rgba(242,236,223,.02); border:1px solid rgba(216,180,106,.16);
+  border-radius:4px; color:#ddd3bf;
+}
+body.page-chart .house-card.active,
+body.page-chart .time-btn.active{
+  border-color:#ff5a1f; background:rgba(255,90,31,.08); color:#f2ecdf;
+}
+body.page-chart .node-toggle__opt input:checked + .node-toggle__pill{
+  border-color:#ff5a1f; background:rgba(255,90,31,.08);
+}
+
+/* ── RESULT PLATES ── */
+body.page-chart .result-header-card.result-header-card,
+body.page-chart .big-three-card.big-three-card,
+body.page-chart .chart-wheel-card.chart-wheel-card,
+body.page-chart .tabs-card.tabs-card,
+body.page-chart .card.card{
+  background:linear-gradient(168deg, rgba(242,236,223,.04), rgba(242,236,223,.015));
+  border:1px solid rgba(216,180,106,.2);
+  border-radius:6px;
+  box-shadow:inset 0 1px 0 rgba(242,236,223,.05);
+}
+body.page-chart .result-badge{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.18em; text-transform:uppercase;
+  color:#d8b46a;
+}
+body.page-chart #result-name{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+body.page-chart .tab-trigger{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.64rem; letter-spacing:.2em; text-transform:uppercase;
+  color:rgba(242,236,223,.55);
+}
+body.page-chart .tab-trigger[aria-selected="true"]{ color:#ff5a1f; }
+body.page-chart .big-three-card__planet{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+  color:rgba(242,236,223,.5);
+}
+body.page-chart .big-three-card__sign{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+body.page-chart .action-btn--gold.action-btn--gold{
+  background:#ff5a1f; color:#1a0d05; border-radius:4px;
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.64rem; letter-spacing:.16em; text-transform:uppercase;
+}
+body.page-chart .action-btn--ghost.action-btn--ghost{
+  border:1px solid rgba(216,180,106,.28); color:#ddd3bf; border-radius:4px;
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.64rem; letter-spacing:.14em; text-transform:uppercase;
+}
+body.page-chart .action-btn--ghost:hover{ border-color:#ff5a1f; color:#ff7a45; }
+body.page-chart .chart-wheel-label,
+body.page-chart .chart-wheel-sublabel{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing:.18em; text-transform:uppercase;
+}
+body.page-chart .chart-wheel-label{ color:#d8b46a; font-size:.64rem; }
+body.page-chart .chart-wheel-sublabel{ color:rgba(242,236,223,.42); font-size:.58rem; }
+
+/* keepsake band + lead magnets → plates */
+body.page-chart .chart-keepsake-band.chart-keepsake-band,
+body.page-chart .wallpaper-lead.wallpaper-lead,
+body.page-chart .email-capture.email-capture{
+  background:rgba(242,236,223,.02);
+  border:1px solid rgba(216,180,106,.2); border-radius:6px;
+}
+body.page-chart .chart-keepsake-band__eyebrow,
+body.page-chart .wallpaper-lead__eyebrow{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#d8b46a;
+}
+body.page-chart .wallpaper-lead__title,
+body.page-chart .email-capture__title{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+body.page-chart .wallpaper-lead__download.wallpaper-lead__download,
+body.page-chart .email-capture__btn.email-capture__btn{
+  background:#ff5a1f; color:#1a0d05; border-radius:4px;
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+}
+body.page-chart .wallpaper-lead__input.wallpaper-lead__input,
+body.page-chart .email-capture__input.email-capture__input{
+  background:rgba(8,8,11,.55); border:1px solid rgba(216,180,106,.18);
+  color:#f2ecdf; border-radius:4px;
+}
+body.page-chart .wallpaper-lead__input:focus,
+body.page-chart .email-capture__input:focus{
+  border-color:#ff5a1f; box-shadow:0 0 0 3px rgba(255,90,31,.18); outline:none;
+}
+
+/* ── EDUCATIONAL CHAPTER ── */
+body.page-chart .section-header__label{
+  font-family:'IBM Plex Mono', ui-monospace, monospace !important;
+  font-size:.62rem; letter-spacing:.26em; text-transform:uppercase;
+  color:#d8b46a !important;
+}
+body.page-chart .section-header__title{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+  font-size:clamp(2rem, 4.4vw, 3.4rem);
+}
+body.page-chart .section-header__subtitle{ color:rgba(242,236,223,.62); }
+body.page-chart .card__title{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+body.page-chart .card__icon{ color:#ff5a1f; }
+body.page-chart .ap-badge{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.16em; text-transform:uppercase;
+  color:#d8b46a; border:1px solid rgba(216,180,106,.3); border-radius:3px;
+}
+
+/* ── CHROME — nav + footer hairlines ── */
+body.page-chart .site-header .navbar__inner{
+  border-bottom:1px solid rgba(216,180,106,.14);
+}
+body.page-chart .navbar__link{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+}
+body.page-chart .footer{ border-top:1px solid rgba(216,180,106,.16); }
+body.page-chart .footer-nav-col__title{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#d8b46a;
+}
+body.page-chart .footer-brand__tagline{ color:rgba(242,236,223,.55); }
+body.page-chart .footer-legal{ color:rgba(242,236,223,.42); }
+
+/* ── MOBILE TUNING ── */
+@media (max-width: 720px){
+  body.page-chart .chart-hero__title{ font-size:clamp(2.4rem, 11vw, 3.4rem) !important; }
+  body.page-chart .chart-hero__eyebrow{ letter-spacing:.2em; }
+}

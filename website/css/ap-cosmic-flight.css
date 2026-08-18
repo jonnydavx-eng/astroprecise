@@ -1,0 +1,367 @@
+/* Cosmic Flight — fullscreen start-sequence tool (opt-in, not a page gate) */
+
+#ap-cosmic-flight[hidden] {
+  display: none !important;
+}
+
+#ap-cosmic-flight {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  color: #e8e4dc;
+  pointer-events: none;
+}
+
+#ap-cosmic-flight.is-open {
+  animation: ap-cf-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ap-cf-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ap-cf-toolbar {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  background: rgba(6, 8, 14, 0.92);
+  border-bottom: 1px solid rgba(168, 176, 188, 0.18);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  pointer-events: auto;
+}
+
+.ap-cf-toolbar__lead {
+  min-width: 8rem;
+}
+
+.ap-cf-toolbar__title {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(168, 176, 188, 0.88);
+  margin: 0;
+}
+
+.ap-cf-toolbar__dek {
+  margin: 0.15rem 0 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  color: rgba(200, 195, 180, 0.62);
+}
+
+.ap-cf-mode {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(168, 176, 188, 0.15);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.ap-cf-toolbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.ap-cf-btn {
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 176, 188, 0.28);
+  background: rgba(12, 16, 22, 0.85);
+  color: #E8EBF0;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.ap-cf-btn:hover {
+  border-color: rgba(168, 176, 188, 0.55);
+  color: #f5efe3;
+}
+
+.ap-cf-btn--primary {
+  border-color: rgba(168, 176, 188, 0.45);
+  color: #C8CDD6;
+}
+
+.ap-cf-btn--exit {
+  border-color: rgba(160, 140, 120, 0.35);
+}
+
+.ap-cf-btn.active,
+.ap-cf-btn--mode.active {
+  border-color: rgba(216, 185, 120, 0.65);
+  color: #f0e6d0;
+  background: rgba(168, 176, 188, 0.12);
+}
+
+.ap-cf-btn[aria-busy="true"] {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+.ap-cf-scale-strip {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  padding: 0.55rem 0.85rem;
+  background: rgba(6, 8, 14, 0.94);
+  border-top: 1px solid rgba(168, 176, 188, 0.16);
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.ap-cf-scale-strip[hidden] {
+  display: none !important;
+}
+
+.ap-cf-scale-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(168, 176, 188, 0.7);
+  margin-right: 0.35rem;
+}
+
+.ap-cf-scale-strip button {
+  font: inherit;
+  font-size: 0.62rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 176, 188, 0.22);
+  background: transparent;
+  color: rgba(232, 226, 216, 0.82);
+  cursor: pointer;
+}
+
+.ap-cf-scale-strip button:hover,
+.ap-cf-scale-strip button.active {
+  border-color: rgba(168, 176, 188, 0.5);
+  color: #C8CDD6;
+}
+
+#ap-cosmic-flight-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+  pointer-events: none;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted,
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted .orrery-viewport {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border: none;
+  border-radius: 0;
+  aspect-ratio: unset;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 11999;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  background: #000;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted::before {
+  display: none;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted void-orrery {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted #orrery-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted .orrery-lite-poster {
+  display: none !important;
+}
+
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted .lite-vp-controls,
+body.ap-cosmic-flight-open .ap-model-stage.ap-cf-promoted .orrery-lite-launch {
+  display: none !important;
+}
+
+#ap-cosmic-flight .journey-hud {
+  position: absolute;
+  left: 1rem;
+  right: auto;
+  bottom: 1.25rem;
+  max-width: min(92vw, 22rem);
+  z-index: 4;
+  pointer-events: auto;
+}
+
+#ap-cosmic-flight .journey-hud__skip {
+  pointer-events: auto;
+}
+
+#ap-cosmic-flight .journey-hud--silent .journey-hud__tagline,
+#ap-cosmic-flight .journey-hud--silent .journey-hud__title,
+#ap-cosmic-flight .journey-hud--silent .journey-hud__more,
+#ap-cosmic-flight .journey-hud--silent .journey-hud__detail {
+  display: none !important;
+}
+
+#ap-cosmic-flight .journey-hud--silent {
+  padding-top: 0.15rem;
+}
+
+body.ap-cosmic-flight-open {
+  overflow: hidden;
+}
+
+/* The fixed stage stays in its original grid cell so the custom element never
+   disconnects. Neutralise ancestor clipping while it is promoted fullscreen. */
+body.ap-cosmic-flight-open .ap-live-stage,
+body.ap-cosmic-flight-open .ap-live-home {
+  transform: none !important;
+  overflow: visible !important;
+}
+
+.ap-control-panel .ap-flight-launch {
+  display: grid;
+  gap: 8px;
+  padding: 15px;
+  border: 1px solid rgba(216, 185, 120, .26);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(216,185,120,.1), rgba(72,93,126,.08));
+}
+
+.ap-control-panel .ap-flight-launch span {
+  color: rgba(220, 222, 228, .62);
+  font: 9px/1.5 var(--ap-data, ui-monospace, monospace);
+  letter-spacing: .04em;
+}
+
+.ap-control-panel .ap-orrery-cosmic-flight {
+  min-height: 48px;
+  padding: 10px 15px;
+  border: 1px solid rgba(216, 185, 120, .62);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(216,185,120,.18), rgba(12,16,22,.95));
+  color: #f0e6d0;
+  font: 700 12px/1.3 var(--ap-body, system-ui, sans-serif);
+  cursor: pointer;
+}
+
+.ap-control-panel .ap-orrery-cosmic-flight:hover,
+.ap-control-panel .ap-orrery-cosmic-flight:focus-visible {
+  border-color: rgba(239, 207, 139, .95);
+  box-shadow: 0 0 22px rgba(216,185,120,.16);
+}
+
+.ap-control-panel .ap-orrery-cosmic-flight:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.ap-award-511 .ap-orrery-cosmic-flight {
+  min-height: 40px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 176, 188, 0.55);
+  background: linear-gradient(180deg, rgba(168, 176, 188, 0.14), rgba(12, 16, 22, 0.95));
+  color: #C8CDD6;
+  font-family: var(--font-ui, system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ap-award-511 .ap-orrery-cosmic-flight:hover {
+  border-color: rgba(216, 185, 120, 0.75);
+  box-shadow: 0 0 18px rgba(168, 176, 188, 0.18);
+}
+
+.ap-award-511 .ap-orrery-cosmic-flight:focus-visible {
+  outline: 2px solid var(--brass, #A8B0BC);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-award-511 .ap-orrery-cosmic-flight {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.ap-award-511 .dept-list-item--action {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.ap-award-511 .dept-list-item--action:focus-visible {
+  outline: 2px solid var(--brass, #A8B0BC);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .ap-cf-toolbar {
+    padding: 0.5rem 0.75rem;
+  }
+  .ap-cf-toolbar__title {
+    font-size: 0.65rem;
+  }
+  #ap-cosmic-flight .journey-hud {
+    left: 0.65rem;
+    right: 0.65rem;
+    max-width: none;
+  }
+  .ap-cf-mode, .ap-cf-toolbar__actions { width: 100%; }
+  .ap-cf-toolbar__actions { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .ap-cf-btn { min-height: 44px; padding-inline: .55rem; }
+}
+/* #4 (2026-07-05): don't render an empty framed HUD box before narration lands.
+   The tagline/title/notes are populated per-scene by scale-journey.js; while a
+   field is still empty it collapses (self-heals the instant textContent is set),
+   so the flight never opens onto a blank bordered rectangle. */
+.journey-hud__tagline:empty,
+.journey-hud__title:empty,
+.journey-hud__narrative:empty,
+.journey-hud__fact:empty,
+.journey-hud__pitch:empty { display: none; }
+
+/* #3 (2026-07-05): the fullscreen flight reuses the intro DOM-label path, whose
+   intro-tuned alphas + projection desync from the bodies across the zoom (labels
+   strewn over the Sun / empty space — an illusion-breaker). Hide the engraved DOM
+   labels entirely while the flight overlay is open; the engine's in-scene render
+   carries the look. (Engine also guards via cosmicFlightToolActive, but labels can
+   orphan in the flight's tail when updateDomLabels stops being called — this is the
+   bulletproof cover, tied to the overlay body class set by ap-cosmic-flight-tool.js.) */
+body.ap-cosmic-flight-open #orrery-dom-labels { display: none !important; }

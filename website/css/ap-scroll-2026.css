@@ -1,0 +1,35 @@
+/* ap-scroll-2026.css — Wave 2 native CSS scroll-driven "flow".
+   Idle-loaded via index.html's apLiteDeferCss SHEETS array; NEVER render-blocking.
+
+   Kept deliberately to ONE verified-safe decorative target after adversarial
+   conflict checks:
+   - .hero__text::before is the hero gold-glow wash (position:absolute, z-index:-1,
+     pointer-events:none, inset:-8% -6%) and is NOT otherwise animated → safe.
+   - .lite-poster-ring already runs its own 48s `lite-zodiac-ring` rotation, so
+     animating it here would OVERRIDE that rotation — left untouched.
+   - The "Now in the sky" sky-dock panel is an interactive content card (contains
+     the time-scrub range input), not decorative — left untouched.
+
+   transform/opacity ONLY. No width/height/top/left/margin. Double-gated:
+   @supports (animation-timeline: scroll()) AND (prefers-reduced-motion:
+   no-preference). Where unsupported or reduced-motion, this file is inert and
+   the shipped IntersectionObserver reveal keeps every element visible — the
+   worst case is exactly today's behaviour. */
+
+@keyframes ap-hero-glow-flow {
+  from { transform: translate3d(0, 0, 0); opacity: 0.9; }
+  to   { transform: translate3d(0, -26px, 0); opacity: 0.4; }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* The gold glow behind the hero text drifts up + softens over the first
+       ~75vh of scroll — a gentle parallax depth cue as the hero leaves. */
+    html.ap-lite-hero .hero__text::before {
+      animation: ap-hero-glow-flow linear both;
+      animation-duration: 1ms; /* Firefox needs a non-zero duration; Chrome/Safari ignore it under a scroll timeline */
+      animation-timeline: scroll(root);
+      animation-range: 0 75vh;
+    }
+  }
+}

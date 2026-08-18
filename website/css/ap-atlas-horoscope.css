@@ -1,0 +1,129 @@
+/* ============================================================
+   AP v4 ATLAS — horoscope.html plate layer
+   Requires css/ap-atlas-tokens.css linked before this file.
+   Page-specific plates only; the palette itself is the token
+   remap, which even the deferred horoscope CSS inherits.
+   ============================================================ */
+
+body.page-horoscope{ background:#08080b; color:#f2ecdf; }
+body.page-horoscope ::selection{ background:#ff5a1f; color:#140b06; }
+
+/* nebula remnants off — the atlas sky is plain ink */
+body.page-horoscope .aurora-orb{ display:none !important; }
+
+/* ── HERO — the day's entry ── */
+body.page-horoscope .sphere-hero__header h1{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-style:italic; font-weight:500 !important;
+  font-size:clamp(2.9rem, 7vw, 5.4rem) !important;
+  line-height:1.02; letter-spacing:-.01em !important;
+  color:#f2ecdf !important;
+  max-width:14ch;
+}
+body.page-horoscope .hero__eyebrow{
+  font-family:'IBM Plex Mono', ui-monospace, monospace !important;
+  font-size:.66rem; letter-spacing:.3em; text-transform:uppercase;
+  color:#d8b46a !important;
+}
+body.page-horoscope .sphere-hero__sub{
+  font-family:'Schibsted Grotesk', system-ui, sans-serif;
+  color:rgba(242,236,223,.66); line-height:1.7; max-width:52ch;
+}
+body.page-horoscope .ap-badge{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.16em; text-transform:uppercase;
+  color:#d8b46a; border:1px solid rgba(216,180,106,.3); border-radius:3px;
+}
+
+/* ── SIGN PICKER — twelve engraved tiles ── */
+body.page-horoscope .sign-picker-primary__lead{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.24em; text-transform:uppercase;
+  color:rgba(242,236,223,.5);
+}
+body.page-horoscope .sign-card.sign-card{
+  background:linear-gradient(168deg, rgba(242,236,223,.04), rgba(242,236,223,.015));
+  border:1px solid rgba(216,180,106,.18);
+  border-radius:6px;
+  box-shadow:inset 0 1px 0 rgba(242,236,223,.05);
+  transition:border-color .2s ease, background .2s ease;
+}
+body.page-horoscope .sign-card:hover{ border-color:rgba(216,180,106,.45); }
+body.page-horoscope .sign-card[aria-pressed="true"],
+body.page-horoscope .sign-card.is-active{
+  border-color:#ff5a1f; background:rgba(255,90,31,.08);
+}
+body.page-horoscope .sign-card__name{
+  font-family:'Cormorant Garamond', Georgia, serif;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+body.page-horoscope .sign-card__dates{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.56rem; letter-spacing:.14em; text-transform:uppercase;
+  color:rgba(242,236,223,.45);
+}
+body.page-horoscope .sign-card__element-badge{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.52rem; letter-spacing:.18em; text-transform:uppercase;
+  color:#d8b46a; border:1px solid rgba(216,180,106,.3); border-radius:3px;
+}
+
+/* ── READING PANEL ── */
+body.page-horoscope .sign-reading-panel.sign-reading-panel{
+  background:linear-gradient(168deg, rgba(242,236,223,.04), rgba(242,236,223,.015));
+  border:1px solid rgba(216,180,106,.22); border-radius:6px;
+  box-shadow:inset 0 1px 0 rgba(242,236,223,.05), 0 24px 60px rgba(0,0,0,.4);
+}
+body.page-horoscope .sphere-selected-label{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+}
+
+/* ── DIAL INTRO ── */
+body.page-horoscope .dial-intro__label{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.26em; text-transform:uppercase; color:#d8b46a;
+}
+body.page-horoscope .dial-intro__sub{ color:rgba(242,236,223,.6); }
+
+/* ── SECTIONS ── */
+body.page-horoscope .section__title,
+body.page-horoscope .section-title{
+  font-family:'Cormorant Garamond', Georgia, serif !important;
+  font-style:italic; font-weight:500; color:#f2ecdf;
+  font-size:clamp(1.8rem, 4vw, 2.8rem);
+}
+body.page-horoscope .eyebrow{
+  font-family:'IBM Plex Mono', ui-monospace, monospace !important;
+  font-size:.62rem; letter-spacing:.26em; text-transform:uppercase;
+  color:#d8b46a !important;
+}
+body.page-horoscope .btn--primary.btn--primary{
+  background:#ff5a1f; color:#1a0d05; border-radius:4px;
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+}
+body.page-horoscope .btn--outline.btn--outline{
+  border:1px solid rgba(216,180,106,.3); color:#ddd3bf; border-radius:4px;
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+}
+body.page-horoscope .btn--outline:hover{ border-color:#ff5a1f; color:#ff7a45; }
+
+/* ── CHROME ── */
+body.page-horoscope .site-header .navbar__inner{ border-bottom:1px solid rgba(216,180,106,.14); }
+body.page-horoscope .navbar__link{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+}
+body.page-horoscope .footer{ border-top:1px solid rgba(216,180,106,.16); }
+body.page-horoscope .footer-nav-col__title{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:#d8b46a;
+}
+body.page-horoscope .footer-brand__tagline{ color:rgba(242,236,223,.55); }
+body.page-horoscope .footer-legal{ color:rgba(242,236,223,.42); }
+
+@media (max-width: 720px){
+  body.page-horoscope .sphere-hero__header h1{ font-size:clamp(2.4rem, 11vw, 3.4rem) !important; }
+}
