@@ -272,10 +272,10 @@
       : (cv.width = W, cv.height = H, cv.getContext('2d'));
     x.scale(W / BASE, W / BASE);
 
-    x.fillStyle = '#07070A';
+    x.fillStyle = '#05080F';
     x.fillRect(0, 0, BASE, BASE);
     const neb = x.createRadialGradient(BASE / 2, 430, 0, BASE / 2, 430, 520);
-    neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
+    neb.addColorStop(0, 'rgba(184, 107, 74, 0.10)');
     neb.addColorStop(1, 'transparent');
     x.fillStyle = neb; x.fillRect(0, 0, BASE, BASE);
 
@@ -346,11 +346,11 @@
 
     // ── text ──
     x.textAlign = 'center';
-    x.fillStyle = '#d8b46a';
+    x.fillStyle = '#8FA3B8';
     x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText('T H E   L I G H T - C O N E', BASE / 2, 130);
 
-    x.fillStyle = '#A89E88';
+    x.fillStyle = '#9AA8B6';
     x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText('The light of my first breath has reached', BASE / 2, 830);
 
@@ -358,11 +358,11 @@
     x.font = 'bold 76px "AstroGlyph", Georgia, serif';
     x.fillText(`${m.reached.length} star systems`, BASE / 2, 920);
 
-    x.fillStyle = '#A89E88';
+    x.fillStyle = '#9AA8B6';
     x.font = '28px "AstroGlyph", Georgia, serif';
     x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, BASE / 2, 975);
 
-    x.fillStyle = '#d8b46a';
+    x.fillStyle = '#8FA3B8';
     x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', BASE / 2, 1010);
 
@@ -392,10 +392,10 @@
       : (cv.width = CARD_W, cv.height = CARD_H, cv.getContext('2d'));
     x.scale(S, S);
 
-    x.fillStyle = '#07070A';
+    x.fillStyle = '#05080F';
     x.fillRect(0, 0, CARD_BASE, CARD_BASE);
     const neb = x.createRadialGradient(nebX, nebY, 0, nebX, nebY, nebR);
-    neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
+    neb.addColorStop(0, 'rgba(184, 107, 74, 0.10)');
     neb.addColorStop(1, 'transparent');
     x.fillStyle = neb; x.fillRect(0, 0, CARD_BASE, CARD_BASE);
 
@@ -407,25 +407,25 @@
       x.fill();
     }
 
-    // Observatory 2026 brass (core #d8b46a) — not retired warm gold
-    x.strokeStyle = 'rgba(216, 180, 106,0.55)';
+    // Observatory 2026 brass (core #8FA3B8) — not retired warm gold
+    x.strokeStyle = 'rgba(143, 163, 184,0.55)';
     x.lineWidth = 2;
     x.strokeRect(46, 46, CARD_BASE - 92, CARD_BASE - 92);
-    x.strokeStyle = 'rgba(216, 180, 106,0.22)';
+    x.strokeStyle = 'rgba(143, 163, 184,0.22)';
     x.strokeRect(58, 58, CARD_BASE - 116, CARD_BASE - 116);
     return { cv, x, S, CARD_W };
   }
 
   function cardHeader(x, text, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#d8b46a';
+    x.fillStyle = '#8FA3B8';
     x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText(text, CARD_BASE / 2, y == null ? 130 : y);
   }
 
   function cardFooter(x, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#d8b46a';
+    x.fillStyle = '#8FA3B8';
     x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', CARD_BASE / 2, y == null ? 1010 : y);
   }
@@ -443,15 +443,15 @@
     x.fillStyle = 'rgba(20, 16, 10,0.55)';
     x.fill();
     x.lineWidth = 1;
-    x.strokeStyle = measured ? 'rgba(216, 180, 106,0.55)' : 'rgba(168,158,136,0.45)';
+    x.strokeStyle = measured ? 'rgba(143, 163, 184,0.55)' : 'rgba(168,158,136,0.45)';
     x.stroke();
     const dotX = left + padX;
     x.beginPath();
     x.arc(dotX, y, dotR, 0, Math.PI * 2);
-    x.fillStyle = measured ? '#d8b46a' : '#A89E88';
+    x.fillStyle = measured ? '#8FA3B8' : '#9AA8B6';
     x.fill();
     x.textAlign = 'left';
-    x.fillStyle = measured ? '#f2ecdf' : '#A89E88';
+    x.fillStyle = measured ? '#E6ECF2' : '#9AA8B6';
     x.fillText(label, dotX + dotGap, y + 7);
     x.textAlign = 'center';
   }
@@ -505,7 +505,7 @@
 
     cardHeader(x, 'Z E N I T H   S T A R');
 
-    x.fillStyle = '#A89E88';
+    x.fillStyle = '#9AA8B6';
     x.font = 'italic 30px "AstroGlyph", Georgia, serif';
     x.fillText('The star over my first breath', CARD_BASE / 2, 196);
 
@@ -516,7 +516,7 @@
       nameSize -= 4; x.font = `bold ${nameSize}px "AstroGlyph", Georgia, serif`;
     }
     x.textAlign = 'center';
-    x.shadowColor = 'rgba(216, 180, 106,0.55)';
+    x.shadowColor = 'rgba(143, 163, 184,0.55)';
     x.shadowBlur = 24;
     x.fillText(s.name.toUpperCase(), CARD_BASE / 2, 296);
     x.shadowBlur = 0;
@@ -534,9 +534,9 @@
     }
     x.beginPath();
     x.arc(CARD_BASE / 2, panelCy, half, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(216, 180, 106,0.14)';
+    x.strokeStyle = 'rgba(143, 163, 184,0.14)';
     x.lineWidth = 1; x.stroke();
-    x.strokeStyle = 'rgba(216, 180, 106,0.30)';
+    x.strokeStyle = 'rgba(143, 163, 184,0.30)';
     x.beginPath();
     x.moveTo(CARD_BASE / 2 - 16, panelCy); x.lineTo(CARD_BASE / 2 + 16, panelCy);
     x.moveTo(CARD_BASE / 2, panelCy - 16); x.lineTo(CARD_BASE / 2, panelCy + 16);
@@ -546,12 +546,12 @@
       const r = Math.max(1.4, 4.2 - p.st.mag * 0.7);
       x.beginPath();
       x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
-      if (isHero) { x.fillStyle = 'rgba(216,185,120,0.98)'; x.shadowColor = 'rgba(216, 180, 106,0.9)'; x.shadowBlur = 16; }
+      if (isHero) { x.fillStyle = 'rgba(197,212,224,0.98)'; x.shadowColor = 'rgba(143, 163, 184,0.9)'; x.shadowBlur = 16; }
       else { x.fillStyle = 'rgba(190,178,152,0.55)'; x.shadowBlur = 0; }
       x.fill(); x.shadowBlur = 0;
     }
 
-    x.fillStyle = '#f2ecdf';
+    x.fillStyle = '#E6ECF2';
     x.font = '30px "AstroGlyph", Georgia, serif';
     const parts = [];
     if (s.con) parts.push(s.con);
@@ -560,7 +560,7 @@
     parts.push(s.ly + ' ly');
     x.fillText(parts.join('   ·   '), CARD_BASE / 2, 812);
 
-    x.fillStyle = '#A89E88';
+    x.fillStyle = '#9AA8B6';
     x.font = '26px "AstroGlyph", Georgia, serif';
     wrapText(x,
       `Nearest catalogued star to the point directly overhead at my birth — ${z.sepDeg.toFixed(1)}° from the exact zenith.`,
@@ -597,7 +597,7 @@
     cardHeader(x, 'D A I L Y   S K Y');
 
     const today = new Date(report.generatedAt);
-    x.fillStyle = '#A89E88';
+    x.fillStyle = '#9AA8B6';
     x.font = 'italic 28px "AstroGlyph", Georgia, serif';
     x.textAlign = 'center';
     x.fillText(today.toLocaleDateString(undefined,
@@ -609,13 +609,13 @@
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 54px "AstroGlyph", Georgia, serif';
     x.fillText(lunar.phaseName, CARD_BASE / 2, 622);
-    x.fillStyle = '#f2ecdf';
+    x.fillStyle = '#E6ECF2';
     x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_BASE / 2, 668);
 
     const tHi = transitHighlightLine(report);
     if (tHi) {
-      x.fillStyle = '#A89E88';
+      x.fillStyle = '#9AA8B6';
       x.font = '27px "AstroGlyph", Georgia, serif';
       wrapText(x, tHi, CARD_BASE / 2, 742, CARD_BASE - 240, 38);
     }
@@ -632,7 +632,7 @@
       swLine = 'Live space-weather feed unreachable — not faked';
       measured = false;
     }
-    x.fillStyle = measured ? '#f2ecdf' : '#A89E88';
+    x.fillStyle = measured ? '#E6ECF2' : '#9AA8B6';
     x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText(swLine, CARD_BASE / 2, 858);
 

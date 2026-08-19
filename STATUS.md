@@ -1,12 +1,19 @@
 # STATUS — AstroPrecise
 
-**State (2026-08-17 ~21:20 BOOK-T1H4NJ753R):** live still `ap-v876`. Local tip **ap-v890** — Earth cloud/limb shader pass. Owner scored 3 before this; not re-scored. Not pushed. `main` is 7 commits ahead of `origin/main`.
+**State (2026-08-19 ~20:05 JDAV):** local tip **ap-v891** — sitting keep aligned to locked lunar tokens. Committed on this clone. Safety copy = GitHub/Book `jdav/main` only. **`github/main` not pushed** (auto-deploy). Live site unchanged.
 
 ## Now
-- Chart form screen: Earth band + title + form (eclipse/keep hidden)
-- Chart result screen: name + one copper “Open the sitting” + natal wheel; badges in More
 - Product is the sitting: sky → minute → seven chapters → keep
-- No new SKUs. No push.
+- Token control: `css/ap-palette-2026.css` plus `css/ap-atlas-tokens.css` `html:root` now restates the same lunar night + instrument silver + copper. Atlas no longer remaps the house to warm brass / acid orange.
+- Keep plates this tip: sky card, chart share, moment share, instrument cards
+- Chart form/result: Earth band + title + form; name + copper “Open the sitting” + natal wheel
+- No new SKUs. `main` not pushed.
+
+## Still off-token (next control passes)
+- Shop product SVGs / seals / generated sign pages (do not hand-edit signs)
+- Canvas 3D paint in orrery-webgl (True-Time rules — do not “fix” lighting blindly)
+- DESIGN.md still describes the older brass table
+- Page `AP_ASSET_V` literals still drift (`880` on several shells)
 
 ## Hard rules
-no React · WebGL only · no gate on sky · no UFO · no push without owner
+no React · WebGL only · no gate on sky · no UFO · no push without owner · no Firefly planets as live sky

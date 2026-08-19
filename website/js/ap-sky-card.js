@@ -49,7 +49,7 @@
      here as literals. Keep them in step with css/ap-living-sky-v834.css. */
   var VOID = '#05080F';
   var PAPER = '#E6ECF2';
-  var MUTE = '#A89C84';
+  var MUTE = '#9AA8B6';
   var EMBER = '#B86B4A';
   var BRASS = '#8FA3B8';
   var DANGER = '#B04A52';
@@ -219,12 +219,12 @@
     ctx.fillStyle = VOID;
     ctx.fillRect(0, 0, 1200, 630);
     var glow = ctx.createRadialGradient(600, -80, 40, 600, -80, 720);
-    glow.addColorStop(0, 'rgba(255,100,40,.16)');
-    glow.addColorStop(1, 'rgba(2,3,7,0)');
+    glow.addColorStop(0, 'rgba(184,107,74,.12)');
+    glow.addColorStop(1, 'rgba(5,8,15,0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, 1200, 630);
     starfield();
-    ctx.strokeStyle = 'rgba(216,180,106,.28)';
+    ctx.strokeStyle = 'rgba(143,163,184),.28)';
     ctx.lineWidth = 1;
     ctx.strokeRect(28.5, 28.5, 1143, 573);
   }
@@ -245,7 +245,7 @@
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    [[198, 'rgba(216,180,106,.55)', 1.2], [176, 'rgba(216,180,106,.28)', 1], [104, 'rgba(216,180,106,.16)', 1]]
+    [[198, 'rgba(143,163,184),.55)', 1.2], [176, 'rgba(143,163,184),.28)', 1], [104, 'rgba(143,163,184),.16)', 1]]
       .forEach(function (ring) {
         ctx.strokeStyle = ring[1];
         ctx.lineWidth = ring[2];
@@ -253,7 +253,7 @@
         ctx.arc(cx, cy, ring[0], 0, Math.PI * 2);
         ctx.stroke();
       });
-    ctx.strokeStyle = 'rgba(216,180,106,.16)';
+    ctx.strokeStyle = 'rgba(143,163,184),.16)';
     for (var s = 0; s < 12; s += 1) {
       var inner = point(s * 30, 176);
       var outer = point(s * 30, 198);
@@ -262,7 +262,7 @@
       ctx.lineTo(outer[0], outer[1]);
       ctx.stroke();
       var mark = point(s * 30 + 15, 187);
-      ctx.fillStyle = 'rgba(216,180,106,.8)';
+      ctx.fillStyle = 'rgba(143,163,184),.8)';
       ctx.font = '400 16px ' + GLYPHS;
       ctx.fillText(SIGN_GLYPHS[s] + TEXT, mark[0], mark[1]);
     }
@@ -275,7 +275,7 @@
       var seat = point(lon, index % 2 ? 130 : 154);
       // A leader line from the degree tick to the glyph: on a keepsake it must
       // be unambiguous which body sits at which longitude.
-      ctx.strokeStyle = 'rgba(216,180,106,.3)';
+      ctx.strokeStyle = 'rgba(143,163,184),.3)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(tick[0], tick[1]);
@@ -326,7 +326,7 @@
     ctx.fillText(minute.place.name.toUpperCase() + '  \u00B7  ' + minute.clockText
       + (minute.timeKnown ? '' : ' (ASSUMED)') + '  \u00B7  ' + minute.place.tz.toUpperCase(), 76, 205);
     ctx.font = '400 12px ' + DATA;
-    ctx.fillStyle = 'rgba(168,156,132,.8)';
+    ctx.fillStyle = 'rgba(154,168,182,.8)';
     ctx.fillText('COMPUTED FROM ' + minute.utText + ' UT', 76, 231);
 
     if (minute.light) {
@@ -383,14 +383,14 @@
     }
 
     if (!minute.timeKnown) {
-      ctx.fillStyle = 'rgba(168,156,132,.85)';
+      ctx.fillStyle = 'rgba(154,168,182,.85)';
       ctx.font = '400 12px ' + DATA;
       ctx.fillText('MOON PLACED FROM ' + ASSUMED_HOUR + ' LOCAL \u00B7 UP TO A SIGN OUT', 76, 528);
     }
 
     wheel(minute.chart, 928, 300);
 
-    ctx.strokeStyle = 'rgba(216,180,106,.28)';
+    ctx.strokeStyle = 'rgba(143,163,184),.28)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(76, 548.5);
@@ -401,7 +401,7 @@
     ctx.font = '600 26px ' + DISPLAY;
     ctx.fillText('AstroPrecise', 76, 586);
     ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(168,156,132,.9)';
+    ctx.fillStyle = 'rgba(154,168,182,.9)';
     ctx.font = '400 11px ' + DATA;
     ctx.fillText('COMPUTED ON THIS DEVICE \u00B7 NOT A CLAIM ABOUT YOUR LIFE', 1124, 583);
     ctx.textAlign = 'left';

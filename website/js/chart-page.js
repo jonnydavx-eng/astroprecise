@@ -33,16 +33,16 @@
     .replace(/\bNNode\b/g, 'North Node')
     .replace(/\bSNode\b/g, 'South Node');
   const ASPECT_DISPLAY = {
-    conjunction:    { name:'Conjunction',    glyph:'☌', color:'#D8B46A' },
-    opposition:     { name:'Opposition',     glyph:'☍', color:'#FF6428' },
-    trine:          { name:'Trine',          glyph:'△', color:'#B9C8DC' },
-    square:         { name:'Square',         glyph:'□', color:'#FF6428' },
-    sextile:        { name:'Sextile',        glyph:'⚹', color:'#D8B46A' },
-    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#B9C8DC' },
-    semisquare:     { name:'Semi-square',     glyph:'∠', color:'#B9C8DC' },
-    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#B9C8DC' },
-    semisextile:    { name:'Semi-sextile',    glyph:'⚺', color:'#B9C8DC' },
-    quintile:       { name:'Quintile',        glyph:'Q', color:'#B9C8DC' },
+    conjunction:    { name:'Conjunction',    glyph:'☌', color:'#8FA3B8' },
+    opposition:     { name:'Opposition',     glyph:'☍', color:'#B86B4A' },
+    trine:          { name:'Trine',          glyph:'△', color:'#8FA3B8' },
+    square:         { name:'Square',         glyph:'□', color:'#B86B4A' },
+    sextile:        { name:'Sextile',        glyph:'⚹', color:'#8FA3B8' },
+    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#8FA3B8' },
+    semisquare:     { name:'Semi-square',     glyph:'∠', color:'#8FA3B8' },
+    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#8FA3B8' },
+    semisextile:    { name:'Semi-sextile',    glyph:'⚺', color:'#8FA3B8' },
+    quintile:       { name:'Quintile',        glyph:'Q', color:'#8FA3B8' },
   };
   const CORE_READING_BODIES = new Set([
     'Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto',
@@ -64,10 +64,10 @@
     Cancer:'water',     Scorpio:'water', Pisces:'water',
   };
   const ELEMENT_COLORS = {
-    fire:  '#FF6428',
-    earth: '#D8B46A',
-    air:   '#F2ECDF',
-    water: '#B9C8DC',
+    fire:  '#B86B4A',
+    earth: '#7EB8A8',
+    air:   '#8FA3B8',
+    water: '#8FA3B8',
   };
   // Modality mapping
   const MODALITY_MAP = {
@@ -1800,18 +1800,18 @@
   const FONT_SANS    = '"Schibsted Grotesk", system-ui, sans-serif';
   const FONT_MONO    = '"IBM Plex Mono", ui-monospace, monospace';
 
-  // Engraved palette (matches css/main.css :root) ────────────────────────────
+  // Lunar night + instrument silver (css/ap-palette-2026.css) ────────────────
   const PAL = {
-    void:      '#020307',
-    voidWarm:  '#0D121B',
-    lapis:     '#B9C8DC',
-    gold:      '#D8B46A',
-    goldHi:    '#FF6428',
-    goldPale:  '#F2ECDF',
-    parchment: '#F2ECDF',
-    oxblood:   '#FF6428',
-    silver:    '#B9C8DC',
-    silverDim: 'rgba(185,200,220,0.68)',
+    void:      '#05080F',
+    voidWarm:  '#0C1422',
+    lapis:     '#8FA3B8',
+    gold:      '#8FA3B8',
+    goldHi:    '#B86B4A',
+    goldPale:  '#C5D4E0',
+    parchment: '#E6ECF2',
+    oxblood:   '#B86B4A',
+    silver:    '#8FA3B8',
+    silverDim: 'rgba(143,163,184,0.68)',
   };
 
   const SHARE_FORMATS = {
@@ -1837,7 +1837,7 @@
   // Faint dot grid (scaled).
   function drawDotGrid(x, W, H, S) {
     const step = 48 * S;
-    x.fillStyle = 'rgba(216,180,106,0.05)';
+    x.fillStyle = 'rgba(143,163,184,0.05)';
     for (let gx = step; gx < W; gx += step) {
       for (let gy = step; gy < H; gy += step) {
         x.beginPath();
@@ -1856,8 +1856,8 @@
       const alpha = 0.12 + rnd() * 0.55;
       const r     = (rnd() * 1.8 + 0.3) * S;
       x.fillStyle = sparkle
-        ? `rgba(216,180,106,${alpha})`
-        : `rgba(242,236,223,${alpha})`;
+        ? `rgba(143,163,184,${alpha})`
+        : `rgba(230,236,242,${alpha})`;
       x.beginPath();
       x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2);
       x.fill();
@@ -1873,7 +1873,7 @@
 
     drawDotGrid(x, W, H, S);
     drawStars(x, W, H, Math.round((W * H) / 4800), seed, S);
-    x.strokeStyle = 'rgba(185,200,220,0.12)';
+    x.strokeStyle = 'rgba(143,163,184,0.12)';
     x.lineWidth = Math.max(1, S);
     x.beginPath();
     x.moveTo(W / 2, H * 0.18);
@@ -1885,14 +1885,14 @@
 
   // Double gold frame with generous margin (print bleed-friendly).
   function drawFrame(x, W, H, outerInset, innerInset) {
-    x.strokeStyle = 'rgba(216,180,106,0.7)';
+    x.strokeStyle = 'rgba(143,163,184,0.7)';
     x.lineWidth = Math.max(2, outerInset * 0.05);
     x.strokeRect(outerInset, outerInset, W - outerInset * 2, H - outerInset * 2);
-    x.strokeStyle = 'rgba(216,180,106,0.3)';
+    x.strokeStyle = 'rgba(143,163,184,0.3)';
     x.lineWidth = Math.max(1, outerInset * 0.025);
     x.strokeRect(innerInset, innerInset, W - innerInset * 2, H - innerInset * 2);
     // Corner ticks (silver chrome — not gold debt)
-    x.strokeStyle = 'rgba(242,236,223,0.45)';
+    x.strokeStyle = 'rgba(230,236,242,0.45)';
     x.lineWidth = Math.max(1.5, outerInset * 0.04);
     const t = (outerInset + innerInset) / 2;
     const len = (innerInset - outerInset) * 1.4;
@@ -1922,7 +1922,7 @@
     if (!signName) {
       x.fillStyle = PAL.voidWarm;
       x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
-      x.strokeStyle = 'rgba(185,200,220,0.34)';
+      x.strokeStyle = 'rgba(143,163,184,0.34)';
       x.lineWidth = Math.max(1, r * 0.045);
       x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
       x.fillStyle = PAL.silver;
@@ -1942,16 +1942,16 @@
       return;
     }
     const grad = x.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
-    grad.addColorStop(0, 'rgba(242,236,223,0.18)');
+    grad.addColorStop(0, 'rgba(230,236,242,0.18)');
     var alphaFn = (window.APCanvasSeals && APCanvasSeals.withAlpha) ? APCanvasSeals.withAlpha.bind(APCanvasSeals) : null;
     grad.addColorStop(0.4, alphaFn ? alphaFn(elemCol, 'cc') : elemCol);
     grad.addColorStop(1, alphaFn ? alphaFn(elemCol, '33') : elemCol);
     x.fillStyle = grad;
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
-    x.strokeStyle = 'rgba(216,180,106,0.55)';
+    x.strokeStyle = 'rgba(143,163,184,0.55)';
     x.lineWidth = Math.max(1, r * 0.06);
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(242,236,223,0.28)';
+    x.strokeStyle = 'rgba(230,236,242,0.28)';
     x.lineWidth = Math.max(1, r * 0.05);
     x.beginPath(); x.arc(cx, cy, r * 0.78, Math.PI * 1.15, Math.PI * 1.85); x.stroke();
     x.fillStyle = PAL.parchment;
@@ -1979,9 +1979,9 @@
                          'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
     // Brand-token element tints: ember, brass, paper and silver.
     const ELEMENT_SECTOR = {
-      Aries:'rgba(255,100,40,0.09)', Taurus:'rgba(216,180,106,0.09)', Gemini:'rgba(242,236,223,0.06)', Cancer:'rgba(185,200,220,0.09)',
-      Leo:'rgba(255,100,40,0.09)', Virgo:'rgba(216,180,106,0.09)', Libra:'rgba(242,236,223,0.06)', Scorpio:'rgba(185,200,220,0.09)',
-      Sagittarius:'rgba(255,100,40,0.09)', Capricorn:'rgba(216,180,106,0.09)', Aquarius:'rgba(242,236,223,0.06)', Pisces:'rgba(185,200,220,0.09)',
+      Aries:'rgba(184,107,74,0.09)', Taurus:'rgba(143,163,184,0.09)', Gemini:'rgba(230,236,242,0.06)', Cancer:'rgba(143,163,184,0.09)',
+      Leo:'rgba(184,107,74,0.09)', Virgo:'rgba(143,163,184,0.09)', Libra:'rgba(230,236,242,0.06)', Scorpio:'rgba(143,163,184,0.09)',
+      Sagittarius:'rgba(184,107,74,0.09)', Capricorn:'rgba(143,163,184,0.09)', Aquarius:'rgba(230,236,242,0.06)', Pisces:'rgba(143,163,184,0.09)',
     };
     const rOuter     = R;
     const rBand      = R * 0.89;
@@ -1997,7 +1997,7 @@
     // Schematic orbital tracks (decorative — matches SVG chart-render layer)
     [0.78, 0.68, 0.58].forEach((frac, i) => {
       x.save();
-      x.strokeStyle = 'rgba(216,180,106,' + (0.1 + i * 0.04) + ')';
+      x.strokeStyle = 'rgba(143,163,184,' + (0.1 + i * 0.04) + ')';
       x.lineWidth = 0.8 * lw;
       x.setLineDash([3 + i, 5 + i * 2]);
       x.beginPath();
@@ -2007,13 +2007,13 @@
     });
 
     // Rings
-    x.strokeStyle = 'rgba(216,180,106,0.75)'; x.lineWidth = 3 * lw;
+    x.strokeStyle = 'rgba(143,163,184,0.75)'; x.lineWidth = 3 * lw;
     x.beginPath(); x.arc(cx, cy, rOuter, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(216,180,106,0.45)'; x.lineWidth = 1.5 * lw;
+    x.strokeStyle = 'rgba(143,163,184,0.45)'; x.lineWidth = 1.5 * lw;
     x.beginPath(); x.arc(cx, cy, rSignInner, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(216,180,106,0.3)'; x.lineWidth = 1 * lw;
+    x.strokeStyle = 'rgba(143,163,184,0.3)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rBand, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(216,180,106,0.22)'; x.lineWidth = 1 * lw;
+    x.strokeStyle = 'rgba(143,163,184,0.22)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rInner, 0, Math.PI * 2); x.stroke();
 
     // Sign sectors
@@ -2024,7 +2024,7 @@
       x.beginPath(); x.moveTo(cx, cy);
       x.arc(cx, cy, rOuter, a1, a2, a1 > a2); x.closePath(); x.fill();
 
-      x.strokeStyle = 'rgba(216,180,106,0.3)'; x.lineWidth = 1 * lw;
+      x.strokeStyle = 'rgba(143,163,184,0.3)'; x.lineWidth = 1 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(a1) * rSignInner, cy + Math.sin(a1) * rSignInner);
       x.lineTo(cx + Math.cos(a1) * rOuter,     cy + Math.sin(a1) * rOuter);
@@ -2036,7 +2036,7 @@
     }
 
     // 10° ticks
-    x.strokeStyle = 'rgba(216,180,106,0.4)';
+    x.strokeStyle = 'rgba(143,163,184,0.4)';
     for (let d2 = 0; d2 < 360; d2 += 10) {
       if (d2 % 30 === 0) continue;
       const a = ang(d2);
@@ -2049,14 +2049,14 @@
 
     // Aspect lines
     const ASPECT_LINE_COLORS = {
-      Trine: '#B9C8DC', Sextile: '#D8B46A', Conjunction: '#D8B46A',
-      Opposition: '#FF6428', Square: '#FF6428',
+      Trine: '#8FA3B8', Sextile: '#8FA3B8', Conjunction: '#8FA3B8',
+      Opposition: '#B86B4A', Square: '#B86B4A',
     };
     (chart.renderAspects || []).slice(0, 24).forEach(asp => {
       const p1 = chart.positions[asp.planet1], p2 = chart.positions[asp.planet2];
       if (!p1 || !p2) return;
       const a1 = ang(p1.lon), a2 = ang(p2.lon);
-      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(185,200,220,0.3)';
+      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(143,163,184,0.3)';
       x.strokeStyle = col.startsWith('rgba') ? col : col + '66';
       x.globalAlpha = 0.5; x.lineWidth = 1.5 * lw;
       x.beginPath();
@@ -2070,7 +2070,7 @@
     if (hasAngles) {
       chart.houses.forEach(cusp => {
         const a = ang(cusp);
-        x.strokeStyle = 'rgba(185,200,220,0.2)'; x.lineWidth = 1 * lw;
+        x.strokeStyle = 'rgba(143,163,184,0.2)'; x.lineWidth = 1 * lw;
         x.beginPath(); x.moveTo(cx, cy);
         x.lineTo(cx + Math.cos(a) * rInner, cy + Math.sin(a) * rInner); x.stroke();
       });
@@ -2079,12 +2079,12 @@
     // Ascendant axis
     if (hasAngles) {
       const aAsc = ang(ascLon);
-      x.strokeStyle = 'rgba(255,100,40,0.9)'; x.lineWidth = 2.5 * lw;
+      x.strokeStyle = 'rgba(184,107,74,0.9)'; x.lineWidth = 2.5 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(aAsc) * rInner,     cy + Math.sin(aAsc) * rInner);
       x.lineTo(cx + Math.cos(aAsc) * rSignInner, cy + Math.sin(aAsc) * rSignInner);
       x.stroke();
-      x.fillStyle = '#FF6428';
+      x.fillStyle = '#B86B4A';
       x.font = `bold ${R * 0.05}px ${FONT_SANS}`;
       x.textBaseline = 'middle'; x.textAlign = 'center';
       x.fillText('ASC', cx + Math.cos(aAsc) * (rInner - 32 * lw), cy + Math.sin(aAsc) * (rInner - 32 * lw));
@@ -2104,7 +2104,7 @@
       const py2 = cy + Math.sin(a) * rPlanets;
 
       const at2 = ang(p.lon);
-      x.strokeStyle = 'rgba(242,236,223,0.45)'; x.lineWidth = 1 * lw;
+      x.strokeStyle = 'rgba(230,236,242,0.45)'; x.lineWidth = 1 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(at2) * rSignInner,            cy + Math.sin(at2) * rSignInner);
       x.lineTo(cx + Math.cos(at2) * (rSignInner - 14 * lw), cy + Math.sin(at2) * (rSignInner - 14 * lw));
@@ -2112,7 +2112,7 @@
 
       const haloR = R * 0.07;
       const haloGrad = x.createRadialGradient(px2, py2, 0, px2, py2, haloR);
-      haloGrad.addColorStop(0, 'rgba(216,180,106,0.22)');
+      haloGrad.addColorStop(0, 'rgba(143,163,184,0.22)');
       haloGrad.addColorStop(1, 'transparent');
       x.fillStyle = haloGrad;
       x.beginPath(); x.arc(px2, py2, haloR, 0, Math.PI * 2); x.fill();
@@ -2132,7 +2132,7 @@
       }
 
       if (p.retrograde) {
-        x.fillStyle = '#FF6428';
+        x.fillStyle = '#B86B4A';
         x.font = `500 ${R * 0.04}px "IBM Plex Mono", ${FONT_SANS}`;
         x.fillText('℞', px2 + R * 0.055, py2 - R * 0.05);
       }
@@ -2140,11 +2140,11 @@
     x.textBaseline = 'alphabetic';
 
     // Centre star
-    x.fillStyle = 'rgba(216,180,106,0.95)';
+    x.fillStyle = 'rgba(143,163,184,0.95)';
     x.font = `400 ${R * 0.14}px ${FONT_DISPLAY}`;
     x.textBaseline = 'middle'; x.textAlign = 'center';
     if (window.AstroUI && AstroUI.drawStar4) {
-      x.fillStyle = 'rgba(216,180,106,0.95)';
+      x.fillStyle = 'rgba(143,163,184,0.95)';
       AstroUI.drawStar4(x, cx, cy, R * 0.12);
     }
     x.textBaseline = 'alphabetic';
@@ -2160,7 +2160,7 @@
     x.font = `600 ${22 * scale}px ${FONT_SANS}`;
     x.fillText('E L E M E N T A L   D I S T R I B U T I O N', x0 + barW / 2, y0);
 
-    x.strokeStyle = 'rgba(216,180,106,0.22)'; x.lineWidth = 1 * scale;
+    x.strokeStyle = 'rgba(143,163,184,0.22)'; x.lineWidth = 1 * scale;
     x.beginPath(); x.moveTo(x0, y0 + 16 * scale); x.lineTo(x0 + barW, y0 + 16 * scale); x.stroke();
 
     const rows = [
@@ -2183,7 +2183,7 @@
       x.font = `600 ${20 * scale}px ${FONT_SANS}`;
       x.fillText(er.label.toUpperCase(), x0, rowY + BAR_H / 2 + 7 * scale);
 
-      x.fillStyle = 'rgba(185,200,220,0.08)';
+      x.fillStyle = 'rgba(143,163,184,0.08)';
       x.beginPath();
       if (x.roundRect) x.roundRect(innerX, rowY, innerW, BAR_H, 6 * scale); else x.rect(innerX, rowY, innerW, BAR_H);
       x.fill();
@@ -2211,7 +2211,7 @@
     x.font = `600 ${22 * scale}px ${FONT_SANS}`;
     x.fillText('P L A N E T A R Y   P L A C E M E N T S', x0 + colW, y0);
 
-    x.strokeStyle = 'rgba(216,180,106,0.22)'; x.lineWidth = 1 * scale;
+    x.strokeStyle = 'rgba(143,163,184,0.22)'; x.lineWidth = 1 * scale;
     x.beginPath(); x.moveTo(x0, y0 + 14 * scale); x.lineTo(x0 + colW * 2, y0 + 14 * scale); x.stroke();
 
     const PLANET_ORDER_TABLE = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
@@ -2227,7 +2227,7 @@
       col.forEach((row, r) => {
         const ry = y0 + 36 * scale + r * ROW_H;
         if (r > 0) {
-          x.strokeStyle = 'rgba(185,200,220,0.08)'; x.lineWidth = 1 * scale;
+          x.strokeStyle = 'rgba(143,163,184,0.08)'; x.lineWidth = 1 * scale;
           x.beginPath(); x.moveTo(colX, ry - 6 * scale); x.lineTo(colX + colW - 60 * scale, ry - 6 * scale); x.stroke();
         }
         x.textAlign = 'left';
@@ -2319,7 +2319,7 @@
     drawWheel(x, chart, W / 2, wheelCY, wheelR);
 
     // Subtle footer (below thumb zone)
-    x.strokeStyle = 'rgba(216,180,106,0.18)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(143,163,184,0.18)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.28, H - safeBot + 36 * S); x.lineTo(W * 0.72, H - safeBot + 36 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${16 * S}px ${FONT_SANS}`;
@@ -2412,7 +2412,7 @@
       x.fillText(dom, W / 2, y);
     }
 
-    x.strokeStyle = 'rgba(216,180,106,0.25)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(143,163,184,0.25)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.2, H - 88 * S); x.lineTo(W * 0.8, H - 88 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${17 * S}px ${FONT_SANS}`;
@@ -2547,12 +2547,12 @@
 
     // ── Footer (shared) ──
     x.textAlign = 'center';
-    x.strokeStyle = 'rgba(216,180,106,0.25)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(143,163,184,0.25)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.2, H - 108 * S); x.lineTo(W * 0.8, H - 108 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${18 * S}px ${FONT_SANS}`;
     x.fillText(`astroprecise  ·  ${accLine}`, W / 2, H - 88 * S);
-    x.fillStyle = 'rgba(185,200,220,0.72)';
+    x.fillStyle = 'rgba(143,163,184,0.72)';
     x.font = `400 ${13 * S}px ${FONT_SANS}`;
     x.fillText('Wheel = computed degrees · artwork = schematic field plate', W / 2, H - 58 * S);
 
