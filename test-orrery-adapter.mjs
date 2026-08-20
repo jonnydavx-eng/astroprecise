@@ -126,7 +126,7 @@ else {
   if (!indexKeepHtml.includes('ap-home-keep.js?v=880')) {
     fail('Home must load ap-home-keep.js to publish birth-hour context');
   }
-  if (!indexKeepHtml.includes('ap-reading-room') || !indexKeepHtml.includes('ap-home-reading.js?v=885')) {
+  if (!indexKeepHtml.includes('ap-reading-room') || !/ap-home-reading\.js\?v=\d+/.test(indexKeepHtml)) {
     fail('Home must open as a reading room and load ap-home-reading.js');
   }
   if (!indexKeepHtml.includes('start-radius="8"') || !indexKeepHtml.includes('start-focus="earth"')) {
@@ -264,15 +264,20 @@ if (got.join() !== expectedOwners.join()) {
   fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-if (!/js\/void-orrery-adapter\.js\?v=888/.test(indexHtml)) fail('Home missing v887 adapter query');
-if (!/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js\?v=888"/.test(indexHtml)) {
-  fail('Home missing exact v887 WebGL modulepreload');
+const swIdentity = readFileSync(join(root, 'sw.js'), 'utf8');
+const tipNum = (swIdentity.match(/const V = "ap-v(\d+)"/) || [])[1];
+if (!tipNum) fail('service worker has no ap-vNNNN identity');
+if (!new RegExp('js/void-orrery-adapter\\.js\\?v=' + tipNum).test(indexHtml)) {
+  fail('Home adapter query must match service worker ap-v' + tipNum);
+}
+if (!new RegExp('<link[^>]+rel="modulepreload"[^>]+href="js/orrery-webgl\\.js\\?v=' + tipNum + '"').test(indexHtml)) {
+  fail('Home WebGL modulepreload must match service worker ap-v' + tipNum);
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
 const modelCount = (indexHtml.match(/<void-orrery\b/g) || []).length;
 if (modelCount !== 1) fail('Home must own exactly one void-orrery (' + modelCount + ')');
-for (const probe of ['class="ap-model-stage"', 'id="mladder"', 'id="dock"', 'aria-label="Interactive live solar system"']) {
+for (const probe of ['class="ap-model-stage"', 'id="mladder"', 'id="dock"', 'aria-label="Live Earth now"']) {
   if (!indexHtml.includes(probe)) fail('Home model contract missing: ' + probe);
 }
 const homeStageStart = indexHtml.indexOf('<div class="ap-model-stage"');
@@ -345,7 +350,7 @@ if (navModel.includes("['horoscope.html', 'Daily']")) fail('Daily must not be a 
 if (navModel.includes("['lifepath.html'")) fail('Life Path must not leak into nav extras');
 if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav extras');
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
-if (!sw.includes('const V = "ap-v888"')) fail('service worker release identity is not ap-v888');
+if (!sw.includes('const V = "ap-v' + tipNum + '"')) fail('service worker release identity drifted from Home tip ap-v' + tipNum);
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
 if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
 

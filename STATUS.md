@@ -1,13 +1,13 @@
 # STATUS — AstroPrecise
 
-**State (2026-08-19 ~20:05 JDAV):** local tip **ap-v891** — sitting keep aligned to locked lunar tokens. Committed on this clone. Safety copy = GitHub/Book `jdav/main` only. **`github/main` not pushed** (auto-deploy). Live site unchanged.
+**State (2026-08-20 ~20:05 JDAV):** local tip **ap-v891** — sitting keep aligned to locked lunar tokens. Owner ordered `github/main` ship so Pages can move live off **ap-v876**. Do not call the public site current until `https://astroprecise.app/sw.js` reads `ap-v891`.
 
 ## Now
 - Product is the sitting: sky → minute → seven chapters → keep
 - Token control: `css/ap-palette-2026.css` plus `css/ap-atlas-tokens.css` `html:root` now restates the same lunar night + instrument silver + copper. Atlas no longer remaps the house to warm brass / acid orange.
 - Keep plates this tip: sky card, chart share, moment share, instrument cards
 - Chart form/result: Earth band + title + form; name + copper “Open the sitting” + natal wheel
-- No new SKUs. `main` not pushed.
+- No new SKUs. Owner-authorized `git push github main` (not the local bundle `origin`).
 
 ## Still off-token (next control passes)
 - Shop product SVGs / seals / generated sign pages (do not hand-edit signs)
