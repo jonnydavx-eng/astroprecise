@@ -1,6 +1,6 @@
 # STATUS — AstroPrecise
 
-**State (2026-08-20 ~20:05 JDAV):** local tip **ap-v891** — sitting keep aligned to locked lunar tokens. Owner ordered `github/main` ship so Pages can move live off **ap-v876**. Do not call the public site current until `https://astroprecise.app/sw.js` reads `ap-v891`.
+**State (2026-08-20 ~20:10 JDAV):** local tip **ap-v892** — sitting keep + Photoshop OG from the real Earth engine still. Ship branch `ship/ap-v891-sitting` is on GitHub. JDAV cannot push `main` (local hook). Live stays **ap-v876** until that PR is merged. Do not call the public site current until `https://astroprecise.app/sw.js` reads `ap-v892`.
 
 ## Now
 - Product is the sitting: sky → minute → seven chapters → keep
