@@ -118,9 +118,11 @@ const productConfig = read('./website/js/app.js');
 const edition = read('./website/js/ap-eclipse-edition-v841.js');
 const gumroad = read('./website/js/gumroad-unlock.js');
 const gumroadBridge = read('./website/js/ap-gumroad-bridge.js');
-assert.equal((shop.match(/<article class="ap-product/g) || []).length, 2,
-  'shop must show only the free guide and one paid edition');
-assert.ok(shop.includes('Eight-page PDF · ready now') && shop.includes('Personalised eclipse edition · £7'));
+assert.equal((shop.match(/<article class="ap-product/g) || []).length, 1,
+  'shop must not sell a second product; field guide may stay as archive');
+assert.ok(shop.includes('Eight-page PDF · ready now'));
+assert.equal(shop.includes('Your Eclipse Edition'), false, 'eclipse edition is retired from the shop');
+assert.equal(shop.includes('Personalised eclipse edition'), false);
 assert.ok(eclipse.includes('id="eclipseEdition"') && eclipse.includes('id="eclipseContactForm"'));
 assert.match(productConfig, /catalogueSkus:\s*\['eclipse-edition'\]/);
 assert.match(productConfig, /id:\s*'eclipse-edition'[\s\S]{0,260}price:\s*7\.00/);
