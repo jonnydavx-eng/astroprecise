@@ -72,6 +72,23 @@
   color: var(--ap-mute, #a89c84);
 }
 
+/* Inline keep-path link on the home coupon (painted 80x16). Size only.
+   Beats .ap-reading-room .ap-hint-link { display: inline }. */
+html body.ap-live-home .ap-calc-entry-panel__hint a[data-ap-keep-minute],
+html body.ap-reading-room .ap-calc-entry-panel__hint a[data-ap-keep-minute],
+html body.ap-reading-room a.ap-hint-link[data-ap-keep-minute],
+html body a.ap-hint-link[data-ap-keep-minute],
+.ap-calc-entry-panel__hint a,
+a[data-ap-keep-minute]:not(.ap-event-ticket) {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  box-sizing: border-box;
+  padding-block: 12px;
+}
+
 /* Overlay trap: DOM labels must never sit above the canvas for hits. */
 #orrery-dom-labels,
 .orrery-dom-labels,
@@ -215,5 +232,26 @@
 
   .ap-keep-path-strip__sep {
     display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Phone Look 21 Aug: last sheet on chart. H1 size + stage height only. */
+  html body.page-chart section.chart-hero h1.chart-hero__title#page-title,
+  html body.page-chart h1#page-title.chart-hero__title {
+    font-size: clamp(2rem, 8.4vw, 2.55rem) !important;
+    line-height: 1.12 !important;
+  }
+  html body.page-chart .ap-room-sky.ap-earth-band,
+  html body.page-chart .ap-room-sky {
+    height: auto !important;
+    min-height: 360px !important;
+  }
+  html body.page-chart .ap-room-sky .ap-model-stage {
+    min-height: 360px !important;
+  }
+  html body.page-chart .ap-room-sky .ap-model-stage void-orrery,
+  html body.page-chart .ap-room-sky .ap-model-stage canvas {
+    transform: none !important;
   }
 }

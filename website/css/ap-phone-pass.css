@@ -11,6 +11,9 @@
   html body.page-compat h1.ap-live-heading,
   html body h1.ap-live-heading,
   html body .ap-live-copy h1,
+  html body.page-chart section.chart-hero h1.chart-hero__title#page-title,
+  html body.page-chart h1#page-title.chart-hero__title,
+  html body.page-chart section.chart-hero h1.chart-hero__title,
   html body.page-chart h1.chart-hero__title,
   html body.page-chart .chart-hero__title,
   html body .chart-hero h1,
@@ -115,6 +118,8 @@
   .ap-ab button,
   #keep-sky,
   .ap-keep-row .btn-invite,
+  .ap-calc-entry-panel__hint a,
+  a[data-ap-keep-minute]:not(.ap-event-ticket),
   .ap-live-home #dock button,
   .ap-live-home #mladder button,
   .navbar__mobile-menu .navbar__link,
@@ -153,7 +158,9 @@
   .ap-ab button,
   #keep-sky,
   .ap-keep-row .btn-invite,
-  .ap-orrery-cosmic-flight {
+  .ap-orrery-cosmic-flight,
+  .ap-calc-entry-panel__hint a,
+  a[data-ap-keep-minute]:not(.ap-event-ticket) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -229,3 +236,47 @@
   }
 }
 
+@media (max-width: 430px) {
+  /* Beat later chart-page !important title clamp (1.4rem / 6.4vw = 24.96 at 390).
+     Size only. Same Act 1 phone clamp as home / tonight / sitting. */
+  html body.page-chart section.chart-hero h1.chart-hero__title#page-title,
+  html body.page-chart h1#page-title.chart-hero__title {
+    font-size: clamp(2rem, 8.4vw, 2.55rem) !important;
+    line-height: 1.12 !important;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Phone Look 21 Aug: beat later home/chart sheets. Size and tap only. */
+  html body.ap-live-home .ap-calc-entry-panel__hint a[data-ap-keep-minute],
+  html body.ap-reading-room .ap-calc-entry-panel__hint a[data-ap-keep-minute],
+  html body.ap-reading-room a.ap-hint-link[data-ap-keep-minute],
+  html body a.ap-hint-link[data-ap-keep-minute] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    box-sizing: border-box;
+    padding-block: 12px;
+  }
+
+  html body.page-chart section.chart-hero h1.chart-hero__title#page-title,
+  html body.page-chart h1#page-title.chart-hero__title {
+    font-size: clamp(2rem, 8.4vw, 2.55rem) !important;
+    line-height: 1.12 !important;
+  }
+
+  html body.page-chart .ap-room-sky.ap-earth-band,
+  html body.page-chart .ap-room-sky {
+    height: auto !important;
+    min-height: 360px !important;
+  }
+  html body.page-chart .ap-room-sky .ap-model-stage {
+    min-height: 360px !important;
+  }
+  html body.page-chart .ap-room-sky .ap-model-stage void-orrery,
+  html body.page-chart .ap-room-sky .ap-model-stage canvas {
+    transform: none !important;
+  }
+}
