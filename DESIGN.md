@@ -6,25 +6,23 @@
 
 **`website/css/ap-palette-2026.css`** is the canonical color layer ("Observatory Palette 2026" — the COOL Ephemeris rebrand, ap-v504–v508). It is imported first by `main-lite.css`; `main.css` `:root` re-declares the same values for the classic path. **Edit tokens there, never hardcode hexes in page CSS.** Legacy names (`--gold`, `--void`, `--silver`, `--lapis`, `--amethyst`…) are aliases into the new tokens — they exist for old selectors, don't add new usages.
 
-## Palette (cool void + engraved brass)
+## Palette (lunar night + instrument silver + copper)
+
+Locked in `website/css/ap-palette-2026.css`. `--ap-brass*` names are **aliases for instrument silver**, not yellow metal.
 
 | Role | Token | Value |
 |---|---|---|
-| Page canvas | `--ap-void-deep` / `--ap-void-base` | `#0C1016` |
-| Section bands | `--ap-void-mid` | `#121826` |
-| Raised plates | `--ap-void-raised` | `#1A2230` |
-| Brass (canonical) | `--ap-gold-core` | `#C2A05E` |
-| Brass on-void AA | `--ap-gold-bright` / `--ap-gold-vivid` | `#CDAE6A` / `#D8B978` |
-| Engraved shadow | `--ap-gold-ink` / `--ap-gold-shadow` | `#6B5836` / `#8C7544` |
-| Hero cream | `--ap-gold-parchment` | `#ECE6D8` |
-| Text primary/secondary/muted/faint | `--ap-text-*` | `#ECE6D8` / `#BEB298` / `#A89C84` / `#968B74` (all ≥4.5:1 on void) |
-| **Primary CTA** | `--ap-cta` (+`-hover`, `-ink`) | terracotta `#D97B52`, espresso ink `#1F1206` |
-| Links / focus | `--ap-link*`, `--ap-focus-ring/-shadow` | brass vivid → parchment hover; 3px brass ring |
-| Cool accent | `--ap-silver-cool` | `#A6AEB8` |
-| Element accents (semantic — do NOT flatten to brass) | `--ap-element-fire/earth/air/water` | `#B85A42` / `#5A7A48` / `#8A7A6A` / `#4A7580` |
-| Cards | `--ap-card-surface/-border`, `--ap-shadow-card/-raised` | translucent night plates + brass hairlines |
+| Page canvas | `--ap-void` / `--ap-void-deep` | `#05080F` |
+| Section bands | `--ap-void-mid` | `#0C1422` |
+| Raised plates | `--ap-void-raised` | `#141E2E` |
+| Instrument silver | `--ap-silver` / `--ap-brass` | `#8FA3B8` |
+| Bright metal | `--ap-brass-bright` / `--ap-silver-bright` | `#C5D4E0` |
+| Paper | `--ap-paper` | `#E6ECF2` |
+| Copper action | `--ap-ember` | `#B86B4A` |
+| Proof teal | `--ap-proof` | `#7EB8A8` |
+| Element accents (semantic — do NOT flatten) | `--ap-element-fire/earth/air/water` | keep distinct; fire may sit near copper |
 
-**Retired — never reintroduce:** warm gold `#C9A227`/`#D4AF37`, warm voids `#050406`/`#0D0A07`/`#13100C`, electric violet `rgba(123,44,191)`, cyan `rgba(0,212,255)`, cool lapis `#2a4a94`. `theme-color` on every page and `manifest.json` are `#0C1016`.
+**Retired — never reintroduce:** engraved brass `#C2A05E`/`#CDAE6A`/`#D8B978`, warm gold `#C9A227`/`#D4AF37`, acid orange `#ff5a1f`, warm voids `#050406`/`#0D0A07`. `theme-color` is `#05080F`. Adobe share plates are type-on-engine-stills only — never Firefly planets as the live sky.
 
 ## Typography
 

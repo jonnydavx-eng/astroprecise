@@ -239,7 +239,7 @@
         '<p class="instrument-eyebrow" style="margin-bottom:var(--space-3);">Most recently reached</p>' +
         '<div style="display:flex;flex-wrap:wrap;gap:var(--space-2);">' +
         last.map(s =>
-          `<span title="${(s.fact || '').replace(/"/g, '&quot;')}" style="font-size:0.7rem;letter-spacing:0.08em;padding:5px 12px;border:1px solid rgba(201, 162, 39,0.3);border-radius:999px;color:var(--gold-pale);cursor:help;">
+          `<span title="${(s.fact || '').replace(/"/g, '&quot;')}" style="font-size:0.7rem;letter-spacing:0.08em;padding:5px 12px;border:1px solid rgba(143, 163, 184,0.3);border-radius:999px;color:var(--gold-pale);cursor:help;">
             ${s.name} · ${s.ly} ly</span>`).join('') + '</div>';
     }
 

@@ -859,3 +859,44 @@
     radial-gradient(circle at 56% 48%, color-mix(in srgb, var(--ap-silver) 18%, transparent), transparent 42%),
     var(--ap-void-deep);
 }
+
+/* Sitting polish ap-v893 — copper action, silver instrument, no leftover brass. */
+.ap-live-home.ap-reading-room .ap-reading-kicker {
+  color: var(--ap-ember);
+  letter-spacing: 0.22em;
+}
+.ap-live-home.ap-reading-room .ap-live-intro .ap-action--primary {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ap-ember) 35%, transparent);
+}
+.ap-reading-room .ap-personal-entry {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--ap-void-raised) 58%, transparent), var(--ap-void-deep));
+}
+.ap-reading-room .ap-live-eyebrow {
+  color: var(--ap-ember);
+  letter-spacing: 0.16em;
+}
+.ap-reading-room .ap-calc-entry-panel__body {
+  border-color: var(--ap-silver-a28);
+  background: color-mix(in srgb, var(--ap-void-raised) 90%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--ap-silver-a12),
+    0 0 0 1px color-mix(in srgb, var(--ap-ember) 18%, transparent);
+}
+.ap-reading-room .btn-primary {
+  background: var(--ap-ember);
+  border-color: var(--ap-ember);
+  color: var(--ap-void-deep);
+}
+.ap-reading-path .ap-event-ticket {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ap-ember) 24%, transparent);
+}
+.ap-reading-path .ap-event-ticket:hover {
+  background: color-mix(in srgb, var(--ap-ember) 8%, transparent);
+}
+.ap-reading-room .ap-proof-ledger span { color: var(--ap-ember); }
+.ap-reading-room .ap-keep-row--home .btn-invite {
+  border: 1px solid var(--ap-ember);
+  background: transparent;
+  color: var(--ap-ember);
+}

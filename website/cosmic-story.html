@@ -61,58 +61,58 @@
   <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=891" id="ap-css-atlas-tokens" />
   <style>
     .cstory-wrap { max-width: 760px; margin: 0 auto; padding: calc(var(--nav-height, 72px) + clamp(1.25rem, 4vw, 2.5rem)) var(--space-4, 1rem) 4rem; }
-    body.page-cosmic-story { background: #020307; }
-    body.page-cosmic-story ::selection{ background:#ff5a1f; color:#140b06; }
+    body.page-cosmic-story { background: #05080F; }
+    body.page-cosmic-story ::selection{ background:#B86B4A; color:#05080F; }
     .cstory-hero { text-align: center; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
     .cstory-hero__eyebrow {
       font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.66rem; letter-spacing: 0.3em;
-      text-transform: uppercase; color: #d8b46a; opacity: 0.95; margin: 0 0 1rem;
+      text-transform: uppercase; color: #B86B4A; opacity: 0.95; margin: 0 0 1rem;
     }
     .cstory-hero__title {
       font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 500;
-      font-size: clamp(2.9rem, 7vw, 5.2rem); line-height: 1.02; letter-spacing: -0.01em; color: #f2ecdf;
+      font-size: clamp(2.9rem, 7vw, 5.2rem); line-height: 1.02; letter-spacing: -0.01em; color: #E6ECF2;
       margin: 0 0 0.8rem; text-wrap: balance;
     }
     .cstory-hero__sub {
       font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic;
-      font-size: clamp(1.05rem, 2.4vw, 1.35rem); color: rgba(242,236,223,.66); margin: 0; text-wrap: balance;
+      font-size: clamp(1.05rem, 2.4vw, 1.35rem); color: rgba(230,236,242,.66); margin: 0; text-wrap: balance;
     }
     .cstory-note {
       margin: 0 auto 2.5rem; max-width: 560px; text-align: center; font-size: 0.9rem; line-height: 1.6;
-      color: rgba(242,236,223,.66);
-      background: rgba(242,236,223,.03); border: 1px solid rgba(216,180,106,.22);
+      color: rgba(230,236,242,.66);
+      background: rgba(230,236,242,.03); border: 1px solid rgba(143,163,184,.22);
       border-radius: 6px; padding: 0.9rem 1.2rem;
     }
-    .cstory-note b { color: #ff5a1f; }
+    .cstory-note b { color: #B86B4A; }
     .cstory__mv { margin: 0 0 clamp(2rem, 5vw, 3.2rem); }
     .cstory__kicker {
       font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase;
-      color: #d8b46a; opacity: 0.9; margin: 0 0 0.5rem;
+      color: #B86B4A; opacity: 0.9; margin: 0 0 0.5rem;
     }
     .cstory__h {
       font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 500;
-      font-size: clamp(1.5rem, 3.6vw, 2.1rem); color: #f2ecdf;
+      font-size: clamp(1.5rem, 3.6vw, 2.1rem); color: #E6ECF2;
       margin: 0 0 0.9rem; line-height: 1.18; text-wrap: balance;
     }
-    .cstory__h::before { content: '✦'; color: #ff5a1f; font-size: 0.7em; margin-right: 0.5em; opacity: 0.8; }
+    .cstory__h::before { content: '✦'; color: #B86B4A; font-size: 0.7em; margin-right: 0.5em; opacity: 0.8; }
     .cstory__p {
       font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(1.08rem, 2.4vw, 1.28rem);
-      line-height: 1.72; color: rgba(242,236,223,.88); margin: 0 0 1rem;
+      line-height: 1.72; color: rgba(230,236,242,.88); margin: 0 0 1rem;
     }
-    .cstory__p em { color: rgba(242,236,223,.66); }
-    .cstory__p strong { color: #e8d3a0; font-weight: 600; }
-    .cstory-foot { text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(216,180,106,.18); }
-    .cstory-foot__line { color: rgba(242,236,223,.6); font-size: 0.98rem; margin: 0 0 1.2rem; }
+    .cstory__p em { color: rgba(230,236,242,.66); }
+    .cstory__p strong { color: #C5D4E0; font-weight: 600; }
+    .cstory-foot { text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(143,163,184,.18); }
+    .cstory-foot__line { color: rgba(230,236,242,.6); font-size: 0.98rem; margin: 0 0 1.2rem; }
     .cstory-cta {
       display: inline-flex; align-items: center; gap: 0.5rem; min-height: 48px; padding: 0 1.6rem;
       border-radius: 4px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 400;
       font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
-      text-decoration: none; color: #1a0d05;
-      background: linear-gradient(135deg, #ff7a45 0%, #ff5a1f 45%, #d84815 100%);
+      text-decoration: none; color: #05080F;
+      background: #B86B4A;
     }
-    .cstory-cta--ghost { background: transparent; color: #ddd3bf; border: 1px solid rgba(216,180,106,.4); margin-left: 0.6rem; }
-    .cstory-cta--ghost:hover { border-color: #ff5a1f; color: #ff7a45; }
-    .cstory-skel { opacity: 0.6; text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; color: rgba(242,236,223,.6); padding: 2rem 0; }
+    .cstory-cta--ghost { background: transparent; color: #C5D4E0; border: 1px solid rgba(143,163,184,.4); margin-left: 0.6rem; }
+    .cstory-cta--ghost:hover { border-color: #B86B4A; color: #B86B4A; }
+    .cstory-skel { opacity: 0.6; text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; color: rgba(230,236,242,.6); padding: 2rem 0; }
   </style>
 </head>
 <body class="page-cosmic-story ap-cinematic-2026 ap-no-nav-enter">
@@ -149,7 +149,7 @@
       <p class="cstory-hero__sub">Your chart, retold as a story — written from the exact sky of your first breath.</p>
     </header>
 
-    <p class="cstory-note" id="cstory-note" hidden>This is a <b>free sample</b> woven from a real example chart. <a href="chart.html" style="color:var(--ap-gold-vivid,#E6C24A)">Cast your own chart</a> and your story rewrites itself from your placements.</p>
+    <p class="cstory-note" id="cstory-note" hidden>This is a <b>free sample</b> woven from a real example chart. <a href="chart.html" style="color:var(--ap-ember,#B86B4A)">Cast your own chart</a> and your story rewrites itself from your placements.</p>
 
     <div id="cstory-out" aria-live="polite"><p class="cstory-skel">Reading the sky…</p></div>
 
