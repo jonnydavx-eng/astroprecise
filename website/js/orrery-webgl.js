@@ -81,7 +81,7 @@ const RadialBlurShader = {
 
 // Finish pass (always the last pass before OutputPass): a hash-based ordered dither
 // that kills banding in the near-black void gradients, a wide soft vignette, and a
-// whisper of a grade (teal-leaning shadows → brass-leaning highlights). STATIC by
+// whisper of a grade (teal-leaning shadows → silver-leaning highlights). STATIC by
 // design — no time uniform, so nothing shimmers or crawls frame to frame.
 const FinishShader = {
   name: 'FinishShader',
@@ -114,8 +114,8 @@ const FinishShader = {
       col += (h - 0.5) * (0.66 / 255.0) * (1.0 - smoothstep(0.02, 0.30, lum));
       // (b) wide soft vignette — anchors the frame without darkening the hero
       float vig = 1.0 - uVignette * smoothstep(0.35, 0.85, length(vUv - 0.5));
-      // (c) whisper grade: teal-leaning shadows → brass-leaning highlights (±2%)
-      vec3 tint = mix(vec3(0.985, 1.005, 1.02), vec3(1.02, 1.005, 0.982), smoothstep(0.05, 0.6, lum));
+      // (c) whisper grade: teal-leaning shadows → instrument-silver highlights (±2%)
+      vec3 tint = mix(vec3(0.985, 1.005, 1.02), vec3(0.988, 1.004, 1.018), smoothstep(0.05, 0.6, lum));
       col *= mix(vec3(vig), tint * vig, uGrade);
       gl_FragColor = vec4(col, tex.a);
     }`,
@@ -134,22 +134,66 @@ const FinishShader = {
   const ORRERY_ENV_TEX = 'img/orrery/';
   const D2R = Math.PI / 180;
   // Cool lunar void — sky/fog clear toward the cooler chrome night (visual wave).
-  // Prefer an exposed CSS token when present; otherwise the authored #05080F.
+  // Home publishes --ap-void / --ap-brass on living-sky :root (not ap-palette-2026).
+  // --ap-lunar-void is palette-only; fall through house tokens, then authored hex.
   const COOL_LUNAR_VOID = 0x05080F;
+  const HOUSE_SILVER = 0x8FA3B8;
+  const HOUSE_SILVER_BRIGHT = 0xC5D4E0;
+  const HOUSE_PAPER = 0xE6ECF2;
+  const HOUSE_EMBER = 0xB86B4A;
   // Drag elevation envelope: intentional observatory tilt — never flop under the ecliptic.
   const CAM_EL_DRAG_MIN = 6 * D2R;
   const CAM_EL_DRAG_MAX = 58 * D2R;
 
+  function cssToken(name) {
+    try { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    catch (e) { return ''; }
+  }
+
+  function parseCssHex(raw) {
+    const hex = String(raw || '').trim().replace(/^#/, '');
+    if (/^[0-9a-fA-F]{6}$/.test(hex)) return parseInt(hex, 16);
+    return null;
+  }
+
+  function houseTokenHex(names, fallback) {
+    const list = Array.isArray(names) ? names : [names];
+    for (let i = 0; i < list.length; i++) {
+      const parsed = parseCssHex(cssToken(list[i]));
+      if (parsed != null) return parsed;
+    }
+    return fallback;
+  }
+
+  function houseHexCss(hex) {
+    return '#' + Number(hex).toString(16).padStart(6, '0');
+  }
+
+  function houseRgba(hex, a) {
+    const r = (hex >> 16) & 255;
+    const g = (hex >> 8) & 255;
+    const b = hex & 255;
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  }
+
   function coolLunarVoidHex() {
-    try {
-      const raw = (typeof cssToken === 'function' ? cssToken('--ap-lunar-void') : '')
-        || (typeof getComputedStyle === 'function'
-          ? getComputedStyle(document.documentElement).getPropertyValue('--ap-lunar-void').trim()
-          : '');
-      const hex = String(raw || '').replace(/^#/, '');
-      if (/^[0-9a-fA-F]{6}$/.test(hex)) return parseInt(hex, 16);
-    } catch (e) { /* token optional */ }
-    return COOL_LUNAR_VOID;
+    return houseTokenHex(['--ap-lunar-void', '--ap-void', '--ap-void-deep'], COOL_LUNAR_VOID);
+  }
+
+  function houseSilverHex() {
+    return houseTokenHex(['--ap-brass', '--ap-silver'], HOUSE_SILVER);
+  }
+
+  function houseSilverBrightHex() {
+    return houseTokenHex(['--ap-brass-bright', '--ap-silver-bright'], HOUSE_SILVER_BRIGHT);
+  }
+
+  function housePaperHex() {
+    return houseTokenHex(['--ap-paper'], HOUSE_PAPER);
+  }
+
+  function houseEmberHex() {
+    return houseTokenHex(['--ap-ember'], HOUSE_EMBER);
   }
 
   function clampCamElevation(el) {
@@ -738,8 +782,8 @@ const FinishShader = {
   let lastGhostSampleMs = 0;
   const GHOST_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
   const NATAL_CLOCK_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
-  const NATAL_CLOCK_A = 0xD8B46A; // brass — person A
-  const NATAL_CLOCK_B = 0xFF6428; // ember — person B
+  const NATAL_CLOCK_A = HOUSE_SILVER; // instrument silver — person A
+  const NATAL_CLOCK_B = HOUSE_EMBER;  // copper — person B
   let natalClockSpec = { a: null, b: null, focus: null };
   let natalClockGroup = null;     // separate layer; not ghostMeshes
   const natalClockMeshes = { a: {}, b: {} };
@@ -2036,11 +2080,10 @@ const FinishShader = {
     sunVisualsMinimal = false;
     buildSunCoronaShell();
     buildSunCorona();
-    // v576: on the award homepage the inner halo uses brass-family stops so the
-    // resting sun glow sits in the ENGRAVED BRASS palette (other pages unchanged).
+    // Award inner halo sits in locked instrument silver (house chrome, not True-Time).
     const layers = [
       { tex: isAwardMode()
-          ? makeGlowTexture('rgba(236,214,164,0.9)', 'rgba(194,160,94,0.4)')
+          ? makeGlowTexture(houseRgba(houseSilverBrightHex(), 0.9), houseRgba(houseSilverHex(), 0.4))
           : makeGlowTexture('rgba(255,252,235,0.95)', 'rgba(255,205,85,0.52)'), scale: SUN_SIZE * 6.2 },
       { tex: makeGlowTexture('rgba(255,218,125,0.48)', 'rgba(240,135,35,0.14)'), scale: SUN_SIZE * 12 },
       { tex: makeGlowTexture('rgba(255,175,55,0.16)', 'rgba(215,85,12,0.04)'), scale: SUN_SIZE * 19 },
@@ -5390,7 +5433,7 @@ const FinishShader = {
 
   function ensureFocusRing(group, scaleMul) {
     if (group.userData.focusRing) return group.userData.focusRing;
-    const tex = makeGlowTexture('rgba(255, 228, 160, 0.85)', 'rgba(201, 162, 39, 0.0)');
+    const tex = makeGlowTexture(houseRgba(houseSilverBrightHex(), 0.85), houseRgba(houseSilverHex(), 0.0));
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({
       map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
     }));
@@ -5618,9 +5661,9 @@ const FinishShader = {
       return ((n ^ (n >>> 14)) >>> 0) / 4294967296;
     };
     const palettes = [
-      ['rgba(216,180,106,0.075)', 'rgba(72,52,22,0.018)'],
-      ['rgba(185,200,220,0.060)', 'rgba(28,42,66,0.016)'],
-      ['rgba(255,100,40,0.030)', 'rgba(62,24,12,0.010)'],
+      [houseRgba(HOUSE_SILVER, 0.075), 'rgba(20,30,46,0.018)'],
+      [houseRgba(HOUSE_SILVER_BRIGHT, 0.060), 'rgba(28,42,66,0.016)'],
+      [houseRgba(HOUSE_EMBER, 0.030), 'rgba(20,10,8,0.010)'],
     ];
     const desktopCount = perfTier === 'low' ? 4 : perfTier === 'mid' ? 7 : 12;
     const count = IS_PHONE ? Math.min(desktopCount, perfTier === 'high' ? 6 : 4) : desktopCount;
@@ -6003,7 +6046,7 @@ const FinishShader = {
       buildSunCorona();
       const layers = [
         { tex: isAwardMode()
-            ? makeGlowTexture('rgba(236,214,164,0.85)', 'rgba(194,160,94,0.32)') // v576 brass halo
+            ? makeGlowTexture(houseRgba(houseSilverBrightHex(), 0.85), houseRgba(houseSilverHex(), 0.32))
             : makeGlowTexture('rgba(255,252,235,0.88)', 'rgba(255,205,85,0.38)'), scale: SUN_SIZE * 4.6 },
         { tex: makeGlowTexture('rgba(255,218,125,0.36)', 'rgba(240,135,35,0.10)'), scale: SUN_SIZE * 8.2 },
         { tex: makeGlowTexture('rgba(255,175,55,0.12)', 'rgba(215,85,12,0.03)'), scale: SUN_SIZE * 13.5 },
@@ -6320,15 +6363,15 @@ const FinishShader = {
           float ringProfile = smoothstep(0.0, 0.18, vUv.y) * smoothstep(1.0, 0.82, vUv.y);
           float baseGlow = ringProfile * 0.38;
           float engraved = ringProfile * (0.28 + majorTick * 0.58 + minorTick * 0.18 + microTick * 0.06);
-          vec3 darkGold = vec3(0.38, 0.28, 0.08);
-          vec3 midGold  = vec3(0.72, 0.58, 0.22);
-          vec3 brightGold = vec3(0.98, 0.84, 0.42);
-          vec3 col = mix(darkGold, midGold, baseGlow + engraved * 0.4);
-          col = mix(col, brightGold, engraved + uHero * 0.14);
+          vec3 darkMetal = vec3(0.22, 0.27, 0.32);
+          vec3 midMetal  = vec3(0.561, 0.639, 0.722);
+          vec3 brightMetal = vec3(0.773, 0.831, 0.878);
+          vec3 col = mix(darkMetal, midMetal, baseGlow + engraved * 0.4);
+          col = mix(col, brightMetal, engraved + uHero * 0.14);
           float pulse = mix(1.0, 0.92 + 0.08 * sin(uTime * 1.4 + angle * 2.5), uMotion);
           float flow = fract(angle * 4.0 - uTime * 0.22);
           float spark = smoothstep(0.94, 1.0, flow) * smoothstep(1.0, 0.97, flow) * uMotion;
-          col = mix(col, brightGold, spark * 0.85);
+          col = mix(col, brightMetal, spark * 0.85);
           float depthFade = smoothstep(480.0, 24.0, vDepth);
           float alpha = (baseGlow * 0.55 + engraved + spark * 0.42) * uOpacity * depthFade * pulse;
           if (alpha < 0.008) discard;
@@ -6337,7 +6380,7 @@ const FinishShader = {
       transparent: true,
       depthWrite: false,
       side: THREE.DoubleSide,
-      // Normal blending makes the Home rails read as engraved brass instead of
+      // Normal blending makes the Home rails read as instrument silver instead of
       // eight unrelated neon hoops. Cinematic archive modes keep additive light.
       blending: instrumentMode ? THREE.NormalBlending : THREE.AdditiveBlending,
     });
@@ -6740,7 +6783,7 @@ const FinishShader = {
         if (ringMat.uniforms) ringMat.uniforms.uMap.value = fbTex;
       }
 
-      // engraved gold orbit ring (shader band with tick marks)
+      // instrument-silver orbit ring (shader band with tick marks)
       const ringWidth = b.hero ? 0.032 : 0.022;
       const inner = Math.max(0.01, b.R - ringWidth * 0.5);
       const outer = b.R + ringWidth * 0.5;
@@ -6802,7 +6845,7 @@ const FinishShader = {
       dot.userData = { b, mat, mesh: sphere };
       extraBodiesGroup.add(dot);
       loadTex(b.tex).then((t) => { if (t) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
-      // faint engraved orbit ring (non-hero styling)
+      // faint instrument-silver orbit ring (non-hero styling)
       const rw = 0.02, inner = Math.max(0.01, b.R - rw * 0.5), outer = b.R + rw * 0.5;
       const segs = perfTier === 'high' ? 192 : 128;
       const ring = new THREE.Mesh(new THREE.RingGeometry(inner, outer, segs, 1), makeOrbitRingMaterial(false));
@@ -6894,7 +6937,7 @@ const FinishShader = {
     const w = Math.ceil(x.measureText(text).width) + pad * 2;
     c.width = w; c.height = font + pad * 2;
     x.font = `600 ${font}px Cinzel, Inter, system-ui, sans-serif`;
-    x.fillStyle = 'rgba(240,232,216,0.95)'; x.textBaseline = 'middle'; x.textAlign = 'center';
+    x.fillStyle = houseRgba(housePaperHex(), 0.95); x.textBaseline = 'middle'; x.textAlign = 'center';
     x.shadowColor = 'rgba(0,0,0,0.8)'; x.shadowBlur = 8;
     x.fillText(text, c.width / 2, c.height / 2);
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false, depthWrite: false }));
@@ -7071,11 +7114,6 @@ const FinishShader = {
     }
   }
 
-  function cssToken(name) {
-    try { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-    catch (e) { return ''; }
-  }
-
   function ensureBirthHourMarker() {
     if (birthHourMarker || !scene) return birthHourMarker;
     const markerCanvas = document.createElement('canvas');
@@ -7083,15 +7121,15 @@ const FinishShader = {
     markerCanvas.height = 256;
     const ctx = markerCanvas.getContext('2d');
     if (!ctx) return null;
-    const brass = cssToken('--ap-brass') || '#d8b46a';
-    const paper = cssToken('--ap-paper') || '#f2ecdf';
-    const silver = cssToken('--ap-silver') || '#b9c8dc';
+    const brass = houseHexCss(houseSilverHex());
+    const paper = houseHexCss(housePaperHex());
+    const silver = houseHexCss(houseSilverBrightHex());
 
     ctx.clearRect(0, 0, markerCanvas.width, markerCanvas.height);
     // Soft lunar glow behind the mark so Earth reads on cool-night stills / Keep captures.
     const glow = ctx.createRadialGradient(96, 96, 6, 96, 96, 78);
-    glow.addColorStop(0, 'rgba(185, 200, 220, 0.62)');
-    glow.addColorStop(0.4, 'rgba(216, 180, 106, 0.34)');
+    glow.addColorStop(0, houseRgba(HOUSE_SILVER_BRIGHT, 0.62));
+    glow.addColorStop(0.4, houseRgba(HOUSE_SILVER, 0.34));
     glow.addColorStop(1, 'rgba(5, 8, 15, 0)');
     ctx.fillStyle = glow;
     ctx.beginPath();
@@ -7524,14 +7562,16 @@ const FinishShader = {
   }
 
   function natalClockColor(who) {
-    return who === 'b' ? NATAL_CLOCK_B : NATAL_CLOCK_A;
+    return who === 'b'
+      ? houseTokenHex(['--ap-ember'], NATAL_CLOCK_B)
+      : houseTokenHex(['--ap-brass', '--ap-silver'], NATAL_CLOCK_A);
   }
 
   function makeNatalClockLabel(text, hex) {
     const pad = 12, font = 48;
     const c = document.createElement('canvas');
     const x = c.getContext('2d');
-    const label = String(text || '').slice(0, 18) || (hex === '#FF6428' ? 'B' : 'A');
+    const label = String(text || '').slice(0, 18) || (String(hex).toLowerCase() === houseHexCss(houseEmberHex()) ? 'B' : 'A');
     x.font = '600 ' + font + 'px "Schibsted Grotesk", system-ui, sans-serif';
     const w = Math.max(72, Math.ceil(x.measureText(label).width) + pad * 2);
     c.width = w;
@@ -7646,7 +7686,7 @@ const FinishShader = {
   function setNatalClockLabel(who, text) {
     const pack = natalClockMeshes[who];
     if (!pack) return;
-    const hex = who === 'b' ? '#FF6428' : '#D8B46A';
+    const hex = houseHexCss(natalClockColor(who));
     const next = String(text || (who === 'b' ? 'B' : 'A')).slice(0, 18);
     if (pack.label && pack._labelText === next) return;
     if (pack.label) disposeNatalClockObject(pack.label);
@@ -10477,13 +10517,13 @@ const FinishShader = {
     return d;
   }
 
-  // Small engraved-brass canvas-texture label sprite (mirrors makeLabel's styling but
+  // Small instrument-silver canvas-texture label sprite (mirrors makeLabel's styling but
   // parameterised for size/colour so the aspect layer reads on the ring). Returns a
   // THREE.Sprite; caller sets .position + .scale via userData.aspectRatio.
   function makeAspectLabel(text, opts) {
     opts = opts || {};
     const font = opts.font || 30;
-    const col = opts.color || 'rgba(236,230,216,0.96)';   // parchment
+    const col = opts.color || houseRgba(housePaperHex(), 0.96);
     const pad = 10;
     const c = document.createElement('canvas');
     const x = c.getContext('2d');
@@ -10558,9 +10598,9 @@ const FinishShader = {
     earthTargetVec(centre);
     grp.position.copy(centre);
 
-    const brass = 0xC2A05E;
+    const brass = houseSilverHex();
 
-    // 1) The 360° zodiac circle — brass hairline, low opacity.
+    // 1) The 360° zodiac circle — instrument-silver hairline, low opacity.
     const ringPts = [];
     for (let d = 0; d <= 360; d += 2) ringPts.push(scenePos(R, d, 0));
     const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPts);
@@ -10586,17 +10626,17 @@ const FinishShader = {
     const signSprites = [];
     for (let s = 0; s < 12; s++) {
       const lon = s * 30 + 15;
-      const lab = makeAspectLabel(SIGN_ABBR[s], { font: 22, baseH: 0.62, color: 'rgba(194,160,94,0.9)' });
+      const lab = makeAspectLabel(SIGN_ABBR[s], { font: 22, baseH: 0.62, color: houseRgba(houseSilverHex(), 0.9) });
       lab.position.copy(scenePos(R * 1.14, lon, 0));
       lab.userData.baseOpacity = 0.62;
       grp.add(lab); signSprites.push(lab);
     }
 
-    // 4) The aspect chord — a straight brass line between the two true-longitude markers.
+    // 4) The aspect chord — a straight instrument-silver line between the two true-longitude markers.
     const mA = scenePos(R, aLon, 0);
     const mB = scenePos(R, bLon, 0);
     const chordGeo = new THREE.BufferGeometry().setFromPoints([mA, mB]);
-    const chordMat = new THREE.LineBasicMaterial({ color: 0xCDAE6A, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+    const chordMat = new THREE.LineBasicMaterial({ color: houseSilverBrightHex(), transparent: true, opacity: 0, depthTest: false, depthWrite: false });
     const chord = new THREE.Line(chordGeo, chordMat);
     chord.userData.baseOpacity = 0.85;
     grp.add(chord);
@@ -10612,17 +10652,17 @@ const FinishShader = {
       arcPts.push(scenePos(R * 1.0, lon, 0));
     }
     const arcGeo = new THREE.BufferGeometry().setFromPoints(arcPts);
-    const arcMat = new THREE.LineBasicMaterial({ color: 0xD8B978, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+    const arcMat = new THREE.LineBasicMaterial({ color: houseSilverBrightHex(), transparent: true, opacity: 0, depthTest: false, depthWrite: false });
     const arc = new THREE.Line(arcGeo, arcMat);
     arc.userData.baseOpacity = 0.7;
     grp.add(arc);
 
     // 5) The two body markers at their TRUE longitudes.
-    const markerA = makeAspectMarker(0xCDAE6A, 0.95);
+    const markerA = makeAspectMarker(houseSilverBrightHex(), 0.95);
     markerA.position.copy(mA);
     markerA.userData.baseOpacity = 1;
     grp.add(markerA);
-    const markerB = makeAspectMarker(solar ? 0x9ED1E8 : 0xECE6D8, 0.85);
+    const markerB = makeAspectMarker(solar ? 0x7EB8A8 : housePaperHex(), 0.85);
     markerB.position.copy(mB);
     markerB.userData.baseOpacity = 1;
     grp.add(markerB);
@@ -10635,14 +10675,14 @@ const FinishShader = {
     grp.add(labA);
 
     const nameB = bLabel || (CAP[idB] || idB) + (solar ? ' · solar chart' : '');
-    const labB = makeAspectLabel(nameB, { font: 26, baseH: 0.82, color: solar ? 'rgba(158,209,232,0.96)' : 'rgba(236,230,216,0.96)' });
+    const labB = makeAspectLabel(nameB, { font: 26, baseH: 0.82, color: solar ? 'rgba(126,184,168,0.96)' : houseRgba(housePaperHex(), 0.96) });
     labB.position.copy(scenePos(R * 0.8, bLon, 0));
     labB.userData.baseOpacity = 0.96;
     grp.add(labB);
 
     // 7) The aspect + REAL computed angle, centred on the chord midpoint.
     const aspName = aspect ? (aspect.charAt(0).toUpperCase() + aspect.slice(1)) : 'separation';
-    const angLabel = makeAspectLabel(`${aspName} · ${Math.round(angle)}°`, { font: 32, baseH: 1.05, color: 'rgba(216,185,120,0.98)' });
+    const angLabel = makeAspectLabel(`${aspName} · ${Math.round(angle)}°`, { font: 32, baseH: 1.05, color: houseRgba(houseSilverBrightHex(), 0.98) });
     const mid = mA.clone().add(mB).multiplyScalar(0.5);
     angLabel.position.copy(mid);
     angLabel.userData.baseOpacity = 1;
@@ -10650,7 +10690,7 @@ const FinishShader = {
 
     // 8) The honesty caption, engraved BELOW the ring (south point, pushed out + down).
     const capText = ASPECT_CAPTION + (solar ? '  ·  (solar chart: Sun = assumed sign-midpoint)' : '');
-    const cap = makeAspectLabel(capText, { font: 22, baseH: 0.66, color: 'rgba(236,230,216,0.82)' });
+    const cap = makeAspectLabel(capText, { font: 22, baseH: 0.66, color: houseRgba(housePaperHex(), 0.82) });
     cap.position.copy(scenePos(R * 1.3, 270, 0));
     cap.position.y -= 0.4;
     cap.userData.baseOpacity = 0.85;
@@ -10778,8 +10818,8 @@ const FinishShader = {
       const angle = Math.round(angleRaw);
 
       buildAspectView(idA, idB, aLon, bLon, angle, opts.aspect, opts.bLabel, solar);
-      setFocusHighlight(idA);           // brass ring on the transiting body...
-      // ...and a parallel brass ring on idB (unless it's the abstract solar point).
+      setFocusHighlight(idA);           // silver ring on the transiting body...
+      // ...and a parallel silver ring on idB (unless it's the abstract solar point).
       if (!solar && meshes[idB]) {
         const g2 = meshes[idB];
         const ring2 = ensureFocusRing(g2, (BODIES.find((b) => b.id === idB) || { size: 0.6 }).size * 3.8);
@@ -10805,7 +10845,7 @@ const FinishShader = {
     }
   }
 
-  // PUBLIC: clearAspect — retire the ring/markers/caption + brass rings, return to hero.
+  // PUBLIC: clearAspect — retire the ring/markers/caption + silver rings, return to hero.
   function clearAspect() {
     if (!aspectActive && !aspectGroup) return;
     aspectActive = false;

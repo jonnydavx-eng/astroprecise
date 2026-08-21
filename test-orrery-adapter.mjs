@@ -54,6 +54,36 @@ if (!W.includes('const COOL_LUNAR_VOID = 0x05080F')) {
 } else {
   ok('living-sky fog uses cool lunar void #05080F');
 }
+
+/* House chrome: engine reads lunar tokens with fallbacks that work on Home.
+ * Home loads ap-living-sky-v834.css (not ap-palette-2026), so --ap-lunar-void
+ * may be missing; --ap-void / --ap-brass are instrument silver on that sheet. */
+if (!W.includes("houseTokenHex(['--ap-lunar-void', '--ap-void', '--ap-void-deep']")) {
+  fail('cool lunar void must fall through --ap-lunar-void → --ap-void → --ap-void-deep');
+}
+if (!W.includes('const HOUSE_SILVER = 0x8FA3B8') || !W.includes('const HOUSE_EMBER = 0xB86B4A')) {
+  fail('house instrument-silver / copper constants missing');
+}
+if (!W.includes("houseTokenHex(['--ap-brass', '--ap-silver'], HOUSE_SILVER)")
+    || !W.includes("houseTokenHex(['--ap-ember'], HOUSE_EMBER)")) {
+  fail('natal clocks / chrome must read --ap-brass/--ap-silver/--ap-ember with house fallbacks');
+}
+for (const retired of ['0xC2A05E', '0xD8B46A', '0xCDAE6A', '0xD8B978', '#d8b46a', '#D8B46A', '#C2A05E']) {
+  if (W.includes(retired)) fail('engine chrome still hardcodes retired engraved brass ' + retired);
+}
+if (W.includes('vec3(1.02, 1.005, 0.982)')) {
+  fail('finish grade still tints highlights engraved brass');
+}
+if (!W.includes('vec3(0.988, 1.004, 1.018)') || !W.includes('instrument-silver highlights')) {
+  fail('finish grade must tint highlights instrument silver');
+}
+if (W.includes('vec3(0.72, 0.58, 0.22)') || W.includes('vec3(0.98, 0.84, 0.42)')) {
+  fail('orbit rails still paint engraved-gold mid/bright stops');
+}
+if (!W.includes('vec3(0.561, 0.639, 0.722)') || !W.includes('vec3(0.773, 0.831, 0.878)')) {
+  fail('orbit rails must paint instrument silver #8FA3B8 / #C5D4E0');
+}
+ok('WebGL chrome paint reads house tokens and has no retired engraved-brass hexes');
 if (!W.includes('setEarthTerminatorCamera(2.18, 6 * D2R)') || !W.includes('applyEarthLimbHold,')) {
   fail('Earth limb hold must be 2.18 and public for adapter snap');
 }
@@ -325,6 +355,13 @@ for (const ref of [
 const livingCss = readFileSync(join(root, 'css', 'ap-living-sky-v834.css'), 'utf8');
 for (const probe of ['.ap-live-stage', '.ap-model-stage', '.ap-control-panel', '.ap-site-footer']) {
   if (!livingCss.includes(probe)) fail('living-sky CSS contract missing: ' + probe);
+}
+if (!livingCss.includes('--ap-void: #05080F') || !livingCss.includes('--ap-brass: #8FA3B8')
+    || !livingCss.includes('--ap-ember: #B86B4A')) {
+  fail('Home living-sky must publish lunar void + instrument silver + copper');
+}
+if (livingCss.includes('--ap-brass: #C2A05E') || livingCss.includes('--ap-brass: #D8B46A')) {
+  fail('Home living-sky remapped --ap-brass back to engraved brass');
 }
 const observatory = readFileSync(join(root, 'js', 'ap-observatory-v834.js'), 'utf8');
 for (const probe of ['var SCALE_KEYS =', 'var FOCUS =', 'function applyHash()', 'orrery.flyTo']) {
