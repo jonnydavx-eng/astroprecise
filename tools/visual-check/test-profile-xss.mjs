@@ -97,6 +97,32 @@ try {
 
   {
     const { context, page } = await newPage(browser);
+    await page.addInitScript(() => {
+      localStorage.setItem('ap_user', JSON.stringify({
+        name: 'Legacy local account',
+        email: 'legacy@example.test',
+        passwordHash: 'VmVyaWZpZXJOZWVkbGU0Mg=='
+      }));
+      localStorage.setItem('ap_charts', '[]');
+    });
+    await page.goto(base + '/profile.html?nosw=1', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => window.AstroProfile);
+    const retiredAuth = await page.evaluate(() => ({
+      legacyUser: localStorage.getItem('ap_user'),
+      login: typeof window.AstroProfile.login,
+      register: typeof window.AstroProfile.register,
+      getUser: typeof window.AstroProfile.getUser,
+      sync: typeof window.AstroProfile.generateAppSyncData
+    }));
+    gate('legacy reversible local account is purged', retiredAuth.legacyUser === null);
+    gate('pseudo-auth API stays retired',
+      retiredAuth.login === 'undefined' && retiredAuth.register === 'undefined' && retiredAuth.getUser === 'undefined');
+    gate('user-bearing QR sync API stays retired', retiredAuth.sync === 'undefined');
+    await context.close();
+  }
+
+  {
+    const { context, page } = await newPage(browser);
     await page.addInitScript(({ attackName, attackCity, attackId }) => {
       localStorage.setItem('ap_profile_v2', JSON.stringify({
         name: 'Stored profile',

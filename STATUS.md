@@ -7,14 +7,14 @@
 - Midnight Meridian 2026 is applied across the public site: void/navy, lunar silver, ion blue, spectral violet, proof mint and semantic rose. Orange interface accents are retired; real astronomical colours remain physically honest.
 - Home owns the one general WebGL Observatory and Eclipse owns the one dedicated simulation. Software WebGL now selects the low tier at DPR 1, loads and warms all five 1024×512 Earth maps before the first reveal, keeps one canvas, and expands the full scene after interaction.
 - Chart renders 14 planets, 35 aspects and 10 collision leaders; the time picker is 46 px. Exact and approximate readings, house/node settings and the seven-chapter handoff pass.
-- Personal birth data is removed from addresses, referrers and share URLs. Stored/imported profile, Moon-name, personalization and dormant-commerce DOM-XSS regressions pass.
-- Shop offers voluntary Ko-fi support only. There is no active product checkout, invented SKU/price/scarcity/testimonial or unverified marketing capture.
-- Fresh production build: 603 copied assets; JS 5,416→3,995 KB, CSS 1,919→1,360 KB, HTML 1,566→1,427 KB. No unresolved minifier placeholders or missing built references were found.
+- Personal birth data is removed from addresses, referrers and share URLs. Stored/imported profile, Moon-name, personalization and dormant-commerce DOM-XSS regressions pass. The unused local pseudo-account API and its reversible password storage are retired, and any legacy `ap_user` record is purged on load.
+- The v900 site offers voluntary Ko-fi support only and does not link or open a product checkout, invented SKU/price/scarcity/testimonial or unverified marketing capture. A separate legacy £7 Gumroad listing remains externally reachable and requires owner unpublishing.
+- Fresh production build: 603 copied assets; JS 5,414→3,994 KB, CSS 1,919→1,360 KB, HTML 1,566→1,427 KB. No unresolved minifier placeholders or missing built references were found.
 
 ## Frozen local evidence
 
 - Functional/release suite, launch architecture, UI interactions, privacy/security regressions, 142/142 syntax files, both dependency audits and `git diff --check`: pass.
-- Lint: 0 errors in the configured scope; 1,140 legacy warnings remain as cleanup debt.
+- Lint: 0 errors in the configured scope; 1,138 legacy warnings remain as cleanup debt.
 - Accessibility: 36-page Axe audit, zero violations. Palette: 67 rendered routes, 200 source surfaces and 36 seal SVGs pass.
 - Runtime: all 68 HTML pages load with zero console errors, page errors, failed requests or HTTP failures.
 - Lighthouse production artifact: Chart 89; Horoscope 85; Aries 95; Leo 91; Compatibility 89; Ephemeris 88; Shop 97; Transits 85; Lifepath 92. Every listed route scored 100 for accessibility, best practices and SEO.
@@ -31,6 +31,7 @@
 - Unpublish the still-live legacy £7 Gumroad Eclipse listing while preserving past-buyer entitlements.
 - Verify the intended Ko-fi owner identity, payout destination and connected PayPal/Stripe account while signed in.
 - Add the required business/service address before opening a paid product.
+- GitHub Pages does not apply the intended `_headers` policy; enforce and verify CSP/HSTS/frame/referrer/permissions headers at a capable host or edge before opening a paid product.
 - No seller-account edit, push or production deployment is authorized or performed.
 
 ## Hard rules

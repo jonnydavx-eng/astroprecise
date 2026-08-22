@@ -7,10 +7,17 @@ const serviceWorker = read('./website/sw.js');
 const releaseTip = (serviceWorker.match(/const V = "ap-v(\d+)"/) || [])[1];
 assert.ok(releaseTip, 'service worker must declare the release tip');
 const appRuntime = read('./website/js/app.js');
+const profileManager = read('./website/js/profile.js');
 assert.ok(appRuntime.includes(`window.AP_ASSET_V || '${releaseTip}'`),
   'runtime-injected assets must fall back to the current release tip');
 assert.ok(appRuntime.includes("s.src = 'js/ap-engine-visuals.js?v=' + AP_ASSET_V"),
   'runtime-injected engine stills must load their controller at the current release tip');
+assert.ok(profileManager.includes("localStorage.removeItem('ap_user')"),
+  'the retired local pseudo-account must purge its legacy browser record');
+assert.equal(/passwordHash|btoa\(password\)|function\s+(?:login|register|saveUser|updateProfile)\b/.test(profileManager), false,
+  'profile manager must never store or expose reversible local password material');
+assert.equal(/\b(?:getUser|saveUser|isLoggedIn|login|register|logout|updateProfile|generateAppSyncData)\s*,/.test(profileManager), false,
+  'retired pseudo-account and user-bearing sync methods must not be exported');
 for (const page of ['./website/ephemeris.html', './website/horoscope.html']) {
   assert.ok(read(page).includes(`window.AP_ASSET_V='${releaseTip}'`),
     `${page} must seed the runtime asset tip before app.js injects styles and helpers`);
@@ -122,7 +129,16 @@ for (const critical of ['app', 'chart-page', 'horoscope-page']) {
 assert.ok(serviceWorker.includes('if (isCritical ||') && serviceWorker.includes('if (network) return network;'), 'release-critical code must remain network-first');
 
 const runbook = read('./ECLIPSE-RUNBOOK.md');
+const paypalRunbook = read('./PAYPAL-SETUP.md');
 assert.ok(runbook.includes('27 suites, must be 27/27'));
+assert.match(runbook, /archived entitlement runbook/i,
+  'Eclipse operations must stay explicitly archived');
+assert.equal(/\?license=|turn(?:ing)? (?:the )?checkout live|checkoutEnabled:\s*true/i.test(runbook), false,
+  'archived Eclipse instructions must not restore URL licences or checkout activation');
+assert.match(paypalRunbook, /retired for v900/i,
+  'obsolete PayPal product instructions must be visibly retired');
+assert.equal(/site is already fully wired for PayPal|every step below is a paste-a-link job/i.test(paypalRunbook), false,
+  'retired PayPal instructions must not tell the owner to reactivate the old catalogue');
 assert.equal(/19 suites|19\/19|23 suites|23\/23|24 suites|24\/24|25 suites|25\/25|26 suites|26\/26/.test(runbook), false);
 
 const mergeNote = read('./MERGE-2026-07-17-COWORK.md');
