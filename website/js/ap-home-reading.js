@@ -7,7 +7,7 @@
 
   if (!document.body || !document.body.classList.contains('ap-reading-room')) return;
 
-  var oracleSrc = 'js/oracle.js?v=899';
+  var oracleSrc = 'js/oracle.js?v=900';
 
   function $(id) { return document.getElementById(id); }
 
@@ -84,6 +84,9 @@
     run.started = true;
     var natal = savedChart();
     paint(null, natal);
+    // Home has no source caption, and the oracle output only feeds that
+    // caption. Keep the sitting copy without loading an unused engine.
+    if (!$('ap-reading-source')) return;
     loadScript(oracleSrc).then(function () {
       if (!window.AstroOracle || typeof window.AstroOracle.getDailyInsight !== 'function') return;
       var insight = window.AstroOracle.getDailyInsight(natal, new Date());

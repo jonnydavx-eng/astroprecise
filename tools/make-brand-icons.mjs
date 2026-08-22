@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // make-brand-icons.mjs — regenerate the full favicon/app-icon set from the
-// v899 Midnight Meridian SVGs. Run from anywhere: node tools/make-brand-icons.mjs
+// v900 Midnight Meridian SVGs. Run from anywhere: node tools/make-brand-icons.mjs
 //
 // Sources:  website/favicon.svg        (32px-optimized derivation, no ticks)
 //           website/img/logo-mark.svg  (large master, full detail)

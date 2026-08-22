@@ -928,7 +928,7 @@
   .ap-surface-a__receipt strong { font-size: clamp(20px, 6.4vw, 28px); }
 }
 
-/* Sitting polish ap-v899 — ion action, silver instrument, cool-spectrum depth. */
+/* Sitting polish ap-v900 — ion action, silver instrument, cool-spectrum depth. */
 .ap-live-home.ap-reading-room .ap-reading-kicker {
   color: var(--ap-ember);
   letter-spacing: 0.22em;
@@ -968,4 +968,29 @@
   border: 1px solid var(--ap-ember);
   background: transparent;
   color: var(--ap-ember);
+}
+
+/* Keep the Earth-first viewport cheap to lay out on phones. These sections
+   retain measured space for the scroll bar while their contents stay outside
+   the initial style/layout/paint pass. */
+@media (max-width: 700px) {
+  .ap-live-home.ap-reading-room .ap-personal-entry {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 972px;
+  }
+
+  .ap-live-home.ap-reading-room .ap-event-rail {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 878px;
+  }
+
+  .ap-live-home.ap-reading-room .ap-proof-ledger {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 408px;
+  }
+
+  .ap-live-home.ap-reading-room .ap-site-footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 490px;
+  }
 }

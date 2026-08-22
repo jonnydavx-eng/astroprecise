@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const count = (text, pattern) => (text.match(pattern) || []).length;
@@ -17,6 +17,12 @@ for (const page of ['./website/ephemeris.html', './website/horoscope.html']) {
 }
 
 const chartPage = read('./website/js/chart-page.js');
+assert.ok(chartPage.includes('(seed = Math.imul(seed, 16807) >>> 0) / 4294967296'),
+  'chart artwork PRNG must stay unsigned so every canvas radius is non-negative');
+assert.equal(/Math\.imul\(seed,\s*16807\)[^\n]*%/.test(chartPage), false,
+  'chart artwork must not restore the signed-remainder PRNG that broke PNG export');
+assert.ok(chartPage.includes('privacySafeShareChart') && chartPage.includes('Personal details withheld'),
+  'default chart sharing must render the privacy-safe surrogate');
 assert.ok(chartPage.includes('Career point'));
 assert.ok(chartPage.includes("fs.orb.toFixed(1) + '° from exact'"));
 assert.ok(!chartPage.includes('}° orb ·'));
@@ -59,6 +65,15 @@ for (const path of ['./website/index-full.html', './website/deep-time.html', './
   assert.equal(/arcminute/i.test(read(path)), false, `${path} must not make an arcminute claim`);
 }
 const home = read('./website/index.html');
+assert.ok(home.includes("key === 'nosw' || key === 'lite'") && home.includes("value === '1'") &&
+  home.indexOf('var incomingQuery') < home.indexOf('<link rel="preload"'),
+  'Observatory query allowlist must scrub legacy personal fields before assets load');
+assert.ok(home.includes('moments.length === 1') && home.includes("publicMarkers.length === 1") &&
+  home.includes("publicMarkers[0].key === 'public'"),
+  'Observatory fixed moments must require one canonical public marker');
+assert.ok(home.includes('focuses.length === 1') && home.includes('scales.length === 1') &&
+  home.includes('raw !== cleanHash'),
+  'Observatory must reconstruct accepted fragments and remove unrelated personal fields');
 const orreryAdapter = read('./website/js/void-orrery-adapter.js');
 assert.ok(home.includes('Preparing 3D'));
 assert.ok(orreryAdapter.includes('No substitute model has been shown.') && orreryAdapter.includes('Retry 3D'));
@@ -131,7 +146,15 @@ assert.equal(/arcminute|ephemeris/i.test(launchPack), false);
 const shop = read('./website/shop.html');
 const terms = read('./website/terms.html');
 const refunds = read('./website/refunds.html');
+const shopCommerce = read('./website/js/shop-commerce.js');
+const personalizationEngine = read('./website/js/personalization-engine.js');
+const readingPrefs = read('./website/js/ap-reading-prefs.js');
+const fulfilRedirect = read('./website/fulfil-redirect.html');
 const eclipse = read('./website/eclipse.html');
+const eclipseLive = read('./website/js/ap-eclipse-live-v834.js');
+const horoscopePage = read('./website/js/horoscope-page.js');
+const quizRuntime = read('./website/js/quiz.js');
+const moonphaseHtml = read('./website/moonphase.html');
 const productConfig = read('./website/js/app.js');
 const affiliateSocial = read('./website/js/affiliate-social.js');
 const edition = read('./website/js/ap-eclipse-edition-v841.js');
@@ -143,6 +166,46 @@ const gumroadBridge = read('./website/js/ap-gumroad-bridge.js');
 assert.equal((shop.match(/<article class="ap-product/g) || []).length, 1,
   'shop must not sell a second product; field guide may stay as archive');
 assert.ok(shop.includes('Eight-page PDF · ready now'));
+assert.match(shop, /eclipse-edition-art-v841-560\.webp[^>]+srcset=/,
+  'shop hero must use the inspected responsive WebP artwork');
+assert.match(shop, /eclipse-field-guide-cover-final-v836-480\.webp[^>]+srcset=/,
+  'field-guide cover must use the inspected responsive WebP artwork');
+assert.match(shop, /earth-256\.webp[^>]+srcset=/,
+  'shop Earth still must use the responsive engine derivative');
+for (const [path, maxBytes] of [
+  ['./website/img/editorial/eclipse-edition-art-v841-560.webp', 30000],
+  ['./website/img/editorial/eclipse-edition-art-v841-1122.webp', 80000],
+  ['./website/img/editorial/eclipse-field-guide-cover-final-v836-480.webp', 40000],
+  ['./website/img/editorial/eclipse-field-guide-cover-final-v836-960.webp', 100000],
+  ['./website/img/engine/earth-256.webp', 20000],
+  ['./website/img/engine/earth-512.webp', 50000],
+]) {
+  assert.ok(statSync(new URL(path, import.meta.url)).size < maxBytes,
+    `${path} exceeds its release byte budget`);
+}
+assert.ok(shopCommerce.includes('const ZODIAC_SIGNS = Object.freeze') &&
+  shopCommerce.includes('const label = canonicalSign(sign)') &&
+  shopCommerce.includes('const slug = label.toLowerCase()'),
+  'dormant commerce previews must keep saved signs on a closed label/path vocabulary');
+assert.equal(/sign\.toLowerCase\(\)\.replace/.test(shopCommerce), false,
+  'saved sign data must never be transformed directly into a seal path');
+assert.ok(personalizationEngine.includes('const ZODIAC_SIGNS = Object.freeze') &&
+  personalizationEngine.includes('welcome.replaceChildren') &&
+  personalizationEngine.includes('note.replaceChildren'),
+  'personalization must use closed sign labels and DOM text nodes');
+assert.equal(personalizationEngine.includes('.innerHTML'), false,
+  'saved profile fields must never reach personalization innerHTML');
+const checkoutPrefs = readingPrefs.slice(
+  readingPrefs.indexOf('function appendToCheckoutUrl'),
+  readingPrefs.indexOf('window.APReadingPrefs')
+);
+assert.equal(/chart_name|AstroProfile\.getCharts/.test(checkoutPrefs), false,
+  'saved chart labels must never be serialized into an external checkout URL');
+assert.ok(fulfilRedirect.includes('content="no-referrer"') &&
+  fulfilRedirect.indexOf('history.replaceState') < fulfilRedirect.indexOf('<link rel="icon"'),
+  'legacy fulfilment metadata must be scrubbed from AstroPrecise history before assets load');
+assert.ok(privacy.includes('Legacy order handoff') && privacy.includes('No current shop checkout uses this bridge.'),
+  'the narrow payment-to-Typeform metadata exception must be documented explicitly');
 assert.equal(shop.includes('Your Eclipse Edition'), false, 'eclipse edition is retired from the shop');
 assert.equal(shop.includes('Personalised eclipse edition'), false);
 assert.match(shop, /Optional Ko-fi support requires an email/i,
@@ -194,6 +257,42 @@ assert.equal(edition.includes('data-edition-buy'), false);
 assert.ok(eclipse.includes('5.1 MB PDF'));
 assert.equal(/2\.7 MB PDF/.test(eclipse), false);
 assert.equal(/personally\s+reviewed|reviewed before they(?:'|&rsquo;)re sent|a human pass/i.test(read('./website/why.html')), false);
+assert.ok(eclipseLive.includes('new URL(window.location.pathname, window.location.origin)') &&
+  eclipseLive.includes("url.searchParams.set('public', '1')"),
+  'eclipse share must build a canonical explicitly public event URL');
+assert.ok(eclipse.includes('momentMs >= rangeStartMs && momentMs <= rangeEndMs'),
+  'eclipse ingress must retain only moments inside its public replay window');
+assert.equal(eclipseLive.includes('new URL(window.location.href)'), false,
+  'eclipse share must not re-share arbitrary ingress parameters');
+assert.ok(horoscopePage.includes('new URL(window.location.pathname, window.location.origin)') &&
+  horoscopePage.includes("url.searchParams.set('sign', currentOpenSign)"),
+  'horoscope share must build a canonical sign-only URL');
+assert.equal(horoscopePage.includes('new URL(window.location.href)'), false,
+  'horoscope share must not re-share arbitrary ingress parameters');
+assert.ok(quizRuntime.includes('new URL(window.location.pathname, window.location.origin).href'),
+  'quiz share must use the canonical page address');
+for (const path of ['./website/eclipse.html', './website/horoscope.html', './website/quiz.html', './website/moonphase.html', './website/guides.html']) {
+  const source = read(path);
+  assert.ok(source.includes('content="no-referrer"'), `${path} must suppress legacy-address referrers`);
+  assert.ok(source.includes('history.replaceState'), `${path} must canonicalize arbitrary ingress before sharing`);
+}
+const skyGuides = read('./website/js/sky-guides.js');
+assert.ok(skyGuides.includes('function safeHistoryUrl') && !skyGuides.includes('location.pathname + location.search'),
+  'guide history must preserve only allowlisted runtime flags');
+const brandNebula = read('./website/css/ap-brand-nebula.css');
+assert.equal(/html\.ap-brand-nebula body\s*>\s*\*\s*\{/.test(brandNebula), false,
+  'late brand styling must not de-fix body-level canvases, notices or mobile navigation');
+
+for (const path of [
+  './website/index-classic.html', './website/index-full.html', './website/index-lite.html',
+  './website/mysky.html', './website/observatory.html', './website/deep-time.html', './website/synastry.html'
+]) {
+  const source = read(path);
+  assert.ok(source.indexOf('content="no-referrer"') > -1 && source.indexOf('content="no-referrer"') < source.indexOf('<script>'),
+    `${path} must suppress referrers before its redirect runs`);
+  assert.equal(/target\.search\s*=\s*location\.search|target\.hash\s*=\s*location\.hash|location\.search\s*\+\s*location\.hash/.test(source), false,
+    `${path} must not blindly relay legacy personal fields`);
+}
 
 const moment = read('./website/moment.html');
 const saturnReturn = read('./website/saturn-return.html');
@@ -330,6 +429,12 @@ for (const path of publicTruthSources) {
 }
 
 const moonphase = read('./website/js/moonphase.js');
+assert.ok(moonphase.includes('APDeepLink.stashSkyLink') && moonphase.includes("var href = 'index.html#focus=moon'"),
+  'birthday Moon instant must use a same-tab private stash and a clean model link');
+assert.equal(/buildSkyLink\s*\(\s*\{\s*m:\s*utc/.test(moonphase), false,
+  'birthday Moon instant must not be serialized into a public link');
+assert.ok(moonphase.includes("escHtml(label || '')"),
+  'Moon compatibility names must render as inert text');
 const outreachPage = read('./website/outreach.html');
 for (const source of [moonphase, outreachPage]) {
   assert.ok(source.includes("document.execCommand('copy') === true"),

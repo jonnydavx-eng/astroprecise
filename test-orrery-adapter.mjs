@@ -125,11 +125,27 @@ if (!observatoryControls.includes("world[2] || '#8BA9FF'")) {
 ok('adapter poster, daypart ambience and System control use Midnight Meridian accents');
 if (!W.includes('function fitEarthTerminatorFrame(') ||
     !W.includes('const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect)') ||
-    !W.includes('fitEarthTerminatorFrame(0.78, 6 * D2R)') ||
+    !W.includes('fitEarthTerminatorFrame(0.78, 6 * D2R, fitOptions)') ||
     !W.includes('const earthScale = meshes.earth.scale') ||
     !W.includes('_camOff.normalize().multiplyScalar(radius)') ||
     !W.includes('applyEarthLimbHold,')) {
   fail('Earth limb hold must solve a public, aspect-aware complete-globe frame');
+}
+const earthFitStart = W.indexOf('function fitEarthTerminatorFrame(');
+const earthFitEnd = W.indexOf('function syncEarthSittingBodyVisibility', earthFitStart);
+const earthFitBody = earthFitStart >= 0 && earthFitEnd > earthFitStart
+  ? W.slice(earthFitStart, earthFitEnd)
+  : '';
+if (!W.includes('const earthFitCache = {') || !W.includes('function invalidateEarthFitCache()')
+    || !W.includes('const fitOptions = { refit: true, aspect: fittedAspect }')) {
+  fail('Earth limb fit must cache its solve and refit from resize-owned aspect data');
+}
+if (earthFitBody.includes('getBoundingClientRect()')) {
+  fail('idle Earth limb fit still forces a DOM layout read');
+}
+if (!earthFitBody.includes('if (camera.fov !== CAM_FOV_CLOSE)')
+    || !earthFitBody.includes('setEarthTerminatorCamera(earthFitCache.distance, elevRad)')) {
+  fail('Earth hold must reuse projection/distance while retaining live sun-relative direction');
 }
 if (!W.includes('syncEarthSittingBodyVisibility') || !W.includes("const sitting = focusFrameId === 'earth'")) {
   fail('Earth sitting must hide outer worlds that peek in wide bands');
@@ -327,7 +343,11 @@ if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820
 if (!W.includes('!portraitMode && !focusFrameId')) {
   fail('free-explore scale sync can still stomp a focused planet portrait');
 }
-if (!W.includes("(!focusFrameId || focusFrameId === 'earth')") || !W.includes('const homeEarthStart =')) {
+if (!W.includes("(!focusFrameId || focusFrameId === 'earth')")
+    || !W.includes('function homeEarthResizeMode()')
+    || !W.includes("return 'intro'")
+    || !W.includes("return 'earth-exit'")
+    || !W.includes('if (homeEarthExit) camRadius = completeEarthRadiusFloor(camRadius)')) {
   fail('Home resize can still retarget an outer-planet portrait to Earth');
 }
 
@@ -440,17 +460,34 @@ if (navModel.includes("['explore.html'")) fail('retired Explore destination rema
 const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
 for (const probe of [
   "new URL('./index.html', location.href)",
-  'target.search = location.search;',
-  'target.hash = location.hash;',
+  "canonicalKey === 'nosw' || canonicalKey === 'lite'",
+  "canonicalKey === 'focus'",
+  "canonicalKey === 'scale'",
   'location.replace(target.href);',
   '<meta name="robots" content="noindex, follow">',
+  '<meta name="referrer" content="no-referrer">',
 ]) {
   if (!exploreHtml.includes(probe)) fail('Explore redirect contract missing: ' + probe);
+}
+for (const unsafeForward of ['target.search = location.search;', 'target.hash = location.hash;']) {
+  if (exploreHtml.includes(unsafeForward)) fail('Explore forwards an unsanitized address component: ' + unsafeForward);
 }
 for (const retired of ['<void-orrery', 'explore-boot-v', 'id="orrery-lite-deck"']) {
   if (exploreHtml.includes(retired)) fail('retired Explore surface remains: ' + retired);
 }
 ok('Explore merges into the one flagship Observatory');
+
+const deepLinkBuilder = readFileSync(join(root, 'js', 'ap-deep-link.js'), 'utf8');
+if (!deepLinkBuilder.includes("if (m !== 'now') parts.push('public=1')")) {
+  fail('public-moment privacy migration missing: fixed emitters must mark public=1');
+}
+for (const probe of ['publicMarkers.length === 1', "publicMarkers[0].key === 'public'", 'history.replaceState']) {
+  if (!observatory.includes(probe)) fail('public-moment privacy migration missing: ' + probe);
+}
+if (!indexHtml.includes('Fixed public sky moments carry public=1 from v900 onward')) {
+  fail('Home does not scrub legacy fixed moments before loading assets');
+}
+ok('fixed public events are marked; ambiguous historical moments fail closed');
 
 /* 5. Dedicated Eclipse renderer and unobstructed stage. */
 const eclipseHtml = readFileSync(join(root, 'eclipse.html'), 'utf8');
@@ -544,11 +581,42 @@ for (const name of ['earth_md.webp', 'jupiter_md.webp', 'mars_md.webp', 'mercury
 for (const probe of ['function mediumName(name)', 'function wantsMediumTextures()',
   'function isCriticalInstrumentTexture(file)', 'requestPreloadTexture(file, startupQuality)',
   'coldInstrument && !isCriticalInstrumentTexture(file)', 'function scheduleFullTextureUpgrades()',
-  'const galaxySpriteTextureCache = new Map()', 'if (p.id >= 3 && !galaxyBuilt) ensureGalaxyLayers()']) {
+  'const galaxySpriteTextureCache = new Map()', 'if (p.id >= 3 && !galaxyBuilt) ensureGalaxyLayers()',
+  'function nextTextureUploadFrame(generation, expectedRenderer)',
+  'async function prewarmEarthTextureBatch(records, generation, expectedRenderer)',
+  'expectedRenderer.initTexture(record.texture)',
+  'function attachEarthTextureBatch(records, generation, expectedRenderer)',
+  'stageEarthTextureBatch(earthSpecs)',
+  '.then(waitForEarthTextureAttachment)']) {
   if (!W.includes(probe)) fail('renderer quality/performance contract missing: ' + probe);
 }
+if (!W.includes("{ file: 'earth.jpg', srgb: true }")
+    || !W.includes("{ file: 'earth_lights.png', srgb: true }")
+    || !W.includes("{ file: 'earth_specular.jpg', srgb: false }")
+    || !W.includes("{ file: 'earth_clouds.jpg', srgb: false }")
+    || !W.includes("{ file: 'earth_normal.jpg', srgb: false }")) {
+  fail('staged Earth batch must retain geography, lights, specular, clouds and normal maps');
+}
+const earthFileListStart = W.indexOf('function earthTextureFiles()');
+const earthFileListEnd = W.indexOf('function requestPreloadTexture', earthFileListStart);
+const earthFileListBody = earthFileListStart >= 0 && earthFileListEnd > earthFileListStart
+  ? W.slice(earthFileListStart, earthFileListEnd)
+  : '';
+if (!earthFileListBody.includes("'earth_clouds.jpg'")
+    || !earthFileListBody.includes("'earth_normal.jpg'")
+    || earthFileListBody.includes('perfTier') || earthFileListBody.includes('PRM')) {
+  fail('reduced-motion/low-tier Earth texture plan must still contain all five physical maps');
+}
+const earthSpecsStart = W.indexOf('const earthSpecs = [');
+const earthSpecsEnd = W.indexOf('stageEarthTextureBatch(earthSpecs)', earthSpecsStart);
+const earthSpecsBody = earthSpecsStart >= 0 && earthSpecsEnd > earthSpecsStart
+  ? W.slice(earthSpecsStart, earthSpecsEnd)
+  : '';
+if (earthSpecsBody.includes("perfTier !== 'low'") || earthSpecsBody.includes('!PRM')) {
+  fail('Earth GPU warmup still removes physical maps for reduced-motion/low-tier visitors');
+}
 if (/function webglOK\(\)/.test(W)) fail('renderer still creates a redundant module-evaluation WebGL context');
-ok('renderer stages crisp medium textures before idle full-resolution upgrades');
+ok('renderer stages one Earth GPU upload per frame before atomic reveal and idle full-resolution upgrades');
 
 /* 7. Import maps on the two live Three.js pages only. */
 for (const page of ['index.html', 'eclipse.html']) {

@@ -8,12 +8,14 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-horoscope.mjs && node test-compat.mjs && node test-couples-sky.mjs && node test-content-bank.mjs && node test-art-themes.mjs && node test-weekly-sky.mjs && node test-ap-sky-bridge.mjs && node test-eclipse-geometry.mjs && node test-orrery-adapter.mjs && node test-gumroad-tables.mjs && node test-eclipse-edition.mjs && node test-deep-reading.mjs && node test-interpretations-patterns.mjs && node test-chart-wheel-layout.mjs && node test-palette-contract.mjs && node test-release-honesty.mjs && node test-planet-maps.mjs && npm --prefix ephemeris-package test",
+    "test": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-horoscope.mjs && node test-compat.mjs && node test-couples-sky.mjs && node test-content-bank.mjs && node test-art-themes.mjs && node test-weekly-sky.mjs && node test-ap-sky-bridge.mjs && node test-eclipse-geometry.mjs && node test-orrery-adapter.mjs && node test-gumroad-tables.mjs && node test-eclipse-edition.mjs && node test-deep-reading.mjs && node test-interpretations-patterns.mjs && node test-chart-wheel-layout.mjs && node test-chart-url-privacy.mjs && npm run test:profile-security && node test-palette-contract.mjs && node test-seal-palette.mjs && node test-release-honesty.mjs && node test-planet-maps.mjs && npm --prefix ephemeris-package test",
     "test:engine": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs",
     "test:ui": "node tools/_diag-click.mjs && node tools/visual-check/_v833-living-sky.mjs && node tools/visual-check/_birth-hour-still.mjs",
     "test:focus": "node tools/visual-check/_v833-living-sky.mjs",
     "test:webgl": "node tools/_proof-webgl-resize.mjs",
     "test:launch": "node tools/_proof-massive-build.mjs && node tools/_proof-eclipse-wire.mjs && node tools/_proof-shop-cowork-wire.mjs && node tools/_proof-verify-plate.mjs && node tools/_proof-sky-events.mjs",
+    "test:palette-rendered": "npm --prefix tools/visual-check run palette",
+    "test:profile-security": "node tools/visual-check/test-profile-xss.mjs",
     "check:plate": "node tools/mint-demo-plate-check.mjs",
     "build": "node tools/build.mjs",
     "serve:dist": "node tools/serve-dist.mjs",
@@ -29,6 +31,10 @@
     "eslint": "^9.13.0",
     "globals": "^15.11.0",
     "prettier": "^3.3.3"
+  },
+  "overrides": {
+    "brace-expansion": "1.1.18",
+    "js-yaml": "4.3.1"
   }
 }
 

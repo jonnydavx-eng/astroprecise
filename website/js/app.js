@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '899');
+const AP_ASSET_V = String(window.AP_ASSET_V || '900');
 
 const AstroApp = (() => {
 
@@ -1652,7 +1652,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Archive · 12 Aug 2026',
         marketingLine:'Closed event edition. Existing buyers retain licence recovery and support.',
-        previewImage: 'img/editorial/eclipse-edition-art-v841.png',
+        previewImage: 'img/editorial/eclipse-edition-art-v841-560.webp',
         sampleUrl:    'eclipse.html',
         blurb:        'The free instrument still checks the 12 August 2026 eclipse against your computed birth chart. The event-specific checkout is closed. Existing buyers can restore the five authored beats, deterministic natal-wheel plate, PNG and print view with their licence.',
         icon:         'sunhigh',
@@ -2290,7 +2290,7 @@ else AstroApp.init();
   if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   if (document.querySelector('script[data-ap-affiliate-social]')) return;
   var s = document.createElement('script');
-  s.src = 'js/affiliate-social.js?v=899';
+  s.src = 'js/affiliate-social.js?v=900';
   s.dataset.apAffiliateSocial = '1';
   s.defer = true;
   document.head.appendChild(s);
@@ -2310,7 +2310,7 @@ else AstroApp.init();
 (function loadFooterInject() {
   if (document.querySelector('script[data-ap-footer-inject], script[src*="ap-footer-inject"]')) return;
   var s = document.createElement('script');
-  s.src = 'js/ap-footer-inject.js?v=899';
+  s.src = 'js/ap-footer-inject.js?v=900';
   s.dataset.apFooterInject = '1';
   s.defer = true;
   document.head.appendChild(s);

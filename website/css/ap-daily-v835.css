@@ -137,6 +137,12 @@ body.page-horoscope {
   font: 500 clamp(4.35rem, 8.5vw, 8rem) / 0.83 "Cormorant Garamond", Georgia, serif;
   letter-spacing: -0.055em;
   text-wrap: balance;
+  /* This route's editorial scale is intentional. A late shared clarity layer
+     otherwise shrinks it after first paint and moves the entire picker. */
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
+  font-size: clamp(4.35rem, 8.5vw, 8rem) !important;
+  font-weight: 500 !important;
+  line-height: 0.83 !important;
 }
 
 .page-horoscope .daily-hero__sub {
@@ -277,6 +283,29 @@ body.page-horoscope {
 
 .page-horoscope .sign-reading-panel.is-open {
   display: block;
+}
+
+/* First-render geometry must match the late shared-structure layer. Reserving
+   the final 4:5 cards here prevents all twelve choices growing after paint. */
+body.page-horoscope .sign-grid {
+  gap: 0.65rem;
+}
+body.page-horoscope .sign-card {
+  aspect-ratio: 4 / 5 !important;
+  min-height: 0 !important;
+  padding: 0.75rem 0.45rem 0.65rem !important;
+  justify-content: center !important;
+  gap: 0.3rem !important;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+body.page-horoscope .sign-card__glyph {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 2.75rem;
+  height: 3.15rem;
+  margin: 0 auto 0.1rem;
+  line-height: 0;
 }
 
 .page-horoscope .sign-reading-panel__inner {

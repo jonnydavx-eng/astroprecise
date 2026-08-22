@@ -28,6 +28,27 @@ const PAGES = [
   { id: 'links', path: '/links.html' },
   { id: 'profile', path: '/profile.html' },
   { id: 'saturn-return', path: '/saturn-return.html' },
+  { id: 'accuracy', path: '/accuracy.html' },
+  { id: 'angel-numbers', path: '/angel-numbers.html' },
+  { id: 'aries', path: '/aries.html' },
+  { id: 'charts', path: '/charts.html' },
+  { id: 'catalogue', path: '/catalogue.html' },
+  { id: 'contact', path: '/contact.html' },
+  { id: 'cosmic-calendar', path: '/cosmic-calendar.html' },
+  { id: 'guides', path: '/guides.html' },
+  { id: 'journey', path: '/journey.html' },
+  { id: 'moment', path: '/moment.html' },
+  { id: 'moonphase', path: '/moonphase.html' },
+  { id: 'name-numerology', path: '/name-numerology.html' },
+  { id: 'numerology', path: '/numerology.html' },
+  { id: 'privacy', path: '/privacy.html' },
+  { id: 'refunds', path: '/refunds.html' },
+  { id: 'retrograde', path: '/retrograde.html' },
+  { id: 'sample-reading', path: '/sample-reading.html' },
+  { id: 'solar-return', path: '/solar-return.html' },
+  { id: 'terms', path: '/terms.html' },
+  { id: 'rising-sign', path: '/what-is-my-rising-sign.html' },
+  { id: 'why', path: '/why.html' },
 ];
 
 async function main() {
@@ -41,7 +62,7 @@ async function main() {
     try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (_) {}
     try { localStorage.setItem('ap_privacy_ack', '1'); } catch (_) {}
   });
-  const version = process.env.AP_VERSION?.replace(/^ap-v/, '') || '899';
+  const version = process.env.AP_VERSION?.replace(/^ap-v/, '') || '900';
 
   const report = { base: BASE, capturedAt: new Date().toISOString(), pages: [], issues: [] };
 
@@ -73,9 +94,7 @@ async function main() {
       entry.incomplete = results.incomplete.length;
       entry.passes = results.passes.length;
       for (const v of entry.violations) {
-        if (v.impact === 'critical' || v.impact === 'serious') {
-          report.issues.push(`${p.id}: ${v.id} (${v.impact}) — ${v.help}`);
-        }
+        report.issues.push(`${p.id}: ${v.id} (${v.impact || 'unrated'}) — ${v.help}`);
       }
     } catch (err) {
       entry.error = String(err);

@@ -3,23 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#05080F">
+  <meta name="referrer" content="no-referrer">
+  <script>
+  (function () {
+    var target = new URL('./compatibility.html', location.href);
+    var incoming = new URLSearchParams(location.search || '');
+    var query = new URLSearchParams();
+    incoming.forEach(function (value, key) {
+      var name = String(key || '').toLowerCase();
+      if ((name === 'nosw' || name === 'lite') && String(value) === '1' && !query.has(name)) query.set(name, '1');
+    });
+    target.search = query.toString();
+    target.hash = '';
+    location.replace(target.href);
+  })();
+  </script>
+  <meta name="theme-color" content="#040812">
   <title>AstroPrecise — two birth minutes, one sky</title>
   <meta name="description" content="Synastry lives in the one sky. Two birth minutes, one model.">
   <link rel="canonical" href="https://astroprecise.app/compatibility.html">
   <meta http-equiv="refresh" content="0; url=compatibility.html">
   <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
   <style>
-    html, body { margin: 0; background: #020307; color: #F2ECDF; font: 16px/1.45 system-ui, sans-serif; }
+    html, body { margin: 0; background: #040812; color: #EEF4FA; font: 16px/1.45 system-ui, sans-serif; }
     main { min-height: 100svh; display: grid; place-items: center; padding: 32px; }
-    a { color: #FF6428; }
+    a { color: #8BA9FF; }
   </style>
-  <script>
-    (function () {
-      var hash = location.hash || '';
-      location.replace('compatibility.html' + hash);
-    })();
-  </script>
 </head>
 <body>
   <main>

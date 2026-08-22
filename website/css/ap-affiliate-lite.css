@@ -5,8 +5,8 @@
   position: relative;
   z-index: 2;
   padding: var(--space-8, 2rem) var(--space-4, 1rem);
-  border-top: 1px solid rgba(168, 158, 136, 0.14);
-  background: linear-gradient(180deg, transparent 0%, rgba(168, 176, 188, 0.04) 100%);
+  border-top: 1px solid rgba(147, 168, 191, 0.14);
+  background: linear-gradient(180deg, transparent 0%, rgba(147, 168, 191, 0.04) 100%);
 }
 
 .ap-affiliate-ad__inner {
@@ -19,12 +19,12 @@
   font-size: 0.58rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold-hero, #A8B0BC);
+  color: var(--gold-hero, #93A8BF);
   margin-bottom: var(--space-2, 0.5rem);
 }
 
 .ap-affiliate-ad__disc {
-  color: var(--silver-dim, #9A9084);
+  color: var(--silver-dim, #93A8BF);
   font-size: 0.52rem;
   letter-spacing: 0.12em;
   margin-left: 6px;
@@ -32,7 +32,7 @@
 
 .ap-affiliate-ad__lede {
   font-size: 0.78rem;
-  color: var(--silver-dim, #9A9084);
+  color: var(--silver-dim, #93A8BF);
   line-height: 1.6;
   max-width: 480px;
   margin: 0 auto var(--space-5, 1.25rem);
@@ -53,8 +53,8 @@
 }
 
 .ap-affiliate-ad__card {
-  background: rgba(16, 21, 32, 0.72);
-  border: 1px solid rgba(168, 158, 136, 0.18);
+  background: rgba(16, 29, 48, 0.72);
+  border: 1px solid rgba(147, 168, 191, 0.18);
   border-radius: var(--radius-lg, 14px);
   padding: var(--space-4, 1rem);
   text-decoration: none;
@@ -65,7 +65,7 @@
 }
 
 .ap-affiliate-ad__card:hover {
-  border-color: rgba(168, 176, 188, 0.38);
+  border-color: rgba(147, 168, 191, 0.38);
   transform: translateY(-1px);
 }
 
@@ -73,52 +73,52 @@
   font-size: 0.48rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold-hero, #A8B0BC);
+  color: var(--gold-hero, #93A8BF);
 }
 
 .ap-affiliate-ad__title {
   font-family: var(--font-display, Georgia, serif);
   font-size: 0.82rem;
-  color: var(--white, #E8E0D0);
+  color: var(--white, #EEF4FA);
   line-height: 1.35;
 }
 
 .ap-affiliate-ad__blurb {
   font-size: 0.68rem;
-  color: var(--silver-dim, #9A9084);
+  color: var(--silver-dim, #93A8BF);
   line-height: 1.5;
   flex: 1;
 }
 
 .ap-affiliate-ad__meta {
   font-size: 0.62rem;
-  color: var(--gold-hero, #A8B0BC);
+  color: var(--gold-hero, #93A8BF);
   letter-spacing: 0.05em;
 }
 
 .ap-affiliate-ad__fine {
   font-size: 0.58rem;
-  color: var(--silver-dim, #9A9084);
+  color: var(--silver-dim, #93A8BF);
   margin-top: var(--space-4, 1rem);
   line-height: 1.55;
 }
 
 .ap-affiliate-ad__fine a {
-  color: var(--gold-hero, #A8B0BC);
+  color: var(--gold-hero, #93A8BF);
   text-decoration: none;
 }
 
 .ap-affiliate-ad__fine a:hover {
-  color: var(--gold-hero-light, #E8EBF0);
+  color: var(--gold-hero-light, #EEF4FA);
 }
 
 /* Inline single-pick card (horoscope slot / reading panel hosts) */
 .ap-affiliate-inline {
   margin: var(--space-6, 1.5rem) 0;
   padding: var(--space-4, 1rem);
-  border: 1px solid rgba(168, 158, 136, 0.16);
+  border: 1px solid rgba(147, 168, 191, 0.16);
   border-radius: var(--radius-lg, 14px);
-  background: rgba(16, 21, 32, 0.55);
+  background: rgba(16, 29, 48, 0.55);
 }
 
 .ap-affiliate-inline__disc {
@@ -126,7 +126,7 @@
   font-size: 0.5rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--silver-dim, #9A9084);
+  color: var(--silver-dim, #93A8BF);
   margin-bottom: var(--space-2, 0.5rem);
 }
 
@@ -140,17 +140,17 @@
 .ap-affiliate-inline__title {
   font-family: var(--font-display, Georgia, serif);
   font-size: 0.88rem;
-  color: var(--white, #E8E0D0);
+  color: var(--white, #EEF4FA);
   line-height: 1.35;
 }
 
 .ap-affiliate-inline__blurb {
   font-size: 0.72rem;
-  color: var(--silver-dim, #9A9084);
+  color: var(--silver-dim, #93A8BF);
   line-height: 1.5;
 }
 
 .ap-affiliate-inline__meta {
   font-size: 0.65rem;
-  color: var(--gold-hero, #A8B0BC);
+  color: var(--gold-hero, #93A8BF);
 }

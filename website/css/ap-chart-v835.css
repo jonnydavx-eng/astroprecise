@@ -1317,7 +1317,7 @@ html body.page-chart .form-glass__icon {
   top: calc(100% + 7px);
   right: 0;
   width: 220px;
-  display: grid;
+  display: none;
   gap: 5px;
   padding: 7px;
   border: 1px solid var(--chart-line-strong);
@@ -1684,6 +1684,10 @@ html body.page-chart .form-glass__icon {
   border: 1px solid var(--chart-line);
   border-radius: 6px;
   background: rgba(5, 8, 15, 0.72);
+}
+
+.page-chart .result-actions__more[open] > .result-actions__more-menu {
+  display: grid;
 }
 
 .page-chart .chart-wheel-control label {
@@ -2872,9 +2876,13 @@ html body.page-chart.ap-chart-has-results .chart-hero {
 }
 
 .page-chart .chart-sitting-more__body {
-  display: grid;
+  display: none;
   gap: 12px;
   padding: 4px 0 18px;
+}
+
+.page-chart .chart-sitting-more[open] > .chart-sitting-more__body {
+  display: grid;
 }
 
 .page-chart .chart-sitting-more .result-actions {
@@ -2894,6 +2902,15 @@ html body.page-chart.ap-chart-has-results .chart-hero {
 }
 
 @media (max-width: 700px) {
+  .page-chart .result-actions__more-menu {
+    position: static;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 6px;
+    box-shadow: none;
+  }
+
   html body.page-chart .ap-room-sky.ap-earth-band,
   html body.page-chart .ap-room-sky {
     height: 144px !important;

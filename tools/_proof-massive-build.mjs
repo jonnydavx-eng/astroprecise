@@ -1,5 +1,5 @@
 /**
- * Static proof: AstroPrecise v899 launch architecture.
+ * Static proof: AstroPrecise v900 launch architecture.
  *
  * Current contract: one general WebGL Observatory, one dedicated Eclipse
  * simulation, authored Surface A stills on reading/conversion routes, truthful
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const web = path.join(root, 'website');
-const RELEASE = '899';
+const RELEASE = '900';
 const failures = [];
 
 function read(file) { return fs.readFileSync(path.join(web, file), 'utf8'); }
@@ -48,7 +48,8 @@ const surfacePages = ['chart.html', 'deep-reading.html', 'shop.html', 'compatibi
 for (const file of surfacePages) {
   const html = read(file);
   ok(!/<void-orrery\b/.test(html) && !/<canvas\b/.test(html), `${file} owns no WebGL context`);
-  ok(/class="ap-surface-a"/.test(html) && /img\/engine\/earth\.webp/.test(html) &&
+  ok(/class="ap-surface-a"/.test(html) &&
+      /img\/engine\/earth-256\.webp/.test(html) && /img\/engine\/earth-512\.webp/.test(html) &&
       /Engine still · schematic/.test(html) && /not a live feed/.test(html),
     `${file} exposes an honest clean Surface A still`);
   ok(/index\.html#m=now&amp;focus=earth/.test(html), `${file} bridges to the one Observatory`);
@@ -58,7 +59,7 @@ for (const file of surfacePages) {
 const eclipse = read('eclipse.html');
 ok((eclipse.match(/class="ap-eclipse-live__canvas"/g) || []).length === 1 && !/<void-orrery\b/.test(eclipse),
   'Eclipse owns one dedicated simulation and no general model');
-ok(/ap-eclipse-live-v834\.js\?v=899/.test(eclipse) && /data-eclipse-play/.test(eclipse) &&
+ok(/ap-eclipse-live-v834\.js\?v=900/.test(eclipse) && /data-eclipse-play/.test(eclipse) &&
     /data-eclipse-lens="earth"/.test(eclipse), 'Eclipse simulation and controls are pinned and present');
 ok(/downloads\/astroprecise-eclipse-field-guide-2026\.pdf/.test(eclipse),
   'Eclipse keeps the completed free field guide');
@@ -67,8 +68,8 @@ ok(!/(?:Buy now|£7|Checkout is live)/i.test(eclipse), 'Eclipse advertises no ar
 const chart = read('chart.html');
 ok(/id="chart-form"/.test(chart) && /min="1800-01-01"/.test(chart) && /max="2200-12-31"/.test(chart),
   'Chart declares its form and supported date range');
-ok(/js\/chart-page\.js\?v=899/.test(chart) && /js\/chart-render\.js\?v=899/.test(chart),
-  'Chart controllers are pinned to v899');
+ok(/js\/chart-page\.js\?v=900/.test(chart) && /js\/chart-render\.js\?v=900/.test(chart),
+  'Chart controllers are pinned to v900');
 ok(/id="sitting-cta"/.test(chart) && /id="ap-chart-sky-bridge"/.test(chart),
   'Chart has the sitting and privacy-safe Observatory handoffs');
 
@@ -102,4 +103,4 @@ if (failures.length) {
   console.error(`\n${failures.length} launch architecture proof(s) failed`);
   process.exit(1);
 }
-console.log('\nPASS v899 launch architecture + one-model law + commerce honesty');
+console.log('\nPASS v900 launch architecture + one-model law + commerce honesty');

@@ -4,10 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <script>
+  (function () {
+    var incoming = new URLSearchParams(location.search || '');
+    var kept = new URLSearchParams();
+    ['nosw', 'lite'].forEach(function (key) {
+      if (incoming.get(key) === '1') kept.set(key, '1');
+    });
+    var sign = String(incoming.get('sign') || '').toLowerCase();
+    if (/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/.test(sign)) kept.set('sign', sign);
+    var cleanSearch = kept.toString() ? '?' + kept.toString() : '';
+    if (location.search !== cleanSearch || location.hash) history.replaceState(null, '', location.pathname + cleanSearch);
+  })();
+  </script>
   <meta name="description" content="Daily horoscope for all 12 signs. Positions are calculated for today at 12:00 UT and interpreted through a solar chart; astrological meaning is offered for reflection and entertainment." />
   <title>Daily Horoscope — calculated from today’s sky | AstroPrecise</title>
-  <script>window.AP_ASSET_V='899';</script>
-  <link rel="stylesheet" href="css/fonts.css?v=899" />
+  <script>window.AP_ASSET_V='900';</script>
+  <link rel="preload" href="fonts/cormorant-garamond-normal-500.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/ibm-plex-mono-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css?v=900" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -29,6 +47,11 @@
   <meta name="twitter:description" content="Positions calculated for today at 12:00 UT, then interpreted through a solar chart for all twelve signs." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#040812" />
+  <link rel="preload" href="css/ap-palette-2026.css?v=900" as="style" />
+  <link rel="preload" href="css/ap-logo-aurora.css?v=900" as="style" />
+  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=900" id="ap-css-visual-clarity" />
+  <link rel="preload" href="css/ap-page-structure.css?v=900" as="style" />
+  <link rel="preload" href="css/ap-model-stage.css?v=900" as="style" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -48,9 +71,9 @@
     "isPartOf": { "@type": "WebSite", "name": "AstroPrecise", "url": "https://astroprecise.app/" }
   }
   </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=899" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=899" />
-  <link rel="stylesheet" href="css/ap-daily-v835.css?v=899" />
+  <link rel="stylesheet" href="css/celestial-seals.css?v=900" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=900" />
+  <link rel="stylesheet" href="css/ap-daily-v835.css?v=900" />
 </head>
 <body class="page-horoscope ap-daily-ledger ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
@@ -89,6 +112,19 @@
       <div class="container daily-room__inner">
         <header class="daily-hero">
           <p class="daily-hero__eyebrow" id="today-date-display" aria-live="polite">Positions calculated at 12:00 UT · solar-chart reading</p>
+          <script>
+          (function () {
+            var target = document.getElementById('today-date-display');
+            var date = new Date().toLocaleDateString('en-GB', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            });
+            target.textContent = date.replace(/,/g, '').toUpperCase()
+              + ' · POSITIONS CALCULATED AT 12:00 UT · SOLAR-CHART READING';
+          })();
+          </script>
           <h1 id="page-title">Today, sign by sign</h1>
           <p class="daily-hero__sub">Choose a Sun sign. We calculate today’s planetary positions at one named instant, then interpret them through a whole-sign solar chart.</p>
           <p class="daily-hero__method"><a href="why.html">Calculated positions · astrological interpretation</a></p>
@@ -194,10 +230,9 @@
   <script src="js/ap-zodiac-constants.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
-  <script src="js/ap-nav-model.js?v=899" defer></script>
-  <script src="js/ap-footer-inject.js?v=899" defer></script>
-  <script src="js/app.js?v=899" defer></script>
-  <script src="js/horoscope-page.js?v=899" defer></script>
-  <script src="js/ap-daily-ritual.js?v=899" defer></script>
+  <script src="js/ap-nav-model.js?v=900" defer></script>
+  <script src="js/ap-footer-inject.js?v=900" defer></script>
+  <script src="js/app.js?v=900" defer></script>
+  <script src="js/horoscope-page.js?v=900" defer></script>
 </body>
 </html>

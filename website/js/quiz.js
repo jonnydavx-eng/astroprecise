@@ -411,7 +411,7 @@ const AstroQuiz = (() => {
     const shareBtn = container.querySelector('#aq-share-btn');
     if (shareBtn) {
       shareBtn.addEventListener('click', () => {
-        const url = window.location.href.split('#')[0];
+        const url = new URL(window.location.pathname, window.location.origin).href;
         if (navigator.share) {
           navigator.share({ title: arch.name + ' — ' + SHARE_NAME, text: shareText, url })
             .catch(() => {});

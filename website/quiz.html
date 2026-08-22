@@ -3,8 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <script>
+  (function () {
+    var incoming = new URLSearchParams(location.search || '');
+    var kept = new URLSearchParams();
+    ['nosw', 'lite'].forEach(function (key) {
+      if (incoming.get(key) === '1') kept.set(key, '1');
+    });
+    var cleanSearch = kept.toString() ? '?' + kept.toString() : '';
+    if (location.search !== cleanSearch || location.hash) history.replaceState(null, '', location.pathname + cleanSearch);
+  })();
+  </script>
   <meta name="description" content="Discover your cosmic archetype — a free 90-second astrology quiz mapping you to an element, modality and planet, then to your real birth chart." />
   <title>Discover Your Cosmic Archetype — Free Astrology Quiz | AstroPrecise</title>
 <link rel="manifest" href="manifest.json" />
@@ -28,11 +40,11 @@
   <meta name="twitter:description" content="A free 90-second quiz that maps you to a cosmic archetype, then routes you to your real birth chart." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#040812" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=899" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=899" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=900" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=900" id="ap-css-atlas-tokens" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=899" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=900" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" />
   <link rel="stylesheet" href="css/quiz-page.css" />
@@ -241,10 +253,10 @@
   <script src="js/ephemeris.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/icons.js"></script>
-<script src="js/quiz.js?v=899"></script>
+<script src="js/quiz.js?v=900"></script>
   <script src="js/effects.js"></script>
-  <script src="js/ap-page-boot.js?v=899" defer></script>
-  <script src="js/ap-footer-inject.js?v=899" defer></script>
+  <script src="js/ap-page-boot.js?v=900" defer></script>
+  <script src="js/ap-footer-inject.js?v=900" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

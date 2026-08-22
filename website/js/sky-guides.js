@@ -3,18 +3,20 @@
 
 (function () {
   const TIPS_KEY = "ap_guide_tips_done";
+  // Theme names are stable content aliases; every painted gradient uses the
+  // cool-spectrum Midnight Meridian system regardless of its legacy key.
   const THEME_GRADS = {
-    gold: "radial-gradient(ellipse 120% 80% at 18% 22%, rgba(236,230,216,0.22) 0%, transparent 55%), linear-gradient(135deg, #E8D4A0 0%, #d8b46a 22%, #6AB0FF 48%, #4A7EB8 82%, #07070A 100%)",
-    meridian: "radial-gradient(ellipse 100% 70% at 82% 18%, rgba(111,160,216,0.28) 0%, transparent 50%), linear-gradient(135deg, #5B9BD5 0%, #6FA0D8 32%, #d8b46a 58%, #121826 100%)",
-    silver: "radial-gradient(ellipse 90% 65% at 12% 78%, rgba(236,230,216,0.18) 0%, transparent 48%), linear-gradient(135deg, #D8D0C0 0%, #f2ecdf 34%, #8BAED4 68%, #121826 100%)",
-    violet: "radial-gradient(ellipse 110% 75% at 70% 30%, rgba(155,143,212,0.32) 0%, transparent 52%), linear-gradient(135deg, #9B8FD4 0%, #8B7EC8 38%, #d8b46a 64%, #1A2230 100%)",
-    rose: "radial-gradient(ellipse 95% 68% at 24% 72%, rgba(232,196,160,0.26) 0%, transparent 50%), linear-gradient(135deg, #E8C4A0 0%, #D4A882 32%, #d8b46a 55%, #5B8EC8 100%)",
-    indigo: "radial-gradient(ellipse 100% 72% at 88% 42%, rgba(90,122,158,0.3) 0%, transparent 48%), linear-gradient(135deg, #3D4F68 0%, #5A7A9E 40%, #d8b46a 68%, #07070A 100%)",
-    coral: "radial-gradient(ellipse 105% 70% at 16% 38%, rgba(232,148,114,0.28) 0%, transparent 50%), linear-gradient(135deg, #E89472 0%, #6AB0FF 38%, #d8b46a 62%, #F0E9DA 100%)",
-    dusk: "radial-gradient(ellipse 120% 80% at 50% 12%, rgba(216,180,106,0.2) 0%, transparent 55%), linear-gradient(135deg, #1A2840 0%, #2E3F5C 36%, #d8b46a 60%, #2A1E0E 100%)",
-    sage: "radial-gradient(ellipse 90% 65% at 78% 68%, rgba(127,168,90,0.26) 0%, transparent 48%), linear-gradient(135deg, #7FA85A 0%, #8FB36B 36%, #d8b46a 62%, #07070A 100%)",
-    slate: "radial-gradient(ellipse 100% 72% at 22% 28%, rgba(138,155,176,0.24) 0%, transparent 50%), linear-gradient(135deg, #5A6A7E 0%, #8A9BB0 38%, #d8b46a 65%, #07070A 100%)",
-    air: "radial-gradient(ellipse 110% 75% at 62% 22%, rgba(168,212,255,0.3) 0%, transparent 52%), linear-gradient(135deg, #A8D4FF 0%, #93c5fd 40%, #d8b46a 66%, #f2ecdf 100%)",
+    gold: "radial-gradient(ellipse 120% 80% at 18% 22%, rgba(139,169,255,0.28) 0%, transparent 55%), linear-gradient(135deg, #A897FF 0%, #8BA9FF 24%, #79C7F2 50%, #17263B 82%, #040812 100%)",
+    meridian: "radial-gradient(ellipse 100% 70% at 82% 18%, rgba(121,199,242,0.28) 0%, transparent 50%), linear-gradient(135deg, #A5BCFF 0%, #8BA9FF 32%, #A897FF 60%, #0A1424 100%)",
+    silver: "radial-gradient(ellipse 90% 65% at 12% 78%, rgba(238,244,250,0.2) 0%, transparent 48%), linear-gradient(135deg, #C9D6E3 0%, #EEF4FA 34%, #93A8BF 68%, #0A1424 100%)",
+    violet: "radial-gradient(ellipse 110% 75% at 70% 30%, rgba(168,151,255,0.34) 0%, transparent 52%), linear-gradient(135deg, #A897FF 0%, #8BA9FF 38%, #79C7F2 64%, #101D30 100%)",
+    rose: "radial-gradient(ellipse 95% 68% at 24% 72%, rgba(255,142,168,0.3) 0%, transparent 50%), linear-gradient(135deg, #FF8EA8 0%, #A897FF 32%, #8BA9FF 58%, #101D30 100%)",
+    indigo: "radial-gradient(ellipse 100% 72% at 88% 42%, rgba(139,169,255,0.3) 0%, transparent 48%), linear-gradient(135deg, #17263B 0%, #8BA9FF 40%, #A897FF 68%, #040812 100%)",
+    coral: "radial-gradient(ellipse 105% 70% at 16% 38%, rgba(255,142,168,0.3) 0%, transparent 50%), linear-gradient(135deg, #FF8EA8 0%, #A897FF 38%, #79C7F2 64%, #EEF4FA 100%)",
+    dusk: "radial-gradient(ellipse 120% 80% at 50% 12%, rgba(168,151,255,0.24) 0%, transparent 55%), linear-gradient(135deg, #0A1424 0%, #17263B 36%, #A897FF 62%, #040812 100%)",
+    sage: "radial-gradient(ellipse 90% 65% at 78% 68%, rgba(111,208,179,0.28) 0%, transparent 48%), linear-gradient(135deg, #6FD0B3 0%, #79C7F2 36%, #8BA9FF 62%, #040812 100%)",
+    slate: "radial-gradient(ellipse 100% 72% at 22% 28%, rgba(147,168,191,0.26) 0%, transparent 50%), linear-gradient(135deg, #17263B 0%, #93A8BF 38%, #8BA9FF 65%, #040812 100%)",
+    air: "radial-gradient(ellipse 110% 75% at 62% 22%, rgba(121,199,242,0.3) 0%, transparent 52%), linear-gradient(135deg, #79C7F2 0%, #A5BCFF 40%, #A897FF 66%, #EEF4FA 100%)",
   };
 
   let catalog = null;
@@ -220,6 +222,15 @@
     return base + "#guides?story=" + encodeURIComponent(id);
   }
 
+  function safeHistoryUrl(hash) {
+    const incoming = new URLSearchParams(location.search || "");
+    const kept = new URLSearchParams();
+    ["nosw", "lite"].forEach(key => {
+      if (incoming.get(key) === "1") kept.set(key, "1");
+    });
+    return location.pathname + (kept.toString() ? "?" + kept.toString() : "") + (hash || "");
+  }
+
   function sharePanelHTML(guide) {
     const url = shareUrl(guide.id);
     const label = navigator.share ? "Share guide" : "Copy share link";
@@ -303,7 +314,7 @@
 
   function syncGuideHash(id, replace) {
     const hash = id ? "guides?story=" + encodeURIComponent(id) : "guides";
-    const url = location.pathname + location.search + "#" + hash;
+    const url = safeHistoryUrl("#" + hash);
     if (replace) history.replaceState(null, "", url);
     else history.pushState(null, "", url);
   }
@@ -478,7 +489,7 @@
         const hit = guidesCache.find(g => g.id === id);
         if (hit) openReader(id, { fromHash: true });
         else {
-          history.replaceState(null, "", location.pathname + location.search + "#guides");
+          history.replaceState(null, "", safeHistoryUrl("#guides"));
           const mount = $("skyGuidesWrap");
           if (mount) mount.scrollIntoView({ block: "start" });
           showToast("Guide not found — browse the catalogue below");
@@ -512,7 +523,7 @@
         const hit = guidesCache.find(g => g.id === deep);
         if (hit) openReader(deep, { fromHash: true });
         else {
-          history.replaceState(null, "", location.pathname + location.search + "#guides");
+          history.replaceState(null, "", safeHistoryUrl("#guides"));
           mount.scrollIntoView({ block: "start" });
           showToast("Guide not found — browse the catalogue below");
         }

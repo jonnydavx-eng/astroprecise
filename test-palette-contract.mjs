@@ -1,4 +1,8 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = dirname(fileURLToPath(import.meta.url));
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
 const failures = [];
@@ -28,24 +32,21 @@ for (const [token, value] of Object.entries(requiredPaletteTokens)) {
     `atlas is missing the ${token} mirror`);
 }
 
+function walk(directory, extension) {
+  const paths = [];
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const absolute = join(directory, entry.name);
+    if (entry.isDirectory()) paths.push(...walk(absolute, extension));
+    else if (entry.name.toLowerCase().endsWith(extension)) {
+      paths.push(`./${relative(ROOT, absolute).replace(/\\/g, '/')}`);
+    }
+  }
+  return paths;
+}
+
 const brandSurfaces = [
-  './website/css/ap-palette-2026.css',
-  './website/css/ap-atlas-tokens.css',
-  './website/css/ap-living-sky-v834.css',
-  './website/css/ap-home-v835.css',
-  './website/css/ap-phone-pass.css',
-  './website/css/ap-chart-v835.css',
-  './website/css/ap-shop-v835.css',
-  './website/css/ap-couples-v858.css',
-  './website/css/ap-daily-v835.css',
-  './website/css/ap-eclipse-live-v834.css',
-  './website/css/ap-eclipse-v835.css',
-  './website/css/ap-keep-sky.css',
-  './website/css/ap-mystic-cards-v835.css',
-  './website/css/ap-natal-reading.css',
-  './website/css/ap-overhaul-s8.css',
-  './website/css/celestial-seals.css',
-  './website/css/tonight-page.css',
+  ...walk(join(ROOT, 'website', 'css'), '.css'),
+  ...walk(join(ROOT, 'website'), '.html'),
   './website/js/orrery-webgl.js',
   './website/js/void-orrery-adapter.js',
   './website/js/ap-sky-time.js',
@@ -54,24 +55,44 @@ const brandSurfaces = [
   './website/js/chart-render.js',
   './website/js/ap-canvas-seals.js',
   './website/js/quiz.js',
+  './website/js/home-daily.js',
+  './website/js/home-match.js',
+  './website/js/daily-transit.js',
+  './website/js/ap-daily-bridge.js',
+  './website/js/footer-chrome.js',
+  './website/js/sky-guides.js',
+  './website/js/lazy-zodiac-cards.js',
+  './website/js/tool-cards.js',
+  './website/js/ap-chart-share.js',
+  './website/js/angel-numbers.js',
+  './website/js/ap-eclipse-edition-v841.js',
+  './website/js/ap-keep-sky.js',
+  './website/js/ap-natal-sphere.js',
+  './website/js/ap-moment-share.js',
+  './website/js/horoscope-page.js',
+  './website/js/horoscope-wheel-poster.js',
+  './website/js/saturn-return.js',
+  './website/js/zodiac-sphere.js',
   './website/favicon.svg',
   './website/img/logo-mark.svg',
-  './website/cosmic-story.html',
-  './website/sample-reading.html',
-  './website/profile.html',
-  './website/sky-events.html',
-  './website/sky-card.html',
-  './website/explore.html',
-  './website/deep-time.html',
-  './website/tonight.html',
-  './website/quiz.html',
 ];
 
-const retiredHex = /#(?:b86b4a|c87d5c|ff6428|ff5a1f|ff7a45|d8b46a)\b/i;
-const retiredRgb = /rgba?\(\s*(?:184\s*,\s*107\s*,\s*74|255\s*,\s*(?:90|100)\s*,\s*(?:31|40)|216\s*,\s*180\s*,\s*106)\b/i;
+const retiredHex = /#(?:b86b4a|c87d5c|ff6428|ff5a1f|ff7a45|e4996f|d8b46a|e8c96a|c4920a|e6c24a|c2a05e|8c6a2f|d9bc5c|d4b87a|f0e8d8|e8e0d0|e6ddc8|ece6d8|c8b88f|f2dfa7)\b/i;
+const retiredRgb = /rgba?\(\s*(?:184\s*,\s*107\s*,\s*74|255\s*,\s*(?:90|100|122)\s*,\s*(?:31|40|69)|216\s*,\s*180\s*,\s*106|232\s*,\s*201\s*,\s*106|196\s*,\s*146\s*,\s*10|240\s*,\s*232\s*,\s*216|232\s*,\s*224\s*,\s*208|242\s*,\s*236\s*,\s*223)\b/i;
+
+function withoutPhysicalColour(source, path) {
+  let audited = source;
+  // Star temperatures and constellation artwork are observations, not brand
+  // chrome. The rendered audit separately refuses warm interactive controls.
+  if (path.endsWith('.html')) audited = audited.replace(/<svg\b[\s\S]*?<\/svg>/gi, '');
+  return audited
+    .split(/\r?\n/)
+    .filter((line) => !/(?:palette-physical|planet|stellar|star-temperature|ap-orb--|\bsun\b|\bmars\b|\bjupiter\b|\bsaturn\b|\bvenus\b|\bmercury\b|\beclipse-geometry\b)/i.test(line))
+    .join('\n');
+}
 
 for (const path of brandSurfaces) {
-  const source = read(path);
+  const source = withoutPhysicalColour(read(path), path);
   check(!retiredHex.test(source), `${path} still contains a retired orange/copper hex`);
   check(!retiredRgb.test(source), `${path} still contains a retired orange/copper RGB value`);
 }

@@ -1,5 +1,5 @@
 /**
- * AstroPrecise v899 flagship UI contract.
+ * AstroPrecise v900 flagship UI contract.
  *
  * The legacy filename is retained because package.json calls it directly. The
  * contract is current: one live WebGL Observatory on the home route, authored
@@ -12,7 +12,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
 const BASE = (process.env.AP_BASE || process.argv[2] || 'http://127.0.0.1:8790').replace(/\/+$/, '');
-const OUT = process.env.AP_VISUAL_OUT || join(tmpdir(), 'astroprecise-v899-ui');
+const OUT = process.env.AP_VISUAL_OUT || join(tmpdir(), 'astroprecise-v900-ui');
 const WINDOWS_CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const failures = [];
 
@@ -46,7 +46,7 @@ async function homeGate(browser, viewport, label, mobile) {
   const context = await browser.newContext({ viewport, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const errors = watch(page);
-  const response = await page.goto(`${BASE}/index.html?nosw=1&contract=v899-${label}`, {
+  const response = await page.goto(`${BASE}/index.html?nosw=1&contract=v900-${label}`, {
     waitUntil: 'domcontentloaded', timeout: 60_000,
   });
   await waitForObservatory(page);
@@ -127,7 +127,7 @@ async function homeGate(browser, viewport, label, mobile) {
 async function responsiveResizeGate(browser) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const errors = watch(page);
-  await page.goto(`${BASE}/index.html?nosw=1&contract=v899-live-resize`, {
+  await page.goto(`${BASE}/index.html?nosw=1&contract=v900-live-resize`, {
     waitUntil: 'domcontentloaded', timeout: 60_000,
   });
   await waitForObservatory(page);
@@ -157,7 +157,7 @@ async function deepLinkGate(browser) {
   const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
   const errors = watch(page);
   const iso = '2020-06-14T12:00:00.000Z';
-  await page.goto(`${BASE}/index.html?nosw=1#m=${encodeURIComponent(iso)}&focus=mars`, {
+  await page.goto(`${BASE}/index.html?nosw=1#m=${encodeURIComponent(iso)}&public=1&name=Alice&dob=1994-03-14&city=Leeds&focus=mars`, {
     waitUntil: 'domcontentloaded', timeout: 60_000,
   });
   await waitForObservatory(page);
@@ -168,9 +168,87 @@ async function deepLinkGate(browser) {
     hash: location.hash,
     canvases: document.querySelectorAll('#orr canvas').length,
   }));
-  gate('Surface A deep link opens the requested live moment and world', state.title === 'Mars' && state.live === 'Selected moment' && state.hash.includes('m=') && state.canvases === 1, JSON.stringify(state));
+  gate('marked public deep link opens the requested event moment and strips unrelated fields',
+    state.title === 'Mars' && state.live === 'Selected moment' && state.hash.includes('m=') &&
+      state.hash.includes('public=1') && !/name|dob|city|Alice|1994|Leeds/i.test(state.hash) && state.canvases === 1,
+    JSON.stringify(state));
   gate('deep-linked Observatory has no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   await page.close();
+
+  const legacyPage = await browser.newPage({ viewport: { width: 1200, height: 800 } });
+  const legacyErrors = watch(legacyPage);
+  await legacyPage.goto(`${BASE}/index.html?nosw=1#m=now&M=${encodeURIComponent('1994-03-14T09:12:00.000Z')}&focus=mars`, {
+    waitUntil: 'domcontentloaded', timeout: 60_000,
+  });
+  await waitForObservatory(legacyPage);
+  await legacyPage.waitForFunction(() => document.getElementById('sky-live-status')?.textContent.trim() === 'Live now', null, { timeout: 8_000 });
+  const legacyState = await legacyPage.evaluate(() => ({
+    live: document.getElementById('sky-live-status')?.textContent.trim(),
+    focus: document.getElementById('sky-focus-title')?.textContent.trim(),
+    hash: location.hash,
+  }));
+  gate('duplicate/case-varied historical moment fails closed before the Observatory boots',
+    legacyState.live === 'Live now' && legacyState.focus === 'Mars' && legacyState.hash === '#focus=mars',
+    JSON.stringify(legacyState));
+  await legacyPage.evaluate(() => {
+    location.hash = 'm=1994-03-14T09%3A12%3A00.000Z&focus=venus';
+  });
+  await legacyPage.waitForFunction(() => location.hash === '#focus=venus' &&
+    document.getElementById('sky-focus-title')?.textContent.trim() === 'Venus' &&
+    document.getElementById('sky-live-status')?.textContent.trim() === 'Live now', null, { timeout: 8_000 });
+  const liveScrub = await legacyPage.evaluate(() => ({
+    live: document.getElementById('sky-live-status')?.textContent.trim(),
+    focus: document.getElementById('sky-focus-title')?.textContent.trim(),
+    hash: location.hash,
+  }));
+  gate('same-document unmarked fixed moment is scrubbed by the live receiver',
+    liveScrub.live === 'Live now' && liveScrub.focus === 'Venus' && liveScrub.hash === '#focus=venus',
+    JSON.stringify(liveScrub));
+  await legacyPage.evaluate(() => {
+    location.hash = 'm=now&name=Alice&dob=1994-03-14&city=Leeds&focus=moon';
+  });
+  await legacyPage.waitForFunction(() => location.hash === '#m=now&focus=moon' &&
+    document.getElementById('sky-focus-title')?.textContent.trim() === 'Moon' &&
+    document.getElementById('sky-live-status')?.textContent.trim() === 'Live now', null, { timeout: 8_000 });
+  const canonicalNow = await legacyPage.evaluate(() => ({
+    live: document.getElementById('sky-live-status')?.textContent.trim(),
+    focus: document.getElementById('sky-focus-title')?.textContent.trim(),
+    hash: location.hash,
+  }));
+  gate('same-document live-now moment retains only canonical public controls',
+    canonicalNow.live === 'Live now' && canonicalNow.focus === 'Moon' && canonicalNow.hash === '#m=now&focus=moon',
+    JSON.stringify(canonicalNow));
+  gate('legacy fixed-moment migration has no runtime errors', legacyErrors.length === 0, legacyErrors.slice(0, 5).join(' | '));
+  await legacyPage.close();
+}
+
+async function stalePrivateStashGate(browser) {
+  const context = await browser.newContext({ viewport: { width: 1200, height: 800 } });
+  await context.addInitScript(() => {
+    sessionStorage.setItem('ap-explore-moment', JSON.stringify({
+      m: '1994-03-14T09:12:00.000Z', focus: 'mars', scale: 'SYSTEM'
+    }));
+  });
+  const page = await context.newPage();
+  const errors = watch(page);
+  await page.goto(`${BASE}/index.html?nosw=1`, {
+    waitUntil: 'domcontentloaded', timeout: 60_000,
+  });
+  await waitForObservatory(page);
+  await page.waitForFunction(() => document.getElementById('sky-live-status')?.textContent.trim() === 'Live now', null, { timeout: 8_000 });
+  const state = await page.evaluate(() => ({
+    live: document.getElementById('sky-live-status')?.textContent.trim(),
+    focus: document.getElementById('sky-focus-title')?.textContent.trim(),
+    scale: window.Orrery3D?.getScaleLevel?.(),
+    stash: sessionStorage.getItem('ap-explore-moment'),
+    href: location.href,
+  }));
+  gate('timestamp-free private stash expires closed and is consumed',
+    state.live === 'Live now' && state.focus === 'Earth' && state.scale === 0 &&
+      state.stash === null && !/1994|focus=mars/i.test(state.href),
+    JSON.stringify(state));
+  gate('stale private stash rejection has no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
+  await context.close();
 }
 
 async function surfaceAGate(browser) {
@@ -178,7 +256,7 @@ async function surfaceAGate(browser) {
   for (const route of routes) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const errors = watch(page);
-    const response = await page.goto(`${BASE}/${route}?nosw=1&contract=v899-surface-a`, {
+    const response = await page.goto(`${BASE}/${route}?nosw=1&contract=v900-surface-a`, {
       waitUntil: 'domcontentloaded', timeout: 60_000,
     });
     await page.waitForSelector('h1', { state: 'visible', timeout: 15_000 });
@@ -229,7 +307,7 @@ async function surfaceAGate(browser) {
 async function eclipseGate(browser) {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const errors = watch(page);
-  const response = await page.goto(`${BASE}/eclipse.html?nosw=1&contract=v899-eclipse`, {
+  const response = await page.goto(`${BASE}/eclipse.html?nosw=1&contract=v900-eclipse`, {
     waitUntil: 'domcontentloaded', timeout: 60_000,
   });
   await page.waitForSelector('.ap-eclipse-live__canvas', { state: 'visible', timeout: 30_000 });
@@ -254,6 +332,7 @@ try {
   await homeGate(browser, { width: 390, height: 844 }, 'phone', true);
   await responsiveResizeGate(browser);
   await deepLinkGate(browser);
+  await stalePrivateStashGate(browser);
   await surfaceAGate(browser);
   await eclipseGate(browser);
 } finally {
@@ -261,8 +340,8 @@ try {
 }
 
 if (failures.length) {
-  console.error(`\n${failures.length} v899 UI gate(s) failed:`);
+  console.error(`\n${failures.length} v900 UI gate(s) failed:`);
   failures.forEach(failure => console.error(` - ${failure}`));
   process.exit(1);
 }
-console.log(`\nALL V899 UI GATES PASS · screenshots: ${OUT}`);
+console.log(`\nALL V900 UI GATES PASS · screenshots: ${OUT}`);

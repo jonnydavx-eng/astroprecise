@@ -30,15 +30,15 @@
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=899" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=899" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=900" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=900" id="ap-css-atlas-tokens" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=899" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=900" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/profile-page.css" id="ap-css-profile" />
   <!-- Fixed mobile tabs: keep this corrective layer after page CSS so the
        AP_NAV four-tab contract wins over legacy flex/pinned rules. -->
-  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=899" id="ap-css-overhaul-s8" />
+  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=900" id="ap-css-overhaul-s8" />
   <style>
     body:has(#setup-section){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(#setup-section) .site-header,body:has(#dashboard-section) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -134,13 +134,13 @@
               <label for="setup-name" class="form-label">Your Name <span aria-hidden="true" style="color:#8BA9FF">*</span></label>
               <input type="text" id="setup-name" class="form-input"
                      placeholder="How shall the cosmos address you?"
-                     required aria-required="true" autocomplete="name" />
+                     maxlength="120" required aria-required="true" autocomplete="name" />
             </div>
             <div class="form-group">
               <label for="setup-email" class="form-label">Email <span style="color:var(--silver-dim);font-weight:400">(optional)</span></label>
               <input type="email" id="setup-email" class="form-input"
                      placeholder="Stored only on this device"
-                     autocomplete="email" />
+                     maxlength="254" autocomplete="email" />
             </div>
             <button type="submit" class="btn btn--primary btn--lg" style="width:100%;margin-top:var(--space-5);">
               Begin &rarr;
@@ -315,7 +315,7 @@
                     <div class="form-group">
                       <label for="ac-name" class="form-label">Chart Label</label>
                       <input type="text" id="ac-name" class="form-input"
-                             placeholder="e.g. My Chart, Mom" autocomplete="off" />
+                             placeholder="e.g. My Chart, Mom" maxlength="120" autocomplete="off" />
                     </div>
                     <div class="form-group">
                       <label for="ac-date" class="form-label">Birth Date <span aria-hidden="true" style="color:#8BA9FF">*</span></label>
@@ -332,6 +332,7 @@
                     <label for="ac-city" class="form-label">Birth City <span aria-hidden="true" style="color:#8BA9FF">*</span></label>
                     <input type="text" id="ac-city" class="form-input"
                            placeholder="Start typing a city…"
+                           maxlength="160"
                            autocomplete="off"
                            aria-autocomplete="list"
                            aria-controls="ac-city-dropdown"
@@ -544,14 +545,142 @@
 
     // ── Storage ──────────────────────────────────────────────────────
     const STORE = 'ap_profile_v2';
+    const MAX_IMPORT_BYTES = 512 * 1024;
+    const MAX_CHARTS = 100;
+    const MAX_HISTORY = 100;
+    const ZODIAC_SIGNS = Object.freeze([
+      'Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+      'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'
+    ]);
+
+    function isRecord(value) {
+      return !!value && typeof value === 'object' && !Array.isArray(value);
+    }
+
+    function cleanText(value, maxLength, fallback) {
+      if (typeof value !== 'string' && !(typeof value === 'number' && Number.isFinite(value))) {
+        return fallback || '';
+      }
+      const text = String(value).trim();
+      return text ? text.slice(0, maxLength) : (fallback || '');
+    }
+
+    function cleanTimestamp(value, fallback) {
+      const timestamp = Number(value);
+      return Number.isFinite(timestamp) && timestamp > 0 ? timestamp : fallback;
+    }
+
+    function cleanDate(value) {
+      if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return '';
+      const parts = value.split('-').map(Number);
+      const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+      if (date.getUTCFullYear() !== parts[0] || date.getUTCMonth() !== parts[1] - 1 || date.getUTCDate() !== parts[2]) return '';
+      return value;
+    }
+
+    function cleanTime(value) {
+      return typeof value === 'string' && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value) ? value : '';
+    }
+
+    function cleanCoordinate(value, min, max) {
+      if (typeof value !== 'string' && typeof value !== 'number') return '';
+      if (typeof value === 'string' && (!value.trim() || value.length > 24)) return '';
+      const number = Number(value);
+      return Number.isFinite(number) && number >= min && number <= max ? String(number) : '';
+    }
+
+    function cleanTimeZone(value) {
+      const zone = cleanText(value, 80, '');
+      if (!zone) return '';
+      try {
+        new Intl.DateTimeFormat('en-US', { timeZone: zone }).format();
+        return zone;
+      } catch {
+        return '';
+      }
+    }
+
+    function canonicalSign(value) {
+      const sign = cleanText(value, 16, '').toLowerCase();
+      return ZODIAC_SIGNS.find(candidate => candidate.toLowerCase() === sign) || null;
+    }
+
+    function normalizeChart(raw, index) {
+      if (!isRecord(raw)) return null;
+      const fallbackId = 'chart-' + String(index + 1);
+      const time = cleanTime(raw.time || raw.birthTime);
+      const timeKnown = raw.timeKnown === true || !!(time && time !== '12:00');
+      const zone = cleanTimeZone(raw.tz);
+      const accuracy = ['exact', 'approximate', 'unknown'].includes(raw.timeAccuracy)
+        ? raw.timeAccuracy
+        : (timeKnown ? 'exact' : 'unknown');
+      return {
+        id: cleanText(raw.id, 128, fallbackId),
+        name: cleanText(raw.name, 120, 'Unnamed Chart'),
+        date: cleanDate(raw.date || raw.birthDate),
+        time: timeKnown ? time : '',
+        timeKnown,
+        timeAccuracy: accuracy,
+        timezoneKnown: raw.timezoneKnown === true || !!zone,
+        city: cleanText(raw.city || raw.birthCity, 160, ''),
+        lat: cleanCoordinate(raw.lat, -90, 90),
+        lon: cleanCoordinate(raw.lon, -180, 180),
+        tz: zone,
+        sun: canonicalSign(raw.sun || raw.sunSign),
+        moon: canonicalSign(raw.moon || raw.moonSign),
+        asc: canonicalSign(raw.asc || raw.ascendant || raw.risingSign),
+        houseSystem: cleanText(raw.houseSystem, 32, ''),
+        savedAt: cleanTimestamp(raw.savedAt || raw.updatedAt || raw.createdAt, 0)
+      };
+    }
+
+    function normalizeCharts(value) {
+      if (!Array.isArray(value)) return [];
+      const seenIds = new Set();
+      return value.slice(0, MAX_CHARTS).map((raw, index) => {
+        const chart = normalizeChart(raw, index);
+        if (!chart) return null;
+        if (seenIds.has(chart.id)) chart.id += '-' + String(index + 1);
+        seenIds.add(chart.id);
+        return chart;
+      }).filter(Boolean);
+    }
+
+    function normalizePrefs(value) {
+      const prefs = isRecord(value) ? value : {};
+      return {
+        houseSystem: ['equal', 'placidus'].includes(prefs.houseSystem) ? prefs.houseSystem : 'equal',
+        orbStyle: ['standard', 'tight', 'wide'].includes(prefs.orbStyle) ? prefs.orbStyle : 'standard',
+        reducedNebula: prefs.reducedNebula === true
+      };
+    }
+
+    function normalizeProfile(value) {
+      if (!isRecord(value)) return null;
+      const now = Date.now();
+      return {
+        name: cleanText(value.name, 120, 'Stargazer'),
+        email: cleanText(value.email, 254, ''),
+        created: cleanTimestamp(value.created, now),
+        updatedAt: cleanTimestamp(value.updatedAt, now),
+        charts: normalizeCharts(value.charts),
+        prefs: normalizePrefs(value.prefs),
+        history: Array.isArray(value.history)
+          ? value.history.slice(0, MAX_HISTORY).map(item => cleanText(item, 64, '')).filter(Boolean)
+          : []
+      };
+    }
 
     function getProfile() {
-      try { return JSON.parse(localStorage.getItem(STORE)) || null; } catch { return null; }
+      try { return normalizeProfile(JSON.parse(localStorage.getItem(STORE))) || null; } catch { return null; }
     }
 
     function saveProfile(p) {
-      p.updatedAt = Date.now();
-      localStorage.setItem(STORE, JSON.stringify(p));
+      const profile = normalizeProfile(p);
+      if (!profile) throw new Error('Invalid profile');
+      profile.updatedAt = Date.now();
+      localStorage.setItem(STORE, JSON.stringify(profile));
+      return profile;
     }
 
     function blankProfile(name, email) {
@@ -568,7 +697,7 @@
 
     // Merge cosmic-dashboard charts with chart.html saves (`ap_charts` via AstroProfile).
     function getEffectiveCharts(profile) {
-      const dashCharts = (profile && profile.charts) || [];
+      const dashCharts = normalizeCharts((profile && profile.charts) || []);
       let apCharts = [];
       if (window.AstroProfile && typeof AstroProfile.getCharts === 'function') {
         try { apCharts = AstroProfile.getCharts() || []; } catch { apCharts = []; }
@@ -587,8 +716,8 @@
           });
       const byId = new Map();
       dashCharts.forEach(c => { if (c && c.id) byId.set(c.id, c); });
-      apCharts.forEach(c => {
-        const row = mapAp(c);
+      (Array.isArray(apCharts) ? apCharts.slice(0, MAX_CHARTS) : []).forEach((c, index) => {
+        const row = normalizeChart(isRecord(c) ? mapAp(c) : null, dashCharts.length + index);
         if (!row || !row.id) return;
         byId.set(row.id, byId.has(row.id) ? { ...byId.get(row.id), ...row } : row);
       });
@@ -601,11 +730,16 @@
     }
 
     // ── Zodiac helpers ───────────────────────────────────────────────
-    function signSealHtml(sign, size) {
-      if (!sign) return '';
-      const key = (window.AP_ZODIAC && AP_ZODIAC.glyphKey(sign)) || String(sign).toLowerCase();
-      const cls = size === 'sm' ? ' ap-seal--sm' : ' ap-seal--lg';
-      return '<img class="ap-seal ap-seal--zodiac' + cls + '" src="assets/images/seals/zodiac/' + key + '.svg" alt="" aria-hidden="true" loading="eager">';
+    function createSignSeal(sign, size) {
+      const canonical = canonicalSign(sign);
+      if (!canonical) return null;
+      const seal = document.createElement('img');
+      seal.className = 'ap-seal ap-seal--zodiac ' + (size === 'sm' ? 'ap-seal--sm' : 'ap-seal--lg');
+      seal.src = 'assets/images/seals/zodiac/' + canonical.toLowerCase() + '.svg';
+      seal.alt = '';
+      seal.setAttribute('aria-hidden', 'true');
+      seal.loading = 'eager';
+      return seal;
     }
 
     function sunSignFromDate(dateStr) {
@@ -852,9 +986,16 @@
       if (first.asc || first.ascendant) ascSign = first.asc || first.ascendant;
 
       if (avatarEl) {
-        avatarEl.innerHTML = sunSign
-          ? signSealHtml(sunSign)
-          : '<span class="eng-star-mark" style="color:#A897FF;"></span>';
+        avatarEl.replaceChildren();
+        const seal = createSignSeal(sunSign);
+        if (seal) {
+          avatarEl.appendChild(seal);
+        } else {
+          const star = document.createElement('span');
+          star.className = 'eng-star-mark';
+          star.style.color = '#A897FF';
+          avatarEl.appendChild(star);
+        }
       }
 
       let tagline = 'The real sky news — charts stay on this device';
@@ -994,14 +1135,16 @@
       const charts = profile.charts || [];
 
       if (!charts.length) {
-        grid.innerHTML = '';
+        grid.replaceChildren();
         if (emptyEl) emptyEl.hidden = false;
         return;
       }
       if (emptyEl) emptyEl.hidden = true;
 
-      grid.innerHTML = charts.map(c => {
-
+      const fragment = document.createDocumentFragment();
+      charts.forEach((rawChart, index) => {
+        const c = normalizeChart(rawChart, index);
+        if (!c) return;
         // Handed to chart.html in sessionStorage, never in the link. Until
         // 2026-08-09 this built 'chart.html?n=…&d=…&lat=…', so opening one of
         // your own saved charts put your name, birth date, birth time and
@@ -1011,29 +1154,73 @@
         if (c.name) params.set('n', c.name);
         if (c.date) params.set('d', c.date);
         if (c.time) params.set('t', c.time);
-        if (c.lat) params.set('lat', c.lat);
-        if (c.lon) params.set('lon', c.lon);
+        if (c.lat !== '') params.set('lat', c.lat);
+        if (c.lon !== '') params.set('lon', c.lon);
         if (c.tz) params.set('tz', c.tz);
         params.set('a', c.timeAccuracy || (c.timeKnown ? 'exact' : 'unknown'));
         if (c.houseSystem) params.set('hs', c.houseSystem);
         const restorePayload = params.toString();
         const dateDisplay = c.date ? new Date(c.date + 'T12:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '';
 
-        return `<article class="chart-gallery-item" aria-label="Chart: ${c.name || 'Unnamed'}">
-          <div class="chart-gallery-item__name">${c.name || 'Unnamed Chart'}</div>
-          <div class="chart-gallery-item__date">${dateDisplay}${c.city ? ' · ' + c.city : ''}</div>
-          <div class="big-three">
-            ${c.sun ? `<span class="big-three-badge big-three-badge--sun">☉ ${signSealHtml(c.sun, 'sm')} ${c.sun}</span>` : ''}
-            ${c.moon ? `<span class="big-three-badge big-three-badge--moon">☽ ${signSealHtml(c.moon, 'sm')} ${c.moon}</span>` : ''}
-            ${(c.asc||c.ascendant) ? `<span class="big-three-badge big-three-badge--asc">↑ ${signSealHtml(c.asc||c.ascendant, 'sm')} ${c.asc||c.ascendant}</span>` : ''}
-            ${!(c.asc||c.ascendant) ? '<span class="big-three-badge big-three-badge--asc" title="Add an exact or approximate birth time to calculate angles">↑ Rising withheld · time needed</span>' : ''}
-          </div>
-          <div class="chart-gallery-item__actions">
-            <a href="chart.html" data-ap-restore="${restorePayload}" class="btn-chart-link" aria-label="Open chart for ${c.name || 'Unnamed'}">Open Chart →</a>
-            <button class="btn-chart-delete" data-id="${c.id}" aria-label="Delete chart for ${c.name || 'Unnamed'}">✕</button>
-          </div>
-        </article>`;
-      }).join('');
+        const article = document.createElement('article');
+        article.className = 'chart-gallery-item';
+        article.setAttribute('aria-label', 'Chart: ' + c.name);
+
+        const name = document.createElement('div');
+        name.className = 'chart-gallery-item__name';
+        name.textContent = c.name;
+        article.appendChild(name);
+
+        const date = document.createElement('div');
+        date.className = 'chart-gallery-item__date';
+        date.textContent = dateDisplay + (c.city ? ' · ' + c.city : '');
+        article.appendChild(date);
+
+        const bigThree = document.createElement('div');
+        bigThree.className = 'big-three';
+        const addBadge = (kind, symbol, sign) => {
+          if (!sign) return;
+          const badge = document.createElement('span');
+          badge.className = 'big-three-badge big-three-badge--' + kind;
+          badge.appendChild(document.createTextNode(symbol + ' '));
+          const seal = createSignSeal(sign, 'sm');
+          if (seal) badge.appendChild(seal);
+          badge.appendChild(document.createTextNode(' ' + sign));
+          bigThree.appendChild(badge);
+        };
+        addBadge('sun', '☉', c.sun);
+        addBadge('moon', '☽', c.moon);
+        addBadge('asc', '↑', c.asc);
+        if (!c.asc) {
+          const withheld = document.createElement('span');
+          withheld.className = 'big-three-badge big-three-badge--asc';
+          withheld.title = 'Add an exact or approximate birth time to calculate angles';
+          withheld.textContent = '↑ Rising withheld · time needed';
+          bigThree.appendChild(withheld);
+        }
+        article.appendChild(bigThree);
+
+        const actions = document.createElement('div');
+        actions.className = 'chart-gallery-item__actions';
+        const open = document.createElement('a');
+        open.href = 'chart.html';
+        open.dataset.apRestore = restorePayload;
+        open.className = 'btn-chart-link';
+        open.setAttribute('aria-label', 'Open chart for ' + c.name);
+        open.textContent = 'Open Chart →';
+        actions.appendChild(open);
+
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'btn-chart-delete';
+        remove.dataset.id = c.id;
+        remove.setAttribute('aria-label', 'Delete chart for ' + c.name);
+        remove.textContent = '✕';
+        actions.appendChild(remove);
+        article.appendChild(actions);
+        fragment.appendChild(article);
+      });
+      grid.replaceChildren(fragment);
 
       // Hand the birth record to chart.html in sessionStorage, then let the
       // plain <a href="chart.html"> navigate. Same tab, same origin, never
@@ -1302,33 +1489,77 @@
     }
 
     // ── Import ───────────────────────────────────────────────────────
+    function validateImportText(record, key, maxLength, allowNumber) {
+      const value = record[key];
+      if (value == null) return;
+      if (typeof value === 'number' && allowNumber && Number.isFinite(value)) return;
+      if (typeof value !== 'string' || value.length > maxLength) throw new Error('Invalid ' + key);
+    }
+
+    function validateImportData(data) {
+      if (!isRecord(data)) throw new Error('Invalid profile');
+      validateImportText(data, 'name', 120, false);
+      validateImportText(data, 'email', 254, false);
+      if (data.prefs != null && !isRecord(data.prefs)) throw new Error('Invalid preferences');
+      if (data.history != null) {
+        if (!Array.isArray(data.history) || data.history.length > MAX_HISTORY) throw new Error('Invalid history');
+        data.history.forEach(item => {
+          if (typeof item !== 'string' || item.length > 64) throw new Error('Invalid history item');
+        });
+      }
+      if (data.charts == null) return;
+      if (!Array.isArray(data.charts) || data.charts.length > MAX_CHARTS) throw new Error('Invalid charts');
+      const textFields = {
+        id: 128, name: 120, date: 10, birthDate: 10, time: 5, birthTime: 5,
+        timeAccuracy: 16, city: 160, birthCity: 160, tz: 80, sun: 16,
+        sunSign: 16, moon: 16, moonSign: 16, asc: 16, ascendant: 16,
+        risingSign: 16, houseSystem: 32
+      };
+      data.charts.forEach(chart => {
+        if (!isRecord(chart)) throw new Error('Invalid chart');
+        Object.entries(textFields).forEach(([key, maxLength]) => {
+          validateImportText(chart, key, maxLength, key === 'id');
+        });
+        ['lat', 'lon'].forEach(key => {
+          const value = chart[key];
+          if (value != null && typeof value !== 'string' && typeof value !== 'number') throw new Error('Invalid coordinate');
+        });
+        ['timeKnown', 'timezoneKnown'].forEach(key => {
+          if (chart[key] != null && typeof chart[key] !== 'boolean') throw new Error('Invalid chart flag');
+        });
+      });
+    }
+
     function setupImport(inputId) {
       const inp = document.getElementById(inputId);
       if (!inp) return;
       inp.addEventListener('change', e => {
         const file = e.target.files[0];
         if (!file) return;
+        if (file.size > MAX_IMPORT_BYTES) {
+          toast('Import failed — profile file is too large.', 'error');
+          inp.value = '';
+          return;
+        }
         const reader = new FileReader();
         reader.onload = ev => {
           try {
-            const data = JSON.parse(ev.target.result);
-            if (!data || typeof data !== 'object') throw new Error('Invalid format');
-            // Basic validation
-            const profile = {
-              name: data.name || 'Stargazer',
-              email: data.email || '',
-              created: data.created || Date.now(),
-              updatedAt: Date.now(),
-              charts: Array.isArray(data.charts) ? data.charts : [],
-              prefs: data.prefs || {},
-              history: Array.isArray(data.history) ? data.history : []
-            };
+            const source = typeof ev.target.result === 'string' ? ev.target.result : '';
+            if (!source || source.length > MAX_IMPORT_BYTES) throw new Error('Invalid format');
+            const data = JSON.parse(source);
+            validateImportData(data);
+            const profile = normalizeProfile(data);
+            if (!profile) throw new Error('Invalid format');
             saveProfile(profile);
             showDashboard(profile);
             toast('Profile imported successfully.', 'success');
           } catch {
-            toast('Import failed — invalid JSON format.', 'error');
+            toast('Import failed — invalid or oversized profile data.', 'error');
           }
+          inp.value = '';
+        };
+        reader.onerror = () => {
+          toast('Import failed — the profile file could not be read.', 'error');
           inp.value = '';
         };
         reader.readAsText(file);
@@ -1440,12 +1671,12 @@
   })();
   </script>
 
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=899" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=900" />
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/ap-daily-bridge.js" defer></script>
   <script src="js/ap-ai-assistant.js" defer></script>
-  <script src="js/ap-page-boot.js?v=899" defer></script>
-  <script src="js/ap-footer-inject.js?v=899" defer></script>
+  <script src="js/ap-page-boot.js?v=900" defer></script>
+  <script src="js/ap-footer-inject.js?v=900" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

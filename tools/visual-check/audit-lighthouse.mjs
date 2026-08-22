@@ -18,7 +18,7 @@ const OUT = join(__dirname, 'out', 'lighthouse');
 const WINDOWS_CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
 const URLS = [
-  { id: 'index', url: `${BASE}/?lite=1` },
+  { id: 'index', url: `${BASE}/?nosw=1` },
   { id: 'chart', url: `${BASE}/chart.html` },
 ];
 

@@ -4,12 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <script>
+    /* Privacy migration: old chart links carried a whole birth record in the
+       query string or fragment. Clean the address before the parser discovers
+       fonts, styles, images or any other outgoing request. Unknown route flags
+       fail closed; only controls used by this page are retained. */
+    window.APChartUrlPrivacy = (function () {
+      'use strict';
+
+      var SAFE_QUERY = {
+        nosw: '1',
+        lite: '1',
+        entry: 'private-reentry'
+      };
+      var SAFE_HASH = 'main-content';
+
+      function scrub(options) {
+        options = options || {};
+        try {
+          var incoming = new URLSearchParams(window.location.search || '');
+          var kept = new URLSearchParams();
+          incoming.forEach(function (value, key) {
+            var canonicalKey = String(key || '').toLowerCase();
+            var canonicalValue = SAFE_QUERY[canonicalKey];
+            if (!Object.prototype.hasOwnProperty.call(SAFE_QUERY, canonicalKey)) return;
+            if (String(value || '').toLowerCase() !== canonicalValue) return;
+            if (options.dropEntry && canonicalKey === 'entry') return;
+            if (!kept.has(canonicalKey)) kept.set(canonicalKey, canonicalValue);
+          });
+
+          var safeHash = '';
+          var rawHash = String(window.location.hash || '').replace(/^#/, '');
+          if (rawHash) {
+            try {
+              if (decodeURIComponent(rawHash).toLowerCase() === SAFE_HASH) safeHash = '#' + SAFE_HASH;
+            } catch (_) { /* malformed or unknown fragments are discarded */ }
+          }
+
+          var search = kept.toString();
+          var next = window.location.pathname + (search ? '?' + search : '') + safeHash;
+          var current = window.location.pathname + window.location.search + window.location.hash;
+          if (next !== current) window.history.replaceState(window.history.state, '', next);
+          return true;
+        } catch (_) {
+          /* Same-origin replaceState should succeed. If a constrained browser
+             blocks it, restart at the clean route under the no-referrer policy
+             rather than booting while personal values remain addressable. */
+          try { window.location.replace(window.location.pathname); } catch (__) { window.stop(); }
+          return false;
+        }
+      }
+
+      var api = Object.freeze({ scrub: scrub });
+      window.addEventListener('hashchange', function () { scrub(); });
+      scrub();
+      return api;
+    })();
+  </script>
   <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
   <title>Your minute — free birth chart, then the sitting | AstroPrecise</title>
-  <script>window.AP_ASSET_V='899';</script>
+  <script>window.AP_ASSET_V='900';</script>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/fonts.css?v=899" />
+  <link rel="stylesheet" href="css/fonts.css?v=900" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -61,18 +119,18 @@
     "@type":"FAQPage",
     "mainEntity":[
       {"@type":"Question","name":"How accurate is the birth chart?","acceptedAnswer":{"@type":"Answer","text":"Accuracy varies by body and date. The core planets and luminaries use published astronomical methods; Pluto and Chiron have wider, date-dependent limits. The supported chart range is 1800–2200."}},
-      {"@type":"Question","name":"What leaves my device?","acceptedAnswer":{"@type":"Answer","text":"Birth date, time and chart calculations stay in your browser. Place search sends the place text to Open-Meteo to resolve coordinates. Saved charts remain in local storage on this device."}},
-      {"@type":"Question","name":"Can I save the chart?","acceptedAnswer":{"@type":"Answer","text":"Yes. Save it to this device, export the data or artwork, share a private chart link, open the seven-chapter natal reading, or carry the chart into the 12 August eclipse contact tool."}}
+      {"@type":"Question","name":"What leaves my device?","acceptedAnswer":{"@type":"Answer","text":"Birth date, time and chart calculations stay in your browser. Place search sends place text to Open-Meteo; choosing current location sends its latitude and longitude for timezone lookup. Saved charts remain in local storage on this device."}},
+      {"@type":"Question","name":"Can I save the chart?","acceptedAnswer":{"@type":"Answer","text":"Yes. Save it to this device, export the data or artwork, share a privacy-safe image with a clean blank chart-page link, open the seven-chapter natal reading, or carry the chart into the 12 August eclipse contact tool."}}
     ]
   }
   </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=899" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=899" />
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=899">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=899">
-  <link rel="stylesheet" href="css/ap-chart-v835.css?v=899" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=899" />
-  <link rel="stylesheet" href="css/ap-keep-sky.css?v=899">
+  <link rel="stylesheet" href="css/celestial-seals.css?v=900" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=900" />
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=900">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=900">
+  <link rel="stylesheet" href="css/ap-chart-v835.css?v=900" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=900" />
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=900">
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
@@ -115,8 +173,8 @@
   </header>
 
   <section class="ap-room-sky ap-earth-band" aria-label="Authored Earth engine still">
-    <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth" aria-label="Open live Earth now in the Observatory">
-      <img src="img/engine/earth.webp" width="1000" height="1000" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
+    <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth">
+      <img src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="(max-width: 760px) calc(100vw - 34px), 512px" width="1000" height="1000" loading="lazy" decoding="async" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
       <span class="ap-surface-a__receipt"><span>Engine still · schematic</span><strong>Open the live Observatory</strong><em>One model · current positions · full controls</em></span>
     </a>
   </section>
@@ -422,7 +480,7 @@
       <!-- ============================================================
            CHART RESULTS (hidden until calculated)
       ============================================================ -->
-      <section id="chart-result" class="hidden" role="region" aria-live="polite" aria-labelledby="result-name">
+      <section id="chart-result" class="hidden" role="region" aria-labelledby="result-name">
 
         <header class="chart-sitting-hero animate-in">
           <div class="chart-sitting-hero__id result-header-meta">
@@ -503,7 +561,7 @@
             <section id="ap-chart-sky-bridge" hidden aria-label="Open this birth moment in the Observatory"></section>
             <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (&plusmn;7&deg;) and still withholds angles. Keep is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
             <div class="result-actions" id="result-actions-row">
-              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share a personalised chart image">
+              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share a privacy-safe chart image with personal details removed">
                 Share this sky
               </button>
               <button id="poster-btn" class="action-btn action-btn--ghost" aria-haspopup="menu" aria-controls="share-format-menu" aria-expanded="false" aria-label="Export chart artwork as a print plate, square, story, wallpaper, or Big Three card">
@@ -521,9 +579,10 @@
                 </div>
               </details>
             </div>
-            <p class="result-method-note ap-support-after-value">If this free chart was useful, <a href="https://ko-fi.com/astroprecise" target="_blank" rel="noopener noreferrer">support the free Observatory</a>. Nothing unlocks and the chart stays free.</p>
+            <p class="result-method-note ap-share-privacy-note">Share this sky removes the chart name, birth date, time and town from its image. Export artwork keeps those displayed details, so review an export before sharing it.</p>
           </div>
         </details>
+        <p class="result-method-note ap-support-after-value">If this free chart was useful, <a href="https://ko-fi.com/astroprecise" target="_blank" rel="noopener noreferrer">support the free Observatory</a>. Nothing unlocks and the chart stays free.</p>
 
         <div class="chart-detail-wrap animate-in animate-in--delay-2">
           <div class="tabs-card chart-detail-tabs">
@@ -617,24 +676,24 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS — chart core first; starfield/effects idle -->
-  <script src="js/raf-core.js?v=899" defer></script>
-  <script src="js/ap-zodiac-constants.js?v=899" defer></script>
-  <script src="js/ephemeris.js?v=899" defer></script>
-  <script src="js/celestial-seals.js?v=899" defer></script>
-  <script src="js/reading-format.js?v=899" defer></script>
-  <script src="js/chart-render.js?v=899" defer></script>
-  <script src="js/ap-load-interpretations.js?v=899" defer></script>
-  <script src="js/profile.js?v=899" defer></script>
-  <script src="js/ap-personal-memory.js?v=899" defer></script>
-  <script src="js/icons.js?v=899" defer></script>
-  <script src="js/ap-nav-model.js?v=899" defer></script>
-  <script src="js/ap-footer-inject.js?v=899" defer></script>
-  <script src="js/app.js?v=899" defer></script>
-  <script src="js/ap-canvas-seals.js?v=899" defer></script>
-  <script src="js/ap-deep-link.js?v=899" defer></script>
-  <script src="js/ap-sky-bridge.js?v=899" defer></script>
-  <script src="js/chart-page.js?v=899" defer></script>
-  <script src="js/ap-keep-sky.js?v=899" defer></script>
-  <script src="js/ap-keep-minute.js?v=899" defer></script>
+  <script src="js/raf-core.js?v=900" defer></script>
+  <script src="js/ap-zodiac-constants.js?v=900" defer></script>
+  <script src="js/ephemeris.js?v=900" defer></script>
+  <script src="js/celestial-seals.js?v=900" defer></script>
+  <script src="js/reading-format.js?v=900" defer></script>
+  <script src="js/chart-render.js?v=900" defer></script>
+  <script src="js/ap-load-interpretations.js?v=900" defer></script>
+  <script src="js/profile.js?v=900" defer></script>
+  <script src="js/ap-personal-memory.js?v=900" defer></script>
+  <script src="js/icons.js?v=900" defer></script>
+  <script src="js/ap-nav-model.js?v=900" defer></script>
+  <script src="js/ap-footer-inject.js?v=900" defer></script>
+  <script src="js/app.js?v=900" defer></script>
+  <script src="js/ap-canvas-seals.js?v=900" defer></script>
+  <script src="js/ap-deep-link.js?v=900" defer></script>
+  <script src="js/ap-sky-bridge.js?v=900" defer></script>
+  <script src="js/chart-page.js?v=900" defer></script>
+  <script src="js/ap-keep-sky.js?v=900" defer></script>
+  <script src="js/ap-keep-minute.js?v=900" defer></script>
 </body>
 </html>

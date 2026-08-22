@@ -1,4 +1,4 @@
-/** Proof: v899 voluntary-support shop and archived entitlement recovery. */
+/** Proof: v900 voluntary-support shop and archived entitlement recovery. */
 import { existsSync, readFileSync } from 'node:fs';
 
 const shop = readFileSync('website/shop.html', 'utf8');
@@ -20,7 +20,8 @@ for (const file of [
   'website/img/engine/earth.webp',
 ]) if (!existsSync(file)) fails.push('missing authored asset ' + file);
 
-if (!/class="ap-surface-a"/.test(shop) || !/img\/engine\/earth\.webp/.test(shop)) {
+if (!/class="ap-surface-a"/.test(shop) ||
+    !/img\/engine\/earth-256\.webp/.test(shop) || !/img\/engine\/earth-512\.webp/.test(shop)) {
   fails.push('shop missing honest clean Surface A model still');
 }
 if (!/https:\/\/ko-fi\.com\/astroprecise/.test(shop) || !/Voluntary support/.test(shop)) {
@@ -64,7 +65,7 @@ if (!/verifyLicense/.test(unlock) || !/api\.gumroad\.com\/v2\/licenses\/verify/.
 }
 if (/openCheckout\s*\(/.test(edition)) fails.push('archived edition can still call checkout');
 if (!/event edition is closed|past buyer/i.test(edition)) fails.push('edition recovery copy does not explain archive/past-buyer state');
-if (!/const V\s*=\s*["']ap-v899["']/.test(sw)) fails.push('SW tip is not ap-v899');
+if (!/const V\s*=\s*["']ap-v900["']/.test(sw)) fails.push('SW tip is not ap-v900');
 
 if (fails.length) {
   console.error('FAIL', fails);

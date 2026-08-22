@@ -16,7 +16,7 @@
   z-index: 940;
   padding-block: 14px 16px;
   background: var(--void);
-  border-bottom: 1px solid rgba(168, 176, 188, 0.12);
+  border-bottom: 1px solid rgba(147, 168, 191, 0.12);
   transition: padding 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -38,7 +38,7 @@
 /* Logo sweep accent */
 /* Logo sweep ring lives on the mark SVG — no pseudo on the link (was misaligned) */
 .ap-award-511 .masthead-logo .logo-mark {
-  filter: drop-shadow(0 0 10px rgba(168, 176, 188, 0.22));
+  filter: drop-shadow(0 0 10px rgba(147, 168, 191, 0.22));
 }
 
 /* ── Float section nav (right rail — must not overlap hero copy) ── */
@@ -54,7 +54,7 @@
   padding: 8px 6px;
   border-radius: 14px;
   background: var(--night);
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
 }
 
@@ -81,14 +81,14 @@
 .ap-float-nav__link:hover,
 .ap-float-nav__link:focus-visible {
   color: var(--brass);
-  background: rgba(168, 176, 188, 0.1);
+  background: rgba(147, 168, 191, 0.1);
   outline: none;
 }
 
 .ap-float-nav__link.is-active {
   color: var(--brass);
-  background: rgba(168, 176, 188, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(168, 176, 188, 0.28);
+  background: rgba(147, 168, 191, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(147, 168, 191, 0.28);
   transform: scale(1.02);
 }
 
@@ -209,7 +209,7 @@ body.ap-award-511::after {
 
 .ap-award-511 .display-accent {
   font-style: italic;
-  color: var(--ap-aurora, #8FA3B8);
+  color: var(--ap-aurora, #93A8BF);
   font-weight: 400;
 }
 
@@ -232,7 +232,7 @@ body.ap-award-511::after {
 }
 
 .ap-award-511 .why-plate {
-  border: 1px solid rgba(168, 176, 188, 0.42);
+  border: 1px solid rgba(147, 168, 191, 0.42);
   background: var(--night);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22);
 }
@@ -280,7 +280,7 @@ body.ap-award-511::after {
 }
 
 .ap-award-511 .sg-card {
-  border-color: rgba(168, 176, 188, 0.32);
+  border-color: rgba(147, 168, 191, 0.32);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
@@ -493,7 +493,7 @@ body.ap-award-511::after {
 
 .ap-award-511 .ap-award-orrery-frame {
   padding: 10px;
-  border: 1px solid rgba(168, 176, 188, 0.34);
+  border: 1px solid rgba(147, 168, 191, 0.34);
   border-radius: 18px;
   background: linear-gradient(165deg, rgba(18, 24, 38, 0.92), rgba(12, 16, 22, 0.98));
   box-shadow:
@@ -517,9 +517,9 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .orrery-lite-poster {
   border-radius: 50%;
   overflow: hidden;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 48%, #121826 0%, #05080F 72%);
+  background: radial-gradient(circle at 50% 48%, #101D30 0%, #040812 72%);
   box-shadow:
-    0 0 0 1px rgba(168, 176, 188, 0.22),
+    0 0 0 1px rgba(147, 168, 191, 0.22),
     0 0 48px rgba(111, 160, 216, 0.18),
     inset 0 0 32px rgba(0, 0, 0, 0.32);
 }
@@ -536,8 +536,8 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .orrery-lite-poster {
   position: absolute;
   inset: -5%;
   border-radius: 50%;
-  border: 1px dashed rgba(168, 176, 188, 0.28);
-  box-shadow: inset 0 0 22px rgba(168, 176, 188, 0.08);
+  border: 1px dashed rgba(147, 168, 191, 0.28);
+  box-shadow: inset 0 0 22px rgba(147, 168, 191, 0.08);
   pointer-events: none;
   z-index: 2;
 }
@@ -564,7 +564,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .orrery-lite-poster {
   max-width: 96%;
   padding: 6px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.3);
+  border: 1px solid rgba(147, 168, 191, 0.3);
   background: rgba(12, 16, 22, 0.94);
   pointer-events: auto;
 }
@@ -578,7 +578,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .orrery-lite-poster {
   padding: 6px 10px;
   min-height: 32px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.24);
+  border: 1px solid rgba(147, 168, 191, 0.24);
   background: rgba(18, 24, 38, 0.8);
   color: var(--ink);
   cursor: pointer;
@@ -587,16 +587,16 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .orrery-lite-poster {
 
 .ap-award-511 .lite-vp-btn:hover,
 .ap-award-511 .lite-vp-btn:focus-visible {
-  border-color: rgba(168, 176, 188, 0.5);
+  border-color: rgba(147, 168, 191, 0.5);
   color: var(--brass);
   outline: none;
 }
 
 .ap-award-511 .lite-vp-btn.active {
-  border-color: rgba(168, 176, 188, 0.62);
+  border-color: rgba(147, 168, 191, 0.62);
   color: var(--brass);
-  background: rgba(168, 176, 188, 0.14);
-  box-shadow: 0 0 10px rgba(168, 176, 188, 0.16);
+  background: rgba(147, 168, 191, 0.14);
+  box-shadow: 0 0 10px rgba(147, 168, 191, 0.16);
 }
 
 .ap-award-511 .orrery-lite-launch {
@@ -612,7 +612,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .orrery-lite-poster {
   padding: 10px 16px;
   min-height: 44px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.45);
+  border: 1px solid rgba(147, 168, 191, 0.45);
   background: rgba(12, 16, 22, 0.92);
   color: var(--brass);
   cursor: pointer;
@@ -620,7 +620,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .orrery-lite-poster {
 
 .ap-award-511 .orrery-lite-launch:hover,
 .ap-award-511 .orrery-lite-launch:focus-visible {
-  background: rgba(168, 176, 188, 0.14);
+  background: rgba(147, 168, 191, 0.14);
   outline: none;
 }
 
@@ -683,7 +683,7 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
   min-height: 40px;
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.38);
+  border: 1px solid rgba(147, 168, 191, 0.38);
   background: var(--night);
   color: var(--ink);
   font-family: var(--font-ui);
@@ -738,9 +738,9 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
   flex-wrap: wrap;
   gap: var(--sp-2) var(--sp-4);
   padding: var(--sp-3) var(--sp-3);
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   border-radius: 12px;
-  background: rgba(168, 176, 188, 0.06);
+  background: rgba(147, 168, 191, 0.06);
 }
 
 .ap-award-511 .ap-mini-trust__item,
@@ -782,7 +782,7 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
   display: flex;
   flex-direction: column;
   border-radius: 14px;
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   background: rgba(18, 24, 38, 0.55);
   overflow: hidden;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
@@ -791,7 +791,7 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
 
 .ap-award-511 .ap-shop-featured__card:hover {
   transform: translateY(-3px);
-  border-color: rgba(168, 176, 188, 0.48);
+  border-color: rgba(147, 168, 191, 0.48);
 }
 
 .ap-award-511 .ap-shop-featured__visual {
@@ -821,11 +821,11 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--void);
-  background: rgba(168, 176, 188, 0.92);
+  background: rgba(147, 168, 191, 0.92);
 }
 
 .ap-award-511 .ap-shop-featured__badge--best {
-  background: rgba(110, 26, 38, 0.88);
+  background: rgba(168, 151, 255, 0.88);
   color: var(--ink);
 }
 
@@ -906,7 +906,7 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
 
 .ap-award-511 .sg-hero {
   min-height: 260px;
-  border-color: rgba(168, 176, 188, 0.38);
+  border-color: rgba(147, 168, 191, 0.38);
 }
 
 .ap-award-511 .sg-featured-badge {
@@ -917,8 +917,8 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(168, 176, 188, 0.2);
-  border: 1px solid rgba(168, 176, 188, 0.45);
+  background: rgba(147, 168, 191, 0.2);
+  border: 1px solid rgba(147, 168, 191, 0.45);
   color: var(--brass);
 }
 
@@ -930,7 +930,7 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
 }
 
 .ap-award-511 .sg-hero-click:has(.sg-featured-badge) {
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(168, 176, 188, 0.32);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(147, 168, 191, 0.32);
 }
 
 .ap-award-511 .ap-reading-copy .pull-quote {
@@ -995,7 +995,7 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
 
 .ap-award-511 .cosmic-story-band .cs-planet svg {
   filter: drop-shadow(0 0 14px rgba(244, 239, 230, 0.22))
-          drop-shadow(0 0 4px rgba(168, 176, 188, 0.18));
+          drop-shadow(0 0 4px rgba(147, 168, 191, 0.18));
 }
 
 .ap-award-511 .cosmic-story-band .cs-planet-label,
@@ -1049,9 +1049,9 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
 .sg-filter-chip.on,
 .sg-filter-chip:hover,
 .sg-filter-chip:focus-visible {
-  border-color: rgba(168, 176, 188, 0.45);
+  border-color: rgba(147, 168, 191, 0.45);
   color: var(--brass);
-  background: rgba(168, 176, 188, 0.1);
+  background: rgba(147, 168, 191, 0.1);
   outline: none;
 }
 
@@ -1060,9 +1060,9 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
   font-weight: 800;
   padding: 3px 7px;
   border-radius: 999px;
-  background: rgba(168, 176, 188, 0.12);
+  background: rgba(147, 168, 191, 0.12);
   color: var(--brass);
-  border: 1px solid rgba(168, 176, 188, 0.22);
+  border: 1px solid rgba(147, 168, 191, 0.22);
 }
 
 .sg-layout {
@@ -1100,7 +1100,7 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
   position: relative;
   overflow: hidden;
   border-radius: 18px;
-  border: 1px solid rgba(168, 176, 188, 0.22);
+  border: 1px solid rgba(147, 168, 191, 0.22);
   min-height: 220px;
   box-shadow: 0 10px 32px rgba(0, 0, 0, 0.32);
 }
@@ -1136,8 +1136,8 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
   letter-spacing: 0.08em;
   padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(168, 176, 188, 0.14);
-  border: 1px solid rgba(168, 176, 188, 0.35);
+  background: rgba(147, 168, 191, 0.14);
+  border: 1px solid rgba(147, 168, 191, 0.35);
   color: var(--brass);
 }
 
@@ -1186,7 +1186,7 @@ html.orrery-full .ap-award-511 .orrery-lite-poster {
 }
 
 .sg-card:hover, .sg-card:focus-visible {
-  border-color: rgba(168, 176, 188, 0.4);
+  border-color: rgba(147, 168, 191, 0.4);
   transform: translateY(-2px);
   outline: none;
 }
@@ -1276,7 +1276,7 @@ body.sg-reader-open {
   overflow-y: auto;
   background: var(--void);
   border-radius: 20px 20px 0 0;
-  border: 1px solid rgba(168, 176, 188, 0.15);
+  border: 1px solid rgba(147, 168, 191, 0.15);
   box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.45);
 }
 
@@ -1328,8 +1328,8 @@ body.sg-reader-open {
   margin: 0 0 18px;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(168, 176, 188, 0.22);
-  background: rgba(168, 176, 188, 0.06);
+  border: 1px solid rgba(147, 168, 191, 0.22);
+  background: rgba(147, 168, 191, 0.06);
 }
 
 .sg-reader-tips-title { margin: 0 0 8px; font-weight: 700; color: var(--brass); }
@@ -1358,7 +1358,7 @@ body.sg-reader-open {
   height: 18px;
   flex-shrink: 0;
   border-radius: 4px;
-  border: 1.5px solid rgba(168, 176, 188, 0.5);
+  border: 1.5px solid rgba(147, 168, 191, 0.5);
   margin-top: 2px;
 }
 
@@ -1433,7 +1433,7 @@ body.sg-reader-open {
 }
 
 .sg-share-chip-primary {
-  border-color: rgba(168, 176, 188, 0.4);
+  border-color: rgba(147, 168, 191, 0.4);
   color: var(--brass);
 }
 
@@ -1453,19 +1453,19 @@ body.sg-reader-open {
   min-height: 44px;
   padding: 8px 16px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.35);
+  border: 1px solid rgba(147, 168, 191, 0.35);
   font-family: var(--font-ui);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   color: var(--brass);
   text-decoration: none;
-  background: rgba(168, 176, 188, 0.08);
+  background: rgba(147, 168, 191, 0.08);
   transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
 .sg-browse-all:hover, .sg-browse-all:focus-visible {
-  border-color: rgba(168, 176, 188, 0.6);
-  background: rgba(168, 176, 188, 0.14);
+  border-color: rgba(147, 168, 191, 0.6);
+  background: rgba(147, 168, 191, 0.14);
   color: var(--ink);
   outline: none;
 }
@@ -1491,7 +1491,7 @@ body.sg-reader-open {
   padding: 12px 20px;
   border-radius: 12px;
   background: var(--night-raised);
-  border: 1px solid rgba(168, 176, 188, 0.3);
+  border: 1px solid rgba(147, 168, 191, 0.3);
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: 0.88rem;
@@ -1521,7 +1521,7 @@ body.sg-reader-open {
   padding: 12px 16px;
   min-height: 48px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.4);
+  border: 1px solid rgba(147, 168, 191, 0.4);
   background: var(--night);
   color: var(--brass);
   font-family: var(--font-ui);
@@ -1538,7 +1538,7 @@ body.sg-reader-open {
   z-index: 950;
   width: min(300px, calc(100vw - 32px));
   background: var(--night-raised);
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   border-radius: 16px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
 }
@@ -1588,7 +1588,7 @@ body.sg-reader-open {
 
 .ap-finder__link:hover,
 .ap-finder__link:focus-visible {
-  background: rgba(168, 176, 188, 0.1);
+  background: rgba(147, 168, 191, 0.1);
   color: var(--brass);
   outline: none;
 }
@@ -1603,8 +1603,8 @@ body.sg-reader-open {
 
 /* Hero orrery — living brass halo */
 @keyframes ap-orrery-halo {
-  0%, 100% { box-shadow: 0 14px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(168, 176, 188, 0.28), 0 0 32px rgba(111, 160, 216, 0.12); }
-  50% { box-shadow: 0 16px 44px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(168, 176, 188, 0.42), 0 0 48px rgba(168, 176, 188, 0.14); }
+  0%, 100% { box-shadow: 0 14px 40px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(147, 168, 191, 0.28), 0 0 32px rgba(111, 160, 216, 0.12); }
+  50% { box-shadow: 0 16px 44px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(147, 168, 191, 0.42), 0 0 48px rgba(147, 168, 191, 0.14); }
 }
 
 .ap-award-511 .ap-award-orrery-frame {
@@ -1617,9 +1617,9 @@ body.sg-reader-open {
 
 html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   border-style: solid;
-  border-color: rgba(168, 176, 188, 0.38);
+  border-color: rgba(147, 168, 191, 0.38);
   box-shadow:
-    inset 0 0 28px rgba(168, 176, 188, 0.1),
+    inset 0 0 28px rgba(147, 168, 191, 0.1),
     0 0 24px rgba(111, 160, 216, 0.14);
 }
 
@@ -1632,7 +1632,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   opacity: 0.55;
   background-image:
     radial-gradient(1px 1px at 12% 22%, rgba(232, 235, 240, 0.5), transparent),
-    radial-gradient(1px 1px at 78% 18%, rgba(168, 176, 188, 0.45), transparent),
+    radial-gradient(1px 1px at 78% 18%, rgba(147, 168, 191, 0.45), transparent),
     radial-gradient(1.5px 1.5px at 44% 68%, rgba(232, 235, 240, 0.35), transparent),
     radial-gradient(1px 1px at 88% 72%, rgba(111, 160, 216, 0.4), transparent),
     radial-gradient(1px 1px at 24% 84%, rgba(232, 235, 240, 0.3), transparent);
@@ -1647,7 +1647,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 .cosmic-story-band .cs-planet svg {
   filter:
     drop-shadow(0 0 18px rgba(244, 239, 230, 0.28))
-    drop-shadow(0 0 6px rgba(168, 176, 188, 0.24))
+    drop-shadow(0 0 6px rgba(147, 168, 191, 0.24))
     drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
   transition: transform 0.35s ease, filter 0.35s ease;
 }
@@ -1657,7 +1657,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   transform: scale(1.04);
   filter:
     drop-shadow(0 0 24px rgba(244, 239, 230, 0.36))
-    drop-shadow(0 0 10px rgba(168, 176, 188, 0.32))
+    drop-shadow(0 0 10px rgba(147, 168, 191, 0.32))
     drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
 }
 
@@ -1670,7 +1670,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 /* Plate I — sharper engraved wheel */
 .ap-award-511 .sky-tonight-plate .plate {
   padding: var(--sp-3);
-  border: 1px solid rgba(168, 176, 188, 0.32);
+  border: 1px solid rgba(147, 168, 191, 0.32);
   border-radius: 12px;
   background: rgba(12, 16, 22, 0.42);
   box-shadow:
@@ -1689,7 +1689,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 .ap-award-511 .why-plate:hover {
   transform: translateY(-3px);
-  border-color: rgba(168, 176, 188, 0.55);
+  border-color: rgba(147, 168, 191, 0.55);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
 }
 
@@ -1723,27 +1723,27 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   margin-bottom: 0.4rem;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 42%, rgba(168,176,188,0.10) 0%, transparent 70%),
+    radial-gradient(circle at 50% 42%, rgba(147, 168, 191,0.10) 0%, transparent 70%),
     var(--night-raised, #1A2230);
   box-shadow:
     inset 0 0 0 1.5px color-mix(in srgb, var(--sign-element-accent, var(--brass)) 62%, transparent),
     inset 0 1px 0 rgba(236,230,216,0.06),
-    0 0 14px -4px var(--sign-element-accent, rgba(168,176,188,0.4));
+    0 0 14px -4px var(--sign-element-accent, rgba(147, 168, 191,0.4));
   transition: box-shadow 0.2s ease, color 0.2s ease;
 }
 .ap-award-511 #libraryChapter .sign-tile:hover .sign-glyph,
 .ap-award-511 #libraryChapter .sign-tile:focus-visible .sign-glyph {
-  color: var(--parchment, #E8EBF0);
+  color: var(--parchment, #EEF4FA);
   box-shadow:
     inset 0 0 0 1.5px var(--sign-element-accent, var(--brass)),
     inset 0 1px 0 rgba(236,230,216,0.08),
-    0 0 20px -4px var(--sign-element-accent, rgba(168,176,188,0.5));
+    0 0 20px -4px var(--sign-element-accent, rgba(147, 168, 191,0.5));
 }
 
 .ap-award-511 #libraryChapter .sign-index-entry:hover,
 .ap-award-511 #libraryChapter .sign-index-entry:focus-visible {
   transform: translateY(-2px);
-  border-color: rgba(168, 176, 188, 0.45);
+  border-color: rgba(147, 168, 191, 0.45);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
   outline: none;
 }
@@ -1755,7 +1755,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 .ap-award-511 .sg-card:hover,
 .ap-award-511 .sg-card:focus-visible {
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(168, 176, 188, 0.22);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(147, 168, 191, 0.22);
 }
 
 .ap-award-511 .sg-card-art::after {
@@ -1777,7 +1777,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 /* Reading natal wheel plate */
 .ap-award-511 #readingChapter .plate {
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   border-radius: 10px;
   padding: var(--sp-2);
   background: rgba(18, 24, 38, 0.35);
@@ -1790,30 +1790,30 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 /* Shop featured edition */
 .ap-award-511 .edition-item.featured {
-  border: 1px solid rgba(168, 176, 188, 0.32);
+  border: 1px solid rgba(147, 168, 191, 0.32);
   border-radius: 10px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Instruments dept-list badges */
 .ap-award-511 .dept-badge {
-  box-shadow: 0 0 0 1px rgba(168, 176, 188, 0.18);
+  box-shadow: 0 0 0 1px rgba(147, 168, 191, 0.18);
 }
 
 .ap-award-511 .dept-list-item:hover .dept-badge {
-  box-shadow: 0 0 12px rgba(168, 176, 188, 0.28);
+  box-shadow: 0 0 12px rgba(147, 168, 191, 0.28);
 }
 
 /* Masthead logomark */
 .ap-award-511 .masthead-logo .logo-mark {
-  filter: drop-shadow(0 0 12px rgba(168, 176, 188, 0.28)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 0 12px rgba(147, 168, 191, 0.28)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
   transition: filter 0.15s;
 }
 
 /* Hover never dims — the mark's brass glow strengthens instead */
 .ap-award-511 .masthead-logo:hover .logo-mark,
 .ap-award-511 .masthead-logo:focus-visible .logo-mark {
-  filter: drop-shadow(0 0 16px rgba(168, 176, 188, 0.44)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 0 16px rgba(147, 168, 191, 0.44)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1852,7 +1852,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
     contrast(1.08)
     brightness(1.04)
     drop-shadow(0 8px 22px rgba(0, 0, 0, 0.32))
-    drop-shadow(0 0 18px rgba(168, 176, 188, 0.12));
+    drop-shadow(0 0 18px rgba(147, 168, 191, 0.12));
 }
 
 .ap-award-511 .ap-hero-wheel-fallback .hero-ecliptic-ring {
@@ -1875,7 +1875,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 /* Trust + method marks — engraved brass seals */
 .ap-award-511 .trust-check circle {
-  filter: drop-shadow(0 0 4px rgba(168, 176, 188, 0.35));
+  filter: drop-shadow(0 0 4px rgba(147, 168, 191, 0.35));
 }
 
 .ap-award-511 .ap-mini-trust__mark,
@@ -1886,38 +1886,38 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   width: 1.35em;
   height: 1.35em;
   border-radius: 50%;
-  border: 1px solid rgba(168, 176, 188, 0.42);
-  background: rgba(168, 176, 188, 0.1);
+  border: 1px solid rgba(147, 168, 191, 0.42);
+  background: rgba(147, 168, 191, 0.1);
   color: var(--brass);
   font-size: 0.72em;
-  box-shadow: 0 0 8px rgba(168, 176, 188, 0.14);
+  box-shadow: 0 0 8px rgba(147, 168, 191, 0.14);
 }
 
 .ap-award-511 .method-step {
-  border-left: 2px solid rgba(168, 176, 188, 0.22);
+  border-left: 2px solid rgba(147, 168, 191, 0.22);
   padding-left: var(--sp-2);
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .ap-award-511 .method-step:hover {
-  border-left-color: rgba(168, 176, 188, 0.52);
+  border-left-color: rgba(147, 168, 191, 0.52);
   transform: translateX(2px);
 }
 
 .ap-award-511 .method-step .step-num {
   color: var(--brass);
-  text-shadow: 0 0 10px rgba(168, 176, 188, 0.18);
+  text-shadow: 0 0 10px rgba(147, 168, 191, 0.18);
 }
 
 /* Q&A — brass rule accents */
 .ap-award-511 .qa-item {
-  border-left: 2px solid rgba(168, 176, 188, 0.18);
+  border-left: 2px solid rgba(147, 168, 191, 0.18);
   padding-left: var(--sp-2);
   transition: border-color 0.2s ease;
 }
 
 .ap-award-511 .qa-item:hover {
-  border-left-color: rgba(168, 176, 188, 0.45);
+  border-left-color: rgba(147, 168, 191, 0.45);
 }
 
 .ap-award-511 .qa-num {
@@ -1941,7 +1941,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   opacity: 0.65;
   background-image:
     radial-gradient(1.5px 1.5px at 14% 28%, rgba(232, 235, 240, 0.75), transparent),
-    radial-gradient(1px 1px at 72% 18%, rgba(168, 176, 188, 0.65), transparent),
+    radial-gradient(1px 1px at 72% 18%, rgba(147, 168, 191, 0.65), transparent),
     radial-gradient(1.2px 1.2px at 48% 62%, rgba(232, 235, 240, 0.5), transparent),
     radial-gradient(1px 1px at 86% 74%, rgba(111, 160, 216, 0.55), transparent),
     radial-gradient(1px 1px at 28% 82%, rgba(232, 235, 240, 0.4), transparent);
@@ -1953,7 +1953,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 #readingChapter .pull-quote {
-  background: linear-gradient(90deg, rgba(168, 176, 188, 0.08), transparent 72%);
+  background: linear-gradient(90deg, rgba(147, 168, 191, 0.08), transparent 72%);
   border-radius: 0 8px 8px 0;
 }
 
@@ -1968,13 +1968,13 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 .edition-item.featured {
-  background: linear-gradient(135deg, rgba(168, 176, 188, 0.06), rgba(12, 16, 22, 0.04));
+  background: linear-gradient(135deg, rgba(147, 168, 191, 0.06), rgba(12, 16, 22, 0.04));
 }
 
 .ap-award-511 .edition-price {
   color: var(--brass);
   font-weight: 700;
-  text-shadow: 0 0 8px rgba(168, 176, 188, 0.16);
+  text-shadow: 0 0 8px rgba(147, 168, 191, 0.16);
 }
 
 /* Instruments — dept row jewel badges */
@@ -1992,7 +1992,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 /* Active planet chip — living glow */
 .ap-award-511 .lite-vp-btn.active {
-  box-shadow: 0 0 14px rgba(168, 176, 188, 0.22), inset 0 0 8px rgba(168, 176, 188, 0.08);
+  box-shadow: 0 0 14px rgba(147, 168, 191, 0.22), inset 0 0 8px rgba(147, 168, 191, 0.08);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -2024,7 +2024,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 /* Trust strip — engraved brass rule */
 .ap-award-511 .ap-chapter--trust .trust-line {
-  border: 1px solid rgba(168, 176, 188, 0.22);
+  border: 1px solid rgba(147, 168, 191, 0.22);
   border-radius: 10px;
   padding: var(--sp-2) var(--sp-3);
   background: linear-gradient(180deg, rgba(232, 235, 240, 0.04), transparent);
@@ -2039,7 +2039,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 .dept-number {
   color: var(--brass);
   font-weight: 700;
-  text-shadow: 0 0 8px rgba(168, 176, 188, 0.14);
+  text-shadow: 0 0 8px rgba(147, 168, 191, 0.14);
 }
 
 /* Sky guides header rhythm */
@@ -2048,7 +2048,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 .sg-filter-chip.on {
-  box-shadow: 0 0 10px rgba(168, 176, 188, 0.18);
+  box-shadow: 0 0 10px rgba(147, 168, 191, 0.18);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -2100,17 +2100,17 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 /* Guide reader — brass instrument frame */
 .ap-award-511 .sg-overlay-sheet {
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   box-shadow:
     0 -16px 52px rgba(0, 0, 0, 0.48),
     0 0 0 1px rgba(232, 235, 240, 0.06),
-    inset 0 0 32px rgba(168, 176, 188, 0.04);
+    inset 0 0 32px rgba(147, 168, 191, 0.04);
 }
 
 .ap-award-511 .sg-overlay-close:focus-visible {
   outline: 2px solid var(--brass);
   outline-offset: 2px;
-  border-color: rgba(168, 176, 188, 0.45);
+  border-color: rgba(147, 168, 191, 0.45);
 }
 
 .ap-award-511 .sg-reader-art {
@@ -2125,13 +2125,13 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 .sg-related-card:hover,
 .ap-award-511 .sg-related-card:focus-visible {
   transform: translateY(-2px);
-  border-color: rgba(168, 176, 188, 0.35);
+  border-color: rgba(147, 168, 191, 0.35);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
   outline: none;
 }
 
 .ap-award-511 .sg-share-panel {
-  border-color: rgba(168, 176, 188, 0.22);
+  border-color: rgba(147, 168, 191, 0.22);
   background: linear-gradient(135deg, rgba(18, 24, 38, 0.92), rgba(12, 16, 22, 0.96));
 }
 
@@ -2140,13 +2140,13 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 #sky-sun-epithet {
   color: var(--brass);
   font-weight: 500;
-  text-shadow: 0 0 10px rgba(168, 176, 188, 0.12);
+  text-shadow: 0 0 10px rgba(147, 168, 191, 0.12);
 }
 
 /* Orrery launch CTA — subtle pulse */
 @keyframes ap-orrery-launch-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(168, 176, 188, 0.2); }
-  50% { box-shadow: 0 0 16px 2px rgba(168, 176, 188, 0.28); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(147, 168, 191, 0.2); }
+  50% { box-shadow: 0 0 16px 2px rgba(147, 168, 191, 0.28); }
 }
 
 .ap-award-511 .orrery-lite-launch:not([hidden]) {
@@ -2174,7 +2174,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 .ap-award-511 .ap-mini-trust,
 .ap-award-511 .ap-shop-trust {
-  border: 1px solid rgba(168, 176, 188, 0.18);
+  border: 1px solid rgba(147, 168, 191, 0.18);
   border-radius: 10px;
   padding: var(--sp-2) var(--sp-3);
   background: linear-gradient(180deg, rgba(232, 235, 240, 0.03), transparent);
@@ -2185,15 +2185,15 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 .sky-tonight-plate .plate:hover {
-  border-color: rgba(168, 176, 188, 0.48);
+  border-color: rgba(147, 168, 191, 0.48);
   box-shadow:
     inset 0 0 0 1px rgba(232, 235, 240, 0.08),
     0 14px 32px rgba(0, 0, 0, 0.36),
-    0 0 24px rgba(168, 176, 188, 0.1);
+    0 0 24px rgba(147, 168, 191, 0.1);
 }
 
 .ap-award-511 .edition-list {
-  border-top: 1px solid rgba(168, 176, 188, 0.16);
+  border-top: 1px solid rgba(147, 168, 191, 0.16);
   padding-top: var(--sp-2);
 }
 
@@ -2226,7 +2226,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   width: min(280px, 42%);
   height: 1px;
   margin: 0 auto clamp(28px, 4vw, 40px);
-  background: linear-gradient(90deg, transparent, rgba(168, 176, 188, 0.42), transparent);
+  background: linear-gradient(90deg, transparent, rgba(147, 168, 191, 0.42), transparent);
   opacity: 0.85;
 }
 
@@ -2236,12 +2236,12 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 /* Hero headline — brass accent shimmer on gold line */
 .ap-award-511 .display .display-accent {
-  background: linear-gradient(105deg, #E8EBF0 0%, #A8B0BC 42%, #E8D4A8 68%, #A8B0BC 100%);
+  background: linear-gradient(105deg, #EEF4FA 0%, #93A8BF 42%, #C9D6E3 68%, #93A8BF 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: none;
-  filter: drop-shadow(0 0 18px rgba(168, 176, 188, 0.22));
+  filter: drop-shadow(0 0 18px rgba(147, 168, 191, 0.22));
 }
 
 /* Why plates — themed gradients + engraved corners */
@@ -2259,7 +2259,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   opacity: 0.55;
   background-image:
     radial-gradient(1px 1px at 18% 24%, rgba(232, 235, 240, 0.35), transparent),
-    radial-gradient(1px 1px at 72% 68%, rgba(168, 176, 188, 0.28), transparent);
+    radial-gradient(1px 1px at 72% 68%, rgba(147, 168, 191, 0.28), transparent);
   z-index: 0;
 }
 
@@ -2273,7 +2273,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 .why-plate:nth-child(2) {
-  background: linear-gradient(155deg, rgba(168, 176, 188, 0.12) 0%, var(--night) 52%);
+  background: linear-gradient(155deg, rgba(147, 168, 191, 0.12) 0%, var(--night) 52%);
 }
 
 .ap-award-511 .why-plate:nth-child(3) {
@@ -2288,7 +2288,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   content: "";
   position: absolute;
   inset: 8px;
-  border: 1px solid rgba(168, 176, 188, 0.14);
+  border: 1px solid rgba(147, 168, 191, 0.14);
   border-radius: 6px;
   pointer-events: none;
   z-index: 0;
@@ -2298,8 +2298,8 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.28);
-  background: rgba(168, 176, 188, 0.08);
+  border: 1px solid rgba(147, 168, 191, 0.28);
+  background: rgba(147, 168, 191, 0.08);
 }
 
 /* Instruments — engraved row panels */
@@ -2311,12 +2311,12 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 #instrumentsChapter .dept-list-item {
-  border: 1px solid rgba(168, 176, 188, 0.22);
-  border-bottom: 1px solid rgba(168, 176, 188, 0.22);
+  border: 1px solid rgba(147, 168, 191, 0.22);
+  border-bottom: 1px solid rgba(147, 168, 191, 0.22);
   border-radius: 12px;
   padding: var(--sp-3) var(--sp-3) var(--sp-3) calc(var(--sp-3) + 6px);
   background:
-    linear-gradient(90deg, rgba(168, 176, 188, 0.08) 0%, transparent 22%),
+    linear-gradient(90deg, rgba(147, 168, 191, 0.08) 0%, transparent 22%),
     linear-gradient(180deg, rgba(18, 24, 38, 0.65), rgba(12, 16, 22, 0.92));
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
@@ -2329,7 +2329,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   bottom: 14px;
   width: 3px;
   border-radius: 0 2px 2px 0;
-  background: linear-gradient(180deg, rgba(168, 176, 188, 0.7), rgba(168, 176, 188, 0.15));
+  background: linear-gradient(180deg, rgba(147, 168, 191, 0.7), rgba(147, 168, 191, 0.15));
 }
 
 .ap-award-511 #instrumentsChapter .dept-list-item {
@@ -2337,8 +2337,8 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 #instrumentsChapter .dept-list-item:hover {
-  border-color: rgba(168, 176, 188, 0.42);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26), 0 0 20px rgba(168, 176, 188, 0.08);
+  border-color: rgba(147, 168, 191, 0.42);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26), 0 0 20px rgba(147, 168, 191, 0.08);
 }
 
 .ap-award-511 #instrumentsChapter .dept-number {
@@ -2347,8 +2347,8 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   text-align: center;
   padding: 4px 0;
   border-radius: 8px;
-  background: rgba(168, 176, 188, 0.08);
-  border: 1px solid rgba(168, 176, 188, 0.2);
+  background: rgba(147, 168, 191, 0.08);
+  border: 1px solid rgba(147, 168, 191, 0.2);
 }
 
 .ap-award-511 #instrumentsChapter .dept-title {
@@ -2372,7 +2372,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
     left: 12%;
     right: 12%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(168, 176, 188, 0.32) 15%, rgba(168, 176, 188, 0.32) 85%, transparent);
+    background: linear-gradient(90deg, transparent, rgba(147, 168, 191, 0.32) 15%, rgba(147, 168, 191, 0.32) 85%, transparent);
     pointer-events: none;
   }
 
@@ -2381,13 +2381,13 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
     padding: var(--sp-3);
     border-radius: 12px;
     background: linear-gradient(180deg, rgba(232, 235, 240, 0.04), transparent);
-    border: 1px solid rgba(168, 176, 188, 0.14);
+    border: 1px solid rgba(147, 168, 191, 0.14);
     text-align: left;
   }
 
   .ap-award-511 #methodChapter .method-step:hover {
     transform: translateY(-2px);
-    border-color: rgba(168, 176, 188, 0.32);
+    border-color: rgba(147, 168, 191, 0.32);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   }
 }
@@ -2404,7 +2404,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   right: 6%;
   top: 38%;
   height: 140px;
-  border: 1px solid rgba(168, 176, 188, 0.14);
+  border: 1px solid rgba(147, 168, 191, 0.14);
   border-radius: 50%;
   transform: perspective(500px) rotateX(72deg);
   pointer-events: none;
@@ -2414,7 +2414,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 /* Reading — dark engraved plate + pull quote */
 .ap-award-511 #readingChapter .featured-reading .plate {
   padding: var(--sp-3);
-  border: 1px solid rgba(168, 176, 188, 0.34);
+  border: 1px solid rgba(147, 168, 191, 0.34);
   border-radius: 14px;
   background: linear-gradient(165deg, rgba(18, 24, 38, 0.95), rgba(12, 16, 22, 0.98));
   box-shadow:
@@ -2432,13 +2432,13 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4);
   border-left: 3px solid var(--brass);
   border-radius: 0 10px 10px 0;
-  background: linear-gradient(90deg, rgba(168, 176, 188, 0.08), transparent 68%);
+  background: linear-gradient(90deg, rgba(147, 168, 191, 0.08), transparent 68%);
   font-family: var(--font-serif);
   font-size: 1.05rem;
   font-style: italic;
   line-height: 1.6;
   color: var(--ink);
-  box-shadow: inset 0 0 0 1px rgba(168, 176, 188, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(147, 168, 191, 0.1);
 }
 
 /* Orrery frame — double brass ring */
@@ -2451,7 +2451,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   position: absolute;
   inset: 4px;
   border-radius: 14px;
-  border: 1px solid rgba(168, 176, 188, 0.12);
+  border: 1px solid rgba(147, 168, 191, 0.12);
   pointer-events: none;
 }
 
@@ -2464,7 +2464,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   opacity: 0.45;
   background-image:
     radial-gradient(1.2px 1.2px at 22% 28%, rgba(232, 235, 240, 0.4), transparent),
-    radial-gradient(1px 1px at 78% 62%, rgba(168, 176, 188, 0.35), transparent),
+    radial-gradient(1px 1px at 78% 62%, rgba(147, 168, 191, 0.35), transparent),
     radial-gradient(1px 1px at 52% 82%, rgba(111, 160, 216, 0.3), transparent);
   z-index: 0;
 }
@@ -2487,7 +2487,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 #libraryChapter .sign-index-entry:hover,
 .ap-award-511 #libraryChapter .sign-index-entry:focus-visible {
   transform: translateY(-2px);
-  border-color: rgba(168, 176, 188, 0.38);
+  border-color: rgba(147, 168, 191, 0.38);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
   outline: none;
 }
@@ -2524,9 +2524,9 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   border-radius: 22px;
   background:
     radial-gradient(ellipse 90% 70% at 50% 38%, rgba(111, 160, 216, 0.14) 0%, transparent 62%),
-    radial-gradient(ellipse 120% 80% at 50% 100%, rgba(168, 176, 188, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 120% 80% at 50% 100%, rgba(147, 168, 191, 0.08) 0%, transparent 55%),
     linear-gradient(180deg, rgba(18, 24, 38, 0.55) 0%, rgba(12, 16, 22, 0.2) 100%);
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   box-shadow:
     0 24px 64px rgba(0, 0, 0, 0.42),
     inset 0 0 0 1px rgba(232, 235, 240, 0.05);
@@ -2539,9 +2539,9 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   margin-bottom: var(--sp-2);
   padding: 8px 16px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.45);
+  border: 1px solid rgba(147, 168, 191, 0.45);
   background: rgba(12, 16, 22, 0.88);
-  box-shadow: 0 0 24px rgba(168, 176, 188, 0.12);
+  box-shadow: 0 0 24px rgba(147, 168, 191, 0.12);
 }
 
 .ap-award-511 .hero-solar-badge__glyph {
@@ -2578,7 +2578,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 .hero-solar-instrument .ap-award-orrery-frame {
   padding: 14px;
   border-width: 1.5px;
-  border-color: rgba(168, 176, 188, 0.48);
+  border-color: rgba(147, 168, 191, 0.48);
   box-shadow:
     0 0 0 1px rgba(232, 235, 240, 0.06),
     0 20px 56px rgba(0, 0, 0, 0.45),
@@ -2661,7 +2661,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 .ap-award-511 .ap-chapter--compare {
   padding-block: var(--sp-8) var(--sp-7);
-  border-bottom: 1px solid rgba(168, 176, 188, 0.18);
+  border-bottom: 1px solid rgba(147, 168, 191, 0.18);
 }
 
 .ap-award-511 .ap-compare-grid {
@@ -2674,7 +2674,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 .ap-compare-card {
   padding: var(--sp-4);
   border-radius: 14px;
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   background: rgba(18, 24, 38, 0.55);
 }
 
@@ -2686,7 +2686,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 .ap-compare-card--us {
-  border-color: rgba(168, 176, 188, 0.48);
+  border-color: rgba(147, 168, 191, 0.48);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(232, 235, 240, 0.05);
 }
 
@@ -2723,8 +2723,8 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   padding: var(--sp-4) var(--sp-5);
   list-style: none;
   border-radius: 14px;
-  border: 1px solid rgba(168, 176, 188, 0.22);
-  background: linear-gradient(135deg, rgba(168, 176, 188, 0.08), rgba(12, 16, 22, 0.4));
+  border: 1px solid rgba(147, 168, 191, 0.22);
+  background: linear-gradient(135deg, rgba(147, 168, 191, 0.08), rgba(12, 16, 22, 0.4));
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--sp-3) var(--sp-5);
@@ -2755,14 +2755,14 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 .ap-why-use strong {
-  color: #C8CDD6;
+  color: #C9D6E3;
   font-weight: 600;
 }
 
 .ap-award-511 .ap-gloss,
 .ap-award-511 abbr.ap-gloss {
-  color: #C8CDD6;
-  text-decoration: underline dotted rgba(216, 185, 120, 0.75);
+  color: #C9D6E3;
+  text-decoration: underline dotted rgba(147, 168, 191, 0.75);
   text-underline-offset: 0.18em;
   cursor: help;
 }
@@ -2806,8 +2806,8 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 @keyframes ap-badge-glow {
-  0%, 100% { box-shadow: 0 0 24px rgba(168, 176, 188, 0.12); }
-  50% { box-shadow: 0 0 40px rgba(168, 176, 188, 0.28), 0 0 12px rgba(111, 160, 216, 0.1); }
+  0%, 100% { box-shadow: 0 0 24px rgba(147, 168, 191, 0.12); }
+  50% { box-shadow: 0 0 40px rgba(147, 168, 191, 0.28), 0 0 12px rgba(111, 160, 216, 0.1); }
 }
 
 @keyframes ap-stage-glow {
@@ -2816,14 +2816,14 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
       0 24px 64px rgba(0, 0, 0, 0.42),
       inset 0 0 0 1px rgba(232, 235, 240, 0.05),
       0 0 48px rgba(111, 160, 216, 0.06);
-    border-color: rgba(168, 176, 188, 0.28);
+    border-color: rgba(147, 168, 191, 0.28);
   }
   50% {
     box-shadow:
       0 28px 72px rgba(0, 0, 0, 0.46),
       inset 0 0 0 1px rgba(232, 235, 240, 0.08),
-      0 0 72px rgba(168, 176, 188, 0.14);
-    border-color: rgba(168, 176, 188, 0.42);
+      0 0 72px rgba(147, 168, 191, 0.14);
+    border-color: rgba(147, 168, 191, 0.42);
   }
 }
 
@@ -2854,10 +2854,10 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   opacity: 0.58;
   background-image:
     radial-gradient(1px 1px at 14% 18%, rgba(232, 235, 240, 0.55), transparent),
-    radial-gradient(1.2px 1.2px at 82% 24%, rgba(168, 176, 188, 0.5), transparent),
+    radial-gradient(1.2px 1.2px at 82% 24%, rgba(147, 168, 191, 0.5), transparent),
     radial-gradient(1px 1px at 38% 72%, rgba(111, 160, 216, 0.42), transparent),
     radial-gradient(1px 1px at 68% 58%, rgba(232, 235, 240, 0.38), transparent),
-    radial-gradient(1.5px 1.5px at 22% 48%, rgba(168, 176, 188, 0.35), transparent),
+    radial-gradient(1.5px 1.5px at 22% 48%, rgba(147, 168, 191, 0.35), transparent),
     radial-gradient(1px 1px at 92% 78%, rgba(232, 235, 240, 0.32), transparent);
   animation: ap-starfield-drift 22s ease-in-out infinite;
 }
@@ -2924,7 +2924,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   background: linear-gradient(
     105deg,
     transparent 38%,
-    rgba(168, 176, 188, 0.16) 50%,
+    rgba(147, 168, 191, 0.16) 50%,
     transparent 62%
   );
   background-size: 220% 100%;
@@ -2933,10 +2933,10 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 .ap-compare-card--us:hover {
-  border-color: rgba(168, 176, 188, 0.62);
+  border-color: rgba(147, 168, 191, 0.62);
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.32),
-    0 0 36px rgba(168, 176, 188, 0.14);
+    0 0 36px rgba(147, 168, 191, 0.14);
 }
 
 .ap-award-511 .ap-compare-card--us:hover::after {
@@ -3016,14 +3016,14 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
     0 0 0 1px rgba(232, 235, 240, 0.08),
     0 24px 64px rgba(0, 0, 0, 0.5),
     0 0 100px rgba(111, 160, 216, 0.18),
-    inset 0 0 48px rgba(168, 176, 188, 0.06);
+    inset 0 0 48px rgba(147, 168, 191, 0.06);
 }
 
 /* Sitewide depth — plates, guides, tonight */
 .ap-award-511 .why-plate {
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.28),
-    inset 0 0 0 1px rgba(168, 176, 188, 0.12);
+    inset 0 0 0 1px rgba(147, 168, 191, 0.12);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -3031,8 +3031,8 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   transform: translateY(-3px);
   box-shadow:
     0 18px 44px rgba(0, 0, 0, 0.36),
-    0 0 32px rgba(168, 176, 188, 0.1),
-    inset 0 0 0 1px rgba(168, 176, 188, 0.22);
+    0 0 32px rgba(147, 168, 191, 0.1),
+    inset 0 0 0 1px rgba(147, 168, 191, 0.22);
 }
 
 .ap-award-511 .sg-card {
@@ -3047,23 +3047,23 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 
 .ap-award-511 .cosmic-story-band .cs-planet svg {
-  filter: drop-shadow(0 0 10px rgba(168, 176, 188, 0.35));
+  filter: drop-shadow(0 0 10px rgba(147, 168, 191, 0.35));
 }
 
 .ap-award-511 .cosmic-story-band .cs-planet:hover svg,
 .ap-award-511 .cosmic-story-band .cs-planet:focus-within svg {
-  filter: drop-shadow(0 0 18px rgba(168, 176, 188, 0.55)) drop-shadow(0 0 8px rgba(111, 160, 216, 0.25));
+  filter: drop-shadow(0 0 18px rgba(147, 168, 191, 0.55)) drop-shadow(0 0 8px rgba(111, 160, 216, 0.25));
 }
 
 .ap-award-511 .plate-i-wheel svg,
 .ap-award-511 #plate-i-wheel svg {
-  filter: contrast(1.08) brightness(1.06) drop-shadow(0 0 24px rgba(168, 176, 188, 0.15));
+  filter: contrast(1.08) brightness(1.06) drop-shadow(0 0 24px rgba(147, 168, 191, 0.15));
 }
 
 .ap-award-511 .ap-chapter--hero {
   background:
     radial-gradient(ellipse 80% 50% at 18% 20%, rgba(111, 160, 216, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 82% 60%, rgba(168, 176, 188, 0.06) 0%, transparent 50%);
+    radial-gradient(ellipse 60% 40% at 82% 60%, rgba(147, 168, 191, 0.06) 0%, transparent 50%);
 }
 
 @media (max-width: 900px) {
@@ -3164,7 +3164,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   box-shadow: none;
   background:
     radial-gradient(ellipse 60% 55% at 63% 45%, rgba(111, 160, 216, 0.10) 0%, transparent 64%),
-    radial-gradient(ellipse 110% 60% at 50% 110%, rgba(168, 176, 188, 0.06) 0%, transparent 58%);
+    radial-gradient(ellipse 110% 60% at 50% 110%, rgba(147, 168, 191, 0.06) 0%, transparent 58%);
 }
 
 /* Un-cage the instrument */
@@ -3409,7 +3409,7 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
   box-sizing: border-box;
   padding: 10px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(168, 176, 188, 0.35);
+  border: 1px solid rgba(147, 168, 191, 0.35);
   background: rgba(18, 24, 38, 0.85);
   color: var(--ink);
   font-family: var(--font-mono);
@@ -3421,8 +3421,8 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
   padding: 12px 24px;
   border-radius: 12px;
   border: 0;
-  background: linear-gradient(180deg, #E08A60, var(--terracotta));
-  color: #1F1206;
+  background: linear-gradient(180deg, #A5BCFF, var(--terracotta));
+  color: #07101E;
   font-family: var(--font-ui);
   font-size: 0.95rem;
   font-weight: 700;
@@ -3546,7 +3546,7 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
   white-space: nowrap;
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.28);
+  border: 1px solid rgba(147, 168, 191, 0.28);
   background: rgba(12, 16, 22, 0.82);
 }
 .ap-award-511 #heroChapter .orrery-viewport .orrery-controls .orrery-date {
@@ -3668,7 +3668,7 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
 .ap-award-511 .sign-tile,
 .ap-award-511 .cs-chip {
   border-radius: 16px;
-  border: 1px solid rgba(168, 176, 188, 0.22);
+  border: 1px solid rgba(147, 168, 191, 0.22);
   background: var(--night-raised, #1A2230);
   box-shadow: none;
   transition:
@@ -3687,7 +3687,7 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
 .ap-award-511 .sign-tile:hover,
 .ap-award-511 .sign-tile:focus-visible,
 .ap-award-511 .cs-chip:hover {
-  border-color: rgba(168, 176, 188, 0.45);
+  border-color: rgba(147, 168, 191, 0.45);
   transform: translateY(-2px);
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4);
 }
@@ -3773,7 +3773,7 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
   font-family: var(--font-mono);
   font-size: 0.8rem;
   letter-spacing: 0.03em;
-  color: var(--paper-on-midnight, #E8EBF0);
+  color: var(--paper-on-midnight, #EEF4FA);
 }
 
 .ap-award-511 .cs-chip-epithet {
@@ -3794,7 +3794,7 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
   font-size: 0.95rem;
   color: var(--brass);
   text-decoration: none;
-  border-bottom: 1px solid rgba(168, 176, 188, 0.4);
+  border-bottom: 1px solid rgba(147, 168, 191, 0.4);
   padding-bottom: 2px;
 }
 
@@ -3857,7 +3857,7 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
   padding: var(--sp-4) var(--sp-5);
   border-left: 2px solid var(--brass);
   border-radius: 0 16px 16px 0;
-  background: rgba(168, 176, 188, 0.05);
+  background: rgba(147, 168, 191, 0.05);
 }
 
 .ap-award-511 .method-quote .ap-pull-quote {
@@ -3927,10 +3927,10 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
   background: var(--sign-element-accent, var(--brass));
 }
 
-.ap-award-511 .sign-tile--fire  { --sign-element-accent: var(--ap-element-fire,  #B85A42); }
-.ap-award-511 .sign-tile--earth { --sign-element-accent: var(--ap-element-earth, #5A7A48); }
-.ap-award-511 .sign-tile--air   { --sign-element-accent: var(--ap-element-air,   #8A7A6A); }
-.ap-award-511 .sign-tile--water { --sign-element-accent: var(--ap-element-water, #4A7580); }
+.ap-award-511 .sign-tile--fire  { --sign-element-accent: var(--ap-element-fire,  #FF8EA8); }
+.ap-award-511 .sign-tile--earth { --sign-element-accent: var(--ap-element-earth, #6FD0B3); }
+.ap-award-511 .sign-tile--air   { --sign-element-accent: var(--ap-element-air,   #93A8BF); }
+.ap-award-511 .sign-tile--water { --sign-element-accent: var(--ap-element-water, #79C7F2); }
 
 .ap-award-511 .sign-tile .sign-glyph {
   font-family: 'AstroGlyph', var(--font-serif);
@@ -4103,7 +4103,7 @@ body.sg-library .sg-filter-slot {
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255, 255, 255, 0.08), transparent 50%),
     radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, var(--void));
   box-shadow:
-    inset 0 0 0 1px rgba(168, 176, 188, 0.4),
+    inset 0 0 0 1px rgba(147, 168, 191, 0.4),
     inset 0 -3px 8px rgba(0, 0, 0, 0.5);
 }
 .ap-award-511 #heroChapter .lite-vp-btn .ap-seal__art {
@@ -4114,16 +4114,16 @@ body.sg-library .sg-filter-slot {
 }
 /* Active pill: brass inset ring + subtle glow (tokens) */
 .ap-award-511 #heroChapter .lite-vp-btn.active {
-  border-color: rgba(168, 176, 188, 0.62);
+  border-color: rgba(147, 168, 191, 0.62);
   box-shadow:
-    inset 0 0 0 1px rgba(168, 176, 188, 0.5),
-    0 0 12px rgba(168, 176, 188, 0.22);
+    inset 0 0 0 1px rgba(147, 168, 191, 0.5),
+    0 0 12px rgba(147, 168, 191, 0.22);
 }
 .ap-award-511 #heroChapter .lite-vp-btn.active .ap-seal__plate {
   box-shadow:
-    inset 0 0 0 1px rgba(216, 185, 120, 0.65),
+    inset 0 0 0 1px rgba(147, 168, 191, 0.65),
     inset 0 -3px 8px rgba(0, 0, 0, 0.5),
-    0 0 10px rgba(168, 176, 188, 0.26);
+    0 0 10px rgba(147, 168, 191, 0.26);
 }
 
 /* ── Scale strip — 7 stations on a brass hairline track ── */
@@ -4145,7 +4145,7 @@ body.sg-library .sg-filter-slot {
   right: 4%;
   bottom: 3px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(168, 176, 188, 0.42) 12%, rgba(168, 176, 188, 0.42) 88%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(147, 168, 191, 0.42) 12%, rgba(147, 168, 191, 0.42) 88%, transparent);
   pointer-events: none;
 }
 .ap-award-511 #heroChapter .ap-scale-btn {
@@ -4171,7 +4171,7 @@ body.sg-library .sg-filter-slot {
   width: 1px;
   height: 7px;
   transform: translateX(-50%);
-  background: rgba(168, 176, 188, 0.55);
+  background: rgba(147, 168, 191, 0.55);
   box-shadow: 1px 0 0 rgba(0, 0, 0, 0.6);
 }
 .ap-award-511 #heroChapter .ap-scale-btn:hover,
@@ -4184,14 +4184,14 @@ body.sg-library .sg-filter-slot {
   outline-offset: 2px;
 }
 .ap-award-511 #heroChapter .ap-scale-btn.active {
-  color: var(--ap-gold-vivid, #C8CDD6);
-  text-shadow: 0 0 12px rgba(216, 185, 120, 0.35);
+  color: var(--ap-gold-vivid, #C9D6E3);
+  text-shadow: 0 0 12px rgba(147, 168, 191, 0.35);
 }
 .ap-award-511 #heroChapter .ap-scale-btn.active::after {
   width: 2px;
   height: 9px;
-  background: var(--ap-gold-vivid, #C8CDD6);
-  box-shadow: 0 0 8px rgba(216, 185, 120, 0.5);
+  background: var(--ap-gold-vivid, #C9D6E3);
+  box-shadow: 0 0 8px rgba(147, 168, 191, 0.5);
 }
 .ap-award-511 #heroChapter .ap-scale-btn:disabled {
   cursor: default;
@@ -4207,7 +4207,7 @@ body.sg-library .sg-filter-slot {
   font-size: 0.6rem;
   letter-spacing: 0.04em;
   text-align: center;
-  color: var(--ap-text-faint, #968B74);
+  color: var(--ap-text-faint, #93A8BF);
 }
 
 /* ── v592 · Orbits toggle — tiny engraved-brass pill under the scale caption ── */
@@ -4216,9 +4216,9 @@ body.sg-library .sg-filter-slot {
   margin: 4px auto 0;
   padding: 3px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.34);
+  border: 1px solid rgba(147, 168, 191, 0.34);
   background: rgba(12, 16, 22, 0.6);
-  color: var(--ap-text-faint, #968B74);
+  color: var(--ap-text-faint, #93A8BF);
   font-family: 'Cinzel', var(--font-serif);
   font-size: 0.58rem;
   font-weight: 600;
@@ -4229,18 +4229,18 @@ body.sg-library .sg-filter-slot {
 }
 .ap-award-511 #heroChapter .ap-orbits-toggle:hover,
 .ap-award-511 #heroChapter .ap-orbits-toggle:focus-visible {
-  color: var(--brass, #A8B0BC);
-  border-color: rgba(168, 176, 188, 0.6);
+  color: var(--brass, #93A8BF);
+  border-color: rgba(147, 168, 191, 0.6);
   outline: none;
 }
 .ap-award-511 #heroChapter .ap-orbits-toggle:focus-visible {
-  outline: 2px solid var(--brass, #A8B0BC);
+  outline: 2px solid var(--brass, #93A8BF);
   outline-offset: 2px;
 }
 .ap-award-511 #heroChapter .ap-orbits-toggle[aria-pressed="true"] {
-  color: var(--ap-gold-vivid, #C8CDD6);
-  border-color: rgba(216, 185, 120, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(168, 176, 188, 0.28), 0 0 10px rgba(168, 176, 188, 0.12);
+  color: var(--ap-gold-vivid, #C9D6E3);
+  border-color: rgba(147, 168, 191, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(147, 168, 191, 0.28), 0 0 10px rgba(147, 168, 191, 0.12);
 }
 
 /* ── v592 · Live readout — compact engraved-brass card; body · sign · note ── */
@@ -4250,7 +4250,7 @@ body.sg-library .sg-filter-slot {
   gap: 8px;
   padding: 5px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(168, 176, 188, 0.3);
+  border: 1px solid rgba(147, 168, 191, 0.3);
   background: linear-gradient(180deg, rgba(18, 24, 38, 0.82), rgba(12, 16, 22, 0.82));
   box-shadow: inset 0 1px 0 rgba(232, 235, 240, 0.05);
   white-space: nowrap;
@@ -4267,22 +4267,22 @@ body.sg-library .sg-filter-slot {
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--ap-gold-vivid, #C8CDD6);
+  color: var(--ap-gold-vivid, #C9D6E3);
 }
 .ap-award-511 #heroChapter .ap-orrery-readout__sign {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.02em;
-  color: var(--parchment, #E8EBF0);
+  color: var(--parchment, #EEF4FA);
 }
 .ap-award-511 #heroChapter .ap-orrery-readout.is-retro .ap-orrery-readout__sign {
-  color: #d8a0a0;
+  color: #FF8EA8;
 }
 .ap-award-511 #heroChapter .ap-orrery-readout__note {
   font-family: var(--font-mono);
   font-size: 0.56rem;
   letter-spacing: 0.04em;
-  color: var(--ap-text-faint, #968B74);
+  color: var(--ap-text-faint, #93A8BF);
 }
 
 /* ── Cosmic journey — ghost brass pill, same family as flight ── */
@@ -4290,7 +4290,7 @@ body.sg-library .sg-filter-slot {
   min-height: 40px;
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 176, 188, 0.4);
+  border: 1px solid rgba(147, 168, 191, 0.4);
   background: rgba(12, 16, 22, 0.85);
   color: var(--brass);
   font-family: var(--font-ui, system-ui, sans-serif);
@@ -4303,18 +4303,18 @@ body.sg-library .sg-filter-slot {
 }
 .ap-award-511 .ap-orrery-cosmic-journey:hover,
 .ap-award-511 .ap-orrery-cosmic-journey:focus-visible {
-  border-color: rgba(216, 185, 120, 0.7);
-  color: var(--ap-gold-vivid, #C8CDD6);
-  box-shadow: 0 0 16px rgba(168, 176, 188, 0.16);
+  border-color: rgba(147, 168, 191, 0.7);
+  color: var(--ap-gold-vivid, #C9D6E3);
+  box-shadow: 0 0 16px rgba(147, 168, 191, 0.16);
 }
 .ap-award-511 .ap-orrery-cosmic-journey:focus-visible {
-  outline: 2px solid var(--brass, #A8B0BC);
+  outline: 2px solid var(--brass, #93A8BF);
   outline-offset: 2px;
 }
 .ap-award-511 .ap-orrery-cosmic-journey.is-running {
-  border-color: rgba(216, 185, 120, 0.7);
-  color: var(--ap-gold-vivid, #C8CDD6);
-  box-shadow: inset 0 0 0 1px rgba(168, 176, 188, 0.35);
+  border-color: rgba(147, 168, 191, 0.7);
+  color: var(--ap-gold-vivid, #C9D6E3);
+  box-shadow: inset 0 0 0 1px rgba(147, 168, 191, 0.35);
 }
 
 /* ── Deck grid v575: [strip] / [pills | date·Now | journey | flight] / [scrub] ── */
@@ -4374,7 +4374,7 @@ body.sg-library .sg-filter-slot {
     min-height: 32px;
     padding: 2px 10px;
     border-radius: 999px;
-    border: 1px solid rgba(168, 176, 188, 0.35);
+    border: 1px solid rgba(147, 168, 191, 0.35);
     background: rgba(18, 24, 38, 0.8);
     color: var(--brass);
     font-size: 1rem;
@@ -4389,7 +4389,7 @@ body.sg-library .sg-filter-slot {
     letter-spacing: 0.16em;
     text-transform: uppercase;
     text-align: center;
-    color: var(--ap-gold-vivid, #C8CDD6);
+    color: var(--ap-gold-vivid, #C9D6E3);
   }
   .ap-award-511 #heroChapter .ap-orrery-cosmic-journey {
     grid-row: auto;
@@ -4425,7 +4425,7 @@ html.orrery-full .ap-award-511 #heroChapter .ap-deck--time-restored .ap-orrery-s
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.03em;
-  color: var(--ap-text-faint, var(--ink-faded, #968B74));
+  color: var(--ap-text-faint, var(--ink-faded, #93A8BF));
 }
 
 /* v576 — mobile conversion fold
@@ -4533,7 +4533,7 @@ html.ap-await-webgl:not(.orrery-full) #orrery-lite-poster {
   z-index: 1;
   background:
     url("../img/engine/earth.webp") center / cover no-repeat,
-    radial-gradient(circle at 50% 48%, #121826 0%, #05080F 72%) !important;
+    radial-gradient(circle at 50% 48%, #101D30 0%, #040812 72%) !important;
 }
 html.ap-await-webgl:not(.orrery-full) .lite-poster-canvas,
 html.ap-await-webgl:not(.orrery-full) .lite-poster-ring,
@@ -4592,7 +4592,7 @@ html.orrery-poster-ready .orrery-earth-loader {
   border-radius: 50%;
   background: conic-gradient(from 0deg,
     transparent 0deg,
-    rgba(168, 176, 188, 0) 250deg,
+    rgba(147, 168, 191, 0) 250deg,
     rgba(126, 200, 232, 0.22) 320deg,
     rgba(200, 205, 214, 0.45) 350deg,
     transparent 360deg);
@@ -4663,7 +4663,7 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .orrery-earth-loader {
   color: var(--brass-vivid);
   text-decoration: none;
   white-space: nowrap;
-  border-bottom: 1px solid rgba(216, 185, 120, 0.4);
+  border-bottom: 1px solid rgba(147, 168, 191, 0.4);
   transition: color 0.15s, border-color 0.15s;
 }
 
@@ -4729,7 +4729,7 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .orrery-earth-loader {
   line-height: 1;
   width: 1.35rem;
   height: 1.35rem;
-  color: var(--brass, #A8B0BC);
+  color: var(--brass, #93A8BF);
   text-rendering: optimizeLegibility;
   transition: color 0.15s, transform 0.15s, text-shadow 0.15s;
 }
@@ -4753,8 +4753,8 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .orrery-earth-loader {
 
 /* Selected chip: vivid brass glyph with a soft brass halo — unmistakable. */
 .ap-award-511 #heroChapter .lite-vp-btn.active .lite-vp-glyph {
-  color: var(--brass-vivid, #C8CDD6);
-  text-shadow: 0 0 8px rgba(216, 185, 120, 0.45);
+  color: var(--brass-vivid, #C9D6E3);
+  text-shadow: 0 0 8px rgba(147, 168, 191, 0.45);
 }
 
 /* ── Large / high-DPI display alignment (2026-07-05) ──────────────────────────
@@ -4795,7 +4795,7 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .orrery-earth-loader {
   gap: 8px;
   margin: 0;
   padding: 0.42rem 0.9rem;
-  border: 1px solid rgba(168, 176, 188, 0.35);
+  border: 1px solid rgba(147, 168, 191, 0.35);
   border-radius: 999px;
   background: rgba(12, 16, 22, 0.78);
   font-family: var(--font-mono);
@@ -4809,7 +4809,7 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .orrery-earth-loader {
   height: 7px;
   border-radius: 50%;
   background: var(--brass-vivid, #C5D4E0);
-  box-shadow: 0 0 10px rgba(168, 176, 188, 0.55);
+  box-shadow: 0 0 10px rgba(147, 168, 191, 0.55);
   animation: ap-live-pulse 2.2s ease-in-out infinite;
 }
 
@@ -4844,7 +4844,7 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .orrery-earth-loader {
 
 /* Deck — engraved glass rail once the engine is live */
 html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck {
-  border: 1px solid rgba(168, 176, 188, 0.22);
+  border: 1px solid rgba(147, 168, 191, 0.22);
   border-radius: 14px;
   background: linear-gradient(180deg, rgba(18, 24, 38, 0.88), rgba(12, 16, 22, 0.92));
   box-shadow:
@@ -5058,14 +5058,14 @@ html.orrery-full .ap-award-511 #heroChapter {
 }
 .ap-obs-gallery__item img {
   width: 100%; aspect-ratio: 1; object-fit: cover;
-  border-radius: 50%; border: 1px solid rgba(168,176,188,0.28);
-  background: var(--ap-void, #05080F); display: block;
+  border-radius: 50%; border: 1px solid rgba(147, 168, 191,0.28);
+  background: var(--ap-void, #040812); display: block;
   box-shadow: 0 12px 32px rgba(0,0,0,0.35);
 }
 .ap-obs-gallery__item span {
   display: block; margin-top: 0.45rem;
   font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: #A8B0BC;
+  color: #93A8BF;
 }
 
 /* ── Sign library engine tiles (design 10 path) ───────────────────────── */
@@ -5091,7 +5091,7 @@ html.orrery-full .ap-award-511 #heroChapter {
   text-decoration: none;
   padding: 1.1rem 0.85rem 1rem;
   border-radius: 16px;
-  border: 1px solid rgba(168, 176, 188, 0.22);
+  border: 1px solid rgba(147, 168, 191, 0.22);
   background: linear-gradient(165deg, rgba(26, 34, 48, 0.72), rgba(12, 16, 22, 0.94));
   min-height: 11.5rem;
   transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
@@ -5100,8 +5100,8 @@ html.orrery-full .ap-award-511 #heroChapter {
 }
 .sign-tile--v2:hover,
 .sign-tile--v2:focus-visible {
-  border-color: rgba(168, 176, 188, 0.55);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(168, 176, 188, 0.12);
+  border-color: rgba(147, 168, 191, 0.55);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(147, 168, 191, 0.12);
   outline: none;
   transform: translateY(-2px);
 }
@@ -5110,8 +5110,8 @@ html.orrery-full .ap-award-511 #heroChapter {
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid rgba(168, 176, 188, 0.35);
-  background: var(--ap-void, #05080F);
+  border: 1px solid rgba(147, 168, 191, 0.35);
+  background: var(--ap-void, #040812);
   display: block;
   margin-bottom: 0.45rem;
 }
@@ -5123,20 +5123,20 @@ html.orrery-full .ap-award-511 #heroChapter {
 .sign-tile--v2 .sign-name {
   font-family: var(--font-display, "Cormorant Garamond", Georgia, serif);
   font-size: 1.2rem;
-  color: #E8EBF0;
+  color: #EEF4FA;
   letter-spacing: 0.02em;
 }
 .sign-tile--v2 .sign-tile-element {
   font-size: 0.68rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #A8B0BC;
+  color: #93A8BF;
   margin-top: 0.3rem;
 }
-.sign-tile--fire { box-shadow: inset 0 0 0 1px rgba(184, 90, 66, 0.12); }
-.sign-tile--earth { box-shadow: inset 0 0 0 1px rgba(90, 122, 72, 0.12); }
-.sign-tile--air { box-shadow: inset 0 0 0 1px rgba(138, 122, 106, 0.12); }
-.sign-tile--water { box-shadow: inset 0 0 0 1px rgba(74, 117, 128, 0.14); }
+.sign-tile--fire { box-shadow: inset 0 0 0 1px rgba(255, 142, 168, 0.12); }
+.sign-tile--earth { box-shadow: inset 0 0 0 1px rgba(111, 208, 179, 0.12); }
+.sign-tile--air { box-shadow: inset 0 0 0 1px rgba(147, 168, 191, 0.12); }
+.sign-tile--water { box-shadow: inset 0 0 0 1px rgba(121, 199, 242, 0.14); }
 
 /* Secondary chapters: quieter so spine stays primary */
 .ap-chapter--secondary {
@@ -5167,7 +5167,7 @@ html.orrery-full .ap-award-511 #heroChapter {
 .hero-explore-chip.hero-explore-chip--quiet {
   opacity: 0.72;
   font-size: 0.78rem;
-  border-color: rgba(168, 176, 188, 0.2);
+  border-color: rgba(147, 168, 191, 0.2);
 }
 .hero-spine-bridge--quiet {
   font-size: 0.88rem;
@@ -5183,12 +5183,12 @@ html.orrery-full .ap-award-511 #heroChapter {
 .sign-thumb img {
   object-fit: cover;
   border-radius: 10px;
-  border: 1px solid rgba(168, 176, 188, 0.25);
-  background: var(--ap-void, #05080F);
+  border: 1px solid rgba(147, 168, 191, 0.25);
+  background: var(--ap-void, #040812);
 }
 .sign-thumb--current img {
-  border-color: rgba(168, 176, 188, 0.55);
-  box-shadow: 0 0 0 1px rgba(168, 176, 188, 0.2);
+  border-color: rgba(147, 168, 191, 0.55);
+  box-shadow: 0 0 0 1px rgba(147, 168, 191, 0.2);
 }
 
 /* Orbit-arc chapter dividers (Art Direction motif) */
@@ -5199,8 +5199,8 @@ html.orrery-full .ap-award-511 #heroChapter {
   height: 12px;
   margin: 0 auto 1.25rem;
   background:
-    radial-gradient(circle at 50% 50%, #A8B0BC 0 2px, transparent 2.5px),
-    radial-gradient(ellipse 100% 100% at 50% 100%, transparent 62%, rgba(168,176,188,0.45) 63%, transparent 64%);
+    radial-gradient(circle at 50% 50%, #93A8BF 0 2px, transparent 2.5px),
+    radial-gradient(ellipse 100% 100% at 50% 100%, transparent 62%, rgba(147, 168, 191,0.45) 63%, transparent 64%);
   opacity: 0.7;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -5223,7 +5223,7 @@ html.orrery-full .ap-award-511 #heroChapter {
 .sign-tile--v2:hover::after,
 .sign-tile--v2:focus-visible::after,
 .ap-shop-featured__card:hover::after {
-  border-color: rgba(168,176,188,0.35);
+  border-color: rgba(147, 168, 191,0.35);
   transform: rotate(8deg) scale(1.02);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -5235,31 +5235,31 @@ html.orrery-full .ap-award-511 #heroChapter {
 .ap-award-511 #heroChapter .hero-solar-trust {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(168,176,188,0.18);
+  border: 1px solid rgba(147, 168, 191,0.18);
   border-radius: 12px;
   padding: 0.55rem 0.85rem;
   background: rgba(12,16,22,0.42);
 }
 html.orrery-full .ap-award-511 #heroChapter .ap-award-orrery-frame {
   box-shadow:
-    0 0 0 1px rgba(168,176,188,0.12),
+    0 0 0 1px rgba(147, 168, 191,0.12),
     0 0 80px rgba(80,140,220,0.08),
     0 28px 80px rgba(0,0,0,0.45);
 }
 .ap-award-511 .dept-list-item {
-  border-color: rgba(168,176,188,0.16);
+  border-color: rgba(147, 168, 191,0.16);
   transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
 }
 .ap-award-511 .dept-list-item:hover,
 .ap-award-511 .dept-list-item:focus-visible {
-  border-color: rgba(168,176,188,0.42);
+  border-color: rgba(147, 168, 191,0.42);
   box-shadow: 0 12px 36px rgba(0,0,0,0.28);
   outline: none;
   transform: translateY(-1px);
 }
 .ap-award-511 .dept-badge.free {
-  border-color: rgba(168,176,188,0.35);
-  color: #C8CDD6;
+  border-color: rgba(147, 168, 191,0.35);
+  color: #C9D6E3;
 }
 /* Lighter page scrim so Earth stays vivid when full */
 html.orrery-full .ap-award-511 #heroChapter .hero-copy {

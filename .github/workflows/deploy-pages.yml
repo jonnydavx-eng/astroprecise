@@ -3,7 +3,14 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-engine-solar-lunar.mjs, test-engine-planets.mjs, test-engine-houses.mjs, test-engine-edge.mjs, test-horoscope.mjs, test-compat.mjs, test-content-bank.mjs, test-art-themes.mjs, test-weekly-sky.mjs, test-ap-sky-bridge.mjs, test-orrery-adapter.mjs, test-gumroad-tables.mjs, tools/e2e-profile-save-audit.mjs]
+    paths:
+      - 'website/**'
+      - 'ephemeris-package/**'
+      - 'tools/**'
+      - 'test-*.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 # 2026-07-04: migrated OFF the legacy gh-pages branch builder onto the official
@@ -28,81 +35,96 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Lighthouse 13 requires Node >=22.19. The maintained 22.x line keeps
+          # CI compatible without jumping to a non-LTS runtime.
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            tools/visual-check/package-lock.json
 
-      - name: Ephemeris engine regression
-        run: node test-engine.mjs
+      - name: Install root dependencies
+        run: npm ci
 
-      - name: Engine solar / lunar
-        run: node test-engine-solar-lunar.mjs
+      - name: Install browser quality dependencies
+        run: npm ci
+        working-directory: tools/visual-check
 
-      - name: Engine planets
-        run: node test-engine-planets.mjs
+      - name: Install Chromium for UI quality gates
+        run: npx playwright install --with-deps chromium
+        working-directory: tools/visual-check
 
-      - name: Engine houses
-        run: node test-engine-houses.mjs
-
-      - name: Engine edge cases
-        run: node test-engine-edge.mjs
-
-      - name: Horoscope determinism
-        run: node test-horoscope.mjs
-
-      - name: Synastry compatibility
-        run: node test-compat.mjs
-
-      - name: Content bank
-        run: node test-content-bank.mjs
-
-      - name: Art theme library
-        run: node test-art-themes.mjs
-
-      - name: Weekly sky determinism
-        run: node test-weekly-sky.mjs
-
-      - name: Personal Sky Moment / sky-bridge
-        run: node test-ap-sky-bridge.mjs
-
-      # These steps were in `npm test` but never gated a deploy: CI
-      # runs a hardcoded list, so adding a test locally did not make it a gate.
-      - name: Orrery adapter
-        run: node test-orrery-adapter.mjs
-
-      - name: Gumroad product tables agree
-        run: node test-gumroad-tables.mjs
-
-      - name: Profile save e2e audit
+      - name: Dependency audit gates
         run: |
-          node website/tools/serve-preview.mjs 8790 &
-          sleep 2
+          npm audit --audit-level=high
+          npm --prefix tools/visual-check audit --audit-level=high
+
+      # npm test is the canonical suite. New regression files become deploy
+      # gates when they are added there instead of being silently omitted from
+      # a second hardcoded CI list.
+      - name: Canonical regression suite
+        run: npm test
+
+      - name: JavaScript syntax gate
+        run: npm run check:syntax
+
+      - name: Launch contract gate
+        run: npm run test:launch
+
+      - name: UI, accessibility and profile gates
+        run: |
+          node website/tools/serve-preview.mjs 8790 > preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8790/?nosw=1 > /dev/null; then
+              break
+            fi
+            if ! kill -0 "$preview_pid" 2>/dev/null; then
+              cat preview.log
+              exit 1
+            fi
+            sleep 1
+          done
+          curl --fail --silent --show-error http://127.0.0.1:8790/?nosw=1 > /dev/null
+          npm run test:ui
+          npm --prefix tools/visual-check run a11y
+          npm run test:palette-rendered
+          npm run test:profile-security
           node tools/e2e-profile-save-audit.mjs
 
-      - name: Production Lighthouse CI
-        # Informational, NOT a deploy blocker: GitHub's shared runner is too
-        # noisy for Lighthouse perf to gate reliably (pages are 95-100 locally
-        # yet flake under 85 on CI's slower/loaded CPU + transient no-FCP). The
-        # deterministic engine/e2e tests above remain hard gates. The scores
-        # still appear in the run log for regression-watching.
-        continue-on-error: true
+      - name: Build production artifact for Lighthouse
+        run: npm run build
+
+      - name: Production artifact Lighthouse CI
+        # Blocking catastrophe floor, not a claim that 50 is the product target.
+        # Shared-runner performance is noisy, while a11y remains a firm 90 floor.
+        timeout-minutes: 20
         env:
           LH_CI_A11Y_MIN: 90
-          # GitHub's shared runner scores Lighthouse perf ~10-15 pts below a
-          # normal machine (slower baseline CPU, amplified by simulate throttle).
-          # Pages are genuinely fast (95-100 locally); 75 here matches the
-          # runner's reality and still catches any real regression. Local runs
-          # (no env) keep the strict default of 85.
-          LH_CI_PERF_MIN: 75
+          LH_CI_PERF_MIN: 50
         run: |
-          node website/tools/serve-preview.mjs 8790 &
-          sleep 2
-          npm ci
-          npm run lighthouse:production:ci
-        working-directory: tools/visual-check
+          PORT=8790 node tools/serve-dist.mjs > lighthouse-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8790/?nosw=1 > /dev/null; then
+              break
+            fi
+            if ! kill -0 "$preview_pid" 2>/dev/null; then
+              cat lighthouse-preview.log
+              exit 1
+            fi
+            sleep 1
+          done
+          curl --fail --silent --show-error http://127.0.0.1:8790/?nosw=1 > /dev/null
+          npm --prefix tools/visual-check run lighthouse:production:ci
 
   build:
     needs: test
@@ -112,7 +134,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.x'
 
       # Faithful minify-in-place (tools/build.mjs): same paths, -27% JS / -29% CSS.
       # build.mjs already skips tools/, the phone-* dev pages and all *.md — dist/
@@ -149,7 +171,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: success()
         with:
-          node-version: '20'
+          node-version: '22.x'
 
       - name: Notify search engines (IndexNow)
         if: success()

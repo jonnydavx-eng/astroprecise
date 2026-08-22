@@ -30,17 +30,17 @@
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=899" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=899" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=899" />
-  <link rel="stylesheet" href="css/main-lite.css?v=899" />
-  <script>window.AP_ASSET_V='899';</script>
-  <script src="js/ap-nav-model.js?v=899" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=899" />
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=899">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=899">
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=900" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=900" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=900" />
+  <link rel="stylesheet" href="css/main-lite.css?v=900" />
+  <script>window.AP_ASSET_V='900';</script>
+  <script src="js/ap-nav-model.js?v=900" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=900" />
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=900">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=900">
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/tonight-page.css?v=899" id="ap-css-tonight" />
+  <link rel="stylesheet" href="css/tonight-page.css?v=900" id="ap-css-tonight" />
   <style>
     body:has(.tn-hero){--tn-gold:#93A8BF;--tn-gold-light:#C9D6E3;--tn-surface:#101D30;--tn-border:rgba(147,168,191,.24);background:#040812;color:#EEF4FA;}
     body:has(.tn-hero) #starfield-canvas,.aurora-orb{display:none!important;}
@@ -141,8 +141,8 @@
   </header>
 
   <section class="ap-room-sky" aria-label="Authored Earth engine still">
-    <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth" aria-label="Open tonight in the live Observatory">
-      <img src="img/engine/earth.webp" width="1000" height="1000" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
+    <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth">
+      <img src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="(max-width: 760px) calc(100vw - 34px), 512px" width="1000" height="1000" loading="lazy" decoding="async" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
       <span class="ap-surface-a__receipt"><span>Engine still · schematic</span><strong>Open tonight in 3D</strong><em>One Observatory · real current positions</em></span>
     </a>
   </section>
@@ -279,7 +279,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
-  <script src="js/ephemeris.js?v=899"></script>
+  <script src="js/ephemeris.js?v=900"></script>
 <script>
   (function () {
     'use strict';
@@ -546,7 +546,7 @@
   </script>
 
   <!-- JS — ephemeris/tonight on defer; cosmos + effects idle after load -->
-  <script src="js/profile.js?v=899" defer></script>
+  <script src="js/profile.js?v=900" defer></script>
   <script>
   (function () {
     function audit() {
@@ -558,9 +558,9 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    inject('js/raf-core.js?v=899');
-    inject('js/icons.js?v=899');
-    inject('js/tonight.js?v=899');
+    inject('js/raf-core.js?v=900');
+    inject('js/icons.js?v=900');
+    inject('js/tonight.js?v=900');
     function idleCosmos() {
       if (audit()) return;
     }
@@ -570,8 +570,8 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=899" defer></script>
-<script src="js/ap-sky-time.js?v=899" defer></script>
-  <script src="js/ap-footer-inject.js?v=899" defer></script>
+  <script src="js/ap-page-boot.js?v=900" defer></script>
+<script src="js/ap-sky-time.js?v=900" defer></script>
+  <script src="js/ap-footer-inject.js?v=900" defer></script>
 </body>
 </html>

@@ -10,6 +10,14 @@
 (function () {
   'use strict';
 
+  /* chart.html runs this once in the head, before any external assets. Re-run
+     defensively before controller boot so a stale/partial page cannot restore
+     historical name/date/time/place/coordinate URL state. */
+  try {
+    if (!window.APChartUrlPrivacy || typeof window.APChartUrlPrivacy.scrub !== 'function') return;
+    if (window.APChartUrlPrivacy.scrub() === false) return;
+  } catch (_) { return; }
+
   if (!document.getElementById('chart-form')) return;
 
   const E = () => window.AstroEphemeris;
@@ -741,7 +749,7 @@
     try {
       const routeQuery = new URLSearchParams(location.search);
       if (routeQuery.get('entry') === 'private-reentry') {
-        try { history.replaceState(null, '', location.pathname); } catch (_) {}
+        try { window.APChartUrlPrivacy.scrub({ dropEntry: true }); } catch (_) {}
         const wrap = document.getElementById('chart-form-wrapper');
         if (wrap && !document.getElementById('chart-handoff-note')) {
           const note = document.createElement('p');
@@ -1794,6 +1802,15 @@
     return location.origin + location.pathname.replace(/[^/]+$/, '') + 'chart.html';
   }
 
+  function privacySafeShareChart(chart) {
+    return Object.assign({}, chart, {
+      name: 'Birth Chart',
+      birthDate: 'Personal details withheld',
+      birthTime: '',
+      city: '',
+    });
+  }
+
   document.getElementById('sitting-cta')?.addEventListener('click', function (ev) {
     ev.preventDefault();
     openSitting();
@@ -1830,13 +1847,14 @@
   // Share Chart → generated image + non-sensitive result summary + clean link.
   document.getElementById('share-btn')?.addEventListener('click', async () => {
     if (!currentChart) return;
-    const shareUrl = buildChartShareUrl(currentChart);
-    const text = sharePlacementLine(currentChart);
+    const shareUrl = buildChartShareUrl();
+    const sharedChart = privacySafeShareChart(currentChart);
+    const text = sharePlacementLine(sharedChart);
     // Prefer sharing the generated image (richer than a bare link) on capable devices.
     if (navigator.canShare && navigator.share) {
       try {
-        const blob = await canvasToBlob(paintShareImage(currentChart, 'square'));
-        const file = blob && new File([blob], `${slugify(currentChart.name)}-natal-square.png`, { type: 'image/png' });
+        const blob = await canvasToBlob(paintShareImage(sharedChart, 'square'));
+        const file = blob && new File([blob], 'astroprecise-natal-square.png', { type: 'image/png' });
         if (file && navigator.canShare({ files: [file] })) {
           await navigator.share({ files: [file], title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
           return;
@@ -1983,7 +2001,10 @@
   // Deterministic starfield with occasional gold sparkles.
   function drawStars(x, W, H, count, seed0, S) {
     let seed = seed0 >>> 0 || 1;
-    const rnd = () => (seed = (Math.imul(seed, 16807)) % 2147483647) / 2147483647;
+    // Keep the generator in unsigned 32-bit space. JavaScript's `%` preserves
+    // a negative sign after Math.imul overflow; that previously fed negative
+    // radii into canvas.arc() and broke every artwork/share-image export.
+    const rnd = () => (seed = Math.imul(seed, 16807) >>> 0) / 4294967296;
     for (let i = 0; i < count; i++) {
       const sparkle = rnd() > 0.9;
       const alpha = 0.12 + rnd() * 0.55;

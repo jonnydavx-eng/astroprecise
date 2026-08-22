@@ -1,4 +1,4 @@
-/* AstroPrecise shop — v899 cool-spectrum lock. Ion CTA, silver hairline, live sky held. */
+/* AstroPrecise shop — v900 cool-spectrum lock. Ion CTA, silver hairline, live sky held. */
 .page-shop,
 .shop-v835 {
   --ap-void: #040812;
@@ -36,7 +36,7 @@
 }
 
 .ap-shop-hero {
-  padding: clamp(54px, 8vw, 106px) 0 clamp(48px, 7vw, 88px);
+  padding: clamp(38px, 5vw, 64px) 0 clamp(38px, 5vw, 64px);
   border-bottom: 1px solid rgba(147, 168, 191, 0.18);
 }
 .ap-shop-hero__grid {
@@ -46,10 +46,10 @@
   align-items: center;
 }
 .ap-shop-hero h1 {
-  max-width: 9ch;
-  margin: 18px 0 24px;
+  max-width: 11ch;
+  margin: 12px 0 18px;
   color: #EEF4FA;
-  font: 600 clamp(56px, 7.3vw, 100px)/.86 var(--ap-display);
+  font: 600 clamp(52px, 6vw, 84px)/.9 var(--ap-display);
   letter-spacing: -.04em;
 }
 .ap-shop-hero h1 em {
@@ -61,12 +61,12 @@
   margin: 0;
   color: rgba(238, 244, 250, 0.76);
   font-size: 16px;
-  line-height: 1.68;
+  line-height: 1.58;
 }
 .ap-shop-includes {
   display: grid;
   gap: 8px;
-  margin: 24px 0 0;
+  margin: 18px 0 0;
   padding: 0;
   list-style: none;
   color: #93A8BF;
@@ -82,7 +82,18 @@
   background: #93A8BF;
   vertical-align: middle;
 }
-.ap-shop-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+.ap-shop-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+.ap-shop-noscript-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 24px;
+  padding: 28px 20px;
+  border-top: 1px solid var(--ap-line);
+}
+
+.ap-shop-noscript-legal a { color: var(--ap-paper-dim); }
 .page-shop .ap-shop-actions .ap-action,
 .page-shop .ap-action {
   min-height: 44px;

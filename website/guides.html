@@ -3,8 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <script>
+  (function () {
+    var incoming = new URLSearchParams(location.search || '');
+    var kept = new URLSearchParams();
+    ['nosw', 'lite'].forEach(function (key) {
+      if (incoming.get(key) === '1') kept.set(key, '1');
+    });
+    var rawHash = String(location.hash || '').replace(/^#/, '');
+    var cleanHash = '';
+    if (rawHash === 'guides') cleanHash = '#guides';
+    else if (rawHash.indexOf('guides?') === 0) {
+      var fragment = new URLSearchParams(rawHash.slice(7));
+      var story = String(fragment.get('story') || '');
+      if (/^[a-z0-9-]{1,80}$/.test(story)) cleanHash = '#guides?story=' + encodeURIComponent(story);
+    }
+    var cleanSearch = kept.toString() ? '?' + kept.toString() : '';
+    if (location.search !== cleanSearch || location.hash !== cleanHash) {
+      history.replaceState(null, '', location.pathname + cleanSearch + cleanHash);
+    }
+  })();
+  </script>
   <meta name="description" content="Short, honest guides to reading your sky — birth charts, rising signs, transits, retrogrades and synastry, each tied to free tools built on real astronomy." />
   <title>Sky Guides — The AstroPrecise Library</title>
   <link rel="manifest" href="manifest.json" />
@@ -30,9 +52,9 @@
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=899" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=899" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=899" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=900" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=900" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=900" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <!-- static, not deferred: the guide grid renders immediately on load -->
@@ -46,8 +68,8 @@
     :root{
       --void: #020307;--night:#121826;--night-raised:#1A2230;
       --paper: #020307;--paper-leaf:#121826;--ink:#E8EBF0;--ink-faded:#C8CDD6;
-      --meridian:var(--ap-brass);--terracotta:var(--ap-ember);--brass:#D8B46A;--sage:#8FB36B;
-      --rose:#D4A882;
+      --meridian:var(--ap-ion,#8BA9FF);--terracotta:var(--ap-violet,#A897FF);--brass:#8BA9FF;--sage:#6FD0B3;
+      --rose:#FF8EA8;
       --font-serif:'Cormorant Garamond',Georgia,serif;--font-ui:'Inter',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,monospace;
       --sp-1:8px;--sp-2:16px;--sp-3:24px;--sp-4:32px;--sp-5:40px;--sp-6:48px;--sp-8:64px;
     }
@@ -239,8 +261,8 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=899" defer></script>
+  <script src="js/ap-page-boot.js?v=900" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=899" defer></script>
+  <script src="js/ap-footer-inject.js?v=900" defer></script>
 </body>
 </html>

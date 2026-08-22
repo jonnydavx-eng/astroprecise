@@ -141,12 +141,9 @@
     custom('house_system', p.houseSystem);
     custom('dedication', p.dedication);
     if (productId) custom('product_sku', productId);
-    try {
-      if (window.AstroProfile && AstroProfile.getCharts) {
-        var c = AstroProfile.getCharts()[0];
-        if (c && c.name) custom('chart_name', c.name);
-      }
-    } catch (e) {}
+    // A saved chart label is profile data, not a checkout preference. Never
+    // copy it into an external URL; a fulfilment form can ask the buyer for a
+    // display name directly when commerce is deliberately re-enabled.
     return u.toString();
   }
 

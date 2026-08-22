@@ -16,7 +16,7 @@
   --ap-ion-hover: #A5BCFF;
   --ap-violet: #A897FF;
   --ap-cta-ink: #07101E;
-  /* Compatibility aliases for pre-v899 surfaces. All resolve to the cool system. */
+  /* Compatibility aliases for pre-v900 surfaces. All resolve to the cool system. */
   --ap-brass: var(--ap-silver);
   --ap-brass-bright: var(--ap-silver-bright);
   --ap-ember: var(--ap-ion);

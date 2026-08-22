@@ -1,14 +1,14 @@
 /* AstroPrecise compact footer — self-contained for legacy and launch pages. */
 .ap-site-footer {
-  --ap-footer-paper: #E6ECF2;
+  --ap-footer-paper: #EEF4FA;
   --ap-footer-paper-dim: rgba(230, 236, 242, .76);
   --ap-footer-paper-faint: rgba(230, 236, 242, .52);
-  --ap-footer-brass: #8FA3B8;
+  --ap-footer-brass: #93A8BF;
   position: relative;
   z-index: 2;
   box-sizing: border-box;
   border-top: 1px solid rgba(143, 163, 184, .18);
-  background: var(--ap-void, #05080F);
+  background: var(--ap-void, #040812);
   color: var(--ap-footer-paper-dim);
   font-family: 'Schibsted Grotesk', 'Segoe UI', sans-serif;
 }

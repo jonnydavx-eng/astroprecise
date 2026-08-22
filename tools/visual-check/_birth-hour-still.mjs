@@ -7,12 +7,12 @@
  */
 import { chromium } from './node_modules/playwright/index.mjs';
 import AxeBuilder from '@axe-core/playwright';
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
 const BASE = (process.env.AP_BASE || 'http://127.0.0.1:8790').replace(/\/+$/, '');
-const OUT = process.env.AP_VISUAL_OUT || join(tmpdir(), 'astroprecise-v899-ui');
+const OUT = process.env.AP_VISUAL_OUT || join(tmpdir(), 'astroprecise-v900-ui');
 const WINDOWS_CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const errors = [];
 let browser;
@@ -32,7 +32,7 @@ try {
     if (message.type() === 'error') errors.push(`CONSOLE ${message.text()}`);
   });
 
-  await page.goto(`${BASE}/chart.html?nosw=1&contract=v899-chart-sitting`, {
+  await page.goto(`${BASE}/chart.html?nosw=1&contract=v900-chart-sitting`, {
     waitUntil: 'domcontentloaded', timeout: 60_000,
   });
   await page.waitForSelector('.ap-surface-a img', { state: 'visible', timeout: 15_000 });
@@ -93,6 +93,14 @@ try {
       localKeys: Object.keys(localStorage),
       resultName: document.querySelector('.result-name')?.textContent.trim() ||
         document.querySelector('.result-header-meta')?.textContent.trim(),
+      collapsedActions: {
+        outerOpen: document.querySelector('.chart-sitting-more')?.open,
+        outerBodyDisplay: getComputedStyle(document.querySelector('.chart-sitting-more__body')).display,
+        innerOpen: document.querySelector('.result-actions__more')?.open,
+        innerMenuDisplay: getComputedStyle(document.querySelector('.result-actions__more-menu')).display,
+        supportVisible: Boolean(document.querySelector('.ap-support-after-value')?.getClientRects().length),
+        supportInsideDetails: Boolean(document.querySelector('.chart-sitting-more .ap-support-after-value')),
+      },
     };
   });
 
@@ -122,6 +130,69 @@ try {
     `Chart handoff dropped computed data: ${JSON.stringify(chartState.handoff)}`);
   assert(chartState.localKeys.length === 0,
     `Casting a chart silently wrote persistent browser storage: ${chartState.localKeys.join(', ')}`);
+  assert(chartState.collapsedActions.outerOpen === false &&
+    chartState.collapsedActions.outerBodyDisplay === 'none' &&
+    chartState.collapsedActions.innerOpen === false &&
+    chartState.collapsedActions.innerMenuDisplay === 'none' &&
+    chartState.collapsedActions.supportVisible && !chartState.collapsedActions.supportInsideDetails,
+    `Closed chart actions leaked into layout or hid the support path: ${JSON.stringify(chartState.collapsedActions)}`);
+
+  // Real canvas output contract: the exact sample must yield a non-empty PNG,
+  // and default Share must paint the privacy-safe surrogate rather than the
+  // displayed name/date/time/town. This catches signed PRNG/negative-radius
+  // failures that static checks and SVG-only screenshots cannot see.
+  await page.locator('.chart-sitting-more > summary').click();
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'canShare', { configurable: true, value: () => false });
+    Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
+  });
+  await page.locator('#poster-btn').click();
+  const squareDownloadPromise = page.waitForEvent('download', { timeout: 60_000 });
+  await page.locator('#share-format-menu button[data-fmt="square"]').click();
+  const squareDownload = await squareDownloadPromise;
+  const squarePath = await squareDownload.path();
+  const squareBytes = squarePath ? readFileSync(squarePath) : Buffer.alloc(0);
+  assert(squareBytes.length > 20_000 && squareBytes.subarray(0, 8).toString('hex') === '89504e470d0a1a0a',
+    `Square artwork did not produce a real PNG: ${JSON.stringify({ suggested: squareDownload.suggestedFilename(), bytes: squareBytes.length })}`);
+
+  await page.evaluate(() => {
+    window.__apShareProof = null;
+    window.__apShareDrawnText = [];
+    const nativeFillText = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function (value, ...args) {
+      window.__apShareDrawnText.push(String(value));
+      return nativeFillText.call(this, value, ...args);
+    };
+    Object.defineProperty(navigator, 'canShare', {
+      configurable: true,
+      value: payload => Boolean(payload && Array.isArray(payload.files) && payload.files.length),
+    });
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: async payload => {
+        const file = payload.files && payload.files[0];
+        window.__apShareProof = {
+          fileName: file?.name || '',
+          fileType: file?.type || '',
+          fileSize: file?.size || 0,
+          title: payload.title || '',
+          text: payload.text || '',
+          url: payload.url || '',
+          drawnText: window.__apShareDrawnText.slice(),
+        };
+      },
+    });
+  });
+  await page.locator('#share-btn').click();
+  await page.waitForFunction(() => window.__apShareProof?.fileSize > 0, null, { timeout: 60_000 });
+  const shareProof = await page.evaluate(() => window.__apShareProof);
+  const shareSurface = JSON.stringify(shareProof);
+  assert(shareProof.fileType === 'image/png' && shareProof.fileSize > 20_000 &&
+    /chart\.html$/.test(shareProof.url) &&
+    shareProof.drawnText.includes('Personal details withheld') &&
+    !/Frida|1907-07-06|08:30|Mexico City/i.test(shareSurface),
+    `Default Share did not deliver a sanitized PNG + clean URL: ${shareSurface}`);
+  await page.locator('.chart-sitting-more > summary').click();
 
   const exactA11y = await new AxeBuilder({ page }).analyze();
   assert(exactA11y.violations.length === 0,
@@ -255,7 +326,7 @@ try {
   approxPage.on('console', message => {
     if (message.type() === 'error') errors.push(`APPROX CONSOLE ${message.text()}`);
   });
-  await approxPage.goto(`${BASE}/chart.html?nosw=1&contract=v899-chart-approximate`, {
+  await approxPage.goto(`${BASE}/chart.html?nosw=1&contract=v900-chart-approximate`, {
     waitUntil: 'domcontentloaded', timeout: 60_000,
   });
   await approxPage.locator('#sample-btn').click();

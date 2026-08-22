@@ -1,6 +1,6 @@
 # Model Surface Contract
 
-**Tip:** ap-v899 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
+**Tip:** ap-v900 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
 
 Three surfaces — never mix their honesty labels.
 
@@ -29,7 +29,9 @@ index.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 
 The `m` grammar is for public sky instants. A personal birth minute must never be emitted into a query or fragment.
 
-**Bridge helpers:** `APSkyBridge.buildLinkFromChart()` / `buildLinkFromDate()` derive `m` from saved chart or date-only (UTC noon when time unknown).
+**Bridge helpers:** `APSkyBridge.buildLinkFromChart()` / `buildLinkFromDate()` derive the private moment from a saved chart or date-only value (UTC noon when time is unknown), but carry it only through the same-tab session handoff. If storage or a current helper is unavailable, they open a focus-only route and do not restore the moment.
+
+**Couples comparison:** the two entered people are persisted only in same-tab `sessionStorage` under `ap-compat-pair`. The page strips and rejects legacy personal query/fragment fields, and its copy action emits only the clean `compatibility.html` URL.
 
 **Honesty:** **SCHEMATIC** or no LIVE badge on stills. Never label a poster as LIVE.
 
@@ -97,7 +99,7 @@ The `m` grammar is for public sky instants. A personal birth minute must never b
 | Moment freeze | A | Share card + explore link; `ap_moment_return` → horoscope return hook |
 | Daily return | A | Horoscope `mountMomentReturnHook` (7-day window) |
 
-**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v899.
+**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v900.
 
 **Event bus:** `ap-sky-ready` — `{ m, link, focus, chart|moment, source }` for share/telemetry hooks.
 
@@ -106,7 +108,8 @@ The `m` grammar is for public sky instants. A personal birth minute must never b
 ## Agent checklist (before ship)
 
 - [ ] Emitters use `APDeepLink.buildSkyLink` — no hand-built `#m=` strings.
-- [ ] Personal chart moments use the session handoff and fail closed to `index.html#focus=<body>` when storage is unavailable; exact birth minutes never appear in an address.
+- [ ] Personal chart moments use the session handoff and fail closed to `index.html#focus=<body>[&scale=N]` when storage or a current bridge helper is unavailable; exact birth minutes never appear in an address, including through a stale cached fallback.
+- [ ] Couples comparison keeps both people in `sessionStorage`; legacy personal URLs are rejected and copied links contain no names, places or birth details.
 - [ ] Home hash/session receiver remains in `ap-observatory-v834.js`; Explore stays a redirect and mounts no context.
 - [ ] Bump `?v=` on touched JS/CSS **and** `sw.js` `const V = "ap-v###"`; precache both eclipse modules and its CSS.
 - [ ] LIVE label audit on every page with a sky panel.

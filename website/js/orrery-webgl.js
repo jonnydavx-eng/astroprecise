@@ -35,7 +35,7 @@ import {
   moonPhaseFromEphemeris,
   integrateDayOffset,
   keplerGuidePoints,
-} from './orbitlab-orbital-math.js?v=899';
+} from './orbitlab-orbital-math.js?v=900';
 
 const RadialBlurShader = {
   name: 'RadialBlurShader',
@@ -427,6 +427,19 @@ const FinishShader = {
     return 'high';
   }
 
+  function usesSoftwareWebGLRenderer(webglRenderer) {
+    try {
+      const gl = webglRenderer && webglRenderer.getContext();
+      if (!gl) return false;
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      if (!debugInfo) return false;
+      const label = String(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '');
+      return /swiftshader|llvmpipe|softpipe|software rasterizer|microsoft basic render|(?:^|[^a-z0-9])warp(?:[^a-z0-9]|$)/i.test(label);
+    } catch (_) {
+      return false;
+    }
+  }
+
   // Closer System default so Earth/inner worlds occupy more than a handful of
   // pixels, while Neptune (R=29) still clears a 44° vertical FOV.
   const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 88 : 76;
@@ -441,7 +454,7 @@ const FinishShader = {
     const pre = onPreloaderStage();
     let cap = pre
       ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.25 : 1.6)
-      : (perfTier === 'low' ? (IS_PHONE ? 1.25 : 1.5) : 2.5);
+      : (perfTier === 'low' ? 1 : 2.5);
     if (IS_PHONE) {
       const phoneCap = perfTier === 'high' ? 2.0 : perfTier === 'mid' ? 1.75 : 1.25;
       cap = Math.min(cap, phoneCap);
@@ -632,6 +645,22 @@ const FinishShader = {
   let earthMapReadyPromise = null;
   const texturePromiseCache = new Map();
   let fullTextureUpgradeScheduled = false;
+  let earthTextureWarmup = null;
+
+  function resetEarthTextureWarmup() {
+    earthTextureWarmup = {
+      planned: 0,
+      loaded: 0,
+      warmed: 0,
+      uploadFrames: 0,
+      usedInitTexture: false,
+      fallback: false,
+      attached: false,
+      startedAt: 0,
+      attachedAt: 0,
+      lastUploadFrameAt: -1,
+    };
+  }
 
   function resetTextureReadiness() {
     if (texturesReadyResolve) texturesReadyResolve(false);
@@ -642,6 +671,7 @@ const FinishShader = {
     earthMapReadyPromise = new Promise((res) => { earthMapReadyResolve = res; });
     texturePromiseCache.clear();
     fullTextureUpgradeScheduled = false;
+    resetEarthTextureWarmup();
   }
   resetTextureReadiness();
 
@@ -1263,6 +1293,19 @@ const FinishShader = {
   const _camOff = new THREE.Vector3();
   const _side = new THREE.Vector3();
   const _WORLD_UP = new THREE.Vector3(0, 1, 0);
+  const earthFitCache = {
+    aspect: 0,
+    fill: 0,
+    scale: 0,
+    distance: 4.8,
+  };
+
+  function invalidateEarthFitCache() {
+    earthFitCache.aspect = 0;
+    earthFitCache.fill = 0;
+    earthFitCache.scale = 0;
+    earthFitCache.distance = 4.8;
+  }
 
   // Place the camera on the terminator plane (perpendicular to sun→Earth) so the
   // day hemisphere faces the sun and the dusk line reads in frame — not orbital angle.
@@ -1291,10 +1334,10 @@ const FinishShader = {
   }
 
   /** Contain the initial Earth without changing the global Earth camera preset. */
-  function containEarthFrame(fillFrac = 0.70) {
+  function containEarthFrame(fillFrac = 0.70, fitOptions) {
     if (!(isHomeHeroEmbed() || isLivingSkyHome()) || onPreloaderStage()) return false;
     const contextFill = freeExploreMode ? fillFrac * 0.90 : fillFrac;
-    return fitEarthTerminatorFrame(contextFill, 7 * D2R);
+    return fitEarthTerminatorFrame(contextFill, 7 * D2R, fitOptions);
   }
 
   /** Default hero + enter-screen frame: lit Earth on the terminator — not wide system + labels. */
@@ -1882,17 +1925,16 @@ const FinishShader = {
    * geometry from the live canvas aspect so Earth remains a recognisable globe at
    * every breakpoint. The atmosphere is included in the fitted radius.
    */
-  function fitEarthTerminatorFrame(fillFrac = 0.78, elevRad = 6 * D2R) {
+  function fitEarthTerminatorFrame(fillFrac = 0.78, elevRad = 6 * D2R, options) {
     if (!canvas || !meshes.earth || !camera) return false;
-    const rect = canvas.getBoundingClientRect();
-    const measuredAspect = rect.width / Math.max(1, rect.height);
-    const aspect = Number.isFinite(measuredAspect) && measuredAspect > 0
-      ? measuredAspect
+    const opts = options || {};
+    // resize() already owns the one authoritative DOM measurement. Idle Earth
+    // hold frames reuse camera.aspect and the solved distance, avoiding a forced
+    // layout read plus projection rebuild on every animation frame.
+    const requestedAspect = Number(opts.aspect);
+    const aspect = Number.isFinite(requestedAspect) && requestedAspect > 0
+      ? requestedAspect
       : (Number.isFinite(camera.aspect) && camera.aspect > 0 ? camera.aspect : 1);
-    const verticalFov = CAM_FOV_CLOSE * D2R;
-    const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect);
-    const limitingFov = Math.min(verticalFov, horizontalFov);
-    const body = meshes.earth.userData && meshes.earth.userData.b;
     const earthScale = meshes.earth.scale
       ? Math.max(
         Math.abs(Number(meshes.earth.scale.x) || 1),
@@ -1900,15 +1942,34 @@ const FinishShader = {
         Math.abs(Number(meshes.earth.scale.z) || 1)
       )
       : 1;
-    const atmosphereRadius = (body && Number.isFinite(body.size) ? body.size : 0.85)
-      * earthScale * 1.055;
     const safeFill = Math.max(0.55, Math.min(0.82, Number(fillFrac) || 0.78));
-    const solved = atmosphereRadius / Math.sin(Math.max(0.05, limitingFov * safeFill / 2));
-    const distance = Number.isFinite(solved) ? Math.max(atmosphereRadius * 1.2, solved) : 4.8;
+    const mustRefit = opts.refit === true
+      || Math.abs(earthFitCache.aspect - aspect) > 1e-4
+      || Math.abs(earthFitCache.fill - safeFill) > 1e-4
+      || Math.abs(earthFitCache.scale - earthScale) > 1e-4;
+    if (mustRefit) {
+      const verticalFov = CAM_FOV_CLOSE * D2R;
+      const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect);
+      const limitingFov = Math.min(verticalFov, horizontalFov);
+      const body = meshes.earth.userData && meshes.earth.userData.b;
+      const atmosphereRadius = (body && Number.isFinite(body.size) ? body.size : 0.85)
+        * earthScale * 1.055;
+      const solved = atmosphereRadius / Math.sin(Math.max(0.05, limitingFov * safeFill / 2));
+      earthFitCache.aspect = aspect;
+      earthFitCache.fill = safeFill;
+      earthFitCache.scale = earthScale;
+      earthFitCache.distance = Number.isFinite(solved)
+        ? Math.max(atmosphereRadius * 1.2, solved)
+        : 4.8;
+    }
 
-    camera.fov = CAM_FOV_CLOSE;
-    camera.updateProjectionMatrix();
-    setEarthTerminatorCamera(distance, elevRad);
+    if (camera.fov !== CAM_FOV_CLOSE) {
+      camera.fov = CAM_FOV_CLOSE;
+      camera.updateProjectionMatrix();
+    }
+    // Sun-relative direction remains live on every hold frame; only the expensive
+    // canvas fit and projection work are cached.
+    setEarthTerminatorCamera(earthFitCache.distance, elevRad);
     return true;
   }
 
@@ -1928,10 +1989,11 @@ const FinishShader = {
     if (moonGroup) moonGroup.visible = !sitting;
   }
 
-  function applyEarthLimbHold() {
+  function applyEarthLimbHold(fitOptions) {
     // Keep the complete Blue Marble in frame. This is recomputed while the sitting
-    // owns the camera, so a rotation or responsive resize cannot return to a crop.
-    if (!fitEarthTerminatorFrame(0.78, 6 * D2R)) {
+    // owns the camera. The sun-relative direction stays live while the aspect fit
+    // is reused until resize() (or an explicit refit) invalidates it.
+    if (!fitEarthTerminatorFrame(0.78, 6 * D2R, fitOptions)) {
       setEarthTerminatorCamera(4.8, 6 * D2R);
       if (camera) {
         camera.fov = CAM_FOV_CLOSE;
@@ -1947,6 +2009,14 @@ const FinishShader = {
       earthAtmoMatOuter.uniforms.uIntensity.value = 0.14;
     }
     syncEarthSittingBodyVisibility();
+  }
+
+  function completeEarthRadiusFloor(authoredRadius) {
+    if (!(isHomeHeroEmbed() || isLivingSkyHome()) || onPreloaderStage()) return authoredRadius;
+    const fitted = Number(earthFitCache.distance);
+    return Number.isFinite(fitted) && fitted > 0
+      ? Math.max(Number(authoredRadius) || 0, fitted)
+      : authoredRadius;
   }
 
   /* v576: Earth+Moon shared frame — camera target rides between the two bodies,
@@ -2330,9 +2400,16 @@ const FinishShader = {
   }
 
   function earthTextureFiles() {
-    const files = ['earth.jpg', 'earth_lights.png', 'earth_specular.jpg'];
-    if (perfTier !== 'low' && !PRM) files.push('earth_clouds.jpg', 'earth_normal.jpg');
-    return files;
+    // Visual truth is not a motion/performance effect. Every visible Earth uses
+    // the same five physical layers; constrained and reduced-motion clients save
+    // work through map resolution, geometry, animation and post-processing.
+    return [
+      'earth.jpg',
+      'earth_lights.png',
+      'earth_specular.jpg',
+      'earth_clouds.jpg',
+      'earth_normal.jpg',
+    ];
   }
 
   function requestPreloadTexture(file, quality) {
@@ -2379,9 +2456,15 @@ const FinishShader = {
     return chain.then(() => { if (!destroyed) refreshTextures(); }).catch(() => {});
   }
 
+  function waitForEarthTextureAttachment() {
+    const readiness = earthMapReadyPromise;
+    return earthMapReady ? Promise.resolve(true) : readiness;
+  }
+
   function preloadTextures() {
     if (onPreloaderStage()) {
-      return Promise.all(earthTextureFiles().map((file) => requestPreloadTexture(file))).then(() => {
+      return Promise.all(earthTextureFiles().map((file) => requestPreloadTexture(file)))
+        .then(waitForEarthTextureAttachment).then(() => {
         markTexturesReady(true);
       }).catch(() => {
         markTexturesReady(false);
@@ -2404,7 +2487,8 @@ const FinishShader = {
         });
       }
       const startupQuality = instrumentStartupTextureQuality();
-      return Promise.all(Array.from(new Set(critical)).map((file) => requestPreloadTexture(file, startupQuality))).then(() => {
+      return Promise.all(Array.from(new Set(critical)).map((file) => requestPreloadTexture(file, startupQuality)))
+        .then(waitForEarthTextureAttachment).then(() => {
         markTexturesReady(false);
         if (earthStart && !earthFirstBoot) preloadDeferredTextures();
       }).catch(() => {
@@ -2417,9 +2501,9 @@ const FinishShader = {
       if (b.tex) files.push(b.tex);
       if (b.ring) files.push(b.ring);
     });
-    files.push('moon.jpg', 'earth_lights.png', 'earth_specular.jpg');
-    if (perfTier !== 'low' && !PRM) files.push('earth_clouds.jpg', 'earth_normal.jpg');
-    return Promise.all(files.map((file) => requestPreloadTexture(file))).then(() => {
+    files.push('moon.jpg', 'earth_lights.png', 'earth_specular.jpg', 'earth_clouds.jpg', 'earth_normal.jpg');
+    return Promise.all(files.map((file) => requestPreloadTexture(file)))
+      .then(waitForEarthTextureAttachment).then(() => {
       markTexturesReady(true);
     }).catch(() => {
       markTexturesReady(false);
@@ -5543,6 +5627,104 @@ const FinishShader = {
     return promise;
   }
 
+  function nextTextureUploadFrame(generation, expectedRenderer) {
+    return new Promise((resolve) => {
+      const finish = (frameAt) => {
+        const live = !destroyed && generation === runtimeGeneration
+          && renderer === expectedRenderer;
+        resolve(live ? (Number(frameAt) || performance.now()) : 0);
+      };
+      // Hidden documents can suspend rAF indefinitely. The timeout branch keeps
+      // the lifecycle fail-safe; the normal visible path still guarantees one
+      // GPU upload opportunity per animation frame.
+      if (typeof requestAnimationFrame === 'function' && !document.hidden) {
+        requestAnimationFrame(finish);
+      } else {
+        setTimeout(() => finish(performance.now()), 16);
+      }
+    });
+  }
+
+  async function prewarmEarthTextureBatch(records, generation, expectedRenderer) {
+    earthTextureWarmup.planned = records.length;
+    earthTextureWarmup.loaded = records.filter((record) => !!record.texture).length;
+    earthTextureWarmup.startedAt = performance.now();
+    for (const record of records) {
+      if (!record.texture) continue;
+      const frameAt = await nextTextureUploadFrame(generation, expectedRenderer);
+      if (!frameAt) return false;
+      if (earthTextureWarmup.lastUploadFrameAt !== frameAt) {
+        earthTextureWarmup.lastUploadFrameAt = frameAt;
+        earthTextureWarmup.uploadFrames += 1;
+      }
+      if (typeof expectedRenderer.initTexture !== 'function') {
+        earthTextureWarmup.fallback = true;
+        continue;
+      }
+      try {
+        // Decode has completed, but Three.js normally defers the synchronous GPU
+        // transfer until first material use. Upload one unbound map per frame so
+        // the reveal frame never has to transfer all five Earth layers at once.
+        expectedRenderer.initTexture(record.texture);
+        earthTextureWarmup.usedInitTexture = true;
+        earthTextureWarmup.warmed += 1;
+      } catch (_) {
+        // Attaching the decoded texture still follows Three.js's normal safe path.
+        earthTextureWarmup.fallback = true;
+      }
+    }
+    return !destroyed && generation === runtimeGeneration && renderer === expectedRenderer;
+  }
+
+  function attachEarthTextureBatch(records, generation, expectedRenderer) {
+    if (destroyed || generation !== runtimeGeneration || renderer !== expectedRenderer) return false;
+    const byFile = new Map(records.map((record) => [record.file, record.texture]));
+    const day = byFile.get('earth.jpg');
+    const lights = byFile.get('earth_lights.png');
+    const specular = byFile.get('earth_specular.jpg');
+    const normal = byFile.get('earth_normal.jpg');
+    const clouds = byFile.get('earth_clouds.jpg');
+    if (earthMat) {
+      if (day) {
+        earthMat.map = day;
+        earthMat.color.set(0xffffff);
+      }
+      if (lights) {
+        earthMat.emissiveMap = lights;
+        earthMat.emissive.set(0xffffff);
+        earthMat.emissiveIntensity = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.6;
+        earthUniforms.uHasLights.value = 1.0;
+      }
+      if (specular) earthMat.roughnessMap = specular;
+      if (normal) {
+        earthMat.normalMap = normal;
+        const normalStrength = perfTier === 'high' ? 0.7 : 0.5;
+        earthMat.normalScale = new THREE.Vector2(normalStrength, normalStrength);
+      }
+      if (clouds) {
+        earthUniforms.uCloudTex.value = clouds;
+        earthUniforms.uCloudShadow.value = 1.0;
+      }
+      // One material invalidation after every layer is resident prevents a chain
+      // of partial Earth shader variants during the hidden boot.
+      earthMat.needsUpdate = true;
+    }
+    earthTextureWarmup.attached = true;
+    earthTextureWarmup.attachedAt = performance.now();
+    markEarthMapReady();
+    return true;
+  }
+
+  async function stageEarthTextureBatch(specs) {
+    const generation = runtimeGeneration;
+    const expectedRenderer = renderer;
+    const records = await Promise.all(specs.map((spec) => (
+      loadTex(spec.file, spec.srgb).then((texture) => ({ ...spec, texture }))
+    )));
+    if (!await prewarmEarthTextureBatch(records, generation, expectedRenderer)) return false;
+    return attachEarthTextureBatch(records, generation, expectedRenderer);
+  }
+
   function applyFullBodyTexture(id, texture) {
     if (!texture || destroyed) return;
     if (id === 'moon') {
@@ -6875,41 +7057,24 @@ const FinishShader = {
       }
 
       if (b.hero) {
-        // ── HD Earth texture swap-in: perceived-quality order, each guarded ──
-        loadTex('earth.jpg').then((t) => {
-          if (t && earthMat) {
-            earthMat.map = t;
-            earthMat.color.set(0xffffff);
-            earthMat.needsUpdate = true;
-          }
-          markEarthMapReady();
-        });
-        loadTex('earth_lights.png').then((t) => {
-          if (t && earthMat) {
-            earthMat.emissiveMap = t;
-            earthMat.emissive.set(0xffffff);
-            earthMat.emissiveIntensity = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.6;
-            earthUniforms.uHasLights.value = 1.0;
-            earthMat.needsUpdate = true;
-          }
-        });
-        loadTex('earth_specular.jpg', false).then((t) => { if (t && earthMat) { earthMat.roughnessMap = t; earthMat.needsUpdate = true; } });
-        if (perfTier !== 'low' && !PRM) {
-          loadTex('earth_normal.jpg', false).then((t) => { if (t && earthMat) { earthMat.normalMap = t; const ns = perfTier === 'high' ? 0.7 : 0.5; earthMat.normalScale = new THREE.Vector2(ns, ns); earthMat.needsUpdate = true; } });
-        }
-        // Clouds (high/mid only): a sun-LIT sphere so the night hemisphere self-darkens
-        // instead of glowing white over the city lights.
+        // Decode the complete quality-tier batch, prewarm one map per animation
+        // frame while Earth is hidden, then attach geography/lights/specular/
+        // normal/clouds together. The first visible frame cannot expose a partial
+        // globe or absorb five synchronous GPU transfers in one long task.
         earthCloud = null;
-        if (perfTier !== 'low' && !PRM) {
-          // Same NASA cloud map, now a height / optical-depth deck in injectEarth.
-          // No 1.015 sticker sphere.
-          loadTex('earth_clouds.jpg', false).then((t) => {
-            if (!t) return;
-            earthUniforms.uCloudTex.value = t;
-            earthUniforms.uCloudShadow.value = 1.0;
-            if (earthMat) earthMat.needsUpdate = true;
-          });
-        }
+        const earthSpecs = [
+          { file: 'earth.jpg', srgb: true },
+          { file: 'earth_lights.png', srgb: true },
+          { file: 'earth_specular.jpg', srgb: false },
+          { file: 'earth_clouds.jpg', srgb: false },
+          { file: 'earth_normal.jpg', srgb: false },
+        ];
+        stageEarthTextureBatch(earthSpecs).catch(() => {
+          // A missing initTexture implementation or upload error must never leave
+          // the owning shell waiting forever; decoded maps use normal lazy upload.
+          earthTextureWarmup.fallback = true;
+          if (!destroyed && !earthMapReady) markEarthMapReady();
+        });
       }
 
       if (b.ring) {
@@ -7463,20 +7628,20 @@ const FinishShader = {
     let atmoF = 0, sunStar = 0, expos = perfTier === 'high' ? 1.26 : 1.18;
 
     if (p < 0.14) {
-      setEarthTerminatorCamera(2.35, 4 * D2R);
+      setEarthTerminatorCamera(completeEarthRadiusFloor(2.35), 4 * D2R);
     } else if (p < 0.36) {
       const e = crossingSmooth(0.14, 0.36, p);
-      setEarthTerminatorCamera(2.35 + 3.05 * e, (4 + 6 * e) * D2R);
+      setEarthTerminatorCamera(completeEarthRadiusFloor(2.35 + 3.05 * e), (4 + 6 * e) * D2R);
       atmoF = e * 0.78;
       expos = (perfTier === 'high' ? 1.26 : 1.18) - e * 0.24;
     } else if (p < 0.48) {
-      setEarthTerminatorCamera(5.4, 10 * D2R);
+      setEarthTerminatorCamera(completeEarthRadiusFloor(5.4), 10 * D2R);
       atmoF = 0.78 + crossingSmooth(0.36, 0.48, p) * 0.14;
       sunStar = 0.10;
       expos = perfTier === 'high' ? 1.02 : 0.96;
     } else if (p < 0.78) {
       const e = crossingSmooth(0.48, 0.78, p);
-      setEarthTerminatorCamera(5.4 + 2.8 * e, (10 + 6 * e) * D2R);
+      setEarthTerminatorCamera(completeEarthRadiusFloor(5.4 + 2.8 * e), (10 + 6 * e) * D2R);
       const termAz = camAz, termEl = camEl, termRad = camRadius;
       const pull = e * e * (3 - 2 * e);
       camTarget.lerpVectors(earthPos, ORIGIN, pull);
@@ -8475,6 +8640,13 @@ const FinishShader = {
         scaleAnimFrom.ty + (scaleAnimTo.ty - scaleAnimFrom.ty) * e,
         scaleAnimFrom.tz + (scaleAnimTo.tz - scaleAnimFrom.tz) * e
       );
+      // A Home Earth→system opening may cross a desktop/phone breakpoint while
+      // it is still centred on the globe. Keep the aspect-derived complete-limb
+      // radius until the pull-back has established the wider system frame.
+      const homeEarthExit = (isHomeHeroEmbed() || isLivingSkyHome()) && !onPreloaderStage()
+        && scaleAnimFromLevel === 0 && scaleAnimToLevel > 0
+        && !focusFrameId && !pendingFocusId && !moonFrameActive && p < 0.62;
+      if (homeEarthExit) camRadius = completeEarthRadiusFloor(camRadius);
       const zoomZ = scaleAnimFromLevel + (scaleAnimToLevel - scaleAnimFromLevel) * e;
       // Do not isolate a named world while it is still a distant speck. Commit
       // portrait ownership only near landing, when the destination fills enough
@@ -8770,6 +8942,12 @@ const FinishShader = {
       orbitLines.forEach((o) => { o.visible = showOrbits && scaleLevel <= 3; });
     }
 
+    // Earth-first boot keeps running the complete animation/update loop while
+    // decoded maps are prewarmed across separate rAFs, but does not spend a GPU
+    // frame on the deliberately hidden untextured globe. The first render below
+    // therefore contains the atomically attached five-layer Earth, and its
+    // readiness event can only follow that proof frame.
+    if (earthFirstBoot && !earthMapReady) return;
     if (composer) composer.render();
     else renderer.render(scene, camera);
     afterComposerFrame();
@@ -8956,6 +9134,23 @@ const FinishShader = {
     return { w, h };
   }
 
+  function homeEarthResizeMode() {
+    if (!(isHomeHeroEmbed() || isLivingSkyHome()) || onPreloaderStage()
+        || portraitMode || moonFrameActive || dragging) return '';
+    if (introActive && !preloaderCosmicJourney && scaleLevel === 0) return 'intro';
+    if (scaleAnimActive && scaleAnimFromLevel === 0 && scaleAnimToLevel > 0
+        && !focusFrameId && !pendingFocusId) {
+      const progress = scaleAnimDurationMs > 0
+        ? (performance.now() - scaleAnimStart) / scaleAnimDurationMs
+        : 1;
+      if (progress < 0.62) return 'earth-exit';
+    }
+    if (scaleLevel === 0 && !scaleAnimActive && !introActive
+        && (!focusFrameId || focusFrameId === 'earth')
+        && (!freeExploreMode || focusFrameId === 'earth')) return 'sitting';
+    return '';
+  }
+
   function resize() {
     if (!renderer || !canvas) return;
     const box = canvasBox();
@@ -8972,17 +9167,17 @@ const FinishShader = {
     }
     if (bloomPass) bloomPass.resolution.set(w, h);
     if (radialBlurPass) radialBlurPass.uniforms.uAspect.value = w / Math.max(h, 1);
-    camera.aspect = w / h; camera.updateProjectionMatrix();
-    const homeEarthStart = (isHomeHeroEmbed() || isLivingSkyHome()) &&
-      scaleLevel === 0 && !scaleAnimActive && !introActive && !portraitMode &&
-      !moonFrameActive && !dragging && !freeExploreMode &&
-      (!focusFrameId || focusFrameId === 'earth');
-    if (homeEarthStart) {
+    const fittedAspect = w / h;
+    camera.aspect = fittedAspect; camera.updateProjectionMatrix();
+    const earthResizeMode = homeEarthResizeMode();
+    if (earthResizeMode) {
       // A live desktop ↔ phone/orientation resize must solve the camera from the
-      // new aspect immediately. The Home Observatory normally owns an Earth focus,
-      // so the old !focusFrameId gate left it using the previous viewport's radius.
-      if (focusFrameId === 'earth') applyEarthLimbHold();
-      else containEarthFrame(0.70);
+      // new aspect immediately, including the opening Earth→system choreography.
+      // The per-frame intro/scale paths retain this fitted floor, so the following
+      // animation frame cannot restore a crop-prone desktop radius.
+      const fitOptions = { refit: true, aspect: fittedAspect };
+      if (focusFrameId === 'earth' || earthResizeMode !== 'sitting') applyEarthLimbHold(fitOptions);
+      else containEarthFrame(0.70, fitOptions);
       applyCamera();
     }
     // Resizing clears the WebGL drawing buffer. If a stale intersection state
@@ -9556,6 +9751,10 @@ const FinishShader = {
       // explicit frame and does not require a permanently preserved backbuffer.
       preserveDrawingBuffer: false,
     });
+    // Capability owns quality: software WebGL remains the same live model, but
+    // receives the established low-tier geometry/DPR/post-processing budget.
+    // This runs before any scene construction, texture work, resize or compile.
+    if (usesSoftwareWebGLRenderer(renderer)) perfTier = 'low';
     renderer.setClearColor(0x000000, 0);
     canvas.style.background = 'transparent';
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -9566,6 +9765,7 @@ const FinishShader = {
     // Cool lunar void for living-sky home (ap-v880); other skins share the same night.
     scene.fog = new THREE.FogExp2(isLivingSkyHome() ? COOL_LUNAR_VOID : coolLunarVoidHex(), 0.00042);
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
+    invalidateEarthFitCache();
     texLoader = new THREE.TextureLoader();
     runtimeGeneration += 1;
     resetTextureReadiness();
@@ -9707,24 +9907,29 @@ const FinishShader = {
     }, false);
 
     if (instrumentMode) syncPosterSunVisibility();
-    // Pre-compile shaders + warm the bloom composer NOW (while the preloader is still
-    // static) so the first animated intro frame doesn't hitch on a heavy program link.
-    try {
-      if (renderer.compile) renderer.compile(scene, camera);
-      const skipWarmRender = instrumentMode && isEarthPosterBlocking();
-      if (!skipWarmRender) {
-        if (composer && !onPreloaderStage()) composer.render();
-        else renderer.render(scene, camera);
-      }
-    } catch (e) {
-      if (composer && radialBlurPass) {
-        console.warn('[orrery] radial blur broke composer — disabling pass:', e.message);
-        removeRadialBlurPass();
-        try { composer.render(); } catch (e2) {
-          console.warn('[orrery] post-processing unavailable after radial blur removal:', e2.message);
-          composer = null;
-          bloomPass = null;
-          finishPass = null;
+    // Earth-first boot prewarms its decoded texture batch across rAFs and keeps
+    // the untextured globe hidden, so defer both synchronous shader compilation
+    // and the warm render until the complete Earth owns a real animation frame.
+    if (!earthFirstBoot) {
+      // Other modes retain their established pre-compile/warm path while their
+      // preloader or poster is static, avoiding a hitch on the first animation.
+      try {
+        if (renderer.compile) renderer.compile(scene, camera);
+        const skipWarmRender = instrumentMode && isEarthPosterBlocking();
+        if (!skipWarmRender) {
+          if (composer && !onPreloaderStage()) composer.render();
+          else renderer.render(scene, camera);
+        }
+      } catch (e) {
+        if (composer && radialBlurPass) {
+          console.warn('[orrery] radial blur broke composer — disabling pass:', e.message);
+          removeRadialBlurPass();
+          try { composer.render(); } catch (e2) {
+            console.warn('[orrery] post-processing unavailable after radial blur removal:', e2.message);
+            composer = null;
+            bloomPass = null;
+            finishPass = null;
+          }
         }
       }
     }
@@ -11193,6 +11398,7 @@ const FinishShader = {
     earthMat = null;
     earthAtmoMat = null;
     earthAtmoMatOuter = null;
+    invalidateEarthFitCache();
     earthUniforms.uCloudTex.value = null;
     earthUniforms.uHasLights.value = 0;
     earthUniforms.uCloudShadow.value = 0;
@@ -11556,6 +11762,18 @@ const FinishShader = {
         programs,
         queuedAt: fullSceneQueuedAt,
         readyAt: fullSceneReadyAt,
+        earthTextures: {
+          planned: earthTextureWarmup.planned,
+          loaded: earthTextureWarmup.loaded,
+          warmed: earthTextureWarmup.warmed,
+          uploadFrames: earthTextureWarmup.uploadFrames,
+          usedInitTexture: earthTextureWarmup.usedInitTexture,
+          fallback: earthTextureWarmup.fallback,
+          attached: earthTextureWarmup.attached,
+          spanMs: earthTextureWarmup.attachedAt > earthTextureWarmup.startedAt
+            ? earthTextureWarmup.attachedAt - earthTextureWarmup.startedAt
+            : 0,
+        },
       };
     },
     getScaleLevel() { return scaleLevel; },

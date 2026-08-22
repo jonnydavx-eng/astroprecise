@@ -1489,9 +1489,8 @@
          following it sent the visitor's birth date in the request line, into
          the host's access logs and into the Referer of everything lifepath.html
          loaded next. The date now travels in sessionStorage — same tab, same
-         origin, never transmitted — stashed on the click so it is always the
-         current one, with a fragment fallback where storage is blocked (a
-         fragment is not part of the request line either). */
+         origin, never transmitted. If storage is blocked, Life Path asks for the
+         date again instead of placing a birth record in the address bar. */
       const lpDate = event_.dt.split('T')[0];
       link.removeAttribute('href');
       link.setAttribute('role', 'text');

@@ -7,19 +7,19 @@
 /* ── Readable body ink — silver on jet ── */
 html.ap-enchanted,
 body.ap-enchanted {
-  color: var(--ap-text-primary, #E8EBF0);
+  color: var(--ap-text-primary, #EEF4FA);
 }
 
 body.ap-enchanted .section-header__sub,
 body.ap-enchanted .compat-overview,
 body.ap-enchanted .shopc-card__blurb,
 body.ap-enchanted .ap-ai-panel__sub {
-  color: var(--ap-text-secondary, #C8CDD6);
+  color: var(--ap-text-secondary, #C9D6E3);
 }
 
 /* ── Primary actions: silver-aurora gradient ── */
 body.ap-enchanted .btn--primary:not(.shopc-card__cta):not(.ap-ai-tab) {
-  background: linear-gradient(135deg, #4A90E0 0%, #7EC8E8 48%, #C8D8E8 100%);
+  background: linear-gradient(135deg, #4A90E0 0%, #79C7F2 48%, #C8D8E8 100%);
   border-color: transparent;
   color: #050508;
 }
@@ -83,7 +83,7 @@ body.shop--dormant .shopc-card__price:not(.shopc-card__price--soon)::after {
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gold, #C4920A);
+  color: var(--gold, #93A8BF);
 }
 
 /* ── AI panel spacing on tool pages ── */

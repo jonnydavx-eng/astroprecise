@@ -4,6 +4,64 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#040812">
+  <meta name="referrer" content="no-referrer">
+  <script>
+  (function () {
+    // The Observatory accepts only two non-personal test/runtime flags in its
+    // query. Remove every other field before styles, scripts, images or the 3D
+    // engine can request a subresource with a legacy personal address.
+    var incomingQuery = new URLSearchParams(location.search || '');
+    var safeQuery = new URLSearchParams();
+    incomingQuery.forEach(function (value, key) {
+      if ((key === 'nosw' || key === 'lite') && value === '1' && !safeQuery.has(key)) {
+        safeQuery.set(key, '1');
+      }
+    });
+    var cleanSearch = safeQuery.toString() ? '?' + safeQuery.toString() : '';
+    if (location.search !== cleanSearch) {
+      history.replaceState(null, '', location.pathname + cleanSearch + location.hash);
+    }
+
+    // Fixed public sky moments carry public=1 from v900 onward. An older bare
+    // #m=<instant> may be a birth minute, so remove it before any page asset is
+    // requested while retaining only non-personal Observatory controls.
+    var raw = String(location.hash || '').replace(/^#/, '');
+    if (!raw || raw === 'lead') return;
+    var params = new URLSearchParams(raw);
+    var moments = [];
+    var publicMarkers = [];
+    var focuses = [];
+    var scales = [];
+    params.forEach(function (value, key) {
+      var canonicalKey = String(key || '').toLowerCase();
+      if (canonicalKey === 'm') moments.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'public') publicMarkers.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'focus') focuses.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'scale') scales.push({ key: String(key), value: String(value) });
+    });
+    var oneCanonicalMoment = moments.length === 1 && moments[0].key === 'm';
+    var safeNow = oneCanonicalMoment && moments[0].value === 'now' && publicMarkers.length === 0;
+    var fixedMoment = oneCanonicalMoment ? moments[0].value : '';
+    var safePublicFixed = oneCanonicalMoment && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(fixedMoment) &&
+      Number.isFinite(new Date(fixedMoment).getTime()) &&
+      publicMarkers.length === 1 && publicMarkers[0].key === 'public' && publicMarkers[0].value === '1';
+    var focusNames = {
+      earth: 1, sun: 1, moon: 1, mercury: 1, venus: 1, mars: 1,
+      jupiter: 1, saturn: 1, uranus: 1, neptune: 1, pluto: 1
+    };
+    var kept = new URLSearchParams();
+    if (safeNow || safePublicFixed) kept.set('m', moments[0].value);
+    if (safePublicFixed) kept.set('public', '1');
+    var focus = focuses.length === 1 && focuses[0].key === 'focus' ? focuses[0].value.toLowerCase() : '';
+    var scale = scales.length === 1 && scales[0].key === 'scale' ? scales[0].value : null;
+    if (focusNames[focus]) kept.set('focus', focus);
+    if (scale != null && /^-?\d+$/.test(String(scale))) kept.set('scale', String(scale));
+    var cleanHash = kept.toString();
+    if (raw !== cleanHash) {
+      history.replaceState(null, '', location.pathname + cleanSearch + (cleanHash ? '#' + cleanHash : ''));
+    }
+  })();
+  </script>
   <title>AstroPrecise — sit with the live sky, then the minute you were born</title>
   <meta name="description" content="Sit with the live sky. Then the minute you were born: free chart, seven chapters, keep card. Computed on this device. Play stays free.">
   <link rel="canonical" href="https://astroprecise.app/">
@@ -22,21 +80,21 @@
   <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-home-og-v893.jpg">
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=899">
-  <script>window.AP_ASSET_V='899';</script>
+  <link rel="preload" href="fonts/cormorant-garamond-italic-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css?v=900">
+  <script>window.AP_ASSET_V='900';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-    <script src="js/void-orrery-adapter.js?v=899" defer></script>
-    <script src="js/ap-nav-model.js?v=899" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=899">
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=899">
-    <link rel="stylesheet" href="css/ap-home-v835.css?v=899">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=899" media="print" onload="this.media='all';this.onload=null">
-    <noscript><link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=899"></noscript>
-    <link rel="stylesheet" href="css/ap-keep-sky.css?v=899" media="print" onload="this.media='all';this.onload=null">
-    <noscript><link rel="stylesheet" href="css/ap-keep-sky.css?v=899"></noscript>
+    <script src="js/void-orrery-adapter.js?v=900" defer></script>
+    <script src="js/ap-nav-model.js?v=900" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=900">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=900">
+    <link rel="stylesheet" href="css/ap-home-v835.css?v=900">
+    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=900" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=900"></noscript>
+    <link rel="stylesheet" href="css/ap-keep-sky.css?v=900" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="css/ap-keep-sky.css?v=900"></noscript>
 </head>
 <body class="ap-live-home page-home ap-reading-room">
   <a class="skip" href="#lead">Skip to the Observatory</a>
@@ -138,7 +196,7 @@
         <div>
           <p class="ap-live-eyebrow">Begin the sitting</p>
           <h2 id="personal-title">The minute you were born.</h2>
-          <p class="standfirst">Date and town. The hour if you have it. Then the chart, seven chapters, and a card you can keep. Only the town name leaves this device, for the zone.</p>
+          <p class="standfirst">Date and town. The hour if you have it. Then the chart, seven chapters, and a card you can keep. Place search sends the town text for the zone; if you later choose current location, its coordinates go to Open-Meteo.</p>
         </div>
         <div class="ap-calc-entry-panel">
           <div class="ap-calc-entry-panel__head"><p class="eyebrow">Your minute · private on this device</p></div>
@@ -202,7 +260,7 @@
         </div>
         <aside class="ap-edition-art">
           <figure>
-            <span class="ap-card-art"><img src="img/editorial/eclipse-edition-art-v841.png" width="1122" height="1402" loading="lazy" alt="Sample eclipse edition plate with engraved orbital geometry"></span>
+            <span class="ap-card-art"><img src="img/editorial/eclipse-edition-art-v841-560.webp" srcset="img/editorial/eclipse-edition-art-v841-560.webp 560w, img/editorial/eclipse-edition-art-v841-1122.webp 1122w" sizes="(max-width: 760px) calc(100vw - 34px), 42vw" width="1122" height="1402" loading="lazy" decoding="async" alt="Sample eclipse edition plate with engraved orbital geometry"></span>
             <figcaption><span>Edition artwork · sample plate</span><strong>Eclipse archive</strong> Replay the instrument. The paid edition is not the shop.</figcaption>
           </figure>
           <div class="ap-edition-art__actions">
@@ -252,16 +310,16 @@
       });
     })();
   </script>
-  <script src="js/ap-observatory-controls-v835.js?v=899" defer></script>
-    <script src="js/ap-observatory-v834.js?v=899" defer></script>
-    <script src="js/ap-home-reading.js?v=899" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=899" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-sky-time.js?v=899" defer></script>
-    <script src="js/ap-footer-inject.js?v=899" defer></script>
-    <script src="js/ap-mystic-cards-v835.js?v=899" defer></script>
-    <script src="js/ap-keep-sky.js?v=899" defer></script>
-    <script src="js/ap-home-keep.js?v=899" defer></script>
-    <script src="js/ap-keep-minute.js?v=899" defer></script>
+  <script src="js/ap-observatory-controls-v835.js?v=900" defer></script>
+    <script src="js/ap-observatory-v834.js?v=900" defer></script>
+    <script src="js/ap-home-reading.js?v=900" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=900" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-sky-time.js?v=900" defer></script>
+    <script src="js/ap-footer-inject.js?v=900" defer></script>
+    <script src="js/ap-mystic-cards-v835.js?v=900" defer></script>
+    <script src="js/ap-keep-sky.js?v=900" defer></script>
+    <script src="js/ap-home-keep.js?v=900" defer></script>
+    <script src="js/ap-keep-minute.js?v=900" defer></script>
   <script>
     (function () {
       var button = document.getElementById('ap-cosmic-flight-launch');

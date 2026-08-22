@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Planetary transits today — live positions and retrogrades computed on your device. The real sky news: weather report of the sky, not prophecy." />
   <title>Planetary Transits — the real sky news | AstroPrecise</title>
@@ -28,19 +28,27 @@
   <meta name="twitter:description" content="Live positions and retrogrades on-device. The real sky news — weather report of the sky, not prophecy." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#040812" />
+  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="css/ap-site-polish.css?v=900" as="style" />
+  <link rel="preload" href="css/ap-logo-aurora.css?v=900" as="style" />
+  <link rel="preload" href="css/ap-visual-clarity.css?v=900" as="style" />
+  <link rel="preload" href="css/ap-model-stage.css?v=900" as="style" />
+  <link rel="preload" href="css/ap-page-structure.css?v=900" as="style" />
+  <link rel="preload" href="css/ap-brand-nebula.css?v=900" as="style" />
+  <link rel="preload" href="css/ap-engine-visuals.css?v=900" as="style" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=899" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=899" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=900" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=900" id="ap-css-atlas-tokens" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=899" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=900" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/celestial-seals.css" />
   <link rel="stylesheet" href="css/transits-page.css" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=899" id="ap-css-structure-clean" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=899" />
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=899" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=900" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=900" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=900" />
   <style>
     body.page-transits{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     .page-transits .navbar__nav{min-height:44px;}
@@ -816,7 +824,7 @@
     }
     function idleHeavy() {
       if (audit()) return;
-      inject('js/chart-render.js?v=899');
+      inject('js/chart-render.js?v=900');
       inject('js/ap-load-interpretations.js');
     }
     function idleCosmos() {
@@ -1172,8 +1180,8 @@
     }
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=899" defer></script>
-  <script src="js/ap-footer-inject.js?v=899" defer></script>
+  <script src="js/ap-page-boot.js?v=900" defer></script>
+  <script src="js/ap-footer-inject.js?v=900" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

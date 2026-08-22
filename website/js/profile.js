@@ -317,7 +317,7 @@ window.AstroProfile = (() => {
     return prefs;
   }
 
-  // ── Export / Import ───────────────────────────────────────────────────────
+  // ── Export ────────────────────────────────────────────────────────────────
 
   function exportData() {
     const data = {
@@ -339,19 +339,6 @@ window.AstroProfile = (() => {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function importData(jsonString) {
-    try {
-      const data = JSON.parse(jsonString);
-      if (data.user)        saveUser(data.user);
-      if (data.charts)      localStorage.setItem(STORAGE_KEY_CHARTS,   JSON.stringify(data.charts));
-      if (data.comparisons) localStorage.setItem(STORAGE_KEY_COMPARES, JSON.stringify(data.comparisons));
-      if (data.prefs)       localStorage.setItem(STORAGE_KEY_PREFS,    JSON.stringify(data.prefs));
-      return { success: true, chartsImported: (data.charts || []).length };
-    } catch (e) {
-      return { success: false, error: e.message };
-    }
-  }
-
   // ── Shareable URL ─────────────────────────────────────────────────────────
   //
   // generateShareUrl() was removed on 2026-08-09. It minted
@@ -361,20 +348,6 @@ window.AstroProfile = (() => {
   // trap for the next person, so it is gone rather than left. The one supported
   // way to build a share link is APChartShare.buildShareUrl(), which runs only
   // when the visitor presses Share or Copy link.
-
-  // Load chart data from URL params
-  function loadChartFromUrl() {
-    const params = new URLSearchParams(location.search);
-    if (!params.get('date')) return null;
-    return {
-      name:      params.get('name') || 'Shared Chart',
-      birthDate: params.get('date'),
-      birthTime: params.get('time') || '12:00',
-      lat:       parseFloat(params.get('lat')) || 0,
-      lon:       parseFloat(params.get('lon')) || 0,
-      city:      params.get('city') || '',
-    };
-  }
 
   const SAVE_POSITION_KEYS = [
     'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn',
@@ -475,8 +448,7 @@ window.AstroProfile = (() => {
     chartToDashboardRow, syncChartToDashboard,
     getComparisons, saveComparison, deleteComparison,
     getPrefs, savePrefs,
-    exportData, importData,
-    loadChartFromUrl,
+    exportData,
     generateAppSyncData,
   };
 })();

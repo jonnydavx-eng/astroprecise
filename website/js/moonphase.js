@@ -27,6 +27,14 @@
   function $(id) { return document.getElementById(id); }
   function mod360(x) { return ((x % 360) + 360) % 360; }
   function toRad(d) { return (d * Math.PI) / 180; }
+  function escHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   var SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
     'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
@@ -289,21 +297,22 @@
       '</article>' +
       '<div class="mp-actions" style="gap:0.6rem;flex-wrap:wrap;">' +
         '<button type="button" class="btn btn--secondary" id="mp-copy-btn">Copy shareable text</button>' +
-        // Open that calendar day at 12:00 UT in the 3D model (explore #m= receiver).
+        // Birthday dates are personal. Stash the noon instant for this tab and
+        // keep the visible/copyable address free of the date.
         (function () {
           try {
             var p = phase.parts;
             if (!p) return '';
             var utc = new Date(Date.UTC(p.y, p.m - 1, p.d, 12, 0, 0));
-            var href = (window.APDeepLink && APDeepLink.buildSkyLink)
-              ? APDeepLink.buildSkyLink({ m: utc, focus: 'moon' })
-              : 'index.html#m=now&focus=moon';
+            if (window.APDeepLink && APDeepLink.stashSkyLink) {
+              try { APDeepLink.stashSkyLink({ m: utc, focus: 'moon' }); } catch (_) {}
+            }
+            // Ignore any helper return so a stale cached implementation cannot
+            // reintroduce the birthday through `m=`.
+            var href = 'index.html#focus=moon';
             return '<a class="btn btn--outline" href="' + href + '">See this Moon in the 3D model &rarr;</a>';
           } catch (e) {
-            var fallback = (window.APDeepLink && APDeepLink.buildSkyLink)
-              ? APDeepLink.buildSkyLink({ m: 'now', focus: 'moon' })
-              : 'index.html#m=now&focus=moon';
-            return '<a class="btn btn--outline" href="' + fallback + '">See the Moon in the 3D model &rarr;</a>';
+            return '<a class="btn btn--outline" href="index.html#focus=moon">See the Moon in the 3D model &rarr;</a>';
           }
         })() +
       '</div>';
@@ -418,7 +427,7 @@
     function miniCard(p, label) {
       return '<div class="mp-mini">' +
         '<div class="mp-mini__moon">' + moonSVG(p, 70) + '</div>' +
-        '<p class="mp-mini__label">' + (label || '') + '</p>' +
+        '<p class="mp-mini__label">' + escHtml(label || '') + '</p>' +
         '<p class="mp-mini__phase">' + p.name + '</p>' +
         '<p class="mp-mini__meta">' + p.illuminationPct + '% · Moon in ' + p.moonSign + '</p>' +
         '<p class="mp-mini__date">' + formatDateLong(p.parts) + '</p>' +

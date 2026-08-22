@@ -3,8 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <script>
+    /* Legacy commerce return only. Capture the five documented fields in
+       memory, then remove them from AstroPrecise history before the browser
+       discovers any assets. The destination is still constrained by the
+       separate Typeform allowlist below. */
+    (function () {
+      var incoming = new URLSearchParams(location.search || '');
+      var handoff = {};
+      ['form', 'email', 'buyer_name', 'order_id', 'product_sku'].forEach(function (key) {
+        var value = incoming.get(key);
+        if (value) handoff[key] = String(value).slice(0, 320);
+      });
+      window.__AP_FULFIL_HANDOFF = Object.freeze(handoff);
+      if (location.search || location.hash) history.replaceState(null, '', location.pathname);
+    })();
+  </script>
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -69,15 +86,15 @@
         'QMcr0Ldw',  // year-ahead
         'vp60QAiN'   // solar-return
       ];
-      var p = new URLSearchParams(location.search);
-      var form = p.get('form');
+      var p = window.__AP_FULFIL_HANDOFF || {};
+      var form = p.form;
       if (!form || KNOWN_FORMS.indexOf(form) === -1) {
         document.body.innerHTML = '<a class="skip-link" href="#main">Skip to content</a><main id="main"><h1 class="sr-only">Missing form reference</h1><p>Missing form reference. <a href="https://astroprecise.app/shop.html">Return to shop</a></p></main>';
         return;
       }
       var parts = [];
       ['email', 'buyer_name', 'order_id', 'product_sku'].forEach(function (k) {
-        var v = p.get(k);
+        var v = p[k];
         if (v) parts.push(k + '=' + encodeURIComponent(v));
       });
       var dest = 'https://form.typeform.com/to/' + encodeURIComponent(form);

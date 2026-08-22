@@ -3,6 +3,52 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <script>
+    /* Historical comparison links placed both birth records in the address.
+       Canonicalise before any external asset is discovered and re-run for an
+       old fragment link targeting an already-open document. */
+    window.APCompatibilityUrlPrivacy = (function () {
+      'use strict';
+      var SAFE_QUERY = { nosw: '1', lite: '1' };
+      var SAFE_HASH = { lead: true, 'main-content': true };
+
+      function scrub() {
+        try {
+          var incoming = new URLSearchParams(window.location.search || '');
+          var kept = new URLSearchParams();
+          incoming.forEach(function (value, key) {
+            var canonicalKey = String(key || '').toLowerCase();
+            if (!Object.prototype.hasOwnProperty.call(SAFE_QUERY, canonicalKey)) return;
+            if (String(value || '').toLowerCase() !== SAFE_QUERY[canonicalKey]) return;
+            if (!kept.has(canonicalKey)) kept.set(canonicalKey, SAFE_QUERY[canonicalKey]);
+          });
+
+          var safeHash = '';
+          var rawHash = String(window.location.hash || '').replace(/^#/, '');
+          if (rawHash) {
+            try {
+              var canonicalHash = decodeURIComponent(rawHash).toLowerCase();
+              if (SAFE_HASH[canonicalHash]) safeHash = '#' + canonicalHash;
+            } catch (_) { /* malformed or legacy fragments are discarded */ }
+          }
+
+          var search = kept.toString();
+          var next = window.location.pathname + (search ? '?' + search : '') + safeHash;
+          var current = window.location.pathname + window.location.search + window.location.hash;
+          if (next !== current) window.history.replaceState(window.history.state, '', next);
+          return true;
+        } catch (_) {
+          try { window.location.replace(window.location.pathname); } catch (__) { window.stop(); }
+          return false;
+        }
+      }
+
+      window.addEventListener('hashchange', scrub);
+      scrub();
+      return Object.freeze({ scrub: scrub });
+    })();
+  </script>
   <meta name="theme-color" content="#040812">
   <title>AstroPrecise — compare two birth minutes</title>
   <meta name="description" content="Compare the measured angles between two birth minutes without a score. Birth times stay here. A place search sends only the town name to a public geocoder.">
@@ -19,17 +65,17 @@
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=899">
-  <script>window.AP_ASSET_V='899';</script>
+  <link rel="stylesheet" href="css/fonts.css?v=900">
+  <script>window.AP_ASSET_V='900';</script>
   <!-- Adapter supplies the small byte-compatible VoidEphem utility here. With no
        model element it does not import or start the WebGL renderer. -->
-  <script src="js/void-orrery-adapter.js?v=899" defer></script>
-  <script src="js/ap-nav-model.js?v=899" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=899">
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=899">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=899">
-  <link rel="stylesheet" href="css/ap-couples-v858.css?v=899">
-  <link rel="stylesheet" href="css/ap-keep-sky.css?v=899">
+  <script src="js/void-orrery-adapter.js?v=900" defer></script>
+  <script src="js/ap-nav-model.js?v=900" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=900">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=900">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=900">
+  <link rel="stylesheet" href="css/ap-couples-v858.css?v=900">
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=900">
 </head>
 <body class="page-compat ap-compat-static">
   <a class="skip" href="#lead">Skip to the sky</a>
@@ -71,8 +117,8 @@
       </div>
 
       <div class="ap-model-stage" role="group" aria-label="Authored Earth engine still">
-        <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth" aria-label="Open the live Observatory">
-          <img src="img/engine/earth.webp" width="1000" height="1000" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
+      <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth">
+          <img src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="(max-width: 760px) calc(100vw - 34px), 512px" width="1000" height="1000" loading="lazy" decoding="async" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
           <span class="ap-surface-a__receipt"><span>Engine still · schematic</span><strong>Open the Observatory</strong><em>The comparison stays lightweight on this page</em></span>
         </a>
       </div>
@@ -142,7 +188,7 @@
       <div class="ap-couples-entry__inner">
         <p class="ap-live-eyebrow">Birth minutes · stay on this device</p>
         <h2 id="minutes-title">Enter both minutes.</h2>
-        <p class="standfirst">Each person needs a date, a real IANA place (not GMT), and a time for their clock. Blank time withholds that clock, Moon, and angles. Not filled with noon. Place search sends only the town name. The hash invite never uses a query string.</p>
+        <p class="standfirst">Each person needs a date, a real IANA place (not GMT), and a time for their clock. Blank time withholds that clock, Moon, and angles. Not filled with noon. Place search sends only the town name. Your pair is kept only in this tab&rsquo;s session storage, never in the address.</p>
 
         <form id="compat-form" novalidate aria-label="Two birth minutes">
           <div class="ap-couples-grid">
@@ -201,8 +247,8 @@
 
           <div class="ap-couples-actions">
             <button class="btn-primary" type="submit" id="compat-submit-btn">Compare both minutes</button>
-            <button class="btn-invite" type="button" id="compat-invite-btn" disabled>Copy hash invite</button>
-            <span class="action-note">Hash only · the part after # never leaves this browser for a server</span>
+            <button class="btn-invite" type="button" id="compat-invite-btn" disabled>Copy clean page link</button>
+            <span class="action-note">Clean link only · names, places and birth minutes are never included</span>
           </div>
           <p id="compatError" hidden role="alert"></p>
         </form>
@@ -222,10 +268,10 @@
     <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" rel="noopener">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" rel="noopener">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></span></div>
   </footer>
 
-  <script src="js/ap-nav-prefetch.js?v=899" defer data-ap-nav-prefetch="1"></script>
-  <script src="js/ap-sky-time.js?v=899" defer></script>
-  <script src="js/ap-footer-inject.js?v=899" defer></script>
-  <script src="js/ap-couples-sky.js?v=899" defer></script>
-  <script src="js/ap-keep-sky.js?v=899" defer></script>
+  <script src="js/ap-nav-prefetch.js?v=900" defer data-ap-nav-prefetch="1"></script>
+  <script src="js/ap-sky-time.js?v=900" defer></script>
+  <script src="js/ap-footer-inject.js?v=900" defer></script>
+  <script src="js/ap-couples-sky.js?v=900" defer></script>
+  <script src="js/ap-keep-sky.js?v=900" defer></script>
 </body>
 </html>
