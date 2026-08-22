@@ -32,7 +32,7 @@ npm audit --audit-level=high
 npm --prefix tools/visual-check audit --audit-level=high
 ```
 
-The root functional sweep currently contains 27 suites, must be 27/27. The launch and UI suites are separate and must also exit zero.
+The root `npm test` chain currently contains 26 commands, must be 26/26. The launch and UI suites are separate and must also exit zero.
 
 The release gates must continue to prove:
 
