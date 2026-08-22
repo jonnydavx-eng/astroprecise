@@ -89,6 +89,8 @@
         + '<span class="ap-social-row__note">Profiles launching soon</span></div>'
         + '<div class="ap-social-row__icons" role="list"></div>';
       host = host.querySelector('.ap-social-row__icons') || host;
+    } else {
+      host.setAttribute('role', 'list');
     }
 
     host.innerHTML = channels.map(function (o) {
@@ -152,7 +154,9 @@
   function shouldShowAds() {
     var M = mon();
     var aff = M.affiliate || {};
-    if (aff.adsEnabled === false) return false;
+    // A real affiliate tag is the minimum proof that these links can earn the
+    // commission claimed by their disclosure copy.
+    if (aff.adsEnabled !== true || !amazonTag()) return false;
     var here = (location.pathname.split('/').pop() || 'index.html');
     var pages = aff.pages || [
       'index.html', 'index-full.html', 'chart.html', 'horoscope.html',
@@ -238,17 +242,21 @@
   }
 
   function softenShopAffiliateDisclosure() {
-    if (amazonTag()) return;
+    if (amazonTag() && shouldShowAds()) return;
     var banner = document.querySelector('[data-ap-affiliate-disclosure], .disclosure-banner');
     if (!banner || banner.dataset.apDisclosureSoftened) return;
     banner.dataset.apDisclosureSoftened = '1';
-    banner.innerHTML = '<strong>Affiliate note</strong> — Some links may earn us a commission at no extra cost to you.';
+    banner.hidden = true;
   }
 
   function renderShopEditorialStrip() {
     var here = (location.pathname.split('/').pop() || 'index.html');
     if (here !== 'shop.html') return;
     var host = document.getElementById('ap-shop-affiliate-editorial');
+    if (!shouldShowAds()) {
+      if (host) host.hidden = true;
+      return;
+    }
     if (!host || host.querySelector('.ap-affiliate-ad__grid')) return;
     var picks = affiliatePicks().slice(0, 3);
     if (!picks.length) return;

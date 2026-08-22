@@ -1,8 +1,8 @@
 /* Engraved hex celestial seals — commissioned hand-drawn instrument plates
  * Hover gleam & alignment shimmer: css/ap-micro-2026.css */
 .ap-seal {
-  --seal-accent: var(--ap-gold-core, #A8B0BC);
-  --seal-glow: var(--ap-gold-a16, rgba(168, 176, 188, 0.16));
+  --seal-accent: var(--ap-silver, #93A8BF);
+  --seal-glow: var(--ap-silver-a18, rgba(147, 168, 191, 0.18));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -22,9 +22,9 @@
   clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
   background:
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.08), transparent 50%),
-    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0a0c, #000000);
+    radial-gradient(ellipse 100% 100% at 50% 100%, #0A1424, #040812);
   box-shadow:
-    inset 0 0 0 1px rgba(168, 176, 188,0.40),
+    inset 0 0 0 1px rgba(147, 168, 191, 0.40),
     inset 0 -3px 8px rgba(0,0,0,0.5),
     0 2px 8px rgba(0,0,0,0.45),
     0 0 14px -4px var(--seal-glow);
@@ -39,19 +39,19 @@
 /* Element accents — cool instrument (jet silver aurora system) */
 .ap-seal--zodiac.ap-seal--aries,
 .ap-seal--zodiac.ap-seal--leo,
-.ap-seal--zodiac.ap-seal--sagittarius { --seal-accent: #E07070; --seal-glow: rgba(224,112,112,0.16); }
+.ap-seal--zodiac.ap-seal--sagittarius { --seal-accent: #FF8EA8; --seal-glow: rgba(255, 142, 168, 0.16); }
 .ap-seal--zodiac.ap-seal--taurus,
 .ap-seal--zodiac.ap-seal--virgo,
-.ap-seal--zodiac.ap-seal--capricorn { --seal-accent: #6A9A70; --seal-glow: rgba(106,154,112,0.14); }
+.ap-seal--zodiac.ap-seal--capricorn { --seal-accent: #6FD0B3; --seal-glow: rgba(111, 208, 179, 0.14); }
 .ap-seal--zodiac.ap-seal--gemini,
 .ap-seal--zodiac.ap-seal--libra,
-.ap-seal--zodiac.ap-seal--aquarius { --seal-accent: #A8B0BC; --seal-glow: rgba(168,176,188,0.16); }
+.ap-seal--zodiac.ap-seal--aquarius { --seal-accent: #93A8BF; --seal-glow: rgba(147, 168, 191, 0.16); }
 .ap-seal--zodiac.ap-seal--cancer,
 .ap-seal--zodiac.ap-seal--scorpio,
-.ap-seal--zodiac.ap-seal--pisces { --seal-accent: #7EC8E8; --seal-glow: rgba(126,200,232,0.18); }
+.ap-seal--zodiac.ap-seal--pisces { --seal-accent: #8BA9FF; --seal-glow: rgba(139, 169, 255, 0.18); }
 
-.ap-seal--planet.ap-seal--sun { --seal-accent: #E8DCC8; --seal-glow: rgba(232,220,200,0.22); }
-.ap-seal--planet.ap-seal--moon { --seal-accent: #C8D0DC; --seal-glow: rgba(200,208,220,0.22); }
+.ap-seal--planet.ap-seal--sun { --seal-accent: #EEF4FA; --seal-glow: rgba(238, 244, 250, 0.22); }
+.ap-seal--planet.ap-seal--moon { --seal-accent: #C9D6E3; --seal-glow: rgba(201, 214, 227, 0.22); }
 
 .tool-card__icon .ap-seal--lg,
 .concept-pill__icon .ap-seal--sm,
@@ -89,7 +89,7 @@
   margin: 0 auto var(--space-4);
   background: none;
   -webkit-text-fill-color: unset;
-  filter: drop-shadow(0 0 18px rgba(196, 146, 10, 0.4));
+  filter: drop-shadow(0 0 18px rgba(168, 151, 255, 0.4));
 }
 .sign-hero__glyph .ap-seal {
   width: 100%;
@@ -167,7 +167,7 @@
   object-fit: contain;
   border-radius: 0;
   clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-  background: #020307;
+  background: #040812;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -202,8 +202,8 @@
   clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
   background:
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.06), transparent 50%),
-    radial-gradient(ellipse 100% 100% at 50% 100%, #020307, #020307);
+    radial-gradient(ellipse 100% 100% at 50% 100%, #040812, #040812);
   box-shadow:
-    inset 0 0 0 1px rgba(168, 176, 188,0.32),
+    inset 0 0 0 1px rgba(147, 168, 191, 0.32),
     0 2px 8px rgba(0,0,0,0.45);
 }

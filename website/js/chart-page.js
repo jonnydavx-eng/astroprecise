@@ -33,16 +33,16 @@
     .replace(/\bNNode\b/g, 'North Node')
     .replace(/\bSNode\b/g, 'South Node');
   const ASPECT_DISPLAY = {
-    conjunction:    { name:'Conjunction',    glyph:'☌', color:'#8FA3B8' },
-    opposition:     { name:'Opposition',     glyph:'☍', color:'#B86B4A' },
-    trine:          { name:'Trine',          glyph:'△', color:'#8FA3B8' },
-    square:         { name:'Square',         glyph:'□', color:'#B86B4A' },
-    sextile:        { name:'Sextile',        glyph:'⚹', color:'#8FA3B8' },
-    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#8FA3B8' },
-    semisquare:     { name:'Semi-square',     glyph:'∠', color:'#8FA3B8' },
-    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#8FA3B8' },
-    semisextile:    { name:'Semi-sextile',    glyph:'⚺', color:'#8FA3B8' },
-    quintile:       { name:'Quintile',        glyph:'Q', color:'#8FA3B8' },
+    conjunction:    { name:'Conjunction',    glyph:'☌', color:'#EEF4FA' },
+    opposition:     { name:'Opposition',     glyph:'☍', color:'#FF8EA8' },
+    trine:          { name:'Trine',          glyph:'△', color:'#6FD0B3' },
+    square:         { name:'Square',         glyph:'□', color:'#A897FF' },
+    sextile:        { name:'Sextile',        glyph:'⚹', color:'#79C7F2' },
+    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#93A8BF' },
+    semisquare:     { name:'Semi-square',     glyph:'∠', color:'#93A8BF' },
+    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#93A8BF' },
+    semisextile:    { name:'Semi-sextile',    glyph:'⚺', color:'#93A8BF' },
+    quintile:       { name:'Quintile',        glyph:'Q', color:'#93A8BF' },
   };
   const CORE_READING_BODIES = new Set([
     'Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto',
@@ -64,10 +64,10 @@
     Cancer:'water',     Scorpio:'water', Pisces:'water',
   };
   const ELEMENT_COLORS = {
-    fire:  '#B86B4A',
-    earth: '#7EB8A8',
-    air:   '#8FA3B8',
-    water: '#8FA3B8',
+    fire:  '#FF8EA8',
+    earth: '#6FD0B3',
+    air:   '#79C7F2',
+    water: '#A897FF',
   };
   // Modality mapping
   const MODALITY_MAP = {
@@ -388,6 +388,9 @@
     document.querySelectorAll('.form-group.is-error').forEach(function (g) {
       g.classList.remove('is-error');
     });
+    Object.keys(FOCUS_GROUPS).forEach(function (id) {
+      document.getElementById(id)?.removeAttribute('aria-invalid');
+    });
   }
 
   function showFormError(focusId, message) {
@@ -400,6 +403,7 @@
     }
     const el = document.getElementById(focusId);
     if (el) {
+      el.setAttribute('aria-invalid', 'true');
       el.focus();
       const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
@@ -435,6 +439,9 @@
     if (![y, m, d, hh, mm].every(Number.isFinite) ||
         m < 1 || m > 12 || d < 1 || d > daysInMonth(y, m) || hh > 23 || mm > 59) {
       return { error: 'That birth date or time looks malformed.', focus: 'date-input' };
+    }
+    if (y < 1800 || y > 2200) {
+      return { error: 'AstroPrecise supports chart dates from 1800 through 2200.', focus: 'date-input' };
     }
     return {
       name, y, m, d, hh, mm, lat, lon, tz,
@@ -841,6 +848,50 @@
     return `${dg}°${String(mn).padStart(2, '0')}′`;
   }
 
+  function renderResultReceipt(chart) {
+    if (!chart) return;
+    const level = chart.timeAccuracy || (chart.birthTime ? 'exact' : 'unknown');
+    const dateEl = document.getElementById('result-date');
+    if (dateEl) {
+      dateEl.textContent = `${chart.birthDate}${chart.birthTime ? ' at ' + chart.birthTime : ' · time unknown'} · ${chart.city}`;
+    }
+
+    const chip = document.getElementById('result-time-chip');
+    if (chip) {
+      chip.dataset.level = level;
+      chip.textContent = level === 'exact'
+        ? 'Exact time'
+        : level === 'approximate'
+          ? 'Approximate time · provisional'
+          : 'Time unknown · points withheld';
+    }
+
+    const wrap = document.getElementById('chart-result');
+    if (wrap) wrap.dataset.timeAccuracy = level;
+
+    const wheel = document.getElementById('natal-wheel');
+    if (wheel) {
+      wheel.dataset.timeAccuracy = level;
+      wheel.setAttribute('aria-describedby', 'result-time-chip chart-wheel-control-hint');
+      wheel.setAttribute('aria-label', level === 'approximate'
+        ? 'Provisional natal chart diagram — calculated at an approximate birth time on schematic ecliptic rings.'
+        : 'Natal chart diagram — computed positions on schematic ecliptic rings.');
+    }
+
+    const precisionLabel = document.getElementById('result-precision-label');
+    if (precisionLabel) {
+      const labels = {
+        exact: 'Exact time · Moon, Rising, MC and houses included',
+        approximate: 'Approximate time · Moon, angles, houses and house placements are provisional',
+        unknown: 'Time unknown · Moon, Rising, MC and houses withheld',
+      };
+      precisionLabel.dataset.level = level;
+      const houseName = HOUSE_SYSTEM_NAMES[chart.houseSystem] || chart.houseSystem || 'Equal';
+      precisionLabel.textContent = (labels[level] || labels.unknown) +
+        (chart.houses ? ` · ${houseName} houses` : ' · date-based placements only');
+    }
+  }
+
   function renderResults(chart) {
     const wrapEl = document.getElementById('chart-result');
     if (!wrapEl) return;
@@ -862,21 +913,8 @@
       resultNameEl.removeAttribute('aria-hidden');
       resultNameEl.setAttribute('tabindex', '-1');
     }
-    document.getElementById('result-date').textContent =
-      `${chart.birthDate}${chart.birthTime ? ' at ' + chart.birthTime : ' · time unknown'} · ${chart.city}`;
-    const precisionLabel = document.getElementById('result-precision-label');
-    if (precisionLabel) {
-      const level = chart.timeAccuracy || (chart.birthTime ? 'exact' : 'unknown');
-      const labels = {
-        exact: 'Exact time · Moon, Rising, MC and houses included',
-        approximate: 'Approximate time · Moon, angles, houses and house placements are provisional',
-        unknown: 'Time unknown · Moon, Rising, MC and houses withheld',
-      };
-      precisionLabel.dataset.level = level;
-      const houseName = HOUSE_SYSTEM_NAMES[chart.houseSystem] || chart.houseSystem || 'Equal';
-      precisionLabel.textContent = (labels[level] || labels.unknown) +
-        (chart.houses ? ` · ${houseName} houses` : ` · date-based placements only`);
-    }
+    syncHouseSystemControls(chart.houseSystem || 'equal');
+    renderResultReceipt(chart);
     const eclipseHref = eclipseHandoffHref(chart);
     ['eclipse-handoff', 'eclipse-cta'].forEach(function (id) {
       const el = document.getElementById(id);
@@ -887,6 +925,9 @@
     renderTabs(chart);
     initTabs();
     writeSittingHandoff(chart);
+    if (window.APSkyBridge && typeof APSkyBridge.mountChartModelCta === 'function') {
+      APSkyBridge.mountChartModelCta(chart);
+    }
 
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     wrapEl.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
@@ -931,6 +972,13 @@
         timeKnown: chart.timeKnown === true,
         timeAccuracy: chart.timeAccuracy || 'unknown',
         houseSystem: chart.houseSystem || 'equal',
+        nodeMode: chart.nodeMode || 'mean',
+        positions: chart.positions || null,
+        houses: Array.isArray(chart.houses) ? chart.houses : null,
+        planetHouses: chart.planetHouses || null,
+        asc: Number.isFinite(Number(chart.asc)) ? Number(chart.asc) : null,
+        mc: Number.isFinite(Number(chart.mc)) ? Number(chart.mc) : null,
+        jd: Number.isFinite(Number(chart.jd)) ? Number(chart.jd) : null,
         ts: Date.now(),
       }));
     } catch (e) { /* storage blocked — visitor re-enters */ }
@@ -939,12 +987,6 @@
   function openSitting() {
     if (!currentChart) return;
     writeSittingHandoff(currentChart);
-    // Also save locally so deep-reading's saved-chart path stays warm.
-    try {
-      if (window.AstroProfile && typeof AstroProfile.saveChart === 'function') {
-        AstroProfile.saveChart(saveDataFor(currentChart));
-      }
-    } catch (e) { /* optional */ }
     window.location.href = 'deep-reading.html?from=chart';
   }
 
@@ -1019,6 +1061,7 @@
         wrap.classList.add('natal-wheel-container--withheld');
         wrap.removeAttribute('aria-busy');
       }
+      renderWheelPicker(null);
       return;
     }
     if (wrap) wrap.classList.remove('natal-wheel-container--withheld');
@@ -1030,15 +1073,94 @@
     el.classList.add('natal-wheel--loading');
     AstroChartRender.renderNatalChart(
       { positions: chart.positions, houses: chart.houses, aspects: chart.renderAspects,
-        name: chart.name, dominant: chart.dominant, chartRuler: chart.chartRuler },
+        name: chart.name, dominant: chart.dominant, chartRuler: chart.chartRuler,
+        timeAccuracy: chart.timeAccuracy || 'unknown' },
       'natal-wheel',
-      { title: null, wheelOnly: true, showTable: false, showLegend: false });
+      { title: null, wheelOnly: true, showTable: false, showLegend: false,
+        provisional: chart.timeAccuracy === 'approximate', describedBy: 'result-time-chip chart-wheel-control-hint' });
     el.classList.remove('natal-wheel--loading');
     el.classList.add('natal-wheel--loaded');
     if (wrap) wrap.removeAttribute('aria-busy');
+    renderWheelPicker(chart);
+  }
+
+  function renderWheelPicker(chart) {
+    const picker = document.getElementById('chart-wheel-picker');
+    const hint = document.getElementById('chart-wheel-control-hint');
+    if (!picker) return;
+    picker.replaceChildren(new Option('Choose a planet or aspect', ''));
+    picker.disabled = !chart || !chart.houses;
+    picker.value = '';
+    if (!chart || !chart.houses) {
+      if (hint) hint.textContent = 'Add an exact or approximate birth time to explore a complete wheel.';
+      picker.onchange = null;
+      picker.onkeydown = null;
+      return;
+    }
+
+    const planets = document.createElement('optgroup');
+    planets.label = 'Planets and points';
+    ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','Lilith','NorthNode','SouthNode']
+      .filter(function (name) { return chart.positions && chart.positions[name]; })
+      .forEach(function (name) {
+        planets.appendChild(new Option(bodyLabel(name), 'planet:' + name));
+      });
+    picker.appendChild(planets);
+
+    const aspects = document.createElement('optgroup');
+    aspects.label = 'Aspects';
+    (chart.renderAspects || []).forEach(function (aspect) {
+      const type = capAspectName(aspect.aspect);
+      const orb = Number.isFinite(Number(aspect.orb)) ? ` · ${Number(aspect.orb).toFixed(1)}° orb` : '';
+      aspects.appendChild(new Option(
+        `${bodyLabel(aspect.planet1)} — ${type} — ${bodyLabel(aspect.planet2)}${orb}`,
+        'aspect:' + aspectKeyOf(aspect.planet1, aspect.planet2, aspect.aspect)
+      ));
+    });
+    if (aspects.children.length) picker.appendChild(aspects);
+
+    const provisional = chart.timeAccuracy === 'approximate';
+    if (hint) hint.textContent = provisional
+      ? 'Every option opens a reading. This wheel is provisional because the selected birth time is approximate.'
+      : 'Every option opens the matching reading with one full-size keyboard and touch control.';
+
+    picker.onchange = function () {
+      const value = picker.value;
+      if (!value) return;
+      const split = value.indexOf(':');
+      const kind = value.slice(0, split);
+      const key = value.slice(split + 1);
+      const target = kind === 'planet'
+        ? document.querySelector('#natal-wheel .planet-glyph[data-planet="' + CSS.escape(key) + '"]')
+        : document.querySelector('#natal-wheel .aspect-line[data-aspect-key="' + CSS.escape(key) + '"]');
+      if (target) target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    };
+    picker.onkeydown = function (event) {
+      if (event.key !== 'Escape') return;
+      const svg = document.querySelector('#natal-wheel svg');
+      if (svg) svg.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      picker.value = '';
+    };
   }
 
   const HOUSE_SYSTEM_NAMES = { equal: 'Equal', placidus: 'Placidus', whole: 'Whole Sign' };
+
+  function syncHouseSystemControls(sys) {
+    const selected = HOUSE_SYSTEM_NAMES[sys] ? sys : 'equal';
+    const houseInput = document.getElementById('house-system');
+    if (houseInput) houseInput.value = selected;
+    document.querySelectorAll('.house-card').forEach(function (card) {
+      const active = card.dataset.value === selected;
+      card.classList.toggle('active', active);
+      card.setAttribute('aria-checked', active ? 'true' : 'false');
+      card.tabIndex = active ? 0 : -1;
+    });
+    document.querySelectorAll('.house-system-switch__btn[data-house-system]').forEach(function (button) {
+      const active = button.dataset.houseSystem === selected;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
 
   // Rebuild a calculate() input from an already-computed chart so the results-level
   // house-system switcher works for both fresh casts and restored shared charts
@@ -1069,8 +1191,12 @@
       const next = calculate(inputFromChart(currentChart, sys));
       if (!next || !next.positions || !next.positions.Sun) return;
       currentChart = next;
+      syncHouseSystemControls(sys);
+      renderResultReceipt(currentChart);
       renderWheel(currentChart);
       renderTabs(currentChart); // re-fills tables + re-wires wheel↔table linking
+      writeSittingHandoff(currentChart);
+      publishKeepSkyContext(currentChart);
       if (window.AstroApp) {
         AstroApp.showToast('House system updated',
           HOUSE_SYSTEM_NAMES[sys] + ' houses — your planets and signs are unchanged; only the house cusps moved.', 'success');
@@ -1650,6 +1776,7 @@
       lon: chart.lon,
       tz: chart.tz,
       houseSystem: chart.houseSystem || 'equal',
+      nodeMode: chart.nodeMode || 'mean',
       timeKnown: chart.timeKnown === true,
       timeAccuracy: chart.timeAccuracy || 'unknown',
       timezoneKnown: chart.timezoneKnown === true,
@@ -1800,18 +1927,24 @@
   const FONT_SANS    = '"Schibsted Grotesk", system-ui, sans-serif';
   const FONT_MONO    = '"IBM Plex Mono", ui-monospace, monospace';
 
-  // Lunar night + instrument silver (css/ap-palette-2026.css) ────────────────
+  // Midnight Meridian 2026 — cool lunar night + ion instrumentation. ─────────
   const PAL = {
-    void:      '#05080F',
-    voidWarm:  '#0C1422',
-    lapis:     '#8FA3B8',
-    gold:      '#8FA3B8',
-    goldHi:    '#B86B4A',
-    goldPale:  '#C5D4E0',
-    parchment: '#E6ECF2',
-    oxblood:   '#B86B4A',
-    silver:    '#8FA3B8',
-    silverDim: 'rgba(143,163,184,0.68)',
+    void:      '#040812',
+    voidWarm:  '#0B1424',
+    lapis:     '#93A8BF',
+    gold:      '#93A8BF',
+    goldHi:    '#8BA9FF',
+    goldPale:  '#C9D6E3',
+    parchment: '#EEF4FA',
+    oxblood:   '#FF8EA8',
+    silver:    '#93A8BF',
+    silverDim: 'rgba(147,168,191,0.68)',
+    ion:       '#8BA9FF',
+    violet:    '#A897FF',
+    proof:     '#6FD0B3',
+    danger:    '#FF8EA8',
+    cyan:      '#79C7F2',
+    ctaInk:    '#07101E',
   };
 
   const SHARE_FORMATS = {
@@ -1837,7 +1970,7 @@
   // Faint dot grid (scaled).
   function drawDotGrid(x, W, H, S) {
     const step = 48 * S;
-    x.fillStyle = 'rgba(143,163,184,0.05)';
+    x.fillStyle = 'rgba(147,168,191,0.05)';
     for (let gx = step; gx < W; gx += step) {
       for (let gy = step; gy < H; gy += step) {
         x.beginPath();
@@ -1856,8 +1989,8 @@
       const alpha = 0.12 + rnd() * 0.55;
       const r     = (rnd() * 1.8 + 0.3) * S;
       x.fillStyle = sparkle
-        ? `rgba(143,163,184,${alpha})`
-        : `rgba(230,236,242,${alpha})`;
+        ? `rgba(147,168,191,${alpha})`
+        : `rgba(238,244,250,${alpha})`;
       x.beginPath();
       x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2);
       x.fill();
@@ -1868,12 +2001,12 @@
   function paintBackground(x, W, H, seed, S) {
     x.fillStyle = PAL.void;
     x.fillRect(0, 0, W, H);
-    x.fillStyle = 'rgba(13,18,27,0.72)';
+    x.fillStyle = 'rgba(11,20,36,0.72)';
     x.fillRect(0, H * 0.18, W, H * 0.64);
 
     drawDotGrid(x, W, H, S);
     drawStars(x, W, H, Math.round((W * H) / 4800), seed, S);
-    x.strokeStyle = 'rgba(143,163,184,0.12)';
+    x.strokeStyle = 'rgba(147,168,191,0.12)';
     x.lineWidth = Math.max(1, S);
     x.beginPath();
     x.moveTo(W / 2, H * 0.18);
@@ -1885,14 +2018,14 @@
 
   // Double gold frame with generous margin (print bleed-friendly).
   function drawFrame(x, W, H, outerInset, innerInset) {
-    x.strokeStyle = 'rgba(143,163,184,0.7)';
+    x.strokeStyle = 'rgba(147,168,191,0.7)';
     x.lineWidth = Math.max(2, outerInset * 0.05);
     x.strokeRect(outerInset, outerInset, W - outerInset * 2, H - outerInset * 2);
-    x.strokeStyle = 'rgba(143,163,184,0.3)';
+    x.strokeStyle = 'rgba(147,168,191,0.3)';
     x.lineWidth = Math.max(1, outerInset * 0.025);
     x.strokeRect(innerInset, innerInset, W - innerInset * 2, H - innerInset * 2);
     // Corner ticks (silver chrome — not gold debt)
-    x.strokeStyle = 'rgba(230,236,242,0.45)';
+    x.strokeStyle = 'rgba(238,244,250,0.45)';
     x.lineWidth = Math.max(1.5, outerInset * 0.04);
     const t = (outerInset + innerInset) / 2;
     const len = (innerInset - outerInset) * 1.4;
@@ -1922,7 +2055,7 @@
     if (!signName) {
       x.fillStyle = PAL.voidWarm;
       x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
-      x.strokeStyle = 'rgba(143,163,184,0.34)';
+      x.strokeStyle = 'rgba(147,168,191,0.34)';
       x.lineWidth = Math.max(1, r * 0.045);
       x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
       x.fillStyle = PAL.silver;
@@ -1942,16 +2075,16 @@
       return;
     }
     const grad = x.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
-    grad.addColorStop(0, 'rgba(230,236,242,0.18)');
+    grad.addColorStop(0, 'rgba(238,244,250,0.18)');
     var alphaFn = (window.APCanvasSeals && APCanvasSeals.withAlpha) ? APCanvasSeals.withAlpha.bind(APCanvasSeals) : null;
     grad.addColorStop(0.4, alphaFn ? alphaFn(elemCol, 'cc') : elemCol);
     grad.addColorStop(1, alphaFn ? alphaFn(elemCol, '33') : elemCol);
     x.fillStyle = grad;
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
-    x.strokeStyle = 'rgba(143,163,184,0.55)';
+    x.strokeStyle = 'rgba(147,168,191,0.55)';
     x.lineWidth = Math.max(1, r * 0.06);
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(230,236,242,0.28)';
+    x.strokeStyle = 'rgba(238,244,250,0.28)';
     x.lineWidth = Math.max(1, r * 0.05);
     x.beginPath(); x.arc(cx, cy, r * 0.78, Math.PI * 1.15, Math.PI * 1.85); x.stroke();
     x.fillStyle = PAL.parchment;
@@ -1977,11 +2110,11 @@
     x.lineJoin = 'round';
     const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                          'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-    // Brand-token element tints: ember, brass, paper and silver.
+    // Cool element tints preserve the four-way distinction without warm brand color.
     const ELEMENT_SECTOR = {
-      Aries:'rgba(184,107,74,0.09)', Taurus:'rgba(143,163,184,0.09)', Gemini:'rgba(230,236,242,0.06)', Cancer:'rgba(143,163,184,0.09)',
-      Leo:'rgba(184,107,74,0.09)', Virgo:'rgba(143,163,184,0.09)', Libra:'rgba(230,236,242,0.06)', Scorpio:'rgba(143,163,184,0.09)',
-      Sagittarius:'rgba(184,107,74,0.09)', Capricorn:'rgba(143,163,184,0.09)', Aquarius:'rgba(230,236,242,0.06)', Pisces:'rgba(143,163,184,0.09)',
+      Aries:'rgba(255,142,168,0.09)', Taurus:'rgba(111,208,179,0.09)', Gemini:'rgba(121,199,242,0.08)', Cancer:'rgba(168,151,255,0.09)',
+      Leo:'rgba(255,142,168,0.09)', Virgo:'rgba(111,208,179,0.09)', Libra:'rgba(121,199,242,0.08)', Scorpio:'rgba(168,151,255,0.09)',
+      Sagittarius:'rgba(255,142,168,0.09)', Capricorn:'rgba(111,208,179,0.09)', Aquarius:'rgba(121,199,242,0.08)', Pisces:'rgba(168,151,255,0.09)',
     };
     const rOuter     = R;
     const rBand      = R * 0.89;
@@ -1997,7 +2130,7 @@
     // Schematic orbital tracks (decorative — matches SVG chart-render layer)
     [0.78, 0.68, 0.58].forEach((frac, i) => {
       x.save();
-      x.strokeStyle = 'rgba(143,163,184,' + (0.1 + i * 0.04) + ')';
+      x.strokeStyle = 'rgba(147,168,191,' + (0.1 + i * 0.04) + ')';
       x.lineWidth = 0.8 * lw;
       x.setLineDash([3 + i, 5 + i * 2]);
       x.beginPath();
@@ -2007,13 +2140,13 @@
     });
 
     // Rings
-    x.strokeStyle = 'rgba(143,163,184,0.75)'; x.lineWidth = 3 * lw;
+    x.strokeStyle = 'rgba(147,168,191,0.75)'; x.lineWidth = 3 * lw;
     x.beginPath(); x.arc(cx, cy, rOuter, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(143,163,184,0.45)'; x.lineWidth = 1.5 * lw;
+    x.strokeStyle = 'rgba(147,168,191,0.45)'; x.lineWidth = 1.5 * lw;
     x.beginPath(); x.arc(cx, cy, rSignInner, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(143,163,184,0.3)'; x.lineWidth = 1 * lw;
+    x.strokeStyle = 'rgba(147,168,191,0.3)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rBand, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(143,163,184,0.22)'; x.lineWidth = 1 * lw;
+    x.strokeStyle = 'rgba(147,168,191,0.22)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rInner, 0, Math.PI * 2); x.stroke();
 
     // Sign sectors
@@ -2024,7 +2157,7 @@
       x.beginPath(); x.moveTo(cx, cy);
       x.arc(cx, cy, rOuter, a1, a2, a1 > a2); x.closePath(); x.fill();
 
-      x.strokeStyle = 'rgba(143,163,184,0.3)'; x.lineWidth = 1 * lw;
+      x.strokeStyle = 'rgba(147,168,191,0.3)'; x.lineWidth = 1 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(a1) * rSignInner, cy + Math.sin(a1) * rSignInner);
       x.lineTo(cx + Math.cos(a1) * rOuter,     cy + Math.sin(a1) * rOuter);
@@ -2036,7 +2169,7 @@
     }
 
     // 10° ticks
-    x.strokeStyle = 'rgba(143,163,184,0.4)';
+    x.strokeStyle = 'rgba(147,168,191,0.4)';
     for (let d2 = 0; d2 < 360; d2 += 10) {
       if (d2 % 30 === 0) continue;
       const a = ang(d2);
@@ -2049,28 +2182,42 @@
 
     // Aspect lines
     const ASPECT_LINE_COLORS = {
-      Trine: '#8FA3B8', Sextile: '#8FA3B8', Conjunction: '#8FA3B8',
-      Opposition: '#B86B4A', Square: '#B86B4A',
+      Conjunction: '#EEF4FA',
+      Opposition: '#FF8EA8',
+      Square: '#A897FF',
+      Trine: '#6FD0B3',
+      Sextile: '#79C7F2',
+    };
+    const ASPECT_LINE_CUES = {
+      Conjunction: { width: 2.1, dash: [] },
+      Opposition: { width: 2.1, dash: [10, 2] },
+      Square: { width: 1.9, dash: [6, 2] },
+      Trine: { width: 1.8, dash: [] },
+      Sextile: { width: 1.5, dash: [2, 2] },
     };
     (chart.renderAspects || []).slice(0, 24).forEach(asp => {
       const p1 = chart.positions[asp.planet1], p2 = chart.positions[asp.planet2];
       if (!p1 || !p2) return;
       const a1 = ang(p1.lon), a2 = ang(p2.lon);
-      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(143,163,184,0.3)';
+      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(147,168,191,0.3)';
+      const cue = ASPECT_LINE_CUES[asp.aspect] || { width: 1, dash: [3, 3] };
+      x.save();
       x.strokeStyle = col.startsWith('rgba') ? col : col + '66';
-      x.globalAlpha = 0.5; x.lineWidth = 1.5 * lw;
+      x.globalAlpha = 0.5;
+      x.lineWidth = cue.width * lw;
+      x.setLineDash(cue.dash.map(value => value * lw));
       x.beginPath();
       x.moveTo(cx + Math.cos(a1) * (rInner - 8 * lw), cy + Math.sin(a1) * (rInner - 8 * lw));
       x.lineTo(cx + Math.cos(a2) * (rInner - 8 * lw), cy + Math.sin(a2) * (rInner - 8 * lw));
       x.stroke();
-      x.globalAlpha = 1;
+      x.restore();
     });
 
     // House spokes
     if (hasAngles) {
       chart.houses.forEach(cusp => {
         const a = ang(cusp);
-        x.strokeStyle = 'rgba(143,163,184,0.2)'; x.lineWidth = 1 * lw;
+        x.strokeStyle = 'rgba(147,168,191,0.2)'; x.lineWidth = 1 * lw;
         x.beginPath(); x.moveTo(cx, cy);
         x.lineTo(cx + Math.cos(a) * rInner, cy + Math.sin(a) * rInner); x.stroke();
       });
@@ -2079,12 +2226,12 @@
     // Ascendant axis
     if (hasAngles) {
       const aAsc = ang(ascLon);
-      x.strokeStyle = 'rgba(184,107,74,0.9)'; x.lineWidth = 2.5 * lw;
+      x.strokeStyle = 'rgba(139,169,255,0.92)'; x.lineWidth = 2.5 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(aAsc) * rInner,     cy + Math.sin(aAsc) * rInner);
       x.lineTo(cx + Math.cos(aAsc) * rSignInner, cy + Math.sin(aAsc) * rSignInner);
       x.stroke();
-      x.fillStyle = '#B86B4A';
+      x.fillStyle = PAL.ion;
       x.font = `bold ${R * 0.05}px ${FONT_SANS}`;
       x.textBaseline = 'middle'; x.textAlign = 'center';
       x.fillText('ASC', cx + Math.cos(aAsc) * (rInner - 32 * lw), cy + Math.sin(aAsc) * (rInner - 32 * lw));
@@ -2104,7 +2251,7 @@
       const py2 = cy + Math.sin(a) * rPlanets;
 
       const at2 = ang(p.lon);
-      x.strokeStyle = 'rgba(230,236,242,0.45)'; x.lineWidth = 1 * lw;
+      x.strokeStyle = 'rgba(238,244,250,0.45)'; x.lineWidth = 1 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(at2) * rSignInner,            cy + Math.sin(at2) * rSignInner);
       x.lineTo(cx + Math.cos(at2) * (rSignInner - 14 * lw), cy + Math.sin(at2) * (rSignInner - 14 * lw));
@@ -2112,7 +2259,7 @@
 
       const haloR = R * 0.07;
       const haloGrad = x.createRadialGradient(px2, py2, 0, px2, py2, haloR);
-      haloGrad.addColorStop(0, 'rgba(143,163,184,0.22)');
+      haloGrad.addColorStop(0, 'rgba(147,168,191,0.22)');
       haloGrad.addColorStop(1, 'transparent');
       x.fillStyle = haloGrad;
       x.beginPath(); x.arc(px2, py2, haloR, 0, Math.PI * 2); x.fill();
@@ -2132,7 +2279,7 @@
       }
 
       if (p.retrograde) {
-        x.fillStyle = '#B86B4A';
+        x.fillStyle = PAL.violet;
         x.font = `500 ${R * 0.04}px "IBM Plex Mono", ${FONT_SANS}`;
         x.fillText('℞', px2 + R * 0.055, py2 - R * 0.05);
       }
@@ -2140,11 +2287,11 @@
     x.textBaseline = 'alphabetic';
 
     // Centre star
-    x.fillStyle = 'rgba(143,163,184,0.95)';
+    x.fillStyle = 'rgba(147,168,191,0.95)';
     x.font = `400 ${R * 0.14}px ${FONT_DISPLAY}`;
     x.textBaseline = 'middle'; x.textAlign = 'center';
     if (window.AstroUI && AstroUI.drawStar4) {
-      x.fillStyle = 'rgba(143,163,184,0.95)';
+      x.fillStyle = 'rgba(147,168,191,0.95)';
       AstroUI.drawStar4(x, cx, cy, R * 0.12);
     }
     x.textBaseline = 'alphabetic';
@@ -2160,7 +2307,7 @@
     x.font = `600 ${22 * scale}px ${FONT_SANS}`;
     x.fillText('E L E M E N T A L   D I S T R I B U T I O N', x0 + barW / 2, y0);
 
-    x.strokeStyle = 'rgba(143,163,184,0.22)'; x.lineWidth = 1 * scale;
+    x.strokeStyle = 'rgba(147,168,191,0.22)'; x.lineWidth = 1 * scale;
     x.beginPath(); x.moveTo(x0, y0 + 16 * scale); x.lineTo(x0 + barW, y0 + 16 * scale); x.stroke();
 
     const rows = [
@@ -2183,7 +2330,7 @@
       x.font = `600 ${20 * scale}px ${FONT_SANS}`;
       x.fillText(er.label.toUpperCase(), x0, rowY + BAR_H / 2 + 7 * scale);
 
-      x.fillStyle = 'rgba(143,163,184,0.08)';
+      x.fillStyle = 'rgba(147,168,191,0.08)';
       x.beginPath();
       if (x.roundRect) x.roundRect(innerX, rowY, innerW, BAR_H, 6 * scale); else x.rect(innerX, rowY, innerW, BAR_H);
       x.fill();
@@ -2211,7 +2358,7 @@
     x.font = `600 ${22 * scale}px ${FONT_SANS}`;
     x.fillText('P L A N E T A R Y   P L A C E M E N T S', x0 + colW, y0);
 
-    x.strokeStyle = 'rgba(143,163,184,0.22)'; x.lineWidth = 1 * scale;
+    x.strokeStyle = 'rgba(147,168,191,0.22)'; x.lineWidth = 1 * scale;
     x.beginPath(); x.moveTo(x0, y0 + 14 * scale); x.lineTo(x0 + colW * 2, y0 + 14 * scale); x.stroke();
 
     const PLANET_ORDER_TABLE = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
@@ -2227,7 +2374,7 @@
       col.forEach((row, r) => {
         const ry = y0 + 36 * scale + r * ROW_H;
         if (r > 0) {
-          x.strokeStyle = 'rgba(143,163,184,0.08)'; x.lineWidth = 1 * scale;
+          x.strokeStyle = 'rgba(147,168,191,0.08)'; x.lineWidth = 1 * scale;
           x.beginPath(); x.moveTo(colX, ry - 6 * scale); x.lineTo(colX + colW - 60 * scale, ry - 6 * scale); x.stroke();
         }
         x.textAlign = 'left';
@@ -2319,7 +2466,7 @@
     drawWheel(x, chart, W / 2, wheelCY, wheelR);
 
     // Subtle footer (below thumb zone)
-    x.strokeStyle = 'rgba(143,163,184,0.18)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(147,168,191,0.18)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.28, H - safeBot + 36 * S); x.lineTo(W * 0.72, H - safeBot + 36 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${16 * S}px ${FONT_SANS}`;
@@ -2412,7 +2559,7 @@
       x.fillText(dom, W / 2, y);
     }
 
-    x.strokeStyle = 'rgba(143,163,184,0.25)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(147,168,191,0.25)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.2, H - 88 * S); x.lineTo(W * 0.8, H - 88 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${17 * S}px ${FONT_SANS}`;
@@ -2547,12 +2694,12 @@
 
     // ── Footer (shared) ──
     x.textAlign = 'center';
-    x.strokeStyle = 'rgba(143,163,184,0.25)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(147,168,191,0.25)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.2, H - 108 * S); x.lineTo(W * 0.8, H - 108 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${18 * S}px ${FONT_SANS}`;
     x.fillText(`astroprecise  ·  ${accLine}`, W / 2, H - 88 * S);
-    x.fillStyle = 'rgba(143,163,184,0.72)';
+    x.fillStyle = 'rgba(147,168,191,0.72)';
     x.font = `400 ${13 * S}px ${FONT_SANS}`;
     x.fillText('Wheel = computed degrees · artwork = schematic field plate', W / 2, H - 58 * S);
 
@@ -2852,15 +2999,8 @@
       });
     }
 
-    const houseInput = document.getElementById('house-system');
     function selectHouseCard(card) {
-      document.querySelectorAll('.house-card').forEach(function (item) {
-        const selected = item === card;
-        item.classList.toggle('active', selected);
-        item.setAttribute('aria-checked', selected ? 'true' : 'false');
-        item.tabIndex = selected ? 0 : -1;
-      });
-      if (houseInput) houseInput.value = card.dataset.value;
+      syncHouseSystemControls(card.dataset.value);
     }
     const houseCards = Array.from(document.querySelectorAll('.house-card'));
     houseCards.forEach(function (card, index) {
@@ -2888,11 +3028,15 @@
       function check() {
         group.classList.toggle('is-valid', input.value.trim() !== '');
         group.classList.remove('is-error');
+        input.removeAttribute('aria-invalid');
       }
       input.addEventListener('input', check);
       input.addEventListener('change', check);
       input.addEventListener('blur', function () {
-        if (input.required && input.value.trim() === '') group.classList.add('is-error');
+        if (input.required && input.value.trim() === '') {
+          group.classList.add('is-error');
+          input.setAttribute('aria-invalid', 'true');
+        }
       });
       check();
     }
@@ -2906,10 +3050,12 @@
         group.classList.add('is-valid');
         group.classList.remove('is-error');
       }
+      document.getElementById('city-input')?.removeAttribute('aria-invalid');
     });
     document.getElementById('city-input')?.addEventListener('input', function () {
       const group = document.getElementById('group-city');
       if (group) group.classList.remove('is-valid', 'is-error');
+      this.removeAttribute('aria-invalid');
     });
 
     const calculateButton = document.getElementById('calculate-btn');

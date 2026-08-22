@@ -3,24 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#05080F">
+  <meta name="theme-color" content="#040812">
   <title>Seven chapters from the minute you were born | AstroPrecise</title>
-  <meta name="description" content="Seven chapters from a computed chart: date, place, and an honest timezone. Unknown birth time is said, not faked. The live sky stays free. Birth date and time stay on this device; place search sends only the town name.">
+  <meta name="description" content="Seven chapters from a computed chart: date, place, and an honest timezone. Unknown birth time is said, not faked. The live Observatory stays free. Birth date and time stay on this device; place search sends only the town name.">
   <link rel="canonical" href="https://astroprecise.app/deep-reading.html">
-  <link rel="stylesheet" href="css/fonts.css?v=880">
-  <script>window.AP_ASSET_V='895';</script>
-  <script src="js/ap-nav-model.js?v=880" defer></script>
-  <script src="js/ephemeris.js?v=880" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880">
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-  <link rel="stylesheet" href="css/ap-natal-reading.css?v=885">
-  <link rel="stylesheet" href="css/ap-keep-sky.css?v=880">
-  <script type="importmap">
-    { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
-  </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=895">
-  <script src="js/void-orrery-adapter.js?v=885" defer></script>
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=885">
+  <link rel="stylesheet" href="css/fonts.css?v=899">
+  <script>window.AP_ASSET_V='899';</script>
+  <script src="js/ap-nav-model.js?v=899" defer></script>
+  <script src="js/ephemeris.js?v=899" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=899">
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=899">
+  <link rel="stylesheet" href="css/ap-natal-reading.css?v=899">
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=899">
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=899">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=899">
 </head>
 <body class="page-natal-reading ap-launch-article">
   <a class="skip-link" href="#natal-main">Skip to reading</a>
@@ -49,12 +45,11 @@
     </nav>
   </header>
 
-  <section class="ap-room-sky" aria-label="Live sky">
-    <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
-      <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
-      <div class="ap-model-vignette" aria-hidden="true"></div>
-      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Opening the live sky</strong><em>The sitting is below</em></div>
-    </div>
+  <section class="ap-room-sky" aria-label="Authored Earth engine still">
+    <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth" aria-label="Open live Earth now in the Observatory">
+      <img src="img/engine/earth.webp" width="1000" height="1000" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
+      <span class="ap-surface-a__receipt"><span>Engine still · schematic</span><strong>The live sky stays free</strong><em>Open the one Observatory model</em></span>
+    </a>
   </section>
 
   <main id="natal-main" class="ap-natal-shell">
@@ -75,7 +70,7 @@
           <input type="hidden" id="natal-lon">
         </label>
       </div>
-      <p class="ap-natal-lede">Seven chapters from a computed chart. If the hour is missing we say so. The live sky above is not behind a paywall.</p>
+      <p class="ap-natal-lede">Seven chapters from a computed chart. If the hour is missing we say so. The live Observatory is not behind a paywall.</p>
       <p class="ap-natal-note" id="natalStatus" role="status">Date and town. Time if you have it. Without a time we use 12:00 as a date reference, not a birth hour.</p>
       <button type="submit" data-natal-submit disabled aria-busy="true" aria-describedby="natalStatus">Begin the sitting</button>
     </form>
@@ -88,17 +83,18 @@
       <p class="ap-natal-legal" id="natalLegal"></p>
       <p class="ap-natal-note" id="natalUnlockNote">Paid print unlock is not open. No price is set. Checkout is not connected. The reading above is here to judge.</p>
       <button type="button" class="ap-natal-print" id="natalPrint">Print / save as PDF</button>
+      <p class="ap-natal-note ap-support-after-value">If this free sitting was useful, <a href="https://ko-fi.com/astroprecise" target="_blank" rel="noopener noreferrer">support the free Observatory</a>. Nothing unlocks and the reading stays free.</p>
     </div>
 
     <nav class="ap-keep-path-strip ap-natal-also" aria-label="Keep this sky">
       <p class="ap-keep-path-strip__label">Keep this sky</p>
-      <a href="chart.html#keep-sky">3D still</a>
+      <a href="index.html#m=now&amp;focus=earth" id="natalObservatoryLink">Open this moment in the Observatory</a>
       <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
       <a href="sky-card.html" data-ap-keep-minute>Sky card</a>
       <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
       <a href="#natalResult">Seven-chapter reading</a>
     </nav>
-    <p class="ap-natal-also">Quiet links to pages that already exist. This reading does not recapture those images. The live sky above stays free.</p>
+    <p class="ap-natal-also">Quiet links to pages that already exist. This reading does not recapture those images. The one live Observatory stays free.</p>
     <nav class="ap-natal-also" aria-label="Also on this site">
       <p>Also</p>
       <a href="eclipse.html#contact">12 August eclipse contact</a>
@@ -108,9 +104,10 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=880" defer></script>
-  <script type="module" src="js/ap-natal-reading.js?v=888"></script>
-  <script src="js/ap-room-sky.js?v=880" defer></script>
-  <script src="js/ap-keep-minute.js?v=880" defer></script>
+  <script src="js/ap-footer-inject.js?v=899" defer></script>
+  <script src="js/ap-deep-link.js?v=899" defer></script>
+  <script src="js/ap-sky-bridge.js?v=899" defer></script>
+  <script type="module" src="js/ap-natal-reading.js?v=899"></script>
+  <script src="js/ap-keep-minute.js?v=899" defer></script>
 </body>
 </html>

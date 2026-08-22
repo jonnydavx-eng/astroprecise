@@ -1,30 +1,34 @@
-/* Couples colour lock — Look 14 Aug 2026. Ember, not filled brass. */
+/* Couples colour lock — v899 ion action over instrument silver. */
 .page-compat {
-  --ap-ember: #B86B4A;
-  --ap-void: #05080F;
-  --ap-paper: #E6ECF2;
-  --ap-mute: #A89C84;
-  --ap-brass: #8FA3B8;
-  --ap-danger: #B04A52;
-  background: var(--ap-void, #05080F);
-  color: #E6ECF2;
+  --ap-ember: #8BA9FF;
+  --ap-ion-hover: #A5BCFF;
+  --ap-cta-ink: #07101E;
+  --ap-void: #040812;
+  --ap-paper: #EEF4FA;
+  --ap-mute: #93A8BF;
+  --ap-brass: #93A8BF;
+  --ap-danger: #FF8EA8;
+  background: var(--ap-void, #040812);
+  color: #EEF4FA;
 }
 .page-compat .ap-live-heading,
 .page-compat .ap-couples-entry h2,
 .page-compat .ap-couples-card h3,
 .page-compat .logo-text,
 .page-compat .logo-text__precise {
-  color: #E6ECF2;
+  color: #EEF4FA;
 }
 .page-compat .ap-live-heading { max-width: 9ch; }
 
 .page-compat .btn-primary,
 .page-compat .ap-couples-actions .btn-primary,
 .page-compat .ap-action--primary {
-  background: #B86B4A;
-  color: #05080F;
-  border-color: #B86B4A;
+  background: #8BA9FF;
+  color: var(--ap-cta-ink);
+  border-color: #8BA9FF;
 }
+.page-compat .btn-primary:hover,
+.page-compat .ap-action--primary:hover { background: var(--ap-ion-hover); border-color: var(--ap-ion-hover); }
 
 .ap-ab {
   display: flex;
@@ -35,10 +39,10 @@
 .ap-ab button {
   flex: 1 1 72px;
   min-height: 44px;
-  border: 1px solid rgba(230, 236, 242,.22);
+  border: 1px solid rgba(238, 244, 250, .22);
   border-radius: 3px;
-  background: rgba(2,3,7,.55);
-  color: #E6ECF2;
+  background: rgba(4, 8, 18, .55);
+  color: #EEF4FA;
   font: 600 12px/1.2 inherit;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -46,28 +50,28 @@
 }
 .ap-ab button[aria-pressed="true"] {
   background: transparent;
-  color: #E6ECF2;
+  color: #EEF4FA;
 }
 .ap-ab button#ab-a[aria-pressed="true"] {
-  border-color: #8FA3B8;
+  border-color: #93A8BF;
 }
 .ap-ab button#ab-b[aria-pressed="true"] {
-  border-color: #B86B4A;
+  border-color: #8BA9FF;
 }
 .ap-ab button#ab-now[aria-pressed="true"] {
-  border-color: #A89C84;
+  border-color: #93A8BF;
 }
 .ap-ab button:disabled { opacity: .38; cursor: not-allowed; }
 .ap-ab-note {
   margin: 0 0 8px;
   font-size: 12px;
   letter-spacing: .04em;
-  color: rgba(230, 236, 242,.62);
+  color: rgba(238, 244, 250, .62);
 }
 .ap-couples-entry {
   padding: 56px 22px 80px;
-  border-top: 1px solid rgba(230, 236, 242,.08);
-  background: var(--ap-void, #05080F);
+  border-top: 1px solid rgba(238, 244, 250, .08);
+  background: var(--ap-void, #040812);
 }
 .ap-couples-entry__inner {
   max-width: 1040px;
@@ -80,7 +84,7 @@
 }
 .ap-couples-entry .standfirst {
   max-width: 54ch;
-  color: rgba(230, 236, 242,.72);
+  color: rgba(238, 244, 250, .72);
 }
 .ap-couples-grid {
   display: grid;
@@ -93,22 +97,22 @@
 }
 .ap-couples-card {
   padding: 22px;
-  border: 1px solid rgba(230, 236, 242,.14);
+  border: 1px solid rgba(238, 244, 250, .14);
   border-radius: 4px;
-  background: var(--ap-void, #05080F);
+  background: var(--ap-void, #040812);
 }
 .ap-couples-card--a {
-  box-shadow: inset 3px 0 0 #8FA3B8;
+  box-shadow: inset 3px 0 0 #93A8BF;
 }
 .ap-couples-card--b {
-  box-shadow: inset 3px 0 0 #B86B4A;
+  box-shadow: inset 3px 0 0 #8BA9FF;
 }
 .ap-couples-card h3 {
   margin: 0 0 16px;
   font-size: 15px;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: #E6ECF2;
+  color: #EEF4FA;
 }
 .ap-couples-card .field-e { margin-bottom: 14px; }
 .ap-couples-card label {
@@ -117,16 +121,16 @@
   font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
-  color: rgba(230, 236, 242,.58);
+  color: rgba(238, 244, 250, .58);
 }
 .ap-couples-card input {
   width: 100%;
   min-height: 44px;
   padding: 8px 12px;
-  border: 1px solid rgba(230, 236, 242,.14);
+  border: 1px solid rgba(238, 244, 250, .14);
   border-radius: 3px;
-  background: rgba(2,3,7,.65);
-  color: #E6ECF2;
+  background: rgba(4, 8, 18, .65);
+  color: #EEF4FA;
   font: 16px/1.3 inherit;
 }
 .ap-couples-actions {
@@ -141,28 +145,28 @@
   padding: 0 22px;
   border: 0;
   border-radius: 3px;
-  background: #B86B4A;
-  color: #05080F;
+  background: #8BA9FF;
+  color: var(--ap-cta-ink);
   font: 650 14px/1 inherit;
   letter-spacing: .04em;
   cursor: pointer;
 }
 .ap-couples-actions .action-note {
   font-size: 12px;
-  color: rgba(230, 236, 242,.55);
+  color: rgba(238, 244, 250, 0.58);
 }
 #compatError {
   margin-top: 14px;
-  color: #B04A52;
+  color: #FF8EA8;
   font-size: 14px;
 }
 .ap-couples-actions .btn-invite {
   min-height: 46px;
   padding: 0 18px;
-  border: 1px solid rgba(184, 107, 74,.45);
+  border: 1px solid rgba(139, 169, 255, .45);
   border-radius: 3px;
   background: transparent;
-  color: #E6ECF2;
+  color: #EEF4FA;
   font: 650 14px/1 inherit;
   letter-spacing: .04em;
   cursor: pointer;
@@ -173,8 +177,8 @@
 .ap-minute__row { display: flex; align-items: center; gap: 10px; }
 .ap-minute .scrub { flex: 1; }
 .ap-angles { margin: 0 0 16px; }
-.ap-angles-note { margin: 4px 0 8px; font-size: 12px; color: rgba(230, 236, 242,.55); }
-.ap-angles ol { margin: 0; padding: 0 0 0 18px; font-size: 13px; line-height: 1.45; color: #E6ECF2; }
+.ap-angles-note { margin: 4px 0 8px; font-size: 12px; color: rgba(238, 244, 250, 0.58); }
+.ap-angles ol { margin: 0; padding: 0 0 0 18px; font-size: 13px; line-height: 1.45; color: #EEF4FA; }
 .ap-angles li { margin: 0 0 6px; }
 
 .ap-city-drop {
@@ -182,8 +186,8 @@
   flex-direction: column;
   gap: 2px;
   margin-top: 6px;
-  border: 1px solid rgba(230, 236, 242,.14);
-  background: var(--ap-void, #05080F);
+  border: 1px solid rgba(238, 244, 250, .14);
+  background: var(--ap-void, #040812);
 }
 .ap-city-drop[hidden] { display: none; }
 .ap-city-item {
@@ -192,23 +196,23 @@
   padding: 8px 10px;
   border: 0;
   background: transparent;
-  color: #E6ECF2;
+  color: #EEF4FA;
   font: 14px/1.3 inherit;
   cursor: pointer;
 }
 .ap-city-item:hover,
 .ap-city-item:focus,
-.ap-city-item.is-selected { background: rgba(184, 107, 74,.16); }
+.ap-city-item.is-selected { background: rgba(139, 169, 255, .16); }
 .ap-city-note {
   margin: 0;
   padding: 8px 10px;
   font-size: 12px;
-  color: rgba(230, 236, 242,.55);
+  color: rgba(238, 244, 250, 0.58);
 }
 .ap-zone-note {
   margin: 6px 0 0;
   font-size: 12px;
-  color: rgba(230, 236, 242,.55);
+  color: rgba(238, 244, 250, 0.58);
 }
 
 .ap-keep-row {
@@ -220,5 +224,70 @@
 }
 .ap-keep-row .action-note {
   font-size: 12px;
-  color: rgba(230, 236, 242,.55);
+  color: rgba(238, 244, 250, 0.58);
+}
+/* Surface-A compatibility pass: the page computes an angle ledger but no longer
+   starts a second live 3D instrument. Retain only the useful receipt controls. */
+.ap-compat-static .ap-mobile-flight-deck,
+.ap-compat-static .ap-ab,
+.ap-compat-static .ap-minute,
+.ap-compat-static .ap-keep-row,
+.ap-compat-static .ap-model-hint,
+.ap-compat-static .ap-context,
+.ap-compat-static .ap-control-group {
+  display: none !important;
+}
+.ap-compat-static .ap-control-panel {
+  min-height: 0;
+  align-content: start;
+}
+.ap-compat-static .ap-angles {
+  margin-top: 20px;
+}
+
+/* Static comparison composition. `ap-live-home` used to make this intro an
+   absolute overlay for the Observatory, which stacked three text layers over
+   the phone still. The comparison is now a calm two-column Surface A preface. */
+.ap-compat-static .ap-live-stage {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  grid-template-columns: minmax(300px, .9fr) minmax(420px, 1.2fr);
+  grid-template-rows: minmax(480px, 62vh) auto;
+}
+.ap-compat-static .ap-live-intro {
+  position: relative;
+  inset: auto;
+  width: auto;
+  grid-column: 1;
+  padding: clamp(34px, 5vw, 72px);
+  pointer-events: auto;
+}
+.ap-compat-static .ap-model-stage {
+  grid-column: 2;
+  min-height: 480px;
+}
+.ap-compat-static .ap-control-panel {
+  grid-column: 1 / -1;
+  padding: 18px clamp(20px, 4vw, 56px);
+  border-top: 1px solid rgba(238, 244, 250, .10);
+  border-left: 0;
+  overflow: visible;
+}
+
+@media (max-width: 700px) {
+  .ap-compat-static .ap-live-stage { display: block; }
+  .ap-compat-static .ap-live-intro {
+    padding: 24px 18px 28px;
+    border-right: 0;
+  }
+  .ap-compat-static .ap-live-heading {
+    max-width: 10ch;
+    font-size: clamp(40px, 11vw, 50px);
+  }
+  .ap-compat-static .ap-model-stage {
+    height: 260px;
+    min-height: 260px;
+  }
+  .ap-compat-static .ap-control-panel { padding: 16px 18px 22px; }
 }

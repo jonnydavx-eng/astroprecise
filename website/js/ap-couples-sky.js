@@ -1,4 +1,4 @@
-/* Couples sky — two natal clocks in one live WebGL sky. */
+/* Couples comparison — two natal clocks, one measured angle ledger. */
 /* Local only. Hash only. No scores. Never treat UK summer as UT/GMT. */
 (function () {
   'use strict';
@@ -235,25 +235,25 @@
     var a = readPerson('person1');
     var b = readPerson('person2');
     if (a.jd && b.jd) {
-      el.textContent = 'One model. Both birth minutes stay in the sky.';
+      el.textContent = 'Both birth minutes are computed in one private angle ledger.';
       return;
     }
     if (a.jd || b.jd) {
       var have = a.jd ? a.name : b.name;
       var need = a.jd ? b.name : a.name;
-      el.textContent = 'One model. ' + have + '\'s minute is in the sky. ' +
+      el.textContent = have + '\'s minute is ready. ' +
         need + ' still needs a birth time and a real zone.';
       return;
     }
     if ((a.date && !a.timeKnown) || (b.date && !b.timeKnown)) {
-      el.textContent = 'One model. Unknown birth time is not filled with noon. Moon and angles stay withheld.';
+      el.textContent = 'Unknown birth time is not filled with noon. Moon and time-sensitive angles stay withheld.';
       return;
     }
     if ((a.date && a.timeKnown && !a.zoneKnown) || (b.date && b.timeKnown && !b.zoneKnown)) {
-      el.textContent = 'One model. Civil time waits for a real zone from the birth town. Not treated as GMT.';
+      el.textContent = 'Civil time waits for a real zone from the birth town. It is not treated as GMT.';
       return;
     }
-    el.textContent = 'One model. Both birth minutes stay in the sky.';
+    el.textContent = 'Enter both minutes to compute their measured contacts.';
   }
 
   function showPerson(which) {
@@ -382,6 +382,12 @@
     var a = readPerson('person1');
     var b = readPerson('person2');
     list.innerHTML = '';
+    var started = ['person1-date', 'person1-time', 'person1-city', 'person2-date', 'person2-time', 'person2-city']
+      .some(function (id) { return String((byId(id) || {}).value || '').trim(); });
+    if (!started) {
+      box.hidden = true;
+      return;
+    }
     if (!a.zoneKnown || !b.zoneKnown) {
       box.hidden = false;
       var need = document.createElement('li');
@@ -582,7 +588,7 @@
     setPressed('now');
     resetScrub();
     enableScrub(false);
-    stamp(a.name + ' and ' + b.name + ' · both minutes in the live sky');
+    stamp(a.name + ' and ' + b.name + ' · comparison computed on this device');
     applyNatalClocks();
     writeHash();
     renderAngles();

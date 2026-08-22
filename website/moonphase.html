@@ -27,12 +27,12 @@
   <meta name="twitter:title" content="Moon Phase on Your Birthday | AstroPrecise" />
   <meta name="twitter:description" content="See the exact phase of the Moon on the day you were born — real astronomy, beautifully drawn, free to share." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#05080F" />
+  <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /><link rel="stylesheet" href="css/moonphase-page.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=891" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=899" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=899" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=899" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/moonphase-page.css" />
@@ -380,10 +380,10 @@
     }
     // Always load the Moon tool — form + result cards (incl. model deep-link).
     // Decorative starfield stays audit-skipped.
-    inject('js/ap-deep-link.js?v=752');
+    inject('js/ap-deep-link.js?v=899');
     inject('js/raf-core.js');
     inject('js/icons.js');
-    inject('js/moonphase.js?v=874');
+    inject('js/moonphase.js?v=899');
     function idleCosmos() {
       if (audit()) return;
       inject('js/cosmos.js');
@@ -396,13 +396,13 @@
   })();
   </script>
 
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=752" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=899" />
   <script src="js/ephemeris.js" defer></script>
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/ap-daily-bridge.js" defer></script>
   <script src="js/ap-ai-assistant.js" defer></script>
-  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-page-boot.js?v=899" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=874" defer></script>
+  <script src="js/ap-footer-inject.js?v=899" defer></script>
 </body>
 </html>

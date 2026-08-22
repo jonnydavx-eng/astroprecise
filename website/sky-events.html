@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#05080F">
+<meta name="theme-color" content="#040812">
 <title>Sky Events — what the sky does next | AstroPrecise</title>
 <meta name="description" content="A living event ledger for eclipses, meteor showers, conjunctions, full moons and planetary stations—observed astronomy and astrological tradition kept visibly separate.">
 <link rel="canonical" href="https://astroprecise.app/sky-events.html">
@@ -14,15 +14,15 @@
      were already in this repo and already precached by the service worker —
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css?v=880">
+<link rel="stylesheet" href="./css/fonts.css?v=899">
 <style>
 .ap-events-shell{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:clamp(52px,8vw,110px) 0 calc(90px + var(--bottom-nav-h,0px))}
 .ap-events-hero{display:grid;grid-template-columns:minmax(0,.82fr) minmax(360px,1.18fr);gap:clamp(38px,8vw,110px);align-items:end;padding-bottom:clamp(54px,8vw,94px)}
 .ap-events-kicker,.kick{margin:0 0 13px;color:var(--ap-brass);font:9px/1.5 var(--ap-data);letter-spacing:.18em;text-transform:uppercase}
 .ap-events-hero h1{max-width:9ch;margin:0;color:var(--ap-paper);font:600 clamp(54px,8vw,100px)/.86 var(--ap-display);letter-spacing:-.04em}
 .ap-events-hero__lede{max-width:54ch;margin:24px 0 0;color:var(--ap-paper-dim);font-size:17px;line-height:1.68}
-.ap-events-feature{position:relative;padding:clamp(28px,4vw,48px);border:1px solid rgba(216,180,106,.32);border-radius:4px;background:linear-gradient(150deg,rgba(255,100,40,.075),rgba(16,23,34,.74));box-shadow:0 28px 90px rgba(0,0,0,.3)}
-.ap-events-feature::before{content:'';position:absolute;inset:14px;border:1px solid rgba(216,180,106,.09);pointer-events:none}
+.ap-events-feature{position:relative;padding:clamp(28px,4vw,48px);border:1px solid rgba(147,168,191,.32);border-radius:4px;background:linear-gradient(150deg,rgba(139,169,255,.075),rgba(16,29,48,.74));box-shadow:0 28px 90px rgba(0,0,0,.3)}
+.ap-events-feature::before{content:'';position:absolute;inset:14px;border:1px solid rgba(168,151,255,.09);pointer-events:none}
 .ap-events-feature time{color:var(--ap-brass);font:10px var(--ap-data);letter-spacing:.1em;text-transform:uppercase}
 .ap-events-feature h2{max-width:12ch;margin:20px 0 16px;color:var(--ap-paper);font:600 clamp(34px,4.6vw,58px)/.94 var(--ap-display)}
 .ap-events-feature p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.65}
@@ -35,7 +35,7 @@
 .event__head h2{margin:0;color:var(--ap-paper);font:600 clamp(30px,4vw,48px)/.98 var(--ap-display)}
 .meta{margin-top:16px;color:var(--ap-silver);font:10px/1.75 var(--ap-data);letter-spacing:.08em;text-transform:uppercase}
 .event__body{display:grid;gap:13px}
-.event__ledger{display:grid;grid-template-columns:100px 1fr;gap:18px;padding:16px 0;border-top:1px solid rgba(216,180,106,.14)}
+.event__ledger{display:grid;grid-template-columns:100px 1fr;gap:18px;padding:16px 0;border-top:1px solid rgba(147,168,191,.14)}
 .event__ledger span{color:var(--ap-proof);font:9px/1.5 var(--ap-data);letter-spacing:.12em;text-transform:uppercase}
 .event__ledger p{margin:0;color:var(--ap-paper-dim);font-size:16px;line-height:1.68}
 .event__ledger--meaning span{color:var(--ap-brass)}
@@ -45,11 +45,11 @@
 @media(max-width:760px){.ap-events-shell{width:min(100% - 32px,1120px);padding-top:42px}.ap-events-hero,.ap-events-intro,.event{grid-template-columns:1fr}.ap-events-hero{gap:34px}.ap-events-hero h1{font-size:clamp(52px,15vw,76px)}.ap-events-feature{padding:26px 22px}.event{gap:20px}.event__ledger{grid-template-columns:1fr;gap:6px}.event__ledger p{font-size:15px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-  <script>window.AP_ASSET_V='895';</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880">
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-  <script src="js/ap-nav-model.js?v=880" defer></script>
-  <script src="js/void-orrery-adapter.js?v=880"></script>
+  <script>window.AP_ASSET_V='899';</script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=899">
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=899">
+  <script src="js/ap-nav-model.js?v=899" defer></script>
+  <script src="js/void-orrery-adapter.js?v=899"></script>
 </head>
 <body class="page-sky-events ap-launch-article">
 <a class="skip-link" href="#events">Skip to sky events</a>
@@ -98,7 +98,7 @@
 </main>
 
 <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-<script src="js/ap-footer-inject.js?v=880" defer></script>
+<script src="js/ap-footer-inject.js?v=899" defer></script>
 
 <script>
 (function () {
@@ -236,6 +236,6 @@
   go();
 })();
 </script>
-<script src="./js/ap-sky-time.js?v=880" defer></script>
+<script src="./js/ap-sky-time.js?v=899" defer></script>
 </body>
 </html>

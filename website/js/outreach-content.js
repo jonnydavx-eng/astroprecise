@@ -62,7 +62,7 @@
         pinnedPost:
           'The 12 August eclipse, live and personal.\n\n'
           + 'Explore the 3D shadow. Download the free eight-page field guide. Check your own chart privately.\n'
-          + 'Direct contact? Your £7 Eclipse Edition adds five authored beats and unique high-resolution artwork. Quiet chart? Keep the free result.\n\n'
+          + 'Compute your archived eclipse contact privately. The event edition is closed; the free result remains.\n\n'
           + 'Start here → ' + LINKS,
         bannerHint: 'marketing/social/banner-x-1500x500.jpg',
         avatarHint: 'marketing/social/avatar-400.jpg',
@@ -70,7 +70,7 @@
       funnel: [
         'X post or reply → profile → links.html (never raw checkout)',
         'links.html → live eclipse, free guide or private chart contact',
-        'Direct contact → one £7 Eclipse Edition; quiet chart → no sale',
+        'Private eclipse contact → free archive result; no event checkout',
       ],
       accountsToEngage: [
         { handle: '@chaninicholas', why: 'Premium astrology audience; transit-focused replies' },
@@ -157,7 +157,7 @@
           subject: 'Does the eclipse actually touch your chart?',
           body:
             'The free eclipse instrument compares the 12 August eclipse with your actual birth chart on your device.\n\n'
-            + 'If it finds a direct conjunction, opposition or square, Your Eclipse Edition unlocks all five authored beats and unique high-resolution artwork for £7. If it finds no direct contact, it tells you to keep the free result.\n\n'
+            + 'It shows direct conjunctions, oppositions and squares honestly. The event-specific edition is now closed to new purchases, while the free result and past-buyer recovery remain.\n\n'
             + 'CHECK YOUR ECLIPSE CONTACT → {{siteUrl}}/eclipse.html#contact\n\n'
             + '(Checkout stays visibly closed until the real purchase and licence flow is verified.)\n\n'
             + '— Astro Precise',
@@ -354,7 +354,7 @@
         { id: 'mc-x-11', day: 11, text: 'GROUND STATION: your birth data never leaves your device. Local compute only.\n\nNo account. No upload. → {{linksUrl}}' },
         { id: 'mc-x-12', day: 12, text: 'Monthly cosmic weather for YOUR chart — one email. Only your address is ever sent.\n\n{{linksUrl}}' },
         { id: 'mc-x-13', day: 13, text: 'POV: Mission Control just downloaded your full chart.\n\nMoon = 3am spiral. Rising = the misread. → {{linksUrl}}' },
-        { id: 'mc-x-14', day: 14, text: 'Mission Control for the eclipse.\n\n✦ Live 3D shadow\n✦ Free eight-page field guide\n✦ Private chart contact · one £7 edition only after a direct hit\n\n{{linksUrl}}' },
+        { id: 'mc-x-14', day: 14, text: 'Mission Control for the eclipse archive.\n\n✦ 3D shadow replay\n✦ Free eight-page field guide\n✦ Private chart contact · event checkout closed\n\n{{linksUrl}}' },
       ],
       replyTemplates: [
         { id: 'reply-transit', template: 'Worth checking the actual station dates — Mercury\'s status changes on a schedule, not a vibe. I use live ephemeris for this.' },

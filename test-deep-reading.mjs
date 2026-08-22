@@ -48,24 +48,53 @@ const timedNoCoords = buildDeepReading(natal, base, deep, {
 });
 assert.ok(timedNoCoords.chapters[0].mono.some((line) => /no usable town coordinates/i.test(line)));
 
+const placidusApprox = buildDeepReading(natal, base, deep, {
+  birth: {
+    dateText: '1990-08-12', timeText: '12:00', timeAccuracy: 'approximate',
+    place: 'London', zone: 'Europe/London', utcText: '11:00 UT', coordsKnown: true,
+  },
+  timeAccuracy: 'approximate',
+  houseSystem: 'placidus',
+  houseCusps: [0, 28, 61, 94, 126, 158, 180, 208, 241, 274, 306, 338],
+  planetHouses: { sun: 8, moon: 1, mercury: 2, venus: 2, mars: 2, jupiter: 3, saturn: 7, uranus: 1, neptune: 11, pluto: 9 },
+});
+assert.match(placidusApprox.houseNote || '', /Placidus houses · provisional/i,
+  'the sitting must preserve the selected house method and approximate-time caveat');
+assert.match(JSON.stringify(placidusApprox.chapters), /Sun[^\n]*8th house/i,
+  'supplied planet houses must survive without Whole Sign reinterpretation');
+assert.ok(placidusApprox.chapters[0].mono.some((line) => /angles and houses are provisional/i.test(line)));
+
 const natalCss = readFileSync(new URL('./website/css/ap-natal-reading.css', import.meta.url), 'utf8');
 assert.equal(/position:\s*sticky/.test(natalCss), false, 'natal submit must not be sticky over the bottom nav');
-assert.ok(natalCss.includes('#05080F') && natalCss.includes('#E6ECF2') && natalCss.includes('#A89C84'));
-assert.ok(natalCss.includes('#B86B4A') && natalCss.includes('#8FA3B8'));
+assert.ok(natalCss.includes('#040812') && natalCss.includes('#EEF4FA') && natalCss.includes('#93A8BF'));
+assert.ok(natalCss.includes('#8BA9FF') && natalCss.includes('#6FD0B3'));
 assert.equal(/#c2a05e|#cdae6a|#b9c8dc|#8b919c/i.test(natalCss), false, 'natal CSS must not keep retired palette fallbacks');
 
 console.log('PASS deep-reading seven chapters + untimed Moon approximate');
 
 const natalJs = readFileSync(new URL('./website/js/ap-natal-reading.js', import.meta.url), 'utf8');
+const chartPageJs = readFileSync(new URL('./website/js/chart-page.js', import.meta.url), 'utf8');
 assert.ok(natalJs.includes("zone === 'UTC'") && natalJs.includes("zone === 'GMT'"), 'natal reading must refuse UTC/GMT');
 assert.ok(natalJs.includes("zone === 'Etc/UTC'") && natalJs.includes('Etc\\/'), 'natal reading must refuse Etc/* offsets as a birth zone');
 assert.ok(natalJs.includes('UK summer is not GMT'), 'natal reading must say UK summer is not GMT');
 assert.ok(natalJs.includes('calculateNatalChart'), 'timed charts with coordinates must use the natal engine, not planets-only');
+for (const field of ['positions: chart.positions', 'houses: Array.isArray(chart.houses)', 'planetHouses: chart.planetHouses', 'houseSystem: chart.houseSystem', 'timeAccuracy: chart.timeAccuracy']) {
+  assert.ok(chartPageJs.includes(field), `chart handoff must preserve ${field}`);
+}
+const openSittingBody = (chartPageJs.match(/function openSitting\(\)[\s\S]*?\n {2}\}/) || [''])[0];
+assert.equal(openSittingBody.includes('AstroProfile.saveChart'), false,
+  'opening the sitting must not silently persist the chart');
+assert.ok(natalJs.includes('metaFromChartSnapshot') && natalJs.includes('planetHouses: meta.planetHouses'),
+  'the sitting must consume the just-cast snapshot instead of changing its chart method');
 assert.ok(natalJs.includes('12:00') && natalJs.includes('date reference'), 'unknown hour must use noon as a stated date reference');
 assert.equal(/reviewUnlock|ap_natal_print_review/.test(natalJs), false, 'paid unlock must stay closed — no review-unlock wiring');
 assert.equal(/openCheckout|gumroad\.com|GUMROAD_PRODUCTS|fulfilUrl/.test(natalJs), false, 'natal page must not open live checkout');
 assert.equal(/£\d|\$\d|price:\s*['"]/.test(natalJs), false, 'natal page must not invent a price');
 assert.equal(/handleUnlockOnLoad|searchParams\.get\(['"]license|[?&]license=/.test(natalJs), false, 'licence keys must not arrive through a URL');
+assert.ok(natalJs.includes('candidateHasBirthMoment') && natalJs.includes("index.html#focus=earth"),
+  'deep-reading must fail closed if the shared bridge tries to expose a birth minute in the URL');
+assert.ok(natalJs.includes('(?:[?#&])m='),
+  'deep-reading must detect birth moments in query or fragment parameters before assigning the link');
 assert.equal(/option value="UTC"/.test(readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8')), false, 'deep-reading must not offer UTC/GMT');
 assert.ok(readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8').includes('natal-city'), 'deep-reading must collect a city for IANA');
 const natalHtml = readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8');
@@ -86,8 +115,9 @@ for (const src of keepScripts) {
 }
 assert.equal(/captureStill/.test(natalHtml + natalJs), false, 'this page must not call a captureStill keep helper that does not exist');
 assert.equal(/sign up|log in|create an account|chatbot|ask the oracle/i.test(natalHtml), false, 'no account and no AI-chat theatre');
-assert.ok(natalHtml.includes('ap-room-sky') && natalHtml.includes('void-orrery'), 'live sky stays on the page');
-assert.ok(/not behind a paywall/i.test(natalHtml), 'the live sky must be named as free');
+assert.ok(natalHtml.includes('ap-room-sky') && natalHtml.includes('ap-surface-a'), 'reading page must use a labelled Surface-A still');
+assert.equal(natalHtml.includes('<void-orrery'), false, 'reading page must not start a second WebGL model');
+assert.ok(/not behind a paywall/i.test(natalHtml), 'the live Observatory must be named as free');
 assert.equal(/unlock the sky|buy to see the sky/i.test(natalHtml), false, 'the live sky must not be gated');
 assert.ok(/Paid print unlock is not open/.test(natalHtml), 'paid print stays closed');
 assert.equal(/£\d|\$\d/.test(natalHtml), false, 'page must not invent a price');

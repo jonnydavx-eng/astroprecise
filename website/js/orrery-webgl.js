@@ -35,7 +35,7 @@ import {
   moonPhaseFromEphemeris,
   integrateDayOffset,
   keplerGuidePoints,
-} from './orbitlab-orbital-math.js';
+} from './orbitlab-orbital-math.js?v=899';
 
 const RadialBlurShader = {
   name: 'RadialBlurShader',
@@ -125,22 +125,26 @@ const FinishShader = {
   'use strict';
 
   // WebGL context ownership
-  // The adapter already performed the page's capability probe. Creating a second
-  // throwaway context delayed the real renderer and consumed scarce mobile GPU
-  // context capacity. THREE.WebGLRenderer remains the fail-closed capability test.
+  // Strict Home intentionally skips the adapter's throwaway capability canvas.
+  // THREE.WebGLRenderer below is the page's one real, fail-closed capability test.
 
   const PRM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TEX = 'assets/textures/';
   const ORRERY_ENV_TEX = 'img/orrery/';
   const D2R = Math.PI / 180;
-  // Cool lunar void — sky/fog clear toward the cooler chrome night (visual wave).
+  // Midnight Meridian 2026 — cool instrument UI only; planetary albedo stays real.
   // Home publishes --ap-void / --ap-brass on living-sky :root (not ap-palette-2026).
   // --ap-lunar-void is palette-only; fall through house tokens, then authored hex.
-  const COOL_LUNAR_VOID = 0x05080F;
-  const HOUSE_SILVER = 0x8FA3B8;
-  const HOUSE_SILVER_BRIGHT = 0xC5D4E0;
+  const COOL_LUNAR_VOID = 0x040812;
+  const HOUSE_ION = 0x8BA9FF;
+  const HOUSE_ION_HOVER = 0xA5BCFF;
+  const HOUSE_VIOLET = 0xA897FF;
+  const HOUSE_SILVER = 0x93A8BF;
+  const HOUSE_SILVER_BRIGHT = 0xC9D6E3;
   const HOUSE_PAPER = 0xE6ECF2;
-  const HOUSE_EMBER = 0xB86B4A;
+  // Kept as a source-compatible alias for callers still publishing --ap-ember.
+  // Its rendered meaning is now cool violet, never copper/orange.
+  const HOUSE_EMBER = HOUSE_VIOLET;
   // Drag elevation envelope: intentional observatory tilt — never flop under the ecliptic.
   const CAM_EL_DRAG_MIN = 6 * D2R;
   const CAM_EL_DRAG_MAX = 58 * D2R;
@@ -181,19 +185,31 @@ const FinishShader = {
   }
 
   function houseSilverHex() {
-    return houseTokenHex(['--ap-brass', '--ap-silver'], HOUSE_SILVER);
+    return houseTokenHex(['--ap-silver', '--ap-brass'], HOUSE_SILVER);
   }
 
   function houseSilverBrightHex() {
-    return houseTokenHex(['--ap-brass-bright', '--ap-silver-bright'], HOUSE_SILVER_BRIGHT);
+    return houseTokenHex(['--ap-silver-bright', '--ap-brass-bright'], HOUSE_SILVER_BRIGHT);
   }
 
   function housePaperHex() {
     return houseTokenHex(['--ap-paper'], HOUSE_PAPER);
   }
 
+  function houseIonHex() {
+    return houseTokenHex(['--ap-ion', '--ap-accent'], HOUSE_ION);
+  }
+
+  function houseIonHoverHex() {
+    return houseTokenHex(['--ap-ion-hover', '--ap-accent-hover'], HOUSE_ION_HOVER);
+  }
+
+  function houseVioletHex() {
+    return houseTokenHex(['--ap-violet', '--ap-ember', '--ap-ion'], HOUSE_VIOLET);
+  }
+
   function houseEmberHex() {
-    return houseTokenHex(['--ap-ember'], HOUSE_EMBER);
+    return houseVioletHex();
   }
 
   function clampCamElevation(el) {
@@ -310,6 +326,13 @@ const FinishShader = {
   let cinematicComposerRequested = false;   // init({ cinematicComposer: true })
   let perfTier = 'high';
   let allPlanetsBuilt = false;
+  let earthFirstBoot = false;
+  let fullSceneState = 'idle';
+  let fullScenePromise = null;
+  let startFullSceneBuild = null;
+  let fullSceneQueuedAt = 0;
+  let fullSceneReadyAt = 0;
+  const BACKGROUND_SCENE_DELAY_MS = 12000;
   let sunVisualsMinimal = false;
   let focusPlanetId = null;
   let focusPlanetUntil = 0;
@@ -396,6 +419,10 @@ const FinishShader = {
       if (mem != null && mem <= 4) return 'mid';
       if (IS_PHONE && cores != null && cores <= 4) return 'mid';
       if (IS_PHONE && mem != null && mem <= 6) return 'mid';
+      // Mobile browsers frequently expose desktop-like core counts and omit
+      // deviceMemory. A narrow coarse-pointer viewport is still constrained by
+      // sustained fill-rate and thermals, so never promote it to the high tier.
+      if (IS_PHONE) return 'mid';
     } catch (e) { /* fall through */ }
     return 'high';
   }
@@ -646,11 +673,11 @@ const FinishShader = {
   let showAspectsHelio = false;
   let aspectHelioGroup = null;
   const HELIO_ASPECTS = [
-    { angle: 0, orb: 8, color: 0xc9a227 },
-    { angle: 60, orb: 4, color: 0x4080c4 },
-    { angle: 90, orb: 6, color: 0xb43232 },
-    { angle: 120, orb: 6, color: 0x32a050 },
-    { angle: 180, orb: 8, color: 0xb43232 },
+    { angle: 0, orb: 8, color: 0xEEF4FA },
+    { angle: 60, orb: 4, color: 0x79C7F2 },
+    { angle: 90, orb: 6, color: 0xA897FF },
+    { angle: 120, orb: 6, color: 0x6FD0B3 },
+    { angle: 180, orb: 8, color: 0xFF8EA8 },
   ];
   let showTrails = false;
   let instrumentMode = false;
@@ -783,7 +810,7 @@ const FinishShader = {
   const GHOST_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
   const NATAL_CLOCK_IDS = { mercury: 1, venus: 1, earth: 1, mars: 1, jupiter: 1, saturn: 1 };
   const NATAL_CLOCK_A = HOUSE_SILVER; // instrument silver — person A
-  const NATAL_CLOCK_B = HOUSE_EMBER;  // copper — person B
+  const NATAL_CLOCK_B = HOUSE_EMBER;  // legacy alias; violet — person B
   let natalClockSpec = { a: null, b: null, focus: null };
   let natalClockGroup = null;     // separate layer; not ghostMeshes
   const natalClockMeshes = { a: {}, b: {} };
@@ -1031,7 +1058,7 @@ const FinishShader = {
     if (hemiLight) {
       hemiLight.intensity = 0;
       hemiLight.color.setHex(galaxyT > 0.4 ? 0x6a7e9a : 0x4e6280);
-      hemiLight.groundColor.setHex(0x05080f);
+      hemiLight.groundColor.setHex(COOL_LUNAR_VOID);
     }
 
     if (bloomPass) {
@@ -1265,16 +1292,9 @@ const FinishShader = {
 
   /** Contain the initial Earth without changing the global Earth camera preset. */
   function containEarthFrame(fillFrac = 0.70) {
-    if (!isHomeHeroEmbed() || onPreloaderStage() || !canvas || !meshes.earth) return false;
-    const r = canvas.getBoundingClientRect();
-    const aspect = r.width / Math.max(1, r.height);
-    if (!Number.isFinite(aspect) || aspect <= 0) return false;
-    // computePortraitCamera fits against vertical FOV. Scale the requested fill by
-    // portrait aspect so the horizontal FOV becomes the limiting dimension.
-    const contextFill = freeExploreMode ? fillFrac * 0.84 : fillFrac;
-    const effectiveFill = Math.max(0.18, Math.min(0.74, contextFill * Math.min(1, aspect)));
-    computePortraitCamera('earth', effectiveFill);
-    return true;
+    if (!(isHomeHeroEmbed() || isLivingSkyHome()) || onPreloaderStage()) return false;
+    const contextFill = freeExploreMode ? fillFrac * 0.90 : fillFrac;
+    return fitEarthTerminatorFrame(contextFill, 7 * D2R);
   }
 
   /** Default hero + enter-screen frame: lit Earth on the terminator — not wide system + labels. */
@@ -1681,7 +1701,15 @@ const FinishShader = {
       preloaderIntroScheduled = false;
       holdPreloaderEarthFrame();
     } else if (isLivingSkyHome()) {
-      settleToSystemHeroFrame(false);
+      if (earthFirstBoot && selectedPlanetId === 'earth') {
+        scaleLevel = 0;
+        focusFrameId = 'earth';
+        showOrbits = false;
+        showLabels = false;
+        updateScaleVisuals(0);
+        applyEarthLimbHold();
+        applyCamera();
+      } else settleToSystemHeroFrame(false);
     } else if (isHomeHeroEmbed()) {
       setDefaultEarthFrame();
     } else {
@@ -1836,10 +1864,52 @@ const FinishShader = {
     _camOff.copy(_toSun).multiplyScalar(radius * 0.76 * ce);
     _camOff.addScaledVector(_side, radius * 0.48 * ce);
     _camOff.y += radius * se;
-    camRadius = Math.max(radius, _camOff.length());
+    // `radius` is a framing distance, so preserve it exactly. The weighted
+    // sun/side composition above previously shortened the camera vector to
+    // roughly 90% of the solved distance and quietly cropped the atmosphere.
+    if (_camOff.lengthSq() > 1e-8) _camOff.normalize().multiplyScalar(radius);
+    camRadius = radius;
     camEl = Math.asin(Math.max(-1, Math.min(1, _camOff.y / camRadius)));
     const horiz = Math.cos(camEl) * camRadius;
     camAz = horiz > 1e-6 ? Math.atan2(_camOff.z, _camOff.x) : 0;
+  }
+
+  /**
+   * Fit the complete Earth limb inside whichever canvas axis is tighter.
+   *
+   * A fixed close-up distance cannot work here: the horizontal FOV collapses on a
+   * portrait phone even though the vertical FOV is unchanged. Solve the pinhole
+   * geometry from the live canvas aspect so Earth remains a recognisable globe at
+   * every breakpoint. The atmosphere is included in the fitted radius.
+   */
+  function fitEarthTerminatorFrame(fillFrac = 0.78, elevRad = 6 * D2R) {
+    if (!canvas || !meshes.earth || !camera) return false;
+    const rect = canvas.getBoundingClientRect();
+    const measuredAspect = rect.width / Math.max(1, rect.height);
+    const aspect = Number.isFinite(measuredAspect) && measuredAspect > 0
+      ? measuredAspect
+      : (Number.isFinite(camera.aspect) && camera.aspect > 0 ? camera.aspect : 1);
+    const verticalFov = CAM_FOV_CLOSE * D2R;
+    const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect);
+    const limitingFov = Math.min(verticalFov, horizontalFov);
+    const body = meshes.earth.userData && meshes.earth.userData.b;
+    const earthScale = meshes.earth.scale
+      ? Math.max(
+        Math.abs(Number(meshes.earth.scale.x) || 1),
+        Math.abs(Number(meshes.earth.scale.y) || 1),
+        Math.abs(Number(meshes.earth.scale.z) || 1)
+      )
+      : 1;
+    const atmosphereRadius = (body && Number.isFinite(body.size) ? body.size : 0.85)
+      * earthScale * 1.055;
+    const safeFill = Math.max(0.55, Math.min(0.82, Number(fillFrac) || 0.78));
+    const solved = atmosphereRadius / Math.sin(Math.max(0.05, limitingFov * safeFill / 2));
+    const distance = Number.isFinite(solved) ? Math.max(atmosphereRadius * 1.2, solved) : 4.8;
+
+    camera.fov = CAM_FOV_CLOSE;
+    camera.updateProjectionMatrix();
+    setEarthTerminatorCamera(distance, elevRad);
+    return true;
   }
 
   function syncEarthSittingBodyVisibility() {
@@ -1859,11 +1929,14 @@ const FinishShader = {
   }
 
   function applyEarthLimbHold() {
-    // Fill the limb without crushing Blue Marble into soft mips (2.05 → 2.18).
-    setEarthTerminatorCamera(2.18, 6 * D2R);
-    if (camera) {
-      camera.fov = CAM_FOV_CLOSE;
-      camera.updateProjectionMatrix();
+    // Keep the complete Blue Marble in frame. This is recomputed while the sitting
+    // owns the camera, so a rotation or responsive resize cannot return to a crop.
+    if (!fitEarthTerminatorFrame(0.78, 6 * D2R)) {
+      setEarthTerminatorCamera(4.8, 6 * D2R);
+      if (camera) {
+        camera.fov = CAM_FOV_CLOSE;
+        camera.updateProjectionMatrix();
+      }
     }
     // Punchier contrast on the first-screen sit — ACES was flattening clouds to mud.
     if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.28 : 1.18;
@@ -2105,8 +2178,26 @@ const FinishShader = {
     needRecompute = true;
   }
 
+  function compileDeferredScene() {
+    if (!renderer || !scene || !camera) return Promise.resolve();
+    if (typeof renderer.compileAsync === 'function') {
+      try {
+        return Promise.resolve(renderer.compileAsync(scene, camera)).catch((err) => {
+          // Keep the shader diagnostic visible, then use Three's synchronous
+          // compiler as the compatibility path for drivers without parallel link.
+          console.warn('[orrery] deferred compileAsync failed; retrying synchronously:', err);
+          if (renderer && renderer.compile) renderer.compile(scene, camera);
+        });
+      } catch (err) {
+        console.warn('[orrery] deferred compileAsync threw; retrying synchronously:', err);
+      }
+    }
+    if (renderer.compile) renderer.compile(scene, camera);
+    return Promise.resolve();
+  }
+
   function settleHeavyWork() {
-    if (destroyed) return;
+    if (destroyed) return Promise.resolve();
     initEnvironmentIBL();
     buildRemainingPlanets();
     buildLiveGhosts();
@@ -2115,10 +2206,73 @@ const FinishShader = {
     if (!asteroidPoints) buildAsteroids();
     if (!starField && !usesPageStarfield()) buildStars();
     preloadDeferredTextures();
+    scheduleFullTextureUpgrades();
     needRecompute = true;
     updatePositions();
     updateScaleVisuals(scaleLevel);
+    ensureComposer();
     resize();
+    return compileDeferredScene();
+  }
+
+  /**
+   * Complete the scene after the Earth-first frame has been handed to the page.
+   * Background boot enters through an idle callback; a non-Earth action calls the
+   * same idempotent starter immediately and awaits its shader-ready completion.
+   */
+  function ensureFullSceneReady(opts) {
+    opts = opts || {};
+    if (!earthFirstBoot) return Promise.resolve(true);
+    if (fullSceneState === 'ready') return Promise.resolve(true);
+    if (fullScenePromise) {
+      if (opts.urgent && startFullSceneBuild) startFullSceneBuild();
+      return fullScenePromise;
+    }
+
+    fullSceneState = 'queued';
+    fullSceneQueuedAt = performance.now();
+    fullScenePromise = new Promise((resolve, reject) => {
+      startFullSceneBuild = () => {
+        if (fullSceneState === 'building' || fullSceneState === 'ready') return;
+        fullSceneState = 'building';
+        startFullSceneBuild = null;
+        Promise.resolve()
+          .then(settleHeavyWork)
+          .then(() => {
+            if (destroyed) throw new Error('renderer destroyed during deferred scene build');
+            fullSceneState = 'ready';
+            fullSceneReadyAt = performance.now();
+            const programs = renderer && renderer.info && Array.isArray(renderer.info.programs)
+              ? renderer.info.programs.length : 0;
+            try {
+              document.dispatchEvent(new CustomEvent('ap-orrery-scene-ready', {
+                detail: { durationMs: fullSceneReadyAt - fullSceneQueuedAt, programs },
+              }));
+            } catch (_) {}
+            resolve(true);
+          })
+          .catch((err) => {
+            fullSceneState = 'failed';
+            console.error('[orrery] deferred scene build failed:', err);
+            reject(err);
+          });
+      };
+    });
+
+    if (opts.urgent) startFullSceneBuild();
+    else {
+      const delayMs = Math.max(0, Number(opts.delayMs) || 0);
+      const queueIdleBuild = () => idle(() => {
+        if (startFullSceneBuild) startFullSceneBuild();
+      }, { timeout: 4000 });
+      // `requestIdleCallback({timeout:1800})` previously forced the entire
+      // galaxy build into Home's LCP/TBT window on throttled phones. Keep the
+      // promise queued so an interaction can escalate it, but allow the quiet
+      // Earth sitting to finish before background expansion begins.
+      if (delayMs > 0) later(queueIdleBuild, delayMs);
+      else queueIdleBuild();
+    }
+    return fullScenePromise;
   }
 
   function settleFromIntro() {
@@ -2157,7 +2311,15 @@ const FinishShader = {
       syncPreloaderCosmicClass(false);
       holdPreloaderEarthFrame();
     } else if (isLivingSkyHome()) {
-      settleToSystemHeroFrame(false);
+      if (earthFirstBoot && selectedPlanetId === 'earth') {
+        scaleLevel = 0;
+        focusFrameId = 'earth';
+        showOrbits = false;
+        showLabels = false;
+        updateScaleVisuals(0);
+        applyEarthLimbHold();
+        applyCamera();
+      } else settleToSystemHeroFrame(false);
     } else if (isHomeHeroEmbed()) {
       setDefaultEarthFrame();
     } else {
@@ -2188,7 +2350,9 @@ const FinishShader = {
     texturesReady = true;
     if (refresh) refreshTextures();
     if (texturesReadyResolve) { texturesReadyResolve(true); texturesReadyResolve = null; }
-    if (instrumentMode) scheduleFullTextureUpgrades();
+    // Earth-first Home holds all non-Earth network/GPU promotion until its real
+    // textured globe has been revealed. settleHeavyWork starts upgrades later.
+    if (instrumentMode && !earthFirstBoot) scheduleFullTextureUpgrades();
   }
 
   function deferredTextureFiles() {
@@ -2230,7 +2394,9 @@ const FinishShader = {
     // second visible startup swap.
     if (instrumentMode) {
       const earthStart = selectedPlanetId === 'earth';
-      const critical = earthTextureFiles().concat('moon.jpg');
+      const critical = earthFirstBoot
+        ? earthTextureFiles()
+        : earthTextureFiles().concat('moon.jpg');
       if (!earthStart) {
         BODIES.forEach((b) => {
           if (b.tex) critical.push(b.tex);
@@ -2240,7 +2406,7 @@ const FinishShader = {
       const startupQuality = instrumentStartupTextureQuality();
       return Promise.all(Array.from(new Set(critical)).map((file) => requestPreloadTexture(file, startupQuality))).then(() => {
         markTexturesReady(false);
-        if (earthStart) preloadDeferredTextures();
+        if (earthStart && !earthFirstBoot) preloadDeferredTextures();
       }).catch(() => {
         markTexturesReady(false);
       });
@@ -2740,7 +2906,7 @@ const FinishShader = {
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
       return new THREE.Line(geo, new THREE.LineBasicMaterial({
-        color: 0xc9a227, transparent: true, opacity: 0.14, depthWrite: false,
+        color: 0x93A8BF, transparent: true, opacity: 0.14, depthWrite: false,
       }));
     }
     leoOrbitRing = orbitRingPoints(0.99, 96, 0.52);
@@ -4093,6 +4259,12 @@ const FinishShader = {
       document.dispatchEvent(new Event('ap-orrery-first-frame'));
       document.dispatchEvent(new CustomEvent('orrery-first-frame'));
     } catch (e) { /* optional */ }
+    // The complete textured Earth owns LCP/reveal. Only after that proof frame do
+    // we spend an idle slice on the other worlds, galaxy layers and post effects.
+    if (earthFirstBoot && fullSceneState === 'idle') {
+      ensureFullSceneReady({ urgent: false, delayMs: BACKGROUND_SCENE_DELAY_MS })
+        .catch(() => { /* diagnostic logged at source */ });
+    }
   }
 
   /** Instrument mode: one stable sun halo — avoids per-frame visibility/opacity fights. */
@@ -4180,7 +4352,7 @@ const FinishShader = {
       }
       if (hemiLight) {
         hemiLight.color.setHex(0x546880);
-        hemiLight.groundColor.setHex(0x05080f);
+        hemiLight.groundColor.setHex(COOL_LUNAR_VOID);
         hemiLight.intensity += (hemiI - hemiLight.intensity) * k;
       }
       if (sunPointLight) {
@@ -4219,11 +4391,11 @@ const FinishShader = {
       if (isAwardMode()) {
         // Cool lunar fill tint; intensity stays off so the night limb stays dark.
         hemiLight.color.setHex(galaxyT > 0.35 ? 0x7a8eaa : (earthT > 0.55 ? 0x42566c : 0x546880));
-        hemiLight.groundColor.setHex(0x05080f);
+        hemiLight.groundColor.setHex(COOL_LUNAR_VOID);
         hemiLight.intensity = 0;
       } else {
         hemiLight.color.setHex(galaxyT > 0.35 ? 0x6e82a0 : 0x4e6280);
-        hemiLight.groundColor.setHex(0x05080f);
+        hemiLight.groundColor.setHex(COOL_LUNAR_VOID);
         hemiLight.intensity = 0;
       }
     }
@@ -5663,7 +5835,8 @@ const FinishShader = {
     const palettes = [
       [houseRgba(HOUSE_SILVER, 0.075), 'rgba(20,30,46,0.018)'],
       [houseRgba(HOUSE_SILVER_BRIGHT, 0.060), 'rgba(28,42,66,0.016)'],
-      [houseRgba(HOUSE_EMBER, 0.030), 'rgba(20,10,8,0.010)'],
+      [houseRgba(HOUSE_ION, 0.045), 'rgba(12,20,54,0.014)'],
+      [houseRgba(HOUSE_VIOLET, 0.034), 'rgba(25,16,58,0.012)'],
     ];
     const desktopCount = perfTier === 'low' ? 4 : perfTier === 'mid' ? 7 : 12;
     const count = IS_PHONE ? Math.min(desktopCount, perfTier === 'high' ? 6 : 4) : desktopCount;
@@ -5712,7 +5885,7 @@ const FinishShader = {
     }
     if (hemiLight) {
       hemiLight.color.setHex(free ? 0x5e7290 : 0x546880);
-      hemiLight.groundColor.setHex(0x05080f);
+      hemiLight.groundColor.setHex(COOL_LUNAR_VOID);
       hemiLight.intensity = 0;
     }
     if (sunPointLight) {
@@ -6059,15 +6232,17 @@ const FinishShader = {
         sunGlow.push(sp);
       });
     }
-    sunPointLight = new THREE.PointLight(0xfff2e6, perfTier === 'high' ? 4.15 : 3.45, 0, 1.55);
+    // Neutral daylight keeps the real texture albedo legible without painting a
+    // synthetic amber hemisphere across every body. The Sun mesh remains G2V-warm.
+    sunPointLight = new THREE.PointLight(0xf2f7ff, perfTier === 'high' ? 4.15 : 3.45, 0, 1.55);
     sunMesh.add(sunPointLight);
-    sunDirLight = new THREE.DirectionalLight(0xf5f0e4, perfTier === 'high' ? 2.55 : 2.15);
+    sunDirLight = new THREE.DirectionalLight(0xeef4ff, perfTier === 'high' ? 2.55 : 2.15);
     sunDirLight.position.set(0, 0, 0);
     scene.add(sunDirLight);
     sunDirLightTarget = new THREE.Object3D();
     scene.add(sunDirLightTarget);
     sunDirLight.target = sunDirLightTarget;
-    hemiLight = new THREE.HemisphereLight(0x6a7e9a, 0x05080f, 0);
+    hemiLight = new THREE.HemisphereLight(0x6a7e9a, COOL_LUNAR_VOID, 0);
     scene.add(hemiLight);
     ambientLight = new THREE.AmbientLight(0x2c3a4c, 0);
     scene.add(ambientLight);
@@ -6294,19 +6469,21 @@ const FinishShader = {
     // stays land/ocean, not a marble wash.
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <map_fragment>',
-        '#include <map_fragment>\n #ifdef USE_MAP\n   float nNdl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float nDay = smoothstep( -0.12, 0.30, nNdl );\n   if ( uCloudShadow > 0.5 ) {\n     vec3 dN = normalize( vObjNormalE );\n     vec3 dL = normalize( uSunDir );\n     vec3 dV = normalize( cameraPosition - vEarthWP );\n     vec2 dUv = vec2( fract( vMapUv.x + uCloudSpin ), vMapUv.y );\n     float cl0 = texture2D( uCloudTex, dUv ).g;\n     float h = cl0 * 0.012;\n     vec3 Vt = dV - dN * dot( dV, dN );\n     vec2 vUvD = dUv + vec2( Vt.x, Vt.z ) * h;\n     float clH = texture2D( uCloudTex, vUvD ).g;\n     vec3 Lt = dL - dN * dot( dL, dN );\n     vec2 sUv = vUvD - vec2( Lt.x, Lt.z ) * ( 0.006 + h );\n     float clS = texture2D( uCloudTex, sUv ).g;\n     float muL = max( dot( dN, dL ), 0.04 );\n     float selfSh = exp( -clS * ( 0.70 + h * 18.0 ) / muL );\n     float cover = smoothstep( 0.28, 0.78, clH );\n     diffuseColor.rgb *= ( 1.0 - cover * 0.28 * nDay * ( 1.0 - selfSh * 0.45 ) );\n     vec3 cloudCol = vec3( 0.96, 0.98, 1.0 ) * ( 0.62 + 0.38 * selfSh );\n     diffuseColor.rgb = mix( diffuseColor.rgb, cloudCol, cover * cover * nDay * 0.88 );\n   }\n   diffuseColor.rgb *= mix( vec3( 0.028, 0.032, 0.048 ), vec3( 1.0 ), nDay );\n   float nDusk = pow( clamp( 1.0 - abs( nNdl ), 0.0, 1.0 ), 4.0 ) * smoothstep( -0.12, 0.22, nNdl );\n   diffuseColor.rgb += vec3( 0.55, 0.22, 0.08 ) * nDusk * 0.16;\n   vec3 eN = normalize( vEarthWN );\n   vec3 eV = normalize( cameraPosition - vEarthWP );\n   float mu = max( dot( eN, eV ), 0.001 );\n   float od = clamp( pow( 1.0 - mu, 1.65 ) * 0.95, 0.0, 1.0 );\n   float grey = dot( diffuseColor.rgb, vec3( 0.30, 0.54, 0.16 ) );\n   diffuseColor.rgb = mix( diffuseColor.rgb, vec3( grey ), od * 0.22 * nDay );\n   vec3 rayleigh = vec3( 0.14, 0.38, 0.88 );\n   vec3 mie = vec3( 0.90, 0.94, 0.99 );\n   diffuseColor.rgb = mix( diffuseColor.rgb, rayleigh, od * 0.16 * nDay );\n   float hg = pow( max( dot( normalize( uSunDir ), eV ), 0.0 ), 6.0 );\n   diffuseColor.rgb += mie * od * nDay * ( 0.04 + hg * 0.08 );\n #endif');
+        '#include <map_fragment>\n #ifdef USE_MAP\n   float nNdl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float nDay = smoothstep( -0.12, 0.30, nNdl );\n   if ( uCloudShadow > 0.5 ) {\n     vec3 dN = normalize( vObjNormalE );\n     vec3 dL = normalize( uSunDir );\n     vec3 dV = normalize( cameraPosition - vEarthWP );\n     vec2 dUv = vec2( fract( vMapUv.x + uCloudSpin ), vMapUv.y );\n     float cl0 = texture2D( uCloudTex, dUv ).g;\n     float h = cl0 * 0.012;\n     vec3 Vt = dV - dN * dot( dV, dN );\n     vec2 vUvD = dUv + vec2( Vt.x, Vt.z ) * h;\n     float clH = texture2D( uCloudTex, vUvD ).g;\n     vec3 Lt = dL - dN * dot( dL, dN );\n     vec2 sUv = vUvD - vec2( Lt.x, Lt.z ) * ( 0.006 + h );\n     float clS = texture2D( uCloudTex, sUv ).g;\n     float muL = max( dot( dN, dL ), 0.04 );\n     float selfSh = exp( -clS * ( 0.70 + h * 18.0 ) / muL );\n     float cover = smoothstep( 0.28, 0.78, clH );\n     diffuseColor.rgb *= ( 1.0 - cover * 0.28 * nDay * ( 1.0 - selfSh * 0.45 ) );\n     vec3 cloudCol = vec3( 0.96, 0.98, 1.0 ) * ( 0.62 + 0.38 * selfSh );\n     diffuseColor.rgb = mix( diffuseColor.rgb, cloudCol, cover * cover * nDay * 0.88 );\n   }\n   diffuseColor.rgb *= mix( vec3( 0.028, 0.032, 0.048 ), vec3( 1.0 ), nDay );\n   vec3 eN = normalize( vEarthWN );\n   vec3 eV = normalize( cameraPosition - vEarthWP );\n   float mu = max( dot( eN, eV ), 0.001 );\n   float od = clamp( pow( 1.0 - mu, 1.65 ) * 0.95, 0.0, 1.0 );\n   float grey = dot( diffuseColor.rgb, vec3( 0.30, 0.54, 0.16 ) );\n   diffuseColor.rgb = mix( diffuseColor.rgb, vec3( grey ), od * 0.22 * nDay );\n   vec3 rayleigh = vec3( 0.14, 0.38, 0.88 );\n   vec3 mie = vec3( 0.90, 0.94, 0.99 );\n   diffuseColor.rgb = mix( diffuseColor.rgb, rayleigh, od * 0.16 * nDay );\n   float hg = pow( max( dot( normalize( uSunDir ), eV ), 0.0 ), 6.0 );\n   diffuseColor.rgb += mie * od * nDay * ( 0.04 + hg * 0.08 );\n #endif');
 
-    // (E) TERMINATOR-GATED REAL CITY LIGHTS + warm dusk band (overwrite, never bleed onto day side)
+    // (E) TERMINATOR-GATED REAL CITY LIGHTS only. Warmth comes from settlement
+    // texture pinpoints; there is no artificial orange hemisphere or emissive wash.
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <emissivemap_fragment>',
-        '#ifdef USE_EMISSIVEMAP\n   vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );\n   float ndl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float dayness = clamp( ndl * uTermSharp * 0.5 + 0.5, 0.0, 1.0 );\n   float nightMask = 1.0 - dayness;\n   float clOcc = ( uCloudShadow > 0.5 ) ? texture2D( uCloudTex, vec2( fract( vMapUv.x + uCloudSpin ), vMapUv.y ) ).g : 0.0;\n   nightMask *= ( 1.0 - clOcc * 0.82 );\n   vec3 cityCol = emissiveColor.rgb * vec3( 1.0, 0.68, 0.32 );\n   float lum = dot( cityCol, vec3( 0.30, 0.50, 0.20 ) );\n   float duskBand = pow( clamp( 1.0 - abs( ndl ), 0.0, 1.0 ), 4.5 ) * smoothstep( -0.12, 0.28, ndl );\n   totalEmissiveRadiance = cityCol * nightMask * uNightInt * uHasLights * ( 1.0 + lum * 1.15 ) + vec3( 0.95, 0.38, 0.10 ) * duskBand * 0.42;\n #endif');
+        '#ifdef USE_EMISSIVEMAP\n   vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );\n   float ndl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float dayness = clamp( ndl * uTermSharp * 0.5 + 0.5, 0.0, 1.0 );\n   float nightMask = 1.0 - dayness;\n   float clOcc = ( uCloudShadow > 0.5 ) ? texture2D( uCloudTex, vec2( fract( vMapUv.x + uCloudSpin ), vMapUv.y ) ).g : 0.0;\n   nightMask *= ( 1.0 - clOcc * 0.82 );\n   vec3 cityCol = emissiveColor.rgb * vec3( 1.0, 0.68, 0.32 );\n   float lum = dot( cityCol, vec3( 0.30, 0.50, 0.20 ) );\n   totalEmissiveRadiance = cityCol * nightMask * uNightInt * uHasLights * ( 1.0 + lum * 1.15 );\n #endif');
   }
 
-  // Dedicated Earth atmosphere: cyan-blue Rayleigh day-limb + terminator sunset band.
+  // Dedicated Earth atmosphere: cyan/indigo Rayleigh limb with a physically
+  // plausible, razor-thin rose terminator. No broad orange brand wash.
   // Uses WORLD-space sun dir + world normal (the shell shares the group tilt but does
   // NOT spin with the textured surface, so object-space would swim).
   // Parametrized so ONE shader drives BOTH limb shells (bright inner Rayleigh rim +
-  // faint outer scatter veil with a warm sunset wrap past the terminator). uEdge
+  // faint outer scatter veil with a restrained terminator wrap). uEdge
   // normalizes the BackSide horizon depth for the shell's scale so the glow peaks at
   // the planet limb and FADES to the shell edge — the previous 1-max(dot(N,V),0)
   // fresnel was ~1 across the whole visible rim, which is exactly why the limb read
@@ -6323,7 +6500,7 @@ const FinishShader = {
         uWrap:    { value: opts.wrap    != null ? opts.wrap    : 0.0 },  // 0 = inner Rayleigh shell, 1 = outer veil w/ sunset wrap
       },
       vertexShader: 'varying vec3 vWN; varying vec3 vWP;\n void main(){ vec4 wp = modelMatrix * vec4(position,1.0); vWP = wp.xyz; vWN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * wp; }',
-      fragmentShader: 'uniform vec3 uSunDir; uniform vec3 uCamPos; uniform float uIntensity; uniform float uEdge; uniform float uFalloff; uniform float uWrap; varying vec3 vWN; varying vec3 vWP;\n void main(){\n   vec3 V = normalize(uCamPos - vWP);\n   vec3 N = normalize(vWN);\n   float fres = pow(clamp(-dot(N,V) * uEdge, 0.0, 1.0), uFalloff);\n   float ndl = dot(N, normalize(uSunDir));\n   float dayMask = smoothstep(-0.2 - uWrap * 0.15, 0.4, ndl);\n   float band = smoothstep(0.0, 0.3 + uWrap * 0.2, 1.0 - abs(ndl));\n   /* sunset only reads when the terminator is viewed side-on (hero rest frame);\n      from a sun-aligned lens (portrait stills) the WHOLE limb sits near ndl=0 and\n      an ungated band paints the rim pink-white — full-disc Earth reads BLUE. */\n   float termView = 1.0 - smoothstep(0.5, 0.85, clamp(dot(normalize(uSunDir), V), 0.0, 1.0));\n   vec3 rayleigh = vec3(0.10, 0.32, 0.95);\n   vec3 sunset   = vec3(0.95, 0.42, 0.14);\n   vec3 col = mix(rayleigh, sunset, band * (0.55 + uWrap * 0.35) * termView);\n   float a = clamp(fres * dayMask * uIntensity, 0.0, 1.0);\n   gl_FragColor = vec4(col * (0.35 + fres * 0.55), a * 0.7);\n }',
+      fragmentShader: 'uniform vec3 uSunDir; uniform vec3 uCamPos; uniform float uIntensity; uniform float uEdge; uniform float uFalloff; uniform float uWrap; varying vec3 vWN; varying vec3 vWP;\n void main(){\n   vec3 V = normalize(uCamPos - vWP);\n   vec3 N = normalize(vWN);\n   float fres = pow(clamp(-dot(N,V) * uEdge, 0.0, 1.0), uFalloff);\n   float ndl = dot(N, normalize(uSunDir));\n   float dayMask = smoothstep(-0.2 - uWrap * 0.15, 0.4, ndl);\n   /* Restrict rose scattering to a few degrees around the true terminator. */\n   float termBand = pow(clamp(1.0 - abs(ndl) * 18.0, 0.0, 1.0), 2.2);\n   /* Terminator colour only reads side-on; sun-aligned portrait stills stay blue. */\n   float termView = 1.0 - smoothstep(0.5, 0.85, clamp(dot(normalize(uSunDir), V), 0.0, 1.0));\n   vec3 rayleigh = vec3(0.10, 0.42, 1.00);\n   vec3 indigo   = vec3(0.35, 0.30, 0.96);\n   vec3 rose     = vec3(0.78, 0.36, 0.52);\n   vec3 col = mix(rayleigh, indigo, 0.18 + uWrap * 0.18);\n   col = mix(col, rose, termBand * termView * (0.07 + uWrap * 0.11));\n   float a = clamp(fres * dayMask * uIntensity, 0.0, 1.0);\n   gl_FragColor = vec4(col * (0.35 + fres * 0.55), a * 0.7);\n }',
       blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
     });
   }
@@ -6364,8 +6541,8 @@ const FinishShader = {
           float baseGlow = ringProfile * 0.38;
           float engraved = ringProfile * (0.28 + majorTick * 0.58 + minorTick * 0.18 + microTick * 0.06);
           vec3 darkMetal = vec3(0.22, 0.27, 0.32);
-          vec3 midMetal  = vec3(0.561, 0.639, 0.722);
-          vec3 brightMetal = vec3(0.773, 0.831, 0.878);
+          vec3 midMetal  = vec3(0.576, 0.659, 0.749);
+          vec3 brightMetal = vec3(0.788, 0.839, 0.890);
           vec3 col = mix(darkMetal, midMetal, baseGlow + engraved * 0.4);
           col = mix(col, brightMetal, engraved + uHero * 0.14);
           float pulse = mix(1.0, 0.92 + 0.08 * sin(uTime * 1.4 + angle * 2.5), uMotion);
@@ -6504,6 +6681,53 @@ const FinishShader = {
     }
   }
 
+  function buildMoon() {
+    if (moonGroup || !scene) return;
+    // The Moon is not visible in Home's opening Earth sitting. Its procedural
+    // 512px bump canvas and crater geometry are deliberately part of the deferred
+    // complete scene, not the first real Earth frame.
+    moonGroup = new THREE.Group(); scene.add(moonGroup);
+    const moonSegs = perfTier === 'high' ? 96 : perfTier === 'mid' ? 64 : 40;
+    const moonRad = 0.26;
+    const moonMat = new THREE.MeshPhysicalMaterial({
+      color: 0xd8dce6, roughness: 0.94, metalness: 0.0,
+      emissive: 0x000000, emissiveIntensity: 0.0,
+      clearcoat: 0.0, clearcoatRoughness: 0.7, envMapIntensity: 0.06,
+    });
+    moonMat.onBeforeCompile = (shader) => {
+      try {
+        injectPlanetSunLighting(shader, 0x98a8b8);
+        moonMat.userData.planetShader = shader;
+      } catch (e) { console.warn('[orrery] moon lighting patch skipped', e); }
+    };
+    moonMat.customProgramCacheKey = () => 'moon-sun';
+    moonMesh = new THREE.Mesh(new THREE.SphereGeometry(moonRad, moonSegs, moonSegs), moonMat);
+    moonGroup.add(moonMesh);
+    const moonBump = makeMoonBumpTexture();
+    moonMat.bumpMap = moonBump;
+    moonMat.bumpScale = perfTier === 'high' ? 0.068 : 0.048;
+    moonMat.needsUpdate = true;
+    addMoonSurfaceCrater(moonMesh, moonRad);
+    if (perfTier !== 'low' && !PRM) {
+      moonHaloMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(moonRad * 1.06, 32, 32),
+        new THREE.MeshBasicMaterial({
+          color: 0x8898b0, transparent: true, opacity: 0.06,
+          side: THREE.BackSide, depthWrite: false, blending: THREE.AdditiveBlending,
+        })
+      );
+      moonGroup.add(moonHaloMesh);
+    }
+    loadTex('moon.jpg').then((t) => {
+      if (t && moonMesh) {
+        moonMesh.material.map = t;
+        moonMesh.material.color.set(0xffffff);
+        moonMesh.material.needsUpdate = true;
+      }
+    });
+    if (window.__apShowOrbitTraffic) buildEarthOrbitTraffic();
+  }
+
   function buildPlanets(opts) {
     const earthOnly = !!(opts && opts.earthOnly);
     const remainingOnly = !!(opts && opts.remainingOnly);
@@ -6600,7 +6824,7 @@ const FinishShader = {
       const trailPts = new Float32Array(TRAIL_LEN * 3);
       trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPts, 3));
       const trailLine = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({
-        color: 0xc9a227, transparent: true, opacity: 0.26,
+        color: 0x8BA9FF, transparent: true, opacity: 0.26,
         blending: THREE.AdditiveBlending, depthWrite: false,
       }));
       trailLine.visible = false;
@@ -6636,7 +6860,7 @@ const FinishShader = {
         group.add(atmo);
         group.userData.atmo = atmo;   // handle so portrait mode can soften the rim
         // Second Earth shell: a faint outer scatter veil (SAME shader, different
-        // uniforms) that carries a warm sunset wrap just past the terminator.
+        // uniforms) that carries a subtle indigo/rose scatter wrap at the terminator.
         // Gated exactly like the dedicated inner shell (never on low tier / PRM).
         if (b.hero && atmoMat === earthAtmoMat) {
           const atmo2 = new THREE.Mesh(
@@ -6686,47 +6910,6 @@ const FinishShader = {
             if (earthMat) earthMat.needsUpdate = true;
           });
         }
-        // Moon — detailed regolith, craters, thin exosphere halo
-        moonGroup = new THREE.Group(); scene.add(moonGroup);
-        const moonSegs = perfTier === 'high' ? 96 : perfTier === 'mid' ? 64 : 40;
-        const moonRad = 0.26;
-        const moonMat = new THREE.MeshPhysicalMaterial({
-          color: 0xd8dce6, roughness: 0.94, metalness: 0.0,
-          emissive: 0x000000, emissiveIntensity: 0.0,
-          clearcoat: 0.0, clearcoatRoughness: 0.7, envMapIntensity: 0.06,
-        });
-        moonMat.onBeforeCompile = (shader) => {
-          try {
-            injectPlanetSunLighting(shader, 0x98a8b8);
-            moonMat.userData.planetShader = shader;
-          } catch (e) { console.warn('[orrery] moon lighting patch skipped', e); }
-        };
-        moonMat.customProgramCacheKey = () => 'moon-sun';
-        moonMesh = new THREE.Mesh(new THREE.SphereGeometry(moonRad, moonSegs, moonSegs), moonMat);
-        moonGroup.add(moonMesh);
-        const moonBump = makeMoonBumpTexture();
-        moonMat.bumpMap = moonBump;
-        moonMat.bumpScale = perfTier === 'high' ? 0.068 : 0.048;
-        moonMat.needsUpdate = true;
-        addMoonSurfaceCrater(moonMesh, moonRad);
-        if (perfTier !== 'low' && !PRM) {
-          moonHaloMesh = new THREE.Mesh(
-            new THREE.SphereGeometry(moonRad * 1.06, 32, 32),
-            new THREE.MeshBasicMaterial({
-              color: 0x8898b0, transparent: true, opacity: 0.06,
-              side: THREE.BackSide, depthWrite: false, blending: THREE.AdditiveBlending,
-            })
-          );
-          moonGroup.add(moonHaloMesh);
-        }
-        loadTex('moon.jpg').then((t) => {
-          if (t && moonMesh) {
-            moonMesh.material.map = t;
-            moonMesh.material.color.set(0xffffff);
-            moonMesh.material.needsUpdate = true;
-          }
-        });
-        if (window.__apShowOrbitTraffic) buildEarthOrbitTraffic();
       }
 
       if (b.ring) {
@@ -6802,11 +6985,12 @@ const FinishShader = {
       labels[b.id] = makeLabel(b.name); labels[b.id].visible = false; scene.add(labels[b.id]);
     });
     if (!earthOnly) {
+      buildMoon();
       allPlanetsBuilt = true;
       buildEccentricGuides();
+      buildExtraBodies();
+      buildTrails();
     }
-    buildExtraBodies();
-    buildTrails();
   }
 
   // Dwarf planets (Pluto) + faint orbit ring. Tier-gated: skipped entirely on
@@ -7563,8 +7747,8 @@ const FinishShader = {
 
   function natalClockColor(who) {
     return who === 'b'
-      ? houseTokenHex(['--ap-ember'], NATAL_CLOCK_B)
-      : houseTokenHex(['--ap-brass', '--ap-silver'], NATAL_CLOCK_A);
+      ? houseTokenHex(['--ap-violet', '--ap-ember', '--ap-ion'], NATAL_CLOCK_B)
+      : houseTokenHex(['--ap-silver', '--ap-brass'], NATAL_CLOCK_A);
   }
 
   function makeNatalClockLabel(text, hex) {
@@ -8789,9 +8973,17 @@ const FinishShader = {
     if (bloomPass) bloomPass.resolution.set(w, h);
     if (radialBlurPass) radialBlurPass.uniforms.uAspect.value = w / Math.max(h, 1);
     camera.aspect = w / h; camera.updateProjectionMatrix();
-    if (isHomeHeroEmbed() && scaleLevel === 0 && !scaleAnimActive && !introActive &&
-        !portraitMode && !moonFrameActive && !dragging && !focusFrameId && !freeExploreMode) {
-      containEarthFrame(0.70);
+    const homeEarthStart = (isHomeHeroEmbed() || isLivingSkyHome()) &&
+      scaleLevel === 0 && !scaleAnimActive && !introActive && !portraitMode &&
+      !moonFrameActive && !dragging && !freeExploreMode &&
+      (!focusFrameId || focusFrameId === 'earth');
+    if (homeEarthStart) {
+      // A live desktop ↔ phone/orientation resize must solve the camera from the
+      // new aspect immediately. The Home Observatory normally owns an Earth focus,
+      // so the old !focusFrameId gate left it using the previous viewport's radius.
+      if (focusFrameId === 'earth') applyEarthLimbHold();
+      else containEarthFrame(0.70);
+      applyCamera();
     }
     // Resizing clears the WebGL drawing buffer. If a stale intersection state
     // previously stopped RAF while Home is visibly on screen, repaint now.
@@ -9344,6 +9536,15 @@ const FinishShader = {
 
     perfTier = getPerfTier();
     const preloaderMode = !!window.__orreryPreloaderOwns;
+    earthFirstBoot = !!(
+      instrumentMode && freeExploreMode && selectedPlanetId === 'earth' && isLivingSkyHome()
+    );
+    fullSceneState = 'idle';
+    fullScenePromise = null;
+    startFullSceneBuild = null;
+    fullSceneQueuedAt = 0;
+    fullSceneReadyAt = 0;
+    const stagedEarthMode = preloaderMode || earthFirstBoot;
 
     renderer = new THREE.WebGLRenderer({
       canvas,
@@ -9369,10 +9570,11 @@ const FinishShader = {
     runtimeGeneration += 1;
     resetTextureReadiness();
     window.__apOrreryIBL = false;
-    if (!preloaderMode) initEnvironmentIBL();
+    if (!stagedEarthMode) initEnvironmentIBL();
 
-    // Bloom composer — defer during preloader to cut GPU memory; built in settleFromIntro.
-    if (!preloaderMode && !PRM && perfTier !== 'low') {
+    // Bloom composer is below the Earth reveal. Preloader and Home's staged
+    // Earth-first path both add it only after the first complete globe is visible.
+    if (!stagedEarthMode && !PRM && perfTier !== 'low') {
       ensureComposer();
     }
     envIblFrozen = false;
@@ -9383,12 +9585,12 @@ const FinishShader = {
     // by the tz offset (BST = +1h = 15° of Earth rotation, ~0.55° of Moon motion).
     baseJd = window.AstroEphemeris.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 0);
 
-    if (!preloaderMode && !usesPageStarfield()) buildStars();
-    buildSun(preloaderMode);
-    buildPlanets(preloaderMode ? { earthOnly: true } : undefined);
-    if (!preloaderMode) {
+    if (!stagedEarthMode && !usesPageStarfield()) buildStars();
+    buildSun(stagedEarthMode);
+    buildPlanets(stagedEarthMode ? { earthOnly: true } : undefined);
+    if (!stagedEarthMode) {
       buildAsteroids();
-    } else if (perfTier !== 'low') {
+    } else if (preloaderMode && perfTier !== 'low') {
       ensureGalaxyLayers();
     }
     // buildHalley();  // retired — the illustrative comet + its blue dashed orbit were
@@ -9424,7 +9626,7 @@ const FinishShader = {
       }
       renderer.setClearColor(COOL_LUNAR_VOID, 1);
       tuneInstrumentSpace();
-      ensureComposer();
+      if (!earthFirstBoot) ensureComposer();
     } else if (window.__orbitlabSpaceFlight) {
       masterclassZoom = 0;
       scaleLevel = 0;
@@ -9448,7 +9650,15 @@ const FinishShader = {
     if (PRM) {
       introActive = false;
       if (!preloaderMode) {
-        if (isLivingSkyHome()) settleToSystemHeroFrame(false);
+        if (earthFirstBoot && selectedPlanetId === 'earth') {
+          scaleLevel = 0;
+          focusFrameId = 'earth';
+          showOrbits = false;
+          showLabels = false;
+          updateScaleVisuals(0);
+          applyEarthLimbHold();
+          applyCamera();
+        } else if (isLivingSkyHome()) settleToSystemHeroFrame(false);
         else setDefaultEarthFrame();
         updateScaleHUD();
       } else {
@@ -10662,7 +10872,7 @@ const FinishShader = {
     markerA.position.copy(mA);
     markerA.userData.baseOpacity = 1;
     grp.add(markerA);
-    const markerB = makeAspectMarker(solar ? 0x7EB8A8 : housePaperHex(), 0.85);
+    const markerB = makeAspectMarker(solar ? houseIonHoverHex() : houseVioletHex(), 0.85);
     markerB.position.copy(mB);
     markerB.userData.baseOpacity = 1;
     grp.add(markerB);
@@ -10675,7 +10885,11 @@ const FinishShader = {
     grp.add(labA);
 
     const nameB = bLabel || (CAP[idB] || idB) + (solar ? ' · solar chart' : '');
-    const labB = makeAspectLabel(nameB, { font: 26, baseH: 0.82, color: solar ? 'rgba(126,184,168,0.96)' : houseRgba(housePaperHex(), 0.96) });
+    const labB = makeAspectLabel(nameB, {
+      font: 26,
+      baseH: 0.82,
+      color: solar ? houseRgba(houseIonHex(), 0.96) : houseRgba(houseVioletHex(), 0.96),
+    });
     labB.position.copy(scenePos(R * 0.8, bLon, 0));
     labB.userData.baseOpacity = 0.96;
     grp.add(labB);
@@ -11049,6 +11263,12 @@ const FinishShader = {
     milkySpiralBuilt = false;
     gaiaSampleBuilt = false;
     allPlanetsBuilt = false;
+    earthFirstBoot = false;
+    fullSceneState = 'idle';
+    fullScenePromise = null;
+    startFullSceneBuild = null;
+    fullSceneQueuedAt = 0;
+    fullSceneReadyAt = 0;
     sunVisualsMinimal = false;
     trailsActive = false;
     trailLastJd = 0;
@@ -11324,6 +11544,20 @@ const FinishShader = {
     },
     whenReady() { return texturesReady ? Promise.resolve() : texturesReadyPromise; },
     whenEarthReady() { return earthMapReady ? Promise.resolve() : earthMapReadyPromise; },
+    whenSceneReady(opts) { return ensureFullSceneReady(opts); },
+    isSceneReady() { return !earthFirstBoot || fullSceneState === 'ready'; },
+    getBootState() {
+      const programs = renderer && renderer.info && Array.isArray(renderer.info.programs)
+        ? renderer.info.programs.length : 0;
+      return {
+        earthFirst: earthFirstBoot,
+        sceneState: earthFirstBoot ? fullSceneState : 'ready',
+        allPlanetsBuilt,
+        programs,
+        queuedAt: fullSceneQueuedAt,
+        readyAt: fullSceneReadyAt,
+      };
+    },
     getScaleLevel() { return scaleLevel; },
     setScaleLevel(n, animate = true) { applyScalePreset(n, animate !== false); },
     startScaleJourney,

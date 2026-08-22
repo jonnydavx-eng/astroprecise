@@ -21,10 +21,10 @@
   window.__apSkyTimeBooted = true;
 
   var PARTS = {
-    night: { label: 'NIGHT', nebula: 'rgba(185,200,220,.035)', aurora: 'rgba(216,180,106,.035)' },
-    dawn:  { label: 'DAWN',  nebula: 'rgba(216,180,106,.055)', aurora: 'rgba(255,100,40,.055)' },
-    day:   { label: 'DAY',   nebula: 'rgba(185,200,220,.035)', aurora: 'rgba(216,180,106,.035)' },
-    dusk:  { label: 'DUSK',  nebula: 'rgba(216,180,106,.05)', aurora: 'rgba(255,100,40,.05)' }
+    night: { label: 'NIGHT', nebula: 'rgba(147,168,191,.035)', aurora: 'rgba(139,169,255,.035)' },
+    dawn:  { label: 'DAWN',  nebula: 'rgba(139,169,255,.055)', aurora: 'rgba(168,151,255,.050)' },
+    day:   { label: 'DAY',   nebula: 'rgba(147,168,191,.035)', aurora: 'rgba(139,169,255,.030)' },
+    dusk:  { label: 'DUSK',  nebula: 'rgba(168,151,255,.050)', aurora: 'rgba(139,169,255,.050)' }
   };
 
   function daypart(h) {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Naked-eye planets after sunset, Moon phase, and twilight — computed on this device. Sky weather, not the minute you were born." />
   <title>What's up tonight — planets, Moon, twilight | AstroPrecise</title>
@@ -27,53 +27,48 @@
   <meta name="twitter:title" content="What's up tonight — planets, Moon, twilight" />
   <meta name="twitter:description" content="Naked-eye planets, Moon phase, twilight — computed in your browser. Sky weather, not a natal sitting." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#05080F" />
+  <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=880" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=891" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=880" />
-  <link rel="stylesheet" href="css/main-lite.css?v=880" />
-  <script>window.AP_ASSET_V='895';</script>
-    <script type="importmap">
-    { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
-  </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=895">
-  <script src="js/void-orrery-adapter.js?v=880" defer></script>
-  <script src="js/ap-nav-model.js?v=880" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880" />
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=880">
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=899" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=899" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=899" />
+  <link rel="stylesheet" href="css/main-lite.css?v=899" />
+  <script>window.AP_ASSET_V='899';</script>
+  <script src="js/ap-nav-model.js?v=899" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=899" />
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=899">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=899">
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/tonight-page.css" id="ap-css-tonight" />
+  <link rel="stylesheet" href="css/tonight-page.css?v=899" id="ap-css-tonight" />
   <style>
-    body:has(.tn-hero){--tn-gold:#8FA3B8;--tn-gold-light:#E6ECF2;--tn-surface:#0C1422;--tn-border:rgba(143,163,184,.24);background:#05080F;color:#E6ECF2;}
+    body:has(.tn-hero){--tn-gold:#93A8BF;--tn-gold-light:#C9D6E3;--tn-surface:#101D30;--tn-border:rgba(147,168,191,.24);background:#040812;color:#EEF4FA;}
     body:has(.tn-hero) #starfield-canvas,.aurora-orb{display:none!important;}
     body:has(.tn-hero) .tn-hero{padding:calc(var(--nav-height,72px) + 54px) 0 34px;text-align:left;}
-    body:has(.tn-hero) .tn-hero::before{background:radial-gradient(circle at 72% 12%,rgba(184,107,74,.10),transparent 34%);}
+    body:has(.tn-hero) .tn-hero::before{background:radial-gradient(circle at 72% 12%,rgba(139,169,255,.10),transparent 34%);}
     body:has(.tn-hero) .tn-hero>.container{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.78fr);gap:clamp(36px,7vw,96px);align-items:center;}
     body:has(.tn-hero) .tn-hero__moon{grid-column:2;grid-row:1 / span 4;width:clamp(150px,22vw,280px);height:clamp(150px,22vw,280px);margin:auto;border-radius:0;background:none;box-shadow:none;opacity:.88;}
-    body:has(.tn-hero) .tn-hero__eyebrow{justify-self:start;border:0;border-radius:0;padding:0;margin:0 0 14px;font-family:'IBM Plex Mono',monospace;color:#B86B4A;}
+    body:has(.tn-hero) .tn-hero__eyebrow{justify-self:start;border:0;border-radius:0;padding:0;margin:0 0 14px;font-family:'IBM Plex Mono',monospace;color:#8BA9FF;}
     body:has(.tn-hero) .tn-hero h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(52px,7vw,96px);font-weight:600;line-height:.9;letter-spacing:-.035em;margin:0 0 20px;max-width:9ch;}
-    body:has(.tn-hero) .tn-hero__sub{font-family:'Schibsted Grotesk',system-ui,sans-serif;font-size:clamp(16px,1.5vw,20px);line-height:1.62;max-width:42rem;margin:0 0 20px;color:rgba(230,236,242,.7);}
-    body:has(.tn-hero) .tn-privacy-seal{justify-self:start;border-radius:3px;background:transparent;border-color:rgba(143,163,184,.3);}
+    body:has(.tn-hero) .tn-hero__sub{font-family:'Schibsted Grotesk',system-ui,sans-serif;font-size:clamp(16px,1.5vw,20px);line-height:1.62;max-width:42rem;margin:0 0 20px;color:rgba(238,244,250,.76);}
+    body:has(.tn-hero) .tn-privacy-seal{justify-self:start;border-radius:3px;background:transparent;border-color:rgba(147,168,191,.3);}
     body:has(.tn-hero) .tn-locator{max-width:1120px;margin:0 auto 36px;}
-    body:has(.tn-hero) .tn-locator__card{min-height:0;padding:clamp(22px,4vw,44px);border-radius:4px;background:#0C1422;box-shadow:none;text-align:left;}
+    body:has(.tn-hero) .tn-locator__card{min-height:0;padding:clamp(22px,4vw,44px);border-radius:4px;background:#101D30;box-shadow:none;text-align:left;}
     body:has(.tn-hero) .tn-locator__buttons{justify-content:flex-start;min-height:0;}
     body:has(.tn-hero) .tn-btn,.tn-city-input{min-height:48px;border-radius:3px;}
-    body:has(.tn-hero) .tn-btn--primary{background:#B86B4A;color:#05080F;box-shadow:none;}
+    body:has(.tn-hero) .tn-btn--primary{background:#8BA9FF;color:#07101E;box-shadow:none;}
     body:has(.tn-hero) .tn-city-row{max-width:none;margin:0;}
-    body:has(.tn-hero) .tn-city-input{background:#05080F;border-color:rgba(143,163,184,.25);}
-    body:has(.tn-hero) .tn-section{padding:64px 0;border-top:1px solid rgba(143,163,184,.14);}
+    body:has(.tn-hero) .tn-city-input{background:#040812;border-color:rgba(147,168,191,.25);}
+    body:has(.tn-hero) .tn-section{padding:64px 0;border-top:1px solid rgba(147,168,191,.14);}
     body:has(.tn-hero) .tn-section__title,body:has(.tn-hero) .tn-privacy-band h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(42px,6vw,70px);font-weight:600;line-height:.95;text-align:left;max-width:12ch;margin:0 auto 16px;}
     body:has(.tn-hero) .tn-section__sub{max-width:48rem;font-size:16px;text-align:left;margin:0 auto 24px;}
     body:has(.tn-hero) .tn-planets{min-height:0!important;}
     body:has(.tn-hero) .tn-twilight{min-height:0!important;}
     body:has(.tn-hero) #tn-moon-wrap{min-height:0!important;}
-    body:has(.tn-hero) .tn-awaiting{max-width:720px;margin:24px auto 0;padding:22px;border:1px solid rgba(143,163,184,.22);color:rgba(230,236,242,.68);font-size:16px;line-height:1.6;}
+    body:has(.tn-hero) .tn-awaiting{max-width:720px;margin:24px auto 0;padding:22px;border:1px solid rgba(147,168,191,.22);color:rgba(238,244,250,.76);font-size:16px;line-height:1.6;}
     body:has(.tn-hero):not(.tn-has-report) .tn-report-section{display:none;}
-    body:has(.tn-hero) .tn-twi-card,body:has(.tn-hero) .tn-planet-card,body:has(.tn-hero) .tn-moon,body:has(.tn-hero) .tn-honesty{border-radius:4px;background:#0C1422;backdrop-filter:none;}
-    body:has(.tn-hero) .tn-privacy-band{background:#0C1422;border-top:1px solid rgba(143,163,184,.16);}
+    body:has(.tn-hero) .tn-twi-card,body:has(.tn-hero) .tn-planet-card,body:has(.tn-hero) .tn-moon,body:has(.tn-hero) .tn-honesty{border-radius:4px;background:#101D30;backdrop-filter:none;}
+    body:has(.tn-hero) .tn-privacy-band{background:#101D30;border-top:1px solid rgba(147,168,191,.16);}
     body:has(.tn-hero) .tn-privacy-band__inner{text-align:left;max-width:860px;}
     body:has(.tn-hero) .tn-privacy-band h2{margin-left:0;}
     body:has(.tn-hero) .tn-privacy-band p{margin-left:0;}
@@ -145,12 +140,11 @@
     </nav>
   </header>
 
-  <section class="ap-room-sky" aria-label="Live sky">
-    <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
-      <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
-      <div class="ap-model-vignette" aria-hidden="true"></div>
-      <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
-    </div>
+  <section class="ap-room-sky" aria-label="Authored Earth engine still">
+    <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth" aria-label="Open tonight in the live Observatory">
+      <img src="img/engine/earth.webp" width="1000" height="1000" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
+      <span class="ap-surface-a__receipt"><span>Engine still · schematic</span><strong>Open tonight in 3D</strong><em>One Observatory · real current positions</em></span>
+    </a>
   </section>
 
 
@@ -285,7 +279,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
-  <script src="js/ephemeris.js?v=880"></script>
+  <script src="js/ephemeris.js?v=899"></script>
 <script>
   (function () {
     'use strict';
@@ -552,7 +546,7 @@
   </script>
 
   <!-- JS — ephemeris/tonight on defer; cosmos + effects idle after load -->
-  <script src="js/profile.js?v=880" defer></script>
+  <script src="js/profile.js?v=899" defer></script>
   <script>
   (function () {
     function audit() {
@@ -564,9 +558,9 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    inject('js/raf-core.js?v=880');
-    inject('js/icons.js?v=880');
-    inject('js/tonight.js?v=880');
+    inject('js/raf-core.js?v=899');
+    inject('js/icons.js?v=899');
+    inject('js/tonight.js?v=899');
     function idleCosmos() {
       if (audit()) return;
     }
@@ -576,9 +570,8 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=880" defer></script>
-<script src="js/ap-sky-time.js?v=880" defer></script>
-  <script src="js/ap-footer-inject.js?v=880" defer></script>
-  <script src="js/ap-room-sky.js?v=880" defer></script>
+  <script src="js/ap-page-boot.js?v=899" defer></script>
+<script src="js/ap-sky-time.js?v=899" defer></script>
+  <script src="js/ap-footer-inject.js?v=899" defer></script>
 </body>
 </html>

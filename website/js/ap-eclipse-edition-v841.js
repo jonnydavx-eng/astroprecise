@@ -1,5 +1,5 @@
-import { isCheckoutReady, openCheckout, verifyLicense } from './gumroad-unlock.js';
-import { fmtDeg, houseOrdinal } from './eclipse-reading.js';
+import { isEntitlementReady, verifyLicense } from './gumroad-unlock.js?v=899';
+import { fmtDeg, houseOrdinal } from './eclipse-reading.js?v=899';
 
 export const ARTWORK_WIDTH = 2400;
 export const ARTWORK_HEIGHT = 3000;
@@ -1002,29 +1002,23 @@ export function mountEclipseEdition(host, context) {
     renderUnlocked(host, model);
     return { state: 'unlocked', model };
   }
-  const ready = isCheckoutReady(EDITION_PRODUCT);
-  host.dataset.paidState = ready ? 'locked' : 'dormant';
+  const recoverable = isEntitlementReady(EDITION_PRODUCT);
+  host.dataset.paidState = recoverable ? 'archive' : 'dormant';
   rememberEditionContext(context);
   host.innerHTML = `
-    <div class="ap-eclipse-edition__head"><span>Your Eclipse Edition</span><strong>£7 · instant</strong></div>
-    <h3>Keep this contact as reading and art.</h3>
-    <p>Five authored beats, a keepable multi-page booklet (print / save as PDF), and unique 2400 × 3000 natal-wheel artwork, generated here from this computed contact. No manual review and no birth data leaves this browser.</p>
-    <ul><li>Five-beat personalised contact reading</li><li>Unique high-resolution natal-wheel plate</li><li>PNG download + print / save-as-PDF booklet</li><li>Licence unlock via Gumroad View content</li></ul>
-    ${ready ? `
-      <div class="ap-eclipse-edition__actions"><button type="button" data-edition-buy>Buy Your Eclipse Edition — £7</button></div>
+    <div class="ap-eclipse-edition__head"><span>12 August edition</span><strong>Archive</strong></div>
+    <h3>Already purchased? Restore your edition.</h3>
+    <p>This event edition is closed to new purchases. Existing buyers can still restore the five-beat reading, print booklet and unique high-resolution natal-wheel plate (2400 × 3000) on this device. Birth data remains in this browser.</p>
+    ${recoverable ? `
       <form class="ap-eclipse-edition__license" data-edition-license-form>
-        <label><span>Already purchased? Paste the licence key from Gumroad View content</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
-        <button type="submit">Unlock on this device</button>
+        <label><span>Paste the licence key from your Gumroad receipt or View content</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
+        <button type="submit">Restore on this device</button>
       </form>
-      <p class="ap-eclipse-edition__status" data-edition-status role="status">Pay on Gumroad → open <strong>View content</strong> → copy the licence key → return here and paste. This contact stays in this browser tab.</p>` : `
-      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is closed.</strong> The public link and product ID are not both configured, so nothing can take payment. Your free contact result above remains available.</p>`}`;
+      <p class="ap-eclipse-edition__status" data-edition-status role="status">No checkout is offered. Licence recovery is retained for people who purchased before the eclipse.</p>` : `
+      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is closed.</strong> Licence recovery is temporarily unavailable. Your free contact result above remains available.</p>`}`;
 
-  if (!ready) return { state: 'dormant', model };
+  if (!recoverable) return { state: 'dormant', model };
   const status = host.querySelector('[data-edition-status]');
-  host.querySelector('[data-edition-buy]').addEventListener('click', () => {
-    rememberEditionContext(context);
-    openCheckout(EDITION_PRODUCT);
-  });
   host.querySelector('[data-edition-license-form]').addEventListener('submit', async (event) => {
     event.preventDefault();
     const input = host.querySelector('[data-edition-license]');
@@ -1048,5 +1042,5 @@ export function mountEclipseEdition(host, context) {
       button.disabled = false;
     }
   });
-  return { state: 'locked', model };
+  return { state: 'archive', model };
 }

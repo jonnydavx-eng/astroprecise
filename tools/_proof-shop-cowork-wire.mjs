@@ -1,63 +1,73 @@
-/**
- * Proof: v846 authored shop, Eclipse Field Guide, Your Eclipse Edition, availability list and live checkout state.
- */
+/** Proof: v899 voluntary-support shop and archived entitlement recovery. */
 import { existsSync, readFileSync } from 'node:fs';
-import { buildEclipseReading5 } from '../website/js/eclipse-reading.js';
 
 const shop = readFileSync('website/shop.html', 'utf8');
-const shopCss = readFileSync('website/css/ap-shop-v835.css', 'utf8');
 const app = readFileSync('website/js/app.js', 'utf8');
-const eclipse = readFileSync('website/eclipse.html', 'utf8');
-const sw = readFileSync('website/sw.js', 'utf8');
-
-const fails = [];
-for (const id of ['eclipse-field-guide', 'eclipse-edition']) {
-  if (!shop.includes('id="' + id + '"')) fails.push('shop missing ' + id + ' edition');
-}
-for (const art of [
-  'img/editorial/eclipse-field-guide-cover-final-v836.png',
-  'img/editorial/eclipse-edition-art-v841.png',
-]) {
-  if (!shop.includes(art) || !existsSync('website/' + art)) fails.push('shop missing authored art ' + art);
-}
-if (!/(?:12 Aug edition · £7|Buy the £7 edition|your-eclipse-reading)/i.test(shop)) fails.push('shop missing clear £7 checkout status');
-if (!/Cast free contact first|Cast, then unlock|eclipse\.html#contact/i.test(shop)) fails.push('shop missing cast-first funnel into the £7 edition');
-if (!/Free first\.[\s\S]*One paid edition\./i.test(shop)) fails.push('shop missing launch-edition proposition');
-if (!/£7/.test(shop) || !/Free/.test(shop)) {
-  fails.push('shop missing GBP 7 Eclipse Edition and free Field Guide prices');
-}
-if (!/Your Eclipse Edition/.test(shop) || !/Eclipse Field Guide/.test(shop)) {
-  fails.push('shop missing named editions');
-}
-if (!/list\.astroprecise\.app\/subscribe/.test(shop)) fails.push('shop missing availability-list endpoint');
-if (!/Nothing was saved/.test(shop)) fails.push('shop missing honest subscribe failure state');
-if (/gumroad\.com\/l\/REPLACE_ME|REPLACE_ME/i.test(shop)) fails.push('shop leaks an unverified checkout path');
-if (!/https:\/\/davxplorer3\.gumroad\.com\/l\/your-eclipse-reading/.test(shop)) fails.push('shop missing live Gumroad product path');
-if (!/View content/.test(shop)) fails.push('shop missing View content licence-key guidance');
-if (!/ap-mystic-cards-v835\.js/.test(shop)) fails.push('shop missing art-only spectral interaction');
-if (!/\.ap-product__stamp/.test(shopCss)) fails.push('shop stamp selector is not class-scoped');
-if (/\.ap-product__image\s+span\s*\{/.test(shopCss)) fails.push('shop retains generic product-image span override');
-if (!app.includes("['shop.html', 'Shop']")) fails.push('shared navigation missing Shop');
-if (!eclipse.includes('id="eclipseEdition"')) fails.push('eclipse missing the gated Eclipse Edition host');
-if (typeof buildEclipseReading5 !== 'function') fails.push('eclipse contact engine missing');
-if (!/const V\s*=\s*["']ap-v874["']/.test(sw)) fails.push('SW tip is not exactly ap-v874');
-if (/tags',\s*'checkout-open'/.test(shop)) fails.push('shop notify tag still says checkout-open');
-if (!/tags',\s*'eclipse-notes'/.test(shop)) fails.push('shop notify tag must match eclipse-notes copy');
 const unlock = readFileSync('website/js/gumroad-unlock.js', 'utf8');
 const bridge = readFileSync('website/js/ap-gumroad-bridge.js', 'utf8');
-if (!/productId:\s*'3ZwFjg0IW702KvJ5s97QuQ=='/.test(unlock)) fails.push('module productId is not the live Gumroad id');
-if (!/productId:\s*'3ZwFjg0IW702KvJ5s97QuQ=='/.test(bridge)) fails.push('bridge productId is not the live Gumroad id');
-if (/productId:\s*'30971'/.test(unlock + bridge)) fails.push('stale productId 30971 still present');
-if (!/View content/.test(readFileSync('website/js/ap-eclipse-edition-v841.js', 'utf8'))) {
-  fails.push('paid edition missing View content licence-key guidance');
+const edition = readFileSync('website/js/ap-eclipse-edition-v841.js', 'utf8');
+const affiliate = readFileSync('website/js/affiliate-social.js', 'utf8');
+const terms = readFileSync('website/terms.html', 'utf8');
+const captureSurfaces = ['links.html', 'profile.html', 'saturn-return.html']
+  .map(file => [file, readFileSync('website/' + file, 'utf8')]);
+const sw = readFileSync('website/sw.js', 'utf8');
+const fails = [];
+
+for (const file of [
+  'website/downloads/astroprecise-eclipse-field-guide-2026.pdf',
+  'website/img/editorial/eclipse-field-guide-cover-final-v836.png',
+  'website/img/editorial/eclipse-edition-art-v841.png',
+  'website/img/engine/earth.webp',
+]) if (!existsSync(file)) fails.push('missing authored asset ' + file);
+
+if (!/class="ap-surface-a"/.test(shop) || !/img\/engine\/earth\.webp/.test(shop)) {
+  fails.push('shop missing honest clean Surface A model still');
+}
+if (!/https:\/\/ko-fi\.com\/astroprecise/.test(shop) || !/Voluntary support/.test(shop)) {
+  fails.push('shop missing voluntary Ko-fi support route');
+}
+if (!/no product checkout is linked or opened on AstroPrecise/i.test(shop)) fails.push('shop does not state the local product-checkout boundary');
+if (!/Optional Ko-fi support requires an email/i.test(shop) || !/connected PayPal or Stripe account/i.test(shop)) {
+  fails.push('shop does not disclose the support email and payment route');
+}
+if (/(?:£7|Buy now|gumroad\.com\/l\/|checkout-open)/i.test(shop)) fails.push('shop still presents stale product checkout copy');
+if (/list\.astroprecise\.app\/subscribe/.test(shop) || /<form[^>]+subscribe/i.test(shop)) {
+  fails.push('shop retains an unverified email-capture endpoint');
+}
+if (!/Email updates are paused/.test(shop)) fails.push('shop missing honest email-pause state');
+if (!/emailCaptureEnabled:\s*false/.test(app) || /list\.astroprecise\.app|function captureEmail/.test(app)) {
+  fails.push('site-wide email capture is not hard-paused');
+}
+for (const [file, html] of captureSurfaces) {
+  if (/ap-email-cta__form|cw-waitlist__form/.test(html)) {
+    fails.push(file + ' still exposes an email signup form');
+  }
+}
+if (!/adsEnabled:\s*false/.test(app) || !/aff\.adsEnabled !== true \|\| !amazonTag\(\)/.test(affiliate)) {
+  fails.push('affiliate inventory can render without verified configuration');
+}
+if (!/No affiliate programme is active today\./.test(terms)) {
+  fails.push('terms still imply an active affiliate programme');
+}
+if (!/catalogueSkus:\s*\[\s*\]/.test(app) || !/price:\s*null/.test(app)) {
+  fails.push('public app catalogue still contains a live SKU or price');
 }
 
-// Verify exactly two editions referenced in the editions section
-const editionCount = (shop.match(/<article class="ap-product/g) || []).length;
-if (editionCount !== 2) fails.push(`shop must have exactly 2 edition articles, found ${editionCount}`);
+for (const [name, source] of [['module', unlock], ['bridge', bridge]]) {
+  if (!/checkoutEnabled:\s*false/.test(source)) fails.push(name + ' checkout is not explicitly disabled');
+  if (!/archived:\s*true/.test(source)) fails.push(name + ' product is not marked archived');
+  if (!/productId:\s*'3ZwFjg0IW702KvJ5s97QuQ=='/.test(source)) fails.push(name + ' lost the historic entitlement product id');
+  if (!/isEntitlementReady/.test(source)) fails.push(name + ' cannot verify past-buyer entitlement');
+}
+if (!/verifyLicense/.test(unlock) || !/api\.gumroad\.com\/v2\/licenses\/verify/.test(unlock)) {
+  fails.push('past-buyer licence verification is no longer wired');
+}
+if (/openCheckout\s*\(/.test(edition)) fails.push('archived edition can still call checkout');
+if (!/event edition is closed|past buyer/i.test(edition)) fails.push('edition recovery copy does not explain archive/past-buyer state');
+if (!/const V\s*=\s*["']ap-v899["']/.test(sw)) fails.push('SW tip is not ap-v899');
 
 if (fails.length) {
   console.error('FAIL', fails);
   process.exit(1);
 }
-console.log('PASS Eclipse Field Guide + Your Eclipse Edition shop + availability list + live checkout state');
+console.log('PASS voluntary support + archived checkout + past-buyer recovery');

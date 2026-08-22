@@ -1,14 +1,17 @@
 /* AstroPrecise Daily v835 — twelve-sign field ledger. */
 
 .page-horoscope {
-  --daily-void: #05080F;
-  --daily-raised: #0d121b;
-  --daily-paper: #E6ECF2;
-  --daily-brass: #8FA3B8;
-  --daily-ember: #B86B4A;
-  --daily-silver: #b9c8dc;
-  --daily-line: rgba(216, 180, 106, 0.22);
-  --daily-line-soft: rgba(185, 200, 220, 0.13);
+  --daily-void: #040812;
+  --daily-raised: #101D30;
+  --daily-paper: #EEF4FA;
+  --daily-brass: #93A8BF;
+  --daily-ember: #8BA9FF;
+  --daily-ion-hover: #A5BCFF;
+  --daily-violet: #A897FF;
+  --daily-cta-ink: #07101E;
+  --daily-silver: #C9D6E3;
+  --daily-line: rgba(147, 168, 191, 0.22);
+  --daily-line-soft: rgba(201, 214, 227, 0.13);
   background: var(--daily-void);
   color: var(--daily-paper);
   font-family: "Schibsted Grotesk", system-ui, sans-serif;
@@ -41,8 +44,8 @@ body.page-horoscope {
   overflow: clip;
   background-color: var(--daily-void);
   background-image:
-    linear-gradient(rgba(216, 180, 106, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(216, 180, 106, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(147, 168, 191, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(147, 168, 191, 0.02) 1px, transparent 1px);
   background-size: 88px 88px;
 }
 
@@ -77,7 +80,7 @@ body.page-horoscope {
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: linear-gradient(90deg, var(--daily-void) 0 42%, rgba(2, 3, 7, 0.76) 68%, var(--daily-void) 100%);
+  background: linear-gradient(90deg, var(--daily-void) 0 42%, rgba(4, 8, 18, 0.76) 68%, var(--daily-void) 100%);
 }
 
 .page-horoscope .daily-room__inner {
@@ -89,7 +92,7 @@ body.page-horoscope {
   position: absolute;
   top: -36px;
   right: 0;
-  color: rgba(216, 180, 106, 0.52);
+  color: rgba(147, 168, 191, 0.52);
   font: 0.55rem/1 "IBM Plex Mono", monospace;
   letter-spacing: 0.18em;
 }
@@ -139,7 +142,7 @@ body.page-horoscope {
 .page-horoscope .daily-hero__sub {
   max-width: 48ch;
   margin: 28px 0 0;
-  color: rgba(242, 236, 223, 0.76);
+  color: rgba(238, 244, 250, 0.76);
   font-size: clamp(1rem, 1.4vw, 1.15rem);
   line-height: 1.68;
 }
@@ -148,7 +151,7 @@ body.page-horoscope {
 .page-horoscope .daily-hero__personal {
   max-width: 58ch;
   margin: 17px 0 0;
-  color: rgba(185, 200, 220, 0.62);
+  color: rgba(201, 214, 227, 0.62);
   font-size: 0.86rem;
   line-height: 1.55;
 }
@@ -205,7 +208,7 @@ body.page-horoscope {
   border-right: 1px solid var(--daily-line);
   border-bottom: 1px solid var(--daily-line);
   border-radius: 0;
-  background: rgba(2, 3, 7, 0.9);
+  background: rgba(4, 8, 18, 0.9);
   color: var(--daily-paper);
   text-align: left;
   cursor: pointer;
@@ -242,7 +245,7 @@ body.page-horoscope {
   width: 34px;
   height: 42px;
   color: var(--daily-brass);
-  filter: sepia(0.72) saturate(0.62);
+  filter: saturate(0.82) brightness(1.04);
 }
 
 .page-horoscope .sign-card__name {
@@ -253,13 +256,13 @@ body.page-horoscope {
 
 .page-horoscope .sign-card__dates,
 .page-horoscope .sign-card__element-badge {
-  color: rgba(185, 200, 220, 0.62);
+  color: rgba(201, 214, 227, 0.62);
   font-size: 0.48rem;
   overflow-wrap: anywhere;
 }
 
 .page-horoscope .sign-card__element-badge {
-  color: rgba(216, 180, 106, 0.76);
+  color: rgba(147, 168, 191, 0.76);
 }
 
 .page-horoscope .sign-reading-panel {
@@ -269,7 +272,7 @@ body.page-horoscope {
   border: 1px solid var(--daily-line);
   border-radius: 8px;
   background: var(--daily-raised);
-  box-shadow: 0 34px 100px rgba(2, 3, 7, 0.42);
+  box-shadow: 0 34px 100px rgba(4, 8, 18, 0.42);
 }
 
 .page-horoscope .sign-reading-panel.is-open {
@@ -303,7 +306,7 @@ body.page-horoscope {
   border-radius: 4px;
   object-fit: contain;
   background: var(--daily-void);
-  filter: sepia(0.48) saturate(0.66);
+  filter: saturate(0.78) brightness(1.04);
 }
 
 .page-horoscope .sign-reading-panel__sign-name {
@@ -359,7 +362,7 @@ body.page-horoscope {
   align-items: center;
   justify-content: center;
   padding: 0 16px;
-  border: 1px solid rgba(216, 180, 106, 0.32);
+  border: 1px solid rgba(147, 168, 191, 0.32);
   border-radius: 5px;
   background: transparent;
   color: var(--daily-paper);
@@ -372,12 +375,12 @@ body.page-horoscope {
 .page-horoscope .btn--primary {
   border-color: var(--daily-ember);
   background: var(--daily-ember);
-  color: var(--daily-void);
+  color: var(--daily-cta-ink);
 }
 
 .page-horoscope .btn--primary:hover {
-  border-color: var(--daily-paper);
-  background: var(--daily-paper);
+  border-color: var(--daily-ion-hover);
+  background: var(--daily-ion-hover);
 }
 
 .page-horoscope .btn:disabled {
@@ -389,8 +392,8 @@ body.page-horoscope {
   margin: 24px 0 0;
   padding: 12px 15px;
   border-left: 2px solid var(--daily-brass);
-  background: rgba(216, 180, 106, 0.06);
-  color: rgba(185, 200, 220, 0.68);
+  background: rgba(147, 168, 191, 0.06);
+  color: rgba(201, 214, 227, 0.68);
   font-size: 0.75rem;
   line-height: 1.6;
 }
@@ -424,7 +427,7 @@ body.page-horoscope {
   padding: 24px;
   border-right: 1px solid var(--daily-line);
   border-bottom: 1px solid var(--daily-line);
-  background: rgba(2, 3, 7, 0.36);
+  background: rgba(4, 8, 18, 0.36);
 }
 
 .page-horoscope .reading-card__icon {
@@ -441,7 +444,7 @@ body.page-horoscope {
 
 .page-horoscope .reading-card__text {
   margin: 0;
-  color: rgba(242, 236, 223, 0.76);
+  color: rgba(238, 244, 250, 0.76);
   font-size: 0.92rem;
   line-height: 1.68;
 }
@@ -458,7 +461,7 @@ body.page-horoscope {
 .page-horoscope .sign-reading-panel__method p {
   max-width: 84ch;
   margin: 8px 0 0;
-  color: rgba(185, 200, 220, 0.6);
+  color: rgba(201, 214, 227, 0.6);
   font-family: "Schibsted Grotesk", system-ui, sans-serif;
   letter-spacing: 0;
   text-transform: none;
@@ -475,7 +478,7 @@ body.page-horoscope {
   align-items: center;
   gap: 18px 32px;
   padding: clamp(24px, 4vw, 42px);
-  border: 1px solid rgba(255, 100, 40, 0.44);
+  border: 1px solid rgba(139, 169, 255, 0.44);
   border-radius: 5px;
   background: var(--daily-raised);
 }
@@ -511,7 +514,7 @@ body.page-horoscope {
 
 .page-horoscope .daily-eclipse p:not(.daily-eclipse__eyebrow) {
   max-width: 66ch;
-  color: rgba(242, 236, 223, 0.68);
+  color: rgba(238, 244, 250, 0.68);
   line-height: 1.62;
 }
 
@@ -525,7 +528,7 @@ body.page-horoscope {
   margin-bottom: clamp(70px, 9vw, 116px);
   border-top: 1px solid var(--daily-line);
   border-bottom: 1px solid var(--daily-line);
-  background: rgba(2, 3, 7, 0.8);
+  background: rgba(4, 8, 18, 0.8);
 }
 
 .page-horoscope .ap-more-sky__summary {
@@ -550,7 +553,7 @@ body.page-horoscope {
 .page-horoscope .daily-evidence__intro {
   max-width: 64ch;
   margin: 18px 0 26px;
-  color: rgba(242, 236, 223, 0.64);
+  color: rgba(238, 244, 250, 0.64);
   line-height: 1.65;
 }
 
@@ -570,7 +573,7 @@ body.page-horoscope {
   padding: 16px 18px;
   border-right: 1px solid var(--daily-line);
   border-bottom: 1px solid var(--daily-line);
-  background: rgba(2, 3, 7, 0.48);
+  background: rgba(4, 8, 18, 0.48);
 }
 
 .page-horoscope .daily-evidence__ledger > div:last-child {
@@ -623,12 +626,12 @@ body.page-horoscope {
   border-radius: 5px;
   background: var(--daily-raised);
   color: var(--daily-paper);
-  box-shadow: 0 18px 48px rgba(2, 3, 7, 0.46);
+  box-shadow: 0 18px 48px rgba(4, 8, 18, 0.46);
   font-size: 0.8rem;
 }
 
 .page-horoscope .toast--error {
-  border-color: rgba(255, 100, 40, 0.58);
+  border-color: rgba(139, 169, 255, 0.58);
 }
 
 .page-horoscope .toast--fallback {
@@ -647,7 +650,7 @@ body.page-horoscope {
 
 .page-horoscope .toast__message {
   margin-top: 2px;
-  color: rgba(185, 200, 220, 0.66);
+  color: rgba(201, 214, 227, 0.66);
   font-size: 0.75rem;
   line-height: 1.45;
 }
@@ -674,7 +677,7 @@ body.page-horoscope {
   .page-horoscope .sign-reading-panel__grid { grid-template-columns: 1fr; }
   .page-horoscope .reading-card { min-height: 0; }
   .page-horoscope .daily-room::before { width: 72vw; opacity: 0.42; }
-  .page-horoscope .daily-room::after { background: linear-gradient(90deg, var(--daily-void) 0 48%, rgba(2, 3, 7, 0.72) 78%, var(--daily-void)); }
+  .page-horoscope .daily-room::after { background: linear-gradient(90deg, var(--daily-void) 0 48%, rgba(4, 8, 18, 0.72) 78%, var(--daily-void)); }
 }
 
 @media (max-width: 660px) {
@@ -688,7 +691,7 @@ body.page-horoscope {
     opacity: 0.24;
   }
   .page-horoscope .daily-room::after {
-    background: linear-gradient(0deg, var(--daily-void) 0 70%, rgba(2, 3, 7, 0.62) 92%, var(--daily-void));
+    background: linear-gradient(0deg, var(--daily-void) 0 70%, rgba(4, 8, 18, 0.62) 92%, var(--daily-void));
   }
   .page-horoscope .daily-room__inner::before { top: -28px; }
   .page-horoscope .daily-hero { margin-bottom: 36px; }

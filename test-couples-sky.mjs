@@ -1,5 +1,5 @@
 /**
- * Couples sky — two birth minutes, one WebGL model.
+ * Couples sky — two birth minutes, one measured-angle ledger and Surface A still.
  * Civil time must use a real IANA zone. Unknown time is not noon.
  * Run: node test-couples-sky.mjs
  */
@@ -12,6 +12,8 @@ const root = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(root, 'website/js/ap-couples-sky.js'), 'utf8');
 const html = readFileSync(join(root, 'website/compatibility.html'), 'utf8');
 const css = readFileSync(join(root, 'website/css/ap-couples-v858.css'), 'utf8');
+const sw = readFileSync(join(root, 'website/sw.js'), 'utf8');
+const releaseTip = sw.match(/const V\s*=\s*["']ap-v(\d+)["']/)?.[1] || '';
 
 let pass = 0;
 let fail = 0;
@@ -166,7 +168,9 @@ ok('hash UTC is stripped and London supplies Europe/London',
 const cityOnly = AP.sceneFromHash('#a=1990-06-15&at=14:22&ac=London');
 ok('city-only hash still finds Europe/London', cityOnly.a && cityOnly.a.tz === 'Europe/London');
 
-ok('page is webgl-only', /<void-orrery[^>]+data-renderer="webgl-only"/.test(html));
+ok('page is Surface A and owns no WebGL context',
+  html.includes('class="ap-surface-a"') && html.includes('img/engine/earth.webp') &&
+  !/<void-orrery\b/.test(html) && !/<canvas\b/.test(html));
 ok('page does not load a 2D orrery.js', !/<script[^>]+js\/orrery\.js/.test(html));
 ok('page does not load retired compatibility-page.js', !html.includes('compatibility-page.js'));
 ok('place is not labelled optional', !/Birth place <span class="opt">optional<\/span>/.test(html));
@@ -175,12 +179,12 @@ ok('keep-sky stays current-view, not birth-hour',
   html.includes('id="keep-sky"') && !/id="keep-sky"[^>]*data-keep-mode/.test(html));
 ok('no checkout or SKU on the couples page', !/gumroad|catalogueSkus|checkout/i.test(html + src));
 ok('house wordmark splits Precise', html.includes('logo-text__precise'));
-ok('A/B cards keep house brass and ember',
-  css.includes('.ap-couples-card--a') && css.includes('#8FA3B8') && css.includes('#B86B4A'));
+ok('A/B cards keep redundant silver and ion identity',
+  css.includes('.ap-couples-card--a') && css.includes('#93A8BF') && css.includes('#8BA9FF'));
 ok('city items are 44px taps', css.includes('.ap-city-item') && /min-height:\s*44px/.test(css));
-ok('house lock colours stay',
-  css.includes('#05080F') && css.includes('#E6ECF2') && css.includes('#A89C84') &&
-  css.includes('#B86B4A') && css.includes('#8FA3B8') && css.includes('#B04A52'));
+ok('Midnight Meridian house colours stay locked',
+  css.includes('#040812') && css.includes('#EEF4FA') && css.includes('#93A8BF') &&
+  css.includes('#8BA9FF') && css.includes('#A5BCFF') && css.includes('#FF8EA8'));
 ok('copy withholds the clock when time is blank',
   /blank time withholds that clock/i.test(html) || html.includes('that clock, the Moon, and angles are withheld'));
 ok('hash restore stays Live so both clocks stay equally up',
@@ -188,8 +192,11 @@ ok('hash restore stays Live so both clocks stay equally up',
   !/function applyHash\(\)[\s\S]*setPressed\('a'\)/.test(src));
 ok('couples page does not fly the camera on A/B',
   !src.includes('flyTo') && !src.includes('focusPlanet') && !src.includes('setJD'));
-ok('couples assets stay at 880',
-  html.includes('ap-couples-sky.js?v=880') && html.includes('ap-couples-v858.css?v=880'));
+ok('blank form keeps the withheld-angle ledger quiet',
+  src.includes("var started = ['person1-date'") && src.includes('if (!started)') && src.includes('box.hidden = true'));
+ok('couples assets stay on the release tip',
+  Boolean(releaseTip) && html.includes(`ap-couples-sky.js?v=${releaseTip}`) &&
+  html.includes(`ap-couples-v858.css?v=${releaseTip}`));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

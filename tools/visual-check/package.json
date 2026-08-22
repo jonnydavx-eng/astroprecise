@@ -22,11 +22,11 @@
     "phone:audit": "node serve-phone-collector.mjs"
   },
   "dependencies": {
-    "@axe-core/playwright": "^4.10.1",
+    "@axe-core/playwright": "^4.13.0",
     "chrome-launcher": "^1.1.2",
-    "lighthouse": "^12.6.0",
+    "lighthouse": "^13.4.1",
     "pixelmatch": "^7.1.0",
-    "playwright": "^1.52.0",
+    "playwright": "^1.62.1",
     "pngjs": "^7.0.0"
   }
 }

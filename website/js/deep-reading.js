@@ -8,12 +8,13 @@
  * Ascendant/houses (says so with dignity); no transits -> CH6 explains the
  * live edition. No dependencies; browser + Node.
  */
-import { fmtDeg, fmtOrb, wholeSignHouse, separation } from './eclipse-reading.js';
+import { fmtDeg, fmtOrb, wholeSignHouse, separation } from './eclipse-reading.js?v=899';
 
 const SIGNS_EL = ['fire','earth','air','water']; // Aries=fire, Taurus=earth, ...
 const SIGNS_MODE = ['cardinal','fixed','mutable'];
 const BODIES = ['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'];
 const ASPECTS = { conjunction: 0, sextile: 60, square: 90, trine: 120, opposition: 180 };
+const HOUSE_SYSTEM_LABELS = { whole: 'Whole Sign', equal: 'Equal', placidus: 'Placidus' };
 
 const signIndex = (lon) => Math.floor((((lon % 360) + 360) % 360) / 30);
 const houseSuffix = (h) => h === 1 ? 'st' : h === 2 ? 'nd' : h === 3 ? 'rd' : 'th';
@@ -81,15 +82,40 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
   const S = base.signs;
   const orbs = base.orbsDeg;
   const B = opts.birth || {};
-  const timed = !!B.timeText; // no birth time -> the Moon (±7°/half-day) is held honestly loose
+  const timeAccuracy = opts.timeAccuracy || B.timeAccuracy || (B.timeText ? 'exact' : 'unknown');
+  const timed = timeAccuracy !== 'unknown' && !!B.timeText;
   const hasAsc = natal.asc != null && !Number.isNaN(natal.asc);
+  const houseSystem = opts.houseSystem || B.houseSystem || 'whole';
+  const houseCusps = Array.isArray(opts.houseCusps) && opts.houseCusps.length === 12 ? opts.houseCusps : null;
+  const suppliedHouses = opts.planetHouses || {};
   const fmtDegCoarse = (lon) => { // whole degrees only, for the untimed Moon
     const norm = ((lon % 360) + 360) % 360, si = Math.floor(norm / 30);
     return `${Math.round(norm - si * 30)}° ${S[si]}`;
   };
-  const houseOf = (lon) => hasAsc ? wholeSignHouse(lon, natal.asc) : null;
-  const houseTxt = (lon) => {
-    const h = houseOf(lon);
+  const suppliedHouse = (body) => {
+    if (!body) return null;
+    const title = body.charAt(0).toUpperCase() + body.slice(1);
+    const value = Number(suppliedHouses[body] ?? suppliedHouses[title]);
+    return Number.isInteger(value) && value >= 1 && value <= 12 ? value : null;
+  };
+  const cuspHouse = (lon) => {
+    if (!houseCusps) return null;
+    for (let i = 0; i < 12; i += 1) {
+      const a = Number(houseCusps[i]);
+      const b = Number(houseCusps[(i + 1) % 12]);
+      if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+      const span = ((b - a) % 360 + 360) % 360 || 30;
+      const off = ((lon - a) % 360 + 360) % 360;
+      if (off < span) return i + 1;
+    }
+    return null;
+  };
+  const houseOf = (lon, body) => {
+    if (!hasAsc) return null;
+    return suppliedHouse(body) || cuspHouse(lon) || wholeSignHouse(lon, natal.asc);
+  };
+  const houseTxt = (lon, body) => {
+    const h = houseOf(lon, body);
     return h ? `, ${h}${houseSuffix(h)} house` : '';
   };
   const label = (b) => base.targets[b]?.label || b;
@@ -103,6 +129,7 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
   ];
   if (B.zone) frameLines.push(`Zone ${B.zone}${B.utcText ? ' · computed from ' + B.utcText : ''}.`);
   else if (B.utcText) frameLines.push(`Computed from ${B.utcText}.`);
+  if (timeAccuracy === 'approximate') frameLines.push('Birth time marked approximate — angles and houses are provisional at the entered time.');
   if (!timed && deep.chapters.ch1.noonNote) frameLines.push(deep.chapters.ch1.noonNote);
   if (timed && B.coordsKnown === false && deep.chapters.ch1.noCoordsNote) frameLines.push(deep.chapters.ch1.noCoordsNote);
   chapters.push({
@@ -111,7 +138,7 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
       ...frameLines,
       ...present.map((b) => (b === 'moon' && !timed)
         ? `${label(b)} — near ${fmtDegCoarse(natal[b])} ${deep.chapters.ch1.moonApproxNote || '(approximate)'}`
-        : `${label(b)} — ${fmtDeg(natal[b], S)}${houseTxt(natal[b])}`),
+        : `${label(b)} — ${fmtDeg(natal[b], S)}${houseTxt(natal[b], b)}`),
     ],
     serif: [timed ? deep.chapters.ch1.serif : (deep.chapters.ch1.serifNoTime || deep.chapters.ch1.serif)],
   });
@@ -129,7 +156,7 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
       lights.serif.push((deep.chapters.ch2.moonNoTime || deep.chapters.ch2.moon)
         .replace('{theme}', themeTxt).replace('{boundary}', boundary));
     } else {
-      lights.mono.push(`${label(l)} — ${fmtDeg(natal[l], S)}${houseTxt(natal[l])}`);
+      lights.mono.push(`${label(l)} — ${fmtDeg(natal[l], S)}${houseTxt(natal[l], l)}`);
       lights.serif.push(deep.chapters.ch2[l].replace('{theme}', themeTxt));
     }
   }
@@ -190,8 +217,8 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
   for (const p of ['saturn', 'uranus', 'neptune', 'pluto']) {
     if (natal[p] == null) continue;
     const sName = S[signIndex(natal[p])];
-    const hClause = (() => { const h = houseOf(natal[p]); return h ? `, ${h}${houseSuffix(h)} house` : ''; })();
-    arcs.mono.push(`${label(p)} — ${fmtDeg(natal[p], S)}${houseTxt(natal[p])}`);
+    const hClause = (() => { const h = houseOf(natal[p], p); return h ? `, ${h}${houseSuffix(h)} house` : ''; })();
+    arcs.mono.push(`${label(p)} — ${fmtDeg(natal[p], S)}${houseTxt(natal[p], p)}`);
     // Sign-specific line when the library has one (audit fix: no placement-blind boilerplate).
     const signLine = deep.ch5Signs && deep.ch5Signs[p] && deep.ch5Signs[p][sName.toLowerCase()];
     arcs.serif.push(signLine
@@ -265,5 +292,9 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
 
   const wordCount = chapters.reduce((s, c) =>
     s + [...c.mono, ...c.serif].join(' ').split(/\s+/).filter(Boolean).length, 0);
-  return { chapters, wordCount, legal: base.legalLine, houseNote: hasAsc ? base.houseSystemNote : null };
+  const methodLabel = HOUSE_SYSTEM_LABELS[houseSystem] || houseSystem;
+  const houseNote = hasAsc
+    ? `${methodLabel} houses${timeAccuracy === 'approximate' ? ' · provisional because the birth time is approximate' : ''}. House placements were carried from the computed chart without changing method.`
+    : null;
+  return { chapters, wordCount, legal: base.legalLine, houseNote };
 }

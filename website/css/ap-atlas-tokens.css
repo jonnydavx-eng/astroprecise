@@ -5,8 +5,8 @@
    page-specific ap-atlas-<page>.css layer.
 
    This file must NOT invent a second palette. Values here
-   restate css/ap-palette-2026.css (lunar night + instrument
-   silver + copper action). Warm brass / acid orange stay retired.
+   restate css/ap-palette-2026.css (Midnight Meridian: lunar navy,
+   instrument silver, ion action and spectral semantic accents).
    ============================================================ */
 
 @font-face{font-family:'Schibsted Grotesk';src:url('../fonts/schibsted-grotesk-latin-var.woff2') format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
@@ -15,60 +15,63 @@
 @font-face{font-family:'Cinzel';src:url('../fonts/cinzel-normal-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 
 html:root{
-  --ap-jet-soft:#05080F; --ap-jet-base:#05080F; --ap-jet-mid:#0C1422;
-  --ap-jet-raised:#141E2E; --ap-jet-elevated:#1A2538;
+  --ap-jet-soft:#040812; --ap-jet-base:#040812; --ap-jet-mid:#0A1424;
+  --ap-jet-raised:#101D30; --ap-jet-elevated:#17263B;
 
-  --ap-silver-bright:#C5D4E0;
-  --ap-silver:#8FA3B8;
-  --ap-silver-dim:rgba(143,163,184,.68);
-  --ap-silver-faint:rgba(143,163,184,.45);
-  --ap-chrome:#8FA3B8;
-  --ap-silver-a08:rgba(143,163,184,.08); --ap-silver-a12:rgba(143,163,184,.12);
-  --ap-silver-a18:rgba(143,163,184,.18); --ap-silver-a28:rgba(143,163,184,.28);
-  --ap-silver-a40:rgba(143,163,184,.40); --ap-silver-a55:rgba(143,163,184,.55);
+  --ap-silver-bright:#C9D6E3;
+  --ap-silver:#93A8BF;
+  --ap-silver-dim:rgba(147,168,191,.72);
+  --ap-silver-faint:rgba(147,168,191,.52);
+  --ap-chrome:#93A8BF;
+  --ap-silver-a08:rgba(147,168,191,.08); --ap-silver-a12:rgba(147,168,191,.12);
+  --ap-silver-a18:rgba(147,168,191,.18); --ap-silver-a28:rgba(147,168,191,.28);
+  --ap-silver-a40:rgba(147,168,191,.40); --ap-silver-a55:rgba(147,168,191,.55);
 
-  --ap-aurora:#8FA3B8; --ap-aurora-bright:#C5D4E0; --ap-aurora-deep:#6B7F94;
-  --ap-aurora-violet:#8FA3B8;
-  --ap-aurora-a10:rgba(143,163,184,.10); --ap-aurora-a16:rgba(143,163,184,.16);
-  --ap-aurora-a28:rgba(143,163,184,.28); --ap-aurora-a40:rgba(143,163,184,.40);
+  --ap-ion:#8BA9FF; --ap-ion-hover:#A5BCFF; --ap-violet:#A897FF;
+  --ap-proof:#6FD0B3; --ap-danger:#FF8EA8; --ap-warning:#C8B5FF;
+  --ap-ember:var(--ap-ion);
+  --ap-aurora:#8BA9FF; --ap-aurora-bright:#A5BCFF; --ap-aurora-deep:#617ED6;
+  --ap-aurora-violet:#A897FF;
+  --ap-aurora-a10:rgba(139,169,255,.10); --ap-aurora-a16:rgba(139,169,255,.16);
+  --ap-aurora-a28:rgba(139,169,255,.28); --ap-aurora-a40:rgba(139,169,255,.40);
 
-  --ap-gold-ink:#5A6E82; --ap-gold-shadow:#6B7F94;
-  --ap-gold-core:#8FA3B8; --ap-gold-bright:#C5D4E0;
-  --ap-gold-vivid:#C5D4E0; --ap-gold-parchment:#E6ECF2;
-  --gold:#8FA3B8; --gold-light:#C5D4E0; --gold-pale:#E6ECF2;
+  --ap-gold-ink:#60768E; --ap-gold-shadow:#728AA3;
+  --ap-gold-core:#93A8BF; --ap-gold-bright:#C9D6E3;
+  --ap-gold-vivid:#C9D6E3; --ap-gold-parchment:#EEF4FA;
+  --gold:#93A8BF; --gold-light:#C9D6E3; --gold-pale:#EEF4FA;
 
-  --ap-cta:#B86B4A; --ap-cta-hover:#C87D5C; --ap-cta-ink:#140A08;
-  --ap-focus-ring:#B86B4A;
+  --ap-cta:#8BA9FF; --ap-cta-hover:#A5BCFF; --ap-cta-ink:#07101E;
+  --ap-focus-ring:#A897FF;
 
-  --ap-enchant-void:#05080F; --ap-enchant-deep:#05080F;
-  --ap-enchant-indigo:#0C1422; --ap-enchant-twilight:#141E2E;
-  --ap-enchant-nebula:rgba(143,163,184,.07);
-  --ap-enchant-aurora:rgba(184,107,74,.05);
-  --ap-enchant-star:rgba(230,236,242,.4);
-  --ap-enchant-gold:#B86B4A;
-  --ap-enchant-gold-soft:rgba(184,107,74,.14);
-  --ap-enchant-gold-glow:0 0 32px rgba(184,107,74,.12), 0 0 64px rgba(143,163,184,.07);
-  --ap-enchant-gold-ring:0 0 0 1px rgba(143,163,184,.22), inset 0 1px 0 rgba(230,236,242,.06);
-  --ap-enchant-sun:#E6ECF2;
+  --ap-enchant-void:#040812; --ap-enchant-deep:#040812;
+  --ap-enchant-indigo:#0A1424; --ap-enchant-twilight:#101D30;
+  --ap-enchant-nebula:rgba(147,168,191,.07);
+  --ap-enchant-aurora:rgba(139,169,255,.07);
+  --ap-enchant-star:rgba(238,244,250,.4);
+  --ap-enchant-gold:#8BA9FF;
+  --ap-enchant-gold-soft:rgba(139,169,255,.14);
+  --ap-enchant-gold-glow:0 0 32px rgba(139,169,255,.14), 0 0 64px rgba(168,151,255,.08);
+  --ap-enchant-gold-ring:0 0 0 1px rgba(147,168,191,.22), inset 0 1px 0 rgba(238,244,250,.06);
+  --ap-enchant-sun:#EEF4FA;
 
-  --glass:rgba(20,30,46,.76); --glass-2:rgba(20,30,46,.82);
-  --glass-3:rgba(5,8,15,.88); --glass-bg:rgba(20,30,46,.76);
-  --surface:rgba(20,30,46,.76); --surface-2:rgba(20,30,46,.82);
-  --surface-hover:rgba(26,37,56,.88);
-  --glass-border:rgba(143,163,184,.18); --glass-border-glow:rgba(143,163,184,.40);
-  --border:rgba(143,163,184,.18); --border-2:rgba(143,163,184,.40);
-  --border-glow:rgba(143,163,184,.40);
-  --hairline:rgba(143,163,184,.12);
-  --rim-light:inset 0 1px 0 rgba(230,236,242,.05);
-  --surface-raised:rgba(20,30,46,.82);
-  --surface-overlay:rgba(5,8,15,.88);
-  --glow-gold:rgba(143,163,184,.14); --glow-gold-2:rgba(143,163,184,.08);
-  --shimmer-line:linear-gradient(90deg, transparent, rgba(143,163,184,.4), rgba(184,107,74,.22), transparent);
+  --glass:rgba(16,29,48,.76); --glass-2:rgba(16,29,48,.82);
+  --glass-3:rgba(4,8,18,.88); --glass-bg:rgba(16,29,48,.76);
+  --surface:rgba(16,29,48,.76); --surface-2:rgba(16,29,48,.82);
+  --surface-hover:rgba(23,38,59,.88);
+  --glass-border:rgba(147,168,191,.18); --glass-border-glow:rgba(147,168,191,.40);
+  --border:rgba(147,168,191,.18); --border-2:rgba(147,168,191,.40);
+  --border-glow:rgba(147,168,191,.40);
+  --hairline:rgba(147,168,191,.12);
+  --rim-light:inset 0 1px 0 rgba(238,244,250,.05);
+  --surface-raised:rgba(16,29,48,.82);
+  --surface-overlay:rgba(4,8,18,.88);
+  --glow-gold:rgba(139,169,255,.14); --glow-gold-2:rgba(139,169,255,.08);
+  --shimmer-line:linear-gradient(90deg, transparent, rgba(147,168,191,.4), rgba(139,169,255,.28), transparent);
 
-  --white:#E6ECF2;
-  --silver:#8FA3B8; --silver-dim:rgba(143,163,184,.68);
-  --silver-dark:rgba(143,163,184,.45);
-  --ap-text-primary:#E6ECF2; --ap-text-secondary:rgba(230,236,242,.72);
+  --white:#EEF4FA;
+  --silver:#93A8BF; --silver-dim:rgba(147,168,191,.72);
+  --silver-dark:rgba(147,168,191,.52);
+  --ap-text-primary:#EEF4FA; --ap-text-secondary:rgba(238,244,250,.76);
   --font-body:'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-mono:'IBM Plex Mono', ui-monospace, monospace;
