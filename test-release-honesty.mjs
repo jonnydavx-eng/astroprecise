@@ -130,6 +130,7 @@ assert.ok(serviceWorker.includes('if (isCritical ||') && serviceWorker.includes(
 
 const runbook = read('./ECLIPSE-RUNBOOK.md');
 const paypalRunbook = read('./PAYPAL-SETUP.md');
+const lighthouseRunner = read('./tools/visual-check/lighthouse-production.mjs');
 assert.ok(runbook.includes('26 commands, must be 26/26'));
 assert.match(runbook, /archived entitlement runbook/i,
   'Eclipse operations must stay explicitly archived');
@@ -140,6 +141,11 @@ assert.match(paypalRunbook, /retired for v900/i,
 assert.equal(/site is already fully wired for PayPal|every step below is a paste-a-link job/i.test(paypalRunbook), false,
   'retired PayPal instructions must not tell the owner to reactivate the old catalogue');
 assert.equal(/19 suites|19\/19|23 suites|23\/23|24 suites|24\/24|25 suites|25\/25|27 suites|27\/27/.test(runbook), false);
+assert.equal(lighthouseRunner.includes('All pages passed CI thresholds.'), false,
+  'informational Lighthouse runs must not claim that every page passed CI');
+assert.ok(lighthouseRunner.includes('Informational threshold misses') &&
+  lighthouseRunner.includes('CI enforcement was not enabled for this run.'),
+  'informational Lighthouse misses must be reported explicitly');
 
 const mergeNote = read('./MERGE-2026-07-17-COWORK.md');
 assert.equal(/£2\.99[^\n]*£4 archive|£14→£19|prices only rise/i.test(mergeNote), false);

@@ -179,8 +179,21 @@ function formatSummary(report) {
   if (report.issues.length) {
     lines.push('', '## Issues', '');
     for (const issue of report.issues) lines.push(`- ${issue}`);
+  } else if (report.ci.perfFails.length || report.ci.a11yFails.length) {
+    lines.push('', '## Informational threshold misses', '');
+    for (const id of report.ci.perfFails) {
+      const page = report.pages.find((entry) => entry.id === id);
+      lines.push(`- ${id}: performance ${page?.scores?.performance ?? 0} < ${report.ci.perfMin}`);
+    }
+    for (const id of report.ci.a11yFails) {
+      const page = report.pages.find((entry) => entry.id === id);
+      lines.push(`- ${id}: accessibility ${page?.scores?.accessibility ?? 0} < ${report.ci.a11yMin}`);
+    }
+    if (!report.ci.mode) lines.push('', 'CI enforcement was not enabled for this run.');
   } else {
-    lines.push('', 'All pages passed CI thresholds.');
+    lines.push('', report.ci.mode
+      ? 'All pages passed the enforced CI thresholds.'
+      : 'All measured pages met the informational thresholds.');
   }
 
   return `${lines.join('\n')}\n`;
