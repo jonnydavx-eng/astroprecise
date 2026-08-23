@@ -1,13 +1,10 @@
 /**
- * Production-profile Lighthouse — real URLs, mobile preset, no audit shortcuts.
+ * Production-profile Lighthouse — real URLs and the visitor resource path.
  *
  * Measures the minified, compressed dist/ artifact through tools/serve-dist.mjs.
- * Scores are typically lower than shortcut-path runs because:
- *
- *   • defer-page-css.js skips deferred CSS when navigator.webdriver or
- *     HeadlessChrome is detected (audit-path) — audit-lighthouse inflates perf.
- *   • Real users load fonts/main/sign-page on scroll or pointerdown; Lighthouse
- *     scrolls the page, which can pull deferred CSS into the trace anyway.
+ * The browser host is headless, but measured CSS, icon, instrument and page
+ * boot code must not branch on webdriver or HeadlessChrome. The release-honesty
+ * gate locks that same-path contract for this 10-route batch.
  *
  * Run:  node lighthouse-production.mjs [baseUrl]
  *       npm run lighthouse:production
@@ -73,7 +70,7 @@ async function main() {
     profile: 'production',
     base: BASE,
     capturedAt: new Date().toISOString(),
-    note: 'Minified, compressed production artifact. Home runs the same real WebGL path users receive; nosw only prevents test cache carry-over.',
+    note: 'Minified, compressed production artifact. Headless is the execution host only: measured CSS, icon, instrument and page boot code uses the visitor path. Home runs the real WebGL path; nosw only prevents test cache carry-over.',
     pages: [],
     issues: [],
   };
@@ -108,7 +105,9 @@ async function main() {
         tbt: lhr.audits?.['total-blocking-time']?.displayValue,
         si: lhr.audits?.['speed-index']?.displayValue,
       };
-      entry.auditPathLikely = /\bHeadlessChrome\b/i.test(lhr.userAgent || '');
+      entry.headlessHost = /\bHeadlessChrome\b/i.test(
+        lhr.environment?.hostUserAgent || lhr.userAgent || '',
+      );
     } catch (err) {
       entry.error = String(err);
       report.issues.push(`${u.id}: ${err.message || err}`);

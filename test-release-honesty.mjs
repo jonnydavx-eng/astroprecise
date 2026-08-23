@@ -131,6 +131,7 @@ assert.ok(serviceWorker.includes('if (isCritical ||') && serviceWorker.includes(
 const runbook = read('./ECLIPSE-RUNBOOK.md');
 const paypalRunbook = read('./PAYPAL-SETUP.md');
 const lighthouseRunner = read('./tools/visual-check/lighthouse-production.mjs');
+const releaseStatus = read('./STATUS.md');
 assert.ok(runbook.includes('26 commands, must be 26/26'));
 assert.match(runbook, /archived entitlement runbook/i,
   'Eclipse operations must stay explicitly archived');
@@ -146,6 +147,27 @@ assert.equal(lighthouseRunner.includes('All pages passed CI thresholds.'), false
 assert.ok(lighthouseRunner.includes('Informational threshold misses') &&
   lighthouseRunner.includes('CI enforcement was not enabled for this run.'),
   'informational Lighthouse misses must be reported explicitly');
+assert.equal(lighthouseRunner.includes('auditPathLikely'), false,
+  'production Lighthouse must describe headless as its host, not a product audit path');
+assert.ok(lighthouseRunner.includes('Headless is the execution host only') &&
+  lighthouseRunner.includes('uses the visitor path'),
+  'production Lighthouse report must disclose its host and same-path contract');
+
+const measuredPathSources = [
+  './website/js/ap-sign-defer-boot.js',
+  './website/js/icons.js',
+  './website/js/instrument.js',
+  './website/ephemeris.html',
+  './website/transits.html',
+  './website/lifepath.html',
+];
+for (const path of measuredPathSources) {
+  assert.equal(/navigator\.webdriver|HeadlessChrome|ap-audit-path/.test(read(path)), false,
+    `${path} must use the visitor rendering and resource path during production measurement`);
+}
+const deferredCssRuntime = read('./website/js/defer-page-css.js').split('/* One-time gentle reload')[0];
+assert.equal(/navigator\.webdriver|HeadlessChrome|auditPath/.test(deferredCssRuntime), false,
+  'deferred CSS must not disappear under automated production measurement');
 
 const mergeNote = read('./MERGE-2026-07-17-COWORK.md');
 assert.equal(/£2\.99[^\n]*£4 archive|£14→£19|prices only rise/i.test(mergeNote), false);
@@ -234,6 +256,10 @@ assert.match(shop, /Optional Ko-fi support requires an email/i,
   'support copy must not claim Ko-fi is email-free');
 assert.match(shop, /connected PayPal or Stripe account/i,
   'support copy must name the actual payment route');
+assert.match(shop, /one-time and optional monthly support/i,
+  'shop must disclose Ko-fi recurring support before the visitor leaves AstroPrecise');
+assert.match(shop, /Monthly support recurs until cancelled/i,
+  'shop must state that monthly Ko-fi support recurs');
 assert.equal(/neither requires an account or email/i.test(shop), false,
   'free-tool privacy must not be attributed to external support');
 for (const [name, source] of [['privacy', privacy], ['terms', terms], ['refunds', refunds]]) {
@@ -245,8 +271,22 @@ for (const [name, source] of [['privacy', privacy], ['terms', terms], ['refunds'
 }
 assert.match(privacy, /Ko-fi and the creator(?:&rsquo;|'|’)s connected PayPal or Stripe account/i,
   'privacy policy must disclose the voluntary-support processors');
-assert.match(terms, /optional tip route, not a purchase, subscription, feature unlock or digital-good order/i,
-  'terms must define voluntary support without inventing a product entitlement');
+assert.match(privacy, /recurring-payment status/i,
+  'privacy policy must disclose metadata for recurring Ko-fi support');
+assert.match(terms, /optional\s+recurring monthly tip/i,
+  'terms must disclose the recurring Ko-fi option');
+assert.match(terms, /monthly tip renews until cancelled/i,
+  'terms must state the recurring effect and cancellation route');
+assert.match(refunds, /A monthly tip renews until cancelled/i,
+  'refunds page must explain recurring support and its cancellation path');
+assert.equal(/not a purchase, subscription, feature unlock or digital-good order/i.test(terms), false,
+  'terms must not deny subscription behavior while Ko-fi monthly support is enabled');
+assert.match(paypalRunbook, /one-time and optional monthly support/i,
+  'owner runbook must verify both public Ko-fi support frequencies');
+assert.match(releaseStatus, /59 changed paths sit outside its sealed target list/i,
+  'release status must report the exact current Coherence scope omission count');
+assert.equal(/omitted 56 later-required/i.test(releaseStatus), false,
+  'release status must not retain the stale Coherence omission count');
 assert.ok(eclipse.includes('id="eclipseEdition"') && eclipse.includes('id="eclipseContactForm"'));
 assert.match(productConfig, /catalogueSkus:\s*\[\]/);
 assert.match(productConfig, /id:\s*'eclipse-edition'[\s\S]{0,300}price:\s*null/);

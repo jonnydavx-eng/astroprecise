@@ -76,13 +76,6 @@ html.ap-fonts-ready .page-lifepath .lp-hero h1.gradient-text {
 .page-lifepath .lp-number-hero {
   min-height: 320px;
 }
-html.ap-audit-path .lp-form-card__art,
-html.ap-audit-path .lp-skel-card,
-html.ap-audit-path .lp-result-skel-hero,
-html.ap-audit-path .lp-result-skel-panel {
-  animation: none !important;
-}
-
 /* CLS: decorative orbs must not affect document flow */
 .page-lifepath > .aurora-orb {
   position: fixed !important;

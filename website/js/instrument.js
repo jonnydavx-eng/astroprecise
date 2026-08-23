@@ -1628,10 +1628,6 @@
       boot();
       return;
     }
-    if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) {
-      boot();
-      return;
-    }
     const target = document.getElementById('sky-tonight')
       || document.getElementById('sec-clock')
       || document.querySelector('.instrument-section');

@@ -158,11 +158,6 @@ html.ap-fonts-ready .page-transits .transits-hero h1 {
 .page-transits .ts-section[aria-labelledby="sky-heading"] {
   contain: layout style;
 }
-html.ap-audit-path .page-transits #daily-transit-card {
-  min-height: 280px;
-  contain: layout style;
-  margin-bottom: 1.5rem;
-}
 .page-transits #daily-transit-card:not(:empty) {
   min-height: 280px;
   contain: layout style;
@@ -203,13 +198,6 @@ html.ap-audit-path .page-transits #daily-transit-card {
 .page-transits #transit-results:not(.hidden) {
   min-height: 200px;
 }
-html.ap-audit-path .page-transits .aurora-orb,
-html.ap-audit-path .page-transits .transit-ticker__track,
-html.ap-audit-path .page-transits .live-date-badge__dot {
-  animation: none !important;
-  transform: none !important;
-}
-
 /* ── Transits page premium overrides (scoped — wins over deferred main.css) ── */
 .page-transits {
   --void: #020307;

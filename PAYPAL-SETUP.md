@@ -1,6 +1,6 @@
 # PayPal product setup — retired for v900
 
-Updated: 2026-08-22
+Updated: 2026-08-23
 
 ## Do not follow the old product-link instructions
 
@@ -10,7 +10,7 @@ AstroPrecise v900 has:
 
 - free sky, chart and seven-chapter reading tools;
 - one external voluntary-support link to Ko-fi;
-- no product checkout, subscription, paid unlock or active SKU;
+- no product checkout, paid unlock or active SKU; Ko-fi currently offers one-time and optional monthly support, with no AstroPrecise product or feature entitlement;
 - an archived Gumroad entitlement path for existing buyers only.
 
 ## Owner checklist for voluntary support
@@ -19,9 +19,10 @@ Before deploying the Ko-fi support surface:
 
 1. Sign in to the intended Ko-fi creator account and verify the public identity is AstroPrecise.
 2. Confirm the payout destination and the connected PayPal or Stripe account.
-3. Confirm Ko-fi presents the transaction as voluntary support, not a product, subscription or feature unlock.
-4. Supply the required business/service address and review the current Privacy, Terms, Refunds and Contact pages.
-5. Deploy v900 only after explicit owner authorization, then test one real low-value support journey and verify the payout appears in the intended account.
+3. Confirm the public one-time and monthly options, displayed amount and currency, recurring-payment notice and cancellation controls.
+4. Confirm neither option promises a product, feature unlock, membership tier or supporter-only entitlement.
+5. Supply the required business/service address and review the current Privacy, Terms, Refunds and Contact pages.
+6. Deploy v900 only after explicit owner authorization, then test one real low-value support journey, verify the payout appears in the intended account and cancel any test recurrence immediately.
 
 Never place account credentials, API keys, webhook secrets, payment emails or licence keys in this repository.
 
