@@ -2,6 +2,7 @@
  * AstroPrecise fulfilment — shared engine loader, chart helpers, HTML primitives.
  */
 import { readFileSync, mkdirSync } from 'fs';
+import { createHash, createHmac, timingSafeEqual } from 'crypto';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -27,34 +28,46 @@ export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', '
 export const FONTS = `<link rel="stylesheet" href="css/fonts.css">`;
 
 /** Astrological-symbol font stack for SVG glyph <text> — 'AstroGlyph' (self-hosted
- *  Noto Sans Symbols 2, from css/fonts.css) covers the zodiac/planet code points so
+ *  Noto Sans Symbols, from css/fonts.css) covers the zodiac/planet code points so
  *  they never fall back to tofu boxes or colour-emoji. Same fix chart-render.js uses. */
-export const GLYPH_FONT = "'AstroGlyph', 'Noto Sans Symbols 2', serif";
+export const GLYPH_FONT = "'AstroGlyph', 'Noto Sans Symbols', serif";
+
+export const STUDIO_PALETTE = Object.freeze({
+  void: '#040812',
+  raised: '#0A1424',
+  paper: '#EEF4FA',
+  silver: '#93A8BF',
+  ion: '#8BA9FF',
+  violet: '#A897FF',
+  mint: '#6FD0B3',
+  rose: '#FF8EA8',
+  cyan: '#79C7F2',
+});
 
 export const PRINT_CSS = `
 @page{size:A4;margin:0;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Cormorant Garamond',Georgia,serif;color:#E8E0D0;background:#070608;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-.page{width:210mm;min-height:297mm;padding:26mm 24mm;position:relative;background:radial-gradient(ellipse 120% 80% at 50% 0%,#0F0B07 0%,#070608 60%,#040305 100%);page-break-after:always;overflow:hidden;}
+body{font-family:'Cormorant Garamond',Georgia,serif;color:#EEF4FA;background:#040812;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.page{width:210mm;height:297mm;padding:26mm 24mm;position:relative;background:radial-gradient(ellipse 120% 80% at 50% 0%,#0A1424 0%,#07101E 60%,#040812 100%);page-break-after:always;overflow:hidden;}
 .page:last-child{page-break-after:auto;}
-.eyebrow{font-family:'Cinzel',serif;font-size:8pt;letter-spacing:.34em;text-transform:uppercase;color:#C9A227;opacity:.85;}
-h1{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.1em;color:#EFE3C0;font-size:28pt;line-height:1.15;margin:6pt 0;}
-h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:11pt;color:#C9A227;margin:18pt 0 8pt;}
-h3{font-family:'Cinzel',serif;font-size:10.5pt;letter-spacing:.04em;color:#E8C872;margin:12pt 0 3pt;}
-p{font-size:11.5pt;line-height:1.62;margin-bottom:8pt;text-wrap:pretty;color:#DCD3C0;}
-.lede{font-size:13pt;line-height:1.6;color:#E8E0D0;font-style:italic;border-left:2px solid rgba(201,162,39,.4);padding-left:14pt;margin:14pt 0;}
-.meta{font-family:'Cinzel',serif;font-size:9pt;letter-spacing:.2em;color:#A89E88;margin-top:14pt;line-height:2;}
+.eyebrow{font-family:'Cinzel',serif;font-size:8pt;letter-spacing:.34em;text-transform:uppercase;color:#8BA9FF;opacity:.95;}
+h1{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.1em;color:#EEF4FA;font-size:28pt;line-height:1.15;margin:6pt 0;}
+h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:11pt;color:#8BA9FF;margin:18pt 0 8pt;}
+h3{font-family:'Cinzel',serif;font-size:10.5pt;letter-spacing:.04em;color:#C9D6E3;margin:12pt 0 3pt;}
+p{font-size:11.5pt;line-height:1.62;margin-bottom:8pt;text-wrap:pretty;color:#D7E2ED;}
+.lede{font-size:13pt;line-height:1.6;color:#EEF4FA;font-style:italic;border-left:2px solid rgba(139,169,255,.52);padding-left:14pt;margin:14pt 0;}
+.meta{font-family:'Cinzel',serif;font-size:9pt;letter-spacing:.2em;color:#93A8BF;margin-top:14pt;line-height:2;}
 table{width:100%;border-collapse:collapse;font-size:10pt;margin:8pt 0;}
-td,th{padding:4pt 6pt;border-bottom:1px solid rgba(201,162,39,.14);text-align:left;font-variant-numeric:tabular-nums;}
-th{font-family:'Cinzel',serif;font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:#C9A227;}
-.glyph{color:#E8C872;font-family:serif;font-size:12pt;}
-.foot{position:absolute;bottom:12mm;left:24mm;right:24mm;display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:7pt;letter-spacing:.16em;text-transform:uppercase;color:#5E5748;border-top:1px solid rgba(201,162,39,.15);padding-top:6pt;}
-.watermark{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-family:'Cinzel',serif;font-size:60pt;letter-spacing:.2em;color:rgba(201,162,39,.06);white-space:nowrap;pointer-events:none;}
+td,th{padding:4pt 6pt;border-bottom:1px solid rgba(147,168,191,.2);text-align:left;font-variant-numeric:tabular-nums;}
+th{font-family:'Cinzel',serif;font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:#8BA9FF;}
+.glyph{color:#C9D6E3;font-family:serif;font-size:12pt;}
+.foot{position:absolute;bottom:12mm;left:24mm;right:24mm;display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:7pt;letter-spacing:.16em;text-transform:uppercase;color:#93A8BF;border-top:1px solid rgba(147,168,191,.24);padding-top:6pt;}
+.watermark{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-family:'Cinzel',serif;font-size:60pt;letter-spacing:.2em;color:rgba(139,169,255,.08);white-space:nowrap;pointer-events:none;}
 .big3{display:flex;gap:10pt;margin:14pt 0;}
-.big3 .b{flex:1;border:1px solid rgba(201,162,39,.3);border-radius:8pt;padding:12pt;text-align:center;background:linear-gradient(160deg,rgba(201,162,39,.06),transparent);}
-.big3 .g{font-size:24pt;color:#E8C872;font-family:serif;}
-.big3 .lbl{font-family:'Cinzel',serif;font-size:7pt;letter-spacing:.18em;text-transform:uppercase;color:#A89E88;margin-top:4pt;}
-.big3 .v{font-size:12pt;color:#EFE3C0;margin-top:3pt;}
+.big3 .b{flex:1;border:1px solid rgba(147,168,191,.34);border-radius:8pt;padding:12pt;text-align:center;background:linear-gradient(160deg,rgba(139,169,255,.08),transparent);}
+.big3 .g{font-size:24pt;color:#C9D6E3;font-family:serif;}
+.big3 .lbl{font-family:'Cinzel',serif;font-size:7pt;letter-spacing:.18em;text-transform:uppercase;color:#93A8BF;margin-top:4pt;}
+.big3 .v{font-size:12pt;color:#EEF4FA;margin-top:3pt;}
 `;
 
 let _engines = null;
@@ -105,6 +118,129 @@ export const sd = (l) => { const s = norm(l); return { sign: SIGNS[Math.floor(s 
 export const fmt = (l) => { const x = sd(l); return `${x.d}°${String(x.m).padStart(2, '0')}′ ${x.sign}`; };
 export const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 export const slug = (name) => String(name || 'order').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'order';
+export const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+
+/**
+ * Normalise a buyer-visible field before it reaches a template. The generator
+ * still HTML-escapes at the point of use; this guard limits storage/log abuse
+ * and rejects invisible control characters.
+ */
+export function cleanDisplayText(value, { label = 'value', max = 120, required = true } = {}) {
+  const text = String(value ?? '').normalize('NFC').replace(/\s+/g, ' ').trim();
+  if (required && !text) throw new Error(`${label} is required`);
+  if (text.length > max) throw new Error(`${label} exceeds ${max} characters`);
+  const hasControlCharacter = Array.from(text).some((character) => {
+    const code = character.charCodeAt(0);
+    return code <= 31 || code === 127;
+  });
+  if (hasControlCharacter) throw new Error(`${label} contains control characters`);
+  return text;
+}
+
+function integer(value, label) {
+  const n = Number(value);
+  if (!Number.isInteger(n)) throw new Error(`${label} must be an integer`);
+  return n;
+}
+
+function validCalendarDate(y, mo, d) {
+  const date = new Date(Date.UTC(y, mo - 1, d));
+  return date.getUTCFullYear() === y && date.getUTCMonth() === mo - 1 && date.getUTCDate() === d;
+}
+
+function zonedParts(formatter, date) {
+  const out = {};
+  for (const part of formatter.formatToParts(date)) {
+    if (part.type !== 'literal') out[part.type] = Number(part.value);
+  }
+  return { y: out.year, mo: out.month, d: out.day, h: out.hour, mi: out.minute };
+}
+
+/**
+ * Resolve a civil clock reading through the IANA time-zone database. We find
+ * all UTC instants that round-trip to the supplied wall time. This deliberately
+ * fails on spring-forward gaps and requires an explicit offset for repeated
+ * autumn times, instead of silently choosing the wrong hour.
+ */
+export function civilTimeToUtc({ y, mo, d, h, mi, tz, utcOffsetMinutes }) {
+  const zone = cleanDisplayText(tz, { label: 'IANA time zone', max: 64 });
+  let formatter;
+  try {
+    formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: zone,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+    });
+    formatter.format(new Date(0));
+  } catch {
+    throw new Error(`Unsupported IANA time zone: ${zone}`);
+  }
+
+  const localStamp = Date.UTC(y, mo - 1, d, h, mi);
+  const candidates = [];
+  for (let delta = -14 * 60; delta <= 14 * 60; delta += 1) {
+    const instant = new Date(localStamp + delta * 60_000);
+    const p = zonedParts(formatter, instant);
+    if (p.y === y && p.mo === mo && p.d === d && p.h === h && p.mi === mi) {
+      candidates.push({ instant, offsetMinutes: Math.round((localStamp - instant.getTime()) / 60_000) });
+    }
+  }
+
+  if (!candidates.length) {
+    throw new Error(`Birth time ${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')} ${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')} does not exist in ${zone}`);
+  }
+  let chosen = candidates[0];
+  if (candidates.length > 1) {
+    // The browser chart exporter cannot yet select a DST fold occurrence. Fail
+    // closed even when an offset was supplied so every delivered asset agrees.
+    throw new Error(`Birth time is ambiguous in ${zone}; Studio orders at a repeated DST minute require manual clarification and are not currently accepted`);
+  }
+  const instant = chosen.instant;
+  return {
+    instant: instant.toISOString(),
+    y: instant.getUTCFullYear(), mo: instant.getUTCMonth() + 1, d: instant.getUTCDate(),
+    h: instant.getUTCHours(), mi: instant.getUTCMinutes(),
+    tz: zone, offsetMinutes: chosen.offsetMinutes,
+  };
+}
+
+/** Canonical launch schema for personalised Studio work: exact recorded time only. */
+export function canonicalizeStudioOrder(input = {}) {
+  const y = integer(input.y, 'birth year');
+  const mo = integer(input.mo, 'birth month');
+  const d = integer(input.d, 'birth day');
+  const h = integer(input.h, 'birth hour');
+  const mi = integer(input.mi, 'birth minute');
+  const currentYear = new Date().getUTCFullYear();
+  if (y < 1900 || y > currentYear) throw new Error(`birth year must be between 1900 and ${currentYear}`);
+  if (mo < 1 || mo > 12 || !validCalendarDate(y, mo, d)) throw new Error('birth date is not a valid calendar date');
+  if (h < 0 || h > 23 || mi < 0 || mi > 59) throw new Error('birth time must be a valid 24-hour clock time');
+  const lat = Number(input.lat);
+  const lon = Number(input.lon);
+  if (!Number.isFinite(lat) || lat < -90 || lat > 90) throw new Error('latitude must be between -90 and 90');
+  if (!Number.isFinite(lon) || lon < -180 || lon > 180) throw new Error('longitude must be between -180 and 180');
+  const timeAccuracy = cleanDisplayText(input.timeAccuracy || '', { label: 'timeAccuracy', max: 16 });
+  if (timeAccuracy !== 'exact') {
+    throw new Error('Studio launch products require timeAccuracy "exact"; approximate or unknown times are not accepted');
+  }
+  const name = cleanDisplayText(input.name || input.chart_name, { label: 'display name', max: 80 });
+  const place = cleanDisplayText(input.place || input.birth_place, { label: 'birth place', max: 120 });
+  const house = cleanDisplayText(input.house || 'placidus', { label: 'house system', max: 16 }).toLowerCase();
+  if (house !== 'placidus') throw new Error('Studio launch products support only the Placidus house system');
+  const zone = civilTimeToUtc({ y, mo, d, h, mi, tz: input.tz, utcOffsetMinutes: input.utcOffsetMinutes });
+  if (Date.parse(zone.instant) > Date.now()) throw new Error('birth moment cannot be in the future');
+  return {
+    ...input,
+    name,
+    place,
+    y, mo, d, h, mi, lat, lon,
+    timeAccuracy,
+    house,
+    tz: zone.tz,
+    utcOffsetMinutes: zone.offsetMinutes,
+    utc: { y: zone.y, mo: zone.mo, d: zone.d, h: zone.h, mi: zone.mi, instant: zone.instant },
+  };
+}
 /** First n complete sentences — never returns a dangling fragment.
  *  A period between digits (e.g. an orb "1.7°" or a decimal) is NOT a sentence
  *  boundary — mask it so "orb 0.0°" never splits into "orb 0. 0°". */
@@ -358,7 +494,7 @@ export function voucherCode(orderId) {
   return 'AP-' + (base.slice(-8) || 'GIFT').padStart(8, '0');
 }
 
-/** Element palette — matches website/js/chart-render.js (warm observatory). */
+/** Midnight Meridian 2026 element palette — no retired brass/orange. */
 export const SIGN_ELEMENT = {
   Aries: 'fire', Leo: 'fire', Sagittarius: 'fire',
   Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth',
@@ -366,13 +502,20 @@ export const SIGN_ELEMENT = {
   Cancer: 'water', Scorpio: 'water', Pisces: 'water',
 };
 export const ELEMENT_FILL = {
-  fire: 'rgba(216,90,44,.22)', earth: 'rgba(94,122,58,.22)',
-  air: 'rgba(167,139,186,.2)', water: 'rgba(63,125,118,.22)',
+  fire: 'rgba(255,142,168,.16)', earth: 'rgba(111,208,179,.15)',
+  air: 'rgba(168,151,255,.16)', water: 'rgba(121,199,242,.16)',
 };
 export const ELEMENT_STROKE = {
-  fire: '#F0A878', earth: '#A8C07A', air: '#C6AEDA', water: '#7FB8B0',
+  fire: STUDIO_PALETTE.rose, earth: STUDIO_PALETTE.mint,
+  air: STUDIO_PALETTE.violet, water: STUDIO_PALETTE.cyan,
 };
-const ASPECT_COLORS = { Conjunction: '#E8C872', Trine: '#5fae8a', Sextile: '#5fae8a', Square: '#b06a6a', Opposition: '#c98e5a' };
+const ASPECT_COLORS = {
+  Conjunction: STUDIO_PALETTE.ion,
+  Trine: STUDIO_PALETTE.mint,
+  Sextile: STUDIO_PALETTE.cyan,
+  Square: STUDIO_PALETTE.rose,
+  Opposition: STUDIO_PALETTE.violet,
+};
 
 /**
  * Premium natal wheel SVG — same geometry as chart-render (ASC at 9 o'clock).
@@ -409,7 +552,7 @@ export function natalWheelSvg({
 
   let s = `<defs>
     <radialGradient id="${idPrefix}-bg" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#13100C"/><stop offset="60%" stop-color="#0D0A07"/><stop offset="100%" stop-color="#050406"/>
+      <stop offset="0%" stop-color="#101D30"/><stop offset="60%" stop-color="#07101E"/><stop offset="100%" stop-color="#040812"/>
     </radialGradient>
     <filter id="${idPrefix}-glow" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
@@ -434,23 +577,23 @@ export function natalWheelSvg({
     s += `<path d="${arc(i * 30, i * 30 + 30, R, rSign)}" fill="${ELEMENT_FILL[elem]}" stroke="${ELEMENT_STROKE[elem]}" stroke-width=".4" opacity=".85"/>`;
     const [x1, y1] = pt(i * 30, rSign);
     const [x2, y2] = pt(i * 30, R);
-    s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#C9A227" stroke-width=".65" opacity=".45"/>`;
+    s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#93A8BF" stroke-width=".65" opacity=".52"/>`;
     const [gx, gy] = pt(i * 30 + 15, (R + rSign) / 2);
     s += `<text x="${gx.toFixed(1)}" y="${gy.toFixed(1)}" font-size="${size * 0.034}" fill="${ELEMENT_STROKE[elem]}" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="${GLYPH_FONT}">${SGL[i]}</text>`;
   }
 
-  s += `<circle cx="${cx}" cy="${cy}" r="${rSign}" fill="none" stroke="#C9A227" stroke-width="1" opacity=".55"/>`;
-  s += `<circle cx="${cx}" cy="${cy}" r="${rHouse}" fill="none" stroke="#C9A227" stroke-width=".7" opacity=".35"/>`;
-  s += `<circle cx="${cx}" cy="${cy}" r="${rAspect}" fill="none" stroke="#C9A227" stroke-width=".5" opacity=".22"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="${rSign}" fill="none" stroke="#8BA9FF" stroke-width="1" opacity=".7"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="${rHouse}" fill="none" stroke="#93A8BF" stroke-width=".7" opacity=".42"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="${rAspect}" fill="none" stroke="#93A8BF" stroke-width=".5" opacity=".28"/>`;
 
   for (let i = 0; i < 12; i++) {
     const axis = [0, 3, 6, 9].includes(i);
     const [x1, y1] = pt(houses[i], rAspect);
     const [x2, y2] = pt(houses[i], rHouse);
-    s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${axis ? 'rgba(232,200,114,.85)' : 'rgba(201,162,39,.32)'}" stroke-width="${axis ? 1.5 : 0.65}"/>`;
+    s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${axis ? 'rgba(139,169,255,.92)' : 'rgba(147,168,191,.38)'}" stroke-width="${axis ? 1.5 : 0.65}"/>`;
     const mid = norm(houses[i] + (norm(houses[(i + 1) % 12] - houses[i]) / 2));
     const [nx, ny] = pt(mid, rHouse - size * 0.028);
-    s += `<text x="${nx.toFixed(1)}" y="${ny.toFixed(1)}" font-size="${size * 0.018}" fill="#A89E88" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="sans-serif">${i + 1}</text>`;
+    s += `<text x="${nx.toFixed(1)}" y="${ny.toFixed(1)}" font-size="${size * 0.018}" fill="#93A8BF" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="sans-serif">${i + 1}</text>`;
   }
 
   aspects.forEach((asp) => {
@@ -459,29 +602,51 @@ export function natalWheelSvg({
     s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${ASPECT_COLORS[asp.type] || '#888'}" stroke-width=".55" opacity=".45"/>`;
   });
 
-  bodies.forEach((k) => {
-    if (!pos[k]) return;
-    const [px, py] = pt(pos[k].lon, rPlanet);
-    const [tx, ty] = pt(pos[k].lon, rHouse - size * 0.005);
-    s += `<line x1="${tx.toFixed(1)}" y1="${ty.toFixed(1)}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="rgba(232,200,114,.35)" stroke-width=".45"/>`;
-    s += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${size * 0.024}" fill="rgba(8,6,5,.92)" stroke="#C9A227" stroke-width=".7" filter="url(#${idPrefix}-glow)"/>`;
-    s += `<text x="${px.toFixed(1)}" y="${py.toFixed(1)}" font-size="${size * 0.027}" fill="#EFE3C0" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="${GLYPH_FONT}">${PGL[k]}</text>`;
+  // Give close longitudes separate radial lanes so glyphs do not collide.
+  const laneByBody = new Map();
+  const placed = [];
+  [...bodies].filter((k) => pos[k]).sort((a, b) => norm(pos[a].lon) - norm(pos[b].lon)).forEach((k) => {
+    const used = new Set();
+    for (const prior of placed) {
+      let gap = Math.abs(norm(pos[k].lon) - norm(pos[prior].lon));
+      gap = Math.min(gap, 360 - gap);
+      if (gap < 7) used.add(laneByBody.get(prior));
+    }
+    let lane = 0;
+    while (used.has(lane) && lane < 3) lane += 1;
+    laneByBody.set(k, lane);
+    placed.push(k);
   });
 
-  const [ax, ay] = pt(asc, R + size * 0.02);
-  s += `<text x="${ax.toFixed(1)}" y="${ay.toFixed(1)}" font-size="${size * 0.02}" fill="#E8C872" text-anchor="middle" font-family="sans-serif" font-weight="bold">ASC</text>`;
+  bodies.forEach((k) => {
+    if (!pos[k]) return;
+    const lane = laneByBody.get(k) || 0;
+    const planetRadius = rPlanet - lane * size * 0.037;
+    const [px, py] = pt(pos[k].lon, planetRadius);
+    const [tx, ty] = pt(pos[k].lon, rHouse - size * 0.005);
+    s += `<line x1="${tx.toFixed(1)}" y1="${ty.toFixed(1)}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="rgba(147,168,191,.46)" stroke-width=".45"/>`;
+    s += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${size * 0.023}" fill="rgba(4,8,18,.94)" stroke="#8BA9FF" stroke-width=".8" filter="url(#${idPrefix}-glow)"/>`;
+    s += `<text x="${px.toFixed(1)}" y="${py.toFixed(1)}" font-size="${size * 0.026}" fill="#EEF4FA" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="${GLYPH_FONT}">${PGL[k]}</text>`;
+  });
+
+  const labelRadius = R - size * 0.018;
+  const [ax, ay] = pt(asc, labelRadius);
+  s += `<text x="${ax.toFixed(1)}" y="${ay.toFixed(1)}" font-size="${size * 0.018}" fill="#EEF4FA" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold">ASC</text>`;
   const mcLon = mc ?? houses[9] ?? houses[10];
   if (mcLon != null) {
-    const [mx, my] = pt(mcLon, R + size * 0.02);
-    s += `<text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" font-size="${size * 0.02}" fill="#E8C872" text-anchor="middle" font-family="sans-serif" font-weight="bold">MC</text>`;
+    const [mx, my] = pt(mcLon, labelRadius);
+    s += `<text x="${mx.toFixed(1)}" y="${my.toFixed(1)}" font-size="${size * 0.018}" fill="#EEF4FA" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-weight="bold">MC</text>`;
   }
-  s += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#C9A227" opacity=".9"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#8BA9FF" opacity=".95"/>`;
 
   return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" role="img" aria-label="Natal chart wheel">${s}</svg>`;
 }
 
 /** Which artefacts each live SKU should emit. */
 export const SKU_DELIVER = {
+  'natal-sky-print-pack': { reading: false, poster: true },
+  'personal-sky-keepsake': { reading: true, poster: true },
+  'whole-sky-edition': { reading: true, poster: true },
   'deep-reading': { reading: true, poster: false },
   'natal-poster-pdf': { reading: false, poster: true },
   'reading-poster-bundle': { reading: true, poster: true },
@@ -492,19 +657,111 @@ export function deliverablesForProduct(product) {
   return SKU_DELIVER[product] || { reading: true, poster: true };
 }
 
-export function isPaidOrder(order = {}) {
-  return !!(order.orderId && String(order.orderId).trim());
+/** Enforce the service-start timing recorded for a commissioned order. */
+export function assertWorkMayStart(order = {}, now = Date.now()) {
+  const contractAt = Date.parse(order.contractAt);
+  if (!Number.isFinite(contractAt)) throw new Error('contractAt is required before commissioned work starts');
+  if (contractAt > now) throw new Error('contractAt cannot be in the future');
+  if (order.earlyStartConsent === true) {
+    const recorded = Date.parse(order.earlyStartConsentRecordedAt);
+    if (!Number.isFinite(recorded)) throw new Error('earlyStartConsentRecordedAt is required when earlyStartConsent is true');
+    if (recorded < contractAt) throw new Error('early-start consent cannot pre-date the contract');
+    if (recorded > now) throw new Error('early-start consent cannot be in the future');
+    return;
+  }
+  const waitUntil = contractAt + 14 * 24 * 60 * 60 * 1000;
+  if (now < waitUntil) throw new Error('14-day cancellation period has not ended and early-start consent was not given');
+}
+
+/** Canonical adapter receipt body. The HMAC signature itself is kept outside it. */
+export function canonicalPaymentEvidence(payment = {}) {
+  const verifiedAt = Date.parse(payment.verifiedAt);
+  return {
+    provider: payment.provider,
+    adapterReceiptId: String(payment.adapterReceiptId || '').trim(),
+    transactionId: String(payment.transactionId || '').trim(),
+    orderId: payment.orderId,
+    productSku: payment.productSku,
+    currency: payment.currency,
+    amountMinor: payment.amountMinor,
+    status: payment.status,
+    refunded: payment.refunded,
+    buyerEmail: String(payment.buyerEmail || '').trim().toLowerCase(),
+    verifiedAt: Number.isFinite(verifiedAt) ? new Date(verifiedAt).toISOString() : null,
+    verifiedBy: String(payment.verifiedBy || '').trim(),
+    verificationMethod: payment.verificationMethod,
+  };
+}
+
+/**
+ * Validate a seller-authenticated adapter receipt before an unwatermarked file
+ * can be created. A hand-written dashboard note cannot satisfy this boundary.
+ */
+export function verifyPaymentEvidence(order = {}, payment = {}, product = {}, {
+  adapterSecret = process.env.AP_PAYMENT_ADAPTER_SECRET,
+} = {}) {
+  const errors = [];
+  const expectedMinor = Number(product.priceGbp) * 100;
+  const orderEmail = String(order.email || '').trim().toLowerCase();
+  const paymentEmail = String(payment.buyerEmail || '').trim().toLowerCase();
+  if (payment.provider !== 'gumroad') errors.push('provider must be gumroad');
+  if (payment.verificationMethod !== 'gumroad-authenticated-adapter-v1') errors.push('verificationMethod must be gumroad-authenticated-adapter-v1');
+  if (!String(payment.adapterReceiptId || '').trim()) errors.push('adapterReceiptId is required');
+  if (payment.status !== 'paid-in-full') errors.push('status must be paid-in-full');
+  if (payment.refunded !== false) errors.push('refunded must be false');
+  if (!payment.transactionId || !String(payment.transactionId).trim()) errors.push('transactionId is required');
+  if (!payment.verifiedBy || !String(payment.verifiedBy).trim()) errors.push('verifiedBy is required');
+  const verifiedAt = Date.parse(payment.verifiedAt);
+  if (!Number.isFinite(verifiedAt)) errors.push('verifiedAt must be an ISO date');
+  if (Number.isFinite(verifiedAt) && verifiedAt > Date.now() + 5 * 60_000) errors.push('verifiedAt cannot be in the future');
+  if (payment.orderId !== order.orderId) errors.push('payment orderId does not match order');
+  if (payment.productSku !== order.product || payment.productSku !== product.sku) errors.push('payment SKU does not match order/catalogue');
+  if (payment.currency !== product.currency || payment.currency !== 'GBP') errors.push('payment currency does not match GBP catalogue price');
+  if (!Number.isInteger(payment.amountMinor) || payment.amountMinor !== expectedMinor) errors.push('payment total does not match catalogue price');
+  if (!orderEmail || paymentEmail !== orderEmail) errors.push('payment buyer email does not match order email');
+  if (!/^[a-f0-9]{64,}$/i.test(String(adapterSecret || ''))) errors.push('authenticated adapter secret is unavailable');
+  if (!/^[a-f0-9]{64}$/i.test(String(payment.adapterSignature || ''))) errors.push('adapterSignature must be a SHA-256 HMAC');
+  if (errors.length) return { ok: false, errors };
+  const canonical = JSON.stringify(canonicalPaymentEvidence(payment));
+  const expectedSignature = createHmac('sha256', Buffer.from(String(adapterSecret), 'hex')).update(canonical).digest();
+  const receivedSignature = Buffer.from(String(payment.adapterSignature), 'hex');
+  if (receivedSignature.length !== expectedSignature.length || !timingSafeEqual(receivedSignature, expectedSignature)) {
+    return { ok: false, errors: ['adapterSignature does not authenticate this payment receipt'] };
+  }
+  return { ok: true, errors: [], evidenceHash: sha256(canonical), canonical: JSON.parse(canonical) };
+}
+
+export function isPaidOrder(order = {}, {
+  capability = process.env.AP_FULFILMENT_CAPABILITY,
+  privateFulfilment = process.env.AP_PRIVATE_FULFILMENT === '1',
+  checkoutVerified = false,
+} = {}) {
+  const auth = order.fulfilmentAuthorization;
+  const token = String(capability || '');
+  return !!(
+    checkoutVerified === true &&
+    privateFulfilment && /^[a-f0-9]{64}$/i.test(token) &&
+    auth && auth.state === 'paid-in-full' &&
+    /^[a-f0-9]{64}$/i.test(String(auth.paymentEvidenceHash || '')) &&
+    /^[a-f0-9]{64}$/i.test(String(auth.renderCapabilityHash || '')) &&
+    sha256(token) === String(auth.renderCapabilityHash).toLowerCase() &&
+    order.orderId && String(order.orderId).trim()
+  );
 }
 
 /** JSON comment embedded in paid HTML for audit + re-verification. */
 export function paidMetaBlock(order, chartMeta = {}) {
   const meta = {
     product: order.product || 'unknown',
-    orderId: order.orderId || null,
+    orderRefHash: order.orderId ? sha256(String(order.orderId)).slice(0, 16) : null,
     engine: 'VSOP87/ELP2000',
     houseSystem: order.house || 'placidus',
-    generated: new Date().toISOString(),
+    generated: order.generatedAt || null,
     ...chartMeta,
   };
-  return `<!-- ap-paid-meta:${JSON.stringify(meta)} -->`;
+  const safeJson = JSON.stringify(meta)
+    .replaceAll('<', '\\u003c')
+    .replaceAll('>', '\\u003e')
+    .replaceAll('--', '\\u002d\\u002d');
+  return `<!-- ap-paid-meta:${safeJson} -->`;
 }

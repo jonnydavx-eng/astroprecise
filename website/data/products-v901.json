@@ -1,0 +1,87 @@
+{
+  "schema": "astroprecise-studio-catalogue-v901",
+  "state": "draft-not-published",
+  "currency": "GBP",
+  "platform": {
+    "seller": "Gumroad",
+    "productType": "commission",
+    "depositPercent": 50,
+    "merchantOfRecord": true,
+    "checkoutVerified": false
+  },
+  "launchBlockers": [
+    "public-geographic-trader-address",
+    "owner-service-level-confirmation",
+    "signed-in-gumroad-commission-eligibility-check",
+    "end-to-end-test-order-receipt-refund-and-deletion"
+  ],
+  "sharedRules": {
+    "format": "digital-files-only",
+    "physicalItem": false,
+    "birthTime": "known-exact-recorded-clock-time",
+    "unknownOrApproximateTimeAccepted": false,
+    "use": "personal-non-commercial",
+    "earlyStartOptional": true,
+    "productionWorkingDays": 5,
+    "productionClock": "complete inputs plus early-start consent, or expiry of the 14-day cancellation period",
+    "correctionPolicy": "calculation and production errors corrected without charge",
+    "retentionDraft": "local raw inputs and working files deleted 30 days after final correction; non-birth-data order evidence retained separately"
+  },
+  "products": [
+    {
+      "sku": "natal-sky-print-pack",
+      "name": "Natal Sky Print Pack",
+      "priceGbp": 18,
+      "checkoutUrl": null,
+      "status": "draft",
+      "summary": "A computed natal chart prepared as two PDFs + five PNG layouts for screen and home printing.",
+      "deliverables": [
+        "A3 RGB home-print PDF",
+        "A4 ink-light home-print PDF",
+        "4960 x 7016 PNG",
+        "2160 x 2160 square PNG",
+        "2160 x 3840 story PNG",
+        "1080 x 1920 phone wallpaper PNG",
+        "1080 x 1080 Big Three PNG",
+        "print guide",
+        "personal-use licence",
+        "SHA-256 file-integrity manifest"
+      ],
+      "sample": "downloads/studio/natal-sky-print-pack-sample.pdf"
+    },
+    {
+      "sku": "personal-sky-keepsake",
+      "name": "Personal Sky Keepsake",
+      "priceGbp": 29,
+      "checkoutUrl": null,
+      "status": "draft",
+      "summary": "An intentionally paginated 20-page reflective reading built from computed chart positions, with screen and ink-light editions.",
+      "deliverables": [
+        "20-page screen PDF",
+        "20-page ink-light A4 PDF",
+        "A3 RGB home-print natal plate PDF",
+        "A4 natal plate PDF",
+        "personal-use licence",
+        "SHA-256 file-integrity manifest"
+      ],
+      "sample": "downloads/studio/personal-sky-keepsake-sample.pdf"
+    },
+    {
+      "sku": "whole-sky-edition",
+      "name": "Whole Sky Edition",
+      "priceGbp": 39,
+      "checkoutUrl": null,
+      "status": "draft",
+      "summary": "The reading and complete print pack, plus a clearly labelled SCHEMATIC 3D Observatory still for the supplied birth hour.",
+      "deliverables": [
+        "everything in the Natal Sky Print Pack",
+        "everything in the Personal Sky Keepsake",
+        "4800 x 3600 SCHEMATIC Observatory birth-hour PNG",
+        "organised ZIP and SHA-256 manifest",
+        "one reasonable layout adjustment requested within 7 days"
+      ],
+      "sample": "downloads/studio/personal-sky-keepsake-sample.pdf",
+      "savingGbpAgainstSeparateProducts": 8
+    }
+  ]
+}

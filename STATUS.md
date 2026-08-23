@@ -1,43 +1,62 @@
 # STATUS — AstroPrecise
 
-**Local v900 release candidate, 2026-08-23:** the complete `ap-v900` candidate is on `codex/v900-midnight-meridian`. It is verified locally and ready for owner review. It has not been pushed or deployed; the last verified public service-worker identity remains `ap-v895`.
+Updated: 2026-08-23 19:37 BST
 
-## Current outcome
+## Result first
 
-- Midnight Meridian 2026 is applied across the public site: void/navy, lunar silver, ion blue, spectral violet, proof mint and semantic rose. Orange interface accents are retired; real astronomical colours remain physically honest.
-- All 36 engraved seals now regenerate from the Midnight Meridian source palette with explicit non-scaling strokes, accessible titles and owned vector geometry. The Life Path infinity no longer depends on a live font, and every seal/element chassis preserves the exact 6:7 master hex instead of squashing an approximate bezel. All legacy page favicons now use the contained canonical v900 mark.
-- Home owns the one general WebGL Observatory and Eclipse owns the one dedicated simulation. Software WebGL now selects the low tier at DPR 1, loads and warms all five 1024×512 Earth maps before the first reveal, keeps one canvas, and expands the full scene after interaction.
-- Chart renders 14 planets, 35 aspects and 10 collision leaders; the time picker is 46 px. Exact and approximate readings, house/node settings and the seven-chapter handoff pass.
-- Personal birth data is removed from addresses, referrers and share URLs. Stored/imported profile, Moon-name, personalization and dormant-commerce DOM-XSS regressions pass. The unused local pseudo-account API and its reversible password storage are retired, and any legacy `ap_user` record is purged on load.
-- The v900 site offers voluntary Ko-fi support only and does not link or open a product checkout, invented SKU/price/scarcity/testimonial or unverified marketing capture. The public Ko-fi page currently offers one-time and optional recurring monthly tips; neither unlocks an AstroPrecise product or feature, and the local Shop, Terms, Privacy and Refunds pages disclose the recurrence. A separate legacy £7 Gumroad listing remains externally reachable and requires owner unpublishing.
-- Fresh production build: 603 copied assets; JS 5,413→3,994 KB, CSS 1,919→1,360 KB, HTML 1,566→1,427 KB. No unresolved minifier placeholders or missing built references were found.
+AstroPrecise now has a **local v901 Studio prelaunch candidate**, not a live shop. The candidate defines exactly three Gumroad Commission services at £18, £29 and £39, a fail-closed personalised fulfilment route, fictional samples and a commerce/legal launch pack. No seller account was changed, no product was published, the legacy Gumroad listing was not archived, and this branch was not pushed or deployed.
 
-## Frozen local evidence
+The public Shop was rechecked on 2026-08-23 and still says that nothing is for sale. Public `sw.js` returned HTTP 200 with `ap-v895`. The legacy Gumroad Eclipse URL also returned HTTP 200 at £7 GBP and remains an external owner action. Local Studio work is later and must not be described as live.
 
-- Functional/release suite, launch architecture, UI interactions, privacy/security regressions, 142/142 syntax files, both dependency audits and `git diff --check`: pass.
-- Lint: 0 errors in the configured scope; 1,138 legacy warnings remain as cleanup debt.
-- Accessibility: 36-page Axe audit, zero violations. Palette: 67 rendered routes, 204 source surfaces and 36 production seal SVGs pass.
-- Runtime: all 68 HTML pages load with zero console errors, page errors, failed requests or HTTP failures.
-- 3D resize proof: Home, Eclipse and the Home cinematic opt-in path remained nonblank through desktop, laptop, tablet, phone and desktop-again frames. Software WebGL correctly stayed low tier, so the hardware-only compositor branch was reported as skipped rather than falsely claimed.
-- Fresh same-path 10-route Lighthouse production artifact: Home 78; Chart 89; Horoscope 85; Aries 94; Leo 91; Compatibility 89; Ephemeris 89; Shop 97; Transits 84; Lifepath 92. Every route scored 100 for accessibility, best practices and SEO. Headless is only the execution host; measured deferred CSS, icons, instruments and page boot use the visitor path.
-- The honest performance exceptions are Home 78 (LCP 2.4 s, CLS .001, TBT .77 s), Horoscope 85 (LCP 4.1 s) and Transits 84 (LCP 4.2 s). This is not a literal 100/100 result.
-- Remaining visual debt: Compatibility CLS .189 and Ephemeris CLS .116. These do not block the local candidate but should be the next performance pass.
+## Local Studio offer
 
-## Verification identity
+| SKU | Product | Price | State |
+|---|---|---:|---|
+| `natal-sky-print-pack` | Natal Sky Print Pack | £18 | local draft |
+| `personal-sky-keepsake` | Personal Sky Keepsake | £29 | local draft |
+| `whole-sky-edition` | Whole Sky Edition | £39 | local draft |
 
-- The Full/L3 Coherence wave is now `ABORTED` (closed 2026-08-23 at 05:19 BST), with no proofs and only its S8 preflight recorded. Against this candidate, 63 changed paths sit outside its sealed target list, including later-required test, build, asset, runbook and evidence paths. It was not and must not be represented as verified; a correctly scoped future wave or independent native peer review is still required for a Coherence `VERIFIED-LOCAL` claim.
-- Adobe Illustrator 2026 (30.7.0) was installed and used through its native JavaScript automation API. It opened the production-safe canonical sources read-only, asserted zero live text after outlining, and produced isolated AI/SVG/PDF masters plus explicit on-dark, contained on-light and one-colour variants. Rendered PDF QA passed; the final local kit is `C:\Users\jonny\Adobe-Close-Dump\brand-marks-outlined\FINAL-v900-20260823`. The animated browser logo is deliberately excluded because Illustrator drops its CSS transforms during static import; the correct accessible web SVG remains canonical.
+All three are proposed Gumroad **Commission** services: 50% deposit, balance charged after completion, digital files only. The default service target is five working days. Whole Sky includes one reasonable layout adjustment requested within seven calendar days. Ko-fi remains support-only and provides no paid product or feature.
 
-- The hardened Illustrator run fails closed on missing sources, pre-existing output or incomplete inventory. Its exact 7×AI/7×SVG/7×PDF manifest verifies, all seven PDFs are vector-only, and the strict one-colour master is solid navy with no transparency or construction axes.
+## What is ready locally
 
-## Revenue/release blockers
+- The old 18-item speculative catalogue has been retired in favour of the exact three-product catalogue above.
+- Product generation is fail-closed: while `platform.checkoutVerified` is `false`, every unwatermarked final route is disabled. A manually written seller-dashboard attestation is explicitly insufficient to cross that gate.
+- The fulfilment route uses private per-order directories, generic filenames, a lock against duplicate processing, an atomic transaction-replay ledger for the eventual verified flow, all-page PDF/image checks, byte-for-byte customer ZIP checks and mutually bound SHA-256 manifests.
+- Final-mode payment evidence must carry an authenticated adapter receipt and a valid HMAC signature. Every generated page and raster is bound to the canonical private input with an `AP REF`; PDF pages are actually rasterised for perceptual inspection, PNGs carry a decoded pixel provenance strip, and the quality gate rechecks work-start authority at delivery time.
+- The Whole Sky image is visibly labelled `SCHEMATIC`; it is an authored compressed whole-system view using computed body positions, not a photograph, live feed or true-scale scientific rendering.
+- The public service-terms candidate is `noindex` and visibly marked as a launch draft, not a current offer.
+- Exact listing copy, buyer questions, cancellation wording, privacy/retention rules and publish/rollback checks are documented under `marketing/shop-studio-v901/` and `docs/`.
+- Self-hosted webfonts now have a repository licence file and an evidence-based family/file map.
 
-- Unpublish the still-live legacy £7 Gumroad Eclipse listing while preserving past-buyer entitlements.
-- Verify the intended Ko-fi owner identity, payout destination, connected PayPal/Stripe account, displayed amount/currency, monthly setting and cancellation controls while signed in.
-- Add the required business/service address and complete the owner legal-copy review before deploying the v900 support surface or opening a paid product.
-- GitHub Pages does not apply the intended `_headers` policy; enforce and verify CSP/HSTS/frame/referrer/permissions headers at a capable host or edge before opening a paid product.
-- No seller-account edit, push or production deployment is authorized or performed.
+## Evidence and verification state
 
-## Hard rules
+- A full fictional Whole Sky proof has completed the local fulfilment quality gate, including 20-page screen and ink-light readings, A3/A4 plates, five exact-dimension print/social PNGs, a 4800 × 3600 Observatory still, ZIP inventory and manifests.
+- `npm run test:shop` passed. `npm run test:fulfil` passed twice independently after the final Observatory tolerance profile, including stale-input rebinding, white-covered PDF, black-raster, ZIP-tamper, payment-signature and generator-liveness attacks.
+- The full `npm test` integration suite, `npm run build`, `node tools/test-product-render.mjs`, `npm audit --audit-level=high` and `git diff --check` passed. The dependency audit reported zero vulnerabilities.
+- Playwright rechecked source and built output at 1440 × 1000 and 390 × 844. Both expose exactly three disabled-checkout products, three loaded 1280 × 720 covers, working PDF sample responses, the support anchor, no horizontal overflow, and no console, page or failed-request errors. Source and built screenshots were byte-identical at both widths.
+- The current Coherence wave still requires its validator-owned completion and independent receipt. Do not claim `VERIFIED-LOCAL` until that receipt is issued.
 
-No React · one general WebGL model · one dedicated Eclipse model · no gate on sky · no UFO · no push without owner · no generated planet imagery as live sky · no invented SKU/price/scarcity/testimonial/revenue metric.
+## Hard blockers before revenue
+
+1. **Trader disclosure:** supply and publish a full geographic business/service address, plus the legal/trading identity and direct service contact route. Checkout must stay closed without it.
+2. **Owner policy decisions:** confirm the five-working-day service target, seven-day layout-adjustment scope, 30-day private-input/working-file deletion rule, supported buyer territories and tax/VAT status.
+3. **Signed-in Gumroad proof:** verify Commission eligibility, payout identity and the complete 50% deposit/final-balance workflow. Confirm that an authenticated adapter can query and bind the paid-in-full state before the final unwatermarked delivery is released.
+4. **End-to-end test:** test buyer receipt, required inputs, unticked early-start choice, cancellation/refund, completion/final charge, downloadable delivery and deletion.
+5. **Authenticated final-release design:** replace the deliberately closed local gate with a seller-authenticated, test-proven payment adapter. Do not treat a self-authored JSON attestation as authentication.
+6. **Public legal alignment:** owner-review the launch terms and update the public privacy/refund/contact surfaces for commissioned service processing before any product link appears.
+7. **Deployment cache identity:** deliberately bump the service worker to the final v901 release and verify its precache from the exact approved commit; the current local worker is still v900 and production was observed at v895.
+8. **Explicit mutations:** obtain action-time owner confirmation before archiving the legacy Gumroad product, publishing the three new drafts or deploying the website.
+
+## Safety rules
+
+- Archive the legacy Gumroad product; do not delete it or strand past buyers.
+- Do not use an order ID alone as proof of payment.
+- Do not create an unwatermarked final from only a 50% deposit.
+- Do not accept unknown or approximate birth times at launch; no time rectification is offered.
+- Do not send birth data through public forms, logs, URLs or customer filenames.
+- Do not claim urgency, scarcity, reviews, bestseller status, outcomes or live availability without evidence.
+- Do not push or deploy without the owner.
+
+Branch: `codex/v900-midnight-meridian`
+Starting frozen commit for this pass: `ea9ff78`

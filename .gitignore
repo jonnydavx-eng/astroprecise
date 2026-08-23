@@ -47,6 +47,12 @@ __pycache__/
 # Visual-check run outputs (screenshots/reports — hundreds of MB, regenerate on demand)
 tools/visual-check/out/
 
+# Private/generated Studio work. These paths can contain birth data, proofs,
+# payment-control hashes and customer files; they must never enter this public repo.
+output/orders/
+output/proofs/
+output/shop-studio-v901/
+
 # Portable GitHub CLI unzipped on JDAV — never commit
 tools/_gh-cli/
 
