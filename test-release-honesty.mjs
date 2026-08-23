@@ -283,8 +283,10 @@ assert.equal(/not a purchase, subscription, feature unlock or digital-good order
   'terms must not deny subscription behavior while Ko-fi monthly support is enabled');
 assert.match(paypalRunbook, /one-time and optional monthly support/i,
   'owner runbook must verify both public Ko-fi support frequencies');
-assert.match(releaseStatus, /59 changed paths sit outside its sealed target list/i,
+assert.match(releaseStatus, /63 changed paths sit outside its sealed target list/i,
   'release status must report the exact current Coherence scope omission count');
+assert.equal(/59 changed paths sit outside its sealed target list/i.test(releaseStatus), false,
+  'release status must not retain the prior-commit Coherence omission count');
 assert.equal(/omitted 56 later-required/i.test(releaseStatus), false,
   'release status must not retain the stale Coherence omission count');
 assert.match(releaseStatus, /Coherence wave is now `ABORTED`/i,
