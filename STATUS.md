@@ -1,20 +1,20 @@
 # STATUS — AstroPrecise
 
-Updated: 2026-08-23 21:17 BST
+Updated: 2026-08-23 23:03 BST
 
 ## Result first
 
-AstroPrecise now has a tested **v901 Studio preview release candidate**, not a live paid shop. The candidate defines exactly three proposed Gumroad Commission services at £18, £29 and £39, a fail-closed personalised fulfilment route, fictional samples and a commerce/legal launch pack. The release is deliberately stamped `ap-v901`; checkout remains closed. No seller account was changed, no product was published and the legacy Gumroad listing was not archived.
+AstroPrecise now has a tested **v901 Studio preview release candidate** and a prepared exact-identity release path, not a live paid shop. The candidate defines exactly three proposed Gumroad Commission services at £18, £29 and £39, a fail-closed personalised fulfilment route, fictional samples and a commerce/legal launch pack. The release is deliberately stamped `ap-v901`; checkout remains closed. No seller account or Cloudflare configuration was changed, no product was published and the legacy Gumroad listing was not withdrawn or archived.
 
-The public Shop was rechecked on 2026-08-23 and still says that nothing is for sale. Public `sw.js` returned HTTP 200 with `ap-v895`. The legacy Gumroad Eclipse URL also returned HTTP 200 at £7 GBP and remains an external owner action. The v901 branch is not production until the protected release review, merge, Pages run and public checks all complete.
+The public Shop was rechecked on 2026-08-23 and still says that nothing is for sale. Public `sw.js` returned HTTP 200 with `ap-v895`; the production identity header is not configured. The legacy Gumroad Eclipse URL also returned HTTP 200 at £7 GBP and remains an authenticated external owner action. The v901 branch is not production until the protected release review, owner signature, immutable-tag Pages run, Cloudflare application and public checks all complete.
 
 ## Local Studio offer
 
-| SKU | Product | Price | State |
-|---|---|---:|---|
-| `natal-sky-print-pack` | Natal Sky Print Pack | £18 | preview draft · checkout closed |
-| `personal-sky-keepsake` | Personal Sky Keepsake | £29 | preview draft · checkout closed |
-| `whole-sky-edition` | Whole Sky Edition | £39 | preview draft · checkout closed |
+| SKU                     | Product               | Price | State                           |
+| ----------------------- | --------------------- | ----: | ------------------------------- |
+| `natal-sky-print-pack`  | Natal Sky Print Pack  |   £18 | preview draft · checkout closed |
+| `personal-sky-keepsake` | Personal Sky Keepsake |   £29 | preview draft · checkout closed |
+| `whole-sky-edition`     | Whole Sky Edition     |   £39 | preview draft · checkout closed |
 
 All three are proposed Gumroad **Commission** services: 50% deposit, balance charged after completion, digital files only. The default service target is five working days. Whole Sky includes one reasonable layout adjustment requested within seven calendar days. Ko-fi remains support-only and provides no paid product or feature.
 
@@ -27,6 +27,8 @@ All three are proposed Gumroad **Commission** services: 50% deposit, balance cha
 - The Whole Sky image is visibly labelled `SCHEMATIC`; it is an authored compressed whole-system view using computed body positions, not a photograph, live feed or true-scale scientific rendering.
 - The public service-terms candidate is `noindex` and visibly marked as a launch draft, not a current offer.
 - Exact listing copy, buyer questions, cancellation wording, privacy/retention rules and publish/rollback checks are documented under `marketing/shop-studio-v901/` and `docs/`.
+- `tools/setup-cloudflare-release-edge.mjs` now prepares a narrow release-identity edge: offline dry-run by default, tokenless public verification, token-backed read-only verification and explicit apply. Apply requires the exact clean tagged checkout and a SHA-named identity file generated inside the deployed Pages artifact; matching only `ap-v901` cannot stamp a candidate. It paginates routing checks, rejects A/AAAA/CNAME/HTTPS/SVCB bypasses and uses rule-specific Transform operations plus one DNS batch. Transform rollback before DNS is bound to exact mutation-response revisions. After any DNS write attempt it deliberately retains DNS and the candidate header for manual recovery because Cloudflare has no compare-and-swap and DNS propagation is not atomic. It has not been run against Cloudflare.
+- `docs/SHOP-LAUNCH-RUNBOOK.md` now records the immutable-tag/environment controls, independent review and owner/S1 order, SHA-specific public artifact, honest GitHub Pages visibility boundary, post-deploy edge sequence, compensating rollback, existing-immutable-tag rollback and legacy-product direct-link proof required before a launch claim.
 - Self-hosted webfonts now have a repository licence file and an evidence-based family/file map.
 
 ## Evidence and verification state
@@ -47,12 +49,13 @@ All three are proposed Gumroad **Commission** services: 50% deposit, balance cha
 4. **End-to-end test:** test buyer receipt, required inputs, unticked early-start choice, cancellation/refund, completion/final charge, downloadable delivery and deletion.
 5. **Authenticated final-release design:** replace the deliberately closed local gate with a seller-authenticated, test-proven payment adapter. Do not treat a self-authored JSON attestation as authentication.
 6. **Public legal alignment:** owner-review the launch terms and update the public privacy/refund/contact surfaces for commissioned service processing before any product link appears.
-7. **Release governance:** freeze the exact final v901 commit in a fresh Full live/release Coherence wave, obtain independent native review and signed S1 authority, then deploy that identity. The owner trust store and required production identity-header route are not yet configured.
-8. **Public verification:** after an approved merge and successful Pages run, verify public `sw.js` is `ap-v901`, the three preview SKUs render logged out and every checkout remains disabled before describing the preview as live.
+7. **Release governance:** freeze the exact final v901 commit in a fresh Full live/release Coherence wave, obtain independent native review and signed S1 authority, protect immutable `release/*` tags and the `github-pages` environment, then deploy that identity. The owner trust store is not yet configured.
+8. **Cloudflare authentication and edge:** provide a zone-scoped token privately, deploy the exact candidate first, explicitly approve the edge mutation, apply the one candidate-identity Transform Rule and proxy only the verified apex/www records. The prepared tool has not contacted or changed Cloudflare. Cloudflare DNS propagation is not atomic, so a convergence interval remains possible even with the batched control-plane write and the explicit manual-recovery boundary after any DNS attempt.
+9. **Public verification:** prove apex and `www` each emit exactly one matching `X-Coherence-Candidate-Tip`, serve the exact SHA-named release JSON, public `sw.js` is `ap-v901`, the three preview SKUs render logged out and every checkout remains disabled before describing the preview as live. The first post-deploy check may remain closed until the separately approved edge application is complete.
 
 ## Safety rules
 
-- Archive the legacy Gumroad product; do not delete it or strand past buyers.
+- Make the legacy Gumroad product unavailable, then archive it while preserving past-buyer access; do not assume archive alone disables its direct purchase URL, and do not delete it.
 - Do not use an order ID alone as proof of payment.
 - Do not create an unwatermarked final from only a 50% deposit.
 - Do not accept unknown or approximate birth times at launch; no time rectification is offered.

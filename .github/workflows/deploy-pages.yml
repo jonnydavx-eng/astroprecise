@@ -1,45 +1,63 @@
-name: Deploy to GitHub Pages
+name: Deploy verified release to GitHub Pages
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'website/**'
-      - 'ephemeris-package/**'
-      - 'tools/**'
-      - 'test-*.mjs'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact lowercase 40-character commit SHA to release
+        required: true
+        type: string
 
-# 2026-07-04: migrated OFF the legacy gh-pages branch builder onto the official
-# GitHub Actions Pages deployment (actions/deploy-pages). The legacy pipeline
-# flaked repeatedly ("Page build failed.") at v566/v568/v574 and AGAIN at v590
-# even after force_orphan, each needing a manual POST /pages/builds kick. The
-# Actions artifact flow bypasses the legacy builder entirely — no gh-pages
-# branch, no branch-history bloat. Repo Pages source set to build_type=workflow
-# via API. Custom domain (astroprecise.app) + HTTPS persist at the Pages level;
-# CNAME + .nojekyll ship inside dist/.
-# Rollback: PATCH build_type=legacy, restore the peaceiris publish step +
-# contents:write, point Pages source back at gh-pages.
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+# Each job receives only the permissions it needs. The release must be
+# dispatched from a protected release/ap-vNNN-<12hex> tag whose commit matches
+# candidate_sha; tools/verify-release-dispatch.mjs enforces that identity before
+# any test, build, or deployment job is allowed to start.
+permissions: {}
 
 concurrency:
-  group: pages
+  group: astroprecise-pages-release
   cancel-in-progress: false
 
 jobs:
+  release_identity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      candidate_sha: ${{ steps.identity.outputs.candidate_sha }}
+      release_tag: ${{ steps.identity.outputs.release_tag }}
+      release_version: ${{ steps.identity.outputs.release_version }}
+    steps:
+      - name: Check out the selected release tag with full history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Verify immutable release identity
+        id: identity
+        env:
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+        run: node tools/verify-release-dispatch.mjs
+
   test:
+    needs: release_identity
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out the verified candidate commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.release_identity.outputs.candidate_sha }}
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           # Lighthouse 13 requires Node >=22.19. The maintained 22.x line keeps
           # CI compatible without jumping to a non-LTS runtime.
@@ -127,54 +145,92 @@ jobs:
           npm --prefix tools/visual-check run lighthouse:production:ci
 
   build:
-    needs: test
+    needs: [release_identity, test]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out the verified candidate commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.release_identity.outputs.candidate_sha }}
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '22.x'
 
-      # Faithful minify-in-place (tools/build.mjs): same paths, -27% JS / -29% CSS.
-      # build.mjs already skips tools/, the phone-* dev pages and all *.md — dist/
-      # IS the deployable tree (CNAME, .nojekyll, .well-known, sw.js precache all
-      # included).
-      - name: Build minified dist/
+      # Faithful minify-in-place (tools/build.mjs): same paths, smaller files.
+      # dist/ is the deployable tree, including CNAME, .nojekyll, .well-known,
+      # and the generated service-worker precache.
+      - name: Build minified dist
         run: |
           npm ci
           npm run build
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      # This file is generated only after the immutable dispatch gate and is
+      # shipped inside the Pages artifact. Cloudflare verification binds the
+      # public deployment to this exact commit instead of trusting ap-vNNN or
+      # a header that the edge tool itself controls.
+      - name: Stamp exact release identity into the Pages artifact
+        env:
+          CANDIDATE_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
+          RELEASE_TAG: ${{ needs.release_identity.outputs.release_tag }}
+          RELEASE_VERSION: ${{ needs.release_identity.outputs.release_version }}
+        run: >-
+          node tools/verify-release-dispatch.mjs
+          --write-artifact
+          "dist/.well-known/astroprecise-release/$CANDIDATE_SHA.json"
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: ./dist
 
-  # Official GitHub Pages deployment — replaces the flaky legacy branch builder.
   deploy:
-    needs: build
+    needs: [release_identity, test, build]
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy verified artifact to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
 
-      - uses: actions/checkout@v4
-        if: success()
+  postdeploy:
+    needs: [release_identity, deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the deployed candidate commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.release_identity.outputs.candidate_sha }}
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
-        if: success()
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '22.x'
 
-      - name: Notify search engines (IndexNow)
-        if: success()
+      - name: Verify public release identity
+        env:
+          CANDIDATE_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
         run: |
           sleep 30
+          node tools/setup-cloudflare-release-edge.mjs --verify-public --candidate "$CANDIDATE_SHA"
+
+      - name: Notify search engines with IndexNow
+        run: |
           node tools/ping-indexnow.mjs
