@@ -287,6 +287,10 @@ assert.match(releaseStatus, /59 changed paths sit outside its sealed target list
   'release status must report the exact current Coherence scope omission count');
 assert.equal(/omitted 56 later-required/i.test(releaseStatus), false,
   'release status must not retain the stale Coherence omission count');
+assert.match(releaseStatus, /Coherence wave is now `ABORTED`/i,
+  'release status must match the closed Coherence manifest state');
+assert.equal(/remains open at `IMPLEMENTING`/i.test(releaseStatus), false,
+  'release status must not claim an aborted wave is still implementing');
 assert.ok(eclipse.includes('id="eclipseEdition"') && eclipse.includes('id="eclipseContactForm"'));
 assert.match(productConfig, /catalogueSkus:\s*\[\]/);
 assert.match(productConfig, /id:\s*'eclipse-edition'[\s\S]{0,300}price:\s*null/);

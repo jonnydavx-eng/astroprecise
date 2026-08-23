@@ -23,7 +23,7 @@
 
 ## Verification identity
 
-- The active Full Coherence wave remains open at `IMPLEMENTING`. Against this candidate, 59 changed paths sit outside its sealed target list, including later-required test, build, asset, runbook and evidence paths. Coherence has no supported scope-amend action. Closing it as verified would be false; a correctly scoped future wave or independent native peer review is still required for a Coherence `VERIFIED-LOCAL` claim.
+- The Full/L3 Coherence wave is now `ABORTED` (closed 2026-08-23 at 05:19 BST), with no proofs and only its S8 preflight recorded. Against this candidate, 59 changed paths sit outside its sealed target list, including later-required test, build, asset, runbook and evidence paths. It was not and must not be represented as verified; a correctly scoped future wave or independent native peer review is still required for a Coherence `VERIFIED-LOCAL` claim.
 - Adobe application tooling was unavailable. The creative direction was informed by official Adobe 2026 trend guidance and checked through the local visual/browser toolchain.
 
 ## Revenue/release blockers
