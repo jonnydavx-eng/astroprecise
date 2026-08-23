@@ -1,4 +1,4 @@
-name: Deploy verified release to GitHub Pages
+name: Deploy verified release to Cloudflare Pages
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ on:
 permissions: {}
 
 concurrency:
-  group: astroprecise-pages-release
+  group: astroprecise-cloudflare-pages-release
   cancel-in-progress: false
 
 jobs:
@@ -144,12 +144,17 @@ jobs:
           curl --fail --silent --show-error http://127.0.0.1:8790/?nosw=1 > /dev/null
           npm --prefix tools/visual-check run lighthouse:production:ci
 
-  build:
+  deploy:
     needs: [release_identity, test]
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
-      pages: write
+    environment:
+      name: cloudflare-pages
+      url: ${{ steps.cloudflare.outputs.deployment-url }}
+    outputs:
+      deployment_url: ${{ steps.cloudflare.outputs.deployment-url }}
     steps:
       - name: Check out the verified candidate commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -163,48 +168,47 @@ jobs:
           node-version: '22.x'
 
       # Faithful minify-in-place (tools/build.mjs): same paths, smaller files.
-      # dist/ is the deployable tree, including CNAME, .nojekyll, .well-known,
+      # dist/ is the deployable tree, including CNAME, _headers, .well-known,
       # and the generated service-worker precache.
       - name: Build minified dist
         run: |
           npm ci
           npm run build
 
-      # This file is generated only after the immutable dispatch gate and is
-      # shipped inside the Pages artifact. Cloudflare verification binds the
-      # public deployment to this exact commit instead of trusting ap-vNNN or
-      # a header that the edge tool itself controls.
-      - name: Stamp exact release identity into the Pages artifact
+      # The stamp command validates the checked-out SHA and release version,
+      # writes the SHA-named identity document, and replaces exactly one
+      # candidate placeholder in dist/_headers. Direct website/ uploads retain
+      # the placeholder and cannot pass post-deploy proof.
+      - name: Stamp exact identity and response header into the artifact
         env:
           CANDIDATE_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
           RELEASE_TAG: ${{ needs.release_identity.outputs.release_tag }}
           RELEASE_VERSION: ${{ needs.release_identity.outputs.release_version }}
-        run: >-
-          node tools/verify-release-dispatch.mjs
-          --write-artifact
-          "dist/.well-known/astroprecise-release/$CANDIDATE_SHA.json"
+        run: node tools/verify-release-dispatch.mjs --stamp-cloudflare-pages dist
 
-      - name: Configure Pages
-        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+      - name: Deploy exact artifact to Cloudflare Pages
+        id: cloudflare
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
-          path: ./dist
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.125.0'
+          command: >-
+            pages deploy dist
+            --project-name=astroprecise
+            --branch=main
+            --commit-hash=${{ needs.release_identity.outputs.candidate_sha }}
+            --commit-message=${{ needs.release_identity.outputs.release_tag }}
+            --commit-dirty=false
 
-  deploy:
-    needs: [release_identity, test, build]
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy verified artifact to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
+      - name: Confirm Cloudflare classified the deployment as production
+        env:
+          PAGES_ENVIRONMENT: ${{ steps.cloudflare.outputs.pages-environment }}
+        run: |
+          if [ "$PAGES_ENVIRONMENT" != "production" ]; then
+            echo "Cloudflare classified the deployment as '$PAGES_ENVIRONMENT'; refusing a preview deployment."
+            exit 1
+          fi
 
   postdeploy:
     needs: [release_identity, deploy]
@@ -227,8 +231,9 @@ jobs:
       - name: Verify public release identity
         env:
           CANDIDATE_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
+          DEPLOYMENT_URL: ${{ needs.deploy.outputs.deployment_url }}
         run: |
-          sleep 30
+          node tools/setup-cloudflare-release-edge.mjs --verify-url "$DEPLOYMENT_URL" --candidate "$CANDIDATE_SHA"
           node tools/setup-cloudflare-release-edge.mjs --verify-public --candidate "$CANDIDATE_SHA"
 
       - name: Notify search engines with IndexNow

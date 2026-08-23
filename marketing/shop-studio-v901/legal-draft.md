@@ -81,7 +81,7 @@ The buyer must check submitted details. AstroPrecise should validate format, cal
 
 An order is a request for a commission. State exactly when AstroPrecise accepts the order in the final public terms and durable confirmation. If the service cannot be accepted, reject it promptly and return the deposit through Gumroad.
 
-The total service price is £18, £29 or £39. Gumroad Commission collects 50% as an up-front deposit and charges the remaining 50% after completion. Gumroad states that the deposit is not credited to the creator's balance until the commission is completed. The exact live checkout total, tax treatment and charge sequence must be verified in the seller account before launch.
+The total service price is £18, £29 or £39. Gumroad Commission collects 50% as an up-front deposit and charges the remaining 50% after the seller uploads files and marks the commission complete. Gumroad's current help states that the deposit is credited to the creator's balance immediately; the exact account-visible balance, final-charge timing, tax treatment and file-replacement route must still be verified in the signed-in seller test before launch.
 
 No unwatermarked final file may be created or released merely because an order ID, 50% deposit or locally authored payment note exists. The local fulfilment gate remains closed until a seller-authenticated adapter verifies the matching paid-in-full state.
 

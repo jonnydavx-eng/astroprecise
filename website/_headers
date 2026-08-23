@@ -1,7 +1,8 @@
-# AstroPrecise — FUTURE-HOSTING POLICY ONLY.
-# ⚠ INERT ON GITHUB PAGES (the current host; GitHub Pages ignores _headers).
-# Do not claim these headers are live until a response-header check on a host
-# that supports this file passes. Re-test every directive during any migration.
+# AstroPrecise — Cloudflare Pages production policy.
+# The source tree deliberately contains a non-deployable candidate placeholder.
+# The protected release workflow replaces it with the exact verified commit in
+# dist/_headers; a direct upload of website/ must therefore fail public proof.
+# Re-test every directive on the deployment URL and both custom domains.
 #
 # The policy matches current product behavior: same-origin geolocation is used
 # by sky/chart features, and contact.html posts to Formspree. The dormant PayPal
@@ -12,6 +13,7 @@
 # See also: tools/setup-cloudflare-cache.mjs
 
 /*
+  X-Coherence-Candidate-Tip: __ASTROPRECISE_CANDIDATE_SHA__
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   X-Permitted-Cross-Domain-Policies: none

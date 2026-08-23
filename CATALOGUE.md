@@ -1,10 +1,10 @@
 # AstroPrecise Studio — launch catalogue
 
-Updated: 2026-08-23
+Updated: 2026-08-24
 
 > **PRELAUNCH — NOT FOR SALE.** These are the only three proposed launch products. Checkout URLs are intentionally absent, no product has been published, and the public site has not been deployed from this branch. Ko-fi remains voluntary support only and does not unlock a product.
 
-All three products are personalised **Gumroad Commission services** ending in digital-file delivery. Prices are listed service prices in GBP; Gumroad must show the final checkout total including any applicable tax before the buyer commits. Gumroad's Commission flow collects 50% as the up-front deposit and charges the remaining 50% after completion. That seller flow, account eligibility and the final-file hand-off must pass a signed-in test order before launch.
+All three products are personalised **Gumroad Commission services** ending in digital-file delivery. Prices are listed service prices in GBP; Gumroad must show the final checkout total including any applicable tax before the buyer commits. Gumroad's current Commission flow credits the 50% deposit to the seller balance, then charges the remaining 50% after the seller uploads files and marks the commission complete. Account eligibility, the exact charge sequence and a safe post-final-charge file hand-off must pass a signed-in test order before launch.
 
 ## The three-product launch
 
@@ -82,9 +82,15 @@ Cover: `website/img/shop/v901/whole-sky-edition.webp`
 
 1. Publish the operator's full geographic business/service address and confirm legal/trading identity, contact route and applicable territories.
 2. Obtain owner confirmation of the five-working-day target, seven-day layout-adjustment scope and 30-day private-working-file deletion rule.
-3. Confirm the Gumroad account is eligible for Commission products and verify the exact 50% deposit/balance workflow.
-4. Complete a test order covering receipt, buyer inputs, optional early-start consent, cancellation/refund, final balance, final-file delivery and data deletion.
-5. Replace this draft/noindex service-terms page with owner-approved public terms and align the live privacy/refund/contact pages before checkout opens.
-6. Receive explicit owner approval before archiving the legacy listing, publishing any new product or deploying the website.
+3. Create the Cloudflare Pages project and attach the apex and `www` custom domains, then prove the exact SHA identity on the Pages deployment and both domains.
+4. Confirm the Gumroad account is eligible for Commission products and verify the exact 50% deposit/balance workflow.
+5. Implement an authenticated seller adapter and prove a truthful completion sequence in which a usable final exists when the commission is marked complete, while unauthorised delivery remains blocked unless the final charge succeeds.
+6. Complete a test order covering receipt, buyer inputs, optional early-start consent, cancellation/refund, final balance, final-file delivery and data deletion.
+7. Replace this draft/noindex service-terms page with owner-approved public terms and align the live privacy/refund/contact pages before checkout opens.
+8. Receive explicit owner approval before archiving the legacy listing, publishing any new product or deploying the website.
 
-Authoritative machine-readable catalogue: `website/data/products-v901.json`.
+Authoritative machine-readable product, price and checkout state:
+`website/data/products-v901.json`. Its `launchBlockers` array is a compact
+fail-closed product guard, not the complete release checklist. The eight blockers
+above and `docs/SHOP-LAUNCH-RUNBOOK.md` remain mandatory even if the compact array
+is unchanged.

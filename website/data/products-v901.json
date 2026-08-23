@@ -15,6 +15,7 @@
     "signed-in-gumroad-commission-eligibility-check",
     "end-to-end-test-order-receipt-refund-and-deletion"
   ],
+  "launchBlockersScope": "compact non-exhaustive product guard; the complete release checklist is docs/SHOP-LAUNCH-RUNBOOK.md",
   "sharedRules": {
     "format": "digital-files-only",
     "physicalItem": false,
@@ -25,7 +26,7 @@
     "productionWorkingDays": 5,
     "productionClock": "complete inputs plus early-start consent, or expiry of the 14-day cancellation period",
     "correctionPolicy": "calculation and production errors corrected without charge",
-    "retentionDraft": "local raw inputs and working files deleted 30 days after final correction; non-birth-data order evidence retained separately"
+    "retentionDraft": "local raw inputs and working files deleted 30 days after final correction, or 30 days after final delivery if no correction is agreed; where both dates exist, whichever is later; non-birth-data order evidence retained separately"
   },
   "products": [
     {

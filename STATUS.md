@@ -1,67 +1,77 @@
-# STATUS — AstroPrecise
+# AstroPrecise status
 
-Updated: 2026-08-23 23:03 BST
+Updated: 2026-08-24
 
-## Result first
+## Outcome
 
-AstroPrecise now has a tested **v901 Studio preview release candidate** and a prepared exact-identity release path, not a live paid shop. The candidate defines exactly three proposed Gumroad Commission services at £18, £29 and £39, a fail-closed personalised fulfilment route, fictional samples and a commerce/legal launch pack. The release is deliberately stamped `ap-v901`; checkout remains closed. No seller account or Cloudflare configuration was changed, no product was published and the legacy Gumroad listing was not withdrawn or archived.
+The repository contains a polished, checkout-closed v901 Studio candidate and a
+Cloudflare Pages release path. It is **not a live release** and checkout is closed.
+It does **not** contain a live paid shop, verified
+seller account, final public consumer terms or release authority. Public v895 is
+intentionally unchanged.
 
-The public Shop was rechecked on 2026-08-23 and still says that nothing is for sale. Public `sw.js` returned HTTP 200 with `ap-v895`; the production identity header is not configured. The legacy Gumroad Eclipse URL also returned HTTP 200 at £7 GBP and remains an authenticated external owner action. The v901 branch is not production until the protected release review, owner signature, immutable-tag Pages run, Cloudflare application and public checks all complete.
+The authoritative candidate SHA is `git rev-parse HEAD`. The authoritative
+governance state is the newest validator receipt for:
 
-## Local Studio offer
+`C:\Users\jonny\dev\coherence-astro-release\.fleets\AstroPrecise\astroprecise-20260824-001759-6bef\manifest.json`
 
-| SKU                     | Product               | Price | State                           |
-| ----------------------- | --------------------- | ----: | ------------------------------- |
-| `natal-sky-print-pack`  | Natal Sky Print Pack  |   £18 | preview draft · checkout closed |
-| `personal-sky-keepsake` | Personal Sky Keepsake |   £29 | preview draft · checkout closed |
-| `whole-sky-edition`     | Whole Sky Edition     |   £39 | preview draft · checkout closed |
+This prose file does not grant `CODE-ONLY`, `BLOCK-SHIP`, `VERIFIED-LOCAL`,
+`READY-SHIP` or `LIVE`.
 
-All three are proposed Gumroad **Commission** services: 50% deposit, balance charged after completion, digital files only. The default service target is five working days. Whole Sky includes one reasonable layout adjustment requested within seven calendar days. Ko-fi remains support-only and provides no paid product or feature.
+## Finished in code
 
-## What is ready locally
+- Exactly three proposed Commission services at £18, £29 and £39.
+- Checkout-closed Shop preview, fictional samples and product covers.
+- Deterministic personalised render/proof pipeline with PDF/PNG/ZIP manifests,
+  visible `AP REF`, raster/perceptual checks and SCHEMATIC Observatory still.
+- Final mode rejects an unverified/forged payment state.
+- Manual protected-tag release identity gate.
+- Cloudflare Pages Direct Upload workflow with pinned actions/runtime, exact-SHA
+  identity JSON, build-stamped `_headers`, production-environment assertion and
+  direct non-redirecting root/deployment/apex/`www` proof.
+- Old GitHub Pages DNS/Transform mutation route retired and mutation disabled.
+- Obsolete 13-product Gumroad provisioner permanently fail-closed.
+- Current launch/monetisation/legal/email documents aligned to the three-product
+  Commission plan and free Cloudflare hosting.
 
-- The old 18-item speculative catalogue has been retired in favour of the exact three-product catalogue above.
-- Product generation is fail-closed: while `platform.checkoutVerified` is `false`, every unwatermarked final route is disabled. A manually written seller-dashboard attestation is explicitly insufficient to cross that gate.
-- The fulfilment route uses private per-order directories, generic filenames, a lock against duplicate processing, an atomic transaction-replay ledger for the eventual verified flow, all-page PDF/image checks, byte-for-byte customer ZIP checks and mutually bound SHA-256 manifests.
-- Final-mode payment evidence must carry an authenticated adapter receipt and a valid HMAC signature. Every generated page and raster is bound to the canonical private input with an `AP REF`; PDF pages are actually rasterised for perceptual inspection, PNGs carry a decoded pixel provenance strip, and the quality gate rechecks work-start authority at delivery time.
-- The Whole Sky image is visibly labelled `SCHEMATIC`; it is an authored compressed whole-system view using computed body positions, not a photograph, live feed or true-scale scientific rendering.
-- The public service-terms candidate is `noindex` and visibly marked as a launch draft, not a current offer.
-- Exact listing copy, buyer questions, cancellation wording, privacy/retention rules and publish/rollback checks are documented under `marketing/shop-studio-v901/` and `docs/`.
-- `tools/setup-cloudflare-release-edge.mjs` now prepares a narrow release-identity edge: offline dry-run by default, tokenless public verification, token-backed read-only verification and explicit apply. Apply requires the exact clean tagged checkout and a SHA-named identity file generated inside the deployed Pages artifact; matching only `ap-v901` cannot stamp a candidate. It paginates routing checks, rejects A/AAAA/CNAME/HTTPS/SVCB bypasses and uses rule-specific Transform operations plus one DNS batch. Transform rollback before DNS is bound to exact mutation-response revisions. After any DNS write attempt it deliberately retains DNS and the candidate header for manual recovery because Cloudflare has no compare-and-swap and DNS propagation is not atomic. It has not been run against Cloudflare.
-- `docs/SHOP-LAUNCH-RUNBOOK.md` now records the immutable-tag/environment controls, independent review and owner/S1 order, SHA-specific public artifact, honest GitHub Pages visibility boundary, post-deploy edge sequence, compensating rollback, existing-immutable-tag rollback and legacy-product direct-link proof required before a launch claim.
-- Self-hosted webfonts now have a repository licence file and an evidence-based family/file map.
+## Confirmed external truth at last check
 
-## Evidence and verification state
+- `astroprecise.app/sw.js` served `ap-v895`, not v901.
+- The public Shop said nothing was for sale.
+- No release tag or workflow run existed for the v901 candidate.
+- The legacy Gumroad Eclipse direct URL was still reachable and marked in stock.
+- Gumroad seller access redirected to sign-in; eligibility and payout are unknown.
+- Cloudflare Pages project/domain/secrets were not configured by this task.
 
-- A full fictional Whole Sky proof has completed the local fulfilment quality gate, including 20-page screen and ink-light readings, A3/A4 plates, five exact-dimension print/social PNGs, a 4800 × 3600 Observatory still, ZIP inventory and manifests.
-- `npm run test:shop` passed. `npm run test:fulfil` passed twice independently after the final Observatory tolerance profile, including stale-input rebinding, white-covered PDF, black-raster, ZIP-tamper, payment-signature and generator-liveness attacks.
-- The full `npm test` integration suite, `npm run test:launch`, `npm run check:syntax`, `npm run build`, `node tools/test-product-render.mjs`, both dependency audits and `git diff --check` passed. The dependency audits reported zero vulnerabilities.
-- Playwright rechecked the release at desktop and 390 × 844 phone widths: one live Observatory model, responsive 3D, exact three-product Shop, three disabled checkouts, no Gumroad sales link, no email form, no overflow and no runtime errors.
-- Axe reported zero violations on all 36 audited routes. The rendered Midnight Meridian palette passed on 67 public routes. Production-artifact Lighthouse passed its CI floors on all ten routes: performance 76–97 and accessibility, best practices and SEO 100 throughout; the Shop scored 93/100/100/100.
-- The service worker was regenerated as `ap-v901` with 82 launch-shell entries totalling 2,674,835 bytes. Four optional editorial WebPs remain runtime-only rather than bloating the offline install.
-- The old frozen Coherence prelaunch wave cannot approve this live release. A fresh Full live/release wave, genuinely independent native review and signed S1 authority are still required before production merge.
+These facts can drift and must be rechecked at action time.
 
-## Hard blockers before revenue
+## Remaining stop-ship work
 
-1. **Trader disclosure:** supply and publish a full geographic business/service address, plus the legal/trading identity and direct service contact route. Checkout must stay closed without it.
-2. **Owner policy decisions:** confirm the five-working-day service target, seven-day layout-adjustment scope, 30-day private-input/working-file deletion rule, supported buyer territories and tax/VAT status.
-3. **Signed-in Gumroad proof:** verify Commission eligibility, payout identity and the complete 50% deposit/final-balance workflow. Confirm that an authenticated adapter can query and bind the paid-in-full state before the final unwatermarked delivery is released.
-4. **End-to-end test:** test buyer receipt, required inputs, unticked early-start choice, cancellation/refund, completion/final charge, downloadable delivery and deletion.
-5. **Authenticated final-release design:** replace the deliberately closed local gate with a seller-authenticated, test-proven payment adapter. Do not treat a self-authored JSON attestation as authentication.
-6. **Public legal alignment:** owner-review the launch terms and update the public privacy/refund/contact surfaces for commissioned service processing before any product link appears.
-7. **Release governance:** freeze the exact final v901 commit in a fresh Full live/release Coherence wave, obtain independent native review and signed S1 authority, protect immutable `release/*` tags and the `github-pages` environment, then deploy that identity. The owner trust store is not yet configured.
-8. **Cloudflare authentication and edge:** provide a zone-scoped token privately, deploy the exact candidate first, explicitly approve the edge mutation, apply the one candidate-identity Transform Rule and proxy only the verified apex/www records. The prepared tool has not contacted or changed Cloudflare. Cloudflare DNS propagation is not atomic, so a convergence interval remains possible even with the batched control-plane write and the explicit manual-recovery boundary after any DNS attempt.
-9. **Public verification:** prove apex and `www` each emit exactly one matching `X-Coherence-Candidate-Tip`, serve the exact SHA-named release JSON, public `sw.js` is `ap-v901`, the three preview SKUs render logged out and every checkout remains disabled before describing the preview as live. The first post-deploy check may remain closed until the separately approved edge application is complete.
+1. Clean commit and Coherence freeze of this exact release-infrastructure slice,
+   including native top-level S12 plus manifest-declared S11/S4/S7/S2/S5 seats.
+2. Owner signer/trust store and signed S1 authority after peer review.
+3. A fresh Full whole-candidate wave at the exact final PR tip; this narrow wave
+   cannot grant release authority to the rest of the v901 candidate.
+4. Legal operator/trading identity, public geographic address, contact, territories,
+   tax/VAT, ICO fee and service/retention decisions.
+5. Owner-created Cloudflare Pages project, protected GitHub environment, least-
+   privilege secrets and approved apex/`www` association/cutover.
+6. Signed-in Gumroad Commission eligibility/payout/fee check and three unpublished
+   drafts matching the catalogue.
+7. Authenticated seller adapter and a complete fictional seller test that proves
+   a usable final exists at truthful completion without unauthorised pre-payment
+   delivery.
+8. Owner-approved public terms/privacy/refund/contact pages. The current Terms,
+   Refunds and Contact pages still incorrectly call the externally purchasable
+   legacy listing archived, so they are explicitly not deployable as final copy.
+9. Measured unit economics for all tiers.
+10. Explicit owner confirmations for legacy listing archive, v901 deployment,
+    product publication and checkout URL wiring.
 
-## Safety rules
+## Buying decision
 
-- Make the legacy Gumroad product unavailable, then archive it while preserving past-buyer access; do not assume archive alone disables its direct purchase URL, and do not delete it.
-- Do not use an order ID alone as proof of payment.
-- Do not create an unwatermarked final from only a 50% deposit.
-- Do not accept unknown or approximate birth times at launch; no time rectification is offered.
-- Do not send birth data through public forms, logs, URLs or customer filenames.
-- Do not claim urgency, scarcity, reviews, bestseller status, outcomes or live availability without evidence.
-- Do not merge production without the independent release receipt and owner authority.
+Buy nothing new now. Existing/free infrastructure is enough. Check only the
+existing domain renewal and ICO fee applicability; consider a bounded UK legal
+review after all owner facts and seller-flow evidence are complete.
 
-Branch: `codex/v900-midnight-meridian`
-Production baseline before this release: `51b2e675ddc9501a75df21bf4fdb7fb17d354a30` (`ap-v895`).
+Operational source of truth: `docs/SHOP-LAUNCH-RUNBOOK.md`.

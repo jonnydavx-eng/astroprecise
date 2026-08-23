@@ -9,6 +9,8 @@ export const OFFICIAL_REPOSITORY = 'jonnydavx-eng/astroprecise'
 export const RELEASE_TAG_PATTERN = /^release\/(ap-v[0-9]{3,})-([0-9a-f]{12})$/
 export const CANDIDATE_SHA_PATTERN = /^[0-9a-f]{40}$/
 export const RELEASE_IDENTITY_SCHEMA = 'astroprecise-release-identity/v1'
+export const CANDIDATE_HEADER = 'X-Coherence-Candidate-Tip'
+export const CANDIDATE_HEADER_PLACEHOLDER = '__ASTROPRECISE_CANDIDATE_SHA__'
 
 function fail(message) {
   throw new Error(`Release identity rejected: ${message}`)
@@ -296,21 +298,89 @@ export function writeReleaseIdentityArtifact(document, outputPath) {
   return absolutePath
 }
 
+export function stampCandidateHeaderTemplate(source, candidateSha) {
+  if (!CANDIDATE_SHA_PATTERN.test(candidateSha ?? '')) {
+    fail('candidate header SHA must be exactly 40 lowercase hexadecimal characters')
+  }
+  const normalizedSource = String(source)
+  const headerLines = normalizedSource.match(
+    new RegExp(`^[\\t ]*${CANDIDATE_HEADER}:[\\t ]*[^\\r\\n]+$`, 'gim'),
+  )
+  if ((headerLines ?? []).length !== 1) {
+    fail(`Cloudflare Pages _headers must contain exactly one ${CANDIDATE_HEADER} line`)
+  }
+  const expectedTemplate = new RegExp(
+    `^[\\t ]*${CANDIDATE_HEADER}:[\\t ]*${CANDIDATE_HEADER_PLACEHOLDER}[\\t ]*$`,
+    'im',
+  )
+  if (!expectedTemplate.test(normalizedSource)) {
+    fail(`Cloudflare Pages ${CANDIDATE_HEADER} must use the exact build-time placeholder`)
+  }
+  const placeholderCount = normalizedSource.split(CANDIDATE_HEADER_PLACEHOLDER).length - 1
+  if (placeholderCount !== 1) {
+    fail('Cloudflare Pages candidate placeholder must occur exactly once')
+  }
+  const stamped = normalizedSource.replace(CANDIDATE_HEADER_PLACEHOLDER, candidateSha)
+  if (!new RegExp(`^[\\t ]*${CANDIDATE_HEADER}:[\\t ]*${candidateSha}[\\t ]*$`, 'im').test(stamped)) {
+    fail('Cloudflare Pages candidate header stamping did not produce the exact SHA')
+  }
+  return stamped
+}
+
+export function stampCloudflarePagesArtifact({
+  document,
+  distDirectory,
+  readFile = readFileSync,
+  writeFile = writeFileSync,
+} = {}) {
+  if (!document) fail('release identity document is required for Pages stamping')
+  const absoluteDist = resolve(distDirectory ?? '')
+  const headersPath = resolve(absoluteDist, '_headers')
+  let template
+  try {
+    template = readFile(headersPath, 'utf8')
+  } catch (error) {
+    fail(`unable to read Cloudflare Pages _headers (${error.message})`)
+  }
+  const stampedHeaders = stampCandidateHeaderTemplate(template, document.candidateSha)
+  const identityPath = resolve(
+    absoluteDist,
+    '.well-known',
+    'astroprecise-release',
+    `${document.candidateSha}.json`,
+  )
+  writeReleaseIdentityArtifact(document, identityPath)
+  writeFile(headersPath, stampedHeaders, { encoding: 'utf8', flag: 'w' })
+  return Object.freeze({ identityPath, headersPath })
+}
+
 export function runCli({
   env = process.env,
   cwd = process.cwd(),
   argv = process.argv.slice(2),
 } = {}) {
   if (argv.length > 0) {
-    if (argv.length !== 2 || argv[0] !== '--write-artifact') {
-      fail('usage: verify-release-dispatch.mjs [--write-artifact <output-path>]')
-    }
     const document = verifyReleaseArtifactBuild({ env, cwd })
-    const outputPath = writeReleaseIdentityArtifact(document, resolve(cwd, argv[1]))
-    process.stdout.write(
-      `Wrote ${document.releaseTag} identity for ${document.candidateSha} to ${outputPath}\n`,
+    if (argv.length === 2 && argv[0] === '--write-artifact') {
+      const outputPath = writeReleaseIdentityArtifact(document, resolve(cwd, argv[1]))
+      process.stdout.write(
+        `Wrote ${document.releaseTag} identity for ${document.candidateSha} to ${outputPath}\n`,
+      )
+      return document
+    }
+    if (argv.length === 2 && argv[0] === '--stamp-cloudflare-pages') {
+      const stamped = stampCloudflarePagesArtifact({
+        document,
+        distDirectory: resolve(cwd, argv[1]),
+      })
+      process.stdout.write(
+        `Stamped ${document.releaseTag} for ${document.candidateSha} into ${stamped.identityPath} and ${stamped.headersPath}\n`,
+      )
+      return document
+    }
+    fail(
+      'usage: verify-release-dispatch.mjs [--write-artifact <output-path> | --stamp-cloudflare-pages <dist-directory>]',
     )
-    return document
   }
 
   const result = verifyReleaseDispatch({ env, cwd })
