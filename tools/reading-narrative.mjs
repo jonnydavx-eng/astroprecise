@@ -71,7 +71,7 @@ export function chartRulerNarrative(ruler, pos, rulerName, pInterp, hMeaning) {
 export function mcCareerBlock(M, mcLon, sunSign, pInterp, hMeaning, sentsFn) {
   const hm = hMeaning(10);
   return `
-  <h3>The top of your chart — ${M.sign} (${hm.keyword})</h3>
+  <h2 class="reading-subhead">The top of your chart — ${M.sign} (${hm.keyword})</h2>
   <p>The top of the chart sits at ${fmt(mcLon)} in ${M.sign}. Traditional astrology uses this point as a lens on public role and visibility, not as a career forecast. The <strong>Sun in ${sunSign}</strong> adds an identity symbol to that reading. ${sentsFn(pInterp('Sun', sunSign), 2)} ${sentsFn(hm.meaning, 1)}</p>`;
 }
 
@@ -79,16 +79,16 @@ export function loveValuesBlock(pos, pInterp, hMeaning, sentsFn, PGL) {
   const vh = pos.venus.house;
   const mh = pos.mars.house;
   return `
-  <h3>${PGL.venus} Venus in ${pos.venus.sign} — ${ord(vh)} House (${hMeaning(vh).keyword})</h3>
+  <h2 class="reading-subhead">${PGL.venus} Venus in ${pos.venus.sign} — ${ord(vh)} House (${hMeaning(vh).keyword})</h2>
   <p>${housePlacementLine('Venus', vh, pos.venus.sign, hMeaning)} ${sentsFn(pInterp('Venus', pos.venus.sign), 2)}</p>
-  <h3>${PGL.mars} Mars in ${pos.mars.sign} — ${ord(mh)} House (${hMeaning(mh).keyword})</h3>
+  <h2 class="reading-subhead">${PGL.mars} Mars in ${pos.mars.sign} — ${ord(mh)} House (${hMeaning(mh).keyword})</h2>
   <p>${sentsFn(pInterp('Mars', pos.mars.sign), 2)} Read together, Venus and Mars offer two symbolic prompts: values through ${pos.venus.sign}, and action through ${pos.mars.sign}. They do not assess a relationship, attraction, or behaviour.</p>`;
 }
 
 export function saturnChapter(pos, pInterp, hMeaning, sentsFn, PGL) {
   const k = 'saturn';
   return `
-  <h3>${PGL[k]} Saturn in ${pos[k].sign} — ${ord(pos[k].house)} House (${hMeaning(pos[k].house).keyword})</h3>
+  <h2 class="reading-subhead">${PGL[k]} Saturn in ${pos[k].sign} — ${ord(pos[k].house)} House (${hMeaning(pos[k].house).keyword})</h2>
   <p class="lede">Astrologers use Saturn as a symbol of structure, limits, time, and responsibility.</p>
   <p>${sentsFn(pInterp('Saturn', pos[k].sign), 3)} Its ${ord(pos[k].house)}-house position places that symbolic prompt alongside ${hMeaning(pos[k].house).keyword.toLowerCase()}.</p>`;
 }
@@ -143,7 +143,7 @@ export function planetDossiersChapter(pos, pInterp, hMeaning, sentsFn, PGL, PNAM
   ${intro ? '<p class="lede">Twelve placements, twelve symbolic voices — each with sign, house, and, where relevant, retrograde motion.</p>' : ''}`;
   BODIES.forEach((k) => {
     const rx = pos[k].retro ? ' <span class="r">℞ retrograde</span>' : '';
-    body += `<h3>${PGL[k]} ${PNAME[k]} — ${fmt(pos[k].lon)} · ${ord(pos[k].house)} house${rx}</h3>`;
+    body += `<h2 class="reading-subhead">${PGL[k]} ${PNAME[k]} — ${fmt(pos[k].lon)} · ${ord(pos[k].house)} house${rx}</h2>`;
     if (k === 'northNode') {
       // No North-Node-in-sign entry exists in the corpus; compose honestly from
       // the real nodal axis (North Node ↔ opposite South Node) instead of the
@@ -176,7 +176,7 @@ export function chartPatternsChapter(patterns, ctx = null) {
   let body = `<h1 style="font-size:20pt;">Patterns in the geometry.</h1><p class="lede">Beyond individual placements, selected geometric relationships can be grouped under traditional pattern names.</p>`;
   patterns.forEach((p) => {
     if (p.type === 'stellium') {
-      body += `<h3>${p.sign} stellium</h3><p>${p.planets.join(', ')} share ${p.sign}, meeting this edition's three-or-more-body threshold. Traditional astrology treats the grouping as concentrated symbolic emphasis; it is not a fixed trait or compulsory lesson.</p>`;
+      body += `<h2 class="reading-subhead">${p.sign} stellium</h2><p>${p.planets.join(', ')} share ${p.sign}, meeting this edition's three-or-more-body threshold. Traditional astrology treats the grouping as concentrated symbolic emphasis; it is not a fixed trait or compulsory lesson.</p>`;
       if (enrich) {
         const key = p.planets[0] === 'Sun' ? 'Sun' : p.planets[0];
         const signProse = ctx.sentsFn(ctx.pInterp(key, p.sign), 2);
@@ -191,11 +191,11 @@ export function chartPatternsChapter(patterns, ctx = null) {
         }
       }
     } else if (p.type === 'grandTrine') {
-      body += `<h3>A closed loop of trines</h3><p>${p.planets.join(', ')} form the measured trine links used for this pattern label. Traditional interpretations sometimes associate this geometry with ease; no talent or outcome is inferred here.</p>`;
+      body += `<h2 class="reading-subhead">A closed loop of trines</h2><p>${p.planets.join(', ')} form the measured trine links used for this pattern label. Traditional interpretations sometimes associate this geometry with ease; no talent or outcome is inferred here.</p>`;
     } else if (p.type === 'tSquare') {
-      body += `<h3>T-square</h3><p>The measured opposition and square links meet this edition's T-square threshold. The name describes geometry; it does not establish conflict, ambition, pressure, or a remedy.</p>`;
+      body += `<h2 class="reading-subhead">T-square</h2><p>The measured opposition and square links meet this edition's T-square threshold. The name describes geometry; it does not establish conflict, ambition, pressure, or a remedy.</p>`;
     } else if (p.type === 'mutualReception') {
-      body += `<h3>Mutual reception</h3><p>${p.pairs.join('; ')}. Traditional rulership tables call this a mutual reception; no behavioural claim follows from the label.</p>`;
+      body += `<h2 class="reading-subhead">Mutual reception</h2><p>${p.pairs.join('; ')}. Traditional rulership tables call this a mutual reception; no behavioural claim follows from the label.</p>`;
     }
   });
   body += closing;
@@ -223,7 +223,7 @@ export function aspectsChapter(aspects, I, PNAME, PGL, limit = 10, offset = 0) {
   </table>`;
   top.forEach((a, i) => {
     const prose = aspectProse(I, a.type, PNAME[a.a], PNAME[a.b], a.orb);
-    body += `<h3>${offset + i + 1}. ${PNAME[a.a]} and ${PNAME[a.b]} — ${plainAspect(a.type).toLowerCase()}</h3><p>${prose}</p>`;
+    body += `<h2 class="reading-subhead">${offset + i + 1}. ${PNAME[a.a]} and ${PNAME[a.b]} — ${plainAspect(a.type).toLowerCase()}</h2><p>${prose}</p>`;
   });
   body += `<p class="note">These interpretations are reflective prompts. No angle guarantees an event, outcome, strength or difficulty.</p>`;
   return body;
@@ -249,12 +249,12 @@ export function methodologyPage(PERSON, order) {
   <p class="eyebrow">How This Reading Was Made</p>
   <h1 style="font-size:22pt;">Measured sky,&nbsp;<br>not invented copy.</h1>
   <p class="lede">Planetary positions in this document are computed from the VSOP87 and ELP2000 models for ${PERSON.date} at ${PERSON.time} in ${PERSON.place}. Interpretive passages come from AstroPrecise's curated astrology corpus and are assembled from those placements.</p>
-  <h3>Your free instruments</h3>
+  <h2 class="reading-subhead">Your free instruments</h2>
   <p>This reading deepens what you can explore free on the site: your <strong>birth chart wheel</strong>, your <strong>daily horoscope</strong> read against your Sun sign, the <strong>live sky</strong> moving over your birth chart, <strong>compatibility</strong> between two charts, and the <strong>raw sky tables</strong> if you would rather see the numbers themselves. They are all in the menu at astroprecise.app. The PDF is the keepsake; the site stays your living observatory.</p>
   ${timeNote}
-  <h3>What astrology is — here</h3>
+  <h2 class="reading-subhead">What astrology is — here</h2>
   <p>This is a traditional symbolic practice, not a scientific personality assessment or fortune-telling. It does not diagnose, prescribe, or guarantee outcomes.</p>
-  <h3>How to use it</h3>
+  <h2 class="reading-subhead">How to use it</h2>
   <p>Use each passage as an optional question. Keep what is useful, set aside what is not, and never substitute a symbolic reading for evidence or qualified advice.</p>
   <p style="font-size:9.5pt;color:#93A8BF;margin-top:14pt;">For reflection and entertainment · Not medical, financial, legal or other professional advice · astroprecise.app/accuracy.html</p>`;
 }

@@ -13,8 +13,8 @@ const unlock = readFileSync('website/js/gumroad-unlock.js', 'utf8');
 const sw = readFileSync('website/sw.js', 'utf8');
 const fails = [];
 
-if (!/ap-eclipse-live-v834\.js\?v=900/.test(html)) fails.push('dedicated simulation is not pinned to v900');
-if (!/ap-eclipse-contact-v835\.js\?v=900/.test(html)) fails.push('contact controller is not pinned to v900');
+if (!/ap-eclipse-live-v834\.js\?v=901/.test(html)) fails.push('dedicated simulation is not pinned to v901');
+if (!/ap-eclipse-contact-v835\.js\?v=901/.test(html)) fails.push('contact controller is not pinned to v901');
 if ((html.match(/class="ap-eclipse-live__canvas"/g) || []).length !== 1 || /<void-orrery\b/.test(html)) {
   fails.push('Eclipse must own one dedicated canvas and no general model');
 }
@@ -43,7 +43,7 @@ if (!/new THREE\.WebGLRenderer/.test(live) || !/function setDisplayDate/.test(li
 if (!/Date\.UTC\(2026, 7, 12, 17, 45, 51\)/.test(geometry)) {
   fails.push('geometry maximum is not 17:45:51 UTC');
 }
-if (!/const V\s*=\s*["']ap-v900["']/.test(sw)) fails.push('SW tip is not ap-v900');
+if (!/const V\s*=\s*["']ap-v901["']/.test(sw)) fails.push('SW tip is not ap-v901');
 if (/openCheckout\s*\(/.test(edition)) fails.push('archived edition still calls checkout');
 if (!/event edition is closed|past buyer/i.test(edition)) fails.push('archive recovery copy missing');
 if (!/verifyLicense/.test(unlock) || !/checkoutEnabled:\s*false/.test(unlock)) {

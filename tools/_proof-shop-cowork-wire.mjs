@@ -1,4 +1,4 @@
-/** Proof: v900 voluntary-support shop and archived entitlement recovery. */
+/** Proof: v901 checkout-closed Studio preview and archived entitlement recovery. */
 import { existsSync, readFileSync } from 'node:fs';
 
 const shop = readFileSync('website/shop.html', 'utf8');
@@ -20,22 +20,28 @@ for (const file of [
   'website/img/engine/earth.webp',
 ]) if (!existsSync(file)) fails.push('missing authored asset ' + file);
 
-if (!/class="ap-surface-a"/.test(shop) ||
-    !/img\/engine\/earth-256\.webp/.test(shop) || !/img\/engine\/earth-512\.webp/.test(shop)) {
-  fails.push('shop missing honest clean Surface A model still');
+if (/<void-orrery\b|<canvas\b/.test(shop) ||
+    !/img\/shop\/v901\/whole-sky-edition\.webp/.test(shop) ||
+    !/fictional/i.test(shop) || !/SCHEMATIC/.test(shop)) {
+  fails.push('shop missing honestly labelled v901 Studio artwork');
 }
-if (!/https:\/\/ko-fi\.com\/astroprecise/.test(shop) || !/Voluntary support/.test(shop)) {
-  fails.push('shop missing voluntary Ko-fi support route');
+if (!/https:\/\/ko-fi\.com\/astroprecise/.test(shop) || !/Ko-fi support is optional/.test(shop)) {
+  fails.push('shop missing optional Ko-fi support route');
 }
-if (!/no product checkout is linked or opened on AstroPrecise/i.test(shop)) fails.push('shop does not state the local product-checkout boundary');
-if (!/Optional Ko-fi support requires an email/i.test(shop) || !/connected PayPal or Stripe account/i.test(shop)) {
+if (!/Checkout remains closed/i.test(shop) ||
+    (shop.match(/class="ap-studio-checkout"[^>]*\bdisabled\b/g) || []).length !== 3) {
+  fails.push('shop does not keep all three Studio checkouts visibly closed');
+}
+if (!/Ko-fi requires an email/i.test(shop) || !/connected PayPal or Stripe account/i.test(shop)) {
   fails.push('shop does not disclose the support email and payment route');
 }
 if (/(?:£7|Buy now|gumroad\.com\/l\/|checkout-open)/i.test(shop)) fails.push('shop still presents stale product checkout copy');
 if (/list\.astroprecise\.app\/subscribe/.test(shop) || /<form[^>]+subscribe/i.test(shop)) {
   fails.push('shop retains an unverified email-capture endpoint');
 }
-if (!/Email updates are paused/.test(shop)) fails.push('shop missing honest email-pause state');
+if (!/No email capture/.test(shop) || /<(?:form|input|textarea)\b/i.test(shop)) {
+  fails.push('shop missing honest no-email-capture state');
+}
 if (!/emailCaptureEnabled:\s*false/.test(app) || /list\.astroprecise\.app|function captureEmail/.test(app)) {
   fails.push('site-wide email capture is not hard-paused');
 }
@@ -65,10 +71,10 @@ if (!/verifyLicense/.test(unlock) || !/api\.gumroad\.com\/v2\/licenses\/verify/.
 }
 if (/openCheckout\s*\(/.test(edition)) fails.push('archived edition can still call checkout');
 if (!/event edition is closed|past buyer/i.test(edition)) fails.push('edition recovery copy does not explain archive/past-buyer state');
-if (!/const V\s*=\s*["']ap-v900["']/.test(sw)) fails.push('SW tip is not ap-v900');
+if (!/const V\s*=\s*["']ap-v901["']/.test(sw)) fails.push('SW tip is not ap-v901');
 
 if (fails.length) {
   console.error('FAIL', fails);
   process.exit(1);
 }
-console.log('PASS voluntary support + archived checkout + past-buyer recovery');
+console.log('PASS checkout-closed Studio preview + optional support + archived past-buyer recovery');

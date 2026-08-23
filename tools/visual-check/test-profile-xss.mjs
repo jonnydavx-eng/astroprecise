@@ -278,7 +278,7 @@ try {
     await page.setContent('<!doctype html><html><body class="page-shop"><div id="shopc-grid"></div></body></html>');
     await page.evaluate(({ attackName, attackSign }) => {
       window.__profileXss = 0;
-      window.AP_ASSET_V = '900';
+      window.AP_ASSET_V = '901';
       window.AstroProfile = {
         getCharts: () => [{
           name: attackName,

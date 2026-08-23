@@ -252,11 +252,11 @@ async function stalePrivateStashGate(browser) {
 }
 
 async function surfaceAGate(browser) {
-  const routes = ['chart.html', 'deep-reading.html', 'shop.html', 'compatibility.html', 'tonight.html'];
+  const routes = ['chart.html', 'deep-reading.html', 'compatibility.html', 'tonight.html'];
   for (const route of routes) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     const errors = watch(page);
-    const response = await page.goto(`${BASE}/${route}?nosw=1&contract=v900-surface-a`, {
+    const response = await page.goto(`${BASE}/${route}?nosw=1&contract=v901-surface-a`, {
       waitUntil: 'domcontentloaded', timeout: 60_000,
     });
     await page.waitForSelector('h1', { state: 'visible', timeout: 15_000 });
@@ -287,21 +287,63 @@ async function surfaceAGate(browser) {
       }));
       gate('Chart declares its supported date range and sitting bridge', chart.min === '1800-01-01' && chart.max === '2200-12-31' && chart.bridge, JSON.stringify(chart));
     }
-    if (route === 'shop.html') {
-      const shop = await page.evaluate(() => ({
-        support: document.getElementById('support')?.getAttribute('href'),
-        text: document.body.innerText,
-        gumroadLinks: document.querySelectorAll('a[href*="gumroad.com/l/"]').length,
-        checkoutButtons: Array.from(document.querySelectorAll('button, a')).filter(item => /buy|checkout|£7/i.test(item.textContent || '')).length,
-      }));
-      gate('Shop offers voluntary Ko-fi support with no product checkout', shop.support === 'https://ko-fi.com/astroprecise' && /no product checkout is linked or opened on AstroPrecise/i.test(shop.text) && shop.gumroadLinks === 0 && shop.checkoutButtons === 0, JSON.stringify({ support: shop.support, gumroadLinks: shop.gumroadLinks, checkoutButtons: shop.checkoutButtons }));
-    }
-
     mkdirSync(OUT, { recursive: true });
     await page.screenshot({ path: join(OUT, `surface-a-${route.replace('.html', '')}-phone.png`), fullPage: false });
     gate(`${route} has no runtime errors`, errors.length === 0, errors.slice(0, 5).join(' | '));
     await page.close();
   }
+}
+
+async function studioShopGate(browser) {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const errors = watch(page);
+  const response = await page.goto(`${BASE}/shop.html?nosw=1&contract=v901-studio`, {
+    waitUntil: 'domcontentloaded', timeout: 60_000,
+  });
+  await page.waitForSelector('.ap-shop-hero__art img', { state: 'visible', timeout: 15_000 });
+  await page.waitForTimeout(300);
+  const state = await page.evaluate(() => {
+    const hero = document.querySelector('.ap-shop-hero__art img');
+    const checkoutButtons = Array.from(document.querySelectorAll('.ap-studio-checkout'));
+    return {
+      models: document.querySelectorAll('void-orrery').length,
+      canvases: document.querySelectorAll('canvas').length,
+      heroLoaded: Boolean(hero?.complete && hero.naturalWidth > 0),
+      heroAlt: hero?.getAttribute('alt'),
+      skus: Array.from(document.querySelectorAll('[data-product-sku]')).map(el => el.getAttribute('data-product-sku')),
+      checkoutCount: checkoutButtons.length,
+      checkoutClosed: checkoutButtons.every(button => button.disabled),
+      gumroadLinks: document.querySelectorAll('a[href*="gumroad.com/l/"]').length,
+      support: document.querySelector('a[href="https://ko-fi.com/astroprecise"]')?.getAttribute('href'),
+      observatory: document.querySelector('.ap-shop-free a[href="index.html"]')?.textContent.trim(),
+      forms: document.querySelectorAll('form, input, textarea').length,
+      text: document.body.innerText,
+      overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+  gate('Shop renders the honest v901 Studio artwork without another WebGL owner',
+    response?.ok() && state.models === 0 && state.canvases === 0 && state.heroLoaded &&
+      /fictional/i.test(state.heroAlt || '') && /schematic/i.test(state.heroAlt || ''),
+    JSON.stringify(state));
+  gate('Shop exposes exactly the three v901 Studio editions',
+    JSON.stringify(state.skus) === JSON.stringify([
+      'natal-sky-print-pack', 'personal-sky-keepsake', 'whole-sky-edition',
+    ]), JSON.stringify(state.skus));
+  gate('Shop keeps checkout closed and exposes no Gumroad sales path',
+    state.checkoutCount === 3 && state.checkoutClosed && state.gumroadLinks === 0 &&
+      /Checkout remains closed/i.test(state.text),
+    JSON.stringify({ checkoutCount: state.checkoutCount, checkoutClosed: state.checkoutClosed, gumroadLinks: state.gumroadLinks }));
+  gate('Shop keeps the free Observatory and optional Ko-fi routes honest',
+    state.support === 'https://ko-fi.com/astroprecise' && /Enter the Observatory/.test(state.observatory || '') &&
+      /Ko-fi support is optional/i.test(state.text),
+    JSON.stringify({ support: state.support, observatory: state.observatory }));
+  gate('Shop has no email capture or phone overflow',
+    state.forms === 0 && /No email capture/i.test(state.text) && state.overflowX <= 1,
+    JSON.stringify({ forms: state.forms, overflowX: state.overflowX }));
+  mkdirSync(OUT, { recursive: true });
+  await page.screenshot({ path: join(OUT, 'studio-shop-phone.png'), fullPage: false });
+  gate('shop.html has no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
+  await page.close();
 }
 
 async function eclipseGate(browser) {
@@ -334,14 +376,15 @@ try {
   await deepLinkGate(browser);
   await stalePrivateStashGate(browser);
   await surfaceAGate(browser);
+  await studioShopGate(browser);
   await eclipseGate(browser);
 } finally {
   await browser.close();
 }
 
 if (failures.length) {
-  console.error(`\n${failures.length} v900 UI gate(s) failed:`);
+  console.error(`\n${failures.length} v901 UI gate(s) failed:`);
   failures.forEach(failure => console.error(` - ${failure}`));
   process.exit(1);
 }
-console.log(`\nALL V900 UI GATES PASS · screenshots: ${OUT}`);
+console.log(`\nALL V901 UI GATES PASS · screenshots: ${OUT}`);

@@ -200,7 +200,9 @@ body{font-family:'Cormorant Garamond',Georgia,serif;color:#EEF4FA;background:#04
 h1{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.075em;color:#EEF4FA;font-size:28pt;line-height:1.13;margin:6pt 0;}
 h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:10.2pt;color:#8BA9FF;margin:15pt 0 6pt;display:flex;align-items:center;gap:9pt;}
 h2::before{content:'';width:16pt;height:1px;background:#8BA9FF;opacity:.7;}
-h3{font-family:'Cinzel',serif;font-size:9.5pt;line-height:1.35;letter-spacing:.025em;color:#C9D6E3;margin:9pt 0 2.5pt;break-after:avoid;}
+h3,h2.reading-subhead{font-family:'Cinzel',serif;font-size:9.5pt;line-height:1.35;letter-spacing:.025em;color:#C9D6E3;margin:9pt 0 2.5pt;break-after:avoid;}
+h2.reading-subhead{display:block;text-transform:none;}
+h2.reading-subhead::before{content:none;}
 p{font-size:10pt;line-height:1.47;margin-bottom:6pt;text-wrap:pretty;color:#D7E2ED;orphans:3;widows:3;}
 .lede{font-size:11.6pt;line-height:1.48;color:#EEF4FA;font-style:italic;border-left:2px solid rgba(139,169,255,.54);padding-left:12pt;margin:11pt 0;}
 .cover{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding-bottom:22mm;}
@@ -242,7 +244,7 @@ body.ap-print-light .page::before{border-color:rgba(16,29,48,.48);}
 body.ap-print-light .page::after{border-color:rgba(139,169,255,.36);}
 body.ap-print-light h1,body.ap-print-light p,body.ap-print-light .lede,body.ap-print-light .big3 .v{color:#101D30;}
 body.ap-print-light h2,body.ap-print-light .eyebrow{color:#315AC9;}
-body.ap-print-light h3,body.ap-print-light .glyph,body.ap-print-light .big3 .g{color:#253A58;}
+body.ap-print-light h3,body.ap-print-light h2.reading-subhead,body.ap-print-light .glyph,body.ap-print-light .big3 .g{color:#253A58;}
 body.ap-print-light .meta,body.ap-print-light .foot,body.ap-print-light p.note{color:#465E7A;}
 body.ap-print-light .symbolic-note{background:#F4F7FC;color:#253A58;border-color:#8BA9FF;}
 `;
@@ -283,13 +285,14 @@ function architecture(){
     });
   }
   body += `<p>${PGL.pluto} <strong>Pluto in ${pos.pluto.sign}</strong>, in the ${ord(pos.pluto.house)} house, is traditionally associated with depth and transformation in the area of ${hMeaning(pos.pluto.house).keyword}. ${PGL.chiron} <strong>Chiron in ${pos.chiron.sign}</strong> is read symbolically as a sensitive point rather than as a diagnosis.</p>`;
-  body += `<h3>☊ The North Node in ${pos.northNode.sign} — a symbolic growth theme</h3>`;
+  body += `<h2 class="reading-subhead">☊ The North Node in ${pos.northNode.sign} — a symbolic growth theme</h2>`;
   body += `<p>Traditional astrology reads the North Node in ${pos.northNode.sign}, in the ${ord(pos.northNode.house)} house of ${hMeaning(pos.northNode.house).keyword}, as a reflective prompt about direction and development. It is not a statement of destiny, deficiency, or required behaviour.</p>`;
   return body;
 }
 
 // ── READING (data-driven from THIS chart) ──
 const reading=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Personal Sky Keepsake — AstroPrecise</title>${FONTS}<style>${CSS}</style></head><body data-ap-product="${esc(PRODUCT)}" data-ap-page-count="20">${paidMeta}
+<main>
 <div class="page cover" data-page="cover">
   ${wm}
   <div class="seal">✦</div>
@@ -323,11 +326,11 @@ const reading=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title
     <div class="b"><div class="g">${PGL.moon}</div><div class="lbl">Moon · feeling lens</div><div class="v">${pos.moon.d}° ${moonSign}</div></div>
     <div class="b"><div class="g">↑</div><div class="lbl">Rising · horizon lens</div><div class="v">${A.d}° ${ascSign}</div></div>
   </div>
-  <h3>${PGL.sun} The Sun in ${sunSign} — ${ord(pos.sun.house)} house (${hMeaning(pos.sun.house).keyword})</h3>
+  <h2 class="reading-subhead">${PGL.sun} The Sun in ${sunSign} — ${ord(pos.sun.house)} house (${hMeaning(pos.sun.house).keyword})</h2>
   <p>Your Sun is at ${fmt(pos.sun.lon)}. ${sents(pInterp('Sun',sunSign),3)} In the ${ord(pos.sun.house)} house, this is traditionally read through ${hMeaning(pos.sun.house).keyword.toLowerCase()}.</p>
-  <h3>${PGL.moon} The Moon in ${moonSign} — ${ord(pos.moon.house)} house (${hMeaning(pos.moon.house).keyword})</h3>
+  <h2 class="reading-subhead">${PGL.moon} The Moon in ${moonSign} — ${ord(pos.moon.house)} house (${hMeaning(pos.moon.house).keyword})</h2>
   <p>${sents(pInterp('Moon',moonSign),3)} The Moon's house is traditionally associated here with ${hMeaning(pos.moon.house).keyword.toLowerCase()}.</p>
-  <h3>↑ ${ascSign} rising</h3>
+  <h2 class="reading-subhead">↑ ${ascSign} rising</h2>
   <p>${chartRulerNarrative(ruler, pos, PNAME[ruler], pInterp, hMeaning)}</p>
   ${foot(2)}
 </div>
@@ -335,9 +338,9 @@ const reading=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title
 <div class="page" data-page="3">
   <p class="eyebrow">III · Mind &amp; Expansion</p>
   <h1 style="font-size:20pt;">Language, learning&nbsp;<br>and perspective.</h1>
-  <h3>${PGL.mercury} Mercury in ${pos.mercury.sign} — ${ord(pos.mercury.house)} house</h3>
+  <h2 class="reading-subhead">${PGL.mercury} Mercury in ${pos.mercury.sign} — ${ord(pos.mercury.house)} house</h2>
   <p>${sents(pInterp('Mercury',pos.mercury.sign),3)} The house places that symbolism in ${hMeaning(pos.mercury.house).keyword.toLowerCase()}.</p>
-  <h3>${PGL.jupiter} Jupiter in ${pos.jupiter.sign} — ${ord(pos.jupiter.house)} house</h3>
+  <h2 class="reading-subhead">${PGL.jupiter} Jupiter in ${pos.jupiter.sign} — ${ord(pos.jupiter.house)} house</h2>
   <p>${sents(pInterp('Jupiter',pos.jupiter.sign),3)} Traditional interpretation connects this placement with growth themes in ${hMeaning(pos.jupiter.house).keyword.toLowerCase()}.</p>
   <p class="note">These passages describe a symbolic tradition, not cognitive, educational, financial, or life-outcome claims.</p>
   ${foot(3)}
@@ -448,6 +451,7 @@ const reading=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title
   <p class="note">Calculation time: ${utcLabel} · Time zone supplied: ${esc(order.tz)} · Placidus houses · Personal use only.</p>
   ${foot(19)}
 </div>
+</main>
 </body></html>`;
 
 // ── POSTER (A3) ──

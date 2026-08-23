@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '900');
+const AP_ASSET_V = String(window.AP_ASSET_V || '901');
 
 const AstroApp = (() => {
 
@@ -2290,7 +2290,7 @@ else AstroApp.init();
   if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   if (document.querySelector('script[data-ap-affiliate-social]')) return;
   var s = document.createElement('script');
-  s.src = 'js/affiliate-social.js?v=900';
+  s.src = 'js/affiliate-social.js?v=901';
   s.dataset.apAffiliateSocial = '1';
   s.defer = true;
   document.head.appendChild(s);
@@ -2310,7 +2310,7 @@ else AstroApp.init();
 (function loadFooterInject() {
   if (document.querySelector('script[data-ap-footer-inject], script[src*="ap-footer-inject"]')) return;
   var s = document.createElement('script');
-  s.src = 'js/ap-footer-inject.js?v=900';
+  s.src = 'js/ap-footer-inject.js?v=901';
   s.dataset.apFooterInject = '1';
   s.defer = true;
   document.head.appendChild(s);

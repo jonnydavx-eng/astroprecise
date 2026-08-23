@@ -83,6 +83,10 @@ const REQUIRED_TRANSITIVE = [
 const RUNTIME_ONLY = new Set([
   './img/editorial/eclipse-edition-art-v841.png',
   './img/editorial/eclipse-field-guide-cover-final-v836.png',
+  './img/editorial/eclipse-edition-art-v841-560.webp',
+  './img/editorial/eclipse-edition-art-v841-1122.webp',
+  './img/editorial/eclipse-field-guide-cover-final-v836-480.webp',
+  './img/editorial/eclipse-field-guide-cover-final-v836-960.webp',
 ]);
 
 // Home's four direct reading/Keep controllers are part of the offline promise.

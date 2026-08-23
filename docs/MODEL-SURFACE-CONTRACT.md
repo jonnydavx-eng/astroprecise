@@ -1,6 +1,6 @@
 # Model Surface Contract
 
-**Tip:** ap-v900 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
+**Tip:** ap-v901 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
 
 Three surfaces — never mix their honesty labels.
 
@@ -99,7 +99,7 @@ The `m` grammar is for public sky instants. A personal birth minute must never b
 | Moment freeze | A | Share card + explore link; `ap_moment_return` → horoscope return hook |
 | Daily return | A | Horoscope `mountMomentReturnHook` (7-day window) |
 
-**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v900.
+**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Current delivery tip is ap-v901.
 
 **Event bus:** `ap-sky-ready` — `{ m, link, focus, chart|moment, source }` for share/telemetry hooks.
 

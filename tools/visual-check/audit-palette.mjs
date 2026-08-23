@@ -11,7 +11,7 @@ import { chromium } from './node_modules/playwright/index.mjs';
 import { existsSync } from 'node:fs';
 
 const BASE = (process.env.AP_BASE || process.argv[2] || 'http://127.0.0.1:8790').replace(/\/+$/, '');
-const VERSION = process.env.AP_VERSION?.replace(/^ap-v/, '') || '900';
+const VERSION = process.env.AP_VERSION?.replace(/^ap-v/, '') || '901';
 const WINDOWS_CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
 const ROUTES = [

@@ -62,7 +62,7 @@ async function main() {
     try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (_) {}
     try { localStorage.setItem('ap_privacy_ack', '1'); } catch (_) {}
   });
-  const version = process.env.AP_VERSION?.replace(/^ap-v/, '') || '900';
+  const version = process.env.AP_VERSION?.replace(/^ap-v/, '') || '901';
 
   const report = { base: BASE, capturedAt: new Date().toISOString(), pages: [], issues: [] };
 

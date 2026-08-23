@@ -904,8 +904,8 @@ ${footerBlockHtml({ footerClass: 'footer' })}
   <script src="js/sign-daily.js"></script>
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/sign-page-boot.js"></script>
-  <script src="js/ap-page-boot.js?v=900" defer></script>
-  <script src="js/ap-footer-inject.js?v=900" defer></script>
+  <script src="js/ap-page-boot.js?v=901" defer></script>
+  <script src="js/ap-footer-inject.js?v=901" defer></script>
 </body>
 </html>
 `;
