@@ -1,5 +1,10 @@
 /* Engraved hex celestial seals — commissioned hand-drawn instrument plates
  * Hover gleam & alignment shimmer: css/ap-micro-2026.css */
+:root {
+  /* Exact percentage projection of the 96 x 112 SVG master path. */
+  --ap-seal-hex: polygon(50% 5.36%, 89.58% 25%, 89.58% 75%, 50% 94.64%, 10.42% 75%, 10.42% 25%);
+}
+
 .ap-seal {
   --seal-accent: var(--ap-silver, #93A8BF);
   --seal-glow: var(--ap-silver-a18, rgba(147, 168, 191, 0.18));
@@ -9,25 +14,25 @@
   vertical-align: middle;
   flex: none;
   line-height: 0;
+  aspect-ratio: 6 / 7;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45)) drop-shadow(0 0 8px var(--seal-glow));
 }
-.ap-seal--sm { width: 1.35rem; height: 1.55rem; }
-.ap-seal--md { width: 2rem; height: 2.3rem; }
-.ap-seal--lg { width: 2.75rem; height: 3.15rem; }
-.ap-seal--xl { width: 3.5rem; height: 4rem; }
+.ap-seal--sm { width: 1.35rem; height: auto; }
+.ap-seal--md { width: 2rem; height: auto; }
+.ap-seal--lg { width: 2.75rem; height: auto; }
+.ap-seal--xl { width: 3.5rem; height: auto; }
 
 .ap-seal__plate {
   display: block;
   width: 100%;
   height: 100%;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  clip-path: var(--ap-seal-hex);
   background:
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.08), transparent 50%),
     radial-gradient(ellipse 100% 100% at 50% 100%, #0A1424, #040812);
   box-shadow:
     inset 0 0 0 1px rgba(147, 168, 191, 0.40),
-    inset 0 -3px 8px rgba(0,0,0,0.5),
-    0 2px 8px rgba(0,0,0,0.45),
-    0 0 14px -4px var(--seal-glow);
+    inset 0 -3px 8px rgba(0,0,0,0.5);
 }
 .ap-seal__art {
   display: block;
@@ -68,7 +73,7 @@
   width: 58%;
   max-width: 4.5rem;
   height: auto;
-  aspect-ratio: 96 / 112;
+  aspect-ratio: 6 / 7;
   pointer-events: none;
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.55));
 }
@@ -85,7 +90,8 @@
 .sign-hero__glyph[data-celestial-seal] {
   display: block;
   width: clamp(3.5rem, 12vw, 5rem);
-  height: clamp(4rem, 14vw, 5.75rem);
+  height: auto;
+  aspect-ratio: 6 / 7;
   margin: 0 auto var(--space-4);
   background: none;
   -webkit-text-fill-color: unset;
@@ -99,7 +105,8 @@
 .sign-card__seal {
   display: block;
   width: 2.75rem;
-  height: 3.15rem;
+  height: auto;
+  aspect-ratio: 6 / 7;
   margin: 0 auto var(--space-2);
   line-height: 0;
 }
@@ -127,7 +134,7 @@
 }
 .ap-guide-link__seal .ap-seal--sm {
   width: 1.1rem;
-  height: 1.26rem;
+  height: auto;
 }
 
 .glance-cell__seal {
@@ -137,13 +144,13 @@
 }
 .glance-cell__seal .ap-seal--sm {
   width: 1.35rem;
-  height: 1.55rem;
+  height: auto;
 }
 
 .sky-pill__seal .ap-seal--sm,
 .sky-pill__placement .ap-seal--sm {
   width: 1.5rem;
-  height: 1.72rem;
+  height: auto;
 }
 
 .compat-matrix__seal {
@@ -154,11 +161,11 @@
 }
 .compat-matrix__seal .ap-seal--sm {
   width: 1.1rem;
-  height: 1.26rem;
+  height: auto;
 }
 .compat-orb__core .ap-seal--lg {
   width: 2.5rem;
-  height: 2.88rem;
+  height: auto;
 }
 
 .home-sign-preview__thumb--seal {
@@ -166,7 +173,7 @@
   height: 84px;
   object-fit: contain;
   border-radius: 0;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  clip-path: var(--ap-seal-hex);
   background: #040812;
 }
 
@@ -185,13 +192,13 @@
   object-fit: contain;
   padding: 6%;
   border-radius: 0;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  clip-path: var(--ap-seal-hex);
 }
 /* Hide stray unicode in pickers until bindSlots runs */
 [data-celestial-seal]:not(:has(.ap-seal)) {
   display: inline-flex;
   min-width: 1.35rem;
-  min-height: 1.55rem;
+  aspect-ratio: 6 / 7;
 }
 .compat-matrix th > span[aria-hidden="true"]:not(.compat-matrix__seal):not(.compat-sign-abbr):not(.ap-seal) {
   display: none;
@@ -199,7 +206,7 @@
 
 .ap-orb.ap-orb--art {
   border-radius: 0;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  clip-path: var(--ap-seal-hex);
   background:
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.06), transparent 50%),
     radial-gradient(ellipse 100% 100% at 50% 100%, #040812, #040812);

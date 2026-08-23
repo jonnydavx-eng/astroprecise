@@ -510,7 +510,8 @@ body:has(.tn-hero) .footer-zodiac-strip [data-celestial-seal] {
     .tn-privacy-band__seal {
       display: block;
       width: clamp(3.6rem, 10vw, 4.8rem);
-      height: clamp(4.1rem, 11vw, 5.5rem);
+      height: auto;
+      aspect-ratio: 6 / 7;
       margin: 0 auto 1.4rem;
       line-height: 0;
       filter: drop-shadow(0 5px 18px rgba(0, 0, 0, 0.5))

@@ -258,7 +258,8 @@
     }
     .compat-orb__core .ap-seal--lg {
       width: 2.5rem;
-      height: 2.88rem;
+      height: auto;
+      aspect-ratio: 6 / 7;
     }
 
     /* ---- Enlarged A/B seal pairing — the hero's focal image ----
@@ -278,7 +279,7 @@
       font-size: 3.1rem;
       flex-shrink: 0;
     }
-    .page-compat .compat-orb__core .ap-seal--lg { width: 4.4rem; height: 5.06rem; }
+    .page-compat .compat-orb__core .ap-seal--lg { width: 4.4rem; height: auto; aspect-ratio: 6 / 7; }
     .page-compat .compat-orbs__arc { min-width: 72px; margin-top: -1.6rem; }
     .page-compat .compat-orbs__arc-label { font-size: 1.6rem; }
     .page-compat .compat-person-label {
@@ -296,7 +297,7 @@
       .page-compat .compat-orbs { max-width: 100%; min-height: 188px; }
       .page-compat .compat-orb { width: 116px; height: 116px; }
       .page-compat .compat-orb__core { width: 96px; height: 96px; font-size: 2.5rem; }
-      .page-compat .compat-orb__core .ap-seal--lg { width: 3.5rem; height: 4.03rem; }
+      .page-compat .compat-orb__core .ap-seal--lg { width: 3.5rem; height: auto; aspect-ratio: 6 / 7; }
       .page-compat .compat-orbs__arc { min-width: 40px; }
       .page-compat .hero--small .compat-orbs { min-height: 188px; }
     }

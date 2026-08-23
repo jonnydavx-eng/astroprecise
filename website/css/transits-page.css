@@ -77,10 +77,15 @@ html.ap-fonts-ready .page-transits .transits-hero h1 {
   width: 2.2rem;
   flex: none;
 }
-.page-transits .planet-card__symbol .ap-orb,
-.page-transits .planet-card__symbol .ap-seal {
+.page-transits .planet-card__symbol .ap-orb {
   width: 1.9em;
   height: 1.9em;
+  flex: none;
+}
+.page-transits .planet-card__symbol .ap-seal {
+  width: 1.9em;
+  height: auto;
+  aspect-ratio: 6 / 7;
   flex: none;
 }
 .page-transits .transit-pill__symbol {

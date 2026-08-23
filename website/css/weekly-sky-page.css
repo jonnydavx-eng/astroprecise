@@ -142,15 +142,20 @@
   align-items: center;
   justify-content: center;
   width: 2.1rem;
-  min-height: 2.1rem;
+  min-height: 2.45rem;
   font-size: 1.35rem;
   color: var(--ap-gold-bright, #C9D6E3);
 }
-/* Belt-and-braces: never let a seal exceed its orb slot, whatever loads first */
-.wk-event__orb .ap-seal,
+/* Belt-and-braces: keep the canonical seal ratio whatever loads first. */
+.wk-event__orb .ap-seal {
+  width: 100%;
+  max-width: 2.1rem;
+  height: auto;
+  aspect-ratio: 6 / 7;
+}
 .wk-event__orb img {
   max-width: 2.1rem;
-  max-height: 2.4rem;
+  max-height: 2.45rem;
   height: auto;
 }
 .wk-event__body { min-width: 0; }

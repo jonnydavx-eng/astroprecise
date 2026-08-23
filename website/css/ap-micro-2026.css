@@ -106,7 +106,7 @@ abbr.ap-gloss {
   content: '';
   position: absolute;
   inset: -1px;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  clip-path: polygon(50% 5.36%, 89.58% 25%, 89.58% 75%, 50% 94.64%, 10.42% 75%, 10.42% 25%);
   background: linear-gradient(
     105deg,
     transparent 28%,

@@ -74,7 +74,11 @@ const brandSurfaces = [
   './website/js/saturn-return.js',
   './website/js/zodiac-sphere.js',
   './website/favicon.svg',
+  './website/img/favicon.svg',
+  './website/img/logo.svg',
   './website/img/logo-mark.svg',
+  './website/tools/generate-celestial-seals.mjs',
+  './website/tools/generate-element-seals.mjs',
 ];
 
 const retiredHex = /#(?:b86b4a|c87d5c|ff6428|ff5a1f|ff7a45|e4996f|d8b46a|e8c96a|c4920a|e6c24a|c2a05e|8c6a2f|d9bc5c|d4b87a|f0e8d8|e8e0d0|e6ddc8|ece6d8|c8b88f|f2dfa7)\b/i;
@@ -95,6 +99,12 @@ for (const path of brandSurfaces) {
   const source = withoutPhysicalColour(read(path), path);
   check(!retiredHex.test(source), `${path} still contains a retired orange/copper hex`);
   check(!retiredRgb.test(source), `${path} still contains a retired orange/copper RGB value`);
+  if (path.endsWith('.html')) {
+    check(
+      !/<link\b[^>]*\brel=["'][^"']*icon[^"']*["'][^>]*\bhref=["'][^"']*logo-mark\.svg["']/i.test(source),
+      `${path} uses the transparent logo mark instead of the contained favicon`,
+    );
+  }
 }
 
 function linearChannel(channel) {

@@ -4089,7 +4089,8 @@ body.sg-library .sg-filter-slot {
   flex: none;
   line-height: 0;
   width: 1.35rem;
-  height: 1.55rem;
+  height: auto;
+  aspect-ratio: 6 / 7;
 }
 .ap-award-511 #heroChapter .lite-vp-btn__label .ap-seal,
 .ap-award-511 #heroChapter .lite-vp-btn .ap-seal__plate {
@@ -4098,10 +4099,10 @@ body.sg-library .sg-filter-slot {
   height: 100%;
 }
 .ap-award-511 #heroChapter .lite-vp-btn .ap-seal__plate {
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  clip-path: polygon(50% 5.36%, 89.58% 25%, 89.58% 75%, 50% 94.64%, 10.42% 75%, 10.42% 25%);
   background:
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255, 255, 255, 0.08), transparent 50%),
-    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, var(--void));
+    radial-gradient(ellipse 100% 100% at 50% 100%, #0A1424, var(--void));
   box-shadow:
     inset 0 0 0 1px rgba(147, 168, 191, 0.4),
     inset 0 -3px 8px rgba(0, 0, 0, 0.5);
@@ -4112,7 +4113,7 @@ body.sg-library .sg-filter-slot {
   height: 100%;
   object-fit: contain;
 }
-/* Active pill: brass inset ring + subtle glow (tokens) */
+/* Active pill: lunar-silver inset ring + subtle glow (tokens) */
 .ap-award-511 #heroChapter .lite-vp-btn.active {
   border-color: rgba(147, 168, 191, 0.62);
   box-shadow:

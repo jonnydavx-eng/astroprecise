@@ -1294,7 +1294,8 @@
     .sky-pill__seal {
       flex-shrink: 0;
       width: 2rem;
-      height: 2.3rem;
+      height: auto;
+      aspect-ratio: 6 / 7;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1302,7 +1303,8 @@
     .sky-pill__seal .ap-seal { width: 100%; height: 100%; }
     .sky-pill__placement .ap-seal--sm {
       width: 1.15rem;
-      height: 1.32rem;
+      height: auto;
+      aspect-ratio: 6 / 7;
       vertical-align: -0.15em;
     }
     .sky-pill:hover .sky-pill__seal { transform: translateY(-1px) scale(1.04); }
@@ -1468,7 +1470,7 @@
       margin-left: 0.5rem;
       vertical-align: middle;
     }
-    .home-sign-preview__element .ap-el-seal--sm { width: 1.35rem; height: 1.55rem; }
+    .home-sign-preview__element .ap-el-seal--sm { width: 1.35rem; height: auto; aspect-ratio: 6 / 7; }
     .home-sign-scroll {
       display: flex;
       gap: 0.7rem;
@@ -2080,7 +2082,7 @@
       padding: var(--space-8) var(--space-9);
     }
     .tool-card--wide .tool-card__icon { min-height: 4.1rem; margin-bottom: var(--space-5); }
-    .tool-card--wide .tool-card__icon .ap-seal--lg { width: 3.5rem; height: 4rem; }
+    .tool-card--wide .tool-card__icon .ap-seal--lg { width: 3.5rem; height: auto; aspect-ratio: 6 / 7; }
     .tool-card--wide .tool-card__desc { max-width: 56ch; }
 
     .tool-card__icon {
@@ -2094,7 +2096,8 @@
     }
     .tool-card__icon .ap-seal--lg {
       width: 2.75rem;
-      height: 3.15rem;
+      height: auto;
+      aspect-ratio: 6 / 7;
       /* Seal-glow tinted to the instrument accent. */
       filter: drop-shadow(0 0 10px var(--tc-glow));
       transition: filter var(--dur-base, 0.32s) var(--ease-standard, ease);

@@ -7015,7 +7015,7 @@ body.preloader-active .bottom-nav {
 }
 /* ── Element seals — hex instrument plates (see js/element-seals.js) ─────── */
 .ap-el-seal {
-  --el-seal-ink: #0a0908;
+  --el-seal-ink: #0A1424;
   --el-seal-accent: #93A8BF;
   --el-seal-gold: #93A8BF;
   --el-seal-glow: rgba(147, 168, 191, 0.18);
@@ -7025,28 +7025,28 @@ body.preloader-active .bottom-nav {
   vertical-align: middle;
   flex: none;
   line-height: 0;
+  aspect-ratio: 6 / 7;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45)) drop-shadow(0 0 8px var(--el-seal-glow));
 }
-.ap-el-seal--fire  { --el-seal-ink: #07101E; --el-seal-accent: #FF8EA8; --el-seal-glow: rgba(255, 142, 168, 0.22); }
-.ap-el-seal--earth { --el-seal-ink: #0e1208; --el-seal-accent: #5e8a4a; --el-seal-glow: rgba(94, 138, 74, 0.20); }
-.ap-el-seal--air   { --el-seal-ink: #100c14; --el-seal-accent: #a78bba; --el-seal-glow: rgba(167, 139, 186, 0.20); }
-.ap-el-seal--water { --el-seal-ink: #081210; --el-seal-accent: #3f7d76; --el-seal-glow: rgba(63, 125, 118, 0.22); }
+.ap-el-seal--fire  { --el-seal-accent: #FF8EA8; --el-seal-glow: rgba(255, 142, 168, 0.22); }
+.ap-el-seal--earth { --el-seal-accent: #6FD0B3; --el-seal-glow: rgba(111, 208, 179, 0.20); }
+.ap-el-seal--air   { --el-seal-accent: #93A8BF; --el-seal-glow: rgba(147, 168, 191, 0.20); }
+.ap-el-seal--water { --el-seal-accent: #8BA9FF; --el-seal-glow: rgba(139, 169, 255, 0.22); }
 .ap-el-seal--all   { --el-seal-accent: #93A8BF; --el-seal-gold: #EEF4FA; }
-.ap-el-seal--sm { width: 1.25rem; height: 1.45rem; }
-.ap-el-seal--md { width: 2rem; height: 2.3rem; }
-.ap-el-seal--lg { width: 2.75rem; height: 3.15rem; }
+.ap-el-seal--sm { width: 1.25rem; height: auto; }
+.ap-el-seal--md { width: 2rem; height: auto; }
+.ap-el-seal--lg { width: 2.75rem; height: auto; }
 .ap-el-seal__plate {
   display: block;
   width: 100%;
   height: 100%;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  clip-path: polygon(50% 5.36%, 89.58% 25%, 89.58% 75%, 50% 94.64%, 10.42% 75%, 10.42% 25%);
   background:
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.08), transparent 50%),
     radial-gradient(ellipse 100% 100% at 50% 100%, var(--el-seal-ink), #040812);
   box-shadow:
     inset 0 0 0 1px rgba(147, 168, 191,0.35),
-    inset 0 -3px 8px rgba(0,0,0,0.5),
-    0 2px 8px rgba(0,0,0,0.45),
-    0 0 14px -4px var(--el-seal-glow);
+    inset 0 -3px 8px rgba(0,0,0,0.5);
 }
 .ap-el-seal__art {
   display: block;

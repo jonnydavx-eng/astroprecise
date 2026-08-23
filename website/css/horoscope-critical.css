@@ -1083,7 +1083,8 @@
     }
     .sign-card__element-badge .ap-el-seal--sm {
       width: 0.95rem;
-      height: 1.1rem;
+      height: auto;
+      aspect-ratio: 6 / 7;
     }
     .sign-card__el-seal {
       position: absolute;
@@ -1102,7 +1103,8 @@
     }
     .srp-element-text .ap-el-seal--sm {
       width: 1.1rem;
-      height: 1.25rem;
+      height: auto;
+      aspect-ratio: 6 / 7;
     }
 
     .sign-card__your-badge {
