@@ -2,76 +2,98 @@
 
 Updated: 2026-08-24
 
-## Outcome
+## Answer first
 
-The repository contains a polished, checkout-closed v901 Studio candidate and a
-Cloudflare Pages release path. It is **not a live release** and checkout is closed.
-It does **not** contain a live paid shop, verified
-seller account, final public consumer terms or release authority. Public v895 is
-intentionally unchanged.
+AstroPrecise now has a checkout-closed v901 Studio candidate with three honest
+commission services, two modes (`self` and adult recipient-controlled `gift`),
+deterministic product generation, fictional samples, marketing guidance and
+fail-closed privacy/payment controls. It is a strong local candidate. **It is not live.**
+Public v895 and its closed checkout remain intentionally unchanged.
 
-The authoritative candidate SHA is `git rev-parse HEAD`. The authoritative
-governance state is the newest validator receipt for:
+The active governance record is:
 
-`C:\Users\jonny\dev\coherence-astro-release\.fleets\AstroPrecise\astroprecise-20260824-001759-6bef\manifest.json`
+`C:\Users\jonny\dev\coherence-astro-release\.fleets\AstroPrecise\astroprecise-20260824-170053-b52c\manifest.json`
 
-This prose file does not grant `CODE-ONLY`, `BLOCK-SHIP`, `VERIFIED-LOCAL`,
-`READY-SHIP` or `LIVE`.
+Read its validator-owned status live. This prose never grants `CODE-ONLY`,
+`VERIFIED-LOCAL`, `READY-SHIP` or `LIVE`.
 
-## Finished in code
+## Finished locally
 
-- Exactly three proposed Commission services at £18, £29 and £39.
-- Checkout-closed Shop preview, fictional samples and product covers.
-- Deterministic personalised render/proof pipeline with PDF/PNG/ZIP manifests,
-  visible `AP REF`, raster/perceptual checks and SCHEMATIC Observatory still.
-- Final mode rejects an unverified/forged payment state.
-- Manual protected-tag release identity gate.
-- Cloudflare Pages Direct Upload workflow with pinned actions/runtime, exact-SHA
-  identity JSON, build-stamped `_headers`, production-environment assertion and
-  direct non-redirecting root/deployment/apex/`www` proof.
-- Old GitHub Pages DNS/Transform mutation route retired and mutation disabled.
-- Obsolete 13-product Gumroad provisioner permanently fail-closed.
-- Current launch/monetisation/legal/email documents aligned to the three-product
-  Commission plan and free Cloudflare hosting.
+- Exactly three proposed Gumroad Commission services: Natal Sky Print Pack £18,
+  Personal Sky Keepsake £29 and Whole Sky Edition £39. Gift is a mode, not a
+  fourth SKU.
+- A 2026 cool lunar Midnight Meridian shop treatment with no orange, responsive
+  self/gift controls, 44 px targets, keyboard support and checkout disabled.
+- Birthday Orbit gift files generated from accepted chart geometry: tagged
+  300 ppi-source A4 jacket, 1080 × 1920 reveal and 2160 × 2160 computed Moon
+  plate. Maximum-length wide-glyph inputs are exercised by the render canary.
+- A corrected, tagged four-page Whole Sky fictional sample with logical reading
+  order, honest reading/print and SCHEMATIC Observatory labels, no forms or JS.
+- Recipient-private gift boundaries: adult recipient self-entry, recipient-only
+  delivery, no surprise/minor path, separate revocable buyer-copy choice and
+  distinct recipient/buyer licences.
+- Fail-closed work/supply controls: canonical wording hashes, order/SKU/account/
+  birth-input-bound recipient evidence, immutable confirmation bundle filenames,
+  versions, sent times and file SHA-256 verification before work.
+- Real proofs require an explicit private output outside the repository. Only
+  the exact Aurora Vale/example.test fixture may use repository-local proof mode.
+- Final files still require authenticated paid-in-full evidence, an external
+  private order root and verified checkout flags. Child generator logs are
+  suppressed by the production orchestrator.
+- A 30-day organic launch playbook, competitor/pricing snapshot, hands-on time
+  caps, stop/go rules and self-mode-first fallback. Paid ads and Gumroad Discover
+  are deferred until five legitimate fulfilled sales.
 
-## Confirmed external truth at last check
+## Current verification truth
 
-- `astroprecise.app/sw.js` served `ap-v895`, not v901.
-- The public Shop said nothing was for sale.
-- No release tag or workflow run existed for the v901 candidate.
-- The legacy Gumroad Eclipse direct URL was still reachable and marked in stock.
-- Gumroad seller access redirected to sign-in; eligibility and payout are unknown.
-- Cloudflare Pages project/domain/secrets were not configured by this task.
+- Focused shop, fulfilment, catalogue and product-render suites pass on the
+  current working candidate.
+- Browser QA at 320, 390, 768 and 1440 px found no overflow, broken visible
+  images, console/request errors, active checkout routes or Axe A/AA violations.
+- Core Studio palette contrast was manually measured above AA thresholds; Axe
+  cannot automatically resolve nodes placed on gradients and reports them as
+  incomplete, not failures.
+- Public `https://astroprecise.app/sw.js` served `ap-v895`; the public Shop said
+  nothing was for sale and no checkout was open.
 
-These facts can drift and must be rechecked at action time.
+External facts can drift and must be rechecked at action time.
 
-## Remaining stop-ship work
+## Honest remaining blockers
 
-1. Clean commit and Coherence freeze of this exact release-infrastructure slice,
-   including native top-level S12 plus manifest-declared S11/S4/S7/S2/S5 seats.
-2. Owner signer/trust store and signed S1 authority after peer review.
-3. A fresh Full whole-candidate wave at the exact final PR tip; this narrow wave
-   cannot grant release authority to the rest of the v901 candidate.
-4. Legal operator/trading identity, public geographic address, contact, territories,
-   tax/VAT, ICO fee and service/retention decisions.
-5. Owner-created Cloudflare Pages project, protected GitHub environment, least-
-   privilege secrets and approved apex/`www` association/cutover.
-6. Signed-in Gumroad Commission eligibility/payout/fee check and three unpublished
-   drafts matching the catalogue.
-7. Authenticated seller adapter and a complete fictional seller test that proves
-   a usable final exists at truthful completion without unauthorised pre-payment
-   delivery.
-8. Owner-approved public terms/privacy/refund/contact pages. The current Terms,
-   Refunds and Contact pages still incorrectly call the externally purchasable
-   legacy listing archived, so they are explicitly not deployable as final copy.
-9. Measured unit economics for all tiers.
-10. Explicit owner confirmations for legacy listing archive, v901 deployment,
-    product publication and checkout URL wiring.
+1. Commit and freeze this exact candidate, then obtain the manifest-declared
+   independent S12/S11/S4/S7/S2/S5 evidence and owner S1 authority. Subagents in
+   this task cannot impersonate those native seats.
+2. Owner-approved legal/trading identity, publishable geographic address,
+   monitored direct contact, territories, tax/VAT and tax-inclusive totals,
+   service/adjustment/retention choices, refund reserve and capacity.
+3. Owner-approved gift LIA/JIT privacy notice, ICO fee/exemption, provider/
+   transfer mapping, complaint handler and children assessment.
+4. Signed-in Gumroad proof of Commission eligibility, payout state, fees, tax,
+   deposit/final-charge sequence and a genuinely recipient-private two-person
+   flow. If Gumroad cannot prove that flow, gift stays disabled and self mode is
+   the first-sale route.
+5. Authenticated paid-order adapter plus fictional receipt/refund/deletion test;
+   access-restricted storage, Windows ACL, encryption/backup boundary and an
+   implemented scheduled purge.
+6. Owner-created Cloudflare Pages project, protected GitHub environment,
+   least-privilege secrets and verified apex/`www` deployment at the exact
+   authorised tip.
+7. Explicit owner confirmation before legacy listing withdrawal/archive, new
+   listing publication, checkout wiring or production deployment.
+
+One known repo-wide follow-up is outside this gift wave's declared file scope:
+direct invocation of `tools/generate-natal-print-pack.mjs` can include a Julian
+Day/browser error in its own console output. The supported production
+orchestrator suppresses that child output and has a regression test, but the
+lower-level tool must not be run directly with real customer data until a later
+governed privacy patch removes the source disclosure.
 
 ## Buying decision
 
-Buy nothing new now. Existing/free infrastructure is enough. Check only the
-existing domain renewal and ICO fee applicability; consider a bounded UK legal
-review after all owner facts and seller-flow evidence are complete.
+Buy no new model, Adobe add-on, hosting tier, ecommerce tool, analytics service
+or advertising now. The existing domain, Adobe tools, Gumroad and Cloudflare
+Pages Free are sufficient. Potential legitimate costs are the domain renewal,
+an ICO fee if applicable and a bounded UK consumer/privacy review after the
+owner facts and signed-in platform evidence are filled.
 
 Operational source of truth: `docs/SHOP-LAUNCH-RUNBOOK.md`.

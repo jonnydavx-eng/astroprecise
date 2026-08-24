@@ -305,6 +305,8 @@ async function studioShopGate(browser) {
   const state = await page.evaluate(() => {
     const hero = document.querySelector('.ap-shop-hero__art img');
     const checkoutButtons = Array.from(document.querySelectorAll('.ap-studio-checkout'));
+    const intentButtons = Array.from(document.querySelectorAll('#shop-intent [role="radio"][data-shop-intent]'));
+    const heroGift = document.querySelector('[data-shop-hero-intent="gift"]');
     return {
       models: document.querySelectorAll('void-orrery').length,
       canvases: document.querySelectorAll('canvas').length,
@@ -317,6 +319,13 @@ async function studioShopGate(browser) {
       support: document.querySelector('a[href="https://ko-fi.com/astroprecise"]')?.getAttribute('href'),
       observatory: document.querySelector('.ap-shop-free a[href="index.html"]')?.textContent.trim(),
       forms: document.querySelectorAll('form, input, textarea').length,
+      intentRole: document.querySelector('#shop-intent [role="radiogroup"]')?.getAttribute('role'),
+      intentModes: intentButtons.map((button) => button.getAttribute('data-shop-intent')),
+      intentSizes: intentButtons.map((button) => {
+        const rect = button.getBoundingClientRect();
+        return [Math.round(rect.width), Math.round(rect.height)];
+      }),
+      heroGiftVisible: Boolean(heroGift && heroGift.getBoundingClientRect().top >= 0 && heroGift.getBoundingClientRect().bottom <= innerHeight),
       text: document.body.innerText,
       overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     };
@@ -340,6 +349,22 @@ async function studioShopGate(browser) {
   gate('Shop has no email capture or phone overflow',
     state.forms === 0 && /No email capture/i.test(state.text) && state.overflowX <= 1,
     JSON.stringify({ forms: state.forms, overflowX: state.overflowX }));
+  gate('Shop exposes a mobile-safe self/gift choice in the first viewport',
+    state.intentRole === 'radiogroup' && JSON.stringify(state.intentModes) === JSON.stringify(['self', 'gift']) &&
+      state.intentSizes.every(([, height]) => height >= 44) && state.heroGiftVisible,
+    JSON.stringify({ intentRole: state.intentRole, intentModes: state.intentModes, intentSizes: state.intentSizes, heroGiftVisible: state.heroGiftVisible }));
+  await page.locator('#shop-intent [data-shop-intent="self"]').focus();
+  await page.keyboard.press('ArrowRight');
+  const giftState = await page.evaluate(() => ({
+    giftChecked: document.querySelector('#shop-intent [data-shop-intent="gift"]')?.getAttribute('aria-checked'),
+    liveText: document.querySelector('[aria-live="polite"]')?.textContent || '',
+    text: document.body.innerText,
+  }));
+  gate('Shop gift mode works by keyboard and stays checkout-closed',
+    giftState.giftChecked === 'true' && /gift/i.test(giftState.liveText) &&
+      /recipient pays (?:nothing|£?0)/i.test(giftState.text) &&
+      /Gift checkout verification pending/i.test(giftState.text),
+    JSON.stringify(giftState));
   mkdirSync(OUT, { recursive: true });
   await page.screenshot({ path: join(OUT, 'studio-shop-phone.png'), fullPage: false });
   gate('shop.html has no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));

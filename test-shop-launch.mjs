@@ -1,17 +1,23 @@
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { GIFT_CONSENT_RECORDS } from './tools/fulfil-shared.mjs'
 
 await import('./tools/test-product-catalog.mjs')
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8')
 const shop = read('./website/shop.html')
 const shopCss = read('./website/css/ap-shop-v835.css')
+const giftIntent = read('./website/js/ap-shop-gift-intent.js')
+const serviceWorker = read('./website/sw.js')
 const catalogue = JSON.parse(read('./website/data/products-v901.json'))
 const privacy = read('./website/privacy.html')
 const terms = read('./website/terms.html')
 const refunds = read('./website/refunds.html')
 const productTerms = read('./website/digital-product-terms.html')
 const legalDraft = read('./marketing/shop-studio-v901/legal-draft.md')
+const gumroadListings = read('./marketing/shop-studio-v901/gumroad-listings.md')
+const giftConfirmationEmail = read('./marketing/shop-studio-v901/gift-confirmation-email.txt')
+const normalizeWhitespace = (value) => value.replace(/\s+/g, ' ').trim()
 const normalizedPrivacy = privacy.replace(/\s+/g, ' ')
 const normalizedTerms = terms.replace(/\s+/g, ' ')
 const normalizedRefunds = refunds.replace(/\s+/g, ' ')
@@ -39,13 +45,48 @@ const expected = [
     'whole-sky-edition',
     'Whole Sky Edition',
     39,
-    'downloads/studio/personal-sky-keepsake-sample.pdf',
+    'downloads/studio/whole-sky-edition-sample.pdf',
   ],
 ]
 
 assert.equal(catalogue.state, 'draft-not-published')
 assert.equal(catalogue.platform.checkoutVerified, false)
+assert.equal(catalogue.platform.giftCheckoutVerified, false)
+assert.equal(catalogue.platform.giftPrivacyNoticeVersion, null)
+assert.equal(catalogue.platform.giftPrivacyNoticeHash, null)
 assert.equal(catalogue.products.length, 3)
+for (const product of catalogue.products) {
+  assert.deepEqual(
+    product.purchaseModes,
+    ['self', 'gift'],
+    `${product.sku} must expose self and gift as modes, not extra SKUs`,
+  )
+  assert.ok(product.gift && typeof product.gift === 'object', `${product.sku} needs gift copy`)
+}
+
+assert.match(shop, /id=["']shop-intent["']/i, 'shop needs the visible self/gift intent control')
+assert.match(shop, /role=["']radiogroup["']/i, 'shop intent control must expose a radiogroup')
+for (const mode of ['self', 'gift']) {
+  assert.match(
+    shop,
+    new RegExp(`data-shop-intent=["']${mode}["'][^>]*role=["']radio["']|role=["']radio["'][^>]*data-shop-intent=["']${mode}["']`, 'i'),
+    `shop needs an accessible ${mode} radio button`,
+  )
+}
+assert.match(shop, /aria-live=["']polite["']/i, 'mode copy changes need a polite live region')
+assert.match(shop, /js\/ap-shop-gift-intent\.js\?v=901/i)
+assert.match(giftIntent, /ap-shop-intent-v1/, 'gift intent must use the non-personal session key')
+assert.match(giftIntent, /sessionStorage/, 'gift intent may persist only in session storage')
+assert.match(
+  serviceWorker,
+  /isCritical[\s\S]*ap-shop-gift-intent/,
+  'the release-specific gift intent controller must be network-first like other critical route code',
+)
+assert.equal(
+  /\b(?:fetch|XMLHttpRequest|sendBeacon|WebSocket)\b|localStorage|document\.cookie/i.test(giftIntent),
+  false,
+  'gift intent controller must not transmit or persist visitor data',
+)
 
 const skuAttributes = [...shop.matchAll(/\bdata-product-sku=["']([^"']+)["']/gi)].map(
   (match) => match[1],
@@ -104,6 +145,11 @@ assert.match(
   shop,
   /href=["']https:\/\/ko-fi\.com\/astroprecise["']/i,
   '#support must lead to the real Ko-fi route',
+)
+assert.match(
+  visibleShop,
+  /draft service prices[\s\S]{0,180}tax-inclusive totals/i,
+  'unverified prices must be labelled as draft and tax testing must remain visible',
 )
 
 for (const [sku, name, price, sample] of expected) {
@@ -235,6 +281,21 @@ assert.equal(
   false,
   'the public prelaunch page must not collect birth data or email',
 )
+assert.match(
+  visibleShop,
+  /adult recipient[^.]{0,120}(?:present|with you)|recipient[^.]{0,120}(?:enter|provide)[^.]{0,80}(?:own|themselves)/i,
+  'gift preview must explain adult recipient self-entry',
+)
+assert.match(
+  visibleShop,
+  /surprise gifts?[^.]{0,80}(?:not accepted|not available|cannot|unsupported)|not (?:a )?surprise gift/i,
+  'gift preview must reject surprise-gift orders at launch',
+)
+assert.match(
+  visibleShop,
+  /recipient pays (?:£?0|nothing)|no charge to the recipient/i,
+  'gift preview must make the payer role clear',
+)
 for (const [, url] of shop.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)) {
   assert.equal(
     /[?&#](?:date|time|city|lat|lon|birth|name)=/i.test(url),
@@ -244,8 +305,8 @@ for (const [, url] of shop.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)) {
 }
 assert.equal(
   shop.includes('digital-product-terms.html'),
-  false,
-  'the noindex legal draft must not be linked as the current sale terms',
+  true,
+  'the checkout-closed shop must expose the clearly labelled noindex terms draft for review',
 )
 assert.match(
   productTerms,
@@ -291,6 +352,21 @@ for (const [label, source] of [
     /fully perform|full performance|once (?:the )?(?:service|commission) is complete|right to cancel ends/i,
     `${label} must explain when the cancellation right ends`,
   )
+  assert.match(
+    source,
+    /adult recipient/i,
+    `${label} must keep gift orders adult-only`,
+  )
+  assert.match(
+    source,
+    /recipient[^.\n]{0,120}(?:enter|entered|complete)[^.\n]{0,100}(?:own|personally|themselves)/i,
+    `${label} must require recipient self-entry`,
+  )
+  assert.match(
+    source,
+    /separate[^.\n]{0,100}(?:unticked|authori[sz]ation|permission)|recipient[^.\n]{0,120}(?:unticked|authori[sz]e)[^.\n]{0,80}(?:buyer|purchaser)/i,
+    `${label} must separate permission to disclose files to the buyer`,
+  )
 }
 
 assert.ok(catalogue.launchBlockers.includes('public-geographic-trader-address'))
@@ -310,13 +386,33 @@ assert.match(
 )
 assert.match(normalizedTerms, /legacy external Gumroad listing may still be reachable/i)
 assert.match(normalizedRefunds, /legacy external Gumroad listing may still be reachable/i)
+assert.match(normalizedPrivacy, /withdraw[\s\S]{0,160}at any time[\s\S]{0,220}(?:later|further)[\s\S]{0,100}(?:copies|replacements)/i)
+assert.match(productTerms, /acknowledge receipt within 30 days/i)
+assert.match(productTerms, /same means of payment[^.]{0,120}no reimbursement fee/i)
+assert.match(shop, /href=["']digital-product-terms\.html["'][^>]*>[^<]*Studio terms draft/i)
+
+const normalizedListingDraft = normalizeWhitespace(gumroadListings)
+for (const [recordName, canonicalText] of Object.entries(GIFT_CONSENT_RECORDS)) {
+  if (!recordName.endsWith('Text')) continue
+  assert.ok(
+    normalizedListingDraft.includes(normalizeWhitespace(canonicalText)),
+    `Gumroad listing draft must reproduce canonical ${recordName} exactly`,
+  )
+}
+const normalizedGiftConfirmation = normalizeWhitespace(giftConfirmationEmail)
+const buyerCopyWording = normalizeWhitespace(GIFT_CONSENT_RECORDS.recipientDisclosureWordingText)
+assert.equal(
+  normalizedGiftConfirmation.split(buyerCopyWording).length - 1,
+  2,
+  'both buyer and recipient durable confirmations must reproduce the exact buyer-copy authorisation wording',
+)
 
 const studioDownloads = new URL('./website/downloads/studio/', import.meta.url)
 assert.ok(existsSync(studioDownloads))
 for (const file of readdirSync(studioDownloads)) {
   assert.match(
     file,
-    /^(?:natal-sky-print-pack|personal-sky-keepsake)-sample\.pdf$/,
+    /^(?:natal-sky-print-pack|personal-sky-keepsake|whole-sky-edition)-sample\.pdf$/,
     `private fulfilment artifact leaked into public downloads: ${file}`,
   )
 }
@@ -348,5 +444,5 @@ assert.ok(
 )
 
 console.log(
-  'PASS shop prelaunch: exact 3 products, closed checkout, no hype, public samples and privacy gates',
+  'PASS shop prelaunch: exact 3 products, safe self/gift modes, closed checkout and privacy gates',
 )

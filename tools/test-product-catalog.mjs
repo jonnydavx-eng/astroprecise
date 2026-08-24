@@ -78,8 +78,8 @@ const expectedProducts = [
     name: 'Whole Sky Edition',
     priceGbp: 39,
     image: 'website/img/shop/v901/whole-sky-edition.webp',
-    sample: 'downloads/studio/personal-sky-keepsake-sample.pdf',
-    samplePages: 20,
+    sample: 'downloads/studio/whole-sky-edition-sample.pdf',
+    samplePages: 4,
     sampleSize: [595.28, 841.89],
     deliverables: [
       'everything in the Natal Sky Print Pack',
@@ -100,15 +100,23 @@ assert.equal(catalogue.platform.productType, 'commission')
 assert.equal(catalogue.platform.depositPercent, 50)
 assert.equal(catalogue.platform.merchantOfRecord, true)
 assert.equal(catalogue.platform.checkoutVerified, false)
+assert.equal(catalogue.platform.giftCheckoutVerified, false)
+assert.equal(catalogue.platform.giftPrivacyNoticeVersion, null)
+assert.equal(catalogue.platform.giftPrivacyNoticeHash, null)
 assert.deepEqual(
   [...catalogue.launchBlockers].sort(),
   [
     'end-to-end-test-order-receipt-refund-and-deletion',
+    'durable-contract-confirmation-before-work',
+    'gift-legitimate-interests-assessment-owner-approval',
+    'gift-recipient-intake-delivery-and-buyer-copy-controls-test',
     'owner-service-level-confirmation',
+    'private-storage-acl-encryption-and-purge-test',
     'public-geographic-trader-address',
     'signed-in-gumroad-commission-eligibility-check',
+    'tax-inclusive-total-price-and-fee-test',
   ].sort(),
-  'all four launch blockers must remain machine-readable until cleared deliberately',
+  'all launch blockers must remain machine-readable until cleared deliberately',
 )
 
 assert.equal(catalogue.sharedRules.format, 'digital-files-only')
@@ -116,6 +124,8 @@ assert.equal(catalogue.sharedRules.physicalItem, false)
 assert.equal(catalogue.sharedRules.birthTime, 'known-exact-recorded-clock-time')
 assert.equal(catalogue.sharedRules.unknownOrApproximateTimeAccepted, false)
 assert.equal(catalogue.sharedRules.earlyStartOptional, true)
+assert.equal(catalogue.sharedRules.giftModel.availability, 'disabled-pending-two-person-platform-test-lia-and-owner-approval')
+assert.equal(catalogue.sharedRules.giftModel.deliveryTarget, 'recipient-always')
 assert.equal(catalogue.sharedRules.productionWorkingDays, 5)
 assert.match(
   catalogue.sharedRules.productionClock,
@@ -166,6 +176,13 @@ for (const expected of expectedProducts) {
     `${expected.sku} sample path must be local and canonical`,
   )
   assert.equal(extname(product.sample), '.pdf')
+  assert.deepEqual(
+    product.purchaseModes,
+    ['self', 'gift'],
+    `${expected.sku} must implement gift as a mode, never another SKU`,
+  )
+  assert.ok(product.gift && typeof product.gift === 'object', `${expected.sku} needs gift-mode copy`)
+  assert.match(JSON.stringify(product.gift), /birthday|gift/i)
 }
 assert.equal(catalogue.products[2].savingGbpAgainstSeparateProducts, 8)
 assert.equal(
@@ -175,6 +192,7 @@ assert.equal(
 )
 const natalProduct = catalogue.products.find(({ sku }) => sku === 'natal-sky-print-pack')
 const illustratorKit = read('tools/adobe/make-shop-studio-kit-v901.jsx')
+const giftIllustratorKit = read('tools/adobe/make-shop-gift-kit-v901.jsx')
 assert.match(
   natalProduct.summary,
   /two(?: [a-z-]+){0,2} PDFs? (?:\+|and) five(?: [a-z-]+){0,2} PNG layouts/i,
@@ -192,6 +210,9 @@ assert.match(
   /A3 \+ A4 plates[\s\S]{0,100}Five PNG layouts/i,
   'Illustrator Natal master must present two PDF plates and five PNG layouts',
 )
+assert.match(giftIllustratorKit, /Birthday Orbit Edition/i)
+assert.match(giftIllustratorKit, /FICTIONAL SAMPLE/i)
+assert.match(giftIllustratorKit, /SCHEMATIC/i)
 
 const hype =
   /\b(?:best[ -]?seller|most popular|selling fast|limited time|today only|last chance|act now|only \d+ (?:left|remaining)|\d+[,+]? happy (?:customers|clients)|five[- ]star|5[- ]star|rated \d)\b/i
@@ -379,9 +400,26 @@ const publicSampleDir = fileUrl('website/downloads/studio/')
 assert.ok(existsSync(publicSampleDir), 'public Studio sample folder is missing')
 assert.deepEqual(
   readdirSync(publicSampleDir).sort(),
-  ['natal-sky-print-pack-sample.pdf', 'personal-sky-keepsake-sample.pdf'],
-  'public Studio downloads must contain only the two deliberate sample PDFs',
+  [
+    'natal-sky-print-pack-sample.pdf',
+    'personal-sky-keepsake-sample.pdf',
+    'whole-sky-edition-sample.pdf',
+  ],
+  'public Studio downloads must contain only the three deliberate sample PDFs',
 )
+
+for (const path of [
+  'website/img/shop/v901/gift-personal-sky-keepsake.webp',
+  'website/img/shop/v901/gift-whole-sky-edition.webp',
+  'website/img/shop/v901/birthday-orbit-detail.webp',
+]) {
+  const url = fileUrl(path)
+  assert.ok(existsSync(url), `missing gift artwork ${path}`)
+  const bytes = statSync(url).size
+  assert.ok(bytes >= 20_000 && bytes <= 100_000, `${path} must be a useful WebP no larger than 100KB`)
+  const metadata = await sharp(fileURLToPath(url)).metadata()
+  assert.deepEqual([metadata.format, metadata.width, metadata.height], ['webp', 1280, 720], path)
+}
 
 for (const [relativePath, expected] of uniqueSamples) {
   const url = fileUrl(`website/${relativePath}`)
@@ -395,7 +433,7 @@ for (const [relativePath, expected] of uniqueSamples) {
   assert.equal(document.getPageCount(), expected.samplePages, `${relativePath} page count drifted`)
   assert.match(
     document.getTitle() || '',
-    /AstroPrecise|Natal Sky|Personal Sky/i,
+    /AstroPrecise|Natal Sky|Personal Sky|Whole Sky/i,
     `${relativePath} needs a meaningful title`,
   )
   assert.equal(
@@ -490,8 +528,17 @@ for (const [relativePath, expected] of uniqueSamples) {
       'Personal sample PDF outline titles must not join words or punctuation at visual line breaks',
     )
   }
+  if (expected.sku === 'whole-sky-edition') {
+    assert.equal(document.getTitle(), 'Whole Sky Edition — fictional sample')
+    assert.match(compactJoined, /WholeSkyEdition/i)
+    assert.match(compactJoined, /SCHEMATIC/i)
+    assert.match(compactJoined, /BirthdayOrbitEdition/i)
+    assert.match(compactJoined, /readingandprintexcerpts/i)
+    assert.match(compactJoined, /for(?:the)?WholeSkyEdition/i)
+    assert.match(compactJoined, /notaphotograph/i)
+  }
 }
 
 console.log(
-  'PASS Studio catalogue: 3 draft commissions, exact value, closed checkout, cool covers and verified fictional PDFs',
+  'PASS Studio catalogue: 3 draft commissions, two modes, closed checkout and verified fictional gift art',
 )

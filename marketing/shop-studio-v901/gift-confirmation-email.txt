@@ -1,0 +1,196 @@
+ASTROPRECISE STUDIO — BIRTHDAY GIFT CONFIRMATION TEMPLATES
+DRAFT ONLY — DO NOT SEND OR AUTOMATE UNTIL THE PRIVATE TWO-PERSON TEST PASSES
+
+These templates deliberately omit birth date, time, place, coordinates and chart
+content. Preserve the exact terms/privacy version and confirmation records in the
+private order record; do not copy sensitive fields into email.
+
+Attach the exact dated contract/privacy files named below. A link to a mutable web
+page is not a substitute for the durable attachments. Do not enable these templates
+until the owner has approved the contract-formation event, provider flow and every
+placeholder.
+
+======================================================================
+BUYER CONFIRMATION
+======================================================================
+
+Subject: Your AstroPrecise birthday gift request — [PRODUCT NAME]
+
+Durable buyer-confirmation file: [EXACT SAVED MESSAGE/ATTACHMENT BUNDLE FILENAME]
+Bundle schema: ap-durable-confirmation-bundle-v1-2026-08-24
+Sent at: [UTC TIMESTAMP]
+SHA-256: [HASH RECORDED AS buyerDurableConfirmationHash]
+
+Hello [BUYER FIRST NAME],
+
+Your request for [PRODUCT NAME] as a birthday gift has been received under order
+[ORDER REFERENCE]. The total service price shown at checkout was [TOTAL AND
+CURRENCY]. Use only the payment/deposit wording proved by the unpublished seller
+test; do not insert an assumed 50% sequence here.
+
+Contract status: [REQUEST RECEIVED — NOT YET ACCEPTED / ACCEPTED AT UTC TIMESTAMP].
+Use only the owner-approved formation event. A deposit alone must not silently be
+described as acceptance.
+
+Attached contract record: [EXACT DATED TERMS FILENAME]
+Terms version: [VERSION]
+Terms SHA-256: [HASH]
+
+This attachment records the accepted product, gift purchase mode, total price/tax,
+delivery target, cancellation information and the separate choices below. Work must
+not start until this durable confirmation and the recipient's separate confirmation
+have both been sent and preserved.
+
+[RECIPIENT DISPLAY NAME] personally entered and confirmed their own details. We
+have not included those details in this email.
+
+The recipient pays nothing. Their completed files will be delivered privately to
+them by default.
+
+Buyer-copy notice: [VERSION / SHA-256]
+Buyer-copy choice: [AUTHORISED AT UTC TIMESTAMP / NOT AUTHORISED — NO CONSENT
+TIMESTAMP]
+Buyer-copy authorisation wording:
+"Optional: I authorise AstroPrecise to send the buyer a private copy of my
+personalised commissioned files as well as delivering them to me. I can withdraw
+this permission at any time; withdrawal cannot recall a copy already sent but
+prevents later buyer copies or replacements."
+
+If the recipient did not separately authorise a buyer copy, you will not receive
+their chart, reading or birthday files. Their choice does not affect the gift.
+The adult recipient is the licensee. If a buyer copy is authorised, you may keep
+one private copy and privately transfer or print it for that recipient as part of
+the gift; it does not give you an independent right to publish, analyse, exploit or
+share their chart or reading.
+
+Work-start notice [VERSION / SHA-256]:
+"I expressly request AstroPrecise to begin this personalised service during my
+14-day cancellation period. I understand that if I cancel after work has begun, I
+may have to pay an amount proportionate to the service supplied up to cancellation;
+and that if the service is fully performed within that period, I will lose my right
+to cancel once it is complete."
+
+Recorded choice: [SELECTED AT UTC TIMESTAMP / NOT SELECTED — NO TIMESTAMP AND NO
+WORK BEFORE THE CANCELLATION PERIOD ENDS]
+
+Early digital-supply notice [VERSION / SHA-256]:
+"I expressly consent to AstroPrecise supplying my commissioned digital files during
+my 14-day cancellation period. I understand that I lose the cancellation right for
+that digital content when supply begins. This does not affect my rights if the
+service or files are faulty, misdescribed or not supplied with reasonable care and
+skill."
+
+Recorded choice: [SELECTED AT UTC TIMESTAMP / NOT SELECTED — NO TIMESTAMP AND NO
+DIGITAL SUPPLY DURING THE CANCELLATION PERIOD]
+
+Target timing: [ONLY INSERT THE OWNER-APPROVED TARGET AND THE VERIFIED CLOCK-START
+EVENT]. We will write privately if a valid input needs clarification.
+
+To cancel, send any clear statement through the private order conversation or
+[DIRECT CONTACT]. Include the order reference, but do not send birth details by
+ordinary email. Your cancellation and statutory rights are set out in the saved
+terms supplied with this order. A cancellation refund must be made without undue
+delay and no later than 14 days after AstroPrecise is informed, using the original
+payment method unless you expressly agree otherwise and without a refund fee, less
+only any lawful proportionate early-service amount.
+
+AstroPrecise Studio
+[FINAL LEGAL/TRADING IDENTITY]
+[DIRECT CONTACT]
+[FULL GEOGRAPHIC BUSINESS/SERVICE ADDRESS — OWNER REQUIRED]
+
+======================================================================
+RECIPIENT CONFIRMATION
+======================================================================
+
+Subject: Your AstroPrecise birthday commission — private confirmation
+
+Durable recipient-confirmation file: [EXACT SAVED MESSAGE/ATTACHMENT BUNDLE FILENAME]
+Bundle schema: ap-durable-confirmation-bundle-v1-2026-08-24
+Sent at: [UTC TIMESTAMP]
+SHA-256: [HASH RECORDED AS recipientDurableConfirmationHash]
+
+Hello [RECIPIENT DISPLAY NAME],
+
+You asked AstroPrecise to prepare [PRODUCT NAME] from the exact details you
+entered for order [ORDER REFERENCE]. The buyer has paid or arranged payment; you
+pay nothing.
+
+Your completed files will be delivered to you by default.
+
+Attached privacy record: [EXACT DATED PRIVACY NOTICE FILENAME]
+Privacy notice version: [VERSION]
+Privacy notice SHA-256: [HASH]
+
+Buyer-copy notice: [VERSION / SHA-256]
+Buyer-copy choice: [AUTHORISED AT UTC TIMESTAMP / NOT AUTHORISED — NO CONSENT
+TIMESTAMP]
+Buyer-copy authorisation wording:
+"Optional: I authorise AstroPrecise to send the buyer a private copy of my
+personalised commissioned files as well as delivering them to me. I can withdraw
+this permission at any time; withdrawal cannot recall a copy already sent but
+prevents later buyer copies or replacements."
+
+If this says AUTHORISED, you may withdraw that optional choice at any time by
+contacting [DIRECT CONTACT]. Refusing or withdrawing a buyer copy does not stop
+your own delivery. Withdrawal before first dispatch prevents that copy; later
+withdrawal prevents further buyer copies or replacements. We cannot technically
+recall a file after it has already been sent, so every dispatch needs a final check.
+
+We use your details only to calculate, compose, check, deliver, support and
+correct this commission. We do not include the details in this email, use them
+for marketing or training, or place them in public examples. The privacy notice
+and gift-role record attached to this message explain the proposed lawful basis,
+recipients, retention and your rights.
+
+If you no longer want the commission prepared, think a detail is wrong, object
+to the processing, or want to exercise a data right, contact [DIRECT CONTACT]
+privately before work continues. Do not put birth details in a public form, URL
+or social message. We will pause future work while an objection is assessed and
+stop unless AstroPrecise can document compelling legitimate grounds overriding
+your rights or the processing is needed for legal claims. Buyer-copy consent is
+separate and may be withdrawn at any time without affecting your own delivery;
+any buyer copy or replacement not already sent must then be stopped.
+
+To make a data protection complaint, use [MONITORED ELECTRONIC COMPLAINT ROUTE]
+and put "Data protection complaint" in the subject. Give an order reference but no
+birth details in the first message. AstroPrecise must acknowledge the complaint
+within 30 days, investigate appropriately, keep you informed about material progress
+and communicate the outcome without undue delay. You may also complain to the ICO.
+
+AstroPrecise Studio
+[FINAL LEGAL/TRADING IDENTITY]
+[DIRECT CONTACT]
+
+======================================================================
+SEND GATE
+======================================================================
+
+Before either template is enabled, verify:
+
+- buyer and recipient receive separate durable confirmations;
+- the recipient confirmation is sent directly to the recipient;
+- no hidden copy or forwarding exposes recipient data/files to the buyer;
+- buyer-copy state defaults to NOT AUTHORISED and matches the recipient's own
+  separately recorded choice and timestamp;
+- the exact dated terms and privacy notice are attached, versioned and hash-recorded;
+- a mutable webpage link is supplementary only and never replaces the attachments;
+- the approved contract-formation event is stated accurately and confirmation is
+  preserved before work starts;
+- the exact separate early-start and early-digital-supply wording, versions, hashes,
+  affirmative states and timestamps match the private order record;
+- an unselected optional control has no consent timestamp and does not authorise work,
+  supply or buyer-copy disclosure;
+- cancellation, objection and buyer-copy withdrawal replies are monitored;
+- the birthday-message field warned against birth details, health information,
+  religious or philosophical beliefs, sexual-life information and other
+  special-category data;
+- the data-protection complaint route is monitored and its 30-day acknowledgement,
+  enquiry, progress and outcome process is assigned;
+- final identity, address, contact, price, tax and platform wording are complete;
+- every provider role, field, sub-processor, destination, transfer mechanism and
+  retention period is verified and accurately described;
+- the private test proves recipient self-entry and recipient-default delivery without
+  buyer visibility; if Gumroad cannot support this, gift mode remains disabled;
+- the exact Gumroad deposit/balance language has been proved in the signed-in
+  unpublished test.

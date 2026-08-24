@@ -27,6 +27,11 @@ const BY_SKU = {
   'personal-sky-keepsake': READING,
   'whole-sky-edition': [...new Set([...READING, ...PRINT_PACK, '06-observatory-birth-hour-schematic-4800x3600.png'])],
 };
+const GIFT_FILES = [
+  'birthday-gift-jacket-a4.pdf',
+  'birthday-reveal-1080x1920.png',
+  'birthday-moon-plate-2160x2160.png',
+];
 
 const README = `ASTROPRECISE STUDIO · DELIVERY NOTES
 
@@ -41,11 +46,29 @@ The Whole Sky Observatory image is labelled SCHEMATIC. It uses computed body pos
 For a calculation/production error or an order question, use the private Gumroad order conversation. Do not send birth details through the public contact form.
 `;
 
-const LICENCE = `ASTROPRECISE STUDIO · PERSONAL-USE LICENCE
+const SELF_LICENCE = `ASTROPRECISE STUDIO · PERSONAL-USE LICENCE
 
 The original purchaser may download, store backup copies, display privately, and self-print the supplied files for personal, non-commercial use.
 
 You may not resell, sublicense, publish, upload for public download, redistribute, mint as a token, use in advertising, or otherwise exploit the files commercially. A commercial or public-display licence requires separate written permission.
+
+This licence does not limit statutory consumer rights. AstroPrecise retains copyright in the design, written corpus, software output and brand elements. Any third-party astronomical imagery or font material remains credited under its own terms.
+`;
+
+const GIFT_RECIPIENT_ONLY_LICENCE = `ASTROPRECISE STUDIO · GIFT PERSONAL-USE LICENCE
+
+The intended adult gift recipient is the personal-use licensee and may download, store backup copies, display privately, and self-print the supplied files for personal, non-commercial use. The buyer is not authorised to receive, download, keep or redistribute these personalised files.
+
+The recipient may not resell, sublicense, publish, upload for public download, redistribute, mint as a token, use in advertising, or otherwise exploit the files commercially. A commercial or public-display licence requires separate written permission.
+
+This licence does not limit statutory consumer rights. AstroPrecise retains copyright in the design, written corpus, software output and brand elements. Any third-party astronomical imagery or font material remains credited under its own terms.
+`;
+
+const GIFT_AUTHORISED_BUYER_COPY_LICENCE = `ASTROPRECISE STUDIO · GIFT PERSONAL-USE LICENCE
+
+The intended adult gift recipient is the personal-use licensee and may download, store backup copies, display privately, and self-print the supplied files for personal, non-commercial use. Because the recipient separately authorised a buyer copy, the buyer may keep one private copy and privately transfer or print it for that recipient as part of the gift. That permission does not transfer the licence or expose the recipient's birth inputs.
+
+Neither person may resell, sublicense, publish, upload for public download, redistribute, mint as a token, use in advertising, or otherwise exploit the files commercially. A commercial or public-display licence requires separate written permission.
 
 This licence does not limit statutory consumer rights. AstroPrecise retains copyright in the design, written corpus, software output and brand elements. Any third-party astronomical imagery or font material remains credited under its own terms.
 `;
@@ -67,14 +90,23 @@ function artifact(path) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const dir = resolve(args.dir || '');
+  const privateOrderPath = resolve(args.in || '');
   const product = String(args.product || '');
   const mode = String(args.mode || '');
-  if (!dir || !BY_SKU[product] || !['proof', 'final'].includes(mode) || !/^[a-f0-9]{64}$/i.test(String(args['input-hash'] || ''))) {
-    throw new Error('Usage: package-studio-order.mjs --dir <private dir> --product <launch sku> --mode proof|final --input-hash <sha256>');
+  if (!dir || !args.in || !existsSync(privateOrderPath) || !BY_SKU[product] || !['proof', 'final'].includes(mode) || !/^[a-f0-9]{64}$/i.test(String(args['input-hash'] || ''))) {
+    throw new Error('Usage: package-studio-order.mjs --dir <private dir> --in <canonical order.json> --product <launch sku> --mode proof|final --input-hash <sha256>');
   }
-  const files = [...BY_SKU[product], 'README.txt', 'PERSONAL-USE-LICENCE.txt', 'PRINT-GUIDE.txt'];
-  writeFileSync(join(dir, 'README.txt'), README);
-  writeFileSync(join(dir, 'PERSONAL-USE-LICENCE.txt'), LICENCE);
+  const privateOrder = JSON.parse(readFileSync(privateOrderPath, 'utf8'));
+  if (privateOrder.product !== product) throw new Error('Package SKU does not match the canonical private order');
+  if (!['self', 'gift'].includes(privateOrder.purchaseIntent)) throw new Error('Canonical private order lacks an approved purchaseIntent');
+  if (sha256(JSON.stringify(privateOrder)) !== String(args['input-hash']).toLowerCase()) throw new Error('Package input hash does not bind the canonical private order');
+  const giftMode = privateOrder.purchaseIntent === 'gift';
+  const giftLicence = privateOrder.recipientDisclosureActive === true
+    ? GIFT_AUTHORISED_BUYER_COPY_LICENCE
+    : GIFT_RECIPIENT_ONLY_LICENCE;
+  const files = [...BY_SKU[product], ...(giftMode ? GIFT_FILES : []), 'README.txt', 'PERSONAL-USE-LICENCE.txt', 'PRINT-GUIDE.txt'];
+  writeFileSync(join(dir, 'README.txt'), giftMode ? `${README}\nGIFT DELIVERY\n\nThe three birthday-gift files are personalised for the intended adult recipient, who receives them by default. The buyer receives a private copy only when the recipient's separate authorisation is still valid at dispatch. The Moon plate is a computed schematic, not a photograph.\n` : README);
+  writeFileSync(join(dir, 'PERSONAL-USE-LICENCE.txt'), giftMode ? giftLicence : SELF_LICENCE);
   writeFileSync(join(dir, 'PRINT-GUIDE.txt'), PRINT_GUIDE);
   for (const file of files) {
     if (!existsSync(join(dir, file))) throw new Error(`Missing required customer file: ${file}`);

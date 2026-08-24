@@ -8,13 +8,15 @@ import { PDFDocument } from 'pdf-lib';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
 import sharp from 'sharp';
-import { assertWorkMayStart, canonicalizeStudioOrder, loadEngines, parseArgs, ROOT, sha256 } from './fulfil-shared.mjs';
+import { assertDigitalSupplyMayBegin, assertExactFictionalStudioFixture, assertWorkMayStart, canonicalizeStudioOrder, loadEngines, parseArgs, ROOT, sha256 } from './fulfil-shared.mjs';
 
 const PRODUCT_FILES = {
   'natal-sky-print-pack': ['natal-sky-home-print-a3.pdf', 'natal-sky-home-print-a4.pdf', '01-natal-print-4960x7016.png', '02-natal-square-2160x2160.png', '03-natal-story-2160x3840.png', '04-phone-wallpaper-1080x1920.png', '05-big-three-1080x1080.png'],
   'personal-sky-keepsake': ['personal-sky-keepsake-screen.pdf', 'personal-sky-keepsake-print.pdf', 'natal-sky-home-print-a3.pdf', 'natal-sky-home-print-a4.pdf'],
   'whole-sky-edition': ['personal-sky-keepsake-screen.pdf', 'personal-sky-keepsake-print.pdf', 'natal-sky-home-print-a3.pdf', 'natal-sky-home-print-a4.pdf', '01-natal-print-4960x7016.png', '02-natal-square-2160x2160.png', '03-natal-story-2160x3840.png', '04-phone-wallpaper-1080x1920.png', '05-big-three-1080x1080.png', '06-observatory-birth-hour-schematic-4800x3600.png'],
 };
+const GIFT_FILES = ['birthday-gift-jacket-a4.pdf', 'birthday-reveal-1080x1920.png', 'birthday-moon-plate-2160x2160.png'];
+const filesForOrder = (product, giftMode) => [...PRODUCT_FILES[product], ...(giftMode ? GIFT_FILES : [])];
 const PNG_DIMS = {
   '01-natal-print-4960x7016.png': [4960, 7016],
   '02-natal-square-2160x2160.png': [2160, 2160],
@@ -22,6 +24,8 @@ const PNG_DIMS = {
   '04-phone-wallpaper-1080x1920.png': [1080, 1920],
   '05-big-three-1080x1080.png': [1080, 1080],
   '06-observatory-birth-hour-schematic-4800x3600.png': [4800, 3600],
+  'birthday-reveal-1080x1920.png': [1080, 1920],
+  'birthday-moon-plate-2160x2160.png': [2160, 2160],
 };
 const DOCS = ['README.txt', 'PERSONAL-USE-LICENCE.txt', 'PRINT-GUIDE.txt', 'CUSTOMER-MANIFEST.json'];
 const RETIRED = ['#C9A227', '#E8C872', '#F0A878', '#050406', '#0D0A07', 'rgba(201,162,39'];
@@ -58,6 +62,14 @@ function normal(text) {
   return String(text || '').normalize('NFKC').replace(/\s+/g, ' ').trim();
 }
 
+function stableValue(value) {
+  if (Array.isArray(value)) return value.map(stableValue);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableValue(value[key])]));
+  }
+  return value;
+}
+
 function visibleHtmlText(source) {
   return normal(String(source || '')
     .replace(/<!--[\s\S]*?-->/g, ' ')
@@ -68,21 +80,22 @@ function visibleHtmlText(source) {
     .replace(/&amp;/gi, '&'));
 }
 
-function isExactFictionalFixture(order) {
-  if (order.sampleMode !== 'fictional' || !/^FICTIONAL[-_]/i.test(String(order.orderId || ''))) return false;
-  const fixture = {
-    name: 'Aurora Vale', place: 'Whitby, England',
-    y: 1990, mo: 6, d: 14, h: 3, mi: 42,
-    lat: 54.486, lon: -0.613, tz: 'Europe/London', timeAccuracy: 'exact', house: 'placidus',
-  };
-  return Object.entries(fixture).every(([field, value]) => order[field] === value);
-}
-
 function assertWorkStartBinding(control, privateOrder) {
   const expected = {
     contractAt: privateOrder.contractAt ?? null,
+    buyerDurableConfirmationSentAt: privateOrder.buyerDurableConfirmationSentAt ?? null,
+    buyerDurableConfirmationVersion: privateOrder.buyerDurableConfirmationVersion ?? null,
+    buyerDurableConfirmationFile: privateOrder.buyerDurableConfirmationFile ?? null,
+    buyerDurableConfirmationHash: privateOrder.buyerDurableConfirmationHash ?? null,
+    recipientDurableConfirmationSentAt: privateOrder.recipientDurableConfirmationSentAt ?? null,
+    recipientDurableConfirmationVersion: privateOrder.recipientDurableConfirmationVersion ?? null,
+    recipientDurableConfirmationFile: privateOrder.recipientDurableConfirmationFile ?? null,
+    recipientDurableConfirmationHash: privateOrder.recipientDurableConfirmationHash ?? null,
     earlyStartConsent: privateOrder.earlyStartConsent,
     earlyStartConsentRecordedAt: privateOrder.earlyStartConsentRecordedAt ?? null,
+    earlyStartConsentActor: privateOrder.earlyStartConsentActor ?? null,
+    earlyStartNoticeVersion: privateOrder.earlyStartNoticeVersion ?? null,
+    earlyStartNoticeHash: privateOrder.earlyStartNoticeHash ?? null,
   };
   const actual = control.workStart;
   if (!actual || typeof actual !== 'object' || Array.isArray(actual)) throw new Error('Private order-control lacks the canonical workStart binding');
@@ -90,6 +103,23 @@ function assertWorkStartBinding(control, privateOrder) {
   const actualKeys = Object.keys(actual).sort();
   if (JSON.stringify(actualKeys) !== JSON.stringify(expectedKeys) || expectedKeys.some((field) => actual[field] !== expected[field])) {
     throw new Error('Private order-control workStart does not exactly match canonical contract/consent timing');
+  }
+}
+
+function assertDigitalSupplyBinding(control, privateOrder) {
+  const expected = {
+    digitalSupplyConsent: privateOrder.digitalSupplyConsent,
+    digitalSupplyConsentRecordedAt: privateOrder.digitalSupplyConsentRecordedAt ?? null,
+    digitalSupplyConsentActor: privateOrder.digitalSupplyConsentActor ?? null,
+    digitalSupplyNoticeVersion: privateOrder.digitalSupplyNoticeVersion ?? null,
+    digitalSupplyNoticeHash: privateOrder.digitalSupplyNoticeHash ?? null,
+  };
+  const actual = control.digitalSupply;
+  if (!actual || typeof actual !== 'object' || Array.isArray(actual)) throw new Error('Private order-control lacks the canonical digitalSupply binding');
+  const expectedKeys = Object.keys(expected).sort();
+  const actualKeys = Object.keys(actual).sort();
+  if (JSON.stringify(actualKeys) !== JSON.stringify(expectedKeys) || expectedKeys.some((field) => actual[field] !== expected[field])) {
+    throw new Error('Private order-control digitalSupply does not exactly match canonical consent records');
   }
 }
 
@@ -286,12 +316,24 @@ function canonicalChart(privateOrder) {
       if (definitions.some(([angle, orb]) => Math.abs(separation - angle) <= orb)) aspects++;
     }
   }
+  const elongation = ((positions.moon - positions.sun) % 360 + 360) % 360;
+  const illuminatedFraction = (1 - Math.cos(elongation * Math.PI / 180)) / 2;
   return {
     order,
     sun: round4(positions.sun),
     moon: round4(positions.moon),
     asc: round4(chart.ascendant),
     aspects,
+    giftAstronomy: {
+      engine: 'VSOP87/ELP2000',
+      frame: 'geocentric-ecliptic-of-date',
+      sunLongitude: +positions.sun.toFixed(6),
+      moonLongitude: +positions.moon.toFixed(6),
+      sunMoonElongation: +elongation.toFixed(6),
+      illuminatedFraction: +illuminatedFraction.toFixed(8),
+      motion: elongation <= 180 ? 'waxing' : 'waning',
+      moonSign: ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'][Math.floor((((positions.moon % 360) + 360) % 360) / 30)],
+    },
   };
 }
 
@@ -378,14 +420,18 @@ async function auditPdf(path, expectedPages, expectedSize, final, expectedName, 
   for (const [index, pageText] of extracted.pages.entries()) {
     assertPdfVisual(extracted.visuals[index], path, index + 1);
     const compactMarkerText = pageText.replace(/[^a-z]/gi, '').toUpperCase();
-    const marked = compactMarkerText.includes('FICTIONALSAMPLE') || compactMarkerText.includes('DRAFT');
+    const marked = compactMarkerText.includes('FICTIONALSAMPLE') || compactMarkerText.includes('DRAFT') || compactMarkerText.includes('PROOF');
     if (final && marked) throw new Error(`${basename(path)} page ${index + 1} retains a proof watermark in final mode`);
     if (!final && !marked) throw new Error(`${basename(path)} page ${index + 1} lacks a proof/sample watermark`);
     if (!pageText.toUpperCase().includes(`AP REF ${expectedProvenanceRef}`)) {
       throw new Error(`${basename(path)} page ${index + 1} lacks visible AP REF ${expectedProvenanceRef} provenance`);
     }
   }
-  if (/personal-sky-keepsake/.test(basename(path))) {
+  if (basename(path) === 'birthday-gift-jacket-a4.pdf') {
+    for (const phrase of ['AP REF', expectedProvenanceRef, 'COMPUTED, NOT A PHOTOGRAPH']) {
+      if (!extracted.text.includes(normal(phrase))) throw new Error(`${basename(path)} cannot extract required gift label: ${phrase}`);
+    }
+  } else if (/personal-sky-keepsake/.test(basename(path))) {
     for (const phrase of ['The Sky at Your First Breath', 'How to read this', 'Chart reference', expectedName]) {
       if (!extracted.text.includes(normal(phrase))) throw new Error(`${basename(path)} cannot extract required phrase: ${phrase}`);
     }
@@ -409,8 +455,9 @@ async function main() {
   if (!dir || !PRODUCT_FILES[product] || (!!args.final === !!args.proof)) {
     throw new Error('Usage: fulfil-quality.mjs --dir <private dir> --product <launch sku> (--final | --proof)');
   }
+  let catalogue = null;
   if (final) {
-    const catalogue = JSON.parse(readFileSync(join(ROOT, 'website', 'data', 'products-v901.json'), 'utf8'));
+    catalogue = JSON.parse(readFileSync(join(ROOT, 'website', 'data', 'products-v901.json'), 'utf8'));
     if (catalogue.platform?.checkoutVerified !== true) throw new Error('Final quality approval is disabled until checkout verification is complete');
   }
   const privateOrderPath = join(dir, '_private', 'canonical-order.json');
@@ -420,6 +467,21 @@ async function main() {
   const renderPath = join(dir, 'render-manifest.json');
   for (const path of [privateOrderPath, controlPath, provenanceKeyPath, manifestPath, renderPath]) if (!existsSync(path)) throw new Error(`Missing control file: ${basename(path)}`);
   const privateOrder = JSON.parse(readFileSync(privateOrderPath, 'utf8'));
+  const recanonicalOrder = canonicalizeStudioOrder(privateOrder);
+  if (JSON.stringify(stableValue(privateOrder)) !== JSON.stringify(stableValue(recanonicalOrder))) {
+    throw new Error('Private canonical order contains non-whitelisted or non-canonical fields');
+  }
+  const giftMode = privateOrder.purchaseIntent === 'gift';
+  if (!['self', 'gift'].includes(privateOrder.purchaseIntent)) throw new Error('Canonical order lacks an approved purchaseIntent');
+  if (final && giftMode) {
+    if (catalogue.platform?.giftCheckoutVerified !== true) throw new Error('Gift final quality approval is disabled until the two-person recipient flow is verified');
+    if (privateOrder.recipientPrivacyNoticeVersion !== catalogue.platform.giftPrivacyNoticeVersion || privateOrder.recipientPrivacyNoticeHash !== catalogue.platform.giftPrivacyNoticeHash) {
+      throw new Error('Gift final quality approval requires the owner-approved recipient privacy notice version and hash');
+    }
+  }
+  const giftControlPath = join(dir, '_private', 'gift-asset-control.json');
+  if (giftMode && !existsSync(giftControlPath)) throw new Error('Missing control file: gift-asset-control.json');
+  if (!giftMode && existsSync(giftControlPath)) throw new Error('Self order unexpectedly contains gift-asset-control.json');
   const control = JSON.parse(readFileSync(controlPath, 'utf8'));
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
   const render = JSON.parse(readFileSync(renderPath, 'utf8'));
@@ -437,10 +499,12 @@ async function main() {
   if (control.schema !== 'astroprecise-studio-control-v901' || control.product !== product || control.mode !== expectedMode) throw new Error('Private order-control schema/product/mode mismatch');
   assertBinding(control, expectedBinding, 'Private order-control');
   assertWorkStartBinding(control, privateOrder);
+  assertDigitalSupplyBinding(control, privateOrder);
   if (privateOrder.sampleMode === 'fictional') {
-    if (!isExactFictionalFixture(privateOrder)) throw new Error('Consent-free fictional proof does not match the exact approved fixture');
+    assertExactFictionalStudioFixture(privateOrder);
   } else {
     assertWorkMayStart(privateOrder);
+    if (final) assertDigitalSupplyMayBegin(privateOrder);
   }
   if (!/^AP-[A-F0-9]{16}$/.test(control.provenanceRef)) throw new Error('Private order-control provenanceRef has an invalid format');
   if (control.provenanceRef !== expectedProvenanceRef) throw new Error('Private order-control provenanceRef is not derived from the private key and canonical binding');
@@ -454,12 +518,45 @@ async function main() {
   }
   assertBinding(render.binding, expectedBinding, 'Rendered-PDF manifest binding');
 
+  let giftControl = null;
+  if (giftMode) {
+    giftControl = JSON.parse(readFileSync(giftControlPath, 'utf8'));
+    if (giftControl.schema !== 'astroprecise-studio-gift-asset-control-v901' || !Array.isArray(giftControl.artifacts) || !Array.isArray(giftControl.labels)) {
+      throw new Error('Gift asset control schema/artifacts/labels mismatch');
+    }
+    assertBinding(giftControl.binding, expectedBinding, 'Gift asset control binding');
+    if (JSON.stringify(giftControl.calculation) !== JSON.stringify(computedChart.giftAstronomy)) {
+      throw new Error('Gift Moon calculation does not match the exact canonical UTC chart');
+    }
+    for (const label of ['COMPUTED FROM THE RECORDED BIRTH MOMENT', 'SCHEMATIC', 'NOT A PHOTOGRAPH', `AP REF ${expectedProvenanceRef}`]) {
+      if (!giftControl.labels.includes(label)) throw new Error(`Gift asset control lacks required visible label: ${label}`);
+    }
+    const giftByFile = new Map(giftControl.artifacts.map((entry) => [entry.file, entry]));
+    if (giftByFile.size !== giftControl.artifacts.length || JSON.stringify([...giftByFile.keys()].sort()) !== JSON.stringify(GIFT_FILES.slice().sort())) {
+      throw new Error('Gift asset control inventory mismatch or duplicate artifact names');
+    }
+    for (const file of GIFT_FILES) {
+      const path = join(dir, file);
+      if (!existsSync(path)) throw new Error(`Missing gift customer artifact: ${file}`);
+      const bytes = readFileSync(path);
+      const recorded = giftByFile.get(file);
+      if (recorded.bytes !== bytes.length || recorded.sha256 !== sha256(bytes)) throw new Error(`${file} does not match gift-asset-control.json`);
+      if (file.endsWith('.png')) {
+        const [width, height] = PNG_DIMS[file];
+        if (recorded.width !== width || recorded.height !== height) throw new Error(`${file} gift control dimensions mismatch`);
+      } else if (recorded.pages !== 1 || Math.abs(recorded.widthPt - 595.28) > .01 || Math.abs(recorded.heightPt - 841.89) > .01) {
+        throw new Error(`${file} gift control A4/page metadata mismatch`);
+      }
+    }
+  }
+
   for (const source of [render.source?.reading, render.source?.poster].filter(Boolean)) {
     const sourcePath = join(dir, source.file);
     if (!existsSync(sourcePath) || source.sha256 !== sha256(readFileSync(sourcePath))) throw new Error(`Rendered source is missing or altered: ${source.file}`);
   }
 
-  const expected = [...PRODUCT_FILES[product], ...DOCS, `astroprecise-${product}.zip`];
+  const productFiles = filesForOrder(product, giftMode);
+  const expected = [...productFiles, ...DOCS, `astroprecise-${product}.zip`];
   for (const file of expected) if (!existsSync(join(dir, file))) throw new Error(`Missing final customer artifact: ${file}`);
   const manifestByFile = new Map(manifest.artifacts.map((entry) => [entry.file, entry]));
   if (manifestByFile.size !== manifest.artifacts.length) throw new Error('Fulfilment manifest contains duplicate artifact names');
@@ -477,11 +574,12 @@ async function main() {
     if (!recorded || recorded.bytes !== bytes.length || recorded.sha256 !== sha256(bytes)) throw new Error(`${file} does not match render-manifest.json`);
   }
 
-  const expectedPngFiles = PRODUCT_FILES[product].filter((name) => name.endsWith('.png'));
+  const expectedPngFiles = productFiles.filter((name) => name.endsWith('.png'));
+  let raster = null;
   if (expectedPngFiles.length) {
     const rasterPath = join(dir, 'raster-manifest.json');
     if (!existsSync(rasterPath)) throw new Error('Missing control file: raster-manifest.json');
-    const raster = JSON.parse(readFileSync(rasterPath, 'utf8'));
+    raster = JSON.parse(readFileSync(rasterPath, 'utf8'));
     if (raster.schema !== 'astroprecise-studio-raster-v901' || !Array.isArray(raster.artifacts)) throw new Error('Raster manifest schema/artifacts mismatch');
     assertBinding(raster.binding, expectedBinding, 'Raster manifest binding');
     const rasterByFile = new Map(raster.artifacts.map((entry) => [entry.file, entry]));
@@ -499,7 +597,7 @@ async function main() {
     }
   }
 
-  for (const file of PRODUCT_FILES[product]) {
+  for (const file of productFiles) {
     const path = join(dir, file);
     if (file.endsWith('.png')) {
       const info = pngInfo(path);
@@ -512,19 +610,37 @@ async function main() {
       if (final && marked) throw new Error(`${file} retains the proof-watermark marker in final mode`);
     } else if (file.endsWith('.pdf')) {
       const reading = file.startsWith('personal-sky-keepsake');
+      const giftJacket = file === 'birthday-gift-jacket-a4.pdf';
       const a3 = file.endsWith('-a3.pdf');
-      const a4 = file.endsWith('-a4.pdf') || reading;
+      const a4 = file.endsWith('-a4.pdf') || reading || giftJacket;
       await auditPdf(path, reading ? 20 : 1, a3 ? [841.89, 1190.55] : a4 ? [595.28, 841.89] : [595.28, 841.89], final, computedChart.order.name, expectedProvenanceRef);
     }
   }
 
   const customerManifestText = readFileSync(join(dir, 'CUSTOMER-MANIFEST.json'), 'utf8');
   const customerManifest = JSON.parse(customerManifestText);
-  for (const secret of [privateOrder.orderId, privateOrder.email, privateOrder.name, privateOrder.place]) {
-    if (secret && customerManifestText.includes(String(secret))) throw new Error('Customer manifest leaks private intake fields');
+  const privateSecrets = [
+    privateOrder.orderId, privateOrder.email, privateOrder.name, privateOrder.place,
+    privateOrder.recipientDisplayName, privateOrder.giverDisplayName, privateOrder.giftMessage,
+    privateOrder.recipientEmail, privateOrder.recipientDeclaration?.typedName,
+    `${privateOrder.y}-${String(privateOrder.mo).padStart(2, '0')}-${String(privateOrder.d).padStart(2, '0')}`,
+  ].filter((value) => String(value || '').length >= 5).map(String);
+  const manifestSurfaces = [
+    customerManifestText,
+    JSON.stringify(manifest),
+    JSON.stringify(render),
+    JSON.stringify(raster || {}),
+    JSON.stringify(giftControl || {}),
+    JSON.stringify(control),
+  ].join('\n');
+  for (const secret of privateSecrets) {
+    if (manifestSurfaces.includes(secret)) throw new Error('A fulfilment manifest/control surface leaks private intake fields');
+  }
+  for (const forbiddenKey of ['email', 'recipientEmail', 'recipientDisplayName', 'giverDisplayName', 'giftMessage', 'typedName', 'place', 'birthDate']) {
+    if (manifestSurfaces.includes(`"${forbiddenKey}"`)) throw new Error(`A fulfilment manifest/control surface exposes private key ${forbiddenKey}`);
   }
   if (/inputHash|paymentEvidence|transaction/i.test(customerManifestText)) throw new Error('Customer manifest exposes internal control evidence');
-  const expectedCustomerFiles = [...PRODUCT_FILES[product], ...DOCS.filter((name) => name !== 'CUSTOMER-MANIFEST.json')].sort();
+  const expectedCustomerFiles = [...productFiles, ...DOCS.filter((name) => name !== 'CUSTOMER-MANIFEST.json')].sort();
   if (customerManifest.schema !== 'astroprecise-studio-customer-manifest-v901' || customerManifest.product !== product || customerManifest.mode !== expectedMode || !Array.isArray(customerManifest.files)) throw new Error('Customer manifest schema/product/mode mismatch');
   const customerByFile = new Map(customerManifest.files.map((entry) => [entry.file, entry]));
   if (customerByFile.size !== customerManifest.files.length || JSON.stringify([...customerByFile.keys()].sort()) !== JSON.stringify(expectedCustomerFiles)) throw new Error('Customer manifest file inventory mismatch');
@@ -536,7 +652,7 @@ async function main() {
   if (manifest.customerManifestHash !== sha256(Buffer.from(customerManifestText))) throw new Error('Customer manifest hash is not bound into fulfilment-manifest.json');
   const zip = await JSZip.loadAsync(readFileSync(join(dir, `astroprecise-${product}.zip`)));
   const zipNames = Object.keys(zip.files).sort();
-  const expectedZip = [...PRODUCT_FILES[product], ...DOCS].sort();
+  const expectedZip = [...productFiles, ...DOCS].sort();
   if (JSON.stringify(zipNames) !== JSON.stringify(expectedZip)) throw new Error('Customer ZIP inventory mismatch or private file leak');
   for (const name of zipNames) {
     if (/\.html$|_private|order|payment/i.test(name)) throw new Error(`Private/internal file present in ZIP: ${name}`);
@@ -565,7 +681,13 @@ async function main() {
   if (final && /\b(?:SAMPLE|DRAFT)\b/.test(html)) throw new Error('Final HTML retains a proof watermark');
   if (!final && !/\b(?:SAMPLE|DRAFT)\b/.test(html)) throw new Error('Proof HTML lacks a DRAFT/SAMPLE watermark');
 
-  const unsafeNames = readdirSync(dir).filter((name) => /display-name|aurora-vale|jane-example|\d{4}-\d{2}-\d{2}/i.test(name));
+  const piiFilenameTokens = [privateOrder.name, privateOrder.recipientDisplayName, privateOrder.giverDisplayName]
+    .map((value) => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+    .filter((value) => value.length >= 4);
+  const unsafeNames = readdirSync(dir).filter((name) => {
+    const lower = name.toLowerCase();
+    return /display-name|aurora-vale|jane-example|\d{4}-\d{2}-\d{2}/i.test(name) || piiFilenameTokens.some((token) => lower.includes(token));
+  });
   if (unsafeNames.length) throw new Error(`PII-like customer filenames found: ${unsafeNames.join(', ')}`);
   console.log(`QUALITY PASS · ${product} · ${final ? 'final' : 'proof'} · ${expected.length} verified customer artifacts`);
 }

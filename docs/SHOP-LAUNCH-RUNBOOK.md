@@ -16,6 +16,8 @@ The launch offer is exactly three personalised Gumroad Commission services:
 | Personal Sky Keepsake | £29 | draft; no checkout URL |
 | Whole Sky Edition | £39 | draft; no checkout URL |
 
+Each SKU has `self` and adult recipient-controlled `gift` purchase modes at the same price. Gift mode is not a fourth listing. It is birthday-only at launch: recipient present and self-entering, recipient pays nothing, recipient-default delivery, no surprise/minor/buyer-entered-data route, and buyer copy only with separate unticked recipient authorisation.
+
 Ko-fi remains optional support. It does not buy a Studio product, reserve a slot,
 accelerate delivery or unlock a file.
 
@@ -34,6 +36,10 @@ Do not open checkout while any item below is unresolved:
 - five-working-day target, seven-day layout adjustment and 30-day working-file
   deletion rule approved by the owner;
 - final public terms, privacy, refund/cancellation and contact pages approved;
+- gift-recipient legitimate-interests assessment completed and owner-approved;
+- adult recipient self-entry, just-in-time privacy notice, recipient-default delivery,
+  separate unticked buyer-copy authorisation, objection/withdrawal and deletion
+  proved without exposing recipient data/files to the buyer;
 - Cloudflare Pages project, protected GitHub environment and custom domains set;
 - Gumroad account age, Commission eligibility, payout identity and seller review
   state checked while signed in;
@@ -41,7 +47,8 @@ Do not open checkout while any item below is unresolved:
   replacement sequence proven with Gumroad's test-purchase route;
 - authenticated paid-in-full fulfilment adapter implemented and verified;
 - one complete fictional test order covers intake, consent, proof, correction,
-  final delivery, receipt retention and deletion;
+  immutable buyer/recipient confirmation delivery, final delivery, receipt
+  retention and deletion;
 - final candidate independently reviewed and owner-authorised through Coherence;
 - old Eclipse listing made unavailable and then archived only after direct-link
   verification and owner confirmation;
@@ -62,12 +69,41 @@ Record these facts privately. Do not invent placeholders in public pages.
 | Service target | approve or replace five working days |
 | Layout adjustment | approve or replace seven calendar days and scope |
 | Private work retention | approve or replace 30 days after final correction, or after final delivery if none is agreed; whichever date is later |
+| Private order storage | approve an absolute non-synced directory, restrictive Windows ACL, device-encryption/backup boundary and purge owner |
+| Refund reserve | sufficient Gumroad balance and operating rule for statutory/quality refunds |
+| Data complaints | monitored route, 30-day acknowledgement owner and complaint register |
+| Children assessment | record whether the wider free service is likely to be accessed by children and any higher-protection measures required |
 | ICO fee | exemption or current tier/payment evidence |
 | Capacity | maximum concurrent commissions and pause rule |
+| Gift privacy | approve the LIA, adult-only self-entry boundary and recipient objection route |
+| Gift delivery | approve recipient-default delivery and separate unticked buyer-copy wording |
 
 If a home address cannot safely be published, obtain a suitable business/service
 address before launch. A contact form or email alone is not a substitute for a
 required geographic address.
+
+Before the first real order, set `AP_STUDIO_PRIVATE_ORDERS_ROOT` to an absolute
+access-restricted directory outside the repository, verify its Windows ACL and
+device-encryption/backup boundary, and exercise a non-identifying scheduled
+purge on a fictional order. The final orchestrator rejects a missing, relative
+or repository-contained private root; that path guard does not replace the ACL
+and deletion tests.
+
+Before any commissioned proof work, preserve the exact dated terms/privacy
+attachments and the sent buyer confirmation as immutable files, then record its
+safe private filename, bundle schema, UTC sent time and SHA-256 in the order.
+Gift work additionally requires the recipient bundle's corresponding quartet.
+The orchestrator re-hashes both files beside the private order. `assertWorkMayStart()` fails closed when
+either required record is missing, pre-dates the relevant contract/confirmation,
+pre-dates a choice reproduced in that confirmation, or is in the future. The future signed-in adapter must authenticate who caused
+each record; the local hashes prove consistency, not identity.
+
+Minimal data-complaint register (keep it access-restricted and do not duplicate
+raw birth details): case ID; received/acknowledged dates; safe contact route;
+complaint and any linked rights-request category; handler; risk/escalation;
+enquiries; material progress updates; outcome/date; ICO escalation; and retention
+or deletion due date. Test acknowledgement, progress and outcome messages with a
+fictional case before launch.
 
 ## 2. Cloudflare Pages setup
 
@@ -79,8 +115,10 @@ Use the free plan. No Cloudflare Pro purchase is required for this static launch
 
 Owner/admin setup:
 
-1. In the existing Cloudflare account, create a **Direct Upload** Pages project
-   named `astroprecise` with production branch `main`. The protected release
+1. Use the existing **Direct Upload** Pages project named `astroprecise`, whose
+   production branch is `main`. Read-only verification on 24 August 2026 found a
+   current `astroprecise.pages.dev` production deployment and no custom domain
+   attached to this project. Do not create a duplicate project. The protected release
    command passes that exact branch because Wrangler can infer detached `HEAD`
    inside CI when no branch is supplied. The workflow then rejects the deployment
    unless Wrangler reports the resulting Pages environment as `production`.
@@ -133,6 +171,8 @@ Before creating the tag:
 6. Confirm the `release/*` ruleset prevents update/deletion and that the
    `cloudflare-pages` environment requires the intended reviewer.
 
+Read-only GitHub verification on 24 August 2026 found no repository rulesets and no classic branch protection. Treat both the protected release-tag ruleset and the `cloudflare-pages` reviewer environment as unproved until the owner configures and rechecks them; do not weaken the workflow to compensate.
+
 The workflow then:
 
 - validates repository, event, protected tag, tag suffix, checked-out SHA,
@@ -162,12 +202,29 @@ While signed in:
 3. Create exactly three **unpublished drafts** matching
    `website/data/products-v901.json`; do not add checkout URLs yet.
 4. Verify the total GBP price, 50% deposit, fee/tax display, required buyer
-   questions, optional early-start choice, message thread, upload limits,
+   questions, separate optional early-start and early digital-supply choices, message thread, upload limits,
    cancellation/refund controls and completion action.
-5. Use Gumroad's test-purchase feature. Do not buy your own listing with your
+   Treat all 50% wording as a draft assumption until this test proves it.
+5. For `self`, prove the subject enters their own exact details.
+6. For `gift`, prove the adult recipient—not the buyer—enters their own details,
+   receives the notice, records the exact canonical confirmation fields, pays
+   nothing and receives files by default. Prove the buyer cannot view those
+   details/files without separate recipient authorisation.
+   The canonical order must bind the exact dated immutable recipient privacy
+   notice version and SHA-256 hash; a mutable webpage link is insufficient.
+7. Prove buyer-copy authorisation starts unticked, is attributable to the
+   recipient, is optional, records wording/state/time, and can be withdrawn at any
+   time so later copies/replacements stop. Prove under-18, surprise, absent-recipient and buyer-entry paths fail.
+8. Use Gumroad's test-purchase feature. Do not buy your own listing with your
    card.
-6. Capture screenshots or exported evidence without exposing credentials or
+9. Capture screenshots or exported evidence without exposing credentials or
    customer data.
+
+If Gumroad cannot prove the two-person recipient intake, private recipient
+delivery and buyer-copy controls, keep `gift` unavailable. A later
+owner-approved first release may offer the same three SKUs in `self` mode only;
+do not approximate the gift flow with buyer-entered fields, shared links or an
+unverified add-on.
 
 Current Gumroad guidance says the 50% deposit is credited to the seller balance
 immediately and the remaining 50% is charged after the seller uploads files and
@@ -190,7 +247,7 @@ payment authority.
 
 ## 5. Test order and unit economics
 
-Use fictional data and complete the full lifecycle:
+Use fictional data and complete the full lifecycle once for `self` and once for `gift`:
 
 - pre-contract information and explicit terms acceptance;
 - optional early-performance choice stored separately;
@@ -202,6 +259,10 @@ Use fictional data and complete the full lifecycle:
 - delivery/completion record;
 - cancellation/refund exercise;
 - deletion of raw inputs and working files on the recorded due date.
+- for gift: recipient confirmation/notice, buyer attestation, recipient-default
+  delivery, buyer-copy refusal and authorised-copy/withdrawal variants;
+- gift artifact dimensions/page count, computed Moon truth label and recipient
+  objection/rejected-order route.
 
 Time each operator step. For each SKU calculate:
 
@@ -214,10 +275,12 @@ Do not call £18/£29/£39 profitable until this measured test is complete. If t
 lowest tier cannot meet the hourly floor, raise the price or remove it before
 publication; do not subsidise it with unmeasured labour.
 
+Time gift composition, dual confirmations and recipient support separately. Do not call the same-price gift mode profitable merely because the self-order timing passes.
+
 ## 6. Owner-controlled launch order
 
 1. Fill the owner decision sheet.
-2. Complete and review public legal/privacy/refund/contact pages.
+2. Complete and owner-approve the gift LIA, then review public legal/privacy/refund/contact pages.
 3. Create Cloudflare Pages project, protected environment and custom domains.
 4. Finish the adapter and fictional end-to-end seller test.
 5. Freeze and independently verify the final whole candidate; obtain S1.
@@ -253,6 +316,8 @@ make the dashboard look clean.
 - Gumroad test purchase: <https://gumroad.com/help/article/62-testing-a-purchase.html>
 - GOV.UK distance selling: <https://www.gov.uk/online-and-distance-selling-for-businesses/distance-selling>
 - ICO data-protection fee: <https://ico.org.uk/for-organisations/data-protection-fee/>
+- ICO legitimate interests: <https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/a-guide-to-lawful-basis/legitimate-interests/>
+- ICO right to be informed: <https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/the-right-to-be-informed/>
 
 Platform rules, fees and account screens can change. Recheck them while signed in
 before each irreversible or public action.
