@@ -24,6 +24,24 @@ Locked in `website/css/ap-palette-2026.css`. `--ap-brass*` names are **aliases f
 
 **Retired — never reintroduce:** engraved brass `#C2A05E`/`#CDAE6A`/`#D8B978`, warm gold `#C9A227`/`#D4AF37`, acid orange `#ff5a1f`, warm voids `#050406`/`#0D0A07`. `theme-color` is `#05080F`. Adobe share plates are type-on-engine-stills only — never Firefly planets as the live sky.
 
+### AstroPrecise Studio — Midnight Meridian v901
+
+Studio product and birthday-gift surfaces are deliberately **cool-only**. Do not use the sitewide copper action token on `shop.html`, product covers or delivered Studio gift artwork.
+
+| Studio role | Local token | Value |
+|---|---|---|
+| Deep canvas | `--studio-void` | `#040812` |
+| Raised field | `--studio-raised` | `#0A1424` |
+| Panel | `--studio-panel` | `#101D30` |
+| Paper | `--studio-paper` | `#EEF4FA` |
+| Instrument silver | `--studio-silver` | `#93A8BF` |
+| Primary ion blue | `--studio-ion` | `#8BA9FF` |
+| Gift/dedication violet | `--studio-violet` | `#A897FF` |
+| Proof/verified mint | `--studio-mint` | `#6FD0B3` |
+| Supporting cyan | `--studio-cyan` | `#79C7F2` |
+
+These local tokens live in `website/css/ap-shop-v835.css` because the Studio surface is an intentional product sub-system. No orange, warm gold or brass-coloured ribbon/device mockup is permitted. Gift art should feel like a private observatory folio: midnight field, silver instrument lines, ion/violet light and restrained mint proof marks.
+
 ## Typography
 
 - **Display/headings:** Cormorant Garamond (sitewide since ap-v500).
@@ -44,10 +62,21 @@ Bespoke engraved-SVG system, NOT a stock icon library: `js/celestial-seals.js` +
 
 1. **Honesty rule:** no fabricated data, no unlabelled sources, no unqualified accuracy claims ("roughly an arcminute, 1800–2200 CE" is the approved phrasing).
 2. Same inputs → same reading (FNV-1a/mulberry32 seeding).
-3. Everything computes in-browser; only labelled public feeds go over the network.
+3. Free chart/Observatory calculations remain in-browser; only labelled public feeds go over the network. A future Studio order is a separate, explicit private commission flow governed by the Studio privacy notice and fulfilment procedure.
 4. Bump `sw.js` `V` (`ap-vNNN`) whenever cached assets change.
 5. Nav/footer are injected single-source (`app.js` `renderNav()`, `ap-footer-inject.js`) — never hand-edit per-page nav.
 6. Before any deploy: `npm test` + the `tools/visual-check/` suite (expert-audit, user-journey, audit-a11y, homepage-contract) must be green.
+
+## Studio birthday-gift design contract
+
+- The shop contains exactly three products with two presentation modes: `self` and `gift`. Never create a fourth gift SKU or revive the retired physical gift-box/voucher imagery.
+- First-viewport controls must make both paths obvious. The full choice is a keyboard-operable radiogroup; its only remembered value is `self` or `gift` in tab-scoped `sessionStorage`.
+- Gift imagery is generated from the accepted recipient-controlled chart, not from a generic zodiac poster or synthetic planet photograph.
+- The gift package uses a standalone tagged A4 dedication jacket rendered from a 2480 × 3508 (300 ppi) source, a 1080 × 1920 phone reveal and a 2160 × 2160 computed Moon-phase plate. The Moon plate must say it is calculated for the recorded birth instant and is not a photograph. Maximum accepted names/messages must pass the wide-glyph boundary fixture before release.
+- The standalone jacket does not alter the reading PDF. Reading products remain exactly 20 pages.
+- Public examples remain fictional and conspicuously marked. Never use a real name, birth moment, dedication or reading as social proof.
+- Delivery truth belongs in the UI: adult recipient present/self-entering, recipient pays nothing, recipient receives files by default, buyer copy only through the recipient's separate unticked choice, no surprise/minor path.
+- Respect `prefers-reduced-motion`, WCAG focus visibility, 44 px touch targets and a 390 × 844 first-viewport check for the gift choice.
 
 
 ## Homepage hero & tile system (ap-v570–v574, 2026-07-03 redesign)

@@ -6,10 +6,10 @@
 .ap-plate-copy h1 { max-width: 9ch; margin: 14px 0 20px; color: var(--ap-paper); font: italic 500 clamp(54px, 7vw, 88px)/.9 var(--ap-display); letter-spacing: -.035em; }
 .ap-plate-copy > p:not(.ap-plate-kicker) { max-width: 42ch; margin: 0; color: var(--ap-paper-dim); font-size: 17px; line-height: 1.65; }
 .ap-plate-state { display: flex; gap: 10px; align-items: center; margin: 26px 0; color: var(--ap-silver); font: 10px/1.5 var(--ap-data); letter-spacing: .08em; text-transform: uppercase; }
-.ap-plate-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--ap-ember); box-shadow: 0 0 14px rgba(255, 100, 40, .6); }
+.ap-plate-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--ap-ember); box-shadow: 0 0 14px rgba(139, 169, 255, .6); }
 .ap-plate-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .ap-plate-actions a { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; padding: 0 18px; border: 1px solid var(--ap-line-strong); border-radius: 5px; color: var(--ap-paper); font-weight: 650; text-decoration: none; }
-.ap-plate-actions a:first-child { border-color: var(--ap-ember); background: var(--ap-ember); color: #170702; }
+.ap-plate-actions a:first-child { border-color: var(--ap-ember); background: var(--ap-ember); color: #07101E; }
 .ap-plate-art { margin: 0; border: 1px solid var(--ap-line-strong); border-radius: 8px; overflow: hidden; background: var(--ap-void-raised); box-shadow: var(--ap-shadow); }
 .ap-plate-art img { display: block; width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
 .ap-plate-art figcaption { padding: 14px 17px; color: var(--ap-paper-faint); font: 10px/1.6 var(--ap-data); letter-spacing: .04em; }

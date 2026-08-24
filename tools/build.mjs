@@ -51,9 +51,16 @@ function walk(dir) {
 async function minifyHtml(code) {
   // esbuild has no HTML loader; minify the inline <script> and <style> blocks only,
   // leaving the hand-written markup (and its strict script order) byte-identical.
+  // Mask comments first: prose can legitimately mention literal HTML tags and
+  // must never be mistaken for an executable inline block by the regex pass.
   const scriptRe = /(<script(?![^>]*\bsrc=)(?![^>]*\btype="application\/(ld\+json)")[^>]*>)([\s\S]*?)(<\/script>)/gi
   const styleRe = /(<style[^>]*>)([\s\S]*?)(<\/style>)/gi
-  let result = code
+  const comments = []
+  let result = code.replace(/<!--[\s\S]*?-->/g, (comment) => {
+    const token = `__APMIN_HTML_COMMENT_${comments.length}__`
+    comments.push([token, comment])
+    return token
+  })
   const jobs = []
   result = result.replace(scriptRe, (m, open, _t, body, close) => {
     if (!body.trim()) return m
@@ -68,6 +75,7 @@ async function minifyHtml(code) {
     return open + token + close
   })
   for (const [token, out] of await Promise.all(jobs)) result = result.replace(token, () => out.trim())
+  for (const [token, comment] of comments) result = result.replace(token, () => comment)
   return result
 }
 
@@ -106,6 +114,9 @@ async function run() {
       const code = readFileSync(p, 'utf8')
       htmlBefore += code.length
       const min = await minifyHtml(code)
+      if (/__APMIN_(?:JS|CSS|HTML_COMMENT)_\d+__/.test(min)) {
+        throw new Error(`HTML minify placeholder leaked: ${rel}`)
+      }
       writeFileSync(dest, min); htmlAfter += min.length
     } else {
       copyFileSync(p, dest); copied++

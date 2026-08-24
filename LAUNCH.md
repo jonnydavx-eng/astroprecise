@@ -1,74 +1,54 @@
-# AstroPrecise — Launch Readiness
+# AstroPrecise release operator sheet
 
-_Assessed 2026-06-12. Verdict: **technically ready to launch the moment it is pushed.** There is no missing backend — the architecture needs none._
+Updated: 2026-08-24
 
-## What blocks launch (one thing)
+Public v895 stays untouched until the final v901 commit has valid Coherence and
+exact-identity Cloudflare Pages evidence. Never push a `gh-pages` mirror or deploy
+from `main` as a shortcut.
 
-The push. Everything is committed locally on `main` with a matching `gh-pages` mirror staged.
+## Local proof
 
-```sh
-git -C C:\Users\jonny\OneDrive\astroprecise push origin main gh-pages
+From `C:\Users\jonny\dev\astroprecise`:
+
+```powershell
+git status --short --branch
+npm ci
+node test-release-infrastructure.mjs
+npm test
+npm run check:syntax
+npm run test:launch
+npm run test:shop
+npm run test:fulfil
+npm run build
 ```
 
-First push triggers a one-time GitHub browser sign-in (credentials then stored). The site
-is live at https://jonnydavx-eng.github.io/astroprecise/ within ~1 minute of the
-`gh-pages` push landing.
+The worktree must contain only intentional release files. Preserve the untracked
+`website/phone-audit.html`; it is not part of the deployable build.
 
-## Strongly recommended at launch (one click on GitHub)
+## Governance
 
-**Settings → Pages → Source → "GitHub Actions".** Pages currently serves the `gh-pages`
-branch; the repo already contains a workflow that deploys `website/` on every push to
-`main`. Flipping the source retires the manual mirror step forever and removes the
-failure mode where a stale mirror overwrites the live site (this happened on 2026-06-12).
+Use the clean kit at `C:\Users\jonny\dev\coherence-astro-release`. Read the
+current manifest; do not trust a copied status word. S12 must come from a distinct
+native top-level agent session. Record all declared seats against the same frozen
+commit and import signed S1 last.
 
-## Back end: none required — by design
+## Protected release
 
-| Concern | How it's handled | Cost |
-|---|---|---|
-| Hosting, TLS, CDN | GitHub Pages | £0 |
-| Birth-place search | Open-Meteo geocoder (client-side, no key) | £0 |
-| Timezones (incl. historical) | Open-Meteo `timezone=auto` + browser `Intl` tzdata | £0 |
-| Astronomy | Computed in-browser (VSOP87/ELP2000 in `ephemeris.js`) | £0 |
-| Readings/horoscopes | Deterministic, computed in-browser (`interpretations.js`, `oracle.js`) | £0 |
-| Space weather | NOAA SWPC public feeds, fetched client-side | £0 |
-| Quantum draw | ANU QRNG public API, honest hardware-entropy fallback | £0 |
-| Offline/PWA | `sw.js` versioned cache (bump `V` on cached-asset changes) | £0 |
+After the final SHA is immutable and authorised:
 
-No accounts, no database, no secrets, no server to monitor. Privacy stance (nothing
-personal leaves the browser except the typed place-search text) is a launch *feature* —
-keep stating it.
+1. Create one protected tag `release/ap-v901-<sha12>` at that exact SHA.
+2. Confirm GitHub environment `cloudflare-pages` has the intended reviewer and
+   environment-scoped Cloudflare account/token secrets.
+3. Dispatch `.github/workflows/deploy-pages.yml` from that tag with the full SHA.
+4. Approve the environment only after reviewing the displayed tag and SHA.
+5. Require the workflow to verify both the `pages.dev` URL and custom domains.
 
-### Future triggers that WOULD need a back end (none needed day one)
+Manual read-only verification:
 
-| If you want… | You'd need… | Static-friendly alternative |
-|---|---|---|
-| Accounts / charts synced across devices | Auth + DB (e.g. Supabase/Firebase) | localStorage already persists per device (natal pins do this today) |
-| Paid tiers / subscriptions | Stripe + a small server or edge functions | Stripe Payment Links (no server) for one-off gift readings |
-| Real LLM-written readings | API proxy holding the key (never ship keys client-side) | Current deterministic readings — already the honest brand position |
-| Email capture / newsletter | — | Buttondown / Formspree embed (no server) |
-| Heavy traffic on geocoding | Tiny caching proxy | Fine until real scale; Open-Meteo & Photon are generous |
+```powershell
+node tools/setup-cloudflare-release-edge.mjs --verify-public --candidate <full-sha>
+```
 
-## Optional pre-launch polish (not blocking)
-
-- [ ] **Custom domain** — buy domain → add `CNAME` file to `website/` → DNS `CNAME` to
-      `jonnydavx-eng.github.io` → set in repo Settings → Pages. Then update `og:url`,
-      `sitemap.xml`, canonicals (currently all point at github.io, which is consistent).
-- [ ] **Privacy-friendly analytics** if wanted: GoatCounter/Plausible script tag —
-      decide deliberately; current stance is "no analytics" and that is also fine.
-- [ ] Submit `sitemap.xml` to Google Search Console after the domain settles.
-- [ ] Lighthouse pass on the live URL (local serving skews scores).
-
-## Post-push verification (5 minutes)
-
-1. Hard-refresh the live URL — check `sw.js` shows the new version.
-2. Cast a chart for a small village (e.g. Skinningrove) — dropdown, timezone chip, wheel.
-3. Homepage: intro plays clean (no debug text), orrery responds; after the chart cast,
-   your Sun/Moon/ASC medallions ride the zodiac ring.
-4. Instrument page: field weather shows real Kp (never "NaN — Severe storm"),
-   Clock of the Spheres ticks, quantum draw states its provenance.
-5. 404 check: visit any bad URL → branded "Off the ecliptic" page.
-
-## Rollback
-
-`git revert` the offending commit on `main`, re-mirror `website/` → `gh-pages`, push.
-(Or with Pages-on-Actions: revert and push — done.)
+Do not create/move the tag, dispatch, approve, change domains or publish listings
+without the owner at the action point. Full account and rollback procedure:
+`docs/SHOP-LAUNCH-RUNBOOK.md`.

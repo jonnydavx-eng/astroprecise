@@ -4,6 +4,7 @@
 import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 import { mkdir, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -18,19 +19,50 @@ const PAGES = [
   { id: 'compatibility', path: '/compatibility.html' },
   { id: 'ephemeris', path: '/ephemeris.html' },
   { id: 'shop', path: '/shop.html' },
+  { id: 'deep-reading', path: '/deep-reading.html' },
+  { id: 'tonight', path: '/tonight.html' },
+  { id: 'eclipse', path: '/eclipse.html' },
+  { id: 'sky-events', path: '/sky-events.html' },
   { id: 'transits', path: '/transits.html' },
   { id: 'lifepath', path: '/lifepath.html' },
+  { id: 'links', path: '/links.html' },
+  { id: 'profile', path: '/profile.html' },
+  { id: 'saturn-return', path: '/saturn-return.html' },
+  { id: 'accuracy', path: '/accuracy.html' },
+  { id: 'angel-numbers', path: '/angel-numbers.html' },
+  { id: 'aries', path: '/aries.html' },
+  { id: 'charts', path: '/charts.html' },
+  { id: 'catalogue', path: '/catalogue.html' },
+  { id: 'contact', path: '/contact.html' },
+  { id: 'cosmic-calendar', path: '/cosmic-calendar.html' },
+  { id: 'guides', path: '/guides.html' },
+  { id: 'journey', path: '/journey.html' },
+  { id: 'moment', path: '/moment.html' },
+  { id: 'moonphase', path: '/moonphase.html' },
+  { id: 'name-numerology', path: '/name-numerology.html' },
+  { id: 'numerology', path: '/numerology.html' },
+  { id: 'privacy', path: '/privacy.html' },
+  { id: 'refunds', path: '/refunds.html' },
+  { id: 'retrograde', path: '/retrograde.html' },
+  { id: 'sample-reading', path: '/sample-reading.html' },
+  { id: 'solar-return', path: '/solar-return.html' },
+  { id: 'terms', path: '/terms.html' },
+  { id: 'rising-sign', path: '/what-is-my-rising-sign.html' },
+  { id: 'why', path: '/why.html' },
 ];
 
 async function main() {
   await mkdir(OUT, { recursive: true });
-  const browser = await chromium.launch({ headless: true });
+  const launch = { headless: true, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] };
+  const windowsChrome = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+  if (existsSync(windowsChrome)) launch.executablePath = windowsChrome;
+  const browser = await chromium.launch(launch);
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   await context.addInitScript(() => {
     try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (_) {}
     try { localStorage.setItem('ap_privacy_ack', '1'); } catch (_) {}
   });
-  const version = process.env.AP_VERSION?.replace(/^ap-v/, '') || '562';
+  const version = process.env.AP_VERSION?.replace(/^ap-v/, '') || '901';
 
   const report = { base: BASE, capturedAt: new Date().toISOString(), pages: [], issues: [] };
 
@@ -38,7 +70,7 @@ async function main() {
     const page = await context.newPage();
     const entry = { id: p.id, path: p.path, violations: [], incomplete: [] };
     try {
-      const qs = p.id === 'index' ? `?v=${version}` : '';
+      const qs = `?nosw=1&v=${version}`;
       await page.goto(`${BASE}${p.path}${qs}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.evaluate(() => {
         document.querySelectorAll('.ap-reveal').forEach((el) => el.classList.add('ap-revealed'));
@@ -53,13 +85,16 @@ async function main() {
         description: v.description,
         nodes: v.nodes.length,
         help: v.help,
+        targets: v.nodes.slice(0, 5).map((node) => ({
+          target: node.target,
+          html: node.html,
+          failureSummary: node.failureSummary,
+        })),
       }));
       entry.incomplete = results.incomplete.length;
       entry.passes = results.passes.length;
       for (const v of entry.violations) {
-        if (v.impact === 'critical' || v.impact === 'serious') {
-          report.issues.push(`${p.id}: ${v.id} (${v.impact}) — ${v.help}`);
-        }
+        report.issues.push(`${p.id}: ${v.id} (${v.impact || 'unrated'}) — ${v.help}`);
       }
     } catch (err) {
       entry.error = String(err);

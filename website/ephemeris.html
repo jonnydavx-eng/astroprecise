@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="The Sky Tonight — live Moon phase, planet positions, and today's sky mood. Add your birth details for your personal chart layer. Free, computed on your device." />
   <meta name="robots" content="index, follow" />
   <title>The Sky | AstroPrecise</title>
+  <script>window.AP_ASSET_V='901';</script>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -28,7 +29,7 @@
   <meta name="twitter:title" content="The Sky | AstroPrecise" />
   <meta name="twitter:description" content="What's in the sky tonight — Moon, planets, and a plain-language read of today's sky. Personalise with your birth details when you're ready." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#05080F" />
+  <meta name="theme-color" content="#040812" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   
@@ -52,23 +53,23 @@
   </script>
 <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=891" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=901" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=901" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=901" />
   <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/ap-page-structure.css?v=752" id="ap-css-page-structure" />
-  <link rel="stylesheet" href="css/ap-model-stage.css?v=752" id="ap-css-model-stage" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-page-structure.css?v=901" id="ap-css-page-structure" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=901" id="ap-css-model-stage" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=901" id="ap-css-structure-clean" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/ephemeris-critical.css" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
-  <link rel="stylesheet" href="css/ephemeris-page.css?v=752" />
+  <link rel="stylesheet" href="css/ephemeris-page.css?v=901" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=752" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=901" />
   <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferInstrumentFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferInstrumentFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=874" />
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferInstrumentFonts(){var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferInstrumentFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=901" />
 </head>
 <body class="page-instrument ap-cinematic-2026 ap-no-nav-enter">
 
@@ -362,7 +363,7 @@
             </defs>
             <circle cx="230" cy="230" r="215" fill="none" stroke="#A8B0BC" stroke-width="2.5" opacity="0.4"/>
           </svg>
-          <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
+          <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#EEF4FA;min-height:2.8em;line-height:1.5;"></div>
           <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
             <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168, 176, 188,0.35);color:#A8B0BC;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
             <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
@@ -576,8 +577,8 @@
   <script src="js/fieldweather.js" defer></script>
   <script src="js/oracle.js" defer></script>
   <script src="js/profile.js" defer></script>
-  <script src="js/ap-nav-model.js?v=874" defer></script>
-  <script src="js/app.js" defer></script>
+  <script src="js/ap-nav-model.js?v=901" defer></script>
+  <script src="js/app.js?v=901" defer></script>
   <script src="js/ephemeris-lazy-modules.js" defer></script>
 
   <script>
@@ -664,7 +665,7 @@
     function defaultReadout() {
       if (!current) return;
       const { slot } = current, p = P[slot.rulerKey];
-      readout.innerHTML = `Hour of <strong style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(slot.start)} – ${fmt(slot.end)}<br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
+      readout.innerHTML = `Hour of <strong data-palette-allow="physical" style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(slot.start)} – ${fmt(slot.end)}<br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
     }
     function render(t) {
       const loc = eventLoc();
@@ -694,7 +695,7 @@
       }
       const cp = current ? P[current.slot.rulerKey] : P.sun;
       s += `<text x="${CX}" y="${CY - 26}" text-anchor="middle" font-size="44" fill="${cp.c}" font-family="AstroGlyph, serif" filter="drop-shadow(0 0 10px rgba(168, 176, 188,.45))">${cp.g}︎</text>
-        <text x="${CX}" y="${CY + 8}" text-anchor="middle" font-size="13" letter-spacing="3" fill="#E8E0D0" font-family="Cinzel,serif">HOUR OF ${cp.n.replace('the ', '').toUpperCase()}</text>
+        <text x="${CX}" y="${CY + 8}" text-anchor="middle" font-size="13" letter-spacing="3" fill="#EEF4FA" font-family="Cinzel,serif">HOUR OF ${cp.n.replace('the ', '').toUpperCase()}</text>
         <text x="${CX}" y="${CY + 28}" text-anchor="middle" font-size="10" fill="#A89E88" font-family="Cormorant Garamond,serif" font-style="italic">${current ? fmt(current.slot.start) + ' – ' + fmt(current.slot.end) : ''}</text>
         <text x="${CX}" y="${CY + 46}" text-anchor="middle" font-size="9" letter-spacing="2" fill="#A89E88" font-family="Cinzel,serif">DAY OF ${P[CHALD[DAY_RULER[dow]]].n.replace('the ', '').toUpperCase()}</text>`;
       svg.innerHTML = s;
@@ -728,7 +729,7 @@
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/ap-daily-bridge.js" defer></script>
   <script src="js/ap-ai-assistant.js" defer></script>
-  <script src="js/instrument.js?v=893" defer></script>
+  <script src="js/instrument.js?v=901" defer></script>
   <script>
   (function () {
     function inject(src) {
@@ -738,7 +739,6 @@
       document.body.appendChild(s);
     }
     function idle() {
-      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
       inject('js/cosmos.js');
       inject('js/effects.js');
     }
@@ -749,6 +749,6 @@
   })();
   </script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=874" defer></script>
+  <script src="js/ap-footer-inject.js?v=901" defer></script>
 </body>
 </html>

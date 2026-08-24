@@ -396,19 +396,19 @@ console.log('\n─── PART 2 · JavaScript ON · the features still work ─�
     ok('compat · reload sent nothing personal', leaks(before).length === 0, leaks(before).join('\n          '));
   }
 
-  // ── compatibility: legacy ?p1d= link still fills, then leaves the bar ──
+  // ── compatibility: legacy ?p1d= links are stripped and rejected ──
   {
     const legacy = `${ORIGIN}/compatibility.html?p1d=${N.date}&p1t=${N.time}&p1n=${N.name}` +
       '&p1la=53.5900&p1lo=-2.2200&p1tz=Europe/London';
     await page.goto(legacy, { waitUntil: 'load' });
     await page.waitForTimeout(2500);
-    ok('compat · legacy query link still prefills person A',
-      (await page.locator('#person1-date').inputValue()) === N.date);
+    ok('compat · legacy query link does not prefill person A',
+      (await page.locator('#person1-date').inputValue()) === '');
     ok('compat · legacy query is stripped from the address bar',
       urlLeaks(page.url()).length === 0, `url=${page.url()}`);
   }
 
-  // ── compatibility: the invite link is a fragment, not a query ──
+  // ── compatibility: the invite is a clean page link, not personal state ──
   {
     await page.goto(ORIGIN + '/compatibility.html', { waitUntil: 'load' });
     await page.evaluate(([n]) => {
@@ -426,8 +426,8 @@ console.log('\n─── PART 2 · JavaScript ON · the features still work ─�
     await page.waitForTimeout(400);
     copied = await page.evaluate(() => window.__copied);
     const q = copied.split('compatibility.html')[1] || '';
-    ok('compat · invite link carries person A after the # , never the ?',
-      q.startsWith('#') && q.includes('p1d=' + N.date) && !q.includes('?'), `link tail=${q}`);
+    ok('compat · invite link carries no person data',
+      q === '' && urlLeaks(copied).length === 0, `link tail=${q}`);
   }
 
   // ── homepage cast → explorer link has no birth instant in it ──

@@ -3,15 +3,61 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#05080F">
-  <title>AstroPrecise — two birth minutes, one sky</title>
-  <meta name="description" content="Compare two birth minutes in the same live 3D sky. Birth times stay here. A place search sends only the town name to a public geocoder.">
+  <meta name="referrer" content="no-referrer">
+  <script>
+    /* Historical comparison links placed both birth records in the address.
+       Canonicalise before any external asset is discovered and re-run for an
+       old fragment link targeting an already-open document. */
+    window.APCompatibilityUrlPrivacy = (function () {
+      'use strict';
+      var SAFE_QUERY = { nosw: '1', lite: '1' };
+      var SAFE_HASH = { lead: true, 'main-content': true };
+
+      function scrub() {
+        try {
+          var incoming = new URLSearchParams(window.location.search || '');
+          var kept = new URLSearchParams();
+          incoming.forEach(function (value, key) {
+            var canonicalKey = String(key || '').toLowerCase();
+            if (!Object.prototype.hasOwnProperty.call(SAFE_QUERY, canonicalKey)) return;
+            if (String(value || '').toLowerCase() !== SAFE_QUERY[canonicalKey]) return;
+            if (!kept.has(canonicalKey)) kept.set(canonicalKey, SAFE_QUERY[canonicalKey]);
+          });
+
+          var safeHash = '';
+          var rawHash = String(window.location.hash || '').replace(/^#/, '');
+          if (rawHash) {
+            try {
+              var canonicalHash = decodeURIComponent(rawHash).toLowerCase();
+              if (SAFE_HASH[canonicalHash]) safeHash = '#' + canonicalHash;
+            } catch (_) { /* malformed or legacy fragments are discarded */ }
+          }
+
+          var search = kept.toString();
+          var next = window.location.pathname + (search ? '?' + search : '') + safeHash;
+          var current = window.location.pathname + window.location.search + window.location.hash;
+          if (next !== current) window.history.replaceState(window.history.state, '', next);
+          return true;
+        } catch (_) {
+          try { window.location.replace(window.location.pathname); } catch (__) { window.stop(); }
+          return false;
+        }
+      }
+
+      window.addEventListener('hashchange', scrub);
+      scrub();
+      return Object.freeze({ scrub: scrub });
+    })();
+  </script>
+  <meta name="theme-color" content="#040812">
+  <title>AstroPrecise — compare two birth minutes</title>
+  <meta name="description" content="Compare the measured angles between two birth minutes without a score. Birth times stay here. A place search sends only the town name to a public geocoder.">
   <link rel="canonical" href="https://astroprecise.app/compatibility.html">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="img/logo-mark.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
-  <meta property="og:title" content="AstroPrecise — two birth minutes, one sky">
-  <meta property="og:description" content="One living-sky instrument. Two birth minutes. A place search sends only the town name to a public geocoder.">
+  <meta property="og:title" content="AstroPrecise — compare two birth minutes">
+  <meta property="og:description" content="Measured chart-to-chart angles without a score. A place search sends only the town name to a public geocoder.">
   <meta property="og:url" content="https://astroprecise.app/compatibility.html">
   <meta property="og:image" content="https://astroprecise.app/img/editorial/eclipse-launch-2026-v835.jpg">
   <meta property="og:site_name" content="AstroPrecise">
@@ -19,21 +65,19 @@
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=880">
-  <script>window.AP_ASSET_V='895';</script>
-  <script type="importmap">
-    { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
-  </script>
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=895">
-  <script src="js/void-orrery-adapter.js?v=880" defer></script>
-  <script src="js/ap-nav-model.js?v=880" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880">
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=880">
-  <link rel="stylesheet" href="css/ap-couples-v858.css?v=880">
-  <link rel="stylesheet" href="css/ap-keep-sky.css?v=880">
+  <link rel="stylesheet" href="css/fonts.css?v=901">
+  <script>window.AP_ASSET_V='901';</script>
+  <!-- Adapter supplies the small byte-compatible VoidEphem utility here. With no
+       model element it does not import or start the WebGL renderer. -->
+  <script src="js/void-orrery-adapter.js?v=901" defer></script>
+  <script src="js/ap-nav-model.js?v=901" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=901">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=901">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=901">
+  <link rel="stylesheet" href="css/ap-couples-v858.css?v=901">
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=901">
 </head>
-<body class="ap-live-home page-compat">
+<body class="page-compat ap-compat-static">
   <a class="skip" href="#lead">Skip to the sky</a>
 
   <header class="site-header" role="banner" data-ap-static-nav>
@@ -66,16 +110,17 @@
       <div class="ap-live-intro">
         <div>
           <p class="ap-live-eyebrow">Two birth minutes</p>
-          <h1 class="ap-live-heading">Two minutes. One live sky.</h1>
+          <h1 class="ap-live-heading">Two minutes. One honest comparison.</h1>
         </div>
-        <p class="ap-live-copy">Two birth minutes in one live sky. Not a score. Not a gift. A and B only brighten one clock; they do not rewind the model. A clock needs a real birth time. A blank time withholds that clock. <a href="deep-reading.html">One chart’s sitting is the seven chapters</a>.</p>
-        <p class="ap-live-proof"><span>Observed</span> One 3D instrument · both clocks visible</p>
+        <p class="ap-live-copy">The measured chart-to-chart angles, without a score or a verdict. A real time and zone are needed for the Moon and time-sensitive contacts; a blank time withholds them. <a href="deep-reading.html">One chart’s sitting is the seven chapters</a>.</p>
+        <p class="ap-live-proof"><span>Computed</span> Two private minutes · one angle ledger</p>
       </div>
 
-      <div class="ap-model-stage" role="group" aria-label="Interactive live solar system" aria-busy="true">
-        <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only" aria-label="Living-sky 3D model"></void-orrery>
-        <div class="ap-model-vignette" aria-hidden="true"></div>
-        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Building the live sky</strong><em>Real positions · one 3D instrument</em></div>
+      <div class="ap-model-stage" role="group" aria-label="Authored Earth engine still">
+      <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth">
+          <img src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="(max-width: 760px) calc(100vw - 34px), 512px" width="1000" height="1000" loading="lazy" decoding="async" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
+          <span class="ap-surface-a__receipt"><span>Engine still · schematic</span><strong>Open the Observatory</strong><em>The comparison stays lightweight on this page</em></span>
+        </a>
       </div>
 
       <div class="ap-mobile-flight-deck" aria-label="3D Observatory controls">
@@ -84,13 +129,13 @@
         <label for="mobileScale"><span>Scale</span><select id="mobileScale" disabled><option value="EARTH">Earth</option><option value="INNER">Inner system</option><option value="SYSTEM" selected>Solar system</option><option value="OORT">Oort cloud</option><option value="STARS">Nearby stars</option><option value="GALAXY">Galaxy</option><option value="COSMOS">Cosmos</option></select></label>
       </div>
 
-      <aside class="ap-control-panel" aria-label="Whose minute the panel names, and the live sky">
+      <div class="ap-control-panel" aria-label="Computed comparison receipt">
         <div class="ap-model-status" aria-live="polite">
-          <span id="sky-live-status">Preparing 3D</span>
-          <span id="sky-scale-status">Solar system</span>
-          <span id="sky-time-status">Live sky · now</span>
+          <span id="sky-live-status">Comparison ready</span>
+          <span id="sky-scale-status">Measured angles</span>
+          <span id="sky-time-status">Enter both minutes</span>
         </div>
-        <p class="ap-ab-note" id="ap-ab-note">Live sky until both dates are set</p>
+        <p class="ap-ab-note" id="ap-ab-note">Both minutes stay on this device</p>
         <div class="ap-ab" role="group" aria-label="Focus whose clock is brighter">
           <button type="button" id="ab-a" disabled aria-pressed="false" aria-label="A's minute">A</button>
           <button type="button" id="ab-b" disabled aria-pressed="false" aria-label="B's minute">B</button>
@@ -136,14 +181,14 @@
             </div>
           </div>
         </div>
-      </aside>
+      </div>
     </section>
 
     <section class="ap-couples-entry" id="minutes" aria-labelledby="minutes-title">
       <div class="ap-couples-entry__inner">
         <p class="ap-live-eyebrow">Birth minutes · stay on this device</p>
         <h2 id="minutes-title">Enter both minutes.</h2>
-        <p class="standfirst">Each person needs a date, a real IANA place (not GMT), and a time for their clock. Blank time withholds that clock, Moon, and angles. Not filled with noon. Place search sends only the town name. The hash invite never uses a query string.</p>
+        <p class="standfirst">Each person needs a date, a real IANA place (not GMT), and a time for their clock. Blank time withholds that clock, Moon, and angles. Not filled with noon. Place search sends only the town name. Your pair is kept only in this tab&rsquo;s session storage, never in the address.</p>
 
         <form id="compat-form" novalidate aria-label="Two birth minutes">
           <div class="ap-couples-grid">
@@ -201,9 +246,9 @@
           </div>
 
           <div class="ap-couples-actions">
-            <button class="btn-primary" type="submit" id="compat-submit-btn">Show both in the sky</button>
-            <button class="btn-invite" type="button" id="compat-invite-btn" disabled>Copy hash invite</button>
-            <span class="action-note">Hash only · the part after # never leaves this browser for a server</span>
+            <button class="btn-primary" type="submit" id="compat-submit-btn">Compare both minutes</button>
+            <button class="btn-invite" type="button" id="compat-invite-btn" disabled>Copy clean page link</button>
+            <span class="action-note">Clean link only · names, places and birth minutes are never included</span>
           </div>
           <p id="compatError" hidden role="alert"></p>
         </form>
@@ -223,12 +268,10 @@
     <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" rel="noopener">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" rel="noopener">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></span></div>
   </footer>
 
-  <script src="js/ap-observatory-controls-v835.js?v=880" defer></script>
-  <script src="js/ap-observatory-v834.js?v=880" defer></script>
-  <script src="js/ap-nav-prefetch.js?v=880" defer data-ap-nav-prefetch="1"></script>
-  <script src="js/ap-sky-time.js?v=880" defer></script>
-  <script src="js/ap-footer-inject.js?v=880" defer></script>
-  <script src="js/ap-couples-sky.js?v=880" defer></script>
-  <script src="js/ap-keep-sky.js?v=880" defer></script>
+  <script src="js/ap-nav-prefetch.js?v=901" defer data-ap-nav-prefetch="1"></script>
+  <script src="js/ap-sky-time.js?v=901" defer></script>
+  <script src="js/ap-footer-inject.js?v=901" defer></script>
+  <script src="js/ap-couples-sky.js?v=901" defer></script>
+  <script src="js/ap-keep-sky.js?v=901" defer></script>
 </body>
 </html>

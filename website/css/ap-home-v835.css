@@ -95,14 +95,14 @@
   padding: 16px clamp(16px, 2.4vw, 32px) 18px;
   overflow: visible;
   border: 0;
-  border-top: 1px solid var(--ap-silver-a18, rgba(185, 200, 220, 0.18));
+  border-top: 1px solid var(--ap-silver-a18, rgba(201, 214, 227, 0.18));
   border-radius: 0;
   background:
     linear-gradient(180deg,
       color-mix(in srgb, var(--ap-void-raised) 78%, transparent),
       color-mix(in srgb, var(--ap-void-deep) 92%, transparent));
   box-shadow:
-    inset 0 1px 0 var(--ap-silver-a12, rgba(185, 200, 220, 0.12)),
+    inset 0 1px 0 var(--ap-silver-a12, rgba(201, 214, 227, 0.12)),
     0 -18px 48px color-mix(in srgb, var(--ap-void-deep) 35%, transparent);
   backdrop-filter: blur(18px) saturate(0.9);
   -webkit-backdrop-filter: blur(18px) saturate(0.9);
@@ -114,12 +114,12 @@
 }
 .ap-live-home .ap-model-status {
   padding-bottom: 8px;
-  border-bottom-color: var(--ap-silver-a12, rgba(185, 200, 220, 0.12));
+  border-bottom-color: var(--ap-silver-a12, rgba(201, 214, 227, 0.12));
 }
 .ap-live-home .ap-model-hint { margin: 8px 0 12px; }
 .ap-live-home .ap-control-group {
   padding: 10px 0;
-  border-bottom: 1px solid var(--ap-silver-a12, rgba(185, 200, 220, 0.12));
+  border-bottom: 1px solid var(--ap-silver-a12, rgba(201, 214, 227, 0.12));
 }
 .ap-live-home .ap-control-group--time { border-bottom: 0; padding-bottom: 0; }
 .ap-live-home .ap-flight-launch {
@@ -129,7 +129,7 @@
   align-items: center;
   margin: 14px 0 0;
   padding: 14px 0 0;
-  border-top: 1px solid var(--ap-silver-a12, rgba(185, 200, 220, 0.12));
+  border-top: 1px solid var(--ap-silver-a12, rgba(201, 214, 227, 0.12));
   border-bottom: 0;
 }
 .ap-live-home .ap-flight-launch span {
@@ -177,7 +177,7 @@
   grid-template-columns: 74px 1fr;
   gap: 11px;
   padding-top: 10px;
-  border-top: 1px solid var(--ap-silver-a12, rgba(185, 200, 220, 0.12));
+  border-top: 1px solid var(--ap-silver-a12, rgba(201, 214, 227, 0.12));
 }
 .ap-ledger > span {
   color: var(--ap-paper-faint);
@@ -213,7 +213,7 @@
   padding: 7px 8px;
   font-size: 11px;
   letter-spacing: .045em;
-  border-color: var(--ap-silver-a18, rgba(185, 200, 220, 0.18));
+  border-color: var(--ap-silver-a18, rgba(201, 214, 227, 0.18));
   background: color-mix(in srgb, var(--ap-void-raised) 55%, transparent);
 }
 .ap-live-home #dock .world-dot { width: 8px; height: 8px; }
@@ -237,7 +237,7 @@
 .ap-model-boot span {
   width: 46px;
   height: 46px;
-  border: 1px solid var(--ap-silver-a28, rgba(185, 200, 220, 0.28));
+  border: 1px solid var(--ap-silver-a28, rgba(201, 214, 227, 0.28));
   border-top-color: var(--ap-ember);
   border-radius: 50%;
   box-shadow: 0 0 32px color-mix(in srgb, var(--ap-ember) 18%, transparent);
@@ -634,13 +634,13 @@
 
 /* ── FIRST SCREEN LAW (home) ─────────────────────────────────────────
    Kill the reading-room slab: night fills the viewport; copy sits ON it;
-   one copper CTA; phone 390 full-bleed. Later rules in this sheet win. */
+   one ion CTA; phone 390 full-bleed. Later rules in this sheet win. */
 .ap-live-home.ap-reading-room {
-  --ap-void: #05080F;
-  --ap-void-deep: #05080F;
-  --ap-silver: #8FA3B8;
-  --ap-ember: #B86B4A;
-  background: #05080F;
+  --ap-void: #040812;
+  --ap-void-deep: #040812;
+  --ap-silver: #93A8BF;
+  --ap-ember: #8BA9FF;
+  background: #040812;
 }
 .ap-live-home.ap-reading-room .site-header {
   position: absolute !important; /* beats living-sky sticky !important */
@@ -666,7 +666,7 @@
   margin-top: 0;
   overflow: hidden;
   border-bottom: 0;
-  background: #05080F;
+  background: #040812;
   isolation: isolate;
 }
 .ap-live-home.ap-reading-room .ap-model-stage {
@@ -679,7 +679,7 @@
   height: 100% !important;
   min-height: 0 !important;
   border: 0;
-  background: #05080F;
+  background: #040812;
 }
 .ap-live-home.ap-reading-room .ap-model-stage void-orrery,
 .ap-live-home.ap-reading-room .ap-model-stage void-orrery canvas {
@@ -690,8 +690,8 @@
 .ap-live-home.ap-reading-room .ap-model-vignette {
   background: linear-gradient(
     0deg,
-    rgba(5, 8, 15, 0.72) 0%,
-    rgba(5, 8, 15, 0.18) 28%,
+    rgba(4, 8, 18, 0.72) 0%,
+    rgba(4, 8, 18, 0.18) 28%,
     transparent 48%
   );
 }
@@ -726,8 +726,8 @@
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #8FA3B8;
-  text-shadow: 0 2px 18px rgba(5, 8, 15, 0.9);
+  color: #93A8BF;
+  text-shadow: 0 2px 18px rgba(4, 8, 18, 0.9);
 }
 .ap-live-home.ap-reading-room .ap-live-heading {
   max-width: 12ch;
@@ -738,16 +738,16 @@
   font-style: normal;
   letter-spacing: -0.03em;
   line-height: 0.95;
-  color: #E6ECF2;
-  text-shadow: 0 8px 36px rgba(5, 8, 15, 0.85);
+  color: #EEF4FA;
+  text-shadow: 0 8px 36px rgba(4, 8, 18, 0.85);
 }
 .ap-live-home.ap-reading-room .ap-live-copy {
   max-width: 28ch;
   margin: 0 0 22px;
   font-size: 15px;
   line-height: 1.45;
-  color: rgba(230, 236, 242, 0.78);
-  text-shadow: 0 4px 20px rgba(5, 8, 15, 0.9);
+  color: rgba(238, 244, 250, 0.76);
+  text-shadow: 0 4px 20px rgba(4, 8, 18, 0.9);
 }
 .ap-live-home.ap-reading-room .ap-reading-source,
 .ap-live-home.ap-reading-room .ap-reading-more,
@@ -761,10 +761,10 @@
   justify-content: center;
   min-height: 48px;
   padding: 0 22px;
-  border: 1px solid #B86B4A;
+  border: 1px solid #8BA9FF;
   border-radius: 3px;
-  background: #B86B4A;
-  color: #05080F;
+  background: #8BA9FF;
+  color: var(--ap-cta-ink, #07101E);
   font-size: 14px;
   font-weight: 650;
   letter-spacing: 0.01em;
@@ -773,7 +773,8 @@
 }
 .ap-live-home.ap-reading-room .ap-live-intro .ap-action--primary:hover,
 .ap-live-home.ap-reading-room .ap-live-intro .ap-action--primary:focus-visible {
-  filter: brightness(1.06);
+  border-color: var(--ap-ion-hover, #A5BCFF);
+  background: var(--ap-ion-hover, #A5BCFF);
 }
 /* First screen: no HUD / flight deck competing with the night. */
 .ap-live-home.ap-reading-room:not(.is-instrument-open) .ap-control-panel,
@@ -795,7 +796,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: #E6ECF2;
+  color: #EEF4FA;
   font: inherit;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -848,19 +849,86 @@
   height: min(22vh, 200px);
   min-height: 140px;
   overflow: hidden;
-  border-bottom: 1px solid var(--ap-line, rgba(185, 200, 220, .2));
+  border-bottom: 1px solid var(--ap-line, rgba(201, 214, 227, .2));
   background: var(--ap-void-deep);
 }
 .ap-room-sky .ap-model-stage {
   position: absolute;
   inset: 0;
+  height: 100%;
   min-height: 0;
   background:
     radial-gradient(circle at 56% 48%, color-mix(in srgb, var(--ap-silver) 18%, transparent), transparent 42%),
     var(--ap-void-deep);
 }
 
-/* Sitting polish ap-v893 — copper action, silver instrument, no leftover brass. */
+/* Surface A — authored engine still. Conversion and reading pages use this
+   lightweight receipt instead of starting a second live WebGL context. */
+.ap-surface-a {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  color: var(--ap-moon, #EEF4FA);
+  text-decoration: none;
+  background: #040812;
+}
+.ap-surface-a img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: right center;
+  opacity: .82;
+  filter: saturate(.82) contrast(1.08);
+}
+.ap-surface-a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 78% 50%, rgba(147, 168, 191, .12), transparent 34%),
+    linear-gradient(90deg, rgba(4, 8, 18, .96), rgba(4, 8, 18, .58) 52%, rgba(4, 8, 18, .18));
+  pointer-events: none;
+}
+.ap-surface-a__receipt {
+  position: absolute;
+  z-index: 1;
+  left: clamp(18px, 4vw, 64px);
+  top: 50%;
+  display: grid;
+  gap: 4px;
+  max-width: min(56vw, 520px);
+  transform: translateY(-50%);
+}
+.ap-surface-a__receipt span,
+.ap-surface-a__receipt em {
+  font: 500 10px/1.4 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ap-silver, #93A8BF);
+}
+.ap-surface-a__receipt strong {
+  font: 600 clamp(21px, 3vw, 34px)/1.05 'Cormorant Garamond', Georgia, serif;
+  color: #EEF4FA;
+}
+.ap-surface-a__receipt em {
+  color: rgba(238, 244, 250, .72);
+  font-style: normal;
+  letter-spacing: .04em;
+  text-transform: none;
+}
+.ap-surface-a:focus-visible { outline: 2px solid var(--ap-ember, #8BA9FF); outline-offset: -4px; }
+
+@media (max-width: 700px) {
+  .ap-surface-a__receipt {
+    left: 18px;
+    max-width: 54vw;
+  }
+  .ap-surface-a__receipt strong { font-size: clamp(20px, 6.4vw, 28px); }
+}
+
+/* Sitting polish ap-v901 — ion action, silver instrument, cool-spectrum depth. */
 .ap-live-home.ap-reading-room .ap-reading-kicker {
   color: var(--ap-ember);
   letter-spacing: 0.22em;
@@ -886,8 +954,9 @@
 .ap-reading-room .btn-primary {
   background: var(--ap-ember);
   border-color: var(--ap-ember);
-  color: var(--ap-void-deep);
+  color: var(--ap-cta-ink, #07101E);
 }
+.ap-reading-room .btn-primary:hover { background: var(--ap-ion-hover, #A5BCFF); border-color: var(--ap-ion-hover, #A5BCFF); }
 .ap-reading-path .ap-event-ticket {
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ap-ember) 24%, transparent);
 }
@@ -899,4 +968,29 @@
   border: 1px solid var(--ap-ember);
   background: transparent;
   color: var(--ap-ember);
+}
+
+/* Keep the Earth-first viewport cheap to lay out on phones. These sections
+   retain measured space for the scroll bar while their contents stay outside
+   the initial style/layout/paint pass. */
+@media (max-width: 700px) {
+  .ap-live-home.ap-reading-room .ap-personal-entry {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 972px;
+  }
+
+  .ap-live-home.ap-reading-room .ap-event-rail {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 878px;
+  }
+
+  .ap-live-home.ap-reading-room .ap-proof-ledger {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 408px;
+  }
+
+  .ap-live-home.ap-reading-room .ap-site-footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 490px;
+  }
 }

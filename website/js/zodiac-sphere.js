@@ -25,20 +25,20 @@
     console.warn('[ZodiacSphere] AP_ZODIAC.SIGNS missing — load ap-zodiac-constants.js first');
   }
 
-  // Element colours (RGB components for easy alpha composition)
-  // Cool-brass system, low saturation — mirrors css .ap-orb ramp --c1 (retinted 2026-07-04)
+  // Midnight Meridian element semantics (RGB components for alpha composition).
+  // Fire is semantic rose; earth proof mint; air spectral violet; water cyan.
   const EL = {
-    fire:  [216, 154, 114],
-    earth: [156, 178, 126],
-    air:   [184, 192, 204],
-    water: [143, 184, 182],
+    fire:  [255, 142, 168],
+    earth: [111, 208, 179],
+    air:   [168, 151, 255],
+    water: [121, 199, 242],
   };
 
   const EL_HEX = {
-    fire: '#d89a72',
-    earth: '#9cb27e',
-    air: '#b8c0cc',
-    water: '#8fb8b6',
+    fire: '#FF8EA8',
+    earth: '#6FD0B3',
+    air: '#A897FF',
+    water: '#79C7F2',
   };
 
   function withAlpha(col, hexAlpha) {
@@ -56,10 +56,10 @@
     }
     var rgb = String(col || '').match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
     if (rgb) return 'rgba(' + rgb[1] + ',' + rgb[2] + ',' + rgb[3] + ',' + a.toFixed(3) + ')';
-    return col || 'rgba(201,162,39,' + a.toFixed(3) + ')';
+    return col || 'rgba(139,169,255,' + a.toFixed(3) + ')';
   }
 
-  // Planet dot colours — muted brass / parchment family, cool (retinted 2026-07-04)
+  // Physical planet-disc cues. These are the only intentionally warm colours in this instrument.
   const PLANETS = [
     { key: 'sun',     sym: '☉', col: '#ead79a', name: 'Sun'     },
     { key: 'moon',    sym: '☽', col: '#e6e0d2', name: 'Moon'    },
@@ -146,7 +146,7 @@
         a: Math.random() * 0.65 + 0.12,
         tw: Math.random() * Math.PI * 2,
         sp: Math.random() * 0.014 + 0.004,
-        brass: Math.random() < 0.28,
+        ion: Math.random() < 0.28,
       });
     }
   }
@@ -165,25 +165,23 @@
 
   function drawSpaceBackground() {
     syncSpaceParallax();
-    // On-system cool-void well (DESIGN.md tokens): raised mid #121826 at the
-    // centre falling to deep base #07070A at the rim — engraved-observatory
-    // backdrop, no photographic sky.
+    // Midnight Meridian void well: raised navy at centre, lunar void at the rim.
     const g = ctx.createRadialGradient(cx, cy * 0.88, 0, cx, cy, Math.max(W, H) * 0.78);
-    g.addColorStop(0, '#121826');
-    g.addColorStop(0.55, '#0E141E');
-    g.addColorStop(1, '#07070A');
+    g.addColorStop(0, '#101D30');
+    g.addColorStop(0.55, '#07101E');
+    g.addColorStop(1, '#040812');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
     const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, ringRadius() * 1.55);
-    glow.addColorStop(0, 'rgba(111, 160, 216, 0.1)');
-    glow.addColorStop(0.45, 'rgba(216, 180, 106, 0.06)');
+    glow.addColorStop(0, 'rgba(121, 199, 242, 0.12)');
+    glow.addColorStop(0.45, 'rgba(168, 151, 255, 0.07)');
     glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
     const vig = ctx.createRadialGradient(cx, cy, ringRadius() * 0.25, cx, cy, Math.max(W, H) * 0.78);
     vig.addColorStop(0, 'rgba(0,0,0,0)');
-    vig.addColorStop(0.65, 'rgba(6, 10, 16, 0.38)');
-    vig.addColorStop(1, 'rgba(6, 10, 16, 0.88)');
+    vig.addColorStop(0.65, 'rgba(4, 8, 18, 0.38)');
+    vig.addColorStop(1, 'rgba(4, 8, 18, 0.88)');
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
   }
@@ -193,10 +191,10 @@
       const alpha = s.a * (0.68 + 0.32 * Math.sin(s.tw + t * s.sp));
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      if (s.brass) {
-        ctx.fillStyle = `rgba(216, 180, 106, ${alpha * 0.95})`;
+      if (s.ion) {
+        ctx.fillStyle = `rgba(165, 188, 255, ${alpha * 0.95})`;
       } else {
-        ctx.fillStyle = `rgba(236, 230, 216, ${alpha})`;
+        ctx.fillStyle = `rgba(238, 244, 250, ${alpha})`;
       }
       ctx.fill();
     }
@@ -205,7 +203,7 @@
   function drawMeridian() {
     const R = ringRadius();
     ctx.save();
-    ctx.strokeStyle = 'rgba(216, 180, 106, 0.48)';
+    ctx.strokeStyle = 'rgba(139, 169, 255, 0.56)';
     ctx.setLineDash([4, 6]);
     ctx.lineWidth = 1.2;
     ctx.beginPath();
@@ -213,12 +211,12 @@
     ctx.lineTo(cx, cy + R * 0.42);
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(216, 180, 106, 0.9)';
+    ctx.fillStyle = 'rgba(165, 188, 255, 0.92)';
     ctx.beginPath();
     ctx.arc(cx, cy - R * 1.06, 3, 0, Math.PI * 2);
     ctx.fill();
     ctx.font = `600 ${Math.max(7, 7.5 * (W / 600))}px Inter, system-ui, sans-serif`;
-    ctx.fillStyle = 'rgba(216, 180, 106, 0.72)';
+    ctx.fillStyle = 'rgba(201, 214, 227, 0.78)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillText('TODAY', cx, cy - R * 1.14);
@@ -263,7 +261,7 @@
         ctx.lineTo(p.x, p.y);
       }
       ctx.closePath();
-      ctx.fillStyle = 'rgba(216, 180, 106, 0.035)';
+      ctx.fillStyle = `rgba(${el[0]},${el[1]},${el[2]},0.045)`;
       ctx.fill();
     }
   }
@@ -288,7 +286,7 @@
       ctx.beginPath();
       ctx.moveTo(cx + x3a * sa, cy + ya * sa);
       ctx.lineTo(cx + x3b * sb, cy + yb * sb);
-      ctx.strokeStyle = major ? 'rgba(216, 180, 106, 0.38)' : 'rgba(216, 180, 106, 0.14)';
+      ctx.strokeStyle = major ? 'rgba(147, 168, 191, 0.44)' : 'rgba(147, 168, 191, 0.16)';
       ctx.lineWidth = major ? 1.2 : 0.55;
       ctx.stroke();
     }
@@ -303,7 +301,7 @@
     drawTickMarks();
     drawOrbitalGlow();
 
-    // Outer brass ring
+    // Outer instrument ring
     ctx.beginPath();
     for (let i = 0; i <= STEPS; i++) {
       const lon = (i / STEPS) * 360;
@@ -311,7 +309,7 @@
       i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(216, 180, 106, 0.42)';
+    ctx.strokeStyle = 'rgba(139, 169, 255, 0.5)';
     ctx.lineWidth   = 1.8;
     ctx.setLineDash([]);
     ctx.stroke();
@@ -331,7 +329,7 @@
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(111, 160, 216, 0.14)';
+    ctx.strokeStyle = 'rgba(121, 199, 242, 0.16)';
     ctx.lineWidth   = 1;
     ctx.setLineDash([2, 5]);
     ctx.stroke();
@@ -342,7 +340,7 @@
     const R = ringRadius();
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    ctx.strokeStyle = 'rgba(111, 160, 216, 0.06)';
+    ctx.strokeStyle = 'rgba(121, 199, 242, 0.08)';
     ctx.lineWidth = 5;
     PLANETS.forEach((pl) => {
       if (planetLons[pl.key] == null) return;
@@ -359,10 +357,9 @@
   }
 
   function chordColor(quality) {
-    // cool-brass system: harmonious = teal-brass, challenging = muted terracotta, else brass
-    if (quality === 'h') return 'rgba(143, 184, 182, 0.82)';
-    if (quality === 'x') return 'rgba(200, 126, 94, 0.78)';
-    return 'rgba(216, 185, 120, 0.88)';
+    if (quality === 'h') return 'rgba(111, 208, 179, 0.82)';
+    if (quality === 'x') return 'rgba(255, 142, 168, 0.78)';
+    return 'rgba(168, 151, 255, 0.88)';
   }
 
   function chordGeometry(ch) {
@@ -458,7 +455,7 @@
     const by = geom.gy - 32;
     const bw = tw + 16;
     const bh = 20;
-    ctx.fillStyle = 'rgba(8, 12, 18, 0.92)';
+    ctx.fillStyle = 'rgba(7, 16, 30, 0.94)';
     ctx.strokeStyle = geom.col;
     ctx.lineWidth = 1;
     ctx.globalAlpha = 1;
@@ -467,7 +464,7 @@
     else ctx.rect(bx, by, bw, bh);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = 'rgba(236, 230, 216, 0.95)';
+    ctx.fillStyle = 'rgba(238, 244, 250, 0.95)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(label, geom.gx, by + bh / 2);
@@ -479,7 +476,7 @@
     natalMarkers.forEach((m, idx) => {
       if (m.lon == null || !isFinite(m.lon)) return;
       const pt = project(((m.lon % 360) + 360) % 360);
-      const col = m.col || '#d8b46a';
+      const col = m.col || '#A897FF';
       const isHov = hoveredNatal === idx;
       const pulse = isHov ? 1 : 0.85 + 0.15 * Math.sin(lastT * 0.002 + (m.lon || 0));
       const hg = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, (isHov ? 22 : 16) * pt.s);
@@ -500,7 +497,7 @@
       ctx.globalAlpha = 1;
       if (m.label && hoveredNatal !== idx) {
         ctx.font = `${Math.max(7, 8 * pt.s)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle = 'rgba(236, 230, 216, 0.9)';
+        ctx.fillStyle = 'rgba(238, 244, 250, 0.92)';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillText(m.label, pt.x, pt.y - sz - 3);
@@ -513,7 +510,7 @@
     const m = natalMarkers[hoveredNatal];
     if (!m || m.lon == null || !isFinite(m.lon)) return;
     const pt = project(((m.lon % 360) + 360) % 360);
-    const col = m.col || '#d8b46a';
+    const col = m.col || '#A897FF';
     const name = (m.label || 'Natal').replace(/\s*Natal\s*/i, '').trim() || 'Natal';
     const label = name + ' · ' + lonToSignName(m.lon) + ' ' + degInSign(m.lon) + '°';
     ctx.font = `500 ${Math.max(9, 10)}px Inter, system-ui, sans-serif`;
@@ -522,7 +519,7 @@
     const by = pt.y - 36 * pt.s;
     const bw = tw + 16;
     const bh = 20;
-    ctx.fillStyle = 'rgba(8, 12, 18, 0.92)';
+    ctx.fillStyle = 'rgba(7, 16, 30, 0.94)';
     ctx.strokeStyle = col;
     ctx.lineWidth = 1;
     ctx.globalAlpha = 1;
@@ -531,7 +528,7 @@
     else ctx.rect(bx, by, bw, bh);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = 'rgba(236, 230, 216, 0.95)';
+    ctx.fillStyle = 'rgba(238, 244, 250, 0.95)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(label, pt.x, by + bh / 2);
@@ -603,8 +600,8 @@
         const tw = ctx.measureText(label).width;
         const bx = pt.x - tw / 2 - 6;
         const by = pt.y - 28 * pt.s;
-        ctx.fillStyle = 'rgba(8,12,18,0.88)';
-        ctx.strokeStyle = 'rgba(201,162,39,0.45)';
+        ctx.fillStyle = 'rgba(7,16,30,0.9)';
+        ctx.strokeStyle = 'rgba(147,168,191,0.5)';
         ctx.lineWidth = 1;
         const bw = tw + 12;
         const bh = 18;
@@ -644,7 +641,7 @@
 
       // Glow for hovered / selected / natal sun sign
       if (isSel || isHov || isNatal) {
-        const [gr, gg, gb] = isSel ? [168, 176, 188] : isNatal ? [111, 160, 216] : el;
+        const [gr, gg, gb] = isSel ? [139, 169, 255] : isNatal ? [121, 199, 242] : el;
         const glow = ctx.createRadialGradient(s.x, s.y, r * 0.4, s.x, s.y, r * 2.8);
         glow.addColorStop(0, `rgba(${gr},${gg},${gb},0.40)`);
         glow.addColorStop(1, `rgba(${gr},${gg},${gb},0)`);
@@ -658,15 +655,15 @@
       ctx.beginPath();
       ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
       ctx.fillStyle = isSel
-        ? 'rgba(216, 180, 106, 0.24)'
+        ? 'rgba(139, 169, 255, 0.24)'
         : isNatal
-          ? 'rgba(111, 160, 216, 0.18)'
+          ? 'rgba(121, 199, 242, 0.18)'
           : `rgba(${el[0]},${el[1]},${el[2]},0.14)`;
       ctx.fill();
 
       // Border ring
       ctx.strokeStyle = isSel
-        ? 'rgba(201, 162, 39,0.95)'
+        ? 'rgba(139, 169, 255,0.95)'
         : isHov
           ? `rgba(${el[0]},${el[1]},${el[2]},0.85)`
           : `rgba(${el[0]},${el[1]},${el[2]},0.40)`;
@@ -674,14 +671,14 @@
       ctx.stroke();
 
       // Engraved zodiac seal (APCanvasSeals) — keyed by sign slug, not Unicode.
-      const sealCol = isSel ? '#d8b46a' : (EL_HEX[s.el] || '#d8b46a');
+      const sealCol = isSel ? '#A5BCFF' : (EL_HEX[s.el] || '#8BA9FF');
       const drewSeal = window.APCanvasSeals && (
         (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, s.key, s.x, s.y, r * 0.82, sealCol)) ||
         (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, s.key, s.x, s.y, r * 1.45))
       );
       if (!drewSeal) {
         ctx.font         = `${Math.max(8, r * 0.55)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle    = isSel ? '#d8b46a' : isHov ? sealCol : '#C8BFA6';
+        ctx.fillStyle    = isSel ? '#A5BCFF' : isHov ? sealCol : '#C9D6E3';
         ctx.textAlign    = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText((s.name || s.key || '?').charAt(0), s.x, s.y);
@@ -692,7 +689,7 @@
       if (labelFade > 0) {
         ctx.globalAlpha = alpha * Math.min(1, labelFade);
         ctx.font        = `${Math.max(8, 9.5 * s.s)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle   = isSel ? '#d8b46a' : 'rgba(200,190,165,0.9)';
+        ctx.fillStyle   = isSel ? '#A5BCFF' : 'rgba(201,214,227,0.92)';
         ctx.textAlign   = 'center';
         ctx.textBaseline = 'top';
         ctx.fillText(s.name, s.x, s.y + r + 3);
@@ -713,7 +710,7 @@
     const wA     = Math.max(0, 0.45 - waveR / (R * 5));
     ctx.beginPath();
     ctx.arc(cx, cy, waveR, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(216, 180, 106, ${wA * 0.85})`;
+    ctx.strokeStyle = `rgba(139, 169, 255, ${wA * 0.85})`;
     ctx.lineWidth   = 1.2;
     ctx.stroke();
 
@@ -733,26 +730,26 @@
       ctx.closePath();
     }
 
-    // Outer gold star
+    // Spectral-violet centre seal
     starPath(R * pulse, R * 0.38 * pulse, 8);
     const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, R * pulse);
-    grad.addColorStop(0,   '#FFF8E4');
-    grad.addColorStop(0.5, '#d8b46a');
-    grad.addColorStop(1,   '#9A7A3A');
+    grad.addColorStop(0,   '#EEF4FA');
+    grad.addColorStop(0.5, '#A5BCFF');
+    grad.addColorStop(1,   '#A897FF');
     ctx.fillStyle = grad;
     ctx.fill();
 
     // Inner star overlay (rotated 22.5°)
     ctx.rotate(Math.PI / 8);
     starPath(R * 0.55 * pulse, R * 0.22 * pulse, 8);
-    ctx.fillStyle = 'rgba(240,216,104,0.45)';
+    ctx.fillStyle = 'rgba(121,199,242,0.48)';
     ctx.fill();
 
     ctx.restore();
 
     // "BIRTH CHART" prompt below the star
     ctx.font          = `500 ${Math.max(9, 10 * (W / 600))}px Inter, system-ui, sans-serif`;
-    ctx.fillStyle     = 'rgba(201, 162, 39,0.65)';
+    ctx.fillStyle     = 'rgba(165,188,255,0.75)';
     ctx.textAlign     = 'center';
     ctx.textBaseline  = 'top';
     ctx.fillText('YOUR CHART', cx, cy + R * pulse + 9);

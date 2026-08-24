@@ -7,9 +7,18 @@
 
   if (!document.body || !document.body.classList.contains('ap-reading-room')) return;
 
-  var oracleSrc = 'js/oracle.js?v=884';
+  var oracleSrc = 'js/oracle.js?v=901';
 
   function $(id) { return document.getElementById(id); }
+
+  // Replacing identical text creates a fresh paint candidate. On Home the
+  // authored H1 already contains the default invitation, so writing the same
+  // string again after the 3D renderer becomes ready made Lighthouse report the
+  // renderer-ready timestamp as text LCP. Preserve the existing node whenever
+  // its copy is already correct; natal copy still personalises normally.
+  function setText(node, value) {
+    if (node && node.textContent !== value) node.textContent = value;
+  }
 
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
@@ -54,34 +63,37 @@
     var moon = insight && insight.meta && insight.meta.moonSign;
     var sun = insight && insight.meta && insight.meta.sunSign;
 
-    if (kicker) kicker.textContent = natal ? 'Your minute is on this device' : 'The night you were born';
-    if (title) title.textContent = natal ? 'Sit with the hour you arrived' : 'Sit with the sky first';
-    if (body) {
-      body.textContent = natal
-        ? 'Your minute is already here.'
-        : 'Earth now. Then the minute you arrived.';
-    }
+    setText(kicker, natal ? 'Your minute is on this device' : 'The night you were born');
+    setText(title, natal ? 'Sit with the hour you arrived' : 'Sit with the sky first');
+    setText(body, natal
+      ? 'Your minute is already here.'
+      : 'Earth now. Then the minute you arrived.');
     if (source) {
       var signs = [];
       if (moon) signs.push('Moon in ' + moon);
       if (sun) signs.push('Sun in ' + sun);
-      source.textContent = natal
+      setText(source, natal
         ? 'From the chart saved on this device. Astrology is symbolic, not a scientific claim.'
         : (signs.length ? signs.join(' · ') + '. Computed here. Cast a chart to read this hour against your birth.'
-          : 'Positions computed on this device. Astrology is offered for reflection, not as fact.');
+          : 'Positions computed on this device. Astrology is offered for reflection, not as fact.'));
     }
   }
 
   function run() {
+    if (run.started) return;
+    run.started = true;
     var natal = savedChart();
     paint(null, natal);
+    // Home has no source caption, and the oracle output only feeds that
+    // caption. Keep the sitting copy without loading an unused engine.
+    if (!$('ap-reading-source')) return;
     loadScript(oracleSrc).then(function () {
       if (!window.AstroOracle || typeof window.AstroOracle.getDailyInsight !== 'function') return;
       var insight = window.AstroOracle.getDailyInsight(natal, new Date());
       paint(insight, natal);
     }).catch(function () {
       var source = $('ap-reading-source');
-      if (source) source.textContent = 'The reading engine is unavailable. The model below is still the live sky.';
+      setText(source, 'The reading engine is unavailable. The model below is still the live sky.');
     });
   }
 

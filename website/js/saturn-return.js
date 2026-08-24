@@ -162,30 +162,30 @@
     var title = (name ? name + ' — ' : '') + ORD[r.n] + ' Saturn Return';
     var css =
       '@page{size:A4;margin:0}' +
-      'body{margin:0;background:#07070A;color:#E8E0D0;font-family:"Cormorant Garamond",Georgia,serif;}' +
-      '.page{position:relative;width:210mm;min-height:296mm;box-sizing:border-box;padding:26mm 24mm;background:#07070A;}' +
-      '.page::before{content:"";position:absolute;inset:8mm;border:1px solid rgba(216,180,106,.42);pointer-events:none}' +
-      '.page::after{content:"";position:absolute;inset:9.4mm;border:1px solid rgba(216,180,106,.15);pointer-events:none}' +
-      '.seal{text-align:center;color:#d8b46a;font-size:20pt;margin:0 0 6pt}' +
-      '.eyebrow{text-align:center;font-family:"Cinzel",serif;font-size:8pt;letter-spacing:.42em;text-transform:uppercase;color:#A89E88;margin:0 0 14pt}' +
-      'h1{font-family:"Cinzel",serif;font-size:26pt;line-height:1.12;text-align:center;color:#f2ecdf;margin:0 0 4pt;font-weight:700}' +
-      '.glyph{text-align:center;font-size:30pt;color:#d8b46a;margin:6pt 0 2pt}' +
+      'body{margin:0;background:#040812;color:#EEF4FA;font-family:"Cormorant Garamond",Georgia,serif;}' +
+      '.page{position:relative;width:210mm;min-height:296mm;box-sizing:border-box;padding:26mm 24mm;background:#040812;}' +
+      '.page::before{content:"";position:absolute;inset:8mm;border:1px solid rgba(139,169,255,.48);pointer-events:none}' +
+      '.page::after{content:"";position:absolute;inset:9.4mm;border:1px solid rgba(147,168,191,.2);pointer-events:none}' +
+      '.seal{text-align:center;color:#A897FF;font-size:20pt;margin:0 0 6pt}' +
+      '.eyebrow{text-align:center;font-family:"Cinzel",serif;font-size:8pt;letter-spacing:.42em;text-transform:uppercase;color:#93A8BF;margin:0 0 14pt}' +
+      'h1{font-family:"Cinzel",serif;font-size:26pt;line-height:1.12;text-align:center;color:#EEF4FA;margin:0 0 4pt;font-weight:700}' +
+      '.glyph{text-align:center;font-size:30pt;color:#A5BCFF;margin:6pt 0 2pt}' +
       'p{font-size:11.5pt;line-height:1.62;margin:0 0 9pt}' +
       '.sat-lead{font-size:12.5pt}' +
-      '.sat-lead::first-letter,p.dropcap::first-letter{font-family:"Cinzel",serif;font-size:32pt;line-height:.78;float:left;padding:3pt 7pt 0 0;color:#d8b46a}' +
-      'strong{color:#f2ecdf;font-weight:600}em{color:#d8b46a}' +
-      '.sat-orn{display:flex;align-items:center;gap:10pt;color:#d8b46a;margin:15pt 0}' +
-      '.sat-orn::before,.sat-orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(216,180,106,.5),transparent)}' +
+      '.sat-lead::first-letter,p.dropcap::first-letter{font-family:"Cinzel",serif;font-size:32pt;line-height:.78;float:left;padding:3pt 7pt 0 0;color:#A897FF}' +
+      'strong{color:#EEF4FA;font-weight:600}em{color:#A5BCFF}' +
+      '.sat-orn{display:flex;align-items:center;gap:10pt;color:#A5BCFF;margin:15pt 0}' +
+      '.sat-orn::before,.sat-orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(139,169,255,.52),transparent)}' +
       '.sat-orn span{font-size:8.5pt;letter-spacing:.34em}' +
-      '.sat-list{list-style:none;padding:0;margin:6pt 0}.sat-list li{font-size:10.5pt;padding:4pt 0;border-bottom:1px solid rgba(216,180,106,.14)}' +
-      '.sat-note{font-size:9pt;color:#A89E88;font-style:italic;margin-top:14pt}' +
-      '.foot{position:absolute;left:24mm;right:24mm;bottom:12mm;display:flex;justify-content:space-between;font-family:"Cinzel",serif;font-size:7pt;letter-spacing:.2em;text-transform:uppercase;color:#8C8678}';
+      '.sat-list{list-style:none;padding:0;margin:6pt 0}.sat-list li{font-size:10.5pt;padding:4pt 0;border-bottom:1px solid rgba(147,168,191,.18)}' +
+      '.sat-note{font-size:9pt;color:#93A8BF;font-style:italic;margin-top:14pt}' +
+      '.foot{position:absolute;left:24mm;right:24mm;bottom:12mm;display:flex;justify-content:space-between;font-family:"Cinzel",serif;font-size:7pt;letter-spacing:.2em;text-transform:uppercase;color:#93A8BF}';
     var body = readingBody(data, idx, name).replace('class="sat-lead"', 'class="sat-lead dropcap"');
     return '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
       '<title>' + title + '</title>' +
       '<link rel="stylesheet" href="css/fonts.css">' +
       '<style>' + css + '</style></head><body><div class="page">' +
-      '<div class="seal"><span class="eng-star-mark" style="color:var(--gold);width:1.2em;height:1.2em;"></span></div>' +
+      '<div class="seal"><span class="eng-star-mark" style="color:#A897FF;width:1.2em;height:1.2em;"></span></div>' +
       '<p class="eyebrow">Astro Precise · The Saturn Return</p>' +
       '<h1>The Return of<br>Saturn</h1>' +
       '<div class="glyph">♄</div>' +

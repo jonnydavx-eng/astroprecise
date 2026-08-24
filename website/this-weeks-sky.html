@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="This week's sky: exact Moon phases, planet sign changes, retrograde stations and exact aspects — computed in your browser from real astronomy." />
   <title>This Week's Sky — Moon Phases, Ingresses &amp; Stations</title>
@@ -27,12 +27,12 @@
   <meta name="twitter:title" content="This Week's Sky | AstroPrecise" />
   <meta name="twitter:description" content="The week's Moon phases, ingresses, stations and exact aspects — computed in your browser from real astronomy." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#05080F" />
+  <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/weekly-sky-page.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=891" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=901" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=901" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=901" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <!-- static, not deferred: events render immediately on load (no user gesture gates them) -->
@@ -61,7 +61,7 @@
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — This Week's Sky","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"isAccessibleForFree":true,"description":"A privacy-first weekly sky calendar: exact Moon phases, planet sign ingresses, retrograde stations and exact aspects, computed entirely in your browser from real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/this-weeks-sky.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How are this week's sky events computed?","acceptedAnswer":{"@type":"Answer","text":"Every event is solved numerically in your browser from the VSOP87 planetary theory and the ELP2000 lunar theory — the week is scanned for Moon-phase instants, sign ingresses, retrograde stations and exact aspects, then each event time is refined by bisection. Nothing is fetched from a server and nothing about you is sent anywhere."}},{"@type":"Question","name":"How accurate are the event times?","acceptedAnswer":{"@type":"Answer","text":"Moon-phase instants are good to a few minutes. Ingress and station times for the outer planets ride truncated series, so they are shown as approximate — right to within hours, occasionally a day for Pluto. The week itself is anchored to UTC so every visitor sees the same list; only the displayed clock times are converted to your local zone."}},{"@type":"Question","name":"Why does a week sometimes look quiet?","acceptedAnswer":{"@type":"Answer","text":"Because some weeks are quiet. The page reports what the sky is actually doing rather than padding the list with minor contacts — if there is no ingress, station or tight aspect, it says so."}}]}</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=874" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=901" />
 </head>
 <body class="ap-no-nav-enter page-weekly-sky">
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -258,7 +258,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
-  <script src="js/ap-deep-link.js?v=834" defer></script>
+  <script src="js/ap-deep-link.js?v=901" defer></script>
   <script src="js/ephemeris.js"></script>
 <script>
   (function () {
@@ -361,7 +361,7 @@
                 if (!isNaN(t.getTime())) {
                   modelHref = (window.APDeepLink && APDeepLink.buildSkyLink)
                     ? APDeepLink.buildSkyLink({ m: t, focus: bodyId || undefined })
-                    : 'index.html#m=' + encodeURIComponent(t.toISOString()) +
+                    : 'index.html#m=' + encodeURIComponent(t.toISOString()) + '&public=1' +
                       (bodyId ? ('&focus=' + encodeURIComponent(bodyId)) : '');
                 }
               } catch (eM) { modelHref = ''; }
@@ -433,8 +433,8 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-page-boot.js?v=901" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=874" defer></script>
+  <script src="js/ap-footer-inject.js?v=901" defer></script>
 </body>
 </html>

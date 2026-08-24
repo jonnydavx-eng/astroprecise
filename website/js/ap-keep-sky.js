@@ -78,18 +78,18 @@
     var y0 = h - band;
 
     ctx.save();
-    ctx.fillStyle = 'rgba(12, 16, 22, 0.78)';
+    ctx.fillStyle = 'rgba(7, 16, 30, 0.82)';
     ctx.fillRect(0, y0, w, band);
 
     ctx.textBaseline = 'top';
-    ctx.fillStyle = '#A8B0BC';
+    ctx.fillStyle = '#93A8BF';
     ctx.font = '600 ' + labelSize + 'px "IBM Plex Mono", ui-monospace, monospace';
     ctx.fillText(SURFACE_A, pad, y0 + pad * 0.55);
 
     var body = context
       ? caption(context)
       : 'Observatory still \u00b7 current view \u00b7 schematic stamp only.';
-    ctx.fillStyle = '#ECE6D8';
+    ctx.fillStyle = '#EEF4FA';
     ctx.font = '500 ' + bodySize + 'px "IBM Plex Mono", ui-monospace, monospace';
     var lines = wrapLines(ctx, body, w - pad * 2);
     var lineH = bodySize * 1.35;

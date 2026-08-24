@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // make-brand-icons.mjs — regenerate the full favicon/app-icon set from the
-// v576 brand SVGs. Run from anywhere: node tools/make-brand-icons.mjs
+// v900 Midnight Meridian SVGs. Run from anywhere: node tools/make-brand-icons.mjs
 //
 // Sources:  website/favicon.svg        (32px-optimized derivation, no ticks)
 //           website/img/logo-mark.svg  (large master, full detail)
 // Outputs:  website/favicon-16.png     (star + centre dot only — no ring)
 //           website/favicon-32.png, website/favicon-48.png
 //           website/favicon.ico        (16 + 32 + 48, BMP-encoded entries)
-//           website/img/apple-touch-icon.png (180, mark ~80% on solid #0C1016)
+//           website/img/apple-touch-icon.png (180, mark ~80% on solid lunar void)
 //           website/img/icon-192.png / icon-512.png (mark ~80%, solid void)
 //           website/img/icon-maskable-512.png (mark ~62% — maskable safe zone)
 //
@@ -15,7 +15,7 @@
 // this machine). ICO entries are classic BMP (BITMAPINFOHEADER + AND mask)
 // for maximum compatibility (Safari/SERP/legacy).
 import { createRequire } from 'module';
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -25,7 +25,7 @@ const { chromium } = require('playwright');
 const { PNG } = require('pngjs');
 
 const SITE = path.join(__dirname, '..', 'website');
-const VOID = '#08080b';
+const VOID = '#040812';
 
 const faviconSvg = readFileSync(path.join(SITE, 'favicon.svg'), 'utf8');
 const masterSvg = readFileSync(path.join(SITE, 'img', 'logo-mark.svg'), 'utf8');
@@ -34,11 +34,20 @@ const masterSvg = readFileSync(path.join(SITE, 'img', 'logo-mark.svg'), 'utf8');
 // diamonds — at 16px the ring collides with the star and reads as mush.
 const favicon16Svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect width="64" height="64" rx="13" fill="${VOID}"/>
-  <path fill="#ECE6D8" d="M32 8 L34.68 25.53 L42.96 21.04 L38.47 29.32 L56 32 L38.47 34.68 L42.96 42.96 L34.68 38.47 L32 56 L29.32 38.47 L21.04 42.96 L25.53 34.68 L8 32 L25.53 29.32 L21.04 21.04 L29.32 25.53 Z"/>
-  <circle cx="32" cy="32" r="4" fill="#CDAE6A"/>
+  <path fill="#EEF4FA" d="M32 8 L34.68 25.53 L42.96 21.04 L38.47 29.32 L56 32 L38.47 34.68 L42.96 42.96 L34.68 38.47 L32 56 L29.32 38.47 L21.04 42.96 L25.53 34.68 L8 32 L25.53 29.32 L21.04 21.04 L29.32 25.53 Z"/>
+  <circle cx="32" cy="32" r="4" fill="#A897FF"/>
 </svg>`;
 
-const browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
+const chromeCandidates = process.platform === 'win32' ? [
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  path.join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+] : [];
+const systemChrome = chromeCandidates.find((candidate) => candidate && existsSync(candidate));
+const browser = await chromium.launch({
+  ...(systemChrome ? { executablePath: systemChrome } : {}),
+  args: ['--enable-unsafe-swiftshader'],
+});
 
 async function renderSvg(svg, size, { transparent = false, scale = 1 } = {}) {
   const page = await browser.newPage({ viewport: { width: size, height: size }, deviceScaleFactor: 1 });

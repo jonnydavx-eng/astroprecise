@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Planetary transits today — live positions and retrogrades computed on your device. The real sky news: weather report of the sky, not prophecy." />
   <title>Planetary Transits — the real sky news | AstroPrecise</title>
@@ -27,20 +27,28 @@
   <meta name="twitter:title" content="Planetary Transits — the real sky news | AstroPrecise" />
   <meta name="twitter:description" content="Live positions and retrogrades on-device. The real sky news — weather report of the sky, not prophecy." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#05080F" />
+  <meta name="theme-color" content="#040812" />
+  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="css/ap-site-polish.css?v=901" as="style" />
+  <link rel="preload" href="css/ap-logo-aurora.css?v=901" as="style" />
+  <link rel="preload" href="css/ap-visual-clarity.css?v=901" as="style" />
+  <link rel="preload" href="css/ap-model-stage.css?v=901" as="style" />
+  <link rel="preload" href="css/ap-page-structure.css?v=901" as="style" />
+  <link rel="preload" href="css/ap-brand-nebula.css?v=901" as="style" />
+  <link rel="preload" href="css/ap-engine-visuals.css?v=901" as="style" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=891" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=901" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=901" id="ap-css-atlas-tokens" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=901" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/celestial-seals.css" />
   <link rel="stylesheet" href="css/transits-page.css" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=752" />
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=752" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=901" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=901" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=901" />
   <style>
     body.page-transits{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     .page-transits .navbar__nav{min-height:44px;}
@@ -60,11 +68,9 @@
     .page-transits .ap-orb--sm{width:1.4em;height:1.4em;}
     .page-transits #daily-transit-card{min-height:0;}
     .page-transits #transits-period{min-height:1.5rem;}
-    html.ap-audit-path .page-transits #daily-transit-card{min-height:280px;margin-bottom:1.5rem;}
   </style>
-  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
   <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferTransitsFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferTransitsFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferTransitsFonts(){var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferTransitsFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -500,8 +506,6 @@
   <!-- Inline init script: live date badge -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      var ua = navigator.userAgent || '';
-      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(ua)) return;
       var tsEl = document.getElementById('sky-timestamp');
       if (!tsEl) return;
       var now = new Date();
@@ -644,7 +648,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
       tryPopulate();
     });
   })();
@@ -756,7 +759,6 @@
       try { render(buildWindows()); } catch (e) { /* fallback text stays visible */ }
     }
     function start() {
-      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
       if (window.requestIdleCallback) { requestIdleCallback(tryBuild, { timeout: 4000 }); }
       else { setTimeout(tryBuild, 900); }
     }
@@ -769,9 +771,6 @@
   <!-- JS — ephemeris/oracle on defer; cosmos + heavy chart libs idle after load -->
   <script>
   (function () {
-    function audit() {
-      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
-    }
     function injectSeq(list, idx) {
       if (idx >= list.length) return;
       var s = document.createElement('script');
@@ -779,16 +778,6 @@
       s.onload = function () { injectSeq(list, idx + 1); };
       s.onerror = function () { injectSeq(list, idx + 1); };
       document.body.appendChild(s);
-    }
-    if (audit()) {
-      injectSeq([
-        'js/profile.js',
-        'js/oracle.js',
-        'js/daily-transit.js',
-        'js/ap-daily-bridge.js',
-        'js/ap-ai-assistant.js',
-      ], 0);
-      return;
     }
     injectSeq([
       'js/profile.js',
@@ -805,9 +794,6 @@
   </script>
   <script>
   (function () {
-    function audit() {
-      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
-    }
     function inject(src) {
       var s = document.createElement('script');
       s.src = src;
@@ -815,12 +801,10 @@
       document.body.appendChild(s);
     }
     function idleHeavy() {
-      if (audit()) return;
-      inject('js/chart-render.js');
+      inject('js/chart-render.js?v=901');
       inject('js/ap-load-interpretations.js');
     }
     function idleCosmos() {
-      if (audit()) return;
       inject('js/cosmos.js');
       inject('js/effects.js');
     }
@@ -1172,8 +1156,8 @@
     }
   })();
   </script>
-  <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=874" defer></script>
+  <script src="js/ap-page-boot.js?v=901" defer></script>
+  <script src="js/ap-footer-inject.js?v=901" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

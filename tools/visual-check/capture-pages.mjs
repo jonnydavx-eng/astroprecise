@@ -21,17 +21,27 @@ async function launchBrowser(options) {
 }
 
 const PAGES = [
-  { id: 'index', path: '/?lite=1', wait: 'h1.hero__h1, .hero__h1', note: 'Home lite shell LCP', requireStarfield: false },
+  { id: 'index', path: '/?nosw=1', wait: '#ap-reading-title', note: 'Home real WebGL shell', requireStarfield: false },
   { id: 'chart', path: '/chart.html', wait: '#chart-form, .chart-form, form', note: 'Birth chart form + wheel mount', requireStarfield: false },
   { id: 'horoscope', path: '/horoscope.html', wait: '.horoscope-hero, .section__title, main', note: 'Daily horoscope hub', requireStarfield: false },
-  { id: 'compatibility', path: '/compatibility.html', wait: 'main, .compat', note: 'Synastry / match UI' },
+  { id: 'compatibility', path: '/compatibility.html', wait: 'main, .compat', note: 'Synastry / match UI', requireStarfield: false },
   { id: 'ephemeris', path: '/ephemeris.html', wait: '#orrery-canvas, .instrument, main', note: 'Sky instrument + ephemeris' },
   { id: 'lifepath', path: '/lifepath.html', wait: 'main, form', note: 'Life path numerology' },
   { id: 'shop', path: '/shop.html', wait: 'main, .shop', note: 'Shop / readings', requireStarfield: false },
   { id: 'sign-aries', path: '/aries.html', wait: '.sign-hero, main', note: 'Sign page template', requireStarfield: false },
   { id: 'moonphase', path: '/moonphase.html', wait: 'main', note: 'Moon phase tool' },
   { id: 'angel-numbers', path: '/angel-numbers.html', wait: 'main', note: 'Synchronicity clock' },
+  { id: 'numerology', path: '/numerology.html', wait: 'main', note: 'Numerology route index', requireStarfield: false },
+  { id: 'name-numerology', path: '/name-numerology.html', wait: 'main', note: 'Name numerology instrument' },
+  { id: 'why', path: '/why.html', wait: 'main', note: 'Trust and accuracy narrative' },
+  { id: 'cosmic-calendar', path: '/cosmic-calendar.html', wait: 'main', note: 'Deep-time instrument', requireStarfield: false },
+  { id: 'journey', path: '/journey.html', wait: 'main', note: 'Space-and-time story', requireStarfield: false },
+  { id: 'privacy', path: '/privacy.html', wait: 'main', note: 'Privacy and trust surface', requireStarfield: false },
 ];
+
+function versioned(path) {
+  return `${BASE}${path}${path.includes('?') ? '&' : '?'}v=${Date.now()}`;
+}
 
 async function snap(page, name) {
   const path = join(OUT, `${name}.png`);
@@ -72,8 +82,9 @@ async function main() {
     page.setDefaultTimeout(15000);
     const entry = { id: p.id, path: p.path, note: p.note, ok: true };
     try {
-      await page.goto(`${BASE}${p.path}?v=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.goto(versioned(p.path), { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.waitForSelector(p.wait, { timeout: 12000 }).catch(() => {});
+      await page.evaluate(() => document.fonts?.ready || Promise.resolve()).catch(() => {});
       await page.waitForTimeout(800);
       entry.state = await readPageState(page);
       entry.shot = await snap(page, p.id);
@@ -97,12 +108,12 @@ async function main() {
   }
 
   // Hero (post-intro) — index with intro skipped
-  console.log('[capture-pages] hero-entered: /?lite=1');
+  console.log('[capture-pages] hero-entered: /?nosw=1');
   const heroPage = await context.newPage();
   heroPage.setDefaultTimeout(15000);
-  const hero = { id: 'hero-entered', path: '/?lite=1', note: 'Lite home shell with orrery mount' };
+  const hero = { id: 'hero-entered', path: '/?nosw=1', note: 'Real Home shell with orrery mount' };
   try {
-    await heroPage.goto(`${BASE}/?lite=1&v=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await heroPage.goto(versioned('/?nosw=1'), { waitUntil: 'domcontentloaded', timeout: 30000 });
     await heroPage.waitForSelector('#orr canvas, #orrery-canvas', { state: 'attached', timeout: 20000 });
     await heroPage.waitForTimeout(1500);
     hero.state = await readPageState(heroPage);

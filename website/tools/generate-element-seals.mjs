@@ -9,16 +9,18 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = join(__dirname, '..', 'assets', 'images', 'seals', 'elements');
 
-const GOLD = '#c9a227';
-const GOLD_LIGHT = '#efe3c0';
-const INK = '#1a1208';
+// Legacy constant names are retained to keep the engraving templates readable,
+// but their values are the v900 Midnight Meridian production tokens.
+const GOLD = '#8BA9FF';
+const GOLD_LIGHT = '#EEF4FA';
+const INK = '#040812';
 
 const ACCENTS = {
-  fire: '#e05a3a',
-  earth: '#5e8a4a',
-  air: '#a78bba',
-  water: '#3f7d76',
-  all: '#c9a227',
+  fire: '#FF8EA8',
+  earth: '#6FD0B3',
+  air: '#A897FF',
+  water: '#79C7F2',
+  all: '#8BA9FF',
 };
 
 /** Flat-top hex plate path (viewBox 0 0 96 112). */
@@ -27,18 +29,28 @@ const HEX =
 const HEX_INNER =
   'M48 14 L78 32 L78 80 L48 98 L18 80 L18 32 Z';
 
+function lockStrokeScale(svg) {
+  // vector-effect is not inherited from a parent <g>. Put it on every
+  // primitive so the 22–28px navigation seals retain crisp optical weight.
+  return svg.replace(
+    /<(path|line|circle|ellipse|rect)\b/g,
+    '<$1 vector-effect="non-scaling-stroke"',
+  );
+}
+
 function wrapHex(title, accent, inner) {
-  return `<?xml version="1.0" encoding="UTF-8"?>
+  return lockStrokeScale(`<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 112" role="img" aria-label="${title}">
+  <title>${title}</title>
   <defs>
     <radialGradient id="plate" cx="38%" cy="26%" r="78%">
-      <stop offset="0%" stop-color="#2a2218"/>
-      <stop offset="55%" stop-color="#120e0a"/>
-      <stop offset="100%" stop-color="#050406"/>
+      <stop offset="0%" stop-color="#17263B"/>
+      <stop offset="55%" stop-color="#0A1424"/>
+      <stop offset="100%" stop-color="#040812"/>
     </radialGradient>
     <radialGradient id="sheen" cx="32%" cy="22%" r="55%">
-      <stop offset="0%" stop-color="#fff" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#EEF4FA" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#EEF4FA" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <path d="${HEX}" fill="url(#plate)"/>
@@ -53,7 +65,7 @@ function wrapHex(title, accent, inner) {
   <g fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
     ${inner}
   </g>
-</svg>`;
+</svg>\n`);
 }
 
 const ELEMENTS = {

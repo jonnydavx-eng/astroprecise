@@ -1,7 +1,8 @@
 /**
  * Astro Precise — Personal Sky bridge (Stage 2–3).
  * Chart/moment → index.html deep link + optional home orrery handoff.
- * Uses APDeepLink.buildSkyLink() for the H1 #m= contract.
+ * Uses APDeepLink.stashSkyLink() for personal moments. Computed public
+ * astronomical events use APDeepLink.buildSkyLink() at their own emitters.
  */
 (function () {
   'use strict';
@@ -11,6 +12,75 @@
     Mars: 'mars', Jupiter: 'jupiter', Saturn: 'saturn',
     Uranus: 'uranus', Neptune: 'neptune', Pluto: 'pluto'
   };
+
+  var SAFE_FOCUS = {
+    earth: 1, sun: 1, moon: 1, mercury: 1, venus: 1, mars: 1,
+    jupiter: 1, saturn: 1, uranus: 1, neptune: 1, pluto: 1
+  };
+
+  function isSafeFocus(value) {
+    return Object.prototype.hasOwnProperty.call(SAFE_FOCUS, value);
+  }
+
+  function observatoryBase(value) {
+    var raw = value != null ? String(value) : 'index.html';
+    var hashAt = raw.indexOf('#');
+    if (hashAt !== -1) raw = raw.slice(0, hashAt);
+    var queryAt = raw.indexOf('?');
+    var path = queryAt === -1 ? raw : raw.slice(0, queryAt);
+    path = path.replace(/^\.\//, '').replace(/^\/+/, '');
+    if (path.toLowerCase() !== 'index.html') path = 'index.html';
+
+    var kept = new URLSearchParams();
+    if (queryAt !== -1) {
+      try {
+        var incoming = new URLSearchParams(raw.slice(queryAt + 1));
+        incoming.forEach(function (valuePart, keyPart) {
+          var key = String(keyPart || '').toLowerCase();
+          if ((key === 'nosw' || key === 'lite') && String(valuePart) === '1' && !kept.has(key)) {
+            kept.set(key, '1');
+          }
+        });
+      } catch (e) { /* malformed query: fail closed to the local route */ }
+    }
+    var query = kept.toString();
+    return 'index.html' + (query ? '?' + query : '');
+  }
+
+  /**
+   * Fail-closed route for personal moments. This intentionally does not accept
+   * a moment value. It is also the compatibility path for a missing or stale
+   * APDeepLink helper, so an old cached builder can never publish birth data.
+   */
+  function personalFocusLink(opts) {
+    opts = opts || {};
+    // Keep this implementation self-contained. Both methods on APDeepLink may
+    // come from an older cached asset, so neither helper is trusted to choose
+    // the visible address for a personal birth-minute handoff.
+    var base = observatoryBase(opts.base);
+    var parts = [];
+    var focus = opts.focus ? String(opts.focus).toLowerCase() : '';
+    if (isSafeFocus(focus)) parts.push('focus=' + encodeURIComponent(focus));
+    if (opts.scale != null && opts.scale !== '') {
+      var scale = String(opts.scale);
+      if (/^-?\d+$/.test(scale)) parts.push('scale=' + encodeURIComponent(scale));
+    }
+    return parts.length ? base + '#' + parts.join('&') : base;
+  }
+
+  function stashPersonalMoment(opts) {
+    if (window.APDeepLink && typeof window.APDeepLink.stashSkyLink === 'function') {
+      try {
+        // Invoke the helper only for its same-tab storage side effect. Never
+        // trust its returned address: an older cached helper can expose a
+        // literal, case-varied, or percent-encoded moment key (or even return
+        // an unsafe scheme). Rebuild the visible route locally from the small
+        // allow-list of non-personal navigation fields below.
+        window.APDeepLink.stashSkyLink(opts);
+      } catch (e) { /* storage/helper unavailable: fail closed below */ }
+    }
+    return personalFocusLink(opts);
+  }
 
   function esc(s) {
     return String(s == null ? '' : s)
@@ -49,7 +119,7 @@
   }
 
   /**
-   * Birth moment as UTC ISO for explore #m= receiver.
+   * Birth moment as UTC ISO for the private same-tab receiver.
    * Date-only → UTC noon (same discipline as ap-scale-ladder).
    * @param {object} chart
    * @returns {string|null}
@@ -88,43 +158,31 @@
     var m = chartMomentIso(chart) || 'now';
     // stashSkyLink, not buildSkyLink: this moment is a birth minute. It goes to
     // index.html in sessionStorage, so the link the visitor can see, copy and
-    // paste carries only the focus body. Falls back to the fragment builder on
-    // an old cached ap-deep-link.js or where storage is blocked.
-    if (window.APDeepLink && window.APDeepLink.stashSkyLink) {
-      return window.APDeepLink.stashSkyLink({
-        m: m,
-        focus: opts.focus || 'earth',
-        scale: opts.scale,
-        base: opts.base
-      });
-    }
-    if (window.APDeepLink && window.APDeepLink.buildSkyLink) {
-      return window.APDeepLink.buildSkyLink({
-        m: m,
-        focus: opts.focus || 'earth',
-        scale: opts.scale,
-        base: opts.base
-      });
-    }
-    return 'index.html#m=' + encodeURIComponent(m) + '&focus=earth';
+    // paste carries only the focus body. If storage or the helper is missing,
+    // the model opens without the private minute instead of publishing it.
+    return stashPersonalMoment({
+      m: m,
+      focus: opts.focus || 'earth',
+      scale: opts.scale,
+      base: opts.base
+    });
   }
 
   /**
    * @param {string} dateVal YYYY-MM-DD
-   * @param {{ focus?: string }} [opts]
+   * @param {{ focus?: string, scale?: number|string, base?: string }} [opts]
    * @returns {string}
    */
   function buildLinkFromDate(dateVal, opts) {
     opts = opts || {};
     var m = dateOnlyMomentIso(dateVal) || 'now';
     // Date-only, but it is still a BIRTH date — same channel as the full chart.
-    if (window.APDeepLink && window.APDeepLink.stashSkyLink) {
-      return window.APDeepLink.stashSkyLink({ m: m, focus: opts.focus || 'earth' });
-    }
-    if (window.APDeepLink && window.APDeepLink.buildSkyLink) {
-      return window.APDeepLink.buildSkyLink({ m: m, focus: opts.focus || 'earth' });
-    }
-    return 'index.html#m=' + encodeURIComponent(m) + '&focus=earth';
+    return stashPersonalMoment({
+      m: m,
+      focus: opts.focus || 'earth',
+      scale: opts.scale,
+      base: opts.base
+    });
   }
 
   function isHomeOrreryLive() {
@@ -231,16 +289,16 @@
   }
 
   /**
-   * Emit ap-sky-ready for moment freeze / share closure (no home orrery drive).
+   * Emit ap-sky-ready for a user-entered life moment (no home orrery drive).
+   * Births, meetings, weddings, memorials and custom moments are personal even
+   * when the visitor chooses to make a card; their instant never enters a URL.
    * @param {object} moment from moment-page computeMoment()
    * @returns {{ m: string, link: string }|null}
    */
   function emitMomentSkyReady(moment) {
     if (!moment || !moment.utc) return null;
     var iso = moment.utc.toISOString ? moment.utc.toISOString() : String(moment.utc);
-    var link = (window.APDeepLink && window.APDeepLink.buildSkyLink)
-      ? window.APDeepLink.buildSkyLink({ m: iso, focus: 'earth' })
-      : 'index.html#m=' + encodeURIComponent(iso) + '&focus=earth';
+    var link = stashPersonalMoment({ m: iso, focus: 'earth' });
     try {
       document.dispatchEvent(new CustomEvent('ap-sky-ready', {
         bubbles: true,

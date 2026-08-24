@@ -4,12 +4,14 @@
  */
 import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BASE = process.argv[2] || 'http://localhost:8790';
 const OUT = join(__dirname, 'out', 'perf');
+const WINDOWS_CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
 const PAGES = [
   { id: 'index', path: '/?lite=1' },
@@ -18,7 +20,9 @@ const PAGES = [
 
 async function main() {
   await mkdir(OUT, { recursive: true });
-  const browser = await chromium.launch({ headless: true });
+  const launch = { headless: true, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] };
+  if (existsSync(WINDOWS_CHROME)) launch.executablePath = WINDOWS_CHROME;
+  const browser = await chromium.launch(launch);
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   await context.addInitScript(() => {
     try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (_) {}

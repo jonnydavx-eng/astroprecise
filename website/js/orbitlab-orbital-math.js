@@ -77,7 +77,7 @@ export function keplerGuidePoints(elements, sceneRadius, segments = 96) {
     const x = x2 * cO - y2 * sO;
     const y = x2 * sO + y2 * cO;
     const z = z2;
-    pts.push({ x, y: y * 0.35, z: -y }); // match scenePos ecliptic flattening
+    pts.push({ x, y: z * 0.35, z: -y }); // ecliptic (x,y,z) -> scene (x,z*0.35,-y)
   }
   return pts;
 }

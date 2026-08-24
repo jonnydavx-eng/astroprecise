@@ -7,15 +7,20 @@ import { readFile, stat } from 'node:fs/promises'
 import { join, extname, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { dirname } from 'node:path'
+import { brotliCompress, gzip } from 'node:zlib'
+import { promisify } from 'node:util'
 
 const DIST = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist')
 const PORT = process.env.PORT || 8796
+const compressBr = promisify(brotliCompress)
+const compressGzip = promisify(gzip)
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2',
   '.ico': 'image/x-icon', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml',
 }
+const COMPRESSIBLE = new Set(['.html', '.js', '.css', '.json', '.svg', '.txt', '.xml'])
 
 createServer(async (req, res) => {
   try {
@@ -27,7 +32,20 @@ createServer(async (req, res) => {
     let body
     try { body = await readFile(file) }
     catch { res.writeHead(404, TYPES['.html']); body = await readFile(join(DIST, '404.html')).catch(() => 'Not found'); res.end(body); return }
-    res.writeHead(200, { 'Content-Type': TYPES[extname(file).toLowerCase()] || 'application/octet-stream' })
+    const extension = extname(file).toLowerCase()
+    const headers = { 'Content-Type': TYPES[extension] || 'application/octet-stream' }
+    const accepted = String(req.headers['accept-encoding'] || '')
+    if (body.length >= 1024 && COMPRESSIBLE.has(extension)) {
+      if (/\bbr\b/.test(accepted)) {
+        body = await compressBr(body)
+        headers['Content-Encoding'] = 'br'
+      } else if (/\bgzip\b/.test(accepted)) {
+        body = await compressGzip(body)
+        headers['Content-Encoding'] = 'gzip'
+      }
+      if (headers['Content-Encoding']) headers.Vary = 'Accept-Encoding'
+    }
+    res.writeHead(200, headers)
     res.end(body)
   } catch (e) { res.writeHead(500).end(String(e)) }
 }).listen(PORT, () => console.log(`dist/ served on http://localhost:${PORT}`))

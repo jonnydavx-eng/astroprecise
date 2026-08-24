@@ -18,7 +18,7 @@
     if (document.querySelector('link[href*="ap-living-sky-v834.css"],link[href*="ap-footer-v835.css"]')) return;
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = new URL('css/ap-footer-v835.css?v=880', document.baseURI).href;
+    link.href = new URL('css/ap-footer-v835.css?v=901', document.baseURI).href;
     link.dataset.apFooterStyles = '835';
     (document.head || document.documentElement).appendChild(link);
   }
@@ -62,6 +62,7 @@
       + '</div>'
       + '<div class="ap-site-footer__colophon">'
       +   '<span>&copy; ' + new Date().getFullYear() + ' AstroPrecise</span>'
+      +   '<span><a href="shop.html#support">Support the free Observatory</a> · voluntary, no feature unlock</span>'
       +   '<span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" target="_blank" rel="noopener noreferrer">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · Pluto: <a href="https://science.nasa.gov/resource/pluto-global-color-map/" target="_blank" rel="noopener noreferrer">NASA/JHUAPL/SwRI</a></span>'
       + '</div>';
   }

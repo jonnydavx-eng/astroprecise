@@ -12,15 +12,17 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', 'assets', 'images', 'seals');
 
-const GOLD = '#c9a227';
-const GOLD_LIGHT = '#efe3c0';
-const INK = '#1a1208';
+// Legacy constant names are retained to keep the engraving templates readable,
+// but their values are the v900 Midnight Meridian production tokens.
+const GOLD = '#8BA9FF';
+const GOLD_LIGHT = '#EEF4FA';
+const INK = '#040812';
 
 const ELEMENT_ACCENTS = {
-  fire: '#e05a3a',
-  earth: '#5e8a4a',
-  air: '#a78bba',
-  water: '#3f7d76',
+  fire: '#FF8EA8',
+  earth: '#6FD0B3',
+  air: '#A897FF',
+  water: '#79C7F2',
 };
 
 const SIGN_ELEMENT = {
@@ -33,18 +35,28 @@ const SIGN_ELEMENT = {
 const HEX = 'M48 6 L86 28 L86 84 L48 106 L10 84 L10 28 Z';
 const HEX_INNER = 'M48 14 L78 32 L78 80 L48 98 L18 80 L18 32 Z';
 
+function lockStrokeScale(svg) {
+  // vector-effect is not inherited from a parent <g>. Put it on every
+  // primitive so the 22–28px navigation seals retain crisp optical weight.
+  return svg.replace(
+    /<(path|line|circle|ellipse|rect)\b/g,
+    '<$1 vector-effect="non-scaling-stroke"',
+  );
+}
+
 function wrapHex(title, accent, inner, extraDefs = '') {
-  return `<?xml version="1.0" encoding="UTF-8"?>
+  return lockStrokeScale(`<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 112" role="img" aria-label="${title}">
+  <title>${title}</title>
   <defs>
     <radialGradient id="plate" cx="38%" cy="26%" r="78%">
-      <stop offset="0%" stop-color="#2a2218"/>
-      <stop offset="55%" stop-color="#120e0a"/>
-      <stop offset="100%" stop-color="#050406"/>
+      <stop offset="0%" stop-color="#17263B"/>
+      <stop offset="55%" stop-color="#0A1424"/>
+      <stop offset="100%" stop-color="#040812"/>
     </radialGradient>
     <radialGradient id="sheen" cx="32%" cy="22%" r="55%">
-      <stop offset="0%" stop-color="#fff" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#EEF4FA" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#EEF4FA" stop-opacity="0"/>
     </radialGradient>
     ${extraDefs}
   </defs>
@@ -60,7 +72,7 @@ function wrapHex(title, accent, inner, extraDefs = '') {
   <g fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
     ${inner}
   </g>
-</svg>`;
+</svg>\n`);
 }
 
 const ZODIAC = {
@@ -248,7 +260,7 @@ const INSTRUMENTS = {
   lifepath: `<g stroke="${GOLD}" stroke-width="1.8">
     <path d="M48 30c-12 14-12 32 0 46 12-14 12-32 0-46z" fill="${INK}" fill-opacity="0.3"/>
     <path d="M40 56h16M44 48h8M42 64h12" stroke-width="1.3" stroke="${GOLD_LIGHT}" opacity="0.65"/>
-    <text x="48" y="60" text-anchor="middle" fill="${GOLD_LIGHT}" font-family="Cinzel,serif" font-size="14" opacity="0.85">∞</text>
+    <path d="M36 56c3.5-7 8.5-7 12 0s8.5 7 12 0c-3.5-7-8.5-7-12 0s-8.5 7-12 0" stroke="${GOLD_LIGHT}" stroke-width="1.5" opacity="0.85"/>
   </g>`,
   instrument: `<g stroke="${GOLD}" stroke-width="1.8">
     <path d="M32 78V42l16-12 16 12v36" fill="${INK}" fill-opacity="0.25"/>
@@ -297,8 +309,14 @@ for (const [slug, art] of Object.entries(PLANETS)) {
   await writeFile(join(ROOT, 'planets', `${slug}.svg`), wrapHex(title, GOLD, art));
 }
 
+const INSTRUMENT_TITLES = {
+  instrument: 'Celestial instrument seal',
+  lifepath: 'Life Path instrument seal',
+};
+
 for (const [slug, art] of Object.entries(INSTRUMENTS)) {
-  const title = slug.charAt(0).toUpperCase() + slug.slice(1) + ' instrument seal';
+  const title = INSTRUMENT_TITLES[slug]
+    || slug.charAt(0).toUpperCase() + slug.slice(1) + ' instrument seal';
   await writeFile(join(ROOT, 'instruments', `${slug}.svg`), wrapHex(title, GOLD, art));
 }
 

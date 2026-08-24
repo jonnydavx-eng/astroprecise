@@ -43,6 +43,20 @@ window.AstroShop = (() => {
 
   const CART_KEY = 'ap_cart';
 
+  // Saved profiles are user-controlled local data. Keep sign labels and seal
+  // paths on a closed vocabulary so a future catalogue reactivation cannot
+  // turn a poisoned profile into markup or an attribute injection.
+  const ZODIAC_SIGNS = Object.freeze({
+    aries: 'Aries', taurus: 'Taurus', gemini: 'Gemini', cancer: 'Cancer',
+    leo: 'Leo', virgo: 'Virgo', libra: 'Libra', scorpio: 'Scorpio',
+    sagittarius: 'Sagittarius', capricorn: 'Capricorn', aquarius: 'Aquarius',
+    pisces: 'Pisces',
+  });
+
+  function canonicalSign(value) {
+    return ZODIAC_SIGNS[String(value == null ? '' : value).trim().toLowerCase()] || '';
+  }
+
   // ── Focus-trap helper (shared by cart drawer + quick-view modal) ─────────
   // Keeps Tab/Shift+Tab cycling inside `container` while a dialog is open, and
   // marks the rest of the page inert so screen-reader + keyboard users can't
@@ -231,9 +245,9 @@ window.AstroShop = (() => {
   function chartLabel(c) {
     if (!c) return '';
     const bits = [
-      c.sunSign && `☉ ${esc(c.sunSign)}`,
-      c.moonSign && `☽ ${esc(c.moonSign)}`,
-      c.risingSign && `↑ ${esc(c.risingSign)}`,
+      canonicalSign(c.sunSign) && `☉ ${canonicalSign(c.sunSign)}`,
+      canonicalSign(c.moonSign) && `☽ ${canonicalSign(c.moonSign)}`,
+      canonicalSign(c.risingSign) && `↑ ${canonicalSign(c.risingSign)}`,
     ].filter(Boolean);
     return bits.join('   ·   ');
   }
@@ -247,10 +261,10 @@ window.AstroShop = (() => {
     const c = savedChart();
     if (!c) return '';
     const seals = (sign) => {
-      if (!sign) return '';
-      const Z = (window.AP_ZODIAC && window.AP_ZODIAC.SIGN_SLUG) || {};
-      const slug = Z[sign] || sign.toLowerCase().replace(/\s+/g,'');
-      return `<img src="assets/images/seals/zodiac/${slug}.svg" alt="${esc(sign)}" width="22" height="22" loading="lazy" />`;
+      const label = canonicalSign(sign);
+      if (!label) return '';
+      const slug = label.toLowerCase();
+      return `<img src="assets/images/seals/zodiac/${slug}.svg" alt="${label}" width="22" height="22" loading="lazy" />`;
     };
     const big3 = `
       <span class="shop-mini-seal" title="Sun">${seals(c.sunSign)}<small>☉</small></span>

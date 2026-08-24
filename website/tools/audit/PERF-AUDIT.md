@@ -1,5 +1,9 @@
 # AstroPrecise Performance Audit
 
+> **Historical ap-v399 snapshot — not current release evidence.** Preserve this file as an implementation record only.
+> For the v900 candidate and its honest Home/CLS exceptions, use the root `STATUS.md` and
+> `tools/visual-check/out/lighthouse/production/` reports. Do not quote the scores below as current.
+
 **Last updated:** 2026-06-17  
 **Preview server:** `node tools/serve-preview.mjs` → `http://127.0.0.1:8790` (brotli + gzip + lite shell rewrite)  
 **SW cache version:** `ap-v399`
@@ -32,7 +36,7 @@ Run Lighthouse against the gzip preview — production Cloudflare gzip should ma
 
 **Strategy:** 7 KB HTML shell, `lite-critical.css` only blocking, orrery via `lite-orrery.js` + early `ephemeris.js` (`modulepreload`), WebGL gated on interaction, below-fold via `lite-shell-boot.js`.
 
-**Recent baseline:** 100/100/100/100 mobile (local :8790).
+**Historical ap-v399 baseline:** 100/100/100/100 mobile (local :8790 at that time).
 
 ---
 
@@ -273,7 +277,7 @@ node tools/serve-preview.mjs 8790
 | ~~Horoscope blocking `ap-page-bridge.css` (first-nav VT)~~ | Low | ✅ Wave 20 (parity with chart/compat; idle defer removed) |
 | ~~Tier C LH + axe — `transits.html`, `lifepath.html`~~ | Medium | ✅ Wave 19 (perf ≥80, a11y 100, CLS reserves on transits ticker) |
 | ~~Visual regression baseline refresh (Wave 19 sweep)~~ | Low | ✅ Wave 19 (`visual-check/baseline/` updated post–horoscope CLS + tier C) |
-| ~~Production LH CI — expand to 10-page batch (+transits, +lifepath)~~ | Medium | ✅ Wave 21 (`lighthouse-production.mjs` 10 URLs; `audit-a11y.mjs` +2 pages; perf ≥85 gate unchanged; **all 10 LH pass**) |
+| ~~Production LH CI — expand to 10-page batch (+transits, +lifepath)~~ | Medium | ✅ Historical Wave 21 result (`lighthouse-production.mjs` 10 URLs; `audit-a11y.mjs` +2 pages; all 10 passed the then-current gate; not a v900 claim) |
 | ~~Transits axe — `aria-prohibited-attr` (ticker `role=marquee`) + color-contrast (39 nodes)~~ | Medium | ✅ Wave 24 (sr-only ticker status, palette contrast, moonphase/retrograde parity) |
 
 ### Ephemeris Lighthouse a11y flake

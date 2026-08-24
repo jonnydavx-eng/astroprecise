@@ -86,12 +86,12 @@ for (const privateValue of ['1990-08-12', '12:00', 'Europe/London', 'dateOfBirth
 const editionSource = read('./website/js/ap-eclipse-edition-v841.js');
 for (const contract of [
   "reading.gateSale || reading.quiet",
-  "isCheckoutReady(EDITION_PRODUCT)",
+  "isEntitlementReady(EDITION_PRODUCT)",
   "canvas.toBlob",
   "link.download",
   "window.open('', '_blank')",
   "print()",
-  "No manual review and no birth data leaves this browser",
+  "This event edition is closed to new purchases",
   "rememberEditionContext",
   "loadEditionContext",
   "Checkout is closed.",
@@ -101,6 +101,12 @@ for (const contract of [
 }
 assert.equal(editionSource.includes('<strong>Checkout is live.</strong>'), false,
   'dormant branch must not claim checkout is live');
+assert.equal(editionSource.includes('data-edition-buy'), false,
+  'archived edition must not render a buy action');
+assert.equal(editionSource.includes('openCheckout('), false,
+  'archived edition runtime must not route to checkout');
+assert.equal(editionSource.includes('Buy Your Eclipse Edition'), false,
+  'archived edition must not advertise the expired offer');
 assert.equal(/searchParams|getParameterByName|[?&]license=/.test(editionSource), false,
   'edition must not unlock from a query-string licence');
 
@@ -151,7 +157,7 @@ assert.ok(natalPage.includes('Moon approximate'));
 const editionSrc = read('./website/js/ap-eclipse-edition-v841.js');
 assert.equal(editionSrc.includes('Unique high-resolution eclipse artwork'), false,
   'locked upsell must not sell eclipse artwork after natal-wheel rebrand');
-assert.ok(editionSrc.includes('Unique high-resolution natal-wheel plate'));
+assert.match(editionSrc, /unique high-resolution natal-wheel plate/i);
 const gumroadHtml = read('./outreach-exports/gumroad/your-eclipse-edition-description.html');
 assert.equal(/eclipse chart artwork/.test(gumroadHtml), false,
   'Gumroad HTML must not promise eclipse chart artwork');

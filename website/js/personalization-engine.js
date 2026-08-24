@@ -12,6 +12,16 @@
 
 (function () {
   const hasProfile = () => !!(window.AstroProfile && typeof window.AstroProfile.getCharts === 'function');
+  const ZODIAC_SIGNS = Object.freeze({
+    aries: 'Aries', taurus: 'Taurus', gemini: 'Gemini', cancer: 'Cancer',
+    leo: 'Leo', virgo: 'Virgo', libra: 'Libra', scorpio: 'Scorpio',
+    sagittarius: 'Sagittarius', capricorn: 'Capricorn', aquarius: 'Aquarius',
+    pisces: 'Pisces',
+  });
+
+  function canonicalSign(value) {
+    return ZODIAC_SIGNS[String(value == null ? '' : value).trim().toLowerCase()] || '';
+  }
 
   function getPrimaryChart() {
     if (!hasProfile()) return null;
@@ -25,9 +35,9 @@
 
   function getBig3(chart) {
     if (!chart) return '';
-    const sun = chart.sunSign || chart.sun || '';
-    const moon = chart.moonSign || chart.moon || '';
-    const asc = chart.risingSign || chart.asc || chart.ascendant || '';
+    const sun = canonicalSign(chart.sunSign || chart.sun);
+    const moon = canonicalSign(chart.moonSign || chart.moon);
+    const asc = canonicalSign(chart.risingSign || chart.asc || chart.ascendant);
     const parts = [];
     if (sun) parts.push('☉ ' + sun);
     if (moon) parts.push('☽ ' + moon);
@@ -52,7 +62,14 @@
     const name = getName(chart);
     const welcome = document.getElementById('personal-welcome');
     if (welcome) {
-      welcome.innerHTML = `Welcome back, ${esc(name)} — ${big3}. <a href="transits.html" class="hero-personal-link">See your transits</a>`;
+      const link = document.createElement('a');
+      link.href = 'transits.html';
+      link.className = 'hero-personal-link';
+      link.textContent = 'See your transits';
+      welcome.replaceChildren(
+        document.createTextNode(`Welcome back, ${name} — ${big3}. `),
+        link
+      );
       welcome.hidden = false;
       welcome.setAttribute('aria-label', `Personalized greeting using your saved chart: ${big3}`);
       if (!prefersReduced()) {
@@ -83,18 +100,23 @@
 
     const big3 = getBig3(chart);
     const name = getName(chart);
-    const sun = chart.sunSign || chart.sun || '';
+    const sun = canonicalSign(chart.sunSign || chart.sun);
 
     // Hero eyebrow + added personal note
     const eyebrow = document.getElementById('shop-personal-eyebrow');
     if (eyebrow) {
-      eyebrow.textContent = `Personalised for ${esc(name)} — ${big3}`;
+      eyebrow.textContent = `Personalised for ${name} — ${big3}`;
     }
 
     const note = document.getElementById('shop-personal-note');
     if (note) {
-      const sunHint = sun ? `Sun in ${esc(sun)}` : '';
-      note.innerHTML = `Your ${sunHint ? sunHint + ' ' : ''}sky powers every piece. <a href="chart.html">Update chart</a>`;
+      const link = document.createElement('a');
+      link.href = 'chart.html';
+      link.textContent = 'Update chart';
+      note.replaceChildren(
+        document.createTextNode(`Your ${sun ? `Sun in ${sun} ` : ''}sky powers every piece. `),
+        link
+      );
       note.hidden = false;
       if (!prefersReduced()) note.classList.add('ap-rise-in', 'ap-micro-press');
     }
@@ -105,7 +127,7 @@
       lede.dataset.personalized = '1';
       const span = document.createElement('span');
       span.className = 'personal-note';
-      span.textContent = ` Tailored to ${esc(name)}.`;
+      span.textContent = ` Tailored to ${name}.`;
       // append safely
       if (lede.lastChild && lede.lastChild.nodeType === 3) {
         lede.appendChild(span);
@@ -120,12 +142,6 @@
     }
 
     return true;
-  }
-
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   // ── Generic entry point (called by boots + storage) ───────────────────────

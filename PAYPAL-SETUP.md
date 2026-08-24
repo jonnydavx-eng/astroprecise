@@ -1,55 +1,48 @@
-# PayPal Direct — Owner Setup Guide
+# PayPal product setup — retired for v900; remains retired for v901
 
-*Created 2026-07-02 when Lemon Squeezy was dropped (they would not onboard the store). The site is already fully wired for PayPal — every step below is a paste-a-link job, no code. Until you paste links, every product honestly shows "coming soon" + email capture; nothing is broken and no dead checkout ever opens.*
+Updated: 2026-08-24
 
-## What the site does now
+## Do not follow the old product-link instructions
 
-- **Checkout = link OUT to PayPal-hosted pages** (GitHub Pages ToS-compliant — the sale happens on paypal.com, same pattern as before).
-- After any buy click, the shop shows the **two-step follow-up**: "Step 1 — pay on PayPal · Step 2 — send your birth details" linking to that product's Typeform. If the buyer closes it, a reminder appears on their next shop visit (7-day window, on-device only).
-- The Two Skies post-purchase 50% offer now works as a **pre-filled discounted PayPal.Me amount link** — it only appears once you set your PayPal.Me handle (honesty rule: no discount we can't grant).
+The former 13-SKU PayPal plan is not the v901 offer. Do not paste payment links into `AP_MON`, enable dormant catalogue entries, restore email-capture fallbacks or describe the old catalogue as ready for sale. The only launch offer is the checkout-closed three-product Gumroad Commission catalogue in `website/data/products-v901.json`.
 
-## Step 1 — PayPal Business account (~10 min)
+The current public v895 site and checkout-closed v901 candidate have:
 
-You need a **Business** account (payment links are Business-only). If yours is personal: log in → Settings (gear) → **Upgrade to a Business account** → business type "Sole trader / Individual". Confirm your bank account.
+- free sky, chart and seven-chapter reading tools;
+- one external voluntary-support link to Ko-fi;
+- no product checkout linked from AstroPrecise and no current Studio SKU; Ko-fi currently offers one-time and optional monthly support, with no AstroPrecise product or feature entitlement;
+- a legacy Gumroad Eclipse listing that is still externally reachable and marked in stock, plus its entitlement path for existing buyers. It is not archived until the owner makes it unavailable and the direct URL is rechecked.
 
-## Step 2 — Create one payment link per product (~30 min for all 13)
+## Owner checklist for voluntary support
 
-1. Log in at paypal.com → Business dashboard → **Pay & Get Paid → Pay Links and Buttons** (or go straight to **https://www.paypal.com/buttons/**).
-2. **Create** → single-item payment link → **Fixed price**.
-3. Product name = the exact SKU name (this is how you'll know what was bought), price, currency **GBP**. Leave tax/shipping 0 for PDFs; add P&P on the two print items if you charge it.
-4. **Build It** → copy the link (`https://www.paypal.com/ncp/payment/XXXXXXXX`).
-5. If the builder offers **Auto-Return / redirect after payment**, point it at `https://astroprecise.app/shop.html?thanks=1` (nice-to-have; the two-step modal covers buyers regardless).
-6. Repeat per product. Suggested names + prices are already in `website/js/app.js` (AP_MON.commerce.products).
+Before deploying the Ko-fi support surface:
 
-## Step 3 — Paste the links (5 min)
+1. Sign in to the intended Ko-fi creator account and verify the public identity is AstroPrecise.
+2. Confirm the payout destination and the connected PayPal or Stripe account.
+3. Confirm the public one-time and monthly options, displayed amount and currency, recurring-payment notice and cancellation controls.
+4. Confirm neither option promises a product, feature unlock, membership tier or supporter-only entitlement.
+5. Supply the required business/service address and review the current Privacy, Terms, Refunds and Contact pages.
+6. Deploy only an independently verified, owner-authorised release, then test one real low-value support journey, verify the payout appears in the intended account and cancel any test recurrence immediately.
 
-Open `website/js/app.js` and paste each link into its product's **`fulfilUrl`** (every one is currently `''` with a `← paste` comment). Also fill the four top-level fields:
+Never place account credentials, API keys, webhook secrets, payment emails or licence keys in this repository.
 
-| Field | Which link |
-|---|---|
-| `deepReadingUrl` + `reportUrl` | Deep Reading (£12) |
-| `posterUrl` | Natal Poster PDF |
-| `giftUrl` | Gift a Reading |
-| `AP_MON.paypal.me` | Your PayPal.Me URL, e.g. `'https://paypal.me/YourHandle'` (enables the Two Skies discount offer) |
+## A future paid product is a separate launch
 
-Pasting a link instantly makes that SKU live (price shows, Add to basket works). Leave any SKU `''` and it stays honestly dormant. Then commit + push `main` (deploys in ~2 min) and hard-refresh.
+A paid chart, reading, art file or physical item needs a fresh commercial scope with:
 
-*(Alternative: put the links in `tools/commerce-urls.json` and run `node tools/wire-ap-mon.mjs`.)*
+- a named product and deliverable that already exists;
+- an approved price and currency;
+- fulfilment, refund, tax/VAT and customer-support ownership;
+- an appropriate Merchant of Record or seller-account review;
+- a service address and current legal copy;
+- privacy-safe checkout and return behavior;
+- end-to-end purchase, fulfilment, refund and accessibility tests;
+- a new correctly scoped release wave.
 
-## Step 4 — Smoke test (do this before announcing)
+Do not reactivate the dormant 13-SKU code as a shortcut.
 
-Buy the cheapest product yourself with a real card: pay → confirm the "send your birth details" modal appears → submit the Typeform → confirm the sale shows in PayPal Activity with the right product name → refund yourself.
+## Hosting caveat
 
-## Fulfilment loop (unchanged)
+The v901 release path uses Cloudflare Pages, which applies the repository's `_headers` file. The protected build stamps the exact candidate SHA into `dist/_headers`; verify CSP, HSTS, frame, referrer, permissions and candidate-identity headers on the immutable deployment URL and both custom domains before launch. Meta tags alone cannot provide the full policy.
 
-Each sale = PayPal email + Activity entry (product name, buyer name + email). Buyer's birth details arrive via the product's Typeform (they're asked to include their PayPal transaction ID). Generate with `node tools/generate-reading.mjs --in order.json --final` as before.
-
-## ⚠ Things Lemon Squeezy did that are now on you
-
-- **VAT**: LS was merchant of record. You are now the seller. UK: nothing owed below the **£90,000**/12-month registration threshold. **EU caveat**: automated digital downloads to EU consumers technically owe that country's VAT from the FIRST sale (Non-Union OSS). Your readings are **manually prepared per order**, which arguably takes them outside the "electronically supplied services" definition — but confirm that judgement with an accountant, or geo-limit sales to the UK. Income goes on Self Assessment either way.
-- **PayPal risk note**: PayPal treats fortune-telling/psychic services as a restricted/high-risk category on some payment methods. Keep product descriptions framed as **astrology reports for insight/entertainment** (the site already does this), keep delivery terms clear, and **withdraw your balance regularly** (PayPal can hold funds up to 180 days in a dispute).
-- No automatic file delivery / license keys — your manual fulfilment flow already covers this.
-
-## Guardrail (do not change)
-
-`checkout.paypalClientId` in app.js stays `''` while the site is on GitHub Pages — on-site PayPal Buttons would put the sale ON the site, which breaches the Pages ToS. It becomes an option only after a Cloudflare Pages move.
+No seller-account mutation, payment-link creation, push or deployment is authorized by this file.

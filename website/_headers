@@ -1,18 +1,26 @@
-# AstroPrecise — Cloudflare Pages response headers (deployed with the static site).
-# ⚠ INERT ON GITHUB PAGES (the current host — Server: GitHub.com ignores _headers).
-# Nothing user-facing may promise a CSP while we're on GitHub Pages; this file
-# becomes live only after a move to Cloudflare Pages. Note also: the AI panel
-# accepts a free-text BYOK endpoint, so if this CSP ever goes live its
-# connect-src allowlist (api.openai.com / openrouter.ai) will silently block
-# custom endpoints — widen or document at migration time.
-# CSP connect-src mirrors fetch() targets in js/fieldweather.js, js/instrument.js,
-# js/app.js (geocoding), js/chart-page.js (weather), and AP_MON email/checkout endpoints.
-# script-src: 'self' only (no unsafe-eval). Inline boot snippets need 'unsafe-inline'
-# until migrated to external .js; PayPal = checkout provider (2026-07-02, link-out to PayPal-hosted pages; SDK host kept for the dormant on-site path — do NOT enable on GitHub Pages).
+# AstroPrecise — Cloudflare Pages production policy.
+# The source tree deliberately contains a non-deployable candidate placeholder.
+# The protected release workflow replaces it with the exact verified commit in
+# dist/_headers; a direct upload of website/ must therefore fail public proof.
+# Re-test every directive on the deployment URL and both custom domains.
+#
+# The policy matches current product behavior: same-origin geolocation is used
+# by sky/chart features, and contact.html posts to Formspree. The dormant PayPal
+# SDK origin remains allowlisted, but checkout is currently a hosted link-out.
+# Inline boot/style snippets still require 'unsafe-inline'; unsafe-eval is not
+# allowed. The BYOK panel accepts a custom endpoint, so an endpoint outside the
+# explicit connect-src list will be blocked if this policy is activated.
 # See also: tools/setup-cloudflare-cache.mjs
 
 /*
+  X-Coherence-Candidate-Tip: __ASTROPRECISE_CANDIDATE_SHA__
   X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-Permitted-Cross-Domain-Policies: none
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://www.paypal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https://list.astroprecise.app https://services.swpc.noaa.gov https://qrng.anu.edu.au https://geocoding-api.open-meteo.com https://api.open-meteo.com https://api.openai.com https://openrouter.ai https://api.gumroad.com; worker-src 'self'; manifest-src 'self'; form-action 'self' https://list.astroprecise.app; frame-src 'self' https://www.paypal.com https://form.typeform.com
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Resource-Policy: same-site
+  Origin-Agent-Cluster: ?1
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(self), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.paypalobjects.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.paypal.com https://www.paypalobjects.com; font-src 'self' data:; connect-src 'self' https://list.astroprecise.app https://services.swpc.noaa.gov https://qrng.anu.edu.au https://geocoding-api.open-meteo.com https://api.open-meteo.com https://api.openai.com https://openrouter.ai https://api.gumroad.com https://www.paypal.com; media-src 'self'; worker-src 'self' blob:; manifest-src 'self'; form-action 'self' https://formspree.io https://list.astroprecise.app; frame-src 'self' https://www.paypal.com; upgrade-insecure-requests

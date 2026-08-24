@@ -3,12 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="no-referrer" />
+  <script>
+  (function () {
+    var target = new URL('./index.html', location.href);
+    var incoming = new URLSearchParams(location.search || '');
+    var query = new URLSearchParams();
+    incoming.forEach(function (value, key) {
+      var name = String(key || '').toLowerCase();
+      if ((name === 'nosw' || name === 'lite') && String(value) === '1' && !query.has(name)) query.set(name, '1');
+    });
+    var fragment = new URLSearchParams(String(location.hash || '').replace(/^#/, ''));
+    var hash = new URLSearchParams();
+    var focus = String(fragment.get('focus') || '').toLowerCase();
+    var scale = fragment.get('scale');
+    if (/^(earth|sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/.test(focus)) hash.set('focus', focus);
+    if (scale != null && /^-?\d+$/.test(String(scale))) hash.set('scale', String(scale));
+    target.search = query.toString();
+    target.hash = hash.toString();
+    location.replace(target.href);
+  })();
+  </script>
   <meta name="robots" content="noindex, follow" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta http-equiv="refresh" content="0;url=index.html" />
   <link rel="canonical" href="https://astroprecise.app/" />
-  <script>location.replace('index.html' + location.search + location.hash);</script>
   <title>Redirecting…</title>
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">

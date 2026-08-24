@@ -3,18 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Astro Precise Observatory</title>
-  <meta name="robots" content="noindex, follow">
-  <link rel="canonical" href="https://astroprecise.app/">
+  <meta name="referrer" content="no-referrer">
   <script>
   (function () {
     var target = new URL('./index.html', location.href);
-    target.search = location.search;
-    target.searchParams.delete('full');
-    target.hash = location.hash;
+    var incoming = new URLSearchParams(location.search || '');
+    var query = new URLSearchParams();
+    incoming.forEach(function (value, key) {
+      var name = String(key || '').toLowerCase();
+      if ((name === 'nosw' || name === 'lite') && String(value) === '1' && !query.has(name)) query.set(name, '1');
+    });
+    var fragment = new URLSearchParams(String(location.hash || '').replace(/^#/, ''));
+    var hash = new URLSearchParams();
+    var focus = String(fragment.get('focus') || '').toLowerCase();
+    var scale = fragment.get('scale');
+    if (/^(earth|sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/.test(focus)) hash.set('focus', focus);
+    if (scale != null && /^-?\d+$/.test(String(scale))) hash.set('scale', String(scale));
+    target.search = query.toString();
+    target.hash = hash.toString();
     location.replace(target.href);
   })();
   </script>
+  <title>Astro Precise Observatory</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://astroprecise.app/">
   <noscript><meta http-equiv="refresh" content="0; url=./index.html"></noscript>
 </head>
 <body><p><a href="./index.html">Open Astro Precise</a></p></body>

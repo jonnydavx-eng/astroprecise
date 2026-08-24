@@ -112,7 +112,8 @@
         if (!accepted) return;
       });
       button.setAttribute('aria-label', 'Fly to ' + world[1]);
-      button.style.setProperty('--world-color', world[2] || '#d8b46a');
+      // Keep true planetary colours; the non-planet System control uses ion blue.
+      button.style.setProperty('--world-color', world[2] || '#8BA9FF');
       button.innerHTML = '<span class="world-dot' + (world[0] ? '' : ' world-dot--system') + '" aria-hidden="true"></span><span>' + world[1] + '</span>';
       worldGroup.appendChild(button);
     });

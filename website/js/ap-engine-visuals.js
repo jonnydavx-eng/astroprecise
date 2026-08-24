@@ -20,7 +20,7 @@
     { id: 'sun', label: 'Sun', src: 'img/engine/sun.webp', href: 'index.html' },
     { id: 'mercury', label: 'Mercury', src: 'img/engine/mercury.webp', href: 'index.html' },
     { id: 'venus', label: 'Venus', src: 'img/engine/venus.webp', href: 'index.html' },
-    { id: 'earth', label: 'Earth', src: 'img/engine/earth.webp', href: 'index.html#heroChapter' },
+    { id: 'earth', label: 'Earth', src: 'img/engine/earth-512.webp', href: 'index.html#lead' },
     { id: 'moon', label: 'Moon', src: 'img/engine/moon.webp', href: 'moonphase.html' },
     { id: 'mars', label: 'Mars', src: 'img/engine/mars.webp', href: 'index.html' },
     { id: 'jupiter', label: 'Jupiter', src: 'img/engine/jupiter.webp', href: 'index.html' },

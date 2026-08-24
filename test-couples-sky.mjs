@@ -1,5 +1,5 @@
 /**
- * Couples sky — two birth minutes, one WebGL model.
+ * Couples sky — two birth minutes, one measured-angle ledger and Surface A still.
  * Civil time must use a real IANA zone. Unknown time is not noon.
  * Run: node test-couples-sky.mjs
  */
@@ -12,6 +12,10 @@ const root = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(root, 'website/js/ap-couples-sky.js'), 'utf8');
 const html = readFileSync(join(root, 'website/compatibility.html'), 'utf8');
 const css = readFileSync(join(root, 'website/css/ap-couples-v858.css'), 'utf8');
+const homeMatch = readFileSync(join(root, 'website/js/home-match.js'), 'utf8');
+const sw = readFileSync(join(root, 'website/sw.js'), 'utf8');
+const releaseTip = sw.match(/const V\s*=\s*["']ap-v(\d+)["']/)?.[1] || '';
+const privateStorage = new Map();
 
 let pass = 0;
 let fail = 0;
@@ -30,11 +34,17 @@ const ctx = {
   },
   location: {
     hash: '',
+    search: '',
     pathname: '/compatibility.html',
     origin: 'http://localhost',
     href: 'http://localhost/compatibility.html'
   },
   history: { replaceState() {} },
+  sessionStorage: {
+    getItem(key) { return privateStorage.has(key) ? privateStorage.get(key) : null; },
+    setItem(key, value) { privateStorage.set(key, String(value)); },
+    removeItem(key) { privateStorage.delete(key); }
+  },
   navigator: {},
   window: null,
   Intl,
@@ -152,21 +162,29 @@ ok('offline list never includes UTC/GMT',
   AP.OFFLINE_TOWNS.every((t) => t.tz !== 'UTC' && t.tz !== 'GMT' && !/^Etc\//.test(t.tz)));
 
 const fromHash = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=Ada&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York');
-ok('hash restores both dates', fromHash.a && fromHash.a.date === '1990-06-15' && fromHash.b && fromHash.b.date === '1985-12-03');
-ok('hash keeps IANA zones', fromHash.a.tz === 'Europe/London' && fromHash.b.tz === 'America/New_York');
-ok('hash city is the town, not the zone', fromHash.a.city === 'London' && fromHash.b.city === 'New York');
+ok('legacy personal-data hash is rejected', !fromHash.a && !fromHash.b && fromHash.rejected === true);
+const fromNativeFormHash = AP.sceneFromHash('#person1-name=Ada&person1-date=1990-06-15&person1-time=14%3A22&person1-city=London&person1-lat=51.5074&person1-lon=-0.1278&person1-tz=Europe%2FLondon&person2-name=Ben&person2-date=1985-12-03');
+ok('historical native-form personal-data hash is rejected',
+  !fromNativeFormHash.a && !fromNativeFormHash.b && fromNativeFormHash.rejected === true);
+const fromMixedCaseHash = AP.sceneFromHash('#Person1-Name=Ada&PERSON1-DATE=1990-06-15&P2C=London');
+ok('mixed-case historical personal-data hash is rejected',
+  !fromMixedCaseHash.a && !fromMixedCaseHash.b && fromMixedCaseHash.rejected === true);
+ok('safe anchor carries no pair', AP.sceneFromHash('#minutes').a === null && AP.sceneFromHash('#minutes').rejected === false);
 
-const tzAsCity = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=Europe/London&ac=Europe/London');
-ok('timezone string is never restored as the city', tzAsCity.a && tzAsCity.a.city === '' && tzAsCity.a.tz === 'Europe/London');
+privateStorage.set('ap-compat-pair', JSON.stringify({
+  version: 1,
+  a: { date: '1990-06-15', time: '14:22', name: 'Ada', tz: 'Europe/London', city: 'London' },
+  b: { date: '1985-12-03', time: '08:40', name: 'Ben', tz: 'America/New_York', city: 'New York' }
+}));
+const privateScene = AP.sceneFromSession();
+ok('same-tab session restores both dates', privateScene.a?.date === '1990-06-15' && privateScene.b?.date === '1985-12-03');
+ok('same-tab session keeps valid IANA zones', privateScene.a?.tz === 'Europe/London' && privateScene.b?.tz === 'America/New_York');
+ok('same-tab session keeps town labels', privateScene.a?.city === 'London' && privateScene.b?.city === 'New York');
 
-const utcHash = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=UTC&ac=London');
-ok('hash UTC is stripped and London supplies Europe/London',
-  utcHash.a && utcHash.a.tz === 'Europe/London', JSON.stringify(utcHash.a));
-
-const cityOnly = AP.sceneFromHash('#a=1990-06-15&at=14:22&ac=London');
-ok('city-only hash still finds Europe/London', cityOnly.a && cityOnly.a.tz === 'Europe/London');
-
-ok('page is webgl-only', /<void-orrery[^>]+data-renderer="webgl-only"/.test(html));
+ok('page is Surface A and owns no WebGL context',
+  html.includes('class="ap-surface-a"') && html.includes('img/engine/earth-256.webp') &&
+  html.includes('img/engine/earth-512.webp 512w') &&
+  !/<void-orrery\b/.test(html) && !/<canvas\b/.test(html));
 ok('page does not load a 2D orrery.js', !/<script[^>]+js\/orrery\.js/.test(html));
 ok('page does not load retired compatibility-page.js', !html.includes('compatibility-page.js'));
 ok('place is not labelled optional', !/Birth place <span class="opt">optional<\/span>/.test(html));
@@ -175,21 +193,38 @@ ok('keep-sky stays current-view, not birth-hour',
   html.includes('id="keep-sky"') && !/id="keep-sky"[^>]*data-keep-mode/.test(html));
 ok('no checkout or SKU on the couples page', !/gumroad|catalogueSkus|checkout/i.test(html + src));
 ok('house wordmark splits Precise', html.includes('logo-text__precise'));
-ok('A/B cards keep house brass and ember',
-  css.includes('.ap-couples-card--a') && css.includes('#8FA3B8') && css.includes('#B86B4A'));
+ok('A/B cards keep redundant silver and ion identity',
+  css.includes('.ap-couples-card--a') && css.includes('#93A8BF') && css.includes('#8BA9FF'));
 ok('city items are 44px taps', css.includes('.ap-city-item') && /min-height:\s*44px/.test(css));
-ok('house lock colours stay',
-  css.includes('#05080F') && css.includes('#E6ECF2') && css.includes('#A89C84') &&
-  css.includes('#B86B4A') && css.includes('#8FA3B8') && css.includes('#B04A52'));
+ok('Midnight Meridian house colours stay locked',
+  css.includes('#040812') && css.includes('#EEF4FA') && css.includes('#93A8BF') &&
+  css.includes('#8BA9FF') && css.includes('#A5BCFF') && css.includes('#FF8EA8'));
 ok('copy withholds the clock when time is blank',
   /blank time withholds that clock/i.test(html) || html.includes('that clock, the Moon, and angles are withheld'));
-ok('hash restore stays Live so both clocks stay equally up',
+ok('private session restore stays Live so both clocks stay equally up',
   /function applyHash\(\)[\s\S]*setPressed\('now'\)/.test(src) &&
   !/function applyHash\(\)[\s\S]*setPressed\('a'\)/.test(src));
+ok('couples URL never serializes birth fields',
+  !/q\.set\(['"](?:a|at|an|az|ac|b|bt|bn|bz|bc)['"]/.test(src) &&
+  /sessionStorage\.setItem\(PRIVATE_PAIR_KEY/.test(src));
+ok('dormant Home match handoff also keeps personal fields out of the URL',
+  !/['"]p1(?:n|d|t|la|lo|tz)=/.test(homeMatch) &&
+  /sessionStorage\.setItem\(['"]ap-compat-pair['"]/.test(homeMatch) &&
+  /return ['"]compatibility\.html['"]/.test(homeMatch));
+ok('historical native-form address keys remain on the scrub list',
+  ['person1-name', 'person1-date', 'person1-time', 'person1-city', 'person1-lat', 'person1-lon', 'person1-tz',
+    'person2-name', 'person2-date', 'person2-time', 'person2-city', 'person2-lat', 'person2-lon', 'person2-tz']
+    .every((key) => src.includes(`'${key}'`)));
+ok('copy action emits a clean page URL only',
+  /return location\.origin \+ location\.pathname;/.test(src) &&
+  /Copy clean page link/.test(html));
 ok('couples page does not fly the camera on A/B',
   !src.includes('flyTo') && !src.includes('focusPlanet') && !src.includes('setJD'));
-ok('couples assets stay at 880',
-  html.includes('ap-couples-sky.js?v=880') && html.includes('ap-couples-v858.css?v=880'));
+ok('blank form keeps the withheld-angle ledger quiet',
+  src.includes("var started = ['person1-date'") && src.includes('if (!started)') && src.includes('box.hidden = true'));
+ok('couples assets stay on the release tip',
+  Boolean(releaseTip) && html.includes(`ap-couples-sky.js?v=${releaseTip}`) &&
+  html.includes(`ap-couples-v858.css?v=${releaseTip}`));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

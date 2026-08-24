@@ -5,7 +5,7 @@
  */
 
 html.ap-brand-nebula {
-  --ap-nebula-violet: #8FA3B8;
+  --ap-nebula-violet: #93A8BF;
   --ap-nebula-cyan: #3dd6ff;
   --ap-nebula-magenta: #c45bff;
   --ap-glass: rgba(8, 10, 18, 0.72);
@@ -20,7 +20,7 @@ html.ap-brand-nebula {
 html.ap-brand-nebula,
 html.ap-brand-nebula body {
   background-color: #000 !important;
-  color: var(--ap-text-primary, #e8ebf0);
+  color: var(--ap-text-primary, #EEF4FA);
 }
 
 html.ap-brand-nebula body::before {
@@ -36,7 +36,15 @@ html.ap-brand-nebula body::before {
     radial-gradient(ellipse 120% 80% at 50% 40%, rgba(16, 16, 24, 0.9) 0%, #000 70%);
 }
 
-html.ap-brand-nebula body > * {
+/* Keep semantic content above the atmospheric pseudo-elements without
+   rewriting the positioning model of every direct child. The former `> *`
+   selector de-fixed canvases, aurora orbs, privacy notices and mobile nav as
+   this late stylesheet arrived, producing severe layout shift. */
+html.ap-brand-nebula body > header,
+html.ap-brand-nebula body > main,
+html.ap-brand-nebula body > footer,
+html.ap-brand-nebula body > .page-wrap,
+html.ap-brand-nebula body > .page-shell {
   position: relative;
   z-index: 1;
 }
@@ -83,7 +91,7 @@ html.ap-brand-nebula .masthead .page-wrap {
 html.ap-brand-nebula .contents-nav a {
   font-size: 0.68rem !important;
   letter-spacing: 0.14em !important;
-  color: var(--ap-silver-dim, #8b919c) !important;
+  color: var(--ap-silver-dim, #93A8BF) !important;
   border-radius: var(--ap-radius-pill);
   transition: color 0.2s, background 0.2s, box-shadow 0.2s;
 }
@@ -100,7 +108,7 @@ html.ap-brand-nebula .wordmark-astro {
 }
 
 html.ap-brand-nebula .wordmark-precise {
-  background: linear-gradient(135deg, #a8dcf2 0%, #7ec8e8 50%, #c45bff 100%);
+  background: linear-gradient(135deg, #a8dcf2 0%, #79C7F2 50%, #c45bff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent !important;
@@ -122,7 +130,7 @@ html.ap-brand-nebula body.ap-observatory-home #castDock {
 
 html.ap-brand-nebula .eyebrow-rose,
 html.ap-brand-nebula .hero-copy .eyebrow-rose {
-  color: var(--ap-aurora, #8FA3B8) !important;
+  color: var(--ap-aurora, #93A8BF) !important;
   font-family: var(--font-mono, 'IBM Plex Mono', monospace) !important;
   font-size: 0.72rem !important;
   letter-spacing: 0.2em !important;
@@ -137,7 +145,7 @@ html.ap-brand-nebula .display {
 }
 
 html.ap-brand-nebula .display-accent {
-  background: linear-gradient(120deg, #e8f4ff 0%, #7ec8e8 40%, #c45bff 100%);
+  background: linear-gradient(120deg, #e8f4ff 0%, #79C7F2 40%, #c45bff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent !important;
@@ -147,7 +155,7 @@ html.ap-brand-nebula .standfirst,
 html.ap-brand-nebula .hero-why-lead {
   font-size: clamp(1rem, 2.2vw, 1.15rem) !important;
   line-height: 1.55 !important;
-  color: var(--ap-silver, #c8cdd6) !important;
+  color: var(--ap-silver, #C9D6E3) !important;
   max-width: 42ch;
 }
 
@@ -237,7 +245,9 @@ html.ap-brand-nebula .bottom-nav {
 }
 
 html.ap-brand-nebula .bottom-nav__item {
-  color: var(--ap-silver-dim) !important;
+  /* Opaque instrument silver remains legible over the translucent mobile
+     dock even when a bright control is moving beneath it. */
+  color: var(--ap-silver, #93A8BF) !important;
   border-radius: 14px !important;
   transition: color 0.2s, background 0.2s, box-shadow 0.2s;
 }
@@ -300,7 +310,7 @@ html.ap-brand-nebula .navbar__link[aria-current="page"] {
 }
 
 html.ap-brand-nebula .logo-text__precise {
-  background: linear-gradient(135deg, #a8dcf2 0%, #7ec8e8 50%, #c45bff 100%);
+  background: linear-gradient(135deg, #a8dcf2 0%, #79C7F2 50%, #c45bff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent !important;

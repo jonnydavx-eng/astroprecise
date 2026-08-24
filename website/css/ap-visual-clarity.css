@@ -2,18 +2,18 @@
  * Astro Precise — Visual clarity · Jet Silver Aurora
  */
 :root {
-  --ap-vc-cream: #E8EBF0;
-  --ap-vc-cream-dim: #C8CDD6;
-  --ap-vc-muted: #8B919C;
-  --ap-vc-accent: #8FA3B8;
-  --ap-vc-brass: #8FA3B8;
+  --ap-vc-cream: #EEF4FA;
+  --ap-vc-cream-dim: #C9D6E3;
+  --ap-vc-muted: #93A8BF;
+  --ap-vc-accent: #93A8BF;
+  --ap-vc-brass: #93A8BF;
   --ap-vc-sun: #E8DCC8;
-  --ap-vc-void: #05080F;
+  --ap-vc-void: #040812;
   --ap-vc-raised: #18181E;
-  --ap-vc-cta: #B86B4A;
+  --ap-vc-cta: #8BA9FF;
   --ap-vc-cta-ink: #050508;
   --ap-vc-rim: rgba(200, 205, 214, 0.18);
-  --ap-vc-rim-strong: rgba(216, 180, 106, 0.4);
+  --ap-vc-rim-strong: rgba(147, 168, 191, 0.4);
 }
 
 body.ap-enchanted,
@@ -135,7 +135,7 @@ body .ap-ev__btn--primary,
 body button[type="submit"].primary,
 body .chart-cta-primary,
 body a.btn-primary {
-  background: linear-gradient(135deg, #b08a43 0%, #8FA3B8 48%, #C5D4E0 100%) !important;
+  background: #8BA9FF !important;
   color: var(--ap-vc-cta-ink) !important;
   border: none !important;
   box-shadow: 0 4px 20px rgba(126, 200, 232, 0.3) !important;
@@ -146,6 +146,7 @@ body a.btn-primary {
 body .btn-press:hover,
 body .mysky-cta--primary:hover,
 body .ap-ev__btn--primary:hover {
+  background: #A5BCFF !important;
   transform: translateY(-1px);
   box-shadow: 0 8px 28px rgba(126, 200, 232, 0.42) !important;
 }

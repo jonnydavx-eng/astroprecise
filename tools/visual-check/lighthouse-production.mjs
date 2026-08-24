@@ -1,18 +1,14 @@
 /**
- * Production-profile Lighthouse — real URLs, mobile preset, no audit shortcuts.
+ * Production-profile Lighthouse — real URLs and the visitor resource path.
  *
- * Unlike audit-lighthouse.mjs (/?lite=1) this measures chart, horoscope, and sign
- * pages as shipped. Scores are typically LOWER than audit-path runs because:
- *
- *   • defer-page-css.js skips deferred CSS when navigator.webdriver or
- *     HeadlessChrome is detected (audit-path) — audit-lighthouse inflates perf.
- *   • ?lite=1 forces lite shell and skips heavy boots — not used here.
- *   • Real users load fonts/main/sign-page on scroll or pointerdown; Lighthouse
- *     scrolls the page, which can pull deferred CSS into the trace anyway.
+ * Measures the minified, compressed dist/ artifact through tools/serve-dist.mjs.
+ * The browser host is headless, but measured CSS, icon, instrument and page
+ * boot code must not branch on webdriver or HeadlessChrome. The release-honesty
+ * gate locks that same-path contract for this 10-route batch.
  *
  * Run:  node lighthouse-production.mjs [baseUrl]
  *       npm run lighthouse:production
- *       npm run lighthouse:production:ci   # --ci enforces perf ≥85 on 10-page batch
+ *       npm run lighthouse:production:ci   # --ci uses the configured CI floors
  * Output: tools/visual-check/out/lighthouse/production/*.report.json
  */
 import { spawn } from 'child_process';
@@ -26,7 +22,7 @@ const BASE = (CLI_ARGS[0] || 'http://localhost:8790').replace(/\/$/, '');
 const OUT = join(__dirname, 'out', 'lighthouse', 'production');
 const LH = join(__dirname, 'node_modules', 'lighthouse', 'cli', 'index.js');
 
-/** Production URLs — no ?lite=1, no audit query params (10-page CI batch, Wave 21) */
+/** Production URLs — no lite/audit rendering shortcut (10-page CI batch). */
 const URLS = [
   { id: 'chart', url: `${BASE}/chart.html` },
   { id: 'horoscope', url: `${BASE}/horoscope.html` },
@@ -37,7 +33,7 @@ const URLS = [
   { id: 'shop', url: `${BASE}/shop.html` },
   { id: 'transits', url: `${BASE}/transits.html` },
   { id: 'lifepath', url: `${BASE}/lifepath.html` },
-  { id: 'index', url: `${BASE}/?lite=1` },
+  { id: 'index', url: `${BASE}/?nosw=1` },
 ];
 
 const CI_PERF_MIN = Number(process.env.LH_CI_PERF_MIN || 85);
@@ -74,7 +70,7 @@ async function main() {
     profile: 'production',
     base: BASE,
     capturedAt: new Date().toISOString(),
-    note: 'Production URLs (index uses ?lite=1 shipped shell). HeadlessChrome may still trigger defer-page-css audit-path. Compare with audit-lighthouse.mjs for shortcut delta.',
+    note: 'Minified, compressed production artifact. Headless is the execution host only: measured CSS, icon, instrument and page boot code uses the visitor path. Home runs the real WebGL path; nosw only prevents test cache carry-over.',
     pages: [],
     issues: [],
   };
@@ -109,7 +105,9 @@ async function main() {
         tbt: lhr.audits?.['total-blocking-time']?.displayValue,
         si: lhr.audits?.['speed-index']?.displayValue,
       };
-      entry.auditPathLikely = /\bHeadlessChrome\b/i.test(lhr.userAgent || '');
+      entry.headlessHost = /\bHeadlessChrome\b/i.test(
+        lhr.environment?.hostUserAgent || lhr.userAgent || '',
+      );
     } catch (err) {
       entry.error = String(err);
       report.issues.push(`${u.id}: ${err.message || err}`);
@@ -180,8 +178,21 @@ function formatSummary(report) {
   if (report.issues.length) {
     lines.push('', '## Issues', '');
     for (const issue of report.issues) lines.push(`- ${issue}`);
+  } else if (report.ci.perfFails.length || report.ci.a11yFails.length) {
+    lines.push('', '## Informational threshold misses', '');
+    for (const id of report.ci.perfFails) {
+      const page = report.pages.find((entry) => entry.id === id);
+      lines.push(`- ${id}: performance ${page?.scores?.performance ?? 0} < ${report.ci.perfMin}`);
+    }
+    for (const id of report.ci.a11yFails) {
+      const page = report.pages.find((entry) => entry.id === id);
+      lines.push(`- ${id}: accessibility ${page?.scores?.accessibility ?? 0} < ${report.ci.a11yMin}`);
+    }
+    if (!report.ci.mode) lines.push('', 'CI enforcement was not enabled for this run.');
   } else {
-    lines.push('', 'All pages passed CI thresholds.');
+    lines.push('', report.ci.mode
+      ? 'All pages passed the enforced CI thresholds.'
+      : 'All measured pages met the informational thresholds.');
   }
 
   return `${lines.join('\n')}\n`;

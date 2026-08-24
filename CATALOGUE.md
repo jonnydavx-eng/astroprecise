@@ -1,132 +1,121 @@
-# AstroPrecise — Product Catalogue
+# AstroPrecise Studio — launch catalogue
 
-*Marketing-ready product list for ads, press and listings. Every piece is personalised from the buyer's own VSOP87 birth chart, computed privately in-browser to roughly an arcminute (1800–2200 CE). Prices are GBP, one-time (no subscriptions). Checkout is opening soon — the on-site basket is live, but purchase links go live once payment is configured.*
+Updated: 2026-08-24
 
-Lookbook: https://astroprecise.app/catalogue.html · Shop: https://astroprecise.app/shop.html
+> **PRELAUNCH — NOT FOR SALE.** These are the only three proposed launch products. Checkout URLs are intentionally absent, no product has been published, and the public site has not been deployed from this branch. Ko-fi remains voluntary support only and does not unlock a product.
 
-The whole story: *At the moment you were born, the sky held a pattern that never repeats. We render that pattern with the same mathematics astronomers use — then translate it into readings, prints, keepsakes and jewellery made for you alone.*
+All three products are personalised **Gumroad Commission services** ending in digital-file delivery. Each has `self` and `gift` purchase modes at the same price; gift mode is not a fourth SKU. Prices are listed service prices in GBP; Gumroad must show the final checkout total including any applicable tax before the buyer commits. Public Gumroad guidance suggests a 50% Commission deposit and later balance, but that is a draft assumption—not account truth. Eligibility, platform role, the exact charge sequence and a safe post-final-charge file hand-off must pass an unpublished signed-in test order before launch.
 
----
+## The three-product launch
 
-## The Reading — words for your chart alone
+### 1. Natal Sky Print Pack — £18
 
-### Deep Natal Reading — £12  *(Bestseller)*
-The words your chart has been waiting for — written for you alone.
-**Delivered:** A 13-page personalised PDF within 24–48 hours — every planet, all twelve houses, love/career/wellbeing chapters, chart patterns and your ten tightest aspects, from the same engine as the free chart tools.
-**Art:** `website/img/shop/product-deep-reading.jpg`
+SKU: `natal-sky-print-pack`
 
-### Your Cosmic Story — £14  *(Written for you)*
-The story of you — told through the exact sky of your first breath.
-**Delivered:** A long-form narrative PDF (24–48h). Not a report — your chart retold as flowing prose: the arc of your Sun, Moon and Rising, the tensions and gifts in your aspects, and where your planets are leading.
-**Art:** `website/img/shop/product-cosmic-story.jpg`
+A computed natal chart prepared as two home-print PDFs and five practical PNG layouts.
 
-### Deep Reading + Poster Bundle — £16  *(Best value · save £2)*
-Reading, poster, free wallpaper and a Two Skies offer — save £2.
-**Delivered:** The 13-page Deep Reading PDF and the print-at-home natal poster PDF from one chart (24–48h), plus free chart wallpaper (email unlock) and a 50% Two Skies code after purchase.
-**Art:** `website/img/shop/product-bundle.jpg`
+Modes: `self` or adult recipient-controlled birthday `gift`.
 
-### Your Year Ahead — Transit Report — £16  *(Instant PDF)*
-Twelve months of transits — your personal sky forecast.
-**Delivered:** A PDF (24–48h) of every major transit to your natal chart for the next twelve months, dated and interpreted for your placements — not a generic horoscope.
-**Art:** `website/img/shop/product-year-ahead.jpg`
+Delivered:
 
-### Solar Return — Your Birthday Year — £14  *(Instant PDF)*
-Your birthday sky — the annual ritual, no subscription.
-**Delivered:** A PDF (24–48h) of your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year.
-**Art:** `website/img/shop/product-solar-return.jpg`
+- A3 RGB home-print PDF
+- A4 ink-light home-print PDF
+- 4960 × 7016 portrait PNG
+- 2160 × 2160 square PNG
+- 2160 × 3840 story PNG
+- 1080 × 1920 phone-wallpaper PNG
+- 1080 × 1080 Big Three PNG
+- print guide, personal-use licence and SHA-256 integrity manifest
 
----
+Sample: `website/downloads/studio/natal-sky-print-pack-sample.pdf`
 
-## On Your Wall — the map of the moment you arrived
+Cover: `website/img/shop/v901/natal-sky-print-pack.webp`
 
-### Your Natal Sky — Art Poster — £20  *(Signature · made to order)*
-Fine-art print of the sky at your first breath.
-**Delivered:** A 250gsm museum-grade matte print of your full birth chart, engraved brass on cool void, ships in 2–7 business days. Foil and framed options at fulfilment.
-**Art:** `website/img/shop/product-natal-poster.jpg`
+### 2. Personal Sky Keepsake — £29
 
-### Your Natal Sky — Print-at-Home PDF — £6  *(Instant PDF)*
-Your exact sky, ready to print tonight.
-**Delivered:** A print-ready A3 PDF (24–48h) of your full birth chart — print at home or at any print shop, any size.
-**Art:** `website/img/shop/product-poster-pdf.jpg`
+SKU: `personal-sky-keepsake`
 
-### Big Three — Mini Print — £10  *(Desk piece · made to order)*
-Sun, Moon, Rising — the chart distilled to its spine.
-**Delivered:** Your three load-bearing placements set as a clean typographic museum-grade matte print, made to order, ships in 2–7 business days.
-**Art:** `website/img/shop/product-big-three.jpg`
+An intentionally paginated, 20-page reflective reading built from computed chart positions, supplied in screen and ink-light editions with a natal plate.
 
----
+Modes: `self` or adult recipient-controlled birthday `gift`.
 
-## Wear Your Sky — your exact birth sky, for the body
+Delivered:
 
-### Your Sky — Tee — £18  *(New · made to order)*
-Constellations from your birth night — a wearable chart.
-**Delivered:** Heavyweight cotton tee, printed to order, with the constellations overhead at your birth and your Sun/Moon/Rising picked out in gold. Ships in 2–7 business days.
-**Art:** `website/img/shop/product-sky-tee.jpg`
+- 20-page screen PDF
+- 20-page ink-light A4 PDF
+- A3 RGB home-print natal-plate PDF
+- A4 natal-plate PDF
+- personal-use licence and SHA-256 integrity manifest
 
-### Your Sky — Heavyweight Hoodie — £32  *(Made to order)*
-Your natal canopy across the back — 350gsm fleece.
-**Delivered:** Premium 350gsm fleece hoodie printed to order — your natal canopy across the back in fine line-work, Big Three glyphs at the cuff. Ships in 2–7 business days.
-**Art:** `website/img/shop/product-sky-hoodie.jpg`
+Sample: `website/downloads/studio/personal-sky-keepsake-sample.pdf`
 
-### Your Star Map — Mug — £9  *(Made to order)*
-Your birth sky on matte ceramic — the morning ritual.
-**Delivered:** Matte ceramic mug (dishwasher safe) with the sky over your birthplace wrapped around it and your Sun-sign glyph at the rim. Printed to order, ships in 2–7 business days.
-**Art:** `website/img/shop/product-mug.jpg`
+Cover: `website/img/shop/v901/personal-sky-keepsake.webp`
 
----
+Gift cover: `website/img/shop/v901/gift-personal-sky-keepsake.webp`
 
-## Gifts — a chart made for someone else
+### 3. Whole Sky Edition — £39
 
-*Recipient birth details and your gift message are collected privately at fulfilment, never on the site.*
+SKU: `whole-sky-edition`
 
-### Two Skies — Couples Star Map — £24  *(Couples)*
-Two birth charts, one print — the anniversary keepsake.
-**Delivered:** A 250gsm museum-grade matte fine-art print of two birth skies set side by side. Framed option at fulfilment; ships in 2–7 business days.
-**Art:** `website/img/shop/product-two-skies.jpg`
+The complete Print Pack and Personal Sky Keepsake, plus a clearly labelled `SCHEMATIC` Observatory still for the supplied birth hour.
 
-### Gift a Reading — £15
-A Deep Reading for someone you love — voucher + your note.
-**Delivered:** A PDF gift voucher with a redemption code and your personal note. The recipient redeems by email with their own birth details; choose a delivery date at fulfilment.
-**Art:** `website/img/shop/product-gift-reading.jpg`
+Modes: `self` or adult recipient-controlled birthday `gift`.
 
-### The Whole Sky — Gift Box — £35  *(Premium gift)*
-Reading PDF + foil print + gift card — the complete sky.
-**Delivered:** A Deep Natal Reading PDF plus an A4 foil natal print, shipped with a personalised gift card carrying your note. The recipient redeems the reading privately by email. Ships in 2–7 business days; costs less than the two bought separately.
-**Art:** `website/img/shop/product-gift-box.jpg`
+Delivered:
 
----
+- everything in the Natal Sky Print Pack
+- everything in the Personal Sky Keepsake
+- 4800 × 3600 `SCHEMATIC` Observatory birth-hour PNG
+- organised ZIP and SHA-256 integrity manifest
+- one reasonable layout adjustment requested within seven calendar days of delivery
 
-## Jewellery — wearable sky talismans *(on the loom — coming soon)*
+At the stated individual prices, the two component products total £47; this combined edition is £39, an £8 saving. This is a permanent price comparison, not a countdown or limited-time claim.
 
-*Engraved from your exact natal chart. Made to order via print-on-demand jewellery fulfilment.*
+Sample: `website/downloads/studio/whole-sky-edition-sample.pdf`.
 
-### Observatory Disc Pendant — £29  *(Made to order)*
-Your full natal wheel, engraved on a wearable disc.
-**Delivered:** A brass or sterling 25mm disc with the complete natal chart wheel micro-engraved from your exact birth data, on a 45cm chain.
-**Art:** `website/img/shop/product-observatory-disc.jpg`
+Cover: `website/img/shop/v901/whole-sky-edition.webp`
 
-### Constellation Bar — £24  *(Made to order)*
-A minimal bar with your birth constellations in line.
-**Delivered:** A slim bar (pendant or cuff) showing the constellation lines of your Sun, Moon and Rising — everyday layering jewellery, exact from your saved chart.
-**Art:** `website/img/shop/product-constellation-bar.jpg`
+Gift cover: `website/img/shop/v901/gift-whole-sky-edition.webp`
 
-### Big Three Glyph — £19  *(Made to order)*
-Sun · Moon · Rising charms on a fine chain.
-**Delivered:** Three small engraved charms — your Sun, Moon and Rising glyphs — on a delicate 40cm chain.
-**Art:** `website/img/shop/product-big-three-glyph.jpg`
+## Shared commission rules
 
-### Seal Medallion — £35  *(Made to order)*
-A hex medallion of your chart's dominant signature.
-**Delivered:** A reversible 32mm hex medallion bearing your dominant element seal and Big Three glyphs, engraved on observatory-grade brass — computed from your real VSOP87 positions.
-**Art:** `website/img/shop/product-seal-medallion.jpg`
+- Digital files only. No framed print, commercial press file, clothing, jewellery or other physical item is included.
+- For `self`, the buyer supplies their own known, exact, recorded birth date, local clock time, city and country. For `gift`, the adult recipient is present and personally supplies their own data after receiving the privacy information. Unknown, approximate and rectified times are not accepted at launch.
+- Gift mode is birthday-only at launch. The recipient pays nothing and receives the files by default. Surprise gifts, delayed redemption, recipients under 18 and buyer-entered recipient birth data are rejected.
+- A buyer copy of recipient files requires the recipient's separate, specific and initially unticked authorisation. Refusing it does not affect the commission.
+- The default production target is five working days after complete valid inputs and either the buyer's optional early-start request or expiry of the 14-day cancellation period. This service level still requires owner confirmation.
+- Calculation and production errors are corrected without charge. The Whole Sky Edition also includes the layout adjustment stated above. Statutory consumer rights are not restricted.
+- Astrology passages describe traditional symbolic interpretations for reflection and entertainment. They are not scientific personality findings, predictions or medical, legal, financial or mental-health advice.
+- Customer birth inputs must stay in the private Gumroad order and local private fulfilment area; they must never be sent through a public contact form, placed in a URL or used in public samples.
+- Public samples use a conspicuously labelled fictional person and remain watermarked. Customer files use generic filenames.
+- Personal, non-commercial use only unless separate written permission is agreed.
 
----
+## Birthday gift additions
 
-## Also free (cast before you buy)
+Every gift-mode package adds these deterministic, chart-derived digital files:
 
-- **Free phone wallpaper** of your chart — 1080×1920 lock-screen PNG, unlocked with an email on the Chart page (`chart.html`). No purchase required.
-- **Free core tools** — Birth Chart, Daily Horoscope, Compatibility/Synastry, Transits, and the "Sky" instrument. Every paid piece is generated from a chart you calculate here for free.
+- `birthday-gift-jacket-a4.pdf` — tagged personalised A4 dedication jacket rendered from a 2480 × 3508 (300 ppi) source;
+- `birthday-reveal-1080x1920.png` — phone/private-share birthday reveal;
+- `birthday-moon-plate-2160x2160.png` — square lunar-phase artwork computed for the exact recorded birth UTC instant and explicitly not a photograph.
 
----
+For the reading SKUs, the jacket is a separate A4 file and the reading remains exactly 20 pages.
 
-*18 personalised pieces across five collections. Honesty note: all product art shows an example chart labelled as such; the buyer's piece is generated from their own birth details. For entertainment; not medical, financial, or legal advice.*
+Shared fictional gift-detail artwork: `website/img/shop/v901/birthday-orbit-detail.webp`.
+
+## Hard launch blockers
+
+1. Publish the operator's full geographic business/service address and confirm legal/trading identity, contact route and applicable territories.
+2. Obtain owner confirmation of the five-working-day target, seven-day layout-adjustment scope and 30-day private-working-file deletion rule.
+3. Create the Cloudflare Pages project and attach the apex and `www` custom domains, then prove the exact SHA identity on the Pages deployment and both domains.
+4. Confirm the Gumroad account is eligible for Commission products and verify the exact 50% deposit/balance workflow.
+5. Implement an authenticated seller adapter and prove a truthful completion sequence in which a usable final exists when the commission is marked complete, while unauthorised delivery remains blocked unless the final charge succeeds.
+6. Complete a test order covering receipt, buyer inputs, optional early-start consent, cancellation/refund, final balance, final-file delivery and data deletion.
+7. Complete and owner-approve the gift legitimate-interests assessment; prove adult recipient self-entry, just-in-time notice, recipient-default delivery, separate unticked buyer-copy authorisation, objection/withdrawal and no-minor/no-surprise rejection.
+8. Replace this draft/noindex service-terms page with owner-approved public terms and align the live privacy/refund/contact pages before checkout opens.
+9. Receive explicit owner approval before archiving the legacy listing, publishing any new product or deploying the website.
+
+Authoritative machine-readable product, price and checkout state:
+`website/data/products-v901.json`. Its `launchBlockers` array is a compact
+fail-closed product guard, not the complete release checklist. The nine blockers
+above and `docs/SHOP-LAUNCH-RUNBOOK.md` remain mandatory even if the compact array
+is unchanged.

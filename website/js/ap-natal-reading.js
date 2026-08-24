@@ -1,7 +1,8 @@
-import { buildDeepReading } from './deep-reading.js';
+import { buildDeepReading } from './deep-reading.js?v=901';
 
 const TARGETS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 const ASSUMED_HOUR = '12:00';
+const HOUSE_NAMES = { whole: 'Whole Sign', equal: 'Equal', placidus: 'Placidus' };
 const byId = (id) => document.getElementById(id);
 const esc = (value) => String(value == null ? '' : value)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -74,7 +75,20 @@ function natalFromPositions(positions, chart, timeKnown) {
   return natal;
 }
 
-function computeNatal(engine, instant, lat, lon, timeKnown) {
+function houseFromCusps(lon, houses) {
+  if (!Array.isArray(houses) || houses.length !== 12) return null;
+  for (let i = 0; i < 12; i += 1) {
+    const a = Number(houses[i]);
+    const b = Number(houses[(i + 1) % 12]);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+    const span = ((b - a) % 360 + 360) % 360 || 30;
+    const off = ((lon - a) % 360 + 360) % 360;
+    if (off < span) return i + 1;
+  }
+  return null;
+}
+
+function computeNatal(engine, instant, lat, lon, timeKnown, houseSystem = 'whole', nodeMode = 'mean') {
   const y = instant.getUTCFullYear();
   const m = instant.getUTCMonth() + 1;
   const d = instant.getUTCDate();
@@ -82,11 +96,24 @@ function computeNatal(engine, instant, lat, lon, timeKnown) {
   const mm = instant.getUTCMinutes();
   const coordsKnown = Number.isFinite(lat) && Number.isFinite(lon);
   if (timeKnown && coordsKnown && typeof engine.calculateNatalChart === 'function') {
-    const chart = engine.calculateNatalChart(y, m, d, hh, mm, lat, lon, 'whole', 'mean');
-    return natalFromPositions(chart.positions, chart, true);
+    const chart = engine.calculateNatalChart(y, m, d, hh, mm, lat, lon, houseSystem, nodeMode);
+    const natal = natalFromPositions(chart.positions, chart, true);
+    const planetHouses = {};
+    TARGETS.forEach((key) => {
+      if (natal[key] == null) return;
+      const house = houseFromCusps(natal[key], chart.houses);
+      if (house) planetHouses[key] = house;
+    });
+    return { natal, houses: chart.houses, planetHouses, houseSystem, nodeMode };
   }
   const jd = engine.julianDay(y, m, d, hh, mm, instant.getUTCSeconds());
-  return natalFromPositions(engine.allPlanetPositions(jd), null, false);
+  return {
+    natal: natalFromPositions(engine.allPlanetPositions(jd), null, false),
+    houses: null,
+    planetHouses: null,
+    houseSystem,
+    nodeMode,
+  };
 }
 
 function getSittingHandoff() {
@@ -138,10 +165,16 @@ function seedHandoffForm(chart) {
   if (Number.isFinite(lat)) byId('natal-lat').value = String(lat);
   if (Number.isFinite(lon)) byId('natal-lon').value = String(lon);
   const box = byId('useSavedChart');
-  if (box) box.checked = false;
+  if (box) {
+    box.checked = false;
+    box.hidden = true;
+    box.disabled = true;
+  }
   const option = byId('savedChartOption');
   if (option) {
     option.hidden = false;
+    option.dataset.mode = 'handoff';
+    option.setAttribute('role', 'status');
     byId('savedChartLabel').textContent = `Just cast · ${chart.name || date}`;
   }
   return true;
@@ -152,6 +185,53 @@ function chartTimeKnown(chart) {
   if (chart.timeKnown === true) return true;
   if (chart.timeKnown === false || chart.timeAccuracy === 'unknown') return false;
   return Boolean(chart.birthTime || chart.time);
+}
+
+function metaFromChartSnapshot(chart, source = 'chart handoff') {
+  if (!chart || !chart.positions) return null;
+  const date = chart.birthDate || chart.date;
+  const savedTime = chart.birthTime || chart.time || '';
+  const timeAccuracy = chart.timeAccuracy || (chartTimeKnown(chart) ? 'exact' : 'unknown');
+  const timeKnown = timeAccuracy !== 'unknown' && Boolean(savedTime);
+  const lat = Number(chart.lat);
+  const lon = Number(chart.lon);
+  const coordsKnown = Number.isFinite(lat) && Number.isFinite(lon);
+  const natal = natalFromPositions(chart.positions, chart, timeKnown);
+  if (natal.sun == null) return null;
+  let utcText = '';
+  if (Number.isFinite(Number(chart.jd))) {
+    const instant = new Date((Number(chart.jd) - 2440587.5) * 86400000);
+    if (!Number.isNaN(instant.getTime())) utcText = utcClock(instant) + ' UT';
+  }
+  const zone = chart.tz || chart.timezone || '';
+  const houseSystem = chart.houseSystem || 'whole';
+  const precisionLabel = timeAccuracy === 'approximate' ? 'approximate time' : timeKnown ? 'exact time' : 'time unknown';
+  return {
+    natal,
+    timeKnown,
+    timeAccuracy,
+    coordsKnown,
+    utcText,
+    zone,
+    houseSystem,
+    houseCusps: Array.isArray(chart.houses) ? chart.houses : null,
+    planetHouses: chart.planetHouses || null,
+    nodeMode: chart.nodeMode || 'mean',
+    label: `${date || 'Saved chart'} · ${precisionLabel}${zone ? ' · ' + zone : ''}${utcText ? ' · ' + utcText : ''}`,
+    birth: {
+      dateText: date || '',
+      timeText: timeKnown ? savedTime : '',
+      timeAccuracy,
+      houseSystem,
+      place: chart.place || chart.city || '',
+      zone,
+      utcText,
+      noonReference: !timeKnown,
+      coordsKnown,
+      source,
+    },
+    chart,
+  };
 }
 
 function transitsNow(engine) {
@@ -191,7 +271,7 @@ function readPlace() {
   };
 }
 
-function buildMeta(engine, { dateValue, timeValue, zone, lat, lon, place, source }) {
+function buildMeta(engine, { dateValue, timeValue, zone, lat, lon, place, source, houseSystem = 'whole', nodeMode = 'mean', timeAccuracy }) {
   if (!dateValue) throw new Error('Enter a birth date or use a saved chart.');
   if (!validTimeZone(zone)) throw new Error('Pick a birth place so the minute uses a real zone. UK summer is not GMT.');
   const [y, m, d] = dateValue.split('-').map(Number);
@@ -200,20 +280,28 @@ function buildMeta(engine, { dateValue, timeValue, zone, lat, lon, place, source
   const instant = civilToUTC(y, m, d, hh, mm, zone);
   if (!instant) throw new Error('Place needs a real timezone. UK summer is not treated as GMT.');
   const coordsKnown = Number.isFinite(lat) && Number.isFinite(lon);
-  const natal = computeNatal(engine, instant, lat, lon, timeKnown);
+  const computed = computeNatal(engine, instant, lat, lon, timeKnown, houseSystem, nodeMode);
+  const precision = timeAccuracy || (timeKnown ? 'exact' : 'unknown');
   const utcText = utcClock(instant) + ' UT';
   return {
-    natal,
+    natal: computed.natal,
     timeKnown,
+    timeAccuracy: precision,
     coordsKnown,
     utcText,
     zone,
+    houseSystem: computed.houseSystem,
+    houseCusps: computed.houses,
+    planetHouses: computed.planetHouses,
+    nodeMode: computed.nodeMode,
     label: timeKnown
-      ? `${dateValue} · ${timeValue} · ${zone} · ${utcText}`
+      ? `${dateValue} · ${timeValue} · ${zone} · ${utcText}${precision === 'approximate' ? ' · approximate time' : ''}`
       : `${dateValue} · time unknown · noon ${zone} as a date reference · ${utcText}`,
     birth: {
       dateText: dateValue,
       timeText: timeKnown ? timeValue : '',
+      timeAccuracy: precision,
+      houseSystem: computed.houseSystem,
       place,
       zone,
       utcText,
@@ -250,6 +338,9 @@ function recomputeSaved(engine, chart) {
     lon: Number.isFinite(lon) ? lon : null,
     place: chart.place || chart.city || '',
     source: 'saved chart, recomputed',
+    houseSystem: chart.houseSystem || 'whole',
+    nodeMode: chart.nodeMode || 'mean',
+    timeAccuracy: chart.timeAccuracy || (known ? 'exact' : 'unknown'),
   });
 }
 
@@ -261,7 +352,13 @@ function seedSavedChart(chart) {
   const known = chartTimeKnown(chart);
   const natal = natalFromPositions(positions, chart, known);
   if (!chart || natal.sun == null) return null;
+  if (checkbox) {
+    checkbox.hidden = false;
+    checkbox.disabled = false;
+  }
   option.hidden = false;
+  option.dataset.mode = 'saved';
+  option.removeAttribute('role');
   byId('savedChartLabel').textContent = `Use saved chart · ${chart.name || date || 'latest chart'}`;
   if (date) byId('dob').value = date;
   const savedTime = chart.birthTime || chart.time || '';
@@ -291,13 +388,20 @@ function seedSavedChart(chart) {
   return {
     natal,
     timeKnown: known,
+    timeAccuracy: chart.timeAccuracy || (known ? 'exact' : 'unknown'),
     coordsKnown: Number.isFinite(lat) && Number.isFinite(lon),
     utcText: '',
     zone: validTimeZone(zone) ? zone : '',
+    houseSystem: chart.houseSystem || 'whole',
+    houseCusps: Array.isArray(chart.houses) ? chart.houses : null,
+    planetHouses: chart.planetHouses || null,
+    nodeMode: chart.nodeMode || 'mean',
     label: chart.name || date || 'Saved chart',
     birth: {
       dateText: date || '',
       timeText: known ? savedTime : '',
+      timeAccuracy: chart.timeAccuracy || (known ? 'exact' : 'unknown'),
+      houseSystem: chart.houseSystem || 'whole',
       place: chart.place || chart.city || '',
       zone: validTimeZone(zone) ? zone : '',
       utcText: '',
@@ -310,6 +414,9 @@ function seedSavedChart(chart) {
 }
 
 function withheldCopy(meta) {
+  if (meta.timeAccuracy === 'approximate' && meta.coordsKnown) {
+    return 'Birth time approximate. The chart is preserved at the entered time, but Rising, Midheaven and houses are provisional rather than exact.';
+  }
   if (meta.timeKnown && meta.coordsKnown) return '';
   if (!meta.timeKnown) {
     return 'Birth time unknown. Noon in the chosen zone was used as a date reference, not a birth hour. The Moon is approximate (±7°). Rising sign, Midheaven and houses are withheld.';
@@ -319,13 +426,23 @@ function withheldCopy(meta) {
 
 function renderReceipt(meta) {
   const host = byId('natalReceipt');
+  const houseName = HOUSE_NAMES[meta.houseSystem] || meta.houseSystem || 'Whole Sign';
+  const timeLabel = meta.timeAccuracy === 'approximate'
+    ? `${meta.birth.timeText} · approximate`
+    : meta.timeKnown ? `${meta.birth.timeText} · exact` : `Unknown · ${ASSUMED_HOUR} local used as a date reference, not a birth hour`;
+  const angleLabel = !meta.timeKnown || !meta.coordsKnown
+    ? 'Withheld.'
+    : meta.timeAccuracy === 'approximate'
+      ? 'Computed at the entered time · provisional.'
+      : 'Computed from the exact hour and town.';
   const rows = [
     ['Date', meta.birth.dateText || '—'],
-    ['Time', meta.timeKnown ? meta.birth.timeText : `Unknown · ${ASSUMED_HOUR} local used as a date reference, not a birth hour`],
+    ['Time', timeLabel],
     ['Place', meta.birth.place || '—'],
     ['Zone', meta.zone || '—'],
     ['Computed from', meta.utcText || 'Saved positions on this device'],
-    ['Angles', meta.timeKnown && meta.coordsKnown ? 'Rising and houses from the hour and the town.' : 'Withheld.'],
+    ['House method', meta.timeKnown && meta.coordsKnown ? `${houseName}${meta.timeAccuracy === 'approximate' ? ' · provisional' : ''}` : 'Withheld.'],
+    ['Angles', angleLabel],
   ];
   host.innerHTML = rows.map(([label, value]) => (
     `<div><span>${esc(label)}</span><p>${esc(value)}</p></div>`
@@ -348,7 +465,24 @@ function renderReading(reading, meta) {
   banner.hidden = !withheld;
   banner.textContent = withheld;
   renderReceipt(meta);
-  byId('natalMeta').textContent = `${meta.label}. ${reading.wordCount} words. ${meta.timeKnown ? 'Birth time used.' : 'Birth time unknown — Moon approximate (±7°); angles and houses withheld.'} ${reading.houseNote || ''}`;
+  const precision = meta.timeAccuracy === 'approximate'
+    ? 'Approximate birth time used; angles and houses are provisional.'
+    : meta.timeKnown
+      ? 'Exact birth time used.'
+      : 'Birth time unknown — Moon approximate (±7°); angles and houses withheld.';
+  byId('natalMeta').textContent = `${meta.label}. ${reading.wordCount} words. ${precision} ${reading.houseNote || ''}`;
+  const observatoryLink = byId('natalObservatoryLink');
+  if (observatoryLink && window.APSkyBridge && typeof APSkyBridge.buildLinkFromChart === 'function') {
+    const bridgeChart = meta.chart || {
+      birthDate: meta.birth.dateText,
+      birthTime: meta.timeKnown ? meta.birth.timeText : '',
+      tz: meta.zone,
+    };
+    const candidate = APSkyBridge.buildLinkFromChart(bridgeChart, { focus: 'earth' });
+    const candidateHasBirthMoment = /(?:[?#&])m=/.test(String(candidate || ''));
+    observatoryLink.href = candidateHasBirthMoment ? 'index.html#focus=earth' : candidate;
+    if (candidateHasBirthMoment) observatoryLink.textContent = 'Open the Observatory';
+  }
   byId('natalResult').hidden = false;
   try { byId('natalResult').focus({ preventScroll: true }); } catch (_) { byId('natalResult').focus(); }
 }
@@ -429,16 +563,17 @@ async function init() {
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=880').then((response) => {
+    fetch('js/reading-templates.json?v=901').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=880').then((response) => {
+    fetch('js/deep-templates.json?v=901').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),
   ]);
   const handoff = getSittingHandoff();
+  let handoffMeta = metaFromChartSnapshot(handoff, 'just-cast chart');
   const savedChart = getActiveChart();
   const savedMeta = seedSavedChart(savedChart);
   const form = byId('natalReadingForm');
@@ -447,7 +582,7 @@ async function init() {
     submit.disabled = false;
     submit.setAttribute('aria-busy', 'false');
   }
-  if (handoff && seedHandoffForm(handoff)) {
+  if (handoffMeta && seedHandoffForm(handoff)) {
     queueMicrotask(function () { form.requestSubmit(); });
   } else if (savedMeta) {
     const box = byId('useSavedChart');
@@ -458,13 +593,16 @@ async function init() {
     event.preventDefault();
     try {
       const useSaved = byId('useSavedChart').checked && savedMeta;
-      const meta = useSaved
-        ? (recomputeSaved(engine, savedChart) || savedMeta)
-        : manualNatal(engine);
+      const meta = handoffMeta || (useSaved ? savedMeta : manualNatal(engine));
+      handoffMeta = null;
       if (!meta.natal.sun) throw new Error('The chart could not be computed from that moment.');
       const sky = transitsNow(engine);
       const reading = buildDeepReading(meta.natal, base, deep, {
         birth: meta.birth || {},
+        timeAccuracy: meta.timeAccuracy || (meta.timeKnown ? 'exact' : 'unknown'),
+        houseSystem: meta.houseSystem || 'whole',
+        houseCusps: meta.houseCusps || null,
+        planetHouses: meta.planetHouses || null,
         transits: sky.transits,
         transitDateText: sky.transitDateText,
       });

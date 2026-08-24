@@ -1,11 +1,36 @@
-/* Couples sky — two natal clocks in one live WebGL sky. */
-/* Local only. Hash only. No scores. Never treat UK summer as UT/GMT. */
+/* Couples comparison — two natal clocks, one measured angle ledger. */
+/* Local only. Session-only continuity. No scores. Never treat UK summer as UT/GMT. */
 (function () {
   'use strict';
 
   var active = 'now';
   var scrubOffset = 0;
   var GEO = 'https://geocoding-api.open-meteo.com/v1/search';
+  var PRIVATE_PAIR_KEY = 'ap-compat-pair';
+  var PERSONAL_ADDRESS_KEYS = [
+    'a', 'at', 'an', 'az', 'ac', 'b', 'bt', 'bn', 'bz', 'bc',
+    'p1d', 'p1t', 'p1n', 'p1la', 'p1lo', 'p1tz', 'p1c',
+    'p2d', 'p2t', 'p2n', 'p2la', 'p2lo', 'p2tz', 'p2c',
+    // Historical native GET-form field names. Keep these explicit so old
+    // bookmarks are scrubbed before they can remain in browser history.
+    'person1-name', 'person1-date', 'person1-time', 'person1-city',
+    'person1-lat', 'person1-lon', 'person1-tz',
+    'person2-name', 'person2-date', 'person2-time', 'person2-city',
+    'person2-lat', 'person2-lon', 'person2-tz'
+  ];
+  var PERSONAL_ADDRESS_KEY_SET = {};
+  PERSONAL_ADDRESS_KEYS.forEach(function (key) {
+    PERSONAL_ADDRESS_KEY_SET[String(key).toLowerCase()] = true;
+  });
+
+  function personalAddressParamKeys(params) {
+    var found = [];
+    if (!params || typeof params.forEach !== 'function') return found;
+    params.forEach(function (_value, key) {
+      if (PERSONAL_ADDRESS_KEY_SET[String(key).toLowerCase()]) found.push(key);
+    });
+    return found;
+  }
 
   var BODIES = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'];
   var ASPECTS = [
@@ -235,25 +260,25 @@
     var a = readPerson('person1');
     var b = readPerson('person2');
     if (a.jd && b.jd) {
-      el.textContent = 'One model. Both birth minutes stay in the sky.';
+      el.textContent = 'Both birth minutes are computed in one private angle ledger.';
       return;
     }
     if (a.jd || b.jd) {
       var have = a.jd ? a.name : b.name;
       var need = a.jd ? b.name : a.name;
-      el.textContent = 'One model. ' + have + '\'s minute is in the sky. ' +
+      el.textContent = have + '\'s minute is ready. ' +
         need + ' still needs a birth time and a real zone.';
       return;
     }
     if ((a.date && !a.timeKnown) || (b.date && !b.timeKnown)) {
-      el.textContent = 'One model. Unknown birth time is not filled with noon. Moon and angles stay withheld.';
+      el.textContent = 'Unknown birth time is not filled with noon. Moon and time-sensitive angles stay withheld.';
       return;
     }
     if ((a.date && a.timeKnown && !a.zoneKnown) || (b.date && b.timeKnown && !b.zoneKnown)) {
-      el.textContent = 'One model. Civil time waits for a real zone from the birth town. Not treated as GMT.';
+      el.textContent = 'Civil time waits for a real zone from the birth town. It is not treated as GMT.';
       return;
     }
-    el.textContent = 'One model. Both birth minutes stay in the sky.';
+    el.textContent = 'Enter both minutes to compute their measured contacts.';
   }
 
   function showPerson(which) {
@@ -382,6 +407,12 @@
     var a = readPerson('person1');
     var b = readPerson('person2');
     list.innerHTML = '';
+    var started = ['person1-date', 'person1-time', 'person1-city', 'person2-date', 'person2-time', 'person2-city']
+      .some(function (id) { return String((byId(id) || {}).value || '').trim(); });
+    if (!started) {
+      box.hidden = true;
+      return;
+    }
     if (!a.zoneKnown || !b.zoneKnown) {
       box.hidden = false;
       var need = document.createElement('li');
@@ -435,56 +466,98 @@
     box.hidden = false;
   }
 
-  function oneFromParams(q, prefix) {
-    var date = q.get(prefix) || '';
+  function privatePerson(raw, prefix) {
+    raw = raw && typeof raw === 'object' ? raw : {};
+    var date = String(raw.date || '');
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
-    var time = q.get(prefix + 't') || '';
+    var time = String(raw.time || '');
     if (time && !/^\d{2}:\d{2}$/.test(time)) time = '';
-    var tz = q.get(prefix + 'z') || '';
+    var tz = String(raw.tz || '');
     if (tz && !isValidTimeZone(tz)) tz = '';
-    var city = q.get(prefix + 'c') || '';
+    var city = String(raw.city || '').slice(0, 120);
     if (city && isValidTimeZone(city)) city = '';
     if (city && !tz) {
       var hit = matchTown(city);
       if (hit) tz = hit.tz;
     }
-    return { date: date, time: time, name: q.get(prefix + 'n') || '', tz: tz, city: city };
+    var fallback = prefix === 'person2' ? 'B' : 'A';
+    var name = String(raw.name || '').slice(0, 80);
+    return { date: date, time: time, name: name || fallback, tz: tz, city: city };
   }
 
   function sceneFromHash(raw) {
     raw = raw != null ? String(raw).replace(/^#/, '') : (location.hash || '').replace(/^#/, '');
     if (!raw) return { a: null, b: null };
     var q = new URLSearchParams(raw);
-    return { a: oneFromParams(q, 'a'), b: oneFromParams(q, 'b') };
+    // Legacy personal-data fragments are deliberately rejected. A URL must
+    // never become a transport or persistence layer for a birth minute.
+    var hasPrivateData = personalAddressParamKeys(q).length > 0;
+    return { a: null, b: null, rejected: hasPrivateData };
   }
 
-  function writeHash() {
+  function privatePair() {
     var a = readPerson('person1');
     var b = readPerson('person2');
-    var q = new URLSearchParams();
-    if (a.date) {
-      q.set('a', a.date);
-      if (a.time) q.set('at', a.time);
-      if (a.name && a.name !== 'A') q.set('an', a.name);
-      if (a.zoneKnown) q.set('az', a.tz);
-      if (a.city && !isValidTimeZone(a.city)) q.set('ac', a.city);
+    function compact(person, fallback) {
+      if (!person.date) return null;
+      return {
+        date: person.date,
+        time: person.time || '',
+        name: person.name === fallback ? '' : person.name,
+        tz: person.zoneKnown ? person.tz : '',
+        city: person.city && !isValidTimeZone(person.city) ? person.city : ''
+      };
     }
-    if (b.date) {
-      q.set('b', b.date);
-      if (b.time) q.set('bt', b.time);
-      if (b.name && b.name !== 'B') q.set('bn', b.name);
-      if (b.zoneKnown) q.set('bz', b.tz);
-      if (b.city && !isValidTimeZone(b.city)) q.set('bc', b.city);
+    return { version: 1, a: compact(a, 'A'), b: compact(b, 'B') };
+  }
+
+  function sceneFromSession() {
+    try {
+      var saved = JSON.parse(sessionStorage.getItem(PRIVATE_PAIR_KEY) || 'null');
+      if (!saved || saved.version !== 1) return { a: null, b: null };
+      return {
+        a: privatePerson(saved.a, 'person1'),
+        b: privatePerson(saved.b, 'person2')
+      };
+    } catch (e) {
+      return { a: null, b: null };
     }
-    var next = q.toString();
-    var hash = next ? '#' + next : '';
-    if (location.hash === hash) return;
-    if (history.replaceState) history.replaceState(null, '', location.pathname + hash);
-    else location.hash = next;
+  }
+
+  function clearPersonalAddress() {
+    var search = String(location.search || '').replace(/^\?/, '');
+    var hash = String(location.hash || '').replace(/^#/, '');
+    var query = new URLSearchParams(search);
+    var fragment = new URLSearchParams(hash);
+    var privateQueryKeys = personalAddressParamKeys(query);
+    var privateHashKeys = personalAddressParamKeys(fragment);
+    var dirtyQuery = privateQueryKeys.length > 0;
+    var dirtyHash = privateHashKeys.length > 0;
+    privateQueryKeys.forEach(function (key) { query.delete(key); });
+    if (!dirtyQuery && !dirtyHash) return;
+    var cleanSearch = query.toString();
+    var cleanHash = dirtyHash ? '' : hash;
+    var clean = location.pathname + (cleanSearch ? '?' + cleanSearch : '') + (cleanHash ? '#' + cleanHash : '');
+    if (history.replaceState) history.replaceState(null, '', clean);
+  }
+
+  // An old bookmark can target this already-open document without re-running
+  // the boot path. Re-scrub same-document fragment navigation so historical
+  // birth records cannot remain in the address bar for even that route shape.
+  if (window.addEventListener) window.addEventListener('hashchange', clearPersonalAddress);
+
+  function writeHash() {
+    try {
+      sessionStorage.setItem(PRIVATE_PAIR_KEY, JSON.stringify(privatePair()));
+    } catch (e) {
+      // Storage can be blocked. Privacy fails closed: the URL remains clean.
+    }
+    clearPersonalAddress();
   }
 
   function applyHash() {
-    var scene = sceneFromHash();
+    clearPersonalAddress();
+    var scene = sceneFromSession();
     if (scene.a) {
       writeField('person1-date', scene.a.date);
       writeField('person1-time', scene.a.time);
@@ -522,7 +595,7 @@
 
   function inviteLink() {
     writeHash();
-    return location.origin + location.pathname + location.hash;
+    return location.origin + location.pathname;
   }
 
   function onInvite() {
@@ -538,7 +611,7 @@
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(link).then(function () {
-        label('Hash link copied');
+        label('Clean page link copied');
       }).catch(function () {
         label('Could not copy');
       });
@@ -582,7 +655,7 @@
     setPressed('now');
     resetScrub();
     enableScrub(false);
-    stamp(a.name + ' and ' + b.name + ' · both minutes in the live sky');
+    stamp(a.name + ' and ' + b.name + ' · comparison computed on this device');
     applyNatalClocks();
     writeHash();
     renderAngles();
@@ -821,7 +894,7 @@
     bindCity('person1');
     bindCity('person2');
     applyHash();
-    if (!sceneFromHash().a) {
+    if (!sceneFromSession().a) {
       enableToggles();
       setPressed('now');
       enableScrub(false);
@@ -846,6 +919,7 @@
     personFromFields: personFromFields,
     clocksFromPeople: clocksFromPeople,
     sceneFromHash: sceneFromHash,
+    sceneFromSession: sceneFromSession,
     matchTown: matchTown,
     minuteLabel: minuteLabel,
     OFFLINE_TOWNS: OFFLINE_TOWNS
