@@ -119,7 +119,7 @@ assert.ok(natalHtml.includes('ap-room-sky') && natalHtml.includes('ap-surface-a'
 assert.equal(natalHtml.includes('<void-orrery'), false, 'reading page must not start a second WebGL model');
 assert.ok(/not behind a paywall/i.test(natalHtml), 'the live Observatory must be named as free');
 assert.equal(/unlock the sky|buy to see the sky/i.test(natalHtml), false, 'the live sky must not be gated');
-assert.ok(/Paid print unlock is not open/.test(natalHtml), 'paid print stays closed');
+assert.equal(/paid print|print unlock|unlock the print/i.test(natalHtml), false, 'deep reading must not advertise a dormant paid print');
 assert.equal(/£\d|\$\d/.test(natalHtml), false, 'page must not invent a price');
 assert.ok(natalHtml.includes('natal-lat') && natalHtml.includes('natal-lon'), 'town pick must keep coordinates for a real rising sign');
 assert.ok(/date reference, not a birth hour/.test(natalHtml), 'unknown time must be disclosed on the page, not only in the engine');

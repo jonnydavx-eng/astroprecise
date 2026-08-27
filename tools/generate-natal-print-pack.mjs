@@ -117,6 +117,83 @@ async function localServer() {
   return { server, base: `http://127.0.0.1:${address.port}` };
 }
 
+async function installStudioExportFinish(page) {
+  await page.evaluate(() => {
+    if (window.__apStudioExportFinishInstalled) return;
+    window.__apStudioExportFinishInstalled = true;
+    const nativeFillText = CanvasRenderingContext2D.prototype.fillText;
+    const finished = new WeakSet();
+    const placementTables = new WeakMap();
+    CanvasRenderingContext2D.prototype.fillText = function studioFillText(text, x, y, maxWidth) {
+      const label = String(text || '');
+      const canvas = this.canvas;
+      if (
+        canvas?.width === 4960 && canvas?.height === 7016 &&
+        label === 'P L A N E T A R Y   P L A C E M E N T S' &&
+        !finished.has(canvas)
+      ) {
+        finished.add(canvas);
+        const scale = canvas.width / 1080;
+        placementTables.set(canvas, { headingY: y, scale });
+        const panelX = 150 * scale;
+        const panelY = y - 30 * scale;
+        const panelW = canvas.width - panelX * 2;
+        const panelH = 324 * scale;
+        this.save();
+        this.beginPath();
+        if (this.roundRect) this.roundRect(panelX, panelY, panelW, panelH, 18 * scale);
+        else this.rect(panelX, panelY, panelW, panelH);
+        this.fillStyle = 'rgba(7,16,30,0.94)';
+        this.fill();
+        this.strokeStyle = 'rgba(139,169,255,0.48)';
+        this.lineWidth = 1.2 * scale;
+        this.stroke();
+
+        // Alternating ledger rows and a centre rule improve scanability at
+        // print size. They sit behind the existing computed text and never
+        // touch the chart wheel or any degree geometry.
+        for (let row = 0; row < 5; row++) {
+          const rowY = y + (29 + row * 56) * scale;
+          this.fillStyle = row % 2
+            ? 'rgba(139,169,255,0.035)'
+            : 'rgba(147,168,191,0.07)';
+          this.fillRect(panelX + 14 * scale, rowY, panelW - 28 * scale, 50 * scale);
+        }
+        this.strokeStyle = 'rgba(147,168,191,0.22)';
+        this.lineWidth = scale;
+        this.beginPath();
+        this.moveTo(canvas.width / 2, y + 29 * scale);
+        this.lineTo(canvas.width / 2, panelY + panelH - 18 * scale);
+        this.stroke();
+        this.restore();
+      }
+      let drawX = x;
+      const placementTable = placementTables.get(canvas);
+      if (
+        placementTable && /^H\d{1,2}$/.test(label) &&
+        y > placementTable.headingY &&
+        y < placementTable.headingY + 340 * placementTable.scale
+      ) {
+        const { scale } = placementTable;
+        // Keep the house label visually separate from the right-aligned
+        // degree value. This changes export typography only; wheel geometry,
+        // positions and computed degree strings pass through untouched.
+        drawX = x - 44 * scale;
+        this.save();
+        this.fillStyle = 'rgba(4,8,18,0.72)';
+        this.beginPath();
+        if (this.roundRect) this.roundRect(drawX - 8 * scale, y - 18 * scale, 52 * scale, 24 * scale, 6 * scale);
+        else this.rect(drawX - 8 * scale, y - 18 * scale, 52 * scale, 24 * scale);
+        this.fill();
+        this.restore();
+      }
+      return maxWidth === undefined
+        ? nativeFillText.call(this, text, drawX, y)
+        : nativeFillText.call(this, text, drawX, y, maxWidth);
+    };
+  });
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (!args.in || !args.out) throw new Error('Usage: generate-natal-print-pack.mjs --in <private canonical order.json> --out <private directory>');
@@ -163,6 +240,7 @@ async function main() {
       Object.defineProperty(navigator, 'canShare', { configurable: true, value: () => false });
       Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
     });
+    await installStudioExportFinish(page);
 
     for (const [format, filename, width, height] of FORMATS) {
       await page.locator('#poster-btn').click();

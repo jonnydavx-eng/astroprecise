@@ -6,11 +6,11 @@
  * local fonts, rejects any overflowing designed page, writes dark and ink-light
  * reading PDFs, and records hashes/page counts in render-manifest.json.
  */
-import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, unlinkSync } from 'fs';
-import { basename, join, resolve } from 'path';
-import { pathToFileURL } from 'url';
+import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSync } from 'fs';
+import { createServer } from 'node:http';
+import { basename, extname, join, resolve, sep } from 'path';
 import { createRequire } from 'module';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, PDFHexString, PDFName } from 'pdf-lib';
 import { ROOT, parseArgs, sha256 } from './fulfil-shared.mjs';
 
 const require = createRequire(import.meta.url);
@@ -34,9 +34,74 @@ function oneHtml(dir, prefix, required = true) {
   return join(dir, matches[0]);
 }
 
-function addWebsiteBase(html) {
-  const base = pathToFileURL(join(ROOT, 'website') + '/').href;
+function addWebsiteBase(html, base) {
   return html.replace(/<head>/i, `<head><base href="${base}">`);
+}
+
+async function startWebsiteAssetServer() {
+  const websiteRoot = resolve(ROOT, 'website');
+  let privateHtml = null;
+  const mime = new Map([
+    ['.css', 'text/css; charset=utf-8'],
+    ['.woff2', 'font/woff2'],
+    ['.svg', 'image/svg+xml'],
+    ['.png', 'image/png'],
+    ['.webp', 'image/webp'],
+  ]);
+  const server = createServer((request, response) => {
+    try {
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        response.writeHead(405).end();
+        return;
+      }
+      const pathname = decodeURIComponent(new URL(request.url || '/', 'http://127.0.0.1').pathname);
+      if (pathname === '/__astroprecise-private-render.html') {
+        if (privateHtml == null) {
+          response.writeHead(404).end();
+          return;
+        }
+        const bytes = Buffer.from(privateHtml, 'utf8');
+        response.writeHead(200, {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Length': bytes.length,
+          'Cache-Control': 'no-store',
+          'X-Content-Type-Options': 'nosniff',
+        });
+        if (request.method === 'HEAD') response.end();
+        else response.end(bytes);
+        return;
+      }
+      const candidate = resolve(websiteRoot, `.${pathname}`);
+      if (candidate !== websiteRoot && !candidate.startsWith(`${websiteRoot}${sep}`)) {
+        response.writeHead(403).end();
+        return;
+      }
+      const stat = statSync(candidate);
+      if (!stat.isFile()) throw new Error('not a file');
+      response.writeHead(200, {
+        'Content-Type': mime.get(extname(candidate).toLowerCase()) || 'application/octet-stream',
+        'Content-Length': stat.size,
+        'Cache-Control': 'no-store',
+        'X-Content-Type-Options': 'nosniff',
+      });
+      if (request.method === 'HEAD') response.end();
+      else response.end(readFileSync(candidate));
+    } catch {
+      response.writeHead(404).end();
+    }
+  });
+  await new Promise((resolveListen, rejectListen) => {
+    server.once('error', rejectListen);
+    server.listen(0, '127.0.0.1', resolveListen);
+  });
+  const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('Local product asset server did not expose a TCP port');
+  return {
+    origin: `http://127.0.0.1:${address.port}`,
+    base: `http://127.0.0.1:${address.port}/`,
+    setPrivateHtml: (html) => { privateHtml = html; },
+    close: () => new Promise((resolveClose, rejectClose) => server.close((error) => error ? rejectClose(error) : resolveClose())),
+  };
 }
 
 function paidMeta(html, label) {
@@ -52,39 +117,38 @@ function paidMeta(html, label) {
 async function addMetadata(pdfPath, meta) {
   const original = readFileSync(pdfPath);
   const pdf = await PDFDocument.load(original);
+  if (!pdf.catalog.has(PDFName.of('StructTreeRoot')) || !pdf.catalog.has(PDFName.of('MarkInfo'))) {
+    throw new Error(`${basename(pdfPath)} was not emitted as a tagged PDF`);
+  }
   pdf.setTitle(meta.title);
-  pdf.setAuthor('Jonathan Davenport trading as AstroPrecise');
+  pdf.setAuthor('Jonathan Davenport / AstroPrecise');
   pdf.setSubject(meta.subject);
-  pdf.setCreator('AstroPrecise Studio v901');
-  pdf.setProducer('AstroPrecise Studio v901 / Microsoft Edge');
+  pdf.setCreator('AstroPrecise Studio v902');
+  pdf.setProducer('AstroPrecise Studio v902 / Microsoft Edge');
   pdf.setLanguage('en-GB');
+  const fixedDateValue = process.env.AP_STUDIO_PDF_FIXED_DATE;
+  if (fixedDateValue) {
+    const fixedDate = new Date(fixedDateValue);
+    if (Number.isNaN(fixedDate.getTime())) throw new Error('AP_STUDIO_PDF_FIXED_DATE must be an ISO date');
+    const seed = `${process.env.AP_STUDIO_INPUT_HASH || 'sample'}:${basename(pdfPath)}`;
+    const documentId = PDFHexString.of(sha256(seed).slice(0, 32));
+    pdf.setCreationDate(fixedDate);
+    pdf.setModificationDate(fixedDate);
+    pdf.context.trailerInfo.ID = pdf.context.obj([documentId, documentId]);
+  }
   const bytes = await pdf.save({ useObjectStreams: false });
   writeFileSync(pdfPath, bytes);
-  return { pages: pdf.getPageCount(), bytes: bytes.length, sha256: sha256(bytes) };
+  const verified = await PDFDocument.load(bytes);
+  const tagged = verified.catalog.has(PDFName.of('StructTreeRoot')) && verified.catalog.has(PDFName.of('MarkInfo'));
+  if (!tagged) throw new Error(`${basename(pdfPath)} lost its accessibility tag tree during metadata finishing`);
+  return { pages: verified.getPageCount(), bytes: bytes.length, sha256: sha256(bytes), tagged: true };
 }
 
-async function deriveA4FromA3(sourcePath, outputPath) {
-  const sourceBytes = readFileSync(sourcePath);
-  const target = await PDFDocument.create();
-  const [embedded] = await target.embedPdf(sourceBytes, [0]);
-  const page = target.addPage([595.28, 841.89]);
-  const scale = Math.min(page.getWidth() / embedded.width, page.getHeight() / embedded.height);
-  const width = embedded.width * scale;
-  const height = embedded.height * scale;
-  page.drawPage(embedded, { x: (page.getWidth() - width) / 2, y: (page.getHeight() - height) / 2, width, height });
-  target.setTitle('Natal Sky home-print A4 plate');
-  target.setAuthor('Jonathan Davenport trading as AstroPrecise');
-  target.setSubject('A4-scaled personal copy of the RGB home-print natal chart plate.');
-  target.setCreator('AstroPrecise Studio v901');
-  target.setProducer('AstroPrecise Studio v901 / pdf-lib');
-  target.setLanguage('en-GB');
-  const bytes = await target.save({ useObjectStreams: false });
-  writeFileSync(outputPath, bytes);
-  return { file: basename(outputPath), variant: 'home-print-a4', pages: 1, bytes: bytes.length, sha256: sha256(bytes), overflow: 0, overflowX: 0, overflowY: 0, fonts: 'embedded-from-a3' };
-}
+const REQUIRED_PRODUCT_FONTS = Object.freeze(['AstroGlyph', 'Cinzel', 'Cormorant Garamond', 'IBM Plex Mono']);
 
-async function renderVariant(page, { html, pdfPath, light, expectedPages, title, subject }) {
-  await page.setContent(addWebsiteBase(html), { waitUntil: 'load' });
+async function renderVariant(page, { html, pdfPath, light, expectedPages, title, subject, assetBase, setPrivateHtml, pageSize = 'css' }) {
+  setPrivateHtml(addWebsiteBase(html, assetBase));
+  await page.goto(`${assetBase}__astroprecise-private-render.html?variant=${encodeURIComponent(basename(pdfPath))}`, { waitUntil: 'load' });
   await page.evaluate(async () => {
     if (document.fonts?.ready) await document.fonts.ready;
   });
@@ -94,6 +158,9 @@ async function renderVariant(page, { html, pdfPath, light, expectedPages, title,
     return {
       expected: Number(document.body.dataset.apPageCount || 0),
       fontStatus: document.fonts?.status || 'unsupported',
+      loadedFontFamilies: [...new Set([...document.fonts]
+        .filter((face) => face.status === 'loaded')
+        .map((face) => face.family.replace(/^['"]|['"]$/g, '')))].sort(),
       pages: nodes.map((node, index) => ({
         index,
         key: node.getAttribute('data-page') || String(index),
@@ -108,22 +175,37 @@ async function renderVariant(page, { html, pdfPath, light, expectedPages, title,
     };
   });
   if (audit.fontStatus !== 'loaded') throw new Error(`Fonts not loaded for ${basename(pdfPath)}: ${audit.fontStatus}`);
+  const missingFonts = REQUIRED_PRODUCT_FONTS.filter((family) => !audit.loadedFontFamilies.includes(family));
+  if (missingFonts.length) {
+    throw new Error(`${basename(pdfPath)} did not load required product fonts: ${missingFonts.join(', ')}`);
+  }
   if (audit.expected !== expectedPages || audit.pages.length !== expectedPages) {
     throw new Error(`${basename(pdfPath)} DOM page count ${audit.pages.length}/${audit.expected}; expected ${expectedPages}`);
   }
   const over = audit.pages.filter((entry) => entry.overflowX > 1 || entry.overflowY > 1);
   if (over.length) throw new Error(`${basename(pdfPath)} has overflowing designed pages: ${over.map((entry) => `${entry.key} x+${entry.overflowX}px y+${entry.overflowY}px`).join(', ')}`);
-  await page.pdf({
+  const pdfOptions = {
     path: pdfPath,
     printBackground: true,
-    preferCSSPageSize: true,
+    preferCSSPageSize: pageSize === 'css',
     displayHeaderFooter: false,
     tagged: true,
     outline: true,
-  });
+  };
+  if (pageSize === 'a4') pdfOptions.format = 'A4';
+  await page.pdf(pdfOptions);
   const pdf = await addMetadata(pdfPath, { title, subject });
   if (pdf.pages !== expectedPages) throw new Error(`${basename(pdfPath)} physical page count ${pdf.pages}; expected ${expectedPages}`);
-  return { file: basename(pdfPath), variant: light ? 'ink-light' : 'screen', ...pdf, overflow: 0, overflowX: 0, overflowY: 0, fonts: audit.fontStatus };
+  return {
+    file: basename(pdfPath),
+    variant: light ? 'ink-light' : 'screen',
+    ...pdf,
+    overflow: 0,
+    overflowX: 0,
+    overflowY: 0,
+    fonts: audit.fontStatus,
+    fontFamilies: audit.loadedFontFamilies,
+  };
 }
 
 async function main() {
@@ -144,37 +226,43 @@ async function main() {
   for (const meta of sourceMetas.slice(1)) {
     for (const key of bindingKeys) if ((meta[key] ?? null) !== binding[key]) throw new Error(`Generated sources disagree on ${key}`);
   }
-  const browser = await chromium.launch({ executablePath: edgePath(), headless: true, args: ['--disable-gpu', '--no-pdf-header-footer'] });
-  const context = await browser.newContext({ locale: 'en-GB', serviceWorkers: 'block' });
+  const assets = await startWebsiteAssetServer();
+  let browser;
+  let context;
   const blockedRequests = [];
-  await context.route('**/*', async (route) => {
-    const requestUrl = new URL(route.request().url());
-    if (['file:', 'data:', 'blob:', 'about:'].includes(requestUrl.protocol)) await route.continue();
-    else {
-      blockedRequests.push(requestUrl.origin);
-      await route.abort();
-    }
-  });
-  const page = await context.newPage();
   const results = [];
-  const a4LightSource = join(dir, '.natal-sky-home-print-a4-source.pdf');
   try {
+    browser = await chromium.launch({ executablePath: edgePath(), headless: true, args: ['--disable-gpu', '--no-pdf-header-footer'] });
+    context = await browser.newContext({ locale: 'en-GB', serviceWorkers: 'block' });
+    await context.route('**/*', async (route) => {
+      const requestUrl = new URL(route.request().url());
+      if (['data:', 'blob:', 'about:'].includes(requestUrl.protocol) || requestUrl.origin === assets.origin) await route.continue();
+      else {
+        blockedRequests.push(requestUrl.origin);
+        await route.abort();
+      }
+    });
+    const page = await context.newPage();
     if (readingHtml) {
       results.push(await renderVariant(page, {
         html: readingHtml,
         pdfPath: join(dir, 'personal-sky-keepsake-screen.pdf'),
         light: false,
         expectedPages: 20,
-        title: 'Personal Sky Keepsake — screen edition',
+        title: 'Personal Sky Keepsake - screen edition',
         subject: 'Computed natal positions with traditional astrological interpretation for reflection and entertainment.',
+        assetBase: assets.base,
+        setPrivateHtml: assets.setPrivateHtml,
       }));
       results.push(await renderVariant(page, {
         html: readingHtml,
         pdfPath: join(dir, 'personal-sky-keepsake-print.pdf'),
         light: true,
         expectedPages: 20,
-        title: 'Personal Sky Keepsake — ink-light print edition',
+        title: 'Personal Sky Keepsake - ink-light print edition',
         subject: 'Ink-light personal copy of a computed natal chart and reflective astrological reading.',
+        assetBase: assets.base,
+        setPrivateHtml: assets.setPrivateHtml,
       }));
     }
     results.push(await renderVariant(page, {
@@ -184,24 +272,25 @@ async function main() {
       expectedPages: 1,
       title: 'Natal Sky home-print A3 plate',
       subject: 'RGB A3 home-print natal chart plate; no bleed or commercial press colour profile is claimed.',
+      assetBase: assets.base,
+      setPrivateHtml: assets.setPrivateHtml,
     }));
-    await renderVariant(page, {
+    results.push(await renderVariant(page, {
       html: posterHtml.replaceAll('HOME-PRINT A3', 'HOME-PRINT A4'),
-      pdfPath: a4LightSource,
+      pdfPath: join(dir, 'natal-sky-home-print-a4.pdf'),
       light: true,
       expectedPages: 1,
-      title: 'Natal Sky ink-light A4 source plate',
-      subject: 'Ink-light RGB source plate for the scaled A4 home-print edition.',
-    });
-    results.push(await deriveA4FromA3(
-      a4LightSource,
-      join(dir, 'natal-sky-home-print-a4.pdf'),
-    ));
+      title: 'Natal Sky home-print A4 plate',
+      subject: 'Ink-light RGB A4 home-print natal chart plate; no bleed or commercial press colour profile is claimed.',
+      assetBase: assets.base,
+      setPrivateHtml: assets.setPrivateHtml,
+      pageSize: 'a4',
+    }));
     if (blockedRequests.length) throw new Error(`Blocked ${blockedRequests.length} external request(s) while rendering private product HTML`);
   } finally {
-    if (existsSync(a4LightSource)) unlinkSync(a4LightSource);
-    await context.close();
-    await browser.close();
+    if (context) await context.close();
+    if (browser) await browser.close();
+    await assets.close();
   }
   const manifest = {
     schema: 'astroprecise-studio-render-v901',

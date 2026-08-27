@@ -254,7 +254,7 @@ const reading = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style
   <h1 style="font-size:20pt;">One horizon.</h1>
   <p class="lede">${esc(a.name)} & ${esc(b.name)} — your charts score ${Math.round(syn.overall || 0)} for fit, but a chart is not a verdict. It is a map of where you flow and where you stretch.</p>
   <p>Lead with what already agrees between you, and treat the friction points not as faults but as the places the relationship is asking each of you to grow. This reading is orientation, not prediction — the sky you were each born under, and the geometry between them, drawn honestly. What you build on it is yours.</p>
-  <p style="margin-top:18pt;font-family:'Cinzel',serif;font-size:8pt;letter-spacing:.2em;color:#5E5748;">✦ This reading is computed; the words are then personally edited before delivery. ✦</p>
+  <p style="margin-top:18pt;font-family:'Cinzel',serif;font-size:8pt;letter-spacing:.2em;color:#5E5748;">✦ This reading is computed and quality-checked before delivery. ✦</p>
   ${foot('4')}
 </div>
 </body></html>`;

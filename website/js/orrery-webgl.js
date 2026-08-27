@@ -35,7 +35,7 @@ import {
   moonPhaseFromEphemeris,
   integrateDayOffset,
   keplerGuidePoints,
-} from './orbitlab-orbital-math.js?v=901';
+} from './orbitlab-orbital-math.js?v=902';
 
 const RadialBlurShader = {
   name: 'RadialBlurShader',
@@ -9729,7 +9729,12 @@ const FinishShader = {
     if (!window.AstroEphemeris) throw new Error('AstroEphemeris not loaded');
     canvas = canvasEl; wrap = canvas.parentElement;
 
-    perfTier = getPerfTier();
+    const deterministicStudioCapture = window.__AP_STUDIO_CAPTURE__ === true;
+    // The isolated fulfilment renderer needs one fixed geometry/DPR/composer
+    // path. Software-renderer capability probing is not guaranteed to expose
+    // the debug label on every launch, so do not let that optional signal make
+    // two identical customer orders choose different render tiers.
+    perfTier = deterministicStudioCapture ? 'low' : getPerfTier();
     const preloaderMode = !!window.__orreryPreloaderOwns;
     earthFirstBoot = !!(
       instrumentMode && freeExploreMode && selectedPlanetId === 'earth' && isLivingSkyHome()
@@ -9743,7 +9748,11 @@ const FinishShader = {
 
     renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: !preloaderMode,
+      // Driver antialiasing can vary at sub-pixel edges between otherwise
+      // identical software-WebGL fulfilment runs. The dedicated Studio capture
+      // context renders without it and downsamples once in the export pipeline;
+      // interactive visitors retain the authored antialiasing path.
+      antialias: !preloaderMode && !deterministicStudioCapture,
       alpha: true,
       premultipliedAlpha: true,
       powerPreference: preloaderMode ? 'default' : 'high-performance',
@@ -9754,7 +9763,7 @@ const FinishShader = {
     // Capability owns quality: software WebGL remains the same live model, but
     // receives the established low-tier geometry/DPR/post-processing budget.
     // This runs before any scene construction, texture work, resize or compile.
-    if (usesSoftwareWebGLRenderer(renderer)) perfTier = 'low';
+    if (!deterministicStudioCapture && usesSoftwareWebGLRenderer(renderer)) perfTier = 'low';
     renderer.setClearColor(0x000000, 0);
     canvas.style.background = 'transparent';
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -11558,6 +11567,24 @@ const FinishShader = {
     });
     const sunScale = sunMesh ? sunMesh.scale.clone() : null;
     const glowOpacity = sunGlow.map((sprite) => sprite && sprite.material ? sprite.material.opacity : null);
+    // Freeze every time-driven shader clock for the duration of the authored
+    // still. The interactive scene resumes its previous clocks immediately
+    // afterwards, while repeated fulfilment renders remain byte-reproducible.
+    const animatedUniforms = [];
+    const seenMaterials = new Set();
+    scene.traverse((object) => {
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.filter(Boolean).forEach((material) => {
+        if (seenMaterials.has(material)) return;
+        seenMaterials.add(material);
+        ['uTime', 'uTimeSlow', 'uTimeFast'].forEach((name) => {
+          const uniform = material.uniforms && material.uniforms[name];
+          if (!uniform || typeof uniform.value !== 'number') return;
+          animatedUniforms.push([uniform, uniform.value]);
+          uniform.value = 0;
+        });
+      });
+    });
     const previous = {
       dayOffset,
       scrollBias,
@@ -11616,6 +11643,7 @@ const FinishShader = {
         }
       });
       if (instrumentFillLight) instrumentFillLight.intensity = 0;
+      animatedUniforms.forEach(([uniform, value]) => { uniform.value = value; });
       if (domLabelLayer) domLabelLayer.style.visibility = previous.domLabelsVisibility;
       needRecompute = previous.needRecompute;
       applyCamera();

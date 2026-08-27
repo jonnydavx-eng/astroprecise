@@ -1,4 +1,11 @@
-ASTROPRECISE — CUSTOMER DELIVERY EMAIL TEMPLATES
+RETIRED LEGACY TEMPLATE SET — DO NOT USE FOR V902 STUDIO ORDERS
+This file predates the controlled self-order Studio fulfilment path and contains
+unsupported products, gifting, old providers and unapproved retention promises.
+It is preserved only as migration evidence. The future live path must send the
+versioned, hash-bound durable confirmation and delivery copy generated from the
+approved self-only product and signed-in checkout evidence.
+
+ASTROPRECISE — HISTORICAL CUSTOMER DELIVERY EMAIL TEMPLATES
 Paste into your mail client (or automate later). Replace {name}, {product}, {orderId} before send.
 Print HTML deliverables to PDF first (Chrome → Print → Save as PDF, backgrounds on).
 

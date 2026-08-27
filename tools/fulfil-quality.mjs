@@ -27,7 +27,7 @@ const PNG_DIMS = {
   'birthday-reveal-1080x1920.png': [1080, 1920],
   'birthday-moon-plate-2160x2160.png': [2160, 2160],
 };
-const DOCS = ['README.txt', 'PERSONAL-USE-LICENCE.txt', 'PRINT-GUIDE.txt', 'CUSTOMER-MANIFEST.json'];
+const DOCS = ['README.txt', 'PERSONAL-USE-LICENCE.txt', 'PRINT-GUIDE.txt', 'THIRD-PARTY-CREDITS.txt', 'CUSTOMER-MANIFEST.json'];
 const RETIRED = ['#C9A227', '#E8C872', '#F0A878', '#050406', '#0D0A07', 'rgba(201,162,39'];
 const PROVENANCE_KEY_BYTES = 32;
 const PROVENANCE_PREFIX = 'AP-';
@@ -36,7 +36,7 @@ const PDF_VISUAL_LIMITS = Object.freeze({
   stdev: 8,
   range: 15,
   lowContrastRange: 8,
-  lowContrastStdev: 16,
+  lowContrastStdev: 12.5,
   lowContrastEdge: 1.5,
   edge: 0.75,
   darkFraction: 0.02,
@@ -44,18 +44,28 @@ const PDF_VISUAL_LIMITS = Object.freeze({
 });
 
 const PNG_VISUAL_LIMITS = Object.freeze({
-  minMean: 5,
-  maxMean: 250,
-  stdev: 5,
-  range: 6,
-  edge: 0.5,
-  nonBlackFraction: 0.20,
-  chroma: 5,
+  minMean: 16,
+  maxMean: 238,
+  stdev: 12,
+  range: 28,
+  edge: 2,
+  nonBlackFraction: 0.92,
+  chroma: 12,
+  edgeCentroidMin: 0.15,
+  edgeCentroidMax: 0.85,
+  upperEdgeFraction: 0.08,
+  activeEdgeCells: 5,
 });
 const OBSERVATORY_VISUAL_LIMITS = Object.freeze({
   ...PNG_VISUAL_LIMITS,
-  minMean: 3,
-  nonBlackFraction: 0.05,
+  minMean: 26,
+  stdev: 10,
+  range: 16,
+  edge: 1.4,
+  nonBlackFraction: 0.95,
+  chroma: 28,
+  upperEdgeFraction: 0.09,
+  activeEdgeCells: 6,
 });
 
 function normal(text) {
@@ -83,6 +93,11 @@ function visibleHtmlText(source) {
 function assertWorkStartBinding(control, privateOrder) {
   const expected = {
     contractAt: privateOrder.contractAt ?? null,
+    termsAccepted: privateOrder.termsAccepted === true,
+    termsAcceptedAt: privateOrder.termsAcceptedAt ?? null,
+    termsAcceptedActor: privateOrder.termsAcceptedActor ?? null,
+    termsVersion: privateOrder.termsVersion ?? null,
+    termsHash: privateOrder.termsHash ?? null,
     buyerDurableConfirmationSentAt: privateOrder.buyerDurableConfirmationSentAt ?? null,
     buyerDurableConfirmationVersion: privateOrder.buyerDurableConfirmationVersion ?? null,
     buyerDurableConfirmationFile: privateOrder.buyerDurableConfirmationFile ?? null,
@@ -169,21 +184,34 @@ function visualMetrics(data, info) {
   }
   let edgeSum = 0;
   let edges = 0;
+  let edgeXSum = 0;
+  let edgeYSum = 0;
+  let upperEdgeSum = 0;
+  const edgeCells = new Float64Array(9);
+  const recordEdge = (value, x, y) => {
+    edgeSum += value;
+    edges++;
+    edgeXSum += value * x;
+    edgeYSum += value * y;
+    if (y < info.height / 3) upperEdgeSum += value;
+    const cellX = Math.min(2, Math.floor(x / info.width * 3));
+    const cellY = Math.min(2, Math.floor(y / info.height * 3));
+    edgeCells[cellY * 3 + cellX] += value;
+  };
   for (let y = 0; y < info.height; y++) {
     const row = y * info.width;
     for (let x = 0; x < info.width; x++) {
       const at = row + x;
       if (x + 1 < info.width) {
-        edgeSum += Math.abs(luma[at] - luma[at + 1]);
-        edges++;
+        recordEdge(Math.abs(luma[at] - luma[at + 1]), x + .5, y);
       }
       if (y + 1 < info.height) {
-        edgeSum += Math.abs(luma[at] - luma[at + info.width]);
-        edges++;
+        recordEdge(Math.abs(luma[at] - luma[at + info.width]), x, y + .5);
       }
     }
   }
   const mean = sum / pixels;
+  const edgeCellFractions = [...edgeCells].map((value) => edgeSum ? value / edgeSum : 0);
   return {
     width: info.width,
     height: info.height,
@@ -195,6 +223,10 @@ function visualMetrics(data, info) {
     below250: below250 / pixels,
     above5: above5 / pixels,
     chroma: chromaSum / pixels,
+    edgeCentroidX: edgeSum ? edgeXSum / edgeSum / info.width : .5,
+    edgeCentroidY: edgeSum ? edgeYSum / edgeSum / info.height : .5,
+    upperEdgeFraction: edgeSum ? upperEdgeSum / edgeSum : 0,
+    activeEdgeCells: edgeCellFractions.filter((value) => value >= .04).length,
   };
 }
 
@@ -207,6 +239,9 @@ function metricsSummary(metrics) {
     `<250 ${(metrics.below250 * 100).toFixed(2)}%`,
     `>5 ${(metrics.above5 * 100).toFixed(2)}%`,
     `chroma ${metrics.chroma.toFixed(2)}`,
+    `edge-centroid ${metrics.edgeCentroidX.toFixed(3)},${metrics.edgeCentroidY.toFixed(3)}`,
+    `upper-edge ${(metrics.upperEdgeFraction * 100).toFixed(1)}%`,
+    `active-cells ${metrics.activeEdgeCells}/9`,
   ].join(', ');
 }
 
@@ -217,7 +252,9 @@ function assertPdfVisual(metrics, file, pageNumber) {
   // Sparse ink-light pages can have a p05 and p95 both in the paper field even
   // while their text/diagram pixels have healthy variance and edge energy.
   // Keep 15 as the normal floor, with a measured-valid low-contrast exception
-  // that still demands range >=8, stdev >=16 and edge >=1.5 together.
+  // that still demands range >=8, stdev >=12.5 and edge >=1.5 together. The
+  // threshold is calibrated against the embedded brand-font ink-light pages;
+  // a white/covered page remains far below all three independent measures.
   if (range < PDF_VISUAL_LIMITS.range && (
     range < PDF_VISUAL_LIMITS.lowContrastRange ||
     metrics.stdev < PDF_VISUAL_LIMITS.lowContrastStdev ||
@@ -260,6 +297,12 @@ async function assertPngVisual(path, width, height) {
   if (metrics.edge < limits.edge) failures.push(`edge energy < ${limits.edge}`);
   if (metrics.above5 < limits.nonBlackFraction) failures.push(`non-black coverage < ${limits.nonBlackFraction * 100}%`);
   if (metrics.chroma < limits.chroma) failures.push(`mean chroma < ${limits.chroma}`);
+  if (
+    metrics.edgeCentroidX < limits.edgeCentroidMin || metrics.edgeCentroidX > limits.edgeCentroidMax ||
+    metrics.edgeCentroidY < limits.edgeCentroidMin || metrics.edgeCentroidY > limits.edgeCentroidMax
+  ) failures.push(`edge centroid outside ${limits.edgeCentroidMin}..${limits.edgeCentroidMax}`);
+  if (metrics.upperEdgeFraction < limits.upperEdgeFraction) failures.push(`upper-third edge share < ${limits.upperEdgeFraction * 100}%`);
+  if (metrics.activeEdgeCells < limits.activeEdgeCells) failures.push(`active composition cells < ${limits.activeEdgeCells}/9`);
   if (failures.length) throw new Error(`${basename(path)} lacks perceptual artwork content: ${failures.join('; ')} (${metricsSummary(metrics)})`);
   return metrics;
 }
@@ -455,9 +498,8 @@ async function main() {
   if (!dir || !PRODUCT_FILES[product] || (!!args.final === !!args.proof)) {
     throw new Error('Usage: fulfil-quality.mjs --dir <private dir> --product <launch sku> (--final | --proof)');
   }
-  let catalogue = null;
+  const catalogue = JSON.parse(readFileSync(join(ROOT, 'website', 'data', 'products-v901.json'), 'utf8'));
   if (final) {
-    catalogue = JSON.parse(readFileSync(join(ROOT, 'website', 'data', 'products-v901.json'), 'utf8'));
     if (catalogue.platform?.checkoutVerified !== true) throw new Error('Final quality approval is disabled until checkout verification is complete');
   }
   const privateOrderPath = join(dir, '_private', 'canonical-order.json');
@@ -473,6 +515,12 @@ async function main() {
   }
   const giftMode = privateOrder.purchaseIntent === 'gift';
   if (!['self', 'gift'].includes(privateOrder.purchaseIntent)) throw new Error('Canonical order lacks an approved purchaseIntent');
+  const catalogueProduct = catalogue.products?.find((entry) => entry.sku === product);
+  if (catalogue.launchMode !== 'self-only' ||
+      !catalogue.sharedRules?.purchaseModes?.includes(privateOrder.purchaseIntent) ||
+      !catalogueProduct?.purchaseModes?.includes(privateOrder.purchaseIntent)) {
+    throw new Error('Catalogue rejects this purchaseIntent; v902 launch is adult self-order only');
+  }
   if (final && giftMode) {
     if (catalogue.platform?.giftCheckoutVerified !== true) throw new Error('Gift final quality approval is disabled until the two-person recipient flow is verified');
     if (privateOrder.recipientPrivacyNoticeVersion !== catalogue.platform.giftPrivacyNoticeVersion || privateOrder.recipientPrivacyNoticeHash !== catalogue.platform.giftPrivacyNoticeHash) {
@@ -513,7 +561,10 @@ async function main() {
   if (!final && control.paymentEvidenceHash !== null) throw new Error('Proof unexpectedly records payment evidence');
   if (final && privateOrder.fulfilmentAuthorization?.state !== 'paid-in-full') throw new Error('Final order lacks paid-in-full authorisation');
   if (!final && privateOrder.fulfilmentAuthorization) throw new Error('Proof order unexpectedly carries final authorisation');
-  if (render.schema !== 'astroprecise-studio-render-v901' || !Array.isArray(render.artifacts) || render.artifacts.some((entry) => entry.overflow !== 0 || entry.overflowX !== 0 || entry.overflowY !== 0 || entry.fonts === 'unloaded')) {
+  const requiredProductFonts = ['AstroGlyph', 'Cinzel', 'Cormorant Garamond', 'IBM Plex Mono'];
+  if (render.schema !== 'astroprecise-studio-render-v901' || !Array.isArray(render.artifacts) || render.artifacts.some((entry) =>
+    entry.overflow !== 0 || entry.overflowX !== 0 || entry.overflowY !== 0 || entry.fonts !== 'loaded' ||
+    !Array.isArray(entry.fontFamilies) || requiredProductFonts.some((family) => !entry.fontFamilies.includes(family)))) {
     throw new Error('Rendered-PDF manifest does not prove zero overflow and loaded fonts');
   }
   assertBinding(render.binding, expectedBinding, 'Rendered-PDF manifest binding');

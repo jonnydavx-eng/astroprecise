@@ -1,12 +1,12 @@
-# PayPal product setup — retired for v900; remains retired for v901
+# PayPal product setup — retired for v902
 
 Updated: 2026-08-24
 
 ## Do not follow the old product-link instructions
 
-The former 13-SKU PayPal plan is not the v901 offer. Do not paste payment links into `AP_MON`, enable dormant catalogue entries, restore email-capture fallbacks or describe the old catalogue as ready for sale. The only launch offer is the checkout-closed three-product Gumroad Commission catalogue in `website/data/products-v901.json`.
+The former 13-SKU PayPal plan is not the v902 offer. Do not paste payment links into `AP_MON`, enable dormant catalogue entries, restore email-capture fallbacks or describe the old catalogue as ready for sale. The only launch offer is the checkout-closed three-product Gumroad Commission catalogue in `website/data/products-v901.json`.
 
-The current public v895 site and checkout-closed v901 candidate have:
+The current public v895 site and checkout-closed v902 candidate have:
 
 - free sky, chart and seven-chapter reading tools;
 - one external voluntary-support link to Ko-fi;
@@ -18,7 +18,7 @@ The current public v895 site and checkout-closed v901 candidate have:
 Before deploying the Ko-fi support surface:
 
 1. Sign in to the intended Ko-fi creator account and verify the public identity is AstroPrecise.
-2. Confirm the payout destination and the connected PayPal or Stripe account.
+2. Confirm the payout destination and which PayPal and/or Stripe account is connected; the public site must not guess this owner-only fact.
 3. Confirm the public one-time and monthly options, displayed amount and currency, recurring-payment notice and cancellation controls.
 4. Confirm neither option promises a product, feature unlock, membership tier or supporter-only entitlement.
 5. Supply the required business/service address and review the current Privacy, Terms, Refunds and Contact pages.
@@ -43,6 +43,6 @@ Do not reactivate the dormant 13-SKU code as a shortcut.
 
 ## Hosting caveat
 
-The v901 release path uses Cloudflare Pages, which applies the repository's `_headers` file. The protected build stamps the exact candidate SHA into `dist/_headers`; verify CSP, HSTS, frame, referrer, permissions and candidate-identity headers on the immutable deployment URL and both custom domains before launch. Meta tags alone cannot provide the full policy.
+The v902 release path uses Cloudflare Pages, which applies the repository's `_headers` file. The protected build stamps the exact candidate SHA into `dist/_headers`; verify CSP, HSTS, frame, referrer, permissions and candidate-identity headers on the immutable deployment URL and both custom domains before launch. Meta tags alone cannot provide the full policy.
 
 No seller-account mutation, payment-link creation, push or deployment is authorized by this file.

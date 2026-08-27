@@ -115,14 +115,36 @@ function moonLitPath(cx, cy, radius, elongation) {
   return `M ${terminator[0]} L ${terminator.slice(1).join(' L ')} L ${limb.join(' L ')} Z`;
 }
 
-function moonGraphic(cx, cy, radius, moon) {
+function deterministicMoonRelief(cx, cy, radius, inputHash, count = 28) {
+  const marks = [];
+  for (let index = 0; index < count; index++) {
+    const digest = sha256(`moon-relief:${inputHash}:${index}`);
+    const angle = Number.parseInt(digest.slice(0, 8), 16) / 0xFFFFFFFF * Math.PI * 2;
+    const radial = Math.sqrt(Number.parseInt(digest.slice(8, 16), 16) / 0xFFFFFFFF) * radius * .76;
+    const x = cx + Math.cos(angle) * radial;
+    const y = cy + Math.sin(angle) * radial;
+    const size = radius * (.022 + Number.parseInt(digest.slice(16, 20), 16) / 0xFFFF * .062);
+    const flatten = .56 + Number.parseInt(digest.slice(20, 24), 16) / 0xFFFF * .35;
+    const rotation = Number.parseInt(digest.slice(24, 28), 16) / 0xFFFF * 180;
+    const opacity = .11 + Number.parseInt(digest.slice(28, 30), 16) / 0xFF * .13;
+    marks.push(`<g transform="rotate(${rotation.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)})" opacity="${opacity.toFixed(3)}">
+      <ellipse cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" rx="${size.toFixed(2)}" ry="${(size * flatten).toFixed(2)}" fill="#52677D" stroke="#EEF4FA" stroke-width="${Math.max(1, radius * .006).toFixed(2)}"/>
+      <path d="M ${(x - size * .7).toFixed(2)} ${(y - size * .12).toFixed(2)} Q ${x.toFixed(2)} ${(y - size * .72).toFixed(2)} ${(x + size * .7).toFixed(2)} ${(y - size * .08).toFixed(2)}" fill="none" stroke="#FFFFFF" stroke-width="${Math.max(.8, radius * .004).toFixed(2)}"/>
+    </g>`);
+  }
+  return marks.join('');
+}
+
+function moonGraphic(cx, cy, radius, moon, inputHash) {
   const phasePath = moonLitPath(cx, cy, radius, moon.elongation);
   return `<g>
-    <circle cx="${cx}" cy="${cy}" r="${radius * 1.12}" fill="none" stroke="${STUDIO_PALETTE.violet}" stroke-opacity=".22" stroke-width="2"/>
-    <circle cx="${cx}" cy="${cy}" r="${radius}" fill="#07101E" stroke="${STUDIO_PALETTE.silver}" stroke-opacity=".62" stroke-width="3"/>
+    <defs><clipPath id="moonPhaseClip"><path d="${phasePath}"/></clipPath></defs>
+    <circle cx="${cx}" cy="${cy}" r="${radius * 1.12}" fill="none" stroke="${STUDIO_PALETTE.violet}" stroke-opacity=".28" stroke-width="2"/>
+    <circle cx="${cx}" cy="${cy}" r="${radius}" fill="#07101E" stroke="${STUDIO_PALETTE.silver}" stroke-opacity=".7" stroke-width="3" filter="url(#moonDepth)"/>
     <path d="${phasePath}" fill="url(#moonLight)"/>
-    <circle cx="${cx - radius * .24}" cy="${cy - radius * .18}" r="${radius * .09}" fill="none" stroke="${STUDIO_PALETTE.silver}" stroke-opacity=".18" stroke-width="2"/>
-    <circle cx="${cx + radius * .18}" cy="${cy + radius * .24}" r="${radius * .13}" fill="none" stroke="${STUDIO_PALETTE.silver}" stroke-opacity=".14" stroke-width="2"/>
+    <g clip-path="url(#moonPhaseClip)">${deterministicMoonRelief(cx, cy, radius, inputHash)}</g>
+    <path d="${phasePath}" fill="none" stroke="#EEF4FA" stroke-opacity=".28" stroke-width="${Math.max(1.5, radius * .008).toFixed(2)}"/>
+    <circle cx="${cx}" cy="${cy}" r="${radius * .965}" fill="none" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="${Math.max(1, radius * .006).toFixed(2)}"/>
   </g>`;
 }
 
@@ -146,8 +168,9 @@ function proofLayer(width, height, mark) {
 function baseDefs() {
   return `<defs>
     <radialGradient id="back" cx="50%" cy="16%" r="92%"><stop offset="0" stop-color="#14223A"/><stop offset=".56" stop-color="${STUDIO_PALETTE.raised}"/><stop offset="1" stop-color="${STUDIO_PALETTE.void}"/></radialGradient>
-    <linearGradient id="moonLight" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${STUDIO_PALETTE.paper}"/><stop offset=".54" stop-color="#C9D6E3"/><stop offset="1" stop-color="${STUDIO_PALETTE.silver}"/></linearGradient>
+    <radialGradient id="moonLight" cx="31%" cy="25%" r="82%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".38" stop-color="${STUDIO_PALETTE.paper}"/><stop offset=".72" stop-color="#C9D6E3"/><stop offset="1" stop-color="#879DB4"/></radialGradient>
     <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${STUDIO_PALETTE.ion}"/><stop offset=".52" stop-color="${STUDIO_PALETTE.violet}"/><stop offset="1" stop-color="${STUDIO_PALETTE.mint}"/></linearGradient>
+    <filter id="moonDepth" x="-24%" y="-24%" width="148%" height="148%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000814" flood-opacity=".74"/></filter>
   </defs>`;
 }
 
@@ -174,7 +197,7 @@ function revealSvg(order, moon, binding, mark) {
     ${textLines(recipientLines, { x: 540, y: 330, lineHeight: recipientSize * 1.16, size: recipientSize, fill: STUDIO_PALETTE.paper, anchor: 'middle', family: 'Georgia, serif', weight: '700', spacing: recipientSpacing })}
     <ellipse cx="540" cy="855" rx="360" ry="360" fill="none" stroke="url(#orbit)" stroke-width="2" stroke-opacity=".7"/>
     <circle cx="900" cy="855" r="9" fill="${STUDIO_PALETTE.mint}"/><circle cx="180" cy="855" r="7" fill="${STUDIO_PALETTE.violet}"/>
-    ${moonGraphic(540, 855, 265, moon)}
+    ${moonGraphic(540, 855, 265, moon, binding.inputHash)}
     <text x="540" y="1180" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="5" fill="${STUDIO_PALETTE.ion}">MOON IN ${moon.sign.toUpperCase()}</text>
     <text x="540" y="1230" text-anchor="middle" font-family="Georgia, serif" font-size="29" fill="${STUDIO_PALETTE.paper}">${moon.motion} · ${moon.illuminationPercent.toFixed(2)}% illuminated</text>
     ${textLines(message, { x: 540, y: 1360, lineHeight: messageSize * 1.38, size: messageSize, fill: '#D7E2ED', anchor: 'middle', family: 'Georgia, serif' })}
@@ -199,7 +222,7 @@ function moonPlateSvg(order, moon, binding, mark) {
     <text x="1080" y="${315 + Math.max(0, recipientLines.length - 1) * recipientSize * 1.12}" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" letter-spacing="7" fill="${STUDIO_PALETTE.silver}">${date}</text>
     <circle cx="1080" cy="1025" r="630" fill="none" stroke="url(#orbit)" stroke-width="3" stroke-opacity=".7"/>
     <circle cx="450" cy="1025" r="10" fill="${STUDIO_PALETTE.violet}"/><circle cx="1710" cy="1025" r="12" fill="${STUDIO_PALETTE.mint}"/>
-    ${moonGraphic(1080, 1025, 500, moon)}
+    ${moonGraphic(1080, 1025, 500, moon, binding.inputHash)}
     <text x="1080" y="1650" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="10" fill="${STUDIO_PALETTE.ion}">MOON IN ${moon.sign.toUpperCase()}</text>
     <text x="1080" y="1725" text-anchor="middle" font-family="Georgia, serif" font-size="48" fill="${STUDIO_PALETTE.paper}">${moon.motion} · ${moon.illuminationPercent.toFixed(2)}% ILLUMINATED</text>
     <text x="1080" y="1795" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" letter-spacing="4" fill="${STUDIO_PALETTE.silver}">SUN–MOON ELONGATION ${moon.elongation.toFixed(2)}°</text>
@@ -229,7 +252,7 @@ function jacketSvg(order, moon, binding, mark) {
     ${textLines(recipientLines, { x: 620, y: 340, lineHeight: recipientSize * 1.16, size: recipientSize, fill: STUDIO_PALETTE.paper, anchor: 'middle', family: 'Georgia, serif', weight: '700', spacing: recipientSpacing })}
     <ellipse cx="620" cy="845" rx="390" ry="390" fill="none" stroke="url(#orbit)" stroke-width="2" stroke-opacity=".72"/>
     <circle cx="1010" cy="845" r="9" fill="${STUDIO_PALETTE.mint}"/><circle cx="230" cy="845" r="8" fill="${STUDIO_PALETTE.violet}"/>
-    ${moonGraphic(620, 845, 275, moon)}
+    ${moonGraphic(620, 845, 275, moon, binding.inputHash)}
     <text x="620" y="1185" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="6" fill="${STUDIO_PALETTE.ion}">A COMPUTED MOON MOMENT · ${moon.sign.toUpperCase()}</text>
     ${textLines(message, { x: 620, y: 1300, lineHeight: messageSize * 1.4, size: messageSize, fill: '#D7E2ED', anchor: 'middle', family: 'Georgia, serif' })}
     ${textLines(giverLines, { x: 620, y: 1510 + Math.max(0, message.length - 4) * 16, lineHeight: giverSize * 1.35, size: giverSize, fill: STUDIO_PALETTE.mint, anchor: 'middle', family: 'Arial, sans-serif', weight: '700', spacing: Math.min(4, giverSize * .18) })}

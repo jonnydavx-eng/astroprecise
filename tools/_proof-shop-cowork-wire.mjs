@@ -8,6 +8,7 @@ const bridge = readFileSync('website/js/ap-gumroad-bridge.js', 'utf8');
 const edition = readFileSync('website/js/ap-eclipse-edition-v841.js', 'utf8');
 const affiliate = readFileSync('website/js/affiliate-social.js', 'utf8');
 const terms = readFileSync('website/terms.html', 'utf8');
+const catalogue = JSON.parse(readFileSync('website/data/products-v901.json', 'utf8'));
 const captureSurfaces = ['links.html', 'profile.html', 'saturn-return.html']
   .map(file => [file, readFileSync('website/' + file, 'utf8')]);
 const sw = readFileSync('website/sw.js', 'utf8');
@@ -32,7 +33,9 @@ if (!/Checkout remains closed/i.test(shop) ||
     (shop.match(/class="ap-studio-checkout"[^>]*\bdisabled\b/g) || []).length !== 3) {
   fails.push('shop does not keep all three Studio checkouts visibly closed');
 }
-if (!/Ko-fi requires an email/i.test(shop) || !/connected PayPal or Stripe account/i.test(shop)) {
+if (!/Ko-fi requires an email/i.test(shop) ||
+    !/payment provider before confirmation/i.test(shop) ||
+    !/PayPal and Stripe as its supported providers/i.test(shop)) {
   fails.push('shop does not disclose the support email and payment route');
 }
 if (/(?:£7|Buy now|gumroad\.com\/l\/|checkout-open)/i.test(shop)) fails.push('shop still presents stale product checkout copy');
@@ -56,7 +59,9 @@ if (!/adsEnabled:\s*false/.test(app) || !/aff\.adsEnabled !== true \|\| !amazonT
 if (!/No affiliate programme is active today\./.test(terms)) {
   fails.push('terms still imply an active affiliate programme');
 }
-if (!/catalogueSkus:\s*\[\s*\]/.test(app) || !/price:\s*null/.test(app)) {
+if (/\bcommerce\s*:|detailsForm|giftUrl\s*:/.test(app) ||
+    catalogue.state !== 'draft-not-published' || catalogue.platform.checkoutVerified !== false ||
+    catalogue.products.length !== 3 || catalogue.products.some(product => product.status !== 'draft' || product.checkoutUrl !== null)) {
   fails.push('public app catalogue still contains a live SKU or price');
 }
 
@@ -71,7 +76,7 @@ if (!/verifyLicense/.test(unlock) || !/api\.gumroad\.com\/v2\/licenses\/verify/.
 }
 if (/openCheckout\s*\(/.test(edition)) fails.push('archived edition can still call checkout');
 if (!/event edition is closed|past buyer/i.test(edition)) fails.push('edition recovery copy does not explain archive/past-buyer state');
-if (!/const V\s*=\s*["']ap-v901["']/.test(sw)) fails.push('SW tip is not ap-v901');
+if (!/const V\s*=\s*["']ap-v902["']/.test(sw)) fails.push('SW tip is not ap-v902');
 
 if (fails.length) {
   console.error('FAIL', fails);

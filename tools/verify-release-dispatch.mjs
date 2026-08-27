@@ -6,6 +6,8 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 export const OFFICIAL_REPOSITORY = 'jonnydavx-eng/astroprecise'
+export const OFFICIAL_RELEASE_WORKFLOW_REF = `${OFFICIAL_REPOSITORY}/.github/workflows/deploy-pages.yml@refs/heads/main`
+export const PRODUCTION_RELEASE_VERSION = 'ap-v902'
 export const RELEASE_TAG_PATTERN = /^release\/(ap-v[0-9]{3,})-([0-9a-f]{12})$/
 export const CANDIDATE_SHA_PATTERN = /^[0-9a-f]{40}$/
 export const RELEASE_IDENTITY_SCHEMA = 'astroprecise-release-identity/v1'
@@ -118,7 +120,6 @@ export function verifyReleaseDispatch({
   env = process.env,
   cwd = process.cwd(),
   git = defaultGit,
-  readFile = readFileSync,
 } = {}) {
   const repository = env.GITHUB_REPOSITORY ?? ''
   const eventName = env.GITHUB_EVENT_NAME ?? ''
@@ -126,6 +127,8 @@ export function verifyReleaseDispatch({
   const refProtected = env.GITHUB_REF_PROTECTED ?? ''
   const candidateSha = env.CANDIDATE_SHA ?? ''
   const githubSha = env.GITHUB_SHA ?? ''
+  const workflowRef = env.WORKFLOW_REF ?? ''
+  const workflowSha = env.WORKFLOW_SHA ?? ''
 
   if (repository !== OFFICIAL_REPOSITORY) {
     fail(`GITHUB_REPOSITORY must be ${OFFICIAL_REPOSITORY}`)
@@ -133,8 +136,11 @@ export function verifyReleaseDispatch({
   if (eventName !== 'workflow_dispatch') {
     fail('GITHUB_EVENT_NAME must be workflow_dispatch')
   }
+  if (ref !== 'refs/heads/main') {
+    fail('GITHUB_REF must be refs/heads/main so the protected workflow is authoritative')
+  }
   if (refProtected !== 'true') {
-    fail('the selected release tag must be protected by a GitHub ruleset')
+    fail('the main branch selected for release dispatch must be protected')
   }
   if (!CANDIDATE_SHA_PATTERN.test(candidateSha)) {
     fail('candidate_sha must be exactly 40 lowercase hexadecimal characters')
@@ -142,23 +148,28 @@ export function verifyReleaseDispatch({
   if (!CANDIDATE_SHA_PATTERN.test(githubSha)) {
     fail('GITHUB_SHA must be exactly 40 lowercase hexadecimal characters')
   }
-
-  const refPrefix = 'refs/tags/'
-  if (!ref.startsWith(refPrefix)) {
-    fail('GITHUB_REF must select a release tag')
+  if (workflowRef !== OFFICIAL_RELEASE_WORKFLOW_REF) {
+    fail(`WORKFLOW_REF must be ${OFFICIAL_RELEASE_WORKFLOW_REF}`)
   }
-  const releaseTag = ref.slice(refPrefix.length)
+  if (!CANDIDATE_SHA_PATTERN.test(workflowSha)) {
+    fail('WORKFLOW_SHA must be exactly 40 lowercase hexadecimal characters')
+  }
+
+  const releaseTag = env.RELEASE_TAG ?? ''
   const tagMatch = RELEASE_TAG_PATTERN.exec(releaseTag)
   if (!tagMatch) {
     fail('tag must match release/ap-vNNN-<12 lowercase hex>')
   }
 
   const [, releaseVersion, tagSuffix] = tagMatch
+  if (releaseVersion !== PRODUCTION_RELEASE_VERSION) {
+    fail(`release tag must name ${PRODUCTION_RELEASE_VERSION}`)
+  }
   if (tagSuffix !== candidateSha.slice(0, 12)) {
     fail('release tag SHA suffix does not match candidate_sha')
   }
-  if (githubSha !== candidateSha) {
-    fail('GITHUB_SHA does not match candidate_sha')
+  if (workflowSha !== githubSha) {
+    fail('the workflow definition SHA does not match protected-main GITHUB_SHA')
   }
 
   let headSha
@@ -173,8 +184,8 @@ export function verifyReleaseDispatch({
   } catch (error) {
     fail(`unable to resolve checked-out commit and release tag (${error.message})`)
   }
-  if (headSha !== candidateSha) {
-    fail('checked-out HEAD does not match candidate_sha')
+  if (headSha !== githubSha) {
+    fail('checked-out HEAD does not match protected-main GITHUB_SHA')
   }
   if (tagCommitSha !== candidateSha) {
     fail('release tag commit does not match candidate_sha')
@@ -185,11 +196,14 @@ export function verifyReleaseDispatch({
 
   let serviceWorkerSource
   try {
-    serviceWorkerSource = readFile(resolve(cwd, 'website', 'sw.js'), 'utf8')
+    serviceWorkerSource = git(['show', `${candidateSha}:website/sw.js`], cwd)
   } catch (error) {
-    fail(`unable to read website/sw.js (${error.message})`)
+    fail(`unable to read website/sw.js from the tagged candidate (${error.message})`)
   }
-  const serviceWorkerVersion = parseServiceWorkerVersion(serviceWorkerSource, 'website/sw.js')
+  const serviceWorkerVersion = parseServiceWorkerVersion(
+    serviceWorkerSource,
+    'tagged candidate website/sw.js',
+  )
   if (serviceWorkerVersion !== releaseVersion) {
     fail(`tag version ${releaseVersion} does not match website/sw.js ${serviceWorkerVersion}`)
   }
@@ -321,7 +335,9 @@ export function stampCandidateHeaderTemplate(source, candidateSha) {
     fail('Cloudflare Pages candidate placeholder must occur exactly once')
   }
   const stamped = normalizedSource.replace(CANDIDATE_HEADER_PLACEHOLDER, candidateSha)
-  if (!new RegExp(`^[\\t ]*${CANDIDATE_HEADER}:[\\t ]*${candidateSha}[\\t ]*$`, 'im').test(stamped)) {
+  if (
+    !new RegExp(`^[\\t ]*${CANDIDATE_HEADER}:[\\t ]*${candidateSha}[\\t ]*$`, 'im').test(stamped)
+  ) {
     fail('Cloudflare Pages candidate header stamping did not produce the exact SHA')
   }
   return stamped
@@ -333,7 +349,7 @@ export function stampCloudflarePagesArtifact({
   readFile = readFileSync,
   writeFile = writeFileSync,
 } = {}) {
-  if (!document) fail('release identity document is required for Pages stamping')
+  if (!document) fail('deployment identity document is required for Pages stamping')
   const absoluteDist = resolve(distDirectory ?? '')
   const headersPath = resolve(absoluteDist, '_headers')
   let template

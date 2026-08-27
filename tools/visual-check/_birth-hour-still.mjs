@@ -306,7 +306,8 @@ try {
     `Sitting exposed birth details in its URL or lost the model bridge: ${JSON.stringify(sitting)}`);
   assert(sitting.withheldHidden === true,
     'Exact-time sitting incorrectly displayed the unknown/provisional warning');
-  assert(/not open/i.test(sitting.unlockNote) && /Checkout is not connected/i.test(sitting.unlockNote) &&
+  assert(/reading stays free/i.test(sitting.unlockNote) &&
+    /Studio commissions are a separate checkout-closed preview/i.test(sitting.unlockNote) &&
     sitting.supportHref === 'https://ko-fi.com/astroprecise',
     `Sitting commerce state is not truthful: ${JSON.stringify(sitting)}`);
   const allowedPreferenceKeys = new Set(['ap_node_mode', 'ap_time_accuracy', 'ap_chart_draft_v1']);

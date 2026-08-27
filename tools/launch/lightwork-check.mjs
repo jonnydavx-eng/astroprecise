@@ -33,7 +33,7 @@ const requiredFiles = [
   'website/chart.html',
   'website/links.html',
   'marketing/SOCIAL-ACCOUNTS-SETUP.md',
-  'marketing/MISSION-CONTROL-CAMPAIGN.md',
+  'marketing/shop-studio-v901/README.md',
   'LAUNCH-WEEK-PLAYBOOK.md',
   'outreach-exports/free-traffic/reddit-value-post.txt',
   'outreach-exports/x-posts/x-01.txt',

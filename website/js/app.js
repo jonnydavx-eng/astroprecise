@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '901');
+const AP_ASSET_V = String(window.AP_ASSET_V || '902');
 
 const AstroApp = (() => {
 
@@ -1361,24 +1361,13 @@ window.AP_SOCIAL = window.AP_SOCIAL || {
 // Footer icon row + affiliate ads: js/affiliate-social.js (auto-loaded below).
 
 // ═══════════════════════════════════════════════════════════════════════
-// MONETISATION — provider-agnostic, dormant-by-default, link-out only.
-// GitHub Pages forbids SELLING on the site, but permits donation/crowdfunding
-// links, and outbound links to storefronts hosted elsewhere are fine. So every
-// avenue here is an external link (tips, hosted product pages, newsletter,
-// affiliate). Nothing renders until you paste a real URL below — so a visitor
-// never sees a broken or fake checkout.  ◆ EDIT THIS BLOCK TO GO LIVE ◆
+// OPTIONAL EXTERNAL ROUTES — provider-agnostic and dormant by default.
+// Nothing renders until its exact destination is configured and verified, so
+// a visitor never sees a guessed or broken checkout, signup or affiliate link.
 // ═══════════════════════════════════════════════════════════════════════
 window.AP_MON = Object.assign({
   family: { biggerPicture: '', backInTime: '' },  // sibling sites — footer "family of sites" links (dormant until set)
-  tipUrl:       'https://ko-fi.com/astroprecise',   // tips/support — Ko-fi (0% on tips). LIVE 2026-06-14.
-  // PayPal direct (2026-07-02 — Lemon Squeezy dropped; category not accepted).
-  // Optional global handle: set me to your PayPal.Me URL ('https://paypal.me/YourHandle')
-  // to enable amount-links (e.g. the Two Skies post-purchase offer). Per-SKU checkout
-  // uses each product's fulfilUrl — paste PayPal payment links there (PAYPAL-SETUP.md).
-  paypal: { me: '', currency: 'GBP' },
-  reportUrl:    '',   // premium written natal report — PayPal payment link (PAYPAL-SETUP.md)
-  posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
-  giftUrl:      '',   // gift a reading — hosted product
+  tipUrl:       'https://ko-fi.com/astroprecise',   // optional support; owner must verify current public options and payout route
   // Capture stays disabled until the owner verifies double opt-in, unsubscribe,
   // suppression and the production destination end to end.
   emailCaptureEnabled: false,
@@ -1471,474 +1460,7 @@ window.AP_MON = Object.assign({
   emailUrl: '',
   ownerEmail: '',
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // COMMERCE — the "wear your sky" shop (config-driven, dormant by default).
-  // ─────────────────────────────────────────────────────────────────────
-  // Read by js/shop-commerce.js (window.AstroShop). The whole catalogue is
-  // PERSONALISED-per-chart, ONE-TIME purchases — no subscriptions. Every
-  // product fulfils elsewhere (hosted store / Etsy / Gelato / Gumroad), so
-  // the site itself never takes money — Pages-compliant, link-out only.
-  //
-  // GO-LIVE: paste a URL into ONE of these and the matching path lights up.
-  // Checkout priority (per item, highest first):
-  //   1. product.fulfilUrl   — that product's own hosted listing ("Buy Now")
-  //   2. checkout.externalStoreUrl / checkout.etsyUrl — whole-cart handoff
-  //   3. checkout.paypalClientId — on-site PayPal Buttons (advanced)
-  //   4. (none set) — DORMANT branded modal + email-signup invite
-  // While every field below is '' the shop stays in honest pre-launch mode:
-  // the cart is real and saved locally, but checkout invites you to be told
-  // when the doors open — it never shows a fake or broken checkout.
-  commerce: {
-    // ── POST-PURCHASE PROMOS ─────────────────────────────────────────────
-    promos: {
-      twoSkies: {
-        code: 'TWOSKIES50',
-        percent: 50,
-        productId: 'two-skies-map',
-        expiresDays: 30,
-      },
-    },
-
-    // ── CHECKOUT — how the cart actually fulfils ──────────────────────────
-    checkout: {
-      paypalClientId:   '',   // PayPal REST Client ID → on-site Buttons (developer.paypal.com)
-      currency:         'GBP',
-      externalStoreUrl: '',   // whole-cart handoff to a hosted store (Shopify / Gelato pop-up)
-      etsyUrl:          '',    // Etsy storefront ("Browse on Etsy" path)
-    },
-
-    // ── CATALOGUE PHASE — which SKUs surface on shop.html ────────────────
-    // 'pdf-only' = Cowork launch ladder (eclipse → deep → plate) + Moment free rail.
-    // Flip to 'full' when prints, apparel, gifts & jewellery return.
-    // Checkout: Gumroad permalinks in js/gumroad-unlock.js (REPLACE_ME = dormant).
-    cataloguePhase: 'pdf-only',
-    catalogueSkus: [],
-
-    // ── COLLECTIONS — the architecture of the sky ─────────────────────────
-    // Every piece belongs to one collection. Re-themed from TBP's tree to
-    // the chart: what you were born under, what you wear, what you keep.
-    collections: {
-      wearYourSky: {
-        name: 'Wear Your Sky',
-        story: 'Your exact birth sky, rendered for the body. Each piece is generated from your own chart — no two are alike.',
-      },
-      onYourWall: {
-        name: 'On Your Wall',
-        story: 'The map of the moment you arrived, printed to keep. Archive paper, your real placements, museum-grade.',
-      },
-      theReading: {
-        name: 'The Reading',
-        story: 'Words for your chart alone. Deep written readings and personalised guidance, delivered to you.',
-      },
-      gifts: {
-        name: 'Gifts',
-        story: 'A chart made for someone else — their exact sky, delivered with a note from you. Recipient birth details and your gift message are collected privately at checkout, never on this site.',
-      },
-      jewellery: {
-        name: 'Jewellery',
-        story: 'Wearable sky talismans — pendants, bars and medallions engraved from your exact natal chart. Personalised accessories you can carry every day.',
-      },
-    },
-
-    // ── PRODUCTS ──────────────────────────────────────────────────────────
-    // type: 'digital' | 'print' | 'apparel' | 'accessory'
-    // personalized: true  → art/text is generated from the buyer's own chart
-    // fulfilUrl: ''       → DORMANT (no per-product link yet); '' keeps it honest
-    products: [
-      {
-        id:           'natal-poster',
-        available:    false,
-        name:         'Your Natal Sky — Art Poster',
-        type:         'print',
-        collection:   'onYourWall',
-        price:        20.00,
-        personalized: true,
-        badge:        'Made to order',
-        marketingLine:'Fine-art print of the sky at your first breath.',
-        previewImage: 'img/shop/product-natal-poster.jpg',
-        blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. 250gsm museum-grade matte, made to order. Foil and framed options at checkout.',
-        icon:         'map',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'MKutUmwh',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'sky-tee',
-        available:    false,
-        name:         'Your Sky — Tee',
-        type:         'apparel',
-        collection:   'wearYourSky',
-        price:        18.00,
-        personalized: true,
-        badge:        'Made to order',
-        marketingLine:'Constellations from your birth night — wearable chart.',
-        previewImage: 'img/shop/product-sky-tee.jpg',
-        blurb:        'The constellations overhead at your birth, printed across heavyweight cotton. Your sun, moon and rising marked in gold thread — a chart you can wear.',
-        icon:         'star4',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'jymyb9t2',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'sky-hoodie',
-        available:    false,
-        name:         'Your Sky — Heavyweight Hoodie',
-        type:         'apparel',
-        collection:   'wearYourSky',
-        price:        32.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Your natal canopy across the back — 350gsm fleece.',
-        previewImage: 'img/shop/product-sky-hoodie.jpg',
-        blurb:        'Your natal canopy across the back in fine line-work; your big-three glyphs at the cuff. Premium 350 gsm fleece, printed to order from your chart.',
-        icon:         'crescent',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'ItYwTtZw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'big-three-print',
-        available:    false,
-        name:         'Big Three — Mini Print',
-        type:         'print',
-        collection:   'onYourWall',
-        price:        10.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Sun, Moon, Rising — the chart distilled to its spine.',
-        previewImage: 'img/shop/product-big-three.jpg',
-        blurb:        'Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine.',
-        icon:         'sunhigh',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'l3BHnRFG',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'constellation-mug',
-        available:    false,
-        name:         'Your Star Map — Mug',
-        type:         'accessory',
-        collection:   'wearYourSky',
-        price:        9.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Your birth sky on matte ceramic — morning ritual.',
-        previewImage: 'img/shop/product-mug.jpg',
-        blurb:        'The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim. The first synchronicity of every morning.',
-        icon:         'orb',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'cQgoY4h4',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'cosmic-story',
-        available:    false,
-        featured:     false,
-        name:         'Your Cosmic Story — Personalised Narrative',
-        type:         'digital',
-        collection:   'theReading',
-        price:        14.00,
-        personalized: true,
-        badge:        'Written for you',
-        marketingLine:'The story of you — told through the exact sky of your first breath.',
-        previewImage: 'img/shop/product-cosmic-story.jpg',
-        sampleUrl:    '',
-        blurb:        'Not a report — a story. Your birth chart retold as a flowing personal narrative: the arc of your Sun, Moon and rising sign, the tensions and gifts written into your aspects, and where your planets are quietly leading you. Drawn entirely from your real VSOP87 chart and written for you alone — a keepsake PDF to read and return to.',
-        icon:         'book',
-      },
-      {
-        id:           'eclipse-edition',
-        available:    false,
-        featured:     false,
-        name:         'Your Eclipse Edition — archive',
-        type:         'digital',
-        collection:   'theReading',
-        price:        null,
-        personalized: true,
-        badge:        'Archive · 12 Aug 2026',
-        marketingLine:'Closed event edition. Existing buyers retain licence recovery and support.',
-        previewImage: 'img/editorial/eclipse-edition-art-v841-560.webp',
-        sampleUrl:    'eclipse.html',
-        blurb:        'The free instrument still checks the 12 August 2026 eclipse against your computed birth chart. The event-specific checkout is closed. Existing buyers can restore the five authored beats, deterministic natal-wheel plate, PNG and print view with their licence.',
-        icon:         'sunhigh',
-        fulfilUrl:    '',   // Gumroad identifiers live in js/gumroad-unlock.js; placeholders keep this dormant
-        gumroadSlug:  'eclipse-edition',
-        detailsForm:  '',
-      },
-      {
-        id:           'eclipse-set',
-        available:    false,
-        featured:     true,
-        name:         'Eclipse Set — Reading + Keepsake',
-        type:         'digital',
-        collection:   'theReading',
-        price:        6.00,
-        personalized: true,
-        badge:        'Both, together',
-        marketingLine:'The words and the keepsake of a once-in-a-decade night.',
-        previewImage: 'img/shop/product-bundle.jpg',
-        sampleUrl:    'eclipse.html',
-        blurb:        'The Eclipse Night Reading plus a print-ready plate of the eclipse sky as it stood over you that night — the reading and the keepsake in one set. The Perseids peak the same night; the story includes them. £6 for both.',
-        icon:         'star4',
-        fulfilUrl:    '',
-        gumroadSlug:  'eclipse-set',
-        detailsForm:  '',
-      },
-      {
-        id:           'deep-reading',
-        available:    false,
-        featured:     true,
-        name:         'Deep Natal Reading — Digital',
-        type:         'digital',
-        collection:   'theReading',
-        price:        12.00,
-        personalized: true,
-        badge:        'Preview',
-        marketingLine:'Your whole chart, read properly — seven chapters from your exact birth minute.',
-        previewImage: 'img/shop/product-deep-reading.jpg',
-        sampleUrl:    'sample-reading.html',
-        blurb:        'Every planet, your tightest aspects with orbs, and this season’s live sky — approximately 1,800 words from your computed birth chart. Read the seven-chapter sample now; checkout and fulfilment stay closed until verified.',
-        icon:         'book',
-        fulfilUrl:    '',   // Gumroad slug full-reading in gumroad-unlock.js; '' = dormant
-        gumroadSlug:  'full-reading',
-        detailsForm:  '',   // 'JVU3Atfm' was a dead Typeform link — removed; runbook will supply the replacement
-      },
-      {
-        id:           'plate',
-        available:    false,
-        featured:     true,
-        name:         'Numbered Sky Plate',
-        type:         'digital',
-        collection:   'onYourWall',
-        price:        14.00,
-        personalized: true,
-        badge:        'Provenance',
-        marketingLine:'One sky, one numbered edition — sealed with a fingerprint you can check yourself.',
-        previewImage: 'img/shop/product-natal-poster.jpg',
-        sampleUrl:    'verify.html',
-        // "rising to £19 by dated edition" deleted 2026-08-09: checkout has never
-        // opened, so nobody has ever paid £19 and £14 was never a saving off it.
-        blurb:        'An A3 plate of the exact sky at your birth minute — every position printed to the minute you were born, sealed with a fingerprint you can recompute and match on the verify page. Never printed for anyone else. £14 when checkout opens. See the full sample plate first.',
-        icon:         'map',
-        fulfilUrl:    '',
-        gumroadSlug:  'plate',
-        detailsForm:  '',
-      },
-      {
-        id:           'sky-pass',
-        available:    false,
-        featured:     true,
-        name:         'Sky Pass',
-        type:         'digital',
-        collection:   'theReading',
-        price:        5.00,
-        personalized: false,
-        badge:        'Dated edition',
-        marketingLine:'Thirty dated days of your sky — your transits, not sun-sign weather.',
-        previewImage: 'img/shop/product-gift-reading.jpg',
-        blurb:        'Chart-aware daily sky notes for 30 dated days, 12 Aug – 10 Sep: the eclipse and its aftermath, computed against your own chart. A dated edition that simply ends — no subscription, no auto-renew, nothing to cancel.',
-        icon:         'orb',
-        fulfilUrl:    '',
-        gumroadSlug:  'sky-pass',
-        detailsForm:  '',
-      },
-      {
-        id:           'year-ahead',
-        available:    false,
-        name:         'Your Year Ahead — Transit Report',
-        type:         'digital',
-        collection:   'theReading',
-        price:        16.00,
-        personalized: true,
-        badge:        'Preview',
-        marketingLine:'Twelve months of transits — your personal sky forecast.',
-        previewImage: 'img/shop/product-year-ahead.jpg',
-        blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — an honest forecast drawn from your own placements, not a generic horoscope.',
-        icon:         'calendar',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'QMcr0Ldw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'moment-pack',
-        available:    false,
-        name:         'Moment Pack — Digital Keepsake',
-        type:         'digital',
-        collection:   'onYourWall',
-        price:        8.00,
-        personalized: true,
-        badge:        'New',
-        marketingLine:'Any date’s zenith star + light-cone story as a print-ready pack.',
-        previewImage: 'img/shop/product-moment-pack.jpg',
-        blurb:        'Freeze any night that mattered — birth, anniversary, memorial — into a multi-format digital pack: square share card, story card, and print plate. Same private VSOP87 math as the free Moment studio. Fulfilment opens once checkout is connected; free card is live on Moment now.',
-        icon:         'star4',
-        fulfilUrl:    '',   // paste PayPal/Payhip link when ready; '' = honest coming soon
-        detailsForm:  '',
-        featured:     true,
-      },
-      {
-        id:           'natal-poster-pdf',
-        available:    false,
-        featured:     true,
-        name:         'Your Natal Sky — Print-at-Home PDF',
-        type:         'digital',
-        collection:   'onYourWall',
-        price:        6.00,
-        personalized: true,
-        badge:        'Preview',
-        marketingLine:'Your exact sky, ready to print tonight.',
-        previewImage: 'img/shop/product-poster-pdf.jpg',
-        blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
-        icon:         'map',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'sL9V4PTk',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'reading-poster-bundle',
-        available:    false,
-        featured:     false,
-        name:         'Deep Reading + Poster — Bundle',
-        type:         'digital',
-        collection:   'theReading',
-        price:        16.00,
-        anchorWas:    18.00,
-        personalized: true,
-        badge:        'Best value',
-        marketingLine:'Reading, poster, free wallpaper & a Two Skies offer — save £2.',
-        previewImage: 'img/shop/product-bundle.jpg',
-        sampleUrl:    'sample-reading.html',
-        blurb:        'Your long-form Deep Natal Reading and print-at-home natal poster, generated together from one chart. Includes free chart wallpaper (email unlock) and a 50% code for Two Skies after purchase. Future bundles will pair readings with Observatory Disc or Seal Medallion jewellery.',
-        bundlePerks:  ['Free chart wallpaper', '50% off Two Skies map', 'Two PDFs · save £2', 'Jewellery cross-sell placeholders live in catalogue'],
-        icon:         'book',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'Iasu4Sia',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'solar-return',
-        available:    false,
-        name:         'Solar Return — Your Birthday Year',
-        type:         'digital',
-        collection:   'theReading',
-        price:        14.00,
-        personalized: true,
-        badge:        'Preview',
-        marketingLine:'Your birthday sky — the annual ritual, no subscription.',
-        previewImage: 'img/shop/product-solar-return.jpg',
-        blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
-        icon:         'sunhigh',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'vp60QAiN',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'gift-reading',
-        available:    false,
-        name:         'Gift a Reading',
-        type:         'digital',
-        collection:   'gifts',
-        price:        15.00,
-        personalized: true,
-        giftNote:     true,
-        badge:        null,
-        marketingLine:'A Deep Reading for someone you love — voucher + your note.',
-        previewImage: 'img/shop/product-gift-reading.jpg',
-        blurb:        'A Deep Natal Reading for someone you love — sent as a PDF gift voucher with a redemption code. They redeem by email and give us their own birth details; we generate the reading and deliver it with your note. Choose a delivery date at checkout.',
-        icon:         'heart',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'VvzhK6Kj',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'gift-box-whole-sky',
-        available:    false,
-        name:         'The Whole Sky — Gift Box',
-        type:         'print',
-        collection:   'gifts',
-        price:        35.00,
-        personalized: true,
-        giftNote:     true,
-        badge:        'Gift',
-        marketingLine:'Reading PDF + foil print + gift card — the complete sky.',
-        previewImage: 'img/shop/product-gift-box.jpg',
-        blurb:        'The complete gift: a Deep Natal Reading PDF plus an A4 foil natal print, shipped, with a personalised gift card carrying your note. They redeem the reading by email with their own birth details — their sky, never our server. Choose a delivery date at checkout, for less than the two bought separately.',
-        icon:         'star4',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'uHADD51y',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'two-skies-map',
-        available:    false,
-        name:         'Two Skies — Couples Star Map',
-        type:         'print',
-        collection:   'gifts',
-        price:        24.00,
-        personalized: true,
-        giftNote:     true,
-        badge:        'Couples',
-        marketingLine:'Two birth charts, one print — the anniversary keepsake.',
-        previewImage: 'img/shop/product-two-skies.jpg',
-        blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. A proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
-        icon:         'crescent',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'ZOp9A1OW',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      // ── JEWELLERY COLLECTION (new accessories, POD placeholders) ───────────
-      // Audience-refined (deep research 2026-06): Gen Z gifting (affordable meaningful), women 18-35 everyday/self (dainty + emotional), existing chart users.
-      // Diffs vs competitors: full VSOP87 chart data (not sun-sign generic), integrated with readings/posters. POD: ShineOn/OwnPrint/AnywherePOD or Etsy manual + custom upload for engraving.
-      {
-        id:           'observatory-disc-pendant',
-        available:    false,
-        name:         'Observatory Disc Pendant',
-        type:         'accessory',
-        collection:   'jewellery',
-        price:        29.00,
-        personalized: true,
-        badge:        'Made to order',
-        marketingLine:'Your full natal wheel, engraved on a wearable disc.',
-        previewImage: 'img/shop/product-observatory-disc.jpg',
-        blurb:        'Solid brass or sterling disc pendant with the complete natal chart wheel micro-engraved from your exact birth data. Planets positioned precisely as at the moment you were born — 25mm on 45cm chain. For women 18-35 who want their sky close every day, or as a standout Gen Z gift that actually means something. POD fulfilment.',
-        icon:         'orb',
-        fulfilUrl:    '', // placeholder — set real POD URL (ShineOn / OwnPrint / Etsy custom / Gelato) when live
-      },
-      {
-        id:           'constellation-bar',
-        available:    false,
-        name:         'Constellation Bar',
-        type:         'accessory',
-        collection:   'jewellery',
-        price:        24.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Minimal bar with your birth constellations in line.',
-        previewImage: 'img/shop/product-constellation-bar.jpg',
-        blurb:        'Slim horizontal bar (pendant or cuff) showing the constellation lines of your Sun + Moon + Rising. Subtle everyday chart jewellery for layering. Perfect for the 18-35 woman who loves dainty cosmic details without shouting her sign — or gift to your astro bestie.',
-        icon:         'star4',
-        fulfilUrl:    '', // placeholder — set real POD URL when live
-      },
-      {
-        id:           'big-three-glyph',
-        available:    false,
-        name:         'Big Three Glyph',
-        type:         'accessory',
-        collection:   'jewellery',
-        price:        19.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Sun · Moon · Rising charms on a fine chain.',
-        previewImage: 'img/shop/product-big-three-glyph.jpg',
-        blurb:        'Three small engraved charms — your Sun, Moon and Rising glyphs — on a delicate 40cm chain. The spine of your chart, worn close to the heart. Entry price for Gen Z gifting and women 18-35 self-purchase; meaningful without the generic zodiac mass-market feel. Differentiator: exact from your saved chart, not a stock Aries stamp.',
-        icon:         'gem',
-        fulfilUrl:    '', // placeholder — set real POD URL when live
-      },
-      {
-        id:           'seal-medallion',
-        available:    false,
-        name:         'Seal Medallion',
-        type:         'accessory',
-        collection:   'jewellery',
-        price:        35.00,
-        personalized: true,
-        badge:        'Made to order',
-        marketingLine:'Hex seal medallion of your chart\'s dominant signature.',
-        previewImage: 'img/shop/product-seal-medallion.jpg',
-        blurb:        'Large 32mm hex medallion bearing your dominant element seal and Big Three glyphs. Reversible; engraved on observatory-grade brass. A true talisman for power users and milestone gifting. Premium tier vs No.13-style luxe — yours is computed from real VSOP87 positions, not artistic interpretation.',
-        icon:         'heart',
-        fulfilUrl:    '', // placeholder — set real POD URL when live
-      },
-    ],
-  },
+  // Retired legacy commerce catalogue removed from the public runtime.
 }, window.AP_MON || {});
 
 (function monetisation() {
@@ -1947,7 +1469,7 @@ window.AP_MON = Object.assign({
   const keyToUrl = k => M[k + 'Url'];
 
   function wire() {
-    // Buttons/links opt in with data-mon="report|poster|gift|newsletter|tip".
+    // Buttons/links opt in with a configured external-route key.
     // mode: data-mon-mode="hide" (default — vanish until configured) or "dormant"
     // (stay visible but disabled with a gentle "coming soon").
     document.querySelectorAll('[data-mon]').forEach(el => {
@@ -2290,7 +1812,7 @@ else AstroApp.init();
   if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   if (document.querySelector('script[data-ap-affiliate-social]')) return;
   var s = document.createElement('script');
-  s.src = 'js/affiliate-social.js?v=901';
+  s.src = 'js/affiliate-social.js?v=' + AP_ASSET_V;
   s.dataset.apAffiliateSocial = '1';
   s.defer = true;
   document.head.appendChild(s);
@@ -2300,7 +1822,7 @@ else AstroApp.init();
 (function loadNavPrefetch() {
   if (document.querySelector('script[data-ap-nav-prefetch], script[src*="ap-nav-prefetch"]')) return;
   var s = document.createElement('script');
-  s.src = 'js/ap-nav-prefetch.js';
+  s.src = 'js/ap-nav-prefetch.js?v=' + AP_ASSET_V;
   s.dataset.apNavPrefetch = '1';
   s.defer = true;
   document.head.appendChild(s);
@@ -2310,7 +1832,7 @@ else AstroApp.init();
 (function loadFooterInject() {
   if (document.querySelector('script[data-ap-footer-inject], script[src*="ap-footer-inject"]')) return;
   var s = document.createElement('script');
-  s.src = 'js/ap-footer-inject.js?v=901';
+  s.src = 'js/ap-footer-inject.js?v=' + AP_ASSET_V;
   s.dataset.apFooterInject = '1';
   s.defer = true;
   document.head.appendChild(s);

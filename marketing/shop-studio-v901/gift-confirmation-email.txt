@@ -1,5 +1,7 @@
 ASTROPRECISE STUDIO — BIRTHDAY GIFT CONFIRMATION TEMPLATES
-DRAFT ONLY — DO NOT SEND OR AUTOMATE UNTIL THE PRIVATE TWO-PERSON TEST PASSES
+DEFERRED FUTURE RESEARCH — V902 HAS NO GIFT PRODUCT OR RECIPIENT FLOW
+DO NOT SEND, AUTOMATE OR ADAPT FOR A LIVE ORDER. A later gift project would need
+its own platform, privacy, legal, product, fulfilment and release approval first.
 
 These templates deliberately omit birth date, time, place, coordinates and chart
 content. Preserve the exact terms/privacy version and confirmation records in the
@@ -194,3 +196,6 @@ Before either template is enabled, verify:
   buyer visibility; if Gumroad cannot support this, gift mode remains disabled;
 - the exact Gumroad deposit/balance language has been proved in the signed-in
   unpublished test.
+DEFERRED RESEARCH ONLY — DO NOT SEND OR USE FOR THE FIRST STUDIO RELEASE
+The launch is self-order only. This file is preserved solely as input to the
+separately gated future gift feature described in deferred-gift-spec.md.

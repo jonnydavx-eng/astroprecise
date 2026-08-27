@@ -1,4 +1,4 @@
-import { buildDeepReading } from './deep-reading.js?v=901';
+import { buildDeepReading } from './deep-reading.js?v=902';
 
 const TARGETS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 const ASSUMED_HOUR = '12:00';
@@ -563,11 +563,11 @@ async function init() {
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=901').then((response) => {
+    fetch('js/reading-templates.json?v=902').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=901').then((response) => {
+    fetch('js/deep-templates.json?v=902').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),

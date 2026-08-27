@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8')
 const count = (text, pattern) => (text.match(pattern) || []).length
@@ -244,7 +244,7 @@ assert.equal(
 )
 assert.match(
   paypalRunbook,
-  /retired for v900/i,
+  /retired for v902/i,
   'obsolete PayPal product instructions must be visibly retired',
 )
 assert.equal(
@@ -333,7 +333,6 @@ assert.equal(/arcminute|ephemeris/i.test(launchPack), false)
 const shop = read('./website/shop.html')
 const terms = read('./website/terms.html')
 const refunds = read('./website/refunds.html')
-const shopCommerce = read('./website/js/shop-commerce.js')
 const personalizationEngine = read('./website/js/personalization-engine.js')
 const readingPrefs = read('./website/js/ap-reading-prefs.js')
 const fulfilRedirect = read('./website/fulfil-redirect.html')
@@ -400,16 +399,10 @@ assert.equal(
   false,
   'shop must not invent urgency, scarcity or social proof',
 )
-assert.ok(
-  shopCommerce.includes('const ZODIAC_SIGNS = Object.freeze') &&
-    shopCommerce.includes('const label = canonicalSign(sign)') &&
-    shopCommerce.includes('const slug = label.toLowerCase()'),
-  'dormant commerce previews must keep saved signs on a closed label/path vocabulary',
-)
 assert.equal(
-  /sign\.toLowerCase\(\)\.replace/.test(shopCommerce),
+  existsSync(new URL('./website/js/shop-commerce.js', import.meta.url)),
   false,
-  'saved sign data must never be transformed directly into a seal path',
+  'the retired legacy commerce runtime must not ship',
 )
 assert.ok(
   personalizationEngine.includes('const ZODIAC_SIGNS = Object.freeze') &&
@@ -433,13 +426,20 @@ assert.equal(
 )
 assert.ok(
   fulfilRedirect.includes('content="no-referrer"') &&
-    fulfilRedirect.indexOf('history.replaceState') < fulfilRedirect.indexOf('<link rel="icon"'),
-  'legacy fulfilment metadata must be scrubbed from AstroPrecise history before assets load',
+    fulfilRedirect.includes('Legacy order handoff retired'),
+  'the legacy fulfilment route must remain a clearly retired no-referrer page',
+)
+assert.equal(
+  /URLSearchParams|__AP_FULFIL_HANDOFF|buyer_name|order_id|product_sku|Typeform|location\.replace/i.test(
+    fulfilRedirect,
+  ),
+  false,
+  'the retired fulfilment route must not read, retain or forward order metadata',
 )
 assert.ok(
   privacy.includes('Legacy order handoff') &&
     privacy.includes('No current shop checkout uses this bridge.'),
-  'the narrow payment-to-Typeform metadata exception must be documented explicitly',
+  'privacy must document that the former handoff is retired',
 )
 assert.equal(
   shop.includes('Your Eclipse Edition'),
@@ -454,8 +454,8 @@ assert.match(
 )
 assert.match(
   shop,
-  /connected PayPal or Stripe account/i,
-  'support copy must name the actual payment route',
+  /payment provider before confirmation[\s\S]{0,160}PayPal and Stripe/i,
+  'support copy must explain the provider boundary without guessing the account-specific route',
 )
 assert.match(
   shop,
@@ -491,8 +491,13 @@ for (const [name, source] of [
 }
 assert.match(
   privacy,
-  /Ko-fi and the creator(?:&rsquo;|'|’)s connected PayPal or Stripe account/i,
-  'privacy policy must disclose the voluntary-support processors',
+  /Ko-fi and\s+the payment provider (?:it )?shows? before confirmation/i,
+  'privacy policy must disclose the voluntary-support processor boundary',
+)
+assert.match(
+  privacy,
+  /Ko-fi currently documents PayPal and Stripe as its supported providers/i,
+  'privacy policy must name Ko-fi’s documented provider set without claiming which account route is connected',
 )
 assert.match(
   privacy,
@@ -547,9 +552,17 @@ assert.equal(
   'release status must not overclaim deployment, publication or checkout activation',
 )
 assert.ok(eclipse.includes('id="eclipseEdition"') && eclipse.includes('id="eclipseContactForm"'))
-assert.match(productConfig, /catalogueSkus:\s*\[\]/)
-assert.match(productConfig, /id:\s*'eclipse-edition'[\s\S]{0,300}price:\s*null/)
+assert.doesNotMatch(
+  productConfig,
+  /\bgiftUrl\s*:|\bcommerce\s*:|detailsForm|Typeform|product-gift|Two Skies|recipient|birthday/i,
+  'the public core runtime must not retain the retired commerce or deferred gift catalogue',
+)
 assert.match(productConfig, /emailCaptureEnabled:\s*false/)
+assert.doesNotMatch(
+  quizRuntime,
+  /AP_MON|checkout|shop\.html|(?:£|\$)\s*\d/i,
+  'the free quiz must not route visitors into a product or priced recommendation while checkout is closed',
+)
 assert.equal(
   /list\.astroprecise\.app|function captureEmail|newsletterUrl:\s*'https?:/.test(productConfig),
   false,

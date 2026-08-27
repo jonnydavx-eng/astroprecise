@@ -1,4 +1,6 @@
-# AstroPrecise — Mission Control Campaign
+# RETIRED — AstroPrecise Mission Control Campaign
+
+Status: preserved for audit only; do not use for the Studio launch. This June plan predates the narrow three-product, self-order-only catalogue and contains unverified positioning, gift and campaign assumptions.
 
 _2026-06-16. SpaceX-inspired positioning without copying trademarks. Pairs with `SOCIAL-ACCOUNTS-SETUP.md`, `CONTENT-CALENDAR.md`, `EMAIL-FUNNEL.md`, `GTM-LADDER.md`._
 

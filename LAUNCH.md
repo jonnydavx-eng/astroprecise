@@ -2,7 +2,7 @@
 
 Updated: 2026-08-24
 
-Public v895 stays untouched until the final v901 commit has valid Coherence and
+Public v895 stays untouched until the final v902 commit has valid Coherence and
 exact-identity Cloudflare Pages evidence. Never push a `gh-pages` mirror or deploy
 from `main` as a shortcut.
 
@@ -36,11 +36,13 @@ commit and import signed S1 last.
 
 After the final SHA is immutable and authorised:
 
-1. Create one protected tag `release/ap-v901-<sha12>` at that exact SHA.
-2. Confirm GitHub environment `cloudflare-pages` has the intended reviewer and
+1. Create one protected tag `release/ap-v902-<sha12>` at that exact SHA.
+2. Confirm GitHub environments `cloudflare-pages-preview` and
+   `cloudflare-pages-production` have the intended reviewer and least-privilege
    environment-scoped Cloudflare account/token secrets.
-3. Dispatch `.github/workflows/deploy-pages.yml` from that tag with the full SHA.
-4. Approve the environment only after reviewing the displayed tag and SHA.
+3. Dispatch `.github/workflows/deploy-pages.yml` from protected `main`, supplying
+   the immutable release tag and full candidate SHA as explicit inputs.
+4. Approve the production environment only after reviewing both displayed identities.
 5. Require the workflow to verify both the `pages.dev` URL and custom domains.
 
 Manual read-only verification:

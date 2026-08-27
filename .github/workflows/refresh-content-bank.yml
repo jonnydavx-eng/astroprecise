@@ -1,38 +1,11 @@
-name: Refresh content bank
-
-# Weekly engine-only rebuild of website/data/content-bank so the daily bank
-# can NEVER dry out again (the pre-pipeline bank ended 2026-09-11; the 12
-# static sign pages have no ephemeris fallback and would have degraded to
-# generic filler under an honest-claim subtitle).
-#
-# What it does: node tools/build-content-bank.mjs regenerates a rolling
-# window (today−7 … today+180 daily, 12 monthlies), prunes stale files, and
-# is idempotent — unchanged days stay byte-identical, so a typical weekly run
-# adds ~7 new files and prunes ~7 old ones. If anything changed, the SW
-# precache window is regenerated (bumps cache V) and the result is committed
-# straight to main. That push intentionally triggers deploy-pages.yml — the
-# fresh bank auto-ships weekly with zero human involvement.
-#
-# NO SECRETS by design: the builder is pure VSOP87 engine text (no API
-# calls). The quarterly LLM voice pass is a separate, local-only process —
-# never add ANTHROPIC_API_KEY (or any key) to this public repo's workflows.
-#
-# NOTE (J2): this workflow only takes effect once this file lands on the
-# default branch — schedules run from main. Merging/pushing ap-v683-wave to
-# main activates the cron. workflow_dispatch is for manual runs (run it from
-# main; it commits to main).
-#
-# If the push races another commit to main, the job rebases and retries; on a
-# genuine conflict (e.g. a concurrent sw.js V bump) it fails cleanly and the
-# next weekly run picks up from the new state.
+name: Refresh content bank by pull request
 
 on:
   schedule:
-    - cron: '0 4 * * 1' # Mondays 04:00 UTC
+    - cron: '0 4 * * 1'
   workflow_dispatch:
 
-permissions:
-  contents: write # commits the refreshed bank + sw.js back to main
+permissions: {}
 
 concurrency:
   group: refresh-content-bank
@@ -40,56 +13,103 @@ concurrency:
 
 jobs:
   refresh:
+    if: github.repository == 'jonnydavx-eng/astroprecise' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      AUTOMATION_BRANCH: automation/content-bank-refresh
+      BASE_BRANCH: main
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - name: Check out the exact protected default-branch event
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          node-version: '20'
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Rebuild content bank (engine-only, idempotent)
+      - name: Refuse event identity drift and create the automation branch
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          test "$EXPECTED_SHA" = "$(git rev-parse HEAD)" || {
+            echo "Checked-out HEAD does not match the scheduled default-branch SHA."
+            exit 1
+          }
+          git switch --force-create "$AUTOMATION_BRANCH" "$EXPECTED_SHA"
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Rebuild the engine-only rolling content bank
         run: node tools/build-content-bank.mjs --days 181 --months 12
 
-      - name: Detect changes
+      - name: Detect content-bank changes
         id: diff
         run: |
           if [ -n "$(git status --porcelain -- website/data/content-bank)" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "Bank unchanged — nothing to commit."
+            echo "Content bank is unchanged; no branch or pull request update is needed."
           fi
 
-      # Same gate the deploy pipeline trusts, run BEFORE committing: engine
-      # regression, horoscope determinism, content-bank parity/manifest checks
-      # (test-content-bank.mjs), synastry, art themes, weekly sky, ephemeris
-      # package. All plain-node, zero deps — no npm ci needed.
-      - name: Test gate (npm test, includes test-content-bank)
-        if: steps.diff.outputs.changed == 'true'
-        run: npm test
-
-      # Rewrites the today±14d content-bank precache window and bumps cache V
-      # so clients pick up the refreshed bank. Only runs when the bank
-      # actually changed — otherwise sw.js stays untouched (no churn).
-      - name: Regenerate SW precache window
+      - name: Regenerate the service-worker precache
         if: steps.diff.outputs.changed == 'true'
         run: node website/tools/generate-sw-precache.mjs
 
-      - name: Commit and push (triggers Pages deploy)
+      - name: Refuse changes outside the generated content-bank surface
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          unexpected="$({ git diff --name-only; git ls-files --others --exclude-standard; } | sort -u | grep -Ev '^(website/data/content-bank/|website/sw\.js$)' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Generator changed paths outside website/data/content-bank and website/sw.js:"
+            echo "$unexpected"
+            exit 1
+          fi
+
+      - name: Run the complete non-browser regression contract
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          npm run check:syntax
+          npm test
+          npm run test:launch
+          npm run build
+          git diff --check
+
+      - name: Commit the generated result
         if: steps.diff.outputs.changed == 'true'
         run: |
           git config user.name "astroprecise-bank-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add website/data/content-bank website/sw.js
-          git commit -m "chore(content): weekly bank refresh $(date -u +%F) — engine-generated, idempotent [bot]"
-          for attempt in 1 2 3; do
-            if git push origin HEAD:main; then
-              exit 0
-            fi
-            echo "Push rejected (attempt $attempt) — rebasing onto latest main…"
-            git fetch origin main
-            git rebase origin/main || { git rebase --abort; exit 1; }
-            sleep 5
-          done
-          exit 1
+          git commit -m "chore(content): refresh rolling content bank $(date -u +%F) [bot]"
+
+      - name: Push only the dedicated automation branch
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          remote_sha="$(git ls-remote --heads origin "refs/heads/$AUTOMATION_BRANCH" | cut -f1)"
+          git push --force-with-lease="refs/heads/$AUTOMATION_BRANCH:$remote_sha" origin "HEAD:refs/heads/$AUTOMATION_BRANCH"
+
+      - name: Open or update the review pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_number="$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --head "$AUTOMATION_BRANCH" --json number --jq '.[0].number')"
+          if [ -n "$pr_number" ]; then
+            gh pr edit "$pr_number" --repo "$GITHUB_REPOSITORY" --base "$BASE_BRANCH" --title "chore(content): refresh rolling content bank" --body "Automated engine-only content-bank refresh. Review the generated diff and required checks before merge; this workflow never writes to the production branch."
+          else
+            gh pr create --repo "$GITHUB_REPOSITORY" --base "$BASE_BRANCH" --head "$AUTOMATION_BRANCH" --title "chore(content): refresh rolling content bank" --body "Automated engine-only content-bank refresh. Review the generated diff and required checks before merge; this workflow never writes to the production branch."
+          fi

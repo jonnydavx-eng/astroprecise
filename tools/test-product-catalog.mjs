@@ -41,7 +41,7 @@ const expectedProducts = [
     sample: 'downloads/studio/personal-sky-keepsake-sample.pdf',
     samplePages: 20,
     sampleSize: [595.28, 841.89],
-    sampleTitle: 'Personal Sky Keepsake — screen edition',
+    sampleTitle: 'Personal Sky Keepsake - screen edition',
     outlineTitles: [
       'The Sky at Your First Breath',
       'A coordinate in time and place.',
@@ -98,21 +98,21 @@ assert.equal(catalogue.currency, 'GBP')
 assert.equal(catalogue.platform.seller, 'Gumroad')
 assert.equal(catalogue.platform.productType, 'commission')
 assert.equal(catalogue.platform.depositPercent, 50)
-assert.equal(catalogue.platform.merchantOfRecord, true)
+assert.equal(catalogue.platform.merchantOfRecord, null)
+assert.match(catalogue.platform.sellerMechanicsNote, /Merchant of Record treatment[^.]+planning assumptions/i)
 assert.equal(catalogue.platform.checkoutVerified, false)
-assert.equal(catalogue.platform.giftCheckoutVerified, false)
-assert.equal(catalogue.platform.giftPrivacyNoticeVersion, null)
-assert.equal(catalogue.platform.giftPrivacyNoticeHash, null)
+assert.equal(catalogue.launchMode, 'self-only')
 assert.deepEqual(
   [...catalogue.launchBlockers].sort(),
   [
-    'end-to-end-test-order-receipt-refund-and-deletion',
+    'authenticated-payment-adapter-and-charge-sequence-test',
     'durable-contract-confirmation-before-work',
-    'gift-legitimate-interests-assessment-owner-approval',
-    'gift-recipient-intake-delivery-and-buyer-copy-controls-test',
+    'end-to-end-test-order-receipt-refund-and-deletion',
+    'independent-release-and-exact-public-identity-proof',
+    'legal-operator-and-public-geographic-address',
+    'monitored-direct-contact',
     'owner-service-level-confirmation',
     'private-storage-acl-encryption-and-purge-test',
-    'public-geographic-trader-address',
     'signed-in-gumroad-commission-eligibility-check',
     'tax-inclusive-total-price-and-fee-test',
   ].sort(),
@@ -124,8 +124,7 @@ assert.equal(catalogue.sharedRules.physicalItem, false)
 assert.equal(catalogue.sharedRules.birthTime, 'known-exact-recorded-clock-time')
 assert.equal(catalogue.sharedRules.unknownOrApproximateTimeAccepted, false)
 assert.equal(catalogue.sharedRules.earlyStartOptional, true)
-assert.equal(catalogue.sharedRules.giftModel.availability, 'disabled-pending-two-person-platform-test-lia-and-owner-approval')
-assert.equal(catalogue.sharedRules.giftModel.deliveryTarget, 'recipient-always')
+assert.deepEqual(catalogue.sharedRules.purchaseModes, ['self'])
 assert.equal(catalogue.sharedRules.productionWorkingDays, 5)
 assert.match(
   catalogue.sharedRules.productionClock,
@@ -178,11 +177,10 @@ for (const expected of expectedProducts) {
   assert.equal(extname(product.sample), '.pdf')
   assert.deepEqual(
     product.purchaseModes,
-    ['self', 'gift'],
-    `${expected.sku} must implement gift as a mode, never another SKU`,
+    ['self'],
+    `${expected.sku} must remain self-order only in the first public release`,
   )
-  assert.ok(product.gift && typeof product.gift === 'object', `${expected.sku} needs gift-mode copy`)
-  assert.match(JSON.stringify(product.gift), /birthday|gift/i)
+  assert.equal('gift' in product, false, `${expected.sku} must not deploy deferred third-party purchase copy`)
 }
 assert.equal(catalogue.products[2].savingGbpAgainstSeparateProducts, 8)
 assert.equal(
@@ -408,19 +406,6 @@ assert.deepEqual(
   'public Studio downloads must contain only the three deliberate sample PDFs',
 )
 
-for (const path of [
-  'website/img/shop/v901/gift-personal-sky-keepsake.webp',
-  'website/img/shop/v901/gift-whole-sky-edition.webp',
-  'website/img/shop/v901/birthday-orbit-detail.webp',
-]) {
-  const url = fileUrl(path)
-  assert.ok(existsSync(url), `missing gift artwork ${path}`)
-  const bytes = statSync(url).size
-  assert.ok(bytes >= 20_000 && bytes <= 100_000, `${path} must be a useful WebP no larger than 100KB`)
-  const metadata = await sharp(fileURLToPath(url)).metadata()
-  assert.deepEqual([metadata.format, metadata.width, metadata.height], ['webp', 1280, 720], path)
-}
-
 for (const [relativePath, expected] of uniqueSamples) {
   const url = fileUrl(`website/${relativePath}`)
   assert.ok(existsSync(url), `missing public sample website/${relativePath}`)
@@ -438,12 +423,12 @@ for (const [relativePath, expected] of uniqueSamples) {
   )
   assert.equal(
     document.getAuthor(),
-    'Jonathan Davenport trading as AstroPrecise',
+    'Jonathan Davenport / AstroPrecise',
     `${relativePath} author metadata drifted`,
   )
   assert.equal(
     document.getCreator(),
-    'AstroPrecise Studio v901',
+    'AstroPrecise Studio v902',
     `${relativePath} creator metadata drifted`,
   )
   const { outlineTitles, pages, viewports } = await pdfText(url)
@@ -529,16 +514,46 @@ for (const [relativePath, expected] of uniqueSamples) {
     )
   }
   if (expected.sku === 'whole-sky-edition') {
-    assert.equal(document.getTitle(), 'Whole Sky Edition — fictional sample')
+    assert.equal(document.getTitle(), 'Whole Sky Edition - fictional sample')
+    const rawPdf = bytes.toString('latin1')
+    assert.match(rawPdf, /\/DisplayDocTitle true/, 'Whole Sky sample must display its document title')
+    assert.ok((rawPdf.match(/\/S \/H1\b/g) || []).length >= 4, 'Whole Sky sample needs a semantic H1 on every page')
+    assert.ok((rawPdf.match(/\/S \/H2\b/g) || []).length >= 8, 'Whole Sky sample needs semantic section headings')
+    assert.ok((rawPdf.match(/\/S \/P\b/g) || []).length >= 12, 'Whole Sky sample needs semantic paragraphs in reading order')
+    assert.ok((rawPdf.match(/\/S \/Figure\b/g) || []).length >= 6, 'Whole Sky sample needs individually described figures')
+    assert.ok(
+      (document.getCreationDate()?.getUTCFullYear() || 0) >= 2026,
+      'Whole Sky document metadata must use the release build date, not the fictional birth moment',
+    )
     assert.match(compactJoined, /WholeSkyEdition/i)
     assert.match(compactJoined, /SCHEMATIC/i)
-    assert.match(compactJoined, /BirthdayOrbitEdition/i)
     assert.match(compactJoined, /readingandprintexcerpts/i)
-    assert.match(compactJoined, /for(?:the)?WholeSkyEdition/i)
+    assert.match(compactJoined, /Everythinginoneprivatedelivery/i)
     assert.match(compactJoined, /notaphotograph/i)
   }
+  assert.doesNotMatch(
+    compactJoined,
+    /gift|birthday|recipient/i,
+    `${relativePath} must remain self-order only in the first public release`,
+  )
 }
 
 console.log(
-  'PASS Studio catalogue: 3 draft commissions, two modes, closed checkout and verified fictional gift art',
+  'PASS Studio catalogue: 3 draft self-order commissions, closed checkout and verified fictional samples',
 )
+assert.match(publicReadingHtml, /@media screen and \(max-width:820px\)/)
+assert.match(publicReadingHtml, /html,body\{width:100%;min-width:0;\}/)
+assert.doesNotMatch(
+  publicReadingHtml,
+  /html,body\{[^}]*overflow-x:hidden/,
+  'mobile sample root must remain keyboard-scrollable; do not restore the Safari scroll trap',
+)
+assert.match(publicReadingHtml, /font-family:'IBM Plex Mono',monospace/)
+assert.equal(/DM Mono/i.test(publicReadingHtml), false, 'public sample must not request an undeclared fallback font')
+assert.match(
+  gumroadListings,
+  /4960 × 7016 portrait print[^\n]+2160 × 2160 square[^\n]+2160 × 3840 story[^\n]+1080 × 1920 phone wallpaper[^\n]+1080 × 1080 Big Three/i,
+  'Natal listing must name the five actual PNG layouts and must not invent a desktop layout',
+)
+assert.equal(/accessible (?:screen|ink-light).*PDF/i.test(gumroadListings), false, 'listing must not make an unverified PDF accessibility claim')
+assert.match(gumroadListings, /tagged (?:screen|ink-light)[^\n]+defined reading order/i)

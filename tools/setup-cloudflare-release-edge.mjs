@@ -21,6 +21,7 @@ import {
   RELEASE_IDENTITY_SCHEMA,
   parseServiceWorkerVersion,
 } from './verify-release-dispatch.mjs'
+import { PREVIEW_BRANCH_PATTERN, PREVIEW_IDENTITY_SCHEMA } from './verify-preview-dispatch.mjs'
 
 export const PUBLIC_BASE_URLS = Object.freeze([
   'https://astroprecise.app',
@@ -42,7 +43,7 @@ export function usage() {
 
 Usage:
   node tools/setup-cloudflare-release-edge.mjs --dry-run [--candidate <40hex>]
-  node tools/setup-cloudflare-release-edge.mjs --verify-url <https://*.pages.dev> --candidate <40hex>
+  node tools/setup-cloudflare-release-edge.mjs --verify-url <https://*.pages.dev> --candidate <40hex> [--deployment-kind release|preview] [--preview-branch preview-<12hex>] [--release-version ap-vNNN]
   node tools/setup-cloudflare-release-edge.mjs --verify-public --candidate <40hex>
 
 Modes:
@@ -59,6 +60,9 @@ export function parseArgs(argv) {
   let mode = 'dry-run'
   let candidate = null
   let baseUrl = null
+  let deploymentKind = 'release'
+  let previewBranch = null
+  let releaseVersion = null
   let modeWasSelected = false
   let help = false
 
@@ -87,6 +91,25 @@ export function parseArgs(argv) {
       if (!value || value.startsWith('--')) fail('--candidate requires a value')
       candidate = value
       index += 1
+    } else if (arg === '--deployment-kind') {
+      const value = argv[index + 1]
+      if (value !== 'release' && value !== 'preview') {
+        fail('--deployment-kind must be release or preview')
+      }
+      deploymentKind = value
+      index += 1
+    } else if (arg === '--preview-branch') {
+      const value = argv[index + 1]
+      if (!value || value.startsWith('--')) fail('--preview-branch requires a value')
+      previewBranch = value
+      index += 1
+    } else if (arg === '--release-version') {
+      const value = argv[index + 1]
+      if (!/^ap-v[0-9]{3,}$/.test(value ?? '')) {
+        fail('--release-version must match ap-vNNN')
+      }
+      releaseVersion = value
+      index += 1
     } else if (arg === '--apply' || arg === '--verify') {
       fail(
         `${arg} belonged to the retired GitHub Pages edge-mutation route; Cloudflare Pages setup is owner-controlled`,
@@ -103,8 +126,30 @@ export function parseArgs(argv) {
     fail(`${mode} requires --candidate`)
   }
   if (mode === 'verify-url' && baseUrl === null) fail('--verify-url requires a URL')
-  if (mode !== 'verify-url' && baseUrl !== null) fail('a deployment URL is valid only with --verify-url')
-  return Object.freeze({ mode, candidate, baseUrl, help })
+  if (mode !== 'verify-url' && baseUrl !== null)
+    fail('a deployment URL is valid only with --verify-url')
+  if (deploymentKind === 'preview') {
+    if (mode !== 'verify-url')
+      fail('preview identity can be verified only at an immutable Pages URL')
+    const branchMatch = PREVIEW_BRANCH_PATTERN.exec(previewBranch ?? '')
+    if (!branchMatch || branchMatch[1] !== candidate?.slice(0, 12)) {
+      fail('preview identity requires preview-branch matching the candidate SHA')
+    }
+    if (releaseVersion === null) {
+      fail('preview identity requires the verifier-approved --release-version')
+    }
+  } else if (previewBranch !== null) {
+    fail('--preview-branch is valid only for preview identity')
+  }
+  return Object.freeze({
+    mode,
+    candidate,
+    baseUrl,
+    deploymentKind,
+    previewBranch,
+    releaseVersion,
+    help,
+  })
 }
 
 export function normalizeDeploymentBaseUrl(value) {
@@ -117,7 +162,8 @@ export function normalizeDeploymentBaseUrl(value) {
   if (url.protocol !== 'https:') fail('deployment URL must use HTTPS')
   if (url.username || url.password) fail('deployment URL must not contain credentials')
   if (url.port && url.port !== '443') fail('deployment URL must not use a custom port')
-  if (!url.hostname.endsWith('.pages.dev')) fail('deployment URL must be a Cloudflare pages.dev host')
+  if (!url.hostname.endsWith('.pages.dev'))
+    fail('deployment URL must be a Cloudflare pages.dev host')
   if (url.pathname !== '/' || url.search || url.hash) {
     fail('deployment URL must identify the host root without a path, query, or fragment')
   }
@@ -144,6 +190,34 @@ export function parsePublicReleaseIdentity(text, candidate, expectedVersion) {
   if (document.candidateSha !== candidate) fail('release identity candidate SHA does not match')
   if (document.releaseVersion !== expectedVersion) fail('release identity version does not match')
   if (document.releaseTag !== expectedTag) fail('release identity tag does not match')
+  return Object.freeze({ ...document })
+}
+
+export function parsePublicPreviewIdentity(
+  text,
+  candidate,
+  expectedVersion,
+  expectedPreviewBranch,
+) {
+  let document
+  try {
+    document = JSON.parse(String(text))
+  } catch (error) {
+    fail(`preview identity is not valid JSON (${error.message})`)
+  }
+  if (!document || Array.isArray(document) || typeof document !== 'object') {
+    fail('preview identity must be a JSON object')
+  }
+  const expectedKeys = ['candidateSha', 'previewBranch', 'releaseVersion', 'schema']
+  const actualKeys = Object.keys(document).sort()
+  if (JSON.stringify(actualKeys) !== JSON.stringify(expectedKeys)) {
+    fail('preview identity must contain only the four signed identity fields')
+  }
+  if (document.schema !== PREVIEW_IDENTITY_SCHEMA) fail('preview identity schema does not match')
+  if (document.candidateSha !== candidate) fail('preview identity candidate SHA does not match')
+  if (document.releaseVersion !== expectedVersion) fail('preview identity version does not match')
+  if (document.previewBranch !== expectedPreviewBranch)
+    fail('preview identity branch does not match')
   return Object.freeze({ ...document })
 }
 
@@ -186,7 +260,9 @@ function exactResponseUrl(response, requestedUrl, label) {
     fail(`${label} returned an invalid final response URL`)
   }
   if (observed.href !== requestedUrl.href) {
-    fail(`${label} returned ${observed.href}; expected the exact requested URL ${requestedUrl.href}`)
+    fail(
+      `${label} returned ${observed.href}; expected the exact requested URL ${requestedUrl.href}`,
+    )
   }
 }
 
@@ -205,11 +281,22 @@ export async function verifyDeployedIdentity(
   baseUrl,
   candidate,
   expectedVersion,
-  { fetchImpl = globalThis.fetch } = {},
+  { fetchImpl = globalThis.fetch, deploymentKind = 'release', previewBranch = null } = {},
 ) {
   if (!CANDIDATE_SHA_PATTERN.test(candidate ?? '')) fail('verification candidate is invalid')
   if (!/^ap-v[0-9]{3,}$/.test(expectedVersion ?? '')) fail('expected release version is invalid')
   if (typeof fetchImpl !== 'function') fail('HTTPS fetch implementation is unavailable')
+  if (deploymentKind !== 'release' && deploymentKind !== 'preview') {
+    fail('deployment kind must be release or preview')
+  }
+  if (deploymentKind === 'preview') {
+    const branchMatch = PREVIEW_BRANCH_PATTERN.exec(previewBranch ?? '')
+    if (!branchMatch || branchMatch[1] !== candidate.slice(0, 12)) {
+      fail('preview verification branch must match the candidate SHA')
+    }
+  } else if (previewBranch !== null) {
+    fail('preview branch is valid only for preview verification')
+  }
 
   const base = new URL(baseUrl)
   if (base.protocol !== 'https:') fail('verification base URL must use HTTPS')
@@ -242,13 +329,13 @@ export async function verifyDeployedIdentity(
     identityUrl,
     fetchImpl,
     candidate,
-    `${identityUrl.origin} release identity`,
+    `${identityUrl.origin} ${deploymentKind} identity`,
   )
-  const identity = parsePublicReleaseIdentity(
-    await identityResponse.text(),
-    candidate,
-    expectedVersion,
-  )
+  const identityText = await identityResponse.text()
+  const identity =
+    deploymentKind === 'preview'
+      ? parsePublicPreviewIdentity(identityText, candidate, expectedVersion, previewBranch)
+      : parsePublicReleaseIdentity(identityText, candidate, expectedVersion)
 
   const swResponse = await fetchExactCandidateResource(
     swUrl,
@@ -267,7 +354,10 @@ export async function verifyDeployedIdentity(
     finalIdentityUrl: identityResponse.url || identityUrl.href,
     finalServiceWorkerUrl: swResponse.url || swUrl.href,
     candidate,
+    deploymentKind,
+    deploymentRef: identity.releaseTag ?? identity.previewBranch,
     releaseTag: identity.releaseTag,
+    previewBranch: identity.previewBranch,
     releaseVersion: observedVersion,
   })
 }
@@ -286,9 +376,7 @@ async function retryVerification({ label, attempts, delayMs, verify, delay = set
     } catch (error) {
       lastError = error
       if (attempt === attempts) break
-      process.stderr.write(
-        `${label} not converged (${attempt}/${attempts}): ${error.message}\n`,
-      )
+      process.stderr.write(`${label} not converged (${attempt}/${attempts}): ${error.message}\n`)
       await new Promise((resolveDelay) => delay(resolveDelay, delayMs))
     }
   }
@@ -319,9 +407,7 @@ export async function verifyPublic(
     verify: async () => {
       const results = []
       for (const base of bases) {
-        results.push(
-          await verifyDeployedIdentity(base, candidate, expectedVersion, { fetchImpl }),
-        )
+        results.push(await verifyDeployedIdentity(base, candidate, expectedVersion, { fetchImpl }))
       }
       return Object.freeze(results)
     },
@@ -334,7 +420,7 @@ async function main() {
     process.stdout.write(`${usage()}\n`)
     return
   }
-  const releaseVersion = readReleaseVersion()
+  const releaseVersion = options.releaseVersion ?? readReleaseVersion()
   if (options.mode === 'dry-run') {
     process.stdout.write(
       `OFFLINE PLAN: verify direct root responses, ${options.candidate ?? '<candidate-sha>'}, ${releaseVersion}, the SHA identity JSON, and exactly one ${CANDIDATE_HEADER} on the Pages deployment plus apex/www. No token or network was used.\n`,
@@ -353,10 +439,14 @@ async function main() {
       label: 'Cloudflare Pages deployment',
       attempts,
       delayMs: DEFAULT_DEPLOYMENT_DELAY_MS,
-      verify: () => verifyDeployedIdentity(base, options.candidate, releaseVersion),
+      verify: () =>
+        verifyDeployedIdentity(base, options.candidate, releaseVersion, {
+          deploymentKind: options.deploymentKind,
+          previewBranch: options.previewBranch,
+        }),
     })
     process.stdout.write(
-      `PAGES DEPLOYMENT VERIFIED: ${result.candidate} (${result.releaseVersion}) at ${base}. No token was read and no mutation was performed.\n`,
+      `PAGES ${result.deploymentKind.toUpperCase()} DEPLOYMENT VERIFIED: ${result.candidate} (${result.releaseVersion}) at ${base}. No token was read and no mutation was performed.\n`,
     )
     return
   }

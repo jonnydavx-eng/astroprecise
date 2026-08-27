@@ -5,8 +5,7 @@
 # Re-test every directive on the deployment URL and both custom domains.
 #
 # The policy matches current product behavior: same-origin geolocation is used
-# by sky/chart features, and contact.html posts to Formspree. The dormant PayPal
-# SDK origin remains allowlisted, but checkout is currently a hosted link-out.
+# by sky/chart features, contact.html posts to Formspree, and checkout is closed.
 # Inline boot/style snippets still require 'unsafe-inline'; unsafe-eval is not
 # allowed. The BYOK panel accepts a custom endpoint, so an endpoint outside the
 # explicit connect-src list will be blocked if this policy is activated.
@@ -23,4 +22,4 @@
   Cross-Origin-Resource-Policy: same-site
   Origin-Agent-Cluster: ?1
   Permissions-Policy: accelerometer=(), camera=(), geolocation=(self), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.paypalobjects.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.paypal.com https://www.paypalobjects.com; font-src 'self' data:; connect-src 'self' https://list.astroprecise.app https://services.swpc.noaa.gov https://qrng.anu.edu.au https://geocoding-api.open-meteo.com https://api.open-meteo.com https://api.openai.com https://openrouter.ai https://api.gumroad.com https://www.paypal.com; media-src 'self'; worker-src 'self' blob:; manifest-src 'self'; form-action 'self' https://formspree.io https://list.astroprecise.app; frame-src 'self' https://www.paypal.com; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://list.astroprecise.app https://services.swpc.noaa.gov https://qrng.anu.edu.au https://geocoding-api.open-meteo.com https://api.open-meteo.com https://api.openai.com https://openrouter.ai https://api.gumroad.com; media-src 'self'; worker-src 'self' blob:; manifest-src 'self'; form-action 'self' https://formspree.io https://list.astroprecise.app; frame-src 'self'; upgrade-insecure-requests

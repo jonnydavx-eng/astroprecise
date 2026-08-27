@@ -1,0 +1,43 @@
+{
+  "schema": "astroprecise-third-party-credits-v1",
+  "updated": "2026-08-24",
+  "entries": [
+    {
+      "work": "Mercury, Venus, Earth, Moon and Mars surface maps",
+      "creator": "NASA / USGS",
+      "licence": "Public domain",
+      "source": "https://astroprecise.app/assets/textures/nasa-rocky-source.txt",
+      "note": "Official source products resized without painting."
+    },
+    {
+      "work": "Jupiter, Saturn, Uranus and Neptune OPAL maps",
+      "creator": "NASA / ESA Hubble OPAL / STScI; PI Amy Simon; GO 13937",
+      "licence": "CC BY 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://doi.org/10.17909/T9G593",
+      "note": "Maps resized from archive products. Neptune pixels without coverage in all three filters are marked as no-data; nothing was painted in."
+    },
+    {
+      "work": "Pluto global mosaic",
+      "creator": "NASA / JHUAPL / SwRI / USGS New Horizons",
+      "licence": "Public domain",
+      "source": "https://astroprecise.app/assets/textures/pluto-source.txt",
+      "note": "Official source product resized without painting; the unobserved southern region remains black."
+    },
+    {
+      "work": "Earth cloud, light, normal and specular overlays; Saturn ring strip",
+      "creator": "Solar System Scope",
+      "licence": "CC BY 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://www.solarsystemscope.com/textures/",
+      "note": "Used under attribution."
+    },
+    {
+      "work": "Three.js r160",
+      "creator": "Three.js authors",
+      "licence": "MIT",
+      "source": "https://github.com/mrdoob/three.js",
+      "note": "Vendored locally for the three-dimensional Observatory rendering."
+    }
+  ]
+}

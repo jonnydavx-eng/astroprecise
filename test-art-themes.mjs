@@ -31,6 +31,10 @@ ok(fallback?.id === data.defaultTheme, 'fallback to default');
 const packIds = new Set(data.packs.map(p => p.id));
 const orphanThemes = data.themes.filter(t => !packIds.has(t.pack));
 ok(orphanThemes.length === 0, 'all themes belong to a pack');
+ok(
+  !/\b(?:best[ -]?seller|most popular|selling fast|favourite|favorite|five[- ]star|5[- ]star|rated \d)\b/i.test(JSON.stringify(data)),
+  'theme copy contains no invented social proof',
+);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail > 0 ? 1 : 0);

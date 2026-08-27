@@ -29,13 +29,12 @@ async function watermarkProof(path, fictional) {
   const width = 4800;
   const height = 3600;
   const primary = fictional ? 'FICTIONAL SAMPLE' : 'PROOF';
-  const footer = fictional ? 'FICTIONAL SAMPLE · NOT A CUSTOMER FILE' : 'PROOF · NOT A CUSTOMER FILE';
   const svg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-    <g transform="translate(${width / 2} ${height / 2}) rotate(-20)">
-      <text x="0" y="0" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-weight="700" font-size="430" letter-spacing="34" fill="#EEF4FA" fill-opacity=".24" stroke="#040812" stroke-opacity=".48" stroke-width="9">${primary}</text>
+    <rect x="116" y="112" width="1120" height="148" rx="22" fill="#040812" fill-opacity=".88" stroke="#8BA9FF" stroke-opacity=".68" stroke-width="4"/>
+    <text x="176" y="210" font-family="Arial, sans-serif" font-weight="700" font-size="62" letter-spacing="14" fill="#EEF4FA">${primary}</text>
+    <g transform="translate(${width / 2} ${height * 0.56}) rotate(-18)">
+      <text x="0" y="0" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-weight="700" font-size="260" letter-spacing="26" fill="#EEF4FA" fill-opacity=".13" stroke="#040812" stroke-opacity=".24" stroke-width="6">${primary}</text>
     </g>
-    <rect x="0" y="3380" width="${width}" height="220" fill="#040812" fill-opacity=".9"/>
-    <text x="120" y="3510" font-family="Arial, sans-serif" font-weight="700" font-size="74" letter-spacing="9" fill="#8BA9FF">${footer}</text>
     <rect x="0" y="3588" width="${width}" height="12" fill="#8BA9FF"/>
   </svg>`);
   const temp = `${path}.watermarked.png`;
@@ -132,6 +131,23 @@ async function main() {
   const { server, base } = await localServer();
   const browser = await chromium.launch({ executablePath: edgePath(), headless: true, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1600, height: 1200 }, acceptDownloads: true, serviceWorkers: 'block', locale: 'en-GB' });
+  // The captured Observatory plate is a fulfilment artefact, so the decorative
+  // star field must be repeatable for the same canonical order. Seed only this
+  // isolated capture context; the public interactive Observatory keeps its
+  // natural per-visit variation. A different order receives a different field.
+  const captureSeed = Number.parseInt(sha256(JSON.stringify(order)).slice(0, 8), 16) >>> 0;
+  await context.addInitScript(({ seed }) => {
+    window.__AP_STUDIO_CAPTURE__ = true;
+    let state = seed >>> 0;
+    const seededRandom = () => {
+      state = (state + 0x6D2B79F5) >>> 0;
+      let value = state;
+      value = Math.imul(value ^ (value >>> 15), value | 1);
+      value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+      return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+    };
+    Object.defineProperty(Math, 'random', { configurable: true, writable: true, value: seededRandom });
+  }, { seed: captureSeed });
   const problems = [];
   await context.route('**/*', async (route) => {
     const url = new URL(route.request().url());
@@ -153,8 +169,65 @@ async function main() {
     });
     const downloadPromise = page.waitForEvent('download', { timeout: 120_000 });
     await page.evaluate(async ({ captureJd, stampContext, filename }) => {
-      const canvas = window.Orrery3D.captureBirthHourStill({ jd: captureJd, timeKnown: true, scale: 3 });
-      if (!canvas) throw new Error('Orrery capture returned no canvas');
+      const source = window.Orrery3D.captureBirthHourStill({ jd: captureJd, timeKnown: true, scale: 3 });
+      if (!source) throw new Error('Orrery capture returned no canvas');
+
+      // Reframe the real engine output into the customer plate. This is a
+      // deterministic crop/exposure finish only: no body, orbit or position is
+      // invented, moved or repainted. The tighter field removes unused ceiling
+      // space while retaining every plotted body and the compressed orbit arcs.
+      const canvas = document.createElement('canvas');
+      canvas.width = source.width;
+      canvas.height = source.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Observatory composition canvas unavailable');
+      ctx.fillStyle = '#0B1D38';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const cropWidth = Math.round(source.width * 0.84);
+      const cropHeight = Math.round(cropWidth * 0.75);
+      const cropX = Math.round((source.width - cropWidth) / 2);
+      const cropY = Math.min(source.height - cropHeight, Math.round(source.height * 0.1333));
+      ctx.globalCompositeOperation = 'screen';
+      // The cool wash must not flatten the real renderer: keep enough tonal
+      // separation for small-screen previews and the fulfilment quality floor.
+      ctx.filter = 'brightness(1.18) contrast(1.16) saturate(1.08)';
+      ctx.drawImage(source, cropX, cropY, cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
+      ctx.filter = 'none';
+      ctx.globalCompositeOperation = 'source-over';
+
+      // The headless WebGL renderer can vary slightly in exposure between
+      // SwiftShader runs. A fixed editorial vignette gives the exported plate
+      // a repeatable tonal hierarchy without redrawing, moving or obscuring a
+      // single computed body or orbit. Its centre lift and edge falloff also
+      // keep the real scene legible in both print and small shop previews.
+      const tone = ctx.createRadialGradient(
+        canvas.width * 0.66, canvas.height * 0.43, canvas.width * 0.04,
+        canvas.width * 0.66, canvas.height * 0.43, canvas.width * 0.78,
+      );
+      tone.addColorStop(0, 'rgba(74,126,202,.30)');
+      tone.addColorStop(.52, 'rgba(22,61,116,.12)');
+      tone.addColorStop(1, 'rgba(0,5,16,.34)');
+      ctx.fillStyle = tone;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // A small editorial rail balances the upper field and states what the
+      // buyer is seeing. It remains a Surface A still, never a LIVE claim.
+      const pad = Math.round(canvas.width * 0.025);
+      ctx.fillStyle = 'rgba(4,8,18,.78)';
+      ctx.fillRect(canvas.width - 1840, 92, 1720, 220);
+      ctx.strokeStyle = 'rgba(139,169,255,.62)';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(canvas.width - 1840, 92, 1720, 220);
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = '#EEF4FA';
+      ctx.font = '700 50px "Schibsted Grotesk", Arial, sans-serif';
+      ctx.fillText('AUTHORED WHOLE-SYSTEM VIEW', canvas.width - pad, 134);
+      ctx.fillStyle = '#8BA9FF';
+      ctx.font = '600 31px "IBM Plex Mono", ui-monospace, monospace';
+      ctx.fillText('COMPUTED POSITIONS · COMPRESSED SCALE', canvas.width - pad, 226);
+      ctx.textAlign = 'left';
+
       window.APKeepSky.stampSurfaceA(canvas, stampContext);
       const blob = await new Promise((resolveBlob, reject) => canvas.toBlob((value) => value ? resolveBlob(value) : reject(new Error('PNG encoding failed')), 'image/png'));
       const url = URL.createObjectURL(blob);

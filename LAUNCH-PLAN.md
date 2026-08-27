@@ -1,4 +1,4 @@
-# AstroPrecise v901 launch plan
+# AstroPrecise v902 launch plan
 
 Updated: 2026-08-24
 
@@ -40,7 +40,7 @@ products without weakening privacy, payment or release controls.
 - [ ] Freeze the whole final candidate, not a narrow subset.
 - [ ] Genuine native S12 and all declared specialist attestations.
 - [ ] Owner signer installed and S1 imported last.
-- [ ] Immutable `release/ap-v901-<sha12>` tag and protected environment checked.
+- [ ] Immutable `release/ap-v902-<sha12>` tag, protected-main workflow source and protected environments checked.
 - [ ] Workflow proves Pages deployment plus apex/www exact identity.
 
 ## Phase E — deliberate publication

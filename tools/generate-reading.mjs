@@ -71,6 +71,13 @@ const sampleOrder = {
   lat: 54.486, lon: -0.613,
   tz: 'Europe/London', timeAccuracy: 'exact', house: 'placidus',
   product: PRODUCT,
+  purchaseIntent: 'self',
+  buyerDeclaration: {
+    typedName: 'Aurora Vale',
+    confirmedAdult: true,
+    confirmedChartSubject: true,
+    confirmedPersonalDataEntry: true,
+  },
 };
 const canonicalOrder = canonicalizeStudioOrder(usingSample ? sampleOrder : order);
 order = { ...order, ...canonicalOrder, product: PRODUCT };
@@ -217,7 +224,7 @@ table{width:100%;border-collapse:collapse;font-size:9pt;margin:7pt 0;}
 td,th{padding:3.2pt 5pt;border-bottom:1px solid rgba(147,168,191,.2);text-align:left;font-variant-numeric:tabular-nums;}
 th{font-family:'Cinzel',serif;font-size:7pt;letter-spacing:.1em;text-transform:uppercase;color:#8BA9FF;}
 .glyph{color:#C9D6E3;font-family:'AstroGlyph',serif;font-size:11pt;}
-.foot{position:absolute;bottom:11mm;left:22mm;right:22mm;display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:6.8pt;letter-spacing:.1em;text-transform:uppercase;color:#93A8BF;border-top:1px solid rgba(147,168,191,.26);padding-top:5pt;}
+.foot{position:absolute;bottom:11mm;left:22mm;right:22mm;display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:6.8pt;letter-spacing:.1em;text-transform:uppercase;color:#93A8BF;border-top:1px solid rgba(147,168,191,.26);padding-top:5pt;}
 .watermark{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-family:'Cinzel',serif;font-size:40pt;letter-spacing:.14em;color:rgba(139,169,255,.09);white-space:nowrap;pointer-events:none;}
 .page::before{content:'';position:absolute;inset:8mm;border:1px solid rgba(147,168,191,.46);pointer-events:none;}
 .page::after{content:'';position:absolute;inset:9.4mm;border:1px solid rgba(139,169,255,.18);pointer-events:none;}
@@ -235,6 +242,8 @@ th{font-family:'Cinzel',serif;font-size:7pt;letter-spacing:.1em;text-transform:u
 ul.questions{margin:9pt 0 12pt 18pt;font-size:10.4pt;line-height:1.48;color:#D7E2ED;}
 ul.questions li{margin-bottom:5pt;}
 p.note{font-size:9.2pt;color:#B6C6D8;border-left:2px solid rgba(139,169,255,.38);padding-left:10pt;}
+.reading-disclaimer{font-size:9.5pt;color:#93A8BF;margin-top:14pt;}
+.reading-support{font-size:9pt;color:#93A8BF;text-align:center;margin-top:12pt;}
 table.placements td,table.placements th{font-size:8.4pt;}
 .r{color:#FF8EA8;font-size:8.5pt;}
 .symbolic-note{border:1px solid rgba(139,169,255,.34);background:rgba(10,20,36,.72);padding:8pt 10pt;color:#C9D6E3;font-size:9.2pt;}
@@ -246,6 +255,13 @@ body.ap-print-light h1,body.ap-print-light p,body.ap-print-light .lede,body.ap-p
 body.ap-print-light h2,body.ap-print-light .eyebrow{color:#315AC9;}
 body.ap-print-light h3,body.ap-print-light h2.reading-subhead,body.ap-print-light .glyph,body.ap-print-light .big3 .g{color:#253A58;}
 body.ap-print-light .meta,body.ap-print-light .foot,body.ap-print-light p.note{color:#465E7A;}
+body.ap-print-light .reading-disclaimer,body.ap-print-light .reading-support{color:#465E7A;}
+body.ap-print-light .cover .seal,body.ap-print-light .orn,body.ap-print-light th{color:#315AC9;}
+body.ap-print-light .cover-recipient,body.ap-print-light .balance .n,body.ap-print-light ul.questions{color:#101D30;}
+body.ap-print-light .cover-method,body.ap-print-light .modality-intro,body.ap-print-light .big3 .lbl,body.ap-print-light .balance .el{color:#465E7A;}
+body.ap-print-light .cover-provenance{color:#315AC9;}
+body.ap-print-light .dropcap::first-letter{color:#253A58;}
+body.ap-print-light .r{color:#B3264B;}
 body.ap-print-light .symbolic-note{background:#F4F7FC;color:#253A58;border-color:#8BA9FF;}
 `;
 
@@ -298,11 +314,11 @@ const reading=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title
   <div class="seal">✦</div>
   <p class="eyebrow">${PLABEL.tag}</p>
   <h1>The Sky at Your&nbsp;<br>First Breath</h1>
-  <p class="lede" style="border:none;text-align:center;max-width:120mm;">A designed, reflective sky reading for<br><strong style="font-style:normal;color:#EEF4FA;font-size:16pt;">${PERSON.name}</strong></p>
+  <p class="lede" style="border:none;text-align:center;max-width:120mm;">A designed, reflective sky reading for<br><strong class="cover-recipient" style="font-style:normal;font-size:16pt;">${PERSON.name}</strong></p>
   <div class="cover-wheel">${wheel(300)}</div>
   <p class="meta">${PERSON.date} &nbsp;·&nbsp; ${PERSON.time}<br>${PERSON.place}<br>Sun ${fmt(pos.sun.lon)} · Moon ${fmt(pos.moon.lon)} · ${ascSign} rising</p>
-  <p style="position:absolute;bottom:18mm;font-size:7.6pt;letter-spacing:.16em;color:#93A8BF;font-family:'Cinzel',serif;">COMPUTED POSITIONS · TRADITIONAL SYMBOLIC INTERPRETATION · VSOP87 / ELP2000</p>
-  ${provenanceLabel ? `<p style="position:absolute;bottom:13mm;font:7pt 'DM Mono',monospace;letter-spacing:.06em;color:#8BA9FF;">${provenanceLabel}</p>` : ''}
+  <p class="cover-method" style="position:absolute;bottom:18mm;font-size:7.6pt;letter-spacing:.16em;font-family:'Cinzel',serif;">COMPUTED POSITIONS · TRADITIONAL SYMBOLIC INTERPRETATION · VSOP87 / ELP2000</p>
+  ${provenanceLabel ? `<p class="cover-provenance" style="position:absolute;bottom:13mm;font:7pt 'IBM Plex Mono',monospace;letter-spacing:.06em;">${provenanceLabel}</p>` : ''}
 </div>
 
 <div class="page" data-page="1">
@@ -313,7 +329,7 @@ const reading=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title
   <p class="dropcap">Three familiar lenses frame what follows. The <strong>Sun in ${sunSign}</strong> is traditionally associated with identity and purpose. The <strong>Moon in ${moonSign}</strong> is associated with feeling and memory. <strong>${ascSign} rising</strong> describes the eastern horizon at the recorded minute and is read as a lens on first impressions.</p>
   <p>${domLine}</p>
   ${balanceBars()}
-  <p style="font-size:9pt;color:#93A8BF;margin-top:6pt;">Modality balance — a traditional classification of how signs initiate, sustain, or adapt:</p>
+  <p class="modality-intro" style="font-size:9pt;margin-top:6pt;">Modality balance — a traditional classification of how signs initiate, sustain, or adapt:</p>
   ${modalityBars(mC)}
   ${foot(1)}
 </div>
@@ -464,9 +480,9 @@ const poster=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>
 .pl .n{font-family:'Cinzel',serif;font-size:8.5pt;letter-spacing:.06em;text-transform:uppercase;color:#93A8BF;width:64pt;}
 .pl .v{color:#EEF4FA;font-variant-numeric:tabular-nums;}
 .pl .r{color:#FF8EA8;font-size:9pt;}
-.poster-kicker{font-family:'DM Mono',monospace;font-size:9pt;letter-spacing:0;text-transform:none;color:#8BA9FF;}
-.poster-meta{letter-spacing:0;font-family:'DM Mono',monospace;}
-.poster-footer{letter-spacing:0;font-family:'DM Mono',monospace;}
+.poster-kicker{font-family:'IBM Plex Mono',monospace;font-size:9pt;letter-spacing:0;text-transform:none;color:#8BA9FF;}
+.poster-meta{letter-spacing:0;font-family:'IBM Plex Mono',monospace;}
+.poster-footer{letter-spacing:0;font-family:'IBM Plex Mono',monospace;}
 body.ap-print-light .pl{border-color:rgba(16,29,48,.22);}
 body.ap-print-light .pl .g,body.ap-print-light .pl .n,body.ap-print-light .pl .v{color:#253A58;}
 body.ap-print-light .pl .r{color:#B3264B;}
@@ -490,9 +506,9 @@ body.ap-print-light .poster-reflection,body.ap-print-light .poster-footer{color:
     <div class="pl"><span class="g">↑</span><span class="n">Ascendant</span><span class="v">${fmt(asc)}</span></div>
     <div class="pl"><span class="g">MC</span><span class="n">Top of chart</span><span class="v">${fmt(mc)}</span></div>
   </div>
-  <p class="poster-reflection" style="margin-top:6mm;font-size:11pt;color:#93A8BF;font-style:italic;">Computed positions · traditional astrological chart · for reflection and entertainment.</p>
-  <p class="poster-footer" style="margin-top:4mm;font-size:8pt;color:#93A8BF;">✦ AstroPrecise ✦ &nbsp; HOME-PRINT A3 · RGB · VSOP87 / ELP2000 · PLACIDUS</p>
-  ${provenanceLabel ? `<p class="poster-footer" style="margin-top:2mm;font-size:7pt;color:#8BA9FF;">${provenanceLabel}</p>` : ''}
+  <p class="poster-reflection" style="margin-top:6mm;font-size:11pt;font-style:italic;">Computed positions · traditional astrological chart · for reflection and entertainment.</p>
+  <p class="poster-footer" style="margin-top:4mm;font-size:8pt;">✦ AstroPrecise ✦ &nbsp; HOME-PRINT A3 · RGB · VSOP87 / ELP2000 · PLACIDUS</p>
+  ${provenanceLabel ? `<p class="poster-footer" style="margin-top:2mm;font-size:7pt;">${provenanceLabel}</p>` : ''}
 </div>
 </body></html>`;
 
@@ -520,10 +536,27 @@ if (usingSample && DELIVER.reading && !FINAL) {
 <link rel="canonical" href="https://astroprecise.app/sample-reading.html" />
 <title>Personal Sky Keepsake sample | AstroPrecise</title>
 ${FONTS}`;
+  const sampleResponsiveCss = `
+@media screen and (max-width:820px){
+  html,body{width:100%;min-width:0;}
+  body{padding:8px;}
+  main{width:100%;}
+  .page{width:100%;height:auto;min-height:calc((100vw - 16px) * 1.4142);padding:9vw 7vw 12vw;margin:0 auto 12px;overflow:hidden;}
+  .page::before{inset:6px;}
+  .page::after{inset:10px;}
+  .cover{padding-bottom:9vw;}
+  .cover-wheel,.cover-wheel svg{max-width:100%;height:auto;}
+  h1{font-size:clamp(20pt,9vw,28pt);}
+  .big3{flex-wrap:wrap;}
+  .big3 .b{min-width:88px;}
+  table{display:block;max-width:100%;overflow-x:auto;}
+  .foot{position:relative;inset:auto;display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:18px;font-size:6pt;}
+  .watermark{font-size:clamp(20pt,10vw,40pt);max-width:92%;text-align:center;}
+}`;
   const sampleHtml = readingOut.replace(
     /<!doctype html><html lang="en"><head><meta charset="utf-8"><title>[^<]*<\/title>\s*<link rel="stylesheet" href="css\/fonts\.css">\s*<style>/i,
     `${sampleHead}<style>`,
-  );
+  ).replace('</style>', `${sampleResponsiveCss}\n</style>`);
   writeFileSync(samplePath, sampleHtml, 'utf8');
   console.log('published:', samplePath);
 }

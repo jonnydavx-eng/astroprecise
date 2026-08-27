@@ -256,7 +256,7 @@ export function methodologyPage(PERSON, order) {
   <p>This is a traditional symbolic practice, not a scientific personality assessment or fortune-telling. It does not diagnose, prescribe, or guarantee outcomes.</p>
   <h2 class="reading-subhead">How to use it</h2>
   <p>Use each passage as an optional question. Keep what is useful, set aside what is not, and never substitute a symbolic reading for evidence or qualified advice.</p>
-  <p style="font-size:9.5pt;color:#93A8BF;margin-top:14pt;">For reflection and entertainment · Not medical, financial, legal or other professional advice · astroprecise.app/accuracy.html</p>`;
+  <p class="reading-disclaimer">For reflection and entertainment · Not medical, financial, legal or other professional advice · astroprecise.app/accuracy.html</p>`;
 }
 
 const artForSign = (sign) => (/^[AEIOU]/i.test(String(sign)) ? 'an' : 'a');
@@ -272,5 +272,5 @@ export function closingChapter(name, sunSign, moonSign, ascSign, domEl, domMode,
   <ul class="questions">${reflections.map((q) => `<li>${q}</li>`).join('')}</ul>
   <p>${name}, the chart count emphasises <strong>${domEl[0].toLowerCase()}</strong> symbolism — ${domLineTail.replace(/^a |^an /, '')} — with a <strong>${domMode[0].toLowerCase()}</strong> classification associated with ${MODE_BLURB[domMode[0]]}. In traditional terms, ${artForSign(sunSign)} ${sunSign} Sun, ${artForSign(moonSign)} ${moonSign} Moon, and ${ascSign} rising provide three optional lenses for reflection.</p>
   <p class="lede" style="margin-top:16pt;">This is not prediction. It is orientation — a map of the sky you were born under, drawn honestly. What you build on it is yours. Thank you for trusting AstroPrecise with your birth moment.</p>
-  <p style="font-size:9pt;color:#93A8BF;text-align:center;margin-top:12pt;">Questions about your files? Use the private Gumroad order conversation · astroprecise.app</p>`;
+  <p class="reading-support">Questions about your files? Use the private Gumroad order conversation · astroprecise.app</p>`;
 }

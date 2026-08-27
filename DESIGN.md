@@ -6,27 +6,28 @@
 
 **`website/css/ap-palette-2026.css`** is the canonical color layer ("Observatory Palette 2026" — the COOL Ephemeris rebrand, ap-v504–v508). It is imported first by `main-lite.css`; `main.css` `:root` re-declares the same values for the classic path. **Edit tokens there, never hardcode hexes in page CSS.** Legacy names (`--gold`, `--void`, `--silver`, `--lapis`, `--amethyst`…) are aliases into the new tokens — they exist for old selectors, don't add new usages.
 
-## Palette (lunar night + instrument silver + copper)
+## Palette (lunar night + instrument silver + ion blue)
 
 Locked in `website/css/ap-palette-2026.css`. `--ap-brass*` names are **aliases for instrument silver**, not yellow metal.
 
 | Role | Token | Value |
 |---|---|---|
-| Page canvas | `--ap-void` / `--ap-void-deep` | `#05080F` |
-| Section bands | `--ap-void-mid` | `#0C1422` |
-| Raised plates | `--ap-void-raised` | `#141E2E` |
-| Instrument silver | `--ap-silver` / `--ap-brass` | `#8FA3B8` |
-| Bright metal | `--ap-brass-bright` / `--ap-silver-bright` | `#C5D4E0` |
-| Paper | `--ap-paper` | `#E6ECF2` |
-| Copper action | `--ap-ember` | `#B86B4A` |
-| Proof teal | `--ap-proof` | `#7EB8A8` |
-| Element accents (semantic — do NOT flatten) | `--ap-element-fire/earth/air/water` | keep distinct; fire may sit near copper |
+| Page canvas | `--ap-void` / `--ap-void-deep` | `#040812` |
+| Section bands | `--ap-void-mid` | `#0A1424` |
+| Raised plates | `--ap-void-raised` | `#101D30` |
+| Elevated surface | `--ap-void-soft` | `#17263B` |
+| Instrument silver | `--ap-silver` / `--ap-brass` | `#93A8BF` |
+| Bright metal | `--ap-brass-bright` / `--ap-silver-bright` | `#C9D6E3` |
+| Paper | `--ap-paper` | `#EEF4FA` |
+| Ion-blue action | `--ap-ion` / `--ap-ember` | `#8BA9FF` |
+| Proof mint | `--ap-proof` | `#6FD0B3` |
+| Element accents (semantic — do NOT flatten) | `--ap-element-fire/earth/air/water` | keep distinct |
 
-**Retired — never reintroduce:** engraved brass `#C2A05E`/`#CDAE6A`/`#D8B978`, warm gold `#C9A227`/`#D4AF37`, acid orange `#ff5a1f`, warm voids `#050406`/`#0D0A07`. `theme-color` is `#05080F`. Adobe share plates are type-on-engine-stills only — never Firefly planets as the live sky.
+**Retired — never reintroduce:** engraved brass `#C2A05E`/`#CDAE6A`/`#D8B978`, warm gold `#C9A227`/`#D4AF37`, acid orange `#ff5a1f`, warm voids `#050406`/`#0D0A07`. `theme-color` is `#040812`. Adobe share plates are type-on-engine-stills only — never Firefly planets as the live sky.
 
-### AstroPrecise Studio — Midnight Meridian v901
+### AstroPrecise Studio — Midnight Meridian v902
 
-Studio product and birthday-gift surfaces are deliberately **cool-only**. Do not use the sitewide copper action token on `shop.html`, product covers or delivered Studio gift artwork.
+Studio product surfaces are deliberately **cool-only**. Do not use the sitewide copper action token on `shop.html`, product covers or delivered Studio artwork.
 
 | Studio role | Local token | Value |
 |---|---|---|
@@ -36,11 +37,11 @@ Studio product and birthday-gift surfaces are deliberately **cool-only**. Do not
 | Paper | `--studio-paper` | `#EEF4FA` |
 | Instrument silver | `--studio-silver` | `#93A8BF` |
 | Primary ion blue | `--studio-ion` | `#8BA9FF` |
-| Gift/dedication violet | `--studio-violet` | `#A897FF` |
+| Supporting violet | `--studio-violet` | `#A897FF` |
 | Proof/verified mint | `--studio-mint` | `#6FD0B3` |
 | Supporting cyan | `--studio-cyan` | `#79C7F2` |
 
-These local tokens live in `website/css/ap-shop-v835.css` because the Studio surface is an intentional product sub-system. No orange, warm gold or brass-coloured ribbon/device mockup is permitted. Gift art should feel like a private observatory folio: midnight field, silver instrument lines, ion/violet light and restrained mint proof marks.
+These local tokens live in `website/css/ap-shop-v835.css` because the Studio surface is an intentional product sub-system. No orange, warm gold or brass-coloured ribbon/device mockup is permitted. Product art should feel like a private observatory folio: midnight field, silver instrument lines, ion/violet light and restrained mint proof marks.
 
 ## Typography
 
@@ -67,16 +68,15 @@ Bespoke engraved-SVG system, NOT a stock icon library: `js/celestial-seals.js` +
 5. Nav/footer are injected single-source (`app.js` `renderNav()`, `ap-footer-inject.js`) — never hand-edit per-page nav.
 6. Before any deploy: `npm test` + the `tools/visual-check/` suite (expert-audit, user-journey, audit-a11y, homepage-contract) must be green.
 
-## Studio birthday-gift design contract
+## Studio v902 first-release design contract
 
-- The shop contains exactly three products with two presentation modes: `self` and `gift`. Never create a fourth gift SKU or revive the retired physical gift-box/voucher imagery.
-- First-viewport controls must make both paths obvious. The full choice is a keyboard-operable radiogroup; its only remembered value is `self` or `gift` in tab-scoped `sessionStorage`.
-- Gift imagery is generated from the accepted recipient-controlled chart, not from a generic zodiac poster or synthetic planet photograph.
-- The gift package uses a standalone tagged A4 dedication jacket rendered from a 2480 × 3508 (300 ppi) source, a 1080 × 1920 phone reveal and a 2160 × 2160 computed Moon-phase plate. The Moon plate must say it is calculated for the recorded birth instant and is not a photograph. Maximum accepted names/messages must pass the wide-glyph boundary fixture before release.
-- The standalone jacket does not alter the reading PDF. Reading products remain exactly 20 pages.
+- The shop contains exactly three adult self-order products. It has no gift toggle, recipient path, voucher, delayed-redemption control or third-party-data route.
+- Every product card shows a fictional computed cover, exact draft price, sample link, material limitations and one disabled checkout control while the catalogue remains unpublished.
 - Public examples remain fictional and conspicuously marked. Never use a real name, birth moment, dedication or reading as social proof.
-- Delivery truth belongs in the UI: adult recipient present/self-entering, recipient pays nothing, recipient receives files by default, buyer copy only through the recipient's separate unticked choice, no surprise/minor path.
-- Respect `prefers-reduced-motion`, WCAG focus visibility, 44 px touch targets and a 390 × 844 first-viewport check for the gift choice.
+- The Whole Sky Observatory still always carries a visible `SCHEMATIC` label and is never described as a photograph, live feed or true-scale rendering.
+- Reading products remain exactly 20 pages; the public Whole Sky sampler is a separate four-page preview.
+- Respect `prefers-reduced-motion`, WCAG focus visibility, 44 px touch targets and 320/390/768/1440 px layout checks.
+- Future gifting is research only in `marketing/shop-studio-v901/deferred-gift-spec.md`. It requires a separately governed legal, privacy, platform, product and release design before any gift control or artwork can return.
 
 
 ## Homepage hero & tile system (ap-v570–v574, 2026-07-03 redesign)
@@ -84,6 +84,6 @@ Bespoke engraved-SVG system, NOT a stock icon library: `js/celestial-seals.js` +
 - **Hero:** the orrery is the homepage. `#heroChapter` is a full-viewport flex stage (`min-height clamp(620px, 100svh - 200px, 950px)`, border-box, bottom 96px reserved for the HUD). `.hero-solar-stage` is an absolute full-bleed backdrop (z1) with the readability scrim as its `::after` (z2); the copy `.page-wrap` sits at z2 on the section (above the stage subtree); the HUD deck `#orrery-lite-deck` is a stage child at z3, pinned bottom. CSS layers `v570*` at the end of `ap-horizon-2026.css`. Mobile (≤1023px): flow order eyebrow → H1 → standfirst → model+HUD → form → trust via `display:contents` + `order`.
 - **Hero operation:** wheel-zoom needs ctrl/cmd (or pinch) so the page always scrolls — hero-scoped in both engines; `touch-action: pan-y`; no scroll-triggered WebGL load (IO + pointer + 8s idle only); the engraved-wheel fallback cross-fades only after `lite-poster-ready` (force-hidden on `ap-orrery-ready`); the 2D fallback engine (orrery3d) caps at 640/760/960 by RafCore tier.
 - **Masthead is critical-path:** the logomark SVG carries `width="46" height="46"` attributes and the masthead structural rules are duplicated in the inline critical `<style>` in index.html (ephemeris.css lazy-loads — never rely on it above the fold). Keep both in sync with ephemeris.css.
-- **Tile system (v571 layer):** one recipe — radius 16px, surface `--night-raised`, border `rgba(194,160,94,.22)` → hover `.45` + `translateY(-2px)` + `0 14px 36px rgba(0,0,0,.4)`. Card innards: Cinzel eyebrow 0.72rem/0.16em → 1.25rem/600 title → 0.9rem dek. `.ap-chapter-title` = `clamp(2rem, 3.4vw, 2.75rem)`; major chapters `padding-block: 5.5rem` (4.5rem <768px).
+- **Tile system (v571 structure, recoloured by the canonical 2026 layer):** radius 16px, raised lunar surface, `--ap-card-border` → `--ap-card-border-strong` on hover + `translateY(-2px)` + `0 14px 36px rgba(0,0,0,.4)`. The former warm-brass rgba values are historical and must not return. Card innards: Cinzel eyebrow 0.72rem/0.16em → 1.25rem/600 title → 0.9rem dek. `.ap-chapter-title` = `clamp(2rem, 3.4vw, 2.75rem)`; major chapters `padding-block: 5.5rem` (4.5rem <768px).
 - **Guides:** homepage `#skyGuidesWrap` runs `data-sg-mode="teaser"` (hero + 3 cards + browse-all); the full catalogue + sticky filter live on `guides.html` (`body.sg-library`). Contract: teaser ≥3 on home, ≥8 on guides.html.
 - **Rail padding:** content `.page-wrap`s reserve `max(108px, gutter + --ap-rail-w)` for the float nav at ≥761px; `#apMasthead .page-wrap` is exempt (nav never overlaps the header).

@@ -349,22 +349,10 @@ async function studioShopGate(browser) {
   gate('Shop has no email capture or phone overflow',
     state.forms === 0 && /No email capture/i.test(state.text) && state.overflowX <= 1,
     JSON.stringify({ forms: state.forms, overflowX: state.overflowX }));
-  gate('Shop exposes a mobile-safe self/gift choice in the first viewport',
-    state.intentRole === 'radiogroup' && JSON.stringify(state.intentModes) === JSON.stringify(['self', 'gift']) &&
-      state.intentSizes.every(([, height]) => height >= 44) && state.heroGiftVisible,
+  gate('Shop exposes the self-order-only privacy boundary on mobile',
+    state.intentRole == null && state.intentModes.length === 0 && state.intentSizes.length === 0 &&
+      !state.heroGiftVisible && /first release is for adults aged 18\+ ordering for themselves only/i.test(state.text),
     JSON.stringify({ intentRole: state.intentRole, intentModes: state.intentModes, intentSizes: state.intentSizes, heroGiftVisible: state.heroGiftVisible }));
-  await page.locator('#shop-intent [data-shop-intent="self"]').focus();
-  await page.keyboard.press('ArrowRight');
-  const giftState = await page.evaluate(() => ({
-    giftChecked: document.querySelector('#shop-intent [data-shop-intent="gift"]')?.getAttribute('aria-checked'),
-    liveText: document.querySelector('[aria-live="polite"]')?.textContent || '',
-    text: document.body.innerText,
-  }));
-  gate('Shop gift mode works by keyboard and stays checkout-closed',
-    giftState.giftChecked === 'true' && /gift/i.test(giftState.liveText) &&
-      /recipient pays (?:nothing|£?0)/i.test(giftState.text) &&
-      /Gift checkout verification pending/i.test(giftState.text),
-    JSON.stringify(giftState));
   mkdirSync(OUT, { recursive: true });
   await page.screenshot({ path: join(OUT, 'studio-shop-phone.png'), fullPage: false });
   gate('shop.html has no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));

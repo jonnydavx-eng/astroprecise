@@ -1,8 +1,8 @@
-# AstroPrecise Studio gift-recipient legitimate-interests assessment
+# Deferred AstroPrecise gift research — legitimate-interests assessment
 
 Updated: 2026-08-24
 
-> **WORKING DRAFT — NOT APPROVED, NOT LEGAL ADVICE, NOT AUTHORITY TO PROCESS DATA.** This assessment is a checkout-opening blocker. The data controller must verify the real Gumroad flow, complete the blank decisions, approve and date the assessment, and consider advice for the actual business and territories before accepting a gift order.
+> **DEFERRED FUTURE RESEARCH — NOT APPROVED, NOT LEGAL ADVICE, NOT AUTHORITY TO PROCESS DATA.** Gifting is absent from the v902 self-only product, checkout and public build. This document is not a blocker for the self-only first release and must not be used to collect recipient data. It would become one of several mandatory gates only if a later, separately governed gift project is opened.
 
 ## Decision in one sentence
 
@@ -10,7 +10,7 @@ The proposed legitimate interest can support a tightly limited, adult-only birth
 
 ## 1. Processing assessed
 
-Exactly three existing Studio SKUs may use `purchaseIntent: gift`; gift mode is not a separate product.
+A future design may evaluate adding a gift mode to the same three Studio SKUs rather than creating a fourth product. The current catalogue permits only `purchaseIntent: self`; no existing SKU may accept a gift order.
 
 Data proposed for direct collection from the adult recipient:
 
@@ -63,7 +63,7 @@ Less intrusive design choices adopted:
 - no surprise/voucher path that stores data before the recipient is informed;
 - delivery goes to the recipient; buyer copy is separate and optional;
 - local raw inputs and working files have a short proposed deletion period;
-- the public shop intent toggle stores only `self` or `gift` in tab-scoped sessionStorage.
+- a future interface must not place recipient data in URLs, browser storage or analytics. The v902 public shop has no gift intent toggle.
 
 The commission cannot be produced from anonymous or materially reduced birth inputs. However, if Gumroad cannot keep the recipient&rsquo;s fields and delivery private from the buyer, cannot present the notice before collection, or cannot preserve the required confirmations, the chosen platform is not a necessary/proportionate route and gift checkout must remain closed.
 
@@ -114,7 +114,7 @@ Children&rsquo;s interests require particular protection and would materially ch
 
 Provisional outcome: **conditional pass, not approved for use**.
 
-Gift checkout must remain disabled until all of the following are evidenced:
+Any future gift checkout must remain absent until all of the following are evidenced in its own governed project:
 
 - final controller identity, geographic address and direct contact route;
 - final public privacy/terms/refunds copy;

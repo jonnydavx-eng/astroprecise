@@ -1,16 +1,16 @@
-# AstroPrecise Studio v901 — commerce pack
+# AstroPrecise Studio v902 — commerce pack
 
 Updated: 2026-08-24
 
 ## Status
 
-This directory is a **local prelaunch pack** for exactly three proposed Gumroad Commission services. Each SKU has `self` and adult recipient-controlled `gift` modes at the same price; gift is not a fourth product. This pack is not evidence that a product exists in Gumroad, is published, can be bought or has been deployed to the AstroPrecise website.
+The directory name is retained for compatibility. This is the **local v902 prelaunch pack** for exactly three proposed, adult self-order Gumroad Commission services. Gifting and all third-party birth-data flows are deferred. This pack is not evidence that a product exists in Gumroad, is published, can be bought or has been deployed to the AstroPrecise website.
 
 | SKU | Product | Total service price | Commission payment |
 |---|---|---:|---|
-| `natal-sky-print-pack` | Natal Sky Print Pack | £18 | self or birthday gift |
-| `personal-sky-keepsake` | Personal Sky Keepsake | £29 | self or birthday gift |
-| `whole-sky-edition` | Whole Sky Edition | £39 | self or birthday gift |
+| `natal-sky-print-pack` | Natal Sky Print Pack | £18 | self-order only |
+| `personal-sky-keepsake` | Personal Sky Keepsake | £29 | self-order only |
+| `whole-sky-edition` | Whole Sky Edition | £39 | self-order only |
 
 The proposed 50% deposit/balance sequence is planning copy only. It must not be presented as account truth until an unpublished signed-in Commission test proves the exact price, tax, payment, upload, completion and final-charge sequence.
 
@@ -21,11 +21,11 @@ Ko-fi remains voluntary support-only. A Ko-fi contribution does not buy, reserve
 Position AstroPrecise as a **premium-accessible designed keepsake**: more considered than a low-cost template, without pretending to be a scientific personality assessment or a live consultation. The offer combines:
 
 - sky geometry computed from the chart subject's recorded birth time and place;
-- a human-edited reading and deliberate visual composition rather than bulk-generated filler;
+- a computed reading, deliberate visual composition and recorded quality checks rather than unsupported claims of manual authorship;
 - visible quality evidence, including fictional samples, labelled schematic imagery and explicit output specifications; and
-- privacy evidence: data minimisation, private production, deletion controls and, for gifts, recipient-led data entry and delivery.
+- privacy evidence: data minimisation, buyer-only self-entry, private production and tested deletion controls.
 
-The £18 / £29 / £39 ladder is a **validation price set**, not proof of profitability or market acceptance. Keep the three SKUs and their scope stable while measuring the first legitimate orders; do not manufacture urgency, discount against an invented former price or add a fourth gift SKU.
+The £18 / £29 / £39 ladder is a **validation price set**, not proof of profitability or market acceptance. Keep the three SKUs and their scope stable while measuring the first legitimate orders; do not manufacture urgency, discount against an invented former price or add another SKU.
 
 ### Dated market snapshot
 
@@ -36,7 +36,7 @@ This is a directional snapshot checked on **2026-08-24**, not a like-for-like au
 | [Etsy custom birth chart search](https://www.etsy.com/market/custom_birth_chart) | 1,000+ results; digital offers roughly £3-£27, with some premium offers around £30-£115+ | Do not compete on lowest price; make process, finish and privacy legible. |
 | [Celestial House](https://celestial.house/shop/your-astrology-birth-chart) | £19.99 for a stated 25-35 pages / about 5,000 words, PDF plus private page | The £18 entry product needs a clearly narrower, visually distinctive promise. |
 | [Lux Readings](https://www.luxreadings.co.uk/bookings) | £95 digital chart on a stated five-day service; £120 with a call | AstroPrecise can occupy the designed-keepsake space below consultation pricing. |
-| [Designed by Leanne](https://www.designedbyleanne.com/products/personalised-zodiac-print-a4-a3-digital-birth-chart-constellation-sun-and-moon-sign-art-birthday-astrology-gifts-for-her-unframed) | £9.95 art-only digital product | Edited reading, computed geometry and production evidence must justify the difference. |
+| [Designed by Leanne](https://www.designedbyleanne.com/products/personalised-zodiac-print-a4-a3-digital-birth-chart-constellation-sun-and-moon-sign-art-birthday-astrology-gifts-for-her-unframed) | £9.95 art-only digital product | Computed geometry, richer scope and production evidence must justify the difference. |
 
 ### Validation economics
 
@@ -56,13 +56,15 @@ These are operational stop lines, not promised turnaround times or guaranteed pr
 
 - `gumroad-listings.md` — paste-ready product descriptions, buyer questions and seller settings
 - `legal-draft.md` — UK pre-contract, cancellation, early-start, privacy and retention working copy
-- `gift-confirmation-email.txt` — separate buyer/recipient durable-confirmation draft with no birth data
-- `../../docs/GIFT-PRIVACY-LIA-DRAFT.md` — unapproved legitimate-interests assessment and gift stop conditions
+- `deferred-gift-spec.md` — future feature contract; explicitly outside the launch scope
+- `gift-confirmation-email.txt` — retained research draft; prohibited for the first release
+- `../../docs/GIFT-PRIVACY-LIA-DRAFT.md` — unapproved future-flow research; not launch authority
 - `../../docs/PRODUCT-FULFILMENT.md` — proof/final generation and private-data procedure
 - `../../docs/SHOP-LAUNCH-RUNBOOK.md` — hard gates, test order, publish sequence and rollback
 - `../../website/digital-product-terms.html` — noindex launch draft, not current terms
 - `../../CATALOGUE.md` — human-readable three-product catalogue
 - `../../website/data/products-v901.json` — authoritative machine-readable product state
+- `../../website/img/shop/v901/whole-sky-edition-1920.webp` — reviewed, fictional Observatory release master derived from the real engine; normal asset builds compare a fresh capture against it and reuse the approved pixels so public PDFs and covers remain reproducible. The generator cannot overwrite this master. Replace it only in a separate release change after the new capture has been visually reviewed.
 
 ## Truth rules
 
@@ -72,8 +74,7 @@ These are operational stop lines, not promised turnaround times or guaranteed pr
 - Do not imply that the Observatory still is a photograph, live feed or true-scale scientific rendering. It must retain the visible `SCHEMATIC` label.
 - Do not call A3 output commercial press-ready. It is an RGB home-print PDF without claimed bleed, CMYK OutputIntent or press boxes.
 - Do not accept unknown, approximate or rectified birth times at launch.
-- For gifts, accept data only when the adult recipient is present, enters their own exact details, sees the privacy notice and confirms the request. No surprise gifts, minor recipients, buyer-entered birth data or delayed redemption.
-- Deliver gift files to the recipient by default. A buyer copy requires the recipient's separate, specific and initially unticked authorisation.
+- Accept only an adult buyer&rsquo;s own birth data in the first release. Do not accept surprise gifts, third-party data, minor data, buyer-entered recipient data or delayed redemption.
 - Do not publish a real customer's chart, reading, name, birth data or order details as a sample.
 - Archive the legacy Gumroad product only after action-time owner confirmation. Never delete it or knowingly remove past-buyer access.
 
@@ -87,12 +88,11 @@ Checkout must remain closed until all of these are resolved:
 4. A full Commission test proves deposit, buyer input, optional early-start consent, cancellation/refund, completion, final 50% charge, final delivery and deletion.
 5. The Commission completion sequence is compatible with the local rule that unwatermarked final files require seller-authenticated paid-in-full evidence; a manual JSON note is not sufficient.
 6. Public terms, privacy, refunds and contact information are aligned and owner-approved.
-7. The gift LIA is completed and owner-approved, and a fictional gift test proves recipient self-entry, notice, default recipient delivery, separate unticked buyer-copy authorisation, objection/withdrawal and deletion.
-8. The owner explicitly approves archiving, publishing and deploying at the moment each action is taken.
+7. The owner explicitly approves archiving, publishing and deploying at the moment each action is taken.
 
 ## Staged launch rule
 
-The current combined candidate remains checkout-closed under all eight blockers. If Gumroad cannot prove the required two-person gift flow, **remove gift mode from the launch scope instead of weakening blocker 7**. Re-review the reduced public copy and launch self mode only after blockers 1-6 and 8, an authenticated paid-in-full self-order test and all release approvals pass. Keep every gift control and gift call to action in draft until a later recipient-controlled test passes.
+The current candidate remains checkout-closed under all seven blockers. Launch self mode only after blockers 1-7, an authenticated paid-in-full self-order test and all release approvals pass. Keep every gift control and gift call to action out of the public build until a later, separately reviewed flow passes.
 
 ## First 30 days after an authorised launch
 
@@ -102,20 +102,20 @@ Day 1 begins only after the applicable blockers and release gates pass. Use owne
 
 - Publish one truthful fictional sample for each SKU, visibly labelled and containing no customer data.
 - Create reusable **2:3 vertical Pinterest assets** from those samples, each leading to the relevant product explanation rather than a generic homepage.
-- Show a short process sequence: submitted recorded moment → computed geometry → edited composition → private finished files.
+- Show a short process sequence: submitted recorded moment → computed geometry → quality-checked composition → private finished files.
 - Explain exactly what differs between £18, £29 and £39 without false scarcity or inflated comparison pricing.
 
 ### Days 8-14 — teach the buying decision
 
 - Publish an exact-time education piece explaining why unknown, approximate and rectified birth times are not accepted at launch.
-- Publish quality evidence: file formats, intended display/print use, the `SCHEMATIC` Observatory label and what human editing checks.
+- Publish quality evidence: file formats, intended display/print use and the `SCHEMATIC` Observatory label. The owner must separately confirm any human-review promise before publication.
 - Publish a plain-English privacy piece covering data minimisation, private working files, deletion and how objections are handled.
 - Recut the best fictional sample into another 2:3 Pin and one short process clip; do not use fabricated reviews or outcomes.
 
 ### Days 15-21 — clarify use cases
 
 - Show self-purchase use cases and the differences between wall art, keepsake and Whole Sky Edition.
-- Discuss birthday gifting only if the recipient-controlled flow has passed. Otherwise state that gifting is not yet available and continue with self-mode education.
+- Keep gifting out of active launch marketing. Continue with self-purchase education until the deferred feature has its own legal, privacy and platform review.
 - Answer genuine pre-sale questions in the product copy or FAQ without broadening the promised scope.
 
 ### Days 22-30 — keep, revise or stop
@@ -129,12 +129,12 @@ Day 1 begins only after the applicable blockers and release gates pass. Use owne
 
 Record only the minimum operational data needed. Review weekly:
 
-- qualified product-page visits, genuine enquiries, checkout starts and completed paid orders by SKU and mode;
+- qualified product-page visits, genuine enquiries, checkout starts and completed paid orders by SKU;
 - actual fees and net receipt, hands-on minutes, elapsed delivery time, corrections, support time and refunds;
-- privacy objections, deletion requests, delivery mistakes and any buyer/recipient confusion; and
+- privacy objections, deletion requests, delivery mistakes and any customer confusion; and
 - which fictional sample, education page, Pin or process asset led to a qualified visit where the available platform data can show this without adding unnecessary tracking.
 
-Stop the affected mode immediately if paid-in-full evidence fails, an unwatermarked file can escape early, a recipient does not control gift data/delivery, legal or tax information is unresolved, or published claims exceed the delivered files. Pause and revise a SKU if its real hands-on time repeatedly exceeds 44 / 72 / 98 minutes or its realised contribution cannot sustain the £20/hour floor.
+Stop checkout immediately if paid-in-full evidence fails, an unwatermarked file can escape early, third-party birth data is accepted, legal or tax information is unresolved, or published claims exceed the delivered files. Pause and revise a SKU if its real hands-on time repeatedly exceeds 44 / 72 / 98 minutes or its realised contribution cannot sustain the £20/hour floor.
 
 Do **not** use paid ads or Gumroad Discover until at least five legitimate sales are fully delivered: paid, non-test, non-refunded customer orders with no critical privacy or fulfilment failure. After sale five, consider a tightly bounded acquisition test only if realised fees are known, the median hands-on time is within its SKU cap, the product retains positive contribution and the organic message that drove qualified interest is clear.
 

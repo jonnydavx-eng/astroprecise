@@ -67,7 +67,7 @@
       "name": "Compound — daily social + community",
       "owner": "Hermes schedule + Grok content",
       "dependsOn": ["spike"],
-      "calendar": "marketing/MISSION-CONTROL-CAMPAIGN.md"
+      "calendar": "marketing/shop-studio-v901/README.md"
     },
     {
       "id": "product-hunt",

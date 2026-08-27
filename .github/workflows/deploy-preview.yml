@@ -1,0 +1,287 @@
+name: Deploy immutable candidate preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact lowercase 40-character commit SHA on a non-main repository branch
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: astroprecise-preview-${{ inputs.candidate_sha }}
+  cancel-in-progress: false
+
+jobs:
+  preview_identity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      candidate_sha: ${{ steps.identity.outputs.candidate_sha }}
+      preview_branch: ${{ steps.identity.outputs.preview_branch }}
+      release_version: ${{ steps.identity.outputs.release_version }}
+    steps:
+      - name: Check out the protected workflow definition with full history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          fetch-tags: false
+          persist-credentials: false
+
+      - name: Verify immutable preview identity
+        id: identity
+        env:
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+        run: node tools/verify-preview-dispatch.mjs
+
+  test:
+    needs: preview_identity
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the verified candidate commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.preview_identity.outputs.candidate_sha }}
+          persist-credentials: false
+
+      - name: Refuse candidate checkout drift
+        env:
+          EXPECTED_SHA: ${{ needs.preview_identity.outputs.candidate_sha }}
+        run: test "$EXPECTED_SHA" = "$(git rev-parse HEAD)"
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            tools/visual-check/package-lock.json
+
+      - name: Install locked dependencies
+        run: |
+          npm ci
+          npm --prefix tools/visual-check ci
+
+      - name: Install Chromium for browser quality gates
+        run: npx playwright install --with-deps chromium
+        working-directory: tools/visual-check
+
+      - name: Reject high-severity dependency findings
+        run: |
+          npm audit --audit-level=high
+          npm --prefix tools/visual-check audit --audit-level=high
+
+      - name: Run code and product contract gates
+        run: |
+          npm run check:syntax
+          npm run lint
+          npm run test:shop
+          npm run test:fulfil
+          npm run test:launch
+          npm test
+          node tools/test-product-render.mjs
+          git diff --check
+
+      - name: Run UI, accessibility, palette and profile gates
+        run: |
+          node website/tools/serve-preview.mjs 8790 > "$RUNNER_TEMP/astroprecise-preview.log" 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8790/?nosw=1 > /dev/null; then
+              break
+            fi
+            if ! kill -0 "$preview_pid" 2>/dev/null; then
+              cat "$RUNNER_TEMP/astroprecise-preview.log"
+              exit 1
+            fi
+            sleep 1
+          done
+          curl --fail --silent --show-error http://127.0.0.1:8790/?nosw=1 > /dev/null
+          npm run test:ui
+          npm --prefix tools/visual-check run a11y
+          npm run test:palette-rendered
+          npm run test:profile-security
+
+      - name: Refuse source mutation before build
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"
+
+      - name: Build production-equivalent artifact
+        run: npm run build
+
+      - name: Run production-artifact Lighthouse gates
+        timeout-minutes: 20
+        env:
+          LH_CI_A11Y_MIN: 90
+          LH_CI_PERF_MIN: 50
+        run: |
+          PORT=8790 node tools/serve-dist.mjs > "$RUNNER_TEMP/astroprecise-lighthouse.log" 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8790/?nosw=1 > /dev/null; then
+              break
+            fi
+            if ! kill -0 "$preview_pid" 2>/dev/null; then
+              cat "$RUNNER_TEMP/astroprecise-lighthouse.log"
+              exit 1
+            fi
+            sleep 1
+          done
+          curl --fail --silent --show-error http://127.0.0.1:8790/?nosw=1 > /dev/null
+          npm --prefix tools/visual-check run lighthouse:production:ci
+
+      - name: Stamp the tested exact preview artifact
+        env:
+          CANDIDATE_SHA: ${{ needs.preview_identity.outputs.candidate_sha }}
+          PREVIEW_BRANCH: ${{ needs.preview_identity.outputs.preview_branch }}
+          RELEASE_VERSION: ${{ needs.preview_identity.outputs.release_version }}
+        run: node tools/verify-preview-dispatch.mjs --stamp-cloudflare-pages dist
+
+      - name: Upload the immutable preview artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: preview-dist-${{ needs.preview_identity.outputs.candidate_sha }}
+          path: dist
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 1
+
+  deploy:
+    needs: [preview_identity, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions: {}
+    environment:
+      name: cloudflare-pages-preview
+      url: ${{ steps.cloudflare.outputs.deployment-url }}
+    outputs:
+      deployment_url: ${{ steps.cloudflare.outputs.deployment-url }}
+      deployment_alias_url: ${{ steps.cloudflare.outputs.pages-deployment-alias-url }}
+      deployment_id: ${{ steps.cloudflare.outputs.pages-deployment-id }}
+      pages_environment: ${{ steps.cloudflare.outputs.pages-environment }}
+    steps:
+      - name: Download the exact tested preview artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: preview-dist-${{ needs.preview_identity.outputs.candidate_sha }}
+          path: dist
+
+      - name: Refuse downloaded artifact identity drift
+        env:
+          CANDIDATE_SHA: ${{ needs.preview_identity.outputs.candidate_sha }}
+          PREVIEW_BRANCH: ${{ needs.preview_identity.outputs.preview_branch }}
+          RELEASE_VERSION: ${{ needs.preview_identity.outputs.release_version }}
+        run: |
+          identity_path="dist/.well-known/astroprecise-release/$CANDIDATE_SHA.json"
+          test -f "$identity_path"
+          jq -e --arg sha "$CANDIDATE_SHA" --arg branch "$PREVIEW_BRANCH" --arg version "$RELEASE_VERSION" '
+            keys == ["candidateSha", "previewBranch", "releaseVersion", "schema"] and
+            .schema == "astroprecise-preview-identity/v1" and
+            .candidateSha == $sha and .previewBranch == $branch and .releaseVersion == $version
+          ' "$identity_path" > /dev/null
+          test "$(grep -Ec '^[[:space:]]*X-Coherence-Candidate-Tip:' dist/_headers)" = "1"
+          grep -Eq "^[[:space:]]*X-Coherence-Candidate-Tip:[[:space:]]*$CANDIDATE_SHA[[:space:]]*$" dist/_headers
+          ! grep -Fq '__ASTROPRECISE_CANDIDATE_SHA__' dist/_headers
+
+      - name: Apply trusted static Pages artifact policy
+        run: |
+          test -d dist
+          test -n "$(find dist -type f -print -quit)"
+          if find dist -mindepth 1 ! -type d ! -type f -print -quit | grep -q .; then
+            echo "Artifact contains a link or non-regular filesystem entry."
+            exit 1
+          fi
+          while IFS= read -r -d '' path; do
+            relative_path="${path#dist/}"
+            lower_path="$(printf '%s' "$relative_path" | tr '[:upper:]' '[:lower:]')"
+            case "$lower_path" in
+              functions|functions/*|_worker.js|_worker.js/*|_worker.bundle|_worker.bundle/*|functions-filepath-routing-config.json|_routes.json|_redirects|wrangler.toml|wrangler.json|wrangler.jsonc|wrangler.yaml|wrangler.yml|.dev.vars|.dev.vars.*)
+                echo "Refusing Cloudflare executable/control path: $relative_path"
+                exit 1
+                ;;
+            esac
+            case "$lower_path" in
+              _headers|.nojekyll|cname|*.html|*.css|*.js|*.json|*.jsonl|*.ico|*.jpg|*.jpeg|*.mp4|*.pdf|*.png|*.svg|*.txt|*.webm|*.webp|*.woff2|*.xml)
+                ;;
+              *)
+                echo "Refusing unknown static Pages artifact path: $relative_path"
+                exit 1
+                ;;
+            esac
+          done < <(find dist -type f -print0)
+
+      - name: Deploy to a candidate-specific non-production branch
+        id: cloudflare
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.125.0'
+          command: >-
+            pages deploy dist
+            --project-name=astroprecise
+            --branch=${{ needs.preview_identity.outputs.preview_branch }}
+            --commit-hash=${{ needs.preview_identity.outputs.candidate_sha }}
+            --commit-message=preview/${{ needs.preview_identity.outputs.release_version }}/${{ needs.preview_identity.outputs.candidate_sha }}
+            --commit-dirty=false
+
+      - name: Refuse production classification
+        env:
+          PAGES_ENVIRONMENT: ${{ steps.cloudflare.outputs.pages-environment }}
+        run: |
+          test "$PAGES_ENVIRONMENT" = "preview" || {
+            echo "Cloudflare did not classify this as a preview deployment."
+            exit 1
+          }
+
+  verify:
+    needs: [preview_identity, deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the protected verifier definition
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22.x'
+
+      - name: Verify immutable output metadata and exact deployed identity
+        env:
+          CANDIDATE_SHA: ${{ needs.preview_identity.outputs.candidate_sha }}
+          DEPLOYMENT_URL: ${{ needs.deploy.outputs.deployment_url }}
+          DEPLOYMENT_ALIAS_URL: ${{ needs.deploy.outputs.deployment_alias_url }}
+          DEPLOYMENT_ID: ${{ needs.deploy.outputs.deployment_id }}
+          PAGES_ENVIRONMENT: ${{ needs.deploy.outputs.pages_environment }}
+          PREVIEW_BRANCH: ${{ needs.preview_identity.outputs.preview_branch }}
+          RELEASE_VERSION: ${{ needs.preview_identity.outputs.release_version }}
+          PAGES_PROJECT_NAME: astroprecise
+        run: |
+          test "$PAGES_ENVIRONMENT" = "preview"
+          node tools/verify-preview-dispatch.mjs --verify-deployment-outputs
+          node tools/setup-cloudflare-release-edge.mjs \
+            --verify-url "$DEPLOYMENT_URL" \
+            --candidate "$CANDIDATE_SHA" \
+            --deployment-kind preview \
+            --preview-branch "$PREVIEW_BRANCH" \
+            --release-version "$RELEASE_VERSION"

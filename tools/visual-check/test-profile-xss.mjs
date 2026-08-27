@@ -272,59 +272,10 @@ try {
     await context.close();
   }
 
-  {
-    const { context, page } = await newPage(browser);
-    await page.goto(base + '/profile.html?nosw=1', { waitUntil: 'domcontentloaded' });
-    await page.setContent('<!doctype html><html><body class="page-shop"><div id="shopc-grid"></div></body></html>');
-    await page.evaluate(({ attackName, attackSign }) => {
-      window.__profileXss = 0;
-      window.AP_ASSET_V = '901';
-      window.AstroProfile = {
-        getCharts: () => [{
-          name: attackName,
-          sunSign: attackSign,
-          moonSign: 'capricorn',
-          risingSign: attackSign
-        }]
-      };
-      window.AP_MON = {
-        commerce: {
-          cataloguePhase: 'full',
-          checkout: { currency: 'GBP' },
-          collections: { jewellery: { name: 'Jewellery' } },
-          products: [{
-            id: 'future-personal-piece',
-            name: 'Future personal piece',
-            blurb: 'Dormant regression fixture',
-            collection: 'jewellery',
-            type: 'accessory',
-            icon: 'star4',
-            price: 1,
-            available: true,
-            personalized: true
-          }]
-        }
-      };
-    }, { attackName, attackSign });
-    await page.addScriptTag({ url: base + '/js/shop-commerce.js' });
-    await page.waitForSelector('.shop-mini-chart-preview', { state: 'attached' });
-    await page.waitForTimeout(50);
-    const result = await page.evaluate(() => ({
-      executed: window.__profileXss || 0,
-      imageSources: Array.from(document.querySelectorAll('.shop-mini-seal img')).map(img => img.getAttribute('src')),
-      imageAlts: Array.from(document.querySelectorAll('.shop-mini-seal img')).map(img => img.getAttribute('alt')),
-      injectedNodes: document.querySelectorAll('img[src="x"], svg[onload]').length,
-      previewText: document.querySelector('.shop-mini-chart-preview')?.textContent || ''
-    }));
-    gate('reactivated commerce profile markup never executes', result.executed === 0, `executed=${result.executed}`);
-    gate('reactivated commerce emits only canonical seal paths',
-      result.imageSources.length === 1 && result.imageSources[0] === 'assets/images/seals/zodiac/capricorn.svg',
-      result.imageSources.join(', '));
-    gate('reactivated commerce emits only canonical seal labels',
-      result.imageAlts.length === 1 && result.imageAlts[0] === 'Capricorn', result.imageAlts.join(', '));
-    gate('reactivated commerce creates no attacker-controlled nodes', result.injectedNodes === 0, `nodes=${result.injectedNodes}`);
-    await context.close();
-  }
+  gate(
+    'retired commerce runtime is absent',
+    !existsSync(join(WEBSITE, 'js', 'shop-commerce.js')),
+  );
 } finally {
   if (browser) await browser.close();
   await new Promise(resolveClose => server.close(resolveClose));

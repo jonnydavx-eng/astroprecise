@@ -28,4 +28,4 @@ and 2,500 emails per month, replacing the repo's old 1,000/12,000 claim. Recheck
 the official pricing before adoption; do not upgrade until real limits require
 it: <https://www.mailerlite.com/pricing>.
 
-No legacy Lemon Squeezy or PayPal funnel is part of v901.
+No legacy Lemon Squeezy or PayPal funnel is part of v902.

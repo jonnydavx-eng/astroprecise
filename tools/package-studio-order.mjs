@@ -5,6 +5,8 @@ import { basename, join, resolve } from 'path';
 import JSZip from 'jszip';
 import { parseArgs, sha256 } from './fulfil-shared.mjs';
 
+const CREDITS_SOURCE = new URL('../website/data/third-party-credits.json', import.meta.url);
+
 const BASE = [
   'natal-sky-home-print-a3.pdf',
   'natal-sky-home-print-a4.pdf',
@@ -82,6 +84,24 @@ const PRINT_GUIDE = `ASTROPRECISE STUDIO · HOME-PRINT GUIDE
 5. The SHA-256 manifest verifies that the delivered bytes have not changed. It does not verify a birth record, astrological validity, scientific validity, or uniqueness.
 `;
 
+function thirdPartyCreditsText() {
+  const credits = JSON.parse(readFileSync(CREDITS_SOURCE, 'utf8'));
+  if (credits?.schema !== 'astroprecise-third-party-credits-v1' || !Array.isArray(credits.entries) || credits.entries.length === 0) {
+    throw new Error('Third-party credits source is missing or invalid');
+  }
+  const entries = credits.entries.map((entry) => {
+    const lines = [
+      entry.work,
+      `Creator/source: ${entry.creator}`,
+      `Licence: ${entry.licence}${entry.licenceUrl ? ` — ${entry.licenceUrl}` : ''}`,
+      `Source: ${entry.source}`,
+    ];
+    if (entry.note) lines.push(`Note: ${entry.note}`);
+    return lines.join('\n');
+  });
+  return `ASTROPRECISE STUDIO · THIRD-PARTY CREDITS\n\nThese credits and licence notices travel with the delivered files. AstroPrecise does not claim ownership of the credited source material.\n\n${entries.join('\n\n')}\n`;
+}
+
 function artifact(path) {
   const bytes = readFileSync(path);
   return { file: basename(path), bytes: bytes.length, sha256: sha256(bytes) };
@@ -104,10 +124,11 @@ async function main() {
   const giftLicence = privateOrder.recipientDisclosureActive === true
     ? GIFT_AUTHORISED_BUYER_COPY_LICENCE
     : GIFT_RECIPIENT_ONLY_LICENCE;
-  const files = [...BY_SKU[product], ...(giftMode ? GIFT_FILES : []), 'README.txt', 'PERSONAL-USE-LICENCE.txt', 'PRINT-GUIDE.txt'];
+  const files = [...BY_SKU[product], ...(giftMode ? GIFT_FILES : []), 'README.txt', 'PERSONAL-USE-LICENCE.txt', 'PRINT-GUIDE.txt', 'THIRD-PARTY-CREDITS.txt'];
   writeFileSync(join(dir, 'README.txt'), giftMode ? `${README}\nGIFT DELIVERY\n\nThe three birthday-gift files are personalised for the intended adult recipient, who receives them by default. The buyer receives a private copy only when the recipient's separate authorisation is still valid at dispatch. The Moon plate is a computed schematic, not a photograph.\n` : README);
   writeFileSync(join(dir, 'PERSONAL-USE-LICENCE.txt'), giftMode ? giftLicence : SELF_LICENCE);
   writeFileSync(join(dir, 'PRINT-GUIDE.txt'), PRINT_GUIDE);
+  writeFileSync(join(dir, 'THIRD-PARTY-CREDITS.txt'), thirdPartyCreditsText());
   for (const file of files) {
     if (!existsSync(join(dir, file))) throw new Error(`Missing required customer file: ${file}`);
   }

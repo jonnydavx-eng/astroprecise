@@ -4,18 +4,31 @@ on:
   workflow_dispatch:
     inputs:
       candidate_sha:
-        description: Exact lowercase 40-character commit SHA to release
+        description: Exact lowercase 40-character commit SHA named by the selected release tag
         required: true
         type: string
+      release_tag:
+        description: Exact immutable release/ap-v902-<12hex> tag naming candidate_sha
+        required: true
+        type: string
+      operation:
+        description: Deploy the exact Pages artifact, or verify an owner-completed public-domain cutover
+        required: true
+        default: deploy
+        type: choice
+        options:
+          - deploy
+          - verify-cutover
 
-# Each job receives only the permissions it needs. The release must be
-# dispatched from a protected release/ap-vNNN-<12hex> tag whose commit matches
-# candidate_sha; tools/verify-release-dispatch.mjs enforces that identity before
-# any test, build, or deployment job is allowed to start.
+# Dispatch this workflow only from protected main. The release tag is data, not
+# the workflow source: trusted-main code verifies its exact immutable mapping to
+# candidate_sha before the candidate is checked out. Candidate code runs only in
+# the no-secret test job. Configure both named environments below with Jonny as a
+# required reviewer and restrict deployments to protected main.
 permissions: {}
 
 concurrency:
-  group: astroprecise-cloudflare-pages-release
+  group: astroprecise-release-${{ inputs.operation }}
   cancel-in-progress: false
 
 jobs:
@@ -29,24 +42,28 @@ jobs:
       release_tag: ${{ steps.identity.outputs.release_tag }}
       release_version: ${{ steps.identity.outputs.release_version }}
     steps:
-      - name: Check out the selected release tag with full history
+      - name: Check out the protected-main workflow source with full history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
 
-      - name: Verify immutable release identity
+      - name: Verify immutable release and workflow identity
         id: identity
         env:
           CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
         run: node tools/verify-release-dispatch.mjs
 
   test:
+    if: inputs.operation == 'deploy'
     needs: release_identity
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     permissions:
       contents: read
     steps:
@@ -56,48 +73,48 @@ jobs:
           ref: ${{ needs.release_identity.outputs.candidate_sha }}
           persist-credentials: false
 
-      - name: Set up Node.js
+      - name: Refuse candidate checkout drift
+        env:
+          EXPECTED_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
+        run: test "$EXPECTED_SHA" = "$(git rev-parse HEAD)"
+
+      - name: Set up Node.js 22
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
-          # Lighthouse 13 requires Node >=22.19. The maintained 22.x line keeps
-          # CI compatible without jumping to a non-LTS runtime.
           node-version: '22.x'
           cache: 'npm'
           cache-dependency-path: |
             package-lock.json
             tools/visual-check/package-lock.json
 
-      - name: Install root dependencies
-        run: npm ci
+      - name: Install locked dependencies
+        run: |
+          npm ci
+          npm --prefix tools/visual-check ci
 
-      - name: Install browser quality dependencies
-        run: npm ci
-        working-directory: tools/visual-check
-
-      - name: Install Chromium for UI quality gates
+      - name: Install Chromium for browser quality gates
         run: npx playwright install --with-deps chromium
         working-directory: tools/visual-check
 
-      - name: Dependency audit gates
+      - name: Reject high-severity dependency findings
         run: |
           npm audit --audit-level=high
           npm --prefix tools/visual-check audit --audit-level=high
 
-      # npm test is the canonical suite. New regression files become deploy
-      # gates when they are added there instead of being silently omitted from
-      # a second hardcoded CI list.
-      - name: Canonical regression suite
-        run: npm test
-
-      - name: JavaScript syntax gate
-        run: npm run check:syntax
-
-      - name: Launch contract gate
-        run: npm run test:launch
-
-      - name: UI, accessibility and profile gates
+      - name: Run code and product contract gates
         run: |
-          node website/tools/serve-preview.mjs 8790 > preview.log 2>&1 &
+          npm run check:syntax
+          npm run lint
+          npm run test:shop
+          npm run test:fulfil
+          npm run test:launch
+          npm test
+          node tools/test-product-render.mjs
+          git diff --check
+
+      - name: Run UI, accessibility, palette and profile gates
+        run: |
+          node website/tools/serve-preview.mjs 8790 > "$RUNNER_TEMP/astroprecise-preview.log" 2>&1 &
           preview_pid=$!
           trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
           for attempt in {1..30}; do
@@ -105,7 +122,7 @@ jobs:
               break
             fi
             if ! kill -0 "$preview_pid" 2>/dev/null; then
-              cat preview.log
+              cat "$RUNNER_TEMP/astroprecise-preview.log"
               exit 1
             fi
             sleep 1
@@ -115,20 +132,23 @@ jobs:
           npm --prefix tools/visual-check run a11y
           npm run test:palette-rendered
           npm run test:profile-security
-          node tools/e2e-profile-save-audit.mjs
+
+      - name: Refuse source mutation before build
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"
 
       - name: Build production artifact for Lighthouse
         run: npm run build
 
-      - name: Production artifact Lighthouse CI
-        # Blocking catastrophe floor, not a claim that 50 is the product target.
-        # Shared-runner performance is noisy, while a11y remains a firm 90 floor.
+      - name: Run production-artifact Lighthouse gates
         timeout-minutes: 20
         env:
           LH_CI_A11Y_MIN: 90
           LH_CI_PERF_MIN: 50
         run: |
-          PORT=8790 node tools/serve-dist.mjs > lighthouse-preview.log 2>&1 &
+          PORT=8790 node tools/serve-dist.mjs > "$RUNNER_TEMP/astroprecise-lighthouse.log" 2>&1 &
           preview_pid=$!
           trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
           for attempt in {1..30}; do
@@ -136,7 +156,7 @@ jobs:
               break
             fi
             if ! kill -0 "$preview_pid" 2>/dev/null; then
-              cat lighthouse-preview.log
+              cat "$RUNNER_TEMP/astroprecise-lighthouse.log"
               exit 1
             fi
             sleep 1
@@ -144,49 +164,89 @@ jobs:
           curl --fail --silent --show-error http://127.0.0.1:8790/?nosw=1 > /dev/null
           npm --prefix tools/visual-check run lighthouse:production:ci
 
-  deploy:
-    needs: [release_identity, test]
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      contents: read
-    environment:
-      name: cloudflare-pages
-      url: ${{ steps.cloudflare.outputs.deployment-url }}
-    outputs:
-      deployment_url: ${{ steps.cloudflare.outputs.deployment-url }}
-    steps:
-      - name: Check out the verified candidate commit
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          ref: ${{ needs.release_identity.outputs.candidate_sha }}
-          persist-credentials: false
-
-      - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: '22.x'
-
-      # Faithful minify-in-place (tools/build.mjs): same paths, smaller files.
-      # dist/ is the deployable tree, including CNAME, _headers, .well-known,
-      # and the generated service-worker precache.
-      - name: Build minified dist
-        run: |
-          npm ci
-          npm run build
-
-      # The stamp command validates the checked-out SHA and release version,
-      # writes the SHA-named identity document, and replaces exactly one
-      # candidate placeholder in dist/_headers. Direct website/ uploads retain
-      # the placeholder and cannot pass post-deploy proof.
-      - name: Stamp exact identity and response header into the artifact
+      - name: Stamp the tested exact production artifact
         env:
           CANDIDATE_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
           RELEASE_TAG: ${{ needs.release_identity.outputs.release_tag }}
           RELEASE_VERSION: ${{ needs.release_identity.outputs.release_version }}
         run: node tools/verify-release-dispatch.mjs --stamp-cloudflare-pages dist
 
-      - name: Deploy exact artifact to Cloudflare Pages
+      - name: Upload the immutable deployment artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pages-dist-${{ needs.release_identity.outputs.candidate_sha }}
+          path: dist
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 1
+
+  deploy:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.ref_protected == true &&
+      github.workflow_ref == 'jonnydavx-eng/astroprecise/.github/workflows/deploy-pages.yml@refs/heads/main' &&
+      inputs.operation == 'deploy'
+    needs: [release_identity, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions: {}
+    environment:
+      name: cloudflare-pages-production
+      url: ${{ steps.cloudflare.outputs.deployment-url }}
+    outputs:
+      deployment_url: ${{ steps.cloudflare.outputs.deployment-url }}
+    steps:
+      - name: Download the exact tested deployment artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: pages-dist-${{ needs.release_identity.outputs.candidate_sha }}
+          path: dist
+
+      - name: Refuse downloaded artifact identity drift
+        env:
+          CANDIDATE_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
+          RELEASE_TAG: ${{ needs.release_identity.outputs.release_tag }}
+          RELEASE_VERSION: ${{ needs.release_identity.outputs.release_version }}
+        run: |
+          identity_path="dist/.well-known/astroprecise-release/$CANDIDATE_SHA.json"
+          test -f "$identity_path"
+          jq -e --arg sha "$CANDIDATE_SHA" --arg tag "$RELEASE_TAG" --arg version "$RELEASE_VERSION" '
+            keys == ["candidateSha", "releaseTag", "releaseVersion", "schema"] and
+            .schema == "astroprecise-release-identity/v1" and
+            .candidateSha == $sha and .releaseTag == $tag and .releaseVersion == $version
+          ' "$identity_path" > /dev/null
+          test "$(grep -Ec '^[[:space:]]*X-Coherence-Candidate-Tip:' dist/_headers)" = "1"
+          grep -Eq "^[[:space:]]*X-Coherence-Candidate-Tip:[[:space:]]*$CANDIDATE_SHA[[:space:]]*$" dist/_headers
+          ! grep -Fq '__ASTROPRECISE_CANDIDATE_SHA__' dist/_headers
+
+      - name: Apply trusted static Pages artifact policy
+        run: |
+          test -d dist
+          test -n "$(find dist -type f -print -quit)"
+          if find dist -mindepth 1 ! -type d ! -type f -print -quit | grep -q .; then
+            echo "Artifact contains a link or non-regular filesystem entry."
+            exit 1
+          fi
+          while IFS= read -r -d '' path; do
+            relative_path="${path#dist/}"
+            lower_path="$(printf '%s' "$relative_path" | tr '[:upper:]' '[:lower:]')"
+            case "$lower_path" in
+              functions|functions/*|_worker.js|_worker.js/*|_worker.bundle|_worker.bundle/*|functions-filepath-routing-config.json|_routes.json|_redirects|wrangler.toml|wrangler.json|wrangler.jsonc|wrangler.yaml|wrangler.yml|.dev.vars|.dev.vars.*)
+                echo "Refusing Cloudflare executable/control path: $relative_path"
+                exit 1
+                ;;
+            esac
+            case "$lower_path" in
+              _headers|.nojekyll|cname|*.html|*.css|*.js|*.json|*.jsonl|*.ico|*.jpg|*.jpeg|*.mp4|*.pdf|*.png|*.svg|*.txt|*.webm|*.webp|*.woff2|*.xml)
+                ;;
+              *)
+                echo "Refusing unknown static Pages artifact path: $relative_path"
+                exit 1
+                ;;
+            esac
+          done < <(find dist -type f -print0)
+
+      - name: Upload the exact candidate to the configured production branch
         id: cloudflare
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
@@ -201,41 +261,78 @@ jobs:
             --commit-message=${{ needs.release_identity.outputs.release_tag }}
             --commit-dirty=false
 
-      - name: Confirm Cloudflare classified the deployment as production
+      - name: Confirm Cloudflare production classification
         env:
           PAGES_ENVIRONMENT: ${{ steps.cloudflare.outputs.pages-environment }}
         run: |
-          if [ "$PAGES_ENVIRONMENT" != "production" ]; then
-            echo "Cloudflare classified the deployment as '$PAGES_ENVIRONMENT'; refusing a preview deployment."
+          test "$PAGES_ENVIRONMENT" = "production" || {
+            echo "Cloudflare classified the upload as '$PAGES_ENVIRONMENT', not production."
             exit 1
-          fi
+          }
 
-  postdeploy:
+  verify_deployment:
     needs: [release_identity, deploy]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
     steps:
-      - name: Check out the deployed candidate commit
+      - name: Check out the trusted protected-main verifier
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ needs.release_identity.outputs.candidate_sha }}
+          ref: ${{ github.sha }}
           persist-credentials: false
 
-      - name: Set up Node.js
+      - name: Set up Node.js 22
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '22.x'
 
-      - name: Verify public release identity
+      - name: Verify the exact uploaded artifact at its Pages URL
         env:
           CANDIDATE_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
           DEPLOYMENT_URL: ${{ needs.deploy.outputs.deployment_url }}
-        run: |
-          node tools/setup-cloudflare-release-edge.mjs --verify-url "$DEPLOYMENT_URL" --candidate "$CANDIDATE_SHA"
-          node tools/setup-cloudflare-release-edge.mjs --verify-public --candidate "$CANDIDATE_SHA"
+          RELEASE_VERSION: ${{ needs.release_identity.outputs.release_version }}
+        run: >-
+          node tools/setup-cloudflare-release-edge.mjs
+          --verify-url "$DEPLOYMENT_URL"
+          --candidate "$CANDIDATE_SHA"
+          --release-version "$RELEASE_VERSION"
 
-      - name: Notify search engines with IndexNow
-        run: |
-          node tools/ping-indexnow.mjs
+  verify_cutover:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.ref_protected == true &&
+      github.workflow_ref == 'jonnydavx-eng/astroprecise/.github/workflows/deploy-pages.yml@refs/heads/main' &&
+      inputs.operation == 'verify-cutover'
+    needs: release_identity
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    environment:
+      # Configure this environment with Jonny as a required reviewer. The
+      # dashboard/DNS association is completed personally before approval;
+      # this job is deliberately read-only and proves the resulting identity.
+      name: cloudflare-custom-domain-cutover
+    steps:
+      - name: Check out the trusted protected-main verifier
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22.x'
+
+      - name: Verify owner-completed public-domain cutover
+        env:
+          CANDIDATE_SHA: ${{ needs.release_identity.outputs.candidate_sha }}
+          RELEASE_VERSION: ${{ needs.release_identity.outputs.release_version }}
+        run: >-
+          node tools/setup-cloudflare-release-edge.mjs
+          --verify-public
+          --candidate "$CANDIDATE_SHA"
+          --release-version "$RELEASE_VERSION"

@@ -1,5 +1,5 @@
 /**
- * Static proof: AstroPrecise v901 launch architecture.
+ * Static proof: AstroPrecise v902 launch architecture.
  *
  * Current contract: one general WebGL Observatory, one dedicated Eclipse
  * simulation, authored Surface A stills on reading/conversion routes, truthful
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const web = path.join(root, 'website');
-const RELEASE = '901';
+const RELEASE = '902';
 const failures = [];
 
 function read(file) { return fs.readFileSync(path.join(web, file), 'utf8'); }
@@ -59,7 +59,7 @@ for (const file of surfacePages) {
 const eclipse = read('eclipse.html');
 ok((eclipse.match(/class="ap-eclipse-live__canvas"/g) || []).length === 1 && !/<void-orrery\b/.test(eclipse),
   'Eclipse owns one dedicated simulation and no general model');
-ok(/ap-eclipse-live-v834\.js\?v=901/.test(eclipse) && /data-eclipse-play/.test(eclipse) &&
+ok(new RegExp(`ap-eclipse-live-v834\\.js\\?v=${RELEASE}`).test(eclipse) && /data-eclipse-play/.test(eclipse) &&
     /data-eclipse-lens="earth"/.test(eclipse), 'Eclipse simulation and controls are pinned and present');
 ok(/downloads\/astroprecise-eclipse-field-guide-2026\.pdf/.test(eclipse),
   'Eclipse keeps the completed free field guide');
@@ -68,8 +68,9 @@ ok(!/(?:Buy now|£7|Checkout is live)/i.test(eclipse), 'Eclipse advertises no ar
 const chart = read('chart.html');
 ok(/id="chart-form"/.test(chart) && /min="1800-01-01"/.test(chart) && /max="2200-12-31"/.test(chart),
   'Chart declares its form and supported date range');
-ok(/js\/chart-page\.js\?v=901/.test(chart) && /js\/chart-render\.js\?v=901/.test(chart),
-  'Chart controllers are pinned to v901');
+ok(new RegExp(`js/chart-page\\.js\\?v=${RELEASE}`).test(chart) &&
+    new RegExp(`js/chart-render\\.js\\?v=${RELEASE}`).test(chart),
+  `Chart controllers are pinned to v${RELEASE}`);
 ok(/id="sitting-cta"/.test(chart) && /id="ap-chart-sky-bridge"/.test(chart),
   'Chart has the sitting and privacy-safe Observatory handoffs');
 
@@ -92,8 +93,11 @@ ok(!/<(?:form|input|textarea)\b/i.test(shop) && /No email capture/.test(shop),
   'Shop has no unverified email capture');
 
 const app = read('js/app.js');
-ok(/catalogueSkus:\s*\[\s*\]/.test(app) && /price:\s*null/.test(app),
-  'Public catalogue has no live SKU or invented price');
+const catalogue = JSON.parse(read('data/products-v901.json'));
+ok(!/\bcommerce\s*:|detailsForm|giftUrl\s*:/.test(app) &&
+    catalogue.state === 'draft-not-published' && catalogue.platform.checkoutVerified === false &&
+    catalogue.products.length === 3 && catalogue.products.every((product) => product.status === 'draft' && product.checkoutUrl === null),
+  'Public candidate has exactly three draft products and no live checkout route');
 
 const nav = read('js/ap-nav-model.js');
 for (const route of ['index.html', 'chart.html', 'sky-events.html', 'shop.html']) {
@@ -113,4 +117,4 @@ if (failures.length) {
   console.error(`\n${failures.length} launch architecture proof(s) failed`);
   process.exit(1);
 }
-console.log('\nPASS v901 launch architecture + one-model law + commerce honesty');
+console.log(`\nPASS v${RELEASE} launch architecture + one-model law + commerce honesty`);

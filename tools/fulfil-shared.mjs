@@ -151,33 +151,41 @@ export const GIFT_CONSENT_HASHES = Object.freeze({
   buyerAttestationHash: sha256(GIFT_CONSENT_RECORDS.buyerAttestationText),
   digitalSupplyNoticeHash: sha256(GIFT_CONSENT_RECORDS.digitalSupplyNoticeText),
 });
-export const DURABLE_CONFIRMATION_VERSION = 'ap-durable-confirmation-bundle-v1-2026-08-24';
+export const DURABLE_CONFIRMATION_VERSION = 'ap-durable-confirmation-self-v2-2026-08-26';
 
 /** The only fixture permitted to bypass commissioned-work consent gates. Keep
  * this shared between orchestration and independent QA so a fictional label
  * can never smuggle real buyer/recipient data into a repository-local proof. */
 export function assertExactFictionalStudioFixture(order = {}) {
   if (order.sampleMode !== 'fictional') return false;
-  if (!/^FICTIONAL[-_]/i.test(String(order.orderId || ''))) throw new Error('fictional proof orderId must begin FICTIONAL-');
   const fixture = {
+    schema: 'astroprecise-studio-order-v901',
+    orderId: 'FICTIONAL-PRODUCT-PROOF-902',
     product: 'whole-sky-edition',
-    purchaseIntent: 'gift',
+    purchaseIntent: 'self',
     email: 'buyer@example.test',
     name: 'Aurora Vale',
     place: 'Whitby, England',
     y: 1990, mo: 6, d: 14, h: 3, mi: 42,
     lat: 54.486, lon: -0.613, tz: 'Europe/London', timeAccuracy: 'exact', house: 'placidus',
-    recipientDisplayName: 'Aurora Vale',
-    giverDisplayName: 'Someone who loves you',
-    occasion: 'birthday',
-    giftMessage: 'May this new orbit bring you wonder, courage and a sky full of possibility.',
-    recipientEmail: 'aurora@example.test',
   };
   for (const [field, value] of Object.entries(fixture)) {
     if (order[field] !== value) throw new Error(`fictional proof fixture mismatch: ${field}`);
   }
-  if (order.recipientDeclaration?.typedName !== 'Aurora Vale' || order.recipientDeclaration?.confirmedAdult !== true || order.recipientDeclaration?.confirmedPersonalDataEntry !== true) {
-    throw new Error('fictional proof fixture mismatch: recipientDeclaration');
+  if (order.buyerDeclaration?.typedName !== 'Aurora Vale' ||
+      order.buyerDeclaration?.confirmedAdult !== true ||
+      order.buyerDeclaration?.confirmedChartSubject !== true ||
+      order.buyerDeclaration?.confirmedPersonalDataEntry !== true) {
+    throw new Error('fictional proof fixture mismatch: buyerDeclaration');
+  }
+  const allowed = new Set([
+    ...Object.keys(fixture),
+    'sampleMode',
+    'buyerDeclaration',
+  ]);
+  const unexpected = Object.keys(order).filter((field) => !allowed.has(field));
+  if (unexpected.length) {
+    throw new Error(`fictional proof fixture mismatch: unsupported field ${unexpected[0]}`);
   }
   return true;
 }
@@ -270,11 +278,55 @@ function canonicalIso(value, label, { required = false, now = Date.now() } = {})
   return new Date(time).toISOString();
 }
 
-function assertAdultBirthDate(y, mo, d, now = new Date()) {
+function assertAdultBirthDate(y, mo, d, now = new Date(), label = 'chart subject') {
   let age = now.getUTCFullYear() - y;
   const beforeBirthday = now.getUTCMonth() + 1 < mo || (now.getUTCMonth() + 1 === mo && now.getUTCDate() < d);
   if (beforeBirthday) age -= 1;
-  if (age < 18) throw new Error('gift recipient must be at least 18 years old');
+  if (age < 18) throw new Error(`${label} must be at least 18 years old`);
+}
+
+function assertExactObjectKeys(value, allowed, label) {
+  const unexpected = Object.keys(value || {}).filter((key) => !allowed.includes(key));
+  if (unexpected.length) throw new Error(`${label} contains unsupported fields: ${unexpected.sort().join(', ')}`);
+}
+
+const SELF_ORDER_INPUT_KEYS = Object.freeze([
+  'schema', 'orderId', 'product', 'email', 'purchaseIntent', 'buyerDeclaration',
+  'name', 'place',
+  'y', 'mo', 'd', 'h', 'mi', 'lat', 'lon', 'tz', 'utcOffsetMinutes', 'timeAccuracy', 'house', 'utc',
+  'contractAt',
+  'termsAccepted', 'termsAcceptedAt', 'termsAcceptedActor', 'termsVersion', 'termsHash',
+  'buyerDurableConfirmationSentAt', 'buyerDurableConfirmationVersion', 'buyerDurableConfirmationFile', 'buyerDurableConfirmationHash',
+  'earlyStartConsent', 'earlyStartConsentRecordedAt', 'earlyStartConsentActor', 'earlyStartNoticeVersion', 'earlyStartNoticeHash',
+  'digitalSupplyConsent', 'digitalSupplyConsentRecordedAt', 'digitalSupplyConsentActor', 'digitalSupplyNoticeVersion', 'digitalSupplyNoticeHash',
+  'generatedAt', 'sampleMode', 'fulfilmentAuthorization',
+]);
+
+function canonicalSelfDeclaration(input, { name, y, mo, d, at }) {
+  assertAdultBirthDate(y, mo, d, at, 'self-order buyer and chart subject');
+  const declaration = input.buyerDeclaration;
+  if (!declaration || typeof declaration !== 'object' || Array.isArray(declaration)) {
+    throw new Error('self order requires a buyerDeclaration');
+  }
+  assertExactObjectKeys(declaration, ['typedName', 'confirmedAdult', 'confirmedChartSubject', 'confirmedPersonalDataEntry'], 'buyerDeclaration');
+  const typedName = cleanDisplayText(declaration.typedName, {
+    label: 'buyerDeclaration.typedName',
+    max: 80,
+  });
+  if (typedName.localeCompare(name, undefined, { sensitivity: 'base' }) !== 0) {
+    throw new Error('buyerDeclaration.typedName must match the chart display name');
+  }
+  if (declaration.confirmedAdult !== true ||
+      declaration.confirmedChartSubject !== true ||
+      declaration.confirmedPersonalDataEntry !== true) {
+    throw new Error('buyerDeclaration must confirm adult status, chart-subject identity and personal data entry');
+  }
+  return {
+    typedName,
+    confirmedAdult: true,
+    confirmedChartSubject: true,
+    confirmedPersonalDataEntry: true,
+  };
 }
 
 function integer(value, label) {
@@ -372,6 +424,12 @@ export function giftRecipientBirthInputHash(input = {}) {
 
 /** Canonical launch schema for personalised Studio work: exact recorded time only. */
 export function canonicalizeStudioOrder(input = {}) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Studio order must be an object');
+  const requestedPurchaseIntent = String(input.purchaseIntent || 'self').trim();
+  if (requestedPurchaseIntent === 'self') {
+    assertExactObjectKeys(input, SELF_ORDER_INPUT_KEYS, 'self-order intake');
+  }
+  if (input.schema != null && input.schema !== 'astroprecise-studio-order-v901') throw new Error('Studio order schema is invalid');
   const y = integer(input.y, 'birth year');
   const mo = integer(input.mo, 'birth month');
   const d = integer(input.d, 'birth day');
@@ -394,6 +452,15 @@ export function canonicalizeStudioOrder(input = {}) {
   const house = cleanDisplayText(input.house || 'placidus', { label: 'house system', max: 16 }).toLowerCase();
   if (house !== 'placidus') throw new Error('Studio launch products support only the Placidus house system');
   const zone = civilTimeToUtc({ y, mo, d, h, mi, tz: input.tz, utcOffsetMinutes: input.utcOffsetMinutes });
+  if (input.utcOffsetMinutes != null && Number(input.utcOffsetMinutes) !== zone.offsetMinutes) {
+    throw new Error('utcOffsetMinutes does not match the selected civil time and timezone');
+  }
+  if (input.utc != null) {
+    if (!input.utc || typeof input.utc !== 'object' || Array.isArray(input.utc)) throw new Error('utc must be an object');
+    assertExactObjectKeys(input.utc, ['y', 'mo', 'd', 'h', 'mi', 'instant'], 'utc');
+    const expectedUtc = { y: zone.y, mo: zone.mo, d: zone.d, h: zone.h, mi: zone.mi, instant: zone.instant };
+    if (JSON.stringify(input.utc) !== JSON.stringify(expectedUtc)) throw new Error('utc does not match the accepted civil-time conversion');
+  }
   if (Date.parse(zone.instant) > Date.now()) throw new Error('birth moment cannot be in the future');
   const product = cleanDisplayText(input.product || '', { label: 'product', max: 64, required: false });
   if (product && !STUDIO_SKUS.includes(product)) throw new Error(`Unsupported launch SKU: ${product}`);
@@ -402,6 +469,28 @@ export function canonicalizeStudioOrder(input = {}) {
   const orderId = cleanDisplayText(input.orderId || '', { label: 'orderId', max: 128, required: false });
   const email = input.email == null || input.email === '' ? undefined : canonicalEmail(input.email, 'buyer email');
   const contractAt = canonicalIso(input.contractAt, 'contractAt');
+  const termsAccepted = input.termsAccepted === true;
+  const termsAcceptedAt = canonicalIso(input.termsAcceptedAt, 'termsAcceptedAt', { required: Boolean(contractAt) });
+  const termsVersion = input.termsVersion == null || input.termsVersion === ''
+    ? null : cleanDisplayText(input.termsVersion, { label: 'termsVersion', max: 96 });
+  const termsHash = input.termsHash == null || input.termsHash === '' ? null : String(input.termsHash).trim().toLowerCase();
+  if (contractAt) {
+    if (!termsAccepted || input.termsAcceptedActor !== 'buyer' || !termsVersion || !/^[a-f0-9]{64}$/.test(String(termsHash || ''))) {
+      throw new Error('contracted Studio orders require authenticated buyer acceptance of the exact versioned terms');
+    }
+    if (Date.parse(termsAcceptedAt) > Date.parse(contractAt)) throw new Error('terms acceptance must be recorded at or before contract acceptance');
+  } else if (input.termsAccepted != null || input.termsAcceptedAt != null || input.termsAcceptedActor != null || input.termsVersion != null || input.termsHash != null) {
+    throw new Error('terms acceptance fields require a recorded contractAt');
+  }
+  const buyerDeclaration = purchaseIntent === 'self'
+    ? canonicalSelfDeclaration(input, {
+        name,
+        y,
+        mo,
+        d,
+        at: new Date(contractAt ? Date.parse(contractAt) : Date.now()),
+      })
+    : null;
   const buyerDurableConfirmationSentAt = canonicalIso(input.buyerDurableConfirmationSentAt, 'buyerDurableConfirmationSentAt');
   const buyerDurableConfirmationHash = input.buyerDurableConfirmationHash == null || input.buyerDurableConfirmationHash === ''
     ? null : String(input.buyerDurableConfirmationHash).toLowerCase();
@@ -427,6 +516,7 @@ export function canonicalizeStudioOrder(input = {}) {
     ...(email ? { email } : {}),
     ...(input.sampleMode === 'fictional' ? { sampleMode: 'fictional' } : {}),
     purchaseIntent,
+    ...(buyerDeclaration ? { buyerDeclaration } : {}),
     name,
     place,
     y, mo, d, h, mi, lat, lon,
@@ -436,6 +526,13 @@ export function canonicalizeStudioOrder(input = {}) {
     utcOffsetMinutes: zone.offsetMinutes,
     utc: { y: zone.y, mo: zone.mo, d: zone.d, h: zone.h, mi: zone.mi, instant: zone.instant },
     ...(contractAt ? { contractAt } : {}),
+    ...(contractAt ? {
+      termsAccepted: true,
+      termsAcceptedAt,
+      termsAcceptedActor: 'buyer',
+      termsVersion,
+      termsHash,
+    } : {}),
     ...(buyerDurableConfirmationSentAt ? { buyerDurableConfirmationSentAt, buyerDurableConfirmationVersion, buyerDurableConfirmationFile, buyerDurableConfirmationHash } : {}),
     earlyStartConsent,
     earlyStartConsentRecordedAt,
@@ -475,6 +572,7 @@ export function canonicalizeStudioOrder(input = {}) {
   if (input.fulfilmentAuthorization != null) {
     const authorization = input.fulfilmentAuthorization;
     if (!authorization || typeof authorization !== 'object' || Array.isArray(authorization)) throw new Error('fulfilmentAuthorization must be an object');
+    assertExactObjectKeys(authorization, ['state', 'paymentEvidenceHash', 'renderCapabilityHash'], 'fulfilmentAuthorization');
     const paymentEvidenceHash = String(authorization.paymentEvidenceHash || '').toLowerCase();
     const renderCapabilityHash = String(authorization.renderCapabilityHash || '').toLowerCase();
     if (authorization.state !== 'paid-in-full' || !/^[a-f0-9]{64}$/.test(paymentEvidenceHash) || !/^[a-f0-9]{64}$/.test(renderCapabilityHash)) {
@@ -489,7 +587,7 @@ export function canonicalizeStudioOrder(input = {}) {
     if (!Object.hasOwn(input, 'digitalSupplyConsent')) throw new Error('gift order must record buyer digitalSupplyConsent');
     if (!email) throw new Error('gift order requires a valid buyer email');
     if (!orderId || !product) throw new Error('gift order requires an orderId and product before recipient confirmation');
-    assertAdultBirthDate(y, mo, d);
+    assertAdultBirthDate(y, mo, d, new Date(contractAt), 'gift recipient');
 
     const recipientDisplayName = cleanGiftText(input.recipientDisplayName, { label: 'recipientDisplayName', max: 80 });
     const giverDisplayName = cleanGiftText(input.giverDisplayName, { label: 'giverDisplayName', max: 80 });
@@ -1023,6 +1121,21 @@ export function assertWorkMayStart(order = {}, now = Date.now()) {
   const contractAt = Date.parse(order.contractAt);
   if (!Number.isFinite(contractAt)) throw new Error('contractAt is required before commissioned work starts');
   if (contractAt > now) throw new Error('contractAt cannot be in the future');
+  const termsAcceptedAt = Date.parse(order.termsAcceptedAt);
+  if (order.termsAccepted !== true || order.termsAcceptedActor !== 'buyer' ||
+      !Number.isFinite(termsAcceptedAt) || termsAcceptedAt > contractAt || termsAcceptedAt > now ||
+      !String(order.termsVersion || '').trim() || !/^[a-f0-9]{64}$/i.test(String(order.termsHash || ''))) {
+    throw new Error('authenticated acceptance of the exact versioned terms is required at or before contract acceptance');
+  }
+  if (order.purchaseIntent === 'self') {
+    canonicalSelfDeclaration(order, {
+      name: cleanDisplayText(order.name, { label: 'display name', max: 80 }),
+      y: integer(order.y, 'birth year'),
+      mo: integer(order.mo, 'birth month'),
+      d: integer(order.d, 'birth day'),
+      at: new Date(contractAt),
+    });
+  }
   const buyerConfirmationAt = Date.parse(order.buyerDurableConfirmationSentAt);
   if (!Number.isFinite(buyerConfirmationAt) || order.buyerDurableConfirmationVersion !== DURABLE_CONFIRMATION_VERSION ||
       !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(String(order.buyerDurableConfirmationFile || '')) ||
@@ -1094,6 +1207,7 @@ export function assertDigitalSupplyMayBegin(order = {}, now = Date.now()) {
 /** Canonical adapter receipt body. The HMAC signature itself is kept outside it. */
 export function canonicalPaymentEvidence(payment = {}) {
   const verifiedAt = Date.parse(payment.verifiedAt);
+  const providerObservedAt = Date.parse(payment.providerObservedAt);
   return {
     provider: payment.provider,
     adapterReceiptId: String(payment.adapterReceiptId || '').trim(),
@@ -1104,10 +1218,41 @@ export function canonicalPaymentEvidence(payment = {}) {
     amountMinor: payment.amountMinor,
     status: payment.status,
     refunded: payment.refunded,
+    refundedAmountMinor: payment.refundedAmountMinor ?? null,
+    disputed: payment.disputed ?? null,
+    chargeback: payment.chargeback ?? null,
+    revoked: payment.revoked ?? null,
     buyerEmail: String(payment.buyerEmail || '').trim().toLowerCase(),
+    providerAuthentication: payment.providerAuthentication ?? null,
+    providerRecordHash: String(payment.providerRecordHash || '').trim().toLowerCase() || null,
+    providerObservedAt: Number.isFinite(providerObservedAt) ? new Date(providerObservedAt).toISOString() : null,
+    commissionState: payment.commissionState ?? null,
+    finalChargeState: payment.finalChargeState ?? null,
     verifiedAt: Number.isFinite(verifiedAt) ? new Date(verifiedAt).toISOString() : null,
     verifiedBy: String(payment.verifiedBy || '').trim(),
     verificationMethod: payment.verificationMethod,
+    verificationNonce: String(payment.verificationNonce || '').trim().toLowerCase() || null,
+  };
+}
+
+/** Exact signed receipt object persisted after a successful adapter check. */
+export function canonicalSignedPaymentReceipt(payment = {}) {
+  return {
+    ...canonicalPaymentEvidence(payment),
+    adapterSignature: String(payment.adapterSignature || '').trim().toLowerCase(),
+  };
+}
+
+/** Stable identity shared by the reservation and every later provider re-query. */
+export function canonicalPaymentIdentity(payment = {}) {
+  return {
+    provider: String(payment.provider || '').trim().toLowerCase(),
+    transactionId: String(payment.transactionId || '').trim(),
+    orderId: String(payment.orderId || '').trim(),
+    productSku: String(payment.productSku || '').trim(),
+    currency: String(payment.currency || '').trim().toUpperCase(),
+    amountMinor: payment.amountMinor,
+    buyerEmail: String(payment.buyerEmail || '').trim().toLowerCase(),
   };
 }
 
@@ -1117,27 +1262,61 @@ export function canonicalPaymentEvidence(payment = {}) {
  */
 export function verifyPaymentEvidence(order = {}, payment = {}, product = {}, {
   adapterSecret = process.env.AP_PAYMENT_ADAPTER_SECRET,
+  now = Date.now,
+  maxAgeMs = 10 * 60_000,
+  maxFutureSkewMs = 60_000,
+  requireAuthenticatedProviderFields = false,
 } = {}) {
   const errors = [];
-  const expectedMinor = Number(product.priceGbp) * 100;
+  const clockValue = typeof now === 'function' ? now() : now?.now ? now.now() : now;
+  const nowMs = clockValue instanceof Date ? clockValue.getTime() : Number(clockValue);
+  if (!Number.isFinite(nowMs)) throw new Error('Payment verification clock did not return a finite time');
+  if (!Number.isFinite(maxAgeMs) || maxAgeMs <= 0) throw new Error('Payment evidence freshness window is invalid');
+  if (!Number.isFinite(maxFutureSkewMs) || maxFutureSkewMs < 0) throw new Error('Payment evidence future-skew window is invalid');
+  const expectedMinor = Math.round(Number(product.priceGbp) * 100);
   const orderEmail = String(order.email || '').trim().toLowerCase();
   const paymentEmail = String(payment.buyerEmail || '').trim().toLowerCase();
   if (payment.provider !== 'gumroad') errors.push('provider must be gumroad');
-  if (payment.verificationMethod !== 'gumroad-authenticated-adapter-v1') errors.push('verificationMethod must be gumroad-authenticated-adapter-v1');
+  const acceptedMethod = payment.verificationMethod === 'gumroad-authenticated-adapter-v1' || payment.verificationMethod === 'gumroad-authenticated-adapter-v2';
+  if (!acceptedMethod) errors.push('verificationMethod must name an authenticated Gumroad adapter');
+  if (requireAuthenticatedProviderFields && payment.verificationMethod !== 'gumroad-authenticated-adapter-v2') errors.push('live fulfilment requires gumroad-authenticated-adapter-v2');
   if (!String(payment.adapterReceiptId || '').trim()) errors.push('adapterReceiptId is required');
   if (payment.status !== 'paid-in-full') errors.push('status must be paid-in-full');
   if (payment.refunded !== false) errors.push('refunded must be false');
+  if (payment.refundedAmountMinor != null && payment.refundedAmountMinor !== 0) errors.push('refundedAmountMinor must be zero');
+  if (payment.disputed === true) errors.push('disputed payments cannot authorise fulfilment');
+  if (payment.chargeback === true) errors.push('chargebacks cannot authorise fulfilment');
+  if (payment.revoked === true) errors.push('revoked payments cannot authorise fulfilment');
   if (!payment.transactionId || !String(payment.transactionId).trim()) errors.push('transactionId is required');
   if (!payment.verifiedBy || !String(payment.verifiedBy).trim()) errors.push('verifiedBy is required');
   const verifiedAt = Date.parse(payment.verifiedAt);
   if (!Number.isFinite(verifiedAt)) errors.push('verifiedAt must be an ISO date');
-  if (Number.isFinite(verifiedAt) && verifiedAt > Date.now() + 5 * 60_000) errors.push('verifiedAt cannot be in the future');
+  if (Number.isFinite(verifiedAt) && new Date(verifiedAt).toISOString() !== payment.verifiedAt) errors.push('verifiedAt must be a canonical UTC ISO timestamp');
+  if (Number.isFinite(verifiedAt) && verifiedAt > nowMs + maxFutureSkewMs) errors.push('verifiedAt cannot be in the future');
+  if (Number.isFinite(verifiedAt) && nowMs - verifiedAt > maxAgeMs) errors.push('payment evidence is stale and must be re-queried');
   if (payment.orderId !== order.orderId) errors.push('payment orderId does not match order');
   if (payment.productSku !== order.product || payment.productSku !== product.sku) errors.push('payment SKU does not match order/catalogue');
   if (payment.currency !== product.currency || payment.currency !== 'GBP') errors.push('payment currency does not match GBP catalogue price');
   if (!Number.isInteger(payment.amountMinor) || payment.amountMinor !== expectedMinor) errors.push('payment total does not match catalogue price');
   if (!orderEmail || paymentEmail !== orderEmail) errors.push('payment buyer email does not match order email');
-  if (!/^[a-f0-9]{64,}$/i.test(String(adapterSecret || ''))) errors.push('authenticated adapter secret is unavailable');
+  if (requireAuthenticatedProviderFields) {
+    const observedAt = Date.parse(payment.providerObservedAt);
+    if (payment.providerAuthentication !== 'gumroad-seller-api') errors.push('providerAuthentication must prove the Gumroad seller API session');
+    if (!/^[a-f0-9]{64}$/i.test(String(payment.providerRecordHash || ''))) errors.push('providerRecordHash must bind the authenticated provider record');
+    if (!Number.isFinite(observedAt)) errors.push('providerObservedAt must be an ISO date');
+    if (Number.isFinite(observedAt) && new Date(observedAt).toISOString() !== payment.providerObservedAt) errors.push('providerObservedAt must be a canonical UTC ISO timestamp');
+    if (Number.isFinite(observedAt) && observedAt > nowMs + maxFutureSkewMs) errors.push('providerObservedAt cannot be in the future');
+    if (Number.isFinite(observedAt) && nowMs - observedAt > maxAgeMs) errors.push('provider payment state is stale and must be re-queried');
+    if (Number.isFinite(observedAt) && Number.isFinite(verifiedAt) && observedAt > verifiedAt) errors.push('providerObservedAt cannot follow adapter verification');
+    if (payment.commissionState !== 'completed') errors.push('Gumroad Commission must be completed');
+    if (payment.finalChargeState !== 'settled') errors.push('Gumroad final charge must be settled');
+    if (payment.refundedAmountMinor !== 0) errors.push('live evidence must explicitly report zero refunded amount');
+    if (payment.disputed !== false) errors.push('live evidence must explicitly report no dispute');
+    if (payment.chargeback !== false) errors.push('live evidence must explicitly report no chargeback');
+    if (payment.revoked !== false) errors.push('live evidence must explicitly report no revocation');
+    if (!/^[a-f0-9]{32,128}$/i.test(String(payment.verificationNonce || ''))) errors.push('verificationNonce is required for live evidence');
+  }
+  if (!/^(?:[a-f0-9]{2}){32,64}$/i.test(String(adapterSecret || ''))) errors.push('authenticated adapter secret is unavailable');
   if (!/^[a-f0-9]{64}$/i.test(String(payment.adapterSignature || ''))) errors.push('adapterSignature must be a SHA-256 HMAC');
   if (errors.length) return { ok: false, errors };
   const canonical = JSON.stringify(canonicalPaymentEvidence(payment));
@@ -1146,7 +1325,13 @@ export function verifyPaymentEvidence(order = {}, payment = {}, product = {}, {
   if (receivedSignature.length !== expectedSignature.length || !timingSafeEqual(receivedSignature, expectedSignature)) {
     return { ok: false, errors: ['adapterSignature does not authenticate this payment receipt'] };
   }
-  return { ok: true, errors: [], evidenceHash: sha256(canonical), canonical: JSON.parse(canonical) };
+  return {
+    ok: true,
+    errors: [],
+    evidenceHash: sha256(canonical),
+    identityHash: sha256(JSON.stringify(canonicalPaymentIdentity(payment))),
+    canonical: JSON.parse(canonical),
+  };
 }
 
 export function isPaidOrder(order = {}, {

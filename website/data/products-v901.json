@@ -1,31 +1,30 @@
 {
   "schema": "astroprecise-studio-catalogue-v901",
   "state": "draft-not-published",
+  "launchMode": "self-only",
   "currency": "GBP",
   "platform": {
     "seller": "Gumroad",
     "productType": "commission",
     "depositPercent": 50,
-    "merchantOfRecord": true,
+    "merchantOfRecord": null,
     "checkoutVerified": false,
-    "giftCheckoutVerified": false,
-    "giftPrivacyNoticeVersion": null,
-    "giftPrivacyNoticeHash": null,
     "sellerMechanicsStatus": "draft-unverified-until-signed-in-test",
-    "sellerMechanicsNote": "The proposed 50% deposit, remaining balance, tax display, delivery and Merchant of Record treatment are planning assumptions only until an unpublished Commission test proves the account-visible flow."
+    "sellerMechanicsNote": "Deposit, balance, tax display, delivery, refund and Merchant of Record treatment are planning assumptions only until an unpublished Commission test proves the account-visible flow."
   },
   "launchBlockers": [
-    "public-geographic-trader-address",
+    "legal-operator-and-public-geographic-address",
+    "monitored-direct-contact",
     "owner-service-level-confirmation",
     "signed-in-gumroad-commission-eligibility-check",
+    "authenticated-payment-adapter-and-charge-sequence-test",
     "tax-inclusive-total-price-and-fee-test",
     "durable-contract-confirmation-before-work",
     "private-storage-acl-encryption-and-purge-test",
     "end-to-end-test-order-receipt-refund-and-deletion",
-    "gift-recipient-intake-delivery-and-buyer-copy-controls-test",
-    "gift-legitimate-interests-assessment-owner-approval"
+    "independent-release-and-exact-public-identity-proof"
   ],
-  "launchBlockersScope": "compact non-exhaustive product guard; the complete release checklist is docs/SHOP-LAUNCH-RUNBOOK.md",
+  "launchBlockersScope": "Compact non-exhaustive product guard; the complete release checklist is docs/SHOP-LAUNCH-RUNBOOK.md.",
   "sharedRules": {
     "format": "digital-files-only",
     "physicalItem": false,
@@ -36,27 +35,10 @@
     "productionWorkingDays": 5,
     "productionClock": "complete inputs plus early-start consent, or expiry of the 14-day cancellation period",
     "correctionPolicy": "calculation and production errors corrected without charge",
-    "retentionDraft": "local raw inputs and working files deleted 30 days after final correction, or 30 days after final delivery if no correction is agreed; where both dates exist, whichever is later; non-birth-data order evidence retained separately",
+    "retentionDraft": "local raw inputs and working files deleted 30 days after final correction, or 30 days after final delivery if no correction is agreed; where both dates exist, whichever date is later; non-birth-data order evidence retained separately",
     "purchaseModes": [
-      "self",
-      "gift"
-    ],
-    "giftModel": {
-      "availability": "disabled-pending-two-person-platform-test-lia-and-owner-approval",
-      "candidateEligibility": "adult-recipient-present-and-self-entering-only",
-      "surpriseGift": false,
-      "buyerMayEnterRecipientBirthData": false,
-      "buyerNoEntryAttestationRequired": true,
-      "minorRecipient": false,
-      "recipientControlsBirthData": true,
-      "recipientConfirmationMethod": "recipient-self-entry-v1",
-      "recipientIsDefaultDeliveryContact": true,
-      "deliveryTarget": "recipient-always",
-      "buyerCopyRequiresSeparateUntickedRecipientAuthorization": true,
-      "siteIntentStorage": "sessionStorage-only-no-PII",
-      "occasion": "birthday",
-      "privacyBasisDraft": "legitimate-interests-subject-to-completed-LIA-owner-approval-and-just-in-time-recipient-notice"
-    }
+      "self"
+    ]
   },
   "products": [
     {
@@ -64,12 +46,11 @@
       "name": "Natal Sky Print Pack",
       "priceGbp": 18,
       "purchaseModes": [
-        "self",
-        "gift"
+        "self"
       ],
       "checkoutUrl": null,
       "status": "draft",
-      "summary": "A computed natal chart prepared as two PDFs + five PNG layouts for screen and home printing.",
+      "summary": "A personalised natal chart print pack with two PDFs and five PNG layouts for screen use and home printing.",
       "deliverables": [
         "A3 RGB home-print PDF",
         "A4 ink-light home-print PDF",
@@ -82,15 +63,6 @@
         "personal-use licence",
         "SHA-256 file-integrity manifest"
       ],
-      "gift": {
-        "summary": "A birthday edition made from the adult recipient's own exact, privately submitted birth moment, with a dedication jacket, phone reveal and computed Moon plate.",
-        "cta": "Prepare the Print Pack as a birthday gift",
-        "deliverables": [
-          "birthday-gift-jacket-a4.pdf — A4 personalised dedication jacket",
-          "birthday-reveal-1080x1920.png — phone and private-share birthday reveal",
-          "birthday-moon-plate-2160x2160.png — computed lunar phase at the exact recorded birth UTC instant, explicitly not a photograph"
-        ]
-      },
       "sample": "downloads/studio/natal-sky-print-pack-sample.pdf"
     },
     {
@@ -98,12 +70,11 @@
       "name": "Personal Sky Keepsake",
       "priceGbp": 29,
       "purchaseModes": [
-        "self",
-        "gift"
+        "self"
       ],
       "checkoutUrl": null,
       "status": "draft",
-      "summary": "An intentionally paginated 20-page reflective reading built from computed chart positions, with screen and ink-light editions.",
+      "summary": "A 20-page personalised astrology reading PDF built from computed chart positions, supplied in screen and ink-light editions.",
       "deliverables": [
         "20-page screen PDF",
         "20-page ink-light A4 PDF",
@@ -112,15 +83,6 @@
         "personal-use licence",
         "SHA-256 file-integrity manifest"
       ],
-      "gift": {
-        "summary": "A birthday reading prepared only after the adult recipient enters and confirms their own exact details, finished with personal dedication and reveal artwork.",
-        "cta": "Prepare the Keepsake as a birthday gift",
-        "deliverables": [
-          "birthday-gift-jacket-a4.pdf — standalone A4 personalised dedication jacket; the reading remains exactly 20 pages",
-          "birthday-reveal-1080x1920.png — phone and private-share birthday reveal",
-          "birthday-moon-plate-2160x2160.png — computed lunar phase at the exact recorded birth UTC instant, explicitly not a photograph"
-        ]
-      },
       "sample": "downloads/studio/personal-sky-keepsake-sample.pdf"
     },
     {
@@ -128,12 +90,11 @@
       "name": "Whole Sky Edition",
       "priceGbp": 39,
       "purchaseModes": [
-        "self",
-        "gift"
+        "self"
       ],
       "checkoutUrl": null,
       "status": "draft",
-      "summary": "The reading and complete print pack, plus a clearly labelled SCHEMATIC 3D Observatory still for the supplied birth hour.",
+      "summary": "A personalised birth chart reading and print bundle with a clearly labelled SCHEMATIC 3D Observatory artwork for the supplied birth hour.",
       "deliverables": [
         "everything in the Natal Sky Print Pack",
         "everything in the Personal Sky Keepsake",
@@ -141,15 +102,6 @@
         "organised ZIP and SHA-256 manifest",
         "one reasonable layout adjustment requested within 7 days"
       ],
-      "gift": {
-        "summary": "The complete birthday commission: reading, print pack and schematic Observatory still, wrapped in dedication, reveal and computed Moon artwork for the adult recipient.",
-        "cta": "Prepare the Whole Sky Edition as a birthday gift",
-        "deliverables": [
-          "birthday-gift-jacket-a4.pdf — standalone A4 personalised dedication jacket; the reading remains exactly 20 pages",
-          "birthday-reveal-1080x1920.png — phone and private-share birthday reveal",
-          "birthday-moon-plate-2160x2160.png — computed lunar phase at the exact recorded birth UTC instant, explicitly not a photograph"
-        ]
-      },
       "sample": "downloads/studio/whole-sky-edition-sample.pdf",
       "savingGbpAgainstSeparateProducts": 8
     }
