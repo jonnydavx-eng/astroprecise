@@ -160,6 +160,20 @@ function fakeResponse(
   return response
 }
 
+function rmTreeWithRetry(target, attempts = 20, delayMs = 100) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      rmSync(target, { recursive: true, force: true })
+      return
+    } catch (err) {
+      if (i === attempts - 1) throw err
+      if (err.code !== 'EBUSY' && err.code !== 'EPERM') throw err
+      // Windows may keep files locked briefly; wait and retry.
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, delayMs)
+    }
+  }
+}
+
 try {
   mkdirSync(join(tempRoot, 'website'), { recursive: true })
   mkdirSync(join(tempRoot, 'dist'), { recursive: true })
@@ -963,6 +977,6 @@ try {
 
   process.stdout.write('Release infrastructure contract tests passed.\n')
 } finally {
-  rmSync(tempRoot, { recursive: true, force: true })
-  rmSync(previewRoot, { recursive: true, force: true })
+  rmTreeWithRetry(tempRoot)
+  rmTreeWithRetry(previewRoot)
 }
