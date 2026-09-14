@@ -1618,7 +1618,10 @@
 
     chartData = normalizeChartData(chartData || {});
     const positions = chartData.positions || {};
-    const houses    = chartData.houses    || Array.from({ length: 12 }, (_, i) => i * 30);
+    const dateOnly = opts.dateOnly === true || (chartData.timeAccuracy === 'unknown' && !chartData.houses);
+    const houses    = dateOnly
+      ? Array.from({ length: 12 }, (_, i) => i * 30)
+      : (chartData.houses || Array.from({ length: 12 }, (_, i) => i * 30));
     const aspects   = chartData.aspects   || [];
     const showAsp   = opts.showAspects !== false;
     const showDeg   = opts.showDegrees !== false;
@@ -1632,7 +1635,7 @@
       : (typeof window !== 'undefined' && typeof window.matchMedia === 'function'
           && window.matchMedia('(max-width: 600px)').matches);
 
-    const ascLon = normLon(
+    const ascLon = dateOnly ? 0 : normLon(
       readLon(positions.Ascendant)
         ?? (typeof chartData.ascendant === 'number' ? chartData.ascendant : null)
         ?? houses[0]
@@ -1653,7 +1656,7 @@
     svg.setAttribute('role', 'img');
     svg.setAttribute('focusable', 'false');
     svg.setAttribute('data-time-accuracy', accuracy);
-    svg.setAttribute('aria-label', `${displayBodyName(chartData.name || 'Natal chart')} natal wheel${accuracy === 'approximate' ? ' — provisional because the selected birth time is approximate' : accuracy === 'unknown' ? ' — limited because the birth time is unknown' : ' — exact birth time supplied'}`);
+    svg.setAttribute('aria-label', `${displayBodyName(chartData.name || 'Natal chart')} natal wheel${accuracy === 'approximate' ? ' — provisional because the selected birth time is approximate' : accuracy === 'unknown' || dateOnly ? ' — date wheel; Moon, Rising and houses withheld without a birth time' : ' — exact birth time supplied'}`);
     if (opts.describedBy) svg.setAttribute('aria-describedby', String(opts.describedBy));
     buildDefs(svg, prefix);
     drawBackground(svg, prefix);
@@ -1671,11 +1674,11 @@
     }));
     drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
-    drawHouseBackdrop(svg, houses, ascLon, prefix);
+    if (!dateOnly) drawHouseBackdrop(svg, houses, ascLon, prefix);
     if (showAsp) drawAspectLines(svg, aspects, positions, ascLon, prefix);
-    drawHouseGrid(svg, houses, ascLon);
+    if (!dateOnly) drawHouseGrid(svg, houses, ascLon);
     drawPlanets(svg, positions, ascLon, prefix, { showDegrees: showDeg, compact });
-    drawCenter(svg, chartData.name || 'Natal Chart', prefix);
+    drawCenter(svg, chartData.name || (dateOnly ? 'Date wheel' : 'Natal Chart'), prefix);
     wirePlanetSelect(svg);
 
     container.appendChild(svg);

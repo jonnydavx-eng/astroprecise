@@ -1,6 +1,6 @@
 # AstroPrecise — HANDOFF (start here) · 2026-07-13
 
-**2026-09-14 Cursor @ JDAV / Laptop 1 — public Pages is `ap-v902`.** Canonical `C:\Users\jonny\dev\astroprecise`. `github/main` `a6765adb` (PR 36 sitting overlay + PR 37 profile-save gate). Fetched `https://astroprecise.app/sw.js` → `const V="ap-v902"`; shop still **Checkout closed**. Hard-refresh (Ctrl+Shift+R) or `?nosw=1` if an old SW still shows 895. Do not open checkout. Do not force-push `main`. Do not replace the GitHub Pages workflow with the local Cloudflare dispatch file. Local sitting branch `cursor/simplify-sitting-spine` `ccd2070b` is still dirty (launchers/Adobe/art); Higgsfield PNGs stay untracked. WebGL unproven in Cursor’s browser.
+**2026-09-14 Cursor @ JDAV / Laptop 1 — towards a finished public site.** Local `ap-v903`: Pages build now includes `img/shop/v902/*` (live shop 404s), Observatory first paint shows an Earth still under Settling, chart no-time path draws a labelled Date wheel, horoscope sign tiles are readable. Checkout stays closed. Public is still `ap-v902` until this branch is merged to `github/main`. Do not force-push. Do not replace the GitHub Pages workflow with the local Cloudflare dispatch file.
 
 **Canonical:** `C:\Users\jonny\dev\astroprecise` · site in `website/` · preview `http://localhost:8790/?nosw=1` · public https://astroprecise.app. Current identity is `STATUS.md`.
 
