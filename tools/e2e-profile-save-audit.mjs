@@ -111,14 +111,15 @@ function auditStaticFiles() {
   const appJs = readFileSync(join(WEB, 'js', 'app.js'), 'utf8');
   if (appJs.includes(DEAD_HOST)) fail('app.js free of dead Lemon Squeezy URLs', 'lemonsqueezy.com found');
   else ok('app.js free of dead Lemon Squeezy URLs');
-  if (!/paypal:\s*\{\s*me:/.test(appJs)) fail('AP_MON.paypal config present');
-  else ok('AP_MON.paypal config present');
-  for (const field of ['deepReadingUrl:', 'posterUrl:', 'reportUrl:', 'giftUrl:']) {
-    if (!appJs.includes(field)) fail('AP_MON field ' + field.replace(':', ''));
-    else ok('AP_MON field ' + field.replace(':', ''));
+  if (/paypal:\s*\{\s*me:\s*'https?:/.test(appJs) || appJs.includes('giftUrl:')) {
+    fail('checkout-closed site must not wire PayPal.me or gift checkout URLs');
+  } else {
+    ok('no PayPal.me or gift checkout URLs in AP_MON');
   }
-  if (!appJs.includes('detailsForm:')) fail('per-SKU detailsForm (post-payment Typeform) wiring');
-  else ok('per-SKU detailsForm (post-payment Typeform) wiring');
+  if (!appJs.includes('deepReadingUrl:')) fail('AP_MON field deepReadingUrl');
+  else ok('AP_MON field deepReadingUrl');
+  if (appJs.includes('detailsForm:')) fail('retired Typeform detailsForm must stay absent');
+  else ok('no per-SKU Typeform detailsForm');
 
   const chartPage = readFileSync(join(WEB, 'js', 'chart-page.js'), 'utf8');
   for (const id of ['save-btn', 'share-btn', 'print-btn', 'json-btn', 'poster-btn']) {
@@ -146,7 +147,7 @@ async function auditLivePreview() {
     const chart = await fetchText(BASE + '/chart.html');
     if (chart.status !== 200) { fail('chart.html HTTP', String(chart.status)); return; }
     ok('chart.html HTTP 200');
-    for (const id of ['save-btn', 'share-btn', 'poster-btn', 'eclipse-handoff', 'eclipse-cta']) {
+    for (const id of ['save-btn', 'share-btn', 'poster-btn', 'eclipse-cta']) {
       if (!chart.body.includes('id="' + id + '"')) fail('chart.html contains #' + id);
       else ok('chart.html serves #' + id);
     }
@@ -158,6 +159,8 @@ async function auditLivePreview() {
     const shop = await fetchText(BASE + '/shop.html');
     if (shop.status !== 200) fail('shop.html HTTP');
     else ok('shop.html HTTP 200');
+    if (!/Checkout closed/i.test(shop.body)) fail('shop.html checkout remains closed');
+    else ok('shop.html checkout remains closed');
 
     const links = await fetchText(BASE + '/links.html');
     if (links.status !== 200) fail('links.html HTTP');
