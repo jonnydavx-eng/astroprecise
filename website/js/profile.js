@@ -107,7 +107,7 @@ window.AstroProfile = (() => {
     catch { return false; }
   }
 
-  // Keep profile.html's cosmic dashboard in sync when charts are saved from chart.html.
+  // Keep profile.html's saved-chart dashboard in sync when charts are saved from chart.html.
   function syncChartToDashboard(savedChart) {
     if (!savedChart) return null;
     try {
