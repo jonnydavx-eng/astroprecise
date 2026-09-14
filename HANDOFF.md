@@ -1,11 +1,10 @@
 # AstroPrecise — HANDOFF (start here) · 2026-07-13
 
-**Canonical:** `C:\Users\jonny\OneDrive\astroprecise` · site in `website/` · preview `http://localhost:8790/?nosw=1` · live https://astroprecise.app · SW tip **ap-v722** (Track A stabilize — shipping).
+**2026-09-14 Cursor @ JDAV / Laptop 1 — public Pages is `ap-v902`.** Canonical `C:\Users\jonny\dev\astroprecise`. `github/main` `a6765adb` (PR 36 sitting overlay + PR 37 profile-save gate). Fetched `https://astroprecise.app/sw.js` → `const V="ap-v902"`; shop still **Checkout closed**. Hard-refresh (Ctrl+Shift+R) or `?nosw=1` if an old SW still shows 895. Do not open checkout. Do not force-push `main`. Do not replace the GitHub Pages workflow with the local Cloudflare dispatch file. Local sitting branch `cursor/simplify-sitting-spine` `ccd2070b` is still dirty (launchers/Adobe/art); Higgsfield PNGs stay untracked. WebGL unproven in Cursor’s browser.
 
-Ground first:
-```powershell
-powershell -NoProfile -File "C:\Users\jonny\OneDrive\control-panel\project_first.ps1" -Name AstroPrecise -Agent <you>
-```
+**Canonical:** `C:\Users\jonny\dev\astroprecise` · site in `website/` · preview `http://localhost:8790/?nosw=1` · public https://astroprecise.app. Current identity is `STATUS.md`.
+
+Ground first: read `STATUS.md` and `AGENT-HANDOFF.md` in `C:\Users\jonny\dev\astroprecise`. Do not use the old OneDrive tree.
 
 **Authoritative status:** `STATUS.md`. **Forward plan:** `docs/FORWARD-PLAN.md`. **Full history:** `AGENT-HANDOFF.md` (+ ARCHIVE). If this file disagrees with STATUS, **STATUS wins**.
 
