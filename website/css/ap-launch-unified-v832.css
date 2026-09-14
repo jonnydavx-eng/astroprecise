@@ -1,94 +1,94 @@
 /* AstroPrecise launch system v832
    One publication across Observatory, Chart, Eclipse, Sky, Daily, Explore and Shop.
-   Obsidian is the room, ivory is the voice, antique brass is the instrument.
-   Ember is reserved for the 12 August eclipse and warnings. */
+   Lunar navy is the room, paper is the voice, silver is the instrument.
+   Ion and spectral violet carry interaction and eclipse emphasis. */
 
 html:root {
   color-scheme: dark;
-  --ap-launch-void: #050505;
-  --ap-launch-raised: #0d0b09;
-  --ap-launch-surface: rgba(244, 234, 215, 0.045);
-  --ap-launch-surface-strong: rgba(244, 234, 215, 0.07);
-  --ap-launch-ink: #f4ead7;
-  --ap-launch-dim: rgba(244, 234, 215, 0.76);
-  --ap-launch-faint: rgba(244, 234, 215, 0.53);
-  --ap-launch-brass: #d8b46a;
-  --ap-launch-brass-deep: #c9a227;
-  --ap-launch-brass-bright: #f0d59d;
-  --ap-launch-line: rgba(216, 180, 106, 0.18);
-  --ap-launch-line-strong: rgba(216, 180, 106, 0.38);
-  --ap-event: #e86d3c;
+  --ap-launch-void: #040812;
+  --ap-launch-raised: #101D30;
+  --ap-launch-surface: rgba(16, 29, 48, 0.76);
+  --ap-launch-surface-strong: rgba(23, 38, 59, 0.88);
+  --ap-launch-ink: #EEF4FA;
+  --ap-launch-dim: rgba(238, 244, 250, 0.76);
+  --ap-launch-faint: rgba(238, 244, 250, 0.53);
+  --ap-launch-brass: #93A8BF;
+  --ap-launch-brass-deep: #60768E;
+  --ap-launch-brass-bright: #C9D6E3;
+  --ap-launch-line: rgba(147, 168, 191, 0.18);
+  --ap-launch-line-strong: rgba(147, 168, 191, 0.38);
+  --ap-event: #A897FF;
 
-  --ap-jet: #050505;
-  --ap-jet-soft: #050505;
-  --ap-jet-base: #070706;
-  --ap-jet-mid: #0d0b09;
-  --ap-jet-raised: #15110d;
-  --ap-jet-elevated: #1b1610;
-  --ap-void-deep: #050505;
-  --ap-void-base: #070706;
-  --ap-void-mid: #0d0b09;
-  --ap-void-raised: #15110d;
-  --ap-enchant-void: #050505;
-  --ap-enchant-deep: #050505;
-  --ap-enchant-indigo: #090807;
-  --ap-enchant-twilight: #100d09;
-  --ap-enchant-nebula: rgba(216, 180, 106, 0.07);
-  --ap-enchant-aurora: rgba(216, 180, 106, 0.045);
+  --ap-jet: #040812;
+  --ap-jet-soft: #040812;
+  --ap-jet-base: #040812;
+  --ap-jet-mid: #0A1424;
+  --ap-jet-raised: #101D30;
+  --ap-jet-elevated: #17263B;
+  --ap-void-deep: #040812;
+  --ap-void-base: #040812;
+  --ap-void-mid: #0A1424;
+  --ap-void-raised: #101D30;
+  --ap-enchant-void: #040812;
+  --ap-enchant-deep: #040812;
+  --ap-enchant-indigo: #0A1424;
+  --ap-enchant-twilight: #101D30;
+  --ap-enchant-nebula: rgba(147, 168, 191, 0.07);
+  --ap-enchant-aurora: rgba(147, 168, 191, 0.045);
 
-  --ap-silver-bright: #f4ead7;
-  --ap-silver: #e0d3bd;
-  --ap-silver-dim: rgba(244, 234, 215, 0.72);
-  --ap-silver-faint: rgba(244, 234, 215, 0.5);
-  --ap-chrome: #d8b46a;
-  --ap-text-primary: #f4ead7;
-  --ap-text-secondary: rgba(244, 234, 215, 0.76);
-  --ap-text-muted: rgba(244, 234, 215, 0.62);
-  --ap-text-faint: rgba(244, 234, 215, 0.5);
+  --ap-silver-bright: #C9D6E3;
+  --ap-silver: #93A8BF;
+  --ap-silver-dim: rgba(238, 244, 250, 0.72);
+  --ap-silver-faint: rgba(238, 244, 250, 0.5);
+  --ap-chrome: #93A8BF;
+  --ap-text-primary: #EEF4FA;
+  --ap-text-secondary: rgba(238, 244, 250, 0.76);
+  --ap-text-muted: rgba(238, 244, 250, 0.62);
+  --ap-text-faint: rgba(238, 244, 250, 0.5);
 
-  --ap-aurora: #d8b46a;
-  --ap-aurora-bright: #f0d59d;
-  --ap-aurora-deep: #c9a227;
-  --ap-aurora-violet: #c9a227;
-  --ap-aurora-a10: rgba(216, 180, 106, 0.10);
-  --ap-aurora-a16: rgba(216, 180, 106, 0.16);
-  --ap-aurora-a28: rgba(216, 180, 106, 0.28);
-  --ap-aurora-a40: rgba(216, 180, 106, 0.40);
-  --ap-cyan: #d8b46a;
-  --ap-cyan-bright: #f0d59d;
-  --ap-cyan-dim: #c9a227;
+  --ap-aurora: #8BA9FF;
+  --ap-aurora-bright: #A5BCFF;
+  --ap-aurora-deep: #617ED6;
+  --ap-aurora-violet: #A897FF;
+  --ap-aurora-a10: rgba(139, 169, 255, 0.10);
+  --ap-aurora-a16: rgba(139, 169, 255, 0.16);
+  --ap-aurora-a28: rgba(139, 169, 255, 0.28);
+  --ap-aurora-a40: rgba(139, 169, 255, 0.40);
+  --ap-cyan: #79C7F2;
+  --ap-cyan-bright: #79C7F2;
+  --ap-cyan-dim: rgba(121, 199, 242, 0.72);
 
-  --ap-gold-core: #d8b46a;
-  --ap-gold-bright: #f0d59d;
-  --ap-gold-vivid: #f4ead7;
-  --ap-gold-parchment: #f4ead7;
-  --gold: #d8b46a;
-  --gold-light: #f0d59d;
-  --gold-pale: #ead6aa;
-  --brass: #d8b46a;
-  --ink: #f4ead7;
-  --silver: #e0d3bd;
-  --silver-dim: rgba(244, 234, 215, 0.72);
-  --silver-dark: rgba(244, 234, 215, 0.53);
-  --white: #f4ead7;
+  --ap-gold-core: #93A8BF;
+  --ap-gold-bright: #C9D6E3;
+  --ap-gold-vivid: #EEF4FA;
+  --ap-gold-parchment: #EEF4FA;
+  --gold: #93A8BF;
+  --gold-light: #C9D6E3;
+  --gold-pale: #EEF4FA;
+  --brass: #93A8BF;
+  --ink: #EEF4FA;
+  --silver: #93A8BF;
+  --silver-dim: rgba(238, 244, 250, 0.72);
+  --silver-dark: rgba(238, 244, 250, 0.53);
+  --white: #EEF4FA;
 
-  --ap-link: #d8b46a;
-  --ap-link-hover: #f0d59d;
-  --ap-focus-ring: #f0d59d;
-  --ap-cta: #d8b46a;
-  --ap-cta-hover: #f0d59d;
-  --ap-cta-ink: #120d06;
-  --ap-cta-grad: linear-gradient(145deg, #f0d59d 0%, #d8b46a 48%, #c9a227 100%);
+  --ap-link: #A5BCFF;
+  --ap-link-hover: #EEF4FA;
+  --ap-focus-ring: #A897FF;
+  --ap-cta: #8BA9FF;
+  --ap-cta-hover: #A5BCFF;
+  --ap-cta-ink: #07101E;
+  --ap-cta-grad: #8BA9FF;
 
-  --glass: rgba(244, 234, 215, 0.035);
-  --glass-2: rgba(244, 234, 215, 0.055);
-  --surface: rgba(244, 234, 215, 0.035);
-  --surface-2: rgba(244, 234, 215, 0.055);
-  --surface-hover: rgba(244, 234, 215, 0.08);
-  --border: rgba(216, 180, 106, 0.18);
-  --border-2: rgba(216, 180, 106, 0.34);
-  --glass-border: rgba(216, 180, 106, 0.18);
-  --glass-border-glow: rgba(216, 180, 106, 0.42);
+  --glass: rgba(16, 29, 48, 0.76);
+  --glass-2: rgba(16, 29, 48, 0.82);
+  --surface: rgba(16, 29, 48, 0.76);
+  --surface-2: rgba(16, 29, 48, 0.82);
+  --surface-hover: rgba(23, 38, 59, 0.88);
+  --border: rgba(147, 168, 191, 0.18);
+  --border-2: rgba(147, 168, 191, 0.34);
+  --glass-border: rgba(147, 168, 191, 0.18);
+  --glass-border-glow: rgba(147, 168, 191, 0.42);
 }
 
 body.ap-award-511,
@@ -101,8 +101,8 @@ body.ap-launch-article {
   margin: 0;
   background-color: var(--ap-launch-void) !important;
   background-image:
-    radial-gradient(900px 600px at 50% -8%, rgba(216, 180, 106, 0.09), transparent 66%),
-    linear-gradient(180deg, #050505 0%, #080706 52%, #050505 100%) !important;
+    radial-gradient(900px 600px at 50% -8%, rgba(147, 168, 191, 0.09), transparent 66%),
+    linear-gradient(180deg, #040812 0%, #0A1424 52%, #040812 100%) !important;
   color: var(--ap-launch-ink) !important;
   font-family: 'Schibsted Grotesk', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -186,7 +186,7 @@ body .navbar__more-btn {
   border: 0 !important;
   border-radius: 999px !important;
   background: transparent !important;
-  color: rgba(244, 234, 215, 0.72) !important;
+  color: rgba(238, 244, 250, 0.72) !important;
   font-family: 'Schibsted Grotesk', system-ui, sans-serif !important;
   font-size: 13px !important;
   font-weight: 500 !important;
@@ -199,7 +199,7 @@ body .navbar__link:hover,
 body .navbar__more-toggle:hover,
 body .navbar__link[aria-current='page'],
 body .navbar__link.active {
-  background: rgba(216, 180, 106, 0.075) !important;
+  background: rgba(147, 168, 191, 0.075) !important;
   color: var(--ap-launch-brass-bright) !important;
 }
 
@@ -212,7 +212,7 @@ body .navbar__toggle {
   min-height: 44px;
   border: 1px solid var(--ap-launch-line) !important;
   border-radius: 999px !important;
-  background: rgba(244, 234, 215, 0.025) !important;
+  background: rgba(238, 244, 250, 0.025) !important;
   color: var(--ap-launch-brass) !important;
   box-shadow: none !important;
 }
@@ -279,15 +279,15 @@ body .reading-card,
 body .product-card,
 body.ap-launch-article .meta,
 body.ap-launch-article .receipt {
-  background: linear-gradient(155deg, rgba(244, 234, 215, 0.052), rgba(244, 234, 215, 0.018)) !important;
+  background: linear-gradient(155deg, rgba(238, 244, 250, 0.052), rgba(238, 244, 250, 0.018)) !important;
   border-color: var(--ap-launch-line) !important;
-  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(244, 234, 215, 0.045) !important;
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(238, 244, 250, 0.045) !important;
 }
 
 body input,
 body select,
 body textarea {
-  background: rgba(244, 234, 215, 0.045) !important;
+  background: rgba(238, 244, 250, 0.045) !important;
   border-color: var(--ap-launch-line-strong) !important;
   color: var(--ap-launch-ink) !important;
   color-scheme: dark;
@@ -297,7 +297,7 @@ body input:focus,
 body select:focus,
 body textarea:focus {
   border-color: var(--ap-launch-brass) !important;
-  box-shadow: 0 0 0 3px rgba(216, 180, 106, 0.14) !important;
+  box-shadow: 0 0 0 3px rgba(147, 168, 191, 0.14) !important;
 }
 
 body .btn--primary,
@@ -315,7 +315,7 @@ body.page-shop .btn--primary {
 body .btn--primary:hover,
 body .btn-primary:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
-body a { text-decoration-color: rgba(216, 180, 106, 0.45); }
+body a { text-decoration-color: rgba(147, 168, 191, 0.45); }
 body a:focus-visible,
 body button:focus-visible,
 body input:focus-visible,
@@ -341,16 +341,16 @@ body.ap-launch-article .launch-article-meta {
 }
 
 body.ap-launch-article .event { border-color: var(--ap-launch-line) !important; }
-body.ap-launch-article .myth { color: rgba(216, 180, 106, 0.88) !important; font-family: 'Cormorant Garamond', Georgia, serif !important; }
+body.ap-launch-article .myth { color: rgba(147, 168, 191, 0.88) !important; font-family: 'Cormorant Garamond', Georgia, serif !important; }
 
 body.page-eclipse { --warn: var(--ap-event); }
 body.page-eclipse .event-accent,
 body.page-eclipse .pulse,
 body.page-eclipse h1 em { color: var(--ap-event) !important; }
 body.page-eclipse .btn {
-  background: linear-gradient(145deg, #f08a59, var(--ap-event)) !important;
-  color: #160b06 !important;
-  box-shadow: 0 10px 30px rgba(232, 109, 60, 0.2) !important;
+  background: linear-gradient(145deg, #8BA9FF, var(--ap-event)) !important;
+  color: #07101E !important;
+  box-shadow: 0 10px 30px rgba(168, 151, 255, 0.2) !important;
 }
 
 /* Keep dormant-shop honesty visually dominant over the product grid. */
@@ -411,7 +411,7 @@ body.page-shop,
 body.page-explore,
 body.ap-launch-article {
   background-color: #050505 !important;
-  color: #f4ead7 !important;
+  color: #EEF4FA !important;
   font-family: 'Schibsted Grotesk', system-ui, sans-serif !important;
 }
 
@@ -546,23 +546,23 @@ html.ap-enchanted.ap-brand-nebula body.page-horoscope,
 html.ap-enchanted.ap-brand-nebula body.page-shop,
 html.ap-enchanted.ap-brand-nebula body.page-explore {
   background-color: #050505 !important;
-  color: #f4ead7 !important;
+  color: #EEF4FA !important;
   font-family: 'Schibsted Grotesk', system-ui, sans-serif !important;
 }
 html.ap-enchanted.ap-brand-nebula body.page-chart :where(h1, h2, h3),
 html.ap-enchanted.ap-brand-nebula body.page-instrument :where(h1, h2, h3),
 html.ap-enchanted.ap-brand-nebula body.page-horoscope :where(h1, h2, h3),
 html.ap-enchanted.ap-brand-nebula body.page-shop :where(h1, h2, h3) {
-  color: #f4ead7 !important;
+  color: #EEF4FA !important;
   font-family: 'Cormorant Garamond', Georgia, serif !important;
   text-shadow: none !important;
 }
 html.ap-enchanted.ap-brand-nebula body.page-chart .chart-hero::before {
-  background: radial-gradient(50% 65% at 88% 35%, rgba(216,180,106,.075), transparent 58%),
-              radial-gradient(40% 50% at 8% 75%, rgba(244,234,215,.035), transparent 55%) !important;
+  background: radial-gradient(50% 65% at 88% 35%, rgba(147, 168, 191,.075), transparent 58%),
+              radial-gradient(40% 50% at 8% 75%, rgba(238, 244, 250,.035), transparent 55%) !important;
 }
 html.ap-enchanted.ap-brand-nebula body.page-shop .shop-hero__title {
   background: none !important;
-  -webkit-text-fill-color: #f4ead7 !important;
-  color: #f4ead7 !important;
+  -webkit-text-fill-color: #EEF4FA !important;
+  color: #EEF4FA !important;
 }

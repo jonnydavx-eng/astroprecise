@@ -2,11 +2,31 @@
 <html lang="en" class="ap-field-instrument">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="index, follow">
   <meta name="color-scheme" content="dark" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <script>
+  (function () {
+    var incoming = new URLSearchParams(location.search || '');
+    var kept = new URLSearchParams();
+    ['nosw', 'lite'].forEach(function (key) {
+      if (incoming.get(key) === '1') kept.set(key, '1');
+    });
+    var sign = String(incoming.get('sign') || '').toLowerCase();
+    if (/^(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)$/.test(sign)) kept.set('sign', sign);
+    var cleanSearch = kept.toString() ? '?' + kept.toString() : '';
+    if (location.search !== cleanSearch || location.hash) history.replaceState(null, '', location.pathname + cleanSearch);
+  })();
+  </script>
   <meta name="description" content="Daily horoscope for all 12 signs. Positions are calculated for today at 12:00 UT and interpreted through a solar chart; astrological meaning is offered for reflection and entertainment." />
   <title>Daily Horoscope — calculated from today’s sky | AstroPrecise</title>
-  <link rel="stylesheet" href="css/fonts.css?v=874" />
+  <script>window.AP_ASSET_V='902';</script>
+  <link rel="preload" href="fonts/cormorant-garamond-normal-500.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/ibm-plex-mono-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css?v=902" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -27,7 +47,12 @@
   <meta name="twitter:title" content="Daily Horoscope — calculated from today’s sky" />
   <meta name="twitter:description" content="Positions calculated for today at 12:00 UT, then interpreted through a solar chart for all twelve signs." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#05080F" />
+  <meta name="theme-color" content="#040812" />
+  <link rel="preload" href="css/ap-palette-2026.css?v=902" as="style" />
+  <link rel="preload" href="css/ap-logo-aurora.css?v=902" as="style" />
+  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=902" id="ap-css-visual-clarity" />
+  <link rel="preload" href="css/ap-page-structure.css?v=902" as="style" />
+  <link rel="preload" href="css/ap-model-stage.css?v=902" as="style" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -47,9 +72,16 @@
     "isPartOf": { "@type": "WebSite", "name": "AstroPrecise", "url": "https://astroprecise.app/" }
   }
   </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=835" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=874" />
-  <link rel="stylesheet" href="css/ap-daily-v835.css?v=835" />
+  <link rel="stylesheet" href="css/celestial-seals.css?v=902" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=902" />
+  <link rel="stylesheet" href="css/ap-daily-v835.css?v=902" />
+  <style>
+    /* One-screen daily: People / Work / Pace. No Guides & tools / engine-visuals strip. */
+    .page-horoscope .ap-guide-links,
+    .page-horoscope #ap-engine-visuals,
+    .page-horoscope .ap-ev { display: none !important; }
+    .page-horoscope .sign-reading-panel__method a { color: var(--daily-brass, #93A8BF); }
+  </style>
 </head>
 <body class="page-horoscope ap-daily-ledger ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
@@ -88,15 +120,29 @@
       <div class="container daily-room__inner">
         <header class="daily-hero">
           <p class="daily-hero__eyebrow" id="today-date-display" aria-live="polite">Positions calculated at 12:00 UT · solar-chart reading</p>
-          <h1 id="page-title">Today, sign by sign</h1>
-          <p class="daily-hero__sub">Choose a Sun sign. We calculate today’s planetary positions at one named instant, then interpret them through a whole-sign solar chart.</p>
-          <p class="daily-hero__method"><a href="why.html">Calculated positions · astrological interpretation</a></p>
-          <p class="daily-hero__personal">This is collective Sun-sign weather, not your natal sitting. <a href="chart.html">Begin with your minute</a>, then <a href="deep-reading.html">the seven chapters</a>.</p>
+          <script>
+          (function () {
+            var target = document.getElementById('today-date-display');
+            var date = new Date().toLocaleDateString('en-GB', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            });
+            target.textContent = date.replace(/,/g, '').toUpperCase()
+              + ' · POSITIONS CALCULATED AT 12:00 UT · SOLAR-CHART READING';
+          })();
+          </script>
+          <h1 id="page-title">Today, in one screen</h1>
+          <p class="daily-hero__sub">Choose a Sun sign. This is weather for the sign, not your birth chart.</p>
+          <p class="daily-hero__cta"><a href="index.html" class="btn btn--primary btn--lg">See today’s sky in the 3D model</a></p>
+          <p class="daily-hero__method"><a href="chart.html">12:00 UT · solar chart · reflection, not fact</a></p>
+          <p class="daily-hero__personal">Positions are calculated at 12:00 UT and read as Sun-sign weather. Meaning is offered for reflection, not as prediction or scientific fact.</p>
         </header>
 
         <div class="sign-picker-primary" id="sign-picker-primary">
           <div class="sign-picker-primary__head">
-            <p class="sign-picker-primary__lead">Select one of twelve signs</p>
+            <p class="sign-picker-primary__lead">Choose a Sun sign</p>
             <p class="daily-reading-status" id="daily-reading-status" aria-live="polite"></p>
           </div>
           <div class="sign-grid" id="sign-grid" role="group" aria-label="Choose a zodiac sign">
@@ -139,16 +185,30 @@
               </div>
             </header>
 
+            <div class="srp-today" id="srp-today">
+              <p class="srp-today__line" id="srp-today-line"></p>
+              <div class="srp-today__pair">
+                <section>
+                  <span class="srp-today__label">Use this</span>
+                  <p id="srp-use-this"></p>
+                </section>
+                <section>
+                  <span class="srp-today__label">Leave this</span>
+                  <p id="srp-leave-this"></p>
+                </section>
+              </div>
+            </div>
             <p class="ap-entertainment-note">Astrological meaning is tradition, offered for reflection and entertainment — not advice, prediction, or scientific fact. The astronomical positions underneath are computed and checkable.</p>
             <p class="sign-reading-panel__overview" id="srp-overview"></p>
             <p class="srp-sky-facts" id="srp-sky-facts"></p>
             <div class="sign-reading-panel__grid">
-              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span><span class="reading-card__label">Love &amp; relationships</span><p class="reading-card__text" id="srp-love"></p></section>
-              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span><span class="reading-card__label">Work &amp; purpose</span><p class="reading-card__text" id="srp-career"></p></section>
-              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span><span class="reading-card__label">Wellbeing &amp; pace</span><p class="reading-card__text" id="srp-health"></p></section>
+              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span><span class="reading-card__label">People</span><p class="reading-card__text" id="srp-love"></p></section>
+              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span><span class="reading-card__label">Work</span><p class="reading-card__text" id="srp-career"></p></section>
+              <section class="reading-card"><span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span><span class="reading-card__label">Pace</span><p class="reading-card__text" id="srp-health"></p></section>
             </div>
             <footer class="sign-reading-panel__method">
               <span>Positions calculated for today at 12:00 UT · interpreted through a solar chart</span>
+              <p class="srp-glossary">A solar house is a life area counted from the Sun sign, not a room.</p>
               <p id="srp-method-note"></p>
             </footer>
           </div>
@@ -158,10 +218,10 @@
 
     <section class="container daily-eclipse" aria-labelledby="daily-eclipse-title">
       <div class="daily-eclipse__inner">
-        <p class="daily-eclipse__eyebrow">12 August 2026 · partial across the UK</p>
-        <h2 id="daily-eclipse-title">See where the 12 August eclipse landed in your chart.</h2>
-        <p>Totality crossed Greenland, Iceland, northern Russia, Spain and a small part of Portugal. Britain was a deep partial. Carry a saved chart into the dedicated eclipse model and contact reading.</p>
-        <a href="eclipse.html" class="btn btn--primary">Open the eclipse model</a>
+        <p class="daily-eclipse__eyebrow">12 August 2026 · archive and replay</p>
+        <h2 id="daily-eclipse-title">Replay the 12 August eclipse.</h2>
+        <p>Totality crossed Greenland, Iceland, northern Russia, Spain and a small part of Portugal. Britain was a deep partial. The eclipse page is an archive of that geometry — a replay, not an edition for sale.</p>
+        <a href="eclipse.html" class="btn btn--outline">Open eclipse archive</a>
       </div>
     </section>
 
@@ -180,12 +240,14 @@
             <div><dt>Jupiter</dt><dd id="ap-sky-jupiter">Open to calculate</dd></div>
             <div><dt>Saturn</dt><dd id="ap-sky-saturn">Open to calculate</dd></div>
           </dl>
-          <a class="daily-evidence__action" href="index.html#m=now">Open these bodies in the live sky &rarr;</a>
+          <a class="daily-evidence__action" href="index.html">See today’s sky in the 3D model</a>
         </section>
       </div>
     </details>
   </main>
 
+  <!-- Sentinel: app.js injects a Guides & tools strip unless this class already exists. -->
+  <p class="ap-guide-links" hidden aria-hidden="true"></p>
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
@@ -193,10 +255,9 @@
   <script src="js/ap-zodiac-constants.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
-  <script src="js/ap-nav-model.js?v=874" defer></script>
-  <script src="js/ap-footer-inject.js?v=874" defer></script>
-  <script src="js/app.js" defer></script>
-  <script src="js/horoscope-page.js?v=835" defer></script>
-  <script src="js/ap-daily-ritual.js?v=835" defer></script>
+  <script src="js/ap-nav-model.js?v=902" defer></script>
+  <script src="js/ap-footer-inject.js?v=902" defer></script>
+  <script src="js/app.js?v=902" defer></script>
+  <script src="js/horoscope-page.js?v=902" defer></script>
 </body>
 </html>

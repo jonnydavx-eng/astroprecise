@@ -15,7 +15,7 @@
       var sign = card.getAttribute('data-sign');
       if (!sign || card.__apZodiacBg) return;
       card.__apZodiacBg = true;
-      card.style.backgroundImage = 'radial-gradient(ellipse 90% 70% at 50% 28%, rgba(216,180,106,0.08), transparent 55%), linear-gradient(180deg, #141A28 0%, #07070A 100%)';
+      card.style.backgroundImage = 'radial-gradient(ellipse 90% 70% at 50% 28%, rgba(139,169,255,0.12), transparent 55%), linear-gradient(180deg, #101D30 0%, #040812 100%)';
     });
     var thumb = document.getElementById('hsp-thumb');
     if (thumb && thumb.dataset.src && !thumb.getAttribute('src')) {

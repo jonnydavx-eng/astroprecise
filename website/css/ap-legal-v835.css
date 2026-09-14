@@ -100,7 +100,7 @@ body.page-legal {
   padding: 16px 18px;
   border: 1px solid var(--ap-line-strong);
   border-radius: 6px;
-  background: linear-gradient(135deg, rgba(216, 180, 106, 0.07), transparent);
+  background: linear-gradient(135deg, rgba(147, 168, 191, 0.07), transparent);
 }
 
 .legal-foot,
@@ -119,8 +119,8 @@ body.page-legal {
 .refund-top { flex-wrap: wrap; }
 .refund-lede { font-size: 21px; }
 .refund-alert {
-  border-color: rgba(255, 100, 40, 0.45);
-  background: rgba(255, 100, 40, 0.06);
+  border-color: rgba(139, 169, 255, 0.45);
+  background: rgba(139, 169, 255, 0.06);
   color: var(--ap-paper);
   font: 10px/1.7 var(--ap-data);
   letter-spacing: 0.1em;

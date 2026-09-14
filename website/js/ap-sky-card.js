@@ -47,11 +47,11 @@
 
   /* Canvas cannot read CSS custom properties, so the house tokens are repeated
      here as literals. Keep them in step with css/ap-living-sky-v834.css. */
-  var VOID = '#05080F';
+  var VOID = '#040812';
   var PAPER = '#E6ECF2';
   var MUTE = '#9AA8B6';
-  var EMBER = '#B86B4A';
-  var BRASS = '#8FA3B8';
+  var ION = '#8BA9FF';
+  var BRASS = '#93A8BF';
   var DANGER = '#B04A52';
   var SILVER = '#C5D0DC';
 
@@ -131,7 +131,7 @@
   }
 
   function lightState(altitude) {
-    if (altitude >= -0.833) return { label: 'Daylight', tone: EMBER, night: false };
+    if (altitude >= -0.833) return { label: 'Daylight', tone: ION, night: false };
     if (altitude >= -6) return { label: 'Civil twilight', tone: BRASS, night: false };
     if (altitude >= -12) return { label: 'Nautical twilight', tone: SILVER, night: true };
     if (altitude >= -18) return { label: 'Astronomical twilight', tone: SILVER, night: true };
@@ -219,12 +219,12 @@
     ctx.fillStyle = VOID;
     ctx.fillRect(0, 0, 1200, 630);
     var glow = ctx.createRadialGradient(600, -80, 40, 600, -80, 720);
-    glow.addColorStop(0, 'rgba(184,107,74,.12)');
-    glow.addColorStop(1, 'rgba(5,8,15,0)');
+    glow.addColorStop(0, 'rgba(139,169,255,.12)');
+    glow.addColorStop(1, 'rgba(4,8,18,0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, 1200, 630);
     starfield();
-    ctx.strokeStyle = 'rgba(143,163,184),.28)';
+    ctx.strokeStyle = 'rgba(147,168,191,0.28)';
     ctx.lineWidth = 1;
     ctx.strokeRect(28.5, 28.5, 1143, 573);
   }
@@ -455,6 +455,22 @@
     else delete statusEl.dataset.state;
   }
 
+  function keepDrawnCard() {
+    if (!canvas || !drawn) return;
+    canvas.toBlob(function (blob) {
+      if (!blob || !window.APKeepLibrary || typeof APKeepLibrary.put !== 'function') return;
+      var town = drawn.place && drawn.place.name ? String(drawn.place.name) : '';
+      APKeepLibrary.put({
+        kind: 'sky-card',
+        blob: blob,
+        caption: 'Sky card · schematic plate · ' + drawn.isoDate + (town ? ' · ' + town : ''),
+        birthDate: drawn.isoDate,
+        place: town,
+        schematic: true
+      });
+    }, 'image/png');
+  }
+
   function draw() {
     var minute = readMinute();
     if (minute.error) {
@@ -472,6 +488,7 @@
     if (shareBtn) shareBtn.disabled = false;
     say('Computed on this device from ' + minute.utText + ' UT. Nothing was uploaded'
       + (minute.timeKnown ? '' : '; the hour is unknown, so the card says so and withholds the rising sign and the houses') + '.');
+    keepDrawnCard();
   }
 
   // ── town search (only the typed town leaves this page) ─────────────────────

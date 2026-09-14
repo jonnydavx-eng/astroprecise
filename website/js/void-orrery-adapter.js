@@ -181,8 +181,12 @@
 
   function selectEnginePath() {
     if (CAN_WEBGL !== null) return CAN_WEBGL;
+    var strict = strict3DRequested();
+    // Strict Home must not burn a throwaway WebGL2 context before Three creates
+    // the page's one real renderer. Module support selects the path; the actual
+    // THREE.WebGLRenderer constructor is the fail-closed capability check.
     CAN_WEBGL = !FORCE_LEGACY && !!window.customElements &&
-      (FORCE_WEBGL || (importMapOK() && webgl2OK()));
+      (FORCE_WEBGL || (importMapOK() && (strict || webgl2OK())));
     if (!CAN_WEBGL && !strict3DRequested()) loadLegacy(FORCE_LEGACY ? '?engine=legacy' : 'capability probe');
     return CAN_WEBGL;
   }
@@ -352,6 +356,7 @@
         this._eclipseK = 0; this._eclipseTarget = 0;
         this._lastLevelName = null;
         this._lastFocusKey = null; this._lastFocusAt = 0;
+        this._sceneActionToken = 0;
         this._strict3D = this.getAttribute('data-renderer') === 'webgl-only';
         this._firstFrameSeen = false;
         this._unavailableEmitted = false;
@@ -665,8 +670,8 @@
         window.__voidOrreryEngine = 'poster';
         if (this._ph) { try { this._ph.remove(); } catch (e) {} this._ph = null; }
         if (this._canvas) { try { this._canvas.remove(); } catch (e) {} this._canvas = null; }
-        var retryMarkup = this._strict3D ? '<button type="button" data-ap-orrery-retry style="display:block;margin:18px auto 0;padding:10px 16px;border:1px solid rgba(216,180,106,.55);border-radius:4px;background:rgba(216,180,106,.08);color:#f2ecdf;font:700 10px/1 IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Retry 3D</button>' : '';
-        this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(216,180,106,.12),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(255,100,40,.09),transparent 55%)"></div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(320px,80%);padding:28px;border:1px solid rgba(216,180,106,.28);border-radius:8px;background:rgba(2,3,7,.78);text-align:center;color:#f2ecdf;font:12px/1.7 IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase"><strong style="display:block;margin-bottom:8px;color:#ff6428">Live sky unavailable</strong><span style="color:rgba(242,236,223,.68);text-transform:none;letter-spacing:0">Chart and eclipse calculations still work on this device.</span>' + retryMarkup + '</div>';
+        var retryMarkup = this._strict3D ? '<button type="button" data-ap-orrery-retry style="display:block;margin:18px auto 0;padding:10px 16px;border:1px solid rgba(139,169,255,.58);border-radius:4px;background:rgba(139,169,255,.10);color:#f2f7ff;font:700 10px/1 IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Retry 3D</button>' : '';
+        this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(139,169,255,.14),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(168,151,255,.10),transparent 55%)"></div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(320px,80%);padding:28px;border:1px solid rgba(147,168,191,.34);border-radius:8px;background:rgba(4,8,18,.90);text-align:center;color:#f2f7ff;font:12px/1.7 IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase"><strong style="display:block;margin-bottom:8px;color:#a5bcff">Live sky unavailable</strong><span style="color:rgba(201,214,227,.72);text-transform:none;letter-spacing:0">Chart and eclipse calculations still work on this device.</span>' + retryMarkup + '</div>';
         var retry = this.querySelector('[data-ap-orrery-retry]');
         if (retry) retry.addEventListener('click', function () { retry.disabled = true; window.location.reload(); }, { once: true });
         // keep the natal overlay + eclipse veil above the poster
@@ -747,6 +752,27 @@
       C.prototype._prepareNavigation = function () {
         this.cancelNavigation();
       };
+      C.prototype._withSceneReady = function (action) {
+        var O = this._engine, self = this;
+        if (!O || typeof action !== 'function') return false;
+        var token = ++this._sceneActionToken;
+        try {
+          if (typeof O.whenSceneReady !== 'function' ||
+              (typeof O.isSceneReady === 'function' && O.isSceneReady())) {
+            return action();
+          }
+          Promise.resolve(O.whenSceneReady({ urgent: true })).then(function () {
+            if (!self.isConnected || !self._ready || self._posted || token !== self._sceneActionToken) return;
+            action();
+          }).catch(function (err) {
+            warn('deferred scene could not complete the requested interaction', err);
+          });
+          return true;
+        } catch (err) {
+          warn('scene readiness gate failed; trying the engine action directly', err);
+          return action();
+        }
+      };
 
       C.prototype._engineFlyTo = function (key) {
         var O = this._engine;
@@ -771,11 +797,18 @@
         key = key == null ? '' : String(key).toLowerCase();
         var self = this;
         if (!this._ready) { this._queue.push(function () { self.flyTo(key); }); return true; }
-        this._prepareNavigation();
-        if (!this._engineFlyTo(key)) return false;
-        if (!key) this._emitFocus(key, { key: key, name: 'The System', glyph: '✦' });
-        else this._emitFocus(key);
-        return true;
+        var run = function () {
+          self._prepareNavigation();
+          if (!self._engineFlyTo(key)) return false;
+          if (!key) self._emitFocus(key, { key: key, name: 'The System', glyph: '✦' });
+          else self._emitFocus(key);
+          return true;
+        };
+        if (key === 'earth') {
+          this._sceneActionToken += 1;
+          return run();
+        }
+        return this._withSceneReady(run);
       };
       C.prototype.flyScale = function (level) {
         var self = this;
@@ -783,10 +816,41 @@
         if (lv === 'EARTH') return this.flyTo('earth');
         var idx = scaleToIndex(level);
         if (!this._ready) { this._queue.push(function () { self.flyScale(level); }); return true; }
-        this._prepareNavigation();
-        if (!this._applyScaleIndex(idx, true)) return false;
-        this._emitFocus(null, { key: null, name: SCALE_FOCUS_NAMES[lv] || lv, glyph: '✦' });
-        return true;
+        var run = function () {
+          self._prepareNavigation();
+          if (!self._applyScaleIndex(idx, true)) return false;
+          self._emitFocus(null, { key: null, name: SCALE_FOCUS_NAMES[lv] || lv, glyph: '✦' });
+          return true;
+        };
+        if (idx <= 0) {
+          this._sceneActionToken += 1;
+          return run();
+        }
+        return this._withSceneReady(run);
+      };
+
+      /* Personal Sky: lock time and hold the sun-lit birth hemisphere. */
+      C.prototype.playBirthEarthView = function (date, options) {
+        var self = this;
+        var opts = options || {};
+        function go() {
+          self._prepareNavigation();
+          self._live = false;
+          if (self._liveTimer) { clearInterval(self._liveTimer); self._liveTimer = null; }
+          var O = self._engine;
+          if (O && typeof O.playBirthEarthView === 'function') {
+            try { return O.playBirthEarthView(date, opts) !== false; } catch (e) { return false; }
+          }
+          try {
+            var instant = date instanceof Date ? date : new Date(date);
+            if (O && O.setDate) O.setDate(instant);
+            else if (window.VoidEphem && window.VoidEphem.jd) self.setJD(window.VoidEphem.jd(instant));
+          } catch (e2) {}
+          return self._engineFlyTo('earth');
+        }
+        if (!this._ready) { this._queue.push(go); return true; }
+        this._sceneActionToken += 1;
+        return go();
       };
 
       /* ── time: setJD / setLive / getJD ── */
@@ -936,7 +1000,7 @@
         ring.setAttribute('cx', '50'); ring.setAttribute('cy', '50');
         ring.setAttribute('rx', '41'); ring.setAttribute('ry', '18.5');
         ring.setAttribute('fill', 'none');
-        ring.setAttribute('stroke', 'rgba(216,180,106,.22)');
+        ring.setAttribute('stroke', 'rgba(147,168,191,.28)');
         ring.setAttribute('stroke-width', '0.35');
         svg.appendChild(ring);
         list.forEach(function (it) {
@@ -946,12 +1010,12 @@
           var t1 = document.createElementNS(NS, 'text');
           t1.setAttribute('x', x.toFixed(2)); t1.setAttribute('y', (y + 1.6).toFixed(2));
           t1.setAttribute('text-anchor', 'middle');
-          t1.setAttribute('style', "font:6.4px 'Schibsted Grotesk',Arial,sans-serif;fill:rgba(230,238,255,.95);paint-order:stroke;stroke:rgba(216,180,106,.55);stroke-width:.9px");
+          t1.setAttribute('style', "font:6.4px 'Schibsted Grotesk',Arial,sans-serif;fill:rgba(201,214,227,.96);paint-order:stroke;stroke:rgba(139,169,255,.62);stroke-width:.9px");
           t1.textContent = it.glyph || '';
           var t2 = document.createElementNS(NS, 'text');
           t2.setAttribute('x', x.toFixed(2)); t2.setAttribute('y', (y + 5.4).toFixed(2));
           t2.setAttribute('text-anchor', 'middle');
-          t2.setAttribute('style', "font:500 2.5px 'IBM Plex Mono',monospace;letter-spacing:.14em;fill:rgba(216,180,106,.9)");
+          t2.setAttribute('style', "font:500 2.5px 'IBM Plex Mono',monospace;letter-spacing:.14em;fill:rgba(168,151,255,.92)");
           t2.textContent = 'YOUR ' + String(it.name || '').toUpperCase();
           g.appendChild(t1); g.appendChild(t2);
           svg.appendChild(g);
@@ -1012,21 +1076,27 @@
         var self = this;
         function go() {
           var O = self._engine;
-          if (!O) return;
+          if (!O) return false;
           try {
             var active = typeof O.isJourneyActive === 'function' && O.isJourneyActive();
-            if (active && typeof O.cancelScaleJourney === 'function') { O.cancelScaleJourney(false); return; }
-            if (typeof O.startScaleJourney === 'function') O.startScaleJourney(6, { fullTour: true, direction: 'out' });
+            if (active && typeof O.cancelScaleJourney === 'function') { O.cancelScaleJourney(false); return true; }
+            if (typeof O.startScaleJourney === 'function') {
+              O.startScaleJourney(6, { fullTour: true, direction: 'out' });
+              return true;
+            }
           } catch (e) {}
+          return false;
         }
-        if (!this._ready) { this._queue.push(go); return; }
-        go();
+        if (!this._ready) { this._queue.push(go); return true; }
+        var O = this._engine;
+        var active = !!(O && typeof O.isJourneyActive === 'function' && O.isJourneyActive());
+        return active ? go() : this._withSceneReady(go);
       };
       C.prototype.setObserver = function (lat, lon) { this._obsLat = lat; this._obsLon = lon; };
       C.prototype.lookUp = function () {
         var self = this;
         if (!this._ready) { this._queue.push(function () { self.lookUp(); }); }
-        else this._engineFlyTo('earth');
+        else { this._sceneActionToken += 1; this._engineFlyTo('earth'); }
         this._emitFocus(null, { key: null, name: this._obsLat != null ? 'Your Local Sky' : 'The Night Sky', glyph: '✷' });
       };
 
@@ -1078,14 +1148,29 @@
     });
   }
   var mo = null;
+  var bootPaintScheduled = false;
+  function scheduleBootAfterPaint() {
+    if (bootStarted || bootPaintScheduled || !document.querySelector('void-orrery')) return;
+    bootPaintScheduled = true;
+    // Deferred scripts and DOMContentLoaded callbacks run before the browser is
+    // obliged to paint. Hand the static promise/H1 to the compositor first, then
+    // import the same real 3D engine on the next frame. This changes no renderer
+    // or model fidelity and adds only two display frames on an ordinary device.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        bootPaintScheduled = false;
+        maybeBoot();
+      });
+    });
+  }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', maybeBoot);
+    document.addEventListener('DOMContentLoaded', scheduleBootAfterPaint);
     if (window.MutationObserver && document.documentElement) {
-      mo = new MutationObserver(maybeBoot);
+      mo = new MutationObserver(scheduleBootAfterPaint);
       mo.observe(document.documentElement, { childList: true, subtree: true });
       setTimeout(function () { if (mo) { try { mo.disconnect(); } catch (e) {} mo = null; } }, 60000);
     }
   } else {
-    maybeBoot();
+    scheduleBootAfterPaint();
   }
 })();

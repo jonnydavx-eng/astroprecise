@@ -8,7 +8,8 @@
  *    is 424KB, so we do NOT load it just for a sketch.)
  *  • Upgrade: a CTA to the real two-chart synastry on compatibility.html, which
  *    measures the actual aspects between two whole charts. If the visitor has a
- *    saved chart, Person A is pre-filled via deep-link params.
+ *    saved chart, Person A is handed over in same-tab sessionStorage; the URL
+ *    remains clean and storage failure simply means no prefill.
  *
  * Lazy-boots on scroll. No app.js globals (the homepage doesn't load app.js).
  * ═══════════════════════════════════════════════════════════════════════════ */
@@ -71,17 +72,26 @@
     try { var p = JSON.parse(localStorage.getItem('ap_natal_pins') || 'null'); if (p && p.sunSign) return p.sunSign; } catch (e) {}
     return null;
   }
-  // Deep-link to the full calculator, pre-filling Person A from a saved chart.
+  // Same-tab handoff to the full calculator. A birth date/time/place must never
+  // be serialized into a URL, browser history, referrer or pasted link.
   function fullSynastryHref() {
     var c = savedChart();
-    if (c && c.birthDate && c.lat != null && c.lon != null) {
-      var q = 'p1n=' + encodeURIComponent(c.name || 'You') +
-        '&p1d=' + encodeURIComponent(c.birthDate) +
-        '&p1t=' + encodeURIComponent(c.birthTime || '12:00') +
-        '&p1la=' + encodeURIComponent(c.lat) +
-        '&p1lo=' + encodeURIComponent(c.lon) +
-        '&p1tz=' + encodeURIComponent(c.tz || 'UTC');
-      return 'compatibility.html?' + q;
+    if (c && /^\d{4}-\d{2}-\d{2}$/.test(String(c.birthDate || ''))) {
+      try {
+        sessionStorage.setItem('ap-compat-pair', JSON.stringify({
+          version: 1,
+          a: {
+            date: String(c.birthDate),
+            time: /^\d{1,2}:\d{2}$/.test(String(c.birthTime || '')) ? String(c.birthTime) : '',
+            name: String(c.name || '').slice(0, 80),
+            tz: String(c.tz || '').slice(0, 80),
+            city: String(c.birthCity || c.city || '').slice(0, 120)
+          },
+          b: null
+        }));
+      } catch (e) {
+        // Privacy fails closed when storage is blocked: open a blank comparison.
+      }
     }
     return 'compatibility.html';
   }
@@ -91,22 +101,22 @@
     var css =
       '.home-match__picks{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:flex-end;margin:0 auto var(--sp-5);max-width:560px}' +
       '.home-match__field{display:flex;flex-direction:column;gap:.35rem;min-width:180px;flex:1}' +
-      '.home-match__field label{font:600 .68rem/1 var(--font-mono,monospace);letter-spacing:.14em;text-transform:uppercase;color:var(--brass,#d8b46a)}' +
-      '.home-match__field select{appearance:none;-webkit-appearance:none;background:rgba(26,34,48,.6);color:var(--ink,#f2ecdf);border:1px solid rgba(216,180,106,.3);border-radius:10px;padding:.6rem .8rem;font:500 .95rem/1 var(--font-ui,Inter),sans-serif;cursor:pointer}' +
-      '.home-match__field select:focus{outline:2px solid rgba(205,174,106,.6);outline-offset:1px}' +
-      '.home-match__amp{font-family:var(--font-serif,serif);color:var(--brass,#d8b46a);font-size:1.4rem;padding-bottom:.5rem}' +
-      '.home-match__card{max-width:560px;margin:0 auto;background:rgba(18,24,38,.66);border:1px solid rgba(216,180,106,.22);border-radius:16px;padding:clamp(1.2rem,3vw,1.9rem);text-align:center}' +
+      '.home-match__field label{font:600 .68rem/1 var(--font-mono,monospace);letter-spacing:.14em;text-transform:uppercase;color:var(--ap-ion,#8BA9FF)}' +
+      '.home-match__field select{appearance:none;-webkit-appearance:none;background:rgba(16,29,48,.76);color:var(--ap-paper,#EEF4FA);border:1px solid rgba(139,169,255,.34);border-radius:10px;padding:.6rem .8rem;font:500 .95rem/1 var(--font-ui,Inter),sans-serif;cursor:pointer}' +
+      '.home-match__field select:focus{outline:2px solid rgba(165,188,255,.68);outline-offset:1px}' +
+      '.home-match__amp{font-family:var(--font-serif,serif);color:var(--ap-violet,#A897FF);font-size:1.4rem;padding-bottom:.5rem}' +
+      '.home-match__card{max-width:560px;margin:0 auto;background:rgba(16,29,48,.76);border:1px solid rgba(139,169,255,.24);border-radius:16px;padding:clamp(1.2rem,3vw,1.9rem);text-align:center}' +
       '.home-match__orbs{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:.7rem}' +
-      '.home-match__orb{font-family:"AstroGlyph",serif;font-variant-emoji:text;font-size:1.9rem;line-height:1;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(216,180,106,.4)}' +
-      '.home-match__orb--fire{color:#D89A72}.home-match__orb--earth{color:#9CB27E}.home-match__orb--air{color:#B8C0CC}.home-match__orb--water{color:#8FB8B6}' +
+      '.home-match__orb{font-family:"AstroGlyph",serif;font-variant-emoji:text;font-size:1.9rem;line-height:1;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(139,169,255,.46)}' +
+      '.home-match__orb--fire{color:var(--ap-danger,#FF8EA8)}.home-match__orb--earth{color:var(--ap-proof,#6FD0B3)}.home-match__orb--air{color:var(--ap-paper-bright,#C9D6E3)}.home-match__orb--water{color:var(--ap-cyan,#79C7F2)}' +
       '.home-match__tone{display:inline-block;font:600 .72rem/1 var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;padding:.32rem .7rem;border-radius:999px;margin-bottom:.6rem}' +
-      '.home-match__tone--harmony{color:#9CB27E;background:rgba(156,178,126,.14);border:1px solid rgba(156,178,126,.35)}' +
-      '.home-match__tone--neutral{color:var(--brass-bright,#ff5a1f);background:rgba(216,180,106,.12);border:1px solid rgba(216,180,106,.35)}' +
-      '.home-match__title{font:600 1.35rem/1.2 var(--font-serif,serif);color:var(--ink,#f2ecdf);margin:.1rem 0 .5rem}' +
-      '.home-match__narr{color:rgba(236,230,216,.9);line-height:1.65;margin:0 auto 1rem;max-width:44ch}' +
-      '.home-match__note{font-size:.78rem;color:rgba(236,230,216,.62);line-height:1.55;border-top:1px solid rgba(216,180,106,.18);padding-top:.8rem;margin:0 0 1.1rem}' +
+      '.home-match__tone--harmony{color:var(--ap-proof,#6FD0B3);background:rgba(111,208,179,.14);border:1px solid rgba(111,208,179,.38)}' +
+      '.home-match__tone--neutral{color:var(--ap-violet,#A897FF);background:rgba(168,151,255,.13);border:1px solid rgba(168,151,255,.38)}' +
+      '.home-match__title{font:600 1.35rem/1.2 var(--font-serif,serif);color:var(--ap-paper,#EEF4FA);margin:.1rem 0 .5rem}' +
+      '.home-match__narr{color:rgba(201,214,227,.94);line-height:1.65;margin:0 auto 1rem;max-width:44ch}' +
+      '.home-match__note{font-size:.78rem;color:rgba(147,168,191,.86);line-height:1.55;border-top:1px solid rgba(139,169,255,.2);padding-top:.8rem;margin:0 0 1.1rem}' +
       '.home-match__cta-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center}' +
-      '.home-match__prompt{text-align:center;color:rgba(236,230,216,.7);font-size:.9rem;margin:.4rem 0 0}';
+      '.home-match__prompt{text-align:center;color:rgba(147,168,191,.9);font-size:.9rem;margin:.4rem 0 0}';
     var st = document.createElement('style'); st.id = 'home-match-css'; st.textContent = css;
     document.head.appendChild(st);
   }

@@ -32,12 +32,12 @@
     ];
   })();
 
-  // cool-brass system — mirrors css .ap-orb ramp (retinted 2026-07-04)
+  // Midnight Meridian element semantics: fire rose, earth mint, air violet, water cyan.
   var EL_COL = {
-    fire:  '#d89a72',
-    earth: '#9cb27e',
-    air:   '#b8c0cc',
-    water: '#8fb8b6',
+    fire:  '#FF8EA8',
+    earth: '#6FD0B3',
+    air:   '#A897FF',
+    water: '#79C7F2',
   };
 
   var PLANETS = [
@@ -163,13 +163,13 @@
     });
     g.appendChild(ns('line', {
       x1: 0, y1: 8, x2: 0, y2: -RING_R * 1.1,
-      stroke: 'rgba(216, 180, 106, 0.5)',
+      stroke: 'rgba(139, 169, 255, 0.58)',
       'stroke-width': '1.2',
       'stroke-dasharray': '3 5',
     }));
     g.appendChild(ns('circle', {
       cx: 0, cy: -RING_R * 1.04, r: 2.8,
-      fill: 'rgba(216, 180, 106, 0.9)',
+      fill: 'rgba(165, 188, 255, 0.92)',
     }));
     g.appendChild(ns('text', {
       y: -RING_R * 1.16,
@@ -177,7 +177,7 @@
       'font-family': 'system-ui,sans-serif',
       'font-size': '6.5',
       'letter-spacing': '0.16em',
-      fill: 'rgba(216, 180, 106, 0.72)',
+      fill: 'rgba(201, 214, 227, 0.78)',
       textContent: 'TODAY',
     }));
     return g;
@@ -190,20 +190,20 @@
     rotator.appendChild(ns('circle', {
       r: RING_R * 1.06,
       fill: 'none',
-      stroke: 'rgba(216, 180, 106, 0.14)',
+      stroke: 'rgba(147, 168, 191, 0.18)',
       'stroke-width': '1',
     }));
     rotator.appendChild(ns('circle', {
       r: RING_R,
-      fill: 'rgba(12, 16, 22, 0.35)',
-      stroke: 'rgba(216, 180, 106, 0.42)',
+      fill: 'rgba(7, 16, 30, 0.45)',
+      stroke: 'rgba(139, 169, 255, 0.5)',
       'stroke-width': '1.8',
       class: 'wheel-poster__outer-ring',
     }));
     rotator.appendChild(ns('circle', {
       r: RING_R * 0.68,
       fill: 'none',
-      stroke: 'rgba(111, 160, 216, 0.12)',
+      stroke: 'rgba(121, 199, 242, 0.16)',
       'stroke-width': '1',
       'stroke-dasharray': '2 6',
     }));
@@ -219,7 +219,7 @@
       var ty2 = -rOut * Math.cos(rad);
       rotator.appendChild(ns('line', {
         x1: tx1, y1: ty1, x2: tx2, y2: ty2,
-        stroke: major ? 'rgba(216, 180, 106, 0.38)' : 'rgba(216, 180, 106, 0.14)',
+        stroke: major ? 'rgba(147, 168, 191, 0.44)' : 'rgba(147, 168, 191, 0.16)',
         'stroke-width': major ? '1.2' : '0.6',
       }));
     }
@@ -232,8 +232,10 @@
       var sector = ns('path', {
         class: 'wheel-sector',
         'data-el': s.el,
-        fill: 'rgba(216, 180, 106, 0.03)',
-        stroke: 'rgba(216, 180, 106, 0.08)',
+        fill: EL_COL[s.el] || '#8BA9FF',
+        'fill-opacity': '0.05',
+        stroke: EL_COL[s.el] || '#8BA9FF',
+        'stroke-opacity': '0.12',
         'stroke-width': '0.5',
       });
       var x0 = r0 * Math.sin(a0);
@@ -269,7 +271,7 @@
       g.appendChild(ns('circle', {
         class: 'wheel-sign__glow',
         r: '32',
-        fill: 'rgba(216, 180, 106, 0.85)',
+        fill: 'rgba(139, 169, 255, 0.88)',
         'fill-opacity': '0',
       }));
       g.appendChild(ns('circle', {
@@ -281,8 +283,8 @@
       g.appendChild(ns('circle', {
         class: 'wheel-sign__ring',
         r: '20',
-        fill: 'rgba(12, 16, 22, 0.72)',
-        stroke: 'rgba(216, 180, 106, 0.38)',
+        fill: 'rgba(7, 16, 30, 0.78)',
+        stroke: 'rgba(147, 168, 191, 0.44)',
         'stroke-width': '1.1',
       }));
       g.appendChild(ns('image', {
@@ -300,7 +302,7 @@
         'text-anchor': 'middle',
         'font-family': 'system-ui,sans-serif',
         'font-size': '7',
-        fill: 'rgba(236, 230, 216, 0.82)',
+        fill: 'rgba(238, 244, 250, 0.86)',
         'letter-spacing': '0.1em',
         textContent: SIGN_ABBR[s.key] || s.name.slice(0, 3).toUpperCase(),
       }));
@@ -317,13 +319,13 @@
       class: 'wheel-centre__pulse',
       r: '38',
       fill: 'none',
-      stroke: 'rgba(63,125,118,0.35)',
+      stroke: 'rgba(111,208,179,0.42)',
       'stroke-width': '1',
     }));
     g.appendChild(ns('circle', {
       r: '34',
-      fill: 'rgba(216, 180, 106, 0.08)',
-      stroke: 'rgba(216, 180, 106, 0.42)',
+      fill: 'rgba(168, 151, 255, 0.1)',
+      stroke: 'rgba(139, 169, 255, 0.5)',
       'stroke-width': '1.2',
     }));
     var star = ns('polygon', {
@@ -346,7 +348,7 @@
     g.appendChild(ns('text', {
       y: '48',
       'text-anchor': 'middle',
-      fill: 'rgba(201,162,39,0.7)',
+      fill: 'rgba(165,188,255,0.78)',
       'font-size': '9',
       'font-family': 'system-ui,sans-serif',
       'letter-spacing': '1.1',
@@ -411,10 +413,10 @@
   }
 
   function chordStroke(quality) {
-    // cool-brass system: harmonious = teal-brass, challenging = muted terracotta
-    if (quality === 'h') return 'rgba(143, 184, 182, 0.55)';
-    if (quality === 'x') return 'rgba(184, 90, 66, 0.48)';
-    return 'rgba(216, 180, 106, 0.62)';
+    // Aspect meaning never depends on hue alone; these colours reinforce the line signatures.
+    if (quality === 'h') return 'rgba(111, 208, 179, 0.62)';
+    if (quality === 'x') return 'rgba(255, 142, 168, 0.58)';
+    return 'rgba(168, 151, 255, 0.68)';
   }
 
   function lonToLocal(lon, r) {

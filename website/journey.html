@@ -10,7 +10,7 @@
 <meta property="og:title" content="Warp to a newly-found world — 63 light-years, honestly">
 <meta property="og:description" content="The new planet Beta Pic d is real and 63 light-years away. There's no warp drive — but here's the dream, anchored in the real distances it has to answer to.">
 <meta property="og:url" content="https://astroprecise.app/journey.html">
-<meta name="theme-color" content="#05080F">
+<meta name="theme-color" content="#040812">
 <!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
      IBM Plex Mono from Google Fonts, which handed Google a request from every
      reader while privacy.html said the site's fonts were its own. Both files
@@ -19,17 +19,17 @@
      no true italic, so italics here are synthesised; that is the whole cost. -->
 <link rel="stylesheet" href="./css/fonts.css">
 <style>
-:root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.26);--acc:#d8b46a;--good:#7ef0c8;--dream:#c9a6ff}
+:root{--ink:#EEF4FA;--dim:rgba(201,214,227,.86);--faint:rgba(147,168,191,.74);--line:rgba(139,169,255,.18);--line2:rgba(168,151,255,.28);--acc:#8BA9FF;--good:#6FD0B3;--dream:#A897FF}
 *{box-sizing:border-box}
-body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1000px 560px at 50% -6%,rgba(255,122,69,.08),transparent 62%);background-attachment:fixed}
-a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
+body{margin:0;background:#040812;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;background-image:radial-gradient(1000px 560px at 50% -6%,rgba(139,169,255,.10),transparent 62%);background-attachment:fixed}
+a{color:var(--acc);text-decoration:none}a:hover{color:#A5BCFF}
 a:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
 #warp{position:fixed;inset:0;width:100%;height:100%;z-index:-1;display:block;background: #020307}
 .wrap{max-width:720px;margin:0 auto;padding:0 22px 90px;position:relative}
 .top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0}
 .kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.26em;color:var(--acc)}
-.navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)}
+.navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(201,214,227,.76)}
 h1{margin:48px 0 12px;font-size:clamp(32px,6.5vw,50px);line-height:1.07;font-weight:700;letter-spacing:-.015em}
 .lede{margin:0 0 24px;font-size:18px;line-height:1.65;color:var(--dim)}
 .card{border:1px solid var(--line2);border-radius:14px;background:rgba(6,10,16,.72);backdrop-filter:blur(8px);padding:24px 26px;margin:22px 0}
@@ -40,22 +40,22 @@ table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:10px 8px;border-top:1px solid var(--line);font-size:14.5px;vertical-align:top}
 th{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:var(--acc);font-weight:500}
 td.t{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);white-space:nowrap}
-.btn{display:inline-block;background:var(--ink);color:#000;border:0;border-radius:100px;padding:14px 28px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em;cursor:pointer;transition:filter .2s}
+.btn{display:inline-block;background:var(--acc);color:#07101E;border:0;border-radius:100px;padding:14px 28px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em;cursor:pointer;transition:filter .2s}
 .btn:hover{filter:brightness(1.08)}
 .btn.dream{background:linear-gradient(90deg,#8f6fd6,#c9a6ff);color:#0a0410}
 .big{font-size:clamp(24px,5vw,34px);font-weight:700;line-height:1.15;margin:2px 0}
 .big .d{color:var(--dream)}.big .a{color:var(--acc)}
 .rule{border-top:1px solid var(--line);margin:30px 0}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:rgba(242,236,223,.4);line-height:2.1}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:rgba(147,168,191,.62);line-height:2.1}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <canvas id="warp" aria-hidden="true"></canvas>
-<div class="wrap">
+<main class="wrap">
 
 <div class="top">
-  <a class="navlink" href="./index.html">← ASTRO PRECISE</a>
+  <a class="navlink" href="./index.html">← Observatory</a>
   <span class="kicker">JOURNEY · SPACE &amp; TIME</span>
 </div>
 
@@ -99,17 +99,17 @@ td.t{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);white
   <div class="lbl">AND THROUGH TIME, TOO</div>
   <p style="font-size:15.5px;line-height:1.65;color:var(--dim);margin:0 0 8px">Space is only half of it. The same engine that computes where the planets really are can run the clock backward — through the real sky, to the edge of what can be known.</p>
   <a class="btn" href="./cosmic-calendar.html" style="margin-right:8px">↺ TRAVEL THROUGH TIME →</a>
-  <a class="navlink" href="./index.html" style="display:inline-block;margin-top:10px">or start with your own sky →</a>
+  <a class="navlink" href="./chart.html" style="display:inline-block;margin-top:10px">or cast your chart →</a>
 </div>
 
 <div class="rule"></div>
 <div class="foot">
   THE DISTANCES AND TRAVEL TIMES ARE COMPUTED AND CHECKABLE. THE WARP CROSSING IS IMAGINATION, LABELLED AS SUCH. THE DESTINATION IS A REAL, CITED, PEER-REVIEWED DISCOVERY.<br>
-  <a href="./index.html">THE OBSERVATORY</a> · <a href="./cosmic-calendar.html">THE COSMIC CALENDAR</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a><br>
+  <a href="./index.html">THE OBSERVATORY</a> · <a href="./chart.html">CHART</a> · <a href="./sky-events.html">EVENTS</a> · <a href="./shop.html">SHOP</a> · <a href="./cosmic-calendar.html">THE COSMIC CALENDAR</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a><br>
   © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED — AND IMAGINATION, HONESTLY LABELLED
 </div>
 
-</div>
+</main>
 
 <script>
 (function(){

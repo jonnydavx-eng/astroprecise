@@ -3,30 +3,37 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Your sky starts here | Astro Precise</title>
-  <meta name="description" content="Start with the live Observatory or calculate your private birth chart.">
-  <meta name="robots" content="noindex, follow">
-  <link rel="canonical" href="https://astroprecise.app/">
-  <link rel="stylesheet" href="./css/fonts.css?v=874">
+  <meta name="referrer" content="no-referrer">
   <script>
   (function () {
     var target = new URL('./index.html', location.href);
-    target.search = location.search;
-    target.hash = 'personal';
+    var incoming = new URLSearchParams(location.search || '');
+    var query = new URLSearchParams();
+    incoming.forEach(function (value, key) {
+      var name = String(key || '').toLowerCase();
+      if ((name === 'nosw' || name === 'lite') && String(value) === '1' && !query.has(name)) query.set(name, '1');
+    });
+    target.search = query.toString();
+    target.hash = '';
     location.replace(target.href);
   })();
   </script>
-  <noscript><meta http-equiv="refresh" content="0; url=./index.html#personal"></noscript>
+  <title>My Sky moved | AstroPrecise</title>
+  <meta name="description" content="The old My Sky hub now redirects to the Observatory and Chart routes.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://astroprecise.app/">
+  <link rel="stylesheet" href="./css/fonts.css?v=902">
+  <noscript><meta http-equiv="refresh" content="0; url=./index.html"></noscript>
   <style>
     :root { color-scheme: dark; }
     * { box-sizing: border-box; }
-    body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; background: #020307; color: #f2ecdf; font-family: "Schibsted Grotesk", sans-serif; }
-    main { width: min(560px, 100%); padding: 34px; border: 1px solid rgba(216,180,106,.32); border-radius: 8px; background: #0d121b; }
-    p { margin: 0 0 20px; color: #b9c8dc; line-height: 1.65; }
-    a { min-height: 46px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 5px; background: #ff6428; color: #170702; font-weight: 750; text-decoration: none; }
+    body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; background: #040812; color: #EEF4FA; font-family: "Schibsted Grotesk", sans-serif; }
+    main { width: min(560px, 100%); padding: 34px; border: 1px solid rgba(139,169,255,.34); border-radius: 8px; background: #101D30; }
+    p { margin: 0 0 20px; color: #C9D6E3; line-height: 1.65; }
+    a { min-height: 46px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 5px; background: #8BA9FF; color: #07101E; font-weight: 750; text-decoration: none; }
   </style>
 </head>
 <body>
-  <main><p>The old My Sky hub has been folded into the live Observatory and private chart entry.</p><a href="./index.html#personal">Open your sky</a></main>
+  <main><p>The old My Sky hub now points to the Observatory and Chart routes.</p><p><a href="./index.html">Observatory</a> · <a href="./chart.html">Chart</a></p></main>
 </body>
 </html>

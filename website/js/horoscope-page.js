@@ -2,6 +2,7 @@
  * AstroPrecise Daily v835
  * One twelve-sign ledger, one selected reading, one evidence ledger.
  * No dial, sphere, saved-sign retention, luck scores, or hidden personal layer.
+ * luckyNumber / luckyColor may exist on the engine object; this page never paints them.
  */
 (function () {
   'use strict';
@@ -150,7 +151,7 @@
     const cy = height / 2;
     const radius = Math.min(width, height) * 0.35;
     context.clearRect(0, 0, width, height);
-    context.fillStyle = '#0d121b';
+    context.fillStyle = '#101D30';
     context.beginPath();
     context.arc(cx, cy, radius + 6, 0, Math.PI * 2);
     context.fill();
@@ -158,9 +159,9 @@
     context.beginPath();
     context.arc(cx, cy, radius, 0, Math.PI * 2);
     context.clip();
-    context.fillStyle = '#020307';
+    context.fillStyle = '#040812';
     context.fillRect(0, 0, width, height);
-    context.fillStyle = '#f2ecdf';
+    context.fillStyle = '#EEF4FA';
     context.beginPath();
     if (phase.fraction < 0.5) {
       context.arc(cx, cy, radius, -Math.PI / 2, Math.PI / 2);
@@ -174,7 +175,7 @@
     context.closePath();
     context.fill();
     context.restore();
-    context.strokeStyle = 'rgba(216,180,106,.7)';
+    context.strokeStyle = 'rgba(139,169,255,.72)';
     context.lineWidth = 1.5;
     context.beginPath();
     context.arc(cx, cy, radius + 2, 0, Math.PI * 2);
@@ -191,11 +192,43 @@
   }
 
   function updateReadingUrl(signKey) {
-    const next = new URL(window.location.href);
+    const next = new URL(window.location.pathname, window.location.origin);
+    ['nosw', 'lite'].forEach(function (key) {
+      if (new URLSearchParams(window.location.search).get(key) === '1') next.searchParams.set(key, '1');
+    });
     if (signKey) next.searchParams.set('sign', signKey);
-    else next.searchParams.delete('sign');
-    next.hash = '';
     history.replaceState(null, '', next.pathname + next.search);
+  }
+
+  function paintMethodNote(methodNote) {
+    const methodEl = document.getElementById('srp-method-note');
+    if (!methodEl) return;
+    methodEl.textContent = '';
+    const note = String(methodNote || '')
+      .replace(/\s*For your full birth chart, see (?:chart\.html|transits\.html|mysky\.html|ephemeris\.html)\.?\s*$/i, '')
+      .trim();
+    if (note) methodEl.appendChild(document.createTextNode(note + ' '));
+    const methodLink = document.createElement('a');
+    methodLink.href = 'chart.html';
+    methodLink.textContent = 'Open your birth chart.';
+    methodEl.appendChild(methodLink);
+  }
+
+  function paintSkyLecture(el, text, summary) {
+    if (!el) return;
+    const plain = String(text || '').trim();
+    el.textContent = '';
+    if (!plain) return;
+    const details = document.createElement('details');
+    details.className = 'ap-reading-details';
+    const sum = document.createElement('summary');
+    sum.className = 'ap-reading-details__summary';
+    sum.textContent = summary;
+    const body = document.createElement('p');
+    body.textContent = plain;
+    details.appendChild(sum);
+    details.appendChild(body);
+    el.appendChild(details);
   }
 
   function renderReading(signKey) {
@@ -219,14 +252,27 @@
     const guide = document.getElementById('srp-guide-link');
     guide.href = signKey + '.html';
     guide.textContent = 'Full ' + info.name + ' guide →';
-    document.getElementById('srp-overview').textContent = data.overview || '';
+    const todayLine = document.getElementById('srp-today-line');
+    const useThis = document.getElementById('srp-use-this');
+    const leaveThis = document.getElementById('srp-leave-this');
+    if (todayLine) todayLine.textContent = data.todayLine || '';
+    if (useThis) useThis.textContent = data.useThis || '';
+    if (leaveThis) leaveThis.textContent = data.leaveThis || '';
+    const overviewEl = document.getElementById('srp-overview');
+    if (overviewEl) {
+      if (data.todayLine && data.overview) {
+        paintSkyLecture(overviewEl, data.overview, 'More about today’s sky');
+      } else {
+        overviewEl.textContent = data.overview || '';
+      }
+    }
     document.getElementById('srp-love').textContent = data.love || '';
     document.getElementById('srp-career').textContent = data.career || '';
     document.getElementById('srp-health').textContent = data.health || '';
     document.getElementById('srp-sky-facts').textContent = data.skyFacts && data.skyFacts.length
       ? 'Computed sky · ' + data.skyFacts.join(' · ')
       : '';
-    document.getElementById('srp-method-note').textContent = data.methodNote || '';
+    paintMethodNote(data.methodNote);
 
     const phase = moonPhaseAtNoon(new Date());
     drawMoonPhase(phase);
@@ -363,9 +409,9 @@
       : (canvas.width = exportSize, canvas.height = exportSize, canvas.getContext('2d'));
     context.scale(exportSize / size, exportSize / size);
 
-    context.fillStyle = '#020307';
+    context.fillStyle = '#040812';
     context.fillRect(0, 0, size, size);
-    context.strokeStyle = 'rgba(216,180,106,.09)';
+    context.strokeStyle = 'rgba(147,168,191,.11)';
     context.lineWidth = 1;
     for (let line = 72; line < size; line += 78) {
       context.beginPath(); context.moveTo(line, 40); context.lineTo(line, 1040); context.stroke();
@@ -373,31 +419,31 @@
     }
     const random = deterministicRandom(Math.floor(Date.now() / 86400000) * 17 + SIGN_KEYS.indexOf(signKey));
     for (let star = 0; star < 100; star += 1) {
-      context.fillStyle = 'rgba(185,200,220,' + (0.12 + random() * 0.45).toFixed(2) + ')';
+      context.fillStyle = 'rgba(201,214,227,' + (0.12 + random() * 0.45).toFixed(2) + ')';
       context.beginPath();
       context.arc(50 + random() * 980, 50 + random() * 980, 0.4 + random() * 1.2, 0, Math.PI * 2);
       context.fill();
     }
-    context.strokeStyle = '#d8b46a';
+    context.strokeStyle = '#8BA9FF';
     context.lineWidth = 2;
     context.strokeRect(40, 40, 1000, 1000);
-    context.strokeStyle = 'rgba(216,180,106,.35)';
+    context.strokeStyle = 'rgba(147,168,191,.4)';
     context.lineWidth = 1;
     context.strokeRect(54, 54, 972, 972);
-    context.fillStyle = '#ff6428';
+    context.fillStyle = '#8BA9FF';
     context.fillRect(40, 40, 178, 5);
 
     const phase = moonPhaseAtNoon(new Date());
     context.textAlign = 'right';
-    context.fillStyle = '#d8b46a';
+    context.fillStyle = '#8BA9FF';
     context.font = '600 19px "IBM Plex Mono", monospace';
     context.fillText(PHASE_NAMES[phase.index].toUpperCase(), 960, 104);
-    context.fillStyle = '#b9c8dc';
+    context.fillStyle = '#C9D6E3';
     context.font = '16px "IBM Plex Mono", monospace';
     context.fillText(phase.illumination + '% LIT · 12:00 UT', 960, 134);
 
     context.textAlign = 'center';
-    context.fillStyle = '#ff6428';
+    context.fillStyle = '#8BA9FF';
     context.font = '600 18px "IBM Plex Mono", monospace';
     context.fillText('DAILY / ' + String(SIGN_KEYS.indexOf(signKey) + 1).padStart(2, '0') + ' / 12', 540, 130);
 
@@ -405,23 +451,35 @@
       const seal = new Image();
       function finish(image) {
         if (image) context.drawImage(image, 445, 154, 190, 222);
-        context.fillStyle = '#f2ecdf';
+        context.fillStyle = '#EEF4FA';
         context.font = '500 82px "Cormorant Garamond", Georgia, serif';
         context.fillText(info.name, 540, 458);
-        context.fillStyle = '#d8b46a';
+        context.fillStyle = '#8BA9FF';
         context.font = '600 18px "IBM Plex Mono", monospace';
         context.fillText(new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase(), 540, 502);
-        context.fillStyle = '#b9c8dc';
-        context.font = '500 30px "Cormorant Garamond", Georgia, serif';
-        wrapText(context, data.overview || '', 540, 580, 780, 44, 6);
-        context.fillStyle = 'rgba(216,180,106,.42)';
-        context.fillRect(150, 870, 780, 1);
-        context.fillStyle = '#b9c8dc';
+        context.fillStyle = '#C9D6E3';
+        context.font = '500 34px "Cormorant Garamond", Georgia, serif';
+        wrapText(context, data.todayLine || data.overview || '', 540, 568, 780, 42, 3);
+        context.fillStyle = '#8BA9FF';
+        context.font = '600 16px "IBM Plex Mono", monospace';
+        context.fillText('USE THIS', 540, 718);
+        context.fillStyle = '#C9D6E3';
+        context.font = '500 24px "Cormorant Garamond", Georgia, serif';
+        wrapText(context, data.useThis || '', 540, 754, 780, 34, 2);
+        context.fillStyle = '#8BA9FF';
+        context.font = '600 16px "IBM Plex Mono", monospace';
+        context.fillText('LEAVE THIS', 540, 838);
+        context.fillStyle = '#C9D6E3';
+        context.font = '500 24px "Cormorant Garamond", Georgia, serif';
+        wrapText(context, data.leaveThis || '', 540, 874, 780, 34, 2);
+        context.fillStyle = 'rgba(147,168,191,.44)';
+        context.fillRect(150, 948, 780, 1);
+        context.fillStyle = '#C9D6E3';
         context.font = '16px "IBM Plex Mono", monospace';
-        context.fillText('ASTROLOGICAL INTERPRETATION · REFLECTION & ENTERTAINMENT', 540, 914);
-        context.fillStyle = '#d8b46a';
-        context.font = '600 19px "IBM Plex Mono", monospace';
-        context.fillText('POSITIONS CALCULATED AT 12:00 UT · ASTROPRECISE.APP', 540, 1000);
+        context.fillText('ASTROLOGICAL INTERPRETATION · REFLECTION & ENTERTAINMENT', 540, 984);
+        context.fillStyle = '#8BA9FF';
+        context.font = '600 18px "IBM Plex Mono", monospace';
+        context.fillText('POSITIONS CALCULATED AT 12:00 UT · ASTROPRECISE.APP', 540, 1018);
         resolve(canvas);
       }
       seal.addEventListener('load', function () { finish(seal); }, { once: true });
@@ -483,9 +541,9 @@
     }
     const info = SIGNS[currentOpenSign];
     const data = Interpretations.getDailyHoroscope(info.name, new Date());
-    const url = new URL(window.location.href);
+    const url = new URL(window.location.pathname, window.location.origin);
     url.searchParams.set('sign', currentOpenSign);
-    const overview = String(data.overview || '').trim();
+    const overview = String(data.todayLine || data.overview || '').trim();
     const sentenceMatch = overview.match(/^.*?[.!?](?:\s|$)/);
     const firstSentence = sentenceMatch ? sentenceMatch[0].trim() : overview;
     const text = info.name + ' · ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + '. ' +

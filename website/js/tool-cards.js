@@ -59,14 +59,14 @@ window.AstroToolCards = (() => {
     {
       id: 'transits',
       href: 'transits.html',
-      label: 'Live Sky',
+      label: 'Computed sky',
       title: 'Current Transits',
-      desc: 'Real-time sky versus your natal chart. See exactly which natal planets are being activated by current transits, with interpretations and a personal forecast.',
+      desc: 'Today\'s computed sky versus your natal chart. See which natal planets are being activated by current transits, with interpretations and a personal forecast.',
       cta: 'View transits',
       icon: 'sunhigh',
       glyph: '☿',
       visual: 'transits',
-      badge: 'Free · Live sky',
+      badge: 'Free · Computed sky',
     },
     {
       id: 'instrument',
@@ -97,28 +97,28 @@ window.AstroToolCards = (() => {
     switch (type) {
       case 'wheel':
         return `<svg class="ap-tool-viz ap-tool-viz--wheel" viewBox="0 0 120 120" aria-hidden="true">
-          <defs><radialGradient id="ap-wh-g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(216,180,106,0.18)"/><stop offset="100%" stop-color="rgba(5,4,6,0)"/></radialGradient></defs>
+          <defs><radialGradient id="ap-wh-g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(139,169,255,0.2)"/><stop offset="100%" stop-color="rgba(4,8,18,0)"/></radialGradient></defs>
           <circle cx="60" cy="60" r="56" fill="url(#ap-wh-g)"/>
-          <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(216,180,106,0.45)" stroke-width="1.2"/>
-          <circle cx="60" cy="60" r="38" fill="none" stroke="rgba(216,180,106,0.28)" stroke-width="0.9"/>
-          <circle cx="60" cy="60" r="22" fill="none" stroke="rgba(216,180,106,0.18)" stroke-width="0.7"/>
+          <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(139,169,255,0.52)" stroke-width="1.2"/>
+          <circle cx="60" cy="60" r="38" fill="none" stroke="rgba(168,151,255,0.34)" stroke-width="0.9"/>
+          <circle cx="60" cy="60" r="22" fill="none" stroke="rgba(121,199,242,0.22)" stroke-width="0.7"/>
           ${[0,30,60,90,120,150,180,210,240,270,300,330].map((d, i) => {
             const r = (d * Math.PI) / 180;
             const x1 = 60 + Math.cos(r) * 22;
             const y1 = 60 + Math.sin(r) * 22;
             const x2 = 60 + Math.cos(r) * 54;
             const y2 = 60 + Math.sin(r) * 54;
-            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(216,180,106,${0.12 + (i % 3) * 0.06})" stroke-width="0.6"/>`;
+            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(139,169,255,${0.14 + (i % 3) * 0.06})" stroke-width="0.6"/>`;
           }).join('')}
-          <circle cx="78" cy="42" r="3" fill="#d8b46a"/><circle cx="44" cy="68" r="2.5" fill="#d8b46a"/>
-          <circle cx="72" cy="78" r="2" fill="#b87850"/><text x="60" y="64" text-anchor="middle" font-size="14" fill="#d8b46a" font-family="serif">☉</text>
+          <circle cx="78" cy="42" r="3" fill="#8BA9FF"/><circle cx="44" cy="68" r="2.5" fill="#A897FF"/>
+          <circle cx="72" cy="78" r="2" fill="#79C7F2"/><text x="60" y="64" text-anchor="middle" font-size="14" fill="#C9D6E3" font-family="serif">☉</text>
         </svg>`;
       case 'ecliptic':
         return `<svg class="ap-tool-viz ap-tool-viz--ecliptic" viewBox="0 0 120 120" aria-hidden="true">
-          <ellipse cx="60" cy="60" rx="50" ry="18" fill="none" stroke="rgba(216,180,106,0.4)" stroke-width="1.2"/>
-          <circle cx="88" cy="52" r="8" fill="rgba(216,180,106,0.12)" stroke="#d8b46a" stroke-width="0.8"/>
-          <text x="88" y="55" text-anchor="middle" font-size="10" fill="#d8b46a">☽</text>
-          <circle cx="32" cy="68" r="5" fill="rgba(176,74,82,0.2)" stroke="#b04a52" stroke-width="0.6"/>
+          <ellipse cx="60" cy="60" rx="50" ry="18" fill="none" stroke="rgba(121,199,242,0.5)" stroke-width="1.2"/>
+          <circle cx="88" cy="52" r="8" fill="rgba(168,151,255,0.14)" stroke="#A897FF" stroke-width="0.8"/>
+          <text x="88" y="55" text-anchor="middle" font-size="10" fill="#C9D6E3">☽</text>
+          <circle cx="32" cy="68" r="5" fill="rgba(255,142,168,0.16)" stroke="#FF8EA8" stroke-width="0.6"/>
           <image href="assets/images/seals/zodiac/aries.svg" x="27" y="62" width="10" height="12" preserveAspectRatio="xMidYMid meet"/>
         </svg>`;
       case 'numerology':
@@ -128,25 +128,25 @@ window.AstroToolCards = (() => {
         </div>`;
       case 'synastry':
         return `<svg class="ap-tool-viz ap-tool-viz--synastry" viewBox="0 0 120 120" aria-hidden="true">
-          <circle cx="48" cy="60" r="28" fill="rgba(176,74,82,0.08)" stroke="rgba(176,120,80,0.5)" stroke-width="1"/>
-          <circle cx="72" cy="60" r="28" fill="rgba(216,180,106,0.06)" stroke="rgba(216,180,106,0.45)" stroke-width="1"/>
-          <path d="M60 44 C54 52 54 68 60 76 C66 68 66 52 60 44Z" fill="rgba(216,180,106,0.25)" stroke="#d8b46a" stroke-width="0.8"/>
+          <circle cx="48" cy="60" r="28" fill="rgba(255,142,168,0.08)" stroke="rgba(255,142,168,0.5)" stroke-width="1"/>
+          <circle cx="72" cy="60" r="28" fill="rgba(168,151,255,0.08)" stroke="rgba(168,151,255,0.48)" stroke-width="1"/>
+          <path d="M60 44 C54 52 54 68 60 76 C66 68 66 52 60 44Z" fill="rgba(139,169,255,0.24)" stroke="#8BA9FF" stroke-width="0.8"/>
         </svg>`;
       case 'transits':
         return `<svg class="ap-tool-viz ap-tool-viz--transits" viewBox="0 0 120 120" aria-hidden="true">
-          <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(216,180,106,0.25)" stroke-width="1" stroke-dasharray="4 6"/>
-          <circle cx="60" cy="60" r="30" fill="none" stroke="rgba(216,180,106,0.15)" stroke-width="0.8"/>
-          <circle cx="60" cy="34" r="3" fill="#d8b46a"/><circle cx="88" cy="60" r="2.5" fill="#d8b46a"/>
-          <line x1="60" y1="34" x2="72" y2="48" stroke="rgba(216,180,106,0.5)" stroke-width="0.8"/>
-          <circle cx="48" cy="72" r="2" fill="#b87850"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(139,169,255,0.32)" stroke-width="1" stroke-dasharray="4 6"/>
+          <circle cx="60" cy="60" r="30" fill="none" stroke="rgba(168,151,255,0.2)" stroke-width="0.8"/>
+          <circle cx="60" cy="34" r="3" fill="#8BA9FF"/><circle cx="88" cy="60" r="2.5" fill="#A897FF"/>
+          <line x1="60" y1="34" x2="72" y2="48" stroke="rgba(121,199,242,0.56)" stroke-width="0.8"/>
+          <circle cx="48" cy="72" r="2" fill="#6FD0B3"/>
         </svg>`;
       case 'lightcone':
         return `<svg class="ap-tool-viz ap-tool-viz--lightcone" viewBox="0 0 120 120" aria-hidden="true">
-          <polygon points="60,18 95,88 25,88" fill="none" stroke="rgba(216,180,106,0.35)" stroke-width="1"/>
-          <polygon points="60,32 82,82 38,82" fill="rgba(216,180,106,0.06)" stroke="rgba(216,180,106,0.2)" stroke-width="0.6"/>
-          <circle cx="60" cy="88" r="4" fill="#d8b46a"/>
-          <line x1="60" y1="18" x2="60" y2="88" stroke="rgba(216,180,106,0.4)" stroke-width="0.8"/>
-          <line x1="38" y1="60" x2="82" y2="60" stroke="rgba(216,180,106,0.15)" stroke-width="0.6"/>
+          <polygon points="60,18 95,88 25,88" fill="none" stroke="rgba(121,199,242,0.46)" stroke-width="1"/>
+          <polygon points="60,32 82,82 38,82" fill="rgba(168,151,255,0.08)" stroke="rgba(168,151,255,0.24)" stroke-width="0.6"/>
+          <circle cx="60" cy="88" r="4" fill="#8BA9FF"/>
+          <line x1="60" y1="18" x2="60" y2="88" stroke="rgba(139,169,255,0.5)" stroke-width="0.8"/>
+          <line x1="38" y1="60" x2="82" y2="60" stroke="rgba(121,199,242,0.22)" stroke-width="0.6"/>
         </svg>`;
       default:
         return `<span class="ap-tool-viz ap-tool-viz--glyph" aria-hidden="true">${icon('star4')}</span>`;

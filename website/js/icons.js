@@ -187,16 +187,7 @@
     });
   }
 
-  function auditPath() {
-    return !!(
-      navigator.webdriver ||
-      /\bHeadlessChrome\b/i.test(navigator.userAgent || '') ||
-      document.documentElement.classList.contains('ap-audit-path')
-    );
-  }
-
   function boot() {
-    if (auditPath()) return;
     upgradeStaticOrbs();
     upgradeSignOrbNodes();
   }

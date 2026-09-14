@@ -29,16 +29,16 @@
 
   // `name` is the machine key (stable — other modules and the content bank key off
   // it). `verb`, `label` and `phrase` are the READER-FACING wordings and are the
-  // only forms that may reach the page. The 60° contact is never called by its
-  // trade name: readers get "a helpful angle", which is what it actually means.
+  // only forms that may reach the page. Trade names never print: 60° is a helpful
+  // angle, 90° presses, 120° flows.
   //   verb   — mid-sentence: "Transiting Venus <verb> your Leo Sun"
   //   label  — short tag beside the planet: "venus <label>"
   //   phrase — joins two bodies: "Venus <phrase> your Sun"
   var ASPECTS = [
     { name: 'conjunction', angle: 0, verb: 'meets', label: 'meeting', phrase: 'meeting', quality: 'blend' },
     { name: 'sextile', angle: 60, verb: 'sits at a helpful angle to', label: 'helpful angle', phrase: 'at a helpful angle to', quality: 'support' },
-    { name: 'square', angle: 90, verb: 'squares', label: 'square', phrase: 'square', quality: 'friction' },
-    { name: 'trine', angle: 120, verb: 'trines', label: 'trine', phrase: 'trine', quality: 'flow' },
+    { name: 'square', angle: 90, verb: 'presses', label: 'press', phrase: 'pressing', quality: 'friction' },
+    { name: 'trine', angle: 120, verb: 'flows with', label: 'flow', phrase: 'flowing with', quality: 'flow' },
     { name: 'opposition', angle: 180, verb: 'opposes', label: 'opposition', phrase: 'opposite', quality: 'polarity' },
   ];
 
@@ -82,6 +82,36 @@
     waning: 'Recovery and release are favoured — sleep, hydration, and fewer inputs restore clarity.',
     full: 'Peak vitality can tip into overstimulation — pace intensity and cool down deliberately tonight.',
     new: 'A quieter baseline suits the body — gentle movement and early rest reset the nervous system.',
+  };
+
+  var USE_BY_HOUSE = {
+    1: 'Use one clean first impression — show up as you are, then stop.',
+    2: 'Use the keep-or-spend choice you have already made in private.',
+    3: 'Use a short message while the thought is still warm.',
+    4: 'Use a quieter hour at home before you answer the room.',
+    5: 'Use one honest creative or affectionate gesture.',
+    6: 'Use a small repair in the daily routine.',
+    7: 'Use one fair conversation instead of guessing.',
+    8: 'Use a truthful sentence about what is shared.',
+    9: 'Use the larger meaning of one task, not ten.',
+    10: 'Use one finished piece of work as the proof.',
+    11: 'Use a friend or ally instead of going it alone.',
+    12: 'Use rest as work — protect a gap in the schedule.',
+  };
+
+  var LEAVE_BY_HOUSE = {
+    1: 'Leave proving you are unbothered.',
+    2: 'Leave a yes that costs more than it is worth.',
+    3: 'Leave the third explanation.',
+    4: 'Leave treating old weather as if it were this afternoon.',
+    5: 'Leave performing fun you do not feel.',
+    6: 'Leave heroic overtime as a personality.',
+    7: 'Leave mind-reading a partner or counterpart.',
+    8: 'Leave a secret that is really a stall.',
+    9: 'Leave a grand plan that has no next hour.',
+    10: 'Leave reputation management that is not the work.',
+    11: 'Leave a group that is not a community.',
+    12: 'Leave filling every quiet minute.',
   };
 
   function mod360(x) { return ((x % 360) + 360) % 360; }
@@ -186,19 +216,69 @@
     return 'Transiting ' + pName + ' ' + hit.aspect.verb + ' your ' + targetLabel + ' — concentrated focus; one theme dominates the day.';
   }
 
+  function lifeArea(planetSignIdx, sunSignIdx) {
+    return solarHouse(planetSignIdx, sunSignIdx);
+  }
+
+  function firstTheme(house) {
+    var theme = HOUSE_THEME[house] || 'the day as it stands';
+    return theme.split(',')[0];
+  }
+
+  function planetTitle(planet) {
+    return planet.charAt(0).toUpperCase() + planet.slice(1);
+  }
+
+  function buildTodayScreen(sign, pos, moonHouse, phase, hits) {
+    var area = firstTheme(moonHouse);
+    var todayLine;
+    if (hits.length) {
+      var pName = planetTitle(hits[0].planet);
+      var q = hits[0].hit.aspect.quality;
+      if (q === 'friction') {
+        todayLine = pName + ' presses the ' + sign + ' Sun — slow the yes around ' + area + '.';
+      } else if (q === 'flow') {
+        todayLine = pName + ' flows with the ' + sign + ' Sun — easier weather around ' + area + '.';
+      } else if (q === 'support') {
+        todayLine = pName + ' sits at a helpful angle to the ' + sign + ' Sun — easier weather around ' + area + '.';
+      } else if (q === 'polarity') {
+        todayLine = pName + ' faces the ' + sign + ' Sun — get a second view on ' + area + '.';
+      } else {
+        todayLine = pName + ' meets the ' + sign + ' Sun — today’s centre is ' + area + '.';
+      }
+    } else {
+      todayLine = 'The Moon in ' + pos.moon.sign + ' puts the day on ' + area + '.';
+    }
+
+    var useThis = USE_BY_HOUSE[moonHouse] || USE_BY_HOUSE[6];
+    var leaveThis = LEAVE_BY_HOUSE[moonHouse] || LEAVE_BY_HOUSE[12];
+    if (pos.mercury && pos.mercury.retrograde) {
+      leaveThis = 'Leave a send, booking, or assumption that cannot be unsent.';
+    } else if (hits[0] && hits[0].hit.aspect.quality === 'friction') {
+      leaveThis = 'Leave forcing a clean win; adjust the pace instead.';
+    } else if (phase.bucket === 'full') {
+      leaveThis = 'Leave stacking one more demand onto a full sky.';
+    } else if (phase.bucket === 'new') {
+      leaveThis = 'Leave filling the quiet with extra inputs.';
+    }
+
+    return { todayLine: todayLine, useThis: useThis, leaveThis: leaveThis };
+  }
+
   function buildSkyFacts(pos, sunIdx, phase) {
     var facts = [];
     if (pos.moon) {
-      facts.push('☽ Moon in ' + pos.moon.sign + ' (your solar ' + ordinal(solarHouse(pos.moon.signIdx, sunIdx)) + ' house)');
+      facts.push('☽ Moon in ' + pos.moon.sign + ' (life area ' +
+        lifeArea(pos.moon.signIdx, sunIdx) + ' from the Sun sign)');
     }
     if (phase) facts.push('Lunar phase: ' + phase.name);
     ['mercury', 'venus', 'mars', 'jupiter', 'saturn'].forEach(function (k) {
       if (!pos[k]) return;
-      var h = solarHouse(pos[k].signIdx, sunIdx);
+      var h = lifeArea(pos[k].signIdx, sunIdx);
       var rx = pos[k].retrograde ? ' retrograde' : '';
       facts.push((GLYPHS[k.charAt(0).toUpperCase() + k.slice(1)] || '') + ' ' +
         k.charAt(0).toUpperCase() + k.slice(1) + ' in ' + pos[k].sign + rx +
-        ' (solar house ' + h + ')');
+        ' (life area ' + h + ' from the Sun sign)');
     });
     return facts;
   }
@@ -299,15 +379,18 @@
 
     var weekly = buildWeekly(sign, sunIdx, day);
     var seed = localEpochDay(day) + sunIdx * 31;
-    var rng = mulberry32(seed >>> 0);
     var colors = ['Amethyst Purple', 'Celestial Gold', 'Midnight Blue', 'Emerald Green',
       'Ruby Red', 'Pearl White', 'Sapphire', 'Rose Gold', 'Obsidian Black'];
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var todayScreen = buildTodayScreen(sign, pos, moonHouse, phase, hits);
 
     return {
       sign: sign,
       date: day.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
       overview: overviewParts.join(' '),
+      todayLine: todayScreen.todayLine,
+      useThis: todayScreen.useThis,
+      leaveThis: todayScreen.leaveThis,
       love: love,
       career: career,
       health: health,
@@ -317,12 +400,10 @@
       bestDay: days[(day.getDay() + (hits.length ? hits[0].planet.length : 3)) % 7],
       moodScore: mood,
       skyFacts: buildSkyFacts(pos, sunIdx, phase),
-      // Reader-facing method line. Two corrections, 2026-08-09: "local noon" was
-      // false — jdAtLocalNoon takes the LOCAL calendar date and anchors hour 12 of
-      // the Julian day, which is 12:00 UT — and the trade word for the position
-      // tables is out of the visitor's vocabulary. Both fixed at source, so the
-      // content bank no longer has to patch the string after the fact.
-      methodNote: 'Solar-chart reading: houses counted whole-sign from your Sun sign, with planet positions computed from the VSOP87 model for 12:00 UT. For your full birth chart, see transits.html.',
+      // Honesty: calendar date at 12:00 UT, solar chart, reflection not fact.
+      // A solar house is a life area counted from the Sun sign, not a room.
+      // Birth-chart door is chart.html — not transits.html.
+      methodNote: 'Positions calculated at 12:00 UT and read through a solar chart. A solar house is a life area counted from the Sun sign, not a room. Meaning is offered for reflection, not as fact. Planet positions from the VSOP87 model. For your full birth chart, see chart.html.',
       transits: hits.slice(0, 3).map(function (h) {
         return {
           planet: h.planet,
@@ -353,15 +434,15 @@
     var lead = 'This week the Moon travels through ' + unique.slice(0, 4).join(', ') +
       (unique.length > 4 ? '…' : '') + ' relative to the sky.';
     if (pos0.jupiter) {
-      lead += ' Jupiter in ' + pos0.jupiter.sign + ' (your solar house ' +
-        solarHouse(pos0.jupiter.signIdx, sunIdx) + ') expands ' +
+      lead += ' Jupiter in ' + pos0.jupiter.sign + ' (life area ' +
+        solarHouse(pos0.jupiter.signIdx, sunIdx) + ' from the Sun sign) expands ' +
         HOUSE_THEME[solarHouse(pos0.jupiter.signIdx, sunIdx)] + '.';
     }
     if (pos0.saturn) {
       lead += ' Saturn in ' + pos0.saturn.sign + ' asks for patience in ' +
         HOUSE_THEME[solarHouse(pos0.saturn.signIdx, sunIdx)] + '.';
     }
-    return lead + ' For your personal chart, open transits.html.';
+    return lead + ' For your personal chart, open chart.html.';
   }
 
   function getMonthlyHoroscope(sign, date) {

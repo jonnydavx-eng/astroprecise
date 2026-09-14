@@ -2,14 +2,14 @@
    Loaded last on Observatory + Chart so the two entry points share the same
    geometry, focus treatment, and honest precision labels. */
 :root {
-  --ap-jet: #07070a;
-  --ap-jet-raised: #111117;
-  --ap-silver: #e8ebf0;
-  --ap-silver-soft: #c8cdd6;
-  --ap-silver-dim: #929aa8;
-  --ap-aurora: #8FA3B8;
-  --ap-aurora-violet: #b9c8dc;
-  --ap-focus-ring: #B86B4A;
+  --ap-jet: #040812;
+  --ap-jet-raised: #101D30;
+  --ap-silver: #EEF4FA;
+  --ap-silver-soft: #C9D6E3;
+  --ap-silver-dim: #93A8BF;
+  --ap-aurora: #8BA9FF;
+  --ap-aurora-violet: #A897FF;
+  --ap-focus-ring: #8BA9FF;
   --ap-nav-height: 56px;
 }
 
@@ -42,7 +42,7 @@ body {
 .navbar__nav .navbar__link[aria-current="page"],
 .navbar__more-btn:focus-visible {
   color: var(--ap-silver);
-  background: rgba(126, 200, 232, 0.1);
+  background: rgba(139, 169, 255, 0.1);
 }
 
 .masthead a:focus-visible,
@@ -129,7 +129,7 @@ body {
 /* Results: put the method/time truth directly beside the name. */
 .result-badge,
 .ap-result-precision {
-  border-color: rgba(126, 200, 232, 0.28);
+  border-color: rgba(139, 169, 255, 0.28);
   color: var(--ap-silver-soft);
 }
 .ap-result-precision {
@@ -141,34 +141,34 @@ body {
   letter-spacing: 0.04em;
 }
 .ap-result-precision[data-level="unknown"] {
-  color: #f0c58a;
+  color: #FF8EA8;
 }
 .ap-result-precision[data-level="approximate"] {
-  color: #e5d698;
+  color: #A897FF;
 }
 .ap-time-status {
   margin-top: 0.45rem;
   font-size: 0.76rem;
 }
 .ap-time-status[data-level="exact"] { color: var(--ap-aurora); }
-.ap-time-status[data-level="approximate"] { color: #e5d698; }
-.ap-time-status[data-level="unknown"] { color: #f0c58a; }
+.ap-time-status[data-level="approximate"] { color: #A897FF; }
+.ap-time-status[data-level="unknown"] { color: #FF8EA8; }
 
 .ap-withheld-card {
   display: grid;
   place-items: center;
   min-height: 9rem;
   padding: 1.2rem;
-  border: 1px dashed rgba(240, 197, 138, 0.35);
+  border: 1px dashed rgba(255, 142, 168, 0.35);
   border-radius: 1rem;
   color: var(--ap-silver-soft);
   text-align: center;
-  background: rgba(240, 197, 138, 0.04);
+  background: rgba(255, 142, 168, 0.04);
 }
 .ap-withheld-card strong {
   display: block;
   margin-bottom: 0.3rem;
-  color: #f0c58a;
+  color: #FF8EA8;
 }
 
 @media (max-width: 640px) {

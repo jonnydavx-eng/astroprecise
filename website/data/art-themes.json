@@ -13,7 +13,7 @@
       "id": "sun-sign",
       "name": "Sun Sign",
       "icon": "sunhigh",
-      "lede": "Twelve accent palettes keyed to your solar sign — collector-favourite layouts.",
+      "lede": "Twelve accent palettes keyed to a solar-sign visual motif.",
       "products": ["natal-poster", "natal-poster-pdf", "sky-tee", "constellation-mug", "big-three-print"]
     },
     {
@@ -35,13 +35,13 @@
       "name": "Couples",
       "icon": "heart",
       "lede": "Two charts, one composition — anniversary and synastry keepsakes.",
-      "products": ["two-skies-map", "gift-box-whole-sky", "gift-reading"]
+      "products": []
     },
     {
       "id": "masculine",
       "name": "Masculine",
       "icon": "mars",
-      "lede": "Bold structure, copper lines, charcoal void — structural gift buyers.",
+      "lede": "Bold structure, copper lines and a charcoal void.",
       "products": ["natal-poster", "sky-tee", "sky-hoodie", "natal-poster-pdf"]
     },
     {
@@ -49,7 +49,7 @@
       "name": "Feminine",
       "icon": "venus",
       "lede": "Rose gold, lunar wash, soft constellation — the Pinterest-forward palette.",
-      "products": ["natal-poster", "constellation-mug", "gift-box-whole-sky", "two-skies-map"]
+      "products": ["natal-poster", "constellation-mug"]
     }
   ],
   "themes": [
@@ -362,7 +362,7 @@
       "id": "couples-rose-gold",
       "pack": "couples",
       "name": "Rose & Gold",
-      "tagline": "Anniversary favourite — blush meets engraved gold",
+      "tagline": "Blush tones meet restrained engraved gold",
       "palette": {
         "void": "#0A0808", "plate": "#140E10", "mid": "#100A0C",
         "gold": "#D8A0A8", "goldLight": "#F0C8D0", "parchment": "#F8E8EC",
@@ -437,7 +437,7 @@
       "id": "feminine-rose-gold",
       "pack": "feminine",
       "name": "Rose Gold",
-      "tagline": "Pinterest bestseller — blush gradient, soft serif type",
+      "tagline": "Blush gradient with restrained soft-serif type",
       "palette": {
         "void": "#100C0C", "plate": "#1A1214", "mid": "#140E10",
         "gold": "#E0A8B0", "goldLight": "#F8D0D8", "parchment": "#FFF0F4",
@@ -449,7 +449,7 @@
       "id": "feminine-lunar",
       "pack": "feminine",
       "name": "Lunar Wash",
-      "tagline": "Moonstone silver and pearl — Cancer/Pisces favourite",
+      "tagline": "Moonstone silver and pearl with a water-sign motif",
       "palette": {
         "void": "#080A10", "plate": "#101420", "mid": "#0C1018",
         "gold": "#C0D0E8", "goldLight": "#E8F0FF", "parchment": "#F4F8FF",
@@ -461,7 +461,7 @@
       "id": "feminine-botanical",
       "pack": "feminine",
       "name": "Botanical Sky",
-      "tagline": "Sage green with gold vine accents — gift-box aesthetic",
+      "tagline": "Sage green with restrained gold vine accents",
       "palette": {
         "void": "#080A08", "plate": "#101410", "mid": "#0C100C",
         "gold": "#A8C88A", "goldLight": "#D0E8B0", "parchment": "#F0F8E8",

@@ -1,7 +1,7 @@
 /**
  * Classic-script bridge for Gumroad checkout (window.APGumroad).
- * v847 — separate public permalink and License API product_id, live
- * checkout, single eclipse edition.
+ * v896 — archived eclipse entitlement. Checkout is disabled while legitimate
+ * past-buyer licence verification remains available.
  *
  * Checkout uses permalink; licence verification uses product_id from the
  * public Gumroad product page (data-page.product.id). After purchase, buyers
@@ -11,7 +11,7 @@
   'use strict';
 
   var PRODUCTS = {
-    'eclipse-edition': { permalink: 'your-eclipse-reading', productId: '3ZwFjg0IW702KvJ5s97QuQ==', price: '£7' },
+    'eclipse-edition': { permalink: 'your-eclipse-reading', productId: '3ZwFjg0IW702KvJ5s97QuQ==', checkoutEnabled: false, archived: true },
   };
 
   function resolveSlug(slug) {
@@ -22,10 +22,16 @@
     return !!(value && value !== 'REPLACE_ME' && String(value).indexOf('REPLACE') < 0);
   }
 
+  function isEntitlementReady(slug) {
+    var key = resolveSlug(slug);
+    var p = PRODUCTS[key] || PRODUCTS[slug];
+    return !!(p && configured(p.productId));
+  }
+
   function isReady(slug) {
     var key = resolveSlug(slug);
     var p = PRODUCTS[key] || PRODUCTS[slug];
-    return !!(p && configured(p.permalink) && configured(p.productId));
+    return !!(p && p.checkoutEnabled === true && configured(p.permalink) && isEntitlementReady(slug));
   }
 
   function openCheckout(slug) {
@@ -53,7 +59,7 @@
   function verifyLicense(licenseKey, slug) {
     var key = resolveSlug(slug);
     var p = PRODUCTS[key] || PRODUCTS[slug];
-    if (!p || !isReady(slug)) {
+    if (!p || !isEntitlementReady(slug)) {
       return Promise.resolve({ valid: false, reason: 'Product not configured.' });
     }
     if (!licenseKey || typeof licenseKey !== 'string' || licenseKey.length < 8) {
@@ -84,6 +90,7 @@
   w.APGumroad = {
     products: PRODUCTS,
     isReady: isReady,
+    isEntitlementReady: isEntitlementReady,
     openCheckout: openCheckout,
     verifyLicense: verifyLicense,
     anyLive: function () {

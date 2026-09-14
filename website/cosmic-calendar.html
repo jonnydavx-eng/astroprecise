@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, follow">
 <title>The Cosmic Calendar — 13.8 billion years, and where you fall | Astro Precise</title>
-<meta name="description" content="Compress all of cosmic history into one year. Computed live from the age of the universe (Planck 2018), with every date checkable — and the honest line where real data ends and cited cosmology begins. See how small, and how late, we are.">
+<meta name="description" content="Compress all of cosmic history into one year. Computed from the measured age of the universe (Planck 2018), with every date checkable — and the honest line where real data ends and cited cosmology begins. See how small, and how late, we are.">
 <link rel="canonical" href="https://astroprecise.app/cosmic-calendar.html">
 <meta property="og:title" content="The whole universe in one year — where do you fall?">
 <meta property="og:description" content="13.8 billion years compressed to a calendar. All of recorded history is the last ~11 seconds of the year. Your whole life is a fraction of a second. Computed, checkable, honest.">
 <meta property="og:url" content="https://astroprecise.app/cosmic-calendar.html">
-<meta name="theme-color" content="#05080F">
+<meta name="theme-color" content="#040812">
 <!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
      IBM Plex Mono from Google Fonts, which handed Google a request from every
      reader while privacy.html said the site's fonts were its own. Both files
@@ -19,27 +19,27 @@
      no true italic, so italics here are synthesised; that is the whole cost. -->
 <link rel="stylesheet" href="./css/fonts.css">
 <style>
-:root{--ink:#f2ecdf;--dim:rgba(242,236,223,.80);--faint:rgba(242,236,223,.58);--line:rgba(216,180,106,.18);--line2:rgba(216,180,106,.26);--acc:#d8b46a;--good:#7ef0c8;--warn:#e8b57d;--card:rgba(242,236,223,.04)}
+:root{--ink:#EEF4FA;--dim:rgba(201,214,227,.86);--faint:rgba(147,168,191,.74);--line:rgba(139,169,255,.18);--line2:rgba(168,151,255,.28);--acc:#8BA9FF;--good:#6FD0B3;--warn:#FF8EA8;--card:rgba(16,29,48,.72)}
 *{box-sizing:border-box}
-body{margin:0;background:#0a0908;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;background-image:radial-gradient(1000px 560px at 50% -6%,rgba(255,122,69,.08),transparent 62%);background-attachment:fixed}
-a{color:var(--acc);text-decoration:none}a:hover{color:#ff7a45}
+body{margin:0;background:#040812;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased;background-image:radial-gradient(1000px 560px at 50% -6%,rgba(139,169,255,.10),transparent 62%);background-attachment:fixed}
+a{color:var(--acc);text-decoration:none}a:hover{color:#A5BCFF}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .mono{font-family:'IBM Plex Mono',monospace}
 .wrap{max-width:760px;margin:0 auto;padding:0 22px 90px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0}
 .kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.26em;color:var(--acc)}
-.navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(242,236,223,.65)}
+.navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(201,214,227,.76)}
 h1{margin:52px 0 12px;font-size:clamp(34px,7vw,52px);line-height:1.06;font-weight:700;letter-spacing:-.015em}
 .lede{margin:0 0 24px;font-size:18px;line-height:1.65;color:var(--dim)}
 .card{border:1px solid var(--line2);border-radius:14px;background:var(--card);padding:24px 26px;margin:22px 0}
 .lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
-.receipt{border:1px solid var(--line);border-radius:10px;background:rgba(242,236,223,.03);padding:13px 16px}
-.receipt div{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.05em;line-height:1.8;color:rgba(242,236,223,.85)}
+.receipt{border:1px solid var(--line);border-radius:10px;background:rgba(16,29,48,.54);padding:13px 16px}
+.receipt div{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.05em;line-height:1.8;color:rgba(201,214,227,.90)}
 /* the calendar strip */
 .year{position:relative;height:56px;border-radius:10px;overflow:hidden;border:1px solid var(--line2);margin:8px 0 6px;
   background:linear-gradient(90deg,#0a0f18 0%,#0d1420 26%,#101a28 50%,#152234 82%,#1a2b40 100%)}
-.mtick{position:absolute;top:0;bottom:0;width:1px;background:rgba(216,180,106,.16)}
-.mlab{position:absolute;bottom:3px;font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.1em;color:rgba(242,236,223,.4);transform:translateX(-50%)}
+.mtick{position:absolute;top:0;bottom:0;width:1px;background:rgba(139,169,255,.18)}
+.mlab{position:absolute;bottom:3px;font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.1em;color:rgba(147,168,191,.62);transform:translateX(-50%)}
 .ev{position:absolute;top:0;width:2px;background:var(--acc);height:100%}
 .evdot{position:absolute;top:-3px;left:-3px;width:8px;height:8px;border-radius:50%;background:var(--acc)}
 .evwrap{position:relative;height:34px;margin-top:2px}
@@ -54,27 +54,27 @@ td.src{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.06e
 .field{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .field label{display:flex;flex-direction:column;gap:6px}
 .field span{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.2em;color:var(--faint)}
-input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark}
-.btn{background:var(--ink);color:#000;border:0;border-radius:100px;padding:13px 26px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;cursor:pointer}
+input{background:rgba(16,29,48,.78);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark}
+.btn{background:var(--acc);color:#07101E;border:0;border-radius:100px;padding:13px 26px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;cursor:pointer}
 .big{font-size:clamp(26px,5vw,38px);font-weight:700;line-height:1.15;letter-spacing:-.01em;margin:2px 0}
 .big .acc{color:var(--acc)}.big .good{color:var(--good)}
 .rule{border-top:1px solid var(--line);margin:32px 0}
-.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:rgba(242,236,223,.4);line-height:2.1}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:rgba(147,168,191,.62);line-height:2.1}
 .pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;padding:2px 7px;border-radius:100px;border:1px solid currentColor;vertical-align:middle}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <canvas id="stars" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;z-index:-1;display:block"></canvas>
-<div class="wrap">
+<main class="wrap">
 
 <div class="top">
-  <a class="navlink" href="./index.html">← ASTRO PRECISE</a>
+  <a class="navlink" href="./index.html">← Observatory</a>
   <span class="kicker">THE COSMIC CALENDAR · DEEP TIME, COMPUTED</span>
 </div>
 
 <h1>13.8 billion years,<br>squeezed into <em style="color:var(--acc);font-style:normal">one year</em>.</h1>
-<p class="lede">If the whole history of the universe were a single calendar year — the Big Bang at midnight on 1 January, this moment at midnight on 31 December — everything you have ever heard of happens in the last few seconds. Every date below is computed live from the measured age of the universe. You can check the arithmetic.</p>
+<p class="lede">If the whole history of the universe were a single calendar year — the Big Bang at midnight on 1 January, this moment at midnight on 31 December — everything you have ever heard of happens in the last few seconds. Every date below is computed on load from the measured age of the universe. You can check the arithmetic.</p>
 
 <div class="receipt" role="status" style="margin-bottom:8px">
   <div id="const">AGE OF THE UNIVERSE: 13.787 ± 0.020 BILLION YEARS · SOURCE: PLANCK 2018 (ESA)</div>
@@ -124,23 +124,23 @@ input{background:rgba(242,236,223,.05);border:1px solid var(--line2);border-radi
 </div>
 
 <!-- honesty panel -->
-<div class="card" style="border-color:rgba(232,181,125,.32);background:rgba(232,181,125,.05)">
+<div class="card" style="border-color:rgba(139,169,255,.32);background:rgba(139,169,255,.05)">
   <div class="lbl" style="color:var(--warn)">WHAT'S REAL / WHAT ISN'T — THE HONEST SEAM</div>
   <p style="font-size:15px;line-height:1.7;color:var(--dim);margin:0 0 8px">There is <b style="color:var(--ink)">no photograph of the Big Bang</b>. The oldest real image of the universe is the <b style="color:var(--ink)">Cosmic Microwave Background</b> — the light released ~380,000 years after the beginning, mapped by ESA's Planck and NASA's WMAP. That is a genuine measurement: the actual oldest light in existence.</p>
   <p style="font-size:15px;line-height:1.7;color:var(--dim);margin:0">Everything <em>earlier</em> than that — inflation, the first instant, the birth of matter — cannot be pictured, only modelled, and the very first slivers (before ~10⁻⁴³ s) are genuinely unknown, because the physics itself runs out. Where this page shows one of those, it is labelled <span class="pill s-model">MODELLED</span> or <span class="pill s-unknown">UNSURE</span>, never dressed up as a snapshot. That seam is the whole point.</p>
 </div>
 
 <div class="rule"></div>
-<p style="font-size:15px;color:var(--dim);line-height:1.6">This is the near end of a longer instrument. From here the plan is a corridor you can drag from tonight's real, computed sky all the way back — the planets and eclipses genuinely computed near the present, the deep past honestly modelled and cited. <a href="./chart.html">Start with your own sky →</a></p>
+<p style="font-size:15px;color:var(--dim);line-height:1.6">This is one archive door in a longer deep-time corridor — from tonight's computed sky back through honestly modelled and cited epochs. <a href="./index.html">Observatory</a> · <a href="./chart.html">Chart</a> · <a href="./sky-events.html">Events</a> · <a href="./shop.html">Shop</a></p>
 
 <div class="rule"></div>
 <div class="foot">
-  COSMIC-CALENDAR DATES ARE COMPUTED LIVE FROM THE PLANCK-2018 AGE (13.787 GYR) BY PURE PROPORTION. EVENT EPOCHS ARE STANDARD SCIENTIFIC CONSENSUS VALUES (WIKIPEDIA "CHRONOLOGY OF THE UNIVERSE" / ESA COSMIC ERAS); WHERE VALUES ARE UNCERTAIN OR MODELLED WE SAY SO IN THE TABLE.<br>
+  COSMIC-CALENDAR DATES ARE COMPUTED ON LOAD FROM THE PLANCK-2018 AGE (13.787 GYR) BY PURE PROPORTION. EVENT EPOCHS ARE STANDARD SCIENTIFIC CONSENSUS VALUES (WIKIPEDIA "CHRONOLOGY OF THE UNIVERSE" / ESA COSMIC ERAS); WHERE VALUES ARE UNCERTAIN OR MODELLED WE SAY SO IN THE TABLE.<br>
   <a href="./index.html">THE OBSERVATORY</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a> · <a href="./why.html">WHY WE NEVER MAKE THINGS UP</a><br>
   © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
 
-</div>
+</main>
 
 <script>
 // ——— cited constant ———
@@ -284,7 +284,7 @@ EVENTS.forEach((e,i)=>{
     {f:1.0,   t:'NOW — 31 December, midnight. You are here.'}
   ];
   function eraFor(f){ let e=ERAS[0]; for(const x of ERAS){ if(f>=x.f) e=x; } return e.t; }
-  function ensureMarker(){ if(!marker){ marker=document.createElement('div'); marker.style.cssText='position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 10px #d8b46a;z-index:3'; strip.appendChild(marker);} }
+  function ensureMarker(){ if(!marker){ marker=document.createElement('div'); marker.style.cssText='position:absolute;top:0;bottom:0;width:2px;background:#EEF4FA;box-shadow:0 0 10px #8BA9FF;z-index:3'; strip.appendChild(marker);} }
   btn.addEventListener('click', ()=>{
     if(raf){ cancelAnimationFrame(raf); raf=null; btn.textContent='▶ PLAY 13.8 BILLION YEARS'; return; }
     ensureMarker(); btn.textContent='⏸ PAUSE';

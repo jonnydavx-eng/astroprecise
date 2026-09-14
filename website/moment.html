@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, follow">
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Freeze the real sky of any date — zenith star, light-cone story, free share card. Computed privately in your browser from VSOP87 astronomy. Birth, anniversary, memorial, or any night that mattered." />
   <title>Moment — Freeze any date’s sky | AstroPrecise</title>
@@ -27,16 +28,16 @@
   <meta name="twitter:title" content="Moment — Freeze any date’s sky | AstroPrecise" />
   <meta name="twitter:description" content="Real zenith star + light-cone story + free share card. Computed in your browser." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og/moment.jpg" />
-  <meta name="theme-color" content="#05080F" />
+  <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=891" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=902" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=902" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=902" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/moment-page.css?v=752" id="ap-css-moment" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/moment-page.css?v=902" id="ap-css-moment" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=902" id="ap-css-structure-clean" />
   <style>
     body.ap-moment-page{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body.ap-moment-page .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -51,7 +52,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — Moment","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Freeze the real sky of any date into a keepsake: zenith star, light-cone story, and free share card. Computed in-browser with VSOP87 astronomy. Town search sends only the place name to Open-Meteo; date and time stay on this device.","url":"https://astroprecise.app/moment.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=874" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=902" />
 </head>
 <body class="ap-no-nav-enter ap-moment-page">
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -61,7 +62,7 @@
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -162,7 +163,7 @@
         <li><strong>02 · See</strong> Real zenith star + light-cone story + 3D engine texture plate.</li>
         <li><strong>03 · Keep</strong> Save the finished PNG on this device. No account or checkout.</li>
       </ol>
-      <p class="mom-deeper__pack">Moment is a free creative tool. The eclipse launch has one separate paid edition.</p>
+      <p class="mom-deeper__pack">Moment is a free schematic card on this device. Shop commissions stay closed. Play stays free.</p>
     </details>
 
     <section class="mom-reveal" id="mom-reveal" hidden aria-labelledby="mom-reveal-title">
@@ -195,15 +196,15 @@
             Separation in degrees is always shown — never claimed as a perfect coincidence.
           </p>
           <div class="mom-engine-window" id="mom-engine-window" hidden>
-            <!-- Placeholder earth.webp until JS sets the occasion plate (empty src was loading moment.html as an image) -->
-            <img id="mom-engine-window-img" src="img/engine/earth.webp" alt="" width="160" height="160" decoding="async" />
+            <!-- Responsive Earth placeholder until JS sets the occasion plate (an empty src would reload this page as an image). -->
+            <img id="mom-engine-window-img" src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="160px" alt="" width="160" height="160" decoding="async" />
             <p class="mom-engine-window__cap" id="mom-engine-window-cap"></p>
           </div>
           <div class="mom-keep">
             <button type="button" class="mom-btn mom-btn--primary" id="mom-share">Share card</button>
             <button type="button" class="mom-btn mom-btn--ghost" id="mom-save">Download PNG</button>
             <a class="mom-btn mom-btn--ghost" href="horoscope.html" id="mom-daily-return" hidden>Tomorrow: today&apos;s Daily →</a>
-            <a class="mom-btn mom-btn--ghost" href="eclipse.html#contact" id="mom-pack-cta">Explore the eclipse edition</a>
+            <a class="mom-btn mom-btn--ghost" href="eclipse.html" id="mom-pack-cta">Replay the eclipse</a>
             <a class="mom-btn mom-btn--ghost" href="chart.html">Cast full chart</a>
             <a class="mom-btn mom-btn--ghost" href="index.html#m=now" id="mom-model-link" hidden>Open this night in the 3D model</a>
           </div>
@@ -211,9 +212,10 @@
             <p><strong>Free now:</strong> this PNG card (zenith + light-cone + engine plate). No account.</p>
             <p><strong>Private by design:</strong> the card is generated and downloaded in this browser.</p>
             <p style="margin:0">
-              <a href="ephemeris.html">Sky</a>
-              · <a href="horoscope.html">Daily</a>
-              · <a href="cosmic-story.html">Readings</a>
+              <a href="index.html">Observatory</a>
+              · <a href="chart.html">Chart</a>
+              · <a href="sky-events.html">Events</a>
+              · <a href="shop.html">Shop</a>
             </p>
           </div>
         </div>
@@ -223,37 +225,37 @@
     <section class="mom-spine" aria-labelledby="mom-spine-title">
       <h2 id="mom-spine-title">How Moment sits in AstroPrecise</h2>
       <ol>
-        <li><strong>1 · Live sky</strong> Feel the system moving — home orrery and <a href="ephemeris.html">Sky</a>.</li>
-        <li><strong>2 · Chart</strong> Cast <em>your</em> birth sky free on <a href="chart.html">Chart</a>.</li>
-        <li><strong>3 · Moment</strong> Keep any date as art (you are here).</li>
-        <li><strong>4 · Daily</strong> Come back for today’s sky on <a href="horoscope.html">Daily</a>.</li>
-        <li><strong>5 · Eclipse</strong> Replay the 12 August eclipse and keep a personalised edition.</li>
+        <li><strong>1 · Observatory</strong> Sit with the computed sky on the <a href="index.html">Observatory</a>.</li>
+        <li><strong>2 · Chart</strong> Cast the minute you arrived on <a href="chart.html">Chart</a>.</li>
+        <li><strong>3 · Keep</strong> Freeze this date as a schematic plate (you are here). Not a live feed.</li>
+        <li><strong>4 · Events</strong> Follow eclipses and named sky nights on <a href="sky-events.html">Events</a>.</li>
+        <li><strong>5 · Shop</strong> A closed commission, if you want a print — play stays free.</li>
       </ol>
     </section>
   </main>
 
   <footer class="site-footer" role="contentinfo">
     <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#8B919C);font-size:0.85rem">
-      <p style="margin:0 0 0.5rem"><a href="index.html">Home</a> · <a href="chart.html">Chart</a> · <a href="ephemeris.html">Sky</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
+      <p style="margin:0 0 0.5rem"><a href="index.html">Observatory</a> · <a href="chart.html">Chart</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
       <p style="margin:0">© AstroPrecise · entertainment &amp; education · astronomy computed in-browser</p>
     </div>
   </footer>
 
   <!-- Chrome boot -->
   <script src="js/ap-safe-dom.js" defer></script>
-  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-page-boot.js?v=902" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){if(window.AP_PAGE_BOOT)AP_PAGE_BOOT.load();});</script>
   <!-- Astronomy engines (after chrome) -->
   <script src="js/raf-core.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
   <script src="js/starcatalog.js" defer></script>
   <script src="js/lightcone.js" defer></script>
-  <script src="js/ap-deep-link.js?v=834" defer></script>
-  <script src="js/ap-sky-bridge.js?v=834" defer></script>
-  <script src="js/ap-moment-share.js?v=891" defer></script>
-  <script src="js/moment-page.js?v=834" defer></script>
+  <script src="js/ap-deep-link.js?v=902" defer></script>
+  <script src="js/ap-sky-bridge.js?v=902" defer></script>
+  <script src="js/ap-moment-share.js?v=902" defer></script>
+  <script src="js/moment-page.js?v=902" defer></script>
   <script src="js/cosmos.js" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=874" defer></script>
+  <script src="js/ap-footer-inject.js?v=902" defer></script>
 </body>
 </html>

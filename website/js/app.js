@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '835');
+const AP_ASSET_V = String(window.AP_ASSET_V || '902');
 
 const AstroApp = (() => {
 
@@ -85,7 +85,7 @@ const AstroApp = (() => {
     }
     if (document.querySelector('script[src*="ap-engine-visuals"]')) return;
     var s = document.createElement('script');
-    s.src = 'js/ap-engine-visuals.js';
+    s.src = 'js/ap-engine-visuals.js?v=' + AP_ASSET_V;
     s.async = true;
     s.onload = function () {
       try {
@@ -286,7 +286,7 @@ const AstroApp = (() => {
   const NAV_PRIMARY = _apNav.NAV_PRIMARY || [
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['sky-events.html', 'Events', { badge: 'Live' }],
+    ['sky-events.html', 'Events'],
     ['shop.html', 'Shop'],
   ];
   const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
@@ -539,19 +539,14 @@ const AstroApp = (() => {
 
   function renderNav() {
     var here = location.pathname.split('/').pop() || 'index.html';
-    var launch = isLaunchRoute(here);
     var desktop = document.querySelector('.navbar__nav');
     var mobile = document.querySelector('.navbar__mobile-menu');
     if (desktop) {
-      // Single source of truth: ALWAYS rebuild the primary bar from NAV_PRIMARY.
-      // (Previously it only rebuilt when empty, so pages that shipped live static
-      //  nav links — chart/shop/compatibility/ephemeris/horoscope — kept a stale
-      //  vocabulary and the menu changed under the visitor. The static markup is
-      //  now purely a no-JS fallback.)
-      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + (launch ? '' : renderMoreMenu(here));
-      initMoreMenu();
+      // Same four-route spine as ap-nav-model: Observatory · Chart · Events · Shop.
+      // Archive URLs stay addressable; they are not advertised in More/drawer.
+      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false);
     }
-    if (mobile) mobile.innerHTML = renderDrawer(here, launch);
+    if (mobile) mobile.innerHTML = renderDrawer(here, true);
   }
 
   /** Right rail: profile + hamburger — keeps center nav from overlapping. */
@@ -590,6 +585,8 @@ const AstroApp = (() => {
   /** Profile as a top-bar tab on every page (not in the bottom nav). */
   function injectTopProfile() {
     if (isLaunchRoute()) return;
+    if (document.querySelector('[data-ap-static-nav]')) return;
+    if (document.body && document.body.getAttribute('data-sign')) return;
     if (document.querySelector('.navbar__profile-top')) return;
     var inner = document.querySelector('.navbar__inner');
     if (!inner) return;
@@ -1305,6 +1302,8 @@ window.AstroUI = (() => {
 (function injectGuideLinks() {
   if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   function place() {
+    if (document.body && document.body.getAttribute('data-sign')) return;
+    if (document.querySelector('[data-ap-static-nav]')) return;
     if (document.querySelector('.ap-guide-links')) return;
     var host = document.querySelector('footer .container') || document.querySelector('footer');
     if (!host) return;
@@ -1361,29 +1360,23 @@ window.AP_SOCIAL = window.AP_SOCIAL || {
 // Footer icon row + affiliate ads: js/affiliate-social.js (auto-loaded below).
 
 // ═══════════════════════════════════════════════════════════════════════
-// MONETISATION — provider-agnostic, dormant-by-default, link-out only.
-// GitHub Pages forbids SELLING on the site, but permits donation/crowdfunding
-// links, and outbound links to storefronts hosted elsewhere are fine. So every
-// avenue here is an external link (tips, hosted product pages, newsletter,
-// affiliate). Nothing renders until you paste a real URL below — so a visitor
-// never sees a broken or fake checkout.  ◆ EDIT THIS BLOCK TO GO LIVE ◆
+// OPTIONAL EXTERNAL ROUTES — provider-agnostic and dormant by default.
+// Nothing renders until its exact destination is configured and verified, so
+// a visitor never sees a guessed or broken checkout, signup or affiliate link.
 // ═══════════════════════════════════════════════════════════════════════
 window.AP_MON = Object.assign({
   family: { biggerPicture: '', backInTime: '' },  // sibling sites — footer "family of sites" links (dormant until set)
-  tipUrl:       'https://ko-fi.com/astroprecise',   // tips/support — Ko-fi (0% on tips). LIVE 2026-06-14.
-  // PayPal direct (2026-07-02 — Lemon Squeezy dropped; category not accepted).
-  // Optional global handle: set me to your PayPal.Me URL ('https://paypal.me/YourHandle')
-  // to enable amount-links (e.g. the Two Skies post-purchase offer). Per-SKU checkout
-  // uses each product's fulfilUrl — paste PayPal payment links there (PAYPAL-SETUP.md).
-  paypal: { me: '', currency: 'GBP' },
-  reportUrl:    '',   // premium written natal report — PayPal payment link (PAYPAL-SETUP.md)
-  posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
-  giftUrl:      '',   // gift a reading — hosted product
-  newsletterUrl:'https://list.astroprecise.app/subscribe',   // LIVE — CF Worker + KV (ap-subscribe)
+  tipUrl:       'https://ko-fi.com/astroprecise',   // optional support; owner must verify current public options and payout route
+  // Capture stays disabled until the owner verifies double opt-in, unsubscribe,
+  // suppression and the production destination end to end.
+  emailCaptureEnabled: false,
+  newsletterUrl:'',
   affiliateTag: '',   // Amazon Associates tag — auto-appended to amazon.* links site-wide (e.g. astroprecise-21)
   // Editorial affiliate picks — disclosed ad strip before footer on key pages (js/affiliate-social.js).
   affiliate: {
-    adsEnabled: true,
+    // Never label ordinary retail links as affiliate inventory without a verified
+    // Associates tag and payout account.
+    adsEnabled: false,
     amazonTag: '',   // alias for affiliateTag; either field works
     pages: [
       'index.html', 'index-full.html', 'chart.html', 'sky-events.html',
@@ -1463,477 +1456,10 @@ window.AP_MON = Object.assign({
   // https://buttondown.email/api/emails/embed-subscribe/<user>, or a Mailchimp
   // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
   // localStorage only — no data leaves the device. When set, the form POSTs here.
-  emailUrl: 'https://list.astroprecise.app/subscribe',
-  ownerEmail: 'hello@astroprecise.app',   // fallback relay + owner notifications from worker
+  emailUrl: '',
+  ownerEmail: '',
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // COMMERCE — the "wear your sky" shop (config-driven, dormant by default).
-  // ─────────────────────────────────────────────────────────────────────
-  // Read by js/shop-commerce.js (window.AstroShop). The whole catalogue is
-  // PERSONALISED-per-chart, ONE-TIME purchases — no subscriptions. Every
-  // product fulfils elsewhere (hosted store / Etsy / Gelato / Gumroad), so
-  // the site itself never takes money — Pages-compliant, link-out only.
-  //
-  // GO-LIVE: paste a URL into ONE of these and the matching path lights up.
-  // Checkout priority (per item, highest first):
-  //   1. product.fulfilUrl   — that product's own hosted listing ("Buy Now")
-  //   2. checkout.externalStoreUrl / checkout.etsyUrl — whole-cart handoff
-  //   3. checkout.paypalClientId — on-site PayPal Buttons (advanced)
-  //   4. (none set) — DORMANT branded modal + email-signup invite
-  // While every field below is '' the shop stays in honest pre-launch mode:
-  // the cart is real and saved locally, but checkout invites you to be told
-  // when the doors open — it never shows a fake or broken checkout.
-  commerce: {
-    // ── POST-PURCHASE PROMOS ─────────────────────────────────────────────
-    promos: {
-      twoSkies: {
-        code: 'TWOSKIES50',
-        percent: 50,
-        productId: 'two-skies-map',
-        expiresDays: 30,
-      },
-    },
-
-    // ── CHECKOUT — how the cart actually fulfils ──────────────────────────
-    checkout: {
-      paypalClientId:   '',   // PayPal REST Client ID → on-site Buttons (developer.paypal.com)
-      currency:         'GBP',
-      externalStoreUrl: '',   // whole-cart handoff to a hosted store (Shopify / Gelato pop-up)
-      etsyUrl:          '',    // Etsy storefront ("Browse on Etsy" path)
-    },
-
-    // ── CATALOGUE PHASE — which SKUs surface on shop.html ────────────────
-    // 'pdf-only' = Cowork launch ladder (eclipse → deep → plate) + Moment free rail.
-    // Flip to 'full' when prints, apparel, gifts & jewellery return.
-    // Checkout: Gumroad permalinks in js/gumroad-unlock.js (REPLACE_ME = dormant).
-    cataloguePhase: 'pdf-only',
-    catalogueSkus: ['eclipse-edition'],
-
-    // ── COLLECTIONS — the architecture of the sky ─────────────────────────
-    // Every piece belongs to one collection. Re-themed from TBP's tree to
-    // the chart: what you were born under, what you wear, what you keep.
-    collections: {
-      wearYourSky: {
-        name: 'Wear Your Sky',
-        story: 'Your exact birth sky, rendered for the body. Each piece is generated from your own chart — no two are alike.',
-      },
-      onYourWall: {
-        name: 'On Your Wall',
-        story: 'The map of the moment you arrived, printed to keep. Archive paper, your real placements, museum-grade.',
-      },
-      theReading: {
-        name: 'The Reading',
-        story: 'Words for your chart alone. Deep written readings and personalised guidance, delivered to you.',
-      },
-      gifts: {
-        name: 'Gifts',
-        story: 'A chart made for someone else — their exact sky, delivered with a note from you. Recipient birth details and your gift message are collected privately at checkout, never on this site.',
-      },
-      jewellery: {
-        name: 'Jewellery',
-        story: 'Wearable sky talismans — pendants, bars and medallions engraved from your exact natal chart. Personalised accessories you can carry every day.',
-      },
-    },
-
-    // ── PRODUCTS ──────────────────────────────────────────────────────────
-    // type: 'digital' | 'print' | 'apparel' | 'accessory'
-    // personalized: true  → art/text is generated from the buyer's own chart
-    // fulfilUrl: ''       → DORMANT (no per-product link yet); '' keeps it honest
-    products: [
-      {
-        id:           'natal-poster',
-        available:    false,
-        name:         'Your Natal Sky — Art Poster',
-        type:         'print',
-        collection:   'onYourWall',
-        price:        20.00,
-        personalized: true,
-        badge:        'Made to order',
-        marketingLine:'Fine-art print of the sky at your first breath.',
-        previewImage: 'img/shop/product-natal-poster.jpg',
-        blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. 250gsm museum-grade matte, made to order. Foil and framed options at checkout.',
-        icon:         'map',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'MKutUmwh',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'sky-tee',
-        available:    false,
-        name:         'Your Sky — Tee',
-        type:         'apparel',
-        collection:   'wearYourSky',
-        price:        18.00,
-        personalized: true,
-        badge:        'Made to order',
-        marketingLine:'Constellations from your birth night — wearable chart.',
-        previewImage: 'img/shop/product-sky-tee.jpg',
-        blurb:        'The constellations overhead at your birth, printed across heavyweight cotton. Your sun, moon and rising marked in gold thread — a chart you can wear.',
-        icon:         'star4',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'jymyb9t2',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'sky-hoodie',
-        available:    false,
-        name:         'Your Sky — Heavyweight Hoodie',
-        type:         'apparel',
-        collection:   'wearYourSky',
-        price:        32.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Your natal canopy across the back — 350gsm fleece.',
-        previewImage: 'img/shop/product-sky-hoodie.jpg',
-        blurb:        'Your natal canopy across the back in fine line-work; your big-three glyphs at the cuff. Premium 350 gsm fleece, printed to order from your chart.',
-        icon:         'crescent',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'ItYwTtZw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'big-three-print',
-        available:    false,
-        name:         'Big Three — Mini Print',
-        type:         'print',
-        collection:   'onYourWall',
-        price:        10.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Sun, Moon, Rising — the chart distilled to its spine.',
-        previewImage: 'img/shop/product-big-three.jpg',
-        blurb:        'Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine.',
-        icon:         'sunhigh',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'l3BHnRFG',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'constellation-mug',
-        available:    false,
-        name:         'Your Star Map — Mug',
-        type:         'accessory',
-        collection:   'wearYourSky',
-        price:        9.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Your birth sky on matte ceramic — morning ritual.',
-        previewImage: 'img/shop/product-mug.jpg',
-        blurb:        'The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim. The first synchronicity of every morning.',
-        icon:         'orb',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'cQgoY4h4',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'cosmic-story',
-        available:    false,
-        featured:     false,
-        name:         'Your Cosmic Story — Personalised Narrative',
-        type:         'digital',
-        collection:   'theReading',
-        price:        14.00,
-        personalized: true,
-        badge:        'Written for you',
-        marketingLine:'The story of you — told through the exact sky of your first breath.',
-        previewImage: 'img/shop/product-cosmic-story.jpg',
-        sampleUrl:    '',
-        blurb:        'Not a report — a story. Your birth chart retold as a flowing personal narrative: the arc of your Sun, Moon and rising sign, the tensions and gifts written into your aspects, and where your planets are quietly leading you. Drawn entirely from your real VSOP87 chart and written for you alone — a keepsake PDF to read and return to.',
-        icon:         'book',
-      },
-      {
-        id:           'eclipse-edition',
-        available:    false,
-        featured:     true,
-        name:         'Your Eclipse Edition',
-        type:         'digital',
-        collection:   'theReading',
-        price:        7.00,
-        personalized: true,
-        badge:        '12 Aug 2026',
-        marketingLine:'Five-beat eclipse-contact reading and unique high-resolution artwork — only for a direct contact.',
-        previewImage: 'img/editorial/eclipse-edition-art-v841.png',
-        sampleUrl:    'eclipse.html',
-        blurb:        'The free instrument checks the 12 August 2026 eclipse against your computed birth chart first. A direct contact can unlock all five authored beats, a deterministic 2400 × 3000 natal-wheel plate, PNG download and print/save-as-PDF view. Quiet charts are never sold an edition.',
-        icon:         'sunhigh',
-        fulfilUrl:    '',   // Gumroad identifiers live in js/gumroad-unlock.js; placeholders keep this dormant
-        gumroadSlug:  'eclipse-edition',
-        detailsForm:  '',
-      },
-      {
-        id:           'eclipse-set',
-        available:    false,
-        featured:     true,
-        name:         'Eclipse Set — Reading + Keepsake',
-        type:         'digital',
-        collection:   'theReading',
-        price:        6.00,
-        personalized: true,
-        badge:        'Both, together',
-        marketingLine:'The words and the keepsake of a once-in-a-decade night.',
-        previewImage: 'img/shop/product-bundle.jpg',
-        sampleUrl:    'eclipse.html',
-        blurb:        'The Eclipse Night Reading plus a print-ready plate of the eclipse sky as it stood over you that night — the reading and the keepsake in one set. The Perseids peak the same night; the story includes them. £6 for both.',
-        icon:         'star4',
-        fulfilUrl:    '',
-        gumroadSlug:  'eclipse-set',
-        detailsForm:  '',
-      },
-      {
-        id:           'deep-reading',
-        available:    false,
-        featured:     true,
-        name:         'Deep Natal Reading — Digital',
-        type:         'digital',
-        collection:   'theReading',
-        price:        12.00,
-        personalized: true,
-        badge:        'Preview',
-        marketingLine:'Your whole chart, read properly — seven chapters from your exact birth minute.',
-        previewImage: 'img/shop/product-deep-reading.jpg',
-        sampleUrl:    'sample-reading.html',
-        blurb:        'Every planet, your tightest aspects with orbs, and this season’s live sky — approximately 1,800 words from your computed birth chart. Read the seven-chapter sample now; checkout and fulfilment stay closed until verified.',
-        icon:         'book',
-        fulfilUrl:    '',   // Gumroad slug full-reading in gumroad-unlock.js; '' = dormant
-        gumroadSlug:  'full-reading',
-        detailsForm:  '',   // 'JVU3Atfm' was a dead Typeform link — removed; runbook will supply the replacement
-      },
-      {
-        id:           'plate',
-        available:    false,
-        featured:     true,
-        name:         'Numbered Sky Plate',
-        type:         'digital',
-        collection:   'onYourWall',
-        price:        14.00,
-        personalized: true,
-        badge:        'Provenance',
-        marketingLine:'One sky, one numbered edition — sealed with a fingerprint you can check yourself.',
-        previewImage: 'img/shop/product-natal-poster.jpg',
-        sampleUrl:    'verify.html',
-        // "rising to £19 by dated edition" deleted 2026-08-09: checkout has never
-        // opened, so nobody has ever paid £19 and £14 was never a saving off it.
-        blurb:        'An A3 plate of the exact sky at your birth minute — every position printed to the minute you were born, sealed with a fingerprint you can recompute and match on the verify page. Never printed for anyone else. £14 when checkout opens. See the full sample plate first.',
-        icon:         'map',
-        fulfilUrl:    '',
-        gumroadSlug:  'plate',
-        detailsForm:  '',
-      },
-      {
-        id:           'sky-pass',
-        available:    false,
-        featured:     true,
-        name:         'Sky Pass',
-        type:         'digital',
-        collection:   'theReading',
-        price:        5.00,
-        personalized: false,
-        badge:        'Dated edition',
-        marketingLine:'Thirty dated days of your sky — your transits, not sun-sign weather.',
-        previewImage: 'img/shop/product-gift-reading.jpg',
-        blurb:        'Chart-aware daily sky notes for 30 dated days, 12 Aug – 10 Sep: the eclipse and its aftermath, computed against your own chart. A dated edition that simply ends — no subscription, no auto-renew, nothing to cancel.',
-        icon:         'orb',
-        fulfilUrl:    '',
-        gumroadSlug:  'sky-pass',
-        detailsForm:  '',
-      },
-      {
-        id:           'year-ahead',
-        available:    false,
-        name:         'Your Year Ahead — Transit Report',
-        type:         'digital',
-        collection:   'theReading',
-        price:        16.00,
-        personalized: true,
-        badge:        'Preview',
-        marketingLine:'Twelve months of transits — your personal sky forecast.',
-        previewImage: 'img/shop/product-year-ahead.jpg',
-        blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — an honest forecast drawn from your own placements, not a generic horoscope.',
-        icon:         'calendar',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'QMcr0Ldw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'moment-pack',
-        available:    false,
-        name:         'Moment Pack — Digital Keepsake',
-        type:         'digital',
-        collection:   'onYourWall',
-        price:        8.00,
-        personalized: true,
-        badge:        'New',
-        marketingLine:'Any date’s zenith star + light-cone story as a print-ready pack.',
-        previewImage: 'img/shop/product-moment-pack.jpg',
-        blurb:        'Freeze any night that mattered — birth, anniversary, memorial — into a multi-format digital pack: square share card, story card, and print plate. Same private VSOP87 math as the free Moment studio. Fulfilment opens once checkout is connected; free card is live on Moment now.',
-        icon:         'star4',
-        fulfilUrl:    '',   // paste PayPal/Payhip link when ready; '' = honest coming soon
-        detailsForm:  '',
-        featured:     true,
-      },
-      {
-        id:           'natal-poster-pdf',
-        available:    false,
-        featured:     true,
-        name:         'Your Natal Sky — Print-at-Home PDF',
-        type:         'digital',
-        collection:   'onYourWall',
-        price:        6.00,
-        personalized: true,
-        badge:        'Preview',
-        marketingLine:'Your exact sky, ready to print tonight.',
-        previewImage: 'img/shop/product-poster-pdf.jpg',
-        blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
-        icon:         'map',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'sL9V4PTk',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'reading-poster-bundle',
-        available:    false,
-        featured:     false,
-        name:         'Deep Reading + Poster — Bundle',
-        type:         'digital',
-        collection:   'theReading',
-        price:        16.00,
-        anchorWas:    18.00,
-        personalized: true,
-        badge:        'Best value',
-        marketingLine:'Reading, poster, free wallpaper & a Two Skies offer — save £2.',
-        previewImage: 'img/shop/product-bundle.jpg',
-        sampleUrl:    'sample-reading.html',
-        blurb:        'Your long-form Deep Natal Reading and print-at-home natal poster, generated together from one chart. Includes free chart wallpaper (email unlock) and a 50% code for Two Skies after purchase. Future bundles will pair readings with Observatory Disc or Seal Medallion jewellery.',
-        bundlePerks:  ['Free chart wallpaper', '50% off Two Skies map', 'Two PDFs · save £2', 'Jewellery cross-sell placeholders live in catalogue'],
-        icon:         'book',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'Iasu4Sia',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'solar-return',
-        available:    false,
-        name:         'Solar Return — Your Birthday Year',
-        type:         'digital',
-        collection:   'theReading',
-        price:        14.00,
-        personalized: true,
-        badge:        'Preview',
-        marketingLine:'Your birthday sky — the annual ritual, no subscription.',
-        previewImage: 'img/shop/product-solar-return.jpg',
-        blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
-        icon:         'sunhigh',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'vp60QAiN',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'gift-reading',
-        available:    false,
-        name:         'Gift a Reading',
-        type:         'digital',
-        collection:   'gifts',
-        price:        15.00,
-        personalized: true,
-        giftNote:     true,
-        badge:        null,
-        marketingLine:'A Deep Reading for someone you love — voucher + your note.',
-        previewImage: 'img/shop/product-gift-reading.jpg',
-        blurb:        'A Deep Natal Reading for someone you love — sent as a PDF gift voucher with a redemption code. They redeem by email and give us their own birth details; we generate the reading and deliver it with your note. Choose a delivery date at checkout.',
-        icon:         'heart',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'VvzhK6Kj',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'gift-box-whole-sky',
-        available:    false,
-        name:         'The Whole Sky — Gift Box',
-        type:         'print',
-        collection:   'gifts',
-        price:        35.00,
-        personalized: true,
-        giftNote:     true,
-        badge:        'Gift',
-        marketingLine:'Reading PDF + foil print + gift card — the complete sky.',
-        previewImage: 'img/shop/product-gift-box.jpg',
-        blurb:        'The complete gift: a Deep Natal Reading PDF plus an A4 foil natal print, shipped, with a personalised gift card carrying your note. They redeem the reading by email with their own birth details — their sky, never our server. Choose a delivery date at checkout, for less than the two bought separately.',
-        icon:         'star4',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'uHADD51y',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      {
-        id:           'two-skies-map',
-        available:    false,
-        name:         'Two Skies — Couples Star Map',
-        type:         'print',
-        collection:   'gifts',
-        price:        24.00,
-        personalized: true,
-        giftNote:     true,
-        badge:        'Couples',
-        marketingLine:'Two birth charts, one print — the anniversary keepsake.',
-        previewImage: 'img/shop/product-two-skies.jpg',
-        blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. A proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
-        icon:         'crescent',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'ZOp9A1OW',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
-      },
-      // ── JEWELLERY COLLECTION (new accessories, POD placeholders) ───────────
-      // Audience-refined (deep research 2026-06): Gen Z gifting (affordable meaningful), women 18-35 everyday/self (dainty + emotional), existing chart users.
-      // Diffs vs competitors: full VSOP87 chart data (not sun-sign generic), integrated with readings/posters. POD: ShineOn/OwnPrint/AnywherePOD or Etsy manual + custom upload for engraving.
-      {
-        id:           'observatory-disc-pendant',
-        available:    false,
-        name:         'Observatory Disc Pendant',
-        type:         'accessory',
-        collection:   'jewellery',
-        price:        29.00,
-        personalized: true,
-        badge:        'Made to order',
-        marketingLine:'Your full natal wheel, engraved on a wearable disc.',
-        previewImage: 'img/shop/product-observatory-disc.jpg',
-        blurb:        'Solid brass or sterling disc pendant with the complete natal chart wheel micro-engraved from your exact birth data. Planets positioned precisely as at the moment you were born — 25mm on 45cm chain. For women 18-35 who want their sky close every day, or as a standout Gen Z gift that actually means something. POD fulfilment.',
-        icon:         'orb',
-        fulfilUrl:    '', // placeholder — set real POD URL (ShineOn / OwnPrint / Etsy custom / Gelato) when live
-      },
-      {
-        id:           'constellation-bar',
-        available:    false,
-        name:         'Constellation Bar',
-        type:         'accessory',
-        collection:   'jewellery',
-        price:        24.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Minimal bar with your birth constellations in line.',
-        previewImage: 'img/shop/product-constellation-bar.jpg',
-        blurb:        'Slim horizontal bar (pendant or cuff) showing the constellation lines of your Sun + Moon + Rising. Subtle everyday chart jewellery for layering. Perfect for the 18-35 woman who loves dainty cosmic details without shouting her sign — or gift to your astro bestie.',
-        icon:         'star4',
-        fulfilUrl:    '', // placeholder — set real POD URL when live
-      },
-      {
-        id:           'big-three-glyph',
-        available:    false,
-        name:         'Big Three Glyph',
-        type:         'accessory',
-        collection:   'jewellery',
-        price:        19.00,
-        personalized: true,
-        badge:        null,
-        marketingLine:'Sun · Moon · Rising charms on a fine chain.',
-        previewImage: 'img/shop/product-big-three-glyph.jpg',
-        blurb:        'Three small engraved charms — your Sun, Moon and Rising glyphs — on a delicate 40cm chain. The spine of your chart, worn close to the heart. Entry price for Gen Z gifting and women 18-35 self-purchase; meaningful without the generic zodiac mass-market feel. Differentiator: exact from your saved chart, not a stock Aries stamp.',
-        icon:         'gem',
-        fulfilUrl:    '', // placeholder — set real POD URL when live
-      },
-      {
-        id:           'seal-medallion',
-        available:    false,
-        name:         'Seal Medallion',
-        type:         'accessory',
-        collection:   'jewellery',
-        price:        35.00,
-        personalized: true,
-        badge:        'Made to order',
-        marketingLine:'Hex seal medallion of your chart\'s dominant signature.',
-        previewImage: 'img/shop/product-seal-medallion.jpg',
-        blurb:        'Large 32mm hex medallion bearing your dominant element seal and Big Three glyphs. Reversible; engraved on observatory-grade brass. A true talisman for power users and milestone gifting. Premium tier vs No.13-style luxe — yours is computed from real VSOP87 positions, not artistic interpretation.',
-        icon:         'heart',
-        fulfilUrl:    '', // placeholder — set real POD URL when live
-      },
-    ],
-  },
+  // Retired legacy commerce catalogue removed from the public runtime.
 }, window.AP_MON || {});
 
 (function monetisation() {
@@ -1942,7 +1468,7 @@ window.AP_MON = Object.assign({
   const keyToUrl = k => M[k + 'Url'];
 
   function wire() {
-    // Buttons/links opt in with data-mon="report|poster|gift|newsletter|tip".
+    // Buttons/links opt in with a configured external-route key.
     // mode: data-mon-mode="hide" (default — vanish until configured) or "dormant"
     // (stay visible but disabled with a gentle "coming soon").
     document.querySelectorAll('[data-mon]').forEach(el => {
@@ -1975,7 +1501,7 @@ window.AP_MON = Object.assign({
         a.href = M.tipUrl; a.target = '_blank'; a.rel = 'noopener';
         a.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Support the free chart';
         a.style.cssText = 'display:inline-block;margin-top:8px;font-family:Inter,system-ui,sans-serif;'
-          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#d8b46a);text-decoration:none;';
+          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ap-ion,#8BA9FF);text-decoration:none;';
         host.appendChild(document.createElement('br'));
         host.appendChild(a);
       }
@@ -2276,656 +1802,16 @@ else AstroApp.init();
 })();
 
 // ═══════════════════════════════════════════════════════════════════════
-// EMAIL CAPTURE / SUBSCRIBERS — one honest engine, dormant-by-default.
-// The "subscriber database" is a hosted provider (Kit / Buttondown / MailerLite)
-// the site POSTs to via AP_MON.newsletterUrl. Until that's set, sign-ups are
-// relayed to the owner by mailto (AP_MON.ownerEmail) AND saved on-device — so an
-// early sign-up is never silently lost. Only the email is ever sent; birth data
-// never leaves the device. Adds a site-wide footer signup, "Cosmic Weather
-// Premium" waitlist wiring, and an owner CSV export (AstroApp.exportIntents()).
+// EMAIL CAPTURE — deliberately paused site-wide.
+// Reintroduce only after the owner verifies double opt-in, one-click
+// unsubscribe, suppression and the production destination end to end.
 // ═══════════════════════════════════════════════════════════════════════
-(function emailEngine() {
-  var M = window.AP_MON = window.AP_MON || {};
-  if (typeof M.waitlistUrl === 'undefined') M.waitlistUrl = '';   // separate list/tag for the premium waitlist
-  if (typeof M.ownerEmail  === 'undefined') M.ownerEmail  = '';   // mailto relay target before a provider is live
-  // emailUrl and newsletterUrl are aliases — set EITHER, get both.
-  var liveUrl = (M.newsletterUrl && String(M.newsletterUrl).trim()) || (M.emailUrl && String(M.emailUrl).trim()) || '';
-  M.newsletterUrl = M.emailUrl = liveUrl;
-
-  window.AP_COPY = window.AP_COPY || {
-    privacyMicro: 'Only your email is sent — birth data never leaves your device. Unsubscribe anytime.',
-    confirmLive: 'You\u2019re on the list. We\u2019ll email when wallpapers, readings or cosmic weather go live.',
-    confirmDoubleOptIn: 'You\u2019re on the list \u2014 cosmic weather updates will land in your inbox. (Only your email was sent; birth data stayed on your device.)',
-    dormantSaved: 'Sign-up isn\u2019t live yet, so nothing left your browser. The moment it opens, you\u2019ll be first.',
-    eyebrow: 'More coming soon',
-    bannerTitle: 'Sign up \u2014 be first when we ship',
-    bannerSub: 'One email list for everything launching next. No spam, no birth data uploaded \u2014 just your address.',
-    heroTitle: 'Get updates before anyone else',
-    heroSub: 'Wallpapers, written readings, cosmic weather & shop drops \u2014 we\u2019ll only write when something real ships.',
-    stickyTitle: 'Updates coming soon \u2014 join the list',
-    navTeaser: 'Wallpapers \u00b7 deep readings \u00b7 cosmic weather \u00b7 shop drops',
-    modalTitle: 'What\u2019s landing in your inbox',
-    modalSub: 'Join once. We\u2019ll email you when each of these goes live \u2014 early access before the public site.',
-    btnLabel: '\u2726 Get updates',
-    btnShort: 'Join list',
-    comingPerks: [
-      'Chart wallpaper \u2014 your exact birth sky as a phone & desktop background',
-      'Personal cosmic weather \u2014 transits to your chart, in plain English',
-      'Deep reading previews \u2014 written natal reports before the shop opens',
-      'Daily & monthly horoscopes \u2014 same real-sky engine as the site, in your inbox',
-      'Shop early access \u2014 wear-your-sky prints, posters & gift readings first',
-      'New tools first \u2014 retrograde alerts, synastry unlocks & more as we build them'
-    ]
-  };
-
-  var isUrl = function (u) { return typeof u === 'string' && /^https?:\/\//i.test((u || '').trim()); };
-  var isEmail = function (e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || ''); };
-
-  /* Honest 3-tier capture: configured provider POST → owner mailto relay → localStorage.
-   *
-   * The opaque no-cors mode was dropped here on 2026-08-09. The reason it was ever set —
-   * "the subscribe Worker sends no CORS headers" — is false: OPTIONS against
-   * https://list.astroprecise.app/subscribe answers 204 with
-   * Access-Control-Allow-Methods: POST, OPTIONS, GET and echoes the requesting
-   * Origin (measured against the live origin and http://localhost:8790). An
-   * opaque response meant a 500 and a 200 looked identical, so `sent:'provider'`
-   * claimed delivery it had no way to know about, and every call site printed
-   * "you're on the list" for a POST that may never have landed.
-   *
-   * The return shape is unchanged so existing callers keep working, but it now
-   * carries `confirmed` — a promise of the truth. Callers that can wait should
-   * (see wireEmailForm / wireWaitlist below); for the ones that have already
-   * painted an optimistic line, a failed POST raises a visible correction here
-   * rather than passing silently.
-   */
-  function captureEmail(email, opts) {
-    opts = opts || {};
-    var Mn = window.AP_MON || {};
-    var confirmed = null;
-    var endpoint = (opts.list === 'waitlist' && isUrl(Mn.waitlistUrl)) ? Mn.waitlistUrl.trim()
-                 : (isUrl(Mn.newsletterUrl) ? Mn.newsletterUrl.trim() : '');
-    if (endpoint) {
-      try {
-        var body = new FormData();
-        body.append('email', email);
-        if (opts.tag) body.append('tags', opts.tag);
-        confirmed = fetch(endpoint, { method: 'POST', body: body })
-          .then(function (r) { return !!r.ok; })
-          .catch(function () { return false; });
-      } catch (e) { confirmed = Promise.resolve(false); }
-      confirmed.then(function (ok) {
-        if (ok || opts.quiet) return;
-        // Nothing reached the list. Say so out loud — the caller has already
-        // told this person they were subscribed.
-        try {
-          if (window.AstroApp && typeof AstroApp.showToast === 'function') {
-            AstroApp.showToast(
-              'That did not send',
-              'You are not on the list — check your connection and try again, or email contact@astroprecise.app.',
-              'warning'
-            );
-          }
-        } catch (e2) {}
-      });
-    } else if (Mn.ownerEmail && isEmail(Mn.ownerEmail)) {
-      try {
-        var subj = encodeURIComponent('Astro Precise sign-up' + (opts.list ? ' — ' + opts.list : ''));
-        var bdy = encodeURIComponent('New subscriber: ' + email + (opts.source ? '\nSource: ' + opts.source : ''));
-        var a = document.createElement('a');
-        a.href = 'mailto:' + Mn.ownerEmail + '?subject=' + subj + '&body=' + bdy;
-        a.style.display = 'none'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      } catch (e) {}
-    }
-    // Always also save same-device intent (owner backstop / offline convenience, capped).
-    try {
-      var key = 'ap_email_intent';
-      var prev = JSON.parse(localStorage.getItem(key) || '[]');
-      prev.push(Object.assign({ email: email, savedAt: Date.now(), source: opts.source || null }, opts.meta || {}));
-      localStorage.setItem(key, JSON.stringify(prev.slice(-50)));
-    } catch (e) {}
-    return {
-      sent: endpoint ? 'provider' : (Mn.ownerEmail ? 'mailto' : 'local'),
-      // Resolves true only when the list answered 2xx. No endpoint configured =
-      // nothing was ever sent anywhere, so that resolves false too.
-      confirmed: confirmed || Promise.resolve(false)
-    };
-  }
-
-  // Owner utility: download captured local intents as CSV (run AstroApp.exportIntents() or visit #export-intents).
-  function exportIntents() {
-    var rows; try { rows = JSON.parse(localStorage.getItem('ap_email_intent') || '[]'); } catch (e) { rows = []; }
-    if (!rows.length) return '';
-    var cols = ['email', 'source', 'sunSign', 'forName', 'savedAt'];
-    var csv = [cols.join(',')].concat(rows.map(function (r) {
-      return cols.map(function (c) {
-        return JSON.stringify(c === 'savedAt' && r[c] ? new Date(r[c]).toISOString() : (r[c] == null ? '' : r[c]));
-      }).join(',');
-    })).join('\n');
-    try {
-      var blob = new Blob([csv], { type: 'text/csv' });
-      var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-      a.download = 'ap-email-intents.csv'; a.click(); URL.revokeObjectURL(a.href);
-    } catch (e) {}
-    return csv;
-  }
-
-  if (window.AstroApp) { window.AstroApp.captureEmail = captureEmail; window.AstroApp.exportIntents = exportIntents; }
-  if (location.hash === '#export-intents') setTimeout(exportIntents, 400);
-
-  var SIGNS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
-  function pageSlug() { return (location.pathname.split('/').pop() || 'index.html').toLowerCase(); }
-  function isSignPage() { var p = pageSlug().replace('.html',''); return SIGNS.indexOf(p) >= 0; }
-
-  function perksHtml(compact) {
-    var perks = (window.AP_COPY || {}).comingPerks || [];
-    if (!perks.length) return '';
-    var cls = 'ap-email-cta__perks' + (compact ? ' ap-email-cta__perks--compact' : '');
-    return '<ul class="' + cls + '">' + perks.map(function (p) {
-      return '<li>' + p + '</li>';
-    }).join('') + '</ul>';
-  }
-
-  function pageEmailCopy() {
-    var c = window.AP_COPY, p = pageSlug();
-    if (p === 'horoscope.html') {
-      return { eyebrow: 'Free in your inbox', title: 'Daily horoscopes + what\u2019s coming next', sub: 'Your sign\u2019s daily & monthly reading, plus first access to wallpapers, deep readings & the shop.', source: 'banner_horoscope', tag: 'tag_horoscope_banner', showPerks: true };
-    }
-    if (isSignPage()) {
-      var sign = p.replace('.html','');
-      sign = sign.charAt(0).toUpperCase() + sign.slice(1);
-      return { eyebrow: c.eyebrow, title: sign + ' updates in your inbox', sub: 'Daily ' + sign + ' reading, cosmic weather for your chart, wallpapers & deep readings as they launch.', source: 'banner_sign', tag: 'tag_sign_' + sign.toLowerCase(), showPerks: true };
-    }
-    if (p === 'index.html' || p === '') {
-      return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_home', tag: 'tag_banner_home', showPerks: true };
-    }
-    if (p === 'shop.html') {
-      return { eyebrow: 'Free wallpaper', title: 'Your sky as a lock-screen PNG', sub: 'Free chart wallpaper on the Chart page \u2014 join the list for cosmic weather, deep-reading previews & shop drops. Paid pieces from \u00a36.', source: 'banner_shop', tag: 'tag_shop_live', showPerks: true };
-    }
-    return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_tool', tag: 'tag_banner_tool', showPerks: true };
-  }
-
-  function closeEmailModal() {
-    if (window.AstroApp && typeof AstroApp.closeModal === 'function') {
-      AstroApp.closeModal('ap-email-modal');
-      return;
-    }
-    resetEmailModalState();
-  }
-
-  function openEmailSignup(source) {
-    if (document.body.classList.contains('preloader-active')) return;
-    if (window.AstroApp && typeof AstroApp.closeNavDrawer === 'function') AstroApp.closeNavDrawer();
-    if (!document.getElementById('ap-email-modal')) injectEmailModal();
-    var modal = document.getElementById('ap-email-modal');
-    if (modal) modal.dataset.source = source || 'modal';
-    if (window.AstroApp && typeof AstroApp.openModal === 'function') AstroApp.openModal('ap-email-modal');
-    else if (modal) {
-      modal.classList.add('open');
-      modal.style.display = 'flex';
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-    }
-    // Focus first field so keyboard / SR users land in the capture (checkout notify path)
-    try {
-      var field = modal && modal.querySelector('input[type="email"], input[name="email"], input:not([type="hidden"])');
-      if (field && typeof field.focus === 'function') {
-        setTimeout(function () { try { field.focus(); } catch (eF) { /* ignore */ } }, 40);
-      }
-    } catch (eOpen) { /* ignore */ }
-  }
-
-  // Alias for dormant checkout hardeners (ap-checkout-honest / ap-gumroad-bridge)
-  // that call AP_openEmailCapture — without this, Notify CTAs silently no-op.
-  window.AP_openEmailCapture = openEmailSignup;
-  if (window.AstroApp) window.AstroApp.openEmailCapture = openEmailSignup;
-
-  function confirmHtml(res) {
-    var c = window.AP_COPY;
-    return res.sent === 'provider'
-      ? '<strong>' + (c.confirmLive || c.confirmDoubleOptIn) + '</strong>'
-      : '<strong>Noted.</strong> ' + c.dormantSaved;
-  }
-
-  /* Resolve the email box WITHOUT relying on name="email".
-     A named control is the only kind a browser can serialise into a URL, so the
-     capture forms had their names removed on 2026-08-09 — otherwise a native
-     submit (JS off, or before this file has loaded) turns a signup into
-     GET /profile.html?email=someone@example.com in the access log. form.email
-     stops resolving the moment a control is unnamed, so look it up by type and
-     keep the named lookup only as a fallback for any form not yet cut over. */
-  function emailFieldOf(form) {
-    if (!form) return null;
-    return form.querySelector('input[type="email"]') || form.email || null;
-  }
-
-  function wireEmailForm(form, opts) {
-    if (!form || form._apWired) return;
-    form._apWired = true;
-    opts = opts || {};
-    var msg = form.querySelector('.ap-email-cta__msg, .ap-footer-signup__msg');
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var emailField = emailFieldOf(form);
-      var email = (emailField && emailField.value || '').trim();
-      if (!isEmail(email)) {
-        if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning');
-        return;
-      }
-      var res = captureEmail(email, {
-        source: opts.source || 'email_cta',
-        tag: opts.tag || 'tag_email_cta',
-        meta: opts.meta || null,
-        quiet: true            // this form reports the outcome itself, inline
-      });
-
-      function finish() {
-        form.classList.add('is-done');
-        if (form.classList.contains('ap-email-cta__form--sticky')) {
-          var sticky = form.closest('.ap-email-cta--sticky');
-          if (sticky) setTimeout(function () { sticky.classList.remove('is-visible'); document.body.classList.remove('has-email-sticky'); }, 3200);
-        }
-      }
-
-      // No list endpoint configured: nothing was posted anywhere and the dormant
-      // copy already says exactly that, so there is nothing to wait for.
-      if (res.sent !== 'provider') {
-        if (msg) msg.innerHTML = confirmHtml(res);
-        finish();
-        return;
-      }
-
-      // A list IS configured \u2014 so "you're on the list" is a claim about a network
-      // call, and it waits for that call to succeed before it gets made.
-      if (msg) msg.innerHTML = '<strong>Sending\u2026</strong>';
-      res.confirmed.then(function (ok) {
-        if (!ok) {
-          if (msg) msg.innerHTML = '<strong>That didn\u2019t send.</strong> You are not on the list \u2014 check your connection and try again, or email contact@astroprecise.app.';
-          if (window.AstroApp) AstroApp.showToast('That did not send', 'You are not on the list \u2014 please try again.', 'warning');
-          return;
-        }
-        if (msg) msg.innerHTML = confirmHtml(res);
-        finish();
-        if (window.AstroApp) AstroApp.showToast('You\u2019re on the list', 'We\u2019ll email when there\u2019s something new.', 'success');
-      });
-    });
-  }
-
-  // Critical positioning for the sticky bar, injected with the element itself.
-  // The full rules live in main.css, but main.css is idle/deferred-loaded on
-  // several pages (chart, horoscope, …) — without these the bar sits unstyled
-  // in flow and its absolutely-positioned close "×" escapes to the viewport
-  // top-right as an orphaned button. Values mirror main.css so there is no
-  // conflict once it loads; visibility gating keeps every child (incl. the ×)
-  // hidden until the bar is deliberately shown.
-  function ensureStickyCtaCss() {
-    if (document.getElementById('ap-email-sticky-critical')) return;
-    var st = document.createElement('style');
-    st.id = 'ap-email-sticky-critical';
-    st.textContent =
-      '.ap-email-cta--sticky{position:fixed;left:0;right:0;bottom:0;z-index:9000;padding:12px 16px;' +
-      'background:var(--ap-void-deep,#07070A);border-top:1px solid rgba(216,180,106,0.35);' +
-      'transform:translateY(110%);visibility:hidden;' +
-      'transition:transform .45s cubic-bezier(.22,1,.36,1),visibility 0s .45s;}' +
-      '.ap-email-cta--sticky.is-visible{transform:translateY(0);visibility:visible;' +
-      'transition:transform .45s cubic-bezier(.22,1,.36,1);}' +
-      '.ap-email-cta--sticky .ap-email-cta__inner{position:relative;}' +
-      '@media (prefers-reduced-motion: reduce){.ap-email-cta--sticky{transition:none;}}';
-    document.head.appendChild(st);
-  }
-
-  // Base skeleton for every CTA variant (banner/hero/inline). The full rules
-  // live in main.css, but main.css is idle/deferred-loaded on most pages and
-  // NEVER loads under webdriver/headless — without these the email input and
-  // button paint as naked native controls for the whole first impression (and
-  // permanently for search-engine renderers). Values mirror main.css so the
-  // full stylesheet simply refines them when it arrives.
-  function ensureSitePolishCss() {
-    if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
-    var l = document.createElement('link');
-    l.rel = 'stylesheet';
-    l.href = 'css/ap-site-polish.css?v=' + AP_ASSET_V;
-    l.id = 'ap-css-site-polish';
-    document.head.appendChild(l);
-  }
-
-  function ensureEmailCtaBaseCss() {
-    if (document.getElementById('ap-email-cta-critical')) return;
-    var st = document.createElement('style');
-    st.id = 'ap-email-cta-critical';
-    st.textContent =
-      '.ap-email-cta--banner{background:linear-gradient(135deg,rgba(94,200,232,0.08) 0%,rgba(5,8,16,0.94) 48%,rgba(61,139,255,0.08) 100%);border-top:1px solid rgba(94,200,232,0.18);border-bottom:1px solid rgba(94,200,232,0.1);padding:48px 0;}' +
-      '.ap-email-cta__inner{position:relative;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;}' +
-      '@media (max-width:768px){.ap-email-cta__inner{grid-template-columns:1fr;text-align:center;gap:24px;}}' +
-      '.ap-email-cta__eyebrow{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--ap-cyan,#5EC8E8);margin:0 0 8px;font-weight:600;}' +
-      '.ap-email-cta__title{font-family:var(--font-display,\'Cormorant Garamond\',serif);font-size:clamp(1.35rem,3vw,1.85rem);font-weight:600;color:var(--ap-text-primary,#E8EEF8);margin:0 0 12px;line-height:1.25;}' +
-      '.ap-email-cta__sub{font-size:0.875rem;color:var(--silver,var(--ap-text-secondary,#B8C4D8));margin:0;line-height:1.65;}' +
-      '.ap-email-cta__form{display:flex;flex-direction:column;gap:8px;}' +
-      '.ap-email-cta__fields{display:flex;gap:12px;flex-wrap:wrap;}' +
-      '.ap-email-cta__input{flex:1;min-width:200px;padding:12px 16px;border-radius:12px;border:1px solid rgba(216,180,106,0.28);background:rgba(12,16,22,0.75);color:var(--white,#fff);font-size:0.88rem;outline:none;-webkit-appearance:none;appearance:none;}' +
-      '.ap-email-cta__btn{padding:12px 22px;border-radius:12px;border:1px solid var(--gold,#d8b46a);background:linear-gradient(180deg,rgba(216,180,106,0.28) 0%,rgba(216,180,106,0.12) 100%);color:var(--gold-pale,#f2ecdf);font-size:0.82rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;white-space:nowrap;-webkit-appearance:none;appearance:none;}' +
-      '.ap-email-cta__hint{font-size:0.62rem;color:var(--silver-dim,var(--ap-text-muted,#8891AA));margin:0;line-height:1.5;}' +
-      '.ap-email-cta__msg{font-size:0.78rem;color:var(--silver,var(--ap-text-secondary,#C8D0E8));margin:0;min-height:1.2em;}';
-    document.head.appendChild(st);
-  }
-
-  function buildEmailCTA(variant, copy, opts) {
-    copy = copy || pageEmailCopy();
-    opts = opts || {};
-    var c = window.AP_COPY;
-    var btn = variant === 'sticky' ? c.btnShort : c.btnLabel;
-    ensureEmailCtaBaseCss();
-    if (variant === 'sticky') ensureStickyCtaCss();
-    var el = document.createElement(variant === 'banner' ? 'section' : 'div');
-    el.className = 'ap-email-cta ap-email-cta--' + variant + (opts.extraClass ? ' ' + opts.extraClass : '');
-    if (variant === 'banner') {
-      el.id = 'ap-email-banner';
-      el.setAttribute('role', 'region');
-      el.setAttribute('aria-labelledby', 'ap-email-banner-title');
-    } else if (variant === 'sticky') {
-      el.setAttribute('role', 'region');
-      el.setAttribute('aria-label', 'Email updates — sticky bar');
-    }
-    var inner = variant === 'hero'
-      ? '<div class="container ap-email-cta__inner">'
-      : (variant === 'sticky'
-        ? '<div class="ap-email-cta__inner">'
-        : '<div class="container ap-email-cta__inner">');
-    if (variant === 'sticky') {
-      inner += '<button type="button" class="ap-email-cta__close" aria-label="Dismiss signup bar">\u00d7</button>';
-    }
-    inner += '<div class="ap-email-cta__copy">';
-    if (variant !== 'sticky') inner += '<p class="ap-email-cta__eyebrow">' + (copy.eyebrow || c.eyebrow) + '</p>';
-    inner += '<p class="ap-email-cta__title"' + (variant === 'banner' ? ' id="ap-email-banner-title"' : '') + '>' + (copy.title || c.bannerTitle) + '</p>';
-    if (variant !== 'sticky') inner += '<p class="ap-email-cta__sub">' + (copy.sub || c.bannerSub) + '</p>';
-    if ((variant === 'banner' || variant === 'hero') && copy.showPerks) inner += perksHtml(variant === 'hero');
-    inner += '</div>';
-    inner += '<form class="ap-email-cta__form' + (variant === 'sticky' ? ' ap-email-cta__form--sticky' : '') + '" novalidate>'
-      + '<div class="ap-email-cta__fields">'
-      + '<input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address">'
-      + '<button type="submit" class="ap-email-cta__btn">' + btn + '</button>'
-      + '</div>'
-      + '<p class="ap-email-cta__msg" role="status" aria-live="polite"></p>'
-      + '<p class="ap-email-cta__hint">' + c.privacyMicro + '</p>'
-      + '</form></div>';
-    el.innerHTML = inner;
-    wireEmailForm(el.querySelector('form'), { source: copy.source, tag: copy.tag });
-    if (variant === 'sticky') {
-      el.querySelector('.ap-email-cta__close').addEventListener('click', function () {
-        try { localStorage.setItem('ap_email_sticky_dismiss', String(Date.now())); } catch (e) {}
-        el.classList.remove('is-visible');
-        document.body.classList.remove('has-email-sticky');
-      });
-    }
-    return el;
-  }
-
-  function scrollToEmailCTA(e) {
-    if (e) e.preventDefault();
-    var target = document.getElementById('ap-email-banner')
-      || document.getElementById('horoscope-subscribe')
-      || document.getElementById('email-capture')
-      || document.querySelector('.ap-email-cta--hero');
-    if (target) {
-      if (target.id === 'email-capture') target.hidden = false;
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    openEmailSignup('scroll_fallback');
-  }
-
-  function injectEmailModal() {
-    if (document.getElementById('ap-email-modal')) return;
-    ensureEmailCtaBaseCss();
-    var c = window.AP_COPY;
-    var wrap = document.createElement('div');
-    wrap.id = 'ap-email-modal';
-    wrap.className = 'modal-backdrop ap-email-modal-backdrop';
-    wrap.setAttribute('role', 'dialog');
-    wrap.setAttribute('aria-labelledby', 'ap-email-modal-title');
-    wrap.setAttribute('aria-modal', 'true');
-    wrap.setAttribute('aria-hidden', 'true');
-    wrap.style.display = 'none';
-    wrap.innerHTML =
-      '<div class="modal ap-email-modal">'
-      + '<div class="modal__header">'
-      + '<h2 class="modal__title" id="ap-email-modal-title">' + c.modalTitle + '</h2>'
-      + '<button type="button" class="modal__close" id="ap-email-modal-close" data-modal-close aria-label="Close">\u00d7</button>'
-      + '</div>'
-      + '<div class="modal__body">'
-      + '<p class="ap-email-modal__sub">' + c.modalSub + '</p>'
-      + perksHtml(false)
-      + '<form class="ap-email-cta__form ap-email-modal__form" id="ap-email-modal-form" novalidate>'
-      + '<div class="ap-email-cta__fields">'
-      + '<input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address">'
-      + '<button type="submit" class="ap-email-cta__btn">' + c.btnLabel + '</button>'
-      + '</div>'
-      + '<p class="ap-email-cta__msg" role="status" aria-live="polite"></p>'
-      + '<p class="ap-email-cta__hint">' + c.privacyMicro + '</p>'
-      + '</form></div></div>';
-    document.body.appendChild(wrap);
-    wireEmailForm(wrap.querySelector('form'), { source: 'email_modal', tag: 'tag_email_modal' });
-    var closeBtn = wrap.querySelector('#ap-email-modal-close');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function (ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        closeEmailModal();
-      });
-    }
-    wrap.addEventListener('click', function (ev) {
-      if (ev.target === wrap) closeEmailModal();
-    });
-    wrap.querySelector('form').addEventListener('submit', function () {
-      setTimeout(closeEmailModal, 2400);
-    }, true);
-  }
-
-  function resetEmailModalState() {
-    var modal = document.getElementById('ap-email-modal');
-    if (!modal) return;
-    modal.classList.remove('open');
-    modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true');
-    releaseFocusTrap();
-    document.body.style.overflow = '';
-  }
-
-  function wireEmailOpenDelegation() {
-    if (document.documentElement.dataset.apEmailOpenWired) return;
-    document.documentElement.dataset.apEmailOpenWired = '1';
-    document.addEventListener('click', function (e) {
-      var t = e.target.closest('[data-ap-open-email]');
-      if (!t) return;
-      e.preventDefault();
-      openEmailSignup(t.getAttribute('data-ap-open-email') || 'nav');
-    });
-  }
-
-  function injectNavCTA() {
-    if (window.AstroApp && typeof AstroApp.cleanupNavEnd === 'function') AstroApp.cleanupNavEnd();
-    wireEmailOpenDelegation();
-  }
-
-  function injectBannerCTA() {
-    var existing = document.querySelector('.ap-email-cta--banner');
-    if (existing) {
-      var form = existing.querySelector('form');
-      if (form && !form._apWired) {
-        var copy = pageEmailCopy();
-        wireEmailForm(form, { source: copy.source, tag: copy.tag });
-      }
-      return;
-    }
-    if (document.getElementById('email-capture')) return;
-    if (document.getElementById('horoscope-subscribe')) return;
-    /* Explore is model-first — no full-width email wall between stage and footer */
-    if (document.body.classList.contains('page-explore')) return;
-    var banner = buildEmailCTA('banner', pageEmailCopy());
-    var slot = document.getElementById('ap-email-banner-slot');
-    if (slot) {
-      slot.replaceWith(banner);
-      return;
-    }
-    var footer = document.querySelector('footer.footer, footer.site-footer, footer[role="contentinfo"]');
-    if (!footer || !footer.parentNode) return;
-    footer.parentNode.insertBefore(banner, footer);
-  }
-
-  function injectHeroCTA() {
-    // Homepage: optional email is on the intro preloader (bottom panel — orrery stays clear).
-  }
-
-  function injectStickyCTA() {
-    /* User screenshot audit 2026-07-09 / v678: sticky bar bisects Explore,
-       Daily sign grid, and model pages. Email only as footer banner. */
-    var slug = pageSlug();
-    var noSticky =
-      /^(index\.html|explore\.html|chart\.html|horoscope\.html|ephemeris\.html|mysky\.html|moment\.html|shop\.html|catalogue\.html|transits\.html|compatibility\.html|quiz\.html|)$/i.test(slug) ||
-      !slug ||
-      document.body.classList.contains('ap-award-511') ||
-      document.body.classList.contains('page-home') ||
-      document.body.classList.contains('page-explore') ||
-      document.body.classList.contains('page-chart') ||
-      document.body.classList.contains('page-horoscope') ||
-      document.body.classList.contains('page-instrument') ||
-      document.body.classList.contains('ap-mysky-page') ||
-      document.body.classList.contains('ap-moment-page') ||
-      document.body.classList.contains('page-shop');
-    if (noSticky) {
-      document.querySelectorAll('.ap-email-cta--sticky').forEach(function (n) { n.remove(); });
-      document.body.classList.remove('has-email-sticky');
-      return;
-    }
-    if (document.querySelector('.ap-email-cta--sticky')) return;
-    if (document.body.classList.contains('preloader-active')) {
-      window.addEventListener('ap-hero-enter', injectStickyCTA, { once: true });
-      return;
-    }
-    if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return;
-    try {
-      var dismissed = parseInt(localStorage.getItem('ap_email_sticky_dismiss') || '0', 10);
-      if (dismissed && (Date.now() - dismissed) < 7 * 86400000) return;
-    } catch (e) {}
-    var sticky = buildEmailCTA('sticky', {
-      title: window.AP_COPY.stickyTitle,
-      source: 'sticky_bar',
-      tag: 'tag_sticky'
-    });
-    document.body.appendChild(sticky);
-    var show = function () {
-      if (sticky.classList.contains('is-visible')) return;
-      sticky.classList.add('is-visible');
-      document.body.classList.add('has-email-sticky');
-    };
-    var delayMs = document.body.classList.contains('page-home') ? 22000 : 6000;
-    setTimeout(show, delayMs);
-    var unsubScroll = null;
-    var onScroll = function () {
-      if (window.scrollY > 480) {
-        show();
-        if (unsubScroll) unsubScroll();
-        else window.removeEventListener('scroll', onScroll);
-      }
-    };
-    if (window.RafCore) unsubScroll = window.RafCore.onScroll(onScroll);
-    else window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
-
-  // ── Compact footer reminder (banner pages get a one-liner; others get mini form) ──
-  function injectFooterSignup() {
-    if (document.querySelector('.ap-footer-signup')) return;
-    if (document.getElementById('email-capture')) return;
-    var host = document.querySelector('footer .container, footer .footer__grid, footer');
-    if (!host) return;
-    var hasBanner = !!document.getElementById('ap-email-banner');
-    var wrap = document.createElement('div');
-    wrap.className = 'ap-footer-signup ap-footer-signup--compact';
-    if (hasBanner) {
-      wrap.innerHTML = '<p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">'
-        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#d8b46a);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
-        + ' \u2014 cosmic weather & new features coming soon.</p>';
-      wrap.querySelector('a').addEventListener('click', scrollToEmailCTA);
-    } else {
-      wrap.innerHTML =
-        '<p class="ap-email-cta__eyebrow" style="margin-bottom:6px;">' + window.AP_COPY.eyebrow + '</p>'
-        + '<form class="ap-email-cta__form ap-footer-signup__form" novalidate>'
-        + '<div class="ap-email-cta__fields" style="justify-content:center;">'
-        + '<input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address">'
-        + '<button type="submit" class="ap-email-cta__btn">' + window.AP_COPY.btnShort + '</button>'
-        + '</div><p class="ap-email-cta__msg ap-footer-signup__msg" role="status" aria-live="polite"></p>'
-        + '<p class="ap-email-cta__hint">' + window.AP_COPY.privacyMicro + '</p></form>';
-      wireEmailForm(wrap.querySelector('form'), { source: 'footer', tag: 'tag_footer' });
-    }
-    host.insertBefore(wrap, host.firstChild);
-  }
-
-  // ── "Cosmic Weather Premium" waitlist forms (validate the future subscription) ──
-  function wireWaitlist() {
-    document.querySelectorAll('.cw-waitlist__form').forEach(function (f) {
-      if (f._wired) return; f._wired = true;
-      f.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var wlField = emailFieldOf(f);
-        var email = (wlField && wlField.value || '').trim();
-        if (!isEmail(email)) { if (window.AstroApp) AstroApp.showToast('Check your email', 'That looks off.', 'warning'); return; }
-        var res = captureEmail(email, { list: 'waitlist', source: 'waitlist', tag: 'tag_waitlist', quiet: true });
-        var box = f.closest('.cw-waitlist');
-        var eyebrow = function (t) { return '<p class="cw-waitlist__eyebrow" style="font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver-dim,#8891AA);margin:0 0 0.3rem;">' + t + '</p>'; };
-        var line = function (t) { return '<p style="font-family:\'Cormorant Garamond\',serif;font-size:0.98rem;color:var(--silver,#C8D0E8);margin:0;">' + t + '</p>'; };
-        // Dormant (no list configured): nothing was posted, and the copy says so.
-        if (res.sent !== 'provider') {
-          if (box) box.innerHTML = eyebrow('You’re on the waitlist.') + line('Saved — nothing was sent or charged. If enough of you want it, we’ll build it.');
-          return;
-        }
-        // A list exists, so "you're on the waitlist" waits for the list to agree.
-        if (box) box.innerHTML = eyebrow('Sending…') + line('Adding you to the waitlist.');
-        res.confirmed.then(function (ok) {
-          if (!box) return;
-          box.innerHTML = ok
-            ? eyebrow('You’re on the waitlist.') + line('Check your inbox to confirm. We’ll only ever email you if this becomes real.')
-            : eyebrow('That didn’t send.') + line('You are not on the waitlist — check your connection and try again, or email contact@astroprecise.app.');
-        });
-      });
-    });
-  }
-
-  function boot() {
-    // The five launch routes own their hierarchy, footer and one intentional
-    // conversion surface. Legacy email banners/forms made those pages look like
-    // separate campaigns and could insert a full-width bar after first paint.
-    if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
-    resetEmailModalState();
-    function injectModalWhenReady() {
-      if (document.body.classList.contains('preloader-active')) return;
-      injectEmailModal();
-      resetEmailModalState();
-    }
-    window.addEventListener('ap-hero-enter', injectModalWhenReady, { once: true });
-    if (window.__apHeroEntered && !document.body.classList.contains('preloader-active')) {
-      injectModalWhenReady();
-    }
-    window.addEventListener('pageshow', function (ev) {
-      if (ev.persisted) resetEmailModalState();
-    });
-    ensureSitePolishCss();
-    injectNavCTA();
-    injectHeroCTA();
-    injectBannerCTA();
-    injectFooterSignup();
-    injectStickyCTA();
-    wireWaitlist();
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
-})();
-
-// Footer social icons + affiliate ads (all pages that load app.js).
+// Footer social icons + affiliate wiring (ads remain hard-gated by a real tag).
 (function loadAffiliateSocial() {
   if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   if (document.querySelector('script[data-ap-affiliate-social]')) return;
   var s = document.createElement('script');
-  s.src = 'js/affiliate-social.js';
+  s.src = 'js/affiliate-social.js?v=' + AP_ASSET_V;
   s.dataset.apAffiliateSocial = '1';
   s.defer = true;
   document.head.appendChild(s);
@@ -2935,7 +1821,7 @@ else AstroApp.init();
 (function loadNavPrefetch() {
   if (document.querySelector('script[data-ap-nav-prefetch], script[src*="ap-nav-prefetch"]')) return;
   var s = document.createElement('script');
-  s.src = 'js/ap-nav-prefetch.js';
+  s.src = 'js/ap-nav-prefetch.js?v=' + AP_ASSET_V;
   s.dataset.apNavPrefetch = '1';
   s.defer = true;
   document.head.appendChild(s);
@@ -2945,7 +1831,7 @@ else AstroApp.init();
 (function loadFooterInject() {
   if (document.querySelector('script[data-ap-footer-inject], script[src*="ap-footer-inject"]')) return;
   var s = document.createElement('script');
-  s.src = 'js/ap-footer-inject.js';
+  s.src = 'js/ap-footer-inject.js?v=' + AP_ASSET_V;
   s.dataset.apFooterInject = '1';
   s.defer = true;
   document.head.appendChild(s);

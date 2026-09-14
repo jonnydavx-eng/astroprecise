@@ -3,19 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Live Sky Observatory | Astro Precise</title>
-  <meta name="description" content="The live 3D Sky Explorer now lives inside the Astro Precise Observatory.">
+  <meta name="referrer" content="no-referrer">
+  <title>Sky Explorer moved | AstroPrecise</title>
+  <meta name="description" content="The old Sky Explorer URL now redirects to the Observatory. The 3D model runs on a sky clock — computed positions, not a live spacecraft feed.">
   <meta name="robots" content="noindex, follow">
-  <link rel="stylesheet" href="./css/fonts.css?v=874">
-  <link rel="canonical" href="https://astroprecise.app/">
   <script>
   (function () {
+    var SAFE_FOCUS = {
+      earth: 1, sun: 1, moon: 1, mercury: 1, venus: 1, mars: 1,
+      jupiter: 1, saturn: 1, uranus: 1, neptune: 1, pluto: 1
+    };
     var target = new URL('./index.html', location.href);
-    target.search = location.search;
-    target.hash = location.hash;
+    var query = new URLSearchParams(location.search || '');
+    var keptQuery = new URLSearchParams();
+    query.forEach(function (value, key) {
+      var canonicalKey = String(key || '').toLowerCase();
+      if ((canonicalKey === 'nosw' || canonicalKey === 'lite') && String(value) === '1' && !keptQuery.has(canonicalKey)) {
+        keptQuery.set(canonicalKey, '1');
+      }
+    });
+    var fragment = new URLSearchParams(String(location.hash || '').replace(/^#/, ''));
+    var keptHash = new URLSearchParams();
+    fragment.forEach(function (value, key) {
+      var canonicalKey = String(key || '').toLowerCase();
+      if (canonicalKey === 'focus') {
+        var focus = String(value || '').toLowerCase();
+        if (SAFE_FOCUS[focus] && !keptHash.has('focus')) keptHash.set('focus', focus);
+      }
+      if (canonicalKey === 'scale' && /^-?\d+$/.test(String(value)) && !keptHash.has('scale')) {
+        keptHash.set('scale', String(value));
+      }
+    });
+    target.search = keptQuery.toString();
+    target.hash = keptHash.toString();
     location.replace(target.href);
   })();
   </script>
+  <link rel="stylesheet" href="./css/fonts.css?v=902">
+  <link rel="canonical" href="https://astroprecise.app/">
   <noscript><meta http-equiv="refresh" content="0; url=./index.html"></noscript>
   <style>
     :root { color-scheme: dark; }
@@ -26,8 +51,8 @@
       display: grid;
       place-items: center;
       padding: 24px;
-      background: radial-gradient(circle at 50% 30%, rgba(216,180,106,.08), transparent 48%), #020307;
-      color: #f2ecdf;
+      background: radial-gradient(circle at 50% 30%, rgba(139,169,255,.08), transparent 48%), #040812;
+      color: #EEF4FA;
       font: 16px/1.6 'Schibsted Grotesk', 'Segoe UI', sans-serif;
     }
     main { width: min(560px, 100%); text-align: center; }
@@ -38,8 +63,8 @@
       align-items: center;
       padding: 0 20px;
       border-radius: 5px;
-      background: #ff6428;
-      color: #170702;
+      background: #8BA9FF;
+      color: #07101E;
       font-weight: 700;
     }
   </style>
@@ -47,8 +72,8 @@
 <body>
   <main>
     <h1>The Explorer is now the Observatory.</h1>
-    <p>Every planet, scale and live-sky control is available in one place.</p>
-    <p><a href="./index.html">Open the live sky</a></p>
+    <p>Planet focus, scale and sky-clock controls live on the Observatory route — computed on your device, honestly labelled.</p>
+    <p><a href="./index.html">Open the Observatory</a></p>
   </main>
 </body>
 </html>

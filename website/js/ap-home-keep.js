@@ -120,6 +120,10 @@
     }
   }
 
+  function fromKeepHandoff() {
+    return detailFromFields(readJson(sessionStorage, 'ap-keep-sky-handoff'));
+  }
+
   function fromSessionChart() {
     var handoff = readJson(sessionStorage, 'ap-chart-handoff');
     if (handoff && handoff.date && handoff.time) {
@@ -175,6 +179,7 @@
 
   function resolveBoot() {
     publish(
+      fromKeepHandoff() ||
       fromSessionChart() ||
       fromKeepMinute() ||
       fromSavedCharts() ||

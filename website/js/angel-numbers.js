@@ -52,13 +52,13 @@
     Sun: '☉', Moon: '☽', Mercury: '☿', Venus: '♀', Mars: '♂', Jupiter: '♃', Saturn: '♄'
   };
   var HOUR_MEANINGS = {
-    Sun: 'Hour of sovereignty — a moment that favours visibility, leadership, and stepping forward.',
-    Moon: 'Hour of tides — a moment that favours rest, intuition, home, and feeling.',
-    Mercury: 'Hour of the messenger — a moment that favours words, study, and clear communication.',
-    Venus: 'Hour of grace — a moment that favours love, beauty, and harmony.',
-    Mars: 'Hour of the blade — a moment that favours courage, effort, and cutting away what is finished.',
-    Jupiter: 'Hour of expansion — a moment that favours generosity, faith, and thinking big.',
-    Saturn: 'Hour of the threshold — a moment that favours boundaries, endings, and patient work.'
+    Sun: 'In the Chaldean hour tradition this slice of day is read as sovereignty — visibility, leadership, stepping forward. Symbolic, not a forecast.',
+    Moon: 'In the Chaldean hour tradition this slice of day is read as tides — rest, home, feeling. Symbolic, not a forecast.',
+    Mercury: 'In the Chaldean hour tradition this slice of day is read as the messenger — words, study, communication. Symbolic, not a forecast.',
+    Venus: 'In the Chaldean hour tradition this slice of day is read as grace — relating, beauty, harmony. Symbolic, not a forecast.',
+    Mars: 'In the Chaldean hour tradition this slice of day is read as the blade — effort, courage, cutting away. Symbolic, not a forecast.',
+    Jupiter: 'In the Chaldean hour tradition this slice of day is read as expansion — generosity, faith, scale. Symbolic, not a forecast.',
+    Saturn: 'In the Chaldean hour tradition this slice of day is read as the threshold — boundaries, endings, patience. Symbolic, not a forecast.'
   };
 
   function sunriseSunsetUTC(y, m, d, lat, lon) {
@@ -141,84 +141,84 @@
 
   var NUMBERS = {
     '111': {
-      title: 'New Beginnings & Focus', root: 1, element: 'fire', color: '#d8b46a',
+      title: 'New Beginnings & Focus', root: 1, element: 'fire', color: '#FF8EA8',
       keywords: ['Initiative', 'Alignment', 'Fresh Start', 'Intention'],
       meaning: 'In numerology, 1 is the number of beginnings, will, and self-direction. Seeing 111 is often read as a nudge to notice what you were just thinking — and to point that attention somewhere worthy. It is a mirror for fresh starts and singular focus, not a forecast.',
       reflection: 'What did your mind land on a moment ago — and is it where you want your energy to flow?',
       faq: 'In numerology, 111 amplifies the meaning of 1: beginnings, initiative, and focused intention. Many people treat 111 as a reminder to be deliberate about their current train of thought. It is a reflective prompt, not a prediction.'
     },
     '222': {
-      title: 'Balance & Patience', root: 2, element: 'water', color: '#6a8a82',
+      title: 'Balance & Patience', root: 2, element: 'water', color: '#79C7F2',
       keywords: ['Harmony', 'Trust', 'Partnership', 'Patience'],
       meaning: 'The number 2 carries cooperation, balance, and the space between things. 222 is commonly read as a cue to trust the slow work of alignment — to keep faith with what is still forming beneath the surface and to value partnership over force.',
       reflection: 'Where in your life would patience serve you better than pressure right now?',
       faq: 'In numerology, 222 doubles and triples the qualities of 2 — balance, cooperation, and trust in timing. It is often interpreted as a reminder to stay patient and seek harmony. Treat it as a mirror for reflection, not a guarantee.'
     },
     '333': {
-      title: 'Expression & Creativity', root: 3, element: 'air', color: '#c08858',
+      title: 'Expression & Creativity', root: 3, element: 'air', color: '#A897FF',
       keywords: ['Creativity', 'Voice', 'Joy', 'Communication'],
       meaning: 'Three is the number of creative expression and communication. 333 is widely read as encouragement to create, speak, and share — to let an idea out rather than keep it tidy and unspoken. A mirror for self-expression.',
       reflection: 'What have you been holding back from saying, making, or sharing?',
       faq: 'In numerology, 333 magnifies 3: creativity, communication, and joyful self-expression. People often read it as a prompt to create or speak up. It is a reflective symbol, not a predictive sign.'
     },
     '444': {
-      title: 'Structure & Stability', root: 4, element: 'earth', color: '#0e5c3a',
+      title: 'Structure & Stability', root: 4, element: 'earth', color: '#6FD0B3',
       keywords: ['Foundation', 'Order', 'Steadiness', 'Discipline'],
       meaning: 'Four is the number of foundations and form. 444 is often read as a steadying mirror — a reminder that the groundwork matters, that consistency compounds, and that solid structure makes everything else possible.',
       reflection: 'Which foundation in your life would reward a little more care this week?',
       faq: 'In numerology, 444 emphasises 4: stability, structure, and disciplined effort. Many treat it as a reassuring reminder that their foundations are sound. It is a mirror for reflection, not a prediction.'
     },
     '555': {
-      title: 'Change & Movement', root: 5, element: 'air', color: '#9db36a',
+      title: 'Change & Movement', root: 5, element: 'air', color: '#A897FF',
       keywords: ['Change', 'Freedom', 'Movement', 'Adaptation'],
       meaning: 'Five is the number of change, freedom, and the senses. 555 is commonly read as a mirror for transition — a cue to loosen your grip on the familiar and stay adaptable as something shifts.',
       reflection: 'What change are you resisting that might actually be an opening?',
       faq: 'In numerology, 555 intensifies 5: change, freedom, and movement. It is often interpreted as a sign that transition is underway and adaptability helps. Treat it as a reflective prompt rather than a forecast.'
     },
     '666': {
-      title: 'Recentring & Balance', root: 6, element: 'earth', color: '#b04a52',
+      title: 'Recentring & Balance', root: 6, element: 'earth', color: '#6FD0B3',
       keywords: ['Care', 'Home', 'Responsibility', 'Re-balance'],
       meaning: 'Despite its pop-culture baggage, in numerology 6 is the number of care, home, and responsibility. 666 is best read as a gentle mirror to recentre — to check whether you have over-given, over-worried, or drifted from what matters, and to restore balance.',
       reflection: 'Have you been pouring out more than you have been taking in?',
       faq: 'In numerology, 666 is not sinister — 6 is the number of care, home, and responsibility. 666 is commonly read as a nudge to rebalance and return to what matters. It is a reflective symbol, not a warning or prediction.'
     },
     '777': {
-      title: 'Reflection & Wisdom', root: 7, element: 'water', color: '#5c4a6e',
+      title: 'Reflection & Wisdom', root: 7, element: 'water', color: '#79C7F2',
       keywords: ['Insight', 'Solitude', 'Learning', 'Depth'],
       meaning: 'Seven is the number of inner work, study, and quiet insight. 777 is often read as a mirror for the contemplative — a cue to trust what you are learning and to make room for stillness.',
       reflection: 'What is the quiet insight you keep noticing but have not acted on?',
       faq: 'In numerology, 777 deepens 7: introspection, wisdom, and learning. People often read it as affirmation of their inner path. It is a reflective prompt, not a predictive sign.'
     },
     '888': {
-      title: 'Flow & Reciprocity', root: 8, element: 'earth', color: '#6e1a26',
+      title: 'Flow & Reciprocity', root: 8, element: 'earth', color: '#6FD0B3',
       keywords: ['Flow', 'Balance', 'Effort', 'Cycles'],
       meaning: 'Eight is the number of cycles, effort, and material balance — the figure that flows back into itself. 888 is commonly read as a mirror for reciprocity: what you put out and what returns, kept in honest balance. (Numerology is reflective; it is not financial advice.)',
       reflection: 'Where could you bring your effort and your rest into better balance?',
       faq: 'In numerology, 888 amplifies 8: cycles, balance, and effort. It is often read as a symbol of reciprocity and steady flow. It is a reflective prompt only — never financial advice or a prediction.'
     },
     '999': {
-      title: 'Completion & Release', root: 9, element: 'fire', color: '#d8b46a',
+      title: 'Completion & Release', root: 9, element: 'fire', color: '#FF8EA8',
       keywords: ['Completion', 'Release', 'Closure', 'Wisdom'],
       meaning: 'Nine is the number of completion and the close of a cycle. 999 is widely read as a mirror for endings — an invitation to release what is finished so the next chapter has room to arrive.',
       reflection: 'What are you ready to let reach its natural ending?',
       faq: 'In numerology, 999 emphasises 9: completion, release, and closure. Many read it as a sign a chapter is ending. It is a reflective symbol, not a prediction.'
     },
     '000': {
-      title: 'Stillness & Potential', root: 9, element: 'void', color: '#A89E88',
+      title: 'Stillness & Potential', root: 9, element: 'void', color: '#93A8BF',
       keywords: ['Wholeness', 'Reset', 'Openness', 'Stillness'],
       meaning: 'Zero is the circle of wholeness and unformed potential — the pause before the next thing. 000 is often read as a mirror for the threshold moment: a clean slate, a breath, an open field. (000 reduces to 0; reflectively it is paired with the completing energy of 9.)',
       reflection: 'If this were a genuinely fresh start, what would you do first?',
       faq: 'In numerology, 000 represents wholeness, potential, and a reset point — the circle of zero. It is commonly read as a clean-slate moment. It is a reflective prompt, not a prediction.'
     },
     '1111': {
-      title: 'Awareness & Alignment', root: 4, element: 'air', color: '#e8c96a',
+      title: 'Awareness & Alignment', root: 4, element: 'air', color: '#A897FF',
       keywords: ['Awareness', 'Synchronicity', 'Intention', 'Awakening'],
       meaning: 'Perhaps the most-noticed sequence of all, 1111 stacks four 1s — beginnings multiplied. It is most often read as a "wake-up" mirror: a moment to become aware of your attention and intentions. Reduced, its digits sum to 4 — awareness given structure.',
       reflection: 'In this exact moment, what is occupying your attention — and is it worthy of it?',
       faq: '1111 is the most commonly noticed angel number. In numerology it stacks the 1 (beginnings, intention) four times and is read as a "wake-up" prompt to notice your thoughts. Its digits reduce to 4 (structure). It is a reflective symbol, not a prediction.'
     },
     '1212': {
-      title: 'Steps & Progression', root: 6, element: 'earth', color: '#c8b07a',
+      title: 'Steps & Progression', root: 6, element: 'earth', color: '#6FD0B3',
       keywords: ['Progress', 'Steps', 'Growth', 'Order'],
       meaning: '1212 alternates the beginning (1) with the partnership and balance of (2), like steps climbed in sequence. It is commonly read as a mirror for steady progression — moving in the right order, one balanced step at a time. Its digits reduce to 6 — care woven through progress.',
       reflection: 'What is the next small, ordered step rather than the whole staircase?',

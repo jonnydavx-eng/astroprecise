@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, follow">
   <meta name="color-scheme" content="dark">
-  <style>html{background:#05080F}</style>
+  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Cosmic Story — A Personalised Narrative | AstroPrecise</title>
   <meta name="description" content="Your birth chart retold as a flowing personal narrative — the arc of your Sun, Moon and rising, drawn from the real sky of your first breath. By AstroPrecise." />
   <link rel="canonical" href="https://astroprecise.app/cosmic-story.html" />
-  <meta name="theme-color" content="#05080F" />
+  <meta name="theme-color" content="#040812" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -27,7 +28,7 @@
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Your Cosmic Story | AstroPrecise" />
   <meta name="twitter:description" content="Your birth chart retold as a flowing personal narrative, drawn from the real sky of your first breath." />
@@ -52,67 +53,67 @@
   </script>
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=780" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=780" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=902" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=902" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=752" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=902" />
   <!-- v4 ATLAS override — token remap (plate rules live inline below) -->
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=891" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=902" id="ap-css-atlas-tokens" />
   <style>
     .cstory-wrap { max-width: 760px; margin: 0 auto; padding: calc(var(--nav-height, 72px) + clamp(1.25rem, 4vw, 2.5rem)) var(--space-4, 1rem) 4rem; }
-    body.page-cosmic-story { background: #05080F; }
-    body.page-cosmic-story ::selection{ background:#B86B4A; color:#05080F; }
+    body.page-cosmic-story { background: #040812; }
+    body.page-cosmic-story ::selection{ background:#8BA9FF; color:#07101E; }
     .cstory-hero { text-align: center; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
     .cstory-hero__eyebrow {
       font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.66rem; letter-spacing: 0.3em;
-      text-transform: uppercase; color: #B86B4A; opacity: 0.95; margin: 0 0 1rem;
+      text-transform: uppercase; color: #8BA9FF; opacity: 0.95; margin: 0 0 1rem;
     }
     .cstory-hero__title {
       font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 500;
-      font-size: clamp(2.9rem, 7vw, 5.2rem); line-height: 1.02; letter-spacing: -0.01em; color: #E6ECF2;
+      font-size: clamp(2.9rem, 7vw, 5.2rem); line-height: 1.02; letter-spacing: -0.01em; color: #EEF4FA;
       margin: 0 0 0.8rem; text-wrap: balance;
     }
     .cstory-hero__sub {
       font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic;
-      font-size: clamp(1.05rem, 2.4vw, 1.35rem); color: rgba(230,236,242,.66); margin: 0; text-wrap: balance;
+      font-size: clamp(1.05rem, 2.4vw, 1.35rem); color: rgba(238,244,250,.76); margin: 0; text-wrap: balance;
     }
     .cstory-note {
       margin: 0 auto 2.5rem; max-width: 560px; text-align: center; font-size: 0.9rem; line-height: 1.6;
-      color: rgba(230,236,242,.66);
-      background: rgba(230,236,242,.03); border: 1px solid rgba(143,163,184,.22);
+      color: rgba(238,244,250,.76);
+      background: rgba(238,244,250,.03); border: 1px solid rgba(147,168,191,.22);
       border-radius: 6px; padding: 0.9rem 1.2rem;
     }
-    .cstory-note b { color: #B86B4A; }
+    .cstory-note b { color: #8BA9FF; }
     .cstory__mv { margin: 0 0 clamp(2rem, 5vw, 3.2rem); }
     .cstory__kicker {
       font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase;
-      color: #B86B4A; opacity: 0.9; margin: 0 0 0.5rem;
+      color: #8BA9FF; opacity: 0.9; margin: 0 0 0.5rem;
     }
     .cstory__h {
       font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 500;
-      font-size: clamp(1.5rem, 3.6vw, 2.1rem); color: #E6ECF2;
+      font-size: clamp(1.5rem, 3.6vw, 2.1rem); color: #EEF4FA;
       margin: 0 0 0.9rem; line-height: 1.18; text-wrap: balance;
     }
-    .cstory__h::before { content: '✦'; color: #B86B4A; font-size: 0.7em; margin-right: 0.5em; opacity: 0.8; }
+    .cstory__h::before { content: '✦'; color: #A897FF; font-size: 0.7em; margin-right: 0.5em; opacity: 0.8; }
     .cstory__p {
       font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(1.08rem, 2.4vw, 1.28rem);
-      line-height: 1.72; color: rgba(230,236,242,.88); margin: 0 0 1rem;
+      line-height: 1.72; color: rgba(238,244,250,.88); margin: 0 0 1rem;
     }
-    .cstory__p em { color: rgba(230,236,242,.66); }
-    .cstory__p strong { color: #C5D4E0; font-weight: 600; }
-    .cstory-foot { text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(143,163,184,.18); }
-    .cstory-foot__line { color: rgba(230,236,242,.6); font-size: 0.98rem; margin: 0 0 1.2rem; }
+    .cstory__p em { color: rgba(238,244,250,.76); }
+    .cstory__p strong { color: #C9D6E3; font-weight: 600; }
+    .cstory-foot { text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(147,168,191,.18); }
+    .cstory-foot__line { color: rgba(238,244,250,.58); font-size: 0.98rem; margin: 0 0 1.2rem; }
     .cstory-cta {
       display: inline-flex; align-items: center; gap: 0.5rem; min-height: 48px; padding: 0 1.6rem;
       border-radius: 4px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 400;
       font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
-      text-decoration: none; color: #05080F;
-      background: #B86B4A;
+      text-decoration: none; color: #07101E;
+      background: #8BA9FF;
     }
-    .cstory-cta--ghost { background: transparent; color: #C5D4E0; border: 1px solid rgba(143,163,184,.4); margin-left: 0.6rem; }
-    .cstory-cta--ghost:hover { border-color: #B86B4A; color: #B86B4A; }
-    .cstory-skel { opacity: 0.6; text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; color: rgba(230,236,242,.6); padding: 2rem 0; }
+    .cstory-cta--ghost { background: transparent; color: #C9D6E3; border: 1px solid rgba(147,168,191,.4); margin-left: 0.6rem; }
+    .cstory-cta--ghost:hover { border-color: #A5BCFF; color: #A5BCFF; }
+    .cstory-skel { opacity: 0.6; text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; color: rgba(238,244,250,.58); padding: 2rem 0; }
   </style>
 </head>
 <body class="page-cosmic-story ap-cinematic-2026 ap-no-nav-enter">
@@ -146,62 +147,26 @@
     <header class="cstory-hero">
       <p class="cstory-hero__eyebrow">✦ A free sample reading — yours will be personal</p>
       <h1 class="cstory-hero__title" id="cstory-title">Your Cosmic Story</h1>
-      <p class="cstory-hero__sub">Your chart, retold as a story — written from the exact sky of your first breath.</p>
+      <p class="cstory-hero__sub">Your chart retold as a letter. Unknown time withholds the Moon and Rising. This is a reading, not a live sky feed.</p>
     </header>
 
-    <p class="cstory-note" id="cstory-note" hidden>This is a <b>free sample</b> woven from a real example chart. <a href="chart.html" style="color:var(--ap-ember,#B86B4A)">Cast your own chart</a> and your story rewrites itself from your placements.</p>
+    <p class="cstory-note" id="cstory-note" hidden>This is a <b>free sample</b> woven from a real example chart. <a href="chart.html" style="color:var(--ap-ion,#8BA9FF)">Cast your own chart</a> and your story rewrites itself from your placements.</p>
 
     <div id="cstory-out" aria-live="polite"><p class="cstory-skel">Reading the sky…</p></div>
 
     <div id="cosmic-story-ai-panel" hidden aria-label="Optional reading insight"></div>
-
-    <footer class="cstory-foot">
-      <p class="cstory-foot__line">Every line above is drawn from your real VSOP87 chart — not a generic horoscope.</p>
-      <a class="cstory-cta" href="chart.html">✦ Cast your free chart →</a>
-      <a class="cstory-cta cstory-cta--ghost" href="eclipse.html#contact">Check your eclipse contact →</a>
-    </footer>
   </main>
 
-  <!-- ============================================================
-       FOOTER — unified footer-nav model (ap-footer-inject upgrades in place)
-  ============================================================ -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-      <div class="footer-inner" data-ap-footer-model="1">
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro<i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed on your device &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-            <li><a href="sample-reading.html"><span aria-hidden="true">✦</span> Sample</a></li>
-            <li><a href="guides.html"><span aria-hidden="true">☰</span> Library</a></li>
-            <li><a href="shop.html"><span aria-hidden="true">◇</span> Shop</a></li>
-          </ul>
-        </div>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
+    <div class="ap-site-footer__inner">
+      <div class="ap-site-footer__brand">
+        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
+        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
       </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; All calculations run on your device &middot; No data collected &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
     </div>
+    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
   </footer>
 
   <!-- Toast container -->
@@ -302,8 +267,8 @@
   <script src="js/ap-daily-bridge.js" defer></script>
   <script src="js/ap-ai-assistant.js" defer></script>
   <!-- Shared page chrome: renderNav (masthead) + upgraded footer nav model -->
-  <script src="js/ap-page-boot.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=874" defer></script>
+  <script src="js/ap-page-boot.js?v=902" defer></script>
+  <script src="js/ap-footer-inject.js?v=902" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

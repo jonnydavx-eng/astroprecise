@@ -1,5 +1,5 @@
 /* Phone pass 14 Aug 2026 — 390x844 Act 1.
-   Type floor, 44px taps, stage height, overflow, ember primaries.
+   Type floor, 44px taps, stage height, overflow, ion primaries.
    Does not swap WebGL for 2D. */
 
 @media (max-width: 700px) {
@@ -225,9 +225,9 @@
   .btn--primary,
   .ap-action--primary,
   .tn-btn--primary {
-    background: #B86B4A;
-    color: #170702;
-    border-color: #B86B4A;
+    background: #8BA9FF;
+    color: #07101E;
+    border-color: #8BA9FF;
   }
 
   body:has(.tn-hero) .site-header {
@@ -267,16 +267,36 @@
     line-height: 1.12 !important;
   }
 
-  html body.page-chart .ap-room-sky.ap-earth-band,
-  html body.page-chart .ap-room-sky {
+}
+
+@media (max-width: 980px) {
+  /* 26 Aug leftover: couples first-screen stage was 260px; sky-card /
+     sitting form labels and receipt copy were still instrument-size. */
+  html body.page-compat.ap-compat-static .ap-model-stage,
+  html body.page-compat .ap-model-stage {
     height: auto !important;
     min-height: 360px !important;
   }
-  html body.page-chart .ap-room-sky .ap-model-stage {
-    min-height: 360px !important;
+
+  html body.page-sky-card .ap-card-form label span,
+  html body.page-natal-reading .ap-natal-form .ap-natal-saved span,
+  html body.page-natal-reading .ap-natal-receipt p,
+  html body.page-natal-reading .ap-natal-withheld,
+  html body.page-natal-reading .ap-natal-also p {
+    font-size: 16px !important;
+    line-height: 1.5;
   }
-  html body.page-chart .ap-room-sky .ap-model-stage void-orrery,
-  html body.page-chart .ap-room-sky .ap-model-stage canvas {
-    transform: none !important;
+
+  html body .btn-primary,
+  html body .btn--primary,
+  html body .ap-action--primary,
+  html body .btn-invite,
+  html body.page-natal-reading .ap-natal-form button,
+  html body.page-natal-reading .ap-natal-print,
+  html body.page-natal-reading .ap-keep-path-strip a,
+  html body.page-sky-card .ap-card-btn {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    box-sizing: border-box;
   }
 }

@@ -7,7 +7,6 @@
 
 window.AstroProfile = (() => {
 
-  const STORAGE_KEY_USER     = 'ap_user';
   const STORAGE_KEY_CHARTS   = 'ap_charts';
   const STORAGE_KEY_PREFS    = 'ap_prefs';
   const STORAGE_KEY_COMPARES = 'ap_comparisons';
@@ -25,54 +24,10 @@ window.AstroProfile = (() => {
     timeFormat:       '12h',
   };
 
-  // ── User ──────────────────────────────────────────────────────────────────
-
-  function getUser() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY_USER)); } catch { return null; }
-  }
-
-  function saveUser(user) {
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify({ ...user, updatedAt: Date.now() }));
-    return user;
-  }
-
-  function isLoggedIn() { return !!getUser(); }
-
-  function login(name, email, password) {
-    // Simulate authentication with localStorage (no real auth)
-    const existing = getUser();
-    if (existing && existing.email === email) {
-      // Simulate password check
-      if (existing.passwordHash !== btoa(password)) return { success: false, error: 'Incorrect password.' };
-      return { success: true, user: existing };
-    }
-    return { success: false, error: 'Account not found. Please create an account.' };
-  }
-
-  function register(name, email, password) {
-    const existing = getUser();
-    if (existing && existing.email === email) return { success: false, error: 'An account with this email already exists.' };
-    const user = {
-      id:           crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
-      name,
-      email,
-      passwordHash: btoa(password),
-      createdAt:    Date.now(),
-      avatar:       name.charAt(0).toUpperCase(),
-    };
-    saveUser(user);
-    return { success: true, user };
-  }
-
-  function logout() {
-    localStorage.removeItem(STORAGE_KEY_USER);
-  }
-
-  function updateProfile(updates) {
-    const user = getUser();
-    if (!user) return null;
-    return saveUser({ ...user, ...updates });
-  }
+  // Retired local pseudo-accounts once stored reversible password material in
+  // `ap_user`. No shipped UI used that API. Purge any legacy residue and keep
+  // AstroPrecise account-free until a real authenticated service exists.
+  try { localStorage.removeItem('ap_user'); } catch {}
 
   // ── Charts ────────────────────────────────────────────────────────────────
 
@@ -96,7 +51,7 @@ window.AstroProfile = (() => {
         const byId = getChart(activeId);
         if (byId) return byId;
       }
-    } catch (_) {}
+    } catch {}
     return charts[0];
   }
 
@@ -149,7 +104,7 @@ window.AstroProfile = (() => {
   function isValidTimeZone(tz) {
     if (typeof tz !== 'string' || !tz.trim()) return false;
     try { new Intl.DateTimeFormat('en-US', { timeZone: tz }).format(); return true; }
-    catch (e) { return false; }
+    catch { return false; }
   }
 
   // Keep profile.html's cosmic dashboard in sync when charts are saved from chart.html.
@@ -193,7 +148,7 @@ window.AstroProfile = (() => {
       new Intl.DateTimeFormat('en-GB', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' })
         .formatToParts(utcDate).forEach(x => { p[x.type] = x.value; });
       return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - utcDate.getTime()) / 60000;
-    } catch (e) { return 0; }
+    } catch { return 0; }
   }
   function civilToUT(y, m, d, hh, mm, zone) {
     let u = new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
@@ -317,11 +272,10 @@ window.AstroProfile = (() => {
     return prefs;
   }
 
-  // ── Export / Import ───────────────────────────────────────────────────────
+  // ── Export ────────────────────────────────────────────────────────────────
 
   function exportData() {
     const data = {
-      user:        getUser(),
       charts:      getCharts(),
       comparisons: getComparisons(),
       prefs:       getPrefs(),
@@ -339,19 +293,6 @@ window.AstroProfile = (() => {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function importData(jsonString) {
-    try {
-      const data = JSON.parse(jsonString);
-      if (data.user)        saveUser(data.user);
-      if (data.charts)      localStorage.setItem(STORAGE_KEY_CHARTS,   JSON.stringify(data.charts));
-      if (data.comparisons) localStorage.setItem(STORAGE_KEY_COMPARES, JSON.stringify(data.comparisons));
-      if (data.prefs)       localStorage.setItem(STORAGE_KEY_PREFS,    JSON.stringify(data.prefs));
-      return { success: true, chartsImported: (data.charts || []).length };
-    } catch (e) {
-      return { success: false, error: e.message };
-    }
-  }
-
   // ── Shareable URL ─────────────────────────────────────────────────────────
   //
   // generateShareUrl() was removed on 2026-08-09. It minted
@@ -361,20 +302,6 @@ window.AstroProfile = (() => {
   // trap for the next person, so it is gone rather than left. The one supported
   // way to build a share link is APChartShare.buildShareUrl(), which runs only
   // when the visitor presses Share or Copy link.
-
-  // Load chart data from URL params
-  function loadChartFromUrl() {
-    const params = new URLSearchParams(location.search);
-    if (!params.get('date')) return null;
-    return {
-      name:      params.get('name') || 'Shared Chart',
-      birthDate: params.get('date'),
-      birthTime: params.get('time') || '12:00',
-      lat:       parseFloat(params.get('lat')) || 0,
-      lon:       parseFloat(params.get('lon')) || 0,
-      city:      params.get('city') || '',
-    };
-  }
 
   const SAVE_POSITION_KEYS = [
     'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn',
@@ -460,23 +387,13 @@ window.AstroProfile = (() => {
     return base;
   }
 
-  // ── App sync (generate QR data string) ────────────────────────────────────
-  function generateAppSyncData() {
-    const user   = getUser();
-    const charts = getCharts().slice(0, 5);
-    return btoa(JSON.stringify({ user: user ? { name: user.name } : null, charts }));
-  }
-
   return {
     engineVersion: ENGINE_V,
-    getUser, saveUser, isLoggedIn, login, register, logout, updateProfile,
     getCharts, getChart, getActiveChart, saveChart, deleteChart, buildChartData,
     packPositionsForSave, hydrateChartFromSaved,
     chartToDashboardRow, syncChartToDashboard,
     getComparisons, saveComparison, deleteComparison,
     getPrefs, savePrefs,
-    exportData, importData,
-    loadChartFromUrl,
-    generateAppSyncData,
+    exportData,
   };
 })();
