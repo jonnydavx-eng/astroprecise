@@ -57,7 +57,7 @@ body.page-horoscope {
 
 .page-horoscope .daily-room {
   position: relative;
-  padding: clamp(76px, 8vw, 116px) 0 clamp(64px, 8vw, 104px);
+  padding: clamp(28px, 4vw, 48px) 0 clamp(36px, 5vw, 64px);
   border-bottom: 1px solid var(--daily-line);
   isolation: isolate;
 }
@@ -69,10 +69,10 @@ body.page-horoscope {
   top: 0;
   right: 0;
   width: min(56vw, 820px);
-  height: 560px;
+  height: 280px;
   background: url("../img/editorial/astronomy-books-editorial.webp") 72% 22% / cover no-repeat;
   filter: saturate(0.52) contrast(1.14) brightness(0.58);
-  opacity: 0.58;
+  opacity: 0.34;
 }
 
 .page-horoscope .daily-room::after {
@@ -88,9 +88,9 @@ body.page-horoscope {
 }
 
 .page-horoscope .daily-room__inner::before {
-  content: "AP / DAILY / 12:00 UT";
+  content: "12:00 UT · solar chart";
   position: absolute;
-  top: -36px;
+  top: -22px;
   right: 0;
   color: rgba(147, 168, 191, 0.52);
   font: 0.55rem/1 "IBM Plex Mono", monospace;
@@ -99,7 +99,7 @@ body.page-horoscope {
 
 .page-horoscope .daily-hero {
   width: min(690px, 100%);
-  margin-bottom: clamp(18px, 3vw, 28px);
+  margin-bottom: clamp(12px, 2vw, 20px);
 }
 
 .page-horoscope .daily-hero__eyebrow,
@@ -141,30 +141,30 @@ body.page-horoscope {
   /* This route's editorial scale is intentional. A late shared clarity layer
      otherwise shrinks it after first paint and moves the entire picker. */
   font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
-  font-size: clamp(4.35rem, 8.5vw, 8rem) !important;
+  font-size: clamp(2.4rem, 6vw, 3.6rem) !important;
   font-weight: 500 !important;
-  line-height: 0.83 !important;
+  line-height: 0.92 !important;
 }
 
 .page-horoscope .daily-hero__sub {
   max-width: 48ch;
-  margin: 28px 0 0;
+  margin: 12px 0 0;
   color: rgba(238, 244, 250, 0.76);
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
-  line-height: 1.68;
+  font-size: clamp(0.95rem, 1.3vw, 1.08rem);
+  line-height: 1.55;
 }
 
 .page-horoscope .daily-hero__cta {
-  margin: 24px 0 8px;
+  margin: 14px 0 4px;
 }
 
 .page-horoscope .daily-hero__method,
 .page-horoscope .daily-hero__personal {
   max-width: 58ch;
-  margin: 17px 0 0;
+  margin: 8px 0 0;
   color: rgba(201, 214, 227, 0.62);
-  font-size: 0.86rem;
-  line-height: 1.55;
+  font-size: 0.8rem;
+  line-height: 1.45;
 }
 
 .page-horoscope .daily-hero__method a,
@@ -768,7 +768,7 @@ body.page-horoscope .sign-card__glyph {
 @media (max-width: 660px) {
   .page-horoscope .container,
   .page-horoscope .ap-more-sky { width: min(100% - 24px, 1180px); }
-  .page-horoscope .daily-room { padding: 66px 0 58px; }
+  .page-horoscope .daily-room { padding: 32px 0 40px; }
   .page-horoscope .daily-room::before {
     width: 100%;
     height: 260px;
@@ -780,8 +780,8 @@ body.page-horoscope .sign-card__glyph {
   }
   .page-horoscope .daily-room__inner::before { top: -28px; }
   .page-horoscope .daily-hero { margin-bottom: 18px; }
-  .page-horoscope .daily-hero h1 { font-size: clamp(2.4rem, 11vw, 3.4rem); }
-  .page-horoscope .daily-hero__sub { margin-top: 20px; font-size: 0.96rem; }
+  .page-horoscope .daily-hero h1 { font-size: clamp(2.2rem, 10vw, 3rem) !important; }
+  .page-horoscope .daily-hero__sub { margin-top: 10px; font-size: 0.94rem; }
   .page-horoscope .sign-picker-primary__head { display: block; min-height: 50px; }
   .page-horoscope .daily-reading-status { margin-top: 6px; text-align: left; }
   .page-horoscope .sign-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
