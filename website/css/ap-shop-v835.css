@@ -327,7 +327,7 @@
   background: var(--studio-void);
 }
 .ap-folio-plate__media--wheel img { aspect-ratio: 1 / 1; }
-.ap-folio-plate__media--book img { aspect-ratio: 4 / 5; }
+.ap-folio-plate__media--book img { aspect-ratio: 1 / 1; }
 .ap-folio-plate__media--earth img {
   aspect-ratio: 1 / 1;
   object-fit: cover;
