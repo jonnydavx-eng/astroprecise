@@ -23,7 +23,7 @@
   <meta property="og:image" content="https://astroprecise.app/img/og/moment.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="AstroPrecise Moment — keep the sky of a night that mattered" />
+  <meta property="og:image:alt" content="Engine still of Earth and Moon from the AstroPrecise model. SAMPLE / SCHEMATIC. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Moment — Freeze any date’s sky | AstroPrecise" />
   <meta name="twitter:description" content="Real zenith star + light-cone story + free share card. Computed in your browser." />
@@ -31,13 +31,13 @@
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=906" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=906" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=906" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=907" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=907" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=907" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/moment-page.css?v=906" id="ap-css-moment" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=906" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/moment-page.css?v=907" id="ap-css-moment" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=907" id="ap-css-structure-clean" />
   <style>
     body.ap-moment-page{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body.ap-moment-page .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -52,7 +52,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — Moment","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Freeze the real sky of any date into a keepsake: zenith star, light-cone story, and free share card. Computed in-browser with VSOP87 astronomy. Town search sends only the place name to Open-Meteo; date and time stay on this device.","url":"https://astroprecise.app/moment.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=906" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=907" />
 </head>
 <body class="ap-no-nav-enter ap-moment-page">
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -150,10 +150,10 @@
     <!-- Lifestyle teaser AFTER form (v682 form-first — never buries date/place) -->
     <figure class="mom-gallery-teaser mom-hero__gallery mom-hero__gallery--solo" id="mom-gallery-teaser">
       <picture>
-        <source type="image/webp" srcset="img/moment/hero-framed.webp?v=752" />
-        <img src="img/moment/hero-framed.jpg?v=752" width="800" height="600" alt="Framed Moment sky print on a gallery wall — example lifestyle render" decoding="async" loading="lazy" />
+        <source type="image/webp" srcset="img/moment/hero-framed.webp?v=907" />
+        <img src="img/moment/hero-framed.jpg?v=907" width="1152" height="864" alt="Engine still of Earth and Moon from the AstroPrecise model, matted as a SAMPLE / SCHEMATIC plate. Not a photograph of a birth." decoding="async" loading="lazy" />
       </picture>
-      <figcaption>Free card uses the same void-and-silver + engine plate language.</figcaption>
+      <figcaption>SAMPLE / SCHEMATIC engine still. Not a gallery photograph and not a live feed.</figcaption>
     </figure>
 
     <details class="mom-deeper">
@@ -197,7 +197,7 @@
           </p>
           <div class="mom-engine-window" id="mom-engine-window" hidden>
             <!-- Responsive Earth placeholder until JS sets the occasion plate (an empty src would reload this page as an image). -->
-            <img id="mom-engine-window-img" src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="160px" alt="" width="160" height="160" decoding="async" />
+            <img id="mom-engine-window-img" src="img/engine/studio/earth.webp" alt="" width="160" height="160" decoding="async" />
             <p class="mom-engine-window__cap" id="mom-engine-window-cap"></p>
           </div>
           <div class="mom-keep">
@@ -243,19 +243,19 @@
 
   <!-- Chrome boot -->
   <script src="js/ap-safe-dom.js" defer></script>
-  <script src="js/ap-page-boot.js?v=906" defer></script>
+  <script src="js/ap-page-boot.js?v=907" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){if(window.AP_PAGE_BOOT)AP_PAGE_BOOT.load();});</script>
   <!-- Astronomy engines (after chrome) -->
   <script src="js/raf-core.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
   <script src="js/starcatalog.js" defer></script>
   <script src="js/lightcone.js" defer></script>
-  <script src="js/ap-deep-link.js?v=906" defer></script>
-  <script src="js/ap-sky-bridge.js?v=906" defer></script>
-  <script src="js/ap-moment-share.js?v=906" defer></script>
-  <script src="js/moment-page.js?v=906" defer></script>
+  <script src="js/ap-deep-link.js?v=907" defer></script>
+  <script src="js/ap-sky-bridge.js?v=907" defer></script>
+  <script src="js/ap-moment-share.js?v=907" defer></script>
+  <script src="js/moment-page.js?v=907" defer></script>
   <script src="js/cosmos.js" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=906" defer></script>
+  <script src="js/ap-footer-inject.js?v=907" defer></script>
 </body>
 </html>
