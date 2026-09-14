@@ -275,6 +275,18 @@
   overflow: visible;
 }
 
+/* Chart uses a full-width band, so the still sits on the right. This page
+   already has copy in the left column — centre Earth in its own pane. */
+.page-compat .ap-surface-a img {
+  object-position: center;
+  object-fit: contain;
+}
+.page-compat .ap-surface-a::after {
+  background:
+    radial-gradient(circle at 50% 46%, rgba(147, 168, 191, .10), transparent 42%),
+    linear-gradient(180deg, rgba(4, 8, 18, .18), rgba(4, 8, 18, .55) 78%, rgba(4, 8, 18, .88));
+}
+
 @media (max-width: 700px) {
   .ap-compat-static .ap-live-stage { display: block; }
   .ap-compat-static .ap-live-intro {

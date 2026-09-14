@@ -1,6 +1,6 @@
 # AstroPrecise — HANDOFF (start here) · 2026-07-13
 
-**2026-09-14 Cursor @ JDAV / Laptop 1 — towards a finished public site.** Local `ap-v903`: Pages build now includes `img/shop/v902/*` (live shop 404s), Observatory first paint shows an Earth still under Settling, chart no-time path draws a labelled Date wheel, horoscope sign tiles are readable. Checkout stays closed. Public is still `ap-v902` until this branch is merged to `github/main`. Do not force-push. Do not replace the GitHub Pages workflow with the local Cloudflare dispatch file.
+**2026-09-14 Cursor @ JDAV / Laptop 1 — towards a finished public site.** Public `ap-v903` is live (shop plates 200, checkout closed). Local `ap-v904`: comparison Earth still, twelve daily signs on the first screen, quieter Events type, Profile sitting language. Checkout stays closed. Do not force-push. Do not replace the GitHub Pages workflow with the local Cloudflare dispatch file.
 
 **Canonical:** `C:\Users\jonny\dev\astroprecise` · site in `website/` · preview `http://localhost:8790/?nosw=1` · public https://astroprecise.app. Current identity is `STATUS.md`.
 
