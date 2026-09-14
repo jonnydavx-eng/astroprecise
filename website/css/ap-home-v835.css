@@ -280,10 +280,10 @@
   margin: auto;
   width: min(68vmin, 560px);
   height: min(68vmin, 560px);
-  object-fit: cover;
-  border-radius: 50%;
+  object-fit: contain;
+  border-radius: 0;
   pointer-events: none;
-  opacity: 0.92;
+  opacity: 0.94;
   transition: opacity 280ms ease, visibility 280ms ease;
 }
 .ap-model-boot {
@@ -950,9 +950,9 @@
   height: 100%;
   display: block;
   object-fit: contain;
-  object-position: right center;
-  opacity: .82;
-  filter: saturate(.82) contrast(1.08);
+  object-position: 88% 48%;
+  opacity: .94;
+  filter: none;
 }
 .ap-surface-a::after {
   content: '';

@@ -2744,9 +2744,9 @@ html body.page-chart .form-glass__icon {
 
 html body.page-chart .ap-room-sky.ap-earth-band,
 html body.page-chart .ap-room-sky {
-  height: min(17vh, 144px) !important;
-  min-height: 128px !important;
-  max-height: 144px;
+  height: min(22vh, 200px) !important;
+  min-height: 168px !important;
+  max-height: 200px;
   overflow: hidden !important;
   isolation: isolate;
   border-bottom: 0;
@@ -2913,9 +2913,9 @@ html body.page-chart.ap-chart-has-results .chart-hero {
 
   html body.page-chart .ap-room-sky.ap-earth-band,
   html body.page-chart .ap-room-sky {
-    height: 144px !important;
-    min-height: 144px !important;
-    max-height: 144px !important;
+    height: 180px !important;
+    min-height: 180px !important;
+    max-height: 180px !important;
   }
 
   html body.page-chart .ap-room-sky .ap-model-stage {
