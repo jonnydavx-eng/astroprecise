@@ -1,4 +1,4 @@
-import { buildDeepReading } from './deep-reading.js?v=902';
+import { buildDeepReading } from './deep-reading.js?v=903';
 
 const TARGETS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 const ASSUMED_HOUR = '12:00';
@@ -449,16 +449,41 @@ function renderReceipt(meta) {
   )).join('');
 }
 
+function renderChapter(chapter) {
+  const lead = chapter.n === 7 ? '' : (chapter.lead || '');
+  const serif = (chapter.serif || []).filter((line) => line && line !== lead);
+  const textbook = [];
+  const visible = [];
+  const TEXTBOOK_PERSON = /\b(these individuals|natives of|the natives|the native|this native|this individual|people with this placement)\b/i;
+  for (const line of serif) {
+    if (chapter.n !== 7 && TEXTBOOK_PERSON.test(line)) textbook.push(line);
+    else visible.push(line);
+  }
+  for (const line of chapter.textbook || []) {
+    if (line && line !== lead) textbook.push(line);
+  }
+  let html = `<article class="ap-natal-ch" id="ch-${chapter.n}">`
+    + `<p class="ap-natal-ch__n">Chapter ${chapter.n}</p>`
+    + `<h2>${esc(chapter.title)}</h2>`;
+  if (chapter.n === 7) {
+    html += (chapter.serif || []).map((line) => `<p class="ap-natal-ch__serif ap-natal-ch__letter">${esc(line)}</p>`).join('');
+    return html + '</article>';
+  }
+  if (lead) html += `<p class="ap-natal-ch__lead">${esc(lead)}</p>`;
+  html += visible.map((line) => `<p class="ap-natal-ch__serif">${esc(line)}</p>`).join('');
+  html += (chapter.mono || []).map((line) => `<p class="ap-natal-ch__mono">${esc(line)}</p>`).join('');
+  if (textbook.length) {
+    html += '<details class="ap-natal-ch__details">'
+      + '<summary>More about this placement</summary>'
+      + textbook.map((line) => `<p class="ap-natal-ch__serif">${esc(line)}</p>`).join('')
+      + '</details>';
+  }
+  return html + '</article>';
+}
+
 function renderReading(reading, meta) {
   const host = byId('natalChapters');
-  host.innerHTML = reading.chapters.map((chapter) => (
-    `<article class="ap-natal-ch" id="ch-${chapter.n}">`
-    + `<p class="ap-natal-ch__n">Chapter ${chapter.n}</p>`
-    + `<h2>${esc(chapter.title)}</h2>`
-    + chapter.mono.map((line) => `<p class="ap-natal-ch__mono">${esc(line)}</p>`).join('')
-    + chapter.serif.map((line) => `<p class="ap-natal-ch__serif">${esc(line)}</p>`).join('')
-    + '</article>'
-  )).join('');
+  host.innerHTML = reading.chapters.map(renderChapter).join('');
   byId('natalLegal').textContent = reading.legal || '';
   const withheld = withheldCopy(meta);
   const banner = byId('natalWithheld');
@@ -567,7 +592,7 @@ async function init() {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=902').then((response) => {
+    fetch('js/deep-templates.json?v=903').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),

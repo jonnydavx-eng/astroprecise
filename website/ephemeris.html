@@ -6,7 +6,7 @@
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="The Sky Tonight — live Moon phase, planet positions, and today's sky mood. Add your birth details for your personal chart layer. Free, computed on your device." />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="noindex, follow">
   <title>The Sky | AstroPrecise</title>
   <script>window.AP_ASSET_V='902';</script>
 <link rel="manifest" href="manifest.json" />
@@ -24,7 +24,7 @@
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="The Sky | AstroPrecise" />
   <meta name="twitter:description" content="What's in the sky tonight — Moon, planets, and a plain-language read of today's sky. Personalise with your birth details when you're ready." />
@@ -82,7 +82,7 @@
   <!-- ============================================================
        NAVIGATION
   ============================================================ -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -91,11 +91,9 @@
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
-            <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="ephemeris.html" class="navbar__link">Sky</a>
-            <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="index.html" class="navbar__link">Observatory</a>
-            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="shop.html" class="navbar__link">Shop</a>
           </noscript>
         </div>
@@ -121,7 +119,7 @@
     <section class="instrument-hero" aria-labelledby="instrument-heading">
       <div class="instrument-wrap">
         <div class="instrument-hero__panel instrument-panel instrument-panel--gold-rim">
-          <p class="instrument-eyebrow instrument-eyebrow--seal">Live · free</p>
+          <p class="instrument-eyebrow instrument-eyebrow--seal">Computed · free</p>
           <h1 class="instrument-title" id="instrument-heading">The Sky Instrument</h1>
 
           <p class="instrument-lede instrument-lede--short instrument-onramp">
@@ -146,7 +144,7 @@
               <a href="chart.html" class="sky-tools-row__link">Birth chart</a>
               <a href="eclipse.html" class="sky-tools-row__link">Eclipse</a>
               <a href="transits.html" class="sky-tools-row__link">Your transits</a>
-              <a href="compatibility.html" class="sky-tools-row__link">Match</a>
+              <a href="compatibility.html" class="sky-tools-row__link">Compatibility</a>
             </nav>
           </details>
           <p id="ev-status" class="sky-ev-status" aria-live="polite"></p>
@@ -169,7 +167,7 @@
               <div class="full sky-birth-panel__actions">
                 <button type="button" class="glow-btn" id="ev-set">Save &amp; personalise</button>
               </div>
-              <p class="sky-birth-panel__note">Unlocks your Sun, Moon, Rising, zenith star, echo dates, and the daimon.</p>
+              <p class="sky-birth-panel__note">Unlocks Sun always; Moon, Rising, zenith, echoes, and houses only with a real clock time. Noon is never invented.</p>
             </div>
           </div>
         </div>
@@ -365,7 +363,7 @@
           </svg>
           <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#EEF4FA;min-height:2.8em;line-height:1.5;"></div>
           <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
-            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168, 176, 188,0.35);color:#A8B0BC;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
+            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168, 176, 188,0.35);color:#A8B0BC;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with the Observatory</button>
             <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
           </div>
           <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore &middot; Sunrise-based unequal hours</div>
@@ -513,58 +511,16 @@
 
   </main>
 
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-
-      <div class="footer-inner" data-ap-footer-model="1">
-
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro<i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
-          </div>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-          </ul>
-        </div>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
+    <div class="ap-site-footer__inner">
+      <div class="ap-site-footer__brand">
+        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
+        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
       </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; Town search sends only that name to Open-Meteo &middot; Birth date and time stay here &middot; No account required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
     </div>
+    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
   </footer>
 
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>

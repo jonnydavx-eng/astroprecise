@@ -52,13 +52,13 @@
     Sun: '☉', Moon: '☽', Mercury: '☿', Venus: '♀', Mars: '♂', Jupiter: '♃', Saturn: '♄'
   };
   var HOUR_MEANINGS = {
-    Sun: 'Hour of sovereignty — a moment that favours visibility, leadership, and stepping forward.',
-    Moon: 'Hour of tides — a moment that favours rest, intuition, home, and feeling.',
-    Mercury: 'Hour of the messenger — a moment that favours words, study, and clear communication.',
-    Venus: 'Hour of grace — a moment that favours love, beauty, and harmony.',
-    Mars: 'Hour of the blade — a moment that favours courage, effort, and cutting away what is finished.',
-    Jupiter: 'Hour of expansion — a moment that favours generosity, faith, and thinking big.',
-    Saturn: 'Hour of the threshold — a moment that favours boundaries, endings, and patient work.'
+    Sun: 'In the Chaldean hour tradition this slice of day is read as sovereignty — visibility, leadership, stepping forward. Symbolic, not a forecast.',
+    Moon: 'In the Chaldean hour tradition this slice of day is read as tides — rest, home, feeling. Symbolic, not a forecast.',
+    Mercury: 'In the Chaldean hour tradition this slice of day is read as the messenger — words, study, communication. Symbolic, not a forecast.',
+    Venus: 'In the Chaldean hour tradition this slice of day is read as grace — relating, beauty, harmony. Symbolic, not a forecast.',
+    Mars: 'In the Chaldean hour tradition this slice of day is read as the blade — effort, courage, cutting away. Symbolic, not a forecast.',
+    Jupiter: 'In the Chaldean hour tradition this slice of day is read as expansion — generosity, faith, scale. Symbolic, not a forecast.',
+    Saturn: 'In the Chaldean hour tradition this slice of day is read as the threshold — boundaries, endings, patience. Symbolic, not a forecast.'
   };
 
   function sunriseSunsetUTC(y, m, d, lat, lon) {

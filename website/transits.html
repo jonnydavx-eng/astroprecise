@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, follow">
   <meta name="color-scheme" content="dark">
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Planetary transits today — live positions and retrogrades computed on your device. The real sky news: weather report of the sky, not prophecy." />
+  <meta name="description" content="Planetary transits today — computed positions and retrogrades on your device. The real sky news: weather report of the sky, not prophecy." />
   <title>Planetary Transits — the real sky news | AstroPrecise</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -16,16 +17,16 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AstroPrecise" />
   <meta property="og:title" content="Planetary Transits — the real sky news | AstroPrecise" />
-  <meta property="og:description" content="Live positions and retrogrades on-device. The real sky news — weather report of the sky, not prophecy." />
+  <meta property="og:description" content="Computed positions and retrogrades on-device. The real sky news — weather report of the sky, not prophecy." />
   <meta property="og:url" content="https://astroprecise.app/transits.html" />
   <link rel="canonical" href="https://astroprecise.app/transits.html" />
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Planetary Transits — the real sky news | AstroPrecise" />
-  <meta name="twitter:description" content="Live positions and retrogrades on-device. The real sky news — weather report of the sky, not prophecy." />
+  <meta name="twitter:description" content="Computed positions and retrogrades on-device. The real sky news — weather report of the sky, not prophecy." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
@@ -107,7 +108,7 @@
   <!-- ============================================================
        NAVIGATION
   ============================================================ -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -115,7 +116,7 @@
           <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -137,11 +138,11 @@
         <p class="transits-hero__eyebrow">This season against your chart</p>
         <h1 id="page-title">What is touching you now</h1>
         <p class="transits-hero__sub">After the sitting, this is the weather: today’s sky against the minute you gave. Quiet skies are said plainly. <a href="deep-reading.html">The seven chapters come first</a>.</p>
-        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Live sky, measured today — labelled the moment it loads</span></a></p>
+        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Computed sky, today — labelled the moment it loads</span></a></p>
 
         <div class="live-date-badge" id="sky-timestamp" aria-live="polite">
           <span class="live-date-badge__dot" aria-hidden="true"></span>
-          <span>Live &mdash; current sky positions</span>
+          <span>Computed today &mdash; current sky positions</span>
         </div>
 
         <p class="sr-only" id="transit-ticker-status" aria-live="polite" aria-atomic="true">Current planetary positions loading.</p>
@@ -168,10 +169,10 @@
     <section class="ts-section" aria-labelledby="sky-heading">
       <div class="container">
         <div class="ts-section__header">
-          <p class="ts-section__label">Real-Time Positions</p>
+          <p class="ts-section__label">Computed positions</p>
           <h2 class="ts-section__title" id="sky-heading">Current Planetary Positions</h2>
           <p class="ts-section__subtitle">Each planet's position in the zodiac right now, with element-resonant color coding and retrograde status.</p>
-          <p style="margin-top:var(--space-3);"><span class="ap-badge">Real positions, recomputed live — never estimated</span></p>
+          <p style="margin-top:var(--space-3);"><span class="ap-badge">Computed on this device — never estimated</span></p>
         </div>
 
         <div id="current-sky" class="planet-grid" aria-live="polite">
@@ -329,7 +330,7 @@
           <div class="ts-section__header">
             <p class="ts-section__label">Reversal Windows</p>
             <h2 class="ts-section__title" id="retro-heading">Retrograde Calendar &mdash; the Year Ahead</h2>
-            <p class="ts-section__subtitle">Computed live in your browser: the engine scans each planet&rsquo;s apparent speed and finds every station in the next twelve months, so this list can never go stale. Station dates are approximate to about a day (&asymp;). When a planet appears to move backward &mdash; an optical effect of orbital geometry &mdash; tradition reads it as a review window: revisit and revise rather than initiate.</p>
+            <p class="ts-section__subtitle">Computed in your browser: the engine scans each planet&rsquo;s apparent speed and finds every station in the next twelve months, so this list can never go stale. Station dates are approximate to about a day (&asymp;). When a planet appears to move backward &mdash; an optical effect of orbital geometry &mdash; tradition reads it as a review window: revisit and revise rather than initiate.</p>
           </div>
 
           <!-- Windows computed on-device by the inline controller below (via WeeklySky
@@ -388,7 +389,7 @@
         <div class="ts-section__header">
           <p class="ts-section__label">Astrological Education</p>
           <h2 class="ts-section__title" id="edu-transits-heading">What Are Planetary Transits?</h2>
-          <p class="ts-section__subtitle">Transits are the ongoing movements of the planets through the zodiac and how they interact with the fixed positions of your natal chart &mdash; your personal cosmic weather forecast.</p>
+          <p class="ts-section__subtitle">Transits are the moving sky against a saved natal chart. That is an astrological tradition for reading weather, not a forecast you must live by, and not a live camera.</p>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;" class="grid-edu">
@@ -405,9 +406,8 @@
               chapters of your life. Inner planets move quickly, triggering brief but immediate shifts.
             </p>
             <p style="color:var(--silver);line-height:1.85;font-size:0.95rem;">
-              Understanding your personal transits gives you a map of upcoming opportunities and
-              challenges, allowing you to schedule major decisions and creative launches at the most
-              auspicious moments.
+              The aspect list on this page is computed from the same engine as Chart.
+              Use it as weather. It does not tell you when to make a decision.
             </p>
           </div>
           <div style="display:flex;flex-direction:column;gap:0.75rem;">
@@ -436,7 +436,7 @@
 
         <div class="cta-divider"><span>Ready to begin?</span></div>
         <div style="text-align:center;">
-          <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Birth Chart &rarr;</a>
+          <a href="chart.html" class="btn btn--primary btn--lg">Cast your chart</a>
         </div>
       </div>
     </section>
@@ -446,58 +446,16 @@
   <!-- ============================================================
        FOOTER
   ============================================================ -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-
-      <div class="footer-inner" data-ap-footer-model="1">
-
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro<i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
-          </div>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-          </ul>
-        </div>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
+    <div class="ap-site-footer__inner">
+      <div class="ap-site-footer__brand">
+        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
+        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
       </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
     </div>
+    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
   </footer>
 
   <!-- Toast container -->
@@ -511,7 +469,7 @@
       var now = new Date();
       var dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       var timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
-      tsEl.innerHTML = '<span class="live-date-badge__dot" aria-hidden="true"></span><span>Live &mdash; ' + dateStr + ' &middot; ' + timeStr + '</span>';
+      tsEl.innerHTML = '<span class="live-date-badge__dot" aria-hidden="true"></span><span>Computed today &mdash; ' + dateStr + ' &middot; ' + timeStr + '</span>';
     });
   </script>
 

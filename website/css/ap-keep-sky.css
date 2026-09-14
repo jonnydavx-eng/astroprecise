@@ -235,6 +235,122 @@ a[data-ap-keep-minute]:not(.ap-event-ticket) {
   }
 }
 
+/* On-device schematic plate library (My Charts). Midnight Meridian. */
+.ap-keep-library {
+  width: min(1100px, calc(100% - 40px));
+  margin: 0 auto 4rem;
+  padding: 0 0 2rem;
+}
+.ap-keep-library__kicker {
+  margin: 0 0 8px;
+  color: #93A8BF;
+  font: 650 11px/1.4 inherit;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ap-keep-library h2 {
+  margin: 0 0 8px;
+  color: #EEF4FA;
+  font: 600 clamp(1.6rem, 4vw, 2.1rem)/1.15 inherit;
+}
+.ap-keep-library__lede {
+  max-width: 58ch;
+  margin: 0 0 1.25rem;
+  color: #93A8BF;
+  font-size: 16px;
+  line-height: 1.55;
+}
+.ap-keep-library__empty {
+  margin: 0;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid rgba(147, 168, 191, 0.22);
+  border-radius: 4px;
+  background: #040812;
+  color: #93A8BF;
+  font-size: 16px;
+  line-height: 1.55;
+}
+.ap-keep-library__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ap-keep-library__card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(147, 168, 191, 0.22);
+  border-radius: 4px;
+  background: #040812;
+  overflow: hidden;
+}
+.ap-keep-library__card figure {
+  margin: 0;
+}
+.ap-keep-library__card img {
+  display: block;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: #040812;
+}
+.ap-keep-library__card figcaption {
+  padding: 12px 14px 4px;
+}
+.ap-keep-library__stamp {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: #8BA9FF;
+  font: 650 10px/1.3 ui-monospace, monospace;
+  letter-spacing: 0.12em;
+}
+.ap-keep-library__card strong {
+  display: block;
+  color: #EEF4FA;
+  font-size: 15px;
+}
+.ap-keep-library__card p {
+  margin: 6px 0 0;
+  color: #93A8BF;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.ap-keep-library__caption {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ap-keep-library__actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 14px;
+}
+.ap-keep-library__actions a,
+.ap-keep-library__actions button {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(139, 169, 255, 0.4);
+  border-radius: 3px;
+  background: transparent;
+  color: #EEF4FA;
+  font: 650 12px/1 inherit;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+.ap-control-panel .ap-keep-row--home a.ap-hint-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: #93A8BF;
+}
+
 @media (max-width: 700px) {
   /* Phone Look 21 Aug: last sheet on chart. H1 size + stage height only. */
   html body.page-chart section.chart-hero h1.chart-hero__title#page-title,

@@ -134,11 +134,57 @@
       });
     }
 
+    function surfaceCOwnsSky() {
+      var html = document.documentElement;
+      return html.classList.contains('orrery-full') && html.classList.contains('ap-model-revealed');
+    }
+
+    function markSurfaceCOwned() {
+      if (!orrery || orrery.getAttribute('data-engine') !== 'webgl') return;
+      if (stage && stage.dataset.modelState === 'unavailable') return;
+      document.documentElement.classList.add('orrery-full', 'ap-model-revealed');
+    }
+
+    function syncStageHonesty(kind) {
+      if (!stage) return;
+      if (kind === 'unavailable') {
+        stage.setAttribute('aria-label', 'Live sky unavailable');
+        return;
+      }
+      if (kind === 'live') {
+        stage.setAttribute('aria-label', 'Live Earth now');
+        return;
+      }
+      stage.setAttribute('aria-label', 'Earth as computed now');
+    }
+
     function updateClock(customDate) {
       var date = customDate || new Date();
       if (timeStatus) timeStatus.textContent = formatUtc(date);
-      if (liveStatus) liveStatus.textContent = customDate ? 'Selected moment' : 'Live now';
-      if (liveStatus) liveStatus.classList.toggle('ap-model-status__live', !customDate);
+      var unavailable = !!(stage && stage.dataset.modelState === 'unavailable');
+      if (unavailable) {
+        if (liveStatus) {
+          liveStatus.textContent = 'Live sky unavailable';
+          liveStatus.classList.remove('ap-model-status__live');
+        }
+        document.documentElement.classList.remove('orrery-full', 'ap-model-revealed');
+        syncStageHonesty('unavailable');
+        return;
+      }
+      var liveCurrent = !customDate && surfaceCOwnsSky();
+      if (liveStatus) {
+        if (customDate) {
+          liveStatus.textContent = 'Selected moment';
+          liveStatus.classList.remove('ap-model-status__live');
+        } else if (liveCurrent) {
+          liveStatus.textContent = 'Live now';
+          liveStatus.classList.add('ap-model-status__live');
+        } else {
+          liveStatus.textContent = didReady ? 'Earth now' : 'Preparing 3D';
+          liveStatus.classList.remove('ap-model-status__live');
+        }
+      }
+      syncStageHonesty(liveCurrent ? 'live' : 'computed');
     }
 
     function showFocus(name, detail) {
@@ -221,6 +267,7 @@
         stage.classList.add('is-model-ready');
         stage.setAttribute('aria-busy', 'false');
       }
+      markSurfaceCOwned();
       if (document.body && document.body.classList.contains('ap-reading-room')) {
         showScale('EARTH');
         showFocus('Earth', { key: 'earth' });
@@ -315,6 +362,7 @@
         liveStatus.textContent = 'Selected moment';
         liveStatus.classList.remove('ap-model-status__live');
       }
+      syncStageHonesty('computed');
     });
 
     document.addEventListener('keydown', function (event) {
@@ -323,12 +371,35 @@
       if (telemetry) telemetry.textContent = 'Movement stopped. Choose any named destination when you are ready.';
     });
 
+    document.addEventListener('ap-personal-sky', function (event) {
+      var detail = event.detail || {};
+      if (detail.live) {
+        updateClock();
+        if (telemetry) telemetry.textContent = 'Earth as computed now. Distances in the model are schematic; longitudes are live.';
+        return;
+      }
+      if (detail.date) updateClock(new Date(detail.date));
+      if (telemetry) {
+        telemetry.textContent = detail.caption
+          ? detail.caption + '. Distances schematic; longitudes live for that instant.'
+          : 'This hemisphere faced the Sun. Distances schematic; longitudes live.';
+      }
+    });
+
     document.addEventListener('ap-orrery-ready', ready, { once: true });
+    document.addEventListener('ap-orrery-unavailable', function () {
+      if (stage) stage.dataset.modelState = 'unavailable';
+      document.documentElement.classList.remove('orrery-full', 'ap-model-revealed');
+      updateClock();
+    });
     if (orrery._ready) ready();
     window.addEventListener('hashchange', function () { appliedHash = null; applyHash(); });
 
     setInterval(function () {
-      if (!liveStatus || liveStatus.textContent === 'Live now') updateClock();
+      if (!liveStatus) return;
+      var label = liveStatus.textContent;
+      if (label === 'Live sky unavailable' || label === 'Selected moment') return;
+      if (label === 'Live now' || label === 'Earth now' || label === 'Preparing 3D') updateClock();
     }, 30000);
   }
 

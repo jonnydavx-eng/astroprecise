@@ -11650,8 +11650,46 @@ const FinishShader = {
     }
   }
 
+  /**
+   * Personal Sky payoff: lock sim time to a civil instant and hold the
+   * sun-lit Earth terminator. True-Time GMST then shows the hemisphere
+   * that faced the Sun. Distances stay schematic.
+   */
+  function playBirthEarthView(date, options) {
+    if (destroyed) return false;
+    const instant = date instanceof Date ? date : new Date(date);
+    if (!Number.isFinite(instant.getTime())) return false;
+    const opts = options || {};
+    try {
+      if (typeof cancelScaleJourney === 'function') cancelScaleJourney(false);
+      if (typeof cancelCosmicFlight === 'function') cancelCosmicFlight(false);
+      if (typeof cancelSpaceFlight === 'function') cancelSpaceFlight();
+    } catch (_) { /* optional tools */ }
+    daysPerSec = 0;
+    introActive = false;
+    try { syncPreloaderIntroClass(false); } catch (_) {}
+    try { syncHeroReplayClass(false); } catch (_) {}
+    flicking = false;
+    userTouched = performance.now();
+    setDate(instant);
+    const reduced = opts.instant === true || PRM;
+    if (scaleLevel !== 0 && !reduced) {
+      applyScalePreset(0, true);
+      window.setTimeout(function () {
+        if (destroyed) return;
+        setDefaultEarthFrame();
+        applyCamera();
+      }, SCALE_ANIM_MS + 48);
+    } else {
+      setDefaultEarthFrame();
+      applyCamera();
+    }
+    return true;
+  }
+
   window.Orrery3D = {
     init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays, getDayOffset, setTimelineDays, snapToNow,
+    playBirthEarthView,
     setEclipse, getEclipse,
     setNatalClocks, clearNatalClocks, getNatalClocks,
     goTo: setDate,

@@ -829,6 +829,30 @@
         return this._withSceneReady(run);
       };
 
+      /* Personal Sky: lock time and hold the sun-lit birth hemisphere. */
+      C.prototype.playBirthEarthView = function (date, options) {
+        var self = this;
+        var opts = options || {};
+        function go() {
+          self._prepareNavigation();
+          self._live = false;
+          if (self._liveTimer) { clearInterval(self._liveTimer); self._liveTimer = null; }
+          var O = self._engine;
+          if (O && typeof O.playBirthEarthView === 'function') {
+            try { return O.playBirthEarthView(date, opts) !== false; } catch (e) { return false; }
+          }
+          try {
+            var instant = date instanceof Date ? date : new Date(date);
+            if (O && O.setDate) O.setDate(instant);
+            else if (window.VoidEphem && window.VoidEphem.jd) self.setJD(window.VoidEphem.jd(instant));
+          } catch (e2) {}
+          return self._engineFlyTo('earth');
+        }
+        if (!this._ready) { this._queue.push(go); return true; }
+        this._sceneActionToken += 1;
+        return go();
+      };
+
       /* ── time: setJD / setLive / getJD ── */
       C.prototype.setJD = function (j) {
         this._live = false;

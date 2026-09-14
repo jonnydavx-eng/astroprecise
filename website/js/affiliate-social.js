@@ -45,6 +45,10 @@
     return typeof u === 'string' && /^https?:\/\//i.test(u.trim());
   }
 
+  function isLiveSocial(u) {
+    return typeof u === 'string' && /^https:\/\//i.test(u.trim());
+  }
+
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -56,37 +60,61 @@
     return '<svg class="ap-social-icon__svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>';
   }
 
-  function toastSoon(label) {
-    if (window.AstroApp && AstroApp.showToast) {
-      AstroApp.showToast(label + ' — coming soon', 'Profiles are being built. Follow via links.html when live.', 'info');
-      return;
-    }
+  function ensureQuietStyle() {
+    if (document.getElementById('ap-social-quiet-css')) return;
+    var st = document.createElement('style');
+    st.id = 'ap-social-quiet-css';
+    st.textContent = [
+      '.ap-social-row--quiet{border-top:none;margin-top:0.4rem;padding-top:0;}',
+      '.ap-social-row__when-live{display:inline-block;font-family:Inter,system-ui,sans-serif;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--silver-dim,#93A8BF);text-decoration:none;opacity:0.85;}',
+      'a.ap-social-row__when-live:hover{color:var(--silver,#C9D6E3);text-decoration:underline;text-underline-offset:2px;}',
+    ].join('');
+    document.head.appendChild(st);
   }
 
-  function socialNode(key, label, url, opts) {
-    var live = isUrl(url);
+  function socialNode(key, label, url) {
+    if (!isLiveSocial(url)) return '';
     var inner = socialIconSvg(key);
-    if (live) {
-      return '<a class="ap-social-icon ap-social-icon--live" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '">' + inner + '</a>';
-    }
-    if (opts && opts.textOnly) {
-      return '<span class="lib-social lib-social--soon" role="status" aria-label="' + esc(label) + ' coming soon">' + esc(label) + '</span>';
-    }
-    return '<button type="button" class="ap-social-icon ap-social-icon--soon" data-social-soon="' + esc(label) + '" aria-label="' + esc(label) + ' — coming soon" title="Coming soon">' + inner + '</button>';
+    return '<a class="ap-social-icon ap-social-icon--live" href="' + esc(url.trim()) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '">' + inner + '</a>';
+  }
+
+  function quietFollowMarkup(opts) {
+    var here = ((location.pathname || '').split('/').pop() || '').toLowerCase();
+    if (here === 'links.html' || (opts && opts.wrap === false)) return '';
+    ensureQuietStyle();
+    return '<a class="ap-social-row__when-live" href="links.html">Follow when live</a>';
+  }
+
+  function hideEmptyFollowChrome(host) {
+    host.innerHTML = '';
+    host.hidden = true;
+    var prev = host.previousElementSibling;
+    if (prev && /follow/i.test((prev.textContent || '').trim())) prev.hidden = true;
   }
 
   function renderSocialRow(host, opts) {
     if (!host) return;
     var S = cfg();
-    var showAll = opts && opts.showAll !== false;
     var channels = SOCIAL_ORDER.filter(function (o) {
-      return showAll || isUrl(S[o[0]]);
+      return isLiveSocial(S[o[0]]);
     });
-    if (!channels.length) return;
 
+    if (!channels.length) {
+      var quiet = quietFollowMarkup(opts);
+      if (!quiet) {
+        hideEmptyFollowChrome(host);
+        return;
+      }
+      host.hidden = false;
+      host.classList.add('ap-social-row--quiet');
+      host.innerHTML = quiet;
+      return;
+    }
+
+    host.hidden = false;
+    host.classList.remove('ap-social-row--quiet');
     if (opts && opts.wrap !== false) {
-      host.innerHTML = '<div class="ap-social-row__head"><span class="ap-social-row__label">Follow ' + esc(S.handle || '@astroprecise') + '</span>'
-        + '<span class="ap-social-row__note">Profiles launching soon</span></div>'
+      host.innerHTML = '<div class="ap-social-row__head"><span class="ap-social-row__label">Follow ' + esc(S.handle || '@astroprecise') + '</span></div>'
         + '<div class="ap-social-row__icons" role="list"></div>';
       host = host.querySelector('.ap-social-row__icons') || host;
     } else {
@@ -94,23 +122,18 @@
     }
 
     host.innerHTML = channels.map(function (o) {
-      return '<span role="listitem">' + socialNode(o[0], o[1], S[o[0]], opts) + '</span>';
+      return '<span role="listitem">' + socialNode(o[0], o[1], S[o[0]]) + '</span>';
     }).join('');
-
-    host.querySelectorAll('[data-social-soon]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        toastSoon(btn.getAttribute('data-social-soon') || 'Social');
-      });
-    });
   }
 
   function injectFooterSocial() {
-    if (document.querySelector('.ap-social-row')) return;
+    if (document.querySelector('.ap-social-row, a.ap-social-row__when-live')) return;
     var footerHost = document.querySelector('footer .container') || document.querySelector('footer .footer__grid') || document.querySelector('footer');
     if (!footerHost) return;
     var row = document.createElement('div');
     row.className = 'ap-social-row';
-    renderSocialRow(row, { wrap: true, showAll: true });
+    renderSocialRow(row, { wrap: true });
+    if (!row.innerHTML) return;
     var legal = footerHost.querySelector('.footer-legal, .footer__bottom, .ap-legal-links');
     if (legal) footerHost.insertBefore(row, legal);
     else footerHost.appendChild(row);

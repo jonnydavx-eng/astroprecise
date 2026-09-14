@@ -1,8 +1,36 @@
-/* Natal seven-chapter reading — Act 1 house look. Print as a booklet. */
+/* Natal seven-chapter reading — after the chart. Print as a booklet. */
 .page-natal-reading {
   background: var(--ap-void-deep, #040812);
   color: var(--ap-paper, #EEF4FA);
 }
+.ap-natal-gate {
+  display: none;
+  margin: 0 0 36px;
+  padding: 22px;
+  border: 1px solid var(--ap-line, rgba(147, 168, 191, .24));
+  border-radius: 4px;
+  background: rgba(16, 29, 48, .72);
+}
+html.ap-natal-no-minute .ap-natal-gate { display: block; }
+html.ap-natal-no-minute .ap-natal-ready { display: none; }
+.ap-natal-gate__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--ap-ion, #8BA9FF);
+  color: #07101E;
+  font: 700 12px/1 var(--ap-data, ui-monospace, monospace);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.ap-natal-back { margin-top: 18px; }
+.ap-natal-back a { color: var(--ap-brass, #93A8BF); }
 .ap-natal-shell {
   width: min(760px, calc(100% - 40px));
   margin: 0 auto;
@@ -16,7 +44,7 @@
   text-transform: uppercase;
 }
 .page-natal-reading h1 {
-  max-width: 16ch;
+  max-width: 18ch;
   margin: 10px 0 14px;
   font: 600 clamp(32px, 6vw, 48px)/.98 var(--ap-display, Georgia, serif);
   letter-spacing: -.03em;
@@ -31,6 +59,54 @@
   color: var(--ap-paper-dim, rgba(238, 244, 250, 0.76));
   font-size: 17px;
   line-height: 1.65;
+}
+.ap-natal-howto {
+  margin: 0 0 28px;
+  padding: 14px 16px;
+  border: 1px solid rgba(147, 168, 191, .24);
+  border-radius: 4px;
+  background: var(--ap-void, #040812);
+}
+body.page-natal-reading .ap-natal-howto h2 {
+  margin: 0 0 8px;
+  color: var(--ap-ion, #8BA9FF);
+  font: 700 10px/1.5 var(--ap-data, ui-monospace, monospace);
+  font-style: normal;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.ap-natal-howto__key {
+  margin: 0 0 12px;
+  color: var(--ap-brass, #93A8BF);
+  font: italic 16px/1.45 var(--ap-display, Georgia, serif);
+}
+.ap-natal-howto__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.ap-natal-howto__list li {
+  display: grid;
+  grid-template-columns: 1.25em 1fr;
+  gap: 8px;
+  align-items: start;
+  color: var(--ap-mute, #93A8BF);
+  font-size: 14px;
+  line-height: 1.5;
+}
+body.page-natal-reading .ap-natal-howto__n {
+  color: var(--ap-ion, #8BA9FF);
+  font: 700 11px/1.5 var(--ap-data, ui-monospace, monospace);
+}
+.ap-natal-howto__mono {
+  color: var(--ap-paper, #EEF4FA);
+  font: 13px/1.5 var(--ap-data, ui-monospace, monospace);
+}
+.ap-natal-howto__meaning {
+  color: var(--ap-paper-dim, rgba(238, 244, 250, 0.76));
+  font: italic 16px/1.5 var(--ap-display, Georgia, serif);
 }
 .ap-natal-ledger {
   display: grid;
@@ -94,7 +170,7 @@
   padding: 0 18px;
   border: 0;
   border-radius: 4px;
-  background: var(--ap-ember, #8BA9FF);
+  background: var(--ap-ion, #8BA9FF);
   color: #07101E;
   font: 700 16px/1 var(--ap-data, ui-monospace, monospace);
   letter-spacing: .08em;
@@ -167,11 +243,33 @@
   color: var(--ap-paper, #EEF4FA);
   font: 13px/1.55 var(--ap-data, ui-monospace, monospace);
 }
+.ap-natal-ch__lead {
+  margin: 0 0 16px;
+  color: var(--ap-paper, #EEF4FA);
+  font: italic 20px/1.5 var(--ap-display, Georgia, serif);
+}
 .ap-natal-ch__serif {
   margin: 14px 0 0;
   color: var(--ap-paper-dim, rgba(238, 244, 250, 0.76));
   font: italic 18px/1.6 var(--ap-display, Georgia, serif);
 }
+.ap-natal-ch__letter {
+  margin-top: 0;
+  color: var(--ap-paper, #EEF4FA);
+}
+.ap-natal-ch__details {
+  margin: 16px 0 0;
+}
+.ap-natal-ch__details summary {
+  cursor: pointer;
+  list-style: none;
+  color: var(--ap-ion, #8BA9FF);
+  font: 700 10px/1.5 var(--ap-data, ui-monospace, monospace);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.ap-natal-ch__details summary::-webkit-details-marker { display: none; }
+.ap-natal-ch__details[open] summary { margin-bottom: 8px; }
 .ap-natal-legal {
   margin: 28px 0 0;
   color: var(--ap-mute, #93A8BF);
@@ -198,7 +296,7 @@
   min-height: 18px;
   margin: 0;
   padding: 0;
-  accent-color: var(--ap-ember, #8BA9FF);
+  accent-color: var(--ap-ion, #8BA9FF);
 }
 .ap-natal-form .ap-natal-saved span {
   display: inline;
@@ -235,14 +333,19 @@
     padding: 12px 14px;
     font-size: 16px;
   }
-  .ap-natal-form button {
+  .ap-natal-form button,
+  .ap-natal-gate__cta {
     width: 100%;
     font-size: 16px;
   }
+  .ap-natal-gate { padding: 18px 16px; }
   .ap-natal-lede,
   .ap-natal-note,
   .ap-natal-ledger p,
+  .ap-natal-howto__key,
+  .ap-natal-howto__list li,
   .ap-zone-note { font-size: 16px; line-height: 1.5; }
+  .ap-natal-howto__mono { font-size: 14px; }
   .ap-natal-also {
     display: flex;
     flex-direction: column;
@@ -258,10 +361,25 @@
   .ap-natal-form,
   .ap-natal-print,
   .ap-natal-also,
+  .ap-natal-gate,
   .ap-room-sky { display: none !important; }
   .page-natal-reading { background: #fff; color: #111; }
   .ap-natal-ch { break-inside: avoid; }
   .ap-natal-ch__serif { color: #222; }
+  .ap-natal-ch__lead,
+  .ap-natal-ch__letter { color: #111; }
+  .ap-natal-ch__details summary { color: #8BA9FF; }
+  .ap-natal-ch__details > *:not(summary) { display: block !important; }
+  .ap-natal-howto {
+    background: #fff;
+    border-color: #93A8BF;
+  }
+  .ap-natal-howto h2,
+  .ap-natal-howto__n { color: #8BA9FF; }
+  .ap-natal-howto__key,
+  .ap-natal-howto__meaning,
+  .ap-natal-howto__list li { color: #222; }
+  .ap-natal-howto__mono { color: #111; }
   .ap-natal-withheld { border-color: #FF8EA8; color: #111; }
 }
 

@@ -1,11 +1,11 @@
 /**
  * Astro Precise — Client-side Adaptive Personalization Engine (2026)
- * Uses saved AstroProfile charts + prefs for dynamic hero, shop teasers,
- * "your transits" hints, and art recommendations without any server calls.
- * Privacy-first, runs entirely after profile is available (idle-deferred).
- * Aligns with cinematic/micro CSS; respects reduced-motion; a11y preserved.
+ * Uses saved AstroProfile charts + prefs for returning-user copy on home and shop.
+ * Privacy-first, idle-deferred. No server. No fake live stats. No merch art-library.
+ * Home doors: chart.html. Shop keep-path after a saved chart: charts.html,
+ * sky-card.html, deep-reading.html — never birth minutes in URLs.
  *
- * Loaded late via lite-shell-boot / shop-page-boot after profile.js.
+ * Loaded after profile.js (lite-shell-boot on home; shop.html loads this file).
  * Exposes: window.AstroPersonalization
  */
 'use strict';
@@ -23,12 +23,15 @@
     return ZODIAC_SIGNS[String(value == null ? '' : value).trim().toLowerCase()] || '';
   }
 
+  function hasBirthTime(chart) {
+    return !!(chart && chart.timeKnown === true);
+  }
+
   function getPrimaryChart() {
     if (!hasProfile()) return null;
     try {
       const list = AstroProfile.getCharts() || [];
       if (!list.length) return null;
-      // Prefer most recently updated; fallback to first
       return list.slice().sort((a, b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0))[0] || list[0];
     } catch (e) { return null; }
   }
@@ -36,13 +39,14 @@
   function getBig3(chart) {
     if (!chart) return '';
     const sun = canonicalSign(chart.sunSign || chart.sun);
-    const moon = canonicalSign(chart.moonSign || chart.moon);
-    const asc = canonicalSign(chart.risingSign || chart.asc || chart.ascendant);
+    const timed = hasBirthTime(chart);
+    const moon = timed ? canonicalSign(chart.moonSign || chart.moon) : '';
+    const asc = timed ? canonicalSign(chart.risingSign || chart.asc || chart.ascendant) : '';
     const parts = [];
-    if (sun) parts.push('☉ ' + sun);
-    if (moon) parts.push('☽ ' + moon);
-    if (asc) parts.push('↑ ' + asc);
-    return parts.join(' · ') || 'your chart';
+    if (sun) parts.push('Sun in ' + sun);
+    if (moon) parts.push('Moon in ' + moon);
+    if (asc) parts.push('Rising in ' + asc);
+    return parts.join(' · ') || 'your saved chart';
   }
 
   function getName(chart) {
@@ -53,7 +57,6 @@
     try { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
   }
 
-  // ── INDEX (home) hero personalization ─────────────────────────────────────
   function personalizeHome() {
     const chart = getPrimaryChart();
     if (!chart) return false;
@@ -63,9 +66,9 @@
     const welcome = document.getElementById('personal-welcome');
     if (welcome) {
       const link = document.createElement('a');
-      link.href = 'transits.html';
+      link.href = 'chart.html';
       link.className = 'hero-personal-link';
-      link.textContent = 'See your transits';
+      link.textContent = 'Open your chart';
       welcome.replaceChildren(
         document.createTextNode(`Welcome back, ${name} — ${big3}. `),
         link
@@ -77,74 +80,44 @@
       }
     }
 
-    // Optional: lightly personalize the eyebrow for returning users (non-destructive)
-    const eyebrow = document.querySelector('.hero__eyebrow');
-    if (eyebrow && eyebrow.textContent.indexOf('Cosmic') !== -1) {
-      eyebrow.textContent = 'Back to your blueprint';
-    }
-
-    // Enhance live-sky note with personal nudge (if chart present)
-    const skyNote = document.querySelector('.live-sky-note');
-    if (skyNote && !skyNote.dataset.personal) {
-      skyNote.dataset.personal = '1';
-      skyNote.textContent = 'Tap a planet · Personal transits from ' + big3.split(' · ')[0];
-    }
-
     return true;
   }
 
-  // ── SHOP teasers & hero personalization ───────────────────────────────────
+  const SHOP_KEEP_HREFS = Object.freeze({
+    charts: 'charts.html',
+    skyCard: 'sky-card.html',
+    sitting: 'deep-reading.html',
+  });
+
+  function keepLink(href, label) {
+    const a = document.createElement('a');
+    a.setAttribute('href', href);
+    a.textContent = label;
+    return a;
+  }
+
   function personalizeShop() {
     const chart = getPrimaryChart();
     if (!chart) return false;
 
-    const big3 = getBig3(chart);
-    const name = getName(chart);
-    const sun = canonicalSign(chart.sunSign || chart.sun);
-
-    // Hero eyebrow + added personal note
-    const eyebrow = document.getElementById('shop-personal-eyebrow');
-    if (eyebrow) {
-      eyebrow.textContent = `Personalised for ${name} — ${big3}`;
-    }
-
     const note = document.getElementById('shop-personal-note');
-    if (note) {
-      const link = document.createElement('a');
-      link.href = 'chart.html';
-      link.textContent = 'Update chart';
-      note.replaceChildren(
-        document.createTextNode(`Your ${sun ? `Sun in ${sun} ` : ''}sky powers every piece. `),
-        link
-      );
-      note.hidden = false;
-      if (!prefersReduced()) note.classList.add('ap-rise-in', 'ap-micro-press');
-    }
+    if (!note) return false;
 
-    // Lightly annotate the featured lede (no overwrite of important copy)
-    const lede = document.querySelector('.shopc-featured__lede');
-    if (lede && !lede.dataset.personalized) {
-      lede.dataset.personalized = '1';
-      const span = document.createElement('span');
-      span.className = 'personal-note';
-      span.textContent = ` Tailored to ${name}.`;
-      // append safely
-      if (lede.lastChild && lede.lastChild.nodeType === 3) {
-        lede.appendChild(span);
-      } else {
-        lede.appendChild(span);
-      }
-    }
-
-    // If art library present, it already calls recommend using saved chart — nudge it
-    if (window.AP_ART && typeof AP_ART.recommend === 'function') {
-      // no-op; library self-updates on its own render cycle. We just ensure profile visible.
-    }
-
+    note.replaceChildren(
+      document.createTextNode('A chart is saved on this device. '),
+      keepLink(SHOP_KEEP_HREFS.charts, 'plates kept on this device'),
+      document.createTextNode(' · '),
+      keepLink(SHOP_KEEP_HREFS.skyCard, 'Sky card'),
+      document.createTextNode(' · '),
+      keepLink(SHOP_KEEP_HREFS.sitting, 'Seven-chapter sitting'),
+      document.createTextNode('. Birth minutes stay here, never in the link.')
+    );
+    note.hidden = false;
+    note.setAttribute('aria-label', 'Keep path for the chart saved on this device');
+    if (!prefersReduced()) note.classList.add('ap-rise-in', 'ap-micro-press');
     return true;
   }
 
-  // ── Generic entry point (called by boots + storage) ───────────────────────
   function init() {
     let doneHome = false;
     let doneShop = false;
@@ -160,7 +133,6 @@
       if (!doneShop && document.body.classList.contains('page-shop')) {
         doneShop = personalizeShop();
       }
-      // fire once for any downstream listeners (e.g. future components)
       if ((doneHome || doneShop) && !document.documentElement.dataset.apPersonalized) {
         document.documentElement.dataset.apPersonalized = '1';
         try {
@@ -177,23 +149,22 @@
       attempt(0);
     }
 
-    // React to chart saves in other tabs or same-session (chart.html save)
+    const reapply = () => {
+      document.documentElement.dataset.apPersonalized = '';
+      doneHome = false;
+      doneShop = false;
+      attempt(0);
+    };
+
     window.addEventListener('storage', (e) => {
-      if (e.key && (e.key === 'ap_charts' || e.key === 'ap_profile_v2')) {
-        // reset flags and re-apply (cheap)
-        document.documentElement.dataset.apPersonalized = '';
-        attempt(0);
-      }
+      if (e.key && (e.key === 'ap_charts' || e.key === 'ap_profile_v2')) reapply();
     });
 
-    // Also listen for explicit profile/chart events emitted elsewhere
-    document.addEventListener('ap-chart-saved', () => attempt(0), { passive: true });
+    document.addEventListener('ap-chart-saved', reapply, { passive: true });
   }
 
-  // Auto-boot
   try { init(); } catch (e) { /* silent; never break page */ }
 
-  // Public surface for other scripts / debug
   window.AstroPersonalization = {
     getPrimaryChart,
     getBig3,

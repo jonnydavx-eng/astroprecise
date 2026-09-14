@@ -2,6 +2,7 @@
  * AstroPrecise Daily v835
  * One twelve-sign ledger, one selected reading, one evidence ledger.
  * No dial, sphere, saved-sign retention, luck scores, or hidden personal layer.
+ * luckyNumber / luckyColor may exist on the engine object; this page never paints them.
  */
 (function () {
   'use strict';
@@ -199,6 +200,37 @@
     history.replaceState(null, '', next.pathname + next.search);
   }
 
+  function paintMethodNote(methodNote) {
+    const methodEl = document.getElementById('srp-method-note');
+    if (!methodEl) return;
+    methodEl.textContent = '';
+    const note = String(methodNote || '')
+      .replace(/\s*For your full birth chart, see (?:chart\.html|transits\.html|mysky\.html|ephemeris\.html)\.?\s*$/i, '')
+      .trim();
+    if (note) methodEl.appendChild(document.createTextNode(note + ' '));
+    const methodLink = document.createElement('a');
+    methodLink.href = 'chart.html';
+    methodLink.textContent = 'Open your birth chart.';
+    methodEl.appendChild(methodLink);
+  }
+
+  function paintSkyLecture(el, text, summary) {
+    if (!el) return;
+    const plain = String(text || '').trim();
+    el.textContent = '';
+    if (!plain) return;
+    const details = document.createElement('details');
+    details.className = 'ap-reading-details';
+    const sum = document.createElement('summary');
+    sum.className = 'ap-reading-details__summary';
+    sum.textContent = summary;
+    const body = document.createElement('p');
+    body.textContent = plain;
+    details.appendChild(sum);
+    details.appendChild(body);
+    el.appendChild(details);
+  }
+
   function renderReading(signKey) {
     const info = SIGNS[signKey];
     const panel = document.getElementById('sign-reading-panel');
@@ -220,14 +252,27 @@
     const guide = document.getElementById('srp-guide-link');
     guide.href = signKey + '.html';
     guide.textContent = 'Full ' + info.name + ' guide →';
-    document.getElementById('srp-overview').textContent = data.overview || '';
+    const todayLine = document.getElementById('srp-today-line');
+    const useThis = document.getElementById('srp-use-this');
+    const leaveThis = document.getElementById('srp-leave-this');
+    if (todayLine) todayLine.textContent = data.todayLine || '';
+    if (useThis) useThis.textContent = data.useThis || '';
+    if (leaveThis) leaveThis.textContent = data.leaveThis || '';
+    const overviewEl = document.getElementById('srp-overview');
+    if (overviewEl) {
+      if (data.todayLine && data.overview) {
+        paintSkyLecture(overviewEl, data.overview, 'More about today’s sky');
+      } else {
+        overviewEl.textContent = data.overview || '';
+      }
+    }
     document.getElementById('srp-love').textContent = data.love || '';
     document.getElementById('srp-career').textContent = data.career || '';
     document.getElementById('srp-health').textContent = data.health || '';
     document.getElementById('srp-sky-facts').textContent = data.skyFacts && data.skyFacts.length
       ? 'Computed sky · ' + data.skyFacts.join(' · ')
       : '';
-    document.getElementById('srp-method-note').textContent = data.methodNote || '';
+    paintMethodNote(data.methodNote);
 
     const phase = moonPhaseAtNoon(new Date());
     drawMoonPhase(phase);
@@ -385,12 +430,12 @@
     context.strokeStyle = 'rgba(147,168,191,.4)';
     context.lineWidth = 1;
     context.strokeRect(54, 54, 972, 972);
-    context.fillStyle = '#A897FF';
+    context.fillStyle = '#8BA9FF';
     context.fillRect(40, 40, 178, 5);
 
     const phase = moonPhaseAtNoon(new Date());
     context.textAlign = 'right';
-    context.fillStyle = '#A5BCFF';
+    context.fillStyle = '#8BA9FF';
     context.font = '600 19px "IBM Plex Mono", monospace';
     context.fillText(PHASE_NAMES[phase.index].toUpperCase(), 960, 104);
     context.fillStyle = '#C9D6E3';
@@ -398,7 +443,7 @@
     context.fillText(phase.illumination + '% LIT · 12:00 UT', 960, 134);
 
     context.textAlign = 'center';
-    context.fillStyle = '#A897FF';
+    context.fillStyle = '#8BA9FF';
     context.font = '600 18px "IBM Plex Mono", monospace';
     context.fillText('DAILY / ' + String(SIGN_KEYS.indexOf(signKey) + 1).padStart(2, '0') + ' / 12', 540, 130);
 
@@ -409,20 +454,32 @@
         context.fillStyle = '#EEF4FA';
         context.font = '500 82px "Cormorant Garamond", Georgia, serif';
         context.fillText(info.name, 540, 458);
-        context.fillStyle = '#A5BCFF';
+        context.fillStyle = '#8BA9FF';
         context.font = '600 18px "IBM Plex Mono", monospace';
         context.fillText(new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase(), 540, 502);
         context.fillStyle = '#C9D6E3';
-        context.font = '500 30px "Cormorant Garamond", Georgia, serif';
-        wrapText(context, data.overview || '', 540, 580, 780, 44, 6);
+        context.font = '500 34px "Cormorant Garamond", Georgia, serif';
+        wrapText(context, data.todayLine || data.overview || '', 540, 568, 780, 42, 3);
+        context.fillStyle = '#8BA9FF';
+        context.font = '600 16px "IBM Plex Mono", monospace';
+        context.fillText('USE THIS', 540, 718);
+        context.fillStyle = '#C9D6E3';
+        context.font = '500 24px "Cormorant Garamond", Georgia, serif';
+        wrapText(context, data.useThis || '', 540, 754, 780, 34, 2);
+        context.fillStyle = '#8BA9FF';
+        context.font = '600 16px "IBM Plex Mono", monospace';
+        context.fillText('LEAVE THIS', 540, 838);
+        context.fillStyle = '#C9D6E3';
+        context.font = '500 24px "Cormorant Garamond", Georgia, serif';
+        wrapText(context, data.leaveThis || '', 540, 874, 780, 34, 2);
         context.fillStyle = 'rgba(147,168,191,.44)';
-        context.fillRect(150, 870, 780, 1);
+        context.fillRect(150, 948, 780, 1);
         context.fillStyle = '#C9D6E3';
         context.font = '16px "IBM Plex Mono", monospace';
-        context.fillText('ASTROLOGICAL INTERPRETATION · REFLECTION & ENTERTAINMENT', 540, 914);
+        context.fillText('ASTROLOGICAL INTERPRETATION · REFLECTION & ENTERTAINMENT', 540, 984);
         context.fillStyle = '#8BA9FF';
-        context.font = '600 19px "IBM Plex Mono", monospace';
-        context.fillText('POSITIONS CALCULATED AT 12:00 UT · ASTROPRECISE.APP', 540, 1000);
+        context.font = '600 18px "IBM Plex Mono", monospace';
+        context.fillText('POSITIONS CALCULATED AT 12:00 UT · ASTROPRECISE.APP', 540, 1018);
         resolve(canvas);
       }
       seal.addEventListener('load', function () { finish(seal); }, { once: true });
@@ -486,7 +543,7 @@
     const data = Interpretations.getDailyHoroscope(info.name, new Date());
     const url = new URL(window.location.pathname, window.location.origin);
     url.searchParams.set('sign', currentOpenSign);
-    const overview = String(data.overview || '').trim();
+    const overview = String(data.todayLine || data.overview || '').trim();
     const sentenceMatch = overview.match(/^.*?[.!?](?:\s|$)/);
     const firstSentence = sentenceMatch ? sentenceMatch[0].trim() : overview;
     const text = info.name + ' · ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + '. ' +

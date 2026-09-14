@@ -91,10 +91,7 @@
     <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=902">
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=902">
     <link rel="stylesheet" href="css/ap-home-v835.css?v=902">
-    <link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=902" media="print" onload="this.media='all';this.onload=null">
-    <noscript><link rel="stylesheet" href="css/ap-mystic-cards-v835.css?v=902"></noscript>
-    <link rel="stylesheet" href="css/ap-keep-sky.css?v=902" media="print" onload="this.media='all';this.onload=null">
-    <noscript><link rel="stylesheet" href="css/ap-keep-sky.css?v=902"></noscript>
+    <link rel="stylesheet" href="css/ap-keep-sky.css?v=902">
 </head>
 <body class="ap-live-home page-home ap-reading-room">
   <a class="skip" href="#lead">Skip to the Observatory</a>
@@ -126,16 +123,20 @@
 
   <main id="main-content">
     <section class="ap-live-stage" id="lead" aria-label="The live sky">
-      <div class="ap-model-stage" role="group" aria-label="Live Earth now" aria-busy="true">
+      <div class="ap-model-stage" role="group" aria-label="Earth as computed now" aria-busy="true">
         <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only"></void-orrery>
         <div class="ap-model-vignette" aria-hidden="true"></div>
-        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Opening the live sky</strong><em>Earth as it is now · computed here</em></div>
+        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Settling…</strong><em>Earth as it is now · computed here</em></div>
       </div>
       <div class="ap-live-intro">
         <p class="ap-reading-kicker" id="ap-reading-kicker">The night you were born</p>
         <h1 class="ap-live-heading" id="ap-reading-title">Sit with the sky first</h1>
         <p class="ap-live-copy" id="ap-reading-body">Earth now. Then the minute you arrived.</p>
-        <a class="ap-action ap-action--primary" href="chart.html">Begin with my minute</a>
+        <p class="ap-birth-sky__honest" id="ap-birth-sky-honest" hidden></p>
+        <div class="ap-live-actions">
+          <a class="ap-action ap-action--primary" id="ap-birth-sky-cta" href="#personal">Begin with my minute</a>
+          <button type="button" class="ap-hint-link" id="ap-birth-sky-now" hidden>Return to now</button>
+        </div>
       </div>
 
       <div class="ap-mobile-flight-deck" aria-label="3D Observatory controls">
@@ -177,10 +178,10 @@
             <div class="ap-ledger ap-ledger--observed"><span>Observed</span><p id="telemetry" aria-live="polite">Earth as computed now. Distances in the model are schematic; longitudes are live.</p></div>
             <div class="ap-ledger ap-ledger--meaning"><span>In astrology</span><p id="sky-meaning">A chart reads angular relationships among these bodies from Earth. It is a symbolic tradition, not a scientific claim.</p></div>
             <a class="ap-context__chart" id="sky-chart-link" href="chart.html">Find these positions in my chart</a>
-            <a class="ap-context__chart" href="sky-card.html" data-ap-keep-minute>Keep this sky · card</a>
             <div class="ap-keep-row ap-keep-row--home">
               <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
-              <span class="action-note" id="keep-sky-caption">Needs a birth minute from your chart. Cast with a clock time to keep that hour&rsquo;s still &mdash; the live sky above stays free.</span>
+              <span class="action-note" id="keep-sky-caption">Needs a birth minute from your chart. Cast with a clock time to keep that hour’s still — the live sky above stays free.</span>
+              <a class="ap-hint-link" href="charts.html">Your plates</a>
             </div>
           </div>
           <div class="ap-flight-launch">
@@ -196,7 +197,7 @@
         <div>
           <p class="ap-live-eyebrow">Begin the sitting</p>
           <h2 id="personal-title">The minute you were born.</h2>
-          <p class="standfirst">Date and town. The hour if you have it. Then the chart, seven chapters, and a card you can keep. Place search sends the town text for the zone; if you later choose current location, its coordinates go to Open-Meteo.</p>
+          <p class="standfirst">Date and town. The hour if you have it. Your Earth turns to the hemisphere that faced the Sun. Then the chart. Place search sends the town text for the zone; birth date and time stay on this device.</p>
         </div>
         <div class="ap-calc-entry-panel">
           <div class="ap-calc-entry-panel__head"><p class="eyebrow">Your minute · private on this device</p></div>
@@ -205,77 +206,24 @@
               <div class="fields">
                 <div class="field-e"><label for="f-date">Birth date</label><input type="date" id="f-date" required min="1800-01-01" max="2200-12-31" autocomplete="bday"></div>
                 <div class="field-e"><label for="f-time">Time <span class="opt">optional</span></label><input type="time" id="f-time"></div>
-                <div class="field-e field--place"><label for="f-place">Birth place</label><input type="text" id="f-place" required placeholder="Town or city" autocomplete="off" aria-describedby="coupon-hint"></div>
+                <div class="field-e field--place"><label for="f-place">Birth place</label><input type="text" id="f-place" required placeholder="Town or city" autocomplete="off" aria-describedby="coupon-hint" aria-controls="f-place-drop" aria-autocomplete="list"><div class="ap-city-drop" id="f-place-drop" hidden></div></div>
               </div>
-              <p class="ap-calc-entry-panel__hint" id="coupon-hint">A precise time sharpens the Moon; your town fixes the angles and houses. You choose an exact place on the next screen.</p>
+              <p class="ap-calc-entry-panel__hint" id="coupon-hint">We’ll hold your Earth first. A clock time sharpens the Moon; you confirm the exact town on the chart.</p>
               <div class="ap-calc-entry-panel__action">
-                <button class="btn-primary" type="submit">Begin with my minute</button>
+                <button class="btn-primary" type="submit">Show me that Earth</button>
                 <span class="action-note">Private · no account · no birth details in the address bar</span>
               </div>
             </form>
-            <p class="ap-calc-entry-panel__hint">Optional: <a href="sky-card.html" data-ap-keep-minute>Keep this sky</a> — one free card drawn on this device. Play stays free; the live sky above is not behind it.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="ap-event-rail ap-reading-path" aria-labelledby="event-rail-title">
-      <div class="ap-event-rail__intro">
-        <p class="ap-live-eyebrow">The sitting</p>
-        <h2 id="event-rail-title">Chart. Reading. Keep.</h2>
-        <a href="deep-reading.html">Start with the seven chapters</a>
-      </div>
-      <a class="ap-event-ticket" href="chart.html"><span>01 · Minute</span><strong>Your birth sky</strong><p>Date, place, and the hour if you have it. Positions stay on this device. Unknown time is said, not faked.</p><em>Begin with my minute →</em></a>
-      <a class="ap-event-ticket ap-event-ticket--next" href="deep-reading.html"><span>02 · Sitting</span><strong>Seven chapters</strong><p>The minute you were born, read in full. Sun, Moon, the weight of the chart, then this season.</p><em>Open the reading →</em></a>
-      <a class="ap-event-ticket" href="sky-card.html" data-ap-keep-minute><span>03 · Keep</span><strong>Card and still</strong><p>A card of that minute, and a 3D still of the system that hour. Optional. Play stays free.</p><em>Keep this sky →</em></a>
-    </section>
-
-    <section class="edition" aria-labelledby="edition-title">
-      <div class="shell edition__grid">
-        <div>
-          <p class="eyebrow">Also here · eclipse archive</p>
-          <h2 class="deck-h" id="edition-title">The eclipse is over. The replay stays.</h2>
-          <p class="sub">Replay the 3D instrument. Keep the field guide free. The eclipse edition is old news. It is not for sale here.</p>
-          <ol class="contents">
-            <li class="item">
-              <span class="item__num">01</span>
-              <h3 class="item__title"><a href="eclipse.html">Eclipse replay</a></h3>
-              <span class="item__price">Free</span>
-              <p class="item__desc">3D Sun–Moon–Earth at greatest eclipse. Replay the shadow. System, Shadow, and Earth views.</p>
-            </li>
-            <li class="item">
-              <span class="item__num">02</span>
-              <h3 class="item__title"><a href="chart.html">Your computed chart</a></h3>
-              <span class="item__price">Free</span>
-              <p class="item__desc">Your planetary positions, angles and houses calculated from the birth moment you choose.</p>
-            </li>
-            <li class="item">
-              <span class="item__num">03</span>
-              <h3 class="item__title"><a href="sky-card.html">Keep this sky</a></h3>
-              <span class="item__price">Free</span>
-              <p class="item__desc">A card of that minute, and a 3D still. Optional. Play stays free.</p>
-            </li>
-          </ol>
-          <p class="honesty">The astronomy is computed and checkable. Astrology is a cultural language offered for reflection—not scientific fact, advice or prediction.</p>
-        </div>
-        <aside class="ap-edition-art">
-          <figure>
-            <span class="ap-card-art"><img src="img/editorial/eclipse-edition-art-v841-560.webp" srcset="img/editorial/eclipse-edition-art-v841-560.webp 560w, img/editorial/eclipse-edition-art-v841-1122.webp 1122w" sizes="(max-width: 760px) calc(100vw - 34px), 42vw" width="1122" height="1402" loading="lazy" decoding="async" alt="Sample eclipse edition plate with engraved orbital geometry"></span>
-            <figcaption><span>Edition artwork · sample plate</span><strong>Eclipse archive</strong> Replay the instrument. The paid edition is not the shop.</figcaption>
-          </figure>
-          <div class="ap-edition-art__actions">
-            <a href="eclipse.html">Replay the eclipse</a>
-            <a href="shop.html">See the shop</a>
-          </div>
-        </aside>
       </div>
     </section>
 
     <section class="ap-proof-ledger" aria-label="How AstroPrecise works">
       <div class="ap-proof-ledger__inner">
-        <div><span>01 · The sky</span><strong>Play stays free</strong><p>One live 3D sky. Nothing here is a substitute model.</p></div>
-        <div><span>02 · The sitting</span><strong>Seven chapters</strong><p>A natal reading from the minute you give, written on this device.</p></div>
-        <div><span>03 · The keep</span><strong>Optional</strong><p>A card and a still of that hour. The live sky is never behind it.</p></div>
+        <div><span>01 · The sky</span><strong>Play stays free</strong><p>One live 3D sky. Distances in the model are schematic; longitudes are live.</p></div>
+        <div><span>02 · The sitting</span><strong>Your Earth, then the chart</strong><p>Give a date and town. The globe turns to the hemisphere that faced the Sun. Seven chapters open after the chart.</p></div>
+        <div><span>03 · Shop</span><strong>Checkout closed</strong><p>Three print commissions for adults ordering for themselves. The live sky is never behind them.</p></div>
       </div>
     </section>
   </main>
@@ -292,34 +240,16 @@
     <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" rel="noopener">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" rel="noopener">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></span></div>
   </footer>
 
-  <script>
-    (function () {
-      var form = document.getElementById('coupon-form');
-      if (!form) return;
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        var payload = {
-          date: document.getElementById('f-date').value,
-          time: document.getElementById('f-time').value,
-          city: document.getElementById('f-place').value.trim()
-        };
-        var target = 'chart.html';
-        try { sessionStorage.setItem('ap-chart-handoff', JSON.stringify(payload)); }
-        catch (_) { target += '?entry=private-reentry'; }
-        location.href = target;
-      });
-    })();
-  </script>
   <script src="js/ap-observatory-controls-v835.js?v=902" defer></script>
     <script src="js/ap-observatory-v834.js?v=902" defer></script>
     <script src="js/ap-home-reading.js?v=902" defer></script>
+    <script src="js/ap-home-personal-sky.js?v=902" defer></script>
+    <script src="js/ap-keep-library.js?v=902" defer></script>
+    <script src="js/ap-keep-sky.js?v=902" defer></script>
+    <script src="js/ap-home-keep.js?v=902" defer></script>
     <script src="js/ap-nav-prefetch.js?v=902" defer data-ap-nav-prefetch="1"></script>
     <script src="js/ap-sky-time.js?v=902" defer></script>
     <script src="js/ap-footer-inject.js?v=902" defer></script>
-    <script src="js/ap-mystic-cards-v835.js?v=902" defer></script>
-    <script src="js/ap-keep-sky.js?v=902" defer></script>
-    <script src="js/ap-home-keep.js?v=902" defer></script>
-    <script src="js/ap-keep-minute.js?v=902" defer></script>
   <script>
     (function () {
       var button = document.getElementById('ap-cosmic-flight-launch');

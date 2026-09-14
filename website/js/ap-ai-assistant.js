@@ -336,7 +336,7 @@ window.APAIAssistant = (function () {
     },
     'ephemeris-ai-panel': {
       title: 'Tonight\u2019s sky, explained',
-      subtitle: 'Connect tonight’s live sky to your birth chart — computed on your device, private.',
+      subtitle: 'Connect tonight’s computed sky to your birth chart — on this device, private.',
       empty: 'Save a chart to compare tonight\u2019s planetary positions with your birth sky.',
       askPlaceholder: 'e.g. What does tonight\u2019s Moon phase mean for my chart?',
     },
@@ -355,7 +355,7 @@ window.APAIAssistant = (function () {
     'synastry-ai-panel': {
       title: 'Read your synastry',
       subtitle: 'Bridge this guide with your saved chart — computed on your device.',
-      empty: 'Build a synastry chart on the Match page, or save your natal chart to explore relationship themes here.',
+      empty: 'Compare two birth minutes on the compatibility page, or save your natal chart to explore relationship themes here.',
       askPlaceholder: 'e.g. Which inter-aspects matter most for long-term commitment?',
     },
     'lifepath-ai-panel': {

@@ -6,8 +6,9 @@
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, follow" />
-  <meta name="description" content="Your saved birth charts on this device — Big Three, set today’s chart for real sky news personalisation. Private; weather report of the sky, not prophecy." />
-  <title>My Charts — the real sky news | AstroPrecise</title>
+  <meta name="description" content="Saved birth charts and schematic plates kept on this device. Local only. Engine stills are not photographs and not a live sky feed." />
+  <title>Your plates — saved charts on this device | AstroPrecise</title>
+  <script>window.AP_ASSET_V='902';</script>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -16,32 +17,25 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="My Charts — the real sky news | AstroPrecise" />
-  <meta property="og:description" content="Saved charts on this device. Set today’s chart for personal real sky news. Private; nothing uploaded." />
+  <meta property="og:title" content="Your plates — saved charts on this device" />
+  <meta property="og:description" content="Saved charts and schematic engine plates stay on this device. They are not photographs and not a live sky feed." />
   <meta property="og:url" content="https://astroprecise.app/charts.html" />
   <link rel="canonical" href="https://astroprecise.app/charts.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/editorial/sitting-keep-og-v893.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta property="og:image:alt" content="Engine still of Earth and Moon from the AstroPrecise model. Schematic plate. Not a photograph, not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="My Charts — the real sky news | AstroPrecise" />
-  <meta name="twitter:description" content="Saved charts on this device. Personal real sky news when you cast and save." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="twitter:title" content="Your plates — saved charts on this device" />
+  <meta name="twitter:description" content="Saved charts and schematic plates kept locally. Not photographs. Not a live sky feed." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-keep-og-v893.jpg" />
   <meta name="theme-color" content="#040812" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=902" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=902" id="ap-css-atlas-tokens" />
-  <link rel="preload" href="css/main-lite.css" as="style" />
-  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=902" />
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/ap-page-bridge.css" />
-  <link rel="stylesheet" href="css/charts-page.css" />
-  <!-- Fixed mobile tabs: AP_NAV owns four equal, non-scrolling targets. -->
-  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=902" id="ap-css-overhaul-s8" />
-  <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferMainCss();});</script>
+  <link rel="stylesheet" href="css/fonts.css?v=902" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=902" />
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=902" />
+  <link rel="stylesheet" href="css/charts-page.css?v=902" />
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=902" />
+  <script src="js/ap-nav-model.js?v=902" defer></script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -50,12 +44,12 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "AstroPrecise — My Charts",
+    "name": "AstroPrecise — saved charts and plates",
     "url": "https://astroprecise.app/charts.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
-    "description": "A private, in-browser dashboard of your saved AstroPrecise birth charts. View the Big Three for each chart, rename, delete, and choose which chart powers your daily transit reading.",
+    "description": "A private, on-device shelf of saved AstroPrecise birth charts and schematic plates. Nothing is uploaded. Plates are engine stills, not photographs or a live sky feed.",
     "isPartOf": {
       "@type": "WebSite",
       "name": "AstroPrecise",
@@ -65,31 +59,22 @@
   </script>
 
   </head>
-<body>
+<body class="page-charts ap-launch-article">
 
   <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
 
-  <!-- Cosmic background -->
-  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
-  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
-  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
-
-  <!-- ============================================================
-       NAVIGATION
-  ============================================================ -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25" /></span>
           <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
-          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
             <span></span><span></span><span></span>
           </button>
         </div>
@@ -101,22 +86,17 @@
   <main id="main-content">
     <div id="charts-dashboard">
 
-      <!-- ============================================================
-           HERO
-      ============================================================ -->
       <section class="mc-hero" aria-labelledby="page-title">
         <div class="container">
-          <p class="mc-hero__eyebrow">Your Collection</p>
-          <h1 id="page-title">My Charts</h1>
-          <p class="mc-hero__sub">Every birth chart you've saved, gathered in one place — the Big Three at a glance, ready to revisit. Saved charts stay in this browser. When you cast, a place search sends only the town name to a public geocoder; birth time stays here.</p>
-          <p style="margin-top:var(--space-3);"><span class="ap-badge">Saved locally — your collection never touches a server</span></p>
+          <p class="mc-hero__eyebrow">This device · local keep</p>
+          <h1 id="page-title">Your saved charts and plates.</h1>
+          <p class="mc-hero__sub">Birth charts saved in this browser, plus schematic engine plates kept on this device. They are not photographs, and this page is not a live sky feed. Birth minutes stay here. When you cast, a place search sends only the town name.</p>
+          <p class="mc-hero__honesty">Local only · schematic plates, not photographs</p>
+          <p class="mc-hero__cast"><a href="chart.html">Cast a chart</a></p>
           <p class="mc-stat" id="charts-stat" hidden aria-live="polite"></p>
         </div>
       </section>
 
-      <!-- ============================================================
-           CHART GRID
-      ============================================================ -->
       <section class="mc-section" aria-label="Saved charts collection">
         <div class="container">
           <h2 id="charts-section-title" class="sr-only">Saved charts</h2>
@@ -126,7 +106,7 @@
                  state. This is NOT the empty state — it makes no claim about how
                  many charts exist, it only says the collection is being read. -->
             <div class="app-empty-state" data-mc-state="loading">
-              <span class="app-empty-state__seal eng-star-mark" aria-hidden="true"></span>
+              <span class="app-empty-state__seal" aria-hidden="true">⊙</span>
               <h2 class="app-empty-state__title">Opening your collection…</h2>
               <p class="app-empty-state__sub">Reading your saved charts from this browser. Birth times stay here.</p>
               <noscript>
@@ -140,82 +120,35 @@
         </div>
       </section>
 
+      <section class="ap-keep-library" aria-labelledby="keep-library-title">
+        <p class="ap-keep-library__kicker">Plates · this device</p>
+        <h2 id="keep-library-title">Artwork kept on this device</h2>
+        <p class="ap-keep-library__lede">Birth-hour stills, sky cards and chart plates. Schematic engine art — not photographs, not a live feed. Birth minutes stay here. Oldest plates drop off after twelve.</p>
+        <div id="ap-keep-library-shelf"></div>
+      </section>
+
     </div>
   </main>
 
-  <!-- ============================================================
-       FOOTER
-  ============================================================ -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-
-      <div class="footer-inner" data-ap-footer-model="1">
-
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro<i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            <strong>The real sky news.</strong>
-            Weather report of the sky, not prophecy. Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
-          </div>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; Calculations run in your browser &middot; A place search sends only the town name to a public geocoder &middot; Birth time stays here &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
-    </div>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
+    <noscript>
+      <nav class="ap-site-footer__routes" aria-label="Core pages">
+        <a href="index.html">Observatory</a>
+        <a href="chart.html">Chart</a>
+        <a href="sky-events.html">Events</a>
+        <a href="shop.html">Shop</a>
+      </nav>
+    </noscript>
   </footer>
 
-  <!-- Toast container -->
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
-  <!-- JS -->
-  <script src="js/raf-core.js"></script>
 
   <!-- ephemeris.js intentionally NOT loaded: the dashboard only reads saved
        records via AstroProfile — View links defer computation to chart.html. -->
-  <script src="js/cosmos.js" defer></script>
   <script src="js/profile.js"></script>
   <script src="js/icons.js"></script>
-<script src="js/effects.js" defer></script>
-  <script src="js/charts-dashboard.js"></script>
-
-  <script src="js/ap-page-boot.js?v=902" defer></script>
+  <script src="js/charts-dashboard.js?v=902"></script>
+  <script src="js/ap-keep-library.js?v=902" defer></script>
   <script src="js/ap-footer-inject.js?v=902" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

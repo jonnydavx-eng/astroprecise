@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, follow">
   <meta name="color-scheme" content="dark">
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -61,7 +62,7 @@
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -162,7 +163,7 @@
         <li><strong>02 · See</strong> Real zenith star + light-cone story + 3D engine texture plate.</li>
         <li><strong>03 · Keep</strong> Save the finished PNG on this device. No account or checkout.</li>
       </ol>
-      <p class="mom-deeper__pack">Moment is a free creative tool. The eclipse launch has one separate paid edition.</p>
+      <p class="mom-deeper__pack">Moment is a free schematic card on this device. Shop commissions stay closed. Play stays free.</p>
     </details>
 
     <section class="mom-reveal" id="mom-reveal" hidden aria-labelledby="mom-reveal-title">
@@ -203,7 +204,7 @@
             <button type="button" class="mom-btn mom-btn--primary" id="mom-share">Share card</button>
             <button type="button" class="mom-btn mom-btn--ghost" id="mom-save">Download PNG</button>
             <a class="mom-btn mom-btn--ghost" href="horoscope.html" id="mom-daily-return" hidden>Tomorrow: today&apos;s Daily →</a>
-            <a class="mom-btn mom-btn--ghost" href="eclipse.html#contact" id="mom-pack-cta">Explore the eclipse edition</a>
+            <a class="mom-btn mom-btn--ghost" href="eclipse.html" id="mom-pack-cta">Replay the eclipse</a>
             <a class="mom-btn mom-btn--ghost" href="chart.html">Cast full chart</a>
             <a class="mom-btn mom-btn--ghost" href="index.html#m=now" id="mom-model-link" hidden>Open this night in the 3D model</a>
           </div>
@@ -211,9 +212,10 @@
             <p><strong>Free now:</strong> this PNG card (zenith + light-cone + engine plate). No account.</p>
             <p><strong>Private by design:</strong> the card is generated and downloaded in this browser.</p>
             <p style="margin:0">
-              <a href="ephemeris.html">Sky</a>
-              · <a href="horoscope.html">Daily</a>
-              · <a href="cosmic-story.html">Readings</a>
+              <a href="index.html">Observatory</a>
+              · <a href="chart.html">Chart</a>
+              · <a href="sky-events.html">Events</a>
+              · <a href="shop.html">Shop</a>
             </p>
           </div>
         </div>
@@ -223,18 +225,18 @@
     <section class="mom-spine" aria-labelledby="mom-spine-title">
       <h2 id="mom-spine-title">How Moment sits in AstroPrecise</h2>
       <ol>
-        <li><strong>1 · Live sky</strong> Feel the system moving — home orrery and <a href="ephemeris.html">Sky</a>.</li>
-        <li><strong>2 · Chart</strong> Cast <em>your</em> birth sky free on <a href="chart.html">Chart</a>.</li>
-        <li><strong>3 · Moment</strong> Keep any date as art (you are here).</li>
-        <li><strong>4 · Daily</strong> Come back for today’s sky on <a href="horoscope.html">Daily</a>.</li>
-        <li><strong>5 · Eclipse</strong> Replay the 12 August eclipse and keep a personalised edition.</li>
+        <li><strong>1 · Observatory</strong> Sit with the computed sky on the <a href="index.html">Observatory</a>.</li>
+        <li><strong>2 · Chart</strong> Cast the minute you arrived on <a href="chart.html">Chart</a>.</li>
+        <li><strong>3 · Keep</strong> Freeze this date as a schematic plate (you are here). Not a live feed.</li>
+        <li><strong>4 · Events</strong> Follow eclipses and named sky nights on <a href="sky-events.html">Events</a>.</li>
+        <li><strong>5 · Shop</strong> A closed commission, if you want a print — play stays free.</li>
       </ol>
     </section>
   </main>
 
   <footer class="site-footer" role="contentinfo">
     <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#8B919C);font-size:0.85rem">
-      <p style="margin:0 0 0.5rem"><a href="index.html">Home</a> · <a href="chart.html">Chart</a> · <a href="ephemeris.html">Sky</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
+      <p style="margin:0 0 0.5rem"><a href="index.html">Observatory</a> · <a href="chart.html">Chart</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
       <p style="margin:0">© AstroPrecise · entertainment &amp; education · astronomy computed in-browser</p>
     </div>
   </footer>

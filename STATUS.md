@@ -1,21 +1,32 @@
 # AstroPrecise status
 
-Updated: 2026-08-24
+**State:** Local v902 Studio candidate on `codex/v902-whole-release-r2` at git HEAD `025c2cb4cb9841d1fe32e8be1a1fbf199719379f`. Public production rechecked 2026-09-13 still `ap-v895` with checkout closed. v902 is local-only and has not been deployed. No validator receipt for this tip.
+
+Updated: 2026-09-13
 
 ## Answer first
 
 AstroPrecise has a checkout-closed v902 Studio candidate for exactly three
 personalised, adult self-order commission services. The product art, fictional
 samples, secure fulfilment boundary, release workflows and launch materials are
-implemented locally. It is **not live**: public v895 and checkout remain
+implemented locally. It is **not deployed**: public `ap-v895` and checkout remain
 intentionally unchanged until independent review, owner facts and signed-in
 platform proof support one exact frozen commit.
 
-The active governance record is:
+## Exact measured identity (2026-09-13)
+
+- Canonical path: `C:\Users\jonny\dev\astroprecise`
+- Branch: `codex/v902-whole-release-r2`
+- HEAD: `025c2cb4cb9841d1fe32e8be1a1fbf199719379f` (`chore: commit Coherence v2.1 policy propagation`)
+- Working tree: dirty `STATUS.md` plus small launcher/path cleanup. Untracked `art/higgsfield-unlimited-2026-08-31/` is left untracked on purpose — do not git add those PNGs.
+- Local `website/sw.js` is `ap-v902`. Public `https://astroprecise.app/sw.js` rechecked today as `const V="ap-v895"`.
+- Do not use `C:\Users\jonny\OneDrive\astroprecise` — it is a separate stale tree whose git metadata is unreadable.
+
+The August 2026 governance record is still:
 
 `C:\Users\jonny\dev\coherence-astro-release\.fleets\AstroPrecise\astroprecise-20260824-195605-8be7\manifest.json`
 
-Read its validator-owned state directly. This document never grants
+That file does not identify this HEAD. Read its validator-owned state directly. This document never grants
 `CODE-ONLY`, `VERIFIED-LOCAL`, `READY-SHIP` or `LIVE`.
 
 ## Finished in the candidate
@@ -62,7 +73,7 @@ provide that independence.
 
 ## Public truth
 
-- `https://astroprecise.app/sw.js` was last rechecked at `ap-v895`.
+- `https://astroprecise.app/sw.js` was rechecked 2026-09-13 serving `ap-v895`.
 - Public checkout is closed and v902 has not been deployed.
 - The public legacy Gumroad listing may still be externally reachable; it has
   not been silently archived or deleted.

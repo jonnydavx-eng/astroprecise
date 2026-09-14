@@ -59,14 +59,14 @@ window.AstroToolCards = (() => {
     {
       id: 'transits',
       href: 'transits.html',
-      label: 'Live Sky',
+      label: 'Computed sky',
       title: 'Current Transits',
-      desc: 'Real-time sky versus your natal chart. See exactly which natal planets are being activated by current transits, with interpretations and a personal forecast.',
+      desc: 'Today\'s computed sky versus your natal chart. See which natal planets are being activated by current transits, with interpretations and a personal forecast.',
       cta: 'View transits',
       icon: 'sunhigh',
       glyph: '☿',
       visual: 'transits',
-      badge: 'Free · Live sky',
+      badge: 'Free · Computed sky',
     },
     {
       id: 'instrument',

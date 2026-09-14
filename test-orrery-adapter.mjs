@@ -371,8 +371,15 @@ if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
 const modelCount = (indexHtml.match(/<void-orrery\b/g) || []).length;
 if (modelCount !== 1) fail('Home must own exactly one void-orrery (' + modelCount + ')');
-for (const probe of ['class="ap-model-stage"', 'id="mladder"', 'id="dock"', 'aria-label="Live Earth now"']) {
+for (const probe of ['class="ap-model-stage"', 'id="mladder"', 'id="dock"', 'aria-label="Earth as computed now"']) {
   if (!indexHtml.includes(probe)) fail('Home model contract missing: ' + probe);
+}
+const observatoryJs = readFileSync(join(root, 'js', 'ap-observatory-v834.js'), 'utf8');
+if (!observatoryJs.includes("stage.setAttribute('aria-label', 'Live Earth now')")) {
+  fail('Surface C must still promote Live Earth now after WebGL owns the sky');
+}
+if (!observatoryJs.includes("html.classList.contains('orrery-full') && html.classList.contains('ap-model-revealed')")) {
+  fail('Surface C Live promotion must require orrery-full and ap-model-revealed');
 }
 const homeStageStart = indexHtml.indexOf('<div class="ap-model-stage"');
 const homePanelStart = indexHtml.indexOf('<aside class="ap-control-panel"');

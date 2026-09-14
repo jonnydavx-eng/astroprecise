@@ -20,7 +20,7 @@
   var NAV_PRIMARY = [
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['sky-events.html', 'Events', { badge: 'Live' }],
+    ['sky-events.html', 'Events'],
     ['shop.html', 'Shop'],
   ];
 
@@ -102,15 +102,13 @@
     if (!header || header.dataset.apStaticNavReady) return;
     header.dataset.apStaticNavReady = '1';
     var here = staticHere();
-    var launch = isLaunchRoute();
     var desktop = header.querySelector('.navbar__nav');
     var mobile = header.querySelector('.navbar__mobile-menu');
     var toggle = header.querySelector('.navbar__toggle');
-    var moreActive = NAV_MORE_EXPLORE.concat(NAV_EXTRAS).some(function (row) { return row[0] === here; });
-    var groups = launch ? [] : [
-      { label: 'Your astrology', items: NAV_MORE_EXPLORE },
-      { label: 'More tools', items: NAV_EXTRAS }
-    ];
+    var moreActive = false;
+    // Public spine is four routes everywhere. Archive URLs stay addressable;
+    // they are not advertised in More/drawer.
+    var groups = [];
     if (desktop) {
       var panel = groups.map(function (group) {
         return '<div class="navbar__more-group" role="group" aria-label="' + group.label + '"><p class="navbar__more-label">' + group.label + '</p>' + staticLinks(group.items, here, true) + '</div>';

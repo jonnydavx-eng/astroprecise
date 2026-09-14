@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#040812">
-<title>Sky card — the minute you arrived | AstroPrecise</title>
-<meta name="description" content="A keepable 1200 × 630 card of one birth minute: the real timezone of the birth town, Sun, Moon and Venus, and the rising sign when the hour is known. Computed and downloaded on your device.">
+<title>Sky card — keep your chart minute | AstroPrecise</title>
+<meta name="description" content="Beat 3 after your chart: a keepable 1200 × 630 card of one birth minute. Engine still artwork, honest timezone rules, computed on your device.">
 <link rel="canonical" href="https://astroprecise.app/sky-card.html">
-<meta property="og:title" content="Sky card — the minute you arrived">
+<meta property="og:title" content="Sky card — keep your chart minute">
 <meta property="og:description" content="A keepable card of one birth minute. Computed and downloaded on this device.">
 <meta property="og:image" content="https://astroprecise.app/img/editorial/sitting-keep-og-v893.jpg">
 <meta property="og:image:width" content="1200">
@@ -17,7 +17,32 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-keep-og-v893.jpg">
 <link rel="stylesheet" href="./css/fonts.css?v=902">
+<script>
+(function () {
+  function hasMinute() {
+    try {
+      if (sessionStorage.getItem('ap-sky-card-handoff')) return true;
+      if (sessionStorage.getItem('ap-sitting-handoff')) return true;
+      var charts = JSON.parse(localStorage.getItem('ap_charts') || '[]');
+      return Array.isArray(charts) && charts.length > 0;
+    } catch (e) { return false; }
+  }
+  if (!hasMinute()) document.documentElement.classList.add('ap-sky-no-minute');
+})();
+</script>
 <style>
+.ap-card-engine{position:relative;height:min(18vh,168px);min-height:120px;overflow:hidden;border-bottom:1px solid var(--ap-line);background:var(--ap-void-deep)}
+.ap-card-engine img{width:100%;height:100%;display:block;object-fit:contain;object-position:right center;opacity:.78;filter:saturate(.82) contrast(1.06)}
+.ap-card-engine::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,8,18,.94),rgba(4,8,18,.42) 55%,rgba(4,8,18,.12));pointer-events:none}
+.ap-card-engine__receipt{position:absolute;z-index:1;left:clamp(18px,4vw,48px);top:50%;display:grid;gap:4px;max-width:min(58vw,480px);transform:translateY(-50%)}
+.ap-card-engine__receipt span,.ap-card-engine__receipt em{font:500 10px/1.4 var(--ap-data);letter-spacing:.14em;text-transform:uppercase;color:var(--ap-brass)}
+.ap-card-engine__receipt strong{font:600 clamp(18px,2.8vw,28px)/1.05 var(--ap-display);color:var(--ap-paper)}
+.ap-card-engine__receipt em{color:var(--ap-paper-dim);font-style:normal;letter-spacing:.04em;text-transform:none}
+.ap-card-gate{display:none;margin:0 0 28px;padding:22px;border:1px solid var(--ap-line);border-radius:4px;background:rgba(16,23,34,.72)}
+html.ap-sky-no-minute .ap-card-gate{display:block}
+html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.ap-sky-no-minute .ap-card-ledger{display:none}
+.ap-card-gate p{margin:0 0 14px;color:var(--ap-paper-dim);font-size:17px;line-height:1.62}
+.ap-card-gate a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ion);color:#07101E;font:700 12px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;text-decoration:none}
 .ap-card-shell{width:min(1000px,calc(100% - 40px));margin:0 auto;padding:clamp(44px,7vw,92px) 0 calc(84px + var(--bottom-nav-h,0px))}
 .ap-card-kicker{margin:0 0 13px;color:var(--ap-brass);font:9px/1.5 var(--ap-data);letter-spacing:.18em;text-transform:uppercase}
 .ap-card-shell h1{max-width:16ch;margin:0;color:var(--ap-paper);font:600 clamp(42px,7vw,76px)/.9 var(--ap-display);letter-spacing:-.03em}
@@ -32,7 +57,7 @@
 .ap-city-item:hover,.ap-city-item:focus{background:rgba(139,169,255,.16)}
 .ap-zone-note{margin:6px 0 0;color:var(--ap-paper-faint);font-size:12px;line-height:1.5}
 .ap-card-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
-.ap-card-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ember);color:#07101E;font:700 12px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;cursor:pointer}
+.ap-card-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ion);color:#07101E;font:700 12px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;cursor:pointer}
 .ap-card-btn--quiet{background:transparent;border:1px solid var(--ap-brass);color:var(--ap-brass-bright)}
 .ap-card-btn[disabled]{opacity:.45;cursor:not-allowed}
 .ap-card-status{margin:0;color:var(--ap-paper-dim);font-size:13px;line-height:1.6}
@@ -47,12 +72,6 @@
 .ap-card-ledger p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.6}
 .ap-card-foot{margin:34px 0 0;color:var(--ap-paper-faint);font-size:13px;line-height:1.7}
 .ap-card-foot a{color:var(--ap-brass-bright)}
-/* Phone band matches the living-sky mobile layout (700px), not 430px: at 390
-   the card was landing at y=927, so the first screen showed a headline and a
-   form and never the thing being kept. Order puts the plate directly under the
-   title; the lede and the form follow it. Body copy holds the 16px floor —
-   the zone rule, the privacy line and the honesty foot are the last text that
-   should need pinching to read. */
 @media(max-width:700px){
   .ap-card-shell{display:flex;flex-direction:column;width:min(100% - 32px,1000px);padding-top:26px}
   .ap-card-kicker{order:1;margin-bottom:10px;font-size:11px}
@@ -60,18 +79,16 @@
   .ap-card-canvas{order:3;margin-top:20px}
   .ap-card-plate-note{display:block}
   .ap-card-lede{order:4;margin-top:24px;font-size:16px}
-  .ap-card-form{order:5;margin-top:22px}
-  .ap-card-ledger{order:6;grid-template-columns:1fr}
-  .ap-card-foot{order:7}
+  .ap-card-gate{order:5;margin-top:22px}
+  .ap-card-form{order:6;margin-top:22px}
+  .ap-card-ledger{order:7;grid-template-columns:1fr}
+  .ap-card-foot{order:8}
   .ap-card-form__fields{grid-template-columns:1fr}
   .ap-card-actions{flex-direction:column;align-items:stretch}
   .ap-card-btn{width:100%}
-  .ap-card-status,.ap-zone-note,.ap-card-ledger p,.ap-card-foot{font-size:16px;line-height:1.55}
+  .ap-card-status,.ap-zone-note,.ap-card-ledger p,.ap-card-foot,.ap-card-gate p{font-size:16px;line-height:1.55}
   .ap-card-ledger span{font-size:11px}
   .ap-card-foot a{display:inline-flex;align-items:center;min-height:44px}
-  /* The shared header and footer chrome still ship 28px and 18px targets on
-     every route; scoped here so this page meets the 44px floor without
-     reaching into the house sheets that the site-wide phone pass owns. */
   .page-sky-card .navbar__logo,
   .page-sky-card .ap-site-footer__wordmark,
   .page-sky-card .ap-site-footer__routes a,
@@ -87,6 +104,7 @@
 <link rel="stylesheet" href="css/ap-phone-pass.css?v=902">
 <script src="js/ap-nav-model.js?v=902" defer></script>
 <script src="js/ephemeris.js?v=902" defer></script>
+<script src="js/ap-keep-library.js?v=902" defer></script>
 <script src="js/ap-sky-card.js?v=902" defer></script>
 </head>
 <body class="page-sky-card ap-launch-article">
@@ -100,10 +118,10 @@
       </a>
       <div class="navbar__nav" role="group" aria-label="Primary">
         <noscript>
-          <a href="index.html" class="navbar__link">Observatory</a>
-          <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="sky-events.html" class="navbar__link">Events</a>
-          <a href="shop.html" class="navbar__link">Shop</a>
+            <a href="index.html" class="navbar__link">Observatory</a>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
         </noscript>
       </div>
       <div class="navbar__end">
@@ -116,10 +134,24 @@
   </nav>
 </header>
 
+<section class="ap-card-engine" aria-label="Authored engine still">
+  <img src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="(max-width: 760px) calc(100vw - 34px), 512px" width="512" height="512" loading="lazy" decoding="async" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
+  <div class="ap-card-engine__receipt">
+    <span>Engine still · schematic</span>
+    <strong>Not a live sky photograph</strong>
+    <em>Type and computed positions only · the Observatory model stays free</em>
+  </div>
+</section>
+
 <main class="ap-card-shell" id="sky-card-main">
-  <p class="ap-card-kicker">Sky card · free · 1200 × 630 · optional</p>
-  <h1>The sky at the minute you arrived.</h1>
-  <p class="ap-card-lede">The keepable half of the sitting: date, town, the clock in that town’s real zone, Sun, Moon and Venus. Drawn here. Play stays free. <a href="deep-reading.html">The seven chapters are the reading</a>.</p>
+  <p class="ap-card-kicker">Beat 3 · Keep · after your chart</p>
+  <h1>Keep this minute as a card.</h1>
+  <p class="ap-card-lede">The optional keep step after a free chart: one birth minute drawn as a 1200 × 630 plate. Sun, Moon and Venus, the town’s real zone, and the rising sign when the hour is known. Play stays free — this is not checkout.</p>
+
+  <div class="ap-card-gate" id="skyCardColdGate">
+    <p>This keep step expects a minute from your chart. Cast the free chart first; the minute travels in this tab when you choose Sky card.</p>
+    <a href="chart.html">Cast your free chart</a>
+  </div>
 
   <form class="ap-card-form" id="skyCardForm" novalidate>
     <div class="ap-card-form__fields">
@@ -147,7 +179,7 @@
   <div class="ap-card-ledger" id="skyCardLedger" aria-live="polite"></div>
 
   <p class="ap-card-foot">
-    Positions come from the same in-browser engine as the <a href="chart.html">free chart</a>; the <a href="deep-reading.html">seven-chapter natal reading</a> reads the same minute in words. Nothing here is a claim about your life — astrology is a symbolic tradition offered for reflection, and the astronomy is computed so you can check it.<br>
+    Positions come from the same in-browser engine as the <a href="chart.html">free chart</a>; the <a href="deep-reading.html">seven-chapter reading</a> is the word half of the same minute. Nothing here is a claim about your life — astrology is a symbolic tradition offered for reflection, and the astronomy is computed so you can check it.<br>
     &copy; 2026 AstroPrecise · computed on this device, never fabricated
   </p>
 </main>

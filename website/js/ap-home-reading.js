@@ -56,25 +56,38 @@
   }
 
   function paint(insight, natal) {
+    if (document.body.classList.contains('is-birth-sky')) return;
     var kicker = $('ap-reading-kicker');
     var title = $('ap-reading-title');
     var body = $('ap-reading-body');
     var source = $('ap-reading-source');
     var moon = insight && insight.meta && insight.meta.moonSign;
-    var sun = insight && insight.meta && insight.meta.sunSign;
+    var sunNow = insight && insight.meta && insight.meta.sunSign;
+    var timed = !!(natal && natal.timeKnown === true);
+    var natalSun = natal && natal.positions && natal.positions.Sun && natal.positions.Sun.sign;
 
-    setText(kicker, natal ? 'Your minute is on this device' : 'The night you were born');
-    setText(title, natal ? 'Sit with the hour you arrived' : 'Sit with the sky first');
-    setText(body, natal
-      ? 'Your minute is already here.'
-      : 'Earth now. Then the minute you arrived.');
+    if (natal) {
+      setText(kicker, timed ? 'Your minute is on this device' : 'Your date is on this device');
+      setText(title, timed ? 'Sit with the hour you arrived' : 'Sit with the sky you were born under');
+      if (natalSun && timed) {
+        setText(body, 'Your Sun in ' + natalSun + ' is already here.');
+      } else if (natalSun) {
+        setText(body, 'Your Sun in ' + natalSun + ' is here. Moon, rising and houses wait for a birth time. Noon is a date reference, not your hour.');
+      } else {
+        setText(body, timed ? 'Your minute is already here.' : 'Your date is here. Moon, rising and houses wait for a birth time.');
+      }
+    } else {
+      setText(kicker, 'The night you were born');
+      setText(title, 'Sit with the sky first');
+      setText(body, 'Earth now. Then the minute you arrived.');
+    }
     if (source) {
       var signs = [];
       if (moon) signs.push('Moon in ' + moon);
-      if (sun) signs.push('Sun in ' + sun);
+      if (sunNow) signs.push('Sun in ' + sunNow);
       setText(source, natal
         ? 'From the chart saved on this device. Astrology is symbolic, not a scientific claim.'
-        : (signs.length ? signs.join(' · ') + '. Computed here. Cast a chart to read this hour against your birth.'
+        : (signs.length ? signs.join(' · ') + '. Computed here. Open your chart to read this hour against your birth.'
           : 'Positions computed on this device. Astrology is offered for reflection, not as fact.'));
     }
   }
@@ -101,7 +114,7 @@
   if (instrumentBtn) {
     instrumentBtn.addEventListener('click', function () {
       var open = document.body.classList.toggle('is-instrument-open');
-      instrumentBtn.textContent = open ? 'Put the instrument away' : 'Use the instrument';
+      instrumentBtn.textContent = open ? 'Hide time controls' : 'Time controls';
       instrumentBtn.setAttribute('aria-pressed', open ? 'true' : 'false');
     });
   }

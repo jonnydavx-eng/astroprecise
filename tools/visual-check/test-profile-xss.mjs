@@ -261,13 +261,22 @@ try {
       welcomeText: document.getElementById('personal-welcome')?.textContent || '',
       welcomeHref: document.querySelector('#personal-welcome a')?.getAttribute('href'),
       noteText: document.getElementById('shop-personal-note')?.textContent || '',
-      noteHref: document.querySelector('#shop-personal-note a')?.getAttribute('href'),
+      noteHrefs: [...document.querySelectorAll('#shop-personal-note a')].map((a) => a.getAttribute('href')),
       injectedNodes: document.querySelectorAll('img[src="x"], svg[onload]').length
     }));
     gate('personalization profile markup never executes', result.executed === 0, `executed=${result.executed}`);
     gate('personalization renders names as literal text', result.welcomeText.includes(attackName));
-    gate('personalization drops non-zodiac sign payloads', result.big3 === '☽ Capricorn', result.big3);
-    gate('personalization builds fixed internal links', result.welcomeHref === 'transits.html' && result.noteHref === 'chart.html');
+    gate('personalization drops non-zodiac sign payloads', result.big3 === 'your saved chart' && !/Moon|Rising/.test(result.big3), result.big3);
+    gate(
+      'personalization builds fixed internal links',
+      result.welcomeHref === 'chart.html'
+        && result.noteHrefs.length === 3
+        && result.noteHrefs[0] === 'charts.html'
+        && result.noteHrefs[1] === 'sky-card.html'
+        && result.noteHrefs[2] === 'deep-reading.html'
+        && result.noteHrefs.every((href) => href && !/[?#]/.test(href)),
+      `welcome=${result.welcomeHref} notes=${(result.noteHrefs || []).join(',')}`
+    );
     gate('personalization creates no attacker-controlled nodes', result.injectedNodes === 0, `nodes=${result.injectedNodes}`);
     await context.close();
   }

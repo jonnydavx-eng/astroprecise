@@ -310,7 +310,7 @@
     resetScrub();
     enableScrub(false);
     setPressed('now');
-    stamp('Live sky · now');
+    stamp('Sky clock · now');
     applyNatalClocks();
     paintTelemetry();
   }
@@ -585,7 +585,7 @@
     enableScrub(false);
     var pa = readPerson('person1');
     var pb = readPerson('person2');
-    if (pa.jd && pb.jd) stamp(pa.name + ' and ' + pb.name + ' · both minutes in the live sky');
+    if (pa.jd && pb.jd) stamp(pa.name + ' and ' + pb.name + ' · both minutes on the sky clock');
     else if (pa.date) stamp(minuteLabel(pa));
     else if (pb.date) stamp(minuteLabel(pb));
     applyNatalClocks();

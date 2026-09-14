@@ -63,7 +63,7 @@ for (const page of PAGES) {
         tabsModel: tabsModel.map(row => ({ label: row[1], href: row[0] })),
         hasMore: !!moreBtn,
         moreLinks,
-        hasFooterModel: !!document.querySelector('footer [data-ap-footer-model="1"]'),
+        hasFooterModel: !!document.querySelector('footer[data-ap-footer-model="compact-v835"], footer [data-ap-footer-model="compact-v835"]'),
       };
     });
     results.push({ page, errs: errs.filter(e => !ignore.test(e)), ...data });

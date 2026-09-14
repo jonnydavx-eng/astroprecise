@@ -30,7 +30,9 @@
   }
 
   function caption(context) {
-    if (!context) return 'Cast the chart to prepare its whole-system birth-hour frame.';
+    if (!context) {
+      return 'Needs a birth minute from your chart. Cast with a clock time to keep that hour\u2019s still \u2014 the live sky above stays free.';
+    }
     var place = String(context.place || '').trim() || 'Place not supplied';
     var date = String(context.birthDate || '').trim() || 'Date not supplied';
     if (context.timeKnown === true && context.birthTime) {
@@ -122,27 +124,53 @@
     btn.disabled = !birthContext;
     btn.setAttribute('aria-disabled', birthContext ? 'false' : 'true');
     if (note) {
-      note.textContent = dated && !valid
-        ? caption({
+      if (dated && !valid) {
+        note.textContent = caption({
           jd: Number(detail.jd),
           birthDate: String(detail.birthDate),
           place: detail.place ? String(detail.place) : '',
           timeKnown: false
-        })
-        : caption(birthContext);
+        });
+      } else if (birthContext) {
+        note.textContent = caption(birthContext);
+      }
     }
+  }
+
+  function rememberHandoff(context) {
+    if (!context) return;
+    try { sessionStorage.setItem('ap-keep-sky-handoff', JSON.stringify(context)); }
+    catch (_) { /* blocked — Observatory Keep stays disabled */ }
+  }
+
+  function keepToLibrary(blob, context, kind) {
+    if (!blob || !window.APKeepLibrary || typeof APKeepLibrary.put !== 'function') return;
+    APKeepLibrary.put({
+      kind: kind,
+      blob: blob,
+      caption: caption(context),
+      birthDate: context && context.birthDate ? String(context.birthDate) : '',
+      place: context && context.place ? String(context.place) : '',
+      schematic: true
+    });
   }
 
   function keep() {
     var orr = document.getElementById('orr');
     var btn = document.getElementById('keep-sky');
-    if (!orr || typeof orr.captureStill !== 'function') {
-      if (btn) btn.textContent = 'Sky not ready';
-      return;
-    }
     var birthMode = btn && btn.dataset.keepMode === 'birth-hour';
     if (birthMode && !birthContext) {
       if (btn) btn.textContent = 'Cast chart first';
+      return;
+    }
+    if (!orr || typeof orr.captureStill !== 'function') {
+      if (birthMode && birthContext) {
+        rememberHandoff(birthContext);
+        if (btn) btn.textContent = 'Open Observatory to keep';
+        window.location.href = 'index.html';
+        return;
+      }
+      if (btn) btn.textContent = 'Sky not ready';
       return;
     }
     // Trigger wire: birth Julian day → existing authored still (no camera rebuild).
@@ -158,6 +186,7 @@
     stampSurfaceA(still, birthMode ? birthContext : null);
     still.toBlob(function (blob) {
       if (!blob) return;
+      keepToLibrary(blob, birthMode ? birthContext : null, birthMode ? 'birth-hour' : 'observatory');
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;

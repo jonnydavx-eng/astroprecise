@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, follow">
   <meta name="color-scheme" content="dark">
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free name numerology calculator — your Expression, Soul Urge and Personality numbers via the Pythagorean system, with a transparent step-by-step breakdown." />
-  <title>Name Numerology Calculator — Expression &amp; Soul Urge</title>
+  <meta name="description" content="Name numerology — Expression, Soul Urge and Personality numbers via Pythagorean letter mapping. Same name, same numbers. Not astronomy. Transparent arithmetic computed in your browser." />
+  <title>Name numbers — letter numerology | AstroPrecise</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -15,17 +16,17 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="Name Numerology Calculator — Expression, Soul Urge &amp; Personality | AstroPrecise" />
-  <meta property="og:description" content="Compute your Expression, Soul Urge, and Personality numbers from your full name with the Pythagorean system. Transparent, deterministic, computed in your browser." />
+  <meta property="og:title" content="Name numbers — letter numerology | AstroPrecise" />
+  <meta property="og:description" content="Expression, Soul Urge, and Personality numbers from your full name — Pythagorean letter mapping for reflection, not prediction. Transparent, deterministic, computed in your browser." />
   <meta property="og:url" content="https://astroprecise.app/name-numerology.html" />
   <link rel="canonical" href="https://astroprecise.app/name-numerology.html" />
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Name Numerology Calculator | AstroPrecise" />
-  <meta name="twitter:description" content="Your Expression, Soul Urge, and Personality numbers from your full name — Pythagorean, transparent, deterministic." />
+  <meta name="twitter:title" content="Name numbers — letter numerology | AstroPrecise" />
+  <meta name="twitter:description" content="Pythagorean name numbers for reflection, not prediction — transparent arithmetic computed in your browser." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
@@ -36,6 +37,14 @@
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/name-numerology-page.css" id="ap-css-nn" />
+  <style id="ap-glacial-override">
+    :root{
+      --gold:#8BA9FF!important;--gold-pale:#C9D6E3!important;--gold-dim:#93A8BF!important;
+      --gold-bright:#A5BCFF!important;--gold-deep:#637DC9!important;
+      --nn-gold:#8BA9FF!important;--nn-gold-pale:#C9D6E3!important;
+      --ap-gold:#8BA9FF!important;--ap-gold-pale:#C9D6E3!important;--ap-gold-dim:#93A8BF!important;
+    }
+  </style>
   <style>
     body:has(.nn-hero){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(.nn-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -81,7 +90,7 @@
         "name": "What is the difference between the Expression, Soul Urge, and Personality numbers?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The Expression (or Destiny) number comes from all the letters of your full name and describes your natural talents and life direction. The Soul Urge (or Heart's Desire) number comes from the vowels and reflects your inner motivations and what you truly want. The Personality number comes from the consonants and describes the impression you make on others."
+          "text": "In the Pythagorean tradition, the Expression (or Destiny) number comes from all the letters of a full name and is read as a symbol of talents and direction. The Soul Urge (or Heart's Desire) comes from the vowels and is read as inner motive. The Personality number comes from the consonants and is read as the impression you make. These are traditional labels, not measured traits."
         }
       },
       {
@@ -89,7 +98,7 @@
         "name": "What are master numbers in numerology?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "11, 22, and 33 are master numbers. When a total reduces to one of these, it is left unreduced rather than being collapsed to a single digit, because master numbers are considered to carry a heightened, more demanding vibration. 11 is the Illuminator, 22 the Master Builder, and 33 the Master Teacher."
+          "text": "11, 22, and 33 are master numbers in the Pythagorean tradition. When a total reduces to one of these, it is left unreduced rather than collapsed to a single digit. The labels Illuminator, Master Builder, and Master Teacher are traditional names, not a scientific claim."
         }
       },
       {
@@ -97,7 +106,7 @@
         "name": "Which name should I use for numerology?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Most numerologists use the full name given at birth as it appears on the birth certificate, because it is considered the blueprint of your potential. You can also calculate the numbers for a name you currently use to see the energy that name carries day to day. The calculator is deterministic, so the same name always returns the same numbers."
+          "text": "Most numerologists use the full name given at birth as it appears on the birth certificate. You can also calculate a name you currently use. Same spelling always returns the same numbers. That arithmetic is checkable; the meanings are tradition, not a measured energy or blueprint."
         }
       },
       {
@@ -125,7 +134,7 @@
   <!-- ============================================================
        NAVIGATION
   ============================================================ -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -152,15 +161,14 @@
     ============================================================ -->
     <section class="nn-hero">
       <div class="container">
-        <p class="eyebrow">Pythagorean Numerology</p>
-        <h1 class="gradient-text">Name Numerology Calculator</h1>
+        <p class="eyebrow">Numerology · not the sky engine</p>
+        <h1 class="gradient-text">Name numbers</h1>
         <p class="nn-hero__sub">
-          Every letter of your name carries a number. Enter your full name to reveal your
-          <strong style="color:var(--nn-gold-pale);">Expression</strong>,
-          <strong style="color:var(--nn-gold-pale);">Soul Urge</strong>, and
-          <strong style="color:var(--nn-gold-pale);">Personality</strong> numbers —
-          calculated with the Pythagorean system, master numbers preserved, every step shown.
+          Letter-to-digit mapping of a name — Expression, Soul Urge, and Personality via the
+          Pythagorean convention. Same name, same numbers. Not astronomy, not a natal chart,
+          and not a fortune. Entertainment and a doorway to your computed sky.
         </p>
+        <p style="margin-top:var(--space-3);"><a href="chart.html" style="text-decoration:none;"><span class="ap-badge ap-badge--deterministic">Arithmetic on letters — then the real sky on Chart</span></a></p>
 
         <div class="nn-form-card">
           <h2 class="section-title" style="font-size:var(--text-xl);margin-bottom:var(--space-6);text-align:center;">Calculate Your Numbers</h2>
@@ -227,6 +235,20 @@
           <div class="nn-calc-rows" id="nn-calc-rows"></div>
         </div>
 
+        <div class="nn-breakdown" style="margin-top:var(--space-6);">
+          <h2 class="nn-breakdown__title">How to read these</h2>
+          <p class="nn-breakdown__note">
+            The calculation above is exact arithmetic — same name, same numbers, every time.
+            The meanings below are something different: numerology is a symbolic tradition,
+            and these readings are <em>a mirror for reflection, not a measured property of you</em>.
+            Take what prompts honest self-inquiry and leave the rest.
+          </p>
+          <p style="font-size:0.8rem;color:var(--nn-silver-dim);line-height:1.7;margin:var(--space-3) 0 0;">
+            Numerology is a symbolic number tradition, offered for reflection and entertainment —
+            not advice, prediction, or scientific fact. The letter arithmetic underneath is computed and checkable.
+          </p>
+        </div>
+
       </div>
     </section>
 
@@ -237,8 +259,8 @@
       <div class="container" style="max-width:980px;">
         <h2 class="section-title" id="nn-meanings-heading" style="text-align:center;">What Every Number Means</h2>
         <p class="section-subtitle" style="text-align:center;max-width:600px;margin:0 auto var(--space-8);color:var(--nn-silver-dim);">
-          Numbers 1–9 are the foundation. The master numbers 11, 22, and 33 are never
-          reduced — they carry an amplified, more demanding vibration.
+          In the numerology tradition, 1–9 are the foundation. Master numbers 11, 22, and 33
+          are often held unreduced — read as carrying amplified symbolic weight, not measured fact.
         </p>
         <div class="nn-meanings-grid" id="nn-meanings-grid">
           <div class="nn-meaning nn-meaning--skeleton" aria-hidden="true"></div>
@@ -263,18 +285,21 @@
     <section class="section instrument-teaser nn-funnel">
       <div class="container">
         <div class="nn-funnel__inner">
-          <div class="instrument-teaser__badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Go Deeper</div>
-          <h2 class="instrument-teaser__title">Your Name Is Only Half the Story</h2>
+          <div class="instrument-teaser__badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> After the number play</div>
+          <h2 class="instrument-teaser__title">See the sky that was actually there</h2>
           <p class="instrument-teaser__body" style="margin:0 auto var(--space-6);">
-            Your name numbers describe your gifts and your inner motivations. Your
-            <strong style="color:var(--nn-gold-pale);">birth date</strong> reveals your Life Path —
-            the road you are here to walk. And a full natal chart adds the living sky on the
-            day you were born. Combine all three for the complete picture.
+            Name numbers are symbolic tradition — a mirror for reflection, not measured astronomy.
+            Your <strong>birth chart</strong> is the computed layer: planetary positions from your birth data,
+            calculated in your browser. Pair with the Life Path archive if you also want date arithmetic.
           </p>
           <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
-            <a href="lifepath.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Life Path</a>
-            <a href="chart.html" class="btn btn--outline btn--lg">Your Full Birth Chart</a>
+            <a href="chart.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast your chart</a>
+            <a href="lifepath.html" class="btn btn--outline btn--lg">Life Path archive</a>
           </div>
+          <p style="font-size:0.65rem;color:var(--nn-silver-dim);margin:var(--space-4) auto 0;max-width:440px;line-height:1.6;">
+            Numerology is a symbolic number tradition, offered for reflection and entertainment —
+            not advice, prediction, or scientific fact. The letter arithmetic underneath is computed and checkable.
+          </p>
           <div id="nn-deep-reading" style="margin-top:var(--space-8);"></div>
         </div>
       </div>
@@ -297,15 +322,15 @@
           </div>
           <div class="nn-faq__item">
             <h3 class="nn-faq__q">What is the difference between the Expression, Soul Urge, and Personality numbers?</h3>
-            <p class="nn-faq__a">The Expression (or Destiny) number comes from all the letters of your full name and describes your natural talents and life direction. The Soul Urge (or Heart's Desire) number comes from the vowels and reflects your inner motivations and what you truly want. The Personality number comes from the consonants and describes the impression you make on others.</p>
+            <p class="nn-faq__a">In the Pythagorean tradition, the Expression (or Destiny) number comes from all the letters of a full name and is read as a symbol of talents and direction. The Soul Urge (or Heart's Desire) comes from the vowels and is read as inner motive. The Personality number comes from the consonants and is read as the impression you make. These are traditional labels, not measured traits.</p>
           </div>
           <div class="nn-faq__item">
             <h3 class="nn-faq__q">What are master numbers in numerology?</h3>
-            <p class="nn-faq__a">11, 22, and 33 are master numbers. When a total reduces to one of these, it is left unreduced rather than being collapsed to a single digit, because master numbers are considered to carry a heightened, more demanding vibration. 11 is the Illuminator, 22 the Master Builder, and 33 the Master Teacher.</p>
+            <p class="nn-faq__a">11, 22, and 33 are master numbers in the Pythagorean tradition. When a total reduces to one of these, it is left unreduced rather than collapsed to a single digit. The labels Illuminator, Master Builder, and Master Teacher are traditional names, not a scientific claim.</p>
           </div>
           <div class="nn-faq__item">
             <h3 class="nn-faq__q">Which name should I use for numerology?</h3>
-            <p class="nn-faq__a">Most numerologists use the full name given at birth as it appears on the birth certificate, because it is considered the blueprint of your potential. You can also calculate the numbers for a name you currently use to see the energy that name carries day to day. The calculator is deterministic, so the same name always returns the same numbers.</p>
+            <p class="nn-faq__a">Most numerologists use the full name given at birth as it appears on the birth certificate. You can also calculate a name you currently use. Same spelling always returns the same numbers. That arithmetic is checkable; the meanings are tradition, not a measured energy or blueprint.</p>
           </div>
           <div class="nn-faq__item">
             <h3 class="nn-faq__q">Is this name numerology calculator free and private?</h3>
@@ -317,75 +342,16 @@
 
   </main>
 
-  <footer class="site-footer" role="contentinfo">
-    <div class="container">
-
-      <div class="footer-inner" data-ap-footer-model="1">
-
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
-          </div>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-            <li><a href="aries.html">Aries profile</a></li>
-            <li><a href="taurus.html">Taurus profile</a></li>
-            <li><a href="gemini.html">Gemini profile</a></li>
-            <li><a href="cancer.html">Cancer profile</a></li>
-            <li><a href="leo.html">Leo profile</a></li>
-            <li><a href="virgo.html">Virgo profile</a></li>
-            <li><a href="libra.html">Libra profile</a></li>
-            <li><a href="scorpio.html">Scorpio profile</a></li>
-            <li><a href="sagittarius.html">Sagittarius profile</a></li>
-            <li><a href="capricorn.html">Capricorn profile</a></li>
-            <li><a href="aquarius.html">Aquarius profile</a></li>
-            <li><a href="pisces.html">Pisces profile</a></li>
-          </ul>
-        </div>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
+    <div class="ap-site-footer__inner">
+      <div class="ap-site-footer__brand">
+        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
+        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
       </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
     </div>
+    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
   </footer>
 
   <!-- Toast container -->
@@ -545,14 +511,14 @@
       lpCard.style.display = 'block';
     }
 
-    /* ── Launch funnel: one private eclipse-contact path ── */
+    /* ── After the number play: the computed sky ── */
     function renderDeepReading() {
       var wrap = document.getElementById('nn-deep-reading');
       if (!wrap) return;
-      wrap.innerHTML = '<a href="eclipse.html#contact" class="btn btn--primary">' +
-        '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Check your eclipse contact</a>' +
+      wrap.innerHTML = '<a href="chart.html" class="btn btn--primary">' +
+        '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast your chart</a>' +
         '<p style="font-size:0.7rem;color:var(--nn-silver-dim);margin-top:var(--space-3);">' +
-        'This numerology result stays separate; the eclipse tool privately computes from your birth chart.</p>';
+        'This numerology result stays separate. The chart is computed astronomy on this device.</p>';
     }
 
     function run() {

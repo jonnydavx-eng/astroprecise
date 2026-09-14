@@ -469,7 +469,7 @@
         </div>
         <div class="chart-method-ledger__row">
           <b>03</b>
-          <div><strong>Time honesty</strong><span>No birth time? Date-based placements remain available; Moon, Rising, the career angle and houses are withheld instead of guessed.</span></div>
+          <div><strong>Time honesty</strong><span>No birth time? Date-based placements remain available; Moon precision, Rising (how you meet the world), and houses (life areas) are withheld instead of guessed.</span></div>
         </div>
         <div class="chart-method-ledger__row">
           <b>04</b>
@@ -489,6 +489,7 @@
               <p id="result-date"></p>
               <span id="result-time-chip" class="result-time-chip" data-level="unknown" role="status" aria-live="polite">Time unknown</span>
             </div>
+            <p class="result-method-note">Sun = how you shine. Moon = what you need. Rising needs a birth time.</p>
           </div>
           <button type="button" id="sitting-cta" class="action-btn action-btn--ember" aria-label="Open the seven-chapter sitting for this minute">
             Open the sitting
@@ -549,7 +550,6 @@
             <span class="result-badge"><span class="eng-star-mark"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
             <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
             <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Moon, Rising, MC and houses — time-sensitive points are withheld without it</span>
-            <a href="eclipse.html#contact" id="eclipse-handoff" class="result-eclipse-handoff result-eclipse-handoff--quiet">See where the 12 Aug eclipse landed &rarr;</a>
             <nav class="ap-keep-path-strip" aria-label="Keep this sky">
               <p class="ap-keep-path-strip__label">Keep this sky</p>
               <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
@@ -557,6 +557,8 @@
               <a href="sky-card.html" data-ap-keep-minute>Sky card</a>
               <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
               <a href="deep-reading.html" id="sitting-link-strip">Seven-chapter sitting</a>
+              <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
+              <a href="charts.html">Your plates</a>
             </nav>
             <section id="ap-chart-sky-bridge" hidden aria-label="Open this birth moment in the Observatory"></section>
             <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (&plusmn;7&deg;) and still withholds angles. Keep is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
@@ -573,7 +575,7 @@
               <details class="result-actions__more">
                 <summary class="result-actions__more-toggle">More</summary>
                 <div class="result-actions__more-menu" role="group" aria-label="More chart actions">
-                  <a id="eclipse-cta" href="eclipse.html#contact" class="action-btn action-btn--ghost" aria-label="See where the 12 August eclipse landed in this chart">12 Aug eclipse</a>
+                  <a id="eclipse-cta" href="eclipse.html" class="action-btn action-btn--ghost" aria-label="Replay the archived 12 August eclipse instrument">Eclipse replay</a>
                   <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">Big Three card</button>
                   <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">Export JSON</button>
                 </div>
@@ -693,7 +695,9 @@
   <script src="js/ap-canvas-seals.js?v=902" defer></script>
   <script src="js/ap-deep-link.js?v=902" defer></script>
   <script src="js/ap-sky-bridge.js?v=902" defer></script>
+  <script src="js/ap-plain-placement.js?v=902" defer></script>
   <script src="js/chart-page.js?v=902" defer></script>
+  <script src="js/ap-keep-library.js?v=902" defer></script>
   <script src="js/ap-keep-sky.js?v=902" defer></script>
   <script src="js/ap-keep-minute.js?v=902" defer></script>
   <script src="js/ap-studio-context-link.js?v=902" defer></script>

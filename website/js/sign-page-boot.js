@@ -16,22 +16,36 @@
     return 'Aries';
   }
 
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   function paint(d) {
     var el = document.getElementById('today-reading');
     if (!el || !d) return;
+    var lead = d.todayLine || d.overview || '';
+    var pair = '';
+    if (d.useThis || d.leaveThis) {
+      pair =
+        '<div class="daily-reading__grid">' +
+        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Use this</span><p class="daily-reading__tile-text">' + esc(d.useThis) + '</p></div>' +
+        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Leave this</span><p class="daily-reading__tile-text">' + esc(d.leaveThis) + '</p></div>' +
+        '</div>';
+    }
     el.innerHTML =
       '<div class="card" style="padding:var(--space-8);">' +
-      '<p class="daily-reading__overview">' + d.overview + '</p>' +
+      '<p class="daily-reading__overview">' + esc(lead) + '</p>' +
+      pair +
       '<div class="daily-reading__grid">' +
-      '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Love</span><p class="daily-reading__tile-text">' + d.love + '</p></div>' +
-      '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Career</span><p class="daily-reading__tile-text">' + d.career + '</p></div>' +
-      '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Wellness</span><p class="daily-reading__tile-text">' + d.health + '</p></div>' +
+      '<div class="daily-reading__tile"><span class="daily-reading__tile-label">People</span><p class="daily-reading__tile-text">' + esc(d.love) + '</p></div>' +
+      '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Work</span><p class="daily-reading__tile-text">' + esc(d.career) + '</p></div>' +
+      '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Pace</span><p class="daily-reading__tile-text">' + esc(d.health) + '</p></div>' +
       '</div>' +
-      '<div class="daily-reading__meta">' +
-      '<span>Lucky Number <strong>' + d.luckyNumber + '</strong></span>' +
-      '<span>Lucky Color <strong>' + d.luckyColor + '</strong></span>' +
-      '</div>' +
-      '<p class="daily-reading__note">Deterministic for this date — refresh tomorrow for a new reading</p>' +
+      '<p class="daily-reading__note">Computed for this date from today’s sky — not a lucky number. Open today’s reading for the one-screen view.</p>' +
       '</div>';
     el.classList.remove('is-loading');
   }

@@ -286,7 +286,7 @@ const AstroApp = (() => {
   const NAV_PRIMARY = _apNav.NAV_PRIMARY || [
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['sky-events.html', 'Events', { badge: 'Live' }],
+    ['sky-events.html', 'Events'],
     ['shop.html', 'Shop'],
   ];
   const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
@@ -539,19 +539,14 @@ const AstroApp = (() => {
 
   function renderNav() {
     var here = location.pathname.split('/').pop() || 'index.html';
-    var launch = isLaunchRoute(here);
     var desktop = document.querySelector('.navbar__nav');
     var mobile = document.querySelector('.navbar__mobile-menu');
     if (desktop) {
-      // Single source of truth: ALWAYS rebuild the primary bar from NAV_PRIMARY.
-      // (Previously it only rebuilt when empty, so pages that shipped live static
-      //  nav links — chart/shop/compatibility/ephemeris/horoscope — kept a stale
-      //  vocabulary and the menu changed under the visitor. The static markup is
-      //  now purely a no-JS fallback.)
-      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + (launch ? '' : renderMoreMenu(here));
-      initMoreMenu();
+      // Same four-route spine as ap-nav-model: Observatory · Chart · Events · Shop.
+      // Archive URLs stay addressable; they are not advertised in More/drawer.
+      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false);
     }
-    if (mobile) mobile.innerHTML = renderDrawer(here, launch);
+    if (mobile) mobile.innerHTML = renderDrawer(here, true);
   }
 
   /** Right rail: profile + hamburger — keeps center nav from overlapping. */
@@ -590,6 +585,8 @@ const AstroApp = (() => {
   /** Profile as a top-bar tab on every page (not in the bottom nav). */
   function injectTopProfile() {
     if (isLaunchRoute()) return;
+    if (document.querySelector('[data-ap-static-nav]')) return;
+    if (document.body && document.body.getAttribute('data-sign')) return;
     if (document.querySelector('.navbar__profile-top')) return;
     var inner = document.querySelector('.navbar__inner');
     if (!inner) return;
@@ -1305,6 +1302,8 @@ window.AstroUI = (() => {
 (function injectGuideLinks() {
   if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   function place() {
+    if (document.body && document.body.getAttribute('data-sign')) return;
+    if (document.querySelector('[data-ap-static-nav]')) return;
     if (document.querySelector('.ap-guide-links')) return;
     var host = document.querySelector('footer .container') || document.querySelector('footer');
     if (!host) return;

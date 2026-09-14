@@ -101,15 +101,15 @@ await ctx.addInitScript(() => {
       .map((a) => a.textContent.trim());
     return {
       labels: links,
-      hasReadings: links.includes('Readings'),
-      hasLibrary: links.includes('Library'),
+      fourRoute: JSON.stringify(links) === JSON.stringify(['Observatory', 'Chart', 'Events', 'Shop']),
       noHome: !links.includes('Home'),
       noMatch: !links.includes('Match'),
+      noMore: !links.some((label) => label === 'More' || label.indexOf('Readings') >= 0 || label.indexOf('Library') >= 0),
     };
   });
   rec(
     'nav:unified-vocab',
-    nav.hasReadings && nav.hasLibrary && nav.noHome && nav.noMatch,
+    nav.fourRoute && nav.noHome && nav.noMatch && nav.noMore,
     JSON.stringify(nav),
   );
   await page.close();

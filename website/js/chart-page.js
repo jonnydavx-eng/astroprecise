@@ -59,9 +59,9 @@
     'conjunction','opposition','trine','square','sextile',
   ]);
   const HOUSE_THEMES = [
-    'Self & Identity', 'Money & Values', 'Mind & Communication', 'Home & Roots',
-    'Creativity & Joy', 'Work & Health', 'Partnership', 'Transformation',
-    'Philosophy & Travel', 'Career & Calling', 'Community & Hopes', 'The Unconscious',
+    'how you meet the world', 'what you own and value', 'words and short roads', 'home and where you come from',
+    'what you make and love out loud', 'work, habits and health', 'partners', 'what is shared and transformed',
+    'belief and long roads', 'work in the world', 'friends and the future', 'rest and the unseen',
   ];
 
   // Element mapping
@@ -1284,7 +1284,14 @@
           `Chart ruler ${cap(chart.chartRuler || '—')} steers your ${chart.risingSign} Ascendant — the lens others meet first.`
         : `Your chart is weighted toward the ${chart.dominantElement} element and ${chart.dominantModality} modality. ` +
           `Birth time is unknown, so the Moon, angles and houses are withheld; the remaining placements are calculated from your date and place.`;
-      blocks.push(analysisSection('Chart emphasis', dominantText, { featured: true, eyebrow: 'Start here' }));
+      const key = window.APPlainPlacement && window.APPlainPlacement.overview
+        ? window.APPlainPlacement.overview(chart)
+        : '';
+      if (key) {
+        blocks.push(analysisSection('How to read this chart', key, { featured: true, eyebrow: 'In one screen' }));
+        tocItems.push({ title: 'How to read this chart' });
+      }
+      blocks.push(analysisSection('Chart emphasis', dominantText, { featured: !key, eyebrow: 'Start here' }));
       tocItems.push({ title: 'Chart emphasis' });
       if (!chart.risingSign) {
         blocks.push(analysisSection('Time-dependent points withheld',
@@ -1295,15 +1302,15 @@
 
       if (a) {
         const sections = [
-          ['Personality', a.personality, 'Core self', true],
-          ['Love & Connection', a.love, 'Relationships', false],
-          ['Career & Calling', a.career, 'Public path', false],
-          ['Growth Edges', a.challenges, 'Lessons', false],
-          ['Life Purpose', a.lifePurpose, 'Direction', false],
+          ['Personality', a.personality, 'Core self'],
+          ['Love & Connection', a.love, 'Relationships'],
+          ['Career & Calling', a.career, 'Public path'],
+          ['Growth Edges', a.challenges, 'Lessons'],
+          ['Life Purpose', a.lifePurpose, 'Direction'],
         ];
         sections.forEach(function (row) {
           if (!row[1]) return;
-          blocks.push(analysisSection(row[0], row[1], { eyebrow: row[2], featured: row[3], collapsed: !row[3] }));
+          blocks.push(analysisSection(row[0], row[1], { eyebrow: row[2], collapsed: true }));
           tocItems.push({ title: row[0] });
         });
       }
@@ -1407,9 +1414,11 @@
         const dignityMeta = dignity && dignity.status !== 'peregrine'
           ? ' · ' + dignity.label
           : '';
+        const P = window.APPlainPlacement;
         const placement = fmt.placement({
           title: label + ' in ' + signName,
           meta: meta + dignityMeta,
+          lead: P && P.line ? P.line(label, signName, h) : '',
           text: fullText.trim(),
           icon: planetIcon(k),
         });
@@ -1475,10 +1484,12 @@
         const occupants = (planetsByHouse[i + 1] || []).map(bodyLabel).join(', ');
         const text = (hm && hm.meaning ? hm.meaning + ' ' : '') +
           (occupants ? 'Chart points here: ' + occupants + '.' : 'No listed planets or points in this house — the theme runs in the background until transits or progressions activate it.');
+        const P = window.APPlainPlacement;
         return fmt.placement({
           title: 'House ' + (i + 1) + ' · ' + (HOUSE_THEMES[i] || ''),
-          meta: (hm && hm.keyword ? hm.keyword + ' · ' : '') + sign + ' ' + dg + '°' + String(mn).padStart(2, '0') +
+          meta: sign + ' ' + dg + '°' + String(mn).padStart(2, '0') +
             '′ on the cusp' + (chart.timeAccuracy === 'approximate' ? ' · provisional' : ''),
+          lead: P && P.houseLine ? P.houseLine(i + 1) : '',
           text: text,
           icon: '<span class="ap-reading-card__aspect-glyph ap-reading-card__roman">' + roman(i + 1) + '</span>',
         });
@@ -1521,6 +1532,9 @@
             applying: x.applying,
             meta: chart.timeKnown ? '' : 'Date-reference angle · orb withheld without a birth time',
             orb: chart.timeKnown ? x.orb : null,
+            lead: window.APPlainPlacement && window.APPlainPlacement.aspectLine
+              ? window.APPlainPlacement.aspectLine(bodyLabel(x.planet1), bodyLabel(x.planet2), x.aspect)
+              : '',
             interpretation: aspectInterpretation(I, x),
           });
         }).join('')
@@ -1608,7 +1622,7 @@
     function cardReadingText(card) {
       if (!card) return '';
       const bits = [];
-      card.querySelectorAll('.ap-reading__lead, .ap-reading-lead, .ap-reading-card__lead, .ap-reading-card__body').forEach(function (n) {
+      card.querySelectorAll('.ap-reading__lead').forEach(function (n) {
         const t = (n.textContent || '').replace(/\s+/g, ' ').trim();
         if (t) bits.push(t);
       });
@@ -2793,6 +2807,16 @@
     const filename = `${slugify(chart.name)}-${nameMap[format] || 'natal-' + format}.png`;
     const blob = await canvasToBlob(cv);
     if (!blob) { if (window.AstroApp) AstroApp.showToast('Export failed', 'Could not render the image.', 'error'); return; }
+    if (window.APKeepLibrary && typeof APKeepLibrary.put === 'function') {
+      APKeepLibrary.put({
+        kind: 'chart-plate',
+        blob: blob,
+        caption: 'Schematic chart plate · not a photograph · ' + sharePlacementLine(chart),
+        birthDate: chart.birthDate || '',
+        place: chart.city || chart.birthCity || chart.place || '',
+        schematic: true
+      });
+    }
 
     // Try the Web Share API with a file (mobile-first), unless caller forces download.
     if (!opts.forceDownload && navigator.canShare && navigator.share) {

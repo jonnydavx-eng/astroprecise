@@ -206,16 +206,21 @@
     if (opts.driveHome !== false && isHomeOrreryLive()) {
       try {
         var eng = window.Orrery3D;
-        if (typeof eng.isJourneyActive === 'function' && eng.isJourneyActive() &&
-            typeof eng.cancelScaleJourney === 'function') {
-          eng.cancelScaleJourney(false);
+        var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (typeof eng.playBirthEarthView === 'function') {
+          eng.playBirthEarthView(dt, { instant: !!reduced });
+        } else {
+          if (typeof eng.isJourneyActive === 'function' && eng.isJourneyActive() &&
+              typeof eng.cancelScaleJourney === 'function') {
+            eng.cancelScaleJourney(false);
+          }
+          if (typeof eng.setScaleLevel === 'function') {
+            var lv = 0;
+            try { lv = eng.getScaleLevel() | 0; } catch (e) {}
+            if (lv !== 0) eng.setScaleLevel(0, true);
+          }
+          eng.setDate(dt);
         }
-        if (typeof eng.setScaleLevel === 'function') {
-          var lv = 0;
-          try { lv = eng.getScaleLevel() | 0; } catch (e) {}
-          if (lv !== 0) eng.setScaleLevel(0, true);
-        }
-        eng.setDate(dt);
       } catch (e2) { /* engine optional */ }
     }
 

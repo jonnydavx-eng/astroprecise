@@ -5,7 +5,7 @@ and **The Instrument** (light-cone, zenith star, echo dates, daimon, quantum dra
 field weather). Every number is computed from the real sky, in the browser, with
 sources labelled and unavailable feeds honestly marked.
 
-**Live:** https://astroprecise.app · tip **ap-v721** · deploy is push `website/**` to `main` → GitHub Actions Pages (not manual gh-pages). See `STATUS.md`.
+**Public site:** https://astroprecise.app · last rechecked identity **ap-v895**, checkout closed. Local candidate is v902 on this branch and is not deployed. See `STATUS.md`.
 
 ## Repository layout
 
@@ -28,7 +28,7 @@ There is no build step — edit files in `website/`, refresh the browser.
 ./launch.sh        # or launch.bat on Windows → http://localhost:8790
 ```
 
-**Deploying:** push `website/**` to `main` → GitHub Actions Pages (`.github/workflows/deploy-pages.yml`). Not manual `gh-pages`. Live: https://astroprecise.app · tip ap-v721. See `STATUS.md`.
+**Deploying:** production deploy is owner-gated and is not this working tree. Public remains `ap-v895` until an authorised exact-SHA release. See `STATUS.md`.
 
 When you change any precached asset, bump `const V` in `website/sw.js` or returning
 visitors keep the old files.

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, follow">
   <meta name="color-scheme" content="dark">
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,7 +35,7 @@
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Discover Your Cosmic Archetype | AstroPrecise" />
   <meta name="twitter:description" content="A free 90-second quiz that maps you to a cosmic archetype, then routes you to your real birth chart." />
@@ -82,7 +83,7 @@
   <!-- ============================================================
        NAVIGATION
   ============================================================ -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -116,7 +117,7 @@
           timeless language of element, modality and planet. Then we point you to the
           real thing: your actual birth chart, computed from genuine astronomy.
         </p>
-        <p style="margin-top:var(--space-4);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">A fun doorway — then the real astronomy, free and private</span></a></p>
+        <p style="margin-top:var(--space-4);"><a href="chart.html" style="text-decoration:none;"><span class="ap-badge">A fun doorway — then your computed chart, free and private</span></a></p>
       </div>
     </section>
 
@@ -127,7 +128,7 @@
       <div class="container">
         <div class="aq-mount" id="aq-mount" role="region" aria-live="polite">
           <div class="aq-card aq-intro">
-            <div class="aq-intro__seal" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);width:1.4em;height:1.4em;"></span></div>
+            <div class="aq-intro__seal" aria-hidden="true"><span class="eng-star-mark" style="color:var(--ap-ion,#8BA9FF);width:1.4em;height:1.4em;"></span></div>
             <h2 class="aq-intro__title">Which cosmic archetype are you?</h2>
             <p class="aq-intro__sub">
               Six questions. One archetype, drawn from the timeless language of element,
@@ -140,7 +141,7 @@
             <div class="aq-card" style="text-align:center">
               <p style="color:var(--silver,#A89E88);line-height:1.7">
                 This quiz needs JavaScript. You can still
-                <a href="chart.html" style="color:var(--gold,#A8B0BC)">cast your free birth chart</a>
+                <a href="chart.html" style="color:var(--ap-ion,#8BA9FF)">cast your chart</a>
                 &mdash; it computes entirely in your browser.
               </p>
             </div>
@@ -155,13 +156,12 @@
     <section class="aq-section" style="padding-top:0">
       <div class="container">
         <div class="aq-cta">
-          <h2>Your real archetype is written in the sky</h2>
+          <h2>Your chart is the sky, not this quiz</h2>
           <p>
-            The quiz is for fun. Your <em>true</em> cosmic blueprint lives in the exact
-            positions of the Sun, Moon and planets at your birth &mdash; cast it free, in
-            your browser, with nothing to sign up for.
+            The quiz is for fun. It is not your birth chart. Cast the minute you arrived
+            &mdash; Sun, Moon, and rising when you give a real time &mdash; free, in this browser.
           </p>
-          <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Free Birth Chart &rarr;</a>
+          <a href="chart.html" class="btn btn--primary btn--lg">Cast your chart</a>
           <p class="aq-cta__note">No account &middot; No tracking &middot; Computed on your device</p>
         </div>
       </div>
@@ -172,75 +172,16 @@
   <!-- ============================================================
        FOOTER
   ============================================================ -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-
-      <div class="footer-inner" data-ap-footer-model="1">
-
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
-          </div>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
-          <h2 class="footer-nav-col__title">Sign guides</h2>
-          <ul>
-            <li><a href="aries.html">Aries profile</a></li>
-            <li><a href="taurus.html">Taurus profile</a></li>
-            <li><a href="gemini.html">Gemini profile</a></li>
-            <li><a href="cancer.html">Cancer profile</a></li>
-            <li><a href="leo.html">Leo profile</a></li>
-            <li><a href="virgo.html">Virgo profile</a></li>
-            <li><a href="libra.html">Libra profile</a></li>
-            <li><a href="scorpio.html">Scorpio profile</a></li>
-            <li><a href="sagittarius.html">Sagittarius profile</a></li>
-            <li><a href="capricorn.html">Capricorn profile</a></li>
-            <li><a href="aquarius.html">Aquarius profile</a></li>
-            <li><a href="pisces.html">Pisces profile</a></li>
-          </ul>
-        </div>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
+    <div class="ap-site-footer__inner">
+      <div class="ap-site-footer__brand">
+        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
+        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
       </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
     </div>
+    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
   </footer>
 
   <!-- Toast container -->

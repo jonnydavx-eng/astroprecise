@@ -1,8 +1,104 @@
 /* charts.html — extracted inline styles */
 /* ── My Charts page ── */
     :root {
-      --mc-surface: rgba(16, 18, 34, 0.55);
-      --mc-border:  rgba(255, 255, 255, 0.09);
+      --mc-surface: rgba(16, 29, 48, 0.76);
+      --mc-border:  rgba(147, 168, 191, 0.22);
+    }
+
+    body.page-charts {
+      background: #040812;
+      color: var(--ap-paper, #EEF4FA);
+    }
+
+    .page-charts .container {
+      width: min(1100px, calc(100% - 40px));
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .page-charts .glass-card {
+      background: var(--mc-surface);
+      border: 1px solid var(--mc-border);
+      border-radius: 4px;
+      box-shadow: 0 18px 54px rgba(4, 8, 18, 0.42);
+    }
+
+    .page-charts .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: 3px;
+      font: 650 12px/1 var(--ap-data, ui-monospace, monospace);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .page-charts .btn--sm { min-height: 44px; padding: 0 12px; font-size: 11px; }
+    .page-charts .btn--lg { min-height: 48px; padding: 0 18px; }
+    .page-charts .btn--primary,
+    .page-charts .btn--gold {
+      border: 0;
+      background: var(--ap-ion, #8BA9FF);
+      color: #07101E;
+    }
+    .page-charts .btn--outline {
+      border: 1px solid rgba(147, 168, 191, 0.4);
+      background: transparent;
+      color: var(--ap-paper, #EEF4FA);
+    }
+    .page-charts .btn--ghost {
+      border: 1px solid rgba(147, 168, 191, 0.22);
+      background: transparent;
+      color: var(--ap-silver, #93A8BF);
+    }
+    .page-charts .btn--danger {
+      border: 1px solid rgba(255, 142, 168, 0.45);
+      background: transparent;
+      color: #FF8EA8;
+    }
+    .page-charts .btn[disabled] { opacity: 0.55; cursor: default; pointer-events: none; }
+
+    .page-charts .app-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      background: var(--mc-surface);
+      border: 1px solid var(--mc-border);
+      border-radius: 4px;
+    }
+    .page-charts .app-empty-state__seal {
+      display: block;
+      margin-bottom: 1rem;
+      color: var(--ap-ion, #8BA9FF);
+      font-size: 1.6rem;
+    }
+    .page-charts .app-empty-state__title {
+      margin: 0 0 0.7rem;
+      color: var(--gold-pale, #EEF4FA);
+      font: 600 1.35rem/1.2 var(--ap-display, Georgia, serif);
+    }
+    .page-charts .app-empty-state__sub {
+      max-width: 42ch;
+      margin: 0 auto 1.5rem;
+      color: var(--ap-silver, #93A8BF);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .page-charts .app-empty-state__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
     }
 
     /* Hero */
@@ -19,7 +115,7 @@
       font-weight: 600;
       letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--ap-ion, #8BA9FF);
       margin-bottom: 1.1rem;
     }
     .mc-hero__eyebrow::before,
@@ -28,25 +124,42 @@
       display: block;
       width: 26px;
       height: 1px;
-      background: var(--gold);
+      background: var(--ap-ion, #8BA9FF);
       opacity: 0.5;
     }
     .mc-hero h1 {
-      font-family: var(--font-display, 'Cinzel', serif);
+      font-family: var(--ap-display, Georgia, serif);
       font-size: clamp(2.1rem, 5vw, 3.4rem);
-      font-weight: 700;
+      font-weight: 600;
       color: var(--gold-pale, #EEF4FA);
       line-height: 1.1;
-      letter-spacing: 0.03em;
+      letter-spacing: -0.03em;
       margin-bottom: 0.9rem;
     }
     .mc-hero__sub {
       font-size: 1.02rem;
       color: var(--silver, #93A8BF);
       max-width: 540px;
-      margin: 0 auto 1.5rem;
+      margin: 0 auto 1.1rem;
       line-height: 1.65;
     }
+    .mc-hero__honesty {
+      margin: 0 auto 0.85rem;
+      color: var(--ap-ion, #8BA9FF);
+      font: 650 11px/1.5 var(--ap-data, ui-monospace, monospace);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .mc-hero__cast { margin: 0 0 1.1rem; }
+    .mc-hero__cast a {
+      color: var(--ap-ion, #8BA9FF);
+      font: 650 12px/1 var(--ap-data, ui-monospace, monospace);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .mc-hero__cast a:hover,
+    .mc-hero__cast a:focus-visible { color: var(--ap-ion-hover, #A5BCFF); text-decoration: underline; }
     .mc-stat {
       display: inline-flex;
       align-items: baseline;
@@ -62,10 +175,10 @@
       color: var(--silver, #93A8BF);
     }
     .mc-stat__num {
-      font-family: var(--font-display, 'Cinzel', serif);
+      font-family: var(--ap-display, Georgia, serif);
       font-size: 1rem;
       font-weight: 700;
-      color: var(--gold);
+      color: var(--ap-ion, #8BA9FF);
     }
 
     .mc-section { padding: 1rem 0 5rem; }
@@ -101,7 +214,7 @@
       display: grid;
       place-items: center;
       border-radius: 50%;
-      font-family: var(--font-display, 'Cinzel', serif);
+      font-family: var(--ap-display, Georgia, serif);
       font-size: 1.15rem;
       font-weight: 700;
       color: var(--gold-pale, #EEF4FA);
@@ -110,7 +223,7 @@
     }
     .mc-card__id { min-width: 0; flex: 1; }
     .mc-card__name {
-      font-family: var(--font-display, 'Cinzel', serif);
+      font-family: var(--ap-display, Georgia, serif);
       font-size: 1.1rem;
       font-weight: 700;
       color: var(--gold-pale, #EEF4FA);
@@ -132,7 +245,7 @@
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--ap-ion, #8BA9FF);
       background: rgba(147, 168, 191, 0.12);
       border: 1px solid rgba(147, 168, 191, 0.35);
       border-radius: 999px;
@@ -162,7 +275,7 @@
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--ap-ion, #8BA9FF);
       opacity: 0.85;
     }
     .mc-big3__sign {
@@ -194,12 +307,12 @@
     .mc-empty__glyph {
       display: block;
       font-size: 2.6rem;
-      color: var(--gold);
+      color: var(--ap-ion, #8BA9FF);
       margin-bottom: 1rem;
       line-height: 1;
     }
     .mc-empty__title {
-      font-family: var(--font-display, 'Cinzel', serif);
+      font-family: var(--ap-display, Georgia, serif);
       font-size: 1.35rem;
       font-weight: 700;
       color: var(--gold-pale, #EEF4FA);
@@ -231,12 +344,12 @@
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--ap-ion, #8BA9FF);
       opacity: 0.85;
       margin: 0 0 0.4rem;
     }
     .mc-reading-path__title {
-      font-family: var(--font-display, 'Cinzel', serif);
+      font-family: var(--ap-display, Georgia, serif);
       font-size: 1.15rem;
       font-weight: 700;
       color: var(--gold-pale, #EEF4FA);
@@ -252,4 +365,18 @@
     .mc-reading-path__links { font-size: 0.88rem; margin: 0; }
     .mc-reading-path__links a { color: var(--gold-light, #93A8BF); }
     a.mc-card__active { text-decoration: none; }
-    a.mc-card__active:hover, a.mc-card__active:focus-visible { border-color: var(--gold); }
+    a.mc-card__active:hover, a.mc-card__active:focus-visible { border-color: var(--ap-ion, #8BA9FF); }
+
+    @media (max-width: 700px) {
+      .page-charts .mc-hero h1 {
+        font-size: clamp(2rem, 8.4vw, 2.55rem);
+        line-height: 1.12;
+      }
+      .page-charts .mc-hero__sub,
+      .page-charts .app-empty-state__sub,
+      .page-charts .mc-card__birth,
+      .page-charts .mc-reading-path__sub {
+        font-size: 16px;
+        line-height: 1.55;
+      }
+    }

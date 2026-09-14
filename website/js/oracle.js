@@ -47,8 +47,8 @@ window.AstroOracle = (() => {
   // Reader-facing verbs. No caller today, but it is one `join` away from print,
   // so it carries the wording the audience uses — never the trade name.
   const ASPECT_VERBS = {
-    conjunction: 'conjoins', sextile: 'sits at a helpful angle to', square: 'squares',
-    trine: 'trines', opposition: 'opposes',
+    conjunction: 'meets', sextile: 'sits at a helpful angle to', square: 'presses against',
+    trine: 'flows easily with', opposition: 'sits opposite',
   };
 
   // quality keys: c = conjunction, h = harmonious (sextile/trine), x = challenging (square/opposition)
@@ -480,64 +480,64 @@ window.AstroOracle = (() => {
   // ── Content: headlines, openers, moon lines, closers ───────────────────────
 
   const HEADLINES = [
-    "The {moon} Moon Has Notes for You",
-    "Today Leans Toward {kw}",
-    "{kw} Is the Assignment",
-    "Let {planet} Set the Tempo",
-    "A Day Written in {kw}",
-    "The Sky Votes {kw}",
-    "{moon} Moon, Open Channel",
-    "Small Moves, {kw} Energy",
-    "{planet} Is Loud Today — Answer It",
-    "Under a {moon} Moon, {kw} Wins",
-    "Proceed as if {kw} Were Guaranteed",
-    "The Quiet Pull of {kw}",
-    "Today Rewards {kw} Over Speed",
-    "{kw}, but Make It Deliberate",
+    "If You Feel {kw}, Slow Down",
+    "Put {kw} on One Task",
+    "Say It Once, Then Wait",
+    "Let {planet} Mean a Slower Pace",
+    "Finish One Thing Before You Expand",
+    "{moon} Moon: Talk, Don't Decide",
+    "Keep {kw} Out of the First Reply",
+    "{planet} Is Busy — Do Less",
+    "{moon} Moon: One Honest Conversation",
+    "Treat {kw} as Weather, Not a Plan",
+    "Don't Let {kw} Pick the Fight",
+    "Name the {kw} Feeling. Then Pause.",
+    "Today: {kw}, Not Faster",
+    "Wait on {planet} Until You've Eaten",
   ];
 
   const OPENERS = {
     high: [
-      "The sky is doing you a favor today.",
-      "Today runs downhill in the good way.",
-      "Conditions are favorable — quietly, but measurably.",
+      "There's some slack in the day. Spend it on one real conversation or one finished task.",
+      "Today is easier to move through. Start the talk you've already practiced.",
+      "The weather is fair. Use it, then stop — don't add extra tabs.",
     ],
     mid: [
-      "Today is mixed weather: usable, if you dress for it.",
-      "Nothing dramatic overhead — which makes it a fine day for deliberate moves.",
-      "The sky is neutral today; your choices carry the casting vote.",
+      "A mixed, usable day. Pick one lane and stay in it.",
+      "Nothing urgent overhead. That's a good day to finish something small.",
+      "Ordinary weather. Your pace is the decision.",
     ],
     low: [
-      "Today has friction baked in — useful friction, if you let it sharpen instead of scrape.",
-      "The sky asks more than it gives today. Pace accordingly.",
-      "Heavy weather overhead. Lower the sail, keep the heading.",
+      "There's drag today. Shrink the list and keep your tone even.",
+      "The day asks for patience. Don't pick a fight with the delay.",
+      "Heavy going. Do the next small step and leave the rest.",
     ],
   };
 
   const MOON_LINES = {
-    Aries: "With the Moon in Aries, feelings move first and explain later — give them somewhere to run.",
-    Taurus: "With the Moon in Taurus, the body sets the agenda: feed it well and decisions improve on their own.",
-    Gemini: "With the Moon in Gemini, the mood wants conversation — talk it through and watch it lighten.",
-    Cancer: "With the Moon in Cancer, the tide runs high and close to shore; protect your soft hours.",
-    Leo: "With the Moon in Leo, the heart wants an audience — let yourself be seen feeling something.",
-    Virgo: "With the Moon in Virgo, tidying one small corner calms the entire interior. Start there.",
-    Libra: "With the Moon in Libra, equilibrium is the craving — one honest conversation rebalances more than three avoided ones.",
-    Scorpio: "With the Moon in Scorpio, feelings run deep and undeclared; what you won't say still steers, so say it to yourself at least.",
-    Sagittarius: "With the Moon in Sagittarius, the mood needs a horizon — open a window, a map, or a question.",
-    Capricorn: "With the Moon in Capricorn, feelings file reports instead of poems; honor the duty, then clock out.",
-    Aquarius: "With the Moon in Aquarius, a little distance from your own drama is available today — use the observation deck.",
-    Pisces: "With the Moon in Pisces, the membrane is thin; you're picking up signals from everywhere, so filter before you forward.",
+    Aries: "Moon in Aries: the urge arrives before the reason. Move your body; wait on the message.",
+    Taurus: "Moon in Taurus: go slower than you think you should. Eat properly. Decide later.",
+    Gemini: "Moon in Gemini: talk it out. One conversation clears more than three extra tabs.",
+    Cancer: "Moon in Cancer: stay close to home if you can. Don't over-give; keep one hour unshared.",
+    Leo: "Moon in Leo: you want to be seen. Show up once, for real — skip the encore.",
+    Virgo: "Moon in Virgo: tidy one small thing. Finishing that is the whole repair.",
+    Libra: "Moon in Libra: one honest talk beats three polite ones. Leave the rest.",
+    Scorpio: "Moon in Scorpio: don't perform the feeling. Name it privately, then wait.",
+    Sagittarius: "Moon in Sagittarius: you need air. Walk, ask a bigger question, skip the small argument.",
+    Capricorn: "Moon in Capricorn: do the duty in front of you. Then clock out. Off-duty is allowed.",
+    Aquarius: "Moon in Aquarius: take a step back from your own story. Watch first; reply second.",
+    Pisces: "Moon in Pisces: you're picking up everyone else's weather. Check what's yours before you act.",
   };
 
   const CLOSERS = [
-    "End the day with one honest sentence in your notes; future you is listening.",
-    "Whatever else happens, keep one promise to yourself before midnight.",
-    "Let the day be measured by what you tended, not what you finished.",
-    "The stars set the weather; you still choose the route.",
-    "Move at the speed of integrity — it's faster than it looks.",
-    "What you practice today, you become slightly more of tomorrow. Choose the rep.",
-    "Drink water, touch ground, tell the truth once. The rest is detail.",
-    "Tomorrow inherits today's smallest decisions. Make two of them kind.",
+    "Write one honest line and close the notebook.",
+    "Keep one small promise to yourself. Midnight is a stop sign.",
+    "Count the day by one finished thing, not the whole list.",
+    "The sky is weather. You still choose when to speak.",
+    "If it's still loud tonight, wait until morning.",
+    "Leave one thing for tomorrow on purpose.",
+    "Drink water. Tell the truth once. Stop there.",
+    "Make two kind decisions. That's enough for tonight.",
   ];
 
   // ── Content: power / caution / keywords ────────────────────────────────────
@@ -640,7 +640,7 @@ window.AstroOracle = (() => {
     Mercury: { h: ['articulate', 'curious', 'nimble'], x: ['scattered', 'sharp-tongued', 'overthinking'] },
     Venus: { h: ['magnetic', 'tender', 'gracious'], x: ['indulgent', 'approval-seeking', 'wistful'] },
     Mars: { h: ['decisive', 'energized', 'brave'], x: ['impatient', 'combative', 'restless'] },
-    Jupiter: { h: ['expansive', 'generous', 'lucky'], x: ['overextended', 'excessive', 'overpromising'] },
+    Jupiter: { h: ['expansive', 'generous', 'roomy'], x: ['overextended', 'excessive', 'overpromising'] },
     Saturn: { h: ['grounded', 'disciplined', 'steadfast'], x: ['heavy', 'self-critical', 'rigid'] },
     Uranus: { h: ['original', 'liberated', 'electric'], x: ['erratic', 'rebellious', 'jumpy'] },
     Neptune: { h: ['inspired', 'compassionate', 'dreamlike'], x: ['foggy', 'escapist', 'porous'] },

@@ -55,7 +55,9 @@
   pointer-events: none;
   transform: none;
 }
-.ap-live-home .ap-live-intro .ap-action { pointer-events: auto; }
+.ap-live-home .ap-live-intro .ap-action,
+.ap-live-home .ap-live-actions,
+.ap-live-home .ap-live-intro .ap-hint-link { pointer-events: auto; }
 .ap-live-home .ap-live-heading {
   max-width: none;
   margin: 0 0 10px;
@@ -76,8 +78,60 @@
   line-height: 1.55;
   text-shadow: 0 6px 24px color-mix(in srgb, var(--ap-void-deep) 80%, transparent);
 }
-.ap-live-home .ap-live-actions { margin-top: 18px; }
+.ap-live-home .ap-live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
 .ap-live-home .ap-live-proof { display: none; }
+.ap-birth-sky__honest {
+  max-width: 38ch;
+  margin: 12px 0 0;
+  color: var(--ap-silver, #93A8BF);
+  font-size: 13px;
+  line-height: 1.5;
+  text-shadow: 0 6px 24px color-mix(in srgb, var(--ap-void-deep) 80%, transparent);
+}
+.ap-birth-sky__honest[hidden] { display: none !important; }
+.ap-live-home.is-birth-sky .ap-live-heading {
+  font-size: clamp(34px, 4.8vw, 58px);
+}
+.ap-reading-room .field--place { position: relative; }
+.ap-reading-room .ap-city-drop {
+  position: absolute;
+  z-index: 8;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  max-height: 220px;
+  overflow: auto;
+  padding: 6px;
+  border: 1px solid var(--ap-silver-a28, rgba(147, 168, 191, .28));
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ap-void-raised, #0A1424) 94%, transparent);
+  box-shadow: 0 18px 40px rgba(4, 8, 18, .45);
+}
+.ap-reading-room .ap-city-drop[hidden] { display: none; }
+.ap-reading-room .ap-city-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ap-paper, #EEF4FA);
+  font: 500 14px/1.35 var(--ap-body, inherit);
+  text-align: left;
+  cursor: pointer;
+}
+.ap-reading-room .ap-city-item:hover,
+.ap-reading-room .ap-city-item:focus {
+  background: rgba(139, 169, 255, .16);
+}
+.ap-calc-entry-panel__hint.is-error { color: #F2B8C6; }
 
 /* Frosted glass plinth — raised void + silver hairline; never covers the disc. */
 .ap-live-home .ap-control-panel {
@@ -579,6 +633,7 @@
     font-size: 14px;
   }
   .ap-live-home .ap-live-actions { display: none; }
+  .ap-live-home.is-birth-sky .ap-live-actions { display: flex; }
   .ap-live-home .ap-control-panel {
     position: absolute;
     top: auto;
@@ -824,6 +879,9 @@
   .ap-live-home.ap-reading-room .ap-live-heading {
     font-size: clamp(32px, 9vw, 42px);
   }
+  .ap-live-home.ap-reading-room.is-birth-sky .ap-live-heading {
+    font-size: clamp(26px, 7vw, 34px);
+  }
   .ap-live-home.ap-reading-room .ap-live-copy { font-size: 15px; }
   .ap-live-home.ap-reading-room .ap-live-intro .ap-action--primary {
     width: auto;
@@ -937,6 +995,7 @@
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--ap-ember) 35%, transparent);
 }
 .ap-reading-room .ap-personal-entry {
+  scroll-margin-top: 88px;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--ap-void-raised) 58%, transparent), var(--ap-void-deep));
 }
@@ -992,5 +1051,128 @@
   .ap-live-home.ap-reading-room .ap-site-footer {
     content-visibility: auto;
     contain-intrinsic-size: auto 490px;
+  }
+}
+
+/* Personal Sky overlay — body.is-birth-sky. Readable on phone and desktop.
+   The plate is a caption, not a canvas cover: pointer-events stay off the
+   intro chrome; only the two actions receive clicks. */
+html body.ap-live-home.is-birth-sky .ap-live-intro,
+html body.ap-live-home.ap-reading-room.is-birth-sky .ap-live-intro {
+  z-index: 6;
+  width: min(440px, calc(100% - 32px)) !important;
+  max-width: calc(100% - 32px);
+  padding: 16px 18px 18px !important;
+  border: 1px solid rgba(147, 168, 191, 0.28);
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(4, 8, 18, 0.88), rgba(4, 8, 18, 0.92)) !important;
+  box-shadow: 0 18px 48px rgba(4, 8, 18, 0.45) !important;
+  pointer-events: none;
+}
+html body.ap-live-home.is-birth-sky .ap-reading-kicker,
+html body.ap-live-home.ap-reading-room.is-birth-sky .ap-reading-kicker {
+  display: block;
+  margin: 0 0 10px;
+  color: var(--ap-ion, #8BA9FF);
+  text-shadow: 0 2px 18px rgba(4, 8, 18, 0.95);
+}
+html body.ap-live-home.is-birth-sky .ap-live-heading,
+html body.ap-live-home.ap-reading-room.is-birth-sky .ap-live-heading {
+  max-width: 16ch;
+  margin: 0 0 10px;
+  color: #EEF4FA;
+  font-size: clamp(28px, 4.2vw, 44px);
+  text-shadow: 0 8px 36px rgba(4, 8, 18, 0.9);
+}
+html body.ap-live-home.is-birth-sky .ap-live-copy,
+html body.ap-live-home.ap-reading-room.is-birth-sky .ap-live-copy {
+  display: block;
+  max-width: 38ch;
+  margin: 0;
+  color: rgba(238, 244, 250, 0.86);
+  font-size: 15px;
+  line-height: 1.5;
+  text-shadow: 0 4px 20px rgba(4, 8, 18, 0.95);
+}
+html body.ap-live-home.is-birth-sky .ap-birth-sky__honest:not([hidden]) {
+  display: block;
+  max-width: 42ch;
+  margin: 10px 0 0;
+  color: var(--ap-silver, #93A8BF);
+  font-size: 13px;
+  line-height: 1.5;
+  text-shadow: 0 4px 18px rgba(4, 8, 18, 0.95);
+}
+html body.ap-live-home.is-birth-sky .ap-live-actions,
+html body.ap-live-home.ap-reading-room.is-birth-sky .ap-live-actions {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 16px;
+  max-width: none;
+  pointer-events: auto;
+}
+html body.ap-live-home.is-birth-sky .ap-live-intro .ap-action,
+html body.ap-live-home.is-birth-sky .ap-live-intro .ap-action--primary,
+html body.ap-live-home.is-birth-sky #ap-birth-sky-cta {
+  display: inline-flex !important;
+  pointer-events: auto;
+  min-height: 48px !important;
+  padding: 0 18px;
+}
+html body.ap-live-home.is-birth-sky #ap-birth-sky-now:not([hidden]) {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--ap-silver, #93A8BF);
+  border-radius: 3px;
+  background: transparent;
+  color: #EEF4FA;
+  font: 650 14px/1.2 var(--ap-body, inherit);
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  text-underline-offset: 0;
+  pointer-events: auto;
+  cursor: pointer;
+}
+html body.ap-live-home.is-birth-sky .orrery-dom-labels,
+html body.ap-live-home.is-birth-sky #orrery-dom-labels,
+html body.ap-live-home.is-birth-sky .orrery-dom-label {
+  pointer-events: none !important;
+}
+
+@media (max-width: 700px) {
+  html body.ap-live-home.is-birth-sky .ap-live-intro,
+  html body.ap-live-home.ap-reading-room.is-birth-sky .ap-live-intro {
+    bottom: max(16px, env(safe-area-inset-bottom, 0px) + 12px) !important;
+    left: 12px !important;
+    width: calc(100% - 24px) !important;
+    max-height: min(58vh, 460px);
+  }
+  html body.ap-live-home.ap-reading-room.is-birth-sky .ap-live-heading {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  html body.ap-live-home.is-birth-sky .ap-live-actions,
+  html body.ap-live-home.ap-reading-room.is-birth-sky .ap-live-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+  html body.ap-live-home.is-birth-sky #ap-birth-sky-cta,
+  html body.ap-live-home.is-birth-sky #ap-birth-sky-now:not([hidden]) {
+    width: 100%;
+    min-height: 48px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body.ap-live-home.is-birth-sky .ap-live-intro,
+  html body.ap-live-home.is-birth-sky .ap-live-actions,
+  html body.ap-live-home.is-birth-sky #ap-birth-sky-cta,
+  html body.ap-live-home.is-birth-sky #ap-birth-sky-now {
+    transition: none;
   }
 }

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, follow">
   <meta name="color-scheme" content="dark">
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,7 +23,7 @@
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="What Is My Rising Sign? Find Your Ascendant Free" />
   <meta name="twitter:description" content="Find your rising sign (Ascendant) free — computed from the real sky using your exact birth date, time, and place." />
@@ -47,7 +48,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"What Is My Rising Sign?","description":"Find your rising sign (Ascendant) free — computed from the real sky using your exact birth date, time, and place. A plain-English guide to what the Ascendant means and why your birth time matters.","url":"https://astroprecise.app/what-is-my-rising-sign.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Rising sign"},{"@type":"Thing","name":"Ascendant"},{"@type":"Thing","name":"Astrology"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"What Is My Rising Sign?","item":"https://astroprecise.app/what-is-my-rising-sign.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Observatory","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"What Is My Rising Sign?","item":"https://astroprecise.app/what-is-my-rising-sign.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a rising sign?","acceptedAnswer":{"@type":"Answer","text":"Your rising sign, also called the Ascendant, is the zodiac sign that was rising on the eastern horizon at the exact moment and place you were born. It marks the cusp of the first house and sets the orientation of your whole birth chart."}},{"@type":"Question","name":"Do I need my birth time to find my rising sign?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Ascendant moves about one degree every four minutes and changes sign roughly every two hours, so an accurate birth time is essential. Without a known time, a rising sign cannot be calculated honestly."}},{"@type":"Question","name":"What is the difference between my Sun sign and my rising sign?","acceptedAnswer":{"@type":"Answer","text":"Your Sun sign depends only on the date of birth and describes your core identity. Your rising sign depends on the exact time and place of birth and describes how you meet the world and how the rest of the chart is arranged."}},{"@type":"Question","name":"How accurate is this rising sign calculator?","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise computes the Ascendant from real astronomy — the local sidereal time and the obliquity of the ecliptic — on your device, to roughly a sixtieth of a degree across 1800–2200 CE. Same inputs always give the same result; the only thing sent is the place name you type, to look up its coordinates."}}]}</script>
   </head>
 <body class="ap-no-nav-enter">
@@ -68,7 +69,7 @@
   <!-- ============================================================
        NAVIGATION
   ============================================================ -->
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" data-ap-static-nav>
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
@@ -76,7 +77,7 @@
           <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -143,7 +144,7 @@
             <p class="rs-result__deg" id="rs-result-deg"></p>
             <p class="rs-result__note" id="rs-result-note"></p>
             <p style="margin-top:1.25rem;">
-              <a href="chart.html" class="btn btn--secondary">See My Full Birth Chart &rarr;</a>
+              <a href="chart.html" class="btn btn--secondary">Cast your chart</a>
             </p>
           </div>
 
@@ -288,11 +289,9 @@
         <div class="glass-card engraved rs-cta">
           <h2 id="cta-heading">Your Rising Sign Is Just the Beginning</h2>
           <p>
-            The Ascendant orients your whole chart. Cast a complete natal chart to see your Sun, Moon,
-            rising, every planet, and the houses they fall in &mdash; free, in your browser, with nothing
-            to sign up for.
+            The Ascendant orients your whole chart when you give a real clock time. Cast a natal chart to see your Sun from the date, and Moon, rising, and houses when the minute is known.
           </p>
-          <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Free Birth Chart &rarr;</a>
+          <a href="chart.html" class="btn btn--primary btn--lg">Cast your chart</a>
           <p class="rs-cta__note">No account &middot; Town name to a public geocoder &middot; Birth time stays here</p>
         </div>
       </div>
@@ -303,58 +302,16 @@
   <!-- ============================================================
        FOOTER
   ============================================================ -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-
-      <div class="footer-inner" data-ap-footer-model="1">
-
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
-            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
-          </div>
-        </div>
-
-        <div class="footer-nav-col" role="group" aria-label="Around the living model">
-          <h2 class="footer-nav-col__title">Around the model</h2>
-          <ul>
-            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
-            <li><a href="sky-events.html"><span aria-hidden="true">☽</span> Events</a></li>
-            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
-            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
-            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
-          </ul>
-        </div>
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
+    <div class="ap-site-footer__inner">
+      <div class="ap-site-footer__brand">
+        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
+        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
       </div>
-
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; Calculations run in your browser &middot; A place search sends only the town name to a public geocoder &middot; Birth time stays here &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
     </div>
+    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
   </footer>
 
   <!-- Toast container -->

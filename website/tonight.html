@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, follow">
   <meta name="color-scheme" content="dark">
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -51,6 +52,7 @@
     body:has(.tn-hero) .tn-hero__eyebrow{justify-self:start;border:0;border-radius:0;padding:0;margin:0 0 14px;font-family:'IBM Plex Mono',monospace;color:#8BA9FF;}
     body:has(.tn-hero) .tn-hero h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(52px,7vw,96px);font-weight:600;line-height:.9;letter-spacing:-.035em;margin:0 0 20px;max-width:9ch;}
     body:has(.tn-hero) .tn-hero__sub{font-family:'Schibsted Grotesk',system-ui,sans-serif;font-size:clamp(16px,1.5vw,20px);line-height:1.62;max-width:42rem;margin:0 0 20px;color:rgba(238,244,250,.76);}
+    body:has(.tn-hero) .tn-hero__cta{margin:0 0 24px;}
     body:has(.tn-hero) .tn-privacy-seal{justify-self:start;border-radius:3px;background:transparent;border-color:rgba(147,168,191,.3);}
     body:has(.tn-hero) .tn-locator{max-width:1120px;margin:0 auto 36px;}
     body:has(.tn-hero) .tn-locator__card{min-height:0;padding:clamp(22px,4vw,44px);border-radius:4px;background:#101D30;box-shadow:none;text-align:left;}
@@ -140,15 +142,6 @@
     </nav>
   </header>
 
-  <section class="ap-room-sky" aria-label="Authored Earth engine still">
-    <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth">
-      <img src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="(max-width: 760px) calc(100vw - 34px), 512px" width="1000" height="1000" loading="lazy" decoding="async" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
-      <span class="ap-surface-a__receipt"><span>Engine still · schematic</span><strong>Open tonight in 3D</strong><em>One Observatory · real current positions</em></span>
-    </a>
-  </section>
-
-
-
   <main id="main-content">
 
     <!-- ============================================================
@@ -162,8 +155,8 @@
         <p class="tn-hero__sub">
           Naked-eye planets after sunset, the Moon, and when twilight fades &mdash; for <em id="tn-hero-place">your place</em>.
           This is sky weather, not the minute you were born.
-          <a href="deep-reading.html">That sitting is the seven chapters</a>.
         </p>
+        <p class="tn-hero__cta"><a href="index.html" class="tn-btn tn-btn--primary">Open tonight in the Observatory</a></p>
         <span class="tn-privacy-seal">
           <span class="tn-privacy-seal__glyph" aria-hidden="true">&#9919;</span>
           Computed locally on your device &middot; no tracking &middot; real astronomy
