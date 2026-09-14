@@ -99,7 +99,7 @@ body.page-horoscope {
 
 .page-horoscope .daily-hero {
   width: min(690px, 100%);
-  margin-bottom: clamp(42px, 6vw, 76px);
+  margin-bottom: clamp(18px, 3vw, 28px);
 }
 
 .page-horoscope .daily-hero__eyebrow,
@@ -132,11 +132,11 @@ body.page-horoscope {
 }
 
 .page-horoscope .daily-hero h1 {
-  max-width: 8ch;
+  max-width: 12ch;
   margin: 0;
   color: var(--daily-paper);
-  font: 500 clamp(4.35rem, 8.5vw, 8rem) / 0.83 "Cormorant Garamond", Georgia, serif;
-  letter-spacing: -0.055em;
+  font: 500 clamp(2.6rem, 5.4vw, 4.4rem) / 0.92 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: -0.04em;
   text-wrap: balance;
   /* This route's editorial scale is intentional. A late shared clarity layer
      otherwise shrinks it after first paint and moves the entire picker. */
@@ -293,15 +293,18 @@ body.page-horoscope {
 /* First-render geometry must match the late shared-structure layer. Reserving
    the final 4:5 cards here prevents all twelve choices growing after paint. */
 body.page-horoscope .sign-grid {
-  gap: 0.65rem;
+  gap: 0.55rem;
 }
 body.page-horoscope .sign-card {
-  aspect-ratio: 4 / 5 !important;
-  min-height: 0 !important;
-  padding: 0.75rem 0.45rem 0.65rem !important;
-  justify-content: center !important;
-  gap: 0.3rem !important;
+  aspect-ratio: auto !important;
+  min-height: 7.2rem !important;
+  padding: 0.85rem 0.7rem 0.75rem !important;
+  justify-content: start !important;
+  gap: 0.25rem !important;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #101D30 !important;
+  border: 1px solid rgba(147, 168, 191, 0.28) !important;
+  color: #EEF4FA !important;
 }
 body.page-horoscope .sign-card__glyph {
   position: relative;
@@ -776,8 +779,8 @@ body.page-horoscope .sign-card__glyph {
     background: linear-gradient(0deg, var(--daily-void) 0 70%, rgba(4, 8, 18, 0.62) 92%, var(--daily-void));
   }
   .page-horoscope .daily-room__inner::before { top: -28px; }
-  .page-horoscope .daily-hero { margin-bottom: 36px; }
-  .page-horoscope .daily-hero h1 { font-size: clamp(3.9rem, 18vw, 5.25rem); }
+  .page-horoscope .daily-hero { margin-bottom: 18px; }
+  .page-horoscope .daily-hero h1 { font-size: clamp(2.4rem, 11vw, 3.4rem); }
   .page-horoscope .daily-hero__sub { margin-top: 20px; font-size: 0.96rem; }
   .page-horoscope .sign-picker-primary__head { display: block; min-height: 50px; }
   .page-horoscope .daily-reading-status { margin-top: 6px; text-align: left; }

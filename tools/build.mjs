@@ -59,6 +59,9 @@ const PUBLIC_SHOP_ASSETS = new Set([
   'img/shop/v901/natal-sky-print-pack.webp',
   'img/shop/v901/personal-sky-keepsake.webp',
   'img/shop/v901/whole-sky-edition.webp',
+  'img/shop/v902/whole-sky-earth.jpg',
+  'img/shop/v902/natal-wheel.webp',
+  'img/shop/v902/keepsake-book.webp',
 ])
 const FORBIDDEN_CLOUDFLARE_PATHS = new Set([
   '_worker.js',

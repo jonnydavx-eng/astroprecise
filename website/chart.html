@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="ap-field-instrument">
+<html lang="en-GB" class="ap-field-instrument">
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
@@ -65,9 +65,9 @@
   <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
   <meta name="robots" content="index, follow" />
   <title>Your minute — free birth chart, then the sitting | AstroPrecise</title>
-  <script>window.AP_ASSET_V='902';</script>
+  <script>window.AP_ASSET_V='903';</script>
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/fonts.css?v=902" />
+  <link rel="stylesheet" href="css/fonts.css?v=903" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -124,13 +124,13 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=902" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=902" />
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=902">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=902">
-  <link rel="stylesheet" href="css/ap-chart-v835.css?v=902" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=902" />
-  <link rel="stylesheet" href="css/ap-keep-sky.css?v=902">
+  <link rel="stylesheet" href="css/celestial-seals.css?v=903" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=903" />
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=903">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=903">
+  <link rel="stylesheet" href="css/ap-chart-v835.css?v=903" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=903" />
+  <link rel="stylesheet" href="css/ap-keep-sky.css?v=903">
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
@@ -175,7 +175,7 @@
   <section class="ap-room-sky ap-earth-band" aria-label="Authored Earth engine still">
     <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth">
       <img src="img/engine/earth-256.webp" srcset="img/engine/earth-256.webp 256w, img/engine/earth-512.webp 512w" sizes="(max-width: 760px) calc(100vw - 34px), 512px" width="1000" height="1000" loading="lazy" decoding="async" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
-      <span class="ap-surface-a__receipt"><span>Engine still · schematic</span><strong>Open the live Observatory</strong><em>One model · current positions · full controls</em></span>
+      <span class="ap-surface-a__receipt"><span>Earth from the model · schematic</span><strong>Open the Observatory</strong><em>Computed sky · one model</em></span>
     </a>
   </section>
 
@@ -260,12 +260,13 @@
               required
               min="1800-01-01"
               max="2200-12-31"
+              lang="en-GB"
               aria-required="true"
               aria-describedby="date-hint date-error"
             />
             <span class="form-group__check" aria-hidden="true"></span>
             <p class="form-error-msg" id="date-error" role="alert">Please enter your birth date.</p>
-            <p class="form-hint" id="date-hint">Start here — supported chart dates are 1800–2200.</p>
+            <p class="form-hint" id="date-hint">Day, month, year — supported dates are 1800–2200. The calendar control follows this browser’s locale.</p>
           </div>
 
           <div class="form-group form-group--city" id="group-city">
@@ -679,27 +680,27 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS — chart core first; starfield/effects idle -->
-  <script src="js/raf-core.js?v=902" defer></script>
-  <script src="js/ap-zodiac-constants.js?v=902" defer></script>
-  <script src="js/ephemeris.js?v=902" defer></script>
-  <script src="js/celestial-seals.js?v=902" defer></script>
-  <script src="js/reading-format.js?v=902" defer></script>
-  <script src="js/chart-render.js?v=902" defer></script>
-  <script src="js/ap-load-interpretations.js?v=902" defer></script>
-  <script src="js/profile.js?v=902" defer></script>
-  <script src="js/ap-personal-memory.js?v=902" defer></script>
-  <script src="js/icons.js?v=902" defer></script>
-  <script src="js/ap-nav-model.js?v=902" defer></script>
-  <script src="js/ap-footer-inject.js?v=902" defer></script>
-  <script src="js/app.js?v=902" defer></script>
-  <script src="js/ap-canvas-seals.js?v=902" defer></script>
-  <script src="js/ap-deep-link.js?v=902" defer></script>
-  <script src="js/ap-sky-bridge.js?v=902" defer></script>
-  <script src="js/ap-plain-placement.js?v=902" defer></script>
-  <script src="js/chart-page.js?v=902" defer></script>
-  <script src="js/ap-keep-library.js?v=902" defer></script>
-  <script src="js/ap-keep-sky.js?v=902" defer></script>
-  <script src="js/ap-keep-minute.js?v=902" defer></script>
-  <script src="js/ap-studio-context-link.js?v=902" defer></script>
+  <script src="js/raf-core.js?v=903" defer></script>
+  <script src="js/ap-zodiac-constants.js?v=903" defer></script>
+  <script src="js/ephemeris.js?v=903" defer></script>
+  <script src="js/celestial-seals.js?v=903" defer></script>
+  <script src="js/reading-format.js?v=903" defer></script>
+  <script src="js/chart-render.js?v=903" defer></script>
+  <script src="js/ap-load-interpretations.js?v=903" defer></script>
+  <script src="js/profile.js?v=903" defer></script>
+  <script src="js/ap-personal-memory.js?v=903" defer></script>
+  <script src="js/icons.js?v=903" defer></script>
+  <script src="js/ap-nav-model.js?v=903" defer></script>
+  <script src="js/ap-footer-inject.js?v=903" defer></script>
+  <script src="js/app.js?v=903" defer></script>
+  <script src="js/ap-canvas-seals.js?v=903" defer></script>
+  <script src="js/ap-deep-link.js?v=903" defer></script>
+  <script src="js/ap-sky-bridge.js?v=903" defer></script>
+  <script src="js/ap-plain-placement.js?v=903" defer></script>
+  <script src="js/chart-page.js?v=903" defer></script>
+  <script src="js/ap-keep-library.js?v=903" defer></script>
+  <script src="js/ap-keep-sky.js?v=903" defer></script>
+  <script src="js/ap-keep-minute.js?v=903" defer></script>
+  <script src="js/ap-studio-context-link.js?v=903" defer></script>
 </body>
 </html>

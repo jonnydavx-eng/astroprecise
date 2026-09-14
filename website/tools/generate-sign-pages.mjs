@@ -823,8 +823,8 @@ function page(s) {
       contain: layout style;
     }
   </style>
-  <script src="js/defer-page-css.js?v=902" defer></script>
-  <script src="js/ap-sign-defer-boot.js?v=902" defer></script>
+  <script src="js/defer-page-css.js?v=903" defer></script>
+  <script src="js/ap-sign-defer-boot.js?v=903" defer></script>
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script type="application/ld+json">${JSON.stringify(breadcrumbLd)}</script>
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
@@ -978,12 +978,12 @@ function page(s) {
   <p class="ap-guide-links" hidden aria-hidden="true"></p>
 ${footerBlockHtml()}
 
-  <script src="js/content-service.js?v=902"></script>
-  <script src="js/sign-daily.js?v=902"></script>
-  <script src="js/ap-zodiac-constants.js?v=902"></script>
-  <script src="js/sign-page-boot.js?v=902"></script>
-  <script src="js/ap-page-boot.js?v=902" defer></script>
-  <script src="js/ap-footer-inject.js?v=902" defer></script>
+  <script src="js/content-service.js?v=903"></script>
+  <script src="js/sign-daily.js?v=903"></script>
+  <script src="js/ap-zodiac-constants.js?v=903"></script>
+  <script src="js/sign-page-boot.js?v=903"></script>
+  <script src="js/ap-page-boot.js?v=903" defer></script>
+  <script src="js/ap-footer-inject.js?v=903" defer></script>
 </body>
 </html>
 `;

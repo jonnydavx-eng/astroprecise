@@ -273,16 +273,29 @@
 .ap-live-home #dock .world-dot { width: 8px; height: 8px; }
 
 .ap-mobile-flight-deck { display: none; }
+.ap-model-poster {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  margin: auto;
+  width: min(68vmin, 560px);
+  height: min(68vmin, 560px);
+  object-fit: cover;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.92;
+  transition: opacity 280ms ease, visibility 280ms ease;
+}
 .ap-model-boot {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 3;
   display: grid;
   place-content: center;
   justify-items: center;
   gap: 9px;
   padding: 24px;
-  background: radial-gradient(circle at 54% 48%, color-mix(in srgb, var(--ap-silver) 8%, transparent), transparent 34%);
+  background: radial-gradient(circle at 54% 48%, color-mix(in srgb, var(--ap-void-deep) 28%, transparent), transparent 42%);
   color: var(--ap-paper);
   text-align: center;
   pointer-events: none;
@@ -304,7 +317,8 @@
   letter-spacing: .12em;
   text-transform: uppercase;
 }
-.ap-model-stage.is-model-ready .ap-model-boot { opacity: 0; visibility: hidden; }
+.ap-model-stage.is-model-ready .ap-model-boot,
+.ap-model-stage.is-model-ready .ap-model-poster { opacity: 0; visibility: hidden; }
 @keyframes ap-model-orbit { to { transform: rotate(1turn); } }
 
 /* DOM planet labels must never steal canvas pointer events. */

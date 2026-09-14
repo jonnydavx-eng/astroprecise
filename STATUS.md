@@ -1,12 +1,12 @@
 # AstroPrecise status
 
-**State:** Public GitHub Pages now serves `ap-v902` with checkout still closed. Rechecked 2026-09-14 from this machine: `https://astroprecise.app/sw.js` begins `const V="ap-v902"`, and `https://astroprecise.app/shop.html` still contains `Checkout closed`. This is a measured Pages identity, not a Coherence validator stamp.
+**State:** Public GitHub Pages still serves `ap-v902` until this sitting pass is merged. Local candidate is `ap-v903`: shop v902 plates in the Pages build, Earth poster on first paint, date-only chart wheel, readable horoscope tiles. Checkout still closed.
 
 Updated: 2026-09-14
 
 ## Answer first
 
-The sitting four-route site (Observatory → Chart → Events → Shop) is on the public GitHub Pages path. Shop still shows three adult self-order SKUs with **Checkout closed**. Do not open checkout, wire PayPal/gift/Typeform, or treat this as Cloudflare tagged production.
+Working toward a public site that actually looks finished. This pass does **not** open checkout. It ships the missing shop art, stops the Observatory looking empty while 3D loads, and stops a no-time chart looking like a crash.
 
 ## Exact measured identity (2026-09-14)
 
