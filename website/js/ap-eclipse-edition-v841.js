@@ -1,5 +1,5 @@
-import { isCheckoutReady, openCheckout, verifyLicense } from './gumroad-unlock.js';
-import { fmtDeg, houseOrdinal } from './eclipse-reading.js';
+import { isEntitlementReady, verifyLicense } from './gumroad-unlock.js?v=902';
+import { fmtDeg, houseOrdinal } from './eclipse-reading.js?v=902';
 
 export const ARTWORK_WIDTH = 2400;
 export const ARTWORK_HEIGHT = 3000;
@@ -14,9 +14,9 @@ const BEATS = [
 ];
 
 const PALETTES = [
-  { brass: '#d9b66f', ember: '#b95d34', ink: '#05070c', blue: '#486f8c' },
-  { brass: '#c9c4ad', ember: '#8f5145', ink: '#04070d', blue: '#526d91' },
-  { brass: '#e0bd78', ember: '#9c6846', ink: '#07060b', blue: '#415e78' },
+  { brass: '#93A8BF', ember: '#FF8EA8', ink: '#040812', blue: '#8BA9FF' },
+  { brass: '#C9D6E3', ember: '#A897FF', ink: '#07101E', blue: '#79C7F2' },
+  { brass: '#A5BCFF', ember: '#6FD0B3', ink: '#040812', blue: '#A897FF' },
 ];
 
 const GLYPHS = {
@@ -183,9 +183,9 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   const { brass, ember, ink, blue } = model.palette;
 
   const background = ctx.createLinearGradient(0, 0, model.width, model.height);
-  background.addColorStop(0, '#020308');
+  background.addColorStop(0, '#040812');
   background.addColorStop(0.42, ink);
-  background.addColorStop(1, '#0a1018');
+  background.addColorStop(1, '#101D30');
   ctx.fillStyle = background;
   ctx.fillRect(0, 0, model.width, model.height);
 
@@ -194,13 +194,13 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
     const y = random() * model.height * 0.62;
     const radius = 0.6 + random() * 2.2;
     ctx.globalAlpha = 0.14 + random() * 0.55;
-    ctx.fillStyle = random() > 0.86 ? brass : '#e9edf4';
+    ctx.fillStyle = random() > 0.86 ? brass : '#EEF4FA';
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fill();
     if (random() > 0.97 && radius > 1.8) {
       ctx.globalAlpha = 0.22;
-      ctx.strokeStyle = '#e9edf4';
+      ctx.strokeStyle = '#EEF4FA';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x - 9, y);
@@ -217,9 +217,9 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   const eclipseRadius = 248;
   const moonShift = ((model.seed % 7) - 3) * 7;
   const corona = ctx.createRadialGradient(ringX, ringY, eclipseRadius * 0.7, ringX, ringY, eclipseRadius * 2.05);
-  corona.addColorStop(0, 'rgba(245,220,157,.98)');
-  corona.addColorStop(0.22, 'rgba(217,182,111,.42)');
-  corona.addColorStop(1, 'rgba(217,182,111,0)');
+  corona.addColorStop(0, 'rgba(245,220,157,.98)'); // palette-physical: Sun corona
+  corona.addColorStop(0.22, 'rgba(217,182,111,.42)'); // palette-physical: Sun corona
+  corona.addColorStop(1, 'rgba(217,182,111,0)'); // palette-physical: Sun corona
   ctx.fillStyle = corona;
   ctx.beginPath();
   ctx.arc(ringX, ringY, eclipseRadius * 2.05, 0, Math.PI * 2);
@@ -232,7 +232,7 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
     const angle = (i / 56) * Math.PI * 2 + (random() - 0.5) * 0.05;
     const inner = eclipseRadius * (1.01 + random() * 0.03);
     const outer = eclipseRadius * (1.22 + random() * 0.55);
-    ctx.strokeStyle = i % 8 === 0 ? brass : '#efe2bd';
+    ctx.strokeStyle = i % 8 === 0 ? '#d9b66f' : '#efe2bd'; // palette-physical: solar corona
     ctx.globalAlpha = 0.1 + random() * 0.32;
     ctx.lineWidth = 1.5 + random() * 4.5;
     ctx.beginPath();
@@ -244,9 +244,9 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   ctx.globalAlpha = 1;
 
   const sunFill = ctx.createRadialGradient(ringX, ringY, 20, ringX, ringY, eclipseRadius);
-  sunFill.addColorStop(0, '#f3e2b0');
-  sunFill.addColorStop(0.55, '#d9b66f');
-  sunFill.addColorStop(1, '#8a5a28');
+  sunFill.addColorStop(0, '#f3e2b0'); // palette-physical: Sun surface
+  sunFill.addColorStop(0.55, '#d9b66f'); // palette-physical: Sun surface
+  sunFill.addColorStop(1, '#8a5a28'); // palette-physical: Sun surface
   ctx.fillStyle = sunFill;
   ctx.beginPath();
   ctx.arc(ringX, ringY, eclipseRadius, 0, Math.PI * 2);
@@ -271,8 +271,8 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   const tickOuter = 678;
 
   const wheelWash = ctx.createRadialGradient(wheelX, wheelY, innerR, wheelX, wheelY, outerR + 40);
-  wheelWash.addColorStop(0, 'rgba(8,12,20,.55)');
-  wheelWash.addColorStop(1, 'rgba(8,12,20,0)');
+  wheelWash.addColorStop(0, 'rgba(7,16,30,.55)');
+  wheelWash.addColorStop(1, 'rgba(7,16,30,0)');
   ctx.fillStyle = wheelWash;
   ctx.beginPath();
   ctx.arc(wheelX, wheelY, outerR + 48, 0, Math.PI * 2);
@@ -332,7 +332,7 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
     ctx.lineWidth = isContact ? 3 : 1.5;
     ctx.globalAlpha = isContact ? 1 : 0.85;
     ctx.stroke();
-    ctx.fillStyle = isContact ? '#f6efe0' : brass;
+    ctx.fillStyle = isContact ? '#EEF4FA' : brass;
     ctx.font = isContact
       ? '700 26px "Schibsted Grotesk", Arial, sans-serif'
       : '600 22px "Schibsted Grotesk", Arial, sans-serif';
@@ -346,17 +346,17 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   ctx.letterSpacing = '8px';
   ctx.fillText('ASTROPRECISE  /  12 AUGUST 2026', 150, 168);
   ctx.letterSpacing = '0px';
-  ctx.fillStyle = '#f0ece3';
+  ctx.fillStyle = '#EEF4FA';
   ctx.font = '600 64px "Cormorant Garamond", Georgia, serif';
   ctx.fillText('Your natal wheel at this eclipse.', 150, 248);
 
-  ctx.fillStyle = 'rgba(217,182,111,.78)';
+  ctx.fillStyle = 'rgba(165,188,255,.82)';
   ctx.font = '600 26px ui-monospace, Consolas, monospace';
   ctx.fillText(`${model.fingerprint}  /  ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 210);
-  ctx.fillStyle = '#d7d9df';
+  ctx.fillStyle = '#C9D6E3';
   ctx.font = '500 32px "Schibsted Grotesk", Arial, sans-serif';
   drawWrapped(ctx, model.share, 150, model.height - 155, 2100, 42, 2);
-  ctx.fillStyle = 'rgba(220,222,228,.55)';
+  ctx.fillStyle = 'rgba(147,168,191,.62)';
   ctx.font = '400 20px "Schibsted Grotesk", Arial, sans-serif';
   ctx.fillText('Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 72);
   return canvas;
@@ -372,7 +372,7 @@ export function renderEclipseDisc(model, canvas = document.createElement('canvas
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < (portrait ? 320 : 180); i += 1) {
     ctx.globalAlpha = 0.12 + random() * 0.5;
-    ctx.fillStyle = random() > 0.85 ? brass : '#e9edf4';
+    ctx.fillStyle = random() > 0.85 ? brass : '#EEF4FA';
     ctx.beginPath();
     ctx.arc(random() * canvas.width, random() * canvas.height, 0.6 + random() * 2, 0, Math.PI * 2);
     ctx.fill();
@@ -383,17 +383,17 @@ export function renderEclipseDisc(model, canvas = document.createElement('canvas
   const radius = portrait ? 430 : 310;
   const moonShift = ((model.seed % 7) - 3) * 8;
   const corona = ctx.createRadialGradient(cx, cy, radius * 0.7, cx, cy, radius * 2.1);
-  corona.addColorStop(0, 'rgba(245,220,157,.98)');
-  corona.addColorStop(0.24, 'rgba(217,182,111,.4)');
-  corona.addColorStop(1, 'rgba(217,182,111,0)');
+  corona.addColorStop(0, 'rgba(245,220,157,.98)'); // palette-physical: Sun corona
+  corona.addColorStop(0.24, 'rgba(217,182,111,.4)'); // palette-physical: Sun corona
+  corona.addColorStop(1, 'rgba(217,182,111,0)'); // palette-physical: Sun corona
   ctx.fillStyle = corona;
   ctx.beginPath();
   ctx.arc(cx, cy, radius * 2.1, 0, Math.PI * 2);
   ctx.fill();
   const sunFill = ctx.createRadialGradient(cx, cy, 20, cx, cy, radius);
-  sunFill.addColorStop(0, '#f3e2b0');
-  sunFill.addColorStop(0.55, '#d9b66f');
-  sunFill.addColorStop(1, '#8a5a28');
+  sunFill.addColorStop(0, '#f3e2b0'); // palette-physical: Sun surface
+  sunFill.addColorStop(0.55, '#d9b66f'); // palette-physical: Sun surface
+  sunFill.addColorStop(1, '#8a5a28'); // palette-physical: Sun surface
   ctx.fillStyle = sunFill;
   ctx.beginPath();
   ctx.arc(cx, cy, radius, 0, Math.PI * 2);
@@ -409,8 +409,8 @@ export function renderEclipseDisc(model, canvas = document.createElement('canvas
   drawHairlineCircle(ctx, cx, cy, radius + 8, brass, 0.88, 3);
   if (portrait) {
     const fade = ctx.createLinearGradient(0, canvas.height * 0.58, 0, canvas.height);
-    fade.addColorStop(0, 'rgba(5,7,11,0)');
-    fade.addColorStop(1, 'rgba(5,7,11,.94)');
+    fade.addColorStop(0, 'rgba(4,8,18,0)');
+    fade.addColorStop(1, 'rgba(4,8,18,.94)');
     ctx.fillStyle = fade;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
@@ -460,7 +460,7 @@ export function renderAspectFigure(model, canvas = document.createElement('canva
   const contact = (model.placements || []).find((row) => row.key === model.contactTarget);
   const aspect = model.contactAspect || 'conjunction';
   const orbRad = (6 * Math.PI) / 180;
-  ctx.fillStyle = 'rgba(255,100,40,.16)';
+  ctx.fillStyle = 'rgba(255,142,168,.18)';
   ctx.beginPath();
   ctx.moveTo(Math.cos(eclipseAngle - orbRad) * radius, Math.sin(eclipseAngle - orbRad) * radius);
   ctx.arc(0, 0, radius, eclipseAngle - orbRad, eclipseAngle + orbRad, false);
@@ -527,7 +527,7 @@ export function renderAspectFigure(model, canvas = document.createElement('canva
     ctx.beginPath();
     ctx.arc(Math.cos(contactAngle) * cr, Math.sin(contactAngle) * cr, 30, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#f6efe0';
+    ctx.fillStyle = '#EEF4FA';
     ctx.font = '700 26px "Schibsted Grotesk", Arial, sans-serif';
     ctx.fillText(contact.glyph || GLYPHS[contact.key] || '', Math.cos(contactAngle) * cr, Math.sin(contactAngle) * cr + 1);
   }
@@ -595,7 +595,7 @@ export function renderNatalWheelFigure(model, canvas = document.createElement('c
     ctx.strokeStyle = brass;
     ctx.lineWidth = isContact ? 3 : 1.5;
     ctx.stroke();
-    ctx.fillStyle = isContact ? '#f6efe0' : brass;
+    ctx.fillStyle = isContact ? '#EEF4FA' : brass;
     ctx.font = isContact
       ? '700 26px "Schibsted Grotesk", Arial, sans-serif'
       : '600 22px "Schibsted Grotesk", Arial, sans-serif';
@@ -630,7 +630,7 @@ export function renderHouseFigure(model, canvas = document.createElement('canvas
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, radius, start, end, true);
     ctx.closePath();
-    ctx.fillStyle = house === Number(model.contactHouse) ? 'rgba(255,100,40,.42)' : 'rgba(72,111,140,.08)';
+    ctx.fillStyle = house === Number(model.contactHouse) ? 'rgba(255,142,168,.42)' : 'rgba(139,169,255,.09)';
     ctx.fill();
     ctx.strokeStyle = brass;
     ctx.globalAlpha = 0.45;
@@ -762,39 +762,39 @@ export function buildEclipsePrintDocument(model, images = {}, { printOnLoad = tr
 ${printFontCss(fontBase)}
 @page{size:A4;margin:0}
 *{box-sizing:border-box}
-html,body{margin:0;background:#05070b;color:#f2ecdf}
+html,body{margin:0;background:#040812;color:#EEF4FA}
 .edition{print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.sheet{box-sizing:border-box;width:210mm;height:297mm;padding:14mm 14mm 18mm;page-break-after:always;break-after:page;overflow:hidden;position:relative;background:#05070b}
+.sheet{box-sizing:border-box;width:210mm;height:297mm;padding:14mm 14mm 18mm;page-break-after:always;break-after:page;overflow:hidden;position:relative;background:#040812}
 .sheet:last-child{page-break-after:auto;break-after:auto}
 .sheet--bleed{padding:0}
 .sheet--stack .plate{margin:0 0 6mm}
 .sheet--stack .plate img{height:108mm;width:100%;object-fit:contain;object-position:center top}
 .plate--seal{position:absolute;right:14mm;bottom:22mm;width:42mm}
-.plate--seal img{height:42mm;width:42mm;object-fit:cover;border:.25pt solid #d8b46a}
-.plate img{display:block;width:100%;height:auto;border:.25pt solid #d8b46a;background:#05070b}
+.plate--seal img{height:42mm;width:42mm;object-fit:cover;border:.25pt solid #8BA9FF}
+.plate img{display:block;width:100%;height:auto;border:.25pt solid #93A8BF;background:#040812}
 .plate--cover img{height:297mm;width:210mm;object-fit:cover;border:0}
 .plate--wheel img{width:148mm;margin:0 auto 4mm}
-.letter-beat{margin:0 0 4.2mm;padding-bottom:3.2mm;border-bottom:.25pt solid rgba(216,180,106,.28)}
+.letter-beat{margin:0 0 4.2mm;padding-bottom:3.2mm;border-bottom:.25pt solid rgba(147,168,191,.3)}
 .letter-beat:last-of-type{border-bottom:0}
-.letter-beat small{display:block;margin:0 0 1.4mm;font:700 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#d8b46a}
+.letter-beat small{display:block;margin:0 0 1.4mm;font:700 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#A5BCFF}
 .letter-beat .fact{margin:0 0 1.2mm;font-size:8.2pt}
 .letter-beat .reflect{margin:0;font-size:12.2pt;line-height:1.38}
 .overlay{position:absolute;left:14mm;right:14mm;bottom:16mm}
-.brand{font:600 9pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#d8b46a;margin:0 0 6mm}
-.display{font:600 32pt/1.05 "Cormorant Garamond",Georgia,serif;margin:0 0 5mm;color:#f2ecdf}
+.brand{font:600 9pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#A5BCFF;margin:0 0 6mm}
+.display{font:600 32pt/1.05 "Cormorant Garamond",Georgia,serif;margin:0 0 5mm;color:#EEF4FA}
 .display--cover{font-size:36pt}
-.fact{font:9.5pt/1.45 "IBM Plex Mono",ui-monospace,monospace;color:#d8b46a;margin:0 0 4mm}
-.fact--caption{color:#b9c8dc}
-.reflect{font:italic 13.5pt/1.45 "Cormorant Garamond",Georgia,serif;color:#f2ecdf;margin:0 0 5mm}
+.fact{font:9.5pt/1.45 "IBM Plex Mono",ui-monospace,monospace;color:#A5BCFF;margin:0 0 4mm}
+.fact--caption{color:#C9D6E3}
+.reflect{font:italic 13.5pt/1.45 "Cormorant Garamond",Georgia,serif;color:#EEF4FA;margin:0 0 5mm}
 .reflect--lead{font-size:16.5pt}
-.running{position:absolute;left:14mm;right:14mm;bottom:8mm;font:8pt/1.3 "IBM Plex Mono",ui-monospace,monospace;color:#d8b46a;letter-spacing:.04em}
-.demo{position:absolute;top:10mm;left:14mm;right:14mm;font:700 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#d8b46a;border:.25pt solid #d8b46a;padding:2mm 3mm}
-.legal{font:8pt/1.4 "Schibsted Grotesk",Arial,sans-serif;color:#b9c8dc;border-top:.25pt solid #d8b46a;padding-top:4mm;margin-top:8mm;max-width:132mm}
+.running{position:absolute;left:14mm;right:14mm;bottom:8mm;font:8pt/1.3 "IBM Plex Mono",ui-monospace,monospace;color:#93A8BF;letter-spacing:.04em}
+.demo{position:absolute;top:10mm;left:14mm;right:14mm;font:700 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#A5BCFF;border:.25pt solid #8BA9FF;padding:2mm 3mm}
+.legal{font:8pt/1.4 "Schibsted Grotesk",Arial,sans-serif;color:#C9D6E3;border-top:.25pt solid #93A8BF;padding-top:4mm;margin-top:8mm;max-width:132mm}
 .sheet[data-page="6"]{padding-bottom:26mm}
-table.placements{width:100%;border-collapse:collapse;font:9pt/1.4 "IBM Plex Mono",ui-monospace,monospace;color:#f2ecdf;margin:4mm 0}
-table.placements caption{caption-side:top;text-align:left;font:600 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#d8b46a;padding-bottom:3mm}
-table.placements th,table.placements td{text-align:left;padding:1.6mm 2mm;border-bottom:.25pt solid rgba(216,180,106,.35);vertical-align:top}
-tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #ff6428;font-weight:700}
+table.placements{width:100%;border-collapse:collapse;font:9pt/1.4 "IBM Plex Mono",ui-monospace,monospace;color:#EEF4FA;margin:4mm 0}
+table.placements caption{caption-side:top;text-align:left;font:600 8pt/1.3 "Schibsted Grotesk",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#A5BCFF;padding-bottom:3mm}
+table.placements th,table.placements td{text-align:left;padding:1.6mm 2mm;border-bottom:.25pt solid rgba(147,168,191,.38);vertical-align:top}
+tr.is-contact th,tr.is-contact td{box-shadow:inset 3pt 0 0 #FF8EA8;font-weight:700}
 @media print{button{display:none}}
 </style></head><body class="edition">
 <section class="sheet sheet--bleed" data-page="1">
@@ -1002,29 +1002,23 @@ export function mountEclipseEdition(host, context) {
     renderUnlocked(host, model);
     return { state: 'unlocked', model };
   }
-  const ready = isCheckoutReady(EDITION_PRODUCT);
-  host.dataset.paidState = ready ? 'locked' : 'dormant';
+  const recoverable = isEntitlementReady(EDITION_PRODUCT);
+  host.dataset.paidState = recoverable ? 'archive' : 'dormant';
   rememberEditionContext(context);
   host.innerHTML = `
-    <div class="ap-eclipse-edition__head"><span>Your Eclipse Edition</span><strong>£7 · instant</strong></div>
-    <h3>Keep this contact as reading and art.</h3>
-    <p>Five authored beats, a keepable multi-page booklet (print / save as PDF), and unique 2400 × 3000 natal-wheel artwork, generated here from this computed contact. No manual review and no birth data leaves this browser.</p>
-    <ul><li>Five-beat personalised contact reading</li><li>Unique high-resolution natal-wheel plate</li><li>PNG download + print / save-as-PDF booklet</li><li>Licence unlock via Gumroad View content</li></ul>
-    ${ready ? `
-      <div class="ap-eclipse-edition__actions"><button type="button" data-edition-buy>Buy Your Eclipse Edition — £7</button></div>
+    <div class="ap-eclipse-edition__head"><span>12 August edition</span><strong>Archive</strong></div>
+    <h3>Already purchased? Restore your edition.</h3>
+    <p>This event edition is closed to new purchases. Existing buyers can still restore the five-beat reading, print booklet and unique high-resolution natal-wheel plate (2400 × 3000) on this device. Birth data remains in this browser.</p>
+    ${recoverable ? `
       <form class="ap-eclipse-edition__license" data-edition-license-form>
-        <label><span>Already purchased? Paste the licence key from Gumroad View content</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
-        <button type="submit">Unlock on this device</button>
+        <label><span>Paste the licence key from your Gumroad receipt or View content</span><input type="password" minlength="8" required autocomplete="off" data-edition-license></label>
+        <button type="submit">Restore on this device</button>
       </form>
-      <p class="ap-eclipse-edition__status" data-edition-status role="status">Pay on Gumroad → open <strong>View content</strong> → copy the licence key → return here and paste. This contact stays in this browser tab.</p>` : `
-      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is closed.</strong> The public link and product ID are not both configured, so nothing can take payment. Your free contact result above remains available.</p>`}`;
+      <p class="ap-eclipse-edition__status" data-edition-status role="status">No checkout is offered. Licence recovery is retained for people who purchased before the eclipse.</p>` : `
+      <p class="ap-eclipse-edition__status" role="status"><strong>Checkout is closed.</strong> Licence recovery is temporarily unavailable. Your free contact result above remains available.</p>`}`;
 
-  if (!ready) return { state: 'dormant', model };
+  if (!recoverable) return { state: 'dormant', model };
   const status = host.querySelector('[data-edition-status]');
-  host.querySelector('[data-edition-buy]').addEventListener('click', () => {
-    rememberEditionContext(context);
-    openCheckout(EDITION_PRODUCT);
-  });
   host.querySelector('[data-edition-license-form]').addEventListener('submit', async (event) => {
     event.preventDefault();
     const input = host.querySelector('[data-edition-license]');
@@ -1048,5 +1042,5 @@ export function mountEclipseEdition(host, context) {
       button.disabled = false;
     }
   });
-  return { state: 'locked', model };
+  return { state: 'archive', model };
 }

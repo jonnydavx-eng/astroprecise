@@ -15,7 +15,7 @@
  * Scope: body.ap-observatory-home (co-exists with ap-award-511 — every
  * existing sheet/boot keys off ap-award-511 and must keep working).
  * Palette: jet interior, silver hairlines rgba(200,205,214,x), parchment ink,
- * brass CTA = dark ink #0B0906 on linear-gradient(160deg,#d8b46a,#C9A227)
+ * brass CTA = dark ink #07101E on linear-gradient(160deg,#93A8BF,#60768E)
  * (the verified 8.2:1 treatment). NO cyan/aurora on anything in this sheet.
  * The .ap-mw-dot aurora LIVE lamp is owner-owned; flip via --ap-live-dot in
  * ap-palette-2026.css (hook below) — do not swap unilaterally.
@@ -642,13 +642,13 @@ body.ap-observatory-home .explore-legend__toggle {
   background: transparent;
   border: 0;
   cursor: pointer;
-  color: var(--ap-parchment, #E8EBF0);
+  color: var(--ap-parchment, #EEF4FA);
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 1.02rem;
   letter-spacing: 0.02em;
 }
 body.ap-observatory-home .explore-legend__title { font-weight: 600; }
-body.ap-observatory-home .explore-legend__chev { color: var(--ap-brass, #A8B0BC); transition: transform 0.25s ease; font-size: 0.8rem; }
+body.ap-observatory-home .explore-legend__chev { color: var(--ap-brass, #93A8BF); transition: transform 0.25s ease; font-size: 0.8rem; }
 body.ap-observatory-home .explore-legend[data-collapsed="true"] .explore-legend__chev { transform: rotate(-90deg); }
 body.ap-observatory-home .explore-legend__body {
   padding: 0 0.9rem 0.9rem;
@@ -660,7 +660,7 @@ body.ap-observatory-home .explore-legend__body {
 }
 body.ap-observatory-home .explore-legend[data-collapsed="true"] .explore-legend__body { display: none; }
 body.ap-observatory-home .explore-legend__body p { margin: 0 0 0.6rem; }
-body.ap-observatory-home .explore-legend__body strong { color: var(--ap-parchment, #E8EBF0); }
+body.ap-observatory-home .explore-legend__body strong { color: var(--ap-parchment, #EEF4FA); }
 body.ap-observatory-home .explore-legend__ladder {
   list-style: none;
   margin: 0 0 0.6rem;
@@ -669,7 +669,7 @@ body.ap-observatory-home .explore-legend__ladder {
   border-bottom: 1px solid rgba(200, 205, 214, 0.14);
 }
 body.ap-observatory-home .explore-legend__ladder li { padding: 0.14rem 0; }
-body.ap-observatory-home .explore-legend__ladder b { color: var(--ap-brass-bright, #CDAE6A); font-weight: 600; }
+body.ap-observatory-home .explore-legend__ladder b { color: var(--ap-brass-bright, #C9D6E3); font-weight: 600; }
 body.ap-observatory-home .explore-legend__ladder em { font-style: italic; color: rgba(232, 235, 240, 0.92); }
 body.ap-observatory-home .explore-legend__foot { font-size: 0.76rem; color: rgba(232, 235, 240, 0.66); margin-bottom: 0 !important; }
 /* <1280: the collapsed legend is a compact chip (fit-content) so it clears
@@ -772,7 +772,7 @@ body.ap-observatory-home .ap-mw-chip {
   font-weight: 400;
   font-size: 0.66rem;
   letter-spacing: 0.14em;
-  color: var(--ap-silver, #C8CDD6);
+  color: var(--ap-silver, #C9D6E3);
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -858,7 +858,7 @@ html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle 
   font-size: 0.68rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #ECE6D8;
+  color: #EEF4FA;
   background: transparent;
   border: 1px solid rgba(200, 205, 214, 0.35);
   border-radius: 999px;
@@ -867,7 +867,7 @@ html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle 
 html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle.is-open,
 html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle[aria-expanded="true"] {
   border-color: rgba(200, 174, 106, 0.55);
-  color: #d8b46a;
+  color: #93A8BF;
 }
 html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-panel[hidden] {
   display: none !important;

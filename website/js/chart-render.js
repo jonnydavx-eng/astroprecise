@@ -36,7 +36,7 @@
   const R_HOUSE_OUT   = 240;   // house lines start at inner zodiac edge
   const R_HOUSE_IN    = 80;    // house lines end at inner circle
   const R_HOUSE_NUM   = 155;   // house number labels
-  const R_ASPECT      = 76;    // aspect line endpoints (inside r=80 center)
+  const R_ASPECT      = 194;   // aspect chords sit inside the planet ring, clear of the center label
   const R_INNER       = 80;    // center circle radius
   const R_CENTER_FILL = 78;    // filled center disc
   const R_CORE_DOT    = 5;     // small golden center dot
@@ -59,22 +59,27 @@
     Libra:'LI', Scorpio:'SC', Sagittarius:'SG', Capricorn:'CP', Aquarius:'AQ', Pisces:'PI'
   };
 
-  // Observatory Visual Wave 2026-08 — cool lunar night.
-  // Kept the WARM.* name to minimise churn; VALUES mirror css/ap-palette-2026.css
-  // (SVG can't read CSS vars). Copper #B86B4A never paints the wheel — CTA only.
+  // Midnight Meridian 2026 — cool lunar night.
+  // Kept the WARM.* name to minimise churn; values mirror css/ap-palette-2026.css
+  // because SVG cannot read the page's CSS custom properties reliably in exports.
   const WARM = {
-    void:      '#05080F',   // --ap-void-deep
-    plate:     '#141E2E',   // --ap-void-raised
-    gold:      '#8FA3B8',   // instrument silver (was brass)
-    goldDim:   '#5C6B7A',   // silver shadow
-    parchment: '#E6ECF2',   // --ap-paper
-    silver:    '#8A97A8',   // --ap-mute
-    silverDim: '#6E7A88',
-    hairline:  'rgba(143,163,184,0.28)',
-    mauve:     '#3A5560',   // faint rim — not purple
-    synastry:  '#9AB0C4',
-    transit:   '#7EB8A8',   // --ap-proof
-    proof:     '#7EB8A8'
+    void:      '#040812',
+    plate:     '#0B1424',
+    gold:      '#93A8BF',
+    goldDim:   '#64778C',
+    parchment: '#EEF4FA',
+    silver:    '#93A8BF',
+    silverDim: '#6F8298',
+    hairline:  'rgba(147,168,191,0.28)',
+    mauve:     '#405679',
+    synastry:  '#A897FF',
+    transit:   '#79C7F2',
+    proof:     '#6FD0B3',
+    ion:       '#8BA9FF',
+    violet:    '#A897FF',
+    danger:    '#FF8EA8',
+    cyan:      '#79C7F2',
+    ctaInk:    '#07101E'
   };
 
   // ─── Zodiac data (AP_ZODIAC) ───────────────────────────────────────────────
@@ -86,17 +91,17 @@
   // Element fill colors — the four semantic element accents (DESIGN.md).
   // These are deliberately NOT flattened to brass; zodiac keeps its element hue.
   const ELEMENT_FILL = {
-    fire:  '#8F5E4A',
-    earth: '#5A6E5C',
-    air:   '#6E7E90',
-    water: '#4A6570'
+    fire:  '#7C4559',
+    earth: '#3F7465',
+    air:   '#3E708C',
+    water: '#584D88'
   };
 
   const ELEMENT_TEXT = {
-    fire:  '#B88872',
-    earth: '#849688',
-    air:   '#9AABBA',
-    water: '#7A96A0'
+    fire:  '#FF8EA8',
+    earth: '#6FD0B3',
+    air:   '#79C7F2',
+    water: '#A897FF'
   };
 
   const SIGN_ELEMENT = (Z && Z.SIGN_ELEMENT) || {
@@ -147,12 +152,12 @@
   const displayBodyName = name => BODY_DISPLAY[name] || String(name || '');
 
 
-  // Cool-night planet markers — readable on #05080F; never CTA copper.
+  // Cool-night planet markers — readable on the void while remaining distinct.
   const PLANET_COLORS = {
-    Sun:'#D6CDB8',      Moon:'#E6ECF2',    Mercury:'#A8B6C4', Venus:'#B5A4A8',
-    Mars:'#A8725C',     Jupiter:'#C5D4E0', Saturn:'#8A97A8',  Uranus:'#7EB8A8',
-    Neptune:'#5A8488',  Pluto:'#6A7888',   Chiron:'#8A9A88',  Lilith:'#7A8490',
-    NorthNode:'#A88870', SouthNode:'#6E7A88', Ascendant:'#E6ECF2', Midheaven:'#C5D4E0'
+    Sun:'#C9D6E3',      Moon:'#EEF4FA',    Mercury:'#AFC0D1', Venus:'#C3B8F9',
+    Mars:'#FF8EA8',     Jupiter:'#8BA9FF', Saturn:'#93A8BF',  Uranus:'#79C7F2',
+    Neptune:'#7EADE0',  Pluto:'#8E82C8',   Chiron:'#6FD0B3',  Lilith:'#A897FF',
+    NorthNode:'#8BA9FF', SouthNode:'#6F8298', Ascendant:'#EEF4FA', Midheaven:'#C9D6E3'
   };
 
   const PLANET_ORDER = [
@@ -160,28 +165,31 @@
     'Jupiter','Saturn','Uranus','Neptune','Pluto',
     'Chiron','Lilith','NorthNode','SouthNode'
   ];
+  const PLANET_ORDER_INDEX = Object.freeze(Object.fromEntries(
+    PLANET_ORDER.map((name, index) => [name, index])
+  ));
 
   // ─── Aspect styling (per spec) ─────────────────────────────────────────────
   // Stroke hierarchy reads importance at a glance:
-  //   majors (Conjunction/Opposition/Trine/Square) ~1.8 · Sextile ~1.2 · minors ~0.6.
-  // Colours unchanged (already warm/on-brand); opacity cascade lives in
-  // ASPECT_OPACITY below (majors ~0.75–0.85, minors ~0.38–0.45).
+  //   each major has a distinct weight/dash signature · Sextile ~1.2 · minors ~0.6.
+  // Colour and line style are both meaningful: the dash/weight hierarchy keeps
+  // the aspect language legible without relying on hue alone.
   const ASPECT_STYLE = {
-    Conjunction:     { color:'#E6ECF2', width:1.8, dash:null  },
-    Opposition:      { color:'#A8725C', width:1.8, dash:null  },
-    Trine:           { color:'#7EB8A8', width:1.8, dash:null  },
-    Square:          { color:'#8F6E55', width:1.8, dash:null  },
-    Sextile:         { color:'#5A6E5C', width:1.2, dash:null  },
-    Quincunx:        { color:'#6B7888', width:0.6, dash:'3,3' },
-    SemiSquare:      { color:'#6B7888', width:0.6, dash:'3,3' },
-    Semisextile:     { color:'#6B7888', width:0.6, dash:'3,3' },
-    Sesquiquadrate:  { color:'#6B7888', width:0.6, dash:'3,3' },
-    Quintile:        { color:'#6B7888', width:0.6, dash:'3,3' },
-    BiQuintile:      { color:'#6B7888', width:0.6, dash:'3,3' }
+    Conjunction:     { color:'#EEF4FA', width:2.4, dash:null   },
+    Opposition:      { color:'#FF8EA8', width:1.8, dash:'10,4' },
+    Trine:           { color:'#6FD0B3', width:1.6, dash:null   },
+    Square:          { color:'#A897FF', width:1.8, dash:'6,2' },
+    Sextile:         { color:'#79C7F2', width:1.2, dash:'2,2' },
+    Quincunx:        { color:'#93A8BF', width:0.6, dash:'3,3' },
+    SemiSquare:      { color:'#93A8BF', width:0.6, dash:'3,3' },
+    Semisextile:     { color:'#93A8BF', width:0.6, dash:'3,3' },
+    Sesquiquadrate:  { color:'#93A8BF', width:0.6, dash:'3,3' },
+    Quintile:        { color:'#93A8BF', width:0.6, dash:'3,3' },
+    BiQuintile:      { color:'#93A8BF', width:0.6, dash:'3,3' }
   };
 
   const ASPECT_OPACITY = {
-    Conjunction:0.85, Opposition:0.80, Trine:0.75, Square:0.75, Sextile:0.70,
+    Conjunction:0.85, Opposition:0.66, Trine:0.75, Square:0.75, Sextile:0.70,
     Quincunx:0.45,    SemiSquare:0.40, Semisextile:0.38,
     Sesquiquadrate:0.40, Quintile:0.38, BiQuintile:0.38
   };
@@ -204,7 +212,7 @@
 
   // ─── Utility: colour math (hex → lighter / darker shade) ─────────────────
   function _hex2rgb(hex) {
-    let h = String(hex || '#888888').replace('#', '');
+    let h = String(hex || '#93A8BF').replace('#', '');
     if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
     const n = parseInt(h, 16);
     return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
@@ -323,9 +331,9 @@
 
     // Radial gradient: deep space center fill
     const rg = el('radialGradient', { id: idPrefix + 'cgrad', cx:'50%', cy:'50%', r:'50%' });
-    [[0,   '#1A2230', 1],
-     [0.6, '#121826', 1],
-     [1,   '#07070A', 1]
+    [[0,   '#14223A', 1],
+     [0.6, '#0B1424', 1],
+     [1,   '#040812', 1]
     ].forEach(([o, c, op]) => {
       rg.appendChild(el('stop', { offset: o * 100 + '%', 'stop-color': c, 'stop-opacity': op }));
     });
@@ -499,7 +507,7 @@
       }
       const sr  = rand() * 1.2 + 0.15;
       const op  = (rand() * 0.55 + 0.12).toFixed(2);
-      const tint = rand() > 0.92 ? WARM.gold : '#FFFFFF';
+      const tint = rand() > 0.92 ? WARM.ion : WARM.parchment;
       starG.appendChild(el('circle', {
         cx: sx.toFixed(1), cy: sy.toFixed(1),
         r: sr.toFixed(2), fill: tint, opacity: op
@@ -621,8 +629,8 @@
   }
 
   // ─── House wheel ──────────────────────────────────────────────────────────
-  function drawHouseWheel(svg, houses, ascLon, idPrefix) {
-    const g = el('g', { class: 'house-wheel' });
+  function drawHouseBackdrop(svg, houses, ascLon, idPrefix) {
+    const g = el('g', { class: 'house-wheel house-wheel--backdrop' });
 
     // Background disc (inner area)
     g.appendChild(el('circle', {
@@ -630,8 +638,6 @@
       fill: `url(#${idPrefix}cgrad)`,
       stroke: WARM.hairline, 'stroke-width': '0.5'
     }));
-
-    const ANGLE_LABELS = { 0:'AC', 3:'IC', 6:'DC', 9:'MC' };
 
     for (let h = 0; h < 12; h++) {
       const cuspLonPre = normLon(houses[h]);
@@ -649,6 +655,13 @@
       }
     }
 
+    svg.appendChild(g);
+  }
+
+  function drawHouseGrid(svg, houses, ascLon) {
+    const g = el('g', { class: 'house-wheel house-wheel--grid' });
+    const ANGLE_LABELS = { 0:'AC', 3:'IC', 6:'DC', 9:'MC' };
+
     for (let h = 0; h < 12; h++) {
       const cuspLon   = normLon(houses[h]);
       const nextLon   = normLon(houses[(h + 1) % 12]);
@@ -661,7 +674,7 @@
       g.appendChild(el('line', {
         x1: p1.x.toFixed(2), y1: p1.y.toFixed(2),
         x2: p2.x.toFixed(2), y2: p2.y.toFixed(2),
-        stroke: isAngle ? WARM.gold : 'rgba(143,163,184,0.30)',
+        stroke: isAngle ? WARM.ion : 'rgba(147,168,191,0.30)',
         'stroke-width': isAngle ? '2' : '0.8',
         opacity: isAngle ? '1' : '0.75'
       }));
@@ -899,9 +912,6 @@
     glyphs.forEach(gn => {
       const name = gn.getAttribute('data-planet');
       if (!name) return;
-      gn.setAttribute('tabindex', '0');
-      gn.setAttribute('role', 'button');
-      gn.setAttribute('aria-label', displayBodyName(name) + ' — open reading');
       gn.style.cursor = 'pointer';
       const select = () => {
         svg.setAttribute('data-wheel-pin', '1');
@@ -991,11 +1001,14 @@
         'data-planet2': p2name,
         'data-aspect-name': aspectName,
         'data-aspect-orb': orbStr,
-        tabindex: '0',
-        role: 'graphics-symbol',
-        'aria-label': title.textContent
+        tabindex: '-1',
+        'aria-hidden': 'true',
+        'data-accessible-label': title.textContent
       };
-      if (isMajor && idPrefix) attrs.filter = `url(#${idPrefix}aglow)`;
+      // Dense opposition sets already carry the strongest dash signature. A
+      // shared blur turns adjacent rose dashes into railroad-track bands, so
+      // keep Opposition crisp while the other majors retain the soft lift.
+      if (isMajor && styleKey !== 'Opposition' && idPrefix) attrs.filter = `url(#${idPrefix}aglow)`;
       if (style.dash) attrs['stroke-dasharray'] = style.dash;
 
       const line = el('line', attrs);
@@ -1017,24 +1030,58 @@
     wireAspectHover(svg);
   }
 
-  // ─── Collision avoidance for planet glyphs ────────────────────────────────
-  // If two planets are within 8° of each other on the wheel,
-  // nudge their display angles apart until they no longer overlap.
-  function separateAngles(entries, threshold, passes) {
-    const sorted = entries.slice().sort((a, b) => a.angle - b.angle);
-    for (let p = 0; p < (passes || 4); p++) {
-      for (let i = 0; i < sorted.length; i++) {
-        const j    = (i + 1) % sorted.length;
-        const diff = ((sorted[j].angle - sorted[i].angle) + 360) % 360;
-        if (diff < threshold) {
-          const push = (threshold - diff) / 2 + 0.3;
-          sorted[i].angle = ((sorted[i].angle - push) + 360) % 360;
-          sorted[j].angle = ((sorted[j].angle + push) + 360) % 360;
-        }
-      }
+  // ─── Circular label layout for planet glyphs ──────────────────────────────
+  // Break the circle at its largest natural gap, then solve the minimum-spacing
+  // constraint with isotonic regression. This preserves cyclic order, is fully
+  // deterministic and cannot leave a dense cluster piled in one corner.
+  function separateAngles(entries, threshold) {
+    if (!entries.length) return {};
+    if (entries.length === 1) return { [entries[0].name]: entries[0].angle };
+    const sorted = entries.slice().sort((a, b) => {
+      const byAngle = a.angle - b.angle;
+      if (byAngle) return byAngle;
+      const rankA = PLANET_ORDER_INDEX[a.name] ?? Number.MAX_SAFE_INTEGER;
+      const rankB = PLANET_ORDER_INDEX[b.name] ?? Number.MAX_SAFE_INTEGER;
+      if (rankA !== rankB) return rankA - rankB;
+      return String(a.name) < String(b.name) ? -1 : String(a.name) > String(b.name) ? 1 : 0;
+    });
+    let breakAfter = 0;
+    let largestGap = -1;
+    for (let i = 0; i < sorted.length; i += 1) {
+      const next = (i + 1) % sorted.length;
+      const gap = ((sorted[next].angle - sorted[i].angle) + 360) % 360;
+      if (gap > largestGap) { largestGap = gap; breakAfter = i; }
     }
+    const ordered = [];
+    for (let step = 1; step <= sorted.length; step += 1) {
+      const item = sorted[(breakAfter + step) % sorted.length];
+      const previous = ordered[ordered.length - 1];
+      let angle = item.angle;
+      // Equal longitudes belong to one collision block. Advancing a tie by a
+      // full turn made exact conjunctions overlap again after modulo 360.
+      if (previous) while (angle < previous.unwrapped) angle += 360;
+      ordered.push({ ...item, unwrapped: angle });
+    }
+    const spacing = Math.min(Number(threshold) || 8, (360 / ordered.length) - 0.5);
+    const blocks = [];
+    ordered.forEach((item, index) => {
+      blocks.push({ start: index, end: index, sum: item.unwrapped - index * spacing, count: 1 });
+      while (blocks.length > 1) {
+        const b = blocks[blocks.length - 1];
+        const a = blocks[blocks.length - 2];
+        if ((a.sum / a.count) <= (b.sum / b.count)) break;
+        blocks.splice(blocks.length - 2, 2, {
+          start: a.start, end: b.end, sum: a.sum + b.sum, count: a.count + b.count
+        });
+      }
+    });
+    const resolved = new Array(ordered.length);
+    blocks.forEach((block) => {
+      const level = block.sum / block.count;
+      for (let i = block.start; i <= block.end; i += 1) resolved[i] = level + i * spacing;
+    });
     const out = {};
-    for (const e of sorted) out[e.name] = e.angle;
+    ordered.forEach((item, index) => { out[item.name] = ((resolved[index] % 360) + 360) % 360; });
     return out;
   }
 
@@ -1065,7 +1112,21 @@
     }
 
     // Resolve collisions (8° threshold)
-    const resolved = separateAngles(entries, 8, 5);
+    const resolved = separateAngles(entries, compact ? 10 : 9);
+    const degreeLabelHasSpace = {};
+    entries.forEach((entry) => {
+      const here = resolved[entry.name];
+      let nearest = 360;
+      entries.forEach((other) => {
+        if (other.name === entry.name) return;
+        const delta = Math.abs((((resolved[other.name] - here) + 540) % 360) - 180);
+        nearest = Math.min(nearest, delta);
+      });
+      // Tiny degree strings are useful on isolated marks, but they turn a real
+      // stellium into visual noise. Exact figures remain in the table and the
+      // accessible label whether or not this micro-label has enough air.
+      degreeLabelHasSpace[entry.name] = nearest >= 14;
+    });
 
     for (const name of PLANET_ORDER) {
       const pos = positions[name];
@@ -1074,16 +1135,25 @@
       const glyph = PLANET_GLYPHS[name];
       if (!glyph) continue;
 
-      const pColor  = opts.colorOverride || PLANET_COLORS[name] || '#CCCCCC';
+      const pColor  = opts.colorOverride || PLANET_COLORS[name] || WARM.silver;
       const trueLon = readLon(pos);
       if (trueLon == null) continue;
       const trueAng = lonToAngle(trueLon, ascLon);
       const dispAng = resolved[name];
+      const degreeValue = pos.degree !== undefined ? pos.degree : (((trueLon % 30) + 30) % 30);
+      const degreeNumber = Math.floor(degreeValue);
+      const minuteNumber = Math.floor((degreeValue - degreeNumber) * 60);
+      const degreeText = `${degreeNumber}°${String(minuteNumber).padStart(2, '0')}'`;
+      const signText = pos.sign ? ` in ${pos.sign}` : '';
 
       // Per-planet group so a table-row hover can highlight all of this planet's
       // marks (spoke + dot + glyph + ℞ + degree) as one unit. data-planet keys
       // the bidirectional wheel↔table link (see wireGlyphHighlight).
-      const pg = el('g', { class: 'planet-glyph', 'data-planet': name });
+      const pg = el('g', {
+        class: 'planet-glyph', 'data-planet': name,
+        tabindex: '-1', 'aria-hidden': 'true',
+        'data-accessible-label': `${displayBodyName(name)}${signText} at ${degreeText}`
+      });
       g.appendChild(pg);
 
       // Thin spoke from inner zodiac edge to dot
@@ -1105,6 +1175,18 @@
 
       // Planet glyph at collision-resolved position
       const gp  = polar(CX, CY, rPlanet, dispAng);
+      const displacement = Math.abs((((dispAng - trueAng) + 540) % 360) - 180);
+      if (displacement > 0.75) {
+        const leadA = polar(CX, CY, rDot + 5, trueAng);
+        const leadB = polar(CX, CY, rPlanet - 15, dispAng);
+        pg.appendChild(el('line', {
+          class: 'planet-glyph__leader',
+          x1: leadA.x.toFixed(2), y1: leadA.y.toFixed(2),
+          x2: leadB.x.toFixed(2), y2: leadB.y.toFixed(2),
+          stroke: pColor, 'stroke-width': '0.7', opacity: '0.58',
+          'stroke-dasharray': '2 2', 'pointer-events': 'none'
+        }));
+      }
       const pSlug = PLANET_SLUG[name];
       if (pSlug && !opts.colorOverride) {
         sealImage(pg, SEAL_BASE + 'planets/' + pSlug + '.svg', gp.x, gp.y, 22, 26, 0.98);
@@ -1113,7 +1195,7 @@
         const txt = el('text', {
           x: gp.x.toFixed(2), y: gp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-          fill: '#ffffff',
+          fill: WARM.parchment,
           'font-size': fSize,
           'font-family': 'serif, "Apple Color Emoji", "Segoe UI Emoji", system-ui',
           'font-weight': 'bold',
@@ -1123,6 +1205,13 @@
         pg.appendChild(txt);
       }
 
+      // Artwork remains compact, while this transparent geometry gives touch
+      // and pointer users a reliable target without changing the visual scale.
+      pg.appendChild(el('circle', {
+        class: 'planet-glyph__hit', cx: gp.x.toFixed(2), cy: gp.y.toFixed(2),
+        r: compact ? '18' : '15', fill: 'transparent', 'pointer-events': 'all'
+      }));
+
       // Retrograde symbol ℞ as superscript after the glyph. 8 → 11 units
       // (≈6.6px @360) so the retrograde state is actually readable on the wheel.
       if (pos.retrograde) {
@@ -1130,7 +1219,7 @@
         const rTxt = el('text', {
           x: orp.x.toFixed(2), y: orp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-          fill: '#A8725C',
+          fill: WARM.violet,
           'font-size': '11',
           'font-family': 'serif, system-ui',
           'font-weight': '600',
@@ -1143,13 +1232,11 @@
       // Degree label (just inside the planet ring). Desktop only (gated by
       // `compact` via showDeg above): 7 → 9 units so it's not anemic where it
       // does render. On mobile the exact figure lives in the planets table.
-      if (showDeg) {
-        const _dv    = pos.degree !== undefined ? pos.degree : (((trueLon % 30) + 30) % 30);
-        const degNum = Math.floor(_dv);
-        const minNum = Math.floor((_dv - degNum) * 60);
+      if (showDeg && degreeLabelHasSpace[name]) {
         const dlr    = rPlanet - 17;
         const dp     = polar(CX, CY, dlr, dispAng);
         const dl = el('text', {
+          class: 'planet-glyph__degree',
           x: dp.x.toFixed(2), y: dp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
           fill: WARM.silver,
@@ -1157,7 +1244,7 @@
           'font-family': 'var(--font-mono, "IBM Plex Mono", ui-monospace, monospace)',
           'font-variant-numeric': 'tabular-nums', opacity: '0.85'
         });
-        dl.textContent = `${degNum}°${String(minNum).padStart(2,'0')}'`;
+        dl.textContent = degreeText;
         pg.appendChild(dl);
       }
     }
@@ -1346,9 +1433,9 @@
     [
       // Labelled by what the line means, not by the trade name. The glyphs are
       // kept for anyone who already reads them; hovering a line spells it out.
-      ['Together','☌','#f2ecdf'],['Facing','☍','#C25A4E'],
-      ['Easy','△','#4A7580'],['Hard','□','#B0703E'],
-      ['Supportive','⚹','#5A7A48'],['Minor','- -','#6B7280']
+      ['Together','☌','#EEF4FA'],['Facing','☍','#FF8EA8'],
+      ['Easy','△','#6FD0B3'],['Hard','□','#A897FF'],
+      ['Supportive','⚹','#79C7F2'],['Minor','- -','#93A8BF']
     ].forEach(([n, s, c]) => {
       const row = document.createElement('div');
       row.className = 'ap-chart-legend__row';
@@ -1559,13 +1646,34 @@
     if (title || subtitle) container.appendChild(buildTitleBar(title, subtitle));
 
     const svg = createSVG();
+    const provisional = opts.provisional === true || chartData.timeAccuracy === 'approximate';
+    const accuracy = chartData.timeAccuracy === 'unknown'
+      ? 'unknown'
+      : provisional ? 'approximate' : 'exact';
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('focusable', 'false');
+    svg.setAttribute('data-time-accuracy', accuracy);
+    svg.setAttribute('aria-label', `${displayBodyName(chartData.name || 'Natal chart')} natal wheel${accuracy === 'approximate' ? ' — provisional because the selected birth time is approximate' : accuracy === 'unknown' ? ' — limited because the birth time is unknown' : ' — exact birth time supplied'}`);
+    if (opts.describedBy) svg.setAttribute('aria-describedby', String(opts.describedBy));
     buildDefs(svg, prefix);
     drawBackground(svg, prefix);
     drawInstrumentBezel(svg, ascLon, prefix);
+    svg.appendChild(el('circle', {
+      class: `chart-accuracy-ring chart-accuracy-ring--${accuracy}`,
+      cx: CX, cy: CY, r: R_BEZEL_OUT - 4,
+      fill: 'none',
+      stroke: accuracy === 'exact' ? WARM.proof : accuracy === 'approximate' ? WARM.violet : WARM.danger,
+      'stroke-width': accuracy === 'exact' ? '1.25' : '1.5',
+      'stroke-dasharray': accuracy === 'exact' ? 'none' : accuracy === 'approximate' ? '6 5' : '1 5',
+      'stroke-linecap': 'round',
+      opacity: accuracy === 'exact' ? '0.46' : '0.72',
+      'pointer-events': 'none'
+    }));
     drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
-    drawHouseWheel(svg, houses, ascLon, prefix);
+    drawHouseBackdrop(svg, houses, ascLon, prefix);
     if (showAsp) drawAspectLines(svg, aspects, positions, ascLon, prefix);
+    drawHouseGrid(svg, houses, ascLon);
     drawPlanets(svg, positions, ascLon, prefix, { showDegrees: showDeg, compact });
     drawCenter(svg, chartData.name || 'Natal Chart', prefix);
     wirePlanetSelect(svg);
@@ -1621,8 +1729,9 @@
     drawInstrumentBezel(svg, ascLon, prefix);
     drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
-    drawHouseWheel(svg, houses1, ascLon, prefix);
+    drawHouseBackdrop(svg, houses1, ascLon, prefix);
     if (showAsp) drawAspectLines(svg, chart1.synastryAspects || aspects, pos1, ascLon, prefix);
+    drawHouseGrid(svg, houses1, ascLon);
 
     drawPlanets(svg, pos1, ascLon, prefix, {
       ringRadius:  R_PLANET,
@@ -1648,7 +1757,7 @@
     const keyRow = document.createElement('div');
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
-      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff5a1f;vertical-align:middle;margin-right:4px"></span><span style="color:#ff5a1f;font-weight:600">${name1}</span></span>` +
+      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.ion};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.ion};font-weight:600">${name1}</span></span>` +
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.synastry};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.synastry};font-weight:600">${name2}</span></span>`;
     container.appendChild(keyRow);
 
@@ -1667,7 +1776,7 @@
       return div;
     };
 
-    tables.appendChild(makeTableBlock(name1, '#ff5a1f', pos1, houses1));
+    tables.appendChild(makeTableBlock(name1, WARM.ion, pos1, houses1));
     tables.appendChild(makeTableBlock(name2, WARM.synastry, pos2, houses2));
     container.appendChild(tables);
   }
@@ -1712,8 +1821,9 @@
     drawInstrumentBezel(svg, ascLon, prefix);
     drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
-    drawHouseWheel(svg, houses, ascLon, prefix);
+    drawHouseBackdrop(svg, houses, ascLon, prefix);
     if (showAsp) drawAspectLines(svg, natalChart.transitAspects || aspects, natalPos, ascLon, prefix);
+    drawHouseGrid(svg, houses, ascLon);
 
     drawPlanets(svg, natalPos, ascLon, prefix, {
       ringRadius:  R_PLANET,
@@ -1739,7 +1849,7 @@
     const keyRow = document.createElement('div');
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff5a1f;vertical-align:middle;margin-right:4px"></span><span style="color:#ff5a1f;font-weight:600">Natal</span></span>' +
+      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.ion};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.ion};font-weight:600">Natal</span></span>` +
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.transit};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.transit};font-weight:600">Transits</span></span>`;
     container.appendChild(keyRow);
 
@@ -1758,7 +1868,7 @@
       return div;
     };
 
-    tables.appendChild(makeBlock('NATAL PLANETS',   '#ff5a1f', natalPos, houses));
+    tables.appendChild(makeBlock('NATAL PLANETS',   WARM.ion, natalPos, houses));
     tables.appendChild(makeBlock('TRANSIT PLANETS', WARM.transit, tPos,
       (transitPositions && transitPositions.houses) || houses));
     container.appendChild(tables);
@@ -1843,7 +1953,8 @@
     renderNatalChart,
     renderCompatibilityChart,
     renderTransitChart,
-    linkWheelAndTables
+    linkWheelAndTables,
+    layoutPlanetAngles: separateAngles
   };
 
 })();

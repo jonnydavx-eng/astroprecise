@@ -351,9 +351,13 @@
     } else if (moment.utc) {
       try {
         var iso = moment.utc.toISOString ? moment.utc.toISOString() : String(moment.utc);
-        state.lastSkyLink = (window.APDeepLink && APDeepLink.buildSkyLink)
-          ? APDeepLink.buildSkyLink({ m: iso, focus: 'earth' })
-          : 'index.html#m=' + encodeURIComponent(iso) + '&focus=earth';
+        // This page captures human life moments, not public sky events. Invoke
+        // the helper only for its private same-tab storage effect, then build a
+        // clean address locally so an older cached helper cannot expose `m=`.
+        if (window.APDeepLink && APDeepLink.stashSkyLink) {
+          try { APDeepLink.stashSkyLink({ m: iso, focus: 'earth' }); } catch (_) {}
+        }
+        state.lastSkyLink = 'index.html#focus=earth';
         document.dispatchEvent(new CustomEvent('ap-sky-ready', {
           bubbles: true,
           detail: { moment: moment, m: iso, link: state.lastSkyLink, focus: 'earth', source: 'moment-freeze' }

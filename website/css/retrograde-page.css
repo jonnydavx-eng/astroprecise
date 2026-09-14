@@ -50,15 +50,15 @@ html.ap-fonts-ready .retro-hero .hero-answer {
 /* ── Retrograde page premium overrides (matches transits palette) ── */
     :root {
       --void: #020307;
-      --gold: #A8B0BC;
-      --gold-light: #E8EBF0;
+      --gold: #93A8BF;
+      --gold-light: #EEF4FA;
       --purple: var(--ap-brass);
-      --white: #E8E0D0;
-      --silver: #A89E88;
-      --silver-dim: #9A9084;
-      --oxblood: #b04a52;
-      --surface: rgba(22, 28, 42,0.55);
-      --border: rgba(168, 176, 188,0.10);
+      --white: #EEF4FA;
+      --silver: #93A8BF;
+      --silver-dim: #93A8BF;
+      --oxblood: #FF8EA8;
+      --surface: rgba(16, 29, 48,0.55);
+      --border: rgba(147, 168, 191,0.10);
       --radius-xl: 20px;
       --radius-2xl: 28px;
     }
@@ -74,12 +74,12 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(216, 180, 106,0.18) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(147, 168, 191,0.18) 0%, transparent 70%);
       pointer-events: none;
       transition: background 0.6s ease;
     }
     .retro-hero--active::before {
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(176,74,82,0.26) 0%, transparent 70%);
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255, 142, 168,0.26) 0%, transparent 70%);
     }
     .retro-hero__eyebrow {
       display: inline-flex;
@@ -121,20 +121,20 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       max-width: 720px;
       margin: 0 auto 1.25rem;
       color: var(--gold-light);
-      background: linear-gradient(180deg, #f2dfa7 0%, var(--gold) 60%, #8c6a2f 100%);
+      background: linear-gradient(180deg, #C9D6E3 0%, var(--gold) 60%, #60768E 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 18px rgba(196,146,10,0.28));
+      filter: drop-shadow(0 0 18px rgba(139, 169, 255,0.28));
       transition: filter 0.4s ease;
     }
     .hero-answer em { font-style: italic; }
     .hero-answer--retro {
-      background: linear-gradient(180deg, #e8a8ad 0%, var(--oxblood) 55%, #6e1a26 100%);
+      background: linear-gradient(180deg, #FF8EA8 0%, var(--oxblood) 55%, #A897FF 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 18px rgba(176,74,82,0.35));
+      filter: drop-shadow(0 0 18px rgba(255, 142, 168,0.35));
     }
     .hero-sub {
       font-size: 1.02rem;
@@ -164,7 +164,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #9db36a;
+      background: #6FD0B3;
       box-shadow: 0 0 6px rgba(74,222,128,0.7);
       animation: pulse-dot 2s ease-in-out infinite;
     }
@@ -175,7 +175,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
 
     /* ── Sections ── */
     .rg-section { padding: 4.5rem 0; }
-    .rg-section--alt { background: rgba(16, 21, 32,0.6); }
+    .rg-section--alt { background: rgba(16, 29, 48,0.6); }
     .rg-section__header { text-align: center; margin-bottom: 2.75rem; }
     .rg-section__label {
       font-size: 0.62rem;
@@ -240,7 +240,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       opacity: 0.7;
     }
     .status-card--retro { --card-accent: var(--oxblood); }
-    .status-card--direct { --card-accent: #9db36a; }
+    .status-card--direct { --card-accent: #6FD0B3; }
     .status-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 12px 40px rgba(0,0,0,0.4);
@@ -272,9 +272,9 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       margin-top: 0.15rem;
     }
     .status-badge--retro {
-      color: #e8a8ad;
-      background: rgba(176,74,82,0.14);
-      border: 1px solid rgba(176,74,82,0.4);
+      color: #FF8EA8;
+      background: rgba(255, 142, 168,0.14);
+      border: 1px solid rgba(255, 142, 168,0.4);
     }
     .status-badge--direct {
       color: #86efac;
@@ -308,7 +308,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       transition: border-color 0.2s, background 0.2s;
     }
     .window-item:hover {
-      border-color: rgba(168, 176, 188,0.25);
+      border-color: rgba(147, 168, 191,0.25);
       background: rgba(15,18,50,0.7);
     }
     .window-item--empty {

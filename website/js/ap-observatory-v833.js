@@ -24,7 +24,9 @@
     try {
       var value = JSON.parse(raw);
       if (!value || (value.m == null && !value.focus && value.scale == null)) return null;
-      if (value.ts && Date.now() - value.ts > STASH_MAX_AGE_MS) return null;
+      var timestamp = Number(value.ts);
+      var age = Date.now() - timestamp;
+      if (!Number.isFinite(timestamp) || timestamp <= 0 || age < 0 || age > STASH_MAX_AGE_MS) return null;
       return {
         moment: value.m != null ? String(value.m) : null,
         focus: value.focus ? String(value.focus).toLowerCase() : '',
@@ -54,11 +56,41 @@
 
   function parseHash() {
     var raw = location.hash.replace(/^#/, '');
+    if (raw === 'lead') return { moment: null, focus: '', scale: null };
     var params = new URLSearchParams(raw);
+    var moments = [];
+    var publicMarkers = [];
+    var focuses = [];
+    var scales = [];
+    params.forEach(function (value, key) {
+      var canonicalKey = String(key || '').toLowerCase();
+      if (canonicalKey === 'm') moments.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'public') publicMarkers.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'focus') focuses.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'scale') scales.push({ key: String(key), value: String(value) });
+    });
+    var oneCanonicalMoment = moments.length === 1 && moments[0].key === 'm';
+    var safeNow = oneCanonicalMoment && moments[0].value === 'now' && publicMarkers.length === 0;
+    var fixedMoment = oneCanonicalMoment ? moments[0].value : '';
+    var safePublicFixed = oneCanonicalMoment && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(fixedMoment) &&
+      Number.isFinite(new Date(fixedMoment).getTime()) &&
+      publicMarkers.length === 1 && publicMarkers[0].key === 'public' && publicMarkers[0].value === '1';
+    var moment = safeNow || safePublicFixed ? moments[0].value : null;
+    var kept = new URLSearchParams();
+    if (safeNow || safePublicFixed) kept.set('m', moments[0].value);
+    if (safePublicFixed) kept.set('public', '1');
+    var focus = focuses.length === 1 && focuses[0].key === 'focus' ? focuses[0].value.toLowerCase() : '';
+    var scale = scales.length === 1 && scales[0].key === 'scale' ? scales[0].value : null;
+    if (FOCUS[focus]) kept.set('focus', focus);
+    if (scale != null && /^-?\d+$/.test(String(scale))) kept.set('scale', String(scale));
+    var cleanHash = kept.toString();
+    if (raw !== cleanHash) {
+      history.replaceState(null, '', location.pathname + location.search + (cleanHash ? '#' + cleanHash : ''));
+    }
     return {
-      moment: params.get('m'),
-      focus: String(params.get('focus') || '').toLowerCase(),
-      scale: params.get('scale')
+      moment: moment,
+      focus: focus,
+      scale: scale
     };
   }
 

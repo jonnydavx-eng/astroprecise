@@ -9,18 +9,18 @@
   var ZODIAC_SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 
   var FALLBACK_OVERVIEWS = {
-    Aries: 'Today\'s Aries reading uses the live sky on our horoscope page — cast from real planetary positions, not a recycled column.',
-    Taurus: 'Your Taurus outlook updates daily from the actual Moon and planet positions. Open the full horoscope for today\'s transit-based reading.',
-    Gemini: 'Gemini\'s daily note is computed from the real sky. See the complete reading with love, career, and wellness sections on horoscope.html.',
-    Cancer: 'Cancer\'s reading follows the Moon\'s true sign and phase today. The full transit-based forecast is on our horoscope page.',
-    Leo: 'Leo\'s daily outlook is generated from the live sky. Open horoscope.html for the professional solar-chart reading.',
-    Virgo: 'Virgo\'s forecast reflects today\'s actual planetary weather. Visit the horoscope page for the complete computed reading.',
-    Libra: 'Libra\'s daily reading is built from real transits — whole-sign solar chart from VSOP87 positions.',
-    Scorpio: 'Scorpio\'s outlook uses the live sky today. See horoscope.html for Moon house, aspects, and sector guidance.',
-    Sagittarius: 'Sagittarius\'s reading is transit-based, not generic filler. Open the horoscope page for today\'s full forecast.',
-    Capricorn: 'Capricorn\'s daily note comes from computed planetary positions. The complete reading is on horoscope.html.',
-    Aquarius: 'Aquarius\'s forecast uses the real sky. Full love, career, and wellness sections on our horoscope page.',
-    Pisces: 'Pisces\'s reading follows actual lunar and planetary transits. Open horoscope.html for the professional daily forecast.',
+    Aries: 'Today\'s Aries reading is computed from planetary positions in your browser. Open today\'s reading for the one-screen view.',
+    Taurus: 'Your Taurus outlook updates from the computed Moon and planet positions. Open today\'s reading for the full transit-based note.',
+    Gemini: 'Gemini\'s daily note is computed from the real sky. See today\'s reading for people, work, and pace.',
+    Cancer: 'Cancer\'s reading follows the Moon\'s computed sign and phase today. The one-screen view is on the horoscope page.',
+    Leo: 'Leo\'s daily outlook is generated from computed planetary positions. Open today\'s reading for the solar-chart note.',
+    Virgo: 'Virgo\'s note reflects today\'s computed planetary weather. Visit the horoscope page for the one-screen reading.',
+    Libra: 'Libra\'s daily reading is built from computed transits — whole-sign solar chart from VSOP87 positions.',
+    Scorpio: 'Scorpio\'s outlook uses today\'s computed sky. See the horoscope page for Moon house, aspects, and sector guidance.',
+    Sagittarius: 'Sagittarius\'s reading is transit-based, not generic filler. Open today\'s reading for the one-screen view.',
+    Capricorn: 'Capricorn\'s daily note comes from computed planetary positions. The one-screen reading is on the horoscope page.',
+    Aquarius: 'Aquarius\'s note uses the computed sky. People, work, and pace sections are on the horoscope page.',
+    Pisces: 'Pisces\'s reading follows computed lunar and planetary transits. Open today\'s reading for the one-screen view.',
   };
 
   function getDailyHoroscope(sign, date) {

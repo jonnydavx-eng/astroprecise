@@ -13,14 +13,14 @@
   var CINEMA = {
     webp: 'img/marketing-system-cinema-silver.jpg',
     jpg: 'img/marketing-system-cinema-silver.jpg',
-    alt: 'Cinematic solar system from Astro Precise',
+    alt: 'Cinematic solar-system still from the AstroPrecise engine. Type only. Not a live feed.',
   };
 
   var BODIES = [
     { id: 'sun', label: 'Sun', src: 'img/engine/sun.webp', href: 'index.html' },
     { id: 'mercury', label: 'Mercury', src: 'img/engine/mercury.webp', href: 'index.html' },
     { id: 'venus', label: 'Venus', src: 'img/engine/venus.webp', href: 'index.html' },
-    { id: 'earth', label: 'Earth', src: 'img/engine/earth.webp', href: 'index.html#heroChapter' },
+    { id: 'earth', label: 'Earth', src: 'img/engine/earth-512.webp', href: 'index.html#lead' },
     { id: 'moon', label: 'Moon', src: 'img/engine/moon.webp', href: 'moonphase.html' },
     { id: 'mars', label: 'Mars', src: 'img/engine/mars.webp', href: 'index.html' },
     { id: 'jupiter', label: 'Jupiter', src: 'img/engine/jupiter.webp', href: 'index.html' },
@@ -88,14 +88,13 @@
   }
 
   function toolsHtml() {
-    /* Model-orbit tools — every page gets the same product ladder around the orrery */
+    /* Public four-route spine — Observatory · Chart · Events · Shop */
     return (
-      '<nav class="ap-ev-tools" aria-label="Tools around the living model">' +
+      '<nav class="ap-ev-tools" aria-label="Core pages">' +
       '<a class="ap-ev-tools__chip ap-ev-tools__chip--primary" href="index.html">Observatory</a>' +
-      '<a class="ap-ev-tools__chip" href="chart.html">Cast chart</a>' +
-      '<a class="ap-ev-tools__chip" href="ephemeris.html">Sky instrument</a>' +
+      '<a class="ap-ev-tools__chip" href="chart.html">Chart</a>' +
       '<a class="ap-ev-tools__chip" href="sky-events.html">Events</a>' +
-      '<a class="ap-ev-tools__chip" href="mysky.html">My Sky hub</a>' +
+      '<a class="ap-ev-tools__chip" href="shop.html">Shop</a>' +
       '</nav>'
     );
   }
@@ -103,9 +102,10 @@
   function actionsHtml() {
     return (
       '<div class="ap-ev__actions">' +
-      '<a class="ap-ev__btn ap-ev__btn--primary" href="index.html#lead">Open the live 3D sky</a>' +
-      '<a class="ap-ev__btn ap-ev__btn--ghost" href="chart.html">Cast your chart</a>' +
-      '<a class="ap-ev__btn ap-ev__btn--ghost" href="mysky.html">My Sky</a>' +
+      '<a class="ap-ev__btn ap-ev__btn--primary" href="index.html">Observatory</a>' +
+      '<a class="ap-ev__btn ap-ev__btn--ghost" href="chart.html">Chart</a>' +
+      '<a class="ap-ev__btn ap-ev__btn--ghost" href="sky-events.html">Events</a>' +
+      '<a class="ap-ev__btn ap-ev__btn--ghost" href="shop.html">Shop</a>' +
       '</div>'
     );
   }
@@ -127,15 +127,13 @@
 
     var head =
       '<header class="ap-ev__head">' +
-      '<p class="ap-ev__eyebrow">Living model</p>' +
+      '<p class="ap-ev__eyebrow">Computed sky</p>' +
       '<h2 id="ap-ev-heading" class="ap-ev__title">' +
-      (mode === 'tools' ? 'Continue around the sky' : 'Tools around the sky') +
+      (mode === 'tools' ? 'Continue around the sky' : 'Around the sky') +
       '</h2>' +
       (mode === 'full' || mode === 'cinema'
-        ? '<p class="ap-ev__lede">Same 3D engine as the homepage. Drag the orrery on <a href="index.html#lead">Live Sky</a> · cast on <a href="chart.html">Chart</a>.</p>'
-        /* Provenance line must survive in the modes that actually ship
-           (modeForPage only returns tools/compact since v680). */
-        : '<p class="ap-ev__lede ap-ev__lede--provenance">Same 3D engine as the homepage hero.</p>') +
+        ? '<p class="ap-ev__lede">Same 3D engine as the homepage. Open the <a href="index.html#lead">Observatory</a> · cast on <a href="chart.html">Chart</a>.</p>'
+        : '<p class="ap-ev__lede ap-ev__lede--provenance">Same 3D engine as the Observatory. Still, not a live feed.</p>') +
       '</header>';
 
     el.innerHTML =
@@ -155,8 +153,9 @@
     var body = document.body;
     if (!body) return true;
     if (body.classList.contains('ap-award-511')) return true;
-    /* My Sky already is the hub map — no second tools strip */
     if (body.classList.contains('ap-mysky-page')) return true;
+    if (body.getAttribute('data-sign')) return true;
+    if (document.querySelector('[data-ap-static-nav]')) return true;
     var key = pageKey();
     /* Launch core is intentionally sparse: these routes already have a single
        obvious job. Injecting the generic model/tool promotion made them read as

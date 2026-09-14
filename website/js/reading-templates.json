@@ -1,8 +1,8 @@
 {
-  "_about": "Astro Precise — the £7 Your Eclipse Edition. Honest template library. The engine computes WHERE the 12 Aug 2026 eclipse degree falls against a person's real natal chart; these templates turn that computed contact into words. TYPE LAW: the 'computed' line is fact (render in mono); the 'reflection' line is human meaning (render in warm serif). Everything traditional is framed as reflection, never prediction. Nothing here is fabricated — every number the engine drops in is real; the words only interpret it. Legal 'for reflection/entertainment' line ships with every reading.",
+  "_about": "AstroPrecise archived eclipse reading template library. The engine computes WHERE the 12 Aug 2026 eclipse degree falls against a person's real natal chart; these templates turn that computed contact into words. TYPE LAW: the 'computed' line is fact (render in mono); the 'reflection' line is human meaning (render in warm serif). Everything traditional is framed as reflection, never prediction. Nothing here is fabricated — every number the engine drops in is real; the words only interpret it. Legal 'for reflection/entertainment' line ships with every reading.",
   "version": "AP-READING-2",
   "voice": "Calm, specific, grown-up. Fact first, then a gentle traditional meaning offered for reflection. No promises about health, money or love. No 'you will'. No fear.",
-  "legalLine": "Astronomy is exact; the meaning is tradition, offered for reflection and entertainment — not advice or prediction.",
+  "legalLine": "Astronomical positions are computed within the documented ephemeris limits; the meaning is tradition, offered for reflection and entertainment — not advice or prediction.",
   "orbsDeg": {
     "conjunction": 6,
     "opposition": 6,

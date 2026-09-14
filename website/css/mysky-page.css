@@ -3,7 +3,7 @@
  * Uses site tokens; does not invent a second design system for the whole site.
  */
 body.ap-mysky-page {
-  --mysky-brass: var(--brass, #A8B0BC);
+  --mysky-brass: var(--brass, #93A8BF);
   --mysky-ink: var(--text, #e8e2d4);
   --mysky-muted: var(--text-muted, #9a927f);
 }
@@ -154,7 +154,7 @@ body.ap-mysky-page {
   text-decoration: none;
 }
 .mysky-cta--primary {
-  background: linear-gradient(135deg, #6A7078, #C8CDD6);
+  background: linear-gradient(135deg, #6A7078, #C9D6E3);
   color: #1a1408;
   border: none;
 }

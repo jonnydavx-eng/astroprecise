@@ -797,9 +797,9 @@ async function mount(root, E) {
 
   async function shareMoment() {
     if (!state) return;
-    const url = new URL(window.location.href);
-    url.searchParams.delete('nosw');
+    const url = new URL(window.location.pathname, window.location.origin);
     url.searchParams.set('moment', displayDate.toISOString());
+    url.searchParams.set('public', '1');
     url.searchParams.set('lens', activeLens);
     url.hash = 'ap-eclipse-live';
     const title = 'The 12 August 2026 eclipse in 3D';

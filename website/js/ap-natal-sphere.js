@@ -18,11 +18,11 @@
   var GLYPH = { Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃', Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇' };
   // `name` is the machine key; `label` is the only one that reaches the reader.
   var ASPECTS = [
-    { name: 'conjunction', angle: 0, orb: 8, label: 'together', color: 'rgba(233,237,242,0.55)' },
-    { name: 'opposition', angle: 180, orb: 7, label: 'opposite', color: 'rgba(242,138,106,0.7)' },
-    { name: 'trine', angle: 120, orb: 6, label: 'easy flow', color: 'rgba(126,240,200,0.65)' },
-    { name: 'square', angle: 90, orb: 6, label: 'friction', color: 'rgba(242,138,106,0.55)' },
-    { name: 'sextile', angle: 60, orb: 4, label: 'helpful angle', color: 'rgba(216,180,106,0.55)' }
+    { name: 'conjunction', angle: 0, orb: 8, label: 'together', color: 'rgba(201,214,227,0.62)' },
+    { name: 'opposition', angle: 180, orb: 7, label: 'opposite', color: 'rgba(255,142,168,0.75)' },
+    { name: 'trine', angle: 120, orb: 6, label: 'easy flow', color: 'rgba(111,208,179,0.68)' },
+    { name: 'square', angle: 90, orb: 6, label: 'friction', color: 'rgba(255,142,168,0.64)' },
+    { name: 'sextile', angle: 60, orb: 4, label: 'helpful angle', color: 'rgba(139,169,255,0.65)' }
   ];
 
   function lonOf(pos) {
@@ -111,14 +111,14 @@
 
     // void
     var g = ctx.createRadialGradient(cx, cy * 0.85, R * 0.1, cx, cy, R * 1.6);
-    g.addColorStop(0, '#0c1722');
-    g.addColorStop(0.55, '#070b12');
-    g.addColorStop(1, '#030508');
+    g.addColorStop(0, '#101D30');
+    g.addColorStop(0.55, '#07101E');
+    g.addColorStop(1, '#040812');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
     // star dust
-    ctx.fillStyle = 'rgba(233,237,242,0.35)';
+    ctx.fillStyle = 'rgba(238,244,250,0.35)';
     for (var i = 0; i < 80; i++) {
       var sx = (Math.sin(i * 12.9898 + t * 3) * 0.5 + 0.5) * W;
       var sy = (Math.cos(i * 78.233 + t * 2) * 0.5 + 0.5) * H;
@@ -143,11 +143,11 @@
         ctx.lineTo(p.x, p.y);
       }
       ctx.closePath();
-      ctx.fillStyle = s % 2 === 0 ? 'rgba(216,180,106,0.05)' : 'rgba(216,180,106,0.02)';
+      ctx.fillStyle = s % 2 === 0 ? 'rgba(139,169,255,0.06)' : 'rgba(168,151,255,0.025)';
       ctx.fill();
       var mid = project(a0 + 15 + t * 40, 14, R * 0.88, cx, cy, tilt);
       if (mid.z > -0.2) {
-        ctx.fillStyle = 'rgba(216,180,106,0.55)';
+        ctx.fillStyle = 'rgba(201,214,227,0.62)';
         ctx.font = '500 11px "IBM Plex Mono", monospace';
         ctx.textAlign = 'center';
         ctx.fillText(SIGNS[s], mid.x, mid.y);
@@ -161,14 +161,14 @@
       if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(216,180,106,0.55)';
+    ctx.strokeStyle = 'rgba(139,169,255,0.62)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
     // outer bezel
     ctx.beginPath();
     ctx.arc(cx, cy, R * 1.22, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(216,180,106,0.25)';
+    ctx.strokeStyle = 'rgba(147,168,191,0.32)';
     ctx.lineWidth = 1;
     ctx.stroke();
 
@@ -199,31 +199,31 @@
       var r = 11 + Math.max(0, p.z) * 4;
       ctx.beginPath();
       ctx.arc(p.x, p.y, r + 4, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(216,180,106,0.12)';
+      ctx.fillStyle = 'rgba(139,169,255,0.14)';
       ctx.fill();
       ctx.beginPath();
       ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = '#0a1018';
+      ctx.fillStyle = '#07101E';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(233,237,242,0.75)';
+      ctx.strokeStyle = 'rgba(201,214,227,0.78)';
       ctx.lineWidth = 1.2;
       ctx.stroke();
-      ctx.fillStyle = '#e9edf2';
+      ctx.fillStyle = '#EEF4FA';
       ctx.font = '16px "Schibsted Grotesk", system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(b.glyph, p.x, p.y + 1);
-      ctx.fillStyle = 'rgba(216,180,106,0.85)';
+      ctx.fillStyle = 'rgba(165,188,255,0.9)';
       ctx.font = '500 9px "IBM Plex Mono", monospace';
       ctx.fillText(b.name.slice(0, 3).toUpperCase() + (b.retro ? ' ℞' : ''), p.x, p.y + r + 11);
     });
 
     // centre seal
-    ctx.fillStyle = 'rgba(216,180,106,0.35)';
+    ctx.fillStyle = 'rgba(168,151,255,0.48)';
     ctx.font = '18px serif';
     ctx.textAlign = 'center';
     ctx.fillText('✶', cx, cy + 2);
-    ctx.fillStyle = 'rgba(233,237,242,0.45)';
+    ctx.fillStyle = 'rgba(147,168,191,0.58)';
     ctx.font = '500 8px "IBM Plex Mono", monospace';
     ctx.fillText('NATAL SPHERE · GEO · ±1′', cx, cy + R * 1.35);
 
@@ -287,16 +287,16 @@
     var modelBtn = document.createElement('a');
     modelBtn.className = 'ap-natal-sphere__cta';
     modelBtn.textContent = 'SEE THIS SKY IN THE LIVING MODEL →';
-    modelBtn.href = './index.html#cast';
+    modelBtn.href = './index.html#lead';
     if (w.APSkyBridge && typeof w.APSkyBridge.buildLinkFromChart === 'function') {
       try {
         var link = w.APSkyBridge.buildLinkFromChart(chart, { focus: 'earth' });
         if (link) modelBtn.href = link;
       } catch (e) { /* keep fallback */ }
-    } else if (w.APDeepLink && typeof w.APDeepLink.buildSkyLink === 'function') {
-      try {
-        modelBtn.href = w.APDeepLink.buildSkyLink({ m: 'birth', focus: 'earth' }) || modelBtn.href;
-      } catch (e2) { /* keep */ }
+    } else {
+      // A missing/private bridge must not turn a birth minute into a visible
+      // public deep link. The clean focus route remains useful without it.
+      modelBtn.href = './index.html#focus=earth';
     }
     cta.appendChild(modelBtn);
 

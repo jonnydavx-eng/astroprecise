@@ -9,6 +9,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   GUMROAD_PRODUCTS,
+  isEntitlementReady,
   isCheckoutReady,
   openCheckout,
   resolveProductSlug,
@@ -23,7 +24,7 @@ new Function('window', bridgeSource)(dormantWindow);
 const BRIDGE = dormantWindow.APGumroad;
 
 assert.ok(BRIDGE, 'classic bridge must assign window.APGumroad');
-for (const method of ['isReady', 'anyLive', 'openCheckout', 'verifyLicense']) {
+for (const method of ['isReady', 'isEntitlementReady', 'anyLive', 'openCheckout', 'verifyLicense']) {
   assert.equal(typeof BRIDGE[method], 'function', `bridge missing ${method}`);
 }
 
@@ -33,21 +34,26 @@ assert.deepEqual(moduleSlugs, ['eclipse-edition']);
 assert.deepEqual(bridgeSlugs, moduleSlugs);
 for (const slug of moduleSlugs) {
   assert.deepEqual(BRIDGE.products[slug], GUMROAD_PRODUCTS[slug], `${slug} tables diverged`);
-  assert.equal(GUMROAD_PRODUCTS[slug].price, '£7');
+  assert.equal(GUMROAD_PRODUCTS[slug].checkoutEnabled, false);
+  assert.equal(GUMROAD_PRODUCTS[slug].archived, true);
   assert.ok(Object.hasOwn(GUMROAD_PRODUCTS[slug], 'permalink'));
   assert.ok(Object.hasOwn(GUMROAD_PRODUCTS[slug], 'productId'));
 }
 assert.equal(resolveProductSlug('eclipse-edition'), 'eclipse-edition');
 assert.equal(isCheckoutReady('not-a-product'), false);
+assert.equal(isEntitlementReady('not-a-product'), false);
 assert.equal(BRIDGE.isReady('not-a-product'), false);
 
-// Shipping source is live after both identifiers were verified against the public product page.
+// The expired event checkout is closed, while the verified product_id remains for past buyers.
 assert.equal(GUMROAD_PRODUCTS['eclipse-edition'].permalink, 'your-eclipse-reading');
 assert.equal(GUMROAD_PRODUCTS['eclipse-edition'].productId, '3ZwFjg0IW702KvJ5s97QuQ==',
   'License API product_id must match the live Gumroad product page id');
-assert.equal(isCheckoutReady('eclipse-edition'), true);
-assert.equal(BRIDGE.isReady('eclipse-edition'), true);
-assert.equal(BRIDGE.anyLive(), true);
+assert.equal(isEntitlementReady('eclipse-edition'), true);
+assert.equal(BRIDGE.isEntitlementReady('eclipse-edition'), true);
+assert.equal(isCheckoutReady('eclipse-edition'), false);
+assert.equal(BRIDGE.isReady('eclipse-edition'), false);
+assert.equal(BRIDGE.anyLive(), false);
+assert.throws(() => openCheckout('eclipse-edition'), /not enabled/i);
 let liveFetchCalled = false;
 const previousFetch = globalThis.fetch;
 globalThis.fetch = async () => { liveFetchCalled = true; return { ok: true, json: async () => ({ success: true, purchase: {} }) }; };
@@ -67,7 +73,8 @@ globalThis.fetch = previousFetch;
 // proven, not just searched for as a string.
 const configuredSource = bridgeSource
   .replace("permalink: 'your-eclipse-reading'", "permalink: 'public-eclipse-slug'")
-  .replace("productId: '3ZwFjg0IW702KvJ5s97QuQ=='", "productId: 'product_api_123'");
+  .replace("productId: '3ZwFjg0IW702KvJ5s97QuQ=='", "productId: 'product_api_123'")
+  .replace('checkoutEnabled: false', 'checkoutEnabled: true');
 const requests = [];
 const configuredWindow = {
   location: { href: '' },
@@ -108,4 +115,4 @@ for (const source of [moduleSource, bridgeSource]) {
     'licence keys must never be accepted from the URL');
 }
 
-console.log('PASS live two-identifier Gumroad gate + checkout/licence routing + bad-state rejection');
+console.log('PASS archived Gumroad entitlement + disabled checkout + fresh-fixture routing + bad-state rejection');

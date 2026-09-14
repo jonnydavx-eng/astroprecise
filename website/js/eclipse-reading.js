@@ -1,5 +1,5 @@
 /*
- * AstroPrecise — five-beat engine for the £7 Your Eclipse Edition
+ * AstroPrecise — five-beat engine for the archived Your Eclipse Edition
  * --------------------------------------------------------------------------
  * Pure logic. Give it the computed eclipse longitude + the person's real natal
  * longitudes (from the on-device VSOP87 engine) + the templates JSON, and it
@@ -155,7 +155,7 @@ export function allContacts(eclipseLon, natal, templates) {
 const t_orb = (t, aspect) => t.orbsDeg[aspect];
 
 /**
- * The full five-beat £7 Eclipse Edition reading.
+ * The full five-beat archived Eclipse Edition reading.
  * @param {number} eclipseLon  ecliptic longitude of the eclipse
  * @param {object} natal       longitudes {sun..pluto, asc?, mc?}
  * @param {object} templates   reading-templates.json (v2)

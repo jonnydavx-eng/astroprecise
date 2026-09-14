@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), 'website');
+const swIdentity = readFileSync(join(root, 'sw.js'), 'utf8');
+const tipNum = (swIdentity.match(/const V = "ap-v(\d+)"/) || [])[1];
 let bad = 0;
 const fail = (message) => { console.log('FAIL ' + message); bad++; };
 const ok = (message) => console.log('  ok ' + message);
@@ -17,6 +19,8 @@ if (!existsSync(adapterPath)) { fail('js/void-orrery-adapter.js missing'); proce
 if (!existsSync(enginePath)) { fail('js/orrery-webgl.js missing'); process.exit(1); }
 const A = readFileSync(adapterPath, 'utf8');
 const W = readFileSync(enginePath, 'utf8');
+const skyTime = readFileSync(join(root, 'js', 'ap-sky-time.js'), 'utf8');
+const observatoryControls = readFileSync(join(root, 'js', 'ap-observatory-controls-v835.js'), 'utf8');
 
 /* 1. Element registration and public consumer surface. */
 if (!/customElements\.define\(['"]void-orrery['"]/.test(A)) fail('adapter never registers <void-orrery>');
@@ -47,12 +51,12 @@ if (!W.includes('mediumName(webp)') || !W.includes("quality === 'medium'")) {
 } else {
   ok('medium texture tier loads _md.webp before _sm.webp');
 }
-if (!W.includes('const COOL_LUNAR_VOID = 0x05080F')) {
-  fail('cool lunar void constant #05080F missing');
+if (!W.includes('const COOL_LUNAR_VOID = 0x040812')) {
+  fail('Midnight Meridian void constant #040812 missing');
 } else if (!W.includes('isLivingSkyHome() ? COOL_LUNAR_VOID')) {
-  fail('living-sky fog must use cool lunar void #05080F');
+  fail('living-sky fog must use Midnight Meridian void #040812');
 } else {
-  ok('living-sky fog uses cool lunar void #05080F');
+  ok('living-sky fog uses Midnight Meridian void #040812');
 }
 
 /* House chrome: engine reads lunar tokens with fallbacks that work on Home.
@@ -61,14 +65,16 @@ if (!W.includes('const COOL_LUNAR_VOID = 0x05080F')) {
 if (!W.includes("houseTokenHex(['--ap-lunar-void', '--ap-void', '--ap-void-deep']")) {
   fail('cool lunar void must fall through --ap-lunar-void → --ap-void → --ap-void-deep');
 }
-if (!W.includes('const HOUSE_SILVER = 0x8FA3B8') || !W.includes('const HOUSE_EMBER = 0xB86B4A')) {
-  fail('house instrument-silver / copper constants missing');
+if (!W.includes('const HOUSE_ION = 0x8BA9FF') || !W.includes('const HOUSE_ION_HOVER = 0xA5BCFF')
+    || !W.includes('const HOUSE_VIOLET = 0xA897FF') || !W.includes('const HOUSE_SILVER = 0x93A8BF')
+    || !W.includes('const HOUSE_SILVER_BRIGHT = 0xC9D6E3') || !W.includes('const HOUSE_EMBER = HOUSE_VIOLET')) {
+  fail('Midnight Meridian ion / violet / instrument-silver constants missing');
 }
-if (!W.includes("houseTokenHex(['--ap-brass', '--ap-silver'], HOUSE_SILVER)")
-    || !W.includes("houseTokenHex(['--ap-ember'], HOUSE_EMBER)")) {
-  fail('natal clocks / chrome must read --ap-brass/--ap-silver/--ap-ember with house fallbacks');
+if (!W.includes("houseTokenHex(['--ap-silver', '--ap-brass'], HOUSE_SILVER)")
+    || !W.includes("houseTokenHex(['--ap-violet', '--ap-ember', '--ap-ion'], NATAL_CLOCK_B)")) {
+  fail('natal clocks / chrome must prefer the modern silver / violet tokens with legacy fallbacks');
 }
-for (const retired of ['0xC2A05E', '0xD8B46A', '0xCDAE6A', '0xD8B978', '#d8b46a', '#D8B46A', '#C2A05E']) {
+for (const retired of ['0xC2A05E', '0xD8B46A', '0xCDAE6A', '0xD8B978', '0xB86B4A', '#d8b46a', '#D8B46A', '#C2A05E']) {
   if (W.includes(retired)) fail('engine chrome still hardcodes retired engraved brass ' + retired);
 }
 if (W.includes('vec3(1.02, 1.005, 0.982)')) {
@@ -80,12 +86,66 @@ if (!W.includes('vec3(0.988, 1.004, 1.018)') || !W.includes('instrument-silver h
 if (W.includes('vec3(0.72, 0.58, 0.22)') || W.includes('vec3(0.98, 0.84, 0.42)')) {
   fail('orbit rails still paint engraved-gold mid/bright stops');
 }
-if (!W.includes('vec3(0.561, 0.639, 0.722)') || !W.includes('vec3(0.773, 0.831, 0.878)')) {
-  fail('orbit rails must paint instrument silver #8FA3B8 / #C5D4E0');
+if (!W.includes('vec3(0.576, 0.659, 0.749)') || !W.includes('vec3(0.788, 0.839, 0.890)')) {
+  fail('orbit rails must paint instrument silver #93A8BF / #C9D6E3');
 }
 ok('WebGL chrome paint reads house tokens and has no retired engraved-brass hexes');
-if (!W.includes('setEarthTerminatorCamera(2.18, 6 * D2R)') || !W.includes('applyEarthLimbHold,')) {
-  fail('Earth limb hold must be 2.18 and public for adapter snap');
+if (!W.includes('new THREE.PointLight(0xf2f7ff') || !W.includes('new THREE.DirectionalLight(0xeef4ff')) {
+  fail('Earth/planet lighting must use neutral #F2F7FF / #EEF4FF sunlight');
+}
+if (W.includes('vec3( 0.55, 0.22, 0.08 )') || W.includes('vec3( 0.95, 0.38, 0.10 ) * duskBand')) {
+  fail('Earth shader still contains a broad artificial orange surface/emissive dusk wash');
+}
+if (!W.includes('vec3 cityCol = emissiveColor.rgb * vec3( 1.0, 0.68, 0.32 )')
+    || !W.includes('totalEmissiveRadiance = cityCol * nightMask')) {
+  fail('real warm city-light pinpoints must remain texture-gated on Earth\'s night side');
+}
+if (!W.includes('float termBand = pow(clamp(1.0 - abs(ndl) * 18.0')
+    || !W.includes('vec3 indigo   = vec3(0.35, 0.30, 0.96)')
+    || !W.includes('vec3 rose     = vec3(0.78, 0.36, 0.52)')) {
+  fail('Earth atmosphere must be cyan/indigo with a razor-thin rose terminator');
+}
+ok('Earth keeps real surface/city colour under neutral light and a narrow cool atmosphere');
+for (const retired of ['rgba(216,180,106', 'rgba(255,100,40', '#ff6428', '#d8b46a']) {
+  if (A.includes(retired) || skyTime.includes(retired) || observatoryControls.includes(retired)) {
+    fail('runtime UI still contains retired orange/brass accent ' + retired);
+  }
+}
+if (!A.includes('rgba(139,169,255,.14)') || !A.includes('rgba(168,151,255,.10)')
+    || !A.includes('color:#a5bcff') || !A.includes("fill:rgba(168,151,255,.92)")) {
+  fail('adapter poster and natal overlay must use ion / hover / violet accents');
+}
+if (!skyTime.includes("dawn:  { label: 'DAWN',  nebula: 'rgba(139,169,255,.055)', aurora: 'rgba(168,151,255,.050)' }")
+    || !skyTime.includes("dusk:  { label: 'DUSK',  nebula: 'rgba(168,151,255,.050)', aurora: 'rgba(139,169,255,.050)' }")) {
+  fail('local sky dayparts must stay within the cool ion/violet palette');
+}
+if (!observatoryControls.includes("world[2] || '#8BA9FF'")) {
+  fail('System control must use ion blue while preserving individual planet colours');
+}
+ok('adapter poster, daypart ambience and System control use Midnight Meridian accents');
+if (!W.includes('function fitEarthTerminatorFrame(') ||
+    !W.includes('const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect)') ||
+    !W.includes('fitEarthTerminatorFrame(0.78, 6 * D2R, fitOptions)') ||
+    !W.includes('const earthScale = meshes.earth.scale') ||
+    !W.includes('_camOff.normalize().multiplyScalar(radius)') ||
+    !W.includes('applyEarthLimbHold,')) {
+  fail('Earth limb hold must solve a public, aspect-aware complete-globe frame');
+}
+const earthFitStart = W.indexOf('function fitEarthTerminatorFrame(');
+const earthFitEnd = W.indexOf('function syncEarthSittingBodyVisibility', earthFitStart);
+const earthFitBody = earthFitStart >= 0 && earthFitEnd > earthFitStart
+  ? W.slice(earthFitStart, earthFitEnd)
+  : '';
+if (!W.includes('const earthFitCache = {') || !W.includes('function invalidateEarthFitCache()')
+    || !W.includes('const fitOptions = { refit: true, aspect: fittedAspect }')) {
+  fail('Earth limb fit must cache its solve and refit from resize-owned aspect data');
+}
+if (earthFitBody.includes('getBoundingClientRect()')) {
+  fail('idle Earth limb fit still forces a DOM layout read');
+}
+if (!earthFitBody.includes('if (camera.fov !== CAM_FOV_CLOSE)')
+    || !earthFitBody.includes('setEarthTerminatorCamera(earthFitCache.distance, elevRad)')) {
+  fail('Earth hold must reuse projection/distance while retaining live sun-relative direction');
 }
 if (!W.includes('syncEarthSittingBodyVisibility') || !W.includes("const sitting = focusFrameId === 'earth'")) {
   fail('Earth sitting must hide outer worlds that peek in wide bands');
@@ -93,8 +153,10 @@ if (!W.includes('syncEarthSittingBodyVisibility') || !W.includes("const sitting 
 if (!W.includes("const earthStart = selectedPlanetId === 'earth'") || !A.includes('O.applyEarthLimbHold()')) {
   fail('Earth-start must snap limb + earth-only texture gate');
 }
-if (W.includes('setEarthTerminatorCamera(2.8, 6 * D2R)') || W.includes('setEarthTerminatorCamera(2.05, 6 * D2R)')) {
-  fail('Earth limb hold still uses a Saturn-peek or soft-mip radius');
+if (W.includes('setEarthTerminatorCamera(2.18, 6 * D2R)') ||
+    W.includes('setEarthTerminatorCamera(2.8, 6 * D2R)') ||
+    W.includes('setEarthTerminatorCamera(2.05, 6 * D2R)')) {
+  fail('Earth limb hold still uses a fixed crop-prone camera radius');
 }
 if (!W.includes('function clampCamElevation(el)') || !W.includes('const CAM_EL_DRAG_MIN')) {
   fail('drag elevation clamp missing');
@@ -138,22 +200,22 @@ else {
   if (!keepSky.includes('stampSurfaceA') || !keepSky.includes("SURFACE_A = 'SCHEMATIC'")) {
     fail('Keep PNG must stamp Surface A SCHEMATIC (never a live badge)');
   }
-  if (/['\"]LIVE['\"]|LIVE ·|LIVE badge/.test(keepSky)) {
+  if (/['"]LIVE['"]|LIVE ·|LIVE badge/.test(keepSky)) {
     fail('Keep path must never label a still with a LIVE badge');
   }
   if (!chartPage.includes('ap-keep-sky-context') || !chartPage.includes('publishKeepSkyContext')) {
     fail('chart-page must publish birth jd on ap-keep-sky-context');
   }
-  if (!chartHtml.includes('data-keep-mode="birth-hour"') || !chartHtml.includes('ap-keep-sky.js?v=880')) {
-    fail('chart.html must host birth-hour Keep control on tip ap-v880');
+  if (!chartHtml.includes('data-keep-mode="birth-hour"') || !chartHtml.includes('ap-keep-sky.js?v=' + tipNum)) {
+    fail('chart.html must host birth-hour Keep control on the release tip');
   }
   if (!indexKeepHtml.includes('id="keep-sky"') || !indexKeepHtml.includes('data-keep-mode="birth-hour"')) {
     fail('Home Observatory must host birth-hour Keep control');
   }
-  if (!indexKeepHtml.includes('ap-keep-sky.js?v=880') || !indexKeepHtml.includes('ap-keep-sky.css?v=880')) {
-    fail('Home must load ap-keep-sky.js + ap-keep-sky.css on tip ap-v880');
+  if (!indexKeepHtml.includes('ap-keep-sky.js?v=' + tipNum) || !indexKeepHtml.includes('ap-keep-sky.css?v=' + tipNum)) {
+    fail('Home must load ap-keep-sky.js + ap-keep-sky.css on the release tip');
   }
-  if (!indexKeepHtml.includes('ap-home-keep.js?v=880')) {
+  if (!indexKeepHtml.includes('ap-home-keep.js?v=' + tipNum)) {
     fail('Home must load ap-home-keep.js to publish birth-hour context');
   }
   if (!indexKeepHtml.includes('ap-reading-room') || !/ap-home-reading\.js\?v=\d+/.test(indexKeepHtml)) {
@@ -281,34 +343,43 @@ if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820
 if (!W.includes('!portraitMode && !focusFrameId')) {
   fail('free-explore scale sync can still stomp a focused planet portrait');
 }
-if (!W.includes('!dragging && !focusFrameId && !freeExploreMode')) {
+if (!W.includes("(!focusFrameId || focusFrameId === 'earth')")
+    || !W.includes('function homeEarthResizeMode()')
+    || !W.includes("return 'intro'")
+    || !W.includes("return 'earth-exit'")
+    || !W.includes('if (homeEarthExit) camRadius = completeEarthRadiusFloor(camRadius)')) {
   fail('Home resize can still retarget an outer-planet portrait to Earth');
 }
 
 /* 3. Exactly one general model, with status outside its canvas. */
 const htmlFiles = readdirSync(root).filter((name) => name.endsWith('.html'));
 const modelOwners = htmlFiles.filter((name) => /<void-orrery\b/i.test(readFileSync(join(root, name), 'utf8')));
-const expectedOwners = ['chart.html', 'compatibility.html', 'deep-reading.html', 'index.html', 'shop.html', 'tonight.html'];
+const expectedOwners = ['index.html'];
 const got = [...modelOwners].sort();
 if (got.join() !== expectedOwners.join()) {
   fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
 const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
-const swIdentity = readFileSync(join(root, 'sw.js'), 'utf8');
-const tipNum = (swIdentity.match(/const V = "ap-v(\d+)"/) || [])[1];
 if (!tipNum) fail('service worker has no ap-vNNNN identity');
 if (!new RegExp('js/void-orrery-adapter\\.js\\?v=' + tipNum).test(indexHtml)) {
   fail('Home adapter query must match service worker ap-v' + tipNum);
 }
-if (!new RegExp('<link[^>]+rel="modulepreload"[^>]+href="js/orrery-webgl\\.js\\?v=' + tipNum + '"').test(indexHtml)) {
-  fail('Home WebGL modulepreload must match service worker ap-v' + tipNum);
+if (/<link[^>]+rel="modulepreload"[^>]+href="js\/orrery-webgl\.js/i.test(indexHtml)) {
+  fail('Home must not let the 524 KB WebGL modulepreload delay its text LCP');
 }
 if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads legacy orrery.js directly');
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
 const modelCount = (indexHtml.match(/<void-orrery\b/g) || []).length;
 if (modelCount !== 1) fail('Home must own exactly one void-orrery (' + modelCount + ')');
-for (const probe of ['class="ap-model-stage"', 'id="mladder"', 'id="dock"', 'aria-label="Live Earth now"']) {
+for (const probe of ['class="ap-model-stage"', 'id="mladder"', 'id="dock"', 'aria-label="Earth as computed now"']) {
   if (!indexHtml.includes(probe)) fail('Home model contract missing: ' + probe);
+}
+const observatoryJs = readFileSync(join(root, 'js', 'ap-observatory-v834.js'), 'utf8');
+if (!observatoryJs.includes("stage.setAttribute('aria-label', 'Live Earth now')")) {
+  fail('Surface C must still promote Live Earth now after WebGL owns the sky');
+}
+if (!observatoryJs.includes("html.classList.contains('orrery-full') && html.classList.contains('ap-model-revealed')")) {
+  fail('Surface C Live promotion must require orrery-full and ap-model-revealed');
 }
 const homeStageStart = indexHtml.indexOf('<div class="ap-model-stage"');
 const homePanelStart = indexHtml.indexOf('<aside class="ap-control-panel"');
@@ -344,9 +415,9 @@ ok('opening beat is subtle, reduced-motion safe and yields to user input; full j
 /* 4. Shared release identity and merged Explore redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
-  'css/ap-living-sky-v834.css?v=883',
-    'js/ap-observatory-v834.js?v=883',
-    'js/ap-nav-model.js?v=884',
+  'css/ap-living-sky-v834.css?v=' + tipNum,
+    'js/ap-observatory-v834.js?v=' + tipNum,
+    'js/ap-nav-model.js?v=' + tipNum,
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
@@ -356,9 +427,11 @@ const livingCss = readFileSync(join(root, 'css', 'ap-living-sky-v834.css'), 'utf
 for (const probe of ['.ap-live-stage', '.ap-model-stage', '.ap-control-panel', '.ap-site-footer']) {
   if (!livingCss.includes(probe)) fail('living-sky CSS contract missing: ' + probe);
 }
-if (!livingCss.includes('--ap-void: #05080F') || !livingCss.includes('--ap-brass: #8FA3B8')
-    || !livingCss.includes('--ap-ember: #B86B4A')) {
-  fail('Home living-sky must publish lunar void + instrument silver + copper');
+if (!livingCss.includes('--ap-void: #040812') || !livingCss.includes('--ap-silver: #93A8BF')
+    || !livingCss.includes('--ap-silver-bright: #C9D6E3') || !livingCss.includes('--ap-ion: #8BA9FF')
+    || !livingCss.includes('--ap-violet: #A897FF') || !livingCss.includes('--ap-brass: var(--ap-silver)')
+    || !livingCss.includes('--ap-ember: var(--ap-ion)')) {
+  fail('Home living-sky must publish Midnight Meridian void + silver + ion legacy aliases');
 }
 if (livingCss.includes('--ap-brass: #C2A05E') || livingCss.includes('--ap-brass: #D8B46A')) {
   fail('Home living-sky remapped --ap-brass back to engraved brass');
@@ -394,17 +467,34 @@ if (navModel.includes("['explore.html'")) fail('retired Explore destination rema
 const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
 for (const probe of [
   "new URL('./index.html', location.href)",
-  'target.search = location.search;',
-  'target.hash = location.hash;',
+  "canonicalKey === 'nosw' || canonicalKey === 'lite'",
+  "canonicalKey === 'focus'",
+  "canonicalKey === 'scale'",
   'location.replace(target.href);',
   '<meta name="robots" content="noindex, follow">',
+  '<meta name="referrer" content="no-referrer">',
 ]) {
   if (!exploreHtml.includes(probe)) fail('Explore redirect contract missing: ' + probe);
+}
+for (const unsafeForward of ['target.search = location.search;', 'target.hash = location.hash;']) {
+  if (exploreHtml.includes(unsafeForward)) fail('Explore forwards an unsanitized address component: ' + unsafeForward);
 }
 for (const retired of ['<void-orrery', 'explore-boot-v', 'id="orrery-lite-deck"']) {
   if (exploreHtml.includes(retired)) fail('retired Explore surface remains: ' + retired);
 }
 ok('Explore merges into the one flagship Observatory');
+
+const deepLinkBuilder = readFileSync(join(root, 'js', 'ap-deep-link.js'), 'utf8');
+if (!deepLinkBuilder.includes("if (m !== 'now') parts.push('public=1')")) {
+  fail('public-moment privacy migration missing: fixed emitters must mark public=1');
+}
+for (const probe of ['publicMarkers.length === 1', "publicMarkers[0].key === 'public'", 'history.replaceState']) {
+  if (!observatory.includes(probe)) fail('public-moment privacy migration missing: ' + probe);
+}
+if (!indexHtml.includes('Fixed public sky moments carry public=1 from v900 onward')) {
+  fail('Home does not scrub legacy fixed moments before loading assets');
+}
+ok('fixed public events are marked; ambiguous historical moments fail closed');
 
 /* 5. Dedicated Eclipse renderer and unobstructed stage. */
 const eclipseHtml = readFileSync(join(root, 'eclipse.html'), 'utf8');
@@ -412,8 +502,8 @@ const eclipseView = readFileSync(join(root, 'js', 'ap-eclipse-live-v834.js'), 'u
 const eclipseLiveCss = readFileSync(join(root, 'css', 'ap-eclipse-live-v834.css'), 'utf8');
 const eclipseGeometry = readFileSync(join(root, 'js', 'ap-eclipse-geometry-v834.js'), 'utf8');
 for (const ref of [
-  'js/ap-eclipse-live-v834.js?v=883',
-    'css/ap-eclipse-live-v834.css?v=883',
+  'js/ap-eclipse-live-v834.js?v=' + tipNum,
+    'css/ap-eclipse-live-v834.css?v=' + tipNum,
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
@@ -430,9 +520,9 @@ for (const retired of ['<void-orrery', 'void-orrery-adapter.js', '91% CORONA STU
   if (eclipseHtml.includes(retired)) fail('retired cosmetic eclipse model remains: ' + retired);
 }
 const eclipseStageStart = eclipseHtml.indexOf('<div class="ap-eclipse-live__stage"');
-const eclipsePanelStart = eclipseHtml.indexOf('<aside class="ap-eclipse-live__panel"');
+const eclipsePanelStart = eclipseHtml.indexOf('<div class="ap-eclipse-live__panel"');
 const eclipseStageSegment = eclipseHtml.slice(eclipseStageStart, eclipsePanelStart);
-const eclipsePanelSegment = eclipseHtml.slice(eclipsePanelStart, eclipseHtml.indexOf('</aside>', eclipsePanelStart));
+const eclipsePanelSegment = eclipseHtml.slice(eclipsePanelStart, eclipseHtml.indexOf('</section>', eclipsePanelStart));
 if (/ap-eclipse-live__live-badge|ap-eclipse-live__legend/.test(eclipseStageSegment)) {
   fail('Eclipse badge or legend still overlays the 3D stage');
 }
@@ -498,11 +588,42 @@ for (const name of ['earth_md.webp', 'jupiter_md.webp', 'mars_md.webp', 'mercury
 for (const probe of ['function mediumName(name)', 'function wantsMediumTextures()',
   'function isCriticalInstrumentTexture(file)', 'requestPreloadTexture(file, startupQuality)',
   'coldInstrument && !isCriticalInstrumentTexture(file)', 'function scheduleFullTextureUpgrades()',
-  'const galaxySpriteTextureCache = new Map()', 'if (p.id >= 3 && !galaxyBuilt) ensureGalaxyLayers()']) {
+  'const galaxySpriteTextureCache = new Map()', 'if (p.id >= 3 && !galaxyBuilt) ensureGalaxyLayers()',
+  'function nextTextureUploadFrame(generation, expectedRenderer)',
+  'async function prewarmEarthTextureBatch(records, generation, expectedRenderer)',
+  'expectedRenderer.initTexture(record.texture)',
+  'function attachEarthTextureBatch(records, generation, expectedRenderer)',
+  'stageEarthTextureBatch(earthSpecs)',
+  '.then(waitForEarthTextureAttachment)']) {
   if (!W.includes(probe)) fail('renderer quality/performance contract missing: ' + probe);
 }
+if (!W.includes("{ file: 'earth.jpg', srgb: true }")
+    || !W.includes("{ file: 'earth_lights.png', srgb: true }")
+    || !W.includes("{ file: 'earth_specular.jpg', srgb: false }")
+    || !W.includes("{ file: 'earth_clouds.jpg', srgb: false }")
+    || !W.includes("{ file: 'earth_normal.jpg', srgb: false }")) {
+  fail('staged Earth batch must retain geography, lights, specular, clouds and normal maps');
+}
+const earthFileListStart = W.indexOf('function earthTextureFiles()');
+const earthFileListEnd = W.indexOf('function requestPreloadTexture', earthFileListStart);
+const earthFileListBody = earthFileListStart >= 0 && earthFileListEnd > earthFileListStart
+  ? W.slice(earthFileListStart, earthFileListEnd)
+  : '';
+if (!earthFileListBody.includes("'earth_clouds.jpg'")
+    || !earthFileListBody.includes("'earth_normal.jpg'")
+    || earthFileListBody.includes('perfTier') || earthFileListBody.includes('PRM')) {
+  fail('reduced-motion/low-tier Earth texture plan must still contain all five physical maps');
+}
+const earthSpecsStart = W.indexOf('const earthSpecs = [');
+const earthSpecsEnd = W.indexOf('stageEarthTextureBatch(earthSpecs)', earthSpecsStart);
+const earthSpecsBody = earthSpecsStart >= 0 && earthSpecsEnd > earthSpecsStart
+  ? W.slice(earthSpecsStart, earthSpecsEnd)
+  : '';
+if (earthSpecsBody.includes("perfTier !== 'low'") || earthSpecsBody.includes('!PRM')) {
+  fail('Earth GPU warmup still removes physical maps for reduced-motion/low-tier visitors');
+}
 if (/function webglOK\(\)/.test(W)) fail('renderer still creates a redundant module-evaluation WebGL context');
-ok('renderer stages crisp medium textures before idle full-resolution upgrades');
+ok('renderer stages one Earth GPU upload per frame before atomic reveal and idle full-resolution upgrades');
 
 /* 7. Import maps on the two live Three.js pages only. */
 for (const page of ['index.html', 'eclipse.html']) {

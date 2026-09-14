@@ -10,8 +10,8 @@ AstroPrecise is available at https://astroprecise.app/. Astronomy and astrologic
 - [12 August 2026 Eclipse](https://astroprecise.app/eclipse.html): Dedicated 3D Sun–Moon–Earth alignment, viewing guide, safety links and a private chart-contact tool
 - [Birth Chart](https://astroprecise.app/chart.html): Free browser-calculated natal chart with time-dependent features withheld when birth time is unknown
 - [Events](https://astroprecise.app/sky-events.html): Live ledger of verified sky events, including the next eclipse and meteor notes
-- [Shop](https://astroprecise.app/shop.html): Free eclipse field guide and the £7 Your Eclipse Edition after a chart contact; no other SKUs are for sale
-- [Published Reading Sample](https://astroprecise.app/sample-reading.html): A complete thirteen-page sample, available before any future purchase
+- [Shop](https://astroprecise.app/shop.html): Checkout-closed previews of three self-order Studio commissions at proposed prices of £18, £29 and £39; none is currently for sale
+- [Published Reading Sample](https://astroprecise.app/sample-reading.html): A complete twenty-page sample, available before any future purchase
 - [Verify a Plate](https://astroprecise.app/verify.html): Recompute the published sample fingerprint against the public register
 
 ## Additional tools and guides

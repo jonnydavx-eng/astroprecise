@@ -1,12 +1,11 @@
 /**
  * Sign landing pages — chart.html defer discipline.
  * Blocking shell: main-lite.css + sign-page.css (page-own CSS is eager —
- * deferred CSS never loads under webdriver/headless, so anything needed for
- * a correct first paint must not live here). Enhancements idle/interaction gated.
+ * anything needed for a correct first paint must not live in the deferred
+ * layer). Enhancements are idle/interaction gated for every visitor and audit.
  */
 document.addEventListener('DOMContentLoaded', function () {
   function deferSignFonts() {
-    if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
     var done = false;
     function load() {
       if (done || document.getElementById('ap-css-fonts')) return;

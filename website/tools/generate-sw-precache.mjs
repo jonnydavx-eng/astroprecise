@@ -83,9 +83,16 @@ const REQUIRED_TRANSITIVE = [
 const RUNTIME_ONLY = new Set([
   './img/editorial/eclipse-edition-art-v841.png',
   './img/editorial/eclipse-field-guide-cover-final-v836.png',
+  './img/editorial/eclipse-edition-art-v841-560.webp',
+  './img/editorial/eclipse-edition-art-v841-1122.webp',
+  './img/editorial/eclipse-field-guide-cover-final-v836-480.webp',
+  './img/editorial/eclipse-field-guide-cover-final-v836-960.webp',
 ]);
 
-const MAX_SHELL_ENTRIES = 80;
+// Home's four direct reading/Keep controllers are part of the offline promise.
+// The complete generated graph is still below the stricter 3 MB byte ceiling;
+// allow its small-file count without dropping functional modules.
+const MAX_SHELL_ENTRIES = 84;
 const MAX_SHELL_BYTES = 3_000_000;
 
 // Mirrors the import maps authored in index.html and eclipse.html. Bare ESM

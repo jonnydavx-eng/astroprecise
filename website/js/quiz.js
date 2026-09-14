@@ -8,12 +8,12 @@
    (chart.html), which the result card routes to first.
 
    Re-themed from The Bigger Picture's awakener.js (question flow,
-   buckets, result card, share + localStorage, product recs).
+   buckets, result card, share + localStorage, free next steps).
 
    Architecture mirrors the rest of the site:
      • window.AstroQuiz (no build step, attaches to window)
      • Glass-orb archetype glyphs via window.AstroIcons
-     • Monetisation routes are dormant-safe via window.AP_MON
+     • No paid recommendation is shown while Studio is unreleased
    Determinism: same answers → same archetype, every time.
    ═══════════════════════════════════════════════════════════ */
 'use strict';
@@ -268,26 +268,10 @@ const AstroQuiz = (() => {
     });
   }
 
-  // ── Build a monetisation-aware route block ─────────────────
-  // Honest + dormant-safe: a real chart is always the primary CTA.
-    // Optional product/email paths only light up when AP_MON has a real URL;
-  // otherwise they degrade to email-intent or quietly vanish (data-mon).
+  // ── Build the free next-step route block ───────────────────
+  // Product recommendations stay absent until a separately verified Studio
+  // catalogue can be consumed through its fail-closed public contract.
   function buildRoutes(arch) {
-    const M = window.AP_MON || {};
-    const isUrl = u => typeof u === 'string' && /^https?:\/\//i.test(u.trim());
-
-    // Pick a product whose vibe matches: apparel for fire/air (expressive),
-    // print for earth (lasting), reading for water (inner). Falls back safely.
-    const commerce = (M.commerce && Array.isArray(M.commerce.products)) ? M.commerce.products : [];
-    const prefByElement = {
-      fire: 'sky-tee', air: 'sky-tee',
-      earth: 'natal-poster', water: 'deep-reading',
-    };
-    const wantId = prefByElement[arch.element] || 'natal-poster';
-    const product = commerce.find(p => p.id === wantId)
-      || commerce.find(p => p.id === 'natal-poster')
-      || commerce[0] || null;
-
     const rows = [];
 
     // 1) PRIMARY — cast the real chart (always live, internal link).
@@ -302,109 +286,19 @@ const AstroQuiz = (() => {
       </a>
     `);
 
-    // 2) One focused launch path — calculate before any paid offer appears.
+    // 2) Event archive — calculation remains free; the expired offer stays closed.
     rows.push(`
       <a class="aq-route" href="eclipse.html#contact">
         <span class="aq-route__icon" aria-hidden="true">❧</span>
         <span class="aq-route__body">
           <span class="aq-route__title">Check your eclipse contact</span>
-          <span class="aq-route__sub">A direct contact can open the one £7 Eclipse Edition; a quiet chart stays free.</span>
+          <span class="aq-route__sub">Compute the archived contact privately. The event edition is closed to new purchases.</span>
         </span>
         <span class="aq-route__arrow" aria-hidden="true">→</span>
       </a>
     `);
 
-    // 3) PRODUCT — dormant-safe. Live "Buy" if the product has a fulfilUrl;
-    // otherwise route to the shop page (real, pre-launch honest cart).
-    if (product) {
-      const live = isUrl(product.fulfilUrl);
-      const href = live ? esc(product.fulfilUrl.trim()) : 'shop.html';
-      const targetAttr = live ? ' target="_blank" rel="noopener sponsored"' : '';
-      const priceTxt = (typeof product.price === 'number')
-        ? '$' + product.price.toFixed(2) : '';
-      rows.push(`
-        <a class="aq-route" href="${href}"${targetAttr}>
-          <span class="aq-route__icon" aria-hidden="true">◈</span>
-          <span class="aq-route__body">
-            <span class="aq-route__title">${esc(product.name)}${priceTxt ? ' · <span class="aq-route__price">' + priceTxt + '</span>' : ''}</span>
-            <span class="aq-route__sub">${live ? 'A piece matched to your archetype — made from your own chart.' : 'A piece matched to your archetype — the shop opens soon.'}</span>
-          </span>
-          <span class="aq-route__arrow" aria-hidden="true">→</span>
-        </a>
-      `);
-    }
-
     return rows.join('');
-  }
-
-  // ── Email capture (dormant-safe via AP_MON.emailUrl) ───────
-  function buildEmailCapture() {
-    return `
-      <form class="aq-email" id="aq-email-form" novalidate>
-        <label class="aq-email__label" for="aq-email-input">
-          Want your archetype + 3 cosmic wallpapers? Drop your email.
-        </label>
-        <div class="aq-email__row">
-          <input class="aq-email__input" id="aq-email-input" type="email"
-            inputmode="email" autocomplete="email" placeholder="you@example.com"
-            aria-label="Email address" />
-          <button class="btn btn--gold btn--sm" type="submit">Send it</button>
-        </div>
-        <p class="aq-email__note" id="aq-email-note">
-          Private by design — your email is saved on your device until a list is live.
-        </p>
-      </form>
-    `;
-  }
-
-  function wireEmailCapture() {
-    const form = container.querySelector('#aq-email-form');
-    if (!form) return;
-    const input = form.querySelector('#aq-email-input');
-    const note = form.querySelector('#aq-email-note');
-    const M = window.AP_MON || {};
-    const isUrl = u => typeof u === 'string' && /^https?:\/\//i.test(u.trim());
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const val = (input.value || '').trim();
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)) {
-        note.textContent = 'That email doesn\'t look right — mind checking it?';
-        note.style.color = 'var(--color-danger, #ef4444)';
-        input.focus();
-        return;
-      }
-      if (isUrl(M.emailUrl)) {
-        // A real list is configured — hand off via a hidden form POST.
-        try {
-          const f = document.createElement('form');
-          f.method = 'POST';
-          f.action = M.emailUrl.trim();
-          f.target = '_blank';
-          f.rel = 'noopener';
-          const inp = document.createElement('input');
-          inp.type = 'hidden'; inp.name = 'email'; inp.value = val;
-          f.appendChild(inp);
-          const tagInp = document.createElement('input');
-          tagInp.type = 'hidden'; tagInp.name = 'tags'; tagInp.value = 'quiz-cosmic-blueprint';
-          f.appendChild(tagInp);
-          document.body.appendChild(f);
-          f.submit();
-          f.remove();
-        } catch (_) { /* fall through to local save */ }
-      } else {
-        // DORMANT — save intent locally only; nothing leaves the device.
-        try {
-          const queue = JSON.parse(localStorage.getItem('ap_email_intent') || '[]');
-          queue.push({ email: val, source: 'quiz', archetype: chosenArchetypeId, at: Date.now() });
-          localStorage.setItem('ap_email_intent', JSON.stringify(queue));
-        } catch (_) { /* ignore storage failures */ }
-      }
-      note.textContent = 'Saved — you\'re on the list. Thank you.';
-      note.style.color = 'var(--color-gold, #d8b46a)';
-      input.disabled = true;
-      form.querySelector('button[type="submit"]').disabled = true;
-    });
   }
 
   function clearMountBoot() {
@@ -470,8 +364,6 @@ const AstroQuiz = (() => {
           ${buildRoutes(arch)}
         </div>
 
-        ${buildEmailCapture()}
-
         <div class="aq-share">
           <button class="btn btn--outline btn--sm" id="aq-share-btn" type="button">Share ↗</button>
           <button class="btn btn--outline btn--sm" id="aq-restart-btn" type="button">Take it again</button>
@@ -479,13 +371,11 @@ const AstroQuiz = (() => {
       </div>
     `;
 
-    wireEmailCapture();
-
     // Share — native share sheet, clipboard fallback.
     const shareBtn = container.querySelector('#aq-share-btn');
     if (shareBtn) {
       shareBtn.addEventListener('click', () => {
-        const url = window.location.href.split('#')[0];
+        const url = new URL(window.location.pathname, window.location.origin).href;
         if (navigator.share) {
           navigator.share({ title: arch.name + ' — ' + SHARE_NAME, text: shareText, url })
             .catch(() => {});

@@ -4,55 +4,72 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#05080F">
+<meta name="theme-color" content="#040812">
 <title>Sky Events — what the sky does next | AstroPrecise</title>
-<meta name="description" content="A living event ledger for eclipses, meteor showers, conjunctions, full moons and planetary stations—observed astronomy and astrological tradition kept visibly separate.">
+<meta name="description" content="The next useful sky event first. Astronomy and astrological tradition labelled separately. Eclipse replay is an archive, not a sale.">
 <link rel="canonical" href="https://astroprecise.app/sky-events.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <!-- Self-hosted since 2026-08-09. This page used to pull Schibsted Grotesk and
      IBM Plex Mono from Google Fonts, which handed Google a request from every
      reader while privacy.html said the site's fonts were its own. Both files
      were already in this repo and already precached by the service worker —
      this page had simply never been cut over. The variable Schibsted file has
      no true italic, so italics here are synthesised; that is the whole cost. -->
-<link rel="stylesheet" href="./css/fonts.css?v=880">
+<link rel="stylesheet" href="./css/fonts.css?v=902">
 <style>
+.page-sky-events{
+  --ap-void:#040812;
+  --ap-ion:#8BA9FF;
+  --ap-ion-hover:#A5BCFF;
+  --ap-silver:#93A8BF;
+  --ap-paper:#EEF4FA;
+  background:#040812;
+  color:var(--ap-paper);
+}
 .ap-events-shell{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:clamp(52px,8vw,110px) 0 calc(90px + var(--bottom-nav-h,0px))}
 .ap-events-hero{display:grid;grid-template-columns:minmax(0,.82fr) minmax(360px,1.18fr);gap:clamp(38px,8vw,110px);align-items:end;padding-bottom:clamp(54px,8vw,94px)}
-.ap-events-kicker,.kick{margin:0 0 13px;color:var(--ap-brass);font:9px/1.5 var(--ap-data);letter-spacing:.18em;text-transform:uppercase}
-.ap-events-hero h1{max-width:9ch;margin:0;color:var(--ap-paper);font:600 clamp(54px,8vw,100px)/.86 var(--ap-display);letter-spacing:-.04em}
+.ap-events-kicker,.kick{margin:0 0 13px;color:var(--ap-ion,#8BA9FF);font:9px/1.5 var(--ap-data);letter-spacing:.18em;text-transform:uppercase}
+.ap-events-hero h1{max-width:11ch;margin:0;color:var(--ap-paper,#EEF4FA);font:600 clamp(54px,8vw,100px)/.86 var(--ap-display);letter-spacing:-.04em}
 .ap-events-hero__lede{max-width:54ch;margin:24px 0 0;color:var(--ap-paper-dim);font-size:17px;line-height:1.68}
-.ap-events-feature{position:relative;padding:clamp(28px,4vw,48px);border:1px solid rgba(216,180,106,.32);border-radius:4px;background:linear-gradient(150deg,rgba(255,100,40,.075),rgba(16,23,34,.74));box-shadow:0 28px 90px rgba(0,0,0,.3)}
-.ap-events-feature::before{content:'';position:absolute;inset:14px;border:1px solid rgba(216,180,106,.09);pointer-events:none}
-.ap-events-feature time{color:var(--ap-brass);font:10px var(--ap-data);letter-spacing:.1em;text-transform:uppercase}
-.ap-events-feature h2{max-width:12ch;margin:20px 0 16px;color:var(--ap-paper);font:600 clamp(34px,4.6vw,58px)/.94 var(--ap-display)}
-.ap-events-feature p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.65}
-.ap-events-feature a{display:inline-flex;margin-top:23px;color:var(--ap-brass-bright);font:10px var(--ap-data);letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
-.ap-events-intro{display:grid;grid-template-columns:.72fr 1.28fr;gap:30px;padding:0 0 30px;border-bottom:1px solid var(--ap-line-strong)}
-.ap-events-intro h2{margin:0;color:var(--ap-paper);font:600 clamp(34px,5vw,58px)/.96 var(--ap-display)}
+.ap-events-feature{position:relative;padding:clamp(28px,4vw,48px);border:1px solid rgba(147,168,191,.32);border-radius:4px;background:linear-gradient(150deg,rgba(139,169,255,.075),rgba(16,29,48,.74));box-shadow:0 28px 90px rgba(4,8,18,.45)}
+.ap-events-feature::before{content:'';position:absolute;inset:14px;border:1px solid rgba(168,151,255,.09);pointer-events:none}
+.ap-events-feature time{color:var(--ap-ion,#8BA9FF);font:10px var(--ap-data);letter-spacing:.1em;text-transform:uppercase}
+.ap-events-feature h2{max-width:14ch;margin:20px 0 16px;color:var(--ap-paper,#EEF4FA);font:600 clamp(34px,4.6vw,58px)/.94 var(--ap-display)}
+.ap-events-feature__split{display:grid;gap:14px;margin:0}
+.ap-events-feature__split span{display:block;margin:0 0 6px;color:var(--ap-proof,#6FD0B3);font:9px/1.5 var(--ap-data);letter-spacing:.12em;text-transform:uppercase}
+.ap-events-feature__split p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.65}
+.ap-events-feature__split--tradition span{color:var(--ap-ion,#8BA9FF)}
+.ap-events-feature a{display:inline-flex;margin-top:23px;color:var(--ap-ion-hover,#A5BCFF);font:10px var(--ap-data);letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
+.ap-events-intro{display:grid;grid-template-columns:.72fr 1.28fr;gap:30px;padding:0 0 30px;border-bottom:1px solid var(--ap-line-strong,rgba(147,168,191,.4))}
+.ap-events-intro h2{margin:0;color:var(--ap-paper,#EEF4FA);font:600 clamp(34px,5vw,58px)/.96 var(--ap-display)}
 .ap-events-intro p{max-width:58ch;margin:4px 0 0;color:var(--ap-paper-dim);line-height:1.65}
 #events{scroll-margin-top:84px}
-.event{display:grid;grid-template-columns:minmax(180px,.6fr) minmax(0,1.4fr);gap:clamp(22px,5vw,68px);padding:clamp(34px,5vw,58px) 0;border-bottom:1px solid var(--ap-line)}
-.event__head h2{margin:0;color:var(--ap-paper);font:600 clamp(30px,4vw,48px)/.98 var(--ap-display)}
-.meta{margin-top:16px;color:var(--ap-silver);font:10px/1.75 var(--ap-data);letter-spacing:.08em;text-transform:uppercase}
+.event{display:grid;grid-template-columns:minmax(180px,.6fr) minmax(0,1.4fr);gap:clamp(22px,5vw,68px);padding:clamp(34px,5vw,58px) 0;border-bottom:1px solid var(--ap-line,rgba(147,168,191,.18))}
+.event__head h2{margin:0;color:var(--ap-paper,#EEF4FA);font:600 clamp(30px,4vw,48px)/.98 var(--ap-display)}
+.meta{margin-top:16px;color:var(--ap-silver,#93A8BF);font:10px/1.75 var(--ap-data);letter-spacing:.08em;text-transform:uppercase}
 .event__body{display:grid;gap:13px}
-.event__ledger{display:grid;grid-template-columns:100px 1fr;gap:18px;padding:16px 0;border-top:1px solid rgba(216,180,106,.14)}
-.event__ledger span{color:var(--ap-proof);font:9px/1.5 var(--ap-data);letter-spacing:.12em;text-transform:uppercase}
+.event__ledger{display:grid;grid-template-columns:100px 1fr;gap:18px;padding:16px 0;border-top:1px solid rgba(147,168,191,.14)}
+.event__ledger span{color:var(--ap-proof,#6FD0B3);font:9px/1.5 var(--ap-data);letter-spacing:.12em;text-transform:uppercase}
 .event__ledger p{margin:0;color:var(--ap-paper-dim);font-size:16px;line-height:1.68}
-.event__ledger--meaning span{color:var(--ap-brass)}
+.event__ledger--meaning span{color:var(--ap-ion,#8BA9FF)}
 .event__ledger--meaning p{font:500 18px/1.58 var(--ap-display)}
+.ap-events-archive{margin-top:clamp(48px,7vw,88px);padding:clamp(28px,4vw,48px);border:1px solid rgba(147,168,191,.22);border-radius:4px;background:rgba(16,29,48,.42)}
+.ap-events-archive h2{margin:0 0 12px;color:var(--ap-paper,#EEF4FA);font:600 clamp(30px,4vw,46px)/.98 var(--ap-display)}
+.ap-events-archive > p{max-width:62ch;color:var(--ap-paper-dim);line-height:1.65}
+.ap-events-archive a{color:var(--ap-ion,#8BA9FF)}
 .foot{margin-top:46px;color:var(--ap-paper-faint);font:9px/2 var(--ap-data);letter-spacing:.12em;text-transform:uppercase}
-.foot a{color:var(--ap-brass-bright)}
+.foot a{color:var(--ap-ion-hover,#A5BCFF)}
 @media(max-width:760px){.ap-events-shell{width:min(100% - 32px,1120px);padding-top:42px}.ap-events-hero,.ap-events-intro,.event{grid-template-columns:1fr}.ap-events-hero{gap:34px}.ap-events-hero h1{font-size:clamp(52px,15vw,76px)}.ap-events-feature{padding:26px 22px}.event{gap:20px}.event__ledger{grid-template-columns:1fr;gap:6px}.event__ledger p{font-size:15px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-  <script>window.AP_ASSET_V='895';</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=880">
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=880">
-  <script src="js/ap-nav-model.js?v=880" defer></script>
-  <script src="js/void-orrery-adapter.js?v=880"></script>
+  <script>window.AP_ASSET_V='902';</script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=902">
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=902">
+  <script src="js/ap-nav-model.js?v=902" defer></script>
+  <script src="js/void-orrery-adapter.js?v=902"></script>
 </head>
 <body class="page-sky-events ap-launch-article">
-<a class="skip-link" href="#events">Skip to sky events</a>
+<a class="skip-link" href="#next-event">Skip to the next event</a>
 <header class="site-header" role="banner" data-ap-static-nav>
   <nav class="navbar" aria-label="Main navigation">
     <div class="navbar__inner">
@@ -69,9 +86,6 @@
         </noscript>
       </div>
       <div class="navbar__end">
-        <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
-          <svg class="navbar__profile-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="3.25"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg>
-        </a>
         <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
           <span></span><span></span><span></span>
         </button>
@@ -82,23 +96,66 @@
 </header>
 <main class="ap-events-shell" id="events-main">
   <section class="ap-events-hero">
-    <div><p class="ap-events-kicker">Event atlas · updated from this minute</p><h1>What the sky does next.</h1><p class="ap-events-hero__lede">One clear timeline for the phenomena worth looking up for. Physical events are described as astronomy; symbolic traditions are labelled separately.</p></div>
-    <article class="ap-events-feature" id="next-eclipse"><time datetime="2026-08-28">Next eclipse · 28 August 2026</time><h2>Earth's shadow reaches the Moon.</h2><p>A partial lunar eclipse arrives sixteen days after the 12 August solar eclipse. It is safe to watch with the naked eye wherever the Moon is above the horizon.</p><a href="#lunar-eclipse">Read the event briefing →</a></article>
+    <div>
+      <p class="ap-events-kicker">Event atlas · next useful event first</p>
+      <h1>What the sky does next.</h1>
+      <p class="ap-events-hero__lede">The soonest phenomenon worth looking up for sits first. Physical events are described as astronomy. Symbolic tradition is labelled separately and is never sold as the sky.</p>
+    </div>
+    <article class="ap-events-feature" id="next-event">
+      <time datetime="">Next from this minute</time>
+      <h2>Computing the next useful event…</h2>
+      <div class="ap-events-feature__split">
+        <div>
+          <span>Astronomy</span>
+          <p id="next-event-astronomy">The soonest computed or published event will appear here. JavaScript runs the ledger in this browser.</p>
+        </div>
+        <div class="ap-events-feature__split--tradition" id="next-event-tradition-wrap" hidden>
+          <span>Tradition</span>
+          <p id="next-event-tradition"></p>
+        </div>
+      </div>
+      <a id="next-event-link" href="#events">Read the event briefing →</a>
+    </article>
   </section>
+
   <section aria-labelledby="computed-events-title">
-    <header class="ap-events-intro"><h2 id="computed-events-title">The living ledger.</h2><p>Dates below are computed in this browser from the same mean-element orrery maths used by the Observatory. They are degree-class planning cues, not the VSOP87 chart engine or a ground-visibility forecast.</p></header>
+    <header class="ap-events-intro">
+      <h2 id="computed-events-title">The living ledger.</h2>
+      <p>Upcoming dates below are sorted from this minute. Conjunctions, moons, stations and season turns are computed here from the same mean-element orrery maths as the Observatory — degree-class planning cues, not the VSOP87 chart engine or a ground-visibility forecast. Eclipse dates are published tables, then labelled as archive when they have passed.</p>
+    </header>
     <div id="events" aria-live="polite"><div class="foot">Computing the next 400 days…</div></div>
   </section>
 
+  <section class="ap-events-archive" id="eclipse-archive" aria-labelledby="eclipse-archive-title">
+    <p class="kick">Archive · replay · not for sale</p>
+    <h2 id="eclipse-archive-title">The 12 August 2026 eclipse.</h2>
+    <div class="event__ledger">
+      <span>Astronomy</span>
+      <p>Totality crossed Greenland, Iceland, northern Russia, Spain and a corner of Portugal. Britain was a deep partial. The eclipse has passed. The 3D instrument replays that geometry — it is an archive, not a live event and not a shop listing.</p>
+    </div>
+    <div class="event__ledger event__ledger--meaning">
+      <span>Tradition</span>
+      <p>Eclipse seasons are a reflective language in astrology. That is not a prediction, and it is not a product.</p>
+    </div>
+    <p><a href="eclipse.html">Replay the 3D archive</a> — free. There is no eclipse edition for sale on this page.</p>
+    <article id="lunar-eclipse">
+      <p class="kick">28 August 2026 · archive</p>
+      <div class="event__ledger">
+        <span>Astronomy</span>
+        <p>A partial lunar eclipse followed sixteen days later. Earth’s shadow clipped the full Moon. Safe to watch with the naked eye wherever the Moon was up. It is not a checkout.</p>
+      </div>
+    </article>
+  </section>
+
 <div class="foot">
-  EVERY DATE ABOVE WAS COMPUTED IN YOUR BROWSER JUST NOW · ORRERY MEAN ELEMENTS · SEPARATIONS TO 0.1° · MEANINGS ARE FOR REFLECTION, NOT PREDICTION<br>
-  <a href="./chart.html">CAST YOUR CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE — YOUR READING</a><br>
+  UPCOMING DATES ABOVE WERE COMPUTED IN YOUR BROWSER JUST NOW · ORRERY MEAN ELEMENTS · SEPARATIONS TO 0.1° · ECLIPSE DATES ARE PUBLISHED TABLES · TRADITION IS FOR REFLECTION, NOT PREDICTION<br>
+  <a href="./chart.html">CAST YOUR CHART FREE</a> · <a href="./eclipse.html">ECLIPSE ARCHIVE REPLAY</a><br>
   © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
 </main>
 
 <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-<script src="js/ap-footer-inject.js?v=880" defer></script>
+<script src="js/ap-footer-inject.js?v=902" defer></script>
 
 <script>
 (function () {
@@ -115,10 +172,16 @@
       setTimeout(go, 150);
       return;
     }
-    var now = new Date(), DAY = 86400000;
+    var now = new Date(), DAY = 86400000, GRACE = 12 * 3600000;
     var fmt = function (d) { return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); };
     var fmtS = function (d) { return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(); };
+    var isoDay = function (d) { return d.toISOString().slice(0, 10); };
     var sep2 = function (a, b) { return Math.abs(((a - b + 540) % 360) - 180); };
+    var esc = function (s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+      });
+    };
     function fullMoonNear(target) {
       var jd0 = E.jd(target) - 3, prev = null;
       for (var h = 0; h <= 144; h++) {
@@ -129,9 +192,10 @@
       }
       return target;
     }
-    var out = [];
-    var ev = function (kick, title, meta, body, myth, id) {
-      out.push('<article class="event"' + (id ? ' id="' + id + '"' : '') + '><div class="event__head"><div class="kick">' + kick + '</div><h2>' + title + '</h2><div class="meta">' + meta + '</div></div><div class="event__body"><div class="event__ledger"><span>Observed</span><p>' + body + '</p></div>' + (myth ? '<div class="event__ledger event__ledger--meaning"><span>In astrology</span><p>' + myth + '</p></div>' : '') + '</div></article>');
+    var items = [];
+    var add = function (opts) {
+      if (!opts || !opts.when || !isFinite(opts.when.getTime())) return;
+      items.push(opts);
     };
     var daysAway = function (n) { return n === 1 ? '1 DAY AWAY' : n + ' DAYS AWAY'; };
     var inDays = function (n) { return n === 1 ? 'IN 1 DAY' : 'IN ' + n + ' DAYS'; };
@@ -157,10 +221,14 @@
     }
     if (best) {
       var dd = new Date(now.getTime() + best.t * DAY);
-      ev('NEXT CONJUNCTION · ' + daysAway(best.t), best.a.name + ' meets ' + best.b.name,
-        fmt(dd).toUpperCase() + ' · CLOSEST APPROACH ' + best.sep.toFixed(1) + '° · IN ' + best.a.sign.name.toUpperCase(),
-        'Two wanderers close to ' + best.sep.toFixed(1) + '° apart in the evening sky — near enough to share one field of view. No instrument needed; look ' + (best.a.sign.name === best.b.sign.name ? 'toward ' + best.a.sign.name : 'along the ecliptic') + ' after dusk.',
-        'The ancients read meetings like this as council between gods. You get to just watch.');
+      add({
+        when: dd, id: 'conjunction',
+        kick: 'NEXT CONJUNCTION · ' + daysAway(best.t),
+        title: best.a.name + ' meets ' + best.b.name,
+        meta: fmt(dd).toUpperCase() + ' · CLOSEST APPROACH ' + best.sep.toFixed(1) + '° · IN ' + best.a.sign.name.toUpperCase(),
+        body: 'Two wanderers close to ' + best.sep.toFixed(1) + '° apart in the evening sky — near enough to share one field of view. No instrument needed; look ' + (best.a.sign.name === best.b.sign.name ? 'toward ' + best.a.sign.name : 'along the ecliptic') + ' after dusk.',
+        myth: 'The ancients read meetings like this as council between gods. You get to just watch.'
+      });
     }
     var mp = E.moonPhase(E.jd(now));
     var fmDate = fullMoonNear(new Date(now.getTime() + mp.daysToFull * DAY));
@@ -169,10 +237,14 @@
     var fmRow = rowOf(E.positions(fmDate).rows, 'moon');
     var ELEM = { Aries: 'fire', Leo: 'fire', Sagittarius: 'fire', Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth', Gemini: 'air', Libra: 'air', Aquarius: 'air', Cancer: 'water', Scorpio: 'water', Pisces: 'water' };
     if (fmRow && fmRow.sign) {
-      ev('NEXT FULL MOON · ' + (fmDays <= 0 ? 'TONIGHT' : inDays(fmDays)), 'Full Moon in ' + fmRow.sign.name,
-        fmt(fmDate).toUpperCase() + ' · ' + fmRow.sign.deg + '° ' + fmRow.sign.name.toUpperCase(),
-        'The Moon reaches opposition — Earth exactly between it and the Sun — fully lit at ' + fmRow.sign.deg + '° ' + fmRow.sign.name + '. It rises at sunset and stays up all night.',
-        'A full moon in a ' + ELEM[fmRow.sign.name] + ' sign, the old books say: feelings run ' + ({ fire: 'hot and fast', earth: 'deep and steady', air: 'loud and social', water: 'under everything' })[ELEM[fmRow.sign.name]] + '. Weather, not fate.');
+      add({
+        when: fmDate, id: 'full-moon',
+        kick: 'NEXT FULL MOON · ' + (fmDays <= 0 ? 'TONIGHT' : inDays(fmDays)),
+        title: 'Full Moon in ' + fmRow.sign.name,
+        meta: fmt(fmDate).toUpperCase() + ' · ' + fmRow.sign.deg + '° ' + fmRow.sign.name.toUpperCase(),
+        body: 'The Moon reaches opposition — Earth exactly between it and the Sun — fully lit at ' + fmRow.sign.deg + '° ' + fmRow.sign.name + '. It rises at sunset and stays up all night.',
+        myth: 'A full moon in a ' + ELEM[fmRow.sign.name] + ' sign, the old books say: feelings run ' + ({ fire: 'hot and fast', earth: 'deep and steady', air: 'loud and social', water: 'under everything' })[ELEM[fmRow.sign.name]] + '. Weather, not fate.'
+      });
     }
     var mercury0 = rowOf(E.positions(now).rows, 'mercury');
     var state0 = mercury0 ? mercury0.retro : null;
@@ -185,57 +257,160 @@
     }
     if (flipT) {
       var sd = new Date(now.getTime() + flipT * DAY);
-      ev('MERCURY STATION · ' + inDays(flipT), state0 ? 'Mercury stations direct in ' + flipRow.sign.name : 'Mercury stations retrograde in ' + flipRow.sign.name,
-        fmt(sd).toUpperCase() + ' · ' + flipRow.sign.deg + '° ' + flipRow.sign.name.toUpperCase(),
-        state0
+      add({
+        when: sd, id: 'mercury-station',
+        kick: 'MERCURY STATION · ' + inDays(flipT),
+        title: state0 ? 'Mercury stations direct in ' + flipRow.sign.name : 'Mercury stations retrograde in ' + flipRow.sign.name,
+        meta: fmt(sd).toUpperCase() + ' · ' + flipRow.sign.deg + '° ' + flipRow.sign.name.toUpperCase(),
+        body: state0
           ? 'Mercury is retrograde right now and appears to stop and resume forward motion in ' + daysWord(flipT) + '. The backward drift is perspective — Earth overtaking a faster inner orbit — and it ends on a computable date.'
           : 'Mercury runs direct today and appears to stop and reverse in ' + daysWord(flipT) + ', at ' + flipRow.sign.deg + '° ' + flipRow.sign.name + '. About three weeks of apparent backward motion follow — the classic re-read-before-you-send season.',
-        'Retrograde is not a curse; it is geometry with a reputation.');
+        myth: 'Retrograde is not a curse; it is geometry with a reputation.'
+      });
     }
     var moonIll = function (d) { return Math.round(E.moonPhase(E.jd(d)).illum * 100); };
-    var leDate = fullMoonNear(new Date(Date.UTC(2026, 7, 28)));
-    var leRow = rowOf(E.positions(leDate).rows, 'moon');
-    if (leRow && leRow.sign) {
-      ev('LUNAR ECLIPSE · PARTIAL', 'The Moon dims in ' + leRow.sign.name,
-        fmtS(leDate) + ' · FULL MOON AT ' + leRow.sign.deg + '° ' + leRow.sign.name.toUpperCase(),
-        "Earth's shadow crosses part of the full Moon — visible wherever the Moon is up, no equipment needed. Sixteen days after the 12 August solar eclipse, the sky answers with its second act.",
-        'Eclipse seasons are traditionally read as paired chapters. Treat that as a reflective language, not a prediction.', 'lunar-eclipse');
-    }
-    var eqDate = null;
-    for (t = 0; t < 40; t++) {
-      var d0 = new Date(Date.UTC(2026, 8, 10) + t * DAY);
+    var CARDINALS = [
+      { lon: 0, kick: 'MARCH EQUINOX', title: 'The Sun crosses 0° Aries', myth: 'Aries begins: the year turns.' },
+      { lon: 90, kick: 'JUNE SOLSTICE', title: 'The Sun stands at midsummer', myth: 'Cancer begins: the year is fullest.' },
+      { lon: 180, kick: 'SEPTEMBER EQUINOX', title: 'The Sun crosses the line', myth: 'Libra begins: the scale, weighing the year.' },
+      { lon: 270, kick: 'DECEMBER SOLSTICE', title: 'The Sun stands at midwinter', myth: 'Capricorn begins: the year turns inward.' }
+    ];
+    var nextCard = null;
+    for (t = 0; t < 400; t++) {
+      var d0 = new Date(now.getTime() + t * DAY);
       var l0 = E.sunLon(E.jd(d0)), l1 = E.sunLon(E.jd(new Date(d0.getTime() + DAY)));
-      if (l0 < 180 && l1 >= 180) { eqDate = new Date(d0.getTime() + (180 - l0) / (l1 - l0) * DAY); break; }
+      var span = (l1 - l0 + 360) % 360;
+      for (i = 0; i < CARDINALS.length; i++) {
+        var target = CARDINALS[i].lon;
+        var toT = (target - l0 + 360) % 360;
+        if (toT <= span + 1e-6) {
+          var whenC = new Date(d0.getTime() + (toT / (span || 1)) * DAY);
+          if (!nextCard || whenC < nextCard.when) nextCard = { when: whenC, card: CARDINALS[i] };
+        }
+      }
+      if (nextCard) break;
     }
-    if (eqDate) ev('EQUINOX', 'The Sun crosses the line', fmtS(eqDate) + ' · SUN AT 0° LIBRA (180.0°)',
-      "Day and night balance as the Sun's longitude crosses exactly 180° — the equinox instant, computed here rather than quoted.", 'Libra begins: the scale, weighing the year.');
+    if (nextCard) {
+      var lonLabel = nextCard.card.lon === 0 ? 'SUN AT 0° ARIES (0.0°)' : nextCard.card.lon === 90 ? 'SUN AT 0° CANCER (90.0°)' : nextCard.card.lon === 180 ? 'SUN AT 0° LIBRA (180.0°)' : 'SUN AT 0° CAPRICORN (270.0°)';
+      add({
+        when: nextCard.when, id: 'season-turn',
+        kick: nextCard.card.kick,
+        title: nextCard.card.title,
+        meta: fmtS(nextCard.when) + ' · ' + lonLabel,
+        body: 'The Sun’s ecliptic longitude crosses this cardinal point — the season-turn instant, computed here rather than quoted from a calendar.',
+        myth: nextCard.card.myth
+      });
+    }
     var sat = E.PLANETS.find(function (p) { return p.key === 'saturn'; });
     var opDate = null, opBest = 999;
-    for (t = 0; t < 180; t++) {
-      var d1 = new Date(Date.UTC(2026, 7, 1) + t * DAY), j2 = E.jd(d1);
-      var gap = Math.abs(sep2(E.sunLon(j2), E.geoLon(sat, j2)) - 180);
-      if (gap < opBest) { opBest = gap; opDate = d1; }
+    if (sat) {
+      for (t = 0; t < 400; t++) {
+        var d1 = new Date(now.getTime() + t * DAY), j2 = E.jd(d1);
+        var gap = Math.abs(sep2(E.sunLon(j2), E.geoLon(sat, j2)) - 180);
+        if (gap < opBest) { opBest = gap; opDate = d1; }
+      }
     }
-    if (opDate) ev('SATURN AT OPPOSITION', 'Saturn, closest and brightest', fmtS(opDate) + ' · WITHIN ' + opBest.toFixed(1) + '° OF EXACT OPPOSITION',
-      'Earth passes directly between Saturn and the Sun — the planet rises at sunset, up all night, as bright as it gets this year. Any small telescope shows the rings.', 'The timekeeper, at its nearest.');
-    var perDark = 100 - moonIll(new Date(Date.UTC(2026, 7, 12, 23)));
-    var gemDark = 100 - moonIll(new Date(Date.UTC(2026, 11, 13, 23)));
-    var perNow = now.getTime();
-    var perLine = (perNow >= Date.UTC(2026, 7, 12, 12) && perNow < Date.UTC(2026, 7, 13, 12))
-      ? 'The Perseids peak tonight under the new-moon sky left by the 12 August eclipse — ' + perDark + '% dark. Typical published rates are near 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.'
-      : (perNow < Date.UTC(2026, 7, 12))
-        ? 'The Perseids peak 12–13 August under the new-moon sky of the eclipse — ' + perDark + '% dark. Typical published rates are near 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.'
-        : 'The Perseids peaked 12–13 August under the new-moon sky left by the eclipse — ' + perDark + '% dark. Typical published rates were near 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.';
-    ev('METEORS · PERSEIDS + GEMINIDS', "The year's two great showers",
-      'PERSEIDS 12–13 AUG · SKY ' + perDark + '% DARK — GEMINIDS 13–14 DEC · SKY ' + gemDark + '% DARK',
-      perLine,
-      'Meteor showers have no standard natal-chart role here; the wonder is physical dust meeting atmosphere.', 'perseids');
+    if (opDate && opBest < 2.5) {
+      add({
+        when: opDate, id: 'saturn-opposition',
+        kick: 'SATURN AT OPPOSITION',
+        title: 'Saturn, closest and brightest',
+        meta: fmtS(opDate) + ' · WITHIN ' + opBest.toFixed(1) + '° OF EXACT OPPOSITION',
+        body: 'Earth passes directly between Saturn and the Sun — the planet rises at sunset, up all night, as bright as it gets this year. Any small telescope shows the rings.',
+        myth: 'The timekeeper, at its nearest.'
+      });
+    }
+    function nextAnnualPeak(monthIndex, day) {
+      var y = now.getUTCFullYear();
+      var d = new Date(Date.UTC(y, monthIndex, day, 23));
+      if (d.getTime() < now.getTime() - GRACE) d = new Date(Date.UTC(y + 1, monthIndex, day, 23));
+      return d;
+    }
+    var perDate = nextAnnualPeak(7, 12);
+    var gemDate = nextAnnualPeak(11, 13);
+    var perDark = 100 - moonIll(perDate);
+    var gemDark = 100 - moonIll(gemDate);
+    add({
+      when: perDate, id: 'perseids',
+      kick: 'METEORS · PERSEIDS',
+      title: 'The Perseids peak',
+      meta: fmtS(perDate) + ' · SKY ' + perDark + '% DARK',
+      body: 'Typical published rates are near 100 meteors an hour after midnight around 12–13 August. Darkness here is the computed Moon, not a weather forecast.',
+      myth: 'Meteor showers have no standard natal-chart role here; the wonder is physical dust meeting atmosphere.'
+    });
+    add({
+      when: gemDate, id: 'geminids',
+      kick: 'METEORS · GEMINIDS',
+      title: 'The Geminids peak',
+      meta: fmtS(gemDate) + ' · SKY ' + gemDark + '% DARK',
+      body: 'The year’s other great shower. Typical published rates are high after midnight around 13–14 December. Darkness here is the computed Moon, not a weather forecast.',
+      myth: 'Meteor showers have no standard natal-chart role here; the wonder is physical dust meeting atmosphere.'
+    });
+    var published = [
+      {
+        when: new Date(Date.UTC(2027, 1, 6)), id: 'annular-2027',
+        kick: 'SOLAR ECLIPSE · ANNULAR',
+        title: 'A ring of Sun in February 2027',
+        meta: '6 FEB 2027 · PUBLISHED TABLE · SOUTHERN PACIFIC, SOUTH AMERICA, ATLANTIC',
+        body: 'New Moon leaves a ring of photosphere. The annular path crosses the southern Pacific, parts of South America and the Atlantic. Listed only — there is no second 3D instrument and nothing to buy.',
+        myth: 'Eclipse seasons are traditionally read as paired chapters. Treat that as a reflective language, not a prediction.'
+      },
+      {
+        when: new Date(Date.UTC(2027, 7, 2)), id: 'total-2027',
+        kick: 'SOLAR ECLIPSE · TOTAL',
+        title: 'Totality across North Africa',
+        meta: '2 AUG 2027 · PUBLISHED TABLE · GIBRALTAR, NORTH AFRICA, ARABIAN PENINSULA',
+        body: 'One of the century’s longer totalities, tracking from the Strait of Gibraltar across North Africa and the Arabian Peninsula. Listed only. The 12 August 2026 replay stays in the archive below.',
+        myth: 'Eclipse seasons are traditionally read as paired chapters. Treat that as a reflective language, not a prediction.'
+      }
+    ];
+    for (i = 0; i < published.length; i++) {
+      if (published[i].when.getTime() >= now.getTime() - GRACE) add(published[i]);
+    }
+
+    items.sort(function (a, b) { return a.when.getTime() - b.when.getTime(); });
+    var upcoming = items.filter(function (ev) { return ev.when.getTime() >= now.getTime() - GRACE; });
+    var next = upcoming[0] || null;
+
+    var feature = document.getElementById('next-event');
+    if (feature && next) {
+      var timeEl = feature.querySelector('time');
+      var titleEl = feature.querySelector('h2');
+      var astro = document.getElementById('next-event-astronomy');
+      var tradWrap = document.getElementById('next-event-tradition-wrap');
+      var trad = document.getElementById('next-event-tradition');
+      var link = document.getElementById('next-event-link');
+      if (timeEl) {
+        timeEl.setAttribute('datetime', isoDay(next.when));
+        timeEl.textContent = next.kick;
+      }
+      if (titleEl) titleEl.textContent = next.title;
+      if (astro) astro.textContent = next.body;
+      if (tradWrap && trad) {
+        if (next.myth) {
+          tradWrap.hidden = false;
+          trad.textContent = next.myth;
+        } else {
+          tradWrap.hidden = true;
+          trad.textContent = '';
+        }
+      }
+      if (link) link.setAttribute('href', next.id ? '#' + next.id : '#events');
+    }
+
+    var html = upcoming.map(function (ev) {
+      return '<article class="event"' + (ev.id ? ' id="' + esc(ev.id) + '"' : '') + '>' +
+        '<div class="event__head"><div class="kick">' + esc(ev.kick) + '</div><h2>' + esc(ev.title) + '</h2><div class="meta">' + esc(ev.meta) + '</div></div>' +
+        '<div class="event__body"><div class="event__ledger"><span>Astronomy</span><p>' + esc(ev.body) + '</p></div>' +
+        (ev.myth ? '<div class="event__ledger event__ledger--meaning"><span>Tradition</span><p>' + esc(ev.myth) + '</p></div>' : '') +
+        '</div></article>';
+    }).join('');
     var host = document.getElementById('events');
-    if (host) host.innerHTML = out.join('');
+    if (host) host.innerHTML = html || '<p class="foot">No upcoming events computed in the next 400 days.</p>';
   }
   go();
 })();
 </script>
-<script src="./js/ap-sky-time.js?v=880" defer></script>
+<script src="./js/ap-sky-time.js?v=902" defer></script>
 </body>
 </html>

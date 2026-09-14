@@ -1,6 +1,6 @@
 {
- "_about": "AstroPrecise — seven-chapter natal reading, the word half of the night you were born. Companion to reading-templates.json. Every chapter opens with mono receipts, then serif meaning the receipts earn. Whole-sign houses only when birth time and town coordinates are known. Noon local is a date reference, never a faked hour. Tradition framed for reflection, never prediction. Paid print unlock is not open.",
- "version": "AP-DEEP-2",
+ "_about": "AstroPrecise — seven-chapter natal reading, the word half of the night you were born. Companion to reading-templates.json. Planet is what, sign is how, house is where in life. Chapters 1–6 open with a you-voice lead, then meaning, then mono receipts. Houses only when birth time and town coordinates are known. Noon local is a date reference, never a faked hour. Tradition is symbolic reflection, never prediction, never you-will. Paid print unlock is not open. Chapters 2–6 speak to you; chapter 7 is a first-person letter to keep.",
+ "version": "AP-DEEP-4",
  "signThemes": {
   "Aries": "direct, first-moving, brave by reflex",
   "Taurus": "steady, sensual, loyal to what lasts",
@@ -15,61 +15,105 @@
   "Aquarius": "independent, systemic, loyal to ideas",
   "Pisces": "porous, imaginative, tuned to the unseen"
  },
+ "planetWhat": {
+  "sun": "how you shine",
+  "moon": "what you need",
+  "mercury": "how you think and speak",
+  "venus": "what you love and value",
+  "mars": "how you act",
+  "jupiter": "where you look for room to grow",
+  "saturn": "the long work you actually keep",
+  "uranus": "where you refuse the given order",
+  "neptune": "what you long for before you can prove it",
+  "pluto": "what slowly transforms and does not go back"
+ },
+ "signHow": {
+  "Aries": "a first move — you start while other people are still circling",
+  "Taurus": "something you can hold — you trust what lasts",
+  "Gemini": "talking it through until the room gets smaller",
+  "Cancer": "protecting what feels like home, even in a borrowed kitchen",
+  "Leo": "being seen doing the thing, not waiting to be invited",
+  "Virgo": "making it useful and exact, then quietly handing it over",
+  "Libra": "finding the fair arrangement before anyone has to raise their voice",
+  "Scorpio": "all-in, or not at all",
+  "Sagittarius": "going farther for a meaning you can stand on",
+  "Capricorn": "building something that still stands at the end of the year",
+  "Aquarius": "changing the rule so more people can breathe",
+  "Pisces": "feeling the room before anyone names the weather"
+ },
+ "houseWhere": {
+  "1": "how you meet the world",
+  "2": "what you own and value",
+  "3": "words, siblings and short roads",
+  "4": "home and where you come from",
+  "5": "what you make, play at and love out loud",
+  "6": "work, habits and health",
+  "7": "partners and one-to-one bonds",
+  "8": "what is shared, owed and transformed",
+  "9": "belief, study and long roads",
+  "10": "work in the world and reputation",
+  "11": "friends, allies and the future",
+  "12": "rest, retreat and the unseen"
+ },
  "elements": {
-  "fire": "Fire runs on ignition — you move when something lights.",
-  "earth": "Earth runs on substance — you trust what can be touched and kept.",
-  "air": "Air runs on connection — you think by talking and link by nature.",
-  "water": "Water runs on feeling — you know things before you can say them."
+  "fire": "Fire is how you start: you move when something lights. In a room this looks like you standing up first.",
+  "earth": "Earth is how you keep things: you trust what can be touched and kept. At work this looks like you finishing the job you can hold in your hands.",
+  "air": "Air is how you think: you think by talking and you link by nature. With people this looks like the conversation that suddenly makes the problem smaller.",
+  "water": "Water is how you know: you know things before you can say them. At home this looks like you catching the mood in the room before anyone names it."
  },
  "modalities": {
-  "cardinal": "You are built to begin; starting is the muscle you trained.",
-  "fixed": "You are built to hold; finishing and keeping are your gifts.",
-  "mutable": "You are built to adapt; you bend where others break."
+  "cardinal": "You are built to begin. In a week this looks like you starting the thing while other people are still circling it.",
+  "fixed": "You are built to hold. In a week this looks like you still there when the novelty has worn off.",
+  "mutable": "You are built to adapt. In a week this looks like you changing the plan without losing the plot."
  },
  "chapters": {
   "ch1": {
    "title": "The sky on the night you were born",
-   "serif": "Everything in this reading is built from the positions above — computed from raw astronomy for your birth minute in that town’s real zone, not looked up, not invented. The live sky on this page is tonight. These numbers are that night. Where the words go further than the numbers, they say so. That is the whole contract.",
-   "serifNoTime": "Everything in this reading is built from the astronomy of your birth date — computed here, not looked up. Without a birth time we do not invent an hour: noon in the chosen zone is a date reference only, the Moon is held approximate (±7°), and the rising sign is withheld. Where the words go further than the numbers, they say so. That is the whole contract.",
+   "lead": "{sunLead}",
+   "leadNoTime": "{sunLead} Your Moon precision, rising sign and houses wait for a birth time. Noon is a date reference, not your hour.",
+   "leadNoAngles": "{sunLead} Your rising sign and houses wait for a usable town rather than being guessed.",
+   "serif": "Everything in this reading is built from the positions below — computed from raw astronomy for your birth minute in that town's real zone, not looked up, not invented. The live sky on this page is tonight. These numbers are that night. Where the words go further than the numbers, they say so. Astrology here is symbolic reflection, not a forecast. That is the whole contract.",
+   "serifNoTime": "Everything in this reading is built from the astronomy of your birth date — computed here, not looked up. Without a birth time we do not invent an hour: noon in the chosen zone is a date reference only, the Moon is held approximate (±7°), and the rising sign is withheld. Where the words go further than the numbers, they say so. Astrology here is symbolic reflection, not a forecast. That is the whole contract.",
    "moonApproxNote": "(birth time unknown — Moon position approximate, ±7°)",
    "noonNote": "Noon local is a date reference so the Sun and slower planets can be placed for that day. It is not your birth hour.",
    "noCoordsNote": "The hour is known, but this chart has no usable town coordinates, so the rising sign is withheld rather than guessed."
   },
   "ch2": {
-   "title": "The three lights",
-   "sun": "Your Sun is the running engine — {theme}.",
-   "moon": "Your Moon is what you need before you can explain why — {theme}.",
-   "asc": "Your Ascendant is the door you meet the world through — {theme}.",
-   "noAsc": "Your rising sign needs a birth time we don't have — so this reading stays honestly with what can be fixed without one. If you ever find your birth time, the third light is waiting.",
-   "moonNoTime": "Your Moon is what you need before you can explain why — {theme}. One honest caveat: without a birth time the Moon can only be placed to within about seven degrees, so we hold it lightly{boundary}.",
+   "title": "Sun, Moon, and how you meet the world",
+   "sun": "Your Sun is how you shine when nobody is scoring you — {theme}. At work this looks like you picking up the task that would bother you if it stayed undone.",
+   "moon": "Your Moon is what you need before you can explain why — {theme}. At home this looks like you going to the quiet room when the day has been too loud.",
+   "asc": "Your rising sign is how you meet the world — {theme}. With people this looks like you in the doorway before you have said a word.",
+   "noAsc": "Your rising sign needs a birth time we don't have — so this reading stays honestly with what can be named without one. The doorway is not guessed. If the hour turns up later, that first impression can be named.",
+   "moonNoTime": "Your Moon is what you need before you can explain why — {theme}. At home this looks like you going to the quiet room when the day has been too loud. One honest caveat: without a birth time the Moon can only be placed to within about seven degrees, so we hold it lightly{boundary}.",
    "moonBoundary": " — and it may in fact sit in {otherSign}"
   },
   "ch3": {
-   "title": "The shape of you"
+   "title": "What your chart is made of",
+   "lead": "You carry more {element} than anything else in this sky."
   },
   "ch4": {
-   "title": "Where the weight falls",
-   "intro": "Of every pair of planets in your chart, these sit closest — the contacts tradition reads as the standing conversations of a life:",
-   "pairFrame": "{a} and {b}, {aspect} ({orb} off exact) — {aTheme} {verb} {bTheme}. Neither wins; the conversation is the point.",
+   "title": "The standing conversations",
+   "intro": "Your closest meetings sit here — standing conversations in you. Neither is a verdict.",
+   "pairFrame": "Your {a} and your {b} sit {aspect} ({orb} off exact) — {aTheme} {verb} {bTheme}. In a life this looks like those two parts of you arriving in the same room. Neither wins; the conversation is the point.",
    "noMoonNote": "Because your birth time is unknown, contacts involving the Moon are left out here — its position isn't certain enough to claim an angle this close, and we'd rather skip a line than invent one."
   },
   "ch5": {
-   "title": "The long arcs",
-   "saturn": "Saturn in {sign}{house} — your patience and your load: where you were given less for free, and built more that lasts.",
-   "uranus": "Uranus in {sign}{house} — where you refuse the given order and keep a window open.",
-   "neptune": "Neptune in {sign}{house} — where the edges soften: your longing, your imagination, your sea.",
-   "pluto": "Pluto in {sign}{house} — the slow engine room: what transforms across decades, not days."
+   "title": "The slow planets",
+   "saturn": "Your Saturn in {sign}{house} is the long work: patience, and the load. In a decade this looks like you becoming good at the responsibility you did not volunteer for.",
+   "uranus": "Your Uranus in {sign}{house} is where you refuse the given order. In a decade this looks like you keeping one window open in a room that wanted all the sashes shut.",
+   "neptune": "Your Neptune in {sign}{house} is where the edges soften: longing, imagination, the sea. In a decade this looks like you trusting a picture you cannot yet prove.",
+   "pluto": "Your Pluto in {sign}{house} is the slow engine room: what transforms across decades, not days. In a life this looks like you outgrowing a skin you thought was permanent."
   },
   "ch6": {
-   "title": "This season's sky",
-   "intro": "Where the sky right now touches the sky you were born under — the living, checkable part of this reading:",
-   "noTransits": "The live edition of this chapter is computed on the day you read it — open your chart on the site and this page fills with today's true contacts, dated to the minute."
+   "title": "What today's sky is touching",
+   "intro": "Your day is being touched by today's sky — weather to notice, not orders to obey.",
+   "noTransits": "Your live sky for this chapter is computed on the day you read it — open the sitting again and today's true contacts fill in, dated to the minute."
   },
   "ch7": {
    "title": "A letter to keep",
-   "body": "If you reread nothing else, reread this. The night you were born is a computed sky, not a verdict. Your Sun is the running engine — {sunTheme}. The closest conversation in your chart — {tightPair} — is not a flaw to fix; it is the friction that makes you specific. Your {domElement} nature keeps doing what it does: {domElementLine} Let it. {ascNote} Nothing in your sky needs repairing. It needs living — openly, and in your own order. The sky above tonight is already different from the one on page one; you are allowed to be, too.",
-   "ascNote": "Your rising sign is the door you meet the world through — {theme}.",
-   "noAscNote": "Your rising sign needs a birth time we do not have, so this letter stays with what can be fixed without one."
+   "body": "If I reread nothing else, I reread this. The night I was born is a computed sky, not a verdict. My Sun is how I shine when nobody is scoring me — {sunTheme}. The closest conversation in this chart — {tightPair} — is not a flaw to fix; it is the friction that makes me specific. My {domElement} nature keeps doing what it does. Let it. {ascNote} Nothing in this sky needs repairing. It needs living — openly, and in my own order. The sky above tonight is already different from the one on page one; I am allowed to be, too.",
+   "ascNote": "My rising sign is how I meet the world — {theme}. With people this looks like me in the doorway before I have said a word.",
+   "noAscNote": "My rising sign needs a birth time we do not have, so this letter stays with what can be named without one."
   }
  },
  "aspectVerbs": {
@@ -88,9 +132,9 @@
  },
  "ch5Signs": {
   "saturn": {
-   "aries": "Discipline landed on the impulse itself: decisive action never came free, so every clean start you make now is one you built. Tradition calls this the slow winning of your own nerve.",
+   "aries": "You built every clean start: discipline landed on the impulse itself, so decisive action never came free. Tradition calls this the slow winning of your own nerve.",
    "taurus": "You were asked to earn your sense of enough. Whatever security you hold, in money, comfort or self-worth, was laid down slowly, and it holds.",
-   "gemini": "Words were work before they were play. You learned to say exactly what you mean, and it shows in how readily people believe you.",
+   "gemini": "You learned words as work before they were play. You say exactly what you mean, and it shows in how readily people believe you.",
    "cancer": "Belonging was never handed over lightly; you built your own shelter and you know precisely what it cost. That is why the people inside your walls are safe there.",
    "leo": "Applause never came free, so you learned to make work that deserves it. Yours is the quieter shine that carries weight.",
    "virgo": "Your standards are the load: rigour comes naturally, rest does not. The craft built under that discipline is proof it was worth carrying.",
@@ -130,7 +174,7 @@
    "pisces": "Neptune stands in its own sign here: imagination, compassion and fog all run stronger through your years than most. Your task is keeping the dream without letting it drown the facts."
   },
   "pluto": {
-   "aries": "The slow engine of your era works on selfhood itself: who may act first, and by what right. Across decades you remake yourself by daring.",
+   "aries": "Your era's slow engine works on selfhood itself: who may act first, and by what right. Across decades you remake yourself by daring.",
    "taurus": "Your era's deep work is ownership: what still holds value when everything else is stripped away. Your transformations are slow, stubborn and permanent once made.",
    "gemini": "The engine of your years runs on information, on what happens when everyone can suddenly speak. Your deepest changes begin as a change of mind.",
    "cancer": "Your era's engine worked on home and homeland: what family survives when history leans on it. Your deepest changes move through your roots.",
@@ -157,7 +201,7 @@
    "neptune": "a year or more of soft focus",
    "pluto": "a years-long excavation, seen only in hindsight"
   },
-  "frame": "Right now {planet} {aspectVerb} your natal {target}, the part of your sky that carries {targetTheme}. Tradition reads a visit like this as weather, not verdict: worth noticing while it lasts, never something to obey.",
+  "frame": "Right now your {planet} {aspectVerb} your natal {target}, the part of this sky that carries {targetTheme}. Tradition reads a visit like this as weather, not a verdict: worth noticing while it lasts, never something to obey. In the day this looks like that part of you being lit, not ordered.",
   "aspectVerbs": {
    "conjunction": "stands on",
    "sextile": "offers a small door to",
@@ -167,17 +211,17 @@
   }
  },
  "ch4Closers": {
-  "conjunction": "These two never take turns in you; they arrive together, and the blend is your signature, not a blur.",
+  "conjunction": "These two never take turns in you; they arrive together, and the blend is a signature, not a blur.",
   "sextile": "This ease never insists; it simply works, whenever you remember to ask.",
   "square": "Much of what you have built, you built because these two would not let each other rest; that is the compliment hidden in the friction.",
   "trine": "An ease so native you may never have clocked it as a gift; name it, and use it on purpose.",
   "opposition": "These poles stay in conversation for a lifetime; the task was never choosing a side, only holding the rope between them."
  },
  "elementAbsent": {
-  "fire": "No fire in a chart reads, traditionally, not as a missing spark but as ignition held under choice: you do not act on reflex, so when you move, it is decided. People learn that your yes means something.",
-  "earth": "A chart without earth travels light. Practicality is learned rather than instinctive for you, and in exchange you are rarely owned by your possessions; what others secure with things, you secure another way.",
-  "air": "No air traditionally reads as knowing before explaining: your understanding forms without conversation, and the words come afterwards. It can make your eventual sentences worth the wait.",
-  "water": "A chart without water is not a chart without feeling; tradition reads it as feeling that arrives through doing, making and thinking rather than tides. You can be the calm one in other people's storms because emotion never runs your instruments."
+  "fire": "You don't start on reflex — ignition is a choice. With people this looks like a yes they can trust, because it was not a twitch.",
+  "earth": "You travel light: practicality is learned rather than instinctive for you, and in exchange you are rarely owned by your things. At home this looks like you securing a life by some other route than stuffing the cupboards.",
+  "air": "You know before you explain. Your understanding forms without conversation, and the words come afterwards. With people this looks like a pause, then a sentence that was worth the wait.",
+  "water": "You still feel — missing water is not missing feeling. Feeling arrives for you through doing, making and thinking rather than tides. In a storm this looks like you still able to work the instruments."
  },
- "stelliumNote": "{count} planets stand together in {sign}{houseClause} — a stellium, the old name for a defining signature: this sign's way of moving is not one note in your chart but its keynote."
+ "stelliumNote": "You have {count} planets standing together in {sign}{houseClause} — a stack, not one note. In a life this looks like you keeping volume on this sign's way of moving, in the part of life that house names."
 }

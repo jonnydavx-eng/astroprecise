@@ -20,12 +20,12 @@ body.ap-mysky-page,
 body.ap-no-nav-enter,
 body.ap-award-511,
 body.page-explore {
-  background-color: var(--ap-jet-soft, #05080F) !important;
+  background-color: var(--ap-jet-soft, #040812) !important;
   background-image:
     radial-gradient(ellipse 85% 55% at 72% 42%, rgba(126, 200, 232, 0.06) 0%, transparent 55%),
     radial-gradient(ellipse 40% 30% at 15% 80%, rgba(139, 124, 224, 0.04) 0%, transparent 50%) !important;
   background-attachment: fixed;
-  color: var(--ap-silver-bright, #E8EBF0) !important;
+  color: var(--ap-silver-bright, #EEF4FA) !important;
 }
 
 /* True jet behind home/explore orrery */
@@ -58,18 +58,18 @@ body .masthead {
 }
 body .navbar__link,
 body .contents-nav a {
-  color: var(--ap-silver-dim, #8B919C) !important;
+  color: var(--ap-silver-dim, #93A8BF) !important;
 }
 body .navbar__link:hover,
 body .navbar__link.is-active,
 body .navbar__link[aria-current="page"],
 body .contents-nav a:hover,
 body .contents-nav a[aria-current="page"] {
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
 }
 body .logo-text,
 body .masthead-logo .logo-text {
-  color: var(--ap-silver-bright, #E8EBF0) !important;
+  color: var(--ap-silver-bright, #EEF4FA) !important;
 }
 
 body .site-footer,
@@ -77,14 +77,14 @@ body footer.site-footer,
 body .ap-footer {
   background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.95) 28%) !important;
   border-top: 1px solid rgba(200, 205, 214, 0.1) !important;
-  color: var(--ap-silver, #C8CDD6) !important;
+  color: var(--ap-silver, #C9D6E3) !important;
 }
 body .site-footer a,
 body footer.site-footer a {
-  color: var(--ap-silver-dim, #8B919C) !important;
+  color: var(--ap-silver-dim, #93A8BF) !important;
 }
 body .site-footer a:hover {
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
 }
 
 /* ── HOME stacked: [model bay] then [cast form] — never overlap (user shots) ──
@@ -209,27 +209,27 @@ body.ap-award-511 #heroChapter .orrery-deck {
   width: 100% !important;
 }
 body.ap-award-511 #heroChapter h1 {
-  color: var(--ap-silver-bright, #E8EBF0) !important;
+  color: var(--ap-silver-bright, #EEF4FA) !important;
   text-shadow: 0 2px 28px rgba(0, 0, 0, 0.7);
 }
 body.ap-award-511 #heroChapter .hero-copy p {
-  color: var(--ap-silver, #C8CDD6) !important;
+  color: var(--ap-silver, #C9D6E3) !important;
 }
 body.ap-award-511 #heroChapter .hero-copy em,
 body.ap-award-511 #heroChapter .hero-copy i,
 body.ap-award-511 #heroChapter .hero-copy .accent,
 body.ap-award-511 .display-accent,
 body.ap-award-511 #heroChapter .display-accent {
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
   font-style: italic;
 }
 body.ap-award-511 .hero-live-pill {
   border-color: rgba(126, 200, 232, 0.35) !important;
   background: rgba(0, 0, 0, 0.75) !important;
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
 }
 body.ap-award-511 .hero-live-pill__dot {
-  background: var(--ap-aurora, #7EC8E8) !important;
+  background: var(--ap-aurora, #79C7F2) !important;
   box-shadow: 0 0 10px rgba(126, 200, 232, 0.65) !important;
 }
 body.ap-award-511 .ap-orrery-deck,
@@ -245,20 +245,20 @@ body.ap-award-511 #heroChapter input,
 body.ap-award-511 #heroChapter select {
   background: rgba(0, 0, 0, 0.75) !important;
   border-color: rgba(200, 205, 214, 0.22) !important;
-  color: var(--ap-silver-bright, #E8EBF0) !important;
+  color: var(--ap-silver-bright, #EEF4FA) !important;
 }
 body.ap-award-511 #heroChapter label {
-  color: var(--ap-silver-dim, #8B919C) !important;
+  color: var(--ap-silver-dim, #93A8BF) !important;
 }
 
 /* Masthead dateline / rules — silver */
 body.ap-award-511 .masthead-rule,
 body.ap-award-511 .dateline {
-  color: var(--ap-silver-dim, #8B919C) !important;
+  color: var(--ap-silver-dim, #93A8BF) !important;
   border-color: rgba(200, 205, 214, 0.15) !important;
 }
 body.ap-award-511 .dateline {
-  color: var(--ap-silver-dim, #8B919C) !important;
+  color: var(--ap-silver-dim, #93A8BF) !important;
 }
 
 /* ── CTAs — silver aurora ── */
@@ -267,7 +267,7 @@ body.ap-award-511 .btn-press,
 body.ap-award-511 #heroChapter .btn-press,
 body .btn--primary,
 body a.btn-primary {
-  background: linear-gradient(135deg, #4A90E0 0%, #7EC8E8 48%, #C8D8E8 100%) !important;
+  background: linear-gradient(135deg, #4A90E0 0%, #79C7F2 48%, #C8D8E8 100%) !important;
   color: #050508 !important;
   box-shadow: 0 6px 28px rgba(126, 200, 232, 0.28) !important;
   border: none !important;
@@ -317,17 +317,17 @@ body.page-chart .chart-form-card a,
 body.page-chart .form-hint a,
 body.page-chart .chart-form__optional-sum,
 body.page-chart summary {
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
 }
 body.page-chart h1,
 body.page-shop h1,
 body.page-horoscope h1 {
-  color: var(--ap-silver-bright, #E8EBF0) !important;
+  color: var(--ap-silver-bright, #EEF4FA) !important;
 }
 
 /* Engine strip */
-body .ap-ev__eyebrow { color: var(--ap-aurora, #7EC8E8) !important; }
-body .ap-ev__title { color: var(--ap-silver-bright, #E8EBF0) !important; }
+body .ap-ev__eyebrow { color: var(--ap-aurora, #79C7F2) !important; }
+body .ap-ev__title { color: var(--ap-silver-bright, #EEF4FA) !important; }
 body .ap-ev-card {
   border-color: rgba(200, 205, 214, 0.16) !important;
   background: rgba(8, 8, 12, 0.92) !important;
@@ -338,12 +338,12 @@ body .ap-ev-card:hover {
   box-shadow: 0 8px 28px rgba(126, 200, 232, 0.1) !important;
 }
 body .ap-ev__btn--primary {
-  background: linear-gradient(135deg, #4A90E0, #7EC8E8) !important;
+  background: linear-gradient(135deg, #4A90E0, #79C7F2) !important;
   color: #050508 !important;
 }
 body .ap-ev__btn--ghost {
   border-color: rgba(126, 200, 232, 0.4) !important;
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
 }
 body .ap-ev-cinema {
   border-radius: 16px !important;
@@ -357,7 +357,7 @@ body.ap-mysky-page .mysky-card {
   border-radius: 16px !important;
 }
 body.ap-mysky-page .mysky-hero h1 {
-  color: var(--ap-silver-bright, #E8EBF0) !important;
+  color: var(--ap-silver-bright, #EEF4FA) !important;
 }
 body.ap-mysky-page .mysky-cta--primary {
   background: linear-gradient(135deg, #4A90E0, #A8DCF2) !important;
@@ -365,7 +365,7 @@ body.ap-mysky-page .mysky-cta--primary {
 }
 body.ap-mysky-page .mysky-cta--ghost {
   border-color: rgba(126, 200, 232, 0.4) !important;
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
 }
 
 body .ap-float-nav,
@@ -377,7 +377,7 @@ body .bottom-nav {
   background: rgba(0, 0, 0, 0.85) !important;
   backdrop-filter: blur(14px) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
-  color: var(--ap-silver, #C8CDD6) !important;
+  color: var(--ap-silver, #C9D6E3) !important;
 }
 
 body.ap-award-511 .instruments-card,
@@ -394,7 +394,7 @@ body .shop-price {
 }
 
 body :focus-visible {
-  outline: 2px solid var(--ap-aurora, #7EC8E8) !important;
+  outline: 2px solid var(--ap-aurora, #79C7F2) !important;
   outline-offset: 2px;
 }
 
@@ -405,7 +405,7 @@ body.page-guides,
 body.page-compat,
 body.page-quiz,
 body.page-explore {
-  background-color: var(--ap-jet-soft, #05080F) !important;
+  background-color: var(--ap-jet-soft, #040812) !important;
 }
 body.page-sign .sign-hero,
 body.page-ephemeris .ephemeris-hero,
@@ -432,9 +432,9 @@ body.page-chart progress,
 body.page-chart .chart-precision__fill,
 body.page-chart .precision-track > span,
 body.page-chart .precision-fill {
-  background: linear-gradient(90deg, #4A90E0, #7EC8E8) !important;
+  background: linear-gradient(90deg, #4A90E0, #79C7F2) !important;
   border-color: rgba(126, 200, 232, 0.35) !important;
-  accent-color: #7EC8E8 !important;
+  accent-color: #79C7F2 !important;
 }
 
 /* Shop product cards silver frame */
@@ -445,7 +445,7 @@ body.page-shop .shop-card {
 }
 body.page-shop .shop-hero h1,
 body.page-shop .shopc-section-title {
-  color: var(--ap-silver-bright, #E8EBF0) !important;
+  color: var(--ap-silver-bright, #EEF4FA) !important;
 }
 
 /* Navbar sitewide glass jet */
@@ -464,8 +464,8 @@ body.page-compat .compat-card {
 }
 
 /* Hard-hex brass leftovers → silver (common inline/old rules) */
-body [style*="#A8B0BC"],
-body [style*="#7EC8E8"] {
+body [style*="#93A8BF"],
+body [style*="#79C7F2"] {
   /* can't fix inline easily; covered by SVG CSS above */
 }
 
@@ -491,14 +491,14 @@ body [style*="#7EC8E8"] {
 /* ── Home body: kill black voids (user full-page shots) ── */
 body.ap-award-511 .ap-chapter,
 body.ap-award-511 .department.ap-chapter {
-  background-color: #05080F !important;
-  color: #E8EBF0 !important;
+  background-color: #040812 !important;
+  color: #EEF4FA !important;
   padding-block: clamp(2.5rem, 5vw, 4rem) !important;
   min-height: 0 !important;
 }
 body.ap-award-511 .ap-chapter-title,
 body.ap-award-511 .ap-chapter h2 {
-  color: #E8EBF0 !important;
+  color: #EEF4FA !important;
   opacity: 1 !important;
 }
 /* Library / sign tiles — never empty black discs (bug shot full-page voids) */
@@ -507,7 +507,7 @@ body.ap-award-511 #libraryChapter .sign-tile,
 body.ap-award-511 .sign-index-entry {
   background: linear-gradient(165deg, rgba(18, 18, 26, 0.9), rgba(8, 8, 12, 0.85)) !important;
   border: 1px solid rgba(200, 205, 214, 0.16) !important;
-  color: #E8EBF0 !important;
+  color: #EEF4FA !important;
   min-height: 4.5rem !important;
 }
 body.ap-award-511 #libraryChapter .sign-glyph,
@@ -519,22 +519,22 @@ body.ap-award-511 #libraryChapter img {
 }
 body.ap-award-511 #libraryChapter .sign-index-entry span,
 body.ap-award-511 #libraryChapter .sign-name {
-  color: #C8CDD6 !important;
+  color: #C9D6E3 !important;
   opacity: 1 !important;
 }
 body.ap-award-511 .dept-list-item,
 body.ap-award-511 .instruments-card {
   background: linear-gradient(165deg, rgba(18, 18, 26, 0.85), rgba(0, 0, 0, 0.65)) !important;
   border: 1px solid rgba(200, 205, 214, 0.14) !important;
-  color: #E8EBF0 !important;
+  color: #EEF4FA !important;
 }
 body.ap-award-511 .ap-chapter-lead,
 body.ap-award-511 .ap-chapter p {
-  color: #C8CDD6 !important;
+  color: #C9D6E3 !important;
   opacity: 1 !important;
 }
 body.ap-award-511 .ap-display-kicker {
-  color: #7EC8E8 !important;
+  color: #79C7F2 !important;
   opacity: 1 !important;
 }
 body.ap-award-511 .dept-list-item,
@@ -546,14 +546,14 @@ body.ap-award-511 .dept-list > li {
 }
 body.ap-award-511 .dept-title,
 body.ap-award-511 .dept-list-dek {
-  color: #E8EBF0 !important;
+  color: #EEF4FA !important;
   opacity: 1 !important;
 }
 body.ap-award-511 .dept-list-dek {
-  color: #C8CDD6 !important;
+  color: #C9D6E3 !important;
 }
 body.ap-award-511 .dept-number {
-  color: #7EC8E8 !important;
+  color: #79C7F2 !important;
 }
 /* Kill mid-page / sticky email on model + tool pages (user screenshot audit) */
 body.ap-award-511 .ap-email-cta--sticky,
@@ -594,8 +594,8 @@ body.ap-award-511 #heroChapter .hero-copy h1 i,
 body.ap-award-511 #heroChapter .hero-copy h1 span[style],
 body.ap-award-511 #heroChapter .hero-copy .display-line--accent,
 body.ap-award-511 #heroChapter .hero-copy .lede em {
-  color: var(--ap-aurora, #7EC8E8) !important;
-  -webkit-text-fill-color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
+  -webkit-text-fill-color: var(--ap-aurora, #79C7F2) !important;
   background: none !important;
   font-style: italic;
 }
@@ -606,29 +606,29 @@ body .sign-hero__seal,
 body .sign-hero__glyph,
 body .sign-seal,
 body [class*="sign-seal"] {
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
   filter: drop-shadow(0 0 12px rgba(126, 200, 232, 0.25));
 }
 body .sign-hero__motto,
 body .sign-hero__quote,
 body .sign-hero em {
-  color: var(--ap-silver, #C8CDD6) !important;
+  color: var(--ap-silver, #C9D6E3) !important;
 }
 body .sign-hero__dates {
-  color: var(--ap-silver-dim, #8B919C) !important;
+  color: var(--ap-silver-dim, #93A8BF) !important;
 }
 body .sign-hero__constellation svg [stroke] {
-  stroke: var(--ap-chrome, #A8B0BC) !important;
+  stroke: var(--ap-chrome, #93A8BF) !important;
 }
 
 /* Chart accuracy callouts */
 body.page-chart .ap-time-accuracy,
 body.page-chart .ap-time-accuracy strong {
-  color: var(--ap-silver, #C8CDD6) !important;
+  color: var(--ap-silver, #C9D6E3) !important;
   border-color: rgba(126, 200, 232, 0.25) !important;
 }
 body.page-chart .ap-time-accuracy strong:first-child {
-  color: var(--ap-aurora, #7EC8E8) !important;
+  color: var(--ap-aurora, #79C7F2) !important;
 }
 
 /* Explore legend jet glass */
@@ -643,7 +643,7 @@ body.page-shop .shopc-card__name,
 body.page-shop .shopc-card__price,
 body.page-shop .shop-hero-lede,
 body.page-shop .shop-section-title {
-  color: var(--ap-silver-bright, #E8EBF0) !important;
+  color: var(--ap-silver-bright, #EEF4FA) !important;
 }
 body.page-shop .shopc-card__art {
   border-color: rgba(200, 205, 214, 0.14) !important;
@@ -659,10 +659,10 @@ body.page-shop .shop-path {
 body .sign-hero__motto,
 body .sign-hero__keyword,
 body .sign-hero [class*="motto"] {
-  color: var(--ap-silver, #C8CDD6) !important;
+  color: var(--ap-silver, #C9D6E3) !important;
 }
 body .sign-hero__dates {
-  color: var(--ap-silver-dim, #8B919C) !important;
+  color: var(--ap-silver-dim, #93A8BF) !important;
   letter-spacing: 0.14em;
 }
 /* Seal plate on jet */
@@ -671,7 +671,7 @@ body .ap-seal__plate {
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.08), transparent 50%),
     radial-gradient(ellipse 100% 100% at 50% 100%, #0a0a0c, #000) !important;
   box-shadow:
-    inset 0 0 0 1px rgba(168, 176, 188, 0.35),
+    inset 0 0 0 1px rgba(147, 168, 191, 0.35),
     inset 0 -3px 8px rgba(0,0,0,0.55),
     0 2px 8px rgba(0,0,0,0.5),
     0 0 16px -4px rgba(126, 200, 232, 0.12) !important;
@@ -681,7 +681,7 @@ body .ap-seal__plate {
 body .sign-hero__glyph .ap-seal,
 body .sign-hero__seal .ap-seal,
 body .home-sign-card__seal .ap-seal {
-  filter: drop-shadow(0 0 12px rgba(168, 176, 188, 0.35)) !important;
+  filter: drop-shadow(0 0 12px rgba(147, 168, 191, 0.35)) !important;
 }
 body[data-element="fire"] .sign-hero__glyph .ap-seal,
 body[data-element="fire"] .sign-hero__seal .ap-seal {
@@ -700,6 +700,6 @@ body[data-element="earth"] .sign-hero__seal .ap-seal {
   filter: drop-shadow(0 0 12px rgba(106, 154, 112, 0.35)) !important;
 }
 body .sign-hero__keyword {
-  color: var(--ap-silver, #C8CDD6) !important;
+  color: var(--ap-silver, #C9D6E3) !important;
   font-style: italic;
 }

@@ -16,7 +16,7 @@
 .ap-contact-form label { display: grid; gap: 7px; color: var(--ap-brass); font: 9px/1.4 var(--ap-data); letter-spacing: .12em; text-transform: uppercase; }
 .ap-contact-form :is(input, textarea) { width: 100%; border: 1px solid rgba(185, 200, 220, .24); border-radius: 4px; background: var(--ap-void-deep); color: var(--ap-paper); padding: 12px 13px; font: 16px/1.5 var(--ap-body); }
 .ap-contact-form textarea { min-height: 150px; resize: vertical; }
-.ap-contact-form button { min-height: 50px; justify-self: start; padding: 0 20px; border: 1px solid var(--ap-ember); border-radius: 5px; background: var(--ap-ember); color: #170702; font-weight: 700; cursor: pointer; }
+.ap-contact-form button { min-height: 50px; justify-self: start; padding: 0 20px; border: 1px solid var(--ap-ember); border-radius: 5px; background: var(--ap-ember); color: #07101E; font-weight: 700; cursor: pointer; }
 .ap-contact-note { margin: 4px 0 0 !important; color: var(--ap-paper-faint) !important; font: 10px/1.6 var(--ap-data) !important; }
 
 @media (max-width: 760px) {

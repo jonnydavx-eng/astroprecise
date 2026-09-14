@@ -1,6 +1,6 @@
 /**
- * AstroPrecise — archive-page fallback footer.
- * Used by generated sign pages when JavaScript cannot mount the compact footer.
+ * AstroPrecise — noscript/first-paint footer for generated sign pages.
+ * Must match ap-footer-inject.js compact four-route chrome.
  */
 
 export const ZODIAC_SIGNS = [
@@ -18,78 +18,57 @@ export const ZODIAC_SIGNS = [
   { key: 'pisces', name: 'Pisces' },
 ];
 
-/** Keep the fallback chrome on the same four-route Act 1 spine as ap-footer-inject.js. Retired room links must not re-enter generated footers. */
-const FOOTER_TOOLS = [
-  { href: 'index.html', label: 'Observatory', icon: '<span aria-hidden="true">✦</span>' },
-  { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
-  { href: 'sky-events.html', label: 'Events', icon: '<span aria-hidden="true">☽</span>' },
-  { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
+const CORE = [
+  { href: 'index.html', label: 'Observatory' },
+  { href: 'chart.html', label: 'Chart' },
+  { href: 'sky-events.html', label: 'Events' },
+  { href: 'shop.html', label: 'Shop' },
 ];
 
-export function footerToolsColHtml() {
-  const items = FOOTER_TOOLS.map((t) =>
-    `            <li><a href="${t.href}">${t.icon} ${t.label}</a></li>`
-  ).join('\n');
-  return `
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
-          <ul>
-${items}
-          </ul>
-        </div>`;
+const LEGAL = [
+  { href: 'privacy.html', label: 'Privacy' },
+  { href: 'terms.html', label: 'Terms' },
+  { href: 'refunds.html', label: 'Refunds' },
+  { href: 'verify.html', label: 'Verify' },
+  { href: 'contact.html', label: 'Contact' },
+];
+
+function links(items) {
+  return items.map((item) => `<a href="${item.href}">${item.label}</a>`).join('');
 }
 
-/** Tools column only; retired room and Sun-sign listings stay unhooked. */
+/** @deprecated kept for older scripts; the public footer is four-route compact. */
+export function footerToolsColHtml() {
+  return '';
+}
+
 export function footerNavHtml() {
-  return footerToolsColHtml();
+  return '';
 }
 
 export function footerBrandColHtml() {
-  const seals = ZODIAC_SIGNS.map((s) =>
-    `            <span data-celestial-seal="zodiac:${s.key}" data-seal-sm></span>`
-  ).join('\n');
-  return `
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">AstroPrecise</span>
-          </a>
-          <p class="footer-brand__tagline">
-            A precision instrument wearing the skin of an astrology site.
-            Real astronomy, read in the old language.
-          </p>
-          <p>
-            <span class="footer-brand__badge">
-              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
-            </span>
-          </p>
-          <div class="footer-zodiac-strip" aria-hidden="true">
-${seals}
-          </div>
-        </div>`;
+  return '';
 }
 
 export function footerLegalHtml() {
-  return `
-      <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; Astronomy computed locally &middot; No accounts required</p>
-        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
-      </div>`;
+  return '';
 }
 
 export function footerInnerHtml() {
   return `
-      <div class="footer-inner" data-ap-footer-model="1">
-${footerBrandColHtml()}
-${footerNavHtml()}
-      </div>`;
+    <div class="ap-site-footer__inner">
+      <div class="ap-site-footer__brand">
+        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
+        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
+      </div>
+      <nav class="ap-site-footer__routes" aria-label="Core pages">${links(CORE)}</nav>
+      <nav class="ap-site-footer__legal" aria-label="Legal and verification">${links(LEGAL)}</nav>
+    </div>
+    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>`;
 }
 
-export function footerBlockHtml({ footerClass = 'footer' } = {}) {
-  return `  <footer class="${footerClass}" role="contentinfo">
-    <div class="container">
+export function footerBlockHtml() {
+  return `  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
 ${footerInnerHtml()}
-${footerLegalHtml()}
-    </div>
   </footer>`;
 }

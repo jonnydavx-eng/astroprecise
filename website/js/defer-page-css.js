@@ -10,16 +10,9 @@
     else window.addEventListener('load', function () { setTimeout(fn, 100); }, { once: true });
   }
 
-  var ua = navigator.userAgent || '';
-  /* Audit detection must never rely on chrome-only globals: window.chrome is
-     undefined in every real Firefox (and some Chromium forks), which used to
-     put actual visitors on the no-CSS audit path. webdriver + HeadlessChrome
-     + explicit ?lite=1 cover Lighthouse/CI. */
-  var auditPath = !!(
-    navigator.webdriver ||
-    /\bHeadlessChrome\b/i.test(ua) ||
-    /[?&]lite=1/.test(location.search)
-  );
+  /* `?lite=1` is an explicit visitor-selected reduced shell. Automation and
+     Lighthouse must exercise the same deferred-resource path as a visitor. */
+  var litePath = /[?&]lite=1/.test(location.search);
 
   function injectStylesheet(href, id, onload) {
     if (document.getElementById(id)) return document.getElementById(id);
@@ -33,7 +26,7 @@
   }
 
   window.loadPageCssNow = function (href, id, onload) {
-    if (auditPath) return null;
+    if (litePath) return null;
     return injectStylesheet(href, id, onload);
   };
 
@@ -49,11 +42,10 @@
     injectStylesheet('css/celestial-seals.css', 'ap-css-seals');
   };
 
-  /* Arm every real-user signal that should pull deferred CSS in:
+  /* Arm every visitor signal that should pull deferred CSS in:
      first pointerdown, first scroll (readers scroll long before they tap),
      the footer approaching the viewport (anchor jumps / short pages), and a
-     30s post-load fallback. Lighthouse/CI never reach this — auditPath
-     returns before arming, so scroll in a trace can't pull deferred CSS. */
+     30s post-load fallback. Automated measurements use this same path. */
   function armDeferredLoad(load) {
     window.addEventListener('pointerdown', load, { once: true, passive: true });
     window.addEventListener('scroll', load, { once: true, passive: true });
@@ -72,7 +64,7 @@
   }
 
   window.deferPageCss = function (href, id) {
-    if (auditPath) return;
+    if (litePath) return;
     function load() {
       injectStylesheet(href, id);
     }
@@ -80,7 +72,7 @@
   };
 
   window.deferMainCss = function () {
-    if (auditPath) return;
+    if (litePath) return;
     var id = 'ap-css-main';
     var done = false;
     function load() {

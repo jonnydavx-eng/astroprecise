@@ -6,14 +6,14 @@
 body.ap-moment-page {
   --mom-void: var(--ap-void-deep, #020307);
   --mom-raised: var(--ap-void-raised, #1A2230);
-  --mom-brass: var(--ap-gold-core, #A8B0BC);
-  --mom-brass-vivid: var(--ap-gold-vivid, #C8CDD6);
-  --mom-parch: var(--ap-text-primary, #E8EBF0);
-  --mom-dim: var(--ap-text-secondary, #C8CDD6);
-  --mom-muted: var(--ap-text-muted, #8B919C);
-  --mom-cta: var(--ap-cta, #FF6428);
-  --mom-cta-ink: var(--ap-cta-ink, #1F1206);
-  --mom-rim: var(--ap-gold-a16, rgba(168, 176, 188, 0.16));
+  --mom-brass: var(--ap-gold-core, #93A8BF);
+  --mom-brass-vivid: var(--ap-gold-vivid, #C9D6E3);
+  --mom-parch: var(--ap-text-primary, #EEF4FA);
+  --mom-dim: var(--ap-text-secondary, #C9D6E3);
+  --mom-muted: var(--ap-text-muted, #93A8BF);
+  --mom-cta: var(--ap-cta, #8BA9FF);
+  --mom-cta-ink: var(--ap-cta-ink, #07101E);
+  --mom-rim: var(--ap-gold-a16, rgba(147, 168, 191, 0.16));
 }
 
 /* ── Hero (compact — form is the product, not a 1200px lifestyle wall) ─ */
@@ -63,7 +63,7 @@ body.ap-moment-page {
   font-size: 0.88rem;
 }
 .mom-hero__jump a {
-  color: var(--ap-aurora, #d8b46a);
+  color: var(--ap-aurora, #93A8BF);
   text-decoration: none;
   border-bottom: 1px solid rgba(126, 200, 232, 0.35);
 }
@@ -101,7 +101,7 @@ body.ap-moment-page {
   height: auto;
   border-radius: 50%;
   border: 2px solid var(--mom-rim);
-  box-shadow: 0 0 0 6px rgba(168, 176, 188, 0.08), 0 18px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 6px rgba(147, 168, 191, 0.08), 0 18px 40px rgba(0, 0, 0, 0.4);
   display: inline-block;
   background: #020307;
 }
@@ -160,8 +160,8 @@ body.ap-moment-page {
   background: rgba(12, 16, 22, 0.55);
 }
 .mom-compare__col--pack {
-  border-color: rgba(168, 176, 188, 0.35);
-  background: rgba(168, 176, 188, 0.08);
+  border-color: rgba(147, 168, 191, 0.35);
+  background: rgba(147, 168, 191, 0.08);
 }
 .mom-compare__head {
   margin: 0 0 0.45rem;
@@ -196,7 +196,7 @@ body.ap-moment-page {
   object-fit: cover;
   border: 1px solid rgba(200, 205, 214, 0.45);
   box-shadow:
-    0 0 0 3px rgba(168, 176, 188, 0.14),
+    0 0 0 3px rgba(147, 168, 191, 0.14),
     0 0 0 5px rgba(126, 200, 232, 0.10);
   flex-shrink: 0;
   background: #000;
@@ -374,7 +374,7 @@ body.ap-moment-page {
   outline: none;
 }
 .mom-chip[aria-pressed="true"] {
-  background: rgba(168, 176, 188, 0.14);
+  background: rgba(147, 168, 191, 0.14);
   border-color: var(--mom-brass);
   color: var(--mom-brass-vivid);
 }
@@ -390,7 +390,7 @@ body.ap-moment-page {
   border: 1px solid var(--mom-rim);
   border-radius: 16px;
   padding: 1.35rem 1.25rem 1.5rem;
-  box-shadow: 0 0 0 1px rgba(168, 176, 188, 0.04), 0 18px 48px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 1px rgba(147, 168, 191, 0.04), 0 18px 48px rgba(0, 0, 0, 0.35);
 }
 .mom-plate__title {
   font-family: var(--font-display, Georgia, serif);
@@ -433,7 +433,7 @@ body.ap-moment-page {
 .mom-field input:focus-visible,
 .mom-field select:focus-visible {
   outline: none;
-  box-shadow: var(--ap-focus-shadow, 0 0 0 3px rgba(168, 176, 188, 0.22));
+  box-shadow: var(--ap-focus-shadow, 0 0 0 3px rgba(147, 168, 191, 0.22));
   border-color: var(--mom-brass);
 }
 .mom-place-wrap { position: relative; }
@@ -464,7 +464,7 @@ body.ap-moment-page {
 }
 .mom-autocomplete button:hover,
 .mom-autocomplete button:focus-visible {
-  background: rgba(168, 176, 188, 0.12);
+  background: rgba(147, 168, 191, 0.12);
   outline: none;
 }
 .mom-actions {
@@ -507,7 +507,7 @@ body.ap-moment-page {
   min-height: 1.35em;
 }
 .mom-status[data-tone="ok"] { color: var(--mom-brass-vivid); }
-.mom-status[data-tone="err"] { color: #E8A090; }
+.mom-status[data-tone="err"] { color: #FF8EA8; }
 
 /* ── Reveal ───────────────────────────────────────────────────────────── */
 .mom-reveal {
@@ -575,7 +575,7 @@ body.ap-moment-page {
   grid-template-columns: 7.5rem 1fr;
   gap: 0.5rem;
   padding: 0.45rem 0;
-  border-bottom: 1px solid rgba(232, 224, 208, 0.06);
+  border-bottom: 1px solid rgba(238, 244, 250, 0.06);
   font-size: 0.92rem;
 }
 .mom-fact:last-of-type { border-bottom: 0; }
@@ -666,7 +666,7 @@ body.ap-moment-page {
   width: 100%;
   height: auto;
   border-radius: 14px;
-  border: 1px solid rgba(168,176,188,0.28);
+  border: 1px solid rgba(147, 168, 191,0.28);
   display: block;
 }
 .mom-hero__jump {
@@ -674,19 +674,19 @@ body.ap-moment-page {
   margin: 0.75rem 0 0;
   font-size: 0.88rem;
 }
-.mom-hero__jump a { color: #C8CDD6; }
+.mom-hero__jump a { color: #C9D6E3; }
 .mom-deeper {
   max-width: 720px;
   margin: 1.25rem auto 1.5rem;
   padding: 0.35rem 1rem 0.75rem;
-  border: 1px solid rgba(168,176,188,0.2);
+  border: 1px solid rgba(147, 168, 191,0.2);
   border-radius: 14px;
   background: rgba(12,16,22,0.4);
 }
 .mom-deeper__sum {
   cursor: pointer;
   list-style: none;
-  color: #A8B0BC;
+  color: #93A8BF;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.75rem;
@@ -699,15 +699,15 @@ body.ap-moment-page {
 .mom-deeper__pack {
   margin: 0.75rem 0 0;
   font-size: 0.88rem;
-  color: #C8CDD6;
+  color: #C9D6E3;
 }
-.mom-deeper .mom-how__steps { margin: 0.5rem 0 0; padding-left: 1.1rem; color: #C8CDD6; }
+.mom-deeper .mom-how__steps { margin: 0.5rem 0 0; padding-left: 1.1rem; color: #C9D6E3; }
 
 /* Sign instrument voice */
 .sign-instrument-note {
   display: block;
   margin-bottom: 0.75rem;
   font-size: 0.92em;
-  color: #A8B0BC;
+  color: #93A8BF;
   letter-spacing: 0.01em;
 }

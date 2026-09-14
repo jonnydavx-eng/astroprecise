@@ -7,15 +7,14 @@
  * reading itself ever leaving the buyer's device.
  *
  * THE HONEST FLOW (birth data never touches Gumroad):
- *   1. The reading is computed ON THE DEVICE from the VSOP87 engine (as today).
- *   2. To reveal it, the buyer taps Buy. We navigate to the Gumroad product page
- *      (full navigation, not an overlay). Gumroad takes the money + the email.
- *   3. Gumroad issues a LICENSE KEY. Paste it on return. We verify that key
+ *   1. The reading is computed ON THE DEVICE from the VSOP87 engine.
+ *   2. The event-specific checkout is now retired; no new payment route is exposed.
+ *   3. Past buyers can paste their LICENSE KEY. We verify that key
  *      against Gumroad's API and, if valid, unlock the already-computed reading.
  *      Licence keys are never accepted from a URL.
  *
- * PRODUCTS (create these in Gumroad, enable "Generate license keys"):
- *   eclipse-edition  £7
+ * ARCHIVED ENTITLEMENT:
+ *   eclipse-edition — checkout disabled; existing licence verification retained.
  *
  * SECURITY NOTE: verifying a license needs only product_id + license_key (no secret),
  * so it CAN run in the browser — but a spoofed "valid" response could unlock content
@@ -25,15 +24,14 @@
  * below works in either place.
  */
 
-// Map the one on-site product to both public and verification identifiers.
-// permalink builds the public checkout URL. productId is sent only to the
-// License API. Checkout is live only when BOTH values are real and verified.
+// Keep the old identifiers solely so legitimate buyers can restore their edition.
+// A future evergreen offer must receive a fresh slug, permalink and productId.
 export const GUMROAD_PRODUCTS = {
   'eclipse-edition': {
     permalink: 'your-eclipse-reading',
-    // License API product_id from the public Gumroad product page (data-page.product.id).
     productId: '3ZwFjg0IW702KvJ5s97QuQ==',
-    price: '£7',
+    checkoutEnabled: false,
+    archived: true,
   },
 };
 
@@ -44,11 +42,17 @@ export function resolveProductSlug(slug) {
 function configured(value) {
   return Boolean(value && value !== 'REPLACE_ME' && !String(value).includes('REPLACE'));
 }
-/** True only when the public checkout and License API identifiers are present. */
+/** True when an archived or current entitlement can still be verified. */
+export function isEntitlementReady(slug) {
+  const key = resolveProductSlug(slug);
+  const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
+  return Boolean(p && configured(p.productId));
+}
+/** True only when a deliberately enabled public checkout is fully configured. */
 export function isCheckoutReady(slug) {
   const key = resolveProductSlug(slug);
   const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
-  return Boolean(p && configured(p.permalink) && configured(p.productId));
+  return Boolean(p && p.checkoutEnabled === true && configured(p.permalink) && isEntitlementReady(slug));
 }
 
 /**
@@ -60,7 +64,7 @@ export function isCheckoutReady(slug) {
 export function openCheckout(slug) {
   const key = resolveProductSlug(slug);
   const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
-  if (!isCheckoutReady(slug)) throw new Error(`Set the Gumroad permalink and product_id for "${slug}"`);
+  if (!isCheckoutReady(slug)) throw new Error(`Checkout is not enabled for "${slug}"`);
   // Gumroad overlay opens when navigating to the ?wanted=true product URL.
   const url = `https://gumroad.com/l/${encodeURIComponent(p.permalink)}?wanted=true`;
   window.location.href = url; // or use an <a class="gumroad-button" href=...> for the inline overlay
@@ -76,7 +80,7 @@ export async function verifyLicense(slug, licenseKey, { incrementUses = false } 
   const key = resolveProductSlug(slug);
   const p = GUMROAD_PRODUCTS[key] || GUMROAD_PRODUCTS[slug];
   if (!p) throw new Error(`Unknown product "${slug}"`);
-  if (!isCheckoutReady(slug)) return { valid: false };
+  if (!isEntitlementReady(slug)) return { valid: false };
   if (!licenseKey || typeof licenseKey !== 'string' || licenseKey.length < 8) {
     return { valid: false };
   }
