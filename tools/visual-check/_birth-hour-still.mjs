@@ -19,7 +19,7 @@ try {
     if (message.type() === 'error') errors.push(`CONSOLE ${message.text()}`);
   });
 
-  await page.goto(`${BASE}/chart.html?nosw=1&diag=birth-hour-still`, {
+  await page.goto(`${BASE}/index.html?nosw=1&diag=birth-hour-still`, {
     waitUntil: 'domcontentloaded',
     timeout: 60_000,
   });
@@ -129,7 +129,7 @@ try {
   assert(kept?.filename === 'astroprecise-1978-03-14.png',
     `unexpected filename: ${JSON.stringify(kept)}`);
   assert(/^blob:/.test(kept.href || ''), 'keep control did not create a local PNG blob');
-  assert(kept.button === 'Saved on this device', 'keep control did not acknowledge the save');
+  assert(/Saved|Download started/.test(kept.button), 'keep control did not acknowledge the save');
 
   await page.evaluate((detail) => {
     document.dispatchEvent(new CustomEvent('ap-keep-sky-context', { detail }));

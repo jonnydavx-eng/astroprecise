@@ -60,15 +60,17 @@
 
   function list() {
     return openDb().then(function (db) {
-      var tx = db.transaction(STORE, 'readonly');
-      var os = tx.objectStore(STORE);
-      return requestToPromise(os.getAll()).then(function (rows) {
-        db.close();
+      return Promise.resolve().then(function () {
+        var tx = db.transaction(STORE, 'readonly');
+        var done = txDone(tx);
+        return Promise.all([requestToPromise(tx.objectStore(STORE).getAll()), done]);
+      }).then(function (results) {
+        var rows = results[0];
         var items = Array.isArray(rows) ? rows.slice() : [];
         items.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
         return items;
-      });
-    }).catch(function () { return []; });
+      }).finally(function () { db.close(); });
+    });
   }
 
   function remove(id) {
@@ -129,16 +131,36 @@
     return KINDS[kind] || 'Plate';
   }
 
-  function revokeLater(url) {
-    setTimeout(function () {
-      try { URL.revokeObjectURL(url); } catch (_) { /* ignore */ }
-    }, 120000);
+  var shelves = new WeakMap();
+
+  function releaseUrls(state) {
+    state.urls.forEach(function (url) { URL.revokeObjectURL(url); });
+    state.urls = [];
   }
 
   function renderShelf(root) {
     if (!root) return;
-    list().then(function (items) {
+    var state = shelves.get(root);
+    if (!state) {
+      state = { urls: [], version: 0 };
+      shelves.set(root, state);
+      // A removed shelf must release its blobs, including pending renders.
+      if (typeof MutationObserver !== 'undefined') {
+        var observer = new MutationObserver(function () {
+          if (root.isConnected) return;
+          state.version++;
+          releaseUrls(state);
+          shelves.delete(root);
+          observer.disconnect();
+        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+      }
+    }
+    var version = ++state.version;
+    return list().then(function (items) {
+      if (version !== state.version) return;
       root.replaceChildren();
+      releaseUrls(state);
       if (!items.length) {
         var empty = document.createElement('p');
         empty.className = 'ap-keep-library__empty';
@@ -154,7 +176,7 @@
         var fig = document.createElement('figure');
         if (item.blob) {
           var url = URL.createObjectURL(item.blob);
-          revokeLater(url);
+          state.urls.push(url);
           var img = document.createElement('img');
           img.src = url;
           img.alt = (item.schematic ? 'Schematic ' : '') + kindLabel(item.kind);
@@ -185,8 +207,7 @@
         var actions = document.createElement('div');
         actions.className = 'ap-keep-library__actions';
         var save = document.createElement('a');
-        save.href = item.blob ? URL.createObjectURL(item.blob) : '#';
-        if (item.blob) revokeLater(save.href);
+        save.href = item.blob ? url : '#';
         save.download = 'astroprecise-' + (item.birthDate || item.kind) + '.png';
         save.rel = 'noopener';
         save.textContent = 'Download';
@@ -202,6 +223,19 @@
         listEl.appendChild(li);
       });
       root.appendChild(listEl);
+    }).catch(function () {
+      if (version !== state.version) return;
+      root.replaceChildren();
+      releaseUrls(state);
+      var error = document.createElement('p');
+      error.setAttribute('role', 'alert');
+      error.textContent = 'Could not load your saved plates. Storage may be unavailable. This does not mean your library is empty.';
+      root.appendChild(error);
+      var retry = document.createElement('button');
+      retry.type = 'button';
+      retry.textContent = 'Try again';
+      retry.addEventListener('click', function () { renderShelf(root); });
+      root.appendChild(retry);
     });
   }
 

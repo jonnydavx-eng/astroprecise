@@ -70,9 +70,9 @@ body.page-horoscope {
   right: 0;
   width: min(56vw, 820px);
   height: 280px;
-  background: url("../img/editorial/astronomy-books-editorial.webp") 72% 22% / cover no-repeat;
-  filter: saturate(0.52) contrast(1.14) brightness(0.58);
-  opacity: 0.34;
+  background: url("../img/editorial/studio-moon-wash-v907.jpg") 78% 42% / cover no-repeat;
+  filter: none;
+  opacity: 0.42;
 }
 
 .page-horoscope .daily-room::after {

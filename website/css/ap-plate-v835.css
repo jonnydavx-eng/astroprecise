@@ -11,7 +11,7 @@
 .ap-plate-actions a { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; padding: 0 18px; border: 1px solid var(--ap-line-strong); border-radius: 5px; color: var(--ap-paper); font-weight: 650; text-decoration: none; }
 .ap-plate-actions a:first-child { border-color: var(--ap-ember); background: var(--ap-ember); color: #07101E; }
 .ap-plate-art { margin: 0; border: 1px solid var(--ap-line-strong); border-radius: 8px; overflow: hidden; background: var(--ap-void-raised); box-shadow: var(--ap-shadow); }
-.ap-plate-art img { display: block; width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; }
+.ap-plate-art img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: contain; background: #040812; }
 .ap-plate-art figcaption { padding: 14px 17px; color: var(--ap-paper-faint); font: 10px/1.6 var(--ap-data); letter-spacing: .04em; }
 .ap-plate-spec { border-top: 1px solid var(--ap-line); border-bottom: 1px solid var(--ap-line); }
 .ap-plate-spec__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }

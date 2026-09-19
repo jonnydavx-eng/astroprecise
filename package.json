@@ -16,7 +16,7 @@
     "test:launch": "node tools/_proof-massive-build.mjs && node tools/_proof-eclipse-wire.mjs && node tools/_proof-shop-cowork-wire.mjs && node tools/_proof-verify-plate.mjs && node tools/_proof-sky-events.mjs",
     "test:palette-rendered": "npm --prefix tools/visual-check run palette",
     "test:profile-security": "node tools/visual-check/test-profile-xss.mjs",
-    "test:fulfil": "node test-fulfil-security.mjs && node test-payment-evidence.mjs && node test-fulfil-recovery.mjs && node test-fulfil-products.mjs",
+    "test:fulfil": "node --test test-package-studio-args.mjs && node test-fulfil-security.mjs && node test-payment-evidence.mjs && node test-fulfil-recovery.mjs && node test-fulfil-products.mjs",
     "test:shop": "node test-shop-launch.mjs && node tools/update-sitemap-lastmod.mjs --check --paths chart.html,shop.html,privacy.html,deep-reading.html,refunds.html,terms.html,contact.html,why.html",
     "test:release-infrastructure": "node test-release-infrastructure.mjs",
     "product:proof": "node tools/fulfil-order.mjs --in tools/order-template.json --proof",

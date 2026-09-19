@@ -673,7 +673,26 @@
         var retryMarkup = this._strict3D ? '<button type="button" data-ap-orrery-retry style="display:block;margin:18px auto 0;padding:10px 16px;border:1px solid rgba(139,169,255,.58);border-radius:4px;background:rgba(139,169,255,.10);color:#f2f7ff;font:700 10px/1 IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Retry 3D</button>' : '';
         this.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 62%,rgba(139,169,255,.14),transparent 62%),radial-gradient(ellipse at 50% 118%,rgba(168,151,255,.10),transparent 55%)"></div><div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(320px,80%);padding:28px;border:1px solid rgba(147,168,191,.34);border-radius:8px;background:rgba(4,8,18,.90);text-align:center;color:#f2f7ff;font:12px/1.7 IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase"><strong style="display:block;margin-bottom:8px;color:#a5bcff">Live sky unavailable</strong><span style="color:rgba(201,214,227,.72);text-transform:none;letter-spacing:0">Chart and eclipse calculations still work on this device.</span>' + retryMarkup + '</div>';
         var retry = this.querySelector('[data-ap-orrery-retry]');
-        if (retry) retry.addEventListener('click', function () { retry.disabled = true; window.location.reload(); }, { once: true });
+        if (retry) {
+          var self = this;
+          retry.addEventListener('click', function () {
+            retry.disabled = true;
+            self._posted = false;
+            self._unavailableEmitted = false;
+            self._firstFrameSeen = false;
+            self._ready = false;
+            self._canvas = null;
+            self._engine = null;
+            self._ph = null;
+            while (self.firstChild) self.removeChild(self.firstChild);
+            var ph = self._ph = document.createElement('div');
+            ph.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;pointer-events:none';
+            self.appendChild(ph);
+            self.setAttribute('data-engine', self._engineKind || 'webgl');
+            self._wireEngineEvents();
+            self._bootEngine();
+          }, { once: true });
+        }
         // keep the natal overlay + eclipse veil above the poster
         if (this._natalLayer) this.appendChild(this._natalLayer);
         if (this._veil) this.appendChild(this._veil);
@@ -839,7 +858,16 @@
           if (self._liveTimer) { clearInterval(self._liveTimer); self._liveTimer = null; }
           var O = self._engine;
           if (O && typeof O.playBirthEarthView === 'function') {
-            try { return O.playBirthEarthView(date, opts) !== false; } catch (e) { return false; }
+            try {
+              var ok = O.playBirthEarthView(date, opts) !== false;
+              try {
+                if (O.forceResize) {
+                  requestAnimationFrame(function () { try { O.forceResize(); } catch (e0) {} });
+                  setTimeout(function () { try { O.forceResize(); if (O.applyEarthLimbHold) O.applyEarthLimbHold({ refit: true }); } catch (e1) {} }, 180);
+                }
+              } catch (e2) {}
+              return ok;
+            } catch (e) { return false; }
           }
           try {
             var instant = date instanceof Date ? date : new Date(date);

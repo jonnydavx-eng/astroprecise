@@ -632,8 +632,7 @@ body.ap-moment-page .mom-btn--primary {
   min-height: 48px !important;
   width: 100% !important;
 }
-/* Lifestyle + essay spine off main path (recover in details / after freeze) */
-body.ap-moment-page .mom-gallery-teaser,
+/* Essay spine stays off the main path; the SAMPLE engine plate sits after the form. */
 body.ap-moment-page .mom-spine {
   display: none !important;
 }

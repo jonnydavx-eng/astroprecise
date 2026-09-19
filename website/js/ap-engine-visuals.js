@@ -17,16 +17,16 @@
   };
 
   var BODIES = [
-    { id: 'sun', label: 'Sun', src: 'img/engine/sun.webp', href: 'index.html' },
-    { id: 'mercury', label: 'Mercury', src: 'img/engine/mercury.webp', href: 'index.html' },
-    { id: 'venus', label: 'Venus', src: 'img/engine/venus.webp', href: 'index.html' },
-    { id: 'earth', label: 'Earth', src: 'img/engine/earth-512.webp', href: 'index.html#lead' },
-    { id: 'moon', label: 'Moon', src: 'img/engine/moon.webp', href: 'moonphase.html' },
-    { id: 'mars', label: 'Mars', src: 'img/engine/mars.webp', href: 'index.html' },
-    { id: 'jupiter', label: 'Jupiter', src: 'img/engine/jupiter.webp', href: 'index.html' },
-    { id: 'saturn', label: 'Saturn', src: 'img/engine/saturn.webp', href: 'index.html' },
-    { id: 'uranus', label: 'Uranus', src: 'img/engine/uranus.webp', href: 'index.html' },
-    { id: 'neptune', label: 'Neptune', src: 'img/engine/neptune.webp', href: 'index.html' },
+    { id: 'sun', label: 'Sun', src: 'img/engine/studio/sun.webp', href: 'index.html' },
+    { id: 'mercury', label: 'Mercury', src: 'img/engine/studio/mercury.webp', href: 'index.html' },
+    { id: 'venus', label: 'Venus', src: 'img/engine/studio/venus.webp', href: 'index.html' },
+    { id: 'earth', label: 'Earth', src: 'img/engine/studio/earth.webp', href: 'index.html#lead' },
+    { id: 'moon', label: 'Moon', src: 'img/engine/studio/moon.webp', href: 'moonphase.html' },
+    { id: 'mars', label: 'Mars', src: 'img/engine/studio/mars.webp', href: 'index.html' },
+    { id: 'jupiter', label: 'Jupiter', src: 'img/engine/studio/jupiter.webp', href: 'index.html' },
+    { id: 'saturn', label: 'Saturn', src: 'img/engine/studio/saturn.webp', href: 'index.html' },
+    { id: 'uranus', label: 'Uranus', src: 'img/engine/studio/uranus.webp', href: 'index.html' },
+    { id: 'neptune', label: 'Neptune', src: 'img/engine/studio/neptune.webp', href: 'index.html' },
   ];
 
   function ensureCss() {

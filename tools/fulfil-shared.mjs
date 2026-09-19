@@ -4,6 +4,9 @@
 import { readFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { createHash } from 'node:crypto';
+
+export const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const JS = join(ROOT, 'website', 'js');
