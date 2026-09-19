@@ -35,7 +35,7 @@ import {
   moonPhaseFromEphemeris,
   integrateDayOffset,
   keplerGuidePoints,
-} from './orbitlab-orbital-math.js?v=906';
+} from './orbitlab-orbital-math.js?v=911';
 
 const RadialBlurShader = {
   name: 'RadialBlurShader',
@@ -225,6 +225,7 @@ const FinishShader = {
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
   let fatalReported = false;
+  let contextLostTimer = null;
   let envRT = null;
   let envIblLoading = false;
   let envIblFrozen = false;
@@ -442,7 +443,7 @@ const FinishShader = {
 
   // Closer System default so Earth/inner worlds occupy more than a handful of
   // pixels, while Neptune (R=29) still clears a 44° vertical FOV.
-  const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 88 : 76;
+  const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 100 : 96;
   function dataSavingRequested() {
     try {
       const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -737,7 +738,7 @@ const FinishShader = {
       camRadius: SYSTEM_CAM_RADIUS, camMin: 48, camMax: 160, camEl: 26 * D2R, camAz: -0.6, targetEarth: false,
       honesty: 'Positions live (VSOP87) · distances schematic' },
     { id: 3, name: 'Oort', hud: 'Oort cloud',
-      camRadius: 108, camMin: 78, camMax: 175, camEl: 20 * D2R, camAz: -0.45, targetEarth: false,
+      camRadius: 158, camMin: 124, camMax: 230, camEl: 18 * D2R, camAz: -0.45, targetEarth: false,
       honesty: 'Illustrative shell · not measured distances' },
     { id: 4, name: 'Stars', hud: 'Local stars',
       camRadius: 310, camMin: 200, camMax: 520, camEl: 24 * D2R, camAz: -0.5, targetEarth: false,
@@ -9912,7 +9913,24 @@ const FinishShader = {
     });
     listen(canvas, 'webglcontextlost', (e) => {
       try { e.preventDefault(); } catch (_) {}
-      reportWebGLFatal(new Error('WebGL context was lost'));
+      running = false;
+      if (contextLostTimer) {
+        try { clearTimeout(contextLostTimer); } catch (_) {}
+      }
+      contextLostTimer = setTimeout(function () {
+        contextLostTimer = null;
+        reportWebGLFatal(new Error('WebGL context was lost'));
+      }, 1800);
+    }, false);
+    listen(canvas, 'webglcontextrestored', () => {
+      if (contextLostTimer) {
+        try { clearTimeout(contextLostTimer); } catch (_) {}
+        contextLostTimer = null;
+      }
+      if (fatalReported || destroyed) return;
+      running = true;
+      try { forceResize(); } catch (_) {}
+      if (shouldRenderFrame() && !raf) raf = requestAnimationFrame(frame);
     }, false);
 
     if (instrumentMode) syncPosterSunVisibility();
@@ -10574,6 +10592,20 @@ const FinishShader = {
       setSelectedPlanet('earth');
       setFocusHighlight('earth');
       if (meshes.earth) {
+        const fromFar = scaleLevel >= 2 || camRadius > 40;
+        showOrbits = false;
+        showLabels = false;
+        if (fromFar || PRM) {
+          scaleAnimActive = false;
+          scaleLevel = 0;
+          focusFrameId = 'earth';
+          moonFrameActive = false;
+          updateScaleVisuals(0);
+          updateScaleHUD();
+          applyEarthLimbHold({ refit: true });
+          applyCamera();
+          return;
+        }
         scaleAnimFrom.radius = camRadius;
         scaleAnimFrom.el = camEl;
         scaleAnimFrom.az = camAz;
@@ -11659,7 +11691,6 @@ const FinishShader = {
     if (destroyed) return false;
     const instant = date instanceof Date ? date : new Date(date);
     if (!Number.isFinite(instant.getTime())) return false;
-    const opts = options || {};
     try {
       if (typeof cancelScaleJourney === 'function') cancelScaleJourney(false);
       if (typeof cancelCosmicFlight === 'function') cancelCosmicFlight(false);
@@ -11667,23 +11698,23 @@ const FinishShader = {
     } catch (_) { /* optional tools */ }
     daysPerSec = 0;
     introActive = false;
+    scaleAnimActive = false;
     try { syncPreloaderIntroClass(false); } catch (_) {}
     try { syncHeroReplayClass(false); } catch (_) {}
     flicking = false;
     userTouched = performance.now();
     setDate(instant);
-    const reduced = opts.instant === true || PRM;
-    if (scaleLevel !== 0 && !reduced) {
-      applyScalePreset(0, true);
-      window.setTimeout(function () {
-        if (destroyed) return;
-        setDefaultEarthFrame();
-        applyCamera();
-      }, SCALE_ANIM_MS + 48);
-    } else {
-      setDefaultEarthFrame();
-      applyCamera();
-    }
+    showOrbits = false;
+    showLabels = false;
+    scaleLevel = 0;
+    focusFrameId = 'earth';
+    pendingFocusId = null;
+    moonFrameActive = false;
+    updateScaleVisuals(0);
+    updateScaleHUD();
+    applyEarthLimbHold({ refit: true });
+    applyCamera();
+    try { forceResize(); } catch (_) {}
     return true;
   }
 

@@ -743,8 +743,8 @@
          visitor confirms the exact place — which is what the homepage coupon
          promises in so many words.
 
-     Nothing already filled is overwritten: a restored local draft always wins
-     over the handoff. */
+     Nothing already filled is overwritten unless this tab just sat a minute
+     on the Observatory: that handoff wins over a stale local draft. */
   function prefillFromHandoff() {
     try {
       const routeQuery = new URLSearchParams(location.search);
@@ -773,13 +773,13 @@
       const timeEl = document.getElementById('time-input');
       const cityEl = document.getElementById('city-input');
 
-      const gotDate = !!(d && /^\d{4}-\d{2}-\d{2}$/.test(d) && dateEl && !dateEl.value);
-      const gotTime = !!(t && /^([01]\d|2[0-3]):[0-5]\d$/.test(t) && timeEl && !timeEl.value);
+      const gotDate = !!(d && /^\d{4}-\d{2}-\d{2}$/.test(d) && dateEl);
+      const gotTime = !!(t && /^([01]\d|2[0-3]):[0-5]\d$/.test(t) && timeEl);
       // A place is only worth carrying if it is plausibly a place name.
       const cityName = (c || '').trim().slice(0, 120);
-      const gotCity = !!(cityName.length >= 2 && cityEl && !cityEl.value);
+      const gotCity = !!(cityName.length >= 2 && cityEl);
 
-      if (!gotDate && !gotTime && !gotCity) return;
+      if (!gotDate && !gotTime && !gotCity) return false;
 
       if (gotDate) {
         dateEl.value = d;
@@ -788,8 +788,12 @@
         if (dateGroup) dateGroup.classList.add('is-valid');
       }
 
-      if (gotTime) {
-        timeEl.value = t;
+      if (timeEl) {
+        timeEl.value = gotTime ? t : '';
+        document.querySelectorAll('.time-btn').forEach(function (button) {
+          button.classList.remove('active');
+          button.setAttribute('aria-pressed', 'false');
+        });
         // The form interaction listener below owns the accuracy status line.
         timeEl.dispatchEvent(new Event('input', { bubbles: true }));
         timeEl.dispatchEvent(new Event('change', { bubbles: true }));
@@ -841,7 +845,8 @@
           try { nextField.focus({ preventScroll: true }); } catch (e) { nextField.focus(); }
         }, reduce ? 0 : 360);
       }
-    } catch (e) {}
+      return true;
+    } catch (e) { return false; }
   }
 
   // ── Results rendering ─────────────────────────────────────────────────────
@@ -3134,9 +3139,16 @@
     booted = true;
     initNodeToggle();
     initAdvancedAccordion();
-    initPersonalMemory();
+    var sittingHandoff = false;
+    try {
+      sittingHandoff = !!sessionStorage.getItem('ap-chart-handoff');
+    } catch (_) { sittingHandoff = false; }
+    var privateReentry = new URLSearchParams(location.search).get('entry') === 'private-reentry';
+    if (!sittingHandoff && !privateReentry) initPersonalMemory();
+    else if (window.APPersonalMemory) APPersonalMemory.watchChartForm(form);
     initFormInteractions();
-    restoreFromPrivateStorage();
+    // An incoming sitting owns this form; never submit a saved chart first.
+    if (!sittingHandoff && !privateReentry) restoreFromPrivateStorage();
     prefillFromHandoff();
   }
   if (document.readyState === 'loading') {

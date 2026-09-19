@@ -5,6 +5,7 @@
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { runInNewContext } from 'node:vm';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), 'website');
 const swIdentity = readFileSync(join(root, 'sw.js'), 'utf8');
@@ -221,8 +222,8 @@ else {
   if (!indexKeepHtml.includes('ap-reading-room') || !/ap-home-reading\.js\?v=\d+/.test(indexKeepHtml)) {
     fail('Home must open as a reading room and load ap-home-reading.js');
   }
-  if (!indexKeepHtml.includes('start-radius="8"') || !indexKeepHtml.includes('start-focus="earth"')) {
-    fail('Home must open on Earth, not the System poster');
+  if (!indexKeepHtml.includes('start-radius="210"') || indexKeepHtml.includes('start-focus="earth"')) {
+    fail('Home must open on the System overview');
   }
   if (!homeKeep.includes('ap-sky-ready') || !homeKeep.includes('ap-keep-sky-context')) {
     fail('ap-home-keep must listen for ap-sky-ready and dispatch ap-keep-sky-context');
@@ -337,7 +338,7 @@ if (!/function frameBody\(t\)\s*\{\s*let announceInstrumentFirstFrame = false;/.
 if (!/if \(composer\) composer\.render\(\);\s*else renderer\.render\(scene, camera\);\s*(afterComposerFrame\(\);\s*)?if \(announceInstrumentFirstFrame\) dispatchOrreryFirstFrame\(\);/.test(W)) {
   fail('Home announces first frame before the settled buffer is rendered');
 }
-if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 88 : 76;') || !W.includes('camRadius: SYSTEM_CAM_RADIUS, camMin: 48')) {
+if (!W.includes('const SYSTEM_CAM_RADIUS = (IS_PHONE || window.innerWidth <= 820) ? 100 : 96;') || !W.includes('camRadius: SYSTEM_CAM_RADIUS, camMin: 48')) {
   fail('System camera no longer frames all eight major worlds');
 }
 if (!W.includes('!portraitMode && !focusFrameId')) {
@@ -371,12 +372,34 @@ if (/<script[^>]*src=["'][^"']*js\/orrery\.js/.test(indexHtml)) fail('Home loads
 if (!/<void-orrery[^>]+data-renderer="webgl-only"/i.test(indexHtml)) fail('Home is not strict WebGL');
 const modelCount = (indexHtml.match(/<void-orrery\b/g) || []).length;
 if (modelCount !== 1) fail('Home must own exactly one void-orrery (' + modelCount + ')');
-for (const probe of ['class="ap-model-stage"', 'id="mladder"', 'id="dock"', 'aria-label="Earth as computed now"']) {
+for (const probe of ['class="ap-model-stage"', 'id="mladder"', 'id="dock"', 'aria-label="Solar system as computed now"']) {
   if (!indexHtml.includes(probe)) fail('Home model contract missing: ' + probe);
 }
 const observatoryJs = readFileSync(join(root, 'js', 'ap-observatory-v834.js'), 'utf8');
-if (!observatoryJs.includes("stage.setAttribute('aria-label', 'Live Earth now')")) {
-  fail('Surface C must still promote Live Earth now after WebGL owns the sky');
+const honestyStart = observatoryJs.indexOf('    function syncStageHonesty(kind)');
+const honestyEnd = observatoryJs.indexOf('    function updateClock(', honestyStart);
+if (honestyStart < 0 || honestyEnd <= honestyStart) {
+  fail('Surface C stage honesty controller is missing');
+} else {
+  for (const [selectedView, timeMode, kind, expected] of [
+    ['Solar system', 'current', 'live', 'Live Solar system now'],
+    ['Earth', 'current', 'live', 'Live Earth now'],
+    ['Solar system', 'current', 'computed', 'Solar system as computed now'],
+    ['Earth', 'birth', 'computed', 'Earth · selected birth view'],
+    ['Solar system', 'selected', 'computed', 'Solar system at selected moment'],
+    ['Earth', 'birth', 'unavailable', 'Live sky unavailable'],
+  ]) {
+    let label;
+    try {
+      runInNewContext(observatoryJs.slice(honestyStart, honestyEnd) + '\nsyncStageHonesty(kind);', {
+        selectedView, timeMode, kind,
+        stage: { setAttribute(name, value) { if (name === 'aria-label') label = value; } },
+      });
+      if (label !== expected) fail(`Surface C stage label: expected ${expected}, got ${label}`);
+    } catch (error) {
+      fail('Surface C stage label failed: ' + error.message);
+    }
+  }
 }
 if (!observatoryJs.includes("html.classList.contains('orrery-full') && html.classList.contains('ap-model-revealed')")) {
   fail('Surface C Live promotion must require orrery-full and ap-model-revealed');

@@ -7,7 +7,7 @@
     ['OORT', 'Oort'], ['STARS', 'Stars'], ['GALAXY', 'Galaxy'], ['COSMOS', 'Cosmos'],
   ];
   var WORLDS = [
-    ['', 'System', ''],
+    ['', 'Overview', ''],
     ['sun', 'Sun', '#ffd76a'],
     ['mercury', 'Mercury', '#aaa39a'],
     ['venus', 'Venus', '#e3bd72'],
@@ -141,10 +141,12 @@
 
     function setControlsReady(ready) {
       var controls = scaleGroup.querySelectorAll('button');
+      var flight = byId('ap-cosmic-flight-launch');
       controls = Array.prototype.slice.call(controls).concat(
         Array.prototype.slice.call(worldGroup.querySelectorAll('button')),
         scrub ? [scrub] : [],
-        nowButton ? [nowButton] : []
+        nowButton ? [nowButton] : [],
+        flight ? [flight] : []
       );
       controls.forEach(function (control) {
         control.disabled = !ready;

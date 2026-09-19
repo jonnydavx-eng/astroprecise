@@ -50,8 +50,8 @@ assert.ok(timedNoCoords.chapters[0].mono.some((line) => /no usable town coordina
 
 const natalCss = readFileSync(new URL('./website/css/ap-natal-reading.css', import.meta.url), 'utf8');
 assert.equal(/position:\s*sticky/.test(natalCss), false, 'natal submit must not be sticky over the bottom nav');
-assert.ok(natalCss.includes('#05080F') && natalCss.includes('#E6ECF2') && natalCss.includes('#A89C84'));
-assert.ok(natalCss.includes('#B86B4A') && natalCss.includes('#8FA3B8'));
+assert.ok(natalCss.includes('--ap-void-deep') && natalCss.includes('--ap-paper'));
+assert.ok(natalCss.includes('--ap-ion'));
 assert.equal(/#c2a05e|#cdae6a|#b9c8dc|#8b919c/i.test(natalCss), false, 'natal CSS must not keep retired palette fallbacks');
 
 console.log('PASS deep-reading seven chapters + untimed Moon approximate');
@@ -86,10 +86,10 @@ for (const src of keepScripts) {
 }
 assert.equal(/captureStill/.test(natalHtml + natalJs), false, 'this page must not call a captureStill keep helper that does not exist');
 assert.equal(/sign up|log in|create an account|chatbot|ask the oracle/i.test(natalHtml), false, 'no account and no AI-chat theatre');
-assert.ok(natalHtml.includes('ap-room-sky') && natalHtml.includes('void-orrery'), 'live sky stays on the page');
+assert.ok(natalHtml.includes('index.html') && !natalHtml.includes('<void-orrery'), 'reading links to the single Home model');
 assert.ok(/not behind a paywall/i.test(natalHtml), 'the live sky must be named as free');
 assert.equal(/unlock the sky|buy to see the sky/i.test(natalHtml), false, 'the live sky must not be gated');
-assert.ok(/Paid print unlock is not open/.test(natalHtml), 'paid print stays closed');
+assert.ok(/Checkout is closed/.test(natalHtml), 'paid print stays closed');
 assert.equal(/£\d|\$\d/.test(natalHtml), false, 'page must not invent a price');
 assert.ok(natalHtml.includes('natal-lat') && natalHtml.includes('natal-lon'), 'town pick must keep coordinates for a real rising sign');
 assert.ok(/date reference, not a birth hour/.test(natalHtml), 'unknown time must be disclosed on the page, not only in the engine');

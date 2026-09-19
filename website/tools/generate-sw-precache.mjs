@@ -81,6 +81,7 @@ const REQUIRED_TRANSITIVE = [
 // boot either WebGL instrument. Keep it runtime-cached so installation remains
 // atomic and fast; the free guide PDF also remains an explicit user download.
 const RUNTIME_ONLY = new Set([
+  './img/editorial/eclipse-archive-cover-v907.jpg',
   './img/editorial/eclipse-edition-art-v841.png',
   './img/editorial/eclipse-field-guide-cover-final-v836.png',
   './img/editorial/eclipse-edition-art-v841-560.webp',
