@@ -38,7 +38,8 @@
 }
 .ap-mirror-badge__note,
 .ap-presence__note,
-.ap-natal-sync__note {
+.ap-natal-sync__note,
+#skySyncNote {
   text-transform: none;
   letter-spacing: 0;
   font-size: 12px;
