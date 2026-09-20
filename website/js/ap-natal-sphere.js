@@ -287,7 +287,7 @@
     var modelBtn = document.createElement('a');
     modelBtn.className = 'ap-natal-sphere__cta';
     modelBtn.textContent = 'SEE THIS SKY IN THE LIVING MODEL →';
-    modelBtn.href = './index.html#lead';
+    modelBtn.href = './observatory.html#lead';
     if (w.APSkyBridge && typeof w.APSkyBridge.buildLinkFromChart === 'function') {
       try {
         var link = w.APSkyBridge.buildLinkFromChart(chart, { focus: 'earth' });

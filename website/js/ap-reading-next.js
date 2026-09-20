@@ -1,4 +1,4 @@
-import { buildDeepReading, chartBalance } from './deep-reading.js?v=913';
+import { buildDeepReading, chartBalance } from './deep-reading.js?v=914';
 
 const $=id=>document.getElementById(id);
 const BODIES=['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'];
@@ -70,7 +70,7 @@ async function start(){
   const natal=natalFromChart(chart);if(Object.keys(natal).length<5){empty('This saved chart needs its planetary positions refreshed. Create the chart again to open your story.');return;}
   $('story-status').textContent='Turning your placements into a story…';
   try{
-    const [base,deep]=await Promise.all(['reading-templates','deep-templates'].map(async name=>{const response=await fetch('js/'+name+'.json?v=913',{credentials:'same-origin'});if(!response.ok)throw new Error('Template unavailable');return response.json();}));
+    const [base,deep]=await Promise.all(['reading-templates','deep-templates'].map(async name=>{const response=await fetch('js/'+name+'.json?v=914',{credentials:'same-origin'});if(!response.ok)throw new Error('Template unavailable');return response.json();}));
     const now=currentTransits();
     reading=buildDeepReading(natal,base,deep,{birth:{dateText:chart.birthDate||chart.date,timeText:chart.timeKnown?chart.birthTime:'',place:chart.birthCity||chart.city,zone:chart.tz},timeAccuracy:chart.timeAccuracy||(chart.timeKnown?'exact':'unknown'),houseSystem:chart.houseSystem||'whole',houseCusps:chart.timeKnown?chart.houses:null,transits:now?.positions,transitDateText:now?.date});
     adaptUnknown(reading,chart,base,deep,natal);render(reading);

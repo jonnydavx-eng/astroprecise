@@ -292,7 +292,7 @@
         kicker: 'PERSONALISE',
         title: 'Cast your free birth chart · your own sky news',
         detail: 'Save a chart on this device and this strip names what today’s sky is actually touching in your placements — never a sun-sign blurb.',
-        href: './index.html#lead',
+        href: './observatory.html#lead',
         fly: 'earth',
         score: 55
       });

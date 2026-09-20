@@ -1,6 +1,6 @@
 # AstroPrecise status
 
-**Source version:** 20 Sep 2026 — `ap-v913`, the guided birth-sky rewrite. The release begins with a short calculated-sky demonstration and leads through birth chart, seven reading chapters and a free PNG keepsake. Checkout remains closed. No ads or new paid dependencies.
+**Source version:** 20 Sep 2026 — `ap-v914`, the guided birth-sky rewrite. The release begins with a short calculated-sky demonstration and leads through birth chart, seven reading chapters and a free PNG keepsake. Checkout remains closed. No ads or new paid dependencies.
 
 Updated: 2026-09-20
 
@@ -8,7 +8,7 @@ Updated: 2026-09-20
 
 The first screen demonstrates the experience before asking visitors for details. The 3D model is at `observatory.html`, with the existing free mirror-hour presence preserved. Exact birth-clock patterns remain in the chart and reading; the new keepsake includes them only when birth details are explicitly shown. The original device-clock card remains at `synchronicity-card.html`.
 
-See [the guided journey implementation and checks](docs/GUIDED-BIRTH-SKY.md). This source document is not a deployment receipt: confirm the Pages run and public `sw.js` before claiming that `ap-v913` is served.
+See [the guided journey implementation and checks](docs/GUIDED-BIRTH-SKY.md). This source document is not a deployment receipt: confirm the Pages run and public `sw.js` before claiming that `ap-v914` is served.
 
 ## Previous public release readback (2026-09-20, before this rewrite)
 

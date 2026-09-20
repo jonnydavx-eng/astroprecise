@@ -27,4 +27,4 @@ Run `node tools/verify-next-journey.mjs` against that preview. Set `AP_BASE` for
 
 Focused regression checks are `node test-ap-sky-bridge.mjs`, `node test-orrery-adapter.mjs`, and `node tools/e2e-profile-save-audit.mjs` (set `AP_BASE` to the running preview). Existing astronomy tests remain release gates. Browser viewport tests do not establish physical-device performance or external user engagement.
 
-The v913 service worker installs the compact guided journey, not the full 3D texture library. Updates wait for the user's explicit update action when an older worker controls the page. Checkout remains closed.
+The v914 service worker installs the compact guided journey, not the full 3D texture library. Updates wait for the user's explicit update action when an older worker controls the page. Checkout remains closed.
