@@ -12,10 +12,13 @@ PR 45 (`fd6461e13beac864975b5e05460da953d72f7d50`) merged the free 11:11 / synch
 
 - Canonical path: `C:\Users\jonny\dev\astroprecise` (never `C:\Users\jonny\OneDrive\astroprecise`)
 - Public remote: `github` → `git@github.com:jonnydavx-eng/astroprecise.git`
-- Public feature base: `fd6461e13beac864975b5e05460da953d72f7d50` (merge of PR 45)
-- Tip in this tree: `website/sw.js` → `const V="ap-v912"` and matching `?v=912` / `AP_ASSET_V='912'`
-- Live door: **GitHub Pages** (`Deploy to GitHub Pages` on push to `main` touching `website/**`). Confirm at `https://astroprecise.app/sw.js` → `const V="ap-v912"` and `https://astroprecise.app/js/ap-mirror-hour.js?v=912` → HTTP 200
-- PR 45 Pages run (v911 + 11:11 assets, still on tip 911): [Deploy to GitHub Pages #35494410957](https://github.com/jonnydavx-eng/astroprecise/actions/runs/35494410957)
+- `github/main`: `2d2f090030e2f6da5b487edf93ea9f8616c92531` (merge of PR 46 tip bump, on top of PR 45 `fd6461e13beac864975b5e05460da953d72f7d50`)
+- Pages deploy: [Deploy to GitHub Pages #35494571413](https://github.com/jonnydavx-eng/astroprecise/actions/runs/35494571413) completed successfully (2026-09-20 06:40:35 GMT)
+- Public cache: `https://astroprecise.app/sw.js` → `const V="ap-v912"`
+- Public 11:11 assets: `https://astroprecise.app/js/ap-mirror-hour.js?v=912`, `ap-mirror-presence.js?v=912`, and `css/ap-mirror-hour.css?v=912` return HTTP 200
+- Home / sky-card / chart HTML pin `AP_ASSET_V="912"` and `ap-mirror-hour.js?v=912`
+- Live door: **GitHub Pages** (`Deploy to GitHub Pages` on push to `main` touching `website/**`)
+- Preceding PR 45 Pages run (shipped the 11:11 files while still on tip 911): [Deploy to GitHub Pages #35494410957](https://github.com/jonnydavx-eng/astroprecise/actions/runs/35494410957)
 - Cloudflare tagged production cutover is **not** the public door and was not used. Do not replace the Pages workflow on `main` with a local Cloudflare `workflow_dispatch` file
 - JDAV hook blocks `git push` of `main` to `github`/`origin`. Feature branch + PR merge is the supported path
 
