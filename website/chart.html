@@ -131,6 +131,7 @@
   <link rel="stylesheet" href="css/ap-chart-v835.css?v=911" />
   <link rel="stylesheet" href="css/ap-micro-delight.css?v=911" />
   <link rel="stylesheet" href="css/ap-keep-sky.css?v=911">
+  <link rel="stylesheet" href="css/ap-mirror-hour.css?v=911">
 </head>
 <body class="page-chart ap-field-instrument ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
@@ -490,6 +491,12 @@
               <p id="result-date"></p>
               <span id="result-time-chip" class="result-time-chip" data-level="unknown" role="status" aria-live="polite">Time unknown</span>
             </div>
+            <aside id="mirror-hour-badge" class="ap-mirror-badge" hidden>
+              <p class="ap-mirror-badge__kicker">Birth minute</p>
+              <p class="ap-mirror-badge__label"></p>
+              <p class="ap-mirror-badge__folk"></p>
+              <p class="ap-mirror-badge__note"></p>
+            </aside>
             <p class="result-method-note">Sun = how you shine. Moon = what you need. Rising needs a birth time.</p>
           </div>
           <button type="button" id="sitting-cta" class="action-btn action-btn--ember" aria-label="Open the seven-chapter sitting for this minute">
@@ -697,6 +704,7 @@
   <script src="js/ap-deep-link.js?v=911" defer></script>
   <script src="js/ap-sky-bridge.js?v=911" defer></script>
   <script src="js/ap-plain-placement.js?v=911" defer></script>
+  <script src="js/ap-mirror-hour.js?v=911" defer></script>
   <script src="js/chart-page.js?v=911" defer></script>
   <script src="js/ap-keep-library.js?v=911" defer></script>
   <script src="js/ap-keep-sky.js?v=911" defer></script>

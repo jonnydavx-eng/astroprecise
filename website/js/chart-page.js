@@ -861,6 +861,28 @@
     return `${dg}°${String(mn).padStart(2, '0')}′`;
   }
 
+  function renderMirrorBadge(chart) {
+    const el = document.getElementById('mirror-hour-badge');
+    if (!el) return;
+    const match = chart && chart.timeKnown && chart.birthTime && window.APMirrorHour
+      ? APMirrorHour.detectFromClock(chart.birthTime)
+      : null;
+    const label = el.querySelector('.ap-mirror-badge__label');
+    const folk = el.querySelector('.ap-mirror-badge__folk');
+    const note = el.querySelector('.ap-mirror-badge__note');
+    if (!match) {
+      el.hidden = true;
+      if (window.APMirrorHour) APMirrorHour.rememberNatal(null);
+      return;
+    }
+    APMirrorHour.rememberNatal(match);
+    const copy = APMirrorHour.badgeCopy(match);
+    if (label) label.textContent = copy.label + ' · ' + copy.time;
+    if (folk) folk.textContent = copy.folk;
+    if (note) note.textContent = copy.honesty;
+    el.hidden = false;
+  }
+
   function renderResultReceipt(chart) {
     if (!chart) return;
     const level = chart.timeAccuracy || (chart.birthTime ? 'exact' : 'unknown');
@@ -928,6 +950,7 @@
     }
     syncHouseSystemControls(chart.houseSystem || 'equal');
     renderResultReceipt(chart);
+    renderMirrorBadge(chart);
     const eclipseHref = eclipseHandoffHref(chart);
     ['eclipse-handoff', 'eclipse-cta'].forEach(function (id) {
       const el = document.getElementById(id);
@@ -992,6 +1015,11 @@
         asc: Number.isFinite(Number(chart.asc)) ? Number(chart.asc) : null,
         mc: Number.isFinite(Number(chart.mc)) ? Number(chart.mc) : null,
         jd: Number.isFinite(Number(chart.jd)) ? Number(chart.jd) : null,
+        mirrorHour: (function () {
+          if (!chart.timeKnown || !chart.birthTime || !window.APMirrorHour) return null;
+          var found = APMirrorHour.detectFromClock(chart.birthTime);
+          return found ? { label: found.label, family: found.family, kind: found.kind } : null;
+        })(),
         ts: Date.now(),
       }));
     } catch (e) { /* storage blocked — visitor re-enters */ }

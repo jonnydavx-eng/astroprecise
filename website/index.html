@@ -7,14 +7,17 @@
   <meta name="referrer" content="no-referrer">
   <script>
   (function () {
-    // The Observatory accepts only two non-personal test/runtime flags in its
-    // query. Remove every other field before styles, scripts, images or the 3D
+    // The Observatory accepts a short list of non-personal test/runtime flags.
+    // Remove every other field before styles, scripts, images or the 3D
     // engine can request a subresource with a legacy personal address.
     var incomingQuery = new URLSearchParams(location.search || '');
     var safeQuery = new URLSearchParams();
     incomingQuery.forEach(function (value, key) {
-      if ((key === 'nosw' || key === 'lite') && value === '1' && !safeQuery.has(key)) {
+      if ((key === 'nosw' || key === 'lite' || key === 'ap-presence') && value === '1' && !safeQuery.has(key)) {
         safeQuery.set(key, '1');
+      }
+      if (key === 'ap-mirror' && !safeQuery.has(key) && (/^\d{1,2}:\d{2}$/.test(value) || /^\d{4}$/.test(value))) {
+        safeQuery.set(key, value);
       }
     });
     var cleanSearch = safeQuery.toString() ? '?' + safeQuery.toString() : '';
@@ -92,6 +95,7 @@
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=911">
     <link rel="stylesheet" href="css/ap-home-v835.css?v=911">
     <link rel="stylesheet" href="css/ap-keep-sky.css?v=911">
+    <link rel="stylesheet" href="css/ap-mirror-hour.css?v=911">
 </head>
 <body class="ap-live-home page-home ap-reading-room">
   <a class="skip" href="#lead">Skip to the Observatory</a>
@@ -139,6 +143,18 @@
         <div class="ap-model-vignette" aria-hidden="true"></div>
         <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Settling…</strong><em>The live sky · computed here</em></div>
       </div>
+      <aside class="ap-presence-banner" id="ap-presence-banner" hidden>
+        <p class="ap-presence__kicker ap-mirror-badge__kicker">Device clock</p>
+        <p class="ap-presence__title" id="ap-presence-title">Sit with the sky</p>
+        <p class="ap-presence__folk" id="ap-presence-folk"></p>
+        <label class="ap-presence__note" for="ap-presence-wish">Optional silent wish — stays in this tab, never sent</label>
+        <input class="ap-presence__wish" id="ap-presence-wish" type="text" maxlength="120" autocomplete="off" placeholder="A word you keep to yourself">
+        <div class="ap-presence__actions">
+          <button type="button" class="ap-presence__btn ap-presence__btn--sit" id="ap-presence-dismiss">Keep sitting · dismiss</button>
+          <a class="ap-presence__btn" id="ap-presence-keep" href="sky-card.html">Keep a synchronicity card</a>
+        </div>
+        <p class="ap-presence__note" id="ap-presence-note"></p>
+      </aside>
 
       <div class="ap-mobile-flight-deck" aria-label="3D Observatory controls">
         <p><span>01</span> Choose a destination <small>Then drag the model to orbit</small></p>
@@ -187,6 +203,7 @@
           <div class="ap-keep-row ap-keep-row--home">
             <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
             <span class="action-note" id="keep-sky-caption">Needs a birth minute with a clock time. Sit with your Earth above, or cast the chart — the live sky stays free.</span>
+            <a class="ap-hint-link" href="sky-card.html" data-ap-keep-minute>Sky card</a>
             <a class="ap-hint-link" href="charts.html">Your plates</a>
           </div>
         </div>
@@ -247,7 +264,10 @@
     <script src="js/ap-home-personal-sky.js?v=911" defer></script>
     <script src="js/ap-keep-library.js?v=911" defer></script>
     <script src="js/ap-keep-sky.js?v=911" defer></script>
+    <script src="js/ap-keep-minute.js?v=911" defer></script>
     <script src="js/ap-home-keep.js?v=911" defer></script>
+    <script src="js/ap-mirror-hour.js?v=911" defer></script>
+    <script src="js/ap-mirror-presence.js?v=911" defer></script>
     <script src="js/ap-nav-prefetch.js?v=911" defer data-ap-nav-prefetch="1"></script>
     <script src="js/ap-sky-time.js?v=911" defer></script>
     <script src="js/ap-footer-inject.js?v=911" defer></script>
