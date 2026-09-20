@@ -102,9 +102,11 @@ html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.a
 <script>window.AP_ASSET_V='911';</script>
 <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=911">
 <link rel="stylesheet" href="css/ap-phone-pass.css?v=911">
+<link rel="stylesheet" href="css/ap-mirror-hour.css?v=911">
 <script src="js/ap-nav-model.js?v=911" defer></script>
 <script src="js/ephemeris.js?v=911" defer></script>
 <script src="js/ap-keep-library.js?v=911" defer></script>
+<script src="js/ap-mirror-hour.js?v=911" defer></script>
 <script src="js/ap-sky-card.js?v=911" defer></script>
 </head>
 <body class="page-sky-card ap-launch-article">
@@ -168,6 +170,11 @@ html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.a
       <button class="ap-card-btn" type="submit" id="skyCardDraw">Draw my card</button>
       <button class="ap-card-btn" type="button" id="skyCardShare" disabled>Share this card</button>
       <button class="ap-card-btn ap-card-btn--quiet" type="button" id="skyCardDownload" disabled>Download PNG</button>
+    </div>
+    <div class="ap-sync-card-panel" id="skySyncPanel" hidden>
+      <p class="ap-sync-card-note" id="skySyncLabel"></p>
+      <p class="ap-sync-card-folk" id="skySyncFolk"></p>
+      <p class="ap-sync-card-note" id="skySyncNote"></p>
     </div>
   </form>
 
