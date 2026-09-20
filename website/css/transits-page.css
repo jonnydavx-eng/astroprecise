@@ -31,12 +31,13 @@ html.ap-fonts-ready .page-transits {
   }
 }
 .page-transits .transits-hero {
-  min-height: calc(var(--nav-height, 72px) + clamp(520px, 118vw, 600px));
+  min-height: 0;
+  padding-bottom: 1.5rem;
   contain: layout style;
 }
 .page-transits .transits-hero h1 {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-size: clamp(1.85rem, 4.4vw, 2.8rem);
   font-weight: 700;
   line-height: 1.1;
   min-height: 1.15em;
@@ -232,6 +233,20 @@ html.ap-fonts-ready .page-transits .transits-hero h1 {
       background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(147, 168, 191,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
+    .transits-hero::after {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      right: 0;
+      width: min(52vw, 720px);
+      height: 100%;
+      background: url('../img/editorial/studio-earth-wash-v907.jpg') 78% 42% / cover no-repeat;
+      opacity: 0.28;
+      pointer-events: none;
+      mask-image: linear-gradient(90deg, transparent, black 38%);
+    }
+    .transits-hero > * { position: relative; z-index: 1; }
     .transits-hero__eyebrow {
       display: inline-flex;
       align-items: center;

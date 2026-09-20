@@ -560,13 +560,13 @@ function page(s) {
   <meta property="og:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="${s.name} – ${s.dates}, ${/^[AEIOU]/.test(s.element) ? 'an' : 'a'} ${s.element} sign ruled by ${RULER_STILL[s.key].label}, shown as a photoreal render of ${RULER_STILL[s.key].label} on AstroPrecise." />
+  <meta property="og:image:alt" content="${s.name} – ${s.dates}. Engine still of ${RULER_STILL[s.key].label} from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${s.name} Horoscope Today | AstroPrecise" />
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
   <meta name="theme-color" content="#040812" />
-  <link rel="preload" href="img/engine/${RULER_STILL[s.key].still}.webp" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preload" href="img/engine/studio/${RULER_STILL[s.key].still}.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <!-- CLS: preload the hero display face (h1) so Cormorant paints from first paint (no late swap). -->
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high" />
@@ -823,8 +823,8 @@ function page(s) {
       contain: layout style;
     }
   </style>
-  <script src="js/defer-page-css.js?v=902" defer></script>
-  <script src="js/ap-sign-defer-boot.js?v=902" defer></script>
+  <script src="js/defer-page-css.js?v=911" defer></script>
+  <script src="js/ap-sign-defer-boot.js?v=911" defer></script>
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script type="application/ld+json">${JSON.stringify(breadcrumbLd)}</script>
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
@@ -864,7 +864,7 @@ function page(s) {
     <section class="sign-hero" aria-labelledby="page-title">
       <div class="sign-hero__inner">
         <figure class="sign-hero__planet">
-          <img class="sign-hero__planet-img" src="img/engine/${RULER_STILL[s.key].still}.webp"
+          <img class="sign-hero__planet-img" src="img/engine/studio/${RULER_STILL[s.key].still}.webp"
             alt="${RULER_STILL[s.key].label}, ${RULER_STILL[s.key].rel} – rendered from the AstroPrecise engine"
             width="340" height="340" loading="eager" decoding="async" fetchpriority="high" />
           <figcaption class="sign-hero__planet-caption">${RULER_STILL[s.key].label} · ${RULER_STILL[s.key].rel} · our engine render</figcaption>
@@ -978,12 +978,12 @@ function page(s) {
   <p class="ap-guide-links" hidden aria-hidden="true"></p>
 ${footerBlockHtml()}
 
-  <script src="js/content-service.js?v=902"></script>
-  <script src="js/sign-daily.js?v=902"></script>
-  <script src="js/ap-zodiac-constants.js?v=902"></script>
-  <script src="js/sign-page-boot.js?v=902"></script>
-  <script src="js/ap-page-boot.js?v=902" defer></script>
-  <script src="js/ap-footer-inject.js?v=902" defer></script>
+  <script src="js/content-service.js?v=911"></script>
+  <script src="js/sign-daily.js?v=911"></script>
+  <script src="js/ap-zodiac-constants.js?v=911"></script>
+  <script src="js/sign-page-boot.js?v=911"></script>
+  <script src="js/ap-page-boot.js?v=911" defer></script>
+  <script src="js/ap-footer-inject.js?v=911" defer></script>
 </body>
 </html>
 `;

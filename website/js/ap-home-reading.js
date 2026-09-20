@@ -7,7 +7,7 @@
 
   if (!document.body || !document.body.classList.contains('ap-reading-room')) return;
 
-  var oracleSrc = 'js/oracle.js?v=902';
+  var oracleSrc = 'js/oracle.js?v=911';
 
   function $(id) { return document.getElementById(id); }
 
@@ -107,15 +107,6 @@
     }).catch(function () {
       var source = $('ap-reading-source');
       setText(source, 'The reading engine is unavailable. The model below is still the live sky.');
-    });
-  }
-
-  var instrumentBtn = $('ap-open-instrument');
-  if (instrumentBtn) {
-    instrumentBtn.addEventListener('click', function () {
-      var open = document.body.classList.toggle('is-instrument-open');
-      instrumentBtn.textContent = open ? 'Hide time controls' : 'Time controls';
-      instrumentBtn.setAttribute('aria-pressed', open ? 'true' : 'false');
     });
   }
 

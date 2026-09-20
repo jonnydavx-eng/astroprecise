@@ -119,6 +119,9 @@
     var stashed = readStash();
     var hasExplicitOpening = !!(location.hash || stashed);
     var userTookControl = false;
+    var selectedView = 'Solar system';
+    var selectedDate = null;
+    var timeMode = 'current';
 
     function markUserControl() { userTookControl = true; }
     if (stage) {
@@ -151,16 +154,18 @@
         stage.setAttribute('aria-label', 'Live sky unavailable');
         return;
       }
-      if (kind === 'live') {
-        stage.setAttribute('aria-label', 'Live Earth now');
-        return;
-      }
-      stage.setAttribute('aria-label', 'Earth as computed now');
+      var label = timeMode === 'birth'
+        ? selectedView + ' · selected birth view'
+        : timeMode === 'selected'
+          ? selectedView + ' at selected moment'
+          : kind === 'live' ? 'Live ' + selectedView + ' now' : selectedView + ' as computed now';
+      stage.setAttribute('aria-label', label);
     }
 
     function updateClock(customDate) {
-      var date = customDate || new Date();
-      if (timeStatus) timeStatus.textContent = formatUtc(date);
+      if (customDate && Number.isFinite(customDate.getTime())) selectedDate = customDate;
+      var date = selectedDate || (timeMode === 'current' ? new Date() : null);
+      if (timeStatus) timeStatus.textContent = date ? formatUtc(date) : 'Selected time';
       var unavailable = !!(stage && stage.dataset.modelState === 'unavailable');
       if (unavailable) {
         if (liveStatus) {
@@ -171,16 +176,16 @@
         syncStageHonesty('unavailable');
         return;
       }
-      var liveCurrent = !customDate && surfaceCOwnsSky();
+      var liveCurrent = timeMode === 'current' && surfaceCOwnsSky();
       if (liveStatus) {
-        if (customDate) {
+        if (timeMode !== 'current') {
           liveStatus.textContent = 'Selected moment';
           liveStatus.classList.remove('ap-model-status__live');
         } else if (liveCurrent) {
           liveStatus.textContent = 'Live now';
           liveStatus.classList.add('ap-model-status__live');
         } else {
-          liveStatus.textContent = didReady ? 'Earth now' : 'Preparing 3D';
+          liveStatus.textContent = didReady ? selectedView + ' now' : 'Preparing 3D';
           liveStatus.classList.remove('ap-model-status__live');
         }
       }
@@ -188,6 +193,7 @@
     }
 
     function showFocus(name, detail) {
+      selectedView = name || 'Solar system';
       if (focusTitle) focusTitle.textContent = name || 'Solar system';
       if (detail && detail.key) {
         setPressed(worldGroup, function (button) { return button.dataset.key === detail.key; });
@@ -195,6 +201,7 @@
         setPressed(worldGroup, function (button) { return button.dataset.key === ''; });
       }
       if (mobileWorld) mobileWorld.value = detail && detail.key ? detail.key : '';
+      updateClock();
     }
 
     function showScale(level) {
@@ -205,10 +212,14 @@
       if (scaleStatus) scaleStatus.textContent = SCALE_NAMES[idx];
       setPressed(scaleGroup, function (button) { return button.dataset.lv === SCALE_KEYS[idx]; });
       if (mobileScale) mobileScale.value = SCALE_KEYS[idx];
+      selectedView = SCALE_NAMES[idx];
+      updateClock();
     }
 
     function setMoment(moment) {
       if (!moment || moment === 'now') {
+        timeMode = 'current';
+        selectedDate = null;
         if (orrery.setLive) orrery.setLive();
         updateClock();
         return;
@@ -217,6 +228,7 @@
       if (/^\d{4}-\d{2}-\d{2}T[\d:.]+$/.test(normalized)) normalized += 'Z';
       var date = new Date(normalized);
       if (Number.isNaN(date.getTime())) return;
+      timeMode = 'selected';
       var jd = date.getTime() / 86400000 + 2440587.5;
       if (orrery.setJD) orrery.setJD(jd);
       var scrub = byId('scrub');
@@ -247,10 +259,6 @@
       } else if (state.scale != null && orrery.flyScale) {
         orrery.flyScale(state.scale);
         showScale(state.scale);
-      } else if (document.body && document.body.classList.contains('ap-reading-room')) {
-        if (orrery.flyTo) orrery.flyTo('earth');
-        showScale('EARTH');
-        showFocus('Earth', { key: 'earth' });
       } else {
         showScale('SYSTEM');
         showFocus('Solar system', { key: '' });
@@ -268,18 +276,19 @@
         stage.setAttribute('aria-busy', 'false');
       }
       markSurfaceCOwned();
-      if (document.body && document.body.classList.contains('ap-reading-room')) {
-        showScale('EARTH');
-        showFocus('Earth', { key: 'earth' });
-      } else {
-        showScale('SYSTEM');
-        showFocus('Solar system', { key: '' });
-      }
+      showScale('SYSTEM');
+      showFocus('Solar system', { key: '' });
       updateClock();
       if (mobileWorld) mobileWorld.disabled = false;
       if (mobileScale) mobileScale.disabled = false;
       appliedHash = null;
       applyHash();
+      try {
+        if (window.Orrery3D && typeof window.Orrery3D.forceResize === 'function') {
+          requestAnimationFrame(function () { window.Orrery3D.forceResize(); });
+          setTimeout(function () { window.Orrery3D.forceResize(); }, 180);
+        }
+      } catch (e) {}
       if (!hasExplicitOpening && !userTookControl && orrery.startOpeningBeat) {
         var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var readingRoom = document.body && document.body.classList.contains('ap-reading-room');
@@ -342,7 +351,9 @@
         var key = String(mobileScale.value || 'SYSTEM').toUpperCase();
         if (orrery.flyScale) orrery.flyScale(key);
         showScale(key);
-        showFocus(SCALE_NAMES[Math.max(0, SCALE_KEYS.indexOf(key))] || 'Solar system', { key: '' });
+        if (key !== 'EARTH') {
+          showFocus(SCALE_NAMES[Math.max(0, SCALE_KEYS.indexOf(key))] || 'Solar system', { key: '' });
+        }
         revealModelAfterChoice();
       });
     }
@@ -350,6 +361,8 @@
     var nowButton = byId('nowBtn');
     if (nowButton) nowButton.addEventListener('click', function () {
       markUserControl();
+      timeMode = 'current';
+      selectedDate = null;
       updateClock();
       appliedHash = null;
       if (location.hash) history.replaceState(null, '', location.pathname + location.search);
@@ -358,11 +371,9 @@
     var scrub = byId('scrub');
     if (scrub) scrub.addEventListener('input', function () {
       markUserControl();
-      if (liveStatus) {
-        liveStatus.textContent = 'Selected moment';
-        liveStatus.classList.remove('ap-model-status__live');
-      }
-      syncStageHonesty('computed');
+      timeMode = 'selected';
+      selectedDate = null;
+      updateClock();
     });
 
     document.addEventListener('keydown', function (event) {
@@ -374,10 +385,16 @@
     document.addEventListener('ap-personal-sky', function (event) {
       var detail = event.detail || {};
       if (detail.live) {
+        timeMode = 'current';
+        selectedDate = null;
         updateClock();
-        if (telemetry) telemetry.textContent = 'Earth as computed now. Distances in the model are schematic; longitudes are live.';
+        if (telemetry) telemetry.textContent = selectedView + ' as computed now. Distances in the model are schematic; longitudes are live.';
         return;
       }
+      timeMode = 'birth';
+      selectedDate = null;
+      showFocus('Earth', { key: 'earth' });
+      showScale('EARTH');
       if (detail.date) updateClock(new Date(detail.date));
       if (telemetry) {
         telemetry.textContent = detail.caption
@@ -396,10 +413,7 @@
     window.addEventListener('hashchange', function () { appliedHash = null; applyHash(); });
 
     setInterval(function () {
-      if (!liveStatus) return;
-      var label = liveStatus.textContent;
-      if (label === 'Live sky unavailable' || label === 'Selected moment') return;
-      if (label === 'Live now' || label === 'Earth now' || label === 'Preparing 3D') updateClock();
+      updateClock();
     }, 30000);
   }
 

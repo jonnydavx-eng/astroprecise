@@ -11,7 +11,7 @@
   'use strict';
 
   var DISABLED_CAPTION =
-    'Needs a birth minute from your chart. Cast with a clock time to keep that hour\u2019s still \u2014 the live sky above stays free.';
+    'Needs a birth minute with a clock time. Sit with your Earth above, or cast the chart \u2014 the live sky stays free.';
 
   function tzOffsetMinutes(tz, utcDate) {
     if (!tz || tz === 'UTC') return 0;

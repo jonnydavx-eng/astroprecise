@@ -144,15 +144,17 @@
   }
 
   function keepToLibrary(blob, context, kind) {
-    if (!blob || !window.APKeepLibrary || typeof APKeepLibrary.put !== 'function') return;
-    APKeepLibrary.put({
-      kind: kind,
-      blob: blob,
-      caption: caption(context),
-      birthDate: context && context.birthDate ? String(context.birthDate) : '',
-      place: context && context.place ? String(context.place) : '',
-      schematic: true
-    });
+    if (!blob || !window.APKeepLibrary || typeof window.APKeepLibrary.put !== 'function') return Promise.resolve(null);
+    return Promise.resolve().then(function () {
+      return window.APKeepLibrary.put({
+        kind: kind,
+        blob: blob,
+        caption: caption(context),
+        birthDate: context && context.birthDate ? String(context.birthDate) : '',
+        place: context && context.place ? String(context.place) : '',
+        schematic: true
+      });
+    }).catch(function () { return null; });
   }
 
   function keep() {
@@ -183,22 +185,36 @@
       if (btn) btn.textContent = 'Could not keep this sky';
       return;
     }
-    stampSurfaceA(still, birthMode ? birthContext : null);
-    still.toBlob(function (blob) {
-      if (!blob) return;
-      keepToLibrary(blob, birthMode ? birthContext : null, birthMode ? 'birth-hour' : 'observatory');
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = filename(birthMode ? birthContext : null);
-      a.rel = 'noopener';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+    var context = birthMode ? birthContext : null;
+    stampSurfaceA(still, context);
+    still.toBlob(async function (blob) {
+      if (!blob) {
+        if (btn) btn.textContent = 'Could not keep this sky';
+        return;
+      }
+      var old = btn && btn.textContent;
+      var downloadStarted = false;
+      var url;
+      var a;
+      try {
+        url = URL.createObjectURL(blob);
+        a = document.createElement('a');
+        a.href = url;
+        a.download = filename(context);
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        downloadStarted = true;
+      } catch { /* Library saving can still succeed without a download. */ }
+      finally {
+        if (a) a.remove();
+        if (url) setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+      }
+      if (btn) btn.textContent = downloadStarted ? 'Download started; saving to library…' : 'Saving to library…';
+      var saved = await keepToLibrary(blob, context, birthMode ? 'birth-hour' : 'observatory');
       if (btn) {
-        var old = btn.textContent;
-        btn.textContent = 'Saved on this device';
+        btn.textContent = saved && saved.id ? 'Saved to library on this device' :
+          (downloadStarted ? 'Download started; not saved to library' : 'Could not keep this sky');
         setTimeout(function () { btn.textContent = old; }, 1800);
       }
     }, 'image/png');

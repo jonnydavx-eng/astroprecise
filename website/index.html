@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -71,27 +71,27 @@
   <meta property="og:title" content="AstroPrecise — sit with the live sky, then the minute you were born">
   <meta property="og:description" content="Sit with the live sky, then the minute you were born. Chart, seven chapters, keep card. Play stays free.">
   <meta property="og:url" content="https://astroprecise.app/">
-  <meta property="og:image" content="https://astroprecise.app/img/editorial/sitting-home-og-v893.jpg">
+  <meta property="og:image" content="https://astroprecise.app/img/editorial/sitting-home-og-v906.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed.">
   <meta property="og:site_name" content="AstroPrecise">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-home-og-v893.jpg">
+  <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-home-og-v906.jpg">
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-italic-500.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=902">
-  <script>window.AP_ASSET_V='902';</script>
+  <link rel="stylesheet" href="css/fonts.css?v=911">
+  <script>window.AP_ASSET_V='911';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-    <script src="js/void-orrery-adapter.js?v=902" defer></script>
-    <script src="js/ap-nav-model.js?v=902" defer></script>
-    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=902">
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=902">
-    <link rel="stylesheet" href="css/ap-home-v835.css?v=902">
-    <link rel="stylesheet" href="css/ap-keep-sky.css?v=902">
+    <script src="js/void-orrery-adapter.js?v=911" defer></script>
+    <script src="js/ap-nav-model.js?v=911" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=911">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=911">
+    <link rel="stylesheet" href="css/ap-home-v835.css?v=911">
+    <link rel="stylesheet" href="css/ap-keep-sky.css?v=911">
 </head>
 <body class="ap-live-home page-home ap-reading-room">
   <a class="skip" href="#lead">Skip to the Observatory</a>
@@ -123,11 +123,6 @@
 
   <main id="main-content">
     <section class="ap-live-stage" id="lead" aria-label="The live sky">
-      <div class="ap-model-stage" role="group" aria-label="Earth as computed now" aria-busy="true">
-        <void-orrery id="orr" start-radius="8" start-focus="earth" data-wheel="off" data-renderer="webgl-only"></void-orrery>
-        <div class="ap-model-vignette" aria-hidden="true"></div>
-        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Settling…</strong><em>Earth as it is now · computed here</em></div>
-      </div>
       <div class="ap-live-intro">
         <p class="ap-reading-kicker" id="ap-reading-kicker">The night you were born</p>
         <h1 class="ap-live-heading" id="ap-reading-title">Sit with the sky first</h1>
@@ -138,11 +133,17 @@
           <button type="button" class="ap-hint-link" id="ap-birth-sky-now" hidden>Return to now</button>
         </div>
       </div>
+      <div class="ap-model-stage" role="group" aria-label="Solar system as computed now" aria-busy="true">
+        <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only"></void-orrery>
+        <img class="ap-model-poster" src="img/engine/studio/earth.webp" width="1024" height="1024" alt="" decoding="async" fetchpriority="high" aria-hidden="true">
+        <div class="ap-model-vignette" aria-hidden="true"></div>
+        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Settling…</strong><em>The live sky · computed here</em></div>
+      </div>
 
       <div class="ap-mobile-flight-deck" aria-label="3D Observatory controls">
         <p><span>01</span> Choose a destination <small>Then drag the model to orbit</small></p>
         <label for="mobileWorld"><span>World</span><select id="mobileWorld" disabled><option value="">Solar system</option><option value="sun">Sun</option><option value="mercury">Mercury</option><option value="venus">Venus</option><option value="earth">Earth</option><option value="moon">Moon</option><option value="mars">Mars</option><option value="jupiter">Jupiter</option><option value="saturn">Saturn</option><option value="uranus">Uranus</option><option value="neptune">Neptune</option></select></label>
-        <label for="mobileScale"><span>Scale</span><select id="mobileScale" disabled><option value="EARTH" selected>Earth</option><option value="INNER">Inner system</option><option value="SYSTEM">Solar system</option><option value="OORT">Oort cloud</option><option value="STARS">Nearby stars</option><option value="GALAXY">Galaxy</option><option value="COSMOS">Cosmos</option></select></label>
+        <label for="mobileScale"><span>Scale</span><select id="mobileScale" disabled><option value="EARTH">Earth</option><option value="INNER">Inner system</option><option value="SYSTEM" selected>Solar system</option><option value="OORT">Oort cloud</option><option value="STARS">Nearby stars</option><option value="GALAXY">Galaxy</option><option value="COSMOS">Cosmos</option></select></label>
       </div>
 
       <aside class="ap-control-panel" aria-label="Explore the live sky">
@@ -152,13 +153,13 @@
             <span id="sky-scale-status">Solar system</span>
             <span id="sky-time-status">Computing UTC</span>
           </div>
-          <p class="ap-model-hint">Drag to orbit · <button type="button" class="ap-hint-link" id="ap-open-instrument">use the instrument</button></p>
+          <p class="ap-model-hint">Drag to orbit. Scroll to zoom. Choose a world to explore.</p>
           <div class="ap-control-group ap-control-group--scale">
-            <div class="ap-control-head"><p class="ap-panel-label">Scale</p><span class="ap-control-note">Earth · Inner · System</span></div>
+            <div class="ap-control-head"><p class="ap-panel-label">Scale</p></div>
             <div id="mladder" role="group" aria-label="Choose spatial scale"></div>
           </div>
           <div class="ap-control-group ap-control-group--worlds">
-            <div class="ap-control-head"><p class="ap-panel-label">Worlds</p><span class="ap-control-note">Fly directly</span></div>
+            <div class="ap-control-head"><p class="ap-panel-label">Worlds</p></div>
             <div id="dock" role="group" aria-label="Choose a named world"></div>
           </div>
           <div class="ap-control-group ap-control-group--time">
@@ -168,28 +169,28 @@
                 <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" aria-label="Move model time between 1800 and 2200">
                 <span class="mono" id="scrubLabel">NOW</span>
                 <button class="mono" id="nowBtn" type="button">Return to live</button>
+                <button class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" type="button" disabled aria-disabled="true">Journey to the edge</button>
               </div>
             </div>
           </div>
         </div>
-        <div class="ap-glass-hud__meta">
-          <div class="ap-context">
-            <div class="ap-context__head"><p class="ap-panel-label">Selected view</p><h2 id="sky-focus-title">Earth</h2></div>
-            <div class="ap-ledger ap-ledger--observed"><span>Observed</span><p id="telemetry" aria-live="polite">Earth as computed now. Distances in the model are schematic; longitudes are live.</p></div>
-            <div class="ap-ledger ap-ledger--meaning"><span>In astrology</span><p id="sky-meaning">A chart reads angular relationships among these bodies from Earth. It is a symbolic tradition, not a scientific claim.</p></div>
-            <a class="ap-context__chart" id="sky-chart-link" href="chart.html">Find these positions in my chart</a>
-            <div class="ap-keep-row ap-keep-row--home">
-              <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
-              <span class="action-note" id="keep-sky-caption">Needs a birth minute from your chart. Cast with a clock time to keep that hour’s still — the live sky above stays free.</span>
-              <a class="ap-hint-link" href="charts.html">Your plates</a>
-            </div>
-          </div>
-          <div class="ap-flight-launch">
-            <button class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" type="button">Journey to the edge</button>
-            <span>Optional full-scale flight · press again or Escape to stop</span>
+      </aside>
+    </section>
+
+    <section class="ap-instrument-notes" aria-label="How to read this sky">
+      <div class="ap-glass-hud__meta">
+        <div class="ap-context">
+          <div class="ap-context__head"><p class="ap-panel-label">Selected view</p><h2 id="sky-focus-title">Solar system</h2></div>
+          <div class="ap-ledger ap-ledger--observed"><span>Observed</span><p id="telemetry" aria-live="polite">Distances in the model are schematic; longitudes are live.</p></div>
+          <div class="ap-ledger ap-ledger--meaning"><span>In astrology</span><p id="sky-meaning">A chart reads angular relationships among these bodies from Earth. It is a symbolic tradition, not a scientific claim.</p></div>
+          <a class="ap-context__chart" id="sky-chart-link" href="chart.html">Find these positions in my chart</a>
+          <div class="ap-keep-row ap-keep-row--home">
+            <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
+            <span class="action-note" id="keep-sky-caption">Needs a birth minute with a clock time. Sit with your Earth above, or cast the chart — the live sky stays free.</span>
+            <a class="ap-hint-link" href="charts.html">Your plates</a>
           </div>
         </div>
-      </aside>
+      </div>
     </section>
 
     <section class="ap-personal-entry" id="personal" aria-labelledby="personal-title">
@@ -208,7 +209,7 @@
                 <div class="field-e"><label for="f-time">Time <span class="opt">optional</span></label><input type="time" id="f-time"></div>
                 <div class="field-e field--place"><label for="f-place">Birth place</label><input type="text" id="f-place" required placeholder="Town or city" autocomplete="off" aria-describedby="coupon-hint" aria-controls="f-place-drop" aria-autocomplete="list"><div class="ap-city-drop" id="f-place-drop" hidden></div></div>
               </div>
-              <p class="ap-calc-entry-panel__hint" id="coupon-hint">We’ll hold your Earth first. A clock time sharpens the Moon; you confirm the exact town on the chart.</p>
+              <p class="ap-calc-entry-panel__hint" id="coupon-hint">Pick the matching town from the list, then we hold your Earth. A clock time sharpens the Moon. You confirm the exact place again on the chart.</p>
               <div class="ap-calc-entry-panel__action">
                 <button class="btn-primary" type="submit">Show me that Earth</button>
                 <span class="action-note">Private · no account · no birth details in the address bar</span>
@@ -223,7 +224,7 @@
       <div class="ap-proof-ledger__inner">
         <div><span>01 · The sky</span><strong>Play stays free</strong><p>One live 3D sky. Distances in the model are schematic; longitudes are live.</p></div>
         <div><span>02 · The sitting</span><strong>Your Earth, then the chart</strong><p>Give a date and town. The globe turns to the hemisphere that faced the Sun. Seven chapters open after the chart.</p></div>
-        <div><span>03 · Shop</span><strong>Checkout closed</strong><p>Three print commissions for adults ordering for themselves. The live sky is never behind them.</p></div>
+        <div><span>03 · Shop</span><strong>Checkout closed</strong><p>Natal Sky Print Pack, Personal Sky Keepsake, Whole Sky Edition — computed digital plates for adults ordering for themselves. The live sky is never behind them.</p></div>
       </div>
     </section>
   </main>
@@ -240,16 +241,16 @@
     <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" rel="noopener">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" rel="noopener">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></span></div>
   </footer>
 
-  <script src="js/ap-observatory-controls-v835.js?v=902" defer></script>
-    <script src="js/ap-observatory-v834.js?v=902" defer></script>
-    <script src="js/ap-home-reading.js?v=902" defer></script>
-    <script src="js/ap-home-personal-sky.js?v=902" defer></script>
-    <script src="js/ap-keep-library.js?v=902" defer></script>
-    <script src="js/ap-keep-sky.js?v=902" defer></script>
-    <script src="js/ap-home-keep.js?v=902" defer></script>
-    <script src="js/ap-nav-prefetch.js?v=902" defer data-ap-nav-prefetch="1"></script>
-    <script src="js/ap-sky-time.js?v=902" defer></script>
-    <script src="js/ap-footer-inject.js?v=902" defer></script>
+  <script src="js/ap-observatory-controls-v835.js?v=911" defer></script>
+    <script src="js/ap-observatory-v834.js?v=911" defer></script>
+    <script src="js/ap-home-reading.js?v=911" defer></script>
+    <script src="js/ap-home-personal-sky.js?v=911" defer></script>
+    <script src="js/ap-keep-library.js?v=911" defer></script>
+    <script src="js/ap-keep-sky.js?v=911" defer></script>
+    <script src="js/ap-home-keep.js?v=911" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=911" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-sky-time.js?v=911" defer></script>
+    <script src="js/ap-footer-inject.js?v=911" defer></script>
   <script>
     (function () {
       var button = document.getElementById('ap-cosmic-flight-launch');

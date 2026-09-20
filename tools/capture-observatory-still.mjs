@@ -160,6 +160,9 @@ async function main() {
   const outputPath = join(out, OUTPUT);
   try {
     await page.goto(`${base}/index.html?nosw=1`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    // A product plate has its own 4:3 render surface. Public page chrome and
+    // responsive layout must not shrink the private print capture viewport.
+    await page.addStyleTag({ content: '.ap-model-stage, #orr { width:1600px !important; height:1200px !important; min-height:1200px !important; aspect-ratio:auto !important; }' });
     await page.waitForFunction(() => window.Orrery3D && window.APKeepSky && typeof window.Orrery3D.captureBirthHourStill === 'function', null, { timeout: 60_000 });
     await page.evaluate(async () => {
       await window.Orrery3D.whenReady();
@@ -172,26 +175,24 @@ async function main() {
       const source = window.Orrery3D.captureBirthHourStill({ jd: captureJd, timeKnown: true, scale: 3 });
       if (!source) throw new Error('Orrery capture returned no canvas');
 
-      // Reframe the real engine output into the customer plate. This is a
-      // deterministic crop/exposure finish only: no body, orbit or position is
-      // invented, moved or repainted. The tighter field removes unused ceiling
-      // space while retaining every plotted body and the compressed orbit arcs.
+      // The private 4:3 surface and fixed output keep the print independent
+      // of page chrome. Reframe the computed scene uniformly, trimming the
+      // outer decorative margin without stretching planetary geometry.
       const canvas = document.createElement('canvas');
-      canvas.width = source.width;
-      canvas.height = source.height;
+      canvas.width = 4800;
+      canvas.height = 3600;
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Observatory composition canvas unavailable');
       ctx.fillStyle = '#0B1D38';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const cropWidth = Math.round(source.width * 0.84);
-      const cropHeight = Math.round(cropWidth * 0.75);
-      const cropX = Math.round((source.width - cropWidth) / 2);
-      const cropY = Math.min(source.height - cropHeight, Math.round(source.height * 0.1333));
+      const cropWidth = Math.min(source.width * 0.8, source.height * 4 / 3);
+      const cropHeight = cropWidth * 3 / 4;
+      const cropX = (source.width - cropWidth) / 2;
+      const cropY = Math.min(source.height - cropHeight, source.height * 0.1333);
       ctx.globalCompositeOperation = 'screen';
-      // The cool wash must not flatten the real renderer: keep enough tonal
-      // separation for small-screen previews and the fulfilment quality floor.
-      ctx.filter = 'brightness(1.18) contrast(1.16) saturate(1.08)';
-      ctx.drawImage(source, cropX, cropY, cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
+      ctx.filter = 'brightness(2.8) contrast(1.25) saturate(1.08)';
+      ctx.drawImage(source, cropX, cropY, cropWidth, cropHeight,
+        0, 0, canvas.width, canvas.height);
       ctx.filter = 'none';
       ctx.globalCompositeOperation = 'source-over';
 

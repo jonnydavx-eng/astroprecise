@@ -377,7 +377,11 @@
     }
 
     resolvePlace(city).then(function (place) {
-      if (place) choosePlace(place);
+      if (!place) {
+        setStatus('Pick your town from the suggestions — a typed name is not a location.', true);
+        return;
+      }
+      choosePlace(place);
       var parts = date.split('-').map(Number);
       var hh = 12;
       var mm = 0;
@@ -392,6 +396,12 @@
         ? localToUT(parts[0], parts[1], parts[2], hh, mm, tz)
         : new Date(Date.UTC(parts[0], parts[1] - 1, parts[2], 12, 0, 0));
 
+      stashHandoff({
+        date: date,
+        time: time,
+        city: placeLabel(place) || city,
+        tz: tz || ''
+      });
       scrollToSky();
       driveEarth(instant);
       paintPlate(buildView({
@@ -401,6 +411,21 @@
         place: place,
         instant: instant
       }));
+      if (hasTime) {
+        try {
+          document.dispatchEvent(new CustomEvent('ap-keep-sky-context', {
+            detail: {
+              jd: instant.getTime() / 86400000 + 2440587.5,
+              birthDate: date,
+              birthTime: time.slice(0, 5),
+              timeKnown: true,
+              timeAccuracy: 'exact',
+              place: placeLabel(place) || city,
+              timezone: tz || ''
+            }
+          }));
+        } catch (_) {}
+      }
     }).finally(function () {
       if (submitBtn) {
         submitBtn.disabled = false;

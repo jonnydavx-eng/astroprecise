@@ -365,7 +365,7 @@ window.APAIAssistant = (function () {
       askPlaceholder: 'e.g. How does a Life Path 7 pair with Scorpio rising?',
     },
     'profile-ai-panel': {
-      title: 'Your cosmic dashboard',
+      title: 'On this device',
       subtitle: 'Ask about saved charts and preferences — computed on your device, private.',
       empty: 'Create your profile and save a chart first — then ask about placements, houses, or what to explore next.',
       askPlaceholder: 'e.g. What should I read next from my saved charts?',

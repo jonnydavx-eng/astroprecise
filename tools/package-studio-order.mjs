@@ -109,7 +109,10 @@ function artifact(path) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const dir = resolve(args.dir || '');
+  if (typeof args.dir !== 'string' || !args.dir.trim()) {
+    throw new Error('--dir requires an explicit nonblank directory path');
+  }
+  const dir = resolve(args.dir);
   const privateOrderPath = resolve(args.in || '');
   const product = String(args.product || '');
   const mode = String(args.mode || '');

@@ -1034,6 +1034,18 @@
       text-align: center;
       position: relative;
       z-index: 1;
+      isolation: isolate;
+    }
+    .hero--small::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(4, 8, 18, 0.2), rgba(4, 8, 18, 0.88)),
+        url('../img/editorial/studio-earth-wash-v907.jpg') 72% 40% / cover no-repeat;
+      opacity: 0.38;
+      pointer-events: none;
     }
     .hero--small h1 {
       font-family: var(--font-display);

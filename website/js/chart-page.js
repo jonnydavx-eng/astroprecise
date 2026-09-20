@@ -743,8 +743,8 @@
          visitor confirms the exact place — which is what the homepage coupon
          promises in so many words.
 
-     Nothing already filled is overwritten: a restored local draft always wins
-     over the handoff. */
+     Nothing already filled is overwritten unless this tab just sat a minute
+     on the Observatory: that handoff wins over a stale local draft. */
   function prefillFromHandoff() {
     try {
       const routeQuery = new URLSearchParams(location.search);
@@ -773,13 +773,13 @@
       const timeEl = document.getElementById('time-input');
       const cityEl = document.getElementById('city-input');
 
-      const gotDate = !!(d && /^\d{4}-\d{2}-\d{2}$/.test(d) && dateEl && !dateEl.value);
-      const gotTime = !!(t && /^([01]\d|2[0-3]):[0-5]\d$/.test(t) && timeEl && !timeEl.value);
+      const gotDate = !!(d && /^\d{4}-\d{2}-\d{2}$/.test(d) && dateEl);
+      const gotTime = !!(t && /^([01]\d|2[0-3]):[0-5]\d$/.test(t) && timeEl);
       // A place is only worth carrying if it is plausibly a place name.
       const cityName = (c || '').trim().slice(0, 120);
-      const gotCity = !!(cityName.length >= 2 && cityEl && !cityEl.value);
+      const gotCity = !!(cityName.length >= 2 && cityEl);
 
-      if (!gotDate && !gotTime && !gotCity) return;
+      if (!gotDate && !gotTime && !gotCity) return false;
 
       if (gotDate) {
         dateEl.value = d;
@@ -788,8 +788,12 @@
         if (dateGroup) dateGroup.classList.add('is-valid');
       }
 
-      if (gotTime) {
-        timeEl.value = t;
+      if (timeEl) {
+        timeEl.value = gotTime ? t : '';
+        document.querySelectorAll('.time-btn').forEach(function (button) {
+          button.classList.remove('active');
+          button.setAttribute('aria-pressed', 'false');
+        });
         // The form interaction listener below owns the accuracy status line.
         timeEl.dispatchEvent(new Event('input', { bubbles: true }));
         timeEl.dispatchEvent(new Event('change', { bubbles: true }));
@@ -841,7 +845,8 @@
           try { nextField.focus({ preventScroll: true }); } catch (e) { nextField.focus(); }
         }, reduce ? 0 : 360);
       }
-    } catch (e) {}
+      return true;
+    } catch (e) { return false; }
   }
 
   // ── Results rendering ─────────────────────────────────────────────────────
@@ -1062,37 +1067,37 @@
     const el = document.getElementById('natal-wheel');
     if (!el) return;
     const wrap = document.getElementById('natal-wheel-wrap');
-    if (!chart.houses) {
-      el.innerHTML = '<div class="ap-withheld-card" role="status"><div><strong>Natal wheel withheld</strong><span>Birth time is unknown, so the wheel cannot claim the Moon, Ascendant, MC or house cusps. Date-based placements remain available below.</span></div></div>';
-      el.classList.remove('natal-wheel--loading', 'natal-wheel--loaded');
-      if (wrap) {
-        wrap.classList.add('natal-wheel-container--withheld');
-        wrap.removeAttribute('aria-busy');
-      }
-      renderWheelPicker(null);
-      return;
-    }
-    if (wrap) wrap.classList.remove('natal-wheel-container--withheld');
     if (!window.AstroChartRender) {
-      // Renderer missing (failed to load/parse) — say so instead of a silent blank wheel.
       el.innerHTML = '<p class="chart-render-error">The chart renderer didn\'t load — please refresh the page.</p>';
       return;
     }
+    const dateOnly = !chart.houses;
+    if (wrap) {
+      wrap.classList.toggle('natal-wheel-container--withheld', dateOnly);
+      wrap.removeAttribute('aria-busy');
+    }
+    const positions = Object.assign({}, chart.positions || {});
+    if (dateOnly) {
+      delete positions.Moon;
+      delete positions.Ascendant;
+      delete positions.Midheaven;
+      delete positions.MC;
+    }
     el.classList.add('natal-wheel--loading');
     AstroChartRender.renderNatalChart(
-      { positions: chart.positions, houses: chart.houses, aspects: chart.renderAspects,
-        name: chart.name, dominant: chart.dominant, chartRuler: chart.chartRuler,
-        timeAccuracy: chart.timeAccuracy || 'unknown' },
+      { positions: positions, houses: dateOnly ? null : chart.houses, aspects: chart.renderAspects,
+        name: dateOnly ? 'Date wheel' : chart.name, dominant: chart.dominant, chartRuler: dateOnly ? null : chart.chartRuler,
+        timeAccuracy: chart.timeAccuracy || (dateOnly ? 'unknown' : 'exact') },
       'natal-wheel',
-      { title: null, wheelOnly: true, showTable: false, showLegend: false,
+      { title: null, wheelOnly: true, showTable: false, showLegend: false, dateOnly: dateOnly,
         provisional: chart.timeAccuracy === 'approximate', describedBy: 'result-time-chip chart-wheel-control-hint' });
     el.classList.remove('natal-wheel--loading');
     el.classList.add('natal-wheel--loaded');
     if (wrap) wrap.removeAttribute('aria-busy');
-    renderWheelPicker(chart);
+    renderWheelPicker(chart, dateOnly);
   }
 
-  function renderWheelPicker(chart) {
+  function renderWheelPicker(chart, dateOnly) {
     const picker = document.getElementById('chart-wheel-picker');
     const hint = document.getElementById('chart-wheel-control-hint');
     if (!picker) return;
@@ -1100,7 +1105,9 @@
     picker.disabled = !chart || !chart.houses;
     picker.value = '';
     if (!chart || !chart.houses) {
-      if (hint) hint.textContent = 'Add an exact or approximate birth time to explore a complete wheel.';
+      if (hint) hint.textContent = dateOnly
+        ? 'Date wheel · Sun and planets from the calendar day. Add a birth time for Moon, Rising and houses.'
+        : 'Add an exact or approximate birth time to explore a complete wheel.';
       picker.onchange = null;
       picker.onkeydown = null;
       return;
@@ -3132,9 +3139,16 @@
     booted = true;
     initNodeToggle();
     initAdvancedAccordion();
-    initPersonalMemory();
+    var sittingHandoff = false;
+    try {
+      sittingHandoff = !!sessionStorage.getItem('ap-chart-handoff');
+    } catch (_) { sittingHandoff = false; }
+    var privateReentry = new URLSearchParams(location.search).get('entry') === 'private-reentry';
+    if (!sittingHandoff && !privateReentry) initPersonalMemory();
+    else if (window.APPersonalMemory) APPersonalMemory.watchChartForm(form);
     initFormInteractions();
-    restoreFromPrivateStorage();
+    // An incoming sitting owns this form; never submit a saved chart first.
+    if (!sittingHandoff && !privateReentry) restoreFromPrivateStorage();
     prefillFromHandoff();
   }
   if (document.readyState === 'loading') {

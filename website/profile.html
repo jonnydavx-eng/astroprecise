@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
   <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, follow" />
-  <meta name="description" content="Your sky on this device — saved charts and timeline, private by default. The real sky news: weather report of the sky, not prophecy." />
-  <title>Profile — the real sky news | AstroPrecise</title>
+  <meta name="description" content="Your sky on this device — saved charts and timeline, private by default. Computed here; nothing is uploaded." />
+  <title>On this device | AstroPrecise</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -16,29 +16,29 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="Profile — the real sky news | AstroPrecise" />
-  <meta property="og:description" content="Saved charts and timeline on this device. The real sky news — computed here, nothing uploaded." />
+  <meta property="og:title" content="On this device | AstroPrecise" />
+  <meta property="og:description" content="Saved charts and timeline on this device. Computed here, nothing uploaded." />
   <meta property="og:url" content="https://astroprecise.app/profile.html" />
   <link rel="canonical" href="https://astroprecise.app/profile.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/editorial/sitting-profile-og-v906.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Profile — the real sky news | AstroPrecise" />
-  <meta name="twitter:description" content="Saved charts on this device. The real sky news — weather report of the sky, not prophecy." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="twitter:title" content="On this device | AstroPrecise" />
+  <meta name="twitter:description" content="Saved charts on this device. Computed here, nothing uploaded." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-profile-og-v906.jpg" />
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=902" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=902" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=911" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=911" id="ap-css-atlas-tokens" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=902" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=911" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/profile-page.css" id="ap-css-profile" />
   <!-- Fixed mobile tabs: keep this corrective layer after page CSS so the
        AP_NAV four-tab contract wins over legacy flex/pinned rules. -->
-  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=902" id="ap-css-overhaul-s8" />
+  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=911" id="ap-css-overhaul-s8" />
   <style>
     body:has(#setup-section){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(#setup-section) .site-header,body:has(#dashboard-section) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -112,9 +112,9 @@
     <!-- Hero -->
     <section class="hero hero--small" aria-labelledby="page-heading">
       <div class="container">
-        <p class="hero__eyebrow">Your Cosmic Record</p>
+        <p class="hero__eyebrow">On this device</p>
         <h1 id="page-heading">Your sky on this device</h1>
-        <p>Your personal astrological journal — stored privately on this device</p>
+        <p>Saved charts stay in this browser. Nothing is uploaded.</p>
         <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Your record lives only on this device — no server, no account needed</span></a></p>
       </div>
     </section>
@@ -126,14 +126,14 @@
       <div class="container">
         <div class="profile-setup-card">
           <div class="setup-star-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
-          <h2 id="setup-heading">Begin Your Cosmic Record</h2>
-          <p>Your complete astrological journal lives here — birth charts, life milestones, and personal insights. Everything is computed on your device and saved locally in your browser.</p>
+          <h2 id="setup-heading">Keep your charts here</h2>
+          <p>Birth charts you cast stay on this device. Everything is computed in the browser and saved locally.</p>
 
           <form id="setup-form" class="setup-form" novalidate aria-label="Create profile">
             <div class="form-group">
               <label for="setup-name" class="form-label">Your Name <span aria-hidden="true" style="color:#8BA9FF">*</span></label>
               <input type="text" id="setup-name" class="form-input"
-                     placeholder="How shall the cosmos address you?"
+                     placeholder="A name for this device"
                      maxlength="120" required aria-required="true" autocomplete="name" />
             </div>
             <div class="form-group">
@@ -177,9 +177,9 @@
               <div class="avatar-circle" id="profile-avatar" aria-hidden="true"><span class="eng-star-mark" style="color:#A897FF;"></span></div>
             </div>
             <div class="profile-hero__info">
-              <p class="profile-hero__label">Cosmic Profile</p>
-              <h2 id="dash-name-heading">Stargazer</h2>
-              <p class="profile-hero__tagline" id="profile-tagline">The real sky news — charts stay on this device</p>
+              <p class="profile-hero__label">On this device</p>
+              <h2 id="dash-name-heading">Saved charts</h2>
+              <p class="profile-hero__tagline" id="profile-tagline">Charts stay in this browser</p>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--space-3);">
               <div class="completeness-ring" title="Profile completeness" aria-label="Profile completeness">
@@ -205,7 +205,7 @@
           <div class="glass-panel reveal-init" id="completeness-panel" aria-labelledby="completeness-title">
             <h3 class="glass-panel__title" id="completeness-title">
               <span class="panel-icon" aria-hidden="true">◎</span>
-              Your Blueprint Completeness
+              How complete this record is
             </h3>
             <div class="completeness-steps" id="completeness-steps" role="list" aria-label="Profile completion steps">
               <div class="completeness-step completeness-step--pending" role="listitem" aria-hidden="true"><span class="step-marker" aria-hidden="true"><span class="eng-step-ring"></span></span><span>Name</span></div>
@@ -223,7 +223,7 @@
           <!-- ── 3. Cosmic Season ── -->
           <div class="cosmic-season-card reveal-init" id="cosmic-season-card" aria-labelledby="season-heading">
             <div class="glass-panel__title" id="season-heading" style="border-bottom:1px solid rgba(147,168,191,0.15);margin-bottom:var(--space-5);padding-bottom:var(--space-3);font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--white);display:flex;align-items:center;gap:var(--space-3);">
-              <span aria-hidden="true">☿</span> Current Cosmic Season
+              <span aria-hidden="true">☿</span> This season
             </div>
             <p class="ap-tradition-note"><b>For reflection &amp; entertainment.</b> Astrological and numerological meaning &mdash; Personal Year, life chapters, milestone cycles &mdash; is tradition offered for reflection and entertainment, not advice, prediction, or scientific fact. The astronomy underneath (dates, positions, cycles) is computed and checkable.</p>
             <p class="ap-sky-routes">Prefer the computed sky? <a href="chart.html">Cast your free birth chart</a> &middot; <a href="eclipse.html">See the 12 Aug 2026 solar eclipse</a></p>
@@ -231,7 +231,7 @@
               <!-- Populated by JS if birth date available -->
               <div style="grid-column:1/-1;text-align:center;padding:var(--space-8) 0;">
                 <p style="color:var(--silver-dim);font-size:var(--text-sm);">
-                  Save a birth chart to unlock your personal cosmic season.
+                  Save a birth chart to see this season.
                 </p>
                 <a href="#charts-gallery-section" class="btn btn--outline btn--sm" style="margin-top:var(--space-4);">Add Birth Chart</a>
               </div>
@@ -242,12 +242,12 @@
           <div class="glass-panel reveal-init" id="journey-section" aria-labelledby="journey-heading">
             <h3 class="glass-panel__title" id="journey-heading">
               <span class="panel-icon" aria-hidden="true">⟳</span>
-              Your Cosmic Timeline
+              Your timeline
             </h3>
             <div class="milestone-timeline" id="milestone-timeline" role="list" aria-label="Life milestone timeline" tabindex="0">
               <!-- JS populates -->
               <div style="padding:var(--space-6) 0 var(--space-4);color:var(--silver-dim);font-size:var(--text-sm);" id="timeline-empty">
-                Add a birth chart to see your cosmic milestones.
+                Add a birth chart to see recorded cycles.
               </div>
             </div>
             <p class="timeline-scroll-hint" id="timeline-scroll-hint" hidden aria-hidden="true">← scroll to explore →</p>
@@ -276,7 +276,7 @@
           <div class="glass-panel reveal-init" aria-labelledby="stats-heading">
             <h3 class="glass-panel__title" id="stats-heading">
               <span class="panel-icon" aria-hidden="true">◈</span>
-              Your Journey Stats
+              This record
             </h3>
             <div class="stat-grid">
               <div class="stat-cell">
@@ -289,7 +289,7 @@
               </div>
               <div class="stat-cell">
                 <div class="stat-cell__value" id="stat-complete">0%</div>
-                <div class="stat-cell__label">Blueprint Complete</div>
+                <div class="stat-cell__label">Record complete</div>
               </div>
             </div>
           </div>
@@ -367,8 +367,8 @@
                   <line x1="82" y1="48" x2="92" y2="48"/>
                 </g>
               </svg>
-              <p class="charts-empty-title">Your Blueprint Awaits</p>
-              <p class="charts-empty-sub">Calculate your birth chart to unlock personalised readings, daily transits, and your cosmic timeline.</p>
+              <p class="charts-empty-title">No chart saved yet</p>
+              <p class="charts-empty-sub">Cast a birth chart to keep it here, with the seven-chapter sitting and this device’s timeline.</p>
               <a href="chart.html" class="btn btn--primary btn--sm">Calculate My Chart</a>
             </div>
           </div>
@@ -380,7 +380,7 @@
               Backup &amp; Restore
             </h3>
             <p style="color:var(--silver-dim);font-size:var(--text-sm);line-height:1.65;margin-bottom:var(--space-5);">
-              Export a complete JSON backup of your profile and charts. Import it on any device to restore your cosmic record. The format is open and human-readable.
+              Export a complete JSON backup of your profile and charts. Import it on any device to restore this record. The format is open and human-readable.
             </p>
             <div class="backup-row">
               <button id="export-btn" class="btn btn--secondary">
@@ -807,7 +807,7 @@
     function completenessMessage(steps, profile) {
       const first = (profile.charts || [])[0] || {};
       if (!steps.find(s=>s.key==='birthdate').done) {
-        return 'Add a birth chart to unlock your cosmic timeline and personalised insights. <a href="#charts-gallery-section">Add Chart →</a>';
+        return 'Add a birth chart to see this timeline and the seven-chapter sitting. <a href="#charts-gallery-section">Add Chart →</a>';
       }
       if (!steps.find(s=>s.key==='birthtime').done) {
         return 'Add your exact birth time for accurate Rising sign, houses, and ascendant.';
@@ -815,7 +815,7 @@
       if ((profile.charts||[]).length < 2) {
         return 'Try <a href="compatibility.html">Compatibility</a> to compare charts with someone important.';
       }
-      return 'Your cosmic record is beautifully complete. Keep exploring the stars.';
+      return 'This record is complete. The Observatory, chart and sitting stay free.';
     }
 
     // ── Recommendations engine ───────────────────────────────────────
@@ -964,7 +964,7 @@
         }
       }
 
-      let tagline = 'The real sky news — charts stay on this device';
+      let tagline = 'Charts stay in this browser';
       if (sunSign || moonSign || ascSign) {
         const parts = [];
         if (sunSign) parts.push('☉ ' + sunSign);
@@ -1433,7 +1433,7 @@
           document.getElementById('ac-lat').value = '';
           document.getElementById('ac-lon').value = '';
           document.getElementById('ac-tz').value = '';
-          toast('Chart saved to your cosmic record.', 'success');
+          toast('Chart saved on this device.', 'success');
         });
       }
     }
@@ -1600,7 +1600,7 @@
           const p = blankProfile(name, email);
           saveProfile(p);
           showDashboard(p);
-          toast('Welcome to your Cosmic Dashboard, ' + name + '.', 'success');
+          toast('Charts on this device are ready, ' + name + '.', 'success');
         });
       }
 
@@ -1608,7 +1608,7 @@
       const clearBtn = document.getElementById('clear-profile-btn');
       if (clearBtn) {
         clearBtn.addEventListener('click', () => {
-          if (!confirm('Clear your entire cosmic record? This cannot be undone.')) return;
+          if (!confirm('Clear everything saved on this device? This cannot be undone.')) return;
           localStorage.removeItem(STORE);
           showSetup();
           toast('Profile cleared.', 'info');
@@ -1637,12 +1637,12 @@
   })();
   </script>
 
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=902" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=911" />
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/ap-daily-bridge.js" defer></script>
   <script src="js/ap-ai-assistant.js" defer></script>
-  <script src="js/ap-page-boot.js?v=902" defer></script>
-  <script src="js/ap-footer-inject.js?v=902" defer></script>
+  <script src="js/ap-page-boot.js?v=911" defer></script>
+  <script src="js/ap-footer-inject.js?v=911" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

@@ -44,9 +44,9 @@
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=902" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=902" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=902" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=911" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=911" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=911" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" />
   <link rel="stylesheet" href="css/accuracy-page.css" />
@@ -202,17 +202,14 @@
       <div class="container">
         <div class="acc-section__header">
           <p class="acc-section__label">What "Accurate" Means Here</p>
-          <h2 class="acc-section__title" id="precision-heading">We Compute to a Sixtieth of a Degree, and We Do Not Round</h2>
+          <h2 class="acc-section__title" id="precision-heading">Computed positions, with stated limits</h2>
           <p class="acc-section__subtitle">
-            The combination of VSOP87, ELP2000, and Meeus algorithms places the Sun
-            through Pluto to within roughly a sixtieth of a degree, and Chiron &mdash;
-            on a Kepler orbit from JPL elements &mdash; to within about a degree. Read
-            that as the margin of error on the <em>coordinates</em>: usually a sixtieth
-            of a degree or better for the Sun and planets, widening toward a full degree
-            for the slowest and most distant bodies. It describes where each body sits,
-            not how accurate any interpretation is &mdash; the difference between
-            positions you can check against the astronomical tables yourself and a
-            one-size-fits-all Sun-sign blurb.
+            Coordinates are displayed in degrees and arcminutes. That display resolution
+            is not a promise of uniform accuracy. Error varies by body, date and model;
+            the slowest and most distant bodies can differ by about a degree.
+            Compare the computed positions with the reference checks below.
+            These checks concern astronomical coordinates, not the accuracy of an
+            astrological interpretation.
           </p>
           <p class="ap-entertainment-note" style="max-width:60ch;margin-left:auto;margin-right:auto;">Astrological meaning is tradition, offered for reflection and entertainment &mdash; not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.</p>
         </div>
@@ -389,12 +386,12 @@
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/ap-zodiac-constants.js"></script>
-  <script src="js/chart-render.js?v=902"></script>
+  <script src="js/chart-render.js?v=911"></script>
   <script src="js/profile.js"></script>
   <script src="js/icons.js"></script>
 <script src="js/effects.js"></script>
-  <script src="js/ap-page-boot.js?v=902" defer></script>
-  <script src="js/ap-footer-inject.js?v=902" defer></script>
+  <script src="js/ap-page-boot.js?v=911" defer></script>
+  <script src="js/ap-footer-inject.js?v=911" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>
