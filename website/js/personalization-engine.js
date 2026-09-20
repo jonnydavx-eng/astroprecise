@@ -3,7 +3,7 @@
  * Uses saved AstroProfile charts + prefs for returning-user copy on home and shop.
  * Privacy-first, idle-deferred. No server. No fake live stats. No merch art-library.
  * Home doors: chart.html. Shop keep-path after a saved chart: charts.html,
- * sky-card.html, deep-reading.html — never birth minutes in URLs.
+ * synchronicity-card.html, deep-reading.html — never birth minutes in URLs.
  *
  * Loaded after profile.js (lite-shell-boot on home; shop.html loads this file).
  * Exposes: window.AstroPersonalization
@@ -85,7 +85,7 @@
 
   const SHOP_KEEP_HREFS = Object.freeze({
     charts: 'charts.html',
-    skyCard: 'sky-card.html',
+    skyCard: 'synchronicity-card.html',
     sitting: 'deep-reading.html',
   });
 

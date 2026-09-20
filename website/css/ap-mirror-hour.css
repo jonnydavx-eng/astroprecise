@@ -1,0 +1,160 @@
+/* Mirror-hour / presence / synchronicity overlays — tokens only. */
+.ap-mirror-badge {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  max-width: 46ch;
+  border: 1px solid var(--ap-line, rgba(147, 168, 191, .28));
+  border-radius: 4px;
+  background: rgba(16, 23, 34, .62);
+}
+.ap-mirror-badge[hidden] { display: none; }
+.ap-mirror-badge__kicker,
+.ap-mirror-badge__note,
+.ap-presence__note,
+.ap-natal-sync__note,
+.ap-sync-card-note {
+  margin: 0;
+  color: var(--ap-brass, #93A8BF);
+  font: 500 10px/1.5 var(--ap-data, ui-monospace, monospace);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ap-mirror-badge__label,
+.ap-presence__title,
+.ap-natal-sync h2 {
+  margin: 0;
+  color: var(--ap-paper, #EEF4FA);
+  font: 600 1.15rem/1.25 var(--ap-display, Georgia, serif);
+}
+.ap-mirror-badge__folk,
+.ap-presence__folk,
+.ap-natal-sync__serif,
+.ap-sync-card-folk {
+  margin: 0;
+  color: var(--ap-paper-dim, rgba(238, 244, 250, .76));
+  font: italic 16px/1.55 var(--ap-display, Georgia, serif);
+}
+.ap-mirror-badge__note,
+.ap-presence__note,
+.ap-natal-sync__note,
+#skySyncNote {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ap-presence-banner {
+  position: absolute;
+  z-index: 8;
+  left: clamp(12px, 3vw, 28px);
+  right: clamp(12px, 3vw, 28px);
+  top: clamp(12px, 3vw, 22px);
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  max-width: 36rem;
+  border: 1px solid var(--ap-line, rgba(147, 168, 191, .32));
+  border-radius: 4px;
+  background: rgba(7, 16, 30, .78);
+  pointer-events: auto;
+}
+.ap-presence-banner[hidden] { display: none; }
+.ap-presence__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.ap-presence__wish {
+  width: min(100%, 28rem);
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--ap-line, rgba(147, 168, 191, .32));
+  border-radius: 4px;
+  background: var(--ap-void-deep, #0C1016);
+  color: var(--ap-paper, #EEF4FA);
+  font: 16px/1.4 var(--ap-body, system-ui, sans-serif);
+}
+.ap-presence__btn,
+.ap-sync-keep {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--ap-brass, #93A8BF);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ap-brass-bright, #C9D6E3);
+  font: 700 11px/1 var(--ap-data, ui-monospace, monospace);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ap-presence__btn--sit {
+  background: var(--ap-ion, #8BA9FF);
+  border-color: transparent;
+  color: #07101E;
+}
+
+body.ap-presence-on .site-header,
+body.ap-presence-on .ap-live-intro,
+body.ap-presence-on .ap-instrument-notes,
+body.ap-presence-on .ap-personal-entry,
+body.ap-presence-on .ap-proof-ledger,
+body.ap-presence-on .ap-site-footer,
+body.ap-presence-on .ap-mobile-flight-deck,
+body.ap-presence-on .ap-control-panel {
+  opacity: .22;
+  pointer-events: none;
+  transition: opacity .4s ease;
+}
+body.ap-presence-on .ap-model-stage {
+  opacity: 1;
+}
+body.ap-presence-on .ap-presence-banner {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.ap-presence-on .site-header,
+  body.ap-presence-on .ap-live-intro,
+  body.ap-presence-on .ap-instrument-notes,
+  body.ap-presence-on .ap-personal-entry,
+  body.ap-presence-on .ap-proof-ledger,
+  body.ap-presence-on .ap-site-footer,
+  body.ap-presence-on .ap-mobile-flight-deck,
+  body.ap-presence-on .ap-control-panel {
+    transition: none;
+  }
+}
+
+.ap-natal-sync {
+  margin: 8px 0 0;
+  padding: 22px 0 8px;
+  border-top: 1px dashed var(--ap-line, rgba(147, 168, 191, .28));
+}
+.ap-natal-sync__n {
+  margin: 0 0 8px;
+  color: var(--ap-brass, #93A8BF);
+  font: 10px var(--ap-data, ui-monospace, monospace);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.ap-natal-sync__mono {
+  margin: 0 0 10px;
+  color: var(--ap-paper, #EEF4FA);
+  font: 13px/1.55 var(--ap-data, ui-monospace, monospace);
+}
+
+.ap-sync-card-panel[hidden] { display: none; }
+.ap-sync-card-panel {
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  border: 1px solid var(--ap-line, rgba(147, 168, 191, .28));
+  border-radius: 4px;
+  background: rgba(16, 23, 34, .62);
+}

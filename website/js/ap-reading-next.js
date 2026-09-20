@@ -1,4 +1,4 @@
-import { buildDeepReading, chartBalance } from './deep-reading.js?v=912';
+import { buildDeepReading, chartBalance } from './deep-reading.js?v=913';
 
 const $=id=>document.getElementById(id);
 const BODIES=['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'];
@@ -6,6 +6,14 @@ const TITLES=['The moment you began','Your three starting points','The shape of 
 const esc=value=>String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cap=value=>value.charAt(0).toUpperCase()+value.slice(1);
 let chart=null,reading=null;
+
+function natalMirrorBeat(row){
+  if(row.timeKnown!==true||row.timeAccuracy!=='exact'||!window.APMirrorHour)return null;
+  const match=window.APMirrorHour.detectFromClock(row.birthTime);
+  if(!match)return null;
+  const beat=window.APMirrorHour.sittingBeat(match,{source:'natal'});
+  return {...beat,serif:match.folk+' '+beat.honesty};
+}
 
 function readChart(){
   try{const raw=sessionStorage.getItem('ap-next-reading');if(raw){const value=JSON.parse(raw);if(value&&value.positions)return value;}}catch(_){}
@@ -41,6 +49,8 @@ function adaptUnknown(result,row,base,deep,natal){
   result.chapters[2].serif.push('These counts describe the selected placements, not a personality score. '+(!row.timeKnown?'They exclude the Moon and any placement whose sign is uncertain.':''));
   if(noMoon)result.chapters[0].mono=result.chapters[0].mono.filter(line=>!/^Moon —/.test(line));
   result.chapters[5].lead=result.chapters[5].mono.length?'These are the planetary contacts calculated when you opened this reading. In astrology they offer themes to reflect on, without telling you what your day will bring.':'Today’s planetary positions are unavailable in this reading. The other chapters still reflect your birth chart; no current contact is being guessed.';
+  const mirrorBeat=natalMirrorBeat(row);
+  if(mirrorBeat){result.chapters[0].serif.push(mirrorBeat.title+'. '+mirrorBeat.serif);result.chapters[0].mono.push(mirrorBeat.mono);}
   return result;
 }
 function render(result){
@@ -60,7 +70,7 @@ async function start(){
   const natal=natalFromChart(chart);if(Object.keys(natal).length<5){empty('This saved chart needs its planetary positions refreshed. Create the chart again to open your story.');return;}
   $('story-status').textContent='Turning your placements into a story…';
   try{
-    const [base,deep]=await Promise.all(['reading-templates','deep-templates'].map(async name=>{const response=await fetch('js/'+name+'.json?v=912',{credentials:'same-origin'});if(!response.ok)throw new Error('Template unavailable');return response.json();}));
+    const [base,deep]=await Promise.all(['reading-templates','deep-templates'].map(async name=>{const response=await fetch('js/'+name+'.json?v=913',{credentials:'same-origin'});if(!response.ok)throw new Error('Template unavailable');return response.json();}));
     const now=currentTransits();
     reading=buildDeepReading(natal,base,deep,{birth:{dateText:chart.birthDate||chart.date,timeText:chart.timeKnown?chart.birthTime:'',place:chart.birthCity||chart.city,zone:chart.tz},timeAccuracy:chart.timeAccuracy||(chart.timeKnown?'exact':'unknown'),houseSystem:chart.houseSystem||'whole',houseCusps:chart.timeKnown?chart.houses:null,transits:now?.positions,transitDateText:now?.date});
     adaptUnknown(reading,chart,base,deep,natal);render(reading);

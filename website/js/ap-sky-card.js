@@ -74,6 +74,41 @@
 
   var place = null;   // { name, lat, lon, tz } once a town has been picked
   var drawn = null;   // the last computed minute, kept for the PNG filename
+  var liveCarry = false; // device-clock synchronicity handoff, not a birth minute
+
+  function currentPattern(clockText) {
+    if (!window.APMirrorHour) return null;
+    return APMirrorHour.detectFromClock(clockText || (byId('tob') && byId('tob').value) || '');
+  }
+
+  function showSyncPanel(match, dateText) {
+    var panel = byId('skySyncPanel');
+    var label = byId('skySyncLabel');
+    var folk = byId('skySyncFolk');
+    var note = byId('skySyncNote');
+    if (!panel) return;
+    if (!match) {
+      panel.hidden = true;
+      return;
+    }
+    if (label) label.textContent = (window.APMirrorHour.cardLabel(match, dateText) || match.label);
+    if (folk) folk.textContent = match.folk;
+    if (note) note.textContent = window.APMirrorHour.HONESTY;
+    panel.hidden = false;
+  }
+
+  function paintSyncMark(match, dateText) {
+    if (!match || !ctx) return;
+    var mark = window.APMirrorHour.cardLabel(match, dateText);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = ION;
+    ctx.font = '600 22px ' + DATA;
+    ctx.fillText(mark, 1124, 118);
+    ctx.fillStyle = MUTE;
+    ctx.font = '400 13px ' + DATA;
+    ctx.fillText('FOLK CLOCK PATTERN', 1124, 142);
+    ctx.textAlign = 'left';
+  }
 
   // ── zone + time ───────────────────────────────────────────────────────────
 
@@ -405,6 +440,50 @@
     ctx.font = '400 11px ' + DATA;
     ctx.fillText('COMPUTED ON THIS DEVICE \u00B7 NOT A CLAIM ABOUT YOUR LIFE', 1124, 583);
     ctx.textAlign = 'left';
+    paintSyncMark(currentPattern(minute.clockText), minute.isoDate);
+  }
+
+  function drawClockPlate(match, dateValue) {
+    plate();
+    ctx.fillStyle = BRASS;
+    ctx.font = '500 13px ' + DATA;
+    tracked('SYNCHRONICITY CARD', 76, 96, 3.4);
+    ctx.fillStyle = PAPER;
+    ctx.font = '600 72px ' + DISPLAY;
+    ctx.fillText(match.label, 76, 200);
+    ctx.fillStyle = MUTE;
+    ctx.font = '400 20px ' + DATA;
+    ctx.fillText((dateValue || '') + '  \u00B7  DEVICE CLOCK  \u00B7  SCHEMATIC', 76, 250);
+    ctx.fillStyle = PAPER;
+    ctx.font = 'italic 26px ' + DISPLAY;
+    var words = match.folk.split(' ');
+    var line = '';
+    var y = 330;
+    words.forEach(function (word) {
+      var next = line ? line + ' ' + word : word;
+      if (ctx.measureText(next).width > 1040 && line) {
+        ctx.fillText(line, 76, y);
+        y += 36;
+        line = word;
+      } else line = next;
+    });
+    if (line) ctx.fillText(line, 76, y);
+    ctx.fillStyle = MUTE;
+    ctx.font = '400 13px ' + DATA;
+    ctx.fillText(window.APMirrorHour ? window.APMirrorHour.HONESTY : '', 76, 560);
+    ctx.fillStyle = PAPER;
+    ctx.font = '600 26px ' + DISPLAY;
+    ctx.fillText('AstroPrecise', 76, 600);
+    drawn = {
+      isoDate: dateValue || '',
+      place: { name: 'device clock' },
+      clockText: match.label,
+      timeKnown: true,
+      syncOnly: true
+    };
+    showSyncPanel(match, dateValue);
+    if (downloadBtn) downloadBtn.disabled = false;
+    if (shareBtn) shareBtn.disabled = false;
   }
 
   function renderLedger(minute) {
@@ -431,6 +510,10 @@
     } else {
       rows.push(['Rising and houses missing', 'The rising sign and the houses need the hour. This card was drawn from '
         + ASSUMED_HOUR + ' local, stated on the plate, so rising and houses are withheld rather than guessed and the Moon may be a sign out.', true]);
+    }
+    var pattern = currentPattern(minute.clockText);
+    if (pattern) {
+      rows.push(['Folk clock pattern', pattern.label + ' — ' + pattern.folk + ' ' + (window.APMirrorHour ? window.APMirrorHour.HONESTY : '')]);
     }
     rows.push(['What this is not', 'A computed sky, not a verdict. The astronomy can be checked; the meaning is a symbolic tradition offered for reflection.']);
 
@@ -460,10 +543,11 @@
     canvas.toBlob(function (blob) {
       if (!blob || !window.APKeepLibrary || typeof APKeepLibrary.put !== 'function') return;
       var town = drawn.place && drawn.place.name ? String(drawn.place.name) : '';
+      var pattern = currentPattern(drawn.clockText);
       APKeepLibrary.put({
-        kind: 'sky-card',
+        kind: pattern ? 'sync-card' : 'sky-card',
         blob: blob,
-        caption: 'Sky card · schematic plate · ' + drawn.isoDate + (town ? ' · ' + town : ''),
+        caption: (pattern ? pattern.label + ' · ' : '') + 'Sky card · schematic plate · ' + drawn.isoDate + (town ? ' · ' + town : ''),
         birthDate: drawn.isoDate,
         place: town,
         schematic: true
@@ -472,6 +556,14 @@
   }
 
   function draw() {
+    var pattern = currentPattern();
+    var dateValue = (byId('dob') && byId('dob').value) || '';
+    if (liveCarry && pattern && !place) {
+      drawClockPlate(pattern, dateValue);
+      say('Device-clock keepable. No birth place was used. Folk pattern only — not a natal claim.');
+      keepDrawnCard();
+      return;
+    }
     var minute = readMinute();
     if (minute.error) {
       say(minute.error, 'refused');
@@ -479,11 +571,13 @@
       if (shareBtn) shareBtn.disabled = true;
       drawn = null;
       placeholder('Nothing computed yet.', 'The card waits for a date and a real place.');
+      showSyncPanel(pattern, dateValue);
       return;
     }
     drawn = minute;
     drawCard(minute);
     renderLedger(minute);
+    showSyncPanel(currentPattern(minute.clockText), minute.isoDate);
     if (downloadBtn) downloadBtn.disabled = false;
     if (shareBtn) shareBtn.disabled = false;
     say('Computed on this device from ' + minute.utText + ' UT. Nothing was uploaded'
@@ -577,6 +671,7 @@
       if (!raw) return null;
       sessionStorage.removeItem(HANDOFF_KEY);
       var payload = JSON.parse(raw);
+      if (payload && payload.livePattern) liveCarry = true;
       return payload && typeof payload === 'object' ? payload : null;
     } catch (e) {
       return null;
@@ -697,7 +792,7 @@
         ? document.fonts.load("400 24px 'n'").catch(function () { return null; })
         : Promise.resolve(null);
       return fonts.then(function () {
-        if (ready) draw();
+        if (ready || (liveCarry && currentPattern())) draw();
         else placeholder('Your minute goes here.', 'Enter a date and a town, then draw the card.');
       });
     }).catch(function (err) {

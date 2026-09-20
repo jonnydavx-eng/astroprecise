@@ -151,6 +151,16 @@
   function placementCard(label,symbol,sign,position,copy) {
     return '<article class="chart-placement"><div class="chart-placement-top"><span class="chart-placement-symbol" aria-hidden="true">'+symbol+'</span>'+label+'</div><h3>'+esc(sign)+'</h3><p class="chart-position">'+esc(position)+'</p><p>'+esc(copy)+'</p></article>';
   }
+  function birthMirrorMatch(data) {
+    if(data.timeKnown!==true || data.timeAccuracy!=='exact' || !window.APMirrorHour) return null;
+    return window.APMirrorHour.detectFromClock(data.birthTime);
+  }
+  function renderBirthMirror(data) {
+    const host=$('birth-mirror-badge'),match=birthMirrorMatch(data);
+    const copy=match?window.APMirrorHour.badgeCopy(match):null;
+    host.hidden=!copy;
+    host.innerHTML=copy?'<strong>'+esc(copy.label)+' · '+esc(copy.time)+'</strong><p>'+esc(copy.folk)+'</p><small>'+esc(copy.honesty)+'</small>':'';
+  }
   function renderWheel(result) {
     const {raw,input,ranges}=result, cx=240,cy=240;
     const rotation=input.timeKnown?raw.ascendant:0;
@@ -183,6 +193,7 @@
     $('result-meta').textContent=new Intl.DateTimeFormat('en-GB',{dateStyle:'long',timeZone:'UTC'}).format(new Date(input.date+'T12:00:00Z'))+' · '+(input.timeKnown?input.time+' local time':'Birth time unknown')+' · '+input.place.name;
     $('result-caveat').textContent=input.timeKnown?'Calculated using '+input.place.tz.replace(/_/g,' ')+'. Tropical zodiac · Whole Sign houses. These are symbolic themes to explore, not fixed facts about you.':'Your time is unknown, so rising and houses are left out. Planetary degrees are approximate noon positions. We checked sign changes across your local birth date; the Moon’s exact position is withheld.';
     if(data.timeAccuracy==='approximate')$('result-caveat').textContent='Your birth time is approximate. Rising, houses and Moon position are provisional at the entered time and may change. '+$('result-caveat').textContent;
+    renderBirthMirror(data);
     const sunCopy=sunRange.length>1?'The Sun changed sign on your birth date. Your birth time is needed to choose between these signs.':'In astrology, a '+sun+' Sun brings attention to '+THEMES[sun].quality+'. Think of it as a lens on how you express yourself.';
     const moonCopy=moonRange.length>1?'The Moon changed sign during your birth date. Either sign is possible; we need your birth time to know which.':'A '+moon+' Moon is traditionally associated with a need for '+THEMES[moon].need+'. It offers a prompt to notice what helps you feel at ease.';
     $('big-three').innerHTML=placementCard('Sun · your expression','☉',sunRange.join(' or '),input.timeKnown?fmtDegree(raw.positions.sun.degree):sunRange.length===1?'Sign stays the same across this date':'Birth time needed',sunCopy)+placementCard('Moon · your inner world','☽',moonRange.join(' or '),input.timeKnown?fmtDegree(raw.positions.moon.degree):moonRange.length===1?'Sign stays the same across this date':'Birth time needed',moonCopy)+placementCard('Rising · your approach','↗',rising||'Time needed',rising?fmtDegree(raw.positions.asc.degree):'Left open, rather than guessed',rising?'With '+rising+' rising, astrology describes an approach that can be '+THEMES[rising].approach+'. See whether that matches how you meet unfamiliar situations.':'Your rising sign depends on the time and place of birth. Add a reliable birth time above to reveal it and the houses.');
@@ -211,7 +222,7 @@
   }
   function loadProfile() {
     if(window.AstroProfile)return Promise.resolve(window.AstroProfile);
-    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=912';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
+    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=913';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
   }
   async function saveChart() {
     if(!currentResult)return;

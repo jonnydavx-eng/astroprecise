@@ -1,4 +1,4 @@
-import { buildDeepReading } from './deep-reading.js?v=911';
+import { buildDeepReading } from './deep-reading.js?v=913';
 
 const TARGETS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 const ASSUMED_HOUR = '12:00';
@@ -481,9 +481,35 @@ function renderChapter(chapter) {
   return html + '</article>';
 }
 
+function renderSyncBeat(meta) {
+  const host = byId('natalChapters');
+  if (!host || !window.APMirrorHour) return;
+  const natalMatch = meta && meta.timeKnown && meta.birth && meta.birth.timeText
+    ? APMirrorHour.detectFromClock(meta.birth.timeText)
+    : (window.APMirrorHour.readNatal ? APMirrorHour.readNatal() : null);
+  const liveMatch = APMirrorHour.readLive ? APMirrorHour.readLive() : null;
+  const match = natalMatch || liveMatch;
+  if (!match) return;
+  const beat = APMirrorHour.sittingBeat(match, { source: natalMatch ? 'natal' : 'live' });
+  if (!beat) return;
+  const aside = document.createElement('aside');
+  aside.className = 'ap-natal-sync';
+  aside.id = 'natal-sync-beat';
+  aside.innerHTML = `<p class="ap-natal-sync__n">Optional beat</p>`
+    + `<h2>${esc(beat.title)}</h2>`
+    + `<p class="ap-natal-sync__mono">${esc(beat.mono)}</p>`
+    + `<p class="ap-natal-sync__serif">${esc(beat.serif)}</p>`
+    + `<p class="ap-natal-sync__note">${esc(beat.honesty)}</p>`;
+  const first = host.querySelector('#ch-1');
+  if (first && first.nextSibling) host.insertBefore(aside, first.nextSibling);
+  else if (first) first.after(aside);
+  else host.appendChild(aside);
+}
+
 function renderReading(reading, meta) {
   const host = byId('natalChapters');
   host.innerHTML = reading.chapters.map(renderChapter).join('');
+  renderSyncBeat(meta);
   byId('natalLegal').textContent = reading.legal || '';
   const withheld = withheldCopy(meta);
   const banner = byId('natalWithheld');
@@ -588,11 +614,11 @@ async function init() {
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=911').then((response) => {
+    fetch('js/reading-templates.json?v=913').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=911').then((response) => {
+    fetch('js/deep-templates.json?v=913').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),

@@ -7,11 +7,12 @@
   <meta name="theme-color" content="#f4f1e9">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Your birth chart — AstroPrecise</title>
-  <link rel="stylesheet" href="css/ap-next.css?v=912">
-  <link rel="stylesheet" href="css/ap-chart-next.css?v=912">
-  <script defer src="js/ap-next.js?v=912"></script>
-  <script defer src="js/ephemeris.js?v=912"></script>
-  <script defer src="js/ap-chart-next.js?v=912"></script>
+  <link rel="stylesheet" href="css/ap-next.css?v=913">
+  <link rel="stylesheet" href="css/ap-chart-next.css?v=913">
+  <script defer src="js/ap-next.js?v=913"></script>
+  <script defer src="js/ephemeris.js?v=913"></script>
+  <script defer src="js/ap-mirror-hour.js?v=913"></script>
+  <script defer src="js/ap-chart-next.js?v=913"></script>
 </head>
 <body class="ap-next">
   <a class="chart-skip" href="#main">Skip to content</a>
@@ -74,6 +75,7 @@
         <button id="edit-chart" class="button-secondary" type="button">Edit birth details</button>
       </header>
       <p id="result-caveat" class="chart-caveat"></p>
+      <aside id="birth-mirror-badge" class="chart-caveat" aria-label="Your birth-clock pattern" hidden></aside>
       <div id="big-three" class="chart-big-three"></div>
       <div class="chart-story-next"><div><p class="eyebrow">THERE’S MORE IN THE PATTERN</p><h3>Now, let’s put it together.</h3><p>A personal story in seven short chapters, built from your chart.</p></div><div><button type="button" id="read-my-sky" class="button">Read my sky story <span aria-hidden="true">↗</span></button><p id="reading-handoff-status" class="chart-status" role="status" aria-live="polite"></p></div></div>
       <div class="chart-reading-grid">

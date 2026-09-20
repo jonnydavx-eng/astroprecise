@@ -8,7 +8,7 @@
  * page loads, and in the visitor's own synced history.
  *
  * If storage is blocked, or nothing has been typed yet, the link still works —
- * sky-card.html then falls back to a locally saved chart, or asks for the
+ * synchronicity-card.html then falls back to a locally saved chart, or asks for the
  * minute. Nothing here is required to use the free pages.
  */
 (function () {

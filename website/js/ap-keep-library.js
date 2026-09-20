@@ -17,7 +17,8 @@
     'birth-hour': 'Birth-hour still',
     'sky-card': 'Sky card',
     'chart-plate': 'Chart plate',
-    observatory: 'Observatory still'
+    observatory: 'Observatory still',
+    'sync-card': 'Synchronicity card'
   };
 
   function openDb() {
