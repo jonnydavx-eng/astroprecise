@@ -18,10 +18,10 @@
 
 (function () {
   var NAV_PRIMARY = [
-    ['index.html', 'Observatory'],
-    ['chart.html', 'Chart'],
-    ['sky-events.html', 'Events'],
-    ['shop.html', 'Shop'],
+    ['index.html', 'Today'],
+    ['chart.html', 'Birth chart'],
+    ['explore.html', 'Explore'],
+    ['charts.html', 'Saved'],
   ];
 
   // Historical direct routes, exposed only on archive pages.
@@ -40,10 +40,10 @@
 
   // Four-route mobile spine. The authored header remains the desktop navigation.
   var NAV_BOTTOM_TABS = [
-    ['index.html', 'Sky', 'star4'],
-    ['chart.html', 'Chart', 'spiral'],
-    ['sky-events.html', 'Events', 'eclipse'],
-    ['shop.html', 'Shop', 'sparkles'],
+    ['index.html', 'Today', 'star4'],
+    ['chart.html', 'Birth chart', 'spiral'],
+    ['explore.html', 'Explore', 'eclipse'],
+    ['charts.html', 'Saved', 'sparkles'],
   ];
 
   // Inline paths keep the four primary icons identical on every route. Several

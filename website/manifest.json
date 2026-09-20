@@ -1,13 +1,13 @@
 {
-  "name": "AstroPrecise — the real sky news",
+  "name": "AstroPrecise — your birth sky",
   "short_name": "AstroPrecise",
-  "description": "Free birth chart, live solar system, and tonight’s sky, computed in your browser. Town search sends only that name to Open-Meteo; birth date and time stay here. No account required.",
+  "description": "Reveal your birth sky, read its patterns, and keep your story. Calculated privately on your device.",
   "id": "/",
   "start_url": "index.html?app=1",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#040812",
-  "theme_color": "#040812",
+  "background_color": "#f4f1e9",
+  "theme_color": "#f4f1e9",
   "icons": [
     {
       "src": "img/icon-192.png",
@@ -28,14 +28,25 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["lifestyle", "entertainment"],
+  "categories": [
+    "lifestyle",
+    "entertainment"
+  ],
   "lang": "en",
   "dir": "ltr",
   "scope": "./",
   "shortcuts": [
-    { "name": "Observatory", "url": "index.html" },
-    { "name": "Chart", "url": "chart.html" },
-    { "name": "Events", "url": "sky-events.html" },
-    { "name": "Shop", "url": "shop.html" }
+    {
+      "name": "Your birth sky",
+      "url": "chart.html"
+    },
+    {
+      "name": "Explore",
+      "url": "explore.html"
+    },
+    {
+      "name": "Saved",
+      "url": "charts.html"
+    }
   ]
 }

@@ -1,39 +1,270 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#040812">
   <meta name="referrer" content="no-referrer">
   <script>
   (function () {
-    var target = new URL('./index.html', location.href);
-    var incoming = new URLSearchParams(location.search || '');
-    var query = new URLSearchParams();
-    incoming.forEach(function (value, key) {
-      var name = String(key || '').toLowerCase();
-      if ((name === 'nosw' || name === 'lite') && String(value) === '1' && !query.has(name)) query.set(name, '1');
+    // The Observatory accepts only two non-personal test/runtime flags in its
+    // query. Remove every other field before styles, scripts, images or the 3D
+    // engine can request a subresource with a legacy personal address.
+    var incomingQuery = new URLSearchParams(location.search || '');
+    var safeQuery = new URLSearchParams();
+    incomingQuery.forEach(function (value, key) {
+      if ((key === 'nosw' || key === 'lite') && value === '1' && !safeQuery.has(key)) {
+        safeQuery.set(key, '1');
+      }
     });
-    target.search = query.toString();
-    target.hash = 'lead';
-    location.replace(target.href);
+    var cleanSearch = safeQuery.toString() ? '?' + safeQuery.toString() : '';
+    if (location.search !== cleanSearch) {
+      history.replaceState(null, '', location.pathname + cleanSearch + location.hash);
+    }
+
+    // Fixed public sky moments carry public=1 from v900 onward. An older bare
+    // #m=<instant> may be a birth minute, so remove it before any page asset is
+    // requested while retaining only non-personal Observatory controls.
+    var raw = String(location.hash || '').replace(/^#/, '');
+    if (!raw || raw === 'lead') return;
+    var params = new URLSearchParams(raw);
+    var moments = [];
+    var publicMarkers = [];
+    var focuses = [];
+    var scales = [];
+    params.forEach(function (value, key) {
+      var canonicalKey = String(key || '').toLowerCase();
+      if (canonicalKey === 'm') moments.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'public') publicMarkers.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'focus') focuses.push({ key: String(key), value: String(value) });
+      if (canonicalKey === 'scale') scales.push({ key: String(key), value: String(value) });
+    });
+    var oneCanonicalMoment = moments.length === 1 && moments[0].key === 'm';
+    var safeNow = oneCanonicalMoment && moments[0].value === 'now' && publicMarkers.length === 0;
+    var fixedMoment = oneCanonicalMoment ? moments[0].value : '';
+    var safePublicFixed = oneCanonicalMoment && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(fixedMoment) &&
+      Number.isFinite(new Date(fixedMoment).getTime()) &&
+      publicMarkers.length === 1 && publicMarkers[0].key === 'public' && publicMarkers[0].value === '1';
+    var focusNames = {
+      earth: 1, sun: 1, moon: 1, mercury: 1, venus: 1, mars: 1,
+      jupiter: 1, saturn: 1, uranus: 1, neptune: 1, pluto: 1
+    };
+    var kept = new URLSearchParams();
+    if (safeNow || safePublicFixed) kept.set('m', moments[0].value);
+    if (safePublicFixed) kept.set('public', '1');
+    var focus = focuses.length === 1 && focuses[0].key === 'focus' ? focuses[0].value.toLowerCase() : '';
+    var scale = scales.length === 1 && scales[0].key === 'scale' ? scales[0].value : null;
+    if (focusNames[focus]) kept.set('focus', focus);
+    if (scale != null && /^-?\d+$/.test(String(scale))) kept.set('scale', String(scale));
+    var cleanHash = kept.toString();
+    if (raw !== cleanHash) {
+      history.replaceState(null, '', location.pathname + cleanSearch + (cleanHash ? '#' + cleanHash : ''));
+    }
   })();
   </script>
-  <title>Observatory route | AstroPrecise</title>
-  <meta name="description" content="This URL redirects to the Observatory on the home page — 3D sky model on a computed sky clock.">
-  <meta name="robots" content="noindex, follow">
-  <link rel="canonical" href="https://astroprecise.app/">
-  <link rel="stylesheet" href="./css/fonts.css?v=911">
-  <noscript><meta http-equiv="refresh" content="0; url=./index.html#lead"></noscript>
-  <style>
-    :root { color-scheme: dark; }
-    * { box-sizing: border-box; }
-    body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; background: #040812; color: #EEF4FA; font-family: "Schibsted Grotesk", sans-serif; }
-    main { width: min(560px, 100%); padding: 34px; border: 1px solid rgba(139,169,255,.34); border-radius: 8px; background: #101D30; }
-    p { margin: 0 0 20px; color: #C9D6E3; line-height: 1.65; }
-    a { min-height: 46px; display: inline-flex; align-items: center; padding: 0 20px; border-radius: 5px; background: #8BA9FF; color: #07101E; font-weight: 750; text-decoration: none; }
-  </style>
-</head>
-<body>
-  <main><p>The threshold and 3D model share one Observatory route on the home page.</p><a href="./index.html#lead">Enter the Observatory</a></main>
+  <title>3D Observatory | AstroPrecise</title>
+  <meta name="description" content="Sit with the live sky. Then the minute you were born: free chart, seven chapters, keep card. Computed on this device. Play stays free.">
+  <link rel="canonical" href="https://astroprecise.app/observatory.html">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <meta property="og:title" content="AstroPrecise — sit with the live sky, then the minute you were born">
+  <meta property="og:description" content="Sit with the live sky, then the minute you were born. Chart, seven chapters, keep card. Play stays free.">
+  <meta property="og:url" content="https://astroprecise.app/">
+  <meta property="og:image" content="https://astroprecise.app/img/editorial/sitting-home-og-v906.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed.">
+  <meta property="og:site_name" content="AstroPrecise">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-home-og-v906.jpg">
+
+  <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/cormorant-garamond-italic-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css?v=912">
+  <script>window.AP_ASSET_V='912';</script>
+  <script type="importmap">
+    { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+  </script>
+    <script src="js/void-orrery-adapter.js?v=912" defer></script>
+    <script src="js/ap-nav-model.js?v=912" defer></script>
+    <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=912">
+    <link rel="stylesheet" href="css/ap-phone-pass.css?v=912">
+    <link rel="stylesheet" href="css/ap-home-v835.css?v=912">
+    <link rel="stylesheet" href="css/ap-keep-sky.css?v=912">
+<link rel="stylesheet" href="css/ap-next.css?v=912"><script defer src="js/ap-next.js?v=912"></script></head>
+<body class="ap-live-home page-home ap-reading-room">
+  <a class="skip" href="#lead">Skip to the Observatory</a>
+
+  <header class="site-header" role="banner" data-ap-static-nav>
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript>
+            <a href="index.html" class="navbar__link" aria-current="page">Observatory</a>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
+          </noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="ap-live-stage" id="lead" aria-label="The live sky">
+      <div class="ap-live-intro">
+        <p class="ap-reading-kicker" id="ap-reading-kicker">The night you were born</p>
+        <h1 class="ap-live-heading" id="ap-reading-title">Explore the solar system</h1>
+        <p class="ap-live-copy" id="ap-reading-body">Choose a world. Discover a different perspective.</p>
+        <p class="ap-birth-sky__honest" id="ap-birth-sky-honest" hidden></p>
+        <div class="ap-live-actions">
+          <a class="ap-action ap-action--primary" id="ap-birth-sky-cta" href="chart.html">Create my birth chart</a>
+          <button type="button" class="ap-hint-link" id="ap-birth-sky-now" hidden>Return to now</button>
+        </div>
+      </div>
+      <div class="ap-model-stage" role="group" aria-label="Solar system as computed now" aria-busy="true">
+        <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only"></void-orrery>
+        <img class="ap-model-poster" src="img/engine/studio/earth.webp" width="1024" height="1024" alt="" decoding="async" fetchpriority="high" aria-hidden="true">
+        <div class="ap-model-vignette" aria-hidden="true"></div>
+        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Settling…</strong><em>The live sky · computed here</em></div>
+      </div>
+
+      <div class="ap-mobile-flight-deck" aria-label="3D Observatory controls">
+        <p><span>01</span> Choose a destination <small>Then drag the model to orbit</small></p>
+        <label for="mobileWorld"><span>World</span><select id="mobileWorld" disabled><option value="">Solar system</option><option value="sun">Sun</option><option value="mercury">Mercury</option><option value="venus">Venus</option><option value="earth">Earth</option><option value="moon">Moon</option><option value="mars">Mars</option><option value="jupiter">Jupiter</option><option value="saturn">Saturn</option><option value="uranus">Uranus</option><option value="neptune">Neptune</option></select></label>
+        <label for="mobileScale"><span>Scale</span><select id="mobileScale" disabled><option value="EARTH">Earth</option><option value="INNER">Inner system</option><option value="SYSTEM" selected>Solar system</option><option value="OORT">Oort cloud</option><option value="STARS">Nearby stars</option><option value="GALAXY">Galaxy</option><option value="COSMOS">Cosmos</option></select></label>
+      </div>
+
+      <aside class="ap-control-panel" aria-label="Explore the live sky">
+        <div class="ap-glass-hud__rail">
+          <div class="ap-model-status" aria-live="polite">
+            <span id="sky-live-status">Preparing 3D</span>
+            <span id="sky-scale-status">Solar system</span>
+            <span id="sky-time-status">Computing UTC</span>
+          </div>
+          <p class="ap-model-hint">Drag to orbit. Scroll to zoom. Choose a world to explore.</p>
+          <div class="ap-control-group ap-control-group--scale">
+            <div class="ap-control-head"><p class="ap-panel-label">Scale</p></div>
+            <div id="mladder" role="group" aria-label="Choose spatial scale"></div>
+          </div>
+          <div class="ap-control-group ap-control-group--worlds">
+            <div class="ap-control-head"><p class="ap-panel-label">Worlds</p></div>
+            <div id="dock" role="group" aria-label="Choose a named world"></div>
+          </div>
+          <div class="ap-control-group ap-control-group--time">
+            <div class="ap-control-head"><p class="ap-panel-label">Time</p><span class="ap-control-note">1800–2200</span></div>
+            <div id="deck">
+              <div class="scrubrow">
+                <input class="scrub" type="range" id="scrub" min="0" max="1000" step="0.5" value="566" aria-label="Move model time between 1800 and 2200">
+                <span class="mono" id="scrubLabel">NOW</span>
+                <button class="mono" id="nowBtn" type="button">Return to live</button>
+                <button class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" type="button" disabled aria-disabled="true">Journey to the edge</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="ap-instrument-notes" aria-label="How to read this sky">
+      <div class="ap-glass-hud__meta">
+        <div class="ap-context">
+          <div class="ap-context__head"><p class="ap-panel-label">Selected view</p><h2 id="sky-focus-title">Solar system</h2></div>
+          <div class="ap-ledger ap-ledger--observed"><span>Observed</span><p id="telemetry" aria-live="polite">Distances in the model are schematic; longitudes are live.</p></div>
+          <div class="ap-ledger ap-ledger--meaning"><span>In astrology</span><p id="sky-meaning">A chart reads angular relationships among these bodies from Earth. It is a symbolic tradition, not a scientific claim.</p></div>
+          <a class="ap-context__chart" id="sky-chart-link" href="chart.html">Find these positions in my chart</a>
+          <div class="ap-keep-row ap-keep-row--home">
+            <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
+            <span class="action-note" id="keep-sky-caption">Needs a birth minute with a clock time. Sit with your Earth above, or cast the chart — the live sky stays free.</span>
+            <a class="ap-hint-link" href="charts.html">Your plates</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ap-personal-entry" id="personal" aria-labelledby="personal-title">
+      <div class="ap-personal-entry__inner">
+        <div>
+          <p class="ap-live-eyebrow">Begin the sitting</p>
+          <h2 id="personal-title">The minute you were born.</h2>
+          <p class="standfirst">Date and town. The hour if you have it. Your Earth turns to the hemisphere that faced the Sun. Then the chart. Place search sends the town text for the zone; birth date and time stay on this device.</p>
+        </div>
+        <div class="ap-calc-entry-panel">
+          <div class="ap-calc-entry-panel__head"><p class="eyebrow">Your minute · private on this device</p></div>
+          <div class="ap-calc-entry-panel__body">
+            <form id="coupon-form" action="chart.html" method="get">
+              <div class="fields">
+                <div class="field-e"><label for="f-date">Birth date</label><input type="date" id="f-date" required min="1800-01-01" max="2200-12-31" autocomplete="bday"></div>
+                <div class="field-e"><label for="f-time">Time <span class="opt">optional</span></label><input type="time" id="f-time"></div>
+                <div class="field-e field--place"><label for="f-place">Birth place</label><input type="text" id="f-place" required placeholder="Town or city" autocomplete="off" aria-describedby="coupon-hint" aria-controls="f-place-drop" aria-autocomplete="list"><div class="ap-city-drop" id="f-place-drop" hidden></div></div>
+              </div>
+              <p class="ap-calc-entry-panel__hint" id="coupon-hint">Pick the matching town from the list, then we hold your Earth. A clock time sharpens the Moon. You confirm the exact place again on the chart.</p>
+              <div class="ap-calc-entry-panel__action">
+                <button class="btn-primary" type="submit">Show me that Earth</button>
+                <span class="action-note">Private · no account · no birth details in the address bar</span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ap-proof-ledger" aria-label="How AstroPrecise works">
+      <div class="ap-proof-ledger__inner">
+        <div><span>01 · The sky</span><strong>Play stays free</strong><p>One live 3D sky. Distances in the model are schematic; longitudes are live.</p></div>
+        <div><span>02 · The sitting</span><strong>Your Earth, then the chart</strong><p>Give a date and town. The globe turns to the hemisphere that faced the Sun. Seven chapters open after the chart.</p></div>
+        <div><span>03 · Shop</span><strong>Checkout closed</strong><p>Natal Sky Print Pack, Personal Sky Keepsake, Whole Sky Edition — computed digital plates for adults ordering for themselves. The live sky is never behind them.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
+    <div class="ap-site-footer__inner">
+      <div class="ap-site-footer__brand">
+        <a class="ap-site-footer__wordmark" href="index.html"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
+        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
+      </div>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html" aria-current="page">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
+    </div>
+    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" rel="noopener">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" rel="noopener">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></span></div>
+  </footer>
+
+  <script src="js/ap-observatory-controls-v835.js?v=912" defer></script>
+    <script src="js/ap-observatory-v834.js?v=912" defer></script>
+    <script src="js/ap-home-reading.js?v=912" defer></script>
+    <script src="js/ap-home-personal-sky.js?v=912" defer></script>
+    <script src="js/ap-keep-library.js?v=912" defer></script>
+    <script src="js/ap-keep-sky.js?v=912" defer></script>
+    <script src="js/ap-home-keep.js?v=912" defer></script>
+    <script src="js/ap-nav-prefetch.js?v=912" defer data-ap-nav-prefetch="1"></script>
+    <script src="js/ap-sky-time.js?v=912" defer></script>
+    <script src="js/ap-footer-inject.js?v=912" defer></script>
+  <script>
+    (function () {
+      var button = document.getElementById('ap-cosmic-flight-launch');
+      var orrery = document.getElementById('orr');
+      if (!button || !orrery) return;
+      button.addEventListener('click', function () {
+        if (orrery.flight) orrery.flight();
+      });
+    })();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator && !/[?&]nosw=1/.test(location.search)) {
+      addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }, { once: true });
+    }
+  </script>
 </body>
 </html>

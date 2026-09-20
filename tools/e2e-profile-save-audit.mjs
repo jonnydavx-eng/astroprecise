@@ -106,7 +106,7 @@ function auditSaveSync() {
 
 // ── Static wiring checks ────────────────────────────────────────────────────
 function auditStaticFiles() {
-  console.log('\n2. Chart actions + eclipse handoff + commerce config (static)');
+  console.log('\n2. Guided chart actions + private handoff + commerce config (static)');
 
   const appJs = readFileSync(join(WEB, 'js', 'app.js'), 'utf8');
   if (appJs.includes(DEAD_HOST)) fail('app.js free of dead Lemon Squeezy URLs', 'lemonsqueezy.com found');
@@ -121,16 +121,16 @@ function auditStaticFiles() {
   if (appJs.includes('detailsForm:')) fail('retired Typeform detailsForm must stay absent');
   else ok('no per-SKU Typeform detailsForm');
 
-  const chartPage = readFileSync(join(WEB, 'js', 'chart-page.js'), 'utf8');
-  for (const id of ['save-btn', 'share-btn', 'print-btn', 'json-btn', 'poster-btn']) {
-    if (!chartPage.includes("getElementById('" + id + "')")) fail('chart-page wires #' + id);
-    else ok('chart-page wires #' + id);
+  const chartPage = readFileSync(join(WEB, 'js', 'ap-chart-next.js'), 'utf8');
+  for (const id of ['birth-chart-form', 'save-chart', 'download-chart', 'read-my-sky', 'edit-chart']) {
+    if (!chartPage.includes("$('" + id + "').addEventListener(")) fail('chart controller wires #' + id);
+    else ok('chart controller wires #' + id);
   }
-  if (!chartPage.includes("'eclipse-handoff', 'eclipse-cta'") ||
-      !chartPage.includes("sessionStorage.setItem('ap-eclipse-handoff'")) {
-    fail('chart-page eclipse handoff wiring');
+  if (!chartPage.includes("sessionStorage.setItem('ap-next-reading'") ||
+      !chartPage.includes("location.href='deep-reading.html'")) {
+    fail('chart-to-reading private handoff');
   } else {
-    ok('chart-page wires both eclipse CTAs through session-only handoff');
+    ok('chart leads to reading through session-only handoff');
   }
 
   const profileHtml = readFileSync(join(WEB, 'profile.html'), 'utf8');
@@ -147,7 +147,7 @@ async function auditLivePreview() {
     const chart = await fetchText(BASE + '/chart.html');
     if (chart.status !== 200) { fail('chart.html HTTP', String(chart.status)); return; }
     ok('chart.html HTTP 200');
-    for (const id of ['save-btn', 'share-btn', 'poster-btn', 'eclipse-cta']) {
+    for (const id of ['birth-chart-form', 'calculate-chart', 'save-chart', 'download-chart', 'read-my-sky', 'edit-chart']) {
       if (!chart.body.includes('id="' + id + '"')) fail('chart.html contains #' + id);
       else ok('chart.html serves #' + id);
     }
@@ -171,8 +171,8 @@ async function auditLivePreview() {
     else ok('served profile.html includes profile.js');
 
     const charts = await fetchText(BASE + '/charts.html');
-    if (!charts.body.includes('charts-dashboard.js')) fail('charts.html dashboard');
-    else ok('charts.html serves My Charts dashboard');
+    if (!charts.body.includes('ap-saved-next.js')) fail('charts.html saved library controller');
+    else ok('charts.html serves saved chart and artwork library');
   } catch (e) {
     fail('live preview unreachable', e.message);
   }
@@ -181,11 +181,11 @@ async function auditLivePreview() {
 function auditSyntax() {
   console.log('\n4. JS syntax check');
   const require = createRequire(import.meta.url);
-  const { execSync } = require('child_process');
-  const files = ['js/profile.js', 'js/chart-page.js', 'js/charts-dashboard.js', 'js/app.js'];
+  const { execFileSync } = require('child_process');
+  const files = ['js/profile.js', 'js/ap-chart-next.js', 'js/ap-reading-next.js', 'js/ap-keepsake-next.js', 'js/ap-saved-next.js', 'js/app.js'];
   for (const f of files) {
     try {
-      execSync('node --check ' + join(WEB, f), { stdio: 'pipe' });
+      execFileSync(process.execPath, ['--check', join(WEB, f)], { stdio: 'pipe' });
       ok('node --check ' + f);
     } catch (e) {
       fail('node --check ' + f, e.stderr?.toString()?.trim());

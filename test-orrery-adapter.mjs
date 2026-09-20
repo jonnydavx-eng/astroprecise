@@ -1,6 +1,6 @@
-/* Gate: v838 flagship renderer contract.
- * Home owns the one general <void-orrery>; Eclipse owns a separate dedicated
- * Sun–Moon–Earth renderer. Product, card and archive routes mount no spare model.
+/* Gate: flagship renderer and guided-journey ownership contract.
+ * Observatory owns the one general <void-orrery>; Eclipse owns a separate
+ * Sun–Moon–Earth renderer. Home, chart and keepsake routes need no WebGL model.
  */
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -183,10 +183,11 @@ if (!A.includes("opts.mode === 'birth-hour'") || !A.includes('O.captureBirthHour
   ok('authored birth-hour capture hides couples clocks and marks Earth');
 }
 
-/* Keep path → applyAuthoredBirthHourStill + home Keep load (Agent D gift path). */
+/* Observatory still capture remains separate from the lightweight chart →
+ * story → keepsake journey. Both must carry personal context locally. */
 const keepSkyPath = join(root, 'js', 'ap-keep-sky.js');
 const homeKeepPath = join(root, 'js', 'ap-home-keep.js');
-const chartPagePath = join(root, 'js', 'chart-page.js');
+const chartPagePath = join(root, 'js', 'ap-chart-next.js');
 const chartHtmlPath = join(root, 'chart.html');
 if (!existsSync(keepSkyPath)) fail('js/ap-keep-sky.js missing');
 else {
@@ -194,7 +195,7 @@ else {
   const homeKeep = existsSync(homeKeepPath) ? readFileSync(homeKeepPath, 'utf8') : '';
   const chartPage = existsSync(chartPagePath) ? readFileSync(chartPagePath, 'utf8') : '';
   const chartHtml = existsSync(chartHtmlPath) ? readFileSync(chartHtmlPath, 'utf8') : '';
-  const indexKeepHtml = readFileSync(join(root, 'index.html'), 'utf8');
+  const indexKeepHtml = readFileSync(join(root, 'observatory.html'), 'utf8');
   if (!keepSky.includes("mode: 'birth-hour'") || !keepSky.includes('birthContext.jd')) {
     fail('Keep path does not pass birth-hour jd into captureStill');
   }
@@ -204,26 +205,27 @@ else {
   if (/['"]LIVE['"]|LIVE ·|LIVE badge/.test(keepSky)) {
     fail('Keep path must never label a still with a LIVE badge');
   }
-  if (!chartPage.includes('ap-keep-sky-context') || !chartPage.includes('publishKeepSkyContext')) {
-    fail('chart-page must publish birth jd on ap-keep-sky-context');
+  if (!chartPage.includes("sessionStorage.setItem('ap-next-reading',JSON.stringify(currentResult.data))")
+      || !chartPage.includes("location.href='deep-reading.html'")) {
+    fail('chart must carry the computed chart privately into the reading');
   }
-  if (!chartHtml.includes('data-keep-mode="birth-hour"') || !chartHtml.includes('ap-keep-sky.js?v=' + tipNum)) {
-    fail('chart.html must host birth-hour Keep control on the release tip');
+  if (!chartHtml.includes('id="read-my-sky"') || !chartHtml.includes('ap-chart-next.js?v=' + tipNum)) {
+    fail('chart.html must expose the guided reading action on the release tip');
   }
   if (!indexKeepHtml.includes('id="keep-sky"') || !indexKeepHtml.includes('data-keep-mode="birth-hour"')) {
-    fail('Home Observatory must host birth-hour Keep control');
+    fail('Observatory must retain the birth-hour still capture control');
   }
   if (!indexKeepHtml.includes('ap-keep-sky.js?v=' + tipNum) || !indexKeepHtml.includes('ap-keep-sky.css?v=' + tipNum)) {
-    fail('Home must load ap-keep-sky.js + ap-keep-sky.css on the release tip');
+    fail('Observatory must load ap-keep-sky.js + ap-keep-sky.css on the release tip');
   }
   if (!indexKeepHtml.includes('ap-home-keep.js?v=' + tipNum)) {
-    fail('Home must load ap-home-keep.js to publish birth-hour context');
+    fail('Observatory must load ap-home-keep.js to publish birth-hour context');
   }
   if (!indexKeepHtml.includes('ap-reading-room') || !/ap-home-reading\.js\?v=\d+/.test(indexKeepHtml)) {
-    fail('Home must open as a reading room and load ap-home-reading.js');
+    fail('Observatory must retain its reading-room controller');
   }
   if (!indexKeepHtml.includes('start-radius="210"') || indexKeepHtml.includes('start-focus="earth"')) {
-    fail('Home must open on the System overview');
+    fail('Observatory must open on the System overview');
   }
   if (!homeKeep.includes('ap-sky-ready') || !homeKeep.includes('ap-keep-sky-context')) {
     fail('ap-home-keep must listen for ap-sky-ready and dispatch ap-keep-sky-context');
@@ -234,7 +236,15 @@ else {
   if (!W.includes('if (!applyAuthoredBirthHourStill(jd)) return null;')) {
     fail('captureBirthHourStill must call applyAuthoredBirthHourStill(jd)');
   }
-  ok('Keep path wires birth jd → captureBirthHourStill → applyAuthoredBirthHourStill + home Keep + SCHEMATIC stamp');
+  const storyHtml = readFileSync(join(root, 'deep-reading.html'), 'utf8');
+  const story = readFileSync(join(root, 'js', 'ap-reading-next.js'), 'utf8');
+  const cardHtml = readFileSync(join(root, 'sky-card.html'), 'utf8');
+  if (!storyHtml.includes('id="keep-my-sky"') || !story.includes("sessionStorage.setItem('ap-next-sky',JSON.stringify(chart))")
+      || !story.includes("location.href='sky-card.html'")) {
+    fail('reading must carry the computed chart privately into its keepsake');
+  }
+  if (!cardHtml.includes('ap-keepsake-next.js?v=' + tipNum)) fail('keepsake must load the current lightweight card controller');
+  ok('Observatory capture retains its SCHEMATIC stamp; chart → story → keepsake uses private handoffs');
 }
 if (!W.includes('type: THREE.UnsignedByteType') || !W.includes('stencilBuffer: false')) {
   fail('Home-safe UnsignedByte composer target is missing');
@@ -355,12 +365,19 @@ if (!W.includes("(!focusFrameId || focusFrameId === 'earth')")
 /* 3. Exactly one general model, with status outside its canvas. */
 const htmlFiles = readdirSync(root).filter((name) => name.endsWith('.html'));
 const modelOwners = htmlFiles.filter((name) => /<void-orrery\b/i.test(readFileSync(join(root, name), 'utf8')));
-const expectedOwners = ['index.html'];
+const expectedOwners = ['observatory.html'];
 const got = [...modelOwners].sort();
 if (got.join() !== expectedOwners.join()) {
   fail('live orrery owners drifted: ' + modelOwners.join(', '));
 }
-const indexHtml = readFileSync(join(root, 'index.html'), 'utf8');
+const indexHtml = readFileSync(join(root, 'observatory.html'), 'utf8');
+const guidedHomeHtml = readFileSync(join(root, 'index.html'), 'utf8');
+if (/<void-orrery\b|(?:void-orrery-adapter|orrery-webgl)\.js/.test(guidedHomeHtml)) {
+  fail('guided home must not boot or preload the optional WebGL Observatory');
+}
+if (!guidedHomeHtml.includes('href="chart.html"') || !guidedHomeHtml.includes('js/ap-intro-next.js?v=' + tipNum)) {
+  fail('guided home must demonstrate the sky and provide its chart entry point');
+}
 if (!tipNum) fail('service worker has no ap-vNNNN identity');
 if (!new RegExp('js/void-orrery-adapter\\.js\\?v=' + tipNum).test(indexHtml)) {
   fail('Home adapter query must match service worker ap-v' + tipNum);
@@ -412,7 +429,7 @@ if (/ap-model-status|ap-model-hint/.test(homeStageSegment)) fail('Home status or
 if (!/ap-model-status/.test(homePanelSegment) || !/ap-model-hint/.test(homePanelSegment)) {
   fail('Home panel does not own status and interaction hint');
 }
-ok('Home owns one strict model with unobstructed canvas and adjacent controls');
+ok('Observatory owns one strict model with unobstructed canvas and adjacent controls');
 const homeCss = readFileSync(join(root, 'css', 'ap-home-v835.css'), 'utf8');
 for (const probe of ['class="ap-mobile-flight-deck"', 'id="mobileWorld"', 'id="mobileScale"', 'class="ap-model-boot"']) {
   if (!indexHtml.includes(probe)) fail('Home phone flight deck missing: ' + probe);
@@ -420,7 +437,7 @@ for (const probe of ['class="ap-mobile-flight-deck"', 'id="mobileWorld"', 'id="m
 for (const probe of ['.ap-mobile-flight-deck', '.ap-model-stage.is-model-ready .ap-model-boot']) {
   if (!homeCss.includes(probe)) fail('Home launch-state CSS missing: ' + probe);
 }
-ok('Home phone deck exposes every destination without covering the model');
+ok('Observatory phone deck exposes every destination without covering the model');
 
 /* 3b. A restrained opening beat replaces the old auto-opening movie overlay. */
 for (const probe of ['id="ap-cosmic-flight-launch"', 'if (orrery.flight) orrery.flight()']) {
@@ -435,7 +452,8 @@ for (const probe of ['!hasExplicitOpening', '!userTookControl', 'prefers-reduced
 if (/ap-cosmic-flight-tool\.js/.test(indexHtml)) fail('legacy auto-opening movie controller still loads on Home');
 ok('opening beat is subtle, reduced-motion safe and yields to user input; full journey remains opt-in');
 
-/* 4. Shared release identity and merged Explore redirect. */
+/* 4. Optional models share the release identity; the guided journey owns the
+ * offline shell, and Explore is a useful directory rather than a redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
   'css/ap-living-sky-v834.css?v=' + tipNum,
@@ -444,7 +462,17 @@ for (const ref of [
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
-  if (!sw.includes("'" + bare + "'")) fail('service worker missing ' + bare);
+  if (!existsSync(join(root, bare))) fail('Observatory release asset missing ' + bare);
+}
+const precacheBlock = sw.slice(sw.indexOf('const PRECACHE = ['), sw.indexOf('/* PRECACHE_END */'));
+for (const file of ['index.html', 'chart.html', 'deep-reading.html', 'sky-card.html',
+  'js/ap-next.js', 'js/ap-intro-next.js', 'js/ap-chart-next.js', 'js/ap-reading-next.js',
+  'js/ap-keepsake-next.js', 'js/ephemeris.js', 'js/reading-templates.json', 'js/deep-templates.json',
+  'css/ap-next.css', 'css/ap-intro-next.css', 'css/ap-chart-next.css', 'css/ap-reading-next.css']) {
+  if (!precacheBlock.includes("'./" + file + "'")) fail('guided offline shell missing ' + file);
+}
+for (const optional of ['observatory.html', 'eclipse.html', 'js/orrery-webgl.js', 'js/vendor/three/three.module.min.js']) {
+  if (precacheBlock.includes("'./" + optional + "'")) fail('optional model still delays core offline install: ' + optional);
 }
 const livingCss = readFileSync(join(root, 'css', 'ap-living-sky-v834.css'), 'utf8');
 for (const probe of ['.ap-live-stage', '.ap-model-stage', '.ap-control-panel', '.ap-site-footer']) {
@@ -467,15 +495,25 @@ for (const probe of ["byId('mobileWorld')", "byId('mobileScale')", "block: 'cent
   if (!observatory.includes(probe)) fail('Home phone controller contract missing: ' + probe);
 }
 const navModel = readFileSync(join(root, 'js', 'ap-nav-model.js'), 'utf8');
+const sharedShell = readFileSync(join(root, 'js', 'ap-next.js'), 'utf8');
+const sharedRows = sharedShell.match(/const rows=([^\r\n]+);/);
+try {
+  const routes = sharedRows && runInNewContext('(' + sharedRows[1] + ').map(row => row.slice(0, 2))');
+  if (JSON.stringify(routes) !== JSON.stringify([
+    ['index.html', 'Today'], ['chart.html', 'Birth chart'], ['explore.html', 'Explore'], ['charts.html', 'Saved'],
+  ])) fail('new shared shell and retained navigation disagree about the four primary routes');
+} catch (error) {
+  fail('shared navigation model could not be checked: ' + error.message);
+}
 for (const probe of [
-  "['index.html', 'Observatory']",
-  "['chart.html', 'Chart']",
-  "['sky-events.html', 'Events'",
-  "['shop.html', 'Shop']",
+  "['index.html', 'Today']",
+  "['chart.html', 'Birth chart']",
+  "['explore.html', 'Explore']",
+  "['charts.html', 'Saved']",
 ]) {
   if (!navModel.includes(probe)) fail('launch navigation contract missing: ' + probe);
 }
-for (const probe of ["['sky-events.html', 'Events', 'eclipse']", '(min-width: 981px)', 'renderStaticBottomNav();']) {
+for (const probe of ["['explore.html', 'Explore', 'eclipse']", '(min-width: 981px)', 'renderStaticBottomNav();']) {
   if (!navModel.includes(probe)) fail('four-route mobile navigation missing: ' + probe);
 }
 if (!livingCss.includes('repeat(4, minmax(0, 1fr))')) fail('mobile navigation is not four equal tabs');
@@ -485,27 +523,25 @@ if (navModel.includes("['synastry.html'")) fail('Synastry must not leak into nav
 if (!livingCss.includes('touch-action: pan-y !important')) fail('Home phone canvas can still trap vertical scrolling');
 if (!sw.includes('const V = "ap-v' + tipNum + '"')) fail('service worker release identity drifted from Home tip ap-v' + tipNum);
 ok('shared shell exposes four primary routes and releases vertical phone scrolling');
-if (navModel.includes("['explore.html'")) fail('retired Explore destination remains in navigation');
-
 const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
 for (const probe of [
-  "new URL('./index.html', location.href)",
-  "canonicalKey === 'nosw' || canonicalKey === 'lite'",
-  "canonicalKey === 'focus'",
-  "canonicalKey === 'scale'",
-  'location.replace(target.href);',
-  '<meta name="robots" content="noindex, follow">',
+  'href="observatory.html"',
+  'id="tool-search"',
+  'data-filter="sky"',
+  'data-tool',
+  'js/ap-discover-next.js',
   '<meta name="referrer" content="no-referrer">',
 ]) {
-  if (!exploreHtml.includes(probe)) fail('Explore redirect contract missing: ' + probe);
+  if (!exploreHtml.includes(probe)) fail('Explore directory contract missing: ' + probe);
 }
+if (/location\.replace\(|http-equiv=["']refresh/.test(exploreHtml)) fail('Explore must not redirect away from its tool directory');
 for (const unsafeForward of ['target.search = location.search;', 'target.hash = location.hash;']) {
   if (exploreHtml.includes(unsafeForward)) fail('Explore forwards an unsanitized address component: ' + unsafeForward);
 }
 for (const retired of ['<void-orrery', 'explore-boot-v', 'id="orrery-lite-deck"']) {
   if (exploreHtml.includes(retired)) fail('retired Explore surface remains: ' + retired);
 }
-ok('Explore merges into the one flagship Observatory');
+ok('Explore exposes the optional Observatory through a searchable tool directory');
 
 const deepLinkBuilder = readFileSync(join(root, 'js', 'ap-deep-link.js'), 'utf8');
 if (!deepLinkBuilder.includes("if (m !== 'now') parts.push('public=1')")) {
@@ -530,7 +566,7 @@ for (const ref of [
 ]) {
   if (!eclipseHtml.includes(ref)) fail('Eclipse release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
-  if (!sw.includes("'" + bare + "'")) fail('service worker missing ' + bare);
+  if (!existsSync(join(root, bare))) fail('Eclipse release asset missing ' + bare);
 }
 for (const probe of ['id="ap-eclipse-live"', 'data-eclipse-now', 'data-eclipse-event',
   'data-eclipse-play', 'data-eclipse-lens="system"', 'data-eclipse-share',
@@ -649,12 +685,12 @@ if (/function webglOK\(\)/.test(W)) fail('renderer still creates a redundant mod
 ok('renderer stages one Earth GPU upload per frame before atomic reveal and idle full-resolution upgrades');
 
 /* 7. Import maps on the two live Three.js pages only. */
-for (const page of ['index.html', 'eclipse.html']) {
+for (const page of ['observatory.html', 'eclipse.html']) {
   const html = readFileSync(join(root, page), 'utf8');
   if (!/type=["']importmap["']/.test(html)) fail(page + ' missing Three import map');
   if (!html.includes('./js/vendor/three/three.module.min.js')) fail(page + ' import map missing local Three build');
 }
-ok('Three import map is present on Home and Eclipse');
+ok('Three import map is present on Observatory and Eclipse');
 
 /* 8. VoidEphem byte compatibility with the legacy calculation port. */
 function legacyEphem() {
@@ -714,4 +750,4 @@ if (bad) {
   console.log(bad + ' flagship renderer contract failure(s)');
   process.exit(1);
 }
-console.log('PASS flagship Home 3D + dedicated Eclipse 3D + VoidEphem compatibility');
+console.log('PASS optional Observatory 3D + guided offline journey + dedicated Eclipse 3D + VoidEphem compatibility');

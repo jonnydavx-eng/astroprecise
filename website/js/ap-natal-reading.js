@@ -505,7 +505,7 @@ function renderReading(reading, meta) {
     };
     const candidate = APSkyBridge.buildLinkFromChart(bridgeChart, { focus: 'earth' });
     const candidateHasBirthMoment = /(?:[?#&])m=/.test(String(candidate || ''));
-    observatoryLink.href = candidateHasBirthMoment ? 'index.html#focus=earth' : candidate;
+    observatoryLink.href = candidateHasBirthMoment ? 'observatory.html#focus=earth' : candidate;
     if (candidateHasBirthMoment) observatoryLink.textContent = 'Open the Observatory';
   }
   byId('natalResult').hidden = false;

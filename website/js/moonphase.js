@@ -309,10 +309,10 @@
             }
             // Ignore any helper return so a stale cached implementation cannot
             // reintroduce the birthday through `m=`.
-            var href = 'index.html#focus=moon';
+            var href = 'observatory.html#focus=moon';
             return '<a class="btn btn--outline" href="' + href + '">See this Moon in the 3D model &rarr;</a>';
           } catch (e) {
-            return '<a class="btn btn--outline" href="index.html#focus=moon">See the Moon in the 3D model &rarr;</a>';
+            return '<a class="btn btn--outline" href="observatory.html#focus=moon">See the Moon in the 3D model &rarr;</a>';
           }
         })() +
       '</div>';
