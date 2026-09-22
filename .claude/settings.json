@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "second-brain/tools/capture-session.sh",
+            "timeout": 120,
+            "statusMessage": "Capturing chat into second-brain vault…"
+          }
+        ]
+      }
+    ]
+  }
+}
