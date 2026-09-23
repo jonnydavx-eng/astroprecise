@@ -2,26 +2,26 @@
  * Astro Precise — Navigation IA (model-first, single source of truth).
  * Load before app.js: <script src="js/ap-nav-model.js"></script>
  *
- * OBSERVATORY STRUCTURE (2026-07-10 — the homepage IS the model):
- *   The living orrery is the product; index.html is the Observatory.
+ * GUIDED HOME (2026-09-20): index.html is the birth-sky journey.
+ * The 3D model lives at observatory.html. Do not send "Observatory" or
+ * "3D model" actions back to index.html.
  *
- * Launch bar: Observatory · Chart · Events · Shop.
- * The historical tools remain directly addressable, but they never leak into
- * the four-route launch shell or reintroduce a second "Explore" entrance.
+ * Launch bar: Today · Birth chart · Explore · Saved.
+ * The historical tools remain directly addressable.
  *
- * Mobile launch tabs: Sky · Chart · Events · Shop.
+ * Mobile launch tabs: Today · Birth chart · Explore · Saved.
  *
- * Site spine: Observatory (see) → Chart (cast) → Events (follow) → Shop (keep)
- * index.html is the single live Observatory; Explore is an action inside that scene, not another route.
+ * Site spine: Today (begin) → Birth chart (cast) → Explore (browse) → Saved (return)
+ * observatory.html is the single live 3D Observatory.
  */
 'use strict';
 
 (function () {
   var NAV_PRIMARY = [
-    ['index.html', 'Observatory'],
-    ['chart.html', 'Chart'],
-    ['sky-events.html', 'Events'],
-    ['shop.html', 'Shop'],
+    ['index.html', 'Today'],
+    ['chart.html', 'Birth chart'],
+    ['explore.html', 'Explore'],
+    ['charts.html', 'Saved'],
   ];
 
   // Historical direct routes, exposed only on archive pages.
@@ -40,10 +40,10 @@
 
   // Four-route mobile spine. The authored header remains the desktop navigation.
   var NAV_BOTTOM_TABS = [
-    ['index.html', 'Sky', 'star4'],
-    ['chart.html', 'Chart', 'spiral'],
-    ['sky-events.html', 'Events', 'eclipse'],
-    ['shop.html', 'Shop', 'sparkles'],
+    ['index.html', 'Today', 'star4'],
+    ['chart.html', 'Birth chart', 'spiral'],
+    ['explore.html', 'Explore', 'eclipse'],
+    ['charts.html', 'Saved', 'sparkles'],
   ];
 
   // Inline paths keep the four primary icons identical on every route. Several

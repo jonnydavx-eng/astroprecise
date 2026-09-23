@@ -357,7 +357,7 @@
         if (window.APDeepLink && APDeepLink.stashSkyLink) {
           try { APDeepLink.stashSkyLink({ m: iso, focus: 'earth' }); } catch (_) {}
         }
-        state.lastSkyLink = 'index.html#focus=earth';
+        state.lastSkyLink = 'observatory.html#focus=earth';
         document.dispatchEvent(new CustomEvent('ap-sky-ready', {
           bubbles: true,
           detail: { moment: moment, m: iso, link: state.lastSkyLink, focus: 'earth', source: 'moment-freeze' }
@@ -367,7 +367,7 @@
 
     var modelLink = $('mom-model-link');
     if (modelLink) {
-      modelLink.href = state.lastSkyLink || 'index.html#m=now&focus=earth';
+      modelLink.href = state.lastSkyLink || 'observatory.html#m=now&focus=earth';
       modelLink.hidden = !state.lastSkyLink;
     }
 

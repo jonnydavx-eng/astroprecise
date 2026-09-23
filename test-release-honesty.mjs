@@ -70,16 +70,16 @@ assert.ok(chartPage.includes("name:'Semi-sextile'"))
 assert.equal(chartPage.includes("name:'Slight angle'"), false)
 assert.ok(chartCss.includes('.ap-reading-card > .ap-reading-card__content:only-child'))
 assert.ok(chartCss.includes('scroll-margin-top:'))
-assert.ok(chartHtml.includes(`ap-chart-v835.css?v=${releaseTip}`))
+assert.ok(chartHtml.includes(`ap-chart-next.css?v=${releaseTip}`))
 assert.ok(
-  chartHtml.includes(`ap-load-interpretations.js?v=${releaseTip}`) &&
-    chartHtml.includes(`chart-page.js?v=${releaseTip}`),
+  chartHtml.includes(`ap-next.css?v=${releaseTip}`) &&
+    chartHtml.includes(`ap-chart-next.js?v=${releaseTip}`),
 )
 assert.ok(
-  chartHtml.includes(`reading-format.js?v=${releaseTip}`) &&
-    chartHtml.includes(`chart-render.js?v=${releaseTip}`),
+  chartHtml.includes(`ephemeris.js?v=${releaseTip}`) &&
+    chartHtml.includes(`ap-mirror-hour.js?v=${releaseTip}`),
 )
-for (const asset of ['css/ap-phone-pass.css', 'css/ap-keep-sky.css', 'js/app.js']) {
+for (const asset of ['css/ap-next.css', 'css/ap-chart-next.css', 'js/ap-chart-next.js']) {
   assert.ok(chartHtml.includes(`${asset}?v=${releaseTip}`), `Chart must release-pin ${asset}`)
 }
 assert.ok(chartRender.includes('ap:wheel-select') && chartPage.includes('wireWheelReadingSelect'))
@@ -92,7 +92,11 @@ assert.ok(
   chartPage.includes('chart-wheel-card--has-reading') && chartPage.includes('keepWheelInView'),
 )
 assert.ok(chartPage.includes('writeSittingHandoff') && chartPage.includes('function openSitting'))
-assert.ok(chartHtml.includes('id="sitting-cta"') && chartHtml.includes('Open the sitting'))
+assert.ok(chartHtml.includes('id="read-my-sky"') && chartHtml.includes('Read my sky story'))
+assert.ok(chartHtml.includes('id="time-unknown"') && chartHtml.includes('id="time-approximate"'))
+assert.ok(/Online search sends only the town text to Open-Meteo/i.test(chartHtml))
+assert.ok(chartHtml.includes('does not claim observatory-grade precision'))
+assert.equal(/gumroad\.com|openCheckout/i.test(chartHtml), false)
 assert.ok(!/card\.scrollIntoView\(\{ behavior: 'smooth', block: 'nearest' \}\)/.test(chartPage))
 assert.ok(
   readingFormat.includes('if (leadHtml) inner += leadHtml;') &&
@@ -118,13 +122,21 @@ for (const path of [
 ]) {
   assert.equal(/arcminute/i.test(read(path)), false, `${path} must not make an arcminute claim`)
 }
-const home = read('./website/index.html')
+const home = read('./website/observatory.html')
 assert.ok(
   home.includes("key === 'nosw' || key === 'lite'") &&
     home.includes("value === '1'") &&
     home.indexOf('var incomingQuery') < home.indexOf('<link rel="preload"'),
   'Observatory query allowlist must scrub legacy personal fields before assets load',
 )
+const guidedHome = read('./website/index.html')
+assert.ok(
+  guidedHome.includes("name === 'nosw' || name === 'lite'") &&
+    guidedHome.includes('Reveal my birth sky') &&
+    /fictional/i.test(guidedHome),
+  'guided home must scrub legacy fields, start the birth-sky path, and label sample artwork',
+)
+assert.equal(/gumroad\.com\/l\/|checkout\.gumroad/i.test(guidedHome), false)
 assert.ok(
   home.includes('moments.length === 1') &&
     home.includes('publicMarkers.length === 1') &&
@@ -447,25 +459,15 @@ assert.equal(
   'eclipse edition is retired from the shop',
 )
 assert.equal(shop.includes('Personalised eclipse edition'), false)
-assert.match(
-  shop,
-  /Ko-fi[^.]{0,140}requires an email/i,
-  'support copy must not claim Ko-fi is email-free',
+assert.equal(
+  /ko-fi\.com|kofi/i.test(shop),
+  false,
+  'Studio preview must not open Ko-fi while checkout is closed',
 )
-assert.match(
-  shop,
-  /payment provider before confirmation[\s\S]{0,160}PayPal and Stripe/i,
-  'support copy must explain the provider boundary without guessing the account-specific route',
-)
-assert.match(
-  shop,
-  /one-time and optional monthly support|support may be one-time or monthly/i,
-  'shop must disclose Ko-fi recurring support before the visitor leaves AstroPrecise',
-)
-assert.match(
-  shop,
-  /Monthly support recurs until cancelled/i,
-  'shop must state that monthly Ko-fi support recurs',
+assert.equal(
+  /one-time and optional monthly support|Monthly support recurs/i.test(shop),
+  false,
+  'Studio preview must not offer recurring support while checkout is closed',
 )
 assert.equal(
   /neither requires an account or email/i.test(shop),
@@ -710,7 +712,7 @@ assert.ok(
   ),
 )
 assert.ok(
-  chartHtml.includes('location button sends coordinates to Open-Meteo for timezone lookup only'),
+  chartHtml.includes('Online search sends only the town text to Open-Meteo'),
 )
 assert.ok(
   footer.includes(
@@ -764,13 +766,10 @@ assert.ok(
   'sky card must offer a share sheet for the PNG',
 )
 assert.ok(
-  skyCard.includes('data-ap-static-nav') && skyCard.includes('sky-events.html'),
-  'sky card must carry the one house navigation',
+  skyCard.includes(`js/ap-next.js?v=${releaseTip}`),
+  'sky card must use the shared phone navigation',
 )
-assert.ok(
-  skyCard.includes('Astro<i class="logo-text__precise">Precise</i>'),
-  'the wordmark is one word',
-)
+assert.equal(/Astro Precise/.test(skyCard), false, 'the wordmark is one word')
 assert.equal(/#0a0908/i.test(skyCard), false, 'sky card must leave the retired warm surface behind')
 assert.equal(
   /never rounded|placed exactly/i.test(skyCard),
@@ -783,8 +782,8 @@ assert.equal(
   'a birth clock time is not UTC',
 )
 assert.ok(
-  skyCard.includes("Open-Meteo's public geocoder"),
-  'sky card must say that only the town text is sent',
+  skyCard.includes('Created in your browser, with no upload.'),
+  'sky card must say the image is created on the device',
 )
 assert.equal(
   /quiz\.html|angel-numbers\.html|name-numerology\.html|lifepath\.html|moment\.html/.test(skyCard),
@@ -835,27 +834,26 @@ assert.ok(
 )
 assert.match(
   skyCard,
-  /\.ap-card-canvas\{order:3/,
-  'the plate must sit above the form on a phone — at 390 it was landing at y=927',
+  /\.sky-poster\{order:1/,
+  'the plate must sit above the form on a phone',
 )
-assert.match(skyCard, /\.ap-card-form\{order:5/, 'the form follows the plate on a phone')
+assert.match(skyCard, /\.keepsake-controls\{order:2/, 'the form follows the plate on a phone')
 assert.ok(
-  skyCard.includes('min-height:48px;padding:10px') && skyCard.includes('font:16px var(--ap-data)'),
+  skyCard.includes('min-height:48px;font-size:16px;padding:10px'),
   'form inputs need a 48px tap and a 16px face',
 )
-assert.ok(skyCard.includes('.ap-card-btn{width:100%}'), 'phone buttons take the full width')
-assert.match(
-  skyCard,
-  /\.ap-card-status,\.ap-zone-note,\.ap-card-ledger p,\.ap-card-foot\{font-size:16px/,
-  'the zone rule, the privacy line and the honesty foot hold the 16px phone floor',
+assert.ok(skyCard.includes('width:100%;min-height:48px'), 'phone buttons take the full width')
+assert.ok(
+  skyCard.includes('.keepsake-controls .small,.page-intro .lede{font-size:16px'),
+  'the privacy line holds the 16px phone floor',
 )
 assert.ok(
-  skyCard.includes('min-width:44px;min-height:44px'),
-  'the house header and footer links need a 44px tap on this page',
+  skyCard.includes('min-height:44px;font-size:16px'),
+  'the birth-details choice needs a 44px tap',
 )
 assert.ok(
-  skyCard.includes('ap-card-plate-note'),
-  'a phone must be told the plate lines are repeated below at reading size',
+  skyCard.includes('distances and sizes are illustrative'),
+  'a phone must be told the plate is a schematic, not a measured portrait',
 )
 assert.equal(
   /Astro\s+Precise/.test(skyCard),
@@ -863,45 +861,44 @@ assert.equal(
   'the wordmark is one word, everywhere on the page',
 )
 
-for (const path of [
-  './website/index.html',
-  './website/chart.html',
-  './website/deep-reading.html',
-]) {
-  const page = read(path)
-  assert.ok(
-    page.includes('href="sky-card.html" data-ap-keep-minute'),
-    `${path} must reach the keep path`,
-  )
-  assert.equal(
-    /sky-card\.html\?/.test(page),
-    false,
-    `${path} must not put a birth minute in the keep link`,
-  )
-  assert.ok(
-    page.includes(`ap-keep-minute.js?v=${releaseTip}`),
-    `${path} must load the keep-path helper`,
-  )
-  assert.ok(/Keep this sky/i.test(page), `${path} must offer a quiet Keep this sky link`)
-  assert.ok(
-    page.includes('ap-keep-path-strip') || path.includes('index.html'),
-    `${path} must present the one keep path strip (or home Keep control)`,
-  )
-}
+const chartNext = read('./website/js/ap-chart-next.js')
+const readingNext = read('./website/js/ap-reading-next.js')
+const keepsakeNext = read('./website/js/ap-keepsake-next.js')
+assert.ok(
+  chartNext.includes("sessionStorage.setItem('ap-next-reading'") &&
+    chartNext.includes("location.href='deep-reading.html'"),
+  'chart hands the reading to the next page in this tab only',
+)
+assert.equal(/deep-reading\.html\?/.test(chartNext), false, 'chart must not put a birth minute in the reading link')
+assert.ok(
+  readingNext.includes("sessionStorage.setItem('ap-next-sky'") &&
+    readingNext.includes("location.href='sky-card.html'"),
+  'reading hands the keepsake to the next page in this tab only',
+)
+assert.equal(/sky-card\.html\?/.test(readingNext), false, 'reading must not put a birth minute in the keep link')
+assert.ok(
+  keepsakeNext.includes("Birth date, time and place are hidden from the image."),
+  'keepsake artwork hides birth details unless the visitor asks',
+)
+assert.equal(
+  /location\.(?:search|hash)|URLSearchParams/.test(keepsakeNext),
+  false,
+  'keepsake must not read a birth minute from the address',
+)
 
-const homeKeepPage = read('./website/index.html')
+const homeKeepPage = read('./website/observatory.html')
 assert.ok(
   homeKeepPage.includes(`ap-keep-sky.js?v=${releaseTip}`) &&
     homeKeepPage.includes(`ap-keep-sky.css?v=${releaseTip}`),
-  'home must load Keep script and release-pinned styles',
+  'Observatory must load Keep script and release-pinned styles',
 )
 assert.ok(
   homeKeepPage.includes(`ap-home-keep.js?v=${releaseTip}`),
-  'home must load the Keep context bridge',
+  'Observatory must load the Keep context bridge',
 )
 assert.ok(
   homeKeepPage.includes('id="keep-sky"') && homeKeepPage.includes('data-keep-mode="birth-hour"'),
-  'home must host birth-hour Keep on the live orrery',
+  'Observatory must host birth-hour Keep on the live orrery',
 )
 assert.equal(
   /LIVE/.test(read('./website/js/ap-keep-sky.js').split('stampSurfaceA')[1] || ''),
@@ -917,10 +914,11 @@ assert.ok(
   'shared asset tip must match the service worker',
 )
 for (const offlineAsset of [
-  './js/ap-home-reading.js',
-  './js/ap-home-keep.js',
-  './js/ap-keep-minute.js',
-  './js/ap-keep-sky.js',
+  './js/ap-chart-next.js',
+  './js/ap-reading-next.js',
+  './js/ap-keepsake-next.js',
+  './js/ap-mirror-hour.js',
+  './js/ephemeris.js',
 ]) {
   assert.ok(
     serviceWorker.includes(`'${offlineAsset}'`),
@@ -969,20 +967,20 @@ for (const path of publicTruthSources) {
 
 const shopBuild = read('./tools/build.mjs')
 assert.ok(
-  shopBuild.includes("'img/shop/v902/whole-sky-earth.jpg'") &&
-    shopBuild.includes("'img/shop/v902/natal-wheel.webp'") &&
-    shopBuild.includes("'img/shop/v902/keepsake-book.webp'"),
-  'Pages dist must ship the v902 shop plates the live shop HTML references',
+  shopBuild.includes("'img/shop/v906/natal-plate.jpg'") &&
+    shopBuild.includes("'img/shop/v906/keepsake-plate.jpg'") &&
+    shopBuild.includes("'img/shop/v906/earth-plate.jpg'"),
+  'Pages dist must ship the v906 shop plates the Studio HTML references',
 )
 assert.ok(
-  read('./website/shop.html').includes('img/shop/v902/whole-sky-earth.jpg'),
-  'shop.html must point at the v902 keep plates',
+  read('./website/shop.html').includes('img/shop/v906/natal-plate.jpg'),
+  'shop.html must point at the v906 Studio plates',
 )
 
 const moonphase = read('./website/js/moonphase.js')
 assert.ok(
   moonphase.includes('APDeepLink.stashSkyLink') &&
-    moonphase.includes("var href = 'index.html#focus=moon'"),
+    moonphase.includes("var href = 'observatory.html#focus=moon'"),
   'birthday Moon instant must use a same-tab private stash and a clean model link',
 )
 assert.equal(

@@ -66,17 +66,20 @@ assert.equal(/reviewUnlock|ap_natal_print_review/.test(natalJs), false, 'paid un
 assert.equal(/openCheckout|gumroad\.com|GUMROAD_PRODUCTS|fulfilUrl/.test(natalJs), false, 'natal page must not open live checkout');
 assert.equal(/£\d|\$\d|price:\s*['"]/.test(natalJs), false, 'natal page must not invent a price');
 assert.equal(/handleUnlockOnLoad|searchParams\.get\(['"]license|[?&]license=/.test(natalJs), false, 'licence keys must not arrive through a URL');
-assert.equal(/option value="UTC"/.test(readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8')), false, 'deep-reading must not offer UTC/GMT');
-assert.ok(readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8').includes('natal-city'), 'deep-reading must collect a city for IANA');
 const natalHtml = readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8');
+const chartHtml = readFileSync(new URL('./website/chart.html', import.meta.url), 'utf8');
+const readingNext = readFileSync(new URL('./website/js/ap-reading-next.js', import.meta.url), 'utf8');
+assert.equal(/option value="UTC"/.test(natalHtml), false, 'deep-reading must not offer UTC/GMT');
+assert.equal(natalHtml.includes('natal-city'), false, 'the reading page must not collect a second birth place');
+assert.ok(chartHtml.includes('id="birth-place"'), 'the chart collects the birth place for a real zone');
+assert.ok(/Open-Meteo/i.test(chartHtml), 'chart must disclose the public geocoder');
 assert.equal(/never leaves the browser/i.test(natalHtml), false, 'deep-reading must not claim nothing leaves the browser');
-assert.ok(/Place search sends only the town name/i.test(natalHtml), 'deep-reading must disclose the public geocoder');
+assert.ok(/No birth details are sent to a reading service/i.test(natalHtml), 'deep-reading must say the reading is assembled locally');
 assert.equal(/Nothing was uploaded/.test(natalJs), false, 'natal status must not claim a total upload blackout');
-assert.ok(/Place search sent only the town name/.test(natalJs), 'natal status must name the geocoder exception');
-assert.ok(natalHtml.includes('class="logo-text">AstroPrecise</span>'), 'wordmark is one word: AstroPrecise');
-assert.equal(/Astro <i|Astro Precise/.test(natalHtml), false, 'wordmark must not split into two words');
-assert.ok(natalHtml.includes('href="sky-card.html"') && natalHtml.includes('href="chart.html"'), 'reading may link to existing keep pages');
-assert.equal(/sky-card\.html\?|chart\.html\?/.test(natalHtml), false, 'keep-path links must not carry a birth minute');
+assert.ok(/Place search sent only the town name/.test(natalJs), 'legacy natal status must name the geocoder exception');
+assert.equal(/Astro Precise/.test(natalHtml), false, 'wordmark must not split into two words');
+assert.ok(readingNext.includes("location.href='sky-card.html'") && natalHtml.includes('href="chart.html"'), 'reading may continue to the chart and the keepsake');
+assert.equal(/sky-card\.html\?|chart\.html\?/.test(natalHtml + readingNext), false, 'keep-path links must not carry a birth minute');
 // Real keep engines now ship on this branch (gift keep path: ap-keep-minute.js).
 // The page may load them, but it must never reference a keep engine that does not exist.
 const keepScripts = [...natalHtml.matchAll(/src="(js\/[^"?]+\.js)/g)].map((m) => m[1]);
@@ -86,11 +89,10 @@ for (const src of keepScripts) {
 }
 assert.equal(/captureStill/.test(natalHtml + natalJs), false, 'this page must not call a captureStill keep helper that does not exist');
 assert.equal(/sign up|log in|create an account|chatbot|ask the oracle/i.test(natalHtml), false, 'no account and no AI-chat theatre');
-assert.ok(natalHtml.includes('index.html') && !natalHtml.includes('<void-orrery'), 'reading links to the single Home model');
-assert.ok(/not behind a paywall/i.test(natalHtml), 'the live sky must be named as free');
-assert.equal(/unlock the sky|buy to see the sky/i.test(natalHtml), false, 'the live sky must not be gated');
-assert.ok(/Checkout is closed/.test(natalHtml), 'paid print stays closed');
+assert.ok(!natalHtml.includes('<void-orrery'), 'reading must not embed a second 3D model');
+assert.equal(/unlock the sky|buy to see the sky/i.test(natalHtml), false, 'the reading must not be gated');
+assert.equal(/gumroad\.com|openCheckout/i.test(natalHtml + readingNext), false, 'paid print stays closed');
 assert.equal(/£\d|\$\d/.test(natalHtml), false, 'page must not invent a price');
-assert.ok(natalHtml.includes('natal-lat') && natalHtml.includes('natal-lon'), 'town pick must keep coordinates for a real rising sign');
-assert.ok(/date reference, not a birth hour/.test(natalHtml), 'unknown time must be disclosed on the page, not only in the engine');
+assert.ok(chartHtml.includes('id="birth-place"'), 'town pick stays on the chart, which keeps coordinates for a real rising sign');
+assert.ok(/rising and houses are omitted/i.test(natalHtml), 'unknown time must be disclosed on the reading page');
 console.log('PASS deep-reading seven chapters + untimed Moon approximate + IANA TZ + house look');

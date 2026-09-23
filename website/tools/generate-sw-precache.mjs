@@ -5,7 +5,7 @@
  * Run once, from website/:
  *   node tools/generate-sw-precache.mjs
  *
- * The service worker caches only the Home/Eclipse/offline shell at install time.
+ * The service worker caches only the guided birth-sky/offline shell at install time.
  * Every other same-origin asset is cached on first use by sw.js. This keeps an
  * update atomic without downloading the historical long tail beside the 3D view.
  */
@@ -20,11 +20,7 @@ const ASSET_VERSION_PATH = join(ROOT, 'js', 'ap-asset-v.js');
 
 // These documents form the launch-day offline shell. Other routes remain
 // network-first for navigation and become available offline after their first use.
-const SHELL_DOCUMENTS = [
-  './index.html',
-  './eclipse.html',
-  './offline.html',
-];
+const SHELL_DOCUMENTS = ['./index.html', './chart.html', './deep-reading.html', './charts.html', './sky-events.html', './sky-card.html', './offline.html'];
 
 // Act 1 and launch-shell pages share one explicit release tip. Mixed query
 // versions let an old document assemble a new runtime, so generation fails
@@ -50,32 +46,7 @@ const RELEASE_PAGES = [
 // Runtime references that cannot be derived safely from markup. The Eclipse
 // contact module imports the engine relative to itself and fetches the JSON from
 // the document root; both are part of the launch experience.
-const REQUIRED_TRANSITIVE = [
-  './js/eclipse-reading.js',
-  './js/reading-templates.json',
-  './css/ap-footer-v835.css',
-  // Home imports this through a release-version expression, which the static
-  // import walker cannot discover. Adding the module lets the walker include
-  // its Three post-processing and orbital-math dependencies.
-  './js/orrery-webgl.js',
-  // Compact texture fallbacks make both 3D instruments usable after an offline
-  // refresh without forcing full-resolution maps into the install transaction.
-  './assets/textures/earth_sm.webp',
-  './assets/textures/earth_clouds_sm.webp',
-  './assets/textures/earth_lights_sm.webp',
-  './assets/textures/earth_normal_sm.webp',
-  './assets/textures/earth_specular_sm.webp',
-  './assets/textures/jupiter_sm.webp',
-  './assets/textures/mars_sm.webp',
-  './assets/textures/mercury_sm.webp',
-  './assets/textures/moon_sm.webp',
-  './assets/textures/neptune_sm.webp',
-  './assets/textures/saturn_sm.webp',
-  './assets/textures/saturn_ring_sm.webp',
-  './assets/textures/uranus_sm.webp',
-  './assets/textures/venus_sm.webp',
-  './img/orrery/env_nebula_cool_sm.webp',
-];
+const REQUIRED_TRANSITIVE = ['./js/profile.js', './js/reading-templates.json', './js/deep-templates.json', './js/ap-keep-library.js', './assets/textures/moon_sm.webp', './img/engine/studio/earth.webp'];
 
 // Editorial/product artwork appears on the launch pages but is not required to
 // boot either WebGL instrument. Keep it runtime-cached so installation remains

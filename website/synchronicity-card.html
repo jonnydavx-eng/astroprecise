@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#040812">
+<title>Sky card — keep your chart minute | AstroPrecise</title>
+<meta name="description" content="Beat 3 after your chart: a keepable 1200 × 630 card of one birth minute. Engine still artwork, honest timezone rules, computed on your device.">
+<link rel="canonical" href="https://astroprecise.app/synchronicity-card.html">
+<meta property="og:title" content="Sky card — keep your chart minute">
+<meta property="og:description" content="A keepable card of one birth minute. Computed and downloaded on this device.">
+<meta property="og:image" content="https://astroprecise.app/img/editorial/sitting-keep-og-v906.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Engine still of Earth and Moon from the AstroPrecise model. Type only. Not a live feed.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-keep-og-v906.jpg">
+<link rel="stylesheet" href="./css/fonts.css?v=915">
+<script>
+(function () {
+  function hasMinute() {
+    try {
+      if (sessionStorage.getItem('ap-sky-card-handoff')) return true;
+      if (sessionStorage.getItem('ap-sitting-handoff')) return true;
+      var charts = JSON.parse(localStorage.getItem('ap_charts') || '[]');
+      return Array.isArray(charts) && charts.length > 0;
+    } catch (e) { return false; }
+  }
+  if (!hasMinute()) document.documentElement.classList.add('ap-sky-no-minute');
+})();
+</script>
+<style>
+.ap-card-engine{position:relative;height:min(22vh,200px);min-height:160px;overflow:hidden;border-bottom:1px solid var(--ap-line);background:var(--ap-void-deep)}
+.ap-card-engine img{width:100%;height:100%;display:block;object-fit:contain;object-position:88% 48%;opacity:.94;filter:none}
+.ap-card-engine::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,8,18,.94),rgba(4,8,18,.42) 55%,rgba(4,8,18,.12));pointer-events:none}
+.ap-card-engine__receipt{position:absolute;z-index:1;left:clamp(18px,4vw,48px);top:50%;display:grid;gap:4px;max-width:min(58vw,480px);transform:translateY(-50%)}
+.ap-card-engine__receipt span,.ap-card-engine__receipt em{font:500 10px/1.4 var(--ap-data);letter-spacing:.14em;text-transform:uppercase;color:var(--ap-brass)}
+.ap-card-engine__receipt strong{font:600 clamp(18px,2.8vw,28px)/1.05 var(--ap-display);color:var(--ap-paper)}
+.ap-card-engine__receipt em{color:var(--ap-paper-dim);font-style:normal;letter-spacing:.04em;text-transform:none}
+.ap-card-gate{display:none;margin:0 0 28px;padding:22px;border:1px solid var(--ap-line);border-radius:4px;background:rgba(16,23,34,.72)}
+html.ap-sky-no-minute .ap-card-gate{display:block}
+html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.ap-sky-no-minute .ap-card-ledger{display:none}
+.ap-card-gate p{margin:0 0 14px;color:var(--ap-paper-dim);font-size:17px;line-height:1.62}
+.ap-card-gate a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ion);color:#07101E;font:700 12px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;text-decoration:none}
+.ap-card-shell{width:min(1000px,calc(100% - 40px));margin:0 auto;padding:clamp(44px,7vw,92px) 0 calc(84px + var(--bottom-nav-h,0px))}
+.ap-card-kicker{margin:0 0 13px;color:var(--ap-brass);font:9px/1.5 var(--ap-data);letter-spacing:.18em;text-transform:uppercase}
+.ap-card-shell h1{max-width:16ch;margin:0;color:var(--ap-paper);font:600 clamp(42px,7vw,76px)/.9 var(--ap-display);letter-spacing:-.03em}
+.ap-card-lede{max-width:58ch;margin:22px 0 0;color:var(--ap-paper-dim);font-size:17px;line-height:1.66}
+.ap-card-form{display:grid;gap:15px;margin:34px 0 0;padding:clamp(20px,3vw,26px);border:1px solid var(--ap-line);border-radius:4px;background:rgba(16,23,34,.72)}
+.ap-card-form__fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.ap-card-form label span{display:block;margin-bottom:6px;color:var(--ap-brass);font:9px/1.4 var(--ap-data);letter-spacing:.13em;text-transform:uppercase}
+.ap-card-form input{width:100%;min-height:48px;padding:10px;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep);color:inherit;font:16px var(--ap-data)}
+.ap-city-drop{display:flex;flex-direction:column;gap:2px;margin-top:6px;border:1px solid var(--ap-line);background:var(--ap-void-deep)}
+.ap-city-drop[hidden]{display:none}
+.ap-city-item{display:flex;align-items:center;min-height:44px;padding:9px 10px;border:0;background:transparent;color:inherit;font:15px/1.3 var(--ap-body);text-align:left;cursor:pointer}
+.ap-city-item:hover,.ap-city-item:focus{background:rgba(139,169,255,.16)}
+.ap-zone-note{margin:6px 0 0;color:var(--ap-paper-faint);font-size:12px;line-height:1.5}
+.ap-card-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
+.ap-card-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ion);color:#07101E;font:700 12px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;cursor:pointer}
+.ap-card-btn--quiet{background:transparent;border:1px solid var(--ap-brass);color:var(--ap-brass-bright)}
+.ap-card-btn[disabled]{opacity:.45;cursor:not-allowed}
+.ap-card-status{margin:0;color:var(--ap-paper-dim);font-size:13px;line-height:1.6}
+.ap-card-status[data-state='refused']{color:var(--ap-danger)}
+.ap-card-canvas{margin:26px 0 0}
+.ap-card-canvas canvas{display:block;width:100%;height:auto;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep)}
+.ap-card-plate-note{display:none;margin:10px 0 0;color:var(--ap-paper-faint);font-size:16px;line-height:1.5}
+.ap-card-ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 30px;margin:28px 0 0;padding-top:22px;border-top:1px solid var(--ap-line)}
+.ap-card-ledger div{padding:12px 0;border-bottom:1px solid rgba(143,163,184,.12)}
+.ap-card-ledger span{display:block;margin-bottom:6px;color:var(--ap-proof);font:9px/1.5 var(--ap-data);letter-spacing:.13em;text-transform:uppercase}
+.ap-card-ledger div[data-withheld] span{color:var(--ap-danger)}
+.ap-card-ledger p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.6}
+.ap-card-foot{margin:34px 0 0;color:var(--ap-paper-faint);font-size:13px;line-height:1.7}
+.ap-card-foot a{color:var(--ap-brass-bright)}
+@media(max-width:700px){
+  .ap-card-shell{display:flex;flex-direction:column;width:min(100% - 32px,1000px);padding-top:26px}
+  .ap-card-kicker{order:1;margin-bottom:10px;font-size:11px}
+  .ap-card-shell h1{order:2;font-size:clamp(32px,9.2vw,38px);line-height:.98}
+  .ap-card-canvas{order:3;margin-top:20px}
+  .ap-card-plate-note{display:block}
+  .ap-card-lede{order:4;margin-top:24px;font-size:16px}
+  .ap-card-gate{order:5;margin-top:22px}
+  .ap-card-form{order:6;margin-top:22px}
+  .ap-card-ledger{order:7;grid-template-columns:1fr}
+  .ap-card-foot{order:8}
+  .ap-card-form__fields{grid-template-columns:1fr}
+  .ap-card-actions{flex-direction:column;align-items:stretch}
+  .ap-card-btn{width:100%}
+  .ap-card-status,.ap-zone-note,.ap-card-ledger p,.ap-card-foot,.ap-card-gate p{font-size:16px;line-height:1.55}
+  .ap-card-ledger span{font-size:11px}
+  .ap-card-foot a{display:inline-flex;align-items:center;min-height:44px}
+  .page-sky-card .navbar__logo,
+  .page-sky-card .ap-site-footer__wordmark,
+  .page-sky-card .ap-site-footer__routes a,
+  .page-sky-card .ap-site-footer__legal a,
+  .page-sky-card .ap-site-footer__colophon a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+  .page-sky-card .ap-site-footer__legal a,
+  .page-sky-card .ap-site-footer__colophon a{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>window.AP_ASSET_V='915';</script>
+<link rel="stylesheet" href="css/ap-living-sky-v834.css?v=915">
+<link rel="stylesheet" href="css/ap-phone-pass.css?v=915">
+<link rel="stylesheet" href="css/ap-mirror-hour.css?v=915">
+<script src="js/ap-nav-model.js?v=915" defer></script>
+<script src="js/ephemeris.js?v=915" defer></script>
+<script src="js/ap-keep-library.js?v=915" defer></script>
+<script src="js/ap-mirror-hour.js?v=915" defer></script>
+<script src="js/ap-sky-card.js?v=915" defer></script>
+<script defer src="js/ap-next.js?v=915"></script></head>
+<body class="page-sky-card ap-launch-article">
+<a class="skip-link" href="#sky-card-main">Skip to the sky card</a>
+<header class="site-header" role="banner" data-ap-static-nav>
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+        <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
+        <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
+      </a>
+      <div class="navbar__nav" role="group" aria-label="Primary">
+        <noscript>
+            <a href="observatory.html" class="navbar__link">Observatory</a>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="sky-events.html" class="navbar__link">Events</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
+        </noscript>
+      </div>
+      <div class="navbar__end">
+        <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+  </nav>
+</header>
+
+<section class="ap-card-engine" aria-label="Authored engine still">
+  <img src="img/engine/studio/earth.webp" width="1024" height="1024" decoding="async" fetchpriority="high" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
+  <div class="ap-card-engine__receipt">
+    <span>Engine still · schematic</span>
+    <strong>Not a live sky photograph</strong>
+    <em>Type and computed positions only · the Observatory model stays free</em>
+  </div>
+</section>
+
+<main class="ap-card-shell" id="sky-card-main">
+  <p class="ap-card-kicker">Beat 3 · Keep · after your chart</p>
+  <h1>Keep this minute as a card.</h1>
+  <p class="ap-card-lede">The optional keep step after a free chart: one birth minute drawn as a 1200 × 630 plate. Sun, Moon and Venus, the town’s real zone, and the rising sign when the hour is known. Play stays free — this is not checkout.</p>
+
+  <div class="ap-card-gate" id="skyCardColdGate">
+    <p>This keep step expects a minute from your chart. Cast the free chart first; the minute travels in this tab when you choose Sky card.</p>
+    <a href="chart.html">Cast your free chart</a>
+  </div>
+
+  <form class="ap-card-form" id="skyCardForm" novalidate>
+    <div class="ap-card-form__fields">
+      <label><span>Birth date</span><input type="date" id="dob" required min="1800-01-01" max="2200-12-31" autocomplete="bday"></label>
+      <label><span>Birth time · optional</span><input type="time" id="tob" autocomplete="bday-time"></label>
+      <label><span>Birth town</span>
+        <input type="text" id="sky-card-city" placeholder="Town or city" autocomplete="off" aria-autocomplete="list" aria-controls="sky-card-city-drop">
+        <div class="ap-city-drop" id="sky-card-city-drop" hidden></div>
+        <p class="ap-zone-note" id="sky-card-zone">Pick a town from the list so the minute uses that town's real zone. UTC and GMT are refused as birth zones — UK summer is not GMT.</p>
+      </label>
+    </div>
+    <p class="ap-card-status" id="skyCardStatus" role="status">Nothing has been computed yet. Only the town text you type is sent to Open-Meteo's public geocoder to find its coordinates and zone; the date and time never leave this page.</p>
+    <div class="ap-sync-card-panel" id="skySyncPanel" hidden>
+      <p class="ap-sync-card-note" id="skySyncLabel"></p>
+      <p class="ap-sync-card-folk" id="skySyncFolk"></p>
+      <p class="ap-sync-card-note" id="skySyncNote"></p>
+    </div>
+    <div class="ap-card-actions">
+      <button class="ap-card-btn" type="submit" id="skyCardDraw">Draw my card</button>
+      <button class="ap-card-btn" type="button" id="skyCardShare" disabled>Share this card</button>
+      <button class="ap-card-btn ap-card-btn--quiet" type="button" id="skyCardDownload" disabled>Download PNG</button>
+    </div>
+  </form>
+
+  <div class="ap-card-canvas">
+    <canvas id="skyCard" width="1200" height="630" role="img" aria-label="A sky card for one birth minute. The reading below the card repeats everything printed on it."></canvas>
+    <p class="ap-card-plate-note">The plate is a 1200 × 630 image, so its lines are small on a phone. Every one of them is repeated in the reading below, at reading size.</p>
+  </div>
+
+  <div class="ap-card-ledger" id="skyCardLedger" aria-live="polite"></div>
+
+  <p class="ap-card-foot">
+    Positions come from the same in-browser engine as the <a href="chart.html">free chart</a>; the <a href="deep-reading.html">seven-chapter reading</a> is the word half of the same minute. Nothing here is a claim about your life — astrology is a symbolic tradition offered for reflection, and the astronomy is computed so you can check it.<br>
+    &copy; 2026 AstroPrecise · computed on this device, never fabricated
+  </p>
+</main>
+
+<footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+<script src="js/ap-footer-inject.js?v=915" defer></script>
+<script src="js/ap-sky-time.js?v=915" defer></script>
+</body>
+</html>

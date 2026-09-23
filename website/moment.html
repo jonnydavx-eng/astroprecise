@@ -31,13 +31,13 @@
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=912" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=912" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=912" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=915" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=915" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=915" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/moment-page.css?v=912" id="ap-css-moment" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=912" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/moment-page.css?v=915" id="ap-css-moment" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=915" id="ap-css-structure-clean" />
   <style>
     body.ap-moment-page{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body.ap-moment-page .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -52,8 +52,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — Moment","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Freeze the real sky of any date into a keepsake: zenith star, light-cone story, and free share card. Computed in-browser with VSOP87 astronomy. Town search sends only the place name to Open-Meteo; date and time stay on this device.","url":"https://astroprecise.app/moment.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=912" />
-</head>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=915" />
+<link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
 <body class="ap-no-nav-enter ap-moment-page">
   <a class="skip-link" href="#main-content">Skip to content</a>
 
@@ -71,7 +71,7 @@
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
-            <a href="index.html" class="navbar__link">Observatory</a>
+            <a href="observatory.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
             <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="shop.html" class="navbar__link">Shop</a>
@@ -150,8 +150,8 @@
     <!-- Lifestyle teaser AFTER form (v682 form-first — never buries date/place) -->
     <figure class="mom-gallery-teaser mom-hero__gallery mom-hero__gallery--solo" id="mom-gallery-teaser">
       <picture>
-        <source type="image/webp" srcset="img/moment/hero-framed.webp?v=912" />
-        <img src="img/moment/hero-framed.jpg?v=912" width="1152" height="864" alt="Engine still of Earth and Moon from the AstroPrecise model, matted as a SAMPLE / SCHEMATIC plate. Not a photograph of a birth." decoding="async" loading="lazy" />
+        <source type="image/webp" srcset="img/moment/hero-framed.webp?v=915" />
+        <img src="img/moment/hero-framed.jpg?v=915" width="1152" height="864" alt="Engine still of Earth and Moon from the AstroPrecise model, matted as a SAMPLE / SCHEMATIC plate. Not a photograph of a birth." decoding="async" loading="lazy" />
       </picture>
       <figcaption>SAMPLE / SCHEMATIC engine still. Not a gallery photograph and not a live feed.</figcaption>
     </figure>
@@ -206,13 +206,13 @@
             <a class="mom-btn mom-btn--ghost" href="horoscope.html" id="mom-daily-return" hidden>Tomorrow: today&apos;s Daily →</a>
             <a class="mom-btn mom-btn--ghost" href="eclipse.html" id="mom-pack-cta">Replay the eclipse</a>
             <a class="mom-btn mom-btn--ghost" href="chart.html">Cast full chart</a>
-            <a class="mom-btn mom-btn--ghost" href="index.html#m=now" id="mom-model-link" hidden>Open this night in the 3D model</a>
+            <a class="mom-btn mom-btn--ghost" href="observatory.html#m=now" id="mom-model-link" hidden>Open this night in the 3D model</a>
           </div>
           <div class="mom-upsell">
             <p><strong>Free now:</strong> this PNG card (zenith + light-cone + engine plate). No account.</p>
             <p><strong>Private by design:</strong> the card is generated and downloaded in this browser.</p>
             <p style="margin:0">
-              <a href="index.html">Observatory</a>
+              <a href="observatory.html">Observatory</a>
               · <a href="chart.html">Chart</a>
               · <a href="sky-events.html">Events</a>
               · <a href="shop.html">Shop</a>
@@ -225,7 +225,7 @@
     <section class="mom-spine" aria-labelledby="mom-spine-title">
       <h2 id="mom-spine-title">How Moment sits in AstroPrecise</h2>
       <ol>
-        <li><strong>1 · Observatory</strong> Sit with the computed sky on the <a href="index.html">Observatory</a>.</li>
+        <li><strong>1 · Observatory</strong> Sit with the computed sky on the <a href="observatory.html">Observatory</a>.</li>
         <li><strong>2 · Chart</strong> Cast the minute you arrived on <a href="chart.html">Chart</a>.</li>
         <li><strong>3 · Keep</strong> Freeze this date as a schematic plate (you are here). Not a live feed.</li>
         <li><strong>4 · Events</strong> Follow eclipses and named sky nights on <a href="sky-events.html">Events</a>.</li>
@@ -236,26 +236,26 @@
 
   <footer class="site-footer" role="contentinfo">
     <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#8B919C);font-size:0.85rem">
-      <p style="margin:0 0 0.5rem"><a href="index.html">Observatory</a> · <a href="chart.html">Chart</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
+      <p style="margin:0 0 0.5rem"><a href="observatory.html">Observatory</a> · <a href="chart.html">Chart</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
       <p style="margin:0">© AstroPrecise · entertainment &amp; education · astronomy computed in-browser</p>
     </div>
   </footer>
 
   <!-- Chrome boot -->
   <script src="js/ap-safe-dom.js" defer></script>
-  <script src="js/ap-page-boot.js?v=912" defer></script>
+  <script src="js/ap-page-boot.js?v=915" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){if(window.AP_PAGE_BOOT)AP_PAGE_BOOT.load();});</script>
   <!-- Astronomy engines (after chrome) -->
   <script src="js/raf-core.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
   <script src="js/starcatalog.js" defer></script>
   <script src="js/lightcone.js" defer></script>
-  <script src="js/ap-deep-link.js?v=912" defer></script>
-  <script src="js/ap-sky-bridge.js?v=912" defer></script>
-  <script src="js/ap-moment-share.js?v=912" defer></script>
-  <script src="js/moment-page.js?v=912" defer></script>
+  <script src="js/ap-deep-link.js?v=915" defer></script>
+  <script src="js/ap-sky-bridge.js?v=915" defer></script>
+  <script src="js/ap-moment-share.js?v=915" defer></script>
+  <script src="js/moment-page.js?v=915" defer></script>
   <script src="js/cosmos.js" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=912" defer></script>
+  <script src="js/ap-footer-inject.js?v=915" defer></script>
 </body>
 </html>

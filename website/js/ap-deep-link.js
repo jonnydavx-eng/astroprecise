@@ -1,8 +1,8 @@
 /**
  * Astro Precise — model sky deep-link builder (H1 contract).
  *
- * Public emitters → index.html#m=<UTC>&public=1&focus=<body>[&scale=N]
- * Live-now emitters → index.html#m=now&focus=<body>[&scale=N]
+ * Public emitters → observatory.html#m=<UTC>&public=1&focus=<body>[&scale=N]
+ * Live-now emitters → observatory.html#m=now&focus=<body>[&scale=N]
  * Receiver: js/ap-observatory-v834.js (hash + private session handoff).
  *
  * Deep links are UTC by contract: bare "1990-06-14T12:00" becomes Z-suffixed
@@ -39,7 +39,7 @@
   }
 
   function observatoryBase(value) {
-    var raw = value != null ? String(value) : 'index.html';
+    var raw = value != null ? String(value) : 'observatory.html';
     var hashAt = raw.indexOf('#');
     if (hashAt !== -1) raw = raw.slice(0, hashAt);
     var queryAt = raw.indexOf('?');
@@ -47,7 +47,7 @@
     path = path.replace(/^\.\//, '').replace(/^\/+/, '');
     // This helper only targets the root Observatory. Schemes, protocol-relative
     // URLs, other origins and look-alike paths all collapse to that local route.
-    if (path.toLowerCase() !== 'index.html') path = 'index.html';
+    if (path.toLowerCase() !== 'observatory.html') path = 'observatory.html';
 
     var kept = new URLSearchParams();
     if (queryAt !== -1) {
@@ -62,7 +62,7 @@
       } catch (e) { /* malformed query: fail closed to the local route */ }
     }
     var query = kept.toString();
-    return 'index.html' + (query ? '?' + query : '');
+    return 'observatory.html' + (query ? '?' + query : '');
   }
 
   /**
@@ -124,7 +124,7 @@
    * Same destination as buildSkyLink, for moments that are somebody's BIRTH
    * minute rather than a public astronomical event.
    *
-   * A link like index.html#m=1994-03-14T09:12:00.000Z is a birth certificate
+   * A link like observatory.html#m=1994-03-14T09:12:00.000Z is a birth certificate
    * to the minute. It survives in the address bar, in a screenshot, in browser
    * history synced across that person's devices, and in whatever they paste it
    * into. So the moment travels in sessionStorage instead — same tab, same
@@ -144,7 +144,7 @@
     if (m == null) m = 'now';
     var focus = opts.focus ? String(opts.focus).toLowerCase() : null;
     if (focus && !isValidFocus(focus)) focus = null;
-    var base = opts.base != null ? String(opts.base) : 'index.html';
+    var base = opts.base != null ? String(opts.base) : 'observatory.html';
 
     try {
       window.sessionStorage.setItem(STASH_KEY, JSON.stringify({

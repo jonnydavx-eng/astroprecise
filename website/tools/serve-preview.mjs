@@ -1,6 +1,7 @@
 /**
  * AstroPrecise local preview — gzip + lite shell rewrite for Lighthouse.
  * Usage: node tools/serve-preview.mjs [port]
+ * Set AP_PREVIEW_ROOT to serve a built dist/ instead of the source website/.
  */
 import http from 'http';
 import fs from 'fs';
@@ -9,7 +10,7 @@ import zlib from 'zlib';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.join(__dirname, '..');
+const ROOT = process.env.AP_PREVIEW_ROOT ? path.resolve(process.env.AP_PREVIEW_ROOT) : path.join(__dirname, '..');
 const PORT = parseInt(process.argv[2] || process.env.PORT || '8790', 10);
 const HOST = process.env.HOST || '0.0.0.0';
 

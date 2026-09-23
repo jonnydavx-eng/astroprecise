@@ -56,3 +56,6 @@ website/tools/visual-check/
 # NASA + planet-map SOURCE textures (raw .tif, hundreds of MB — source only, never deploy)
 _nasa_src/
 tools/_tmp-pluto/
+
+# Generated evidence from the guided-journey browser check.
+output/playwright/

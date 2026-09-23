@@ -1,4 +1,4 @@
-import { buildDeepReading } from './deep-reading.js?v=912';
+import { buildDeepReading } from './deep-reading.js?v=915';
 
 const TARGETS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 const ASSUMED_HOUR = '12:00';
@@ -531,7 +531,7 @@ function renderReading(reading, meta) {
     };
     const candidate = APSkyBridge.buildLinkFromChart(bridgeChart, { focus: 'earth' });
     const candidateHasBirthMoment = /(?:[?#&])m=/.test(String(candidate || ''));
-    observatoryLink.href = candidateHasBirthMoment ? 'index.html#focus=earth' : candidate;
+    observatoryLink.href = candidateHasBirthMoment ? 'observatory.html#focus=earth' : candidate;
     if (candidateHasBirthMoment) observatoryLink.textContent = 'Open the Observatory';
   }
   byId('natalResult').hidden = false;
@@ -614,11 +614,11 @@ async function init() {
   const status = byId('natalStatus');
   const [engine, base, deep] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=912').then((response) => {
+    fetch('js/reading-templates.json?v=915').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
-    fetch('js/deep-templates.json?v=912').then((response) => {
+    fetch('js/deep-templates.json?v=915').then((response) => {
       if (!response.ok) throw new Error('The deep-reading language did not load.');
       return response.json();
     }),

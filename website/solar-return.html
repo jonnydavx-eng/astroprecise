@@ -32,9 +32,9 @@
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=912" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=912" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=912" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=915" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=915" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=915" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" />
   <link rel="stylesheet" href="css/solar-return-page.css" />
@@ -45,9 +45,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Solar Return Chart — the Sun’s yearly return","description":"A plain-English guide to the solar return — the exact moment the Sun returns to its natal ecliptic longitude each year — with a free tool to compute that instant from the real sky. The chart reading is tradition, not a scientific forecast.","url":"https://astroprecise.app/solar-return.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Solar return"},{"@type":"Thing","name":"Solar return chart"},{"@type":"Thing","name":"Traditional astrology"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Observatory","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Solar Return Chart","item":"https://astroprecise.app/solar-return.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Observatory","item":"https://astroprecise.app/observatory.html"},{"@type":"ListItem","position":2,"name":"Solar Return Chart","item":"https://astroprecise.app/solar-return.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a solar return chart?","acceptedAnswer":{"@type":"Answer","text":"A solar return chart is the birth chart cast for the exact moment each year when the transiting Sun returns to the precise ecliptic longitude it held at your birth. In the astrological tradition it is read as a year-theme chart. That is interpretive, not a scientific forecast."}},{"@type":"Question","name":"Is the solar return always on my birthday?","acceptedAnswer":{"@type":"Answer","text":"Almost, but not exactly. Because a tropical year is about 365.2422 days, the Sun returns to its natal longitude a little earlier or later than midnight on your calendar birthday — usually within a day either side, and at a specific time of day, not at the start of it."}},{"@type":"Question","name":"What does a solar return chart tell you?","acceptedAnswer":{"@type":"Answer","text":"In the astrological tradition, the solar return chart's Ascendant, house emphasis, and planetary placements are read as optional year themes — not a prediction of where your energy will go, and not a scientific forecast."}},{"@type":"Question","name":"How is the exact solar return moment calculated?","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise finds the natal Sun's exact longitude, then solves for the moment in the target year when the transiting Sun matches it, using the real VSOP87 solar position — accurate to roughly a sixtieth of a degree (1800–2200 CE), computed entirely in your browser."}}]}</script>
-  </head>
+  <link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
@@ -74,7 +74,7 @@
           <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+          <noscript><a href="observatory.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -290,7 +290,7 @@
         <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
         <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
       </div>
-      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="index.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
+      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="observatory.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
       <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
     </div>
     <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
@@ -364,8 +364,8 @@
   <script src="js/icons.js"></script>
 <script src="js/seo-tools.js"></script>
   <script src="js/effects.js"></script>
-  <script src="js/ap-page-boot.js?v=912" defer></script>
+  <script src="js/ap-page-boot.js?v=915" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=912" defer></script>
+  <script src="js/ap-footer-inject.js?v=915" defer></script>
 </body>
 </html>

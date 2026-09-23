@@ -152,21 +152,20 @@ ok('offline list never includes UTC/GMT',
   AP.OFFLINE_TOWNS.every((t) => t.tz !== 'UTC' && t.tz !== 'GMT' && !/^Etc\//.test(t.tz)));
 
 const fromHash = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=Europe/London&ac=London&an=Ada&b=1985-12-03&bt=08:40&bz=America/New_York&bc=New%20York');
-ok('hash restores both dates', fromHash.a && fromHash.a.date === '1990-06-15' && fromHash.b && fromHash.b.date === '1985-12-03');
-ok('hash keeps IANA zones', fromHash.a.tz === 'Europe/London' && fromHash.b.tz === 'America/New_York');
-ok('hash city is the town, not the zone', fromHash.a.city === 'London' && fromHash.b.city === 'New York');
+ok('a birth-minute hash is rejected', fromHash.rejected === true && fromHash.a == null && fromHash.b == null);
+ok('a rejected hash keeps no IANA zone', fromHash.a == null);
 
 const tzAsCity = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=Europe/London&ac=Europe/London');
-ok('timezone string is never restored as the city', tzAsCity.a && tzAsCity.a.city === '' && tzAsCity.a.tz === 'Europe/London');
+ok('a timezone-only hash is still rejected', tzAsCity.rejected === true && tzAsCity.a == null);
 
 const utcHash = AP.sceneFromHash('#a=1990-06-15&at=14:22&az=UTC&ac=London');
-ok('hash UTC is stripped and London supplies Europe/London',
-  utcHash.a && utcHash.a.tz === 'Europe/London', JSON.stringify(utcHash.a));
+ok('a UTC hash is rejected rather than repaired from the address', utcHash.rejected === true && utcHash.a == null);
 
 const cityOnly = AP.sceneFromHash('#a=1990-06-15&at=14:22&ac=London');
-ok('city-only hash still finds Europe/London', cityOnly.a && cityOnly.a.tz === 'Europe/London');
+ok('a city hash is rejected', cityOnly.rejected === true && cityOnly.a == null);
 
-ok('page is webgl-only', /<void-orrery[^>]+data-renderer="webgl-only"/.test(html));
+ok('comparison does not mount a second live model', !/<void-orrery/.test(html));
+ok('comparison offers the Observatory', html.includes('href="observatory.html'));
 ok('page does not load a 2D orrery.js', !/<script[^>]+js\/orrery\.js/.test(html));
 ok('page does not load retired compatibility-page.js', !html.includes('compatibility-page.js'));
 ok('place is not labelled optional', !/Birth place <span class="opt">optional<\/span>/.test(html));
@@ -188,8 +187,9 @@ ok('hash restore stays Live so both clocks stay equally up',
   !/function applyHash\(\)[\s\S]*setPressed\('a'\)/.test(src));
 ok('couples page does not fly the camera on A/B',
   !src.includes('flyTo') && !src.includes('focusPlanet') && !src.includes('setJD'));
-ok('couples assets stay at 880',
-  html.includes('ap-couples-sky.js?v=880') && html.includes('ap-couples-v858.css?v=880'));
+const releaseTip = (readFileSync(join(root, 'website/sw.js'), 'utf8').match(/const V = "ap-v(\d+)"/) || [])[1];
+ok('couples assets match the release tip',
+  html.includes(`ap-couples-sky.js?v=${releaseTip}`) && html.includes(`ap-couples-v858.css?v=${releaseTip}`));
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

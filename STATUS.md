@@ -1,14 +1,16 @@
 # AstroPrecise status
 
-**State:** 20 Sep 2026 — free 11:11 / mirror-hour / presence / synchronicity sky card / sitting beat is the public release tip `ap-v912`. Checkout still closed. No ads. No new hosting spend.
+**Source version:** 20 Sep 2026 — `ap-v915`, the guided birth-sky rewrite. The release begins with a short calculated-sky demonstration and leads through birth chart, seven reading chapters and a free PNG keepsake. Checkout is closed. No ads or new paid dependencies.
 
 Updated: 2026-09-20
 
 ## Answer first
 
-PR 45 (`fd6461e13beac864975b5e05460da953d72f7d50`) merged the free 11:11 / synchronicity work on `main` while leaving the cache tip at `ap-v911` on purpose. This tree advances the shared worker and query pins to `ap-v912` so returning browsers drop the v911 cache and load `ap-mirror-hour.js`. Paid checkout stays closed.
+The first screen demonstrates the experience before asking visitors for details. The 3D model is at `observatory.html`, with the existing free mirror-hour presence preserved. Exact birth-clock patterns remain in the chart and reading; the new keepsake includes them only when birth details are explicitly shown. The original device-clock card remains at `synchronicity-card.html`.
 
-## Exact measured identity (2026-09-20)
+See [the guided journey implementation and checks](docs/GUIDED-BIRTH-SKY.md). This source document is not a deployment receipt: confirm the Pages run and public `sw.js` before claiming that `ap-v915` is served.
+
+## Previous public release readback (2026-09-20, before this rewrite)
 
 - Canonical path: `C:\Users\jonny\dev\astroprecise` (never `C:\Users\jonny\OneDrive\astroprecise`)
 - Public remote: `github` → `git@github.com:jonnydavx-eng/astroprecise.git`

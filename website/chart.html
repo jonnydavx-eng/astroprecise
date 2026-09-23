@@ -1,714 +1,152 @@
-<!DOCTYPE html>
-<html lang="en-GB" class="ap-field-instrument">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="color-scheme" content="dark">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="referrer" content="no-referrer" />
-  <script>
-    /* Privacy migration: old chart links carried a whole birth record in the
-       query string or fragment. Clean the address before the parser discovers
-       fonts, styles, images or any other outgoing request. Unknown route flags
-       fail closed; only controls used by this page are retained. */
-    window.APChartUrlPrivacy = (function () {
-      'use strict';
-
-      var SAFE_QUERY = {
-        nosw: '1',
-        lite: '1',
-        entry: 'private-reentry'
-      };
-      var SAFE_HASH = 'main-content';
-
-      function scrub(options) {
-        options = options || {};
+  <meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
+<script id="ap-url-privacy">
+/* Retired links may contain birth details. Clean them before any asset loads. */
+window.APUrlPrivacy = (function () {
+  'use strict';
+  var anchors = ["main"];
+  function scrub() {
+    try {
+      var incoming = new URLSearchParams(window.location.search || '');
+      var kept = new URLSearchParams();
+      incoming.forEach(function (value, key) {
+        var name = String(key || '').toLowerCase();
+        if ((name === 'nosw' || name === 'lite') && value === '1' && !kept.has(name)) kept.set(name, '1');
+      });
+      // Only an existing local chart ID is a supported query-driven route.
+      // Unknown IDs are discarded, as are all legacy birth-data fields.
+      var ids = incoming.getAll('id');
+      if (ids.length === 1 && /^[A-Za-z0-9_-]{1,80}$/.test(ids[0])) {
         try {
-          var incoming = new URLSearchParams(window.location.search || '');
-          var kept = new URLSearchParams();
-          incoming.forEach(function (value, key) {
-            var canonicalKey = String(key || '').toLowerCase();
-            var canonicalValue = SAFE_QUERY[canonicalKey];
-            if (!Object.prototype.hasOwnProperty.call(SAFE_QUERY, canonicalKey)) return;
-            if (String(value || '').toLowerCase() !== canonicalValue) return;
-            if (options.dropEntry && canonicalKey === 'entry') return;
-            if (!kept.has(canonicalKey)) kept.set(canonicalKey, canonicalValue);
-          });
-
-          var safeHash = '';
-          var rawHash = String(window.location.hash || '').replace(/^#/, '');
-          if (rawHash) {
-            try {
-              if (decodeURIComponent(rawHash).toLowerCase() === SAFE_HASH) safeHash = '#' + SAFE_HASH;
-            } catch (_) { /* malformed or unknown fragments are discarded */ }
-          }
-
-          var search = kept.toString();
-          var next = window.location.pathname + (search ? '?' + search : '') + safeHash;
-          var current = window.location.pathname + window.location.search + window.location.hash;
-          if (next !== current) window.history.replaceState(window.history.state, '', next);
-          return true;
-        } catch (_) {
-          /* Same-origin replaceState should succeed. If a constrained browser
-             blocks it, restart at the clean route under the no-referrer policy
-             rather than booting while personal values remain addressable. */
-          try { window.location.replace(window.location.pathname); } catch (__) { window.stop(); }
-          return false;
-        }
+          var charts = JSON.parse(window.localStorage.getItem('ap_charts') || '[]');
+          if (Array.isArray(charts) && charts.some(function (chart) { return chart && String(chart.id) === ids[0]; })) kept.set('id', ids[0]);
+        } catch (_) { /* Unreadable local storage cannot resolve a saved ID. */ }
       }
-
-      var api = Object.freeze({ scrub: scrub });
-      window.addEventListener('hashchange', function () { scrub(); });
-      scrub();
-      return api;
-    })();
-  </script>
-  <meta name="description" content="Free natal chart calculated in your browser from published astronomical methods. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
-  <meta name="robots" content="index, follow" />
-  <title>Your minute — free birth chart, then the sitting | AstroPrecise</title>
-  <script>window.AP_ASSET_V='912';</script>
-  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/fonts.css?v=912" />
-<link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="favicon.ico" sizes="48x48">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="Free birth chart, computed on-device" />
-  <meta property="og:description" content="Calculate your natal chart in the browser. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
-  <meta property="og:url" content="https://astroprecise.app/chart.html" />
-  <link rel="canonical" href="https://astroprecise.app/chart.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/editorial/sitting-chart-og-v906.jpg" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Engine still of the Moon from the AstroPrecise model. Type only. Not a live feed." />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Free birth chart, computed on-device" />
-  <meta name="twitter:description" content="Calculate your natal chart in the browser. Birth date and time stay on your device; place search uses Open-Meteo to resolve coordinates." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-chart-og-v906.jpg" />
-  <meta name="theme-color" content="#040812" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "AstroPrecise — Birth Chart Calculator",
-    "url": "https://astroprecise.app/chart.html",
-    "applicationCategory": "LifestyleApplication",
-    "operatingSystem": "Any (web browser)",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
-    "isAccessibleForFree": true,
-    "description": "Free natal chart calculator with calculated planetary positions, aspects, and time-dependent angles when a birth time is supplied. Birth date, time and chart calculations stay in the browser; place search uses Open-Meteo to resolve coordinates.",
-    "dateModified": "2026-08-21",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "AstroPrecise",
-      "url": "https://astroprecise.app/"
+      var safeHash = '';
+      var rawHash = String(window.location.hash || '').replace(/^#/, '');
+      try {
+        var anchor = decodeURIComponent(rawHash).toLowerCase();
+        if (anchors.indexOf(anchor) !== -1) safeHash = '#' + anchor;
+      } catch (_) { /* Malformed or unknown fragments are discarded. */ }
+      var search = kept.toString();
+      var next = window.location.pathname + (search ? '?' + search : '') + safeHash;
+      var current = window.location.pathname + window.location.search + window.location.hash;
+      if (next !== current) window.history.replaceState(window.history.state, '', next);
+      return true;
+    } catch (_) {
+      // Fail closed under no-referrer if history cleanup is unavailable.
+      try { window.location.replace(window.location.pathname); } catch (__) { window.stop(); }
+      return false;
     }
   }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"FAQPage",
-    "mainEntity":[
-      {"@type":"Question","name":"How accurate is the birth chart?","acceptedAnswer":{"@type":"Answer","text":"Accuracy varies by body and date. The core planets and luminaries use published astronomical methods; Pluto and Chiron have wider, date-dependent limits. The supported chart range is 1800–2200."}},
-      {"@type":"Question","name":"What leaves my device?","acceptedAnswer":{"@type":"Answer","text":"Birth date, time and chart calculations stay in your browser. Place search sends place text to Open-Meteo; choosing current location sends its latitude and longitude for timezone lookup. Saved charts remain in local storage on this device."}},
-      {"@type":"Question","name":"Can I save the chart?","acceptedAnswer":{"@type":"Answer","text":"Yes. Save it to this device, export the data or artwork, share a privacy-safe image with a clean blank chart-page link, open the seven-chapter natal reading, or carry the chart into the 12 August eclipse contact tool."}}
-    ]
-  }
-  </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=912" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=912" />
-    <link rel="stylesheet" href="css/ap-phone-pass.css?v=912">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=912">
-  <link rel="stylesheet" href="css/ap-chart-v835.css?v=912" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=912" />
-  <link rel="stylesheet" href="css/ap-keep-sky.css?v=912">
-  <link rel="stylesheet" href="css/ap-mirror-hour.css?v=912">
+  window.addEventListener('hashchange', scrub);
+  scrub();
+  return Object.freeze({ scrub: scrub });
+})();
+</script>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Make sense of your birth chart. Start with your Sun, Moon and rising sign, then explore the planets. Free, private and made for your phone.">
+  <meta name="theme-color" content="#f4f1e9">
+  <title>Your birth chart — AstroPrecise</title>
+  <link rel="stylesheet" href="css/ap-next.css?v=915">
+  <link rel="stylesheet" href="css/ap-chart-next.css?v=915">
+  <script defer src="js/ap-next.js?v=915"></script>
+  <script defer src="js/ephemeris.js?v=915"></script>
+  <script defer src="js/ap-mirror-hour.js?v=915"></script>
+  <script defer src="js/ap-chart-next.js?v=915"></script>
 </head>
-<body class="page-chart ap-field-instrument ap-no-nav-enter">
-  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
-    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
-    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
-    <symbol id="ei-pin" viewBox="0 0 24 24"><path d="M12 21c-4-5.3-6-8.4-6-11a6 6 0 1 1 12 0c0 2.6-2 5.7-6 11Z"/><circle cx="12" cy="10" r="2.2"/></symbol>
-  </svg>
+<body class="ap-next">
+  <a class="chart-skip" href="#main">Skip to content</a>
+  <div data-ap-next-nav></div>
+  <main id="main" class="wrap chart-page">
+    <header class="chart-intro">
+      <p class="eyebrow">YOUR BIRTH CHART</p>
+      <h1>Let’s find<br>your sky.</h1>
+      <p class="chart-lead">Your birth date, place and time, if you know it. Your sky comes next.</p>
+    </header>
 
-  <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
-
-  <!-- Intro lives only on the homepage (once per session). Internal pages load
-       straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
-
-  <!-- ============================================================
-       LAUNCH HEADER
-  ============================================================ -->
-  <header class="site-header" role="banner" data-ap-static-nav>
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
-          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
-        </a>
-        <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript>
-            <a href="index.html" class="navbar__link">Observatory</a>
-            <a href="chart.html" class="navbar__link" aria-current="page">Chart</a>
-            <a href="sky-events.html" class="navbar__link">Events</a>
-            <a href="shop.html" class="navbar__link">Shop</a>
-          </noscript>
-        </div>
-        <div class="navbar__end">
-          <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
-    </nav>
-  </header>
-
-  <section class="ap-room-sky ap-earth-band" aria-label="Authored Earth engine still">
-    <a class="ap-surface-a" href="index.html#m=now&amp;focus=earth">
-      <img src="img/engine/studio/earth.webp" width="1024" height="1024" decoding="async" fetchpriority="high" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
-      <span class="ap-surface-a__receipt"><span>Earth from the model · schematic</span><strong>Open the Observatory</strong><em>Computed sky · one model</em></span>
-    </a>
-  </section>
-
-
-
-  <main id="main-content">
-
-    <!-- ============================================================
-         HERO
-    ============================================================ -->
-    <section class="chart-hero" aria-labelledby="page-title">
-
-      <div class="container">
-        <p class="chart-hero__eyebrow" aria-hidden="true">THE NIGHT YOU WERE BORN · ON THIS DEVICE</p>
-        <h1 class="chart-hero__title" id="page-title">Your minute, then the sitting</h1>
-        <p class="chart-hero__subtitle">
-          Date, town, and the hour if you have it. The chart is the receipt. The seven chapters are the sitting.
-        </p>
-      </div>
-    </section>
-
-    <!-- ECLIPSE STRIP — kept for SEO copy; first screen never shows it. -->
-    <section class="container chart-eclipse-strip" hidden aria-hidden="true" aria-label="The 12 August eclipse and natal reading">
-      <a href="eclipse.html#contact" class="chart-eclipse-strip__link">
-        <span class="chart-eclipse-strip__fact">The eclipse · 12 Aug 2026 · has passed · partial across the UK · totality in Greenland, Iceland, northern Russia, Spain and a small part of Portugal</span>
-        <span class="chart-eclipse-strip__action">See where it landed in your chart &rarr;</span>
-      </a>
-    </section>
-
-    <!-- ============================================================
-         MAIN CONTENT
-    ============================================================ -->
-    <div class="chart-layout">
-
-      <!-- ── CHART FORM ───────────────────────────────────────────── -->
-      <div class="form-glass" id="chart-form-wrapper">
-
-        <div class="form-glass__header">
-          <div class="form-glass__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
-          <h2 class="form-glass__title">Cast your chart</h2>
-          <p class="form-glass__sub">Instant on your device. Birth date and time stay in the browser; place search contacts Open-Meteo for coordinates. No account.</p>
-          <p class="chart-form__progress" id="chart-form-progress">Date, place, then time — about 20 seconds</p>
-        </div>
-
-        <!--
-          NO birth-data control below carries a `name`, and that is load-bearing.
-          This form has no `action`, so a native submit is a GET to this same
-          page and every named control lands in the request line — the access
-          log, the Referer header, and the Cache Storage key. Measured before
-          this fix: a native submit returned 200 for
-            ?birth-date=…&birth-time=…&name=…&latitude=…&longitude=…
-          which is the buyer's birth minute, full name and home coordinates, on
-          a page whose own copy says "Nothing is uploaded, ever."
-
-          preventDefault() in js/chart-page.js is NOT the guarantee. That
-          deferred file loads after this form, so the form can exist before
-          the listener does and the leak would remain possible if the script
-          were blocked, slow or threw. Dropping the names makes the guarantee
-          structural: with JS off there is nothing to put in the URL.
-
-          chart-page.js reads every field by getElementById, never by name, so
-          nothing depends on these. The node-mode radios keep their name because
-          radios need one to group — they carry no personal data.
-          Same pattern as the homepage coupon form, index.html:598-601.
-        -->
-        <form id="chart-form" novalidate aria-label="Birth chart calculation form">
-
-          <div class="chart-form__essentials">
-          <div class="form-section-label chart-form__essentials-label">
-            <div class="form-section-label__num" aria-hidden="true">1</div>
-            <span class="form-section-label__text">Date, place &amp; time</span>
+    <section id="chart-builder" class="chart-builder" aria-labelledby="builder-title">
+      <div class="chart-form-panel">
+        <div class="chart-section-label"><span>01</span><h2 id="builder-title">Your starting point</h2></div>
+        <form id="birth-chart-form" novalidate>
+          <div class="chart-field">
+            <label for="birth-date">Date of birth</label>
+            <input id="birth-date" name="birth-date" type="date" min="1900-01-01" required aria-describedby="date-hint">
+            <small id="date-hint">Choose a date from 1900 onwards.</small>
           </div>
-
-          <div class="form-group chart-form__priority" id="group-date-first">
-            <label for="date-input" class="form-label">
-              Birth Date <span class="required" aria-hidden="true">*</span>
-            </label>
-            <input
-              type="date"
-              id="date-input"
-              class="form-input"
-              required
-              min="1800-01-01"
-              max="2200-12-31"
-              lang="en-GB"
-              aria-required="true"
-              aria-describedby="date-hint date-error"
-            />
-            <span class="form-group__check" aria-hidden="true"></span>
-            <p class="form-error-msg" id="date-error" role="alert">Please enter your birth date.</p>
-            <p class="form-hint" id="date-hint">Day, month, year — supported dates are 1800–2200. The calendar control follows this browser’s locale.</p>
+          <div class="chart-field">
+            <label for="birth-time">Time of birth <span class="chart-optional">if you know it</span></label>
+            <input id="birth-time" name="birth-time" type="time" aria-describedby="time-hint">
+            <label class="chart-check"><input id="time-unknown" type="checkbox"><span>I don’t know my birth time</span></label>
+            <label class="chart-check"><input id="time-approximate" type="checkbox"><span>This time is approximate</span></label>
+            <small id="time-hint">Use the local time on your birth record. Without it, we’ll leave out rising and houses.</small>
           </div>
-
-          <div class="form-group form-group--city" id="group-city">
-            <label for="city-input" class="form-label">
-              Birth City <span class="required" aria-hidden="true">*</span>
-            </label>
-            <div class="input-with-icon">
-              <span class="input-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span>
-              <input
-                type="text"
-                id="city-input"
-                class="form-input"
-                role="combobox"
-                placeholder="Start typing your birth city or town"
-                autocomplete="off"
-                required
-                aria-required="true"
-                aria-autocomplete="list"
-                aria-expanded="false"
-                aria-controls="city-autocomplete"
-                aria-describedby="city-hint"
-              />
-            </div>
-            <span class="form-group__check" aria-hidden="true"></span>
-            <div
-              class="autocomplete-dropdown"
-              id="city-autocomplete"
-              role="listbox"
-              aria-label="City suggestions"
-              hidden
-            ></div>
-            <p class="form-error-msg" role="alert">Please select a city from the dropdown.</p>
-            <p class="form-hint" id="city-hint">Pick a result for precise coordinates — a typed city name alone is not enough. The location button sends coordinates to Open-Meteo for timezone lookup only.
-              <button type="button" id="geo-btn" class="form-inline-action">Use my current location</button>
-            </p>
+          <div id="fold-field" class="chart-field" hidden>
+            <label for="birth-fold">The clocks went back at this time</label>
+            <select id="birth-fold"><option value="">Choose which occurrence</option><option value="earlier">First occurrence, before the clocks went back</option><option value="later">Second occurrence, after the clocks went back</option></select>
+            <small>This local time happened twice. If you’re unsure, choose “I don’t know my birth time”.</small>
           </div>
-
-          <div class="form-group" id="group-time">
-            <label for="time-input" class="form-label">
-              Birth Time
-              <span class="form-label__optional"> — optional</span>
-            </label>
-            <input
-              type="time"
-              id="time-input"
-              class="form-input"
-              aria-describedby="time-hint"
-            />
-            <input type="hidden" id="time-accuracy-input" value="unknown" />
-            <p class="form-hint" id="time-hint">Exact time unlocks the Moon, Rising, MC and houses. Leave blank if unknown — time-sensitive placements will be withheld.
-              <button type="button" id="time-unknown-btn" class="form-inline-action">Choose an approximate time</button>
-            </p>
-            <p class="form-hint ap-time-status" id="time-accuracy-status" role="status" aria-live="polite">Time unknown · Moon, Rising, MC and houses will be withheld.</p>
+          <div class="chart-field">
+            <label for="birth-place">Town or city of birth</label>
+            <input id="birth-place" name="birth-place" type="search" autocomplete="off" spellcheck="false" placeholder="Start with a town, e.g. London" aria-describedby="place-hint place-status" aria-controls="place-options">
+            <small id="place-hint">Pick a matching place below. Major cities are available offline.</small>
+            <div id="place-options" class="chart-places" aria-label="Matching birth places" hidden></div>
+            <p id="place-status" class="chart-status" role="status" aria-live="polite"></p>
+            <button id="search-world" class="chart-text-button" type="button">Search more towns online ↗</button>
+            <small class="chart-privacy-note">Online search sends only the town text to Open-Meteo. Your birth date and time stay on this device.</small>
           </div>
-
-          <details class="chart-form__optional-label" id="group-name-wrap">
-            <summary class="chart-form__optional-sum">Name this chart <span class="chart-form__optional-hint">(optional)</span></summary>
-            <div class="form-group" id="group-name">
-              <label for="name-input" class="form-label sr-only">Your Name</label>
-              <input
-                type="text"
-                id="name-input"
-                class="form-input"
-                placeholder="e.g. Jane Doe"
-                autocomplete="name"
-                aria-describedby="name-hint"
-              />
-              <span class="form-group__check" aria-hidden="true"></span>
-              <p class="form-hint" id="name-hint">Labels saved charts and exports. Blank = “Birth Chart”.</p>
-            </div>
-          </details>
-          </div><!-- /.chart-form__essentials -->
-
-          <!-- Hidden coordinate / tz fields -->
-          <input type="hidden" id="lat-input" />
-          <input type="hidden" id="lon-input" />
-          <input type="hidden" id="tz-input" />
-
-          <!-- Submit CTA FIRST (structure clean) — advanced options never push Calculate below the fold -->
-          <div class="form-divider" aria-hidden="true"><span class="eng-star-mark"></span></div>
-
-          <div class="form-cta">
-            <div id="spacetime-summary" class="spacetime-summary" hidden>
-              <span class="spacetime-summary__label">Your event in spacetime</span>
-              <span id="spacetime-summary-txt"></span>
-            </div>
-            <button type="submit" class="btn--calculate" id="calculate-btn" aria-describedby="submit-hint">
-              <span class="btn-idle"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Read this minute</span>
-              <span class="btn-loading" aria-hidden="true">
-                <span class="btn-spinner"></span>Calculating…
-              </span>
-            </button>
-            <button type="button" class="btn--sample" id="sample-btn">
-              Sample Chart (Frida Kahlo)
-            </button>
-          </div>
-          <p class="form-hint form-hint--submit" id="submit-hint">
-            The chart calculation stays on your device. Place search sends the place text to Open-Meteo to find coordinates.
-          </p>
-
-          <!-- ── Advanced options AFTER primary CTA (collapsed by default) ───────────── -->
-          <div class="chart-advanced accordion" id="chart-advanced">
-            <div class="accordion-item" id="chart-advanced-item">
-              <button type="button" class="accordion-trigger" id="chart-advanced-trigger" aria-expanded="false" aria-controls="chart-advanced-panel">
-                <span>Advanced chart options</span>
-                <svg class="accordion-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </button>
-              <div class="accordion-content" id="chart-advanced-panel" role="region" aria-labelledby="chart-advanced-trigger">
-                <div class="accordion-content__inner">
-                  <div class="chart-form__time-picks">
-                    <p class="form-label chart-form__time-label">
-                      Time of Day
-                      <span class="form-label__optional"> — tap to approximate if exact time is unknown</span>
-                    </p>
-                    <div class="time-selector" role="group" aria-label="Time of day selector">
-                      <button type="button" class="time-btn" data-time="04:30" aria-label="Dawn, around 4:30 AM" aria-pressed="false">
-                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunrise"/></svg></span>Dawn
-                      </button>
-                      <button type="button" class="time-btn" data-time="09:00" aria-label="Morning, around 9:00 AM" aria-pressed="false">
-                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunrise"/></svg></span>Morning
-                      </button>
-                      <button type="button" class="time-btn" data-time="12:00" aria-label="Noon, 12:00 PM" aria-pressed="false">
-                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunhigh"/></svg></span>Noon
-                      </button>
-                      <button type="button" class="time-btn" data-time="15:30" aria-label="Afternoon, around 3:30 PM" aria-pressed="false">
-                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunhigh"/></svg></span>Afternoon
-                      </button>
-                      <button type="button" class="time-btn" data-time="20:00" aria-label="Evening, around 8:00 PM" aria-pressed="false">
-                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunset"/></svg></span>Evening
-                      </button>
-                      <button type="button" class="time-btn" data-time="23:30" aria-label="Night, around 11:30 PM" aria-pressed="false">
-                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span>Night
-                      </button>
-                    </div>
-                  </div>
-                  <div class="form-section-label">
-                    <div class="form-section-label__num" aria-hidden="true">2</div>
-                    <span class="form-section-label__text">House System</span>
-                  </div>
-
-                  <div class="house-cards" role="radiogroup" aria-label="House system selection">
-                    <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
-                      <div class="house-card__name">Equal</div>
-                      <div class="house-card__desc">Each house spans exactly 30° from your Ascendant. Simple to compare, but every cusp and placement remains provisional when birth time is approximate.</div>
-                    </div>
-                    <div class="house-card" data-value="placidus" tabindex="-1" role="radio" aria-checked="false">
-                      <div class="house-card__name">Placidus</div>
-                      <div class="house-card__desc">Time-based divisions. The most popular system in Western astrology today.</div>
-                    </div>
-                    <div class="house-card" data-value="whole" tabindex="-1" role="radio" aria-checked="false">
-                      <div class="house-card__name">Whole Sign</div>
-                      <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
-                    </div>
-                  </div>
-                  <input type="hidden" id="house-system" value="equal" />
-
-                  <div class="form-section-label form-section-label--spaced">
-                    <div class="form-section-label__num" aria-hidden="true">3</div>
-                    <span class="form-section-label__text">Lunar Node Model</span>
-                  </div>
-
-                  <div class="node-toggle" role="radiogroup" aria-label="Lunar node calculation model">
-                    <label class="node-toggle__opt">
-                      <input type="radio" name="node-mode" value="mean" checked />
-                      <span class="node-toggle__pill">
-                        <span class="node-toggle__name">Mean Node</span>
-                        <span class="node-toggle__desc">Smoothly-moving classical point (default)</span>
-                      </span>
-                    </label>
-                    <label class="node-toggle__opt">
-                      <input type="radio" name="node-mode" value="true" />
-                      <span class="node-toggle__pill">
-                        <span class="node-toggle__name">True Node</span>
-                        <span class="node-toggle__desc">Osculating node — wobbles ±~1.5° about the mean</span>
-                      </span>
-                    </label>
-                  </div>
-                  <p class="form-hint form-hint--compact">
-                    Black Moon Lilith (mean lunar apogee, ⚸) and the lunar nodes (☊ / ☋) are always included in your chart.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          <p id="form-error" class="chart-error" role="alert" hidden></p>
+          <button id="calculate-chart" class="button chart-submit" type="submit">Create my birth chart <span aria-hidden="true">↗</span></button>
+          <p class="chart-privacy-note">Free to calculate. No account. Nothing is saved unless you choose to save it.</p>
         </form>
-      </div><!-- /.form-glass -->
-
-      <aside class="chart-method-ledger" aria-labelledby="chart-method-title">
-        <div class="chart-method-ledger__head">
-          <p class="chart-method-ledger__kicker">Instrument specification</p>
-          <h2 id="chart-method-title">A chart you can audit.</h2>
-        </div>
-        <div class="chart-method-ledger__row">
-          <b>01</b>
-          <div><strong>Published methods</strong><span>The wheel is a schematic drawing of calculated Western tropical positions, not a sky photograph.</span></div>
-        </div>
-        <div class="chart-method-ledger__row">
-          <b>02</b>
-          <div><strong>Qualified limits</strong><span>Published methods typically place the supported major-planet positions within about a sixtieth of a degree across 1800–2200. Accuracy varies by body and date; Pluto and Chiron carry wider, date-dependent limits.</span></div>
-        </div>
-        <div class="chart-method-ledger__row">
-          <b>03</b>
-          <div><strong>Time honesty</strong><span>No birth time? Date-based placements remain available; Moon precision, Rising (how you meet the world), and houses (life areas) are withheld instead of guessed.</span></div>
-        </div>
-        <div class="chart-method-ledger__row">
-          <b>04</b>
-          <div><strong>Place lookup disclosed</strong><span>Birth fields have no URL names. Place search contacts Open-Meteo to resolve coordinates; the chart calculation stays in the browser.</span></div>
-        </div>
+        <noscript><p class="chart-error">Turn on JavaScript to calculate your chart on this device.</p></noscript>
+      </div>
+      <aside class="chart-aside">
+        <div class="chart-orbit" aria-hidden="true"><span class="orbit-star">✦</span><span class="orbit-word">YOUR MOMENT<br>IN THE SKY</span></div>
+        <h2>You’re more than a Sun sign.</h2>
+        <p>Your Sun is one part of the picture. The Moon, rising sign and planets add different themes to explore.</p>
+        <dl class="chart-three-notes"><div><dt>Sun</dt><dd>Identity &amp; expression</dd></div><div><dt>Moon</dt><dd>Emotions &amp; comfort</dd></div><div><dt>Rising</dt><dd>Approach &amp; first impressions</dd></div></dl>
+        <p class="chart-privacy-note">Astrology is a symbolic practice for reflection. It isn’t a scientific assessment of your personality or a prediction of your future.</p>
       </aside>
+    </section>
 
-      <!-- ============================================================
-           CHART RESULTS (hidden until calculated)
-      ============================================================ -->
-      <section id="chart-result" class="hidden" role="region" aria-labelledby="result-name">
-
-        <header class="chart-sitting-hero animate-in">
-          <div class="chart-sitting-hero__id result-header-meta">
-            <h1 id="result-name"></h1>
-            <div class="result-date-line">
-              <p id="result-date"></p>
-              <span id="result-time-chip" class="result-time-chip" data-level="unknown" role="status" aria-live="polite">Time unknown</span>
-            </div>
-            <aside id="mirror-hour-badge" class="ap-mirror-badge" hidden>
-              <p class="ap-mirror-badge__kicker">Birth minute</p>
-              <p class="ap-mirror-badge__label"></p>
-              <p class="ap-mirror-badge__folk"></p>
-              <p class="ap-mirror-badge__note"></p>
-            </aside>
-            <p class="result-method-note">Sun = how you shine. Moon = what you need. Rising needs a birth time.</p>
-          </div>
-          <button type="button" id="sitting-cta" class="action-btn action-btn--ember" aria-label="Open the seven-chapter sitting for this minute">
-            Open the sitting
-          </button>
-        </header>
-
-        <div class="chart-results-grid animate-in">
-          <section class="chart-wheel-hero" aria-label="Natal chart wheel diagram">
-            <div class="chart-wheel-stage">
-              <div class="chart-wheel-card">
-                <header class="chart-wheel-header">
-                  <span class="chart-wheel-header__seal" data-celestial-seal="instrument:chart" aria-hidden="true">
-                    <span class="ap-seal ap-seal--instrument ap-seal--chart ap-seal--md" aria-hidden="true">
-                      <span class="ap-seal__plate">
-                        <img class="ap-seal__art" src="assets/images/seals/instruments/chart.svg" alt="" width="96" height="112" loading="eager" decoding="async" />
-                      </span>
-                    </span>
-                  </span>
-                  <div class="chart-wheel-header__text">
-                    <p class="chart-wheel-label"><span class="eng-star-mark"></span>Natal wheel</p>
-                    <p class="chart-wheel-sublabel">Click a body · the sitting is the next door</p>
-                  </div>
-                </header>
-                <div class="natal-wheel-container" aria-live="polite" aria-busy="true" id="natal-wheel-wrap">
-                  <div id="natal-wheel" class="natal-wheel-mount" role="group" aria-label="Natal chart diagram — computed positions on schematic ecliptic rings." aria-describedby="result-time-chip chart-wheel-control-hint"></div>
-                </div>
-                <div class="chart-wheel-control" id="chart-wheel-control">
-                  <label for="chart-wheel-picker">Explore this wheel</label>
-                  <select id="chart-wheel-picker" aria-describedby="result-time-chip chart-wheel-control-hint" disabled>
-                    <option value="">Choose a planet or aspect</option>
-                  </select>
-                  <p id="chart-wheel-control-hint">A full-size keyboard and touch control for every point drawn on the wheel.</p>
-                </div>
-                <aside id="chart-wheel-reading" class="chart-wheel-reading" hidden aria-live="polite">
-                  <p class="chart-wheel-reading__kicker">From the wheel</p>
-                  <h2 class="chart-wheel-reading__title" id="chart-wheel-reading-title"></h2>
-                  <p class="chart-wheel-reading__meta" id="chart-wheel-reading-meta"></p>
-                  <p class="chart-wheel-reading__body" id="chart-wheel-reading-body"></p>
-                  <div class="chart-wheel-reading__actions">
-                    <button type="button" class="chart-wheel-reading__open" id="chart-wheel-reading-open">Open the sitting</button>
-                    <button type="button" class="chart-wheel-reading__clear" id="chart-wheel-reading-clear">Clear</button>
-                  </div>
-                </aside>
-                <p class="chart-wheel-hint">Use the chart-point menu or tap a mark · Esc clears</p>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <section class="big-three-section animate-in animate-in--delay-1" role="group" aria-labelledby="big-three-heading">
-          <h2 id="big-three-heading" class="sr-only">Core placements and time-dependent angles</h2>
-          <div id="big-three" class="big-three-grid"></div>
+    <section id="chart-result" class="chart-result" aria-labelledby="result-title" hidden>
+      <header class="chart-result-head">
+        <div><p class="eyebrow">YOUR SKY, EXPLAINED</p><h2 id="result-title" tabindex="-1">Your birth chart</h2><p id="result-meta" class="muted"></p></div>
+        <button id="edit-chart" class="button-secondary" type="button">Edit birth details</button>
+      </header>
+      <p id="result-caveat" class="chart-caveat"></p>
+      <aside id="birth-mirror-badge" class="chart-caveat" aria-label="Your birth-clock pattern" hidden></aside>
+      <div id="big-three" class="chart-big-three"></div>
+      <div class="chart-story-next"><div><p class="eyebrow">THERE’S MORE IN THE PATTERN</p><h3>Now, let’s put it together.</h3><p>A personal story in seven short chapters, built from your chart.</p></div><div><button type="button" id="read-my-sky" class="button">Read my sky story <span aria-hidden="true">↗</span></button><p id="reading-handoff-status" class="chart-status" role="status" aria-live="polite"></p></div></div>
+      <div class="chart-reading-grid">
+        <section class="chart-wheel-panel" aria-labelledby="wheel-title">
+          <p class="eyebrow">THE WHOLE PICTURE</p><h3 id="wheel-title">Your chart wheel</h3>
+          <div id="birth-wheel"></div>
+          <p class="chart-privacy-note">Each marker locates a planet in the zodiac. Full names and positions are in the table below.</p>
         </section>
-
-        <details class="chart-sitting-more">
-          <summary class="chart-sitting-more__sum">Chart details &amp; export</summary>
-          <div class="chart-sitting-more__body">
-            <span class="result-badge"><span class="eng-star-mark"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
-            <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
-            <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Add a birth time for Moon, Rising, MC and houses — time-sensitive points are withheld without it</span>
-            <nav class="ap-keep-path-strip" aria-label="Keep this sky">
-              <p class="ap-keep-path-strip__label">Keep this sky</p>
-              <button type="button" class="btn-invite" id="keep-sky" data-keep-mode="birth-hour" disabled aria-disabled="true">Keep this sky</button>
-              <span class="action-note" id="keep-sky-caption">Cast with a clock time to keep that hour’s still.</span>
-              <a href="sky-card.html" data-ap-keep-minute>Sky card</a>
-              <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
-              <a href="deep-reading.html" id="sitting-link-strip">Seven-chapter sitting</a>
-              <span class="ap-keep-path-strip__sep" aria-hidden="true">&middot;</span>
-              <a href="charts.html">Your plates</a>
-            </nav>
-            <section id="ap-chart-sky-bridge" hidden aria-label="Open this birth moment in the Observatory"></section>
-            <small class="result-method-note">The chart page withholds Moon and angles without a birth time. The natal reading keeps the Moon as approximate (&plusmn;7&deg;) and still withholds angles. Keep is optional and free — this chart stays free either way, and the minute travels in this tab, never in the link.</small>
-            <div class="result-actions" id="result-actions-row">
-              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share a privacy-safe chart image with personal details removed">
-                Share this sky
-              </button>
-              <button id="poster-btn" class="action-btn action-btn--ghost" aria-haspopup="menu" aria-controls="share-format-menu" aria-expanded="false" aria-label="Export chart artwork as a print plate, square, story, wallpaper, or Big Three card">
-                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Export artwork
-              </button>
-              <button id="save-btn" class="action-btn action-btn--ghost" aria-label="Save chart on this device">
-                Save
-              </button>
-              <details class="result-actions__more">
-                <summary class="result-actions__more-toggle">More</summary>
-                <div class="result-actions__more-menu" role="group" aria-label="More chart actions">
-                  <a id="eclipse-cta" href="eclipse.html" class="action-btn action-btn--ghost" aria-label="Replay the archived 12 August eclipse instrument">Eclipse replay</a>
-                  <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">Big Three card</button>
-                  <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">Export JSON</button>
-                </div>
-              </details>
-            </div>
-            <p class="result-method-note ap-share-privacy-note">Share this sky removes the chart name, birth date, time and town from its image. Export artwork keeps those displayed details, so review an export before sharing it.</p>
-          </div>
-        </details>
-        <p class="result-method-note ap-support-after-value">If this free chart was useful, <a href="https://ko-fi.com/astroprecise" target="_blank" rel="noopener noreferrer">support the free Observatory</a>. Nothing unlocks and the chart stays free.</p>
-        <p class="result-method-note" data-ap-studio-context data-product-sku="natal-sky-print-pack" hidden aria-hidden="true">Want to keep your own recorded sky as finished artwork? <a data-ap-studio-context-link href="shop.html#natal-sky-print-pack">See the Natal Sky Print Pack</a>.</p>
-
-        <div class="chart-detail-wrap animate-in animate-in--delay-2">
-          <div class="tabs-card chart-detail-tabs">
-            <div class="tabs-nav" role="tablist" aria-label="Chart detail sections">
-              <button
-                class="tab-trigger"
-                role="tab"
-                id="tab-overview-btn"
-                aria-selected="true"
-                aria-controls="tab-overview"
-              >Overview</button>
-              <button
-                class="tab-trigger"
-                role="tab"
-                id="tab-planets-btn"
-                aria-selected="false"
-                aria-controls="tab-planets"
-              >Planets</button>
-              <button
-                class="tab-trigger"
-                role="tab"
-                id="tab-houses-btn"
-                aria-selected="false"
-                aria-controls="tab-houses"
-              >Houses</button>
-              <button
-                class="tab-trigger"
-                role="tab"
-                id="tab-aspects-btn"
-                aria-selected="false"
-                aria-controls="tab-aspects"
-              >Aspects</button>
-            </div>
-
-            <!-- Overview Tab -->
-            <div
-              id="tab-overview"
-              class="tab-panel tabs__panel"
-              role="tabpanel"
-              aria-labelledby="tab-overview-btn"
-              aria-hidden="false"
-            >
-              <div id="analysis-content"></div>
-            </div>
-
-            <!-- Planets Tab -->
-            <div
-              id="tab-planets"
-              class="tab-panel tabs__panel"
-              role="tabpanel"
-              aria-labelledby="tab-planets-btn"
-              aria-hidden="true"
-            >
-              <div id="planets-table"></div>
-            </div>
-
-            <!-- Houses Tab -->
-            <div
-              id="tab-houses"
-              class="tab-panel tabs__panel"
-              role="tabpanel"
-              aria-labelledby="tab-houses-btn"
-              aria-hidden="true"
-            >
-              <div id="houses-table"></div>
-            </div>
-
-            <!-- Aspects Tab -->
-            <div
-              id="tab-aspects"
-              class="tab-panel tabs__panel"
-              role="tabpanel"
-              aria-labelledby="tab-aspects-btn"
-              aria-hidden="true"
-            >
-              <div id="aspects-table"></div>
-            </div>
-
-          </div><!-- /.tabs-card -->
-        </div><!-- /.chart-detail-wrap -->
-
-      </section><!-- /#chart-result -->
-
-    </div><!-- /.chart-layout -->
-
+        <section class="chart-reflection" aria-labelledby="reflection-title">
+          <p class="eyebrow">MAKE IT YOUR OWN</p><h3 id="reflection-title">A starting point, not a verdict.</h3>
+          <p id="reading-summary"></p>
+          <div class="chart-prompt"><span class="eyebrow">SOMETHING TO SIT WITH</span><p id="reflection-prompt"></p></div>
+          <p class="chart-privacy-note">Notice what resonates and what doesn’t. Your experience matters more than a description.</p>
+        </section>
+      </div>
+      <details class="chart-details" open>
+        <summary>All your planetary placements <span aria-hidden="true">+</span></summary>
+        <p id="positions-note" class="chart-privacy-note"></p>
+        <div class="chart-table-wrap"><table class="chart-table"><caption class="chart-sr-only">Planetary placements</caption><thead><tr><th scope="col">Planet</th><th scope="col">Sign</th><th scope="col">Position</th><th scope="col">Theme</th></tr></thead><tbody id="planet-rows"></tbody></table></div>
+      </details>
+      <section class="chart-save-panel" aria-labelledby="save-title">
+        <div><p class="eyebrow">COME BACK TO THIS</p><h3 id="save-title">Keep your chart close.</h3><p>Save it in this browser, or download a text copy you can keep anywhere. Browser storage doesn’t sync between devices and can be cleared.</p></div>
+        <div class="chart-save-actions"><label for="chart-name">A name for this chart <span class="chart-optional">optional</span></label><input id="chart-name" type="text" maxlength="60" placeholder="My birth chart"><div class="chart-action-row"><button id="save-chart" class="button" type="button">Save on this device</button><button id="download-chart" class="button-secondary" type="button">Download reading</button></div><p id="save-status" class="chart-status" role="status" aria-live="polite"></p><a href="charts.html">Open saved charts <span aria-hidden="true">→</span></a></div>
+      </section>
+      <details class="chart-details"><summary>How this chart is calculated <span aria-hidden="true">+</span></summary><div class="chart-method"><p>Positions are calculated in your browser using the AstroPrecise astronomical engine. We use the tropical zodiac, Whole Sign houses and the true lunar node. The built-in engine is approximate; this page does not claim observatory-grade precision.</p><p>Your selected place supplies coordinates and a real time zone. Your browser applies historical clock rules. A repeated clock time asks you to choose; a time skipped by a clock change is rejected.</p><p>Without a birth time we use local noon for approximate planetary positions, check sign changes across the local day, and withhold rising, houses and exact Moon degrees. Historical time-zone data and the precision of your birth record can affect the result.</p></div></details>
+    </section>
   </main>
-
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-
-  <!-- Toast container -->
-  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
-  <!-- JS — chart core first; starfield/effects idle -->
-  <script src="js/raf-core.js?v=912" defer></script>
-  <script src="js/ap-zodiac-constants.js?v=912" defer></script>
-  <script src="js/ephemeris.js?v=912" defer></script>
-  <script src="js/celestial-seals.js?v=912" defer></script>
-  <script src="js/reading-format.js?v=912" defer></script>
-  <script src="js/chart-render.js?v=912" defer></script>
-  <script src="js/ap-load-interpretations.js?v=912" defer></script>
-  <script src="js/profile.js?v=912" defer></script>
-  <script src="js/ap-personal-memory.js?v=912" defer></script>
-  <script src="js/icons.js?v=912" defer></script>
-  <script src="js/ap-nav-model.js?v=912" defer></script>
-  <script src="js/ap-footer-inject.js?v=912" defer></script>
-  <script src="js/app.js?v=912" defer></script>
-  <script src="js/ap-canvas-seals.js?v=912" defer></script>
-  <script src="js/ap-deep-link.js?v=912" defer></script>
-  <script src="js/ap-sky-bridge.js?v=912" defer></script>
-  <script src="js/ap-plain-placement.js?v=912" defer></script>
-  <script src="js/ap-mirror-hour.js?v=912" defer></script>
-  <script src="js/chart-page.js?v=912" defer></script>
-  <script src="js/ap-keep-library.js?v=912" defer></script>
-  <script src="js/ap-keep-sky.js?v=912" defer></script>
-  <script src="js/ap-keep-minute.js?v=912" defer></script>
-  <script src="js/ap-studio-context-link.js?v=912" defer></script>
+  <div data-ap-next-footer></div>
 </body>
 </html>

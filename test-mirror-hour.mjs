@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 
 const src = readFileSync(new URL('./website/js/ap-mirror-hour.js', import.meta.url), 'utf8');
 const module = { exports: {} };
@@ -74,25 +75,97 @@ assert.equal(/angel numbers as fact|messages from angels/i.test(src), false);
 
 const chartHtml = readFileSync(new URL('./website/chart.html', import.meta.url), 'utf8');
 const indexHtml = readFileSync(new URL('./website/index.html', import.meta.url), 'utf8');
+const observatoryHtml = readFileSync(new URL('./website/observatory.html', import.meta.url), 'utf8');
 const sittingHtml = readFileSync(new URL('./website/deep-reading.html', import.meta.url), 'utf8');
 const skyHtml = readFileSync(new URL('./website/sky-card.html', import.meta.url), 'utf8');
-const natalJs = readFileSync(new URL('./website/js/ap-natal-reading.js', import.meta.url), 'utf8');
-const chartJs = readFileSync(new URL('./website/js/chart-page.js', import.meta.url), 'utf8');
-const skyJs = readFileSync(new URL('./website/js/ap-sky-card.js', import.meta.url), 'utf8');
+const syncHtml = readFileSync(new URL('./website/synchronicity-card.html', import.meta.url), 'utf8');
+const natalJs = readFileSync(new URL('./website/js/ap-reading-next.js', import.meta.url), 'utf8');
+const chartJs = readFileSync(new URL('./website/js/ap-chart-next.js', import.meta.url), 'utf8');
+const skyJs = readFileSync(new URL('./website/js/ap-keepsake-next.js', import.meta.url), 'utf8');
+const syncJs = readFileSync(new URL('./website/js/ap-sky-card.js', import.meta.url), 'utf8');
 const sw = readFileSync(new URL('./website/sw.js', import.meta.url), 'utf8');
-assert.ok(sw.includes('./js/ap-mirror-hour.js') && sw.includes('./js/ap-mirror-presence.js'));
-assert.ok(sw.includes('./css/ap-mirror-hour.css'));
+const precache = sw.slice(sw.indexOf('const PRECACHE = ['), sw.indexOf('/* PRECACHE_END */'));
+assert.ok(precache.includes('./js/ap-mirror-hour.js'), 'natal mirror helper must work with the offline chart and reading');
+for (const asset of ['js/ap-mirror-presence.js', 'css/ap-mirror-hour.css']) {
+  assert.ok(existsSync(new URL('./website/' + asset, import.meta.url)), 'optional Observatory asset exists: ' + asset);
+}
 
-assert.ok(chartHtml.includes('id="mirror-hour-badge"'));
+assert.ok(chartHtml.includes('id="birth-mirror-badge"'));
 assert.ok(chartHtml.includes('ap-mirror-hour.js'));
-assert.ok(chartJs.includes('renderMirrorBadge') && chartJs.includes('APMirrorHour'));
-assert.ok(indexHtml.includes('id="ap-presence-banner"'));
-assert.ok(indexHtml.includes('ap-mirror-presence.js'));
-assert.ok(indexHtml.includes('href="sky-card.html" data-ap-keep-minute'));
+assert.ok(chartJs.includes('detectFromClock') && chartJs.includes('badgeCopy'));
+assert.ok(observatoryHtml.includes('id="ap-presence-banner"'));
+assert.ok(observatoryHtml.includes('ap-mirror-presence.js'));
+assert.ok(observatoryHtml.includes('href="synchronicity-card.html"'));
+assert.equal(indexHtml.includes('ap-mirror-presence.js'), false, 'the guided homepage must not run the optional live-clock presence feature');
 assert.ok(sittingHtml.includes('ap-mirror-hour.js'));
-assert.ok(natalJs.includes('sittingBeat') && natalJs.includes('natal-sync-beat'));
+assert.ok(natalJs.includes('sittingBeat') && natalJs.includes("source:'natal'"));
 assert.ok(skyHtml.includes('ap-mirror-hour.js'));
-assert.ok(skyJs.includes('paintSyncMark') || skyJs.includes('APMirrorHour'));
-assert.ok(skyHtml.includes('id="skySyncPanel"') || skyJs.includes('skySyncPanel'));
+assert.ok(skyJs.includes('detectFromClock') && skyJs.includes('APMirrorHour'));
+assert.ok(syncHtml.includes('ap-mirror-hour.js'));
+assert.ok(syncJs.includes('paintSyncMark') || syncJs.includes('APMirrorHour'));
+assert.ok(syncHtml.includes('id="skySyncPanel"') || syncJs.includes('skySyncPanel'));
 
-console.log('PASS mirror-hour detector, copy, presence override, and surface wiring');
+// Exercise the actual surface helpers so a guessed/default clock cannot become
+// a birth-minute claim, including on saved charts with no accuracy metadata.
+const helpers = [
+  ['chart', chartJs.match(/function birthMirrorMatch\(data\) \{[\s\S]*?\n  \}/)?.[0], 'birthMirrorMatch'],
+  ['reading', natalJs.match(/function natalMirrorBeat\(row\)\{[\s\S]*?\n\}/)?.[0], 'natalMirrorBeat'],
+  ['keepsake', skyJs.match(/function keepsakeMirror\(row,includeBirth\)\{[^\n]+\}/)?.[0], 'keepsakeMirror'],
+];
+for (const [surface, source, name] of helpers) {
+  assert.ok(source, surface + ' exposes its birth-minute decision helper');
+  let detectorCalls = 0;
+  const api = { ...APMirrorHour, detectFromClock(clock) { detectorCalls++; return detectFromClock(clock); } };
+  const helper = runInNewContext(source + '\n' + name, { window: { APMirrorHour: api } });
+  const exact = { birthTime: '11:11', timeKnown: true, timeAccuracy: 'exact' };
+  const result = helper(exact, true);
+  assert.ok(result, surface + ' recognises an explicitly exact mirror birth minute');
+  if (surface === 'reading') {
+    assert.match(result.mono, /Birth clock 11:11/);
+    assert.ok(result.serif.includes(HONESTY), 'reading preserves the folk-pattern disclosure');
+  } else {
+    assert.equal(result.label, '11:11');
+  }
+  assert.equal(helper({ ...exact, birthTime: '10:15' }, true), null, surface + ' rejects non-pattern clocks');
+  for (const overrides of [{ timeAccuracy: 'approximate' }, { timeAccuracy: 'unknown' },
+    { timeAccuracy: undefined }, { timeKnown: false }, { timeKnown: 'true' }]) {
+    const before = detectorCalls;
+    assert.equal(helper({ ...exact, ...overrides }, true), null, surface + ' suppresses uncertain birth minutes');
+    assert.equal(detectorCalls, before, surface + ' never sends uncertain birth times to the detector');
+  }
+  if (surface === 'keepsake') {
+    const before = detectorCalls;
+    assert.equal(helper(exact, false), null, 'keepsake omits the birth minute without explicit disclosure');
+    assert.equal(detectorCalls, before, 'private keepsake does not inspect the birth minute');
+  }
+  const withoutModule = runInNewContext(source + '\n' + name, { window: {} });
+  assert.equal(withoutModule(exact, true), null, surface + ' degrades safely without the optional copy helper');
+}
+
+// Execute the live-presence handoff: it must preserve a device-clock source,
+// never turn that clock into a natal claim, and use its separate card surface.
+const elements = new Map();
+const listeners = new Map();
+for (const id of ['ap-presence-banner', 'ap-presence-title', 'ap-presence-folk', 'ap-presence-note',
+  'ap-presence-dismiss', 'ap-presence-keep', 'ap-presence-wish']) {
+  elements.set(id, { hidden: true, dataset: {}, addEventListener(type, listener) { listeners.set(id + ':' + type, listener); } });
+}
+const handoffs = new Map();
+const presenceWindow = {
+  APMirrorHour: { ...APMirrorHour, detectNow: () => portal, isDismissed: () => false, rememberLive() {} },
+  location: { href: '' }, setInterval: () => 1,
+};
+runInNewContext(presence, {
+  window: presenceWindow,
+  document: { readyState: 'complete', body: { classList: { toggle() {} } }, getElementById: id => elements.get(id), addEventListener() {} },
+  sessionStorage: { setItem: (key, value) => handoffs.set(key, value) },
+});
+listeners.get('ap-presence-keep:click')({ preventDefault() {} });
+assert.equal(presenceWindow.location.href, 'synchronicity-card.html');
+const liveHandoff = JSON.parse(handoffs.get('ap-sky-card-handoff'));
+assert.equal(liveHandoff.source, 'live-clock');
+assert.equal(liveHandoff.livePattern, true);
+assert.equal(liveHandoff.time, '11:11');
+assert.equal(Object.hasOwn(liveHandoff, 'birthDate'), false);
+
+console.log('PASS mirror-hour detector, honest natal precision gates, private keepsake, and live-clock handoff');

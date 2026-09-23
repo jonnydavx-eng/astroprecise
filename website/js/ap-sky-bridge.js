@@ -1,6 +1,6 @@
 /**
  * Astro Precise — Personal Sky bridge (Stage 2–3).
- * Chart/moment → index.html deep link + optional home orrery handoff.
+ * Chart/moment → observatory.html deep link + optional home orrery handoff.
  * Uses APDeepLink.stashSkyLink() for personal moments. Computed public
  * astronomical events use APDeepLink.buildSkyLink() at their own emitters.
  */
@@ -23,13 +23,13 @@
   }
 
   function observatoryBase(value) {
-    var raw = value != null ? String(value) : 'index.html';
+    var raw = value != null ? String(value) : 'observatory.html';
     var hashAt = raw.indexOf('#');
     if (hashAt !== -1) raw = raw.slice(0, hashAt);
     var queryAt = raw.indexOf('?');
     var path = queryAt === -1 ? raw : raw.slice(0, queryAt);
     path = path.replace(/^\.\//, '').replace(/^\/+/, '');
-    if (path.toLowerCase() !== 'index.html') path = 'index.html';
+    if (path.toLowerCase() !== 'observatory.html') path = 'observatory.html';
 
     var kept = new URLSearchParams();
     if (queryAt !== -1) {
@@ -44,7 +44,7 @@
       } catch (e) { /* malformed query: fail closed to the local route */ }
     }
     var query = kept.toString();
-    return 'index.html' + (query ? '?' + query : '');
+    return 'observatory.html' + (query ? '?' + query : '');
   }
 
   /**
@@ -157,7 +157,7 @@
     opts = opts || {};
     var m = chartMomentIso(chart) || 'now';
     // stashSkyLink, not buildSkyLink: this moment is a birth minute. It goes to
-    // index.html in sessionStorage, so the link the visitor can see, copy and
+    // observatory.html in sessionStorage, so the link the visitor can see, copy and
     // paste carries only the focus body. If storage or the helper is missing,
     // the model opens without the private minute instead of publishing it.
     return stashPersonalMoment({
@@ -255,7 +255,7 @@
     var link = buildLinkFromChart(chart, { focus: 'earth' });
     // Naming a chart is optional, and most people skip it — so most of the time
     // the name here was never typed by anybody. It is a label the app filled in:
-    // chart.html's readForm() uses "Birth Chart", index.html's quick cast uses
+    // chart.html's readForm() uses "Birth Chart", observatory.html's quick cast uses
     // "Home cast", and this function's own old default was the literal string
     // "Your". The possessive below turned those into "See Birth's sky",
     // "See Home's sky" and "See Your's sky in the 3D model". None of them is a

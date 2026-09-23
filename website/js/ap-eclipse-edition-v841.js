@@ -1,5 +1,5 @@
-import { isEntitlementReady, verifyLicense } from './gumroad-unlock.js?v=912';
-import { fmtDeg, houseOrdinal } from './eclipse-reading.js?v=912';
+import { isEntitlementReady, verifyLicense } from './gumroad-unlock.js?v=915';
+import { fmtDeg, houseOrdinal } from './eclipse-reading.js?v=915';
 
 export const ARTWORK_WIDTH = 2400;
 export const ARTWORK_HEIGHT = 3000;

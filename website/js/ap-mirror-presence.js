@@ -86,7 +86,7 @@
         event.preventDefault();
         var match = api.detectNow() || api.readLive();
         if (match) writeLiveHandoff(match);
-        window.location.href = 'sky-card.html';
+        window.location.href = 'synchronicity-card.html';
       });
     }
     if (wish) {

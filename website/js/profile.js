@@ -208,6 +208,8 @@ window.AstroProfile = (() => {
   // before it carry the DESCENDANT as risingSign. Birth data is stored, so we
   // recompute quietly instead of asking anyone to re-enter anything.
   function migrateCharts() {
+    // The new explicit-save flow preserves historical records until the visitor chooses to recalculate.
+    if (typeof document !== 'undefined' && document.body?.classList.contains('ap-next')) return;
     const E = window.AstroEphemeris;
     if (!E || !E.calculateNatalChart) { setTimeout(migrateCharts, 300); return; }
     const charts = getCharts();

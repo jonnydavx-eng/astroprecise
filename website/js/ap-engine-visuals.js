@@ -17,16 +17,16 @@
   };
 
   var BODIES = [
-    { id: 'sun', label: 'Sun', src: 'img/engine/studio/sun.webp', href: 'index.html' },
-    { id: 'mercury', label: 'Mercury', src: 'img/engine/studio/mercury.webp', href: 'index.html' },
-    { id: 'venus', label: 'Venus', src: 'img/engine/studio/venus.webp', href: 'index.html' },
-    { id: 'earth', label: 'Earth', src: 'img/engine/studio/earth.webp', href: 'index.html#lead' },
+    { id: 'sun', label: 'Sun', src: 'img/engine/studio/sun.webp', href: 'observatory.html' },
+    { id: 'mercury', label: 'Mercury', src: 'img/engine/studio/mercury.webp', href: 'observatory.html' },
+    { id: 'venus', label: 'Venus', src: 'img/engine/studio/venus.webp', href: 'observatory.html' },
+    { id: 'earth', label: 'Earth', src: 'img/engine/studio/earth.webp', href: 'observatory.html#lead' },
     { id: 'moon', label: 'Moon', src: 'img/engine/studio/moon.webp', href: 'moonphase.html' },
-    { id: 'mars', label: 'Mars', src: 'img/engine/studio/mars.webp', href: 'index.html' },
-    { id: 'jupiter', label: 'Jupiter', src: 'img/engine/studio/jupiter.webp', href: 'index.html' },
-    { id: 'saturn', label: 'Saturn', src: 'img/engine/studio/saturn.webp', href: 'index.html' },
-    { id: 'uranus', label: 'Uranus', src: 'img/engine/studio/uranus.webp', href: 'index.html' },
-    { id: 'neptune', label: 'Neptune', src: 'img/engine/studio/neptune.webp', href: 'index.html' },
+    { id: 'mars', label: 'Mars', src: 'img/engine/studio/mars.webp', href: 'observatory.html' },
+    { id: 'jupiter', label: 'Jupiter', src: 'img/engine/studio/jupiter.webp', href: 'observatory.html' },
+    { id: 'saturn', label: 'Saturn', src: 'img/engine/studio/saturn.webp', href: 'observatory.html' },
+    { id: 'uranus', label: 'Uranus', src: 'img/engine/studio/uranus.webp', href: 'observatory.html' },
+    { id: 'neptune', label: 'Neptune', src: 'img/engine/studio/neptune.webp', href: 'observatory.html' },
   ];
 
   function ensureCss() {
@@ -91,7 +91,7 @@
     /* Public four-route spine — Observatory · Chart · Events · Shop */
     return (
       '<nav class="ap-ev-tools" aria-label="Core pages">' +
-      '<a class="ap-ev-tools__chip ap-ev-tools__chip--primary" href="index.html">Observatory</a>' +
+      '<a class="ap-ev-tools__chip ap-ev-tools__chip--primary" href="observatory.html">Observatory</a>' +
       '<a class="ap-ev-tools__chip" href="chart.html">Chart</a>' +
       '<a class="ap-ev-tools__chip" href="sky-events.html">Events</a>' +
       '<a class="ap-ev-tools__chip" href="shop.html">Shop</a>' +
@@ -102,7 +102,7 @@
   function actionsHtml() {
     return (
       '<div class="ap-ev__actions">' +
-      '<a class="ap-ev__btn ap-ev__btn--primary" href="index.html">Observatory</a>' +
+      '<a class="ap-ev__btn ap-ev__btn--primary" href="observatory.html">Observatory</a>' +
       '<a class="ap-ev__btn ap-ev__btn--ghost" href="chart.html">Chart</a>' +
       '<a class="ap-ev__btn ap-ev__btn--ghost" href="sky-events.html">Events</a>' +
       '<a class="ap-ev__btn ap-ev__btn--ghost" href="shop.html">Shop</a>' +
@@ -132,7 +132,7 @@
       (mode === 'tools' ? 'Continue around the sky' : 'Around the sky') +
       '</h2>' +
       (mode === 'full' || mode === 'cinema'
-        ? '<p class="ap-ev__lede">Same 3D engine as the homepage. Open the <a href="index.html#lead">Observatory</a> · cast on <a href="chart.html">Chart</a>.</p>'
+        ? '<p class="ap-ev__lede">Same 3D engine as the homepage. Open the <a href="observatory.html#lead">Observatory</a> · cast on <a href="chart.html">Chart</a>.</p>'
         : '<p class="ap-ev__lede ap-ev__lede--provenance">Same 3D engine as the Observatory. Still, not a live feed.</p>') +
       '</header>';
 
