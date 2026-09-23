@@ -30,6 +30,7 @@
   let searchSequence = 0;
   let searchController = null;
   let savedId = null;
+  let openedSaved = false;
   const esc = value => String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmtDegree = value => { const minute = Math.floor((value % 1) * 60); return Math.floor(value) + '° ' + String(minute).padStart(2,'0') + '′'; };
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
@@ -121,11 +122,20 @@
     });
     container.hidden=!container.childElementCount;
   }
+  function placeMatches(city, query) {
+    const hay = normalize((city.name || '') + ' ' + (city.country || ''));
+    if (hay.includes(query)) return true;
+    const town = normalize(city.name);
+    // "London, England, United Kingdom" still has to find London. The match
+    // only opens the list; coordinates stay unset until the visitor picks one.
+    return town.length >= 2 && (query === town || query.startsWith(town + ',') || query.startsWith(town + ' '));
+  }
   function offlineSearch() {
     searchSequence++; if(searchController) searchController.abort();
     chosenPlace=null;resetFold();
     const query=normalize($('birth-place').value);
-    const places=query.length>=2?((E()&&E().CITIES)||[]).filter(city=>normalize(city.name+' '+city.country).includes(query)).sort((a,b)=>Number(normalize(b.name).startsWith(query))-Number(normalize(a.name).startsWith(query))):[];
+    const prefix=query.split(',')[0].trim();
+    const places=query.length>=2?((E()&&E().CITIES)||[]).filter(city=>placeMatches(city, query)).sort((a,b)=>Number(normalize(b.name).startsWith(prefix))-Number(normalize(a.name).startsWith(prefix))):[];
     renderPlaces(places);
     $('place-status').textContent=query.length<2?'':places.length?'Choose your place from the matches above.':'No offline match. Use “Search more towns online” to look it up.';
   }
@@ -211,6 +221,7 @@
     ['birth-date','birth-time','birth-place','birth-fold'].forEach(id=>$(id).removeAttribute('aria-invalid'));
     const date=$('birth-date').value,time=$('birth-time').value,timeKnown=!$('time-unknown').checked&&!!time;
     if(!date || !$('birth-date').validity.valid) {showError('Enter a valid birth date between 1900 and today.','birth-date');return;}
+    if(!$('time-unknown').checked && !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) {showError('Enter a local birth time, or choose “I don’t know my birth time”.','birth-time');return;}
     if(!chosenPlace) {showError('Choose your birth place from the matching places.','birth-place');return;}
     $('calculate-chart').disabled=true;
     try {
@@ -222,7 +233,7 @@
   }
   function loadProfile() {
     if(window.AstroProfile)return Promise.resolve(window.AstroProfile);
-    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=915';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
+    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=916';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
   }
   async function saveChart() {
     if(!currentResult)return;
@@ -263,7 +274,7 @@
       if(!row){showError('This saved chart wasn’t found in this browser. You can create a new chart below.');return;}
       const place={name:row.birthCity||row.city||'Saved birthplace',lat:Number(row.lat),lon:Number(row.lon),tz:row.tz};
       if(!validPlace(place))throw new Error('Your saved chart needs its birthplace selected again.');
-      $('birth-date').value=row.birthDate||row.date||'';$('birth-time').value=row.birthTime||row.time||'';$('time-unknown').checked=row.timeKnown===false||!$('birth-time').value;$('birth-time').disabled=$('time-unknown').checked;pickPlace(place);
+      $('birth-date').value=row.birthDate||row.date||'';$('birth-time').value=row.birthTime||row.time||'';$('time-unknown').checked=row.timeKnown===false||!$('birth-time').value;$('birth-time').disabled=$('time-unknown').checked;pickPlace(place);openedSaved=true;
       $('time-approximate').checked=row.timeAccuracy==='approximate';$('time-approximate').disabled=$('time-unknown').checked;
       const savedMethod=String(row.houseSystem||'unspecified').toLowerCase().replace(/[\s_-]/g,'');
       if(!['whole','wholesign'].includes(savedMethod)||row.nodeMode!=='true'){
@@ -288,6 +299,77 @@
     catch(_){$('reading-handoff-status').textContent='This browser is blocking the handoff. Save this chart on your device first, then open the story from the link below.';const link=document.createElement('a');link.href='deep-reading.html';link.textContent='Open my sky story →';$('reading-handoff-status').append(document.createElement('br'),link);}
   });
   $('birth-chart-form').addEventListener('submit',()=>{$('result-title').textContent='Your birth chart';});
-  window.APChartNext={getResult:()=>currentResult?JSON.parse(JSON.stringify(currentResult.data)):null,calculate,civilCandidates};
+  function parseHandoff(raw) {
+    if(!raw || typeof raw!=='object' || Array.isArray(raw)) return null;
+    const date=typeof raw.date==='string'?raw.date:'';
+    const time=typeof raw.time==='string'?raw.time.slice(0,5):'';
+    const city=typeof raw.city==='string'?raw.city.trim().slice(0,120):'';
+    const tz=typeof raw.tz==='string'&&validZone(raw.tz)?raw.tz:'';
+    const gotDate=/^\d{4}-\d{2}-\d{2}$/.test(date);
+    const gotTime=/^([01]\d|2[0-3]):[0-5]\d$/.test(time);
+    const gotCity=city.length>=2;
+    if(!gotDate&&!gotTime&&!gotCity) return null;
+    return {date:gotDate?date:'',time:gotTime?time:'',city:gotCity?city:'',tz};
+  }
+  function showHandoffNote(message) {
+    let note=document.getElementById('chart-handoff-note');
+    if(!note){
+      note=document.createElement('p');
+      note.id='chart-handoff-note';
+      note.className='chart-status';
+      note.setAttribute('role','status');
+      $('form-error').before(note);
+    }
+    note.textContent=message;
+  }
+  function readObservatoryHandoff() {
+    try {
+      const raw=sessionStorage.getItem('ap-chart-handoff');
+      if(!raw) return null;
+      sessionStorage.removeItem('ap-chart-handoff');
+      return parseHandoff(JSON.parse(raw));
+    } catch (_) { return null; }
+  }
+  // Observatory keeps the birth minute in this tab. The chart confirms the
+  // town again and never accepts the minute from the address bar.
+  function applyObservatoryHandoff() {
+    const params=new URLSearchParams(location.search);
+    const blocked=params.get('entry')==='private-reentry';
+    if(blocked){
+      try {
+        const url=new URL(location.href);
+        url.searchParams.delete('entry');
+        history.replaceState(history.state,'',url.pathname+url.search+url.hash);
+      } catch (_) {}
+    }
+    const handoff=readObservatoryHandoff();
+    if(currentResult||openedSaved) return;
+    if(!handoff){
+      if(blocked) showHandoffNote('Private browser storage is blocked, so your birth details were not carried in the address bar. Re-enter them here to keep the chart private.');
+      return;
+    }
+    if(handoff.date) $('birth-date').value=handoff.date;
+    if(handoff.time){
+      $('time-unknown').checked=false;
+      $('birth-time').disabled=false;
+      $('time-approximate').disabled=false;
+      $('birth-time').value=handoff.time;
+    }
+    if(handoff.city){
+      $('birth-place').value=handoff.city;
+      offlineSearch();
+    }
+    const carried=[handoff.date&&'birth date',handoff.time&&'time',handoff.city&&'place name'].filter(Boolean);
+    const listed=carried.length>1?carried.slice(0,-1).join(', ')+' and '+carried[carried.length-1]:carried[0];
+    const zone=handoff.tz?handoff.tz.replace(/_/g,' ')+'. ':'';
+    const ask=handoff.city
+      ?' Pick the matching town from the list so the zone and coordinates are real. A typed name is not a location.'
+      :' Add your birth place and pick it from the list.';
+    const timeAsk=handoff.time?'':' Add a birth time, or mark it unknown, before creating the chart.';
+    showHandoffNote('Carried from your sky sitting: '+listed+'. '+zone+ask+timeAsk);
+    (handoff.city?$('birth-place'):$('birth-date')).focus({preventScroll:true});
+  }
+  window.APChartNext={getResult:()=>currentResult?JSON.parse(JSON.stringify(currentResult.data)):null,calculate,civilCandidates,parseHandoff,placeMatches};
   restoreSaved();
+  applyObservatoryHandoff();
 })();

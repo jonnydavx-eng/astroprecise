@@ -16,6 +16,10 @@ window.APUrlPrivacy = (function () {
         var name = String(key || '').toLowerCase();
         if ((name === 'nosw' || name === 'lite') && value === '1' && !kept.has(name)) kept.set(name, '1');
       });
+      // Storage-blocked Observatory visits may signal re-entry. The token
+      // carries no birth details; anything else named entry is discarded.
+      var entries = incoming.getAll('entry');
+      if (entries.length === 1 && entries[0] === 'private-reentry') kept.set('entry', 'private-reentry');
       // Only an existing local chart ID is a supported query-driven route.
       // Unknown IDs are discarded, as are all legacy birth-data fields.
       var ids = incoming.getAll('id');
@@ -51,12 +55,12 @@ window.APUrlPrivacy = (function () {
   <meta name="description" content="Make sense of your birth chart. Start with your Sun, Moon and rising sign, then explore the planets. Free, private and made for your phone.">
   <meta name="theme-color" content="#f4f1e9">
   <title>Your birth chart — AstroPrecise</title>
-  <link rel="stylesheet" href="css/ap-next.css?v=915">
-  <link rel="stylesheet" href="css/ap-chart-next.css?v=915">
-  <script defer src="js/ap-next.js?v=915"></script>
-  <script defer src="js/ephemeris.js?v=915"></script>
-  <script defer src="js/ap-mirror-hour.js?v=915"></script>
-  <script defer src="js/ap-chart-next.js?v=915"></script>
+  <link rel="stylesheet" href="css/ap-next.css?v=916">
+  <link rel="stylesheet" href="css/ap-chart-next.css?v=916">
+  <script defer src="js/ap-next.js?v=916"></script>
+  <script defer src="js/ephemeris.js?v=916"></script>
+  <script defer src="js/ap-mirror-hour.js?v=916"></script>
+  <script defer src="js/ap-chart-next.js?v=916"></script>
 </head>
 <body class="ap-next">
   <a class="chart-skip" href="#main">Skip to content</a>
