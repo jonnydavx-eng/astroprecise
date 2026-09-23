@@ -252,11 +252,60 @@
     const url=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='astroprecise-birth-reading.txt';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
     $('save-status').textContent='Your reading is ready to download. Keep the file somewhere you trust.';
   }
+  function takeSittingHandoff() {
+    try {
+      const raw = sessionStorage.getItem('ap-chart-handoff');
+      if (raw) sessionStorage.removeItem('ap-chart-handoff');
+      return raw;
+    } catch (_) { return null; }
+  }
+  function note(message, field) {
+    $('form-error').textContent = message;
+    $('form-error').hidden = false;
+    if (field) $(field).focus({ preventScroll: true });
+  }
+  function applySittingHandoff(raw) {
+    if (!raw) return false;
+    let row;
+    try { row = JSON.parse(raw); } catch (_) { return false; }
+    if (!row || typeof row !== 'object' || Array.isArray(row)) return false;
+    const date = String(row.date || row.birthDate || '');
+    const time = String(row.time || row.birthTime || '').slice(0, 5);
+    const city = String(row.city || row.birthCity || '').trim().slice(0, 120);
+    const gotDate = /^\d{4}-\d{2}-\d{2}$/.test(date);
+    const gotTime = /^([01]\d|2[0-3]):[0-5]\d$/.test(time);
+    if (!gotDate && !gotTime && !city) return false;
+    if (gotDate) $('birth-date').value = date;
+    if (gotTime) {
+      $('birth-time').value = time;
+      $('time-unknown').checked = false;
+      $('birth-time').disabled = false;
+      $('time-approximate').disabled = false;
+    }
+    if (city) {
+      $('birth-place').value = city;
+      offlineSearch();
+    }
+    note(gotDate && city
+      ? 'Your date and town stayed on this device. Choose the matching town from the list, then create the chart.'
+      : gotDate
+        ? 'Your birth date stayed on this device. Add the town, then create the chart.'
+        : 'Your town stayed on this device. Choose the matching place and add the date.',
+      city ? 'birth-place' : 'birth-date');
+    return true;
+  }
   function restoreSaved() {
+    const sittingRaw = takeSittingHandoff();
     let handoff=null;
     const id=new URLSearchParams(location.search).get('id');
     try { handoff=sessionStorage.getItem('ap-next-chart-open');if(handoff)sessionStorage.removeItem('ap-next-chart-open'); } catch (_) { /* Optional handoff; the calculator still works without storage. */ }
-    if(!handoff&&!id)return;
+    if(!handoff&&!id){
+      if (applySittingHandoff(sittingRaw)) return;
+      if (new URLSearchParams(location.search).get('entry') === 'private-reentry') {
+        note('This browser is blocking storage, so the birth details were not carried in the address. Enter them here.', 'birth-date');
+      }
+      return;
+    }
     try {
       let row=handoff?JSON.parse(handoff):null;
       if(!row&&id){const library=JSON.parse(localStorage.getItem('ap_charts')||'[]');row=Array.isArray(library)?library.find(chart=>String(chart.id)===id):null;}

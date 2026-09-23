@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-engine-solar-lunar.mjs, test-engine-planets.mjs, test-engine-houses.mjs, test-engine-edge.mjs, test-horoscope.mjs, test-compat.mjs, test-content-bank.mjs, test-art-themes.mjs, test-weekly-sky.mjs, test-ap-sky-bridge.mjs, test-orrery-adapter.mjs, test-gumroad-tables.mjs, tools/e2e-profile-save-audit.mjs]
+    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-engine-solar-lunar.mjs, test-engine-planets.mjs, test-engine-houses.mjs, test-engine-edge.mjs, test-horoscope.mjs, test-compat.mjs, test-content-bank.mjs, test-art-themes.mjs, test-weekly-sky.mjs, test-ap-sky-bridge.mjs, test-orrery-adapter.mjs, test-gumroad-tables.mjs, test-journey-handoff.mjs, test-next-url-privacy.mjs, test-sitting-handoff-stage.mjs, tools/e2e-profile-save-audit.mjs]
   workflow_dispatch:
 
 # 2026-07-04: migrated OFF the legacy gh-pages branch builder onto the official
@@ -72,6 +72,12 @@ jobs:
       # runs a hardcoded list, so adding a test locally did not make it a gate.
       - name: Orrery adapter
         run: node test-orrery-adapter.mjs
+
+      - name: Phone journey handoff and URL privacy
+        run: |
+          node test-journey-handoff.mjs
+          node test-next-url-privacy.mjs
+          node --test test-sitting-handoff-stage.mjs
 
       - name: Gumroad product tables agree
         run: node test-gumroad-tables.mjs

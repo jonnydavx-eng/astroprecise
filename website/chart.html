@@ -25,6 +25,13 @@ window.APUrlPrivacy = (function () {
           if (Array.isArray(charts) && charts.some(function (chart) { return chart && String(chart.id) === ids[0]; })) kept.set('id', ids[0]);
         } catch (_) { /* Unreadable local storage cannot resolve a saved ID. */ }
       }
+      // Storage-blocked Observatory/Life Path handoff. The value is a fixed
+      // token with no birth data; every other entry value is still removed.
+      var entries = [];
+      incoming.forEach(function (value, key) {
+        if (String(key || '').toLowerCase() === 'entry') entries.push(String(value || ''));
+      });
+      if (entries.length === 1 && entries[0] === 'private-reentry') kept.set('entry', 'private-reentry');
       var safeHash = '';
       var rawHash = String(window.location.hash || '').replace(/^#/, '');
       try {
