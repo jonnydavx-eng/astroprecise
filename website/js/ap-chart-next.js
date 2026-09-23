@@ -222,7 +222,7 @@
   }
   function loadProfile() {
     if(window.AstroProfile)return Promise.resolve(window.AstroProfile);
-    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=914';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
+    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=915';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
   }
   async function saveChart() {
     if(!currentResult)return;

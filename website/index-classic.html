@@ -6,28 +6,33 @@
   <meta name="referrer" content="no-referrer">
   <script>
   (function () {
-    var target = new URL('./index.html', location.href);
+    var target = new URL('./observatory.html', location.href);
     var incoming = new URLSearchParams(location.search || '');
     var query = new URLSearchParams();
     incoming.forEach(function (value, key) {
       var name = String(key || '').toLowerCase();
       if ((name === 'nosw' || name === 'lite') && String(value) === '1' && !query.has(name)) query.set(name, '1');
     });
-    var fragment = new URLSearchParams(String(location.hash || '').replace(/^#/, ''));
-    var hash = new URLSearchParams();
-    var focus = String(fragment.get('focus') || '').toLowerCase();
-    var scale = fragment.get('scale');
-    if (/^(earth|sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/.test(focus)) hash.set('focus', focus);
-    if (scale != null && /^-?\d+$/.test(String(scale))) hash.set('scale', String(scale));
+    var rawHash = String(location.hash || '').replace(/^#/, '');
     target.search = query.toString();
-    target.hash = hash.toString();
+    if (rawHash.toLowerCase() === 'lead') {
+      target.hash = 'lead';
+    } else {
+      var fragment = new URLSearchParams(rawHash);
+      var hash = new URLSearchParams();
+      var focus = String(fragment.get('focus') || '').toLowerCase();
+      var scale = fragment.get('scale');
+      if (/^(earth|sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/.test(focus)) hash.set('focus', focus);
+      if (scale != null && /^-?\d+$/.test(String(scale))) hash.set('scale', String(scale));
+      target.hash = hash.toString();
+    }
     location.replace(target.href);
   })();
   </script>
   <title>Astro Precise Observatory</title>
   <meta name="robots" content="noindex, follow">
-  <link rel="canonical" href="https://astroprecise.app/">
-  <noscript><meta http-equiv="refresh" content="0; url=./index.html"></noscript>
+  <link rel="canonical" href="https://astroprecise.app/observatory.html">
+  <noscript><meta http-equiv="refresh" content="0; url=./observatory.html#lead"></noscript>
 </head>
-<body><p><a href="./index.html">Open the Observatory</a></p></body>
+<body><p><a href="./observatory.html#lead">Open the Observatory</a></p></body>
 </html>

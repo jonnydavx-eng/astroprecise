@@ -31,17 +31,17 @@
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=914" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=914" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=914" />
-  <link rel="stylesheet" href="css/main-lite.css?v=914" />
-  <script>window.AP_ASSET_V='914';</script>
-  <script src="js/ap-nav-model.js?v=914" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=914" />
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=914">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=914">
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=915" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=915" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=915" />
+  <link rel="stylesheet" href="css/main-lite.css?v=915" />
+  <script>window.AP_ASSET_V='915';</script>
+  <script src="js/ap-nav-model.js?v=915" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=915" />
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=915">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=915">
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/tonight-page.css?v=914" id="ap-css-tonight" />
+  <link rel="stylesheet" href="css/tonight-page.css?v=915" id="ap-css-tonight" />
   <style>
     body:has(.tn-hero){--tn-gold:#93A8BF;--tn-gold-light:#C9D6E3;--tn-surface:#101D30;--tn-border:rgba(147,168,191,.24);background:#040812;color:#EEF4FA;}
     body:has(.tn-hero) #starfield-canvas,.aurora-orb{display:none!important;}
@@ -108,7 +108,7 @@
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — What's Visible Tonight","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"A privacy-first tool that computes which naked-eye planets are visible tonight, the Moon's phase and illumination, and sunset and twilight times for your location using real VSOP87/ELP2000 astronomy. City search sends only the place name to Open-Meteo; the sky calculation runs in your browser.","url":"https://astroprecise.app/tonight.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What planets are visible tonight?","acceptedAnswerNote":"Computed live in the browser.","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise computes which of the five naked-eye planets — Mercury, Venus, Mars, Jupiter and Saturn — are above your horizon and visible after sunset tonight, based on your location and real planetary positions. The answer is calculated on your device and changes daily."}},{"@type":"Question","name":"How is the visibility calculated?","acceptedAnswer":{"@type":"Answer","text":"Each planet's position is found from VSOP87 and ELP2000 astronomical theory, converted to its altitude above your local horizon using your latitude and the local sidereal time. A planet is reported as visible if it rises clear of the horizon during the dark hours after sunset. Times are good approximations for a flat, unobstructed horizon and may vary with terrain, weather and light pollution."}},{"@type":"Question","name":"Is my location sent anywhere?","acceptedAnswer":{"@type":"Answer","text":"Your coordinates are never transmitted to AstroPrecise. If you type a city name to search, only that place name is sent to Open-Meteo — never your exact position. The sky calculation runs in your browser."}}]}</script>
-  <link rel="stylesheet" href="css/ap-next.css?v=914"><script defer src="js/ap-next.js?v=914"></script></head>
+  <link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
 <body class="ap-no-nav-enter">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
@@ -130,7 +130,7 @@
           <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+          <noscript><a href="observatory.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -156,7 +156,7 @@
           Naked-eye planets after sunset, the Moon, and when twilight fades &mdash; for <em id="tn-hero-place">your place</em>.
           This is sky weather, not the minute you were born.
         </p>
-        <p class="tn-hero__cta"><a href="index.html" class="tn-btn tn-btn--primary">Open tonight in the Observatory</a></p>
+        <p class="tn-hero__cta"><a href="observatory.html#m=now&amp;focus=earth" class="tn-btn tn-btn--primary">Open tonight in the Observatory</a></p>
         <span class="tn-privacy-seal">
           <span class="tn-privacy-seal__glyph" aria-hidden="true">&#9919;</span>
           Computed locally on your device &middot; no tracking &middot; real astronomy
@@ -272,7 +272,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
-  <script src="js/ephemeris.js?v=914"></script>
+  <script src="js/ephemeris.js?v=915"></script>
 <script>
   (function () {
     'use strict';
@@ -539,7 +539,7 @@
   </script>
 
   <!-- JS — ephemeris/tonight on defer; cosmos + effects idle after load -->
-  <script src="js/profile.js?v=914" defer></script>
+  <script src="js/profile.js?v=915" defer></script>
   <script>
   (function () {
     function audit() {
@@ -551,9 +551,9 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    inject('js/raf-core.js?v=914');
-    inject('js/icons.js?v=914');
-    inject('js/tonight.js?v=914');
+    inject('js/raf-core.js?v=915');
+    inject('js/icons.js?v=915');
+    inject('js/tonight.js?v=915');
     function idleCosmos() {
       if (audit()) return;
     }
@@ -563,8 +563,8 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=914" defer></script>
-<script src="js/ap-sky-time.js?v=914" defer></script>
-  <script src="js/ap-footer-inject.js?v=914" defer></script>
+  <script src="js/ap-page-boot.js?v=915" defer></script>
+<script src="js/ap-sky-time.js?v=915" defer></script>
+  <script src="js/ap-footer-inject.js?v=915" defer></script>
 </body>
 </html>

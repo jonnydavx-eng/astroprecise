@@ -146,7 +146,7 @@ window.APDailyBridge = (function () {
     footer.className = 'dt-bridge-footer';
     footer.style.cssText = 'margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(139,169,255,0.16);display:flex;flex-wrap:wrap;gap:0.5rem;';
     footer.innerHTML =
-      '<a href="index.html" class="btn btn--outline btn--sm">Observatory</a>' +
+      '<a href="observatory.html" class="btn btn--outline btn--sm">Observatory</a>' +
       '<a href="chart.html" class="btn btn--ghost btn--sm">Chart</a>';
     card.appendChild(footer);
   }

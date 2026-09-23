@@ -8,7 +8,7 @@
  * Ascendant/houses (says so with dignity); no transits -> CH6 explains the
  * live edition. No dependencies; browser + Node.
  */
-import { fmtDeg, fmtOrb, wholeSignHouse, separation } from './eclipse-reading.js?v=914';
+import { fmtDeg, fmtOrb, wholeSignHouse, separation } from './eclipse-reading.js?v=915';
 
 const SIGNS_EL = ['fire','earth','air','water']; // Aries=fire, Taurus=earth, ...
 const SIGNS_MODE = ['cardinal','fixed','mutable'];

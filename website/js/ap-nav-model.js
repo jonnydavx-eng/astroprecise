@@ -2,17 +2,17 @@
  * Astro Precise — Navigation IA (model-first, single source of truth).
  * Load before app.js: <script src="js/ap-nav-model.js"></script>
  *
- * OBSERVATORY STRUCTURE (2026-07-10 — the homepage IS the model):
- *   The living orrery is the product; index.html is the Observatory.
+ * GUIDED HOME (2026-09-20): index.html is the birth-sky journey.
+ * The 3D model lives at observatory.html. Do not send "Observatory" or
+ * "3D model" actions back to index.html.
  *
- * Launch bar: Observatory · Chart · Events · Shop.
- * The historical tools remain directly addressable, but they never leak into
- * the four-route launch shell or reintroduce a second "Explore" entrance.
+ * Launch bar: Today · Birth chart · Explore · Saved.
+ * The historical tools remain directly addressable.
  *
- * Mobile launch tabs: Sky · Chart · Events · Shop.
+ * Mobile launch tabs: Today · Birth chart · Explore · Saved.
  *
- * Site spine: Observatory (see) → Chart (cast) → Events (follow) → Shop (keep)
- * index.html is the single live Observatory; Explore is an action inside that scene, not another route.
+ * Site spine: Today (begin) → Birth chart (cast) → Explore (browse) → Saved (return)
+ * observatory.html is the single live 3D Observatory.
  */
 'use strict';
 

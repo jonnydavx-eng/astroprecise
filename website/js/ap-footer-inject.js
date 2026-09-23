@@ -18,7 +18,7 @@
     if (document.querySelector('link[href*="ap-living-sky-v834.css"],link[href*="ap-footer-v835.css"]')) return;
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = new URL('css/ap-footer-v835.css?v=914', document.baseURI).href;
+    link.href = new URL('css/ap-footer-v835.css?v=915', document.baseURI).href;
     link.dataset.apFooterStyles = '835';
     (document.head || document.documentElement).appendChild(link);
   }
@@ -27,7 +27,7 @@
   // Load only this self-contained layer there so the footer never becomes raw text.
   ensureStyles();
   var CORE_LINKS = [
-    { href: 'index.html', label: 'Observatory' },
+    { href: 'observatory.html', label: 'Observatory' },
     { href: 'chart.html', label: 'Chart' },
     { href: 'sky-events.html', label: 'Events' },
     { href: 'shop.html', label: 'Shop' },

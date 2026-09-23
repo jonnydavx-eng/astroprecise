@@ -296,7 +296,7 @@
     } else {
       // A missing/private bridge must not turn a birth minute into a visible
       // public deep link. The clean focus route remains useful without it.
-      modelBtn.href = './index.html#focus=earth';
+      modelBtn.href = './observatory.html#focus=earth';
     }
     cta.appendChild(modelBtn);
 

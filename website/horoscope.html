@@ -21,12 +21,12 @@
   </script>
   <meta name="description" content="Daily horoscope for all 12 signs. Positions are calculated for today at 12:00 UT and interpreted through a solar chart; astrological meaning is offered for reflection and entertainment." />
   <title>Daily Horoscope — calculated from today’s sky | AstroPrecise</title>
-  <script>window.AP_ASSET_V='914';</script>
+  <script>window.AP_ASSET_V='915';</script>
   <link rel="preload" href="fonts/cormorant-garamond-normal-500.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/ibm-plex-mono-normal-400.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/fonts.css?v=914" />
+  <link rel="stylesheet" href="css/fonts.css?v=915" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -48,11 +48,11 @@
   <meta name="twitter:description" content="Positions calculated for today at 12:00 UT, then interpreted through a solar chart for all twelve signs." />
   <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-horoscope-og-v906.jpg" />
   <meta name="theme-color" content="#040812" />
-  <link rel="preload" href="css/ap-palette-2026.css?v=914" as="style" />
-  <link rel="preload" href="css/ap-logo-aurora.css?v=914" as="style" />
-  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=914" id="ap-css-visual-clarity" />
-  <link rel="preload" href="css/ap-page-structure.css?v=914" as="style" />
-  <link rel="preload" href="css/ap-model-stage.css?v=914" as="style" />
+  <link rel="preload" href="css/ap-palette-2026.css?v=915" as="style" />
+  <link rel="preload" href="css/ap-logo-aurora.css?v=915" as="style" />
+  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=915" id="ap-css-visual-clarity" />
+  <link rel="preload" href="css/ap-page-structure.css?v=915" as="style" />
+  <link rel="preload" href="css/ap-model-stage.css?v=915" as="style" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -72,9 +72,9 @@
     "isPartOf": { "@type": "WebSite", "name": "AstroPrecise", "url": "https://astroprecise.app/" }
   }
   </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=914" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=914" />
-  <link rel="stylesheet" href="css/ap-daily-v835.css?v=914" />
+  <link rel="stylesheet" href="css/celestial-seals.css?v=915" />
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=915" />
+  <link rel="stylesheet" href="css/ap-daily-v835.css?v=915" />
   <style>
     /* One-screen daily: People / Work / Pace. No Guides & tools / engine-visuals strip. */
     .page-horoscope .ap-guide-links,
@@ -82,7 +82,7 @@
     .page-horoscope .ap-ev { display: none !important; }
     .page-horoscope .sign-reading-panel__method a { color: var(--daily-brass, #93A8BF); }
   </style>
-<link rel="stylesheet" href="css/ap-next.css?v=914"><script defer src="js/ap-next.js?v=914"></script></head>
+<link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
 <body class="page-horoscope ap-daily-ledger ap-no-nav-enter">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
@@ -101,7 +101,7 @@
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript>
-            <a href="index.html" class="navbar__link">Observatory</a>
+            <a href="observatory.html" class="navbar__link">Observatory</a>
             <a href="chart.html" class="navbar__link">Chart</a>
             <a href="sky-events.html" class="navbar__link">Events</a>
             <a href="shop.html" class="navbar__link">Shop</a>
@@ -135,7 +135,7 @@
           </script>
           <h1 id="page-title">Today, in one screen</h1>
           <p class="daily-hero__sub">Choose a Sun sign. This is weather for the sign, not your birth chart.</p>
-          <p class="daily-hero__cta"><a href="index.html" class="btn btn--primary btn--lg">See today’s sky in the 3D model</a></p>
+          <p class="daily-hero__cta"><a href="observatory.html#m=now&amp;focus=earth" class="btn btn--primary btn--lg">See today’s sky in the 3D model</a></p>
           <p class="daily-hero__method"><a href="chart.html">12:00 UT · solar chart · reflection, not fact</a></p>
           <p class="daily-hero__personal">Positions are calculated at 12:00 UT and read as Sun-sign weather. Meaning is offered for reflection, not as prediction or scientific fact.</p>
         </header>
@@ -240,7 +240,7 @@
             <div><dt>Jupiter</dt><dd id="ap-sky-jupiter">Open to calculate</dd></div>
             <div><dt>Saturn</dt><dd id="ap-sky-saturn">Open to calculate</dd></div>
           </dl>
-          <a class="daily-evidence__action" href="index.html">See today’s sky in the 3D model</a>
+          <a class="daily-evidence__action" href="observatory.html#m=now&amp;focus=earth">See today’s sky in the 3D model</a>
         </section>
       </div>
     </details>
@@ -255,9 +255,9 @@
   <script src="js/ap-zodiac-constants.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
-  <script src="js/ap-nav-model.js?v=914" defer></script>
-  <script src="js/ap-footer-inject.js?v=914" defer></script>
-  <script src="js/app.js?v=914" defer></script>
-  <script src="js/horoscope-page.js?v=914" defer></script>
+  <script src="js/ap-nav-model.js?v=915" defer></script>
+  <script src="js/ap-footer-inject.js?v=915" defer></script>
+  <script src="js/app.js?v=915" defer></script>
+  <script src="js/horoscope-page.js?v=915" defer></script>
 </body>
 </html>
