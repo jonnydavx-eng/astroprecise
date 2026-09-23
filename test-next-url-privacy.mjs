@@ -51,7 +51,13 @@ for (const [file, anchor] of pages) {
   initial.location.hash = '#' + anchor;
   initial.events.hashchange();
   assert.equal(initial.location.hash, '#' + anchor, file + ' retains a real section route');
-  assert.equal(boot('?nosw=0&lite=private&entry=private-reentry', '#%E0%A4%A').location.search, '');
+  const entry = boot('?nosw=0&lite=private&entry=private-reentry', '#%E0%A4%A');
+  assert.equal(entry.location.search, file === 'chart.html' ? '?entry=private-reentry' : '');
+  if (file === 'chart.html') {
+    assert.equal(boot('?entry=private-reentry&date=1990-01-01&time=11:11', '').location.search, '?entry=private-reentry', 'chart keeps the storage-blocked signal and drops birth fields');
+    assert.equal(boot('?entry=1990-01-01', '').location.search, '', 'chart rejects an entry value that could carry a birth detail');
+    assert.equal(boot('?entry=private-reentry&entry=private-reentry', '').location.search, '', 'chart rejects an ambiguous entry');
+  }
   assert.equal(boot('', '#%E0%A4%A').location.hash, '', file + ' discards malformed fragments');
   assert.equal(boot('?NOSW=1&nosw=1&LITE=1', '').location.search, '?nosw=1&lite=1');
 

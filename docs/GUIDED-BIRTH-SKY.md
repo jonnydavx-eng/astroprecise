@@ -11,7 +11,7 @@ The homepage demonstrates the moving sky before asking for birth details. Its si
 
 ## Data boundaries
 
-Calculations and generated readings run on the device. Offline city choices supply real IANA zones. Online town search is explicit and sends only the town query to Open-Meteo. Birth details travel between journey pages through session storage, never through query strings.
+Calculations and generated readings run on the device. Offline city choices supply real IANA zones. Online town search is explicit and sends only the town query to Open-Meteo. Birth details travel between journey pages through session storage, never through query strings. An Observatory sitting stores `ap-chart-handoff` for the chart page, which prefills the date, time and place name and then asks for the town to be picked again. A typed place name is not calculated.
 
 Saving a chart is opt-in. The existing `ap_charts` and profile formats remain compatible. Opening an older record does not silently migrate it to another calculation method. The new calculator uses Whole Sign houses and the true lunar node; incompatible saved methods prefill a new calculation instead of overwriting the original. Malformed saved data is not silently discarded.
 
@@ -27,4 +27,4 @@ Run `node tools/verify-next-journey.mjs` against that preview. Set `AP_BASE` for
 
 Focused regression checks are `node test-ap-sky-bridge.mjs`, `node test-orrery-adapter.mjs`, and `node tools/e2e-profile-save-audit.mjs` (set `AP_BASE` to the running preview). Existing astronomy tests remain release gates. Browser viewport tests do not establish physical-device performance or external user engagement.
 
-The ap-v915 service worker installs the compact guided journey, not the full 3D texture library. Updates wait for the user's explicit update action when an older worker controls the page. Checkout is closed. Public Pages still serves ap-v912 until this branch is merged.
+The ap-v916 service worker installs the compact guided journey, not the full 3D texture library. Updates wait for the user's explicit update action when an older worker controls the page. Checkout is closed. Public Pages still serves ap-v912 until this branch is merged.

@@ -16,3 +16,17 @@ body.ap-legacy{--ap-display:var(--ap-next-serif);--ap-ui:var(--ap-next-sans);--a
 body.ap-legacy .site-header:not(#ap-next-header),body.ap-legacy [data-ap-static-nav]{display:none!important}
 
 .ap-next{--serif:var(--ap-next-serif);--sans:var(--ap-next-sans)}.ap-next .eyebrow{font-size:12px}.ap-next .ap-next-tabs a{font-size:11px}
+
+/* Observatory is a night surface. Keep the shared shell from painting cream over the globe. */
+body.ap-observatory .ap-next-header{background:#0c1016;color:#ece6d8;border-bottom-color:#2a3344}
+body.ap-observatory .ap-next-logo,body.ap-observatory .ap-next-desktop a,body.ap-observatory .ap-next-studio{color:#ece6d8!important}
+body.ap-observatory .ap-next-desktop a[aria-current]:after{background:#d8b978}
+@media(max-width:800px){
+  body.ap-observatory .ap-next-tabs{background:#0c1016f2;border-top-color:#2a3344}
+  body.ap-observatory .ap-next-tabs a{color:#c8c2b4}
+  body.ap-observatory .ap-next-tabs a[aria-current]{background:#1a2230;color:#ece6d8}
+  body.ap-observatory .tool-crumb{display:none!important}
+  body.ap-observatory.ap-legacy main{padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+  html body.ap-observatory.ap-live-home.ap-reading-room .ap-live-intro{position:absolute!important;z-index:6;top:12px!important;left:16px!important;right:16px!important;width:auto!important;max-height:46%;overflow:auto;padding:12px 0 0!important}
+  html body.ap-observatory.ap-live-home.ap-reading-room .ap-model-stage{height:calc(100svh - 69px - 96px)!important;min-height:240px!important}
+}
