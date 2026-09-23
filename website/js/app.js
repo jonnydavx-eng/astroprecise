@@ -1270,7 +1270,7 @@ window.AstroUI = (() => {
     { href: 'moonphase.html', label: 'Moon Phase' },
     { href: 'retrograde.html', label: 'Retrograde' },
     { href: 'what-is-my-rising-sign.html', label: 'Rising Sign' },
-    { href: 'synastry.html', label: 'Synastry' },
+    { href: 'compatibility.html', label: 'Compare charts' },
     { href: 'solar-return.html', label: 'Solar Return' },
     { href: 'accuracy.html', label: 'Accuracy' },
   ];
@@ -1312,7 +1312,7 @@ window.AstroUI = (() => {
       ['tonight.html', 'Tonight’s sky'],
       ['moonphase.html', 'Moon phase'],
       ['retrograde.html', 'Mercury retrograde'],
-      ['synastry.html', 'Synastry'],
+      ['compatibility.html', 'Compare two charts'],
       ['solar-return.html', 'Solar return'],
       ['charts.html', 'My charts'],
       ['accuracy.html', 'How it’s accurate'],

@@ -77,6 +77,7 @@ async function start(){
   }catch(error){empty('The reading language couldn’t load. Your chart is still on this device. Return to your chart and try “Read my sky story” again.');}
 }
 $('keep-my-sky').addEventListener('click',()=>{
+  if(!chart||!chart.positions){$('story-keep-status').textContent='Create your chart before keeping a sky card.';return;}
   try{sessionStorage.setItem('ap-next-sky',JSON.stringify(chart));sessionStorage.setItem('ap-sky-card-handoff',JSON.stringify({date:chart.birthDate,time:chart.timeKnown?chart.birthTime:'',zone:chart.tz,city:chart.birthCity||chart.city,lat:chart.lat,lon:chart.lon,timeKnown:chart.timeKnown}));location.href='sky-card.html';}
   catch(_){$('story-keep-status').textContent='This browser is blocking the handoff. Download your reading below to keep it. Your saved chart, if you saved one, is still in Saved charts.';}
 });

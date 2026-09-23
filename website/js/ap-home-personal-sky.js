@@ -183,7 +183,7 @@
       return;
     }
     var my = ++searchSeq;
-    fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json')
+    fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json', { credentials: 'omit', referrerPolicy: 'no-referrer' })
       .then(function (r) { return r.ok ? r.json() : { results: [] }; })
       .then(function (data) {
         if (my !== searchSeq) return;
@@ -207,7 +207,7 @@
     if (picked && placeEl.value.trim()) return Promise.resolve(picked);
     var q = String(typed || '').trim();
     if (q.length < 2) return Promise.resolve(null);
-    return fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json')
+    return fetch(GEO + '?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json', { credentials: 'omit', referrerPolicy: 'no-referrer' })
       .then(function (r) { return r.ok ? r.json() : { results: [] }; })
       .then(function (data) {
         var list = (data.results || []).map(function (r) {
