@@ -1,0 +1,88 @@
+import { chromium } from 'playwright-core';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const base=process.env.AP_BASE||'http://127.0.0.1:8796';
+const folder='output/playwright/guided-20260927';
+fs.mkdirSync(folder,{recursive:true});
+const browser=await chromium.launch({channel:'msedge',headless:true});
+const evidence={at:new Date().toISOString(),base,viewports:[],errors:[]};
+try {
+  const context=await browser.newContext({reducedMotion:'reduce'});
+  const page=await context.newPage();
+  page.on('pageerror',e=>evidence.errors.push(e.message));
+  for(const [width,height] of [[320,568],[360,640],[390,844],[768,1024],[1440,960]]) {
+    await page.setViewportSize({width,height});
+    await page.goto(base+'/?nosw=1');
+    await page.locator('#sky-instrument svg').waitFor();
+    await page.evaluate(()=>document.fonts.ready);
+    const geometry=await page.evaluate(()=>{
+      const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,bottom:r.bottom};};
+      return {cta:rect('.intro-cta .button'),demo:rect('.intro-showcase'),scrollWidth:document.documentElement.scrollWidth,width:innerWidth,height:innerHeight,visibleNavigation:[...document.querySelectorAll('.ap-next-desktop,.ap-next-tabs,.ap-next-studio')].filter(e=>e.getBoundingClientRect().height>0).length};
+    });
+    assert(geometry.scrollWidth<=width+1,'horizontal overflow '+width);
+    assert(geometry.cta.bottom<=height,'CTA below first screen '+width+': '+geometry.cta.bottom);
+    assert.equal(geometry.visibleNavigation,0,'entry navigation creates choices');
+    assert.equal(await page.locator('#demo-keepsake:visible').count(),0);
+    await page.screenshot({path:`${folder}/opening-${width}.png`});
+    evidence.viewports.push({width,height,...geometry});
+  }
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(base+'/?nosw=1');
+  const started=Date.now();
+  await page.getByRole('button',{name:'Play sky demonstration'}).click();
+  await page.locator('#demo-keepsake:visible').waitFor({timeout:13000});
+  evidence.revealMs=Date.now()-started;
+  assert(evidence.revealMs<15000);
+  assert.match(await page.locator('#demo-signs').innerText(),/Sun · .+ Moon/);
+  await page.screenshot({path:`${folder}/reveal-390.png`});
+  await page.getByRole('link',{name:'Reveal my birth sky',exact:true}).first().click();
+  await page.locator('#birth-date').fill('1990-06-15');
+  await page.locator('#birth-time').fill('14:30');
+  await page.locator('#birth-place').fill('London');
+  await page.getByRole('button',{name:'London · GB Europe/London'}).click();
+  await page.locator('#calculate-chart').click();
+  await page.locator('#chart-result').waitFor({state:'visible'});
+  await page.getByRole('button',{name:'Read my sky story'}).click();
+  await page.locator('#story-content').waitFor({state:'visible'});
+  assert.equal(await page.locator('#story-chapters>details').count(),7);
+  await page.locator('#keep-my-sky').click();
+  await page.locator('#sky-poster svg').waitFor();
+  const download=page.waitForEvent('download');
+  await page.locator('#download-poster').click();
+  await (await download).saveAs(`${folder}/fictional-free-card.png`);
+  evidence.chartStoryCard=true;
+  await page.goto(base+'/shop.html?nosw=1');
+  assert.equal(await page.locator('[data-product-sku]').count(),1);
+  assert.equal(await page.locator('[data-product-sku]').getAttribute('data-product-sku'),'natal-sky-print-pack');
+  assert.match(await page.locator('main').innerText(),/Checkout closed/);
+  assert(!/£29|£39/.test(await page.locator('main').innerText()));
+  assert.equal(await page.locator('a[href*="gumroad"]').count(),0);
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  await page.screenshot({path:`${folder}/studio-390.png`,fullPage:true});
+  evidence.singleClosedOffer=true;
+  assert.deepEqual(evidence.errors,[]);
+  await context.close();
+  const automatic=await browser.newContext({viewport:{width:320,height:568},reducedMotion:'no-preference'});
+  const autoPage=await automatic.newPage();
+  const autoStart=Date.now();
+  await autoPage.goto(base+'/?nosw=1');
+  await autoPage.locator('#demo-keepsake:visible').waitFor({timeout:14000});
+  evidence.autoplayMs=Date.now()-autoStart;
+  assert(evidence.autoplayMs<15000);
+  const clearances=await autoPage.evaluate(()=>{
+    const card=document.querySelector('#demo-keepsake').getBoundingClientRect();
+    const caption=document.querySelector('.showcase-caption').getBoundingClientRect();
+    const detail=document.querySelector('#demo-detail').getBoundingClientRect();
+    const model=document.querySelector('.showcase-model').getBoundingClientRect();
+    return {cardToCaption:caption.top-card.bottom,detailToModel:model.top-detail.bottom};
+  });
+  assert(clearances.cardToCaption>=0,'sample overlaps caption');
+  assert(clearances.detailToModel>=0,'description overlaps model label');
+  evidence.revealClearances=clearances;
+  await autoPage.screenshot({path:`${folder}/reveal-320.png`});
+  await automatic.close();
+} finally {
+  fs.writeFileSync(`${folder}/verification.json`,JSON.stringify(evidence,null,2));
+  await browser.close();
+}
+console.log(JSON.stringify(evidence,null,2));
