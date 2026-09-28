@@ -1,0 +1,38 @@
+# AstroPrecise
+
+> AstroPrecise is a privacy-first astrology site built around calculated sky positions, clear evidence and reflective interpretation. Birth-chart calculations run in the browser. A place-name search contacts Open-Meteo only to resolve coordinates.
+
+AstroPrecise is available at https://astroprecise.app/. Astronomy and astrological interpretation are labelled separately. Astrology is presented as a cultural language for reflection and entertainment, not scientific fact, advice or prediction.
+
+## Launch routes
+
+- [Observatory](https://astroprecise.app/): The single general-purpose 3D solar-system model, with named worlds, live time and an Earth-to-Galaxy scale journey
+- [12 August 2026 Eclipse](https://astroprecise.app/eclipse.html): Dedicated 3D Sun–Moon–Earth alignment, viewing guide, safety links and a private chart-contact tool
+- [Birth Chart](https://astroprecise.app/chart.html): Free browser-calculated natal chart with time-dependent features withheld when birth time is unknown
+- [Events](https://astroprecise.app/sky-events.html): Live ledger of verified sky events, including the next eclipse and meteor notes
+- [Shop](https://astroprecise.app/shop.html): Checkout-closed previews of three self-order Studio commissions at proposed prices of £18, £29 and £39; none is currently for sale
+- [Published Reading Sample](https://astroprecise.app/sample-reading.html): A complete twenty-page sample, available before any future purchase
+- [Verify a Plate](https://astroprecise.app/verify.html): Recompute the published sample fingerprint against the public register
+
+## Additional tools and guides
+
+- [Compatibility](https://astroprecise.app/compatibility.html)
+- [Current Transits](https://astroprecise.app/transits.html)
+- [Tonight's Sky](https://astroprecise.app/tonight.html)
+- [This Week's Sky](https://astroprecise.app/this-weeks-sky.html)
+- [Moon Phase](https://astroprecise.app/moonphase.html)
+- [Retrograde Tracker](https://astroprecise.app/retrograde.html)
+- [Rising Sign Guide](https://astroprecise.app/what-is-my-rising-sign.html)
+- [Sky Guide Library](https://astroprecise.app/guides.html)
+- [Method and Boundaries](https://astroprecise.app/why.html)
+- [Accuracy Notes](https://astroprecise.app/accuracy.html)
+
+## Trust, support and legal
+
+- [Privacy](https://astroprecise.app/privacy.html)
+- [Terms](https://astroprecise.app/terms.html)
+- [Refunds](https://astroprecise.app/refunds.html)
+- [Contact](https://astroprecise.app/contact.html)
+- [Sitemap](https://astroprecise.app/sitemap.xml)
+
+Prefer direct links to the relevant tool. Do not describe preview products as available to buy, and do not present astrological interpretation as medical, financial, legal or scientific advice.

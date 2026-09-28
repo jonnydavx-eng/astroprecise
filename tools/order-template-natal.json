@@ -1,0 +1,26 @@
+{
+  "schema": "astroprecise-studio-order-v901",
+  "orderId": "FICTIONAL-NATAL-PROOF-20260928",
+  "product": "natal-sky-print-pack",
+  "email": "buyer@example.test",
+  "sampleMode": "fictional",
+  "purchaseIntent": "self",
+  "buyerDeclaration": {
+    "typedName": "Aurora Vale",
+    "confirmedAdult": true,
+    "confirmedChartSubject": true,
+    "confirmedPersonalDataEntry": true
+  },
+  "name": "Aurora Vale",
+  "place": "Whitby, England",
+  "y": 1990,
+  "mo": 6,
+  "d": 14,
+  "h": 3,
+  "mi": 42,
+  "lat": 54.486,
+  "lon": -0.613,
+  "tz": "Europe/London",
+  "timeAccuracy": "exact",
+  "house": "placidus"
+}

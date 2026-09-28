@@ -28,7 +28,11 @@
     "lint": "eslint website/js test-*.mjs ephemeris-package",
     "lint:fix": "eslint --fix website/js test-*.mjs ephemeris-package",
     "format": "prettier --write \"website/js/**/*.js\" \"test-*.mjs\" \"*.md\"",
-    "format:check": "prettier --check \"website/js/**/*.js\" \"test-*.mjs\""
+    "format:check": "prettier --check \"website/js/**/*.js\" \"test-*.mjs\"",
+    "product:proof:natal": "node tools/fulfil-order.mjs --in tools/order-template-natal.json --proof --fictional-fixture natal-sky-print-pack-v1",
+    "test:proof:natal": "node --test --test-concurrency=1 tools/test-fictional-natal-fixture.mjs tools/test-natal-presentation.mjs",
+    "test:fulfil:source": "node --test test-package-studio-args.mjs && node test-fulfil-security.mjs && node test-payment-evidence.mjs && node test-fulfil-recovery.mjs && npm run test:proof:natal",
+    "test:studio:candidate": "node tools/verify-studio-candidate.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

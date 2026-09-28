@@ -33,15 +33,7 @@ function fixture() {
   const root = mkdtempSync(join(ROOT, '.package-args-test-'));
   const invokingDirectory = join(root, 'invoking-directory');
   mkdirSync(invokingDirectory);
-  // Packaging needs a fictional self-order, independent of legacy render templates.
-  const order = {
-    orderId: 'FICTIONAL-PACKAGING-TEST',
-    product: PRODUCT,
-    purchaseIntent: 'self',
-    sampleMode: 'fictional',
-    name: 'Aurora Vale',
-    email: 'buyer@example.test',
-  };
+  const order = { ...JSON.parse(readFileSync(join(ROOT, 'tools/order-template.json'), 'utf8')), product: PRODUCT };
   const inputPath = join(root, 'fictional-order.json');
   writeFileSync(inputPath, JSON.stringify(order));
   for (const name of DOC_FILES) writeFileSync(join(invokingDirectory, name), `Existing document must survive: ${name}\n`);

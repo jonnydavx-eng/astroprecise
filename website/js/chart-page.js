@@ -852,12 +852,11 @@
   // ── Results rendering ─────────────────────────────────────────────────────
 
   function fmtDeg(p) {
-    let dg = Math.floor(p.degree);
-    let mn = Math.round((p.degree - dg) * 60);
-    if (mn === 60) {
-      dg = (dg + 1) % 30;
-      mn = 0;
-    }
+    // Match the PDF and chart-render display: show completed arcminutes.
+    // Truncation keeps the degree label in the same sign as the computed point.
+    const minutes = Math.min(1799, Math.floor(p.degree * 60 + 1e-9));
+    const dg = Math.floor(minutes / 60);
+    const mn = minutes % 60;
     return `${dg}°${String(mn).padStart(2, '0')}′`;
   }
 

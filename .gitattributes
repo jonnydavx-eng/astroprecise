@@ -1,0 +1,6 @@
+# Preserve hash-bound proof fixtures and private render snapshots across checkouts.
+tools/studio-render/** -text whitespace=cr-at-eol
+tools/test-fixtures/natal-baseline/** -text whitespace=cr-at-eol
+tools/order-template.json -text whitespace=cr-at-eol
+tools/order-template-natal.json -text whitespace=cr-at-eol
+tools/fulfil-shared.mjs -text whitespace=cr-at-eol

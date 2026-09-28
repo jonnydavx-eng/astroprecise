@@ -84,6 +84,37 @@ const PRINT_GUIDE = `ASTROPRECISE STUDIO · HOME-PRINT GUIDE
 5. The SHA-256 manifest verifies that the delivered bytes have not changed. It does not verify a birth record, astrological validity, scientific validity, or uniqueness.
 `;
 
+const NATAL_README = `ASTROPRECISE · NATAL SKY PRINT PACK · DELIVERY NOTES
+
+This digital pack contains two home-print PDFs (A3 colour and ink-light A4), a 4960 × 7016 print PNG, a 2160 × 2160 square PNG, a 2160 × 3840 story PNG, a 1080 × 1920 phone wallpaper and a 1080 × 1080 Big Three card.
+
+The chart positions are computed from the recorded birth data supplied with the order. Astrological labels are traditional symbolic descriptions for reflection and entertainment, not scientific personality findings, predictions or professional advice.
+
+Positions are displayed in whole arcminutes, truncating smaller fractions consistently across the PDFs and PNGs. This display rule does not change the computed positions or house assignments.
+
+The A3 plate is an RGB home-print file with no commercial-press bleed, TrimBox or CMYK OutputIntent. Use fit to printable area unless your printer supports borderless A3. The A4 plate is an ink-light, scaled convenience copy.
+
+For a calculation/production error or an order question, use the private Gumroad order conversation. Do not send birth details through the public contact form.
+`;
+
+const NATAL_PRINT_GUIDE = `ASTROPRECISE · NATAL SKY PRINT PACK · HOME-PRINT GUIDE
+
+1. A3 PDF: RGB home-print plate, 297 × 420 mm. No bleed or commercial CMYK profile is claimed.
+2. A4 PDF: ink-light, scaled convenience copy for common home printers.
+3. Choose actual size only when the printer can image the full page; otherwise choose fit to printable area.
+4. For best dark output, use heavyweight matte stock and the printer's high-quality setting. Use the ink-light A4 plate for more economical printing.
+5. Five PNG layouts are supplied: print (4960 × 7016), square (2160 × 2160), story (2160 × 3840), phone (1080 × 1920) and Big Three (1080 × 1080).
+6. The SHA-256 manifest verifies that the delivered bytes have not changed. It does not verify a birth record, astrological validity, scientific validity or uniqueness.
+7. The personal-use licence permits private display and self-printing for personal, non-commercial use. It does not include printing by a third-party print service, public redistribution or resale.
+`;
+
+// Clarifies the existing self-printing scope for this proposed Natal offer.
+// Other products' licence text is unchanged; launch terms remain unapproved.
+const NATAL_SELF_LICENCE = SELF_LICENCE.replace(
+  'The original purchaser may download, store backup copies, display privately, and self-print the supplied files for personal, non-commercial use.',
+  'The original purchaser may download and store backup copies. The personal-use licence permits private display and self-printing for personal, non-commercial use. It does not include printing by a third-party print service, public redistribution or resale.',
+);
+
 function thirdPartyCreditsText() {
   const credits = JSON.parse(readFileSync(CREDITS_SOURCE, 'utf8'));
   if (credits?.schema !== 'astroprecise-third-party-credits-v1' || !Array.isArray(credits.entries) || credits.entries.length === 0) {
@@ -128,9 +159,12 @@ async function main() {
     ? GIFT_AUTHORISED_BUYER_COPY_LICENCE
     : GIFT_RECIPIENT_ONLY_LICENCE;
   const files = [...BY_SKU[product], ...(giftMode ? GIFT_FILES : []), 'README.txt', 'PERSONAL-USE-LICENCE.txt', 'PRINT-GUIDE.txt', 'THIRD-PARTY-CREDITS.txt'];
-  writeFileSync(join(dir, 'README.txt'), giftMode ? `${README}\nGIFT DELIVERY\n\nThe three birthday-gift files are personalised for the intended adult recipient, who receives them by default. The buyer receives a private copy only when the recipient's separate authorisation is still valid at dispatch. The Moon plate is a computed schematic, not a photograph.\n` : README);
-  writeFileSync(join(dir, 'PERSONAL-USE-LICENCE.txt'), giftMode ? giftLicence : SELF_LICENCE);
-  writeFileSync(join(dir, 'PRINT-GUIDE.txt'), PRINT_GUIDE);
+  const baseReadme = product === 'natal-sky-print-pack' ? NATAL_README : README;
+  const proofNotice = product === 'natal-sky-print-pack' && mode === 'proof'
+    ? 'PROOF · NOT A CUSTOMER DELIVERY. Fictional examples are labelled FICTIONAL SAMPLE on the artwork.\n\n' : '';
+  writeFileSync(join(dir, 'README.txt'), giftMode ? `${baseReadme}\nGIFT DELIVERY\n\nThe three birthday-gift files are personalised for the intended adult recipient, who receives them by default. The buyer receives a private copy only when the recipient's separate authorisation is still valid at dispatch. The Moon plate is a computed schematic, not a photograph.\n` : `${proofNotice}${baseReadme}`);
+  writeFileSync(join(dir, 'PERSONAL-USE-LICENCE.txt'), giftMode ? giftLicence : product === 'natal-sky-print-pack' ? NATAL_SELF_LICENCE : SELF_LICENCE);
+  writeFileSync(join(dir, 'PRINT-GUIDE.txt'), product === 'natal-sky-print-pack' ? NATAL_PRINT_GUIDE : PRINT_GUIDE);
   writeFileSync(join(dir, 'THIRD-PARTY-CREDITS.txt'), thirdPartyCreditsText());
   for (const file of files) {
     if (!existsSync(join(dir, file))) throw new Error(`Missing required customer file: ${file}`);
