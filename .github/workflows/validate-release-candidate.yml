@@ -1,0 +1,84 @@
+name: Validate release candidate
+
+on:
+  pull_request:
+    branches: [main]
+
+# Review evidence only. No provider secrets, main writes or deployment rights.
+permissions:
+  contents: read
+
+concurrency:
+  group: candidate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  candidate:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Build deployable website
+        run: npm run build
+
+      - name: Couples and privacy regressions
+        shell: pwsh
+        env:
+          AP_PRIVACY_ROOT: ./dist/
+        run: |
+          foreach ($test in @('test-couples-sky.mjs', 'test-next-url-privacy.mjs', 'test-mirror-hour.mjs', 'test-gumroad-tables.mjs')) {
+            node $test
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+
+      - name: Fictional packaging, security, payment evidence and recovery
+        run: npm run test:fulfil:source
+
+      - name: Private render inputs and fictional chart controls
+        run: node tools/verify-studio-render-surface.mjs
+
+      - name: Studio mobile geometry and offline sample
+        run: node tools/verify-studio-candidate.mjs
+
+      - name: Guided opening offline
+        run: node tools/verify-opening-offline.mjs
+
+      - name: Retain fictional browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-browser-evidence
+          path: |
+            output/playwright/studio-candidate-20260928/verification.json
+            output/playwright/studio-candidate-20260928/render-surface.json
+            output/playwright/studio-candidate-20260928/studio-320.png
+            output/playwright/studio-candidate-20260928/studio-390.png
+            output/playwright/opening-offline/offline.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  legacy-release-contract:
+    # Keep the inherited release-contract failure visible without suppressing
+    # the focused candidate evidence. It must be reconciled before release.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Existing release contract
+        run: node test-release-honesty.mjs
