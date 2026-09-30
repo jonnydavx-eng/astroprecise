@@ -174,12 +174,22 @@ ok('keep-sky stays current-view, not birth-hour',
   html.includes('id="keep-sky"') && !/id="keep-sky"[^>]*data-keep-mode/.test(html));
 ok('no checkout or SKU on the couples page', !/gumroad|catalogueSkus|checkout/i.test(html + src));
 ok('house wordmark splits Precise', html.includes('logo-text__precise'));
-ok('A/B cards keep house brass and ember',
-  css.includes('.ap-couples-card--a') && css.includes('#8FA3B8') && css.includes('#B86B4A'));
+ok('A/B cards keep distinct silver and ion accents',
+  /\.ap-couples-card--a\s*\{[^}]*box-shadow:\s*inset\s+3px\s+0\s+0\s+#93A8BF\s*;/i.test(css) &&
+  /\.ap-couples-card--b\s*\{[^}]*box-shadow:\s*inset\s+3px\s+0\s+0\s+#8BA9FF\s*;/i.test(css));
 ok('city items are 44px taps', css.includes('.ap-city-item') && /min-height:\s*44px/.test(css));
-ok('house lock colours stay',
-  css.includes('#05080F') && css.includes('#E6ECF2') && css.includes('#A89C84') &&
-  css.includes('#B86B4A') && css.includes('#8FA3B8') && css.includes('#B04A52'));
+const pagePalette = (css.match(/\.page-compat\s*\{([^}]*)\}/) || [null, ''])[1];
+ok('page palette keeps the v900 ion and silver colour lock',
+  Object.entries({
+    '--ap-ember': '#8BA9FF',
+    '--ap-ion-hover': '#A5BCFF',
+    '--ap-cta-ink': '#07101E',
+    '--ap-void': '#040812',
+    '--ap-paper': '#EEF4FA',
+    '--ap-mute': '#93A8BF',
+    '--ap-brass': '#93A8BF',
+    '--ap-danger': '#FF8EA8',
+  }).every(([token, colour]) => new RegExp(token + ':\\s*' + colour + '\\s*;', 'i').test(pagePalette)));
 ok('copy withholds the clock when time is blank',
   /blank time withholds that clock/i.test(html) || html.includes('that clock, the Moon, and angles are withheld'));
 ok('hash restore stays Live so both clocks stay equally up',

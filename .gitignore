@@ -59,3 +59,5 @@ tools/_tmp-pluto/
 
 # Generated evidence from the guided-journey browser check.
 output/playwright/
+# Generated synthetic packaging fixtures; not source or customer deliverables.
+output/natal-source-checks/

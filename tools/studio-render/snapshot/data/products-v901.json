@@ -1,0 +1,109 @@
+{
+  "schema": "astroprecise-studio-catalogue-v901",
+  "state": "draft-not-published",
+  "launchMode": "self-only",
+  "currency": "GBP",
+  "platform": {
+    "seller": "Gumroad",
+    "productType": "commission",
+    "depositPercent": 50,
+    "merchantOfRecord": null,
+    "checkoutVerified": false,
+    "sellerMechanicsStatus": "draft-unverified-until-signed-in-test",
+    "sellerMechanicsNote": "Deposit, balance, tax display, delivery, refund and Merchant of Record treatment are planning assumptions only until an unpublished Commission test proves the account-visible flow."
+  },
+  "launchBlockers": [
+    "legal-operator-and-public-geographic-address",
+    "monitored-direct-contact",
+    "owner-service-level-confirmation",
+    "signed-in-gumroad-commission-eligibility-check",
+    "authenticated-payment-adapter-and-charge-sequence-test",
+    "tax-inclusive-total-price-and-fee-test",
+    "durable-contract-confirmation-before-work",
+    "private-storage-acl-encryption-and-purge-test",
+    "end-to-end-test-order-receipt-refund-and-deletion",
+    "independent-release-and-exact-public-identity-proof"
+  ],
+  "launchBlockersScope": "Compact non-exhaustive product guard; the complete release checklist is docs/SHOP-LAUNCH-RUNBOOK.md.",
+  "sharedRules": {
+    "format": "digital-files-only",
+    "physicalItem": false,
+    "birthTime": "known-exact-recorded-clock-time",
+    "unknownOrApproximateTimeAccepted": false,
+    "use": "personal-non-commercial",
+    "earlyStartOptional": true,
+    "productionWorkingDays": 5,
+    "productionClock": "complete inputs plus early-start consent, or expiry of the 14-day cancellation period",
+    "correctionPolicy": "calculation and production errors corrected without charge",
+    "retentionDraft": "local raw inputs and working files deleted 30 days after final correction, or 30 days after final delivery if no correction is agreed; where both dates exist, whichever date is later; non-birth-data order evidence retained separately",
+    "purchaseModes": [
+      "self"
+    ]
+  },
+  "products": [
+    {
+      "sku": "natal-sky-print-pack",
+      "name": "Natal Sky Print Pack",
+      "priceGbp": 18,
+      "purchaseModes": [
+        "self"
+      ],
+      "checkoutUrl": null,
+      "status": "draft",
+      "summary": "A personalised natal chart print pack with two PDFs and five PNG layouts for screen use and home printing.",
+      "deliverables": [
+        "A3 RGB home-print PDF",
+        "A4 ink-light home-print PDF",
+        "4960 x 7016 PNG",
+        "2160 x 2160 square PNG",
+        "2160 x 3840 story PNG",
+        "1080 x 1920 phone wallpaper PNG",
+        "1080 x 1080 Big Three PNG",
+        "print guide",
+        "personal-use licence",
+        "SHA-256 file-integrity manifest"
+      ],
+      "sample": "downloads/studio/natal-sky-print-pack-sample.pdf"
+    },
+    {
+      "sku": "personal-sky-keepsake",
+      "name": "Personal Sky Keepsake",
+      "priceGbp": 29,
+      "purchaseModes": [
+        "self"
+      ],
+      "checkoutUrl": null,
+      "status": "draft",
+      "summary": "A 20-page personalised astrology reading PDF built from computed chart positions, supplied in screen and ink-light editions.",
+      "deliverables": [
+        "20-page screen PDF",
+        "20-page ink-light A4 PDF",
+        "A3 RGB home-print natal plate PDF",
+        "A4 natal plate PDF",
+        "personal-use licence",
+        "SHA-256 file-integrity manifest"
+      ],
+      "sample": "downloads/studio/personal-sky-keepsake-sample.pdf"
+    },
+    {
+      "sku": "whole-sky-edition",
+      "name": "Whole Sky Edition",
+      "priceGbp": 39,
+      "purchaseModes": [
+        "self"
+      ],
+      "checkoutUrl": null,
+      "status": "draft",
+      "summary": "A personalised birth chart reading and print bundle with a clearly labelled SCHEMATIC 3D Observatory artwork for the supplied birth hour.",
+      "deliverables": [
+        "everything in the Natal Sky Print Pack",
+        "everything in the Personal Sky Keepsake",
+        "4800 x 3600 SCHEMATIC Observatory birth-hour PNG",
+        "organised ZIP and SHA-256 manifest",
+        "one reasonable layout adjustment requested within 7 days"
+      ],
+      "sample": "downloads/studio/whole-sky-edition-sample.pdf",
+      "savingGbpAgainstSeparateProducts": 8
+    }
+  ]
+}

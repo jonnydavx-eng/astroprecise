@@ -27,4 +27,8 @@ Run `node tools/verify-next-journey.mjs` against that preview. Set `AP_BASE` for
 
 Focused regression checks are `node test-ap-sky-bridge.mjs`, `node test-orrery-adapter.mjs`, and `node tools/e2e-profile-save-audit.mjs` (set `AP_BASE` to the running preview). Existing astronomy tests remain release gates. Browser viewport tests do not establish physical-device performance or external user engagement.
 
-The ap-v915 service worker installs the compact guided journey, not the full 3D texture library. Updates wait for the user's explicit update action when an older worker controls the page. Checkout is closed. Public Pages still serves ap-v912 until this branch is merged.
+The ap-v916 candidate service worker includes the guided opening stylesheet. Updates wait for the user's explicit update action when an older worker controls the page. Checkout is closed. Public Pages was rechecked on 27 September 2026 and serves ap-v915; PR 48 was merged on 23 September by a later release. This local follow-up is not deployed.
+
+The opening now has one destination, a timed calculated-sky-to-keepsake demonstration, and a chart button visible at 320 × 568. The complete toolkit remains in the footer and the shared navigation after entry. Studio previews only the Natal Sky Print Pack at a draft £18; the existing catalogue and payment gates are unchanged. No engagement or physical-phone acceptance is claimed.
+
+Focused follow-up proof: `node tools/verify-opening-flow.mjs` exercises the first-screen geometry, reduced-motion playback, chart → seven-chapter story → PNG, and the single closed Studio offer. Evidence is in `output/playwright/guided-20260927/`.

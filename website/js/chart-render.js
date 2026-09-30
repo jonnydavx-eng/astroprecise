@@ -304,6 +304,12 @@
   // ─── Utility: normalise longitude 0..360 ─────────────────────────────────
   function normLon(v) { return ((v % 360) + 360) % 360; }
 
+  // Same whole-minute policy as chart-page exports and the PDF formatter.
+  function displayDegreeParts(degree) {
+    const minutes = Math.min(1799, Math.floor(degree * 60 + 1e-9));
+    return { d: Math.floor(minutes / 60), m: minutes % 60 };
+  }
+
   // ─── Utility: angular distance from → to (0..360 CCW) ───────────────────
   function arcFrom(from, to) { return ((to - from) % 360 + 360) % 360; }
 
@@ -1141,8 +1147,7 @@
       const trueAng = lonToAngle(trueLon, ascLon);
       const dispAng = resolved[name];
       const degreeValue = pos.degree !== undefined ? pos.degree : (((trueLon % 30) + 30) % 30);
-      const degreeNumber = Math.floor(degreeValue);
-      const minuteNumber = Math.floor((degreeValue - degreeNumber) * 60);
+      const { d: degreeNumber, m: minuteNumber } = displayDegreeParts(degreeValue);
       const degreeText = `${degreeNumber}°${String(minuteNumber).padStart(2, '0')}'`;
       const signText = pos.sign ? ` in ${pos.sign}` : '';
 
@@ -1368,8 +1373,7 @@
 
       const tr = document.createElement('tr');
       const _dv      = pos.degree !== undefined ? pos.degree : (((pos.lon % 30) + 30) % 30);
-      const degNum   = Math.floor(_dv);
-      const minNum   = Math.floor((_dv - degNum) * 60);
+      const { d: degNum, m: minNum } = displayDegreeParts(_dv);
       const signName = pos.sign || ZODIAC_SIGNS[Math.floor(normLon(pos.lon) / 30)];
       const elemKey  = SIGN_ELEMENT[signName] || '';
       const elemClr  = ELEMENT_TEXT[elemKey] || WARM.silver;
