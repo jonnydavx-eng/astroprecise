@@ -63,7 +63,7 @@
       + '<div class="ap-site-footer__colophon">'
       +   '<span>&copy; ' + new Date().getFullYear() + ' AstroPrecise</span>'
       +   '<span><a href="shop.html#support">Support the free Observatory</a> · voluntary, no feature unlock</span>'
-      +   '<span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" target="_blank" rel="noopener noreferrer">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · Pluto: <a href="https://science.nasa.gov/resource/pluto-global-color-map/" target="_blank" rel="noopener noreferrer">NASA/JHUAPL/SwRI</a></span>'
+      +   '<span>Astronomy computed locally · Planet maps: NASA/USGS public domain (Mercury, Venus, Earth, Moon, Mars); <a href="https://archive.stsci.edu/hlsp/opal" target="_blank" rel="noopener noreferrer">NASA/ESA Hubble OPAL</a> / STScI <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> (Jupiter, Saturn, Uranus, Neptune); NASA/JHUAPL/SwRI/USGS public domain (Pluto); <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> CC BY 4.0 (Earth clouds, lights and the Saturn ring). <a href="privacy.html#image-credits">Credits</a></span>'
       + '</div>';
   }
 

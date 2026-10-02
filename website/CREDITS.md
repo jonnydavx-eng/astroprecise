@@ -47,8 +47,9 @@ licensed under **CC BY 4.0** (https://creativecommons.org/licenses/by/4.0/).
 Still used for `earth_clouds`, `earth_lights`, `earth_normal`, `earth_specular`,
 and `saturn_ring`.
 
-**Attribution requirement:** CC BY 4.0 requires visible credit. Before public
-launch, surface a credit line (e.g. site footer or an /about-credits page):
+**Attribution requirement:** CC BY 4.0 requires visible credit. The Observatory
+page carries a planet-map credit line, and the same list is on the privacy
+page (`privacy.html#image-credits`):
 > "Planet textures: NASA/USGS (Mercury, Venus, Earth, Moon, Mars); NASA/ESA Hubble OPAL / STScI (Jupiter, Saturn, Uranus, Neptune); NASA/JHUAPL/SwRI/USGS New Horizons (Pluto); Solar System Scope CC BY 4.0 (Earth overlays, Saturn ring). Uranus south and Pluto south of ~30°S unobserved in the source."
 
 ## 3D engine
