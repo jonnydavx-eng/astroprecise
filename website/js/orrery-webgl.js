@@ -463,10 +463,14 @@ const FinishShader = {
     const real = window.devicePixelRatio || 1;
     // Desktop instrument: never sit at 1× when the OS reports 100% scaling.
     // Do not delegate to RafCore.hdDPR — that helper still clamps 4-core hosts to 1.25.
+    var ratio;
     if (!IS_PHONE && !pre && perfTier !== 'low' && !dataSavingRequested()) {
-      return Math.min(Math.max(real, 1.5), cap);
+      ratio = Math.min(Math.max(real, 1.5), cap);
+    } else {
+      ratio = Math.min(real, cap);
     }
-    return Math.min(real, cap);
+    // Hard ceiling: phones stay at 1.5, larger screens at 2, even when the OS reports more.
+    return Math.min(ratio, IS_PHONE ? 1.5 : 2);
   }
 
   function sphereSegs(hero) {

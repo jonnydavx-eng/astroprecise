@@ -83,20 +83,29 @@
   <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-home-og-v906.jpg">
 
   <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/cormorant-garamond-italic-500.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=915">
+  <link rel="preload" href="fonts/ibm-plex-mono-normal-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="img/engine/studio/observatory-poster-280.webp" media="(max-width: 700px)" fetchpriority="high">
+  <link rel="preload" as="image" href="img/engine/studio/observatory-poster.webp" media="(min-width: 701px)" fetchpriority="high">
+  <style>
+    /* Observatory only. optional so a late face cannot move the first screen. Preloads above usually arrive before first paint. */
+    @font-face{font-family:'Schibsted Grotesk';src:url(fonts/schibsted-grotesk-latin-var.woff2) format('woff2');font-weight:400 700;font-style:normal;font-display:optional}
+    @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:500;font-display:optional;src:url(fonts/cormorant-garamond-italic-500.woff2) format('woff2')}
+    @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:600;font-display:optional;src:url(fonts/cormorant-garamond-normal-600.woff2) format('woff2')}
+    @font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:optional;src:url(fonts/ibm-plex-mono-normal-400.woff2) format('woff2')}
+  </style>
   <script>window.AP_ASSET_V='915';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-    <script src="js/void-orrery-adapter.js?v=915" defer></script>
     <script src="js/ap-nav-model.js?v=915" defer></script>
     <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=915">
     <link rel="stylesheet" href="css/ap-phone-pass.css?v=915">
     <link rel="stylesheet" href="css/ap-home-v835.css?v=915">
     <link rel="stylesheet" href="css/ap-keep-sky.css?v=915">
     <link rel="stylesheet" href="css/ap-mirror-hour.css?v=915">
-<link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
+</head>
 <body class="ap-live-home page-home ap-reading-room">
   <a class="skip" href="#lead">Skip to the Observatory</a>
 
@@ -137,11 +146,15 @@
           <button type="button" class="ap-hint-link" id="ap-birth-sky-now" hidden>Return to now</button>
         </div>
       </div>
-      <div class="ap-model-stage" role="group" aria-label="Solar system as computed now" aria-busy="true">
+      <div class="ap-model-stage" role="group" aria-label="Solar system as computed now" aria-busy="false">
         <void-orrery id="orr" start-radius="210" data-wheel="off" data-renderer="webgl-only"></void-orrery>
-        <img class="ap-model-poster" src="img/engine/studio/earth.webp" width="1024" height="1024" alt="" decoding="async" fetchpriority="high" aria-hidden="true">
+        <picture>
+          <source media="(max-width: 700px)" srcset="img/engine/studio/observatory-poster-280.webp" type="image/webp">
+          <img class="ap-model-poster" src="img/engine/studio/observatory-poster.webp" width="512" height="512" alt="Still of Earth from the AstroPrecise model. Not a live sky." decoding="async" fetchpriority="high">
+        </picture>
         <div class="ap-model-vignette" aria-hidden="true"></div>
-        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Settling…</strong><em>The live sky · computed here</em></div>
+        <div class="ap-model-boot" aria-hidden="true"><span></span><strong>Preparing 3D</strong><em>The live sky · computed here</em></div>
+        <button type="button" class="ap-enter-sky" id="ap-enter-sky">Enter the sky</button>
       </div>
 
       <aside class="ap-presence-banner" id="ap-presence-banner" hidden>
@@ -269,6 +282,34 @@
     <script src="js/ap-nav-prefetch.js?v=915" defer data-ap-nav-prefetch="1"></script>
     <script src="js/ap-sky-time.js?v=915" defer></script>
     <script src="js/ap-footer-inject.js?v=915" defer></script>
+  <style>
+    .ap-model-poster{transition:none}
+    .ap-enter-sky{position:absolute;z-index:4;left:50%;bottom:12%;transform:translateX(-50%);min-height:48px;padding:12px 22px;border:0;border-radius:2px;background:#f4f1e9;color:#101c1c;font:600 16px/1.2 'Schibsted Grotesk',system-ui,sans-serif;cursor:pointer}
+    .ap-enter-sky:focus-visible{outline:3px solid #e2b779;outline-offset:4px}
+    .ap-model-stage.is-sky-entered .ap-enter-sky{display:none}
+    .ap-model-stage:not(.is-sky-entered) .ap-model-boot{display:none}
+  </style>
+  <script>
+    (function () {
+      var button = document.getElementById('ap-enter-sky');
+      var stage = document.querySelector('.ap-model-stage');
+      if (!button || !stage) return;
+      var started = false;
+      button.addEventListener('click', function () {
+        if (started) return;
+        started = true;
+        stage.classList.add('is-sky-entered');
+        stage.setAttribute('aria-busy', 'true');
+        stage.setAttribute('aria-label', 'Solar system as computed now');
+        button.disabled = true;
+        button.textContent = 'Opening the sky…';
+        var script = document.createElement('script');
+        script.src = 'js/void-orrery-adapter.js?v=915';
+        script.defer = true;
+        document.body.appendChild(script);
+      });
+    })();
+  </script>
   <script>
     (function () {
       var button = document.getElementById('ap-cosmic-flight-launch');
