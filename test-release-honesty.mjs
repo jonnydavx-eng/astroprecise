@@ -384,9 +384,9 @@ assert.deepEqual(
     checkoutUrl,
   })),
   [
-    { sku: 'natal-sky-print-pack', priceGbp: 18, status: 'draft', checkoutUrl: null },
-    { sku: 'personal-sky-keepsake', priceGbp: 29, status: 'draft', checkoutUrl: null },
-    { sku: 'whole-sky-edition', priceGbp: 39, status: 'draft', checkoutUrl: null },
+    { sku: 'clean-sky-card', priceGbp: 7, status: 'draft', checkoutUrl: null },
+    { sku: 'seven-chapter-sitting', priceGbp: 18, status: 'draft', checkoutUrl: null },
+    { sku: 'next-month-note', priceGbp: 4.5, status: 'draft', checkoutUrl: null },
   ],
 )
 assert.deepEqual(
@@ -394,6 +394,17 @@ assert.deepEqual(
   studioCatalogue.products.map(({ sku }) => sku).sort(),
   'the public candidate must show each reviewed product once and no placeholder SKU',
 )
+assert.equal(studioCatalogue.paidTierEnabled, false, 'paid tier must stay off until checkout is opened')
+assert.deepEqual(studioCatalogue.paymentLinks, {
+  'clean-sky-card': '',
+  'seven-chapter-sitting': '',
+  'next-month-note': '',
+})
+const commerceConfig = read('./website/js/ap-commerce-config.js')
+assert.ok(commerceConfig.includes('var PAID_TIER_ENABLED = false'))
+assert.equal(/https?:\/\//.test(commerceConfig), false, 'commerce config must not carry a payment URL')
+assert.ok(shop.includes('Opening soon') && shop.includes('£4.50'))
+assert.equal(/<button\b/i.test(shop), false, 'shop must not show a pay button while checkout is closed')
 assert.match(
   shop,
   /(?:checkout|commissions?)[^.]{0,90}(?:closed|not open|not live|verification pending|open after verification)/i,
