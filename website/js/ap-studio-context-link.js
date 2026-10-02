@@ -5,9 +5,9 @@
   if (mounts.length === 0) return
 
   const safeSkus = new Set([
-    'natal-sky-print-pack',
-    'personal-sky-keepsake',
-    'whole-sky-edition',
+    'clean-sky-card',
+    'seven-chapter-sitting',
+    'next-month-note',
   ])
 
   const hideAll = () => {
