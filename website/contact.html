@@ -41,6 +41,18 @@
         <a class="ap-contact-email" href="mailto:contact@astroprecise.app">contact@astroprecise.app</a>
         <dl class="ap-contact-ledger">
           <div><dt>Operator</dt><dd>The current free site identifies Jonathan Davenport as its operator in the United Kingdom. The legal/trading status for Studio sales must be confirmed before checkout opens. Archived eclipse-edition licences, support and refunds remain available. Questions: contact@astroprecise.app.</dd></div>
+          <div><dt>Trader</dt><dd>[TRADER NAME]</dd></div>
+          <div><dt>Geographic address</dt><dd>[GEOGRAPHIC ADDRESS – to be confirmed by owner]</dd></div>
+          <div><dt>First 30 days of sales</dt><dd>For the first 30 days that checkout is open, orders are accepted from the United Kingdom only. An order from outside the United Kingdom will be refunded.</dd></div>
+          <div><dt>Cancellation</dt><dd>
+            <form>
+              <label for="ap-immediate-supply" style="display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.55">
+                <input id="ap-immediate-supply" name="immediate-supply" type="checkbox" style="width:22px;height:22px;margin-top:3px;flex:none">
+                I request immediate supply of the digital item, and I acknowledge that I lose the 14-day right to cancel once supply starts (Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013, regulation 37).
+              </label>
+            </form>
+            <p>This box starts unticked. Checkout is closed. A future checkout cannot start until it is ticked.</p>
+          </dd></div>
           <div><dt>Privacy</dt><dd>Do not send birth details or payment data. The form sends only the name, email and message you enter.</dd></div>
           <div><dt>Corrections</dt><dd>If an astronomical figure looks wrong, include the page, date, device and what you expected to see.</dd></div>
         </dl>
@@ -62,6 +74,7 @@
   </main>
 
   <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <script>(function(){var box=document.getElementById('ap-immediate-supply');if(!box)return;box.checked=false;window.APMayStartCheckout=function(){return box.checked===true;};})();</script>
   <script src="js/ap-footer-inject.js?v=915" defer></script>
   <script src="js/ap-sky-time.js?v=915" defer></script>
 </body>
