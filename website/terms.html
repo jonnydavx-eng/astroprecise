@@ -102,6 +102,18 @@
     <h2>Purchases</h2>
     <p>No product checkout is linked or opened on AstroPrecise. The free tools remain available without a purchase. Any future paid offer
       will publish its eligibility, price, delivery and cancellation terms before payment is possible.</p>
+    <h2 id="trader">Trader</h2>
+    <p><strong>Trader:</strong> [TRADER NAME]</p>
+    <p><strong>Geographic address:</strong> [GEOGRAPHIC ADDRESS – to be confirmed by owner]</p>
+    <p>For the first 30 days that checkout is open, orders are accepted from the United Kingdom only. An order from outside the United Kingdom will be refunded.</p>
+    <form>
+      <label for="ap-immediate-supply" style="display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.55;color:#1a1a1a">
+        <input id="ap-immediate-supply" name="immediate-supply" type="checkbox" style="width:22px;height:22px;margin-top:3px;flex:none">
+        I request immediate supply of the digital item, and I acknowledge that I lose the 14-day right to cancel once supply starts (Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013, regulation 37).
+      </label>
+    </form>
+    <p>This box starts unticked. Checkout is closed. A future checkout cannot start until it is ticked.</p>
+    <script>(function(){var box=document.getElementById('ap-immediate-supply');if(!box)return;box.checked=false;window.APMayStartCheckout=function(){return box.checked===true;};})();</script>
 
     <h2>Voluntary support</h2>
     <p>The Ko-fi link is an optional voluntary-support route. Ko-fi currently offers a one-time tip and an optional
