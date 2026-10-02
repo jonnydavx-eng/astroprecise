@@ -526,14 +526,17 @@ ok('shared shell exposes four primary routes and releases vertical phone scrolli
 const exploreHtml = readFileSync(join(root, 'explore.html'), 'utf8');
 for (const probe of [
   'href="observatory.html"',
-  'id="tool-search"',
-  'data-filter="sky"',
+  'href="chart.html"',
+  'href="deep-reading.html"',
+  'href="sky-card.html"',
+  'href="tonight.html"',
   'data-tool',
-  'js/ap-discover-next.js',
   '<meta name="referrer" content="no-referrer">',
 ]) {
   if (!exploreHtml.includes(probe)) fail('Explore directory contract missing: ' + probe);
 }
+if ((exploreHtml.match(/data-tool/g) || []).length !== 4) fail('Explore lists the Observatory plus four further tools');
+if (exploreHtml.includes('href="moment.html"')) fail('Moment stays off Explore; the page remains at its own address');
 if (/location\.replace\(|http-equiv=["']refresh/.test(exploreHtml)) fail('Explore must not redirect away from its tool directory');
 for (const unsafeForward of ['target.search = location.search;', 'target.hash = location.hash;']) {
   if (exploreHtml.includes(unsafeForward)) fail('Explore forwards an unsanitized address component: ' + unsafeForward);
@@ -541,7 +544,7 @@ for (const unsafeForward of ['target.search = location.search;', 'target.hash = 
 for (const retired of ['<void-orrery', 'explore-boot-v', 'id="orrery-lite-deck"']) {
   if (exploreHtml.includes(retired)) fail('retired Explore surface remains: ' + retired);
 }
-ok('Explore exposes the optional Observatory through a searchable tool directory');
+ok('Explore lists the Observatory, birth chart, seven chapters, sky card and Tonight');
 
 const deepLinkBuilder = readFileSync(join(root, 'js', 'ap-deep-link.js'), 'utf8');
 if (!deepLinkBuilder.includes("if (m !== 'now') parts.push('public=1')")) {
