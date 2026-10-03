@@ -83,7 +83,7 @@
     .page-horoscope .sign-reading-panel__method a { color: var(--daily-brass, #93A8BF); }
   </style>
 <link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
-<body class="page-horoscope ap-daily-ledger ap-no-nav-enter">
+<body class="page-horoscope ap-daily-ledger ap-no-nav-enter ap-editorial">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -92,28 +92,7 @@
 
   <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
 
-  <header class="site-header" role="banner" data-ap-static-nav>
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
-          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
-        </a>
-        <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript>
-            <a href="observatory.html" class="navbar__link">Observatory</a>
-            <a href="chart.html" class="navbar__link">Chart</a>
-            <a href="sky-events.html" class="navbar__link">Events</a>
-            <a href="shop.html" class="navbar__link">Shop</a>
-          </noscript>
-        </div>
-        <div class="navbar__end">
-          <button type="button" class="navbar__toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button>
-        </div>
-      </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
-    </nav>
-  </header>
+  <div data-ap-next-nav></div>
 
   <main id="main-content">
     <section class="daily-room" aria-labelledby="page-title">
@@ -248,7 +227,7 @@
 
   <!-- Sentinel: app.js injects a Guides & tools strip unless this class already exists. -->
   <p class="ap-guide-links" hidden aria-hidden="true"></p>
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <div data-ap-next-footer></div>
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <script src="js/raf-core.js" defer></script>
