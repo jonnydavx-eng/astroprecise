@@ -1493,7 +1493,8 @@ window.AP_MON = Object.assign({
     // Footer support line — appears the moment a tip URL is configured.
     const routeKey = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
     const isLaunchCore = /^(index|chart|sky-events|shop|eclipse)\.html$/.test(routeKey);
-    if (!isLaunchCore && isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
+    const editorialShell = document.body.classList.contains('ap-editorial') || document.body.classList.contains('ap-next') || document.querySelector('footer.ap-next-footer');
+    if (!editorialShell && !isLaunchCore && isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
       const host = document.querySelector('.ap-legal-links') || document.querySelector('.footer-legal')
         || document.querySelector('footer .container') || document.querySelector('footer');
       if (host) {

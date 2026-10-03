@@ -1,30 +1,167 @@
-(function(){'use strict';
-function boot(){const E=window.AstroEphemeris,root=document.getElementById('sky-instrument');if(!E||!root)return;
-const now=new Date(),sample=new Date('2000-01-01T12:00:00Z');
-const fmt=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'UTC'});
-const symbols=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
-const bodies=[['Sun','☉','#e6c681'],['Moon','☽','#e8ecdc'],['Mercury','☿','#b4c8b9'],['Venus','♀','#d5b89a'],['Mars','♂','#d79479'],['Jupiter','♃','#bdcbb0'],['Saturn','♄','#c6ba82']];
-let staticSvg='<svg viewBox="0 0 360 360" aria-hidden="true"><defs><radialGradient id="sky-heart"><stop stop-color="#708169" stop-opacity=".25"/><stop offset="1" stop-color="#122b2c" stop-opacity="0"/></radialGradient></defs><circle cx="180" cy="180" r="155" fill="url(#sky-heart)" stroke="#adc099" stroke-opacity=".22"/><circle cx="180" cy="180" r="140" fill="none" stroke="#cbbf8b" stroke-opacity=".3"/><circle cx="180" cy="180" r="109" fill="none" stroke="#adc099" stroke-opacity=".3"/><circle cx="180" cy="180" r="73" fill="none" stroke="#adc099" stroke-opacity=".16" stroke-dasharray="2 5"/>';
-for(let i=0;i<72;i++){const a=i*5*Math.PI/180;const r=i%6===0?125:135;staticSvg+='<path d="M '+(180+140*Math.cos(a))+' '+(180+140*Math.sin(a))+' L '+(180+r*Math.cos(a))+' '+(180+r*Math.sin(a))+'" stroke="#c1c99c" stroke-opacity="'+(i%6===0?.5:.2)+'" stroke-width=".8"/>';}
-symbols.forEach((s,i)=>{const a=(i*30+15)*Math.PI/180;staticSvg+='<text x="'+(180+151*Math.cos(a))+'" y="'+(180+151*Math.sin(a)+3)+'" fill="#b2c29b" font-size="10" text-anchor="middle">'+s+'\uFE0E</text>';});
-staticSvg+='<circle cx="180" cy="180" r="43" fill="#e0d5a4" opacity=".06"/><circle cx="180" cy="180" r="31" fill="#b7c39b" opacity=".07"/><path d="m180 156 4 20 20 4-20 4-4 20-4-20-20-4 20-4Z" fill="#d9c697" opacity=".82"/>';
-bodies.forEach(([name,glyph,color],i)=>{staticSvg+='<g class="body-point" id="intro-'+name+'"><circle r="'+(name==='Sun'?9:7)+'" fill="'+color+'" stroke="#122c2b" stroke-width="2"/><text y="-13" fill="'+color+'" font-size="11" text-anchor="middle">'+glyph+'</text></g>';});
-staticSvg+='</svg>';root.innerHTML=staticSvg;
-let stage=0,timer=null,paused=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const set=(id,t)=>{document.getElementById(id).textContent=t;};
-function draw(n){stage=n;const date=n===0?now:sample;const positions=E.allPlanetPositions(date.getTime()/86400000+2440587.5);
-bodies.forEach(([name],i)=>{const p=positions[name],a=(p.lon-90)*Math.PI/180,r=94-(i%3)*15;document.getElementById('intro-'+name).style.transform='translate('+(180+r*Math.cos(a))+'px,'+(180+r*Math.sin(a))+'px)';});
-const moonSign=E.signOf(positions.Moon.lon),sunSign=E.signOf(positions.Sun.lon);
-set('demo-mode',n===0?'The sky right now':'Example · 1 Jan 2000 · 12:00 UTC');
-set('demo-kicker',['01 / A living sky','02 / Turn back the sky','03 / Now imagine your moment'][n]);
-set('demo-title',['This moment. Already extraordinary.','One birth moment. A whole new picture.','Your Sun. Your Moon. Your story.'][n]);
-set('demo-detail',n===0?'Moon in '+moonSign+' · '+fmt.format(now)+' UTC':n===1?'Watch the planets return to our example date.':'Example: Sun in '+sunSign+' · Moon in '+moonSign);
-document.querySelectorAll('.showcase-progress span').forEach((el,i)=>el.classList.toggle('active',i===n));
-root.setAttribute('aria-label',n===0?'Calculated zodiac positions for the current sky':'Example zodiac positions for 1 January 2000 at 12:00 UTC');
-if(!paused&&n<2)timer=setTimeout(()=>draw(n+1),n===0?4300:4500);else if(n===2){set('demo-pause','Replay ↺');document.getElementById('demo-pause').setAttribute('aria-label','Replay sky demonstration');}
-}
-const pause=document.getElementById('demo-pause');if(paused){pause.textContent='Play ▷';pause.setAttribute('aria-label','Play sky demonstration');}
-pause.addEventListener('click',()=>{if(stage===2){clearTimeout(timer);paused=false;pause.textContent='Pause Ⅱ';pause.setAttribute('aria-label','Pause sky demonstration');draw(0);return;}paused=!paused;clearTimeout(timer);pause.textContent=paused?'Play ▷':'Pause Ⅱ';pause.setAttribute('aria-label',paused?'Play sky demonstration':'Pause sky demonstration');if(!paused)timer=setTimeout(()=>draw(stage+1),3000);});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(timer);paused=true;if(stage<2){pause.textContent='Play ▷';pause.setAttribute('aria-label','Play sky demonstration');}}});
-try{draw(0);}catch{set('demo-title','A sky waiting to be discovered.');set('demo-detail','Continue to calculate your own birth chart.');pause.hidden=true;}
-}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();})();
+(function () {
+  'use strict';
+  var EXAMPLE = new Date('1990-01-15T10:30:00Z');
+  var BODIES = [
+    ['Sun', 118],
+    ['Moon', 96],
+    ['Mercury', 78],
+    ['Venus', 64],
+    ['Mars', 52],
+    ['Jupiter', 40],
+    ['Saturn', 30]
+  ];
+
+  function boot() {
+    var E = window.AstroEphemeris;
+    var svg = document.getElementById('limb-orbits');
+    var pause = document.getElementById('demo-pause');
+    var retry = document.getElementById('demo-retry');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var stage = 0;
+    var timer = null;
+    var paused = reduced;
+    var failed = false;
+    var fmt = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC'
+    });
+
+    function set(id, text) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    function sep(a, b) {
+      var d = Math.abs(a - b) % 360;
+      return d > 180 ? 360 - d : d;
+    }
+
+    function place(date) {
+      if (!E || !svg) return null;
+      var jd = date.getTime() / 86400000 + 2440587.5;
+      var positions = E.allPlanetPositions(jd);
+      BODIES.forEach(function (row) {
+        var name = row[0];
+        var radius = row[1];
+        var lon = positions[name] && positions[name].lon;
+        var node = document.getElementById('intro-' + name);
+        if (!node || !Number.isFinite(lon)) return;
+        var a = (lon - 90) * Math.PI / 180;
+        var x = 200 + radius * Math.cos(a);
+        var y = 210 + radius * 0.62 * Math.sin(a);
+        node.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')');
+      });
+      return positions;
+    }
+
+    function drawOrbits() {
+      if (!svg || svg.dataset.ready) return;
+      var rings = '';
+      BODIES.forEach(function (row) {
+        rings += '<ellipse class="orbit-ring" cx="200" cy="210" rx="' + row[1] + '" ry="' + (row[1] * 0.62) + '" stroke-width="1.15"/>';
+      });
+      BODIES.forEach(function (row) {
+        rings += '<g class="body-point" id="intro-' + row[0] + '"><circle r="' + (row[0] === 'Sun' ? 3.2 : 2.2) + '" fill="#f4efe6"/></g>';
+      });
+      svg.innerHTML = rings;
+      svg.dataset.ready = '1';
+    }
+
+    function show(n) {
+      stage = n;
+      var positions = null;
+      failed = false;
+      set('demo-status', '');
+      if (retry) retry.hidden = true;
+      try {
+        drawOrbits();
+        positions = place(n === 0 ? new Date() : EXAMPLE);
+        if (!positions) throw new Error('engine');
+      } catch (err) {
+        failed = true;
+        set('demo-kicker', 'The picture stays');
+        set('demo-detail', 'Planet positions did not load. This is still a model picture of Earth, not your sky.');
+        set('demo-status', 'You can reveal your birth sky now, or try the positions again.');
+        if (retry) retry.hidden = false;
+        if (pause) pause.hidden = true;
+        return;
+      }
+      var sun = E.signOf(positions.Sun.lon);
+      var moon = E.signOf(positions.Moon.lon);
+      var saturn = E.signOf(positions.Saturn.lon);
+      var sunMoon = sep(positions.Sun.lon, positions.Moon.lon);
+      if (n === 0) {
+        set('demo-kicker', 'The sky right now');
+        set('demo-detail', 'Computed on this device · ' + fmt.format(new Date()) + ' UTC. The Earth picture does not move with it.');
+      } else if (n === 1) {
+        set('demo-kicker', 'A labelled rewind');
+        set('demo-detail', 'From now to an example birth · 15 Jan 1990 · 10:30 UTC · London clock, treated as UTC. Illustrative scale. Not your chart.');
+      } else if (n === 2) {
+        set('demo-kicker', 'More than a Sun sign');
+        set('demo-detail', 'Example only. Sun in ' + sun + '. Moon in ' + moon + ', ' + sunMoon.toFixed(0) + '° from the Sun. Saturn in ' + saturn + '. Your own signs come after you enter a birth.');
+      } else {
+        set('demo-kicker', 'What you do next');
+        set('demo-detail', 'Enter a date, a place, and a time if you know it. Then the main signs, one relationship, and a story you can keep. Nothing on this screen is for sale.');
+      }
+      if (pause) {
+        pause.hidden = false;
+        if (reduced) {
+          pause.textContent = n === 3 ? 'Replay stills' : 'Next still';
+          pause.setAttribute('aria-label', n === 3 ? 'Replay the still sequence' : 'Show the next still');
+        } else if (n === 3) {
+          pause.textContent = 'Replay';
+          pause.setAttribute('aria-label', 'Replay the sky sequence');
+        } else {
+          pause.textContent = paused ? 'Play' : 'Pause';
+          pause.setAttribute('aria-label', paused ? 'Play the sky sequence' : 'Pause the sky sequence');
+        }
+      }
+      clearTimeout(timer);
+      if (!paused && !reduced && n < 3) timer = setTimeout(function () { show(n + 1); }, 5000);
+    }
+
+    drawOrbits();
+    var started = Date.now();
+    function attempt() {
+      if (!window.AstroEphemeris) {
+        if (Date.now() - started < 2500) {
+          set('demo-status', 'Positions are still calculating on this device. The picture and the reveal stay available.');
+          timer = setTimeout(attempt, 200);
+          return;
+        }
+      }
+      show(0);
+    }
+    if (pause) {
+      pause.addEventListener('click', function () {
+        if (failed) return;
+        if (reduced || stage === 3) {
+          show(stage === 3 ? 0 : stage + 1);
+          return;
+        }
+        paused = !paused;
+        clearTimeout(timer);
+        pause.textContent = paused ? 'Play' : 'Pause';
+        pause.setAttribute('aria-label', paused ? 'Play the sky sequence' : 'Pause the sky sequence');
+        if (!paused) timer = setTimeout(function () { show(Math.min(stage + 1, 3)); }, 5000);
+      });
+    }
+    if (retry) retry.addEventListener('click', function () { paused = reduced; show(stage); });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden || reduced || failed) return;
+      clearTimeout(timer);
+      paused = true;
+      if (pause && stage < 3) {
+        pause.textContent = 'Play';
+        pause.setAttribute('aria-label', 'Play the sky sequence');
+      }
+    });
+    window.APIntroDemo = {
+      go: function (n) { paused = true; clearTimeout(timer); show(n); },
+      stage: function () { return stage; }
+    };
+    attempt();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
