@@ -64,7 +64,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How are this week's sky events computed?","acceptedAnswer":{"@type":"Answer","text":"Every event is solved numerically in your browser from the VSOP87 planetary theory and the ELP2000 lunar theory — the week is scanned for Moon-phase instants, sign ingresses, retrograde stations and exact aspects, then each event time is refined by bisection. Nothing is fetched from a server and nothing about you is sent anywhere."}},{"@type":"Question","name":"How accurate are the event times?","acceptedAnswer":{"@type":"Answer","text":"Moon-phase instants are good to a few minutes. Ingress and station times for the outer planets ride truncated series, so they are shown as approximate — right to within hours, occasionally a day for Pluto. The week itself is anchored to UTC so every visitor sees the same list; only the displayed clock times are converted to your local zone."}},{"@type":"Question","name":"Why does a week sometimes look quiet?","acceptedAnswer":{"@type":"Answer","text":"Because some weeks are quiet. The page reports what the sky is actually doing rather than padding the list with minor contacts — if there is no ingress, station or tight aspect, it says so."}}]}</script>
   <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=915" />
 <link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
-<body class="ap-no-nav-enter page-weekly-sky">
+<body class="ap-no-nav-enter page-weekly-sky ap-editorial">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -80,25 +80,7 @@
   <!-- ============================================================
        NAVIGATION
   ============================================================ -->
-  <header class="site-header" role="banner" data-ap-static-nav>
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-        </a>
-        <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="observatory.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
-        </div>
-        <div class="navbar__end">
-          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
-    </nav>
-  </header>
+  <div data-ap-next-nav></div>
 
   <main id="main-content">
 
@@ -201,17 +183,7 @@
   <!-- ============================================================
        FOOTER
   ============================================================ -->
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
-    <div class="ap-site-footer__inner">
-      <div class="ap-site-footer__brand">
-        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
-        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
-      </div>
-      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="observatory.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
-      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
-    </div>
-    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
-  </footer>
+  <div data-ap-next-footer></div>
 
   <!-- Toast container -->
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
