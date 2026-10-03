@@ -31,9 +31,9 @@
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/weekly-sky-page.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=915" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=915" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=915" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=916" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=916" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=916" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <!-- static, not deferred: events render immediately on load (no user gesture gates them) -->
@@ -62,8 +62,8 @@
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — This Week's Sky","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"isAccessibleForFree":true,"description":"A privacy-first weekly sky calendar: exact Moon phases, planet sign ingresses, retrograde stations and exact aspects, computed entirely in your browser from real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/this-weeks-sky.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How are this week's sky events computed?","acceptedAnswer":{"@type":"Answer","text":"Every event is solved numerically in your browser from the VSOP87 planetary theory and the ELP2000 lunar theory — the week is scanned for Moon-phase instants, sign ingresses, retrograde stations and exact aspects, then each event time is refined by bisection. Nothing is fetched from a server and nothing about you is sent anywhere."}},{"@type":"Question","name":"How accurate are the event times?","acceptedAnswer":{"@type":"Answer","text":"Moon-phase instants are good to a few minutes. Ingress and station times for the outer planets ride truncated series, so they are shown as approximate — right to within hours, occasionally a day for Pluto. The week itself is anchored to UTC so every visitor sees the same list; only the displayed clock times are converted to your local zone."}},{"@type":"Question","name":"Why does a week sometimes look quiet?","acceptedAnswer":{"@type":"Answer","text":"Because some weeks are quiet. The page reports what the sky is actually doing rather than padding the list with minor contacts — if there is no ingress, station or tight aspect, it says so."}}]}</script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=915" />
-<link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=916" />
+<link rel="stylesheet" href="css/ap-next.css?v=916"><script defer src="js/ap-next.js?v=916"></script></head>
 <body class="ap-no-nav-enter page-weekly-sky">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
@@ -217,7 +217,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
-  <script src="js/ap-deep-link.js?v=915" defer></script>
+  <script src="js/ap-deep-link.js?v=916" defer></script>
   <script src="js/ephemeris.js"></script>
 <script>
   (function () {
@@ -392,8 +392,8 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=915" defer></script>
+  <script src="js/ap-page-boot.js?v=916" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=915" defer></script>
+  <script src="js/ap-footer-inject.js?v=916" defer></script>
 </body>
 </html>
