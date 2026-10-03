@@ -51,7 +51,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Observatory","item":"https://astroprecise.app/observatory.html"},{"@type":"ListItem","position":2,"name":"Saturn Return Calculator","item":"https://astroprecise.app/saturn-return.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a Saturn return?","acceptedAnswer":{"@type":"Answer","text":"A Saturn return is the period when transiting Saturn comes back to the exact ecliptic longitude it held at your birth. Because Saturn takes about 29.5 years to orbit the Sun, this happens around ages 29–30, 58–60 and 87–90. It is read as a maturing, structure-testing passage of life."}},{"@type":"Question","name":"When is my Saturn return?","acceptedAnswer":{"@type":"Answer","text":"Enter your birth date above and AstroPrecise computes the exact dates from the real sky. Your first Saturn return falls around age 29–30; the second around 58–60; the third around 87–90. Because Saturn retrogrades, the return often has up to three exact passes across roughly a year."}},{"@type":"Question","name":"How long does a Saturn return last?","acceptedAnswer":{"@type":"Answer","text":"The exact conjunction is a moment, but the felt passage runs roughly nine to fourteen months — the approach, the exact passes (sometimes three, as Saturn retrogrades back over the point), and the consolidation as Saturn moves on."}},{"@type":"Question","name":"Are the dates accurate?","acceptedAnswer":{"@type":"Answer","text":"Yes. AstroPrecise computes Saturn's position with the VSOP87 planetary theory and solves for the exact moment it returns to your natal longitude, entirely in your browser. The dates are real astronomy; the reading is reflective interpretation, not prediction."}}]}</script>
   <link rel="stylesheet" href="css/ap-next.css?v=915"><script defer src="js/ap-next.js?v=915"></script></head>
-<body class="ap-no-nav-enter">
+<body class="ap-no-nav-enter ap-editorial">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -66,25 +66,7 @@
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
-  <header class="site-header" role="banner" data-ap-static-nav>
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
-        </a>
-        <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="observatory.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
-        </div>
-        <div class="navbar__end">
-          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
-    </nav>
-  </header>
+  <div data-ap-next-nav></div>
 
   <main id="main-content">
     <section class="sat-hero" aria-labelledby="page-title">
@@ -145,17 +127,7 @@
     </section>
   </main>
 
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835">
-    <div class="ap-site-footer__inner">
-      <div class="ap-site-footer__brand">
-        <a class="ap-site-footer__wordmark" href="index.html" aria-label="AstroPrecise home"><img src="img/logo-mark.svg" width="28" height="28" alt=""><span>AstroPrecise</span></a>
-        <p>The sky computes here. Town search sends only that name to Open-Meteo; birth date and time stay on this device.</p>
-      </div>
-      <nav class="ap-site-footer__routes" aria-label="Core pages"><a href="observatory.html">Observatory</a><a href="chart.html">Chart</a><a href="sky-events.html">Events</a><a href="shop.html">Shop</a></nav>
-      <nav class="ap-site-footer__legal" aria-label="Legal and verification"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="verify.html">Verify</a><a href="contact.html">Contact</a></nav>
-    </div>
-    <div class="ap-site-footer__colophon"><span>&copy; 2026 AstroPrecise</span><span>Astronomy computed locally</span></div>
-  </footer>
+  <div data-ap-next-footer></div>
 
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
   <script src="js/ap-zodiac-constants.js"></script>
