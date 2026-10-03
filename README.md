@@ -5,7 +5,7 @@ and **The Instrument** (light-cone, zenith star, echo dates, daimon, quantum dra
 field weather). Every number is computed from the real sky, in the browser, with
 sources labelled and unavailable feeds honestly marked.
 
-**Live:** https://astroprecise.app · public tip **ap-v912** · this branch’s source tip is **ap-v915** and is not the public site until it is merged. Deploy is push `website/**` to `main` → GitHub Actions Pages (not manual gh-pages). See `STATUS.md`.
+**Live:** https://astroprecise.app · public tip **ap-v912** · this branch’s source tip is **ap-v916** and is not the public site until it is merged. Deploy is push `website/**` to `main` → GitHub Actions Pages (not manual gh-pages). See `STATUS.md`.
 
 ## Repository layout
 
