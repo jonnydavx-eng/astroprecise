@@ -371,11 +371,11 @@
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);margin-top:var(--space-8);">
           <p style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:#8BA9FF;margin-bottom:var(--space-3);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Example Calculation</p>
           <p style="font-family:'Courier New',monospace;font-size:var(--text-sm);color:var(--silver);line-height:2;">
-            Birth date: <strong style="color:var(--white);">14 April 1992</strong><br>
-            Month: <strong style="color:#8BA9FF;">4</strong><br>
-            Day: 1+4 = <strong style="color:#8BA9FF;">5</strong><br>
-            Year: 1+9+9+2 = 21 → 2+1 = <strong style="color:#8BA9FF;">3</strong><br>
-            Life Path: 4 + 5 + 3 = 12 → 1+2 = <strong style="color:#8BA9FF;">3</strong><br>
+            Birth date: <strong style="color:var(--white);">14 April 1992</strong> <br>
+            Month: <strong style="color:#8BA9FF;">4</strong> <br>
+            Day: 1+4 = <strong style="color:#8BA9FF;">5</strong> <br>
+            Year: 1+9+9+2 = 21 → 2+1 = <strong style="color:#8BA9FF;">3</strong> <br>
+            Life Path: 4 + 5 + 3 = 12 → 1+2 = <strong style="color:#8BA9FF;">3</strong> <br>
             <strong style="color:var(--white);">Life Path 3 — The Creator</strong>
           </p>
         </div>
@@ -677,7 +677,7 @@
         formatReduceLine('Year', yrDigits) + ` <span style="opacity:0.65">(${String(y).split('').join('+')})</span>`,
         sumLine,
         `<div class="lp-math-result">Life Path <span class="lp-math-val">${lp}</span> — ${data ? data.title : ''}</div>`,
-      ].join('<br>'),
+      ].join(' <br>'),
       lp,
       birthLabel,
     };

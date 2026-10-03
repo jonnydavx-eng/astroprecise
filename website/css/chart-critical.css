@@ -94,7 +94,8 @@
         font-size: clamp(2rem, 3.5vw, 3.2rem);
         margin-bottom: var(--space-3);
       }
-      .page-chart .form-glass__sub br { display: none; }
+      .page-chart .form-glass__sub br { display: inline; font-size: 0; line-height: 0; }
+      .page-chart .form-glass__sub br::after { content: " "; font-size: 1rem; }
       .page-chart .form-glass__sub {
         min-height: 0;
         font-size: 0.82rem;

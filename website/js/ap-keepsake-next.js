@@ -65,13 +65,15 @@
 
   async function loadAssets() {
     if (assets) return assets;
-    const [serif, glyph, limb] = await Promise.all([
-      fetch('fonts/newsreader-latin-500.woff2').then(r => r.arrayBuffer()),
+    const [serif, sans, glyph, limb] = await Promise.all([
+      fetch('fonts/instrument-serif-latin-400.woff2').then(r => r.arrayBuffer()),
+      fetch('fonts/instrument-sans-latin-400.woff2').then(r => r.arrayBuffer()),
       fetch('fonts/astro-glyphs.woff2').then(r => r.arrayBuffer()),
       fetch('img/engine/studio/earth-limb.webp').then(r => r.arrayBuffer())
     ]);
     assets = {
       serif: b64(serif),
+      sans: b64(sans),
       glyph: b64(glyph),
       limb: 'data:image/webp;base64,' + b64(limb)
     };
@@ -79,16 +81,25 @@
   }
 
   function stars() {
-    let seed = 915;
-    function rnd() { seed = (seed * 48271) % 2147483647; return seed / 2147483647; }
+    const data = window.APBrightStars;
+    if (!data || !data.rows) return '';
     let out = '';
-    for (let i = 0; i < 64; i++) {
-      const a = rnd() * Math.PI * 2;
-      const rad = 18 + rnd() * 250;
-      const x = 600 + Math.cos(a) * rad;
-      const y = 900 + Math.sin(a) * rad * 0.92;
-      const arm = (0.8 + rnd() * 1.6).toFixed(2);
-      out += `<path d="M${x.toFixed(1)} ${y.toFixed(1)} m ${-arm} 0 h ${(arm * 2)} m ${-arm} ${-arm} v ${(arm * 2)}" stroke="#f4efe6" stroke-opacity="${(0.28 + rnd() * 0.4).toFixed(2)}" stroke-width="0.6"/>`;
+    const rows = data.rows;
+    for (let i = 0; i < rows.length; i += 4) {
+      const mag = rows[i + 2] / 100;
+      if (mag > 3.1) continue;
+      const ra = rows[i] / 100;
+      const dec = rows[i + 1] / 100;
+      const x = 160 + ((ra + 180) / 360) * 880;
+      const y = 500 + ((80 - dec) / 140) * 820;
+      const dx = x - 600;
+      const dy = y - 900;
+      if (dx * dx + dy * dy < 250 * 250) continue;
+      if (y < 480 || y > 1340) continue;
+      const fade = (mag + 1.46) / 4.6;
+      const arm = (1.7 - fade * 0.9).toFixed(2);
+      const op = Math.max(0.18, 0.62 - fade * 0.35).toFixed(2);
+      out += `<path d="M${x.toFixed(1)} ${y.toFixed(1)} m ${-arm} 0 h ${arm * 2} m ${-arm} ${-arm} v ${arm * 2}" stroke="#f4efe6" stroke-opacity="${op}" stroke-width="0.7"/>`;
     }
     return out;
   }
@@ -100,7 +111,7 @@
     const titleSize = lines.length > 3 ? 34 : lines.length > 2 ? 42 : lines.some(line => line.length > 16) ? 50 : 62;
     let title = '';
     lines.forEach((line, i) => {
-      title += `<text x="84" y="${168 + i * (titleSize + 6)}" fill="#f4efe6" font-size="${titleSize}" font-family="Newsreader Display">${esc(line)}</text>`;
+      title += `<text x="84" y="${168 + i * (titleSize + 6)}" fill="#f4efe6" font-size="${titleSize}" font-family="Instrument Serif">${esc(line)}</text>`;
     });
     const cx = 600;
     const cy = 900;
@@ -155,18 +166,18 @@
         const join = side === 'left' ? nameX + 8 : nameX - 8;
         out += `<polyline fill="none" stroke="#e7dcc8" stroke-opacity=".5" stroke-width="1" points="${p.x.toFixed(1)},${p.y.toFixed(1)} ${sx.toFixed(1)},${sy.toFixed(1)} ${rail},${sy.toFixed(1)} ${rail},${labelY.toFixed(1)} ${join},${labelY.toFixed(1)}"/>`;
         out += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${p.name === 'Sun' ? 6.5 : 4.2}" fill="#f4efe6"/>`;
-        out += `<text x="${nameX}" y="${(labelY - 6).toFixed(1)}" text-anchor="${anchor}" fill="#f4efe6" font-family="Newsreader Display" font-size="22">${esc(p.name)}</text>`;
-        out += `<text x="${nameX}" y="${(labelY + 16).toFixed(1)}" text-anchor="${anchor}" fill="#d9d3c6" font-family="Newsreader Display" font-size="14">${esc(p.sign)} ${(p.lon % 30).toFixed(0)}°</text>`;
+        out += `<text x="${nameX}" y="${(labelY - 6).toFixed(1)}" text-anchor="${anchor}" fill="#f4efe6" font-family="Instrument Serif" font-size="22">${esc(p.name)}</text>`;
+        out += `<text x="${nameX}" y="${(labelY + 16).toFixed(1)}" text-anchor="${anchor}" fill="#d9d3c6" font-family="Instrument Sans" font-size="14">${esc(p.sign)} ${(p.lon % 30).toFixed(0)}°</text>`;
       });
       return out;
     }
     const markers = column(left, 'left') + column(right, 'right');
     const sub = show ? [chart.birthDate, chart.timeKnown ? chart.birthTime + ' local' : 'Time unknown', chart.birthCity].filter(Boolean).join(' · ') : 'Birth date, time and place are hidden on this card.';
     const mirror = keepsakeMirror(chart, show);
-    const mirrorLine = mirror ? `<text x="84" y="1460" fill="#efe6d6" font-size="15" font-family="Newsreader Display">${esc(mirror.label + ' · ' + mirror.title + ' · folk clock pattern, not a prediction')}</text>` : '';
+    const mirrorLine = mirror ? `<text x="84" y="1460" fill="#efe6d6" font-size="15" font-family="Instrument Sans">${esc(mirror.label + ' · ' + mirror.title + ' · folk clock pattern, not a prediction')}</text>` : '';
     const limb = pack ? `<g clip-path="url(#bandclip)"><image href="${pack.limb}" x="520" y="-70" width="820" height="615" preserveAspectRatio="xMidYMid slice" opacity="0.92"/></g><rect width="1200" height="460" fill="url(#bandfade)"/>` : '<rect width="1200" height="460" fill="#070b10"/>';
-    const fontCss = pack ? `<style><![CDATA[@font-face{font-family:"Newsreader Display";src:url(data:font/woff2;base64,${pack.serif}) format("woff2");font-weight:500;font-style:normal}@font-face{font-family:AstroGlyph;src:url(data:font/woff2;base64,${pack.glyph}) format("woff2");font-weight:400;font-style:normal}]]></style>` : '';
-    svgText = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">${fontCss}<defs><clipPath id="bandclip"><rect width="1200" height="460"/></clipPath><linearGradient id="bandfade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#070b10"/><stop offset="0.46" stop-color="#070b10"/><stop offset="0.78" stop-color="#070b10" stop-opacity="0"/></linearGradient></defs><rect width="1200" height="1600" fill="#070b10"/>${limb}<text x="84" y="92" fill="#efe6d6" font-size="13" letter-spacing="3.2" font-family="Newsreader Display">ASTROPRECISE</text>${title}${stars()}<circle cx="${cx}" cy="${cy}" r="${R + 52}" fill="none" stroke="#e7dcc8" stroke-opacity=".16"/><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#e7dcc8" stroke-opacity=".55"/>${wheel}${markers}<text x="84" y="1388" fill="#efe6d6" font-size="18" font-family="Newsreader Display">${esc(sub.slice(0, 92))}</text><text x="84" y="1424" fill="#efe6d6" font-size="15" font-family="Newsreader Display">${chart.timeKnown ? (chart.timeAccuracy === 'approximate' ? 'Approximate birth time. Rising and angles are provisional.' : 'Computed tropical positions. Schematic artwork, not a sky photograph.') : 'Time unknown. Moon marker and angles are omitted.'}</text>${mirrorLine}<text x="84" y="1508" fill="#efe6d6" font-size="16" font-family="Newsreader Display">Sun ${esc(sign('Sun'))} · Moon ${esc(sign('Moon'))} · Rising ${esc(chart.timeKnown ? chart.risingSign || 'Unrecorded' : 'Time needed')}</text><text x="84" y="1552" fill="#efe6d6" font-size="14" font-family="Newsreader Display">Astrology is a symbolic tradition. Your story is your own.</text></svg>`;
+    const fontCss = pack ? `<style><![CDATA[@font-face{font-family:"Instrument Serif";src:url(data:font/woff2;base64,${pack.serif}) format("woff2");font-weight:400;font-style:normal}@font-face{font-family:"Instrument Sans";src:url(data:font/woff2;base64,${pack.sans}) format("woff2");font-weight:400;font-style:normal}@font-face{font-family:AstroGlyph;src:url(data:font/woff2;base64,${pack.glyph}) format("woff2");font-weight:400;font-style:normal}]]></style>` : '';
+    svgText = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">${fontCss}<defs><clipPath id="bandclip"><rect width="1200" height="460"/></clipPath><linearGradient id="bandfade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#070b10"/><stop offset="0.46" stop-color="#070b10"/><stop offset="0.78" stop-color="#070b10" stop-opacity="0"/></linearGradient></defs><rect width="1200" height="1600" fill="#070b10"/>${limb}<text x="84" y="92" fill="#efe6d6" font-size="13" letter-spacing="3.2" font-family="Instrument Sans">ASTROPRECISE</text>${title}${stars()}<circle cx="${cx}" cy="${cy}" r="${R + 52}" fill="none" stroke="#e7dcc8" stroke-opacity=".16"/><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#e7dcc8" stroke-opacity=".55"/>${wheel}${markers}<text x="84" y="1388" fill="#efe6d6" font-size="18" font-family="Instrument Sans">${esc(sub.slice(0, 92))}</text><text x="84" y="1424" fill="#efe6d6" font-size="15" font-family="Instrument Sans">${chart.timeKnown ? (chart.timeAccuracy === 'approximate' ? 'Approximate birth time. Rising and angles are provisional.' : 'Computed tropical positions. Schematic artwork, not a sky photograph.') : 'Time unknown. Moon marker and angles are omitted.'}</text>${mirrorLine}<text x="84" y="1508" fill="#efe6d6" font-size="16" font-family="Instrument Sans">Sun ${esc(sign('Sun'))} · Moon ${esc(sign('Moon'))} · Rising ${esc(chart.timeKnown ? chart.risingSign || 'Unrecorded' : 'Time needed')}</text><text x="84" y="1552" fill="#efe6d6" font-size="14" font-family="Instrument Sans">Astrology is a symbolic tradition. Your story is your own.</text></svg>`;
     $('sky-poster').innerHTML = svgText;
     $('poster-status').textContent = show ? 'Birth details are visible on this image.' : 'Birth date, time and place are hidden from the image.';
   }
@@ -175,7 +186,8 @@
     const pack = await loadAssets();
     render(pack);
     if (document.fonts && document.fonts.load) {
-      await document.fonts.load('500 62px "Newsreader Display"');
+      await document.fonts.load('400 62px "Instrument Serif"');
+      await document.fonts.load('400 16px "Instrument Sans"');
       await document.fonts.load('400 18px AstroGlyph');
     }
     const blob = new Blob([svgText], { type: 'image/svg+xml' });

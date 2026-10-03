@@ -14,7 +14,8 @@ See `assets/textures/nasa-rocky-source.txt`.
   product has small black gap tiles and a south-polar fringe.
 - Venus: Magellan C3-MIDR radar + colorized GTDR topography. No optical
   global surface map exists (cloud deck).
-- Earth body: Blue Marble Next Generation July 2004 (MODIS, cloud-free). The opening limb is a cropped still of that model, with the ocean glint painted out. It is not a photograph and not a personal sky.
+- Earth body: Blue Marble Next Generation July 2004 (MODIS, cloud-free). The opening limb is a cropped still of that model, with the ocean glint painted out. It is not a photograph and not a personal sky. NASA is credited as the image source. The chart is not a NASA product and NASA does not endorse it.
+- Opening stars: Yale Bright Star Catalogue positions, visual magnitude 4.2 and brighter, from the d3-celestial `stars.6.json` file (BSD). J2000 right ascension and declination, drawn once for the labelled London demo instant. Not a photograph and not a live telescope view.
   with topography and bathymetry. `earth_clouds` / lights / normal / specular
   were not replaced.
 - Moon: NASA SVS CGI Moon Kit 2025 LROC WAC color (643/566/415 nm). Poles

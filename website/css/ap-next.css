@@ -18,5 +18,8 @@ body.ap-editorial .navbar,body.ap-editorial .bottom-nav,body.ap-editorial .site-
 html.ap-brand-nebula footer.ap-next-footer{background:#e8e9df!important;color:#162625!important;border-top:1px solid #d4d8ce!important}
 html.ap-brand-nebula footer.ap-next-footer a,html.ap-brand-nebula footer.ap-next-footer p,html.ap-brand-nebula footer.ap-next-footer span{color:#162625!important}
 body.ap-editorial .ap-support-link,body.ap-next .ap-support-link,footer.ap-next-footer .ap-support-link,body.ap-editorial .ap-social-row,body.ap-next .ap-social-row{display:none!important}
+/* A hidden break must leave a word space. display:none drops ::after, which glued seeyourself, muchbigger and twelfthof. */
+@media(max-width:600px){.story-layout h2 br,.showcase-caption h2 br,.intro-copy h1 br,.intro-lede br,.intro-finale h2 br{display:inline!important;font-size:0;line-height:0}.story-layout h2 br::after,.showcase-caption h2 br::after,.intro-copy h1 br::after,.intro-lede br::after,.intro-finale h2 br::after{content:" ";font-size:16px;line-height:1}}
+.ap-next-footer .ap-next-logo{color:#162625!important;-webkit-text-fill-color:#162625!important;background:none!important;opacity:1!important}
 
 .ap-next{--serif:var(--ap-next-serif);--sans:var(--ap-next-sans)}.ap-next .eyebrow{font-size:12px}.ap-next .ap-next-tabs a{font-size:11px}

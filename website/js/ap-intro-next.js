@@ -6,6 +6,41 @@
   var AU = { Mercury: 0.387, Venus: 0.723, Moon: 1, Mars: 1.524, Jupiter: 5.203, Saturn: 9.537 };
   var CX = 200;
   var CY = 214;
+  var LAT = 51.5072;
+  var LON = -0.1278;
+  var plateT = 0;
+  var plateRaf = 0;
+  var sprites = null;
+
+  function stopPlate() {
+    if (plateRaf) {
+      cancelAnimationFrame(plateRaf);
+      plateRaf = 0;
+    }
+  }
+
+  function settlePlate(canvas) {
+    plateT = 1;
+    canvas.classList.remove('plate-ease');
+    paintStars(true);
+  }
+
+  function easePlate() {
+    stopPlate();
+    var canvas = document.getElementById('stars-far');
+    if (!canvas) return;
+    plateT = 0;
+    paintStars(true);
+    canvas.classList.remove('plate-ease');
+    void canvas.offsetWidth;
+    function done(event) {
+      if (event.target !== canvas) return;
+      canvas.removeEventListener('animationend', done);
+      settlePlate(canvas);
+    }
+    canvas.addEventListener('animationend', done);
+    canvas.classList.add('plate-ease');
+  }
 
   function boot() {
     var svg = document.getElementById('limb-orbits');
@@ -148,6 +183,11 @@
 
     function showNow() {
       stage = 0;
+      stopPlate();
+      plateT = 0;
+      var plate = document.getElementById('stars-far');
+      if (plate) plate.classList.remove('plate-ease');
+      paintStars(true);
       var now = positions(new Date());
       if (!now) return false;
       note('longitude');
@@ -170,6 +210,10 @@
       BODIES.forEach(function (name) { place(name, now[name]); });
       set('demo-kicker', 'Rewinding to ' + DEMO + ' · demo');
       set('demo-detail', '10:30 in London. January is GMT, the same instant as 10:30 UTC.');
+      if (reduced) {
+        plateT = 1;
+        paintStars(true);
+      } else easePlate();
       shiftRim();
       BODIES.forEach(function (name, i) { travel(name, demo[name], i * 80); });
       return true;
@@ -259,6 +303,11 @@
     function still() {
       running = false;
       clearTimers();
+      stopPlate();
+      plateT = 1;
+      var plate = document.getElementById('stars-far');
+      if (plate) plate.classList.remove('plate-ease');
+      paintStars(true);
       set('demo-kicker', 'The picture stays');
       set('demo-detail', 'Planet positions are not on this page yet. This is a composed model of Earth, not your sky.');
       set('demo-status', 'Reveal your birth sky whenever you are ready, or try the positions again.');
@@ -314,8 +363,12 @@
         }
         paused = !paused;
         clearTimers();
+        if (paused) stopPlate();
         document.getAnimations().forEach(function (anim) { paused ? anim.pause() : anim.play(); });
-        if (!paused) arm();
+        if (!paused) {
+          if (stage >= 1 && plateT < 0.999) easePlate();
+          arm();
+        }
         labelPause();
       });
     }
@@ -336,6 +389,7 @@
       if (!document.hidden || reduced || !running) return;
       paused = true;
       clearTimers();
+      stopPlate();
       document.getAnimations().forEach(function (anim) { anim.pause(); });
       labelPause();
     });
@@ -358,40 +412,93 @@
     }
   }
 
-  function paintStars() {
-    var layers = [
-      ['stars-far', 170, 0.45, 0.8, 0.72],
-      ['stars-mid', 72, 0.75, 1.15, 0.86],
-      ['stars-near', 28, 1.05, 1.55, 0.95]
-    ];
-    layers.forEach(function (layer) {
-      var canvas = document.getElementById(layer[0]);
-      if (!canvas) return;
-      var rect = canvas.getBoundingClientRect();
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var w = Math.max(1, Math.round(rect.width * dpr));
-      var h = Math.max(1, Math.round(rect.height * dpr));
-      if (w < 2 || h < 2) return;
-      if (canvas.dataset.w === String(w) && canvas.dataset.h === String(h)) return;
-      canvas.width = w;
-      canvas.height = h;
-      var ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      ctx.clearRect(0, 0, w, h);
-      var seed = layer[1] * 9973;
-      function rnd() {
-        seed = (seed * 48271) % 2147483647;
-        return seed / 2147483647;
-      }
-      for (var i = 0; i < layer[1]; i++) {
-        ctx.fillStyle = 'rgba(244,239,230,' + (layer[4] * (0.45 + rnd() * 0.55)).toFixed(3) + ')';
-        ctx.beginPath();
-        ctx.arc(rnd() * w, rnd() * h, (layer[2] + rnd() * (layer[3] - layer[2])) * dpr, 0, 6.2832);
-        ctx.fill();
-      }
-      canvas.dataset.w = String(w);
-      canvas.dataset.h = String(h);
-    });
+  function lstDeg(date) {
+    var jd = date.getTime() / 86400000 + 2440587.5;
+    var d = jd - 2451545.0;
+    var gmst = 280.46061837 + 360.98564736629 * d;
+    gmst = ((gmst % 360) + 360) % 360;
+    return gmst + LON;
+  }
+
+  function plateLst() {
+    var now = lstDeg(new Date());
+    var birth = lstDeg(EXAMPLE);
+    var delta = ((birth - now + 540) % 360) - 180;
+    return now + delta * plateT;
+  }
+
+  function ensureSprites(dpr) {
+    if (sprites && sprites.dpr === dpr) return sprites;
+    var colors = [[170, 198, 232], [214, 224, 236], [236, 228, 206], [236, 204, 160], [236, 168, 132]];
+    sprites = {
+      dpr: dpr,
+      imgs: colors.map(function (c) {
+        var s = document.createElement('canvas');
+        var n = Math.max(8, Math.ceil(14 * dpr));
+        s.width = s.height = n;
+        var g = s.getContext('2d');
+        var grd = g.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2);
+        grd.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',1)');
+        grd.addColorStop(0.42, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0.8)');
+        grd.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0)');
+        g.fillStyle = grd;
+        g.fillRect(0, 0, n, n);
+        return s;
+      })
+    };
+    return sprites;
+  }
+
+  function paintStars(force) {
+    var canvas = document.getElementById('stars-far');
+    var data = window.APBrightStars;
+    if (!canvas || !data || !data.rows) return;
+    var rect = canvas.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var w = Math.max(1, Math.round(rect.width * dpr));
+    var h = Math.max(1, Math.round(rect.height * dpr));
+    if (w < 2 || h < 2) return;
+    var stamp = w + 'x' + h + '@' + plateT.toFixed(3);
+    if (!force && canvas.dataset.stamp === stamp) return;
+    canvas.width = w;
+    canvas.height = h;
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, w, h);
+    var pack = ensureSprites(dpr);
+    var lst = plateLst() * Math.PI / 180;
+    var lat = LAT * Math.PI / 180;
+    var sinLat = Math.sin(lat);
+    var cosLat = Math.cos(lat);
+    var zenithX = w * 0.62;
+    var zenithY = h * 0.38;
+    var radius = Math.max(w, h) * 0.78;
+    var rows = data.rows;
+    for (var i = 0; i < rows.length; i += 4) {
+      var ra = rows[i] / 100 * Math.PI / 180;
+      var dec = rows[i + 1] / 100 * Math.PI / 180;
+      var mag = rows[i + 2] / 100;
+      var bv = rows[i + 3] / 100;
+      var ha = lst - ra;
+      var sinAlt = Math.sin(dec) * sinLat + Math.cos(dec) * cosLat * Math.cos(ha);
+      if (sinAlt < -0.05) continue;
+      var alt = Math.asin(Math.max(-1, Math.min(1, sinAlt)));
+      var cosAlt = Math.cos(alt) || 1e-4;
+      var sinAz = -Math.cos(dec) * Math.sin(ha) / cosAlt;
+      var cosAz = (Math.sin(dec) - sinAlt * sinLat) / (cosAlt * cosLat);
+      var az = Math.atan2(sinAz, cosAz);
+      var rho = (Math.PI / 2 - alt) / (Math.PI / 2);
+      var x = zenithX + Math.sin(az) * rho * radius;
+      var y = zenithY - Math.cos(az) * rho * radius;
+      if (x < -8 || y < -8 || x > w + 8 || y > h + 8) continue;
+      var fade = (mag + 1.46) / 5.7;
+      var size = (3.1 - fade * 2.15) * dpr;
+      var bin = bv < -0.05 ? 0 : bv < 0.15 ? 1 : bv < 0.45 ? 2 : bv < 0.9 ? 3 : 4;
+      ctx.globalAlpha = Math.max(0.22, 0.95 - fade * 0.7);
+      ctx.drawImage(pack.imgs[bin], x - size, y - size, size * 2, size * 2);
+    }
+    ctx.globalAlpha = 1;
+    canvas.dataset.stamp = stamp;
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
