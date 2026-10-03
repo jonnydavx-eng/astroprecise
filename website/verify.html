@@ -169,9 +169,9 @@ async function runFingerprint() {
   const chain = verifyChain(registerRows);
 
   $('fp').innerHTML =
-    `<span class="lab">format&nbsp;&nbsp;&nbsp;</span>${FORMAT_VERSION}<br>` +
-    `<span class="lab">computed&nbsp;</span>${computed}<br>` +
-    `<span class="lab">sealed&nbsp;&nbsp;&nbsp;&nbsp;</span>${sealedFp}<br>` +
+    `<span class="lab">format&nbsp;&nbsp;&nbsp;</span>${FORMAT_VERSION} <br>` +
+    `<span class="lab">computed&nbsp;</span>${computed} <br>` +
+    `<span class="lab">sealed&nbsp;&nbsp;&nbsp;&nbsp;</span>${sealedFp} <br>` +
     `<span class="lab">chain&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>${chain.ok ? 'OK' : 'BROKEN @ ' + chain.brokenAt}`;
 
   $('verdict').classList.add('show');

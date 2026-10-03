@@ -24,6 +24,9 @@ The files are self-hosted web subsets/variants. No exact upstream commit was rec
 | `inter-normal-300.woff2`, `inter-normal-400.woff2`, `inter-normal-500.woff2`, `inter-normal-600.woff2` | **Inter**; Copyright 2016 The Inter Project Authors; Open Font License URL embedded. | [Google Fonts family and OFL](https://github.com/google/fonts/tree/main/ofl/inter) · [upstream](https://github.com/rsms/inter) |
 | `ibm-plex-mono-normal-400.woff2` | **IBM Plex Mono**; Copyright 2017 IBM Corp.; OFL URL embedded. Upstream reserves the font name “Plex”. | [IBM Plex source and licence](https://github.com/IBM/plex) |
 | `schibsted-grotesk-latin-var.woff2` | **Schibsted Grotesk**; Copyright 2023 The Schibsted-Grotesk Project Authors; OFL URL embedded. | [upstream and OFL](https://github.com/schibsted/schibsted-grotesk) · [Google Fonts family](https://github.com/google/fonts/tree/main/ofl/schibstedgrotesk) |
+| `newsreader-latin-500.woff2` | **Newsreader** Latin subset, optical size 16–72, weight 500; Copyright 2018 The Newsreader Project Authors; OFL. No longer used by the opening. | [Google Fonts family and OFL](https://github.com/google/fonts/tree/main/ofl/newsreader) |
+| `instrument-serif-latin-400.woff2` | **Instrument Serif** Latin, weight 400; Copyright 2022 The Instrument Serif Project Authors; OFL. Opening headline and keepsake title. SHA-256 `60c06664b5a95c7de6cc3e00d1f9034d78bd1e40b564016b241674449a067d4d`. | [Google Fonts family and OFL](https://github.com/google/fonts/tree/main/ofl/instrumentserif) |
+| `instrument-sans-latin-400.woff2` | **Instrument Sans** Latin variable, weights 400–700; Copyright 2022 The Instrument Sans Project Authors; OFL. Opening UI and keepsake data. SHA-256 `6219bc4bfdfc5d9b2201dcdf046218b122a758f932e25ed5f168f929b7ca2311`. | [Google Fonts family and OFL](https://github.com/google/fonts/tree/main/ofl/instrumentsans) |
 
 ### Noto naming correction
 
@@ -47,6 +50,7 @@ d80df8ff5aecd299a61549f9e29ab1ed0b9b05f4ea71d50fe978e07d5240b235  cormorant-gara
 3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62  inter-normal-400.woff2
 3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62  inter-normal-500.woff2
 3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62  inter-normal-600.woff2
+a4522993e415f9064fea8ba3dac17691707784cbb24a7bf5c3ca42b4c346edbf  newsreader-latin-500.woff2
 4c8b93f431d462c696e12b9d6a033feb3394d36e66e781357c496b95d8a75e05  schibsted-grotesk-latin-var.woff2
 ```
 

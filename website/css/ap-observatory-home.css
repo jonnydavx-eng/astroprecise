@@ -400,7 +400,8 @@ html body.ap-observatory-home #heroChapter .hero-copy .display {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
-body.ap-observatory-home #heroChapter .hero-copy h1 br { display: none; }
+body.ap-observatory-home #heroChapter .hero-copy h1 br { display: inline; font-size: 0; line-height: 0; }
+body.ap-observatory-home #heroChapter .hero-copy h1 br::after { content: " "; font-size: 1rem; line-height: 1.25; }
 body.ap-observatory-home #heroChapter .hero-copy .eyebrow-rose,
 body.ap-observatory-home #heroChapter .hero-copy .standfirst,
 body.ap-observatory-home #heroChapter .hero-copy .hero-why-lead,
@@ -494,7 +495,8 @@ html body.ap-observatory-home #heroChapter .hero-copy .hero-today-chip {
     overflow: visible !important;
     margin: 0.25rem 0 0.45rem !important;
   }
-  body.ap-observatory-home #heroChapter .hero-copy h1 br { display: inline; }
+  body.ap-observatory-home #heroChapter .hero-copy h1 br { display: unset; font-size: inherit; line-height: inherit; }
+body.ap-observatory-home #heroChapter .hero-copy h1 br::after { content: none; }
   html body.ap-observatory-home #heroChapter .hero-copy .eyebrow-rose { display: block !important; }
   html body.ap-observatory-home #heroChapter .hero-copy .standfirst,
   html body.ap-observatory-home #heroChapter .hero-copy .hero-why-lead {

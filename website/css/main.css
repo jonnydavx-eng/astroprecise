@@ -7668,3 +7668,13 @@ p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text
   .app-empty-state__actions { width: 100%; }
   .app-empty-state__actions .btn { flex: 1 1 auto; }
 }
+
+/* Solid footer wordmark. Transparent fill plus a gradient clip vanishes when the clip does not paint. */
+.footer__logo,
+.footer-logo,
+.footer-logo-wordmark {
+  background: none !important;
+  background-image: none !important;
+  -webkit-text-fill-color: #C2A05E !important;
+  color: #C2A05E !important;
+}

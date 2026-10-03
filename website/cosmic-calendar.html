@@ -73,7 +73,7 @@ input{background:rgba(16,29,48,.78);border:1px solid var(--line2);border-radius:
   <span class="kicker">THE COSMIC CALENDAR · DEEP TIME, COMPUTED</span>
 </div>
 
-<h1>13.8 billion years,<br>squeezed into <em style="color:var(--acc);font-style:normal">one year</em>.</h1>
+<h1>13.8 billion years, <br>squeezed into <em style="color:var(--acc);font-style:normal">one year</em>.</h1>
 <p class="lede">If the whole history of the universe were a single calendar year — the Big Bang at midnight on 1 January, this moment at midnight on 31 December — everything you have ever heard of happens in the last few seconds. Every date below is computed on load from the measured age of the universe. You can check the arithmetic.</p>
 
 <div class="receipt" role="status" style="margin-bottom:8px">
@@ -135,8 +135,8 @@ input{background:rgba(16,29,48,.78);border:1px solid var(--line2);border-radius:
 
 <div class="rule"></div>
 <div class="foot">
-  COSMIC-CALENDAR DATES ARE COMPUTED ON LOAD FROM THE PLANCK-2018 AGE (13.787 GYR) BY PURE PROPORTION. EVENT EPOCHS ARE STANDARD SCIENTIFIC CONSENSUS VALUES (WIKIPEDIA "CHRONOLOGY OF THE UNIVERSE" / ESA COSMIC ERAS); WHERE VALUES ARE UNCERTAIN OR MODELLED WE SAY SO IN THE TABLE.<br>
-  <a href="./index.html">THE OBSERVATORY</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a> · <a href="./why.html">WHY WE NEVER MAKE THINGS UP</a><br>
+  COSMIC-CALENDAR DATES ARE COMPUTED ON LOAD FROM THE PLANCK-2018 AGE (13.787 GYR) BY PURE PROPORTION. EVENT EPOCHS ARE STANDARD SCIENTIFIC CONSENSUS VALUES (WIKIPEDIA "CHRONOLOGY OF THE UNIVERSE" / ESA COSMIC ERAS); WHERE VALUES ARE UNCERTAIN OR MODELLED WE SAY SO IN THE TABLE. <br>
+  <a href="./index.html">THE OBSERVATORY</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a> · <a href="./why.html">WHY WE NEVER MAKE THINGS UP</a> <br>
   © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
 </div>
 
@@ -206,7 +206,7 @@ const tbl = $('evTable');
 for (const e of EVENTS){
   const tr = document.createElement('tr');
   tr.innerHTML = `<td>${e.name}</td><td class="d">${realLabel(e.t)}</td><td class="d">${calLabel(e.t)}</td>`+
-    `<td class="src ${SRC_CLASS[e.src]}">● ${SRC_TXT[e.src].toUpperCase()}<br><span style="color:var(--faint)">${e.note}</span></td>`;
+    `<td class="src ${SRC_CLASS[e.src]}">● ${SRC_TXT[e.src].toUpperCase()} <br><span style="color:var(--faint)">${e.note}</span></td>`;
   tbl.appendChild(tr);
 }
 
@@ -316,8 +316,8 @@ $('go').addEventListener('click', ()=>{
   const lifeStr = calSeconds < 1 ? `${calMs.toFixed(1)} milliseconds` : `${calSeconds.toFixed(2)} seconds`;
   $('lifeMs').textContent = lifeStr;
   $('youOut').hidden = false;
-  $('youNarr').innerHTML = `On this scale a single year of your life is about <b style="color:var(--ink)">${oneYearMs.toFixed(2)} milliseconds</b> — the blink between two frames of a film. You were born inside the last <b style="color:var(--ink)">${histSeconds.toFixed(1)} seconds</b> of 31 December, the tiny window that also holds every empire, every song, and everyone you have ever known. It is almost nothing. It is also the only part that ever wondered about the rest.<br><br>And yet you are not late to everything. Almost every atom in you heavier than helium — the calcium in your bones, the iron in your blood — was forged inside earlier stars and flung out when they died, long before the Sun was lit on <b style="color:var(--ink)">September 2nd</b>. You spend your milliseconds made from the ash of suns that burned out billions of years before you.`;
-  $('youReceipt').innerHTML = `<div>YOUR AGE: ${ageYears.toFixed(2)} YEARS · ÷ ${perCalSecond.toFixed(0)} YR/CAL-SEC = ${calSeconds.toExponential(2)} CAL-SECONDS<br>RECORDED HISTORY (5,000 YR) = ${histSeconds.toFixed(1)} CAL-SECONDS · ALL OF IT INSIDE DEC 31'S FINAL ${Math.ceil(histSeconds)} SECONDS</div>`;
+  $('youNarr').innerHTML = `On this scale a single year of your life is about <b style="color:var(--ink)">${oneYearMs.toFixed(2)} milliseconds</b> — the blink between two frames of a film. You were born inside the last <b style="color:var(--ink)">${histSeconds.toFixed(1)} seconds</b> of 31 December, the tiny window that also holds every empire, every song, and everyone you have ever known. It is almost nothing. It is also the only part that ever wondered about the rest. <br><br>And yet you are not late to everything. Almost every atom in you heavier than helium — the calcium in your bones, the iron in your blood — was forged inside earlier stars and flung out when they died, long before the Sun was lit on <b style="color:var(--ink)">September 2nd</b>. You spend your milliseconds made from the ash of suns that burned out billions of years before you.`;
+  $('youReceipt').innerHTML = `<div>YOUR AGE: ${ageYears.toFixed(2)} YEARS · ÷ ${perCalSecond.toFixed(0)} YR/CAL-SEC = ${calSeconds.toExponential(2)} CAL-SECONDS <br>RECORDED HISTORY (5,000 YR) = ${histSeconds.toFixed(1)} CAL-SECONDS · ALL OF IT INSIDE DEC 31'S FINAL ${Math.ceil(histSeconds)} SECONDS</div>`;
 });
 </script>
 <script src="js/ap-sky-time.js" defer></script>

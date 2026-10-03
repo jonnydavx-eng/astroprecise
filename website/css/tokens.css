@@ -1,0 +1,23 @@
+/* House tokens. 4 px space. One palette for the opening. */
+:root {
+  --ap-color-bg: #070b10;
+  --ap-color-ink: #f4efe6;
+  --ap-color-muted: #efe6d6;
+  --ap-color-brass: #c4b49a;
+  --ap-color-paper: #e8e9df;
+  --ap-color-paper-ink: #162625;
+  --ap-space-1: 4px;
+  --ap-space-2: 8px;
+  --ap-space-3: 12px;
+  --ap-space-4: 16px;
+  --ap-space-5: 20px;
+  --ap-space-6: 24px;
+  --ap-space-8: 32px;
+  --ap-space-11: 44px;
+  --ap-type-body: 16px;
+  --ap-type-small: 13px;
+  --ap-type-display: 44px;
+  --ap-radius-1: 4px;
+  --ap-shadow-1: 0 16px 40px #000a;
+  --ap-ease: cubic-bezier(.22, .8, .24, 1);
+}

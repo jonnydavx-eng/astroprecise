@@ -582,7 +582,7 @@
     function defaultReadout() {
       if (!current) return;
       const { slot } = current, p = P[slot.rulerKey];
-      readout.innerHTML = `Hour of <strong data-palette-allow="physical" style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(slot.start)} – ${fmt(slot.end)}<br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
+      readout.innerHTML = `Hour of <strong data-palette-allow="physical" style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(slot.start)} – ${fmt(slot.end)} <br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
     }
     function render(t) {
       const loc = eventLoc();
@@ -619,7 +619,7 @@
       svg.querySelectorAll('.ph-sec').forEach(g => {
         g.addEventListener('click', () => {
           const sl = slots[+g.dataset.i], p = P[sl.rulerKey];
-          readout.innerHTML = `${sl.kind === 'day' ? 'Day' : 'Night'} hour ${(+g.dataset.i % 12) + 1} — <strong style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(sl.start)} – ${fmt(sl.end)}<br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
+          readout.innerHTML = `${sl.kind === 'day' ? 'Day' : 'Night'} hour ${(+g.dataset.i % 12) + 1} — <strong style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(sl.start)} – ${fmt(sl.end)} <br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
         });
       });
       defaultReadout();
@@ -634,7 +634,7 @@
       if (isNaN(aligned)) { aligned = null; return; }
       render(aligned);
       nowBtn.style.display = '';
-      readout.innerHTML += `<br><span style="color:#A8B0BC;font-size:.85em;">⟐ Aligned with the home orrery’s sky — ${aligned.toLocaleString()}</span>`;
+      readout.innerHTML += ` <br><span style="color:#A8B0BC;font-size:.85em;">⟐ Aligned with the home orrery’s sky — ${aligned.toLocaleString()}</span>`;
     });
     nowBtn.addEventListener('click', () => { aligned = null; nowBtn.style.display = 'none'; render(new Date()); });
     render(new Date());
