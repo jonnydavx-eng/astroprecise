@@ -68,6 +68,8 @@
   }
 
   function mount() {
+    if (document.body.classList.contains('ap-editorial') || document.body.classList.contains('ap-next')) return;
+    if (document.querySelector('[data-ap-next-footer], footer.ap-next-footer')) return;
     var existing = document.querySelector('body > footer:not(.ap-lite-footer)');
     if (existing && existing.matches('.ap-site-footer[data-ap-footer-model="compact-v835"]')
         && existing.querySelector('.ap-site-footer__inner')) {

@@ -9,7 +9,7 @@
   function links(mobile){return rows.map(r=>'<a href="'+url(r[0])+'"'+(r[0]===primary?' aria-current="page"':'')+'>'+(mobile?'<svg viewBox="0 0 24 24" aria-hidden="true">'+r[2]+'</svg>':'')+'<span>'+r[1]+'</span></a>').join('');}
   function boot(){
     if(document.getElementById('ap-next-header'))return;
-    const fresh=document.body.classList.contains('ap-next');
+    const fresh=document.body.classList.contains('ap-next')||document.body.classList.contains('ap-editorial');
     if(!fresh)document.body.classList.add('ap-legacy');
     if(here==='observatory.html')document.body.classList.add('ap-observatory');
     document.documentElement.classList.add('ap-next-shell');

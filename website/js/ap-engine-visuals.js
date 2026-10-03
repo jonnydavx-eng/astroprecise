@@ -155,6 +155,7 @@
     if (body.classList.contains('ap-award-511')) return true;
     if (body.classList.contains('ap-mysky-page')) return true;
     if (body.getAttribute('data-sign')) return true;
+    if (body.classList.contains('ap-editorial') || body.classList.contains('ap-next')) return true;
     if (document.querySelector('[data-ap-static-nav]')) return true;
     var key = pageKey();
     /* Launch core is intentionally sparse: these routes already have a single
