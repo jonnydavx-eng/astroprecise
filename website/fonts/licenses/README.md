@@ -24,6 +24,7 @@ The files are self-hosted web subsets/variants. No exact upstream commit was rec
 | `inter-normal-300.woff2`, `inter-normal-400.woff2`, `inter-normal-500.woff2`, `inter-normal-600.woff2` | **Inter**; Copyright 2016 The Inter Project Authors; Open Font License URL embedded. | [Google Fonts family and OFL](https://github.com/google/fonts/tree/main/ofl/inter) · [upstream](https://github.com/rsms/inter) |
 | `ibm-plex-mono-normal-400.woff2` | **IBM Plex Mono**; Copyright 2017 IBM Corp.; OFL URL embedded. Upstream reserves the font name “Plex”. | [IBM Plex source and licence](https://github.com/IBM/plex) |
 | `schibsted-grotesk-latin-var.woff2` | **Schibsted Grotesk**; Copyright 2023 The Schibsted-Grotesk Project Authors; OFL URL embedded. | [upstream and OFL](https://github.com/schibsted/schibsted-grotesk) · [Google Fonts family](https://github.com/google/fonts/tree/main/ofl/schibstedgrotesk) |
+| `newsreader-latin-500.woff2` | **Newsreader** Latin subset, optical size 16–72, weight 500; Copyright 2018 The Newsreader Project Authors; OFL. Used for the opening headline and the keepsake title. | [Google Fonts family and OFL](https://github.com/google/fonts/tree/main/ofl/newsreader) |
 
 ### Noto naming correction
 
@@ -47,6 +48,7 @@ d80df8ff5aecd299a61549f9e29ab1ed0b9b05f4ea71d50fe978e07d5240b235  cormorant-gara
 3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62  inter-normal-400.woff2
 3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62  inter-normal-500.woff2
 3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62  inter-normal-600.woff2
+a4522993e415f9064fea8ba3dac17691707784cbb24a7bf5c3ca42b4c346edbf  newsreader-latin-500.woff2
 4c8b93f431d462c696e12b9d6a033feb3394d36e66e781357c496b95d8a75e05  schibsted-grotesk-latin-var.woff2
 ```
 
