@@ -63,6 +63,7 @@ const PUBLIC_SHOP_ASSETS = new Set([
   'img/shop/v902/natal-wheel.webp',
   'img/shop/v902/keepsake-book.webp',
   'img/shop/v906/natal-plate.jpg',
+  'img/shop/v906/natal-plate.webp',
   'img/shop/v906/keepsake-plate.jpg',
   'img/shop/v906/earth-plate.jpg',
 ])
