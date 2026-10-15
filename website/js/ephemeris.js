@@ -129,7 +129,13 @@ function ascendant(lst, lat, eps) {
 
   const y = Math.cos(lstR);
   const x = -(Math.sin(lstR) * Math.cos(epsR) + Math.tan(latR) * Math.sin(epsR));
-  return mod360(toDeg(Math.atan2(y, x)));
+  let asc = mod360(toDeg(Math.atan2(y, x)));
+  // Inside the polar circles the formula can return the western intersection.
+  // Keep the Ascendant in the eastern half (0..180 deg ahead of the MC), the
+  // Swiss Ephemeris convention, so high-latitude charts do not swap ASC/DSC.
+  const mc = midheaven(lst, eps);
+  if (mod360(asc - mc) > 180) asc = mod360(asc + 180);
+  return asc;
 }
 
 // ---------------------------------------------------------------------------
@@ -150,7 +156,8 @@ function midheaven(lst, eps) {
 // Ecliptic longitude of the point on the ecliptic whose right ascension is raDeg.
 function eclLonFromRA(raDeg, epsDeg) {
   const ra = toRad(raDeg), e = toRad(epsDeg);
-  return mod360(toDeg(Math.atan2(Math.sin(ra) * Math.cos(e), Math.cos(ra))));
+  // tan(lambda) = tan(alpha) / cos(eps)
+  return mod360(toDeg(Math.atan2(Math.sin(ra), Math.cos(ra) * Math.cos(e))));
 }
 
 // Correct Placidus via the semi-arc method. ramc = right ascension of the MC
