@@ -63,6 +63,17 @@ const PUBLIC_SHOP_ASSETS = new Set([
   'img/shop/v902/natal-wheel.webp',
   'img/shop/v902/keepsake-book.webp',
   'img/shop/v906/natal-plate.jpg',
+  // Responsive home-page variants of natal-plate.jpg (tools/make-responsive-image.mjs).
+  'img/shop/v906/natal-plate-400.avif',
+  'img/shop/v906/natal-plate-400.webp',
+  'img/shop/v906/natal-plate-600.avif',
+  'img/shop/v906/natal-plate-600.webp',
+  'img/shop/v906/natal-plate-800.avif',
+  'img/shop/v906/natal-plate-800.webp',
+  'img/shop/v906/natal-plate-1200.avif',
+  'img/shop/v906/natal-plate-1200.webp',
+  'img/shop/v906/natal-plate-1600.avif',
+  'img/shop/v906/natal-plate-1600.webp',
   'img/shop/v906/keepsake-plate.jpg',
   'img/shop/v906/earth-plate.jpg',
 ])

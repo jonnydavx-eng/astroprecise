@@ -6,3 +6,4 @@
 @media(max-width:600px){.intro-showcase{min-height:340px;grid-template-rows:30px 203px 107px}.showcase-caption{padding-bottom:23px}.showcase-caption h2{font-size:23px;max-width:23ch;margin:4px auto 8px}.sky-instrument{margin:-8px auto -18px}.showcase-model{font-size:12px;bottom:10px}.showcase-progress{bottom:12px}}
 
 .showcase-top{font-size:11px}.showcase-caption>p:last-child{font-size:12px}.showcase-caption>p:first-child{font-size:10px}.showcase-model{font-size:10px}@media(max-width:600px){.intro-showcase{min-height:358px;grid-template-rows:32px 205px 121px}.showcase-caption{padding-bottom:27px}.showcase-caption>p:last-child{font-size:13px}.showcase-model{font-size:12px}.intro-copy>.eyebrow{font-size:12px}.showcase-top{font-size:12px}.intro-proof p{font-size:12px;max-width:none}.intro-proof span{font-size:10px}}
+.story-art picture{display:contents}
