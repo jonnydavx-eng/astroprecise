@@ -13,7 +13,7 @@
     if(!fresh)document.body.classList.add('ap-legacy');
     if(here==='observatory.html')document.body.classList.add('ap-observatory');
     document.documentElement.classList.add('ap-next-shell');
-    if(!document.querySelector('link[href*="ap-next.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href=url('css/ap-next.css?v=915');document.head.append(l);}
+    if(!document.querySelector('link[href*="ap-next.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href=url('css/ap-next.css?v=916');document.head.append(l);}
     const logo='<a class="ap-next-logo" href="'+url('index.html')+'" aria-label="AstroPrecise home"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="8"/><path d="M16 0v32M0 16h32M5 5l22 22M5 27 27 5"/><path d="m16 8 2.2 5.8L24 16l-5.8 2.2L16 24l-2.2-5.8L8 16l5.8-2.2Z" fill="currentColor"/></svg>AstroPrecise</a>';
     const header=document.createElement('header');header.id='ap-next-header';header.className='ap-next-header';header.innerHTML='<div class="nav-inner">'+logo+'<nav class="ap-next-desktop" aria-label="Primary">'+links(false)+'</nav><a class="ap-next-studio" href="'+url('shop.html')+'">The Studio ↗</a></div>';
     const navPlaceholder=document.querySelector('[data-ap-next-nav]');if(navPlaceholder)navPlaceholder.replaceWith(header);else document.body.prepend(header);
@@ -26,7 +26,7 @@
     document.dispatchEvent(new Event('ap-next-ready'));
     if(fresh&&'serviceWorker'in navigator&&!new URLSearchParams(location.search).has('nosw')){
       navigator.serviceWorker.register(url('sw.js')).then(reg=>{
-        function offer(){if(!reg.waiting||!navigator.serviceWorker.controller||document.querySelector('.ap-update'))return;const note=document.createElement('div');note.className='ap-update';note.setAttribute('role','status');note.append(document.createTextNode('An updated AstroPrecise is ready. Finish any unsaved changes first. '));const btn=document.createElement('button');btn.className='button-secondary';btn.textContent='Update now';btn.onclick=()=>{navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});reg.waiting.postMessage({type:'SKIP_WAITING'});};note.append(btn);document.body.append(note);}
+        function offer(){if(!reg.waiting||!navigator.serviceWorker.controller||document.querySelector('.ap-update'))return;try{if(sessionStorage.getItem('ap-update-later'))return;}catch(e){}const note=document.createElement('div');note.className='ap-update';note.setAttribute('role','status');note.append(document.createTextNode('An updated AstroPrecise is ready. Finish any unsaved changes first. '));const btn=document.createElement('button');btn.className='button-secondary';btn.textContent='Update now';btn.onclick=()=>{navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});reg.waiting.postMessage({type:'SKIP_WAITING'});};const later=document.createElement('button');later.className='button-secondary';later.textContent='Later';later.onclick=()=>{try{sessionStorage.setItem('ap-update-later','1');}catch(e){}note.remove();};note.append(btn,later);document.body.append(note);}
         offer();reg.addEventListener('updatefound',()=>{const installing=reg.installing;if(installing)installing.addEventListener('statechange',offer);});
       }).catch(()=>{});
     }
