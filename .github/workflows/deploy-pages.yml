@@ -104,8 +104,27 @@ jobs:
           npm run lighthouse:production:ci
         working-directory: tools/visual-check
 
+  # Chart accuracy gate: the full engine suite, including the offline Swiss
+  # Ephemeris fixture checks (test-engine-swiss, test-accuracy-20charts,
+  # test-chiron-swiss) and the historic UK time-zone test, must pass before
+  # anything is built or deployed.
+  accuracy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install (npm ci)
+        run: npm ci
+
+      - name: Chart accuracy (npm run test:engine)
+        run: npm run test:engine
+
   build:
-    needs: test
+    needs: [test, accuracy]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
