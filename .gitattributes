@@ -1,0 +1,29 @@
+# Same line endings on Mac, Windows and Linux. The repo stores LF; Windows
+# scripts check out as CRLF so cmd.exe/PowerShell behave.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.sh  text eol=lf
+
+# Binary assets: never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.mp4 binary
+*.webm binary
+*.mp3 binary
+*.wav binary
+*.glb binary
+*.blend binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.jar binary
+*.keystore binary

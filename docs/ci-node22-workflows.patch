@@ -1,0 +1,44 @@
+diff --git a/.github/workflows/deploy-pages.yml b/.github/workflows/deploy-pages.yml
+index 80ad2d4e..0892b020 100644
+--- a/.github/workflows/deploy-pages.yml
++++ b/.github/workflows/deploy-pages.yml
+@@ -33,7 +33,7 @@ jobs:
+ 
+       - uses: actions/setup-node@v4
+         with:
+-          node-version: '20'
++          node-version: '22'
+ 
+       - name: Ephemeris engine regression
+         run: node test-engine.mjs
+@@ -112,7 +112,7 @@ jobs:
+ 
+       - uses: actions/setup-node@v4
+         with:
+-          node-version: '20'
++          node-version: '22'
+ 
+       # Faithful minify-in-place (tools/build.mjs): same paths, -27% JS / -29% CSS.
+       # build.mjs already skips tools/, the phone-* dev pages and all *.md — dist/
+@@ -149,7 +149,7 @@ jobs:
+       - uses: actions/setup-node@v4
+         if: success()
+         with:
+-          node-version: '20'
++          node-version: '22'
+ 
+       - name: Notify search engines (IndexNow)
+         if: success()
+diff --git a/.github/workflows/refresh-content-bank.yml b/.github/workflows/refresh-content-bank.yml
+index dc97d6e5..7a074bb9 100644
+--- a/.github/workflows/refresh-content-bank.yml
++++ b/.github/workflows/refresh-content-bank.yml
+@@ -46,7 +46,7 @@ jobs:
+ 
+       - uses: actions/setup-node@v4
+         with:
+-          node-version: '20'
++          node-version: '22'
+ 
+       - name: Rebuild content bank (engine-only, idempotent)
+         run: node tools/build-content-bank.mjs --days 181 --months 12
