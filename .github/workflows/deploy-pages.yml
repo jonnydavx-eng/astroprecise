@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Ephemeris engine regression
         run: node test-engine.mjs
@@ -112,7 +112,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       # Faithful minify-in-place (tools/build.mjs): same paths, -27% JS / -29% CSS.
       # build.mjs already skips tools/, the phone-* dev pages and all *.md — dist/
@@ -149,7 +149,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: success()
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Notify search engines (IndexNow)
         if: success()

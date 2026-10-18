@@ -1,0 +1,61 @@
+{
+ "repo": "/workspace/ap-team/main",
+ "charts": 400,
+ "maxErrDeg": {
+  "sun": 0.0081,
+  "moon": 0.0182,
+  "mercury": 1.3859,
+  "venus": 1.3951,
+  "mars": 1.3974,
+  "jupiter": 1.3954,
+  "saturn": 1.4039,
+  "uranus": 1.4902,
+  "neptune": 1.401,
+  "pluto": 0.0286,
+  "chiron": 5.5777,
+  "asc": 179.9961,
+  "mc": 0.0051
+ },
+ "overTol": {
+  "mercury": 387,
+  "venus": 386,
+  "mars": 387,
+  "jupiter": 392,
+  "saturn": 392,
+  "uranus": 385,
+  "neptune": 389,
+  "chiron": 398,
+  "asc": 2
+ },
+ "signMismatches": {
+  "chiron": 19,
+  "saturn": 10,
+  "jupiter": 10,
+  "uranus": 11,
+  "venus": 9,
+  "mercury": 5,
+  "neptune": 14,
+  "mars": 7,
+  "asc": 2
+ },
+ "placidusCuspMax": 8.4839,
+ "placidusCuspOver01": 3088,
+ "meanNodeMax": 0.0053,
+ "trueNodeMax": 0.0989,
+ "lilithMax": 0.1205,
+ "worstAt": {
+  "sun": "1933-7-15-5-17 lat -16.9504",
+  "moon": "2049-8-15-17-28 lat -36.5378",
+  "mercury": "1900-2-8-0-4 lat -43.8961",
+  "venus": "1900-5-16-6-1 lat 54.2488",
+  "mars": "1900-5-16-6-1 lat 54.2488",
+  "jupiter": "1900-5-16-6-1 lat 54.2488",
+  "saturn": "1900-5-16-6-1 lat 54.2488",
+  "uranus": "1900-8-28-6-13 lat -42.5606",
+  "neptune": "1900-2-8-0-4 lat -43.8961",
+  "pluto": "2048-8-22-20-0 lat -42.7402",
+  "chiron": "1900-5-16-6-1 lat 54.2488",
+  "asc": "2024-7-1-11-44 lat 77.7298",
+  "mc": "2011-8-12-21-44 lat 50.1901"
+ }
+}

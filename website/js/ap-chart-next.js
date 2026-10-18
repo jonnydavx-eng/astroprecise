@@ -78,7 +78,18 @@
     const today=new Date();const todayText=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
     if(!/^\d{4}-\d{2}-\d{2}$/.test(input.date)||!Number.isFinite(day.getTime())||day.toISOString().slice(0,10)!==input.date||input.date<'1900-01-01'||input.date>todayText) throw new Error('Enter a valid birth date between 1900 and today.');
     if(input.timeKnown&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(input.time))throw new Error('Enter a valid local birth time, or choose “I don’t know my birth time”.');
-    const candidates=civilCandidates(input.date,input.timeKnown?input.time:'12:00',input.place.tz);
+    let refTime=input.timeKnown?input.time:'12:00';
+    let candidates=civilCandidates(input.date,refTime,input.place.tz);
+    if(!input.timeKnown&&!candidates.length) {
+      // Unknown time: noon itself may have been skipped by a clock change
+      // (e.g. Khartoum, 15 Jan 2000). Use the nearest minute that existed that day.
+      for(let step=1;step<=720&&!candidates.length;step++) for(const m of [720-step,720+step]) {
+        if(m<0||m>1439||candidates.length) continue;
+        refTime=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+        candidates=civilCandidates(input.date,refTime,input.place.tz);
+      }
+      if(!candidates.length) throw new Error('That date did not occur in this place because the local calendar changed. Please check the birth record.');
+    }
     if(!candidates.length) throw new Error('This local time was skipped when the clocks changed. Please check your birth record, or choose “I don’t know my birth time”.');
     if(input.timeKnown && candidates.length>1 && !input.fold) {
       const error=new Error('This time happened twice when the clocks went back. Choose which occurrence below the time field.');
@@ -101,7 +112,7 @@
       const p=raw.positions[key]; positions[label]={lon:p.longitude,longitude:p.longitude,sign:p.sign,degree:p.degree,retrograde:false};
     }
     // No noon-derived angle escapes into saved data when the time is unknown.
-    const data={name:'My birth chart',birthDate:input.date,birthTime:input.timeKnown?input.time:null,timeKnown:input.timeKnown,timeAccuracy:input.timeKnown?'exact':'unknown',timezoneKnown:true,birthCity:input.place.name,city:input.place.name,lat:input.place.lat,lon:input.place.lon,tz:input.place.tz,houseSystem:'whole',nodeMode:'true',jd:raw.jd,positions,ascendant:input.timeKnown?raw.ascendant:null,asc:input.timeKnown?raw.ascendant:null,mc:input.timeKnown?raw.midheaven:null,houses:input.timeKnown?raw.houses:null,aspects:[],sunSign:positions.Sun?positions.Sun.sign:null,moonSign:positions.Moon?positions.Moon.sign:null,risingSign:input.timeKnown?raw.positions.asc.sign:null,engineV:3,timeFold:input.fold||null,uncertainty:input.timeKnown?null:{assumedLocalTime:'12:00',signRanges:ranges}};
+    const data={name:'My birth chart',birthDate:input.date,birthTime:input.timeKnown?input.time:null,timeKnown:input.timeKnown,timeAccuracy:input.timeKnown?'exact':'unknown',timezoneKnown:true,birthCity:input.place.name,city:input.place.name,lat:input.place.lat,lon:input.place.lon,tz:input.place.tz,houseSystem:'whole',nodeMode:'true',jd:raw.jd,positions,ascendant:input.timeKnown?raw.ascendant:null,asc:input.timeKnown?raw.ascendant:null,mc:input.timeKnown?raw.midheaven:null,houses:input.timeKnown?raw.houses:null,aspects:[],sunSign:positions.Sun?positions.Sun.sign:null,moonSign:positions.Moon?positions.Moon.sign:null,risingSign:input.timeKnown?raw.positions.asc.sign:null,engineV:3,timeFold:input.fold||null,uncertainty:input.timeKnown?null:{assumedLocalTime:refTime,signRanges:ranges}};
     if(input.timeKnown&&input.timeAccuracy==='approximate')data.timeAccuracy='approximate';
     return {data,raw,ranges,instant:new Date(ms).toISOString(),input};
   }
@@ -222,7 +233,7 @@
   }
   function loadProfile() {
     if(window.AstroProfile)return Promise.resolve(window.AstroProfile);
-    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=915';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
+    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=916';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
   }
   async function saveChart() {
     if(!currentResult)return;

@@ -1,4 +1,4 @@
-import { buildDeepReading, chartBalance } from './deep-reading.js?v=915';
+import { buildDeepReading, chartBalance } from './deep-reading.js?v=916';
 
 const $=id=>document.getElementById(id);
 const BODIES=['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'];
@@ -56,7 +56,8 @@ function adaptUnknown(result,row,base,deep,natal){
 function render(result){
   $('story-signature').textContent=[chart.sunSign?'Sun in '+chart.sunSign:'',chart.moonSign?'Moon in '+chart.moonSign:'',chart.timeKnown&&chart.risingSign?chart.risingSign+' rising':''].filter(Boolean).join(' · ');
   const method=({whole:'Whole Sign',equal:'Equal',placidus:'Placidus'})[chart.houseSystem]||chart.houseSystem||'Recorded';
-  $('story-precision').textContent=(chart.birthDate||chart.date||'')+' · '+(chart.birthCity||chart.city||'Your birthplace')+' · '+(chart.timeKnown?(chart.timeAccuracy==='approximate'?'Approximate birth time ':'Birth time ')+chart.birthTime+' · '+method+' houses'+(chart.timeAccuracy==='approximate'?' · rising and houses provisional':''):'Birth time unknown · rising and houses omitted; date-based positions approximate');
+  const rawDate=chart.birthDate||chart.date||'';let niceDate=rawDate;try{if(/^\d{4}-\d{2}-\d{2}$/.test(rawDate))niceDate=new Intl.DateTimeFormat('en-GB',{dateStyle:'long',timeZone:'UTC'}).format(new Date(rawDate+'T12:00:00Z'));}catch(e){}
+  $('story-precision').textContent=niceDate+' · '+(chart.birthCity||chart.city||'Your birthplace')+' · '+(chart.timeKnown?(chart.timeAccuracy==='approximate'?'Approximate birth time ':'Birth time ')+chart.birthTime+' · '+method+' houses'+(chart.timeAccuracy==='approximate'?' · rising and houses provisional':''):'Birth time unknown · rising and houses omitted; date-based positions approximate');
   $('story-chapters').innerHTML=result.chapters.map((ch,index)=>{
     const paragraphs=[ch.lead,...ch.serif].filter(line=>line&&typeof line==='string'&&!/undefined|NaN|\{\w+\}/.test(line));
     return '<details class="story-chapter" id="story-chapter-'+(index+1)+'"'+(index===0?' open':'')+'><summary><span class="story-chapter-number">0'+(index+1)+'</span><h2>'+TITLES[index]+'</h2><span class="story-expand" aria-hidden="true">+</span></summary><div class="story-chapter-body">'+paragraphs.map((p,i)=>'<p'+(i===0&&ch.lead?' class="story-lead"':'')+'>'+esc(p)+'</p>').join('')+(ch.mono.length?'<details class="story-receipts"><summary>See the placements behind this chapter</summary><ul>'+ch.mono.filter(line=>!/undefined|NaN/.test(line)).map(line=>'<li>'+esc(line)+'</li>').join('')+'</ul></details>':'')+(index<6?'<button class="story-continue" type="button" data-next-chapter="'+(index+2)+'">Continue: '+TITLES[index+1]+' <span aria-hidden="true">→</span></button>':'')+'</div></details>';
@@ -70,7 +71,7 @@ async function start(){
   const natal=natalFromChart(chart);if(Object.keys(natal).length<5){empty('This saved chart needs its planetary positions refreshed. Create the chart again to open your story.');return;}
   $('story-status').textContent='Turning your placements into a story…';
   try{
-    const [base,deep]=await Promise.all(['reading-templates','deep-templates'].map(async name=>{const response=await fetch('js/'+name+'.json?v=915',{credentials:'same-origin'});if(!response.ok)throw new Error('Template unavailable');return response.json();}));
+    const [base,deep]=await Promise.all(['reading-templates','deep-templates'].map(async name=>{const response=await fetch('js/'+name+'.json?v=916',{credentials:'same-origin'});if(!response.ok)throw new Error('Template unavailable');return response.json();}));
     const now=currentTransits();
     reading=buildDeepReading(natal,base,deep,{birth:{dateText:chart.birthDate||chart.date,timeText:chart.timeKnown?chart.birthTime:'',place:chart.birthCity||chart.city,zone:chart.tz},timeAccuracy:chart.timeAccuracy||(chart.timeKnown?'exact':'unknown'),houseSystem:chart.houseSystem||'whole',houseCusps:chart.timeKnown?chart.houses:null,transits:now?.positions,transitDateText:now?.date});
     adaptUnknown(reading,chart,base,deep,natal);render(reading);
