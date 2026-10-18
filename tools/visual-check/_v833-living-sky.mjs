@@ -13,7 +13,10 @@ import { join } from 'node:path';
 const BASE = (process.env.AP_BASE || process.argv[2] || 'http://127.0.0.1:8790').replace(/\/+$/, '');
 const OUT = process.env.AP_VISUAL_OUT || '/tmp/astroprecise-act1-visual';
 const WINDOWS_CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const WORLDS = ['System', 'Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
+// The WebGL Observatory moved off the guided home page to observatory.html.
+const OBSERVATORY = 'observatory.html';
+// v858 controls (ap-observatory-controls-v835.js) label the whole-system view "Overview".
+const WORLDS = ['Overview', 'Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
 const SCALES = [
   ['EARTH', 0], ['INNER', 1], ['SYSTEM', 2], ['OORT', 3],
   ['STARS', 4], ['GALAXY', 5], ['COSMOS', 6],
@@ -56,12 +59,12 @@ async function waitForModel(page) {
 
 async function selectWorld(page, name, mobile) {
   if (mobile) {
-    const value = name === 'System' ? '' : name.toLowerCase();
+    const value = name === 'Overview' ? '' : name.toLowerCase();
     await page.locator('#mobileWorld').selectOption(value);
   } else {
     await page.locator(`#dock button[data-name="${name}"]`).click();
   }
-  const accepted = name === 'System' ? ['Solar system', 'The System'] : [name];
+  const accepted = name === 'Overview' ? ['Solar system', 'The System', 'Overview'] : [name];
   await page.waitForFunction(names => names.includes(document.getElementById('sky-focus-title')?.textContent.trim()), accepted, { timeout: 4_000 });
 }
 
@@ -78,7 +81,7 @@ async function homeGate(browser, viewport, label, mobile) {
   const context = await browser.newContext({ viewport, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const errors = watch(page);
-  await page.goto(`${BASE}/index.html?nosw=1&contract=act1-${label}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.goto(`${BASE}/${OBSERVATORY}?nosw=1&contract=act1-${label}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await waitForModel(page);
 
   const state = await page.evaluate(() => {
@@ -123,7 +126,8 @@ async function homeGate(browser, viewport, label, mobile) {
   gate(`${label} opens directly at System frame`, state.scale === 2 && Number(state.radius) >= 32 && Number(state.radius) <= 160, JSON.stringify({ scale: state.scale, radius: state.radius }));
   gate(`${label} retired doorway absent`, !state.oldThreshold && !state.oldDeck);
   gate(`${label} living-sky stylesheet loaded`, state.cssLoaded);
-  gate(`${label} launch heading`, state.heading === 'The sky is moving.', state.heading || 'missing');
+  // observatory.html's heading is set by ap-home-reading.js ("Sit with the sky first" before a chart is chosen).
+  gate(`${label} launch heading`, state.heading === 'Sit with the sky first', state.heading || 'missing');
   gate(`${label} no horizontal overflow`, state.overflowX <= 1, `${state.overflowX}px`);
   gate(`${label} model has usable geometry`, state.stage && state.canvas && state.stage.width > 280 && state.stage.height > 340 && state.canvas.width > 280 && state.canvas.height > 340, JSON.stringify({ stage: state.stage, canvas: state.canvas }));
   gate(`${label} model remains directly interactive`, state.canvasPointerEvents !== 'none', String(state.canvasPointerEvents));
@@ -173,15 +177,17 @@ async function homeGate(browser, viewport, label, mobile) {
 
   if (mobile) {
     const toggle = page.locator('.navbar__toggle');
-    gate(`${label} mobile menu control visible`, await toggle.isVisible());
-    await toggle.click();
-    gate(`${label} mobile menu opens`, await page.locator('#nav-mobile-menu.open').isVisible());
+    const toggleVisible = await toggle.isVisible();
+    gate(`${label} mobile menu control visible`, toggleVisible);
+    // Record the failure above and keep going, so later gates still report.
+    if (toggleVisible) await toggle.click();
+    gate(`${label} mobile menu opens`, toggleVisible && await page.locator('#nav-mobile-menu.open').isVisible());
     await page.keyboard.press('Escape');
-    gate(`${label} Escape closes mobile menu`, !(await page.locator('#nav-mobile-menu').evaluate(element => element.classList.contains('open'))));
+    gate(`${label} Escape closes mobile menu`, toggleVisible && (await page.locator('#nav-mobile-menu').count()) > 0 && !(await page.locator('#nav-mobile-menu').evaluate(element => element.classList.contains('open'))));
   }
 
   mkdirSync(OUT, { recursive: true });
-  await page.screenshot({ path: join(OUT, `home-${label}.png`), fullPage: false });
+  await page.screenshot({ path: join(OUT, `observatory-${label}.png`), fullPage: false });
   gate(`${label} no runtime errors`, errors.length === 0, errors.slice(0, 5).join(' | '));
   await context.close();
 }
@@ -190,7 +196,14 @@ async function deepLinkGate(browser) {
   const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
   const errors = watch(page);
   const iso = '2020-06-14T12:00:00.000Z';
-  await page.goto(`${BASE}/index.html?nosw=1#m=${encodeURIComponent(iso)}&focus=mars`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  // v834 public-link contract: a fixed moment is only honoured with public=1;
+  // anything else (e.g. a pasted birth time) is stripped for privacy.
+  await page.goto(`${BASE}/${OBSERVATORY}?nosw=1#m=${encodeURIComponent(iso)}&focus=mars`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await waitForModel(page);
+  const privateLink = await page.evaluate(() => ({ hash: location.hash, live: document.getElementById('sky-live-status')?.textContent.trim() }));
+  gate('unmarked fixed moment is stripped from the Observatory link', !privateLink.hash.includes('m=') && privateLink.live === 'Live now', JSON.stringify(privateLink));
+  await page.goto(`${BASE}/explore.html?nosw=1`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.goto(`${BASE}/${OBSERVATORY}?nosw=1#m=${encodeURIComponent(iso)}&public=1&focus=mars`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await waitForModel(page);
   const direct = await page.evaluate(() => ({
     title: document.getElementById('sky-focus-title')?.textContent.trim(),
@@ -201,11 +214,16 @@ async function deepLinkGate(browser) {
   }));
   gate('direct Observatory deep link applies time + focus', direct.title === 'Mars' && direct.live === 'Selected moment' && direct.stageBusy === 'false' && direct.elementReady, JSON.stringify(direct));
 
-  await page.goto(`${BASE}/explore.html?nosw=1#m=${encodeURIComponent(iso)}&focus=jupiter&scale=2`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
-  await page.waitForURL(url => url.pathname.endsWith('/index.html') && url.hash.includes('focus=jupiter'), { timeout: 10_000 });
+  // Explore is now a tool directory (not a redirect). Its job here is to lead
+  // into the Observatory: follow its Observatory link, then prove a deep link
+  // with time + focus + scale still lands on the live model.
+  await page.goto(`${BASE}/explore.html?nosw=1`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  const exploreLinks = await page.locator('a[href="observatory.html"]').count();
+  gate('Explore links into the Observatory', exploreLinks >= 1, `${exploreLinks} link(s)`);
+  await page.goto(`${BASE}/${OBSERVATORY}?nosw=1#m=${encodeURIComponent(iso)}&public=1&focus=jupiter&scale=2`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await waitForModel(page);
   const merged = await page.evaluate(() => ({ path: location.pathname, hash: location.hash, title: document.getElementById('sky-focus-title')?.textContent.trim() }));
-  gate('legacy Explore route merges into Observatory', merged.path.endsWith('/index.html') && merged.title === 'Jupiter' && merged.hash.includes('m='), JSON.stringify(merged));
+  gate('Observatory deep link keeps time + focus + scale', merged.path.endsWith(`/${'observatory.html'}`) && merged.title === 'Jupiter' && merged.hash.includes('m='), JSON.stringify(merged));
   gate('deep-link routes have no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   await page.close();
 }
@@ -297,7 +315,7 @@ async function planetReturnGate(browser) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const errors = watch(page);
-  await page.goto(`${BASE}/index.html?nosw=1&contract=act1-planet-return`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.goto(`${BASE}/${OBSERVATORY}?nosw=1&contract=act1-planet-return`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await waitForModel(page);
   await page.locator('#mobileWorld').selectOption('jupiter');
   await page.waitForFunction(() => document.getElementById('sky-focus-title')?.textContent.trim() === 'Jupiter', null, { timeout: 4_000 });
@@ -317,13 +335,14 @@ async function planetReturnGate(browser) {
   });
   gate('phone planet choice returns the live model to view', state.title === 'Jupiter' && state.engine === 'webgl' && state.visible, JSON.stringify(state));
   mkdirSync(OUT, { recursive: true });
-  await page.screenshot({ path: join(OUT, 'home-phone-jupiter.png'), fullPage: false });
+  await page.screenshot({ path: join(OUT, 'observatory-phone-jupiter.png'), fullPage: false });
   gate('phone planet-return path has no runtime errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   await context.close();
 }
 
 const launch = { headless: true, args: ['--enable-unsafe-swiftshader', '--disable-dev-shm-usage'] };
-if (existsSync(WINDOWS_CHROME)) launch.executablePath = WINDOWS_CHROME;
+if (process.env.AP_BROWSER_PATH) launch.executablePath = process.env.AP_BROWSER_PATH;
+else if (existsSync(WINDOWS_CHROME)) launch.executablePath = WINDOWS_CHROME;
 const browser = await chromium.launch(launch);
 try {
   await homeGate(browser, { width: 1440, height: 900 }, 'desktop', false);
