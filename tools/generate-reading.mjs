@@ -12,6 +12,7 @@
 //   --final   paid copy (no watermark). Omit = DRAFT/SAMPLE for proofing.
 //   --out     output dir (default %TEMP%/ap-out).
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { tmpdir } from 'os';
 import { join } from 'path';
 import {
   ROOT, JS, norm, sd, fmt, slug, sents, ord, FONTS,
@@ -74,7 +75,7 @@ const Y  = order.y  ?? 1990, MO = order.mo ?? 6, D = order.d ?? 14,
       LAT= order.lat?? 54.486, LON = order.lon ?? -0.613,
       HSYS = order.house || 'placidus';
 
-const OUT = A_.out || (process.env.TEMP ? process.env.TEMP.replace(/\\/g,'/') + '/ap-out' : 'C:/Users/jonny/AppData/Local/Temp/ap-out');
+const OUT = A_.out || join(tmpdir(), 'ap-out').replace(/\\/g, '/');
 mkdirSync(OUT,{recursive:true});
 
 const SIGNS=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
