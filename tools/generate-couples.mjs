@@ -18,13 +18,13 @@
 //
 // With NO args it falls back to two built-in sample people (watermark "SAMPLE").
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { paidMetaBlock, isPaidOrder } from './fulfil-shared.mjs';
+import { paidMetaBlock, resolveFinal } from './fulfil-shared.mjs';
 // One source of truth for what an angle is CALLED in front of a customer.
 import { plainAspect } from './reading-narrative.mjs';
 
 // ── load the real engines into a shared sandbox ──
 const win = {};
-const ROOT = 'C:/Users/jonny/OneDrive/astroprecise/website/js';
+const ROOT = new URL('../website/js', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'); // repo-relative (was a hard-coded C:/Users/jonny/OneDrive path)
 new Function('window', 'console', readFileSync(`${ROOT}/ephemeris.js`, 'utf8'))(win, console);
 const E = win.AstroEphemeris;
 let I = null;
@@ -48,7 +48,7 @@ const A_ = parseArgs(process.argv.slice(2));
 let order = {};
 if (A_.in) { try { order = JSON.parse(readFileSync(A_.in, 'utf8')); } catch (e) { console.error('Could not read --in JSON:', e.message); process.exit(1); } }
 
-const FINAL = !!A_.final || isPaidOrder(order);
+const FINAL = resolveFinal(!!A_.final, order);
 const usingSample = !order.p1 || !order.p2;
 const WATERMARK = FINAL ? '' : (usingSample ? 'SAMPLE' : 'DRAFT');
 

@@ -28,7 +28,8 @@
     "lint": "eslint website/js test-*.mjs ephemeris-package",
     "lint:fix": "eslint --fix website/js test-*.mjs ephemeris-package",
     "format": "prettier --write \"website/js/**/*.js\" \"test-*.mjs\" \"*.md\"",
-    "format:check": "prettier --check \"website/js/**/*.js\" \"test-*.mjs\""
+    "format:check": "prettier --check \"website/js/**/*.js\" \"test-*.mjs\"",
+    "test:paid-gate": "node test-fulfil-paid-gate.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

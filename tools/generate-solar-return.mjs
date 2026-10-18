@@ -7,13 +7,13 @@ import { readFileSync, writeFileSync } from 'fs';
 import {
   loadEngines, parseArgs, defaultOutDir, ensureOut, buildChart, nextSolarReturn,
   fmt, esc, slug, sents, ord, PGL, PNAME, PRINT_CSS, htmlDoc, MONTHS,
-  paidMetaBlock, isPaidOrder,
+  paidMetaBlock, resolveFinal,
 } from './fulfil-shared.mjs';
 
 const A = parseArgs(process.argv.slice(2));
 let order = {};
 if (A.in) order = JSON.parse(readFileSync(A.in, 'utf8'));
-const FINAL = !!A.final || isPaidOrder(order);
+const FINAL = resolveFinal(!!A.final, order);
 const WATERMARK = FINAL ? '' : 'DRAFT';
 const OUT = ensureOut(A.out || defaultOutDir());
 const { E, I } = loadEngines();

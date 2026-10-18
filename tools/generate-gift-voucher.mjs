@@ -8,7 +8,7 @@ import { readFileSync as readCat } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {
-  parseArgs, defaultOutDir, ensureOut, esc, slug, voucherCode, PRINT_CSS, htmlDoc,
+  parseArgs, defaultOutDir, ensureOut, esc, slug, voucherCode, PRINT_CSS, htmlDoc, resolveFinal,
 } from './fulfil-shared.mjs';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
@@ -17,7 +17,7 @@ const catalog = JSON.parse(readCat(join(__dir, 'typeform-catalog.json'), 'utf8')
 const A = parseArgs(process.argv.slice(2));
 let order = {};
 if (A.in) order = JSON.parse(readFileSync(A.in, 'utf8'));
-const FINAL = !!A.final;
+const FINAL = resolveFinal(!!A.final, order);
 const WATERMARK = FINAL ? '' : 'DRAFT';
 const OUT = ensureOut(A.out || defaultOutDir());
 
