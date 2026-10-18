@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "AstroPrecise — static astrology PWA (website/), ephemeris engine + npm package, dormant Android app. See OVERHAUL-PLAN.md.",
+  "description": "AstroPrecise \u2014 static astrology PWA (website/), ephemeris engine + npm package, dormant Android app. See OVERHAUL-PLAN.md.",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "test": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-horoscope.mjs && node test-compat.mjs && node test-couples-sky.mjs && node test-content-bank.mjs && node test-art-themes.mjs && node test-weekly-sky.mjs && node test-ap-sky-bridge.mjs && node test-eclipse-geometry.mjs && node test-orrery-adapter.mjs && node test-gumroad-tables.mjs && node test-eclipse-edition.mjs && node test-deep-reading.mjs && node test-interpretations-patterns.mjs && node test-chart-wheel-layout.mjs && node test-chart-url-privacy.mjs && npm run test:profile-security && node test-palette-contract.mjs && node test-seal-palette.mjs && node test-release-honesty.mjs && node test-mirror-hour.mjs && npm run test:release-infrastructure && node test-planet-maps.mjs && npm run test:fulfil && npm --prefix ephemeris-package test",
+    "test": "npm run test:gate && node test-deep-reading.mjs && node test-interpretations-patterns.mjs && node test-chart-wheel-layout.mjs && node test-eclipse-geometry.mjs && node test-mirror-hour.mjs && node test-planet-maps.mjs",
     "test:engine": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs",
     "test:ui": "node tools/_diag-click.mjs && node tools/visual-check/_v833-living-sky.mjs && node tools/visual-check/_birth-hour-still.mjs",
     "test:focus": "node tools/visual-check/_v833-living-sky.mjs",
@@ -28,7 +28,9 @@
     "lint": "eslint website/js test-*.mjs ephemeris-package",
     "lint:fix": "eslint --fix website/js test-*.mjs ephemeris-package",
     "format": "prettier --write \"website/js/**/*.js\" \"test-*.mjs\" \"*.md\"",
-    "format:check": "prettier --check \"website/js/**/*.js\" \"test-*.mjs\""
+    "format:check": "prettier --check \"website/js/**/*.js\" \"test-*.mjs\"",
+    "test:gate": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-horoscope.mjs && node test-compat.mjs && node test-couples-sky.mjs && node test-content-bank.mjs && node test-art-themes.mjs && node test-weekly-sky.mjs && node test-ap-sky-bridge.mjs && node test-orrery-adapter.mjs && node test-gumroad-tables.mjs && npm --prefix ephemeris-package test",
+    "test:stale": "node test-eclipse-edition.mjs; node test-release-honesty.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

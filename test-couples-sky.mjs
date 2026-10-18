@@ -174,12 +174,14 @@ ok('keep-sky stays current-view, not birth-hour',
   html.includes('id="keep-sky"') && !/id="keep-sky"[^>]*data-keep-mode/.test(html));
 ok('no checkout or SKU on the couples page', !/gumroad|catalogueSkus|checkout/i.test(html + src));
 ok('house wordmark splits Precise', html.includes('logo-text__precise'));
-ok('A/B cards keep house brass and ember',
-  css.includes('.ap-couples-card--a') && css.includes('#8FA3B8') && css.includes('#B86B4A'));
+// v900 couples lock: ion action (#8BA9FF) over instrument silver (#93A8BF).
+// The old brass/ember hexes (#8FA3B8/#B86B4A) were retired on purpose.
+ok('A/B cards keep the v900 ion and silver',
+  css.includes('.ap-couples-card--a') && css.includes('#93A8BF') && css.includes('#8BA9FF'));
 ok('city items are 44px taps', css.includes('.ap-city-item') && /min-height:\s*44px/.test(css));
-ok('house lock colours stay',
-  css.includes('#05080F') && css.includes('#E6ECF2') && css.includes('#A89C84') &&
-  css.includes('#B86B4A') && css.includes('#8FA3B8') && css.includes('#B04A52'));
+ok('house lock colours stay (v900)',
+  css.includes('#040812') && css.includes('#EEF4FA') && css.includes('#93A8BF') &&
+  css.includes('#8BA9FF') && css.includes('#07101E') && css.includes('#FF8EA8'));
 ok('copy withholds the clock when time is blank',
   /blank time withholds that clock/i.test(html) || html.includes('that clock, the Moon, and angles are withheld'));
 ok('hash restore stays Live so both clocks stay equally up',
