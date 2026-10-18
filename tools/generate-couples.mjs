@@ -17,6 +17,9 @@
 //   --out     output dir (default %TEMP%/ap-out).
 //
 // With NO args it falls back to two built-in sample people (watermark "SAMPLE").
+import { tmpdir } from 'os';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { paidMetaBlock, resolveFinal } from './fulfil-shared.mjs';
 // One source of truth for what an angle is CALLED in front of a customer.
@@ -24,7 +27,7 @@ import { plainAspect } from './reading-narrative.mjs';
 
 // ── load the real engines into a shared sandbox ──
 const win = {};
-const ROOT = new URL('../website/js', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'); // repo-relative (was a hard-coded C:/Users/jonny/OneDrive path)
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', 'website', 'js');
 new Function('window', 'console', readFileSync(`${ROOT}/ephemeris.js`, 'utf8'))(win, console);
 const E = win.AstroEphemeris;
 let I = null;
@@ -60,7 +63,7 @@ const SAMPLE = {
 const P1 = order.p1 || SAMPLE.p1;
 const P2 = order.p2 || SAMPLE.p2;
 
-const OUT = A_.out || (process.env.TEMP ? process.env.TEMP.replace(/\\/g, '/') + '/ap-out' : 'C:/Users/jonny/AppData/Local/Temp/ap-out');
+const OUT = A_.out || join(tmpdir(), 'ap-out').replace(/\\/g, '/');
 mkdirSync(OUT, { recursive: true });
 
 // ── shared tables/helpers ──

@@ -5,6 +5,7 @@ import { readFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
 
 export const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 
@@ -93,9 +94,8 @@ export function parseArgs(argv) {
 }
 
 export function defaultOutDir() {
-  return process.env.TEMP
-    ? process.env.TEMP.replace(/\\/g, '/') + '/ap-out'
-    : 'C:/Users/jonny/AppData/Local/Temp/ap-out';
+  // os.tmpdir() honours TEMP/TMP on Windows and TMPDIR on macOS/Linux.
+  return join(tmpdir(), 'ap-out').replace(/\\/g, '/');
 }
 
 export function ensureOut(dir) {
