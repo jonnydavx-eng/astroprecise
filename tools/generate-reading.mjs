@@ -16,7 +16,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import {
   ROOT, JS, norm, sd, fmt, slug, sents, ord, FONTS,
-  natalWheelSvg, deliverablesForProduct, paidMetaBlock, isPaidOrder,
+  natalWheelSvg, deliverablesForProduct, paidMetaBlock, resolveFinal,
 } from './fulfil-shared.mjs';
 import {
   productLabel, modalityBars, chartRulerNarrative, mcCareerBlock, loveValuesBlock,
@@ -59,8 +59,7 @@ if (A_.in) { try { order = JSON.parse(readFileSync(A_.in,'utf8')); } catch(e){ c
 const usingSample = order.y === undefined;
 const PRODUCT = order.product || A_.product || 'reading-poster-bundle';
 const DELIVER = deliverablesForProduct(PRODUCT);
-const paidOrder = isPaidOrder(order);
-const FINAL = !!A_.final || paidOrder;
+const FINAL = resolveFinal(!!A_.final, order);
 const WATERMARK = FINAL ? '' : (usingSample ? 'SAMPLE' : 'DRAFT');
 
 // ── the sample chart (default when no buyer supplied) ──

@@ -495,8 +495,57 @@ export function deliverablesForProduct(product) {
   return SKU_DELIVER[product] || { reading: true, poster: true };
 }
 
+// Paid status fails closed (Codex review A2, 15 Oct 2026). An order id on its
+// own proves nothing: anyone can type one into an order JSON. An order only
+// counts as paid when it carries a payment record from a real provider that
+// names the same order, is live mode, has a positive amount in whole minor
+// units, and is not refunded, disputed or revoked. Nothing on this path is
+// ever inferred from order data alone; FINAL output also needs --final.
+export const PAYMENT_PROVIDERS = new Set(['stripe', 'paypal', 'gumroad', 'lemonsqueezy']);
+const PLACEHOLDER_ID = /(^|[-_\s])(here|test|review|sample|example|demo|proof|placeholder|todo|unpaid)([-_\s]|$)/i;
+
+export function paymentEvidenceProblems(order = {}) {
+  const problems = [];
+  const id = order && typeof order.orderId === 'string' ? order.orderId.trim() : '';
+  if (!id) problems.push('no orderId');
+  else if (PLACEHOLDER_ID.test(id)) problems.push(`orderId "${id}" looks like a placeholder`);
+  const p = order && order.payment;
+  if (!p || typeof p !== 'object') {
+    problems.push('no payment record (order.payment)');
+    return problems;
+  }
+  if (p.status !== 'paid') problems.push(`payment.status is ${JSON.stringify(p.status)}, not "paid"`);
+  if (!PAYMENT_PROVIDERS.has(p.provider)) problems.push(`payment.provider ${JSON.stringify(p.provider)} is not a known provider`);
+  if (!p.reference || String(p.reference).trim() !== id) problems.push('payment.reference does not match orderId');
+  if (p.livemode !== true) problems.push('payment is not live mode (test-mode payments are not paid)');
+  if (!Number.isInteger(p.amountMinor) || p.amountMinor <= 0) problems.push('payment.amountMinor must be a positive whole number of minor units');
+  if (typeof p.currency !== 'string' || !/^[A-Z]{3}$/.test(p.currency)) problems.push('payment.currency must be a 3-letter ISO code');
+  if (!p.paidAt || Number.isNaN(Date.parse(p.paidAt))) problems.push('payment.paidAt must be a timestamp');
+  for (const k of ['refunded', 'disputed', 'revoked']) if (p[k]) problems.push(`payment is ${k}`);
+  if (p.product && order.product && p.product !== order.product) problems.push('payment.product does not match order.product');
+  return problems;
+}
+
 export function isPaidOrder(order = {}) {
-  return !!(order.orderId && String(order.orderId).trim());
+  return paymentEvidenceProblems(order).length === 0;
+}
+
+/**
+ * FINAL (unwatermarked, paid) output needs BOTH an explicit --final and a
+ * payment record that passes paymentEvidenceProblems. --final without proof
+ * stops the run (exit 2) instead of quietly making a proof, so an operator
+ * cannot think they shipped a final. Without --final the run is a proof.
+ */
+export function resolveFinal(final, order = {}, exit = (code) => process.exit(code)) {
+  if (!final) return false;
+  const problems = paymentEvidenceProblems(order);
+  if (problems.length) {
+    console.error('Refusing FINAL output: this order is not proven paid.');
+    for (const m of problems) console.error('  - ' + m);
+    exit(2);
+    return false;
+  }
+  return true;
 }
 
 /** JSON comment embedded in paid HTML for audit + re-verification. */

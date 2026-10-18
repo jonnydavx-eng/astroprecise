@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { parseArgs, defaultOutDir, slug, isPaidOrder } from './fulfil-shared.mjs';
+import { parseArgs, defaultOutDir, slug, resolveFinal } from './fulfil-shared.mjs';
 import { typeformToOrder, resolveCoordinates } from './typeform-to-order.mjs';
 import { validateBirthData, validatePaidOutputs, PAID_DELIVERABLES } from './fulfil-quality.mjs';
 
@@ -102,7 +102,7 @@ function main() {
   mkdirSync(outDir, { recursive: true });
   const tmpPath = join(outDir, `_order-${slug(product)}.json`);
   const flags = ['--in', tmpPath, '--out', outDir];
-  const paidFinal = !!(A.final || isPaidOrder(order));
+  const paidFinal = resolveFinal(!!A.final, { ...order, product });
   if (paidFinal) flags.push('--final');
 
   if (route.kind === 'couples') {

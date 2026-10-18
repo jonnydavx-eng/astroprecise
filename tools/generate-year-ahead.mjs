@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import {
   loadEngines, parseArgs, defaultOutDir, ensureOut, buildChart, natalLongitudes,
   scanYearTransits, fmt, esc, slug, sents, PRINT_CSS, htmlDoc, MONTHS,
-  paidMetaBlock, isPaidOrder,
+  paidMetaBlock, resolveFinal,
 } from './fulfil-shared.mjs';
 // One source of truth for what an angle is CALLED in front of a customer:
 // the trade name ("sextile") never reaches the page — only what it does.
@@ -22,7 +22,7 @@ const angleVerb = (t) => ANGLE_VERB[t] || 'contacts';
 const A = parseArgs(process.argv.slice(2));
 let order = {};
 if (A.in) order = JSON.parse(readFileSync(A.in, 'utf8'));
-const FINAL = !!A.final || isPaidOrder(order);
+const FINAL = resolveFinal(!!A.final, order);
 const WATERMARK = FINAL ? '' : 'DRAFT';
 const OUT = ensureOut(A.out || defaultOutDir());
 const { E, I } = loadEngines();
