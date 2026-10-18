@@ -61,6 +61,7 @@ async function readTabs(page) {
   });
 }
 const failures = [];
+const skipped = [];
 // Slow or busy machines (swiftshader WebGL, an 8 GB laptop) can set
 // AP_TIMEOUT_SCALE=3 to stretch every wait; the assertions do not change.
 const TIMEOUT_SCALE = Math.max(1, Number(process.env.AP_TIMEOUT_SCALE) || 1);
@@ -70,6 +71,11 @@ function gate(name, condition, detail = '') {
   const ok = Boolean(condition);
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? ` — ${detail}` : ''}`);
   if (!ok) failures.push(`${name}${detail ? `: ${detail}` : ''}`);
+}
+
+function skip(name, reason) {
+  console.log(`SKIPPED  ${name} — ${reason}`);
+  skipped.push(name);
 }
 
 function watch(page) {
@@ -313,13 +319,10 @@ async function routeGate(browser) {
       gate('Eclipse owns one dedicated 3D canvas, controls and free guide', eclipse.canvasCount === 1 && eclipse.guide && eclipse.controls, JSON.stringify(eclipse));
     }
     if (route === 'shop.html') {
-      const shop = await page.evaluate(() => ({
-        freeGuide: Boolean(document.getElementById('eclipse-field-guide')),
-        paidEditionCount: document.querySelectorAll('#eclipse-edition').length,
-        price: document.getElementById('eclipse-edition')?.textContent.includes('£7'),
-        gumroad: Boolean(document.querySelector('a[href*="gumroad.com/l/your-eclipse-reading"]')),
-      }));
-      gate('Shop presents the free guide and one truthful £7 edition', shop.freeGuide && shop.paidEditionCount === 1 && shop.price && shop.gumroad, JSON.stringify(shop));
+      // Known skip: shop contents and pricing are deferred to the final-website
+      // shop task (Jonny 18 Oct 16:40, "sort shop out when we have final website").
+      // The old check expected the free eclipse guide and one £7 Gumroad edition.
+      skip('Shop presents the free guide and one truthful £7 edition', 'shop contents and pricing are deferred to the final-website shop task (Jonny 18 Oct 16:40)');
     }
 
     gate(`${route} has no runtime errors`, errors.length === 0, errors.slice(0, 5).join(' | '));
@@ -402,4 +405,4 @@ if (failures.length) {
   failures.forEach(failure => console.error(` - ${failure}`));
   process.exit(1);
 }
-console.log(`\nALL ACT 1 LAUNCH GATES PASS · screenshots: ${OUT}`);
+console.log(`\nALL ACT 1 LAUNCH GATES PASS${skipped.length ? ` (${skipped.length} known skip)` : ''} · screenshots: ${OUT}`);
