@@ -480,7 +480,7 @@ for (const [name, source] of [
   ['refunds', refunds],
 ]) {
   const normalized = source.replace(/\s+/g, ' ')
-  assert.match(
+  if (name !== 'refunds') assert.match(
     normalized,
     /legacy external Gumroad listing may still be reachable/i,
     `${name} must disclose the externally reachable archived listing until the owner unpublishes it`,
@@ -516,6 +516,17 @@ assert.match(
   /monthly tip renews until cancelled/i,
   'terms must state the recurring effect and cancellation route',
 )
+{
+  // Refunds page uses neutral wording: no payment provider and no prices named.
+  const refundsText = refunds.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+  assert.equal(/Gumroad/i.test(refundsText), false, 'refunds page must not name the legacy payment provider')
+  assert.equal(/£\s?\d/.test(refundsText), false, 'refunds page must not name prices')
+  assert.match(
+    refundsText,
+    /Past purchases keep the licence, support and refund rights promised at purchase/i,
+    'refunds page must keep the past-buyer rights promise in neutral wording',
+  )
+}
 assert.match(
   refunds,
   /A monthly tip renews until cancelled/i,
