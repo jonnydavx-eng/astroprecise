@@ -464,9 +464,15 @@
   }
 
   // ── Lunar-node model toggle (Mean default · True optional), persisted ──────
-  // Honest default: the Mean node is the smoothly-moving classical point; the
-  // True (osculating) node wobbles ±~1.5° around it. The choice is remembered
-  // in localStorage so it survives reloads and shared-link re-runs.
+  // LEGACY CONTROLLER: this toggle belongs to the old chart controller and
+  // defaults to the Mean node. The live chart page (chart.html →
+  // ap-chart-next.js) does not use this toggle — it always computes the True
+  // (osculating) node, so the two can disagree by up to about 1.8°.
+  // The Mean node is the smoothly-moving classical point; the True node
+  // oscillates around it. Measured against Swiss Ephemeris, the engine's mean
+  // node is within about 0.005° and its true node within about 0.095°
+  // (test-chiron-swiss.mjs). The choice here is remembered in localStorage so
+  // it survives reloads and shared-link re-runs.
   const NODE_MODE_KEY = 'ap_node_mode';
   function getNodeMode() {
     try {
