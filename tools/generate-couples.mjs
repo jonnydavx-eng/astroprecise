@@ -17,10 +17,10 @@
 //   --out     output dir (default %TEMP%/ap-out).
 //
 // With NO args it falls back to two built-in sample people (watermark "SAMPLE").
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { tmpdir } from 'os';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { paidMetaBlock, isPaidOrder } from './fulfil-shared.mjs';
 // One source of truth for what an angle is CALLED in front of a customer.
 import { plainAspect } from './reading-narrative.mjs';
