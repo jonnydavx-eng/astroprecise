@@ -1,0 +1,41 @@
+{
+ "repo": "/workspace/ap-team/chiron",
+ "charts": 400,
+ "maxErrDeg": {
+  "sun": 0.0087,
+  "moon": 0.0065,
+  "mercury": 0.0017,
+  "venus": 0.005,
+  "mars": 0.0031,
+  "jupiter": 0.0013,
+  "saturn": 0.0019,
+  "uranus": 0.0019,
+  "neptune": 0.0015,
+  "pluto": 0.0286,
+  "chiron": 0.0066,
+  "asc": 0.0125,
+  "mc": 0.0051
+ },
+ "overTol": {},
+ "signMismatches": {},
+ "placidusCuspMax": 0.0125,
+ "placidusCuspOver01": 0,
+ "meanNodeMax": 0.0053,
+ "trueNodeMax": 0.0988,
+ "lilithMax": 0.1205,
+ "worstAt": {
+  "sun": "2016-7-27-4-30 lat 27.7866",
+  "moon": "1964-10-13-8-24 lat -19.0247",
+  "mercury": "2006-7-18-14-4 lat -34.3425",
+  "venus": "2014-1-17-5-18 lat 11.0286",
+  "mars": "1939-6-3-16-0 lat -20.6672",
+  "jupiter": "1941-11-3-0-15 lat 41.5365",
+  "saturn": "1913-11-12-16-17 lat -50.7193",
+  "uranus": "1998-6-26-12-52 lat 47.0079",
+  "neptune": "2008-9-19-15-32 lat -45.7445",
+  "pluto": "2048-8-22-20-0 lat -42.7402",
+  "chiron": "1940-1-7-12-18 lat 21.9534",
+  "asc": "1980-9-22-4-59 lat 58.2706",
+  "mc": "2011-8-12-21-44 lat 50.1901"
+ }
+}
