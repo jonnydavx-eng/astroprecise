@@ -1,0 +1,26 @@
+diff --git a/.github/workflows/refresh-content-bank.yml b/.github/workflows/refresh-content-bank.yml
+index dc97d6e5..85de70b9 100644
+--- a/.github/workflows/refresh-content-bank.yml
++++ b/.github/workflows/refresh-content-bank.yml
+@@ -61,13 +61,15 @@ jobs:
+             echo "Bank unchanged — nothing to commit."
+           fi
+ 
+-      # Same gate the deploy pipeline trusts, run BEFORE committing: engine
+-      # regression, horoscope determinism, content-bank parity/manifest checks
+-      # (test-content-bank.mjs), synastry, art themes, weekly sky, ephemeris
+-      # package. All plain-node, zero deps — no npm ci needed.
+-      - name: Test gate (npm test, includes test-content-bank)
++      # Same plain-node gate the deploy pipeline trusts, run BEFORE committing:
++      # engine regression, horoscope determinism, content-bank parity/manifest
++      # checks, synastry, couples, art themes, weekly sky, sky bridge, orrery,
++      # archived Gumroad tables and the ephemeris package. Zero deps, no npm ci.
++      # (Was `npm test`, which on main references test files that only exist
++      # on unmerged branches and needs jszip, so every run since 21 Sep failed.)
++      - name: Test gate (npm run test:gate, includes test-content-bank)
+         if: steps.diff.outputs.changed == 'true'
+-        run: npm test
++        run: npm run test:gate
+ 
+       # Rewrites the today±14d content-bank precache window and bumps cache V
+       # so clients pick up the refreshed bank. Only runs when the bank
