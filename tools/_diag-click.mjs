@@ -17,6 +17,7 @@ async function launchBrowser() {
     return await chromium.launch({
       headless: true,
       args: ['--enable-unsafe-swiftshader'],
+      ...(process.env.AP_BROWSER_PATH ? { executablePath: process.env.AP_BROWSER_PATH } : {}),
     });
   } catch (error) {
     if (!/Executable doesn't exist/i.test(String(error))) throw error;
@@ -40,7 +41,7 @@ try {
     if (message.type() === 'error') errors.push(`CONSOLE ${message.text()}`);
   });
 
-  await page.goto(`${BASE}/index.html?nosw=1&diag=mouse`, {
+  await page.goto(`${BASE}/observatory.html?nosw=1&diag=mouse`, {
     waitUntil: 'domcontentloaded',
     timeout: 60_000,
   });

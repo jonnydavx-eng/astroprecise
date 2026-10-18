@@ -12,6 +12,7 @@ try {
   browser = await chromium.launch({
     headless: true,
     args: ['--enable-unsafe-swiftshader'],
+    ...(process.env.AP_BROWSER_PATH ? { executablePath: process.env.AP_BROWSER_PATH } : {}),
   });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true });
   page.on('pageerror', (error) => errors.push(`PAGEERROR ${error.message || error}`));
@@ -19,7 +20,7 @@ try {
     if (message.type() === 'error') errors.push(`CONSOLE ${message.text()}`);
   });
 
-  await page.goto(`${BASE}/index.html?nosw=1&diag=birth-hour-still`, {
+  await page.goto(`${BASE}/observatory.html?nosw=1&diag=birth-hour-still`, {
     waitUntil: 'domcontentloaded',
     timeout: 60_000,
   });

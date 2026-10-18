@@ -16,3 +16,19 @@ body.ap-legacy{--ap-display:var(--ap-next-serif);--ap-ui:var(--ap-next-sans);--a
 body.ap-legacy .site-header:not(#ap-next-header),body.ap-legacy [data-ap-static-nav]{display:none!important}
 
 .ap-next{--serif:var(--ap-next-serif);--sans:var(--ap-next-sans)}.ap-next .eyebrow{font-size:12px}.ap-next .ap-next-tabs a{font-size:11px}
+
+/* Observatory fit (v917 candidate). The instrument used to sit under a fixed
+   64px bar that the shared shell retired, so it kept dead space on top and its
+   time rail fell below the fold (1440x900: rail ended at 1049px). The page
+   chrome is measured in ap-next.js (--ap-shell-top, --ap-next-tabs-h,
+   --ap-obs-intro-h, --ap-obs-deck-h). */
+html body.ap-observatory.ap-live-home.ap-reading-room #lead{padding-top:0!important;height:calc(100svh - var(--ap-shell-top,149px))!important;min-height:520px!important;max-height:none!important}
+html body.ap-observatory.ap-live-home.ap-reading-room .ap-live-intro{padding-top:14px!important;padding-bottom:10px!important}
+html body.ap-observatory.ap-live-home.ap-reading-room.is-birth-sky .ap-live-intro{top:14px!important}
+@media(max-width:700px){
+html body.ap-observatory.ap-live-home.ap-reading-room #lead{height:auto!important;min-height:0!important}
+html body.ap-observatory.ap-live-home.ap-reading-room .ap-live-intro{flex-direction:row!important;align-items:center!important;padding:12px 16px 10px!important}
+html body.ap-observatory.ap-live-home.ap-reading-room .ap-reading-kicker,html body.ap-observatory.ap-live-home.ap-reading-room:not(.is-birth-sky) .ap-live-copy{display:none!important}
+html body.ap-observatory.ap-live-home.ap-reading-room .ap-model-stage{height:max(340px,calc(100svh - var(--ap-shell-top,131px) - var(--ap-obs-intro-h,96px) - var(--ap-obs-deck-h,131px) - var(--ap-next-tabs-h,63px)))!important;min-height:340px!important}
+html body.ap-observatory .ap-mobile-flight-deck{scroll-margin-bottom:calc(var(--ap-next-tabs-h,63px) + 8px)}
+}
