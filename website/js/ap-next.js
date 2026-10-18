@@ -7,6 +7,29 @@
   const rows=[['index.html','Today','<circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>'],['chart.html','Birth chart','<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="m12 3 3 12-11-3 14-5-6 14"/>'],['explore.html','Explore','<circle cx="12" cy="12" r="9"/><path d="m16 8-3 5-5 3 3-5Z"/>'],['charts.html','Saved','<path d="M6 3h12v18l-6-4-6 4Z"/>']];
   const primary=rows.some(r=>r[0]===here)?here:(['profile.html','sky-card.html'].includes(here)?'charts.html':here==='deep-reading.html'?'chart.html':'explore.html');
   function links(mobile){return rows.map(r=>'<a href="'+url(r[0])+'"'+(r[0]===primary?' aria-current="page"':'')+'>'+(mobile?'<svg viewBox="0 0 24 24" aria-hidden="true">'+r[2]+'</svg>':'')+'<span>'+r[1]+'</span></a>').join('');}
+  // Observatory: the instrument fills the screen under the shared header and
+  // crumb (it used to sit under a retired fixed bar). Measure the real chrome
+  // so the model, phone selectors and time rail stay above the fold and above
+  // the phone tab bar at any size.
+  function fitObservatory(header){
+    const root=document.documentElement;
+    const crumb=document.querySelector('.tool-crumb');
+    const tabs=document.querySelector('.ap-next-tabs');
+    const flowH=el=>{if(!el)return 0;const cs=getComputedStyle(el);return cs.display==='none'||cs.position==='absolute'||cs.position==='fixed'?0:el.offsetHeight;};
+    let queued=false;
+    function measure(){
+      queued=false;
+      root.style.setProperty('--ap-shell-top',((header?header.offsetHeight:0)+(crumb?crumb.offsetHeight:0))+'px');
+      root.style.setProperty('--ap-next-tabs-h',(tabs&&getComputedStyle(tabs).display!=='none'?tabs.offsetHeight:0)+'px');
+      root.style.setProperty('--ap-obs-intro-h',flowH(document.querySelector('.ap-live-intro'))+'px');
+      root.style.setProperty('--ap-obs-deck-h',flowH(document.querySelector('.ap-mobile-flight-deck'))+'px');
+    }
+    function queue(){if(!queued){queued=true;requestAnimationFrame(measure);}}
+    measure();
+    addEventListener('resize',queue);
+    if('ResizeObserver'in window){const ro=new ResizeObserver(queue);[header,crumb,tabs,document.querySelector('.ap-live-intro'),document.querySelector('.ap-mobile-flight-deck')].forEach(el=>{if(el)ro.observe(el);});}
+    new MutationObserver(queue).observe(document.body,{attributes:true,attributeFilter:['class']});
+  }
   function boot(){
     if(document.getElementById('ap-next-header'))return;
     const fresh=document.body.classList.contains('ap-next');
@@ -23,6 +46,7 @@
     const footer=document.createElement('footer');footer.className='ap-next-footer';footer.innerHTML='<div class="wrap"><div class="footer-top"><div>'+logo+'<p>A little more perspective.<br>Astronomy you can explore. Astrology you can reflect on.</p></div><nav aria-label="Information">'+[['guides.html','Start learning'],['accuracy.html','Our calculations'],['observatory.html','3D observatory'],['privacy.html','Privacy'],['terms.html','Terms'],['refunds.html','Refunds'],['contact.html','Contact']].map(r=>'<a href="'+url(r[0])+'">'+r[1]+'</a>').join('')+'</nav></div><div class="footer-bottom"><span>© '+new Date().getFullYear()+' AstroPrecise · Made for the curious.</span><span>Birth calculations stay on your device. No account needed.</span></div></div>';
     const footerPlaceholder=document.querySelector('[data-ap-next-footer]');if(footerPlaceholder)footerPlaceholder.replaceWith(footer);else document.body.append(footer);
     window.APNext={base:url(''),escape:s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))};
+    if(here==='observatory.html')fitObservatory(header);
     document.dispatchEvent(new Event('ap-next-ready'));
     if(fresh&&'serviceWorker'in navigator&&!new URLSearchParams(location.search).has('nosw')){
       navigator.serviceWorker.register(url('sw.js')).then(reg=>{
