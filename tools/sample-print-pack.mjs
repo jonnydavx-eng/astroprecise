@@ -13,8 +13,11 @@
  *
  * Path: fulfil-shared buildChart (VSOP87/ELP2000 engine) → natalWheelSvg →
  * HTML plates → headless Chromium (playwright-core, system Chrome/Edge) →
- * page.pdf for A3/A4 and page.screenshot for the PNGs. Fonts come from
- * website/fonts via a loopback-only static server; nothing leaves the machine.
+ * page.pdf for A3/A4 and page.screenshot for the PNGs. Fonts are inlined as
+ * data: URLs by fulfil-shared printFontsHtml(): the static TrueType print
+ * instances in tools/print-fonts (so the PDFs embed real TrueType/CID fonts,
+ * not Type3 outlines) plus the AstroGlyph symbol font from website/fonts. The
+ * plate is served from a loopback-only origin; nothing leaves the machine.
  *
  * Default --out: C:\house\astro-samples\print-pack on Windows, else
  * ./out/sample-print-pack (both ignored by git).
@@ -27,7 +30,7 @@ import { PDFDocument, PDFName, PDFDict } from 'pdf-lib';
 import sharp from 'sharp';
 import { chromium } from 'playwright-core';
 import {
-  ROOT, loadEngines, buildChart, natalWheelSvg, fmt, esc, PGL, PNAME, parseArgs,
+  ROOT, loadEngines, buildChart, natalWheelSvg, fmt, esc, PGL, SGL, PNAME, GLYPH_FONT, parseArgs, printFontsHtml,
 } from './fulfil-shared.mjs';
 
 const ALLOWED_FLAGS = new Set(['out', 'browser', 'quiet']);
@@ -128,7 +131,7 @@ function plateHtml({ W, H, layout, light = false, chart, pageMm = null }) {
   const pad = { print: 60, square: 36, story: 60, wallpaper: 40, bigthree: 36 }[layout];
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(SAMPLE_LABEL)}</title>
-<link rel="stylesheet" href="/css/fonts.css">
+${printFontsHtml()}
 <style>
 ${pageCss}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -159,7 +162,9 @@ h1{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.1em;color:${ink.te
 </style></head><body>${body}<div class="wm">SAMPLE</div></body></html>`;
 }
 
-// ── loopback font server (serves website/ read-only on 127.0.0.1) ────────────
+// ── loopback origin (serves website/ read-only on 127.0.0.1) ─────────────────
+// The plate's fonts are inlined, so in practice nothing is fetched from here; the
+// server only gives page.route() a real http origin to intercept.
 const TYPES = { '.css': 'text/css; charset=utf-8', '.woff2': 'font/woff2', '.html': 'text/html; charset=utf-8' };
 function startServer() {
   const root = join(ROOT, 'website');
@@ -185,6 +190,43 @@ async function launchBrowser(pref) {
 }
 
 // ── checks ────────────────────────────────────────────────────────────────────
+/** Every non-Latin character the plates print, with the font stack it is set in. */
+export const PLATE_GLYPHS = Object.freeze([
+  ...[...Object.values(PGL), ...SGL, '↑'].map((ch) => [ch, GLYPH_FONT]),
+  ['℞', "'Cormorant Garamond',Georgia,serif"],
+  ['—', "'Cormorant Garamond',Georgia,serif"],
+  ['·', "'Cinzel',serif"],
+]);
+
+/**
+ * Runs in the page. Draws each glyph with its stack and compares the pixels with
+ * U+0378 (unassigned, so no font covers it), which Chromium draws as the .notdef
+ * box. Same pixels, or no pixels at all, means the glyph fell through every font
+ * in the stack: tofu. A fallback font (Noto, Segoe UI Symbol, Georgia) is fine.
+ */
+function tofuGlyphsInPage(glyphs) {
+  const c = document.createElement('canvas');
+  c.width = 72; c.height = 72;
+  const ctx = c.getContext('2d');
+  const draw = (ch, stack) => {
+    ctx.clearRect(0, 0, 72, 72);
+    ctx.font = `36px ${stack}`;
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#000';
+    ctx.fillText(ch, 8, 36);
+    return ctx.getImageData(0, 0, 72, 72).data;
+  };
+  const bad = [];
+  for (const [ch, stack] of glyphs) {
+    const notdef = draw('͸', stack);
+    const g = draw(ch, stack);
+    const blank = g.every((v, i) => i % 4 !== 3 || v === 0);
+    const same = g.every((v, i) => v === notdef[i]);
+    if (blank || same) bad.push(ch);
+  }
+  return bad;
+}
+
 export async function inspectPng(path) {
   const meta = await sharp(path).metadata();
   const stats = await sharp(path).stats();
@@ -196,17 +238,21 @@ export async function inspectPdf(path) {
   const doc = await PDFDocument.load(readFileSync(path), { updateMetadata: false });
   const pages = doc.getPages();
   const mm = pages.map((p) => { const { width, height } = p.getSize(); return [width, height].map((v) => Number((v / 72 * 25.4).toFixed(1))); });
-  // Chromium embeds system fonts as TrueType subsets (FontFile2) but writes the
-  // OFL web fonts (Cinzel, Cormorant Garamond) as Type3 fonts: vector glyph
-  // outlines stored in the PDF itself. Both are self-contained; a font that is
-  // referenced by name only (no FontFile*, not Type3) would be "not embedded".
+  // Chromium embeds static fonts as TrueType subsets (FontFile2, simple
+  // /TrueType or /Type0 + CIDFontType2). A VARIABLE font instance it cannot
+  // embed, so it writes those runs as Type3 fonts (glyph outlines drawn as page
+  // content): no real font program, no text extraction, no print-shop font
+  // check. tools/print-fonts supplies static instances precisely so type3 is 0.
+  // A font referenced by name only (no FontFile*, not Type3) is "not embedded".
   const embedded = [];
+  const subtypes = new Set();
   let type3 = 0;
   let notEmbedded = 0;
   for (const [, obj] of doc.context.enumerateIndirectObjects()) {
     if (!(obj instanceof PDFDict)) continue;
     const type = obj.get(PDFName.of('Type'))?.toString();
     const subtype = obj.get(PDFName.of('Subtype'))?.toString();
+    if (type === '/Font' && subtype) subtypes.add(subtype.replace(/^\//, ''));
     if (type === '/Font' && subtype === '/Type3') { type3++; continue; }
     if (type === '/Font' && (subtype === '/TrueType' || subtype === '/Type1' || subtype === '/MMType1')) {
       const fd = obj.get(PDFName.of('FontDescriptor'));
@@ -226,7 +272,7 @@ export async function inspectPdf(path) {
       }
     }
   }
-  return { pages: pages.length, pageMm: mm, fontsEmbedded: embedded.length, type3Fonts: type3, fontsNotEmbedded: notEmbedded, fontNames: [...new Set(embedded)] };
+  return { pages: pages.length, pageMm: mm, fontsEmbedded: embedded.length, type3Fonts: type3, fontsNotEmbedded: notEmbedded, fontSubtypes: [...subtypes].sort(), fontNames: [...new Set(embedded)] };
 }
 
 // ── main ──────────────────────────────────────────────────────────────────────
@@ -263,6 +309,8 @@ export async function generateSamplePack({ out = defaultSampleOut(), browser: pr
       for (const fam of ['AstroGlyph', 'Cinzel', 'Cormorant Garamond']) {
         if (!loaded.includes(fam)) throw new Error(`${spec.file}: font ${fam} did not load (glyphs would render as tofu)`);
       }
+      const tofu = await page.evaluate(tofuGlyphsInPage, PLATE_GLYPHS);
+      if (tofu.length) throw new Error(`${spec.file}: no font in the stack draws ${tofu.map((g) => `${g} (U+${g.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')})`).join(', ')}: tofu`);
       if (isPdf) {
         await page.emulateMedia({ media: 'print' });
         await page.pdf({ path: target, printBackground: true, preferCSSPageSize: true, margin: { top: '0', right: '0', bottom: '0', left: '0' } });
@@ -272,13 +320,14 @@ export async function generateSamplePack({ out = defaultSampleOut(), browser: pr
       await context.close();
 
       const bytes = statSync(target).size;
-      const row = { file: spec.file, bytes };
+      const row = { file: spec.file, bytes, glyphsChecked: PLATE_GLYPHS.length };
       if (isPdf) {
         const info = await inspectPdf(target);
         Object.assign(row, info);
         const [w, h] = info.pageMm[0];
         if (info.pages !== 1 || Math.abs(w - spec.mm[0]) > 0.5 || Math.abs(h - spec.mm[1]) > 0.5) throw new Error(`${spec.file}: expected 1 page ${spec.mm.join('x')} mm, got ${info.pages} page(s) ${info.pageMm.map((p) => p.join('x')).join(',')}`);
-        if (info.fontsEmbedded === 0 || info.fontsNotEmbedded > 0) throw new Error(`${spec.file}: fonts not self-contained (embedded ${info.fontsEmbedded}, type3 ${info.type3Fonts}, not embedded ${info.fontsNotEmbedded})`);
+        if (info.fontsEmbedded === 0 || info.fontsNotEmbedded > 0) throw new Error(`${spec.file}: fonts not self-contained (embedded ${info.fontsEmbedded}, not embedded ${info.fontsNotEmbedded})`);
+        if (info.type3Fonts > 0) throw new Error(`${spec.file}: ${info.type3Fonts} Type3 font(s) in the PDF; a variable font slipped into the print path (expected only the static instances in tools/print-fonts)`);
         // Preview: rasterise page 1 by re-screenshotting the same plate small.
         const pv = await browserInst.newPage({ viewport: { width: 420, height: Math.round(420 * spec.mm[1] / spec.mm[0]) } });
         await pv.route(`${origin}/plate/*`, (route) => route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: plateHtml({ W: 420, H: 420 * spec.mm[1] / spec.mm[0], layout: spec.layout, light: !!spec.light, chart }) }));
@@ -294,7 +343,7 @@ export async function generateSamplePack({ out = defaultSampleOut(), browser: pr
         await sharp(target).resize({ width: 420 }).png().toFile(join(outDir, 'preview', spec.file.replace(/\.png$/, '-preview.png')));
       }
       results.push(row);
-      log(`written: ${spec.file} (${(bytes / 1024).toFixed(0)} KB${row.width ? `, ${row.width}x${row.height}` : `, ${row.pageMm[0].join('x')} mm, fonts: ${row.fontsEmbedded} embedded subsets + ${row.type3Fonts} Type3 outline fonts, ${row.fontsNotEmbedded} not embedded`})`);
+      log(`written: ${spec.file} (${(bytes / 1024).toFixed(0)} KB${row.width ? `, ${row.width}x${row.height}` : `, ${row.pageMm[0].join('x')} mm, fonts: ${row.fontsEmbedded} embedded ${row.fontSubtypes.join('/')} subsets, ${row.type3Fonts} Type3, ${row.fontsNotEmbedded} not embedded`})`);
     }
   } finally {
     await browserInst.close();

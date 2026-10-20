@@ -20,8 +20,8 @@ that do carry it. The common licence text and copyright notices are in
 | Family (local files) | Embedded copyright | Licence | Used in the print pack |
 |---|---|---|---|
 | Noto Sans Symbols (`astro-glyphs.woff2`, CSS alias `AstroGlyph`) | Copyright 2022 The Noto Project Authors | SIL OFL 1.1 — verified (embedded URL) | Yes: zodiac and planet glyphs |
-| Cinzel (`cinzel-normal-400/600/700`, `cinzel-hero-700`) | Copyright 2020 The Cinzel Project Authors | SIL OFL 1.1 — verified (embedded URL in the three normal files; hero subset: copyright only) | Yes: headings, labels |
-| Cormorant Garamond (`cormorant-garamond-normal-400/500/600`, `italic-400/500`) | Copyright 2015 The Cormorant Project Authors | SIL OFL 1.1 — verified (embedded URL) | Yes: body text |
+| Cinzel (`cinzel-normal-400/600/700`, `cinzel-hero-700`) | Copyright 2020 The Cinzel Project Authors | SIL OFL 1.1 — verified (embedded URL in the three normal files; hero subset: copyright only) | Website only since 2026-10-20; the PDFs embed the static instances in section 1a |
+| Cormorant Garamond (`cormorant-garamond-normal-400/500/600`, `italic-400/500`) | Copyright 2015 The Cormorant Project Authors | SIL OFL 1.1 — verified (embedded URL) | Website only since 2026-10-20; the PDFs embed the static instances in section 1a |
 | Inter (`inter-normal-300/400/500/600`) | Copyright 2016 The Inter Project Authors | SIL OFL 1.1 — verified (embedded URL) | No (website only) |
 | IBM Plex Mono (`ibm-plex-mono-normal-400`) | Copyright 2017 IBM Corp., Reserved Font Name "Plex" | SIL OFL 1.1 — verified (embedded URL) | No (website only) |
 | Schibsted Grotesk (`schibsted-grotesk-latin-var`) | Copyright 2023 The Schibsted-Grotesk Project Authors | SIL OFL 1.1 — verified (embedded URL) | No (website only) |
@@ -33,6 +33,26 @@ comments are the wrong name.
 OFL conditions that matter for the pack: the fonts may be embedded in PDFs and bundled with the
 files; keep the copyright notices and the licence text with any redistributed font binaries; the
 fonts themselves may not be sold on their own.
+
+Note on the WOFF2 files (added 2026-10-20): the Cinzel and Cormorant Garamond weight aliases
+point at byte-identical files because each is a **variable** font (see the hash inventory in
+`website/fonts/licenses/README.md`). Chromium embeds a variable instance in a PDF only as a
+Type3 outline font, which is why the print path no longer uses them; see section 1a.
+
+## 1a. Print fonts (`tools/print-fonts/`)
+
+Static TrueType instances used only when rendering PDFs (`tools/fulfil-shared.mjs`
+`printFontCss`, consumed by `tools/sample-print-pack.mjs` and `htmlDoc`). Not served by the
+website. Detail, derivation and SHA-256 list: `tools/print-fonts/README.md`.
+
+| Files | Derived from | Embedded family name | Licence |
+|---|---|---|---|
+| `cinzel-static-400/600/700.ttf` | github.com/google/fonts `ofl/cinzel`, variable TTF instanced with fontTools `varLib.instancer` at 400/600/700 and subset to Latin + punctuation + arrows, 2026-10-20 | "Cinzel Print" (renamed instance; `fsType` 0) | SIL OFL 1.1 — verified (`OFL-Cinzel.txt`, Copyright 2020 The Cinzel Project Authors, no Reserved Font Name declared) |
+| `cormorant-garamond-static-400/500/600.ttf`, `cormorant-garamond-static-italic-400/500.ttf` | github.com/google/fonts `ofl/cormorantgaramond`, variable roman and italic TTFs instanced and subset the same way, 2026-10-20 | "Cormorant Garamond Print" (renamed instance; `fsType` 0) | SIL OFL 1.1 — verified (`OFL-CormorantGaramond.txt`, Copyright 2015 the Cormorant Project Authors, no Reserved Font Name declared) |
+
+The renamed family names keep OFL section 3 satisfied even though no Reserved Font Name is
+declared. The two OFL texts travel with the binaries in the same folder. Glyphs (zodiac, planets)
+still come from `astro-glyphs.woff2` in section 1, inlined into the same print stylesheet.
 
 ## 2. Ephemeris engine and astronomical data
 
@@ -103,4 +123,5 @@ renders through the operator's locally installed Chrome, Edge or Playwright Chro
 
 - `tools/sample-print-pack.mjs` writes `PRINT-GUIDE.txt` and `SAMPLE-README.txt` pointing here.
 - `website/fonts/licenses/README.md` holds the detailed font map and hashes.
+- `tools/print-fonts/README.md` holds the print-font derivation notes and hashes.
 - `website/data/third-party-credits.json` is the single source for customer-facing credits.
