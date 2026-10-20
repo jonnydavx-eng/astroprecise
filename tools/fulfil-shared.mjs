@@ -30,6 +30,40 @@ export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', '
 /** Self-hosted fonts — paths resolve from website root (css/fonts.css). */
 export const FONTS = `<link rel="stylesheet" href="css/fonts.css">`;
 
+/**
+ * Print-only static fonts (tools/print-fonts/, OFL 1.1 — see README.md there).
+ * website/fonts ships variable WOFF2 instances of Cinzel and Cormorant Garamond;
+ * Chromium cannot embed a variable instance as a glyph program and writes those
+ * runs into PDFs as Type3 outline fonts. These static TrueType instances are
+ * declared under the SAME family names, so the print CSS needs no change, and
+ * Chromium embeds them as TrueType / CIDFontType2 subsets instead. The glyph
+ * font (AstroGlyph) is already static and embeds fine; it is inlined here too so
+ * a print document is self-contained (data: URLs, nothing fetched).
+ */
+export const PRINT_FONTS_DIR = join(ROOT, 'tools', 'print-fonts');
+export const PRINT_FONT_FACES = Object.freeze([
+  { family: 'Cinzel', style: 'normal', weight: 400, file: 'cinzel-static-400.ttf' },
+  { family: 'Cinzel', style: 'normal', weight: 600, file: 'cinzel-static-600.ttf' },
+  { family: 'Cinzel', style: 'normal', weight: 700, file: 'cinzel-static-700.ttf' },
+  { family: 'Cormorant Garamond', style: 'normal', weight: 400, file: 'cormorant-garamond-static-400.ttf' },
+  { family: 'Cormorant Garamond', style: 'normal', weight: 500, file: 'cormorant-garamond-static-500.ttf' },
+  { family: 'Cormorant Garamond', style: 'normal', weight: 600, file: 'cormorant-garamond-static-600.ttf' },
+  { family: 'Cormorant Garamond', style: 'italic', weight: 400, file: 'cormorant-garamond-static-italic-400.ttf' },
+  { family: 'Cormorant Garamond', style: 'italic', weight: 500, file: 'cormorant-garamond-static-italic-500.ttf' },
+]);
+let _printFontCss = null;
+export function printFontCss() {
+  if (_printFontCss) return _printFontCss;
+  const face = (family, style, weight, path, format) =>
+    `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:block;src:url(data:font/${format};base64,${readFileSync(path).toString('base64')}) format('${format}');}`;
+  const rules = [face('AstroGlyph', 'normal', 400, join(ROOT, 'website', 'fonts', 'astro-glyphs.woff2'), 'woff2')];
+  for (const f of PRINT_FONT_FACES) rules.push(face(f.family, f.style, f.weight, join(PRINT_FONTS_DIR, f.file), 'truetype'));
+  _printFontCss = rules.join('\n');
+  return _printFontCss;
+}
+/** `<style>` block for print HTML: static TrueType Cinzel / Cormorant Garamond + AstroGlyph, all inline. */
+export const printFontsHtml = () => `<style>${printFontCss()}</style>`;
+
 /** Astrological-symbol font stack for SVG glyph <text> — 'AstroGlyph' (self-hosted
  *  Noto Sans Symbols 2, from css/fonts.css) covers the zodiac/planet code points so
  *  they never fall back to tofu boxes or colour-emoji. Same fix chart-render.js uses. */
@@ -353,7 +387,7 @@ export function scanYearTransits(E, natal, start = new Date(), months = 12) {
 
 export function htmlDoc(title, css, body, watermark = '') {
   const wm = watermark ? `<div class="watermark">${esc(watermark)}</div>` : '';
-  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${FONTS}<style>${css}</style></head><body>${body.replace(/\{\{WM\}\}/g, wm)}</body></html>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>${printFontsHtml()}<style>${css}</style></head><body>${body.replace(/\{\{WM\}\}/g, wm)}</body></html>`;
 }
 
 export function voucherCode(orderId) {

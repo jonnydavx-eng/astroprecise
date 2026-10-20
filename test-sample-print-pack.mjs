@@ -12,7 +12,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { PACK_FILES, TEXT_FILES, SAMPLE, inspectPng, inspectPdf } from './tools/sample-print-pack.mjs';
+import { PACK_FILES, TEXT_FILES, SAMPLE, PLATE_GLYPHS, inspectPng, inspectPdf } from './tools/sample-print-pack.mjs';
 import { loadEngines, SIGNS } from './tools/fulfil-shared.mjs';
 
 let pass = 0;
@@ -38,13 +38,19 @@ try {
     });
   }
   for (const spec of PACK_FILES.filter((s) => s.kind === 'pdf')) {
-    await ok(`${spec.file} is one ${spec.mm.join('x')} mm page with embedded fonts`, async () => {
+    await ok(`${spec.file} is one ${spec.mm.join('x')} mm page with embedded TrueType/CID fonts and no Type3`, async () => {
       const info = await inspectPdf(join(dir, spec.file));
       assert.equal(info.pages, 1);
       assert.ok(Math.abs(info.pageMm[0][0] - spec.mm[0]) <= 0.5 && Math.abs(info.pageMm[0][1] - spec.mm[1]) <= 0.5, `page ${info.pageMm[0].join('x')} mm`);
       assert.ok(info.fontsEmbedded > 0, 'no FontFile streams');
       assert.equal(info.fontsNotEmbedded, 0, 'a font is referenced by name only');
-      assert.ok(info.type3Fonts > 0, 'expected the OFL web fonts as Type3 outline fonts (Chromium behaviour)');
+      // Static instances from tools/print-fonts must be what Chromium embeds. A
+      // Type3 font dictionary means a variable WOFF2 got into the print path.
+      assert.equal(info.type3Fonts, 0, `Type3 font dictionaries present: ${info.type3Fonts}`);
+      for (const st of info.fontSubtypes) assert.ok(['TrueType', 'Type0', 'CIDFontType2'].includes(st), `unexpected font subtype ${st}`);
+      assert.ok(info.fontNames.some((n) => /CinzelPrint/.test(n)), `Cinzel Print not embedded: ${info.fontNames.join(', ')}`);
+      assert.ok(info.fontNames.some((n) => /CormorantGaramondPrint/.test(n)), `Cormorant Garamond Print not embedded: ${info.fontNames.join(', ')}`);
+      assert.ok(info.fontNames.some((n) => /NotoSansSymbols/.test(n)), `glyph font not embedded: ${info.fontNames.join(', ')}`);
     });
   }
 
@@ -53,6 +59,11 @@ try {
     assert.equal(manifest.sample, true); assert.equal(manifest.notForSale, true);
     assert.deepEqual(manifest.files.map((f) => f.file), PACK_FILES.map((s) => s.file));
     assert.equal(manifest.input.name, SAMPLE.name); assert.equal(manifest.input.fictional, true);
+  });
+
+  await ok(`every plate passed the in-browser tofu check on ${PLATE_GLYPHS.length} glyphs`, () => {
+    assert.ok(PLATE_GLYPHS.length >= 20, 'glyph list unexpectedly short');
+    for (const f of manifest.files) assert.equal(f.glyphsChecked, PLATE_GLYPHS.length, f.file);
   });
 
   await ok('chart labels match an independent engine call for the sample moment', () => {
