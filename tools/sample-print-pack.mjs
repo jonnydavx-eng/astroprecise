@@ -68,7 +68,7 @@ export function defaultSampleOut() {
 const BODIES = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'chiron', 'northNode'];
 const ASPECTS = [['Conjunction', 0, 7], ['Opposition', 180, 7], ['Trine', 120, 6], ['Square', 90, 6], ['Sextile', 60, 4]];
 
-function computeAspects(pos) {
+export function computeAspects(pos) {
   const keys = BODIES.filter((b) => b !== 'northNode');
   const out = [];
   for (let i = 0; i < keys.length; i++) {
