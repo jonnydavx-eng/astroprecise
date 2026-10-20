@@ -109,6 +109,8 @@
 .studio-edition-bottom { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
 .studio-price { font-family:'Cormorant Garamond',Georgia,serif; font-size:52px; line-height:1; margin:0; }
 .studio-price>span { font:11px/1.5 'Schibsted Grotesk',sans-serif; display:block; margin-top:8px; }
+.studio-status { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:34px; line-height:1; margin:0; }
+.studio-status>span { font:11px/1.5 'Schibsted Grotesk',sans-serif; font-style:normal; display:block; margin-top:8px; }
 .studio-edition-bottom>a { max-width:100%; font-size:13px; gap:9px; }
 .studio-pdf { font-size:10px; opacity:.75; }
 .studio-facts { display:grid; grid-template-columns:1fr 1.7fr; gap:70px; border-top:1px solid var(--dis-line); padding-top:65px; padding-bottom:65px; }
