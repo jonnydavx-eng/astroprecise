@@ -59,3 +59,6 @@ tools/_tmp-pluto/
 
 # Generated evidence from the guided-journey browser check.
 output/playwright/
+
+# Sample print pack output (tools/sample-print-pack.mjs; Windows default is C:\house\astro-samples, outside the repo)
+out/
