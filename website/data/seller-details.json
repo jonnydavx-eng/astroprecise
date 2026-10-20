@@ -1,5 +1,5 @@
 {
-  "_comment": "Single source of truth for who sells on AstroPrecise. Every company field stays null until Jonny confirms the Ltd's verified Companies House details and says yes (docs/SELLER-DETAILS.md). The seller blocks on contact.html, terms.html and digital-product-terms.html are static HTML; test-seller-details.mjs fails if they disagree with this file. Do not invent a name, number or address here.",
+  "_comment": "Single source of truth for who sells on AstroPrecise. Every company field stays null until the owner confirms the Ltd's verified Companies House details and says yes (docs/SELLER-DETAILS.md). The seller blocks on contact.html, terms.html and digital-product-terms.html are static HTML; test-seller-details.mjs fails if they disagree with this file. Do not invent a name, number or address here.",
   "tradingAs": "AstroPrecise",
   "legalName": null,
   "companyNumber": null,
