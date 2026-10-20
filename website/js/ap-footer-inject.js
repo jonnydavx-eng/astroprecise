@@ -63,7 +63,6 @@
       + '<div class="ap-site-footer__colophon">'
       +   '<span>Astrology on AstroPrecise is symbolic and offered for reflection and entertainment. The planetary positions are calculated carefully; the meanings are interpretation, not prediction or advice. Nothing here is medical, financial, legal or psychological advice.</span>'
       +   '<span>&copy; ' + new Date().getFullYear() + ' AstroPrecise</span>'
-      +   '<span><a href="shop.html#support">Support the free Observatory</a> · voluntary, no feature unlock</span>'
       +   '<span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" target="_blank" rel="noopener noreferrer">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · Pluto: <a href="https://science.nasa.gov/resource/pluto-global-color-map/" target="_blank" rel="noopener noreferrer">NASA/JHUAPL/SwRI</a></span>'
       + '</div>';
   }
