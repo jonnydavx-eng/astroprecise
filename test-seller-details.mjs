@@ -28,6 +28,10 @@ const PLACEHOLDER_RE = /\[(?:TRADER|TRADING|GEOGRAPHIC|COMPANY|REGISTERED|SELLER
 const COMPANY_NUMBER_RE = /(?:company|registration|registered|incorporat)[^0-9]{0,80}\b\d{8}\b/i;
 const VAT_RE = /\bGB ?\d{9}\b/;
 const CHECKOUT_LINK_RE = /gumroad\.com\/(?:l\/|checkout)|checkout\.gumroad\.com|lemonsqueezy\.com\/checkout|buy\.stripe\.com|paypal\.com\/(?:checkoutnow|cgi-bin\/webscr)/i;
+// PR5 (20 Oct 2026): the owner's personal name and personal contact routes must never appear on the public site.
+// Operator/controller wording routes to the seller-details block instead; contact@astroprecise.app is a role address.
+const PERSONAL_RE = /Jonathan Davenport|Davenport|Jonny Dav|davxplorer|[A-Za-z0-9._%+-]+@(?:gmail|hotmail|outlook|icloud|yahoo)\.[a-z]{2,}(?:\.[a-z]{2,})?|\bjonny@/i;
+const BINARY_EXT_RE = /\.(?:png|jpe?g|webp|gif|ico|avif|woff2?|ttf|otf|mp3|mp4|ogg|wasm|bin|zip|gz|br)$/i;
 
 const seller = JSON.parse(read('website/data/seller-details.json'));
 const catalogue = JSON.parse(read('website/data/products-v901.json'));
@@ -45,6 +49,17 @@ function walkHtml(dir) {
   return out;
 }
 const pages = walkHtml(join(root, 'website')).map((p) => ({ rel: relative(root, p).replace(/\\/g, '/'), html: readFileSync(p, 'utf8') }));
+
+function walkPublic(dir) {
+  const out = [];
+  for (const name of readdirSync(dir)) {
+    if (name === 'node_modules') continue;
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) out.push(...walkPublic(p));
+    else if (!BINARY_EXT_RE.test(name)) out.push(p);
+  }
+  return out;
+}
 
 function sellerBlock(page) {
   const html = read(`website/${page}`);
@@ -109,6 +124,15 @@ ok('no public page shows an invented company number or VAT number', () => {
     if (isSet(seller.vatNumber)) text = text.split(seller.vatNumber).join('');
     assert.doesNotMatch(text, COMPANY_NUMBER_RE, `${rel} shows an 8-digit number next to company wording`);
     assert.doesNotMatch(text, VAT_RE, `${rel} shows a VAT-shaped number`);
+  }
+});
+
+ok('no served file names the owner or carries a personal email', () => {
+  for (const p of walkPublic(join(root, 'website'))) {
+    const rel = relative(root, p).replace(/\\/g, '/');
+    const text = readFileSync(p, rel.endsWith('.pdf') ? 'latin1' : 'utf8');
+    const m = text.match(PERSONAL_RE);
+    assert.equal(m, null, `${rel} contains personal details: "${m && m[0]}"`);
   }
 });
 
