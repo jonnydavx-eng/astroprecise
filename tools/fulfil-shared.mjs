@@ -480,7 +480,9 @@ export function natalWheelSvg({
   }
   s += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#C9A227" opacity=".9"/>`;
 
-  return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" role="img" aria-label="Natal chart wheel">${s}</svg>`;
+  // overflow="visible": the ASC/MC labels sit just outside the outer ring (R + 2% of size),
+  // which is past the viewBox edge; without this they are clipped at every size.
+  return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" overflow="visible" role="img" aria-label="Natal chart wheel">${s}</svg>`;
 }
 
 /** Which artefacts each live SKU should emit. */

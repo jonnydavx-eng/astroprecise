@@ -20,6 +20,8 @@
     "test:shop": "node test-shop-launch.mjs && node tools/update-sitemap-lastmod.mjs --check --paths chart.html,shop.html,privacy.html,deep-reading.html,refunds.html,terms.html,contact.html,why.html",
     "test:release-infrastructure": "node test-release-infrastructure.mjs",
     "product:proof": "node tools/fulfil-order.mjs --in tools/order-template.json --proof",
+    "pack:sample": "node tools/sample-print-pack.mjs",
+    "test:pack": "node test-sample-print-pack.mjs",
     "product:render": "node tools/render-product-pdfs.mjs",
     "check:plate": "node tools/mint-demo-plate-check.mjs",
     "build": "node tools/build.mjs",
