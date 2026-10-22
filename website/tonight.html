@@ -31,17 +31,17 @@
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=920" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=920" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=920" />
-  <link rel="stylesheet" href="css/main-lite.css?v=920" />
-  <script>window.AP_ASSET_V='920';</script>
-  <script src="js/ap-nav-model.js?v=920" defer></script>
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=920" />
-  <link rel="stylesheet" href="css/ap-phone-pass.css?v=920">
-  <link rel="stylesheet" href="css/ap-home-v835.css?v=920">
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=921" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=921" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=921" />
+  <link rel="stylesheet" href="css/main-lite.css?v=921" />
+  <script>window.AP_ASSET_V='921';</script>
+  <script src="js/ap-nav-model.js?v=921" defer></script>
+  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=921" />
+  <link rel="stylesheet" href="css/ap-phone-pass.css?v=921">
+  <link rel="stylesheet" href="css/ap-home-v835.css?v=921">
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/tonight-page.css?v=920" id="ap-css-tonight" />
+  <link rel="stylesheet" href="css/tonight-page.css?v=921" id="ap-css-tonight" />
   <style>
     body:has(.tn-hero){--tn-gold:#93A8BF;--tn-gold-light:#C9D6E3;--tn-surface:#101D30;--tn-border:rgba(147,168,191,.24);background:#040812;color:#EEF4FA;}
     body:has(.tn-hero) #starfield-canvas,.aurora-orb{display:none!important;}
@@ -108,8 +108,8 @@
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — What's Visible Tonight","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"A privacy-first tool that computes which naked-eye planets are visible tonight, the Moon's phase and illumination, and sunset and twilight times for your location using real VSOP87/ELP2000 astronomy. City search sends only the place name to Open-Meteo; the sky calculation runs in your browser.","url":"https://astroprecise.app/tonight.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What planets are visible tonight?","acceptedAnswerNote":"Computed live in the browser.","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise computes which of the five naked-eye planets — Mercury, Venus, Mars, Jupiter and Saturn — are above your horizon and visible after sunset tonight, based on your location and real planetary positions. The answer is calculated on your device and changes daily."}},{"@type":"Question","name":"How is the visibility calculated?","acceptedAnswer":{"@type":"Answer","text":"Each planet's position is found from VSOP87 and ELP2000 astronomical theory, converted to its altitude above your local horizon using your latitude and the local sidereal time. A planet is reported as visible if it rises clear of the horizon during the dark hours after sunset. Times are good approximations for a flat, unobstructed horizon and may vary with terrain, weather and light pollution."}},{"@type":"Question","name":"Is my location sent anywhere?","acceptedAnswer":{"@type":"Answer","text":"Your coordinates are never transmitted to AstroPrecise. If you type a city name to search, only that place name is sent to Open-Meteo — never your exact position. The sky calculation runs in your browser."}}]}</script>
-  <link rel="stylesheet" href="css/ap-next.css?v=920"><script defer src="js/ap-next.js?v=920"></script></head>
-<body class="ap-no-nav-enter">
+  <link rel="stylesheet" href="css/ap-next.css?v=921"><script defer src="js/ap-next.js?v=921"></script></head>
+<body class="ap-editorial ap-no-nav-enter">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -122,25 +122,7 @@
   <!-- ============================================================
        NAVIGATION
   ============================================================ -->
-  <header class="site-header" role="banner" data-ap-static-nav>
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span>
-        </a>
-        <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="observatory.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
-        </div>
-        <div class="navbar__end">
-          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
-    </nav>
-  </header>
+  <div data-ap-next-nav><noscript><nav class="ap-noscript-nav" aria-label="Primary"><a href="index.html">AstroPrecise</a> · <a href="chart.html">Birth chart</a> · <a href="explore.html">Explore</a> · <a href="charts.html">Saved</a></nav></noscript></div>
 
   <main id="main-content">
 
@@ -266,13 +248,13 @@
 
   </main>
 
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
+  <div data-ap-next-footer><noscript><footer class="ap-noscript-footer"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refunds.html">Refunds</a> · <a href="contact.html">Contact</a></footer></noscript></div>
 
   <!-- Toast container -->
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
-  <script src="js/ephemeris.js?v=920"></script>
+  <script src="js/ephemeris.js?v=921"></script>
 <script>
   (function () {
     'use strict';
@@ -539,7 +521,7 @@
   </script>
 
   <!-- JS — ephemeris/tonight on defer; cosmos + effects idle after load -->
-  <script src="js/profile.js?v=920" defer></script>
+  <script src="js/profile.js?v=921" defer></script>
   <script>
   (function () {
     function audit() {
@@ -551,9 +533,9 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    inject('js/raf-core.js?v=920');
-    inject('js/icons.js?v=920');
-    inject('js/tonight.js?v=920');
+    inject('js/raf-core.js?v=921');
+    inject('js/icons.js?v=921');
+    inject('js/tonight.js?v=921');
     function idleCosmos() {
       if (audit()) return;
     }
@@ -563,8 +545,8 @@
     }, { once: true });
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=920" defer></script>
-<script src="js/ap-sky-time.js?v=920" defer></script>
-  <script src="js/ap-footer-inject.js?v=920" defer></script>
+  <script src="js/ap-page-boot.js?v=921" defer></script>
+<script src="js/ap-sky-time.js?v=921" defer></script>
+  <script src="js/ap-footer-inject.js?v=921" defer></script>
 </body>
 </html>

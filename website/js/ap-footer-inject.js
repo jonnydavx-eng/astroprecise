@@ -18,7 +18,7 @@
     if (document.querySelector('link[href*="ap-living-sky-v834.css"],link[href*="ap-footer-v835.css"]')) return;
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = new URL('css/ap-footer-v835.css?v=920', document.baseURI).href;
+    link.href = new URL('css/ap-footer-v835.css?v=921', document.baseURI).href;
     link.dataset.apFooterStyles = '835';
     (document.head || document.documentElement).appendChild(link);
   }
@@ -63,11 +63,13 @@
       + '<div class="ap-site-footer__colophon">'
       +   '<span>Astrology on AstroPrecise is symbolic and offered for reflection and entertainment. The planetary positions are calculated carefully; the meanings are interpretation, not prediction or advice. Nothing here is medical, financial, legal or psychological advice.</span>'
       +   '<span>&copy; ' + new Date().getFullYear() + ' AstroPrecise</span>'
-      +   '<span>Astronomy computed locally · Model imagery: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> · Uranus and Neptune: <a href="https://archive.stsci.edu/hlsp/opal" target="_blank" rel="noopener noreferrer">Hubble OPAL</a> / STScI (Uranus south unobserved in the source) / <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> · Pluto: <a href="https://science.nasa.gov/resource/pluto-global-color-map/" target="_blank" rel="noopener noreferrer">NASA/JHUAPL/SwRI</a></span>'
+      +   '<span>Astronomy computed locally · Planet maps: NASA/USGS public domain (Mercury, Venus, Earth, Moon, Mars); <a href="https://archive.stsci.edu/hlsp/opal" target="_blank" rel="noopener noreferrer">NASA/ESA Hubble OPAL</a> / STScI <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> (Jupiter, Saturn, Uranus, Neptune); NASA/JHUAPL/SwRI/USGS public domain (Pluto); <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope</a> CC BY 4.0 (Earth clouds, lights and the Saturn ring). <a href="privacy.html#image-credits">Credits</a></span>'
       + '</div>';
   }
 
   function mount() {
+    if (document.body.classList.contains('ap-editorial') || document.body.classList.contains('ap-next')) return;
+    if (document.querySelector('[data-ap-next-footer], footer.ap-next-footer')) return;
     var existing = document.querySelector('body > footer:not(.ap-lite-footer)');
     if (existing && existing.matches('.ap-site-footer[data-ap-footer-model="compact-v835"]')
         && existing.querySelector('.ap-site-footer__inner')) {

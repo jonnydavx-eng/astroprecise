@@ -1,0 +1,14 @@
+HYG bright-star extract
+Source: HYG Database v4.0 (hygdata_v40.csv.gz), David Nash / astronexus.
+https://github.com/astronexus/HYG-Database
+https://codeberg.org/astronexus/hyg
+
+This binary is a selection of the brightest 8,000 stars, excluding the Sun,
+packed as right ascension, declination, apparent magnitude and spectral class.
+It is a derivative of the HYG Database and stays under the same licence:
+
+Creative Commons Attribution-ShareAlike 4.0 International
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Credit the HYG Database (astronexus) wherever these stars are shown.
+The file is fetched only after the Observatory has been asked to enter the sky.

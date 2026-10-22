@@ -173,7 +173,8 @@ ok('time is needed for the clock', html.includes('Birth time <span class="opt">n
 ok('keep-sky stays current-view, not birth-hour',
   html.includes('id="keep-sky"') && !/id="keep-sky"[^>]*data-keep-mode/.test(html));
 ok('no checkout or SKU on the couples page', !/gumroad|catalogueSkus|checkout/i.test(html + src));
-ok('house wordmark splits Precise', html.includes('logo-text__precise'));
+// The page now uses the shared editorial shell; ap-next.js paints the wordmark.
+ok('shared editorial header placeholder', html.includes('data-ap-next-nav') && html.includes('ap-editorial'));
 // v900 couples lock: ion action (#8BA9FF) over instrument silver (#93A8BF).
 // The old brass/ember hexes (#8FA3B8/#B86B4A) were retired on purpose.
 ok('A/B cards keep the v900 ion and silver',

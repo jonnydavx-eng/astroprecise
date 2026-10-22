@@ -188,6 +188,7 @@
 
   function renderStaticBottomNav() {
     if (!document.body) return;
+    if (document.body.classList.contains('ap-editorial') || document.body.classList.contains('ap-next')) return;
     var nav = document.querySelector('.bottom-nav');
     if (!nav) {
       nav = document.createElement('nav');

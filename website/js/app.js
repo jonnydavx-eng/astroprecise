@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '920');
+const AP_ASSET_V = String(window.AP_ASSET_V || '921');
 
 const AstroApp = (() => {
 
@@ -1303,6 +1303,7 @@ window.AstroUI = (() => {
   if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
   function place() {
     if (document.body && document.body.getAttribute('data-sign')) return;
+    if (document.body && (document.body.classList.contains('ap-editorial') || document.body.classList.contains('ap-next'))) return;
     if (document.querySelector('[data-ap-static-nav]')) return;
     if (document.querySelector('.ap-guide-links')) return;
     var host = document.querySelector('footer .container') || document.querySelector('footer');
@@ -1667,6 +1668,7 @@ else AstroApp.init();
   }
 
   function initBottomNav() {
+    if (document.body.classList.contains('ap-editorial') || document.body.classList.contains('ap-next')) return;
     if (window.AstroApp && AstroApp.isLaunchCorePage && AstroApp.isLaunchCorePage()) return;
     if (document.querySelector('.bottom-nav')) return;
     // Structure clean: home uses custom masthead (no .navbar) — still give phone tabs.

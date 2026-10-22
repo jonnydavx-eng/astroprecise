@@ -62,3 +62,9 @@ output/playwright/
 
 # Sample print pack output (tools/sample-print-pack.mjs; Windows default is C:\house\astro-samples, outside the repo)
 out/
+
+# Build report: files the build left out of dist/
+dist-omitted.txt
+
+# Phone check screenshots and report (npm run test:phone)
+phone-check-out/
