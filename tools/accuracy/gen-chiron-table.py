@@ -1,3 +1,6 @@
+# SUPERSEDED 22 Oct 2026: the shipped CHIRON_TAB now comes from NASA/JPL Horizons
+# (tools/accuracy/gen-chiron-table-horizons.py). Kept only to show how the old
+# Swiss-derived table was made; do not use it to regenerate the shipped table.
 # Regenerate the CHIRON_TAB string in website/js/ephemeris.js from Swiss Ephemeris 2.10.
 # Needs pyswisseph and seas_18.se1 (github.com/aloistr/swisseph/ephe) in SE_EPHE_PATH.
 import os

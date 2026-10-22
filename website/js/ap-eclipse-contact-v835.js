@@ -1,5 +1,5 @@
-import { buildEclipseReading5 } from './eclipse-reading.js?v=921';
-import { loadEditionContext, mountEclipseEdition } from './ap-eclipse-edition-v841.js?v=921';
+import { buildEclipseReading5 } from './eclipse-reading.js?v=922';
+import { loadEditionContext, mountEclipseEdition } from './ap-eclipse-edition-v841.js?v=922';
 
 // NASA GSFC Besselian elements: greatest eclipse 17:45:51 UT.
 const EVENT_UTC_MS = Date.UTC(2026, 7, 12, 17, 45, 51);
@@ -309,7 +309,7 @@ async function init() {
   }
   const [engine, templates] = await Promise.all([
     waitForEphemeris(),
-    fetch('js/reading-templates.json?v=921').then((response) => {
+    fetch('js/reading-templates.json?v=922').then((response) => {
       if (!response.ok) throw new Error('The reading language did not load.');
       return response.json();
     }),
