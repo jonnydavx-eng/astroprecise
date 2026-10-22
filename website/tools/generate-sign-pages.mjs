@@ -5,14 +5,19 @@
  * Output: website/<sign>.html
  */
 
-import { writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { CONSTELLATIONS } from './constellations.mjs';
-import { footerBlockHtml } from './footer-model.mjs';
 
-const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
+const OUT_ARG = process.argv.indexOf('--out');
+const OUT_DIR = OUT_ARG > -1 && process.argv[OUT_ARG + 1]
+  ? process.argv[OUT_ARG + 1]
+  : join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = 'https://astroprecise.app';
+// Release pin: read from js/ap-asset-v.js so the ?v= pins never drift from the release.
+const SITE_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
+const ASSET_V = readFileSync(join(SITE_DIR, 'js', 'ap-asset-v.js'), 'utf8').match(/AP_ASSET_V\s*=\s*'(\d+)'/)[1];
 
 const SIGNS = [
   {
@@ -414,20 +419,6 @@ function eventsStudioBridge() {
     </section>`;
 }
 
-function navShell() {
-  return `
-        <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
-        </div>
-        <div class="navbar__end">
-          <button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>`;
-}
-
 function faqSection(s) {
   const items = [
     {
@@ -823,13 +814,13 @@ function page(s) {
       contain: layout style;
     }
   </style>
-  <script src="js/defer-page-css.js?v=912" defer></script>
-  <script src="js/ap-sign-defer-boot.js?v=912" defer></script>
+  <script src="js/defer-page-css.js?v=${ASSET_V}" defer></script>
+  <script src="js/ap-sign-defer-boot.js?v=${ASSET_V}" defer></script>
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script type="application/ld+json">${JSON.stringify(breadcrumbLd)}</script>
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
-</head>
-<body class="ap-no-nav-enter" data-element="${s.element.toLowerCase()}" data-sign="${s.name}">
+<link rel="stylesheet" href="css/ap-next.css?v=${ASSET_V}"><script defer src="js/ap-next.js?v=${ASSET_V}"></script></head>
+<body class="ap-editorial ap-no-nav-enter" data-element="${s.element.toLowerCase()}" data-sign="${s.name}">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
@@ -842,21 +833,12 @@ function page(s) {
     <symbol id="ei-modality" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></symbol>
   </svg>
 
-  <header class="site-header" role="banner" data-ap-static-nav>
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="25" height="25"></span>
-          <span class="logo-text">AstroPrecise</span>
-        </a>
-        ${navShell()}
-    </nav>
-  </header>
+  <div data-ap-next-nav><noscript><nav class="ap-noscript-nav" aria-label="Primary"><a href="index.html">AstroPrecise</a> · <a href="chart.html">Birth chart</a> · <a href="explore.html">Explore</a> · <a href="charts.html">Saved</a> · <a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a></nav></noscript></div>
 
   <main id="main-content">
     <nav class="sign-breadcrumb" aria-label="Breadcrumb">
       <ol>
-        <li><a href="index.html">Observatory</a></li>
+        <li><a href="observatory.html">Observatory</a></li>
         <li aria-current="page">${s.name}</li>
       </ol>
     </nav>
@@ -968,7 +950,7 @@ function page(s) {
         <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
         <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign’s daily reading and full profile</p>
         <ul class="sign-thumb-grid" aria-label="All zodiac signs">
-          ${SIGNS.map(o => `<li><a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}"${o.key === s.key ? ' aria-current="page"' : ''}><img src="assets/images/zodiac-cards/${o.key}.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.name}</span></a></li>`).join('\n          ')}
+          ${SIGNS.map(o => `<li><a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}"${o.key === s.key ? ' aria-current="page"' : ''}><img src="assets/images/zodiac-cards/${o.key}.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.name}</span></a></li>`).join('\n          ')}
         </ul>
       </div>
     </section>
@@ -976,14 +958,14 @@ function page(s) {
   </main>
 
   <p class="ap-guide-links" hidden aria-hidden="true"></p>
-${footerBlockHtml()}
+  <div data-ap-next-footer><noscript><footer class="ap-noscript-footer"><a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refunds.html">Refunds</a> · <a href="contact.html">Contact</a></footer></noscript></div>
 
-  <script src="js/content-service.js?v=912"></script>
-  <script src="js/sign-daily.js?v=912"></script>
-  <script src="js/ap-zodiac-constants.js?v=912"></script>
-  <script src="js/sign-page-boot.js?v=912"></script>
-  <script src="js/ap-page-boot.js?v=912" defer></script>
-  <script src="js/ap-footer-inject.js?v=912" defer></script>
+  <script src="js/content-service.js?v=${ASSET_V}"></script>
+  <script src="js/sign-daily.js?v=${ASSET_V}"></script>
+  <script src="js/ap-zodiac-constants.js?v=${ASSET_V}"></script>
+  <script src="js/sign-page-boot.js?v=${ASSET_V}"></script>
+  <script src="js/ap-page-boot.js?v=${ASSET_V}" defer></script>
+  <script src="js/ap-footer-inject.js?v=${ASSET_V}" defer></script>
 </body>
 </html>
 `;
