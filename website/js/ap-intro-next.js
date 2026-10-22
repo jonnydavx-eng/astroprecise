@@ -1,7 +1,11 @@
 (function(){'use strict';
+/* Show "the sky right now" in the visitor's own time zone with its label (e.g. "22 Oct 2026, 08:47 BST").
+   timeZone is optional and only used by tests; the browser default zone is used otherwise. */
+function formatLocalSkyTime(date,timeZone){const opts={day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZoneName:'short'};if(timeZone)opts.timeZone=timeZone;try{return new Intl.DateTimeFormat('en-GB',opts).format(date);}catch{opts.timeZone='UTC';return new Intl.DateTimeFormat('en-GB',opts).format(date);}}
+window.APIntroTime=Object.freeze({formatLocalSkyTime});
 function boot(){const E=window.AstroEphemeris,root=document.getElementById('sky-instrument');if(!E||!root)return;
 const now=new Date(),sample=new Date('2000-01-01T12:00:00Z');
-const fmt=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'UTC'});
+const fmt={format:d=>formatLocalSkyTime(d)};
 const symbols=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 const bodies=[['Sun','☉','#e6c681'],['Moon','☽','#e8ecdc'],['Mercury','☿','#b4c8b9'],['Venus','♀','#d5b89a'],['Mars','♂','#d79479'],['Jupiter','♃','#bdcbb0'],['Saturn','♄','#c6ba82']];
 let staticSvg='<svg viewBox="0 0 360 360" aria-hidden="true"><defs><radialGradient id="sky-heart"><stop stop-color="#708169" stop-opacity=".25"/><stop offset="1" stop-color="#122b2c" stop-opacity="0"/></radialGradient></defs><circle cx="180" cy="180" r="155" fill="url(#sky-heart)" stroke="#adc099" stroke-opacity=".22"/><circle cx="180" cy="180" r="140" fill="none" stroke="#cbbf8b" stroke-opacity=".3"/><circle cx="180" cy="180" r="109" fill="none" stroke="#adc099" stroke-opacity=".3"/><circle cx="180" cy="180" r="73" fill="none" stroke="#adc099" stroke-opacity=".16" stroke-dasharray="2 5"/>';
@@ -18,7 +22,7 @@ const moonSign=E.signOf(positions.Moon.lon),sunSign=E.signOf(positions.Sun.lon);
 set('demo-mode',n===0?'The sky right now':'Example · 1 Jan 2000 · 12:00 UTC');
 set('demo-kicker',['01 / A living sky','02 / Turn back the sky','03 / Now imagine your moment'][n]);
 set('demo-title',['This moment. Already extraordinary.','One birth moment. A whole new picture.','Your Sun. Your Moon. Your story.'][n]);
-set('demo-detail',n===0?'Moon in '+moonSign+' · '+fmt.format(now)+' UTC':n===1?'Watch the planets return to our example date.':'Example: Sun in '+sunSign+' · Moon in '+moonSign);
+set('demo-detail',n===0?'Moon in '+moonSign+' · '+fmt.format(now):n===1?'Watch the planets return to our example date.':'Example: Sun in '+sunSign+' · Moon in '+moonSign);
 document.querySelectorAll('.showcase-progress span').forEach((el,i)=>el.classList.toggle('active',i===n));
 root.setAttribute('aria-label',n===0?'Calculated zodiac positions for the current sky':'Example zodiac positions for 1 January 2000 at 12:00 UTC');
 if(!paused&&n<2)timer=setTimeout(()=>draw(n+1),n===0?4300:4500);else if(n===2){set('demo-pause','Replay ↺');document.getElementById('demo-pause').setAttribute('aria-label','Replay sky demonstration');}

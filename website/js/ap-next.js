@@ -5,7 +5,12 @@
   const url=p=>new URL(p,base).href;
   const here=location.pathname.split('/').pop()||'index.html';
   const rows=[['index.html','Today','<circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>'],['chart.html','Birth chart','<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="m12 3 3 12-11-3 14-5-6 14"/>'],['explore.html','Explore','<circle cx="12" cy="12" r="9"/><path d="m16 8-3 5-5 3 3-5Z"/>'],['charts.html','Saved','<path d="M6 3h12v18l-6-4-6 4Z"/>']];
-  const primary=rows.some(r=>r[0]===here)?here:(['profile.html','sky-card.html'].includes(here)?'charts.html':here==='deep-reading.html'?'chart.html':'explore.html');
+  // Which section is current: one of the four tabs, the Studio (shop), or none for
+  // information pages (legal, contact, method) so they don't claim to be Explore.
+  const STUDIO_PAGES=['shop.html'];
+  const INFO_PAGES=['privacy.html','terms.html','refunds.html','contact.html','digital-product-terms.html','accuracy.html','why.html','404.html','offline.html'];
+  const primary=rows.some(r=>r[0]===here)?here:(['profile.html','sky-card.html'].includes(here)?'charts.html':here==='deep-reading.html'?'chart.html':STUDIO_PAGES.includes(here)||INFO_PAGES.includes(here)?'':'explore.html');
+  const studioCurrent=STUDIO_PAGES.includes(here);
   function links(mobile){return rows.map(r=>'<a href="'+url(r[0])+'"'+(r[0]===primary?' aria-current="page"':'')+'>'+(mobile?'<svg viewBox="0 0 24 24" aria-hidden="true">'+r[2]+'</svg>':'')+'<span>'+r[1]+'</span></a>').join('');}
   // Observatory: the instrument fills the screen under the shared header and
   // crumb (it used to sit under a retired fixed bar). Measure the real chrome
@@ -36,11 +41,13 @@
     if(!fresh)document.body.classList.add('ap-legacy');
     if(here==='observatory.html')document.body.classList.add('ap-observatory');
     document.documentElement.classList.add('ap-next-shell');
-    if(!document.querySelector('link[href*="ap-next.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href=url('css/ap-next.css?v=919');document.head.append(l);}
+    if(!document.querySelector('link[href*="ap-next.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href=url('css/ap-next.css?v=920');document.head.append(l);}
     const logo='<a class="ap-next-logo" href="'+url('index.html')+'" aria-label="AstroPrecise home"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="8"/><path d="M16 0v32M0 16h32M5 5l22 22M5 27 27 5"/><path d="m16 8 2.2 5.8L24 16l-5.8 2.2L16 24l-2.2-5.8L8 16l5.8-2.2Z" fill="currentColor"/></svg>AstroPrecise</a>';
-    const header=document.createElement('header');header.id='ap-next-header';header.className='ap-next-header';header.innerHTML='<div class="nav-inner">'+logo+'<nav class="ap-next-desktop" aria-label="Primary">'+links(false)+'</nav><a class="ap-next-studio" href="'+url('shop.html')+'">The Studio ↗</a></div>';
+    const header=document.createElement('header');header.id='ap-next-header';header.className='ap-next-header';header.innerHTML='<div class="nav-inner">'+logo+'<nav class="ap-next-desktop" aria-label="Primary">'+links(false)+'</nav><a class="ap-next-studio" href="'+url('shop.html')+'"'+(studioCurrent?' aria-current="page"':'')+'>The Studio ↗</a></div>';
     const navPlaceholder=document.querySelector('[data-ap-next-nav]');if(navPlaceholder)navPlaceholder.replaceWith(header);else document.body.prepend(header);
-    const main=document.querySelector('main');if(main){if(!main.id)main.id='main-content';const skip=document.createElement('a');skip.href='#'+main.id;skip.className='ap-skip';skip.textContent='Skip to content';document.body.prepend(skip);}
+    const main=document.querySelector('main');if(main){if(!main.id)main.id='main-content';
+    // Add a skip link only when the page doesn't already have one pointing at main.
+    if(!document.querySelector('a[href="#'+main.id+'"]')){const skip=document.createElement('a');skip.href='#'+main.id;skip.className='ap-skip';skip.textContent='Skip to content';document.body.prepend(skip);}}
     if(!fresh){const crumb=document.createElement('div');crumb.className='tool-crumb';const a=document.createElement('a');a.href=url('explore.html');a.textContent='← All tools & guides';crumb.append(a);header.after(crumb);}
     const tabs=document.createElement('nav');tabs.className='ap-next-tabs';tabs.setAttribute('aria-label','Primary mobile navigation');tabs.innerHTML=links(true);document.body.append(tabs);
     const footer=document.createElement('footer');footer.className='ap-next-footer';footer.innerHTML='<div class="wrap"><div class="footer-top"><div>'+logo+'<p>A little more perspective.<br>Astronomy you can explore. Astrology you can reflect on.</p></div><nav aria-label="Information">'+[['guides.html','Start learning'],['accuracy.html','Our calculations'],['observatory.html','3D observatory'],['privacy.html','Privacy'],['terms.html','Terms'],['refunds.html','Refunds'],['contact.html','Contact']].map(r=>'<a href="'+url(r[0])+'">'+r[1]+'</a>').join('')+'</nav></div><p class="footer-disclaimer">Astrology on AstroPrecise is symbolic and offered for reflection and entertainment. The planetary positions are calculated carefully; the meanings are interpretation, not prediction or advice. Nothing here is medical, financial, legal or psychological advice.</p><div class="footer-bottom"><span>© '+new Date().getFullYear()+' AstroPrecise · Made for the curious.</span><span>Birth calculations stay on your device. No account needed.</span></div></div>';

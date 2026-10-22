@@ -593,8 +593,6 @@
           ' Sun in ' + esc(reading.sunSign) + '</span>' : '') +
         (reading.moonSign ? '<span class="dt-chip">' + signOrb(reading.moonSign, { sm: true }) +
           ' Moon in ' + esc(reading.moonSign) + '</span>' : '') +
-        (insight && insight.moodScore != null ? '<span class="dt-chip">Mood ' +
-          Math.round(insight.moodScore) + '/100</span>' : '') +
         '</div>';
     }
 

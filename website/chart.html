@@ -67,12 +67,14 @@ window.APUrlPrivacy = (function () {
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg">
   <meta name="theme-color" content="#f4f1e9">
   <title>Your birth chart — AstroPrecise</title>
-  <link rel="stylesheet" href="css/ap-next.css?v=919">
-  <link rel="stylesheet" href="css/ap-chart-next.css?v=919">
-  <script defer src="js/ap-next.js?v=919"></script>
-  <script defer src="js/ephemeris.js?v=919"></script>
-  <script defer src="js/ap-mirror-hour.js?v=919"></script>
-  <script defer src="js/ap-chart-next.js?v=919"></script>
+  <link rel="stylesheet" href="css/ap-next.css?v=920">
+  <link rel="stylesheet" href="css/ap-chart-next.css?v=920">
+  <script defer src="js/ap-next.js?v=920"></script>
+  <script defer src="js/ephemeris.js?v=920"></script>
+  <script defer src="js/ap-mirror-hour.js?v=920"></script>
+  <script defer src="js/ap-place-match.js?v=920"></script>
+  <script defer src="js/ap-chart-next.js?v=920"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise birth chart","url":"https://astroprecise.app/chart.html","applicationCategory":"LifestyleApplication","operatingSystem":"Any (runs in a web browser)","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"description":"Make sense of your birth chart. Start with your Sun, Moon and rising sign, then explore the planets. Calculated on your device; no account.","inLanguage":"en-GB","publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app/"}}</script>
 </head>
 <body class="ap-next">
   <a class="chart-skip" href="#main">Skip to content</a>
@@ -117,7 +119,7 @@ window.APUrlPrivacy = (function () {
           <p id="form-error" class="chart-error" role="alert" hidden></p>
           <button id="calculate-chart" class="button chart-submit" type="submit">Create my birth chart <span aria-hidden="true">↗</span></button>
           <p class="chart-privacy-note">Your birth chart and seven-chapter sky story are free. No account needed.</p>
-          <p class="chart-privacy-note">Your birth details: your date, time and chart are calculated and kept on this device. Nothing is saved unless you choose to save it, and saving keeps it in this browser only. We have no account system and no analytics, so we never receive your birth details.</p>
+          <p class="chart-privacy-note">Your birth details: your date, time and chart are calculated and kept on this device. Nothing is saved unless you choose to save it, and saving keeps it in this browser only. We have no account system and no analytics, so we never receive your birth details. You can remove saved charts at any time on the <a href="charts.html">Saved page</a>.</p>
         </form>
         <noscript><p class="chart-error">Turn on JavaScript to calculate your chart on this device.</p></noscript>
       </div>
@@ -161,6 +163,7 @@ window.APUrlPrivacy = (function () {
         <div><p class="eyebrow">COME BACK TO THIS</p><h3 id="save-title">Keep your chart close.</h3><p>Save it in this browser, or download a text copy you can keep anywhere. Browser storage doesn’t sync between devices and can be cleared.</p></div>
         <div class="chart-save-actions"><label for="chart-name">A name for this chart <span class="chart-optional">optional</span></label><input id="chart-name" type="text" maxlength="60" placeholder="My birth chart"><div class="chart-action-row"><button id="save-chart" class="button" type="button">Save on this device</button><button id="download-chart" class="button-secondary" type="button">Download reading</button></div><p id="save-status" class="chart-status" role="status" aria-live="polite"></p><a href="charts.html">Open saved charts <span aria-hidden="true">→</span></a></div>
       </section>
+      <aside class="ap-print-card chart" aria-labelledby="print-card-title-chart"><p class="eyebrow">Something to keep</p><h3 id="print-card-title-chart">Make this a print.</h3><p>Your chart, composed as digital plates you could print at home or frame. The Studio editions are opening soon; for now you can look through a fictional sample.</p><p class="ap-print-card-status">Opening soon · Not on sale yet</p><a class="button-secondary" href="shop.html#natal-sky-print-pack">See the print sample ↗</a></aside>
       <details class="chart-details"><summary>How this chart is calculated <span aria-hidden="true">+</span></summary><div class="chart-method"><p>Positions are calculated in your browser using the AstroPrecise astronomical engine. We use the tropical zodiac, Whole Sign houses and the true lunar node. In our checks against Swiss Ephemeris on 400 charts from 1900 to 2049, the planets, Sun, Moon and Chiron came within about 0.03°, the rising sign and Midheaven within about 0.02°, and the true node within about 0.1°. That is close enough for the signs and degrees shown here, but this page does not claim observatory-grade precision.</p><p>Your selected place supplies coordinates and a real time zone. Your browser applies historical clock rules. A repeated clock time asks you to choose; a time skipped by a clock change is rejected.</p><p>Without a birth time we use local noon (or the nearest minute that existed that day, if a clock change skipped noon) for approximate planetary positions, check sign changes across the local day, and withhold rising, houses and exact Moon degrees. Historical time-zone data and the precision of your birth record can affect the result.</p></div></details>
     </section>
   </main>

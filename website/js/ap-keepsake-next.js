@@ -1,7 +1,7 @@
 (function(){'use strict';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let chart=null,svgText='',busy=false;
-try{const raw=sessionStorage.getItem('ap-next-sky')||sessionStorage.getItem('ap-next-reading');if(raw)chart=JSON.parse(raw);if(!chart){const rows=JSON.parse(localStorage.getItem('ap_charts')||'[]');const active=localStorage.getItem('ap_active_chart');if(Array.isArray(rows))chart=rows.find(c=>String(c.id)===active)||rows[0];}}catch{}
+try{const raw=sessionStorage.getItem('ap-next-sky')||sessionStorage.getItem('ap-next-reading');sessionStorage.removeItem('ap-next-sky');sessionStorage.removeItem('ap-next-reading');if(raw)chart=JSON.parse(raw);if(!chart){const rows=JSON.parse(localStorage.getItem('ap_charts')||'[]');const active=localStorage.getItem('ap_active_chart');if(Array.isArray(rows))chart=rows.find(c=>String(c.id)===active)||rows[0];}}catch{}
 if(!chart||!chart.positions){$('keepsake-empty').hidden=false;$('keepsake-work').hidden=true;return;}
 const positions=chart.positions;const bodies=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
 function sign(name){return chart.uncertainty?.signRanges?.[name.toLowerCase()]?.join(' / ')||positions[name]?.sign||positions[name.toLowerCase()]?.sign||'Time needed';}

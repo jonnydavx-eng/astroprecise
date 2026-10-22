@@ -43,19 +43,18 @@
       '<div class="daily-reading__grid">' +
       '<div class="daily-reading__tile"><span class="daily-reading__tile-label">People</span><p class="daily-reading__tile-text">' + esc(d.love) + '</p></div>' +
       '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Work</span><p class="daily-reading__tile-text">' + esc(d.career) + '</p></div>' +
-      '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Pace</span><p class="daily-reading__tile-text">' + esc(d.health) + '</p></div>' +
       '</div>' +
-      '<p class="daily-reading__note">Computed for this date from today’s sky — not a lucky number. Open today’s reading for the one-screen view.</p>' +
+      '<p class="daily-reading__note">A symbol from today’s computed sky. Not a promise about health, money, or what will happen.</p>' +
       '</div>';
     el.classList.remove('is-loading');
   }
 
   function resolveDaily(sign, date) {
-    if (window.ContentService && typeof ContentService.resolveDailyHoroscope === 'function') {
-      return ContentService.resolveDailyHoroscope(sign, date);
-    }
     if (window.SignDaily && typeof SignDaily.getDailyHoroscope === 'function') {
       return SignDaily.getDailyHoroscope(sign, date);
+    }
+    if (window.ContentService && typeof ContentService.resolveDailyHoroscope === 'function') {
+      return ContentService.resolveDailyHoroscope(sign, date);
     }
     if (window.Interpretations && typeof Interpretations.getDailyHoroscope === 'function') {
       return Interpretations.getDailyHoroscope(sign, date);
@@ -67,7 +66,7 @@
     var sign = pageSign();
     var dateEl = document.getElementById('today-date');
     if (dateEl) {
-      dateEl.textContent = new Date().toLocaleDateString('en-US', {
+      dateEl.textContent = new Date().toLocaleDateString('en-GB', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
       });
     }
