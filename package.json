@@ -8,7 +8,7 @@
     "node": ">=22.13"
   },
   "scripts": {
-    "test": "npm run test:gate && node test-checkout-closed.mjs && node test-fulfil-paid-gate.mjs && node test-deep-reading.mjs && node test-reading-no-repeat.mjs && node test-interpretations-patterns.mjs && node test-chart-wheel-layout.mjs && node test-orrery-readability.mjs && node test-eclipse-geometry.mjs && node test-mirror-hour.mjs && node test-planet-maps.mjs && node test-seller-details.mjs && node test-sample-shorts.mjs && node test-intro-local-time.mjs && node test-place-search.mjs && node test-pdf-privacy.mjs && node test-build-reachable.mjs",
+    "test": "npm run test:gate && node test-checkout-closed.mjs && node test-fulfil-paid-gate.mjs && node test-deep-reading.mjs && node test-reading-no-repeat.mjs && node test-interpretations-patterns.mjs && node test-chart-wheel-layout.mjs && node test-orrery-readability.mjs && node test-observatory-focus.mjs && node test-eclipse-geometry.mjs && node test-mirror-hour.mjs && node test-planet-maps.mjs && node test-seller-details.mjs && node test-sample-shorts.mjs && node test-intro-local-time.mjs && node test-place-search.mjs && node test-pdf-privacy.mjs && node test-build-reachable.mjs",
     "test:engine": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-engine-uk-historic-tz.mjs && node test-engine-swiss.mjs && node test-accuracy-20charts.mjs && node test-chiron-swiss.mjs && node test-chiron-horizons.mjs",
     "test:ui": "node tools/_diag-click.mjs && node tools/visual-check/_v833-living-sky.mjs && node tools/visual-check/_birth-hour-still.mjs",
     "test:focus": "node tools/visual-check/_v833-living-sky.mjs",
