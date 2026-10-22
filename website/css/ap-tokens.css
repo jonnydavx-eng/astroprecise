@@ -1,0 +1,91 @@
+/* AstroPrecise — Paper & Night tokens (Direction A, recommended) · 22 Oct 2026
+   One palette, two typefaces, one accent. Load this FIRST on every page, before any page CSS.
+   Dark is allowed only inside .ap-sky (the Observatory canvas and the night disc on plates).
+   Fonts: Instrument Serif (OFL 1.1, Rodrigo Fuenzalida & Jordan Egstad) + Inter (OFL 1.1, Rasmus Andersson). Self-host both. */
+
+@font-face { font-family: 'AP Serif'; src: url('../fonts/instrument-serif-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'AP Serif'; src: url('../fonts/instrument-serif-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'AP Sans'; src: url('../fonts/inter-normal-400.woff2') format('woff2'); font-weight: 100 900; font-display: swap; } /* inter-normal-*.woff2 are one variable Inter file; one face avoids three identical downloads */
+
+:root {
+  /* colour: surfaces */
+  --ap-paper: #F6F3EC;      /* page */
+  --ap-paper-2: #EDE8DD;    /* bands, wells */
+  --ap-card: #FBF9F4;       /* cards, sheets */
+  --ap-rule: #D6D1C6;       /* hairlines, borders */
+  --ap-fog: #D9D6CE;        /* disabled, placeholders */
+  /* colour: text */
+  --ap-ink: #0E1116;        /* headings, body  — 17.1:1 on paper */
+  --ap-graphite: #3A3F47;   /* secondary text  — 9.6:1 */
+  --ap-muted: #5C6168;      /* captions, meta  — 5.6:1 (AA body) */
+  /* colour: the one accent */
+  --ap-copper: #B4693E;     /* stars, ticks, rules, focus ring, big numerals ≥24px — 3.8:1 (non-text / large text only) */
+  --ap-copper-ink: #8A4A24; /* copper as TEXT: eyebrows, links — 6.1:1 */
+  /* colour: night (only inside .ap-sky) */
+  --ap-night: #0E1116;
+  --ap-night-2: #181C24;
+  --ap-starlight: #F1E7CF;
+  /* colour: states */
+  --ap-proof: #3D6B55;      /* "checked against Swiss Ephemeris" */
+  --ap-alert: #A64526;      /* form errors */
+
+  /* type */
+  --ap-serif: 'AP Serif', 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ap-sans: 'AP Sans', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ap-num: var(--ap-sans);           /* degrees use Inter tabular figures: Instrument Serif has no prime (′) */
+  --ap-num-features: 'tnum' 1, 'kern' 1;
+  --ap-step--1: 0.875rem;   /* 14px floor for any text — nothing smaller (fixes the 11px labels) */
+  --ap-step-0: 1.0625rem;   /* 17px body */
+  --ap-step-1: 1.25rem;
+  --ap-step-2: 1.625rem;
+  --ap-step-3: 2.25rem;
+  --ap-step-4: clamp(2.5rem, 5vw + 1rem, 4.25rem); /* serif display */
+  --ap-eyebrow-tracking: 0.18em;
+  --ap-leading: 1.55;
+  --ap-leading-tight: 1.05;
+
+  /* space & shape */
+  --ap-s1: 4px; --ap-s2: 8px; --ap-s3: 12px; --ap-s4: 16px; --ap-s5: 24px; --ap-s6: 32px; --ap-s7: 48px; --ap-s8: 72px; --ap-s9: 112px;
+  --ap-measure: 64ch;
+  --ap-radius: 2px;         /* print-like corners; pills only for chips */
+  --ap-hairline: 1px solid var(--ap-rule);
+  --ap-shadow-print: 0 18px 40px -18px rgba(14,17,22,.35); /* framed plates only */
+  --ap-focus: 0 0 0 3px var(--ap-paper), 0 0 0 5px var(--ap-copper);
+
+  /* graphic language */
+  --ap-line: 1.5px;         /* glyphs and diagrams on a 24 grid; 1.8 at ≤16px */
+  --ap-orbit-dash: 1 5;
+  color-scheme: light;
+}
+
+/* ---- legacy aliases: keep old pages working while they migrate (delete when MIGRATION-PLAN step 6 is done) ---- */
+:root {
+  --ap-next-paper: var(--ap-paper);
+  --ap-next-ink: var(--ap-ink);
+  --ap-next-night: var(--ap-night);
+  --ap-next-accent: var(--ap-copper);
+  --ap-next-line: var(--ap-rule);
+  --ap-next-muted: var(--ap-muted);
+  --ap-next-sage: var(--ap-paper-2);
+  --ap-next-serif: var(--ap-serif);
+  --ap-next-sans: var(--ap-sans);
+}
+
+/* ---- base ---- */
+html { background: var(--ap-paper); color: var(--ap-ink); font: 400 var(--ap-step-0)/var(--ap-leading) var(--ap-sans); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, .ap-display { font-family: var(--ap-serif); font-weight: 400; line-height: var(--ap-leading-tight); letter-spacing: -0.015em; color: var(--ap-ink); }
+.ap-eyebrow { font: 600 var(--ap-step--1)/1.2 var(--ap-sans); letter-spacing: var(--ap-eyebrow-tracking); text-transform: uppercase; color: var(--ap-copper-ink); }
+.ap-num, .ap-deg { font-family: var(--ap-num); font-feature-settings: var(--ap-num-features); font-weight: 500; }
+a { color: var(--ap-copper-ink); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+:focus-visible { outline: none; box-shadow: var(--ap-focus); }
+.ap-btn { font: 600 var(--ap-step-0)/1 var(--ap-sans); padding: 14px 22px; border-radius: var(--ap-radius); background: var(--ap-ink); color: var(--ap-paper); border: 0; }
+.ap-btn--quiet { background: transparent; color: var(--ap-ink); border: var(--ap-hairline); }
+.ap-card { background: var(--ap-card); border: var(--ap-hairline); border-radius: var(--ap-radius); }
+.ap-specimen { font: 600 0.75rem/1 var(--ap-sans); letter-spacing: .24em; color: var(--ap-copper); border: 1px solid currentColor; padding: 5px 8px; } /* small corner mark; never a diagonal watermark */
+.ap-glyph { width: 1.25em; height: 1.25em; stroke: currentColor; fill: none; stroke-width: var(--ap-line); stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.2em; }
+
+/* ---- the only dark context ---- */
+.ap-sky { background: var(--ap-night); color: var(--ap-starlight); color-scheme: dark; }
+.ap-sky a { color: #E2A27A; } /* copper lifted for night: 8.7:1 on --ap-night */
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
