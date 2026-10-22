@@ -216,6 +216,8 @@
       if (idx === 0 && focusKey && focusKey !== 'earth' && FOCUS[focusKey]) {
         if (scaleStatus) scaleStatus.textContent = FOCUS[focusKey] + ' close-up';
         setPressed(scaleGroup, function () { return false; });
+        // The phone scale picker shows no rung rather than a stale EARTH.
+        if (mobileScale) mobileScale.selectedIndex = -1;
         selectedView = FOCUS[focusKey];
         updateClock();
         return;
