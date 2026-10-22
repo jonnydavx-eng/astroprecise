@@ -122,6 +122,7 @@
     var selectedView = 'Solar system';
     var selectedDate = null;
     var timeMode = 'current';
+    var focusKey = '';
 
     function markUserControl() { userTookControl = true; }
     if (stage) {
@@ -193,6 +194,7 @@
     }
 
     function showFocus(name, detail) {
+      focusKey = detail && detail.key ? String(detail.key).toLowerCase() : '';
       selectedView = name || 'Solar system';
       if (focusTitle) focusTitle.textContent = name || 'Solar system';
       if (detail && detail.key) {
@@ -209,6 +211,15 @@
       var idx = SCALE_KEYS.indexOf(key);
       if (idx < 0 && /^\d+$/.test(key)) idx = Math.max(0, Math.min(6, Number(key)));
       if (idx < 0) idx = 2;
+      // A planet close-up sits at the engine's nearest zoom level, which is the
+      // EARTH rung. Don't claim "Earth" while another world is in view.
+      if (idx === 0 && focusKey && focusKey !== 'earth' && FOCUS[focusKey]) {
+        if (scaleStatus) scaleStatus.textContent = FOCUS[focusKey] + ' close-up';
+        setPressed(scaleGroup, function () { return false; });
+        selectedView = FOCUS[focusKey];
+        updateClock();
+        return;
+      }
       if (scaleStatus) scaleStatus.textContent = SCALE_NAMES[idx];
       setPressed(scaleGroup, function (button) { return button.dataset.lv === SCALE_KEYS[idx]; });
       if (mobileScale) mobileScale.value = SCALE_KEYS[idx];
@@ -303,6 +314,7 @@
       var detail = event.detail || {};
       showFocus(detail.name || FOCUS[detail.key] || 'Solar system', detail);
       if (detail.key === 'earth') showScale('EARTH');
+      else if (detail.key && FOCUS[detail.key]) showScale('EARTH'); // a world close-up: label it by name and clear the scale chips
     });
 
     orrery.addEventListener('scalechange', function (event) {
