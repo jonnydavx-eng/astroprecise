@@ -16,8 +16,11 @@ import json, math, os, re, sys, urllib.parse, urllib.request, datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, '..', '..'))
 
-J0, STEP = 2396758.5, 200                      # 1850-01-01 TDB, 200-day step
-N = int((2506331.5 - J0) / STEP) + 2           # through 2150-01-01 (+1 spare row)
+# 200-day step, same phase as the original 1850-01-01 grid so the old rows are
+# unchanged. Starts two rows before 1800-01-01 and ends two after 2200-12-31, so
+# the 4-point interpolation covers every date the site accepts (1800-2200).
+J0, STEP = 2396758.5 - 93 * 200, 200           # 1799-01-28 TDB
+N = int((2524958.5 - J0) / STEP) + 3           # through 2201-01 (+2 spare rows)
 API = 'https://ssd.jpl.nasa.gov/api/horizons.api'
 
 def fetch(start, stop):
@@ -83,5 +86,7 @@ src = open(eph, encoding='utf-8').read()
 src, n = re.subn(r"const CHIRON_TAB = '[^']*'", "const CHIRON_TAB = '" + ';'.join(vals) + "'", src)
 src = re.sub(r'(NASA/JPL Horizons \(solution )[^,]*, fetched [0-9-]+', r'\g<1>' + str(meta['solution']) + ', fetched ' + meta['fetched_utc'][:10], src)
 if n != 1: sys.exit('CHIRON_TAB not found in ephemeris.js')
+src, n = re.subn(r'const CHIRON_T0 = [0-9.]+,', f'const CHIRON_T0 = {J0},', src)
+if n != 1: sys.exit('CHIRON_T0 not found in ephemeris.js')
 open(eph, 'w', encoding='utf-8').write(src)
 print(json.dumps(meta, indent=1))
