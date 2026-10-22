@@ -9,7 +9,8 @@
 //
 // What is copied: the @font-face rules, the :root tokens, the component
 // classes (.ap-eyebrow, .ap-btn, .ap-card, .ap-specimen, .ap-glyph, .ap-num),
-// .ap-sky and the reduced-motion rule; :root becomes .ap-next. What is left out: the legacy alias
+// .ap-sky and the reduced-motion rule; :root becomes .ap-next, and each
+// var(--ap-*) a class reads gets its literal value as a fallback. What is left out: the legacy alias
 // block (ap-next.css defines --ap-next-* itself, with fallbacks) and the bare
 // element rules (html, h1–h3, a, :focus-visible), because the dark legacy
 // pages also load ap-next.css until they migrate (MIGRATION-PLAN step 5).
@@ -39,10 +40,23 @@ export function tokenLayer(src) {
     if (sel === ':root') return !/--ap-next-/.test(r);
     return sel.split(',').every((s) => s.trim().startsWith('.'));
   });
+  // The component classes (.ap-sky, .ap-specimen, …) are global, but the
+  // tokens live on .ap-next. Give every var(--ap-*) they read the literal
+  // token value as a fallback, so a class works on any page.
+  const vals = {};
+  for (const r of keep.filter((x) => x.startsWith(':root'))) {
+    for (const d of r.slice(r.indexOf('{') + 1, -1).split(';')) {
+      const k = d.indexOf(':');
+      if (k > 0 && d.trim().startsWith('--')) vals[d.slice(0, k).trim()] = d.slice(k + 1).trim();
+    }
+  }
+  const resolve = (v, n = 0) => (n > 8 ? v : v.replace(/var\((--ap-[a-z0-9-]+)\)/g, (m, name) => (name in vals ? resolve(vals[name], n + 1) : m)));
+  const withFallbacks = (r) => (r.startsWith(':root') || r.startsWith('@font-face') ? r
+    : r.replace(/var\((--ap-[a-z0-9-]+)\)/g, (m, name) => (name in vals ? `var(${name},${resolve(vals[name])})` : m)));
   // The tokens live on body.ap-next, not :root: the dark legacy stylesheets
   // define their own --ap-paper / --ap-line / --ap-proof / --ap-radius /
   // --ap-hairline on :root, and ap-next.css loads after them.
-  return keep.map((r) => (r.startsWith(':root') ? '.ap-next' + r.slice(5) : r)).map((r) => r.replace(/\s*\n\s*/g, ' ').replace(/\s*([{};:,])\s*/g, '$1').replace(/;}/g, '}')).join('\n');
+  return keep.map(withFallbacks).map((r) => (r.startsWith(':root') ? '.ap-next' + r.slice(5) : r)).map((r) => r.replace(/\s*\n\s*/g, ' ').replace(/\s*([{};:,])\s*/g, '$1').replace(/;}/g, '}')).join('\n');
 }
 
 const src = readFileSync(path.join(CSS, 'ap-tokens.css'), 'utf8');
