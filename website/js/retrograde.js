@@ -66,11 +66,11 @@
   }
 
   function fmtDate(d) {
-    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 
   function fmtDateShort(d) {
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   function dateFromJDStartOffset(baseDate, dayOffset) {
@@ -305,10 +305,10 @@
   function renderTimestamp(now) {
     var el = $('retro-timestamp');
     if (!el) return;
-    var dateStr = now.toLocaleDateString('en-US',
-      { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    var timeStr = now.toLocaleTimeString('en-US',
-      { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+    var dateStr = now.toLocaleDateString('en-GB',
+      { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).replace(/^(\S+),/, '$1');
+    var timeStr = now.toLocaleTimeString('en-GB',
+      { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short' }).replace(/GMT\+0(?!\d)/, 'GMT');
     el.innerHTML = '<span class="live-date-badge__dot" aria-hidden="true"></span>' +
       '<span>Live — ' + dateStr + ' · ' + timeStr + '</span>';
   }

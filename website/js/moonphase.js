@@ -62,7 +62,7 @@
   function formatDateLong(parts) {
     // Use a UTC date purely for label formatting (no offset distortion).
     var dt = new Date(Date.UTC(parts.y, parts.m - 1, parts.d, 12, 0, 0));
-    return dt.toLocaleDateString('en-US', {
+    return dt.toLocaleDateString('en-GB', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'
     });
   }

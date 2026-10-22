@@ -8,7 +8,7 @@
  * Ascendant/houses (says so with dignity); no transits -> CH6 explains the
  * live edition. No dependencies; browser + Node.
  */
-import { fmtDeg, fmtOrb, wholeSignHouse, separation } from './eclipse-reading.js?v=922';
+import { fmtDeg, fmtOrb, wholeSignHouse, separation } from './eclipse-reading.js?v=923';
 
 const SIGNS_EL = ['fire','earth','air','water']; // Aries=fire, Taurus=earth, ...
 const SIGNS_MODE = ['cardinal','fixed','mutable'];
@@ -192,7 +192,10 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
   }
   if (hasAsc) {
     lights.mono.push(`Ascendant — ${fmtDeg(natal.asc, S)}`);
-    lights.serif.push(deep.chapters.ch2.asc.replace('{theme}', `${S[signIndex(natal.asc)]}: ${deep.signThemes[S[signIndex(natal.asc)]]}`));
+    const ascSign = S[signIndex(natal.asc)];
+    lights.serif.push((ascSign === S[signIndex(natal.sun)] && deep.chapters.ch2.ascSameAsSun)
+      ? deep.chapters.ch2.ascSameAsSun.replace('{sign}', ascSign)
+      : deep.chapters.ch2.asc.replace('{theme}', `${ascSign}: ${deep.signThemes[ascSign]}`));
   } else {
     lights.serif.push(deep.chapters.ch2.noAsc);
   }
@@ -229,13 +232,22 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
   // Untimed birth: the Moon is excluded from tight-orb claims — and we say why.
   const aspects = natalAspects(natal, orbs)
     .filter((x) => timed || (x.a !== 'moon' && x.b !== 'moon')).slice(0, 3);
-  const ch4Closer = (x) => (deep.ch4Closers && deep.ch4Closers[x.aspect])
-    ? ' ' + deep.ch4Closers[x.aspect] : ' Neither wins; the conversation is the point.';
+  // Never repeat a closer in one chapter: a second pair of the same aspect gets the alternate line.
+  const usedClosers = new Set();
+  const ch4Closer = (x) => {
+    const first = deep.ch4Closers && deep.ch4Closers[x.aspect];
+    const alt = deep.ch4ClosersAlt && deep.ch4ClosersAlt[x.aspect];
+    const pick = (first && !usedClosers.has(first)) ? first : (alt && !usedClosers.has(alt) ? alt : '');
+    if (pick) usedClosers.add(pick);
+    return pick ? ' ' + pick : '';
+  };
+  const pairFrames = (deep.chapters.ch4.pairFrames && deep.chapters.ch4.pairFrames.length)
+    ? deep.chapters.ch4.pairFrames : [deep.chapters.ch4.pairFrame];
   // x.aspect is the machine key ('sextile', 'trine', …). It is never printed:
   // the reader gets what the angle DOES, from deep-templates.json aspectNames.
   const aspectPlain = (key) => (deep.aspectNames && deep.aspectNames[key]) || 'in contact';
-  const ch4Serif = [deep.chapters.ch4.intro, ...aspects.map((x) =>
-    deep.chapters.ch4.pairFrame
+  const ch4Serif = [deep.chapters.ch4.intro, ...aspects.map((x, i) =>
+    pairFrames[i % pairFrames.length]
       .replace('{a}', label(x.a)).replace('{b}', label(x.b))
       .replace('{aspect}', aspectPlain(x.aspect)).replace('{orb}', fmtOrb(x.orbDeg))
       .replace('{aTheme}', theme(x.a)).replace('{verb}', deep.aspectVerbs[x.aspect]).replace('{bTheme}', theme(x.b))
@@ -296,10 +308,14 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
     const ch6Serif = [deep.chapters.ch6.intro];
     if (deep.ch6Transits) {
       const T6 = deep.ch6Transits;
+      let shown = 0;
       for (const x of tc) {
         const arc = T6.planetArcs && T6.planetArcs[x.transiting];
         if (!arc || !T6.frame) continue;
-        ch6Serif.push(T6.frame
+        const more = T6.frameMore || [];
+        const tpl = shown === 0 || !more.length ? T6.frame : more[(shown - 1) % more.length];
+        shown += 1;
+        ch6Serif.push(tpl
           .replace('{planet}', label(x.transiting)).replace('{planetArc}', arc)
           .replace('{aspectVerb}', (T6.aspectVerbs && T6.aspectVerbs[x.aspect]) || x.aspect)
           .replace('{target}', label(x.natal))
@@ -309,7 +325,7 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
     chapters.push(chapter(6, deep.chapters.ch6.title, {
       lead: deep.chapters.ch6.intro,
       mono: tc.length
-        ? tc.map((x) => `${opts.transitDateText || 'Today'}: transiting ${label(x.transiting)} ${aspectPlain(x.aspect)} your natal ${label(x.natal)} — within ${fmtOrb(x.orbDeg)}.`)
+        ? tc.map((x) => `${opts.transitDateText || 'Today'}: transiting ${label(x.transiting)} ${(deep.aspectWith && deep.aspectWith[x.aspect]) || aspectPlain(x.aspect)} your natal ${label(x.natal)} — within ${fmtOrb(x.orbDeg)}.`)
         : [`${opts.transitDateText || 'Today'}: no transiting body sits within 3° of your chart — a genuinely quiet sky.`],
       serif: ch6Serif.filter((line) => line && line !== deep.chapters.ch6.intro),
     }));
@@ -334,6 +350,8 @@ export function buildDeepReading(natal, base, deep, opts = {}) {
     serif: [deep.chapters.ch7.body
       .replace('{sunTheme}', sunTheme)
       .replace('{tightPair}', tight ? `${label(tight.a)} ${tight.aspect} ${label(tight.b)} (${fmtOrb(tight.orbDeg)})` : 'the quiet evenness of my placements')
+      .replace('{tightClause}', (tight && deep.chapters.ch7.tightClauses && deep.chapters.ch7.tightClauses[tight.aspect])
+        || 'is not a flaw to fix; it is part of what makes me specific')
       .replace('{domElement}', bal.domEl)
       .replace('{domElementLine}', '')
       .replace('{ascNote}', ascNote)],

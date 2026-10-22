@@ -30,7 +30,7 @@
  "signHow": {
   "Aries": "a first move — you start while other people are still circling",
   "Taurus": "something you can hold — you trust what lasts",
-  "Gemini": "talking it through until the room gets smaller",
+  "Gemini": "talking it through until the knot loosens",
   "Cancer": "protecting what feels like home, even in a borrowed kitchen",
   "Leo": "being seen doing the thing, not waiting to be invited",
   "Virgo": "making it useful and exact, then quietly handing it over",
@@ -85,7 +85,8 @@
    "asc": "Your rising sign is how you meet the world — {theme}. With people this looks like you in the doorway before you have said a word.",
    "noAsc": "Your rising sign needs a birth time we don't have — so this reading stays honestly with what can be named without one. The doorway is not guessed. If the hour turns up later, that first impression can be named.",
    "moonNoTime": "Your Moon is what you need before you can explain why — {theme}. At home this looks like you going to the quiet room when the day has been too loud. One honest caveat: without a birth time the Moon can only be placed to within about seven degrees, so we hold it lightly{boundary}.",
-   "moonBoundary": " — and it may in fact sit in {otherSign}"
+   "moonBoundary": " — and it may in fact sit in {otherSign}",
+   "ascSameAsSun": "Your rising sign is {sign} as well, the same sign as your Sun, so the first impression people meet and the core they come to know tend to agree. With people this looks like you in the doorway already sounding like yourself."
   },
   "ch3": {
    "title": "What your chart is made of",
@@ -95,7 +96,12 @@
    "title": "The standing conversations",
    "intro": "Your closest meetings sit here — standing conversations in you. Neither is a verdict.",
    "pairFrame": "Your {a} and your {b} sit {aspect} ({orb} off exact) — {aTheme} {verb} {bTheme}. In a life this looks like those two parts of you arriving in the same room. Neither wins; the conversation is the point.",
-   "noMoonNote": "Because your birth time is unknown, contacts involving the Moon are left out here — its position isn't certain enough to claim an angle this close, and we'd rather skip a line than invent one."
+   "noMoonNote": "Because your birth time is unknown, contacts involving the Moon are left out here — its position isn't certain enough to claim an angle this close, and we'd rather skip a line than invent one.",
+   "pairFrames": [
+    "Your {a} and your {b} sit {aspect} ({orb} off exact) — {aTheme} {verb} {bTheme}. In a life this looks like those two parts of you arriving in the same room. Neither wins; the conversation is the point.",
+    "Your {a} and your {b} sit {aspect} ({orb} off exact) — {aTheme} {verb} {bTheme}. Day to day this shows up as two needs that keep checking in with each other. Neither wins; the conversation is the point.",
+    "Your {a} and your {b} sit {aspect} ({orb} off exact) — {aTheme} {verb} {bTheme}. Over years this reads as a habit of pairing those two, often without noticing. Neither wins; the conversation is the point."
+   ]
   },
   "ch5": {
    "title": "The slow planets",
@@ -111,9 +117,16 @@
   },
   "ch7": {
    "title": "A letter to keep",
-   "body": "If I reread nothing else, I reread this. The night I was born is a computed sky, not a verdict. My Sun is how I shine when nobody is scoring me — {sunTheme}. The closest conversation in this chart — {tightPair} — is not a flaw to fix; it is the friction that makes me specific. My {domElement} nature keeps doing what it does. Let it. {ascNote} Nothing in this sky needs repairing. It needs living — openly, and in my own order. The sky above tonight is already different from the one on page one; I am allowed to be, too.",
+   "body": "If I reread nothing else, I reread this. The night I was born is a computed sky, not a verdict. My Sun is how I shine when nobody is scoring me — {sunTheme}. The closest conversation in this chart — {tightPair} — {tightClause}. My {domElement} nature keeps doing what it does. Let it. {ascNote} Nothing in this sky needs repairing. It needs living — openly, and in my own order. The sky above tonight is already different from the one on page one; I am allowed to be, too.",
    "ascNote": "My rising sign is how I meet the world — {theme}. With people this looks like me in the doorway before I have said a word.",
-   "noAscNote": "My rising sign needs a birth time we do not have, so this letter stays with what can be named without one."
+   "noAscNote": "My rising sign needs a birth time we do not have, so this letter stays with what can be named without one.",
+   "tightClauses": {
+    "conjunction": "is a blend, not a blur; it is part of what makes me specific",
+    "opposition": "is not a flaw to fix; it is the pull that makes me specific",
+    "square": "is not a flaw to fix; it is the friction that makes me specific",
+    "trine": "is an ease I can use on purpose, not a gift to take for granted",
+    "sextile": "is a small open door; it works whenever I remember to use it"
+   }
   }
  },
  "aspectVerbs": {
@@ -201,14 +214,18 @@
    "neptune": "a year or more of soft focus",
    "pluto": "a years-long excavation, seen only in hindsight"
   },
-  "frame": "Right now your {planet} {aspectVerb} your natal {target}, the part of this sky that carries {targetTheme}. Tradition reads a visit like this as weather, not a verdict: worth noticing while it lasts, never something to obey. In the day this looks like that part of you being lit, not ordered.",
+  "frame": "Right now today's {planet} {aspectVerb} your natal {target}, the part of this sky that carries {targetTheme}. Tradition reads a visit like this as weather, not a verdict: worth noticing while it lasts, never something to obey. In the day this looks like that part of you being lit, not ordered.",
   "aspectVerbs": {
    "conjunction": "stands on",
    "sextile": "offers a small door to",
    "square": "pushes against",
    "trine": "moves easily with",
    "opposition": "sits directly opposite"
-  }
+  },
+  "frameMore": [
+   "Today's {planet} also {aspectVerb} your natal {target}, which carries {targetTheme}. Read it as {planetArc}.",
+   "A third contact: today's {planet} {aspectVerb} your natal {target} ({targetTheme}), which tradition reads as {planetArc}."
+  ]
  },
  "ch4Closers": {
   "conjunction": "These two never take turns in you; they arrive together, and the blend is a signature, not a blur.",
@@ -223,5 +240,19 @@
   "air": "You know before you explain. Your understanding forms without conversation, and the words come afterwards. With people this looks like a pause, then a sentence that was worth the wait.",
   "water": "You still feel — missing water is not missing feeling. Feeling arrives for you through doing, making and thinking rather than tides. In a storm this looks like you still able to work the instruments."
  },
- "stelliumNote": "You have {count} planets standing together in {sign}{houseClause} — a stack, not one note. In a life this looks like you keeping volume on this sign's way of moving, in the part of life that house names."
+ "stelliumNote": "You have {count} planets standing together in {sign}{houseClause} — a stack, not one note. In a life this looks like you keeping volume on this sign's way of moving, in the part of life that house names.",
+ "aspectWith": {
+  "conjunction": "together with",
+  "opposition": "facing",
+  "square": "at odds with",
+  "trine": "in easy flow with",
+  "sextile": "at a helpful angle to"
+ },
+ "ch4ClosersAlt": {
+  "conjunction": "Here too the two arrive together; read the pair as one voice with two accents.",
+  "sextile": "Another quiet helper: it rarely announces itself, and it rewards being asked.",
+  "square": "Another pair that keeps each other awake; the tension is where effort tends to go.",
+  "trine": "Another easy current; the risk is only that it goes unnoticed.",
+  "opposition": "Another pair of poles; the work is the same — hold both, choose neither."
+ }
 }
