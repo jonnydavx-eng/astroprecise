@@ -41,7 +41,7 @@ for i in range(0, len(moments), 20):
     for m in chunk:
         j = jd_ut(*m); jds += [j - 0.5, j, j + 0.5]
     lons, text = q31(jds)
-    soln = soln or (re.search(r'Soln\.date: (\S+)', text).group(1), re.search(r'\{source: (JPL#\d+)\}', text).group(1))
+    soln = soln or (re.search(r'Soln\.\s*date:\s*(\S+)', text).group(1), re.search(r'\{source: (JPL#\d+)\}', text).group(1))
     for n, m in enumerate(chunk):
         b, c, a = lons[3 * n:3 * n + 3]
         speed = ((a - b + 540) % 360) - 180

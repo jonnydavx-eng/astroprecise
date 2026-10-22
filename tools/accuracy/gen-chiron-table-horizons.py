@@ -16,7 +16,7 @@ import json, math, os, re, sys, urllib.parse, urllib.request, datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, '..', '..'))
 
-J0, STEP = 2396758.5, 200                      # 1850-01-01 TT, 200-day step
+J0, STEP = 2396758.5, 200                      # 1850-01-01 TDB, 200-day step
 N = int((2506331.5 - J0) / STEP) + 2           # through 2150-01-01 (+1 spare row)
 API = 'https://ssd.jpl.nasa.gov/api/horizons.api'
 
@@ -73,7 +73,7 @@ vals = [f"{round(l * 1e4) % 3600000},{round(b * 1e4)},{round(r * 1e5)}" for _, l
 meta = {'source': 'NASA/JPL Horizons API, https://ssd.jpl.nasa.gov/api/horizons.api',
         'target': soln.group(1).strip() if soln else '2060 Chiron',
         'solution': soln.group(2).strip() if soln else None,
-        'solution_date': re.search(r'Soln\.date: (\S+)', text).group(1),
+        'solution_date': re.search(r'Soln\.\s*date:\s*(\S+)', text).group(1),
         'fetched_utc': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%MZ'),
         'frame': 'heliocentric, light time over the Sun distance, J2000 ecliptic precessed to the ecliptic of date (Meeus 21.5) plus nutation in longitude (Meeus 22)',
         't0_jd_tdb': J0, 'step_days': STEP, 'rows': N}
