@@ -2,7 +2,7 @@
 import { mkdtempSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
-import { selectReachable } from './tools/build-reachable.mjs'
+import { selectReachable, ALWAYS_SHIP_FILES } from './tools/build-reachable.mjs'
 
 let pass = 0, fail = 0
 const ok = (name, cond) => { if (cond) { pass++ } else { fail++; console.log('  ✗ ' + name) } }
@@ -22,6 +22,7 @@ const files = [
   put('data/content-bank/daily/2026-10-22.json', '{}'),
   put('data/hyg-bright.LICENSE.txt', 'CC BY-SA'),
   put('js/vendor/three-r128-RenderPass.js', ''),
+  put('img/og-banner-v576.jpg'),
 ]
 const { keep, omitted } = selectReachable(files)
 const kept = new Set(keep.map((f) => f.rel))
@@ -35,6 +36,8 @@ ok('textures (computed names) ship', kept.has('assets/textures/mars_md.webp'))
 ok('dated content ships', kept.has('data/content-bank/daily/2026-10-22.json'))
 ok('licence files ship', kept.has('data/hyg-bright.LICENSE.txt'))
 ok('vendor builds ship', kept.has('js/vendor/three-r128-RenderPass.js'))
+ok('old social-share image still ships', kept.has('img/og-banner-v576.jpg'))
+ok('14 old share images are on the always-ship list', ALWAYS_SHIP_FILES.size === 14)
 ok('unreferenced image is left out', omitted.includes('img/old-banner.jpg'))
 ok('unreferenced script is left out', omitted.includes('js/retired.js'))
 console.log(`\ntest-build-reachable: ${pass} passed, ${fail} failed`)
