@@ -3,7 +3,7 @@
   "short_name": "AstroPrecise",
   "description": "Reveal your birth sky, read its patterns, and keep your story. Calculated privately on your device.",
   "id": "/",
-  "start_url": "index.html?app=1",
+  "start_url": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#f4f1e9",

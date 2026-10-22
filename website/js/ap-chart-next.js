@@ -30,7 +30,7 @@
   let searchSequence = 0;
   let searchController = null;
   let autoSearchTimer = null;
-  const AUTO_SEARCH_DELAY_MS = 700;
+  const AUTO_SEARCH_DELAY_MS = 400;
   let savedId = null;
   const esc = value => String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmtDegree = value => { const minute = Math.floor((value % 1) * 60); return Math.floor(value) + '° ' + String(minute).padStart(2,'0') + '′'; };
@@ -141,7 +141,9 @@
     searchSequence++; if(searchController) searchController.abort();
     chosenPlace=null;resetFold();
     const query=normalize($('birth-place').value);
-    const places=query.length>=2?((E()&&E().CITIES)||[]).filter(city=>normalize(city.name+' '+city.country).includes(query)).sort((a,b)=>Number(normalize(b.name).startsWith(query))-Number(normalize(a.name).startsWith(query))):[];
+    const cities=(E()&&E().CITIES)||[];
+    // Word-start matching (APPlaceMatch): "Bury" finds Bury, not Canterbury, so a miss can go online.
+    const places=query.length<2?[]:window.APPlaceMatch?window.APPlaceMatch.matchOffline(query,cities):cities.filter(city=>normalize(city.name).startsWith(query));
     renderPlaces(places);
     $('place-status').textContent=query.length<2?'':places.length?'Choose your place from the matches above.':'No offline match. Use “Search more towns online” to look it up.';
     // No offline match: look the typed town text up online after a short pause.
@@ -162,10 +164,11 @@
     const timer=setTimeout(()=>controller.abort(),9000);
     $('search-world').disabled=true;$('place-status').textContent='Looking for matching towns…';
     try {
-      const response=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(query)+'&count=7&language=en&format=json',{signal:controller.signal,credentials:'omit',referrerPolicy:'no-referrer'});
+      const response=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(query)+'&count=10&language=en&format=json',{signal:controller.signal,credentials:'omit',referrerPolicy:'no-referrer'});
       if(!response.ok) throw new Error('Search unavailable');
       const result=await response.json();if(sequence!==searchSequence)return;
-      const places=(result.results||[]).map(row=>({name:[row.name,row.admin1&&row.admin1!==row.name?row.admin1:'',row.country].filter(Boolean).join(', '),lat:Number(row.latitude),lon:Number(row.longitude),tz:row.timezone||''})).filter(validPlace);
+      const rows=window.APPlaceMatch?window.APPlaceMatch.sortOnline(result.results):(result.results||[]);
+      const places=rows.map(row=>({name:[row.name,row.admin2&&row.admin2!==row.name?row.admin2:'',row.admin1&&row.admin1!==row.name?row.admin1:'',row.country].filter(Boolean).join(', '),lat:Number(row.latitude),lon:Number(row.longitude),tz:row.timezone||''})).filter(validPlace);
       renderPlaces(places);$('place-status').textContent=places.length?'Choose the correct town from the matches above.':'No matching town found. Try a nearby larger town or add the country.';
     } catch(error) {
       if(sequence===searchSequence) $('place-status').textContent='Online town search couldn’t connect. Try again, or choose a nearby city from the offline list.';
@@ -235,6 +238,8 @@
     ['birth-date','birth-time','birth-place','birth-fold'].forEach(id=>$(id).removeAttribute('aria-invalid'));
     const date=$('birth-date').value,time=$('birth-time').value,timeKnown=!$('time-unknown').checked&&!!time;
     if(!date || !$('birth-date').validity.valid) {showError('Enter a valid birth date between 1900 and today.','birth-date');return;}
+    // Never turn a forgotten time into "time unknown" silently.
+    if(!$('time-unknown').checked && !time) {showError('Enter your birth time, or tick “I don’t know my birth time”.','birth-time');return;}
     if(!chosenPlace) {showError('Choose your birth place from the matching places.','birth-place');return;}
     $('calculate-chart').disabled=true;
     try {
@@ -246,7 +251,7 @@
   }
   function loadProfile() {
     if(window.AstroProfile)return Promise.resolve(window.AstroProfile);
-    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=919';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
+    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=920';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
   }
   async function saveChart() {
     if(!currentResult)return;
@@ -303,7 +308,10 @@
   $('birth-place').addEventListener('input',offlineSearch);
   $('search-world').addEventListener('click',onlineSearch);
   $('birth-date').addEventListener('input',resetFold);$('birth-time').addEventListener('input',resetFold);
-  $('time-unknown').addEventListener('change',()=>{$('birth-time').disabled=$('time-unknown').checked;$('time-approximate').disabled=$('time-unknown').checked;resetFold();});
+  // "I don't know" and "approximate" are mutually exclusive.
+  $('time-unknown').addEventListener('change',()=>{const unknown=$('time-unknown').checked;if(unknown)$('time-approximate').checked=false;$('birth-time').disabled=unknown;$('time-approximate').disabled=unknown;if(unknown)$('birth-time').removeAttribute('aria-invalid');resetFold();});
+  $('time-approximate').addEventListener('change',()=>{if($('time-approximate').checked&&$('time-unknown').checked){$('time-unknown').checked=false;$('birth-time').disabled=false;}});
+  $('birth-time').addEventListener('input',()=>{if($('birth-time').value)$('birth-time').removeAttribute('aria-invalid');});
   $('edit-chart').addEventListener('click',()=>{$('chart-builder').hidden=false;document.querySelector('.chart-intro').hidden=false;$('chart-result').hidden=true;$('birth-date').focus({preventScroll:true});$('chart-builder').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});
   $('save-chart').addEventListener('click',saveChart);$('download-chart').addEventListener('click',downloadReading);
   $('read-my-sky').addEventListener('click',()=>{

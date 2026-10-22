@@ -1,0 +1,21 @@
+/* AstroPrecise contact page on the ap-next (paper and night) shell. */
+.ap-contact-shell{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(40px,7vw,96px);align-items:start;padding-block:clamp(40px,7vw,96px)}
+.ap-contact-intro h1{max-width:9ch;margin:14px 0 20px}
+.ap-contact-intro>p:not(.eyebrow){max-width:42ch;margin:0;color:var(--ap-next-muted);font-size:17px;line-height:1.65}
+.ap-contact-email{display:inline-flex;align-items:center;min-height:44px;margin-top:22px;font-size:15px}
+.ap-contact-ledger{margin:34px 0 0;border-top:1px solid var(--ap-next-line)}
+.ap-contact-ledger>div{display:grid;grid-template-columns:104px 1fr;gap:18px;padding:16px 0;border-bottom:1px solid var(--ap-next-line)}
+.ap-contact-ledger dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ap-next-muted)}
+.ap-contact-ledger dd{margin:0;font-size:14px;line-height:1.55}
+.ap-contact-card{padding:clamp(22px,4vw,36px);border:1px solid var(--ap-next-line);border-radius:8px;background:#fbfaf5}
+.ap-contact-card h2{margin:0 0 8px}
+.ap-contact-card>p{margin:0 0 22px;color:var(--ap-next-muted);font-size:14px;line-height:1.6}
+.ap-contact-form{display:grid;gap:16px}
+.ap-contact-form label{display:grid;gap:7px;font-size:13px;font-weight:600}
+.ap-contact-form :is(input,textarea){width:100%;min-height:44px;border:1px solid #b9c0b3;border-radius:6px;background:#fff;color:var(--ap-next-ink);padding:11px 13px;font:16px/1.5 var(--ap-next-sans)}
+.ap-contact-form textarea{min-height:150px;resize:vertical}
+.ap-contact-form button{min-height:48px;justify-self:start;padding:0 22px;border:0;border-radius:6px;background:var(--ap-next-ink);color:var(--ap-next-paper);font:600 15px var(--ap-next-sans);cursor:pointer}
+.ap-contact-form button[disabled]{opacity:.6;cursor:progress}
+.ap-contact-note,.ap-contact-status{margin:0;font-size:12px;color:var(--ap-next-muted)}
+.ap-contact-sent{padding-top:6px}.ap-contact-sent h2{font-size:clamp(26px,3vw,34px)}
+@media(max-width:800px){.ap-contact-shell{grid-template-columns:1fr}.ap-contact-form button{width:100%}.ap-contact-ledger>div{grid-template-columns:86px 1fr}}

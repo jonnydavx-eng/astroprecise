@@ -2,40 +2,37 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta name="robots" content="index, follow">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#040812">
+  <meta name="referrer" content="no-referrer">
+  <script id="ap-url-privacy">
+/* Retired links may contain birth details. Clean them before any asset loads. */
+window.APUrlPrivacy=(function(){'use strict';var anchors=["main","main-content"];function scrub(){try{var incoming=new URLSearchParams(window.location.search||'');var kept=new URLSearchParams();incoming.forEach(function(value,key){var name=String(key||'').toLowerCase();if((name==='nosw'||name==='lite')&&value==='1'&&!kept.has(name))kept.set(name,'1');});var safeHash='';var rawHash=String(window.location.hash||'').replace(/^#/,'');try{var anchor=decodeURIComponent(rawHash).toLowerCase();if(anchors.indexOf(anchor)!==-1)safeHash='#'+anchor;}catch(_){}var search=kept.toString();var next=window.location.pathname+(search?'?'+search:'')+safeHash;var current=window.location.pathname+window.location.search+window.location.hash;if(next!==current)window.history.replaceState(window.history.state,'',next);return true;}catch(_){try{window.location.replace(window.location.pathname);}catch(__){window.stop();}return false;}}window.addEventListener('hashchange',scrub);scrub();return Object.freeze({scrub:scrub});})();
+</script>
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f4f1e9">
   <title>Contact AstroPrecise — talk to the maker</title>
   <meta name="description" content="Contact AstroPrecise about a correction, licence problem, refund or access issue. One independent UK maker reads the message.">
   <link rel="canonical" href="https://astroprecise.app/contact.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
   <meta property="og:site_name" content="AstroPrecise">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Contact AstroPrecise — talk to the maker">
   <meta property="og:description" content="Questions, corrections and access problems go directly to the independent maker.">
   <meta property="og:url" content="https://astroprecise.app/contact.html">
-  <link rel="stylesheet" href="css/fonts.css?v=919">
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=919">
-  <link rel="stylesheet" href="css/ap-contact-v835.css?v=919">
-  <script src="js/ap-nav-model.js?v=919" defer></script>
-<link rel="stylesheet" href="css/ap-next.css?v=919"><script defer src="js/ap-next.js?v=919"></script></head>
-<body class="page-contact">
-  <a class="skip-link" href="#main-content">Skip to contact</a>
-  <header class="site-header" role="banner" data-ap-static-nav>
-    <nav class="navbar" aria-label="Main navigation">
-      <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home"><span class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28"></span><span class="logo-text">Astro<i class="logo-text__precise">Precise</i></span></a>
-        <div class="navbar__nav" role="group" aria-label="Primary"><noscript><a href="observatory.html" class="navbar__link">Observatory</a><a href="chart.html" class="navbar__link">Chart</a><a href="sky-events.html" class="navbar__link">Events</a><a href="shop.html" class="navbar__link">Shop</a></noscript></div>
-        <div class="navbar__end"><button class="navbar__toggle" type="button" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button></div>
-      </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
-    </nav>
-  </header>
-
+  <link rel="stylesheet" href="css/fonts.css?v=920">
+  <link rel="stylesheet" href="css/ap-next.css?v=920">
+  <link rel="stylesheet" href="css/ap-contact-next.css?v=920">
+  <script defer src="js/ap-next.js?v=920"></script>
+  <script defer src="js/ap-contact-next.js?v=920"></script>
+</head>
+<body class="ap-next page-contact">
+  <a class="ap-skip" href="#main-content">Skip to contact</a>
+  <div data-ap-next-nav></div>
   <main class="ap-contact-main" id="main-content">
-    <div class="ap-contact-shell">
+    <div class="ap-contact-shell wrap">
       <section class="ap-contact-intro" aria-labelledby="contact-title">
-        <p class="ap-contact-kicker">Independent project · United Kingdom</p>
+        <p class="eyebrow">Independent project · United Kingdom</p>
         <h1 id="contact-title">Talk to the maker.</h1>
         <p>Questions, corrections, licence problems and refunds come directly to the person building AstroPrecise.</p>
         <a class="ap-contact-email" href="mailto:contact@astroprecise.app">contact@astroprecise.app</a>
@@ -52,20 +49,23 @@
       <section class="ap-contact-card" aria-labelledby="message-title">
         <h2 id="message-title">Send a message</h2>
         <p>No account or support maze. Formspree delivers this message to the AstroPrecise inbox.</p>
-        <form class="ap-contact-form" action="https://formspree.io/f/xgolwnnk" method="post">
+        <form class="ap-contact-form" id="contact-form" action="https://formspree.io/f/xgolwnnk" method="post">
           <input type="hidden" name="_subject" value="AstroPrecise website message">
           <label>Your name<input name="name" type="text" autocomplete="name"></label>
           <label>Your email<input name="email" type="email" required autocomplete="email"></label>
           <label>Message<textarea name="message" rows="6" required></textarea></label>
           <button type="submit">Send to AstroPrecise</button>
           <p class="ap-contact-note">By sending, you ask us to use these details to answer. Read the <a href="privacy.html">privacy policy</a>.</p>
+          <p class="ap-contact-status" id="contact-status" role="status" aria-live="polite"></p>
         </form>
+        <div class="ap-contact-sent" id="contact-sent" tabindex="-1" hidden>
+          <h2>Thank you. Your message is on its way.</h2>
+          <p>It goes to the AstroPrecise inbox and a person reads it. If you asked a question, the reply comes to the email address you gave.</p>
+          <a class="button-secondary" href="index.html">Back to the sky</a>
+        </div>
       </section>
     </div>
   </main>
-
-  <footer class="ap-site-footer" role="contentinfo" data-ap-footer-model="compact-v835"></footer>
-  <script src="js/ap-footer-inject.js?v=919" defer></script>
-  <script src="js/ap-sky-time.js?v=919" defer></script>
+  <div data-ap-next-footer></div>
 </body>
 </html>
