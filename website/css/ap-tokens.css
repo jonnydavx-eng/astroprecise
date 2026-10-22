@@ -69,6 +69,13 @@
   --ap-next-sage: var(--ap-paper-2);
   --ap-next-serif: var(--ap-serif);
   --ap-next-sans: var(--ap-sans);
+  --ap-next-card: var(--ap-card);
+  --ap-next-fog: var(--ap-fog);
+  --ap-next-graphite: var(--ap-graphite);
+  --ap-next-copper-ink: var(--ap-copper-ink);
+  --ap-next-night-2: var(--ap-night-2);
+  --ap-next-starlight: var(--ap-starlight);
+  --ap-next-alert: var(--ap-alert);
 }
 
 /* ---- base ---- */
@@ -81,11 +88,11 @@ a { color: var(--ap-copper-ink); text-underline-offset: 0.18em; text-decoration-
 .ap-btn { font: 600 var(--ap-step-0)/1 var(--ap-sans); padding: 14px 22px; border-radius: var(--ap-radius); background: var(--ap-ink); color: var(--ap-paper); border: 0; }
 .ap-btn--quiet { background: transparent; color: var(--ap-ink); border: var(--ap-hairline); }
 .ap-card { background: var(--ap-card); border: var(--ap-hairline); border-radius: var(--ap-radius); }
-.ap-specimen { font: 600 0.75rem/1 var(--ap-sans); letter-spacing: .24em; color: var(--ap-copper); border: 1px solid currentColor; padding: 5px 8px; } /* small corner mark; never a diagonal watermark */
+.ap-specimen { font: 600 0.75rem/1 var(--ap-sans); letter-spacing: .24em; color: var(--ap-copper-ink); border: 1px solid currentColor; padding: 5px 8px; } /* small corner mark; never a diagonal watermark */
 .ap-glyph { width: 1.25em; height: 1.25em; stroke: currentColor; fill: none; stroke-width: var(--ap-line); stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.2em; }
 
 /* ---- the only dark context ---- */
-.ap-sky { background: var(--ap-night); color: var(--ap-starlight); color-scheme: dark; }
+.ap-sky { --ap-night: #0E1116; --ap-night-2: #181C24; --ap-starlight: #F1E7CF; background: var(--ap-night); color: var(--ap-starlight); color-scheme: dark; }
 .ap-sky a { color: #E2A27A; } /* copper lifted for night: 8.7:1 on --ap-night */
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

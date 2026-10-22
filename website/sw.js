@@ -24,6 +24,7 @@ const PRECACHE = [
   './fonts/astro-glyphs.woff2',
   './fonts/cormorant-garamond-normal-500.woff2',
   './fonts/instrument-serif-regular.woff2',
+  './fonts/instrument-serif-italic.woff2',
   './fonts/inter-normal-400.woff2',
   './fonts/schibsted-grotesk-latin-var.woff2',
   './img/engine/studio/earth.webp',
