@@ -2,7 +2,7 @@
 /**
  * Pre-generate AstroPrecise content bank (static JSON served from website/data/).
  *
- *   node tools/build-content-bank.mjs [--days 90] [--months 6] [--keep-days 7]
+ *   node tools/build-content-bank.mjs [--days 90] [--months 6] [--keep-days 7] [--months-back 1] [--no-prune]
  *
  * Outputs:
  *   website/data/content-bank/manifest.json
@@ -49,11 +49,13 @@ const PLANETS = [
 const DAY_MS = 86400000;
 
 function parseArgs(argv) {
-  const a = { days: 90, months: 6, keepDays: 7 };
+  const a = { days: 90, months: 6, keepDays: 7, monthsBack: 1, prune: true };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--days' && argv[i + 1]) { a.days = Number(argv[++i]); }
     if (argv[i] === '--months' && argv[i + 1]) { a.months = Number(argv[++i]); }
     if (argv[i] === '--keep-days' && argv[i + 1]) { a.keepDays = Number(argv[++i]); }
+    if (argv[i] === '--no-prune') { a.prune = false; }
+    if (argv[i] === '--months-back' && argv[i + 1]) { a.monthsBack = Number(argv[++i]); }
   }
   return a;
 }
@@ -114,6 +116,23 @@ function fixMethodNote(note) {
 const BANNED_WORDS = /\b(sextiles?|ephemeri(?:s|des)|orbs?|midheavens?|arcminutes?)\b/i;
 const MACHINE_KEYS = new Set(['aspect', 'planet', 'sign', 'orb']);
 
+/* Daily and monthly readings are shown to everyone as "today's sky": they must
+ * not give money advice (pricing, spending, investing, debts, negotiating pay).
+ * Describing the 2nd house as "money, values, and what you choose to keep" is
+ * a house theme, not advice, and stays. The natal corpus (core/) describes a
+ * placement and is not checked here. test-content-bank.mjs repeats the check on disk. */
+const MONEY_ADVICE = /\b(?:price your|keep-or-spend|negotiat\w*(?: \w+){0,2} (?:worth|pay|price|rates?|fees?)|invest(?:ing)? in|spend(?:ing)? (?:money|less|more)|budget\w*|debts?|loans?|savings|financial (?:decisions?|moves?|risks?|choices?)|income|salary|salaries|windfalls?)\b/i;
+function assertNoMoneyAdvice(value, where) {
+  const text = JSON.stringify(value);
+  const hit = text.match(MONEY_ADVICE);
+  if (hit) {
+    throw new Error(
+      `Money advice "${hit[0]}" in ${where}: …${text.slice(Math.max(0, hit.index - 80), hit.index + 80)}…\n` +
+      '  → fix the wording in website/js/horoscope-engine.js, then rebuild.',
+    );
+  }
+}
+
 function assertReaderSafe(value, where) {
   if (typeof value === 'string') {
     const hit = value.match(BANNED_WORDS);
@@ -153,6 +172,7 @@ function stripReading(r) {
     transits: r.transits,
   };
   assertReaderSafe(out, `daily/${r.sign}`);
+  assertNoMoneyAdvice(out, `daily/${r.sign}`);
   return out;
 }
 
@@ -193,6 +213,7 @@ function writeIfChanged(path, text) {
 }
 
 function pruneDir(dir, pattern, cutoffKey) {
+  if (!args.prune) return; // --no-prune: rewrite wording in place, keep the on-disk range
   if (!existsSync(dir)) return;
   for (const name of readdirSync(dir)) {
     const m = name.match(pattern);
@@ -247,7 +268,7 @@ console.log(`Building ${args.months} monthly files × 12 signs (plus the retaine
 // was still serving retired wording six weeks later. Regenerating it is free: the
 // content is a pure function of the mid-month date, so only the wording can differ.
 // On-disk count is unchanged (prune keeps exactly one past month either way).
-for (let m = -1; m < args.months; m++) {
+for (let m = -args.monthsBack; m < args.months; m++) {
   const y = NOW.getUTCFullYear();
   const mo = NOW.getUTCMonth() + m;
   const key = monthKeyOf(new Date(Date.UTC(y, mo, 1)).getUTCFullYear(), new Date(Date.UTC(y, mo, 1)).getUTCMonth());
@@ -255,7 +276,7 @@ for (let m = -1; m < args.months; m++) {
   const readings = {};
   for (const sign of SIGNS) {
     const raw = H.getMonthlyHoroscope(sign, engineDateFor(dU, 15));
-    if (raw) assertReaderSafe(raw, `monthly/${sign}`);
+    if (raw) { assertReaderSafe(raw, `monthly/${sign}`); assertNoMoneyAdvice(raw, `monthly/${sign}`); }
     readings[sign] = raw ? {
       sign: raw.sign,
       month: raw.month,
