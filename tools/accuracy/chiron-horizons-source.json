@@ -3,9 +3,9 @@
  "target": "2060 Chiron (1977 UB)",
  "solution": "JPL#171",
  "solution_date": "2026-Jun-05_06:09:00",
- "fetched_utc": "2026-10-22T19:02Z",
+ "fetched_utc": "2026-10-22T21:45Z",
  "frame": "heliocentric, light time over the Sun distance, J2000 ecliptic precessed to the ecliptic of date (Meeus 21.5) plus nutation in longitude (Meeus 22)",
- "t0_jd_tdb": 2396758.5,
+ "t0_jd_tdb": 2378158.5,
  "step_days": 200,
- "rows": 549
+ "rows": 737
 }
