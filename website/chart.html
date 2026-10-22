@@ -49,14 +49,30 @@ window.APUrlPrivacy = (function () {
 </script>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Make sense of your birth chart. Start with your Sun, Moon and rising sign, then explore the planets. Free, private and made for your phone.">
+  <link rel="canonical" href="https://astroprecise.app/chart.html">
+  <link rel="icon" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AstroPrecise">
+  <meta property="og:title" content="Your birth chart — AstroPrecise">
+  <meta property="og:description" content="Make sense of your birth chart. Start with your Sun, Moon and rising sign, then explore the planets. Free, private and made for your phone.">
+  <meta property="og:url" content="https://astroprecise.app/chart.html">
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Engine still of Earth from the AstroPrecise model. Type only. Not a live feed.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Your birth chart — AstroPrecise">
+  <meta name="twitter:description" content="Make sense of your birth chart. Start with your Sun, Moon and rising sign, then explore the planets. Free, private and made for your phone.">
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg">
   <meta name="theme-color" content="#f4f1e9">
   <title>Your birth chart — AstroPrecise</title>
-  <link rel="stylesheet" href="css/ap-next.css?v=918">
-  <link rel="stylesheet" href="css/ap-chart-next.css?v=918">
-  <script defer src="js/ap-next.js?v=918"></script>
-  <script defer src="js/ephemeris.js?v=918"></script>
-  <script defer src="js/ap-mirror-hour.js?v=918"></script>
-  <script defer src="js/ap-chart-next.js?v=918"></script>
+  <link rel="stylesheet" href="css/ap-next.css?v=919">
+  <link rel="stylesheet" href="css/ap-chart-next.css?v=919">
+  <script defer src="js/ap-next.js?v=919"></script>
+  <script defer src="js/ephemeris.js?v=919"></script>
+  <script defer src="js/ap-mirror-hour.js?v=919"></script>
+  <script defer src="js/ap-chart-next.js?v=919"></script>
 </head>
 <body class="ap-next">
   <a class="chart-skip" href="#main">Skip to content</a>
@@ -96,7 +112,7 @@ window.APUrlPrivacy = (function () {
             <div id="place-options" class="chart-places" aria-label="Matching birth places" hidden></div>
             <p id="place-status" class="chart-status" role="status" aria-live="polite"></p>
             <button id="search-world" class="chart-text-button" type="button">Search more towns online ↗</button>
-            <small class="chart-privacy-note">Online search sends only the town text to Open-Meteo, so your browser can look up coordinates and the time zone. Your birth date and time are never sent.</small>
+            <small class="chart-privacy-note">Online search sends only the town text to Open-Meteo, so your browser can look up coordinates and the time zone. If your town isn’t in the offline list, this happens automatically when you pause typing. Your birth date and time are never sent.</small>
           </div>
           <p id="form-error" class="chart-error" role="alert" hidden></p>
           <button id="calculate-chart" class="button chart-submit" type="submit">Create my birth chart <span aria-hidden="true">↗</span></button>

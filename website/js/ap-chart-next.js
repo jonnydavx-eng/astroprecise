@@ -29,6 +29,8 @@
   let currentResult = null;
   let searchSequence = 0;
   let searchController = null;
+  let autoSearchTimer = null;
+  const AUTO_SEARCH_DELAY_MS = 700;
   let savedId = null;
   const esc = value => String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmtDegree = value => { const minute = Math.floor((value % 1) * 60); return Math.floor(value) + '° ' + String(minute).padStart(2,'0') + '′'; };
@@ -118,7 +120,7 @@
   }
   function pickPlace(place) {
     if(!validPlace(place)) return;
-    chosenPlace=place; $('birth-place').value=place.name; $('place-options').hidden=true;
+    cancelAutoSearch(); chosenPlace=place; $('birth-place').value=place.name; $('place-options').hidden=true;
     $('place-status').textContent=place.name+' · '+place.tz.replace(/_/g,' ');
     $('birth-place').removeAttribute('aria-invalid'); resetFold();
   }
@@ -132,17 +134,28 @@
     });
     container.hidden=!container.childElementCount;
   }
+  function cancelAutoSearch() { if(autoSearchTimer) { clearTimeout(autoSearchTimer); autoSearchTimer=null; } }
+  function isOffline() { return typeof navigator!=='undefined'&&navigator.onLine===false; }
   function offlineSearch() {
+    cancelAutoSearch();
     searchSequence++; if(searchController) searchController.abort();
     chosenPlace=null;resetFold();
     const query=normalize($('birth-place').value);
     const places=query.length>=2?((E()&&E().CITIES)||[]).filter(city=>normalize(city.name+' '+city.country).includes(query)).sort((a,b)=>Number(normalize(b.name).startsWith(query))-Number(normalize(a.name).startsWith(query))):[];
     renderPlaces(places);
     $('place-status').textContent=query.length<2?'':places.length?'Choose your place from the matches above.':'No offline match. Use “Search more towns online” to look it up.';
+    // No offline match: look the typed town text up online after a short pause.
+    // Only the town text is sent (see onlineSearch); further typing cancels it.
+    if(query.length>=3&&!places.length) {
+      if(isOffline()) $('place-status').textContent='No offline match, and you seem to be offline. Choose a nearby city from the offline list, or reconnect and try again.';
+      else { $('place-status').textContent='No offline match. Looking it up online…'; autoSearchTimer=setTimeout(()=>{autoSearchTimer=null;onlineSearch();},AUTO_SEARCH_DELAY_MS); }
+    }
   }
   async function onlineSearch() {
+    cancelAutoSearch();
     const query=$('birth-place').value.trim();
     if(query.length<2) { $('place-status').textContent='Type at least two letters of your town first.';$('birth-place').focus();return; }
+    if(isOffline()) { $('place-status').textContent='Online town search needs a connection. Choose a nearby city from the offline list, or reconnect and try again.';return; }
     const sequence=++searchSequence;
     if(searchController) searchController.abort();
     searchController=new AbortController(); const controller=searchController;
@@ -233,7 +246,7 @@
   }
   function loadProfile() {
     if(window.AstroProfile)return Promise.resolve(window.AstroProfile);
-    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=918';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
+    return new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='js/profile.js?v=919';script.onload=()=>window.AstroProfile?resolve(window.AstroProfile):reject(new Error('Storage is unavailable'));script.onerror=()=>{script.remove();reject(new Error('Storage could not load'));};document.head.append(script);});
   }
   async function saveChart() {
     if(!currentResult)return;

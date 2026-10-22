@@ -19,7 +19,12 @@ $EnvFile = Join-Path $Root 'secrets\.env.local'
 $AccountId = 'd6684e6cd24d1f20d2f92bd74bee9303'
 $ZoneId = '0b117b494c51a835f52841db29104bf4'
 $Domain = 'astroprecise.app'
-$Destination = 'jonnydavx@gmail.com'
+# Destination inbox: set AP_OWNER_EMAIL before running; no personal address is kept in the repo.
+$Destination = if ($env:AP_OWNER_EMAIL) { $env:AP_OWNER_EMAIL } else { 'owner@example.invalid' }
+if ($Destination -like '*.invalid') {
+    Write-Error 'Set AP_OWNER_EMAIL to the real destination inbox before running this script (the repo keeps only a placeholder).'
+    exit 1
+}
 $ForwardAddresses = @(
     'hello@astroprecise.app',
     'support@astroprecise.app',
@@ -119,7 +124,7 @@ function Show-GmailSendAsGuide {
     Write-Host 'Step 2: Click Send verification (NOT custom SMTP)'
     Write-Host '  - Do NOT use route1.mx.cloudflare.net — that is receive-only.'
     Write-Host '  - If SMTP is forced: smtp.gmail.com, port 587, TLS'
-    Write-Host '    Username: jonnydavx@gmail.com'
+    Write-Host "    Username: $Destination"
     Write-Host '    Password: Google App Password (myaccount.google.com/apppasswords)'
     Write-Host ''
     Write-Host 'Step 3: Code arrives in Gmail (forwarded from hello@) — paste it in the popup.'

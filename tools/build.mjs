@@ -75,7 +75,25 @@ const PUBLIC_SHOP_ASSETS = new Set([
   'img/shop/v906/natal-plate-1600.avif',
   'img/shop/v906/natal-plate-1600.webp',
   'img/shop/v906/keepsake-plate.jpg',
+  // Responsive Studio variants of keepsake-plate.jpg (tools/make-responsive-image.mjs).
+  'img/shop/v906/keepsake-plate-400.avif',
+  'img/shop/v906/keepsake-plate-400.webp',
+  'img/shop/v906/keepsake-plate-800.avif',
+  'img/shop/v906/keepsake-plate-800.webp',
+  'img/shop/v906/keepsake-plate-1200.avif',
+  'img/shop/v906/keepsake-plate-1200.webp',
+  'img/shop/v906/keepsake-plate-1600.avif',
+  'img/shop/v906/keepsake-plate-1600.webp',
   'img/shop/v906/earth-plate.jpg',
+  // Responsive Studio variants of earth-plate.jpg (tools/make-responsive-image.mjs).
+  'img/shop/v906/earth-plate-400.avif',
+  'img/shop/v906/earth-plate-400.webp',
+  'img/shop/v906/earth-plate-800.avif',
+  'img/shop/v906/earth-plate-800.webp',
+  'img/shop/v906/earth-plate-1200.avif',
+  'img/shop/v906/earth-plate-1200.webp',
+  'img/shop/v906/earth-plate-1600.avif',
+  'img/shop/v906/earth-plate-1600.webp',
 ])
 const FORBIDDEN_CLOUDFLARE_PATHS = new Set([
   '_worker.js',

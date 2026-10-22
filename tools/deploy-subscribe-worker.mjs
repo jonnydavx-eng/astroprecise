@@ -9,7 +9,7 @@
  *
  * Optional:
  *   AP_DOMAIN=astroprecise.app
- *   OWNER_EMAIL=jonnydavx@gmail.com
+ *   OWNER_EMAIL=owner@example.invalid   (set your real destination in the environment)
  *   SUBSCRIBE_HOST=list.astroprecise.app
  *   EXPORT_TOKEN=<random>   # enables GET /export?token=… CSV download
  *
@@ -190,7 +190,11 @@ async function main() {
 
   const domain = process.env.AP_DOMAIN || 'astroprecise.app';
   const subscribeHost = process.env.SUBSCRIBE_HOST || `list.${domain}`;
-  const ownerEmail = process.env.OWNER_EMAIL || 'jonnydavx@gmail.com';
+  const ownerEmail = process.env.OWNER_EMAIL || 'owner@example.invalid';
+  if (!process.env.OWNER_EMAIL || ownerEmail.endsWith('.invalid')) {
+    console.error('Set OWNER_EMAIL in secrets/.env.local to the real notify inbox before deploying (the repo keeps only a placeholder).');
+    process.exit(1);
+  }
   const fromEmail = process.env.FROM_EMAIL || `subscribe@${domain}`;
   const exportToken = process.env.EXPORT_TOKEN || '';
   const customUrl = `https://${subscribeHost}/subscribe`;
