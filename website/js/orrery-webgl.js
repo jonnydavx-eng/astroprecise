@@ -7148,14 +7148,28 @@ const FinishShader = {
         ringLo.rotation.x = Math.PI / 2;
         ringLo.position.y = -ringThick * 0.5;
         group.add(ringLo);
-        // Fixed draw order for the see-through parts of a ringed world: the
-        // atmosphere shell first, then both ring faces after the opaque globe has
-        // written depth. Without it the per-frame distance sort can flip the two
-        // coplanar ring faces and the shell, which read as the far ring arc
-        // showing through the top of Saturn's disc.
-        if (group.userData.atmo) group.userData.atmo.renderOrder = 1;
+        // Fixed draw order for the see-through parts of a ringed world, all after
+        // the opaque globe has written depth: both ring faces (2), then a
+        // depth-only copy of the ring (3), then the atmosphere shell (4). Without
+        // a fixed order the per-frame distance sort can flip the coplanar ring
+        // faces and the shell, which read as the far ring arc showing through the
+        // top of Saturn's disc. The ring faces stay depthWrite:false so they
+        // blend with each other; the depth-only copy then lets the near ring hide
+        // the shell's pale limb line where the ring passes in front of the globe,
+        // while the far ring (behind the limb) still sits under the glow.
         ring.renderOrder = 2;
         ringLo.renderOrder = 2;
+        const ringDepth = new THREE.Mesh(ringGeo, new THREE.ShaderMaterial({
+          uniforms: ringMat.uniforms, // shared object: the texture swap-in reaches it too
+          vertexShader: ringMat.vertexShader,
+          fragmentShader: ringMat.fragmentShader, // same Cassini/edge discard, so gaps stay open
+          transparent: true, side: THREE.DoubleSide, depthWrite: true, colorWrite: false,
+        }));
+        ringDepth.rotation.x = Math.PI / 2;
+        ringDepth.position.y = ringThick * 0.5;
+        ringDepth.renderOrder = 3;
+        group.add(ringDepth);
+        if (group.userData.atmo) group.userData.atmo.renderOrder = 4;
         if (b.id === 'saturn') {
           saturnRingMesh = ring;
           saturnShadowBand = new THREE.Mesh(
