@@ -72,7 +72,7 @@
     10: 'Professional visibility is activated — deliver one polished piece of work and let competence speak.',
     6: 'Systems and craft win — refine the process, finish the backlog, and improve one routine permanently.',
     3: 'Messages and meetings matter — pitch, write, negotiate, and follow up while ideas are still warm.',
-    2: 'Income and value propositions are live — price your work fairly and back it with substance.',
+    2: 'What you value is in the frame — notice which work feels worth your effort, and why.',
     9: 'Teaching, publishing, or cross-border opportunities open — think bigger than this week\'s inbox.',
     11: 'Collaboration and network intelligence advance goals — the right ally shortens the path.',
   };
@@ -86,7 +86,7 @@
 
   var USE_BY_HOUSE = {
     1: 'Use one clean first impression — show up as you are, then stop.',
-    2: 'Use the keep-or-spend choice you have already made in private.',
+    2: 'Use one quiet look at what you truly value.',
     3: 'Use a short message while the thought is still warm.',
     4: 'Use a quieter hour at home before you answer the room.',
     5: 'Use one honest creative or affectionate gesture.',
@@ -386,7 +386,7 @@
 
     return {
       sign: sign,
-      date: day.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+      date: day.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
       overview: overviewParts.join(' '),
       todayLine: todayScreen.todayLine,
       useThis: todayScreen.useThis,
@@ -484,7 +484,7 @@
       'Professional momentum favours finishing visible work before pitching the next idea.',
       'A collaboration proposed mid-month could define the quarter — vet fit, then commit cleanly.',
       'Reputation for reliability opens a door louder competitors cannot walk through.',
-      'Negotiate scope and worth early; late-month pressure makes the same terms harder to land.',
+      'Name the scope of shared work early; late-month pressure makes the same conversation harder.',
     ];
     var wellnessPool = [
       'Rhythm beats intensity — sleep and movement on a schedule outperform heroic one-off efforts.',
@@ -495,7 +495,7 @@
 
     return {
       sign: sign,
-      month: d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      month: d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
       overview: overviewParts.join(' ') || ('Monthly outlook for ' + sign + ' follows the live sky — open horoscope.html for daily transits.'),
       love: pick(rng, lovePool),
       career: pick(rng, careerPool),

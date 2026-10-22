@@ -30,26 +30,26 @@
   <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-transits-og-v906.jpg" />
   <meta name="theme-color" content="#040812" />
   <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="css/ap-site-polish.css?v=922" as="style" />
-  <link rel="preload" href="css/ap-logo-aurora.css?v=922" as="style" />
-  <link rel="preload" href="css/ap-visual-clarity.css?v=922" as="style" />
-  <link rel="preload" href="css/ap-model-stage.css?v=922" as="style" />
-  <link rel="preload" href="css/ap-page-structure.css?v=922" as="style" />
-  <link rel="preload" href="css/ap-brand-nebula.css?v=922" as="style" />
-  <link rel="preload" href="css/ap-engine-visuals.css?v=922" as="style" />
+  <link rel="preload" href="css/ap-site-polish.css?v=923" as="style" />
+  <link rel="preload" href="css/ap-logo-aurora.css?v=923" as="style" />
+  <link rel="preload" href="css/ap-visual-clarity.css?v=923" as="style" />
+  <link rel="preload" href="css/ap-model-stage.css?v=923" as="style" />
+  <link rel="preload" href="css/ap-page-structure.css?v=923" as="style" />
+  <link rel="preload" href="css/ap-brand-nebula.css?v=923" as="style" />
+  <link rel="preload" href="css/ap-engine-visuals.css?v=923" as="style" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=922" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=922" id="ap-css-atlas-tokens" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=923" />
+  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=923" id="ap-css-atlas-tokens" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=922" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=923" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/celestial-seals.css" />
   <link rel="stylesheet" href="css/transits-page.css" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=922" id="ap-css-structure-clean" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=922" />
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=922" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=923" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=923" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=923" />
   <style>
     body.page-transits{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     .page-transits .navbar__nav{min-height:44px;}
@@ -95,7 +95,7 @@
     }
   }
   </script>
-<link rel="stylesheet" href="css/ap-next.css?v=922"><script defer src="js/ap-next.js?v=922"></script></head>
+<link rel="stylesheet" href="css/ap-next.css?v=923"><script defer src="js/ap-next.js?v=923"></script></head>
 <body class="page-transits ap-no-nav-enter ap-editorial">
   <a class="skip-link" href="#main-content">Skip to content</a>
 
@@ -433,8 +433,8 @@
       var tsEl = document.getElementById('sky-timestamp');
       if (!tsEl) return;
       var now = new Date();
-      var dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      var timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+      var dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).replace(/^(\S+),/, '$1');
+      var timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short' }).replace(/GMT\+0(?!\d)/, 'GMT');
       tsEl.innerHTML = '<span class="live-date-badge__dot" aria-hidden="true"></span><span>Computed today &mdash; ' + dateStr + ' &middot; ' + timeStr + '</span>';
     });
   </script>
@@ -725,7 +725,7 @@
       document.body.appendChild(s);
     }
     function idleHeavy() {
-      inject('js/chart-render.js?v=922');
+      inject('js/chart-render.js?v=923');
       inject('js/ap-load-interpretations.js');
     }
     function idleCosmos() {
@@ -1080,8 +1080,8 @@
     }
   })();
   </script>
-  <script src="js/ap-page-boot.js?v=922" defer></script>
-  <script src="js/ap-footer-inject.js?v=922" defer></script>
+  <script src="js/ap-page-boot.js?v=923" defer></script>
+  <script src="js/ap-footer-inject.js?v=923" defer></script>
 <script src="js/ap-sky-time.js" defer></script>
 </body>
 </html>

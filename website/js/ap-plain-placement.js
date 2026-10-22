@@ -29,7 +29,7 @@
   var HOW = {
     Aries: 'a first move — you start while other people are still circling',
     Taurus: 'something you can hold — you trust what lasts',
-    Gemini: 'talking it through until the room gets smaller',
+    Gemini: 'talking it through until the knot loosens',
     Cancer: 'protecting what feels like home, even in a borrowed kitchen',
     Leo: 'being seen doing the thing, not waiting to be invited',
     Virgo: 'making it useful and exact, then quietly handing it over',

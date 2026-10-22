@@ -442,7 +442,7 @@
 
   function formatLongDate(date) {
     try {
-      return date.toLocaleDateString('en-US',
+      return date.toLocaleDateString('en-GB',
         { weekday: 'long', month: 'long', day: 'numeric' });
     } catch (e) {
       return isoDate(date);

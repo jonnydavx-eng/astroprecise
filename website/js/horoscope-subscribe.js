@@ -69,7 +69,7 @@
 
     return {
       sign: sign,
-      month: d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      month: d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
       overview: MONTHLY_THEMES[sign] || MONTHLY_THEMES.Aries,
       love: MONTHLY_FOCUS.love[seed % MONTHLY_FOCUS.love.length],
       career: MONTHLY_FOCUS.career[(seed + 1) % MONTHLY_FOCUS.career.length],
