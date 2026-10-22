@@ -214,7 +214,7 @@
    "neptune": "a year or more of soft focus",
    "pluto": "a years-long excavation, seen only in hindsight"
   },
-  "frame": "Right now today's {planet} {aspectVerb} your natal {target}, the part of this sky that carries {targetTheme}. Tradition reads a visit like this as weather, not a verdict: worth noticing while it lasts, never something to obey. In the day this looks like that part of you being lit, not ordered.",
+  "frame": "Today's {planet} {aspectVerb} your natal {target}, the part of this sky that carries {targetTheme}. Tradition reads a visit like this as weather, not a verdict: worth noticing while it lasts, never something to obey. In the day this looks like that part of you being lit, not ordered.",
   "aspectVerbs": {
    "conjunction": "stands on",
    "sextile": "offers a small door to",

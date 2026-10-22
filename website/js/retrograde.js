@@ -308,7 +308,7 @@
     var dateStr = now.toLocaleDateString('en-GB',
       { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).replace(/^(\S+),/, '$1');
     var timeStr = now.toLocaleTimeString('en-GB',
-      { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short' }).replace(/GMT\+0(?!\d)/, 'GMT');
+      { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short' }).replace(/GMT\+0(?![\d:])/, 'GMT');
     el.innerHTML = '<span class="live-date-badge__dot" aria-hidden="true"></span>' +
       '<span>Live — ' + dateStr + ' · ' + timeStr + '</span>';
   }
