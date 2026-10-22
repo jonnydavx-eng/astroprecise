@@ -54,8 +54,29 @@ assert.match(gl, /const fillOff = instrumentPortraitBodyId\(\) \|\| \(birthHourM
 assert.match(gl, /instrumentFillLight\.intensity \+= \(goal - instrumentFillLight\.intensity\) \* fillK/, 'fill eases every frame');
 
 // ── draw order ─────────────────────────────────────────────────────────────
-assert.match(gl, /if \(group\.userData\.atmo\) group\.userData\.atmo\.renderOrder = 1;/, 'atmosphere draws before the ring');
-assert.match(gl, /ring\.renderOrder = 2;[\s\S]{0,40}ringLo\.renderOrder = 2;/, 'both ring faces draw after the atmosphere (depth-sorted between themselves)');
+// Ringed world: ring faces (2) -> depth-only ring (3) -> atmosphere shell (4).
+// The shell's pale limb line used to draw over the near ring where it crosses
+// the globe (Edge/D3D11 on the Mini GPU, 2B shots); the depth-only ring hides it.
+const ringBlock = gl.slice(gl.indexOf('if (b.ring) {'), gl.indexOf('loadTex(b.ring)'));
+assert.ok(ringBlock.length > 200, 'ring build block found');
+assert.match(ringBlock, /ring\.renderOrder = 2;[\s\S]{0,40}ringLo\.renderOrder = 2;/, 'both ring faces share one draw slot (depth-sorted between themselves)');
+const ringMatSrc = gl.slice(gl.indexOf('function saturnRingMaterial()'), gl.indexOf('function injectEarth('));
+assert.match(ringMatSrc, /transparent: true, side: THREE\.DoubleSide, depthWrite: false/, 'ring faces still blend (no depth write), so the two faces both show');
+const depthMesh = ringBlock.match(/const ringDepth = new THREE\.Mesh\(ringGeo, new THREE\.ShaderMaterial\(\{([\s\S]*?)\}\)\);/);
+assert.ok(depthMesh, 'a depth-only copy of the ring exists');
+assert.match(depthMesh[1], /uniforms: ringMat\.uniforms\b/, 'depth ring shares the ring uniforms (texture swap reaches it)');
+assert.match(depthMesh[1], /fragmentShader: ringMat\.fragmentShader/, 'depth ring uses the ring discard, so the Cassini gap stays open');
+assert.match(depthMesh[1], /depthWrite: true/, 'depth ring writes depth');
+assert.match(depthMesh[1], /colorWrite: false/, 'depth ring draws no colour');
+const order = (re) => { const m = ringBlock.match(re); return m ? Number(m[1]) : NaN; };
+const oFaces = order(/\bring\.renderOrder = (\d+);/);
+const oDepth = order(/ringDepth\.renderOrder = (\d+);/);
+const oAtmo = order(/group\.userData\.atmo\.renderOrder = (\d+);/);
+assert.ok(oFaces < oDepth && oDepth < oAtmo, `ring faces < depth ring < atmosphere (got ${oFaces}, ${oDepth}, ${oAtmo})`);
+assert.equal((gl.match(/userData\.atmo\.renderOrder\s*=/g) || []).length, 1, 'nothing else reorders the shell');
+assert.match(ringBlock, /group\.add\(ringDepth\)/, 'depth ring is added with the planet group (moves and hides with Saturn)');
+const atmoSrc = gl.slice(gl.indexOf('function atmosphereMaterial('), gl.indexOf('function saturnRingMaterial()'));
+assert.doesNotMatch(atmoSrc, /depthTest:\s*false/, 'the shell depth-tests, so the near ring can hide it');
 assert.match(gl, /labels\[b\.id\]\.renderOrder = 10;/, 'planet tags draw after the rings');
 
 // ── observatory status ─────────────────────────────────────────────────────
