@@ -153,3 +153,4 @@
  .studio-facts { grid-template-columns:1fr; gap:25px; padding-top:40px; padding-bottom:30px; }.studio-facts h2 { font-size:43px; }.studio-facts dl>div { padding:20px 0; }
  .studio-free { padding:30px 24px; margin-bottom:40px; }.studio-free h2 { font-size:48px; }.discover-actions { gap:10px 16px; }.discover-actions .button,.discover-actions .button-secondary { min-height:48px; }
 }
+.discover-more{margin-top:28px;margin-bottom:56px;font-family:var(--ap-next-sans)}.discover-more a{display:inline-flex;align-items:center;min-height:44px}

@@ -16,6 +16,24 @@ const TEXT_EXT = new Set(['.html', '.js', '.css', '.json', '.svg', '.xml', '.txt
 // Files in these folders are requested by computed names (dated content, planet textures
 // built as name + '_md.webp', element seals), and .well-known must always be served.
 export const ALWAYS_SHIP_PREFIXES = ['data/content-bank/', 'assets/', '.well-known/', 'js/vendor/']
+// Images that old social shares (og:image / twitter:image in earlier releases) still point at.
+// No current page references them, but links already posted elsewhere must keep loading.
+export const ALWAYS_SHIP_FILES = new Set([
+  'img/editorial/eclipse-field-guide-cover-final-v836.png',
+  'img/editorial/eclipse-launch-2026-v835.jpg',
+  'img/editorial/eclipse-launch-2026-v835.webp',
+  'img/editorial/sitting-chart-og-v893.jpg',
+  'img/editorial/sitting-chart-og-v906.jpg',
+  'img/editorial/sitting-earth-og-v891.jpg',
+  'img/editorial/sitting-earth-og-v902.jpg',
+  'img/editorial/sitting-events-og-v906.jpg',
+  'img/editorial/sitting-home-og-v893.jpg',
+  'img/editorial/sitting-keep-og-v893.jpg',
+  'img/editorial/sitting-shop-og-v906.jpg',
+  'img/og-banner-improved.jpg',
+  'img/og-banner-v576.jpg',
+  'img/shop/numbered-sky-plate-v835.webp',
+])
 // Licence and credit files ship with whatever they cover.
 export const ALWAYS_SHIP_NAME = /licen[cs]e|credits/i
 
@@ -26,7 +44,7 @@ export function selectReachable(files) {
   const queue = []
   const reach = (rel) => { if (!reached.has(rel)) { reached.add(rel); queue.push(rel) } }
   for (const rel of byRel.keys()) {
-    if (!rel.includes('/') || rel.endsWith('.html') || ALWAYS_SHIP_NAME.test(rel) || ALWAYS_SHIP_PREFIXES.some((p) => rel.startsWith(p))) reach(rel)
+    if (!rel.includes('/') || rel.endsWith('.html') || ALWAYS_SHIP_NAME.test(rel) || ALWAYS_SHIP_FILES.has(rel) || ALWAYS_SHIP_PREFIXES.some((p) => rel.startsWith(p))) reach(rel)
   }
   const pending = new Map()
   for (const rel of byRel.keys()) {
