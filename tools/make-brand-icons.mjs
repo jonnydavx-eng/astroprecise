@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-// make-brand-icons.mjs — regenerate the full favicon/app-icon set from the
-// v576 brand SVGs. Run from anywhere: node tools/make-brand-icons.mjs
+// make-brand-icons.mjs — regenerate the favicon/app-icon set from the
+// Paper & Night brand mark (brand pack directions/A-paper-and-night/logo,
+// drawn by src/themes.py mark()). Run from anywhere: node tools/make-brand-icons.mjs
 //
-// Sources:  website/favicon.svg        (32px-optimized derivation, no ticks)
-//           website/img/logo-mark.svg  (large master, full detail)
-// Outputs:  website/favicon-16.png     (star + centre dot only — no ring)
-//           website/favicon-32.png, website/favicon-48.png
+// Sources:  website/favicon.svg           (night tile, half-lit disc, copper star)
+//           tools/brand-src/mark-dark.svg  (large master on a full night square)
+// Outputs:  website/favicon-16.png, favicon-32.png, favicon-48.png
 //           website/favicon.ico        (16 + 32 + 48, BMP-encoded entries)
-//           website/img/apple-touch-icon.png (180, mark ~80% on solid #0C1016)
-//           website/img/icon-192.png / icon-512.png (mark ~80%, solid void)
-//           website/img/icon-maskable-512.png (mark ~62% — maskable safe zone)
+//           website/img/apple-touch-icon.png (180, full-bleed night square)
+//           website/img/icon-192.png / icon-512.png
+//           website/img/icon-maskable-512.png (mark ~80% — maskable safe zone)
 //
 // Uses playwright + pngjs from tools/visual-check/node_modules (no sharp on
 // this machine). ICO entries are classic BMP (BITMAPINFOHEADER + AND mask)
@@ -25,18 +25,14 @@ const { chromium } = require('playwright');
 const { PNG } = require('pngjs');
 
 const SITE = path.join(__dirname, '..', 'website');
-const VOID = '#08080b';
+const VOID = '#0E1116'; // --ap-night
 
 const faviconSvg = readFileSync(path.join(SITE, 'favicon.svg'), 'utf8');
-const masterSvg = readFileSync(path.join(SITE, 'img', 'logo-mark.svg'), 'utf8');
+const masterSvg = readFileSync(path.join(__dirname, 'brand-src', 'mark-dark.svg'), 'utf8');
 
-// 16px-only derivation: rounded void tile + star + centre dot. No ring, no
-// diamonds — at 16px the ring collides with the star and reads as mush.
-const favicon16Svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="13" fill="${VOID}"/>
-  <path fill="#ECE6D8" d="M32 8 L34.68 25.53 L42.96 21.04 L38.47 29.32 L56 32 L38.47 34.68 L42.96 42.96 L34.68 38.47 L32 56 L29.32 38.47 L21.04 42.96 L25.53 34.68 L8 32 L25.53 29.32 L21.04 21.04 L29.32 25.53 Z"/>
-  <circle cx="32" cy="32" r="4" fill="#CDAE6A"/>
-</svg>`;
+// The Paper & Night favicon is drawn to read at 16px, so all three sizes
+// render from the same SVG.
+const favicon16Svg = faviconSvg;
 
 const browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
 
@@ -118,10 +114,10 @@ writeFileSync(path.join(SITE, 'favicon.ico'), Buffer.concat([head, ...entries.ma
 console.log('wrote favicon.ico (16+32+48, BMP entries)');
 
 // ── App icons from the large master (solid void, no alpha) ────────────────
-writeFileSync(path.join(SITE, 'img', 'apple-touch-icon.png'), await renderSvg(masterSvg, 180, { scale: 0.8 }));
-writeFileSync(path.join(SITE, 'img', 'icon-192.png'), await renderSvg(masterSvg, 192, { scale: 0.8 }));
-writeFileSync(path.join(SITE, 'img', 'icon-512.png'), await renderSvg(masterSvg, 512, { scale: 0.8 }));
-writeFileSync(path.join(SITE, 'img', 'icon-maskable-512.png'), await renderSvg(masterSvg, 512, { scale: 0.62 }));
+writeFileSync(path.join(SITE, 'img', 'apple-touch-icon.png'), await renderSvg(masterSvg, 180));
+writeFileSync(path.join(SITE, 'img', 'icon-192.png'), await renderSvg(masterSvg, 192));
+writeFileSync(path.join(SITE, 'img', 'icon-512.png'), await renderSvg(masterSvg, 512));
+writeFileSync(path.join(SITE, 'img', 'icon-maskable-512.png'), await renderSvg(masterSvg, 512, { scale: 0.8 }));
 console.log('wrote img/apple-touch-icon.png (180), img/icon-192.png, img/icon-512.png, img/icon-maskable-512.png');
 
 await browser.close();
