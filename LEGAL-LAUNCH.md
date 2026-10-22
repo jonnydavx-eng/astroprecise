@@ -20,7 +20,7 @@ The hard legal work is already done in code. Privacy policy, terms (with the "en
 | `website/terms.html` refunds + contact | `[CONTACT EMAIL]` | same as above |
 | `website/terms.html` governing law | `[JURISDICTION]` | **England & Wales** (default for a UK operator) |
 
-> ⚠ Editing `privacy.html`/`terms.html` are cached-asset changes — **bump `V` in `sw.js`** and re-deploy (per repo CLAUDE.md). `shop.html` already hardcodes `jonnydavx@gmail.com` as the suggestions contact; align it to the dedicated address at the same time if you set one up.
+> ⚠ Editing `privacy.html`/`terms.html` are cached-asset changes — **bump `V` in `sw.js`** and re-deploy (per repo CLAUDE.md). `shop.html` already hardcodes `owner@example.invalid` as the suggestions contact; align it to the dedicated address at the same time if you set one up.
 
 ## 2. Business entity & payment account
 

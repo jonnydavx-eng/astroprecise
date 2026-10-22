@@ -109,7 +109,7 @@ FULFILMENT (per order, ~2 minutes)
 4. From repo root:
      node tools/generate-reading.mjs --in tools/order-from-ls.json --final
 5. Print HTML outputs to PDF (browser Print → Save as PDF).
-6. Email PDF(s) to buyer from jonnydavx@gmail.com (or your AstroPrecise address).
+6. Email PDF(s) to buyer from owner@example.invalid (or your AstroPrecise address).
 
 Bundle: one generator run produces both reading + poster HTML files.
 

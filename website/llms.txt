@@ -6,11 +6,12 @@ AstroPrecise is available at https://astroprecise.app/. Astronomy and astrologic
 
 ## Launch routes
 
-- [Observatory](https://astroprecise.app/): The single general-purpose 3D solar-system model, with named worlds, live time and an Earth-to-Galaxy scale journey
-- [12 August 2026 Eclipse](https://astroprecise.app/eclipse.html): Dedicated 3D Sun–Moon–Earth alignment, viewing guide, safety links and a private chart-contact tool
+- [Home](https://astroprecise.app/): "The sky at your first breath" — a free introduction to your birth chart, calculated on your device, with no account
+- [Observatory](https://astroprecise.app/observatory.html): The general-purpose 3D solar-system model, with named worlds, live time and an Earth-to-Galaxy scale journey
+- [12 August 2026 Eclipse (past, archived)](https://astroprecise.app/eclipse.html): The eclipse has passed; the page remains as an archive of the 3D Sun–Moon–Earth alignment and viewing guide
 - [Birth Chart](https://astroprecise.app/chart.html): Free browser-calculated natal chart with time-dependent features withheld when birth time is unknown
 - [Events](https://astroprecise.app/sky-events.html): Live ledger of verified sky events, including the next eclipse and meteor notes
-- [Shop](https://astroprecise.app/shop.html): Checkout-closed previews of three self-order Studio commissions at proposed prices of £18, £29 and £39; none is currently for sale
+- [Shop](https://astroprecise.app/shop.html): Checkout-closed previews of planned digital editions; nothing is for sale
 - [Published Reading Sample](https://astroprecise.app/sample-reading.html): A complete twenty-page sample, available before any future purchase
 - [Verify a Plate](https://astroprecise.app/verify.html): Recompute the published sample fingerprint against the public register
 
