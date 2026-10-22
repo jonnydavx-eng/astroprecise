@@ -364,7 +364,12 @@
       mobileScale.addEventListener('change', function () {
         markUserControl();
         var key = String(mobileScale.value || 'SYSTEM').toUpperCase();
-        if (orrery.flyScale) orrery.flyScale(key);
+        var accepted = orrery.flyScale ? orrery.flyScale(key) : false;
+        if (accepted === false) { revealModelAfterChoice(); return; }
+        // Choosing the EARTH rung is a choice of Earth: drop any earlier world
+        // close-up (Saturn, say) even if the engine queues the flight and
+        // emits no planetfocus yet, so the status cannot read "Saturn close-up".
+        if (key === 'EARTH' && focusKey !== 'earth') showFocus('Earth', { key: 'earth' });
         showScale(key);
         if (key !== 'EARTH') {
           showFocus(SCALE_NAMES[Math.max(0, SCALE_KEYS.indexOf(key))] || 'Solar system', { key: '' });
