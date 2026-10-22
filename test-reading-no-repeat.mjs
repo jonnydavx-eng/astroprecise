@@ -33,7 +33,12 @@ for (const c of charts) {
     : { dateText: '1990-06-14', timeText: '03:42', place: 'Whitby', zone: 'Europe/London', utcText: '02:42 UT', coordsKnown: true };
   const r = buildDeepReading(c.natal, base, deep, { birth, transits: c.transits, transitDateText: '2026-10-22 UTC' });
   const all = [];
-  for (const ch of r.chapters) for (const key of ['mono', 'serif']) for (const line of (ch[key] || [])) all.push(...sentences(line));
+  assert.ok(r.chapters.length >= 7, `${c.name}: expected 7 chapters, got ${r.chapters.length}`);
+  for (const ch of r.chapters) {
+    all.push(...sentences(ch.lead || ''));
+    for (const key of ['mono', 'serif']) for (const line of (ch[key] || [])) all.push(...sentences(line));
+  }
+  assert.ok(all.length >= 20, `${c.name}: only ${all.length} prose sentences rendered; the guard would pass vacuously`);
   const seen = new Map();
   for (const s of all) seen.set(s, (seen.get(s) || 0) + 1);
   const dups = [...seen].filter(([, n]) => n > 1);
@@ -41,17 +46,34 @@ for (const c of charts) {
   const blob = JSON.stringify(r.chapters);
   assert.equal(/\b[Aa] (?:Aries|Aquarius|Aries)\b/.test(blob), false, `${c.name}: "a Aries/Aquarius" article slip`);
   assert.equal(/\b(?:sitting|in easy flow|at a helpful angle) your natal\b/.test(blob), false, `${c.name}: missing preposition before "your natal"`);
+  assert.equal(/Right now today's/.test(blob), false, `${c.name}: "Right now today's" is malformed`);
   assert.equal(/Right now your (?:Sun|Moon|Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto)\b/.test(blob), false, `${c.name}: transit planet called "your"`);
 }
 
 const chartNext = readFileSync(new URL('./website/js/ap-chart-next.js', import.meta.url), 'utf8');
-assert.ok(/anA\(/.test(chartNext), 'chart copy must choose a/an by sign');
+const anASrc = chartNext.match(/const anA=(w=>[^,]+?'an':'a')/);
+assert.ok(anASrc, 'chart copy must choose a/an by sign');
+const anA = new Function('return ' + anASrc[1])();
+for (const [sign, art] of [['Aries', 'an'], ['Aquarius', 'an'], ['Taurus', 'a'], ['Leo', 'a'], ['Scorpio', 'a']]) assert.equal(anA(sign), art, `a/an for ${sign}`);
+assert.ok(/'In astrology, '\+anA\(sun\)/.test(chartNext) && /cap\(anA\(moon\)\)/.test(chartNext), 'Sun and Moon copy must use the a/an helper');
 
 // UK display formats: no US-ordered display dates on the reading, transit and sky pages.
 for (const rel of ['website/transits.html', 'website/js/daily-transit.js', 'website/js/retrograde.js', 'website/js/horoscope-engine.js', 'website/js/interpretations.js', 'website/js/moonphase.js', 'website/js/horoscope-subscribe.js', 'website/js/ap-today-next.js']) {
   const src = readFileSync(new URL('./' + rel, import.meta.url), 'utf8');
-  assert.equal(/toLocale(?:Date|Time)?String\('en-US'/.test(src), false, `${rel}: display dates must use en-GB`);
+  assert.equal(/toLocale(?:Date|Time)?String\(\s*['"]en-US['"]/.test(src), false, `${rel}: display dates must use en-GB`);
+  assert.equal(/DateTimeFormat\(\s*['"]en-US['"]/.test(src), false, `${rel}: Intl formatters must use en-GB`);
+  assert.equal(/hour12\s*:\s*true/.test(src), false, `${rel}: UK times are 24-hour`);
 }
 const todayNext = readFileSync(new URL('./website/js/ap-today-next.js', import.meta.url), 'utf8');
 assert.equal(/\+' UTC'/.test(todayNext), false, 'sky-events must show local time, not UTC-only');
+// Zone label: Chrome's en-GB gives BST in summer; a zero offset may come back as "GMT+0" in winter.
+const tidy = (str) => str.replace(/GMT\+0(?![\d:])/, 'GMT');
+const fmt = (iso) => tidy(new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short', timeZone: 'Europe/London' }).format(new Date(iso)));
+assert.match(fmt('2026-07-01T23:05:00Z'), /^2 Jul, 00:05 (BST|GMT\+1)$/);
+assert.match(fmt('2026-01-15T00:30:00Z'), /^15 Jan, 00:30 GMT$/);
+assert.equal(tidy('10:00 GMT+0:30'), '10:00 GMT+0:30', 'fractional offsets are left alone');
+for (const rel of ['website/js/ap-today-next.js', 'website/js/retrograde.js', 'website/transits.html']) {
+  const src = readFileSync(new URL('./' + rel, import.meta.url), 'utf8');
+  assert.ok(src.includes("hourCycle:'h23'") || src.includes("hourCycle: 'h23'"), `${rel}: 24-hour clock`);
+}
 console.log(`PASS reading no-repeat (${charts.length} fictional charts, no duplicate sentences, no article slips, UK formats)`);
