@@ -41,6 +41,10 @@ for (const f of ['ap-next.css', 'ap-intro-next.css', 'ap-chart-next.css', 'ap-di
   if (f === 'ap-next.css') css = css.slice(css.indexOf('/* ap-tokens-end */'));
   const left = OLD.filter((h) => new RegExp(h + '\\b').test(css));
   ok(left.length === 0, `${f} has no old palette hex${left.length ? ' (' + left.join(', ') + ')' : ''}`);
+  // Instrument Serif is already narrow: headings keep the brand's -0.015em
+  // tracking, not the tighter values tuned for the old display serif.
+  const tight = (css.match(/letter-spacing:\s?-\.0(?:[2-9]|1[6-9])\d*em/g) || []);
+  ok(tight.length === 0, `${f} has no heading tracking tighter than -0.015em${tight.length ? ' (' + tight.join(', ') + ')' : ''}`);
   // Outside the token layer the shell reads only --ap-next-* (defined on
   // :root with literal values), because the dark legacy pages also load the
   // shell CSS and define their own --ap-paper / --ap-line on :root.
