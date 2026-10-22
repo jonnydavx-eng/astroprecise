@@ -28,6 +28,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { BODIES, PLANET_VIS, SUN_SIZE, ORBITAL_ELEMENTS, SCALE_DOC, ROTATION_MODEL, MOON_TEX_OFFSET_DEG } from './orbitlab-bodies.js';
+
 import {
   helioStateFromEphemeris,
   estimateHelioSpeedKmS,
@@ -36,6 +37,39 @@ import {
   integrateDayOffset,
   keplerGuidePoints,
 } from './orbitlab-orbital-math.js?v=924';
+
+// Screen-space layout for the 3D name tags (pure, unit-tested in
+// test-orrery-readability.mjs). items[0..n) carry the anchor (x, y) and size
+// (w, h) in CSS pixels, highest priority first; it writes the centre (cx, cy)
+// and show. Tags are kept PAD px inside the canvas on both axes, stepped down
+// past an overlap up to five times, and hidden when they still collide or are
+// wider/taller than the canvas. `placed` is a reused scratch array.
+export function apLayoutLabelBoxes(items, n, W, H, placed) {
+  const PAD = 4, GAP = 2;
+  placed.length = 0;
+  for (let i = 0; i < n; i++) {
+    const it = items[i];
+    const w = it.w, h = it.h;
+    it.show = false;
+    if (!(w > 0 && h > 0) || w > W - PAD * 2 || h > H - PAD * 2) continue;
+    const loY = PAD + h / 2, hiY = H - PAD - h / 2;
+    let cx = Math.max(PAD + w / 2, Math.min(W - PAD - w / 2, it.x));
+    let cy = Math.max(loY, Math.min(hiY, it.y));
+    for (let tries = 0; tries < 5; tries++) {
+      let hit = null;
+      for (let j = 0; j < placed.length; j++) {
+        const q = placed[j];
+        if (Math.abs(q.cx - cx) < (q.w + w) / 2 + GAP && Math.abs(q.cy - cy) < (q.h + h) / 2 + GAP) { hit = q; break; }
+      }
+      if (!hit) { it.show = true; break; }
+      cy = hit.cy + (hit.h + h) / 2 + GAP;
+      if (cy > hiY) break;
+    }
+    if (!it.show) continue;
+    it.cx = cx; it.cy = cy;
+    placed.push(it);
+  }
+}
 
 const RadialBlurShader = {
   name: 'RadialBlurShader',
@@ -6092,7 +6126,6 @@ const FinishShader = {
       instrumentFillLight.position.copy(camera.position);
       instrumentFillLight.intensity = 0;
     }
-    instrumentFillGoal = 0;
     if (renderer) {
       instrumentExposure = free
         ? (perfTier === 'high' ? 1.22 : 1.16)
@@ -7341,41 +7374,49 @@ const FinishShader = {
   // (VENUS over EARTH). Works in screen pixels and moves each sprite with its
   // anchor (Sprite.center), so world positions and picking are untouched.
   const labelProjV = new THREE.Vector3();
+  const labelViewV = new THREE.Vector3();
+  const labelItems = [];     // pooled { id, x, y, w, h, cx, cy, show } records
+  const labelPlaced = [];    // reused per-frame list of placed records
   function layoutSpriteLabels() {
     const el = renderer && renderer.domElement;
     const W = el ? el.clientWidth : 0;
     const H = el ? el.clientHeight : 0;
     if (!W || !H || !camera) return;
+    // project() reads matrixWorldInverse, which three.js only refreshes inside
+    // render(); the camera may have moved this frame, so update it first.
+    camera.updateMatrixWorld();
     const k = H / (2 * Math.tan((camera.fov * Math.PI) / 360));
-    const PAD = 4, GAP = 2;
-    const boxes = [];
-    const ids = BODIES.map((b) => b.id).filter((id) => labels[id] && labels[id].visible);
-    ids.sort((a, b) => (b === 'earth') - (a === 'earth'));
-    ids.forEach((id) => {
-      const lab = labels[id];
-      lab.center.set(0.5, 0.5);
-      labelProjV.copy(lab.position).project(camera);
-      if (!(labelProjV.z > -1 && labelProjV.z < 1)) return;
-      const d = Math.max(1e-6, camera.position.distanceTo(lab.position));
-      const w = (lab.scale.x * k) / d;
-      const h = (lab.scale.y * k) / d;
-      if (!(w > 0 && h > 0)) return;
-      const x = (labelProjV.x * 0.5 + 0.5) * W;
-      const y = (-labelProjV.y * 0.5 + 0.5) * H;
-      let cx = x;
-      let cy = y;
-      if (w < W - PAD * 2) cx = Math.max(PAD + w / 2, Math.min(W - PAD - w / 2, cx));
-      let clear = false;
-      for (let tries = 0; tries < 5; tries++) {
-        const hit = boxes.find((q) => Math.abs(q.cx - cx) < (q.w + w) / 2 + GAP && Math.abs(q.cy - cy) < (q.h + h) / 2 + GAP);
-        if (!hit) { clear = true; break; }
-        cy = hit.cy + (hit.h + h) / 2 + GAP;
-        if (cy + h / 2 > H - PAD) break;
+    let n = 0;
+    // Earth first so it always keeps its tag; base visibility was set this
+    // frame by the label loop, so a tag hidden by a collision is re-tried.
+    for (let pass = 0; pass < 2; pass++) {
+      for (let i = 0; i < BODIES.length; i++) {
+        const id = BODIES[i].id;
+        if ((id === 'earth') !== (pass === 0)) continue;
+        const lab = labels[id];
+        if (!lab || !lab.visible) continue;
+        lab.center.set(0.5, 0.5);
+        labelProjV.copy(lab.position).project(camera);
+        if (!(labelProjV.z > -1 && labelProjV.z < 1)) continue;
+        // Perspective size follows camera-space depth, not straight-line distance.
+        const depth = -labelViewV.copy(lab.position).applyMatrix4(camera.matrixWorldInverse).z;
+        if (!(depth > 1e-6)) continue;
+        const rec = labelItems[n] || (labelItems[n] = { id: '', x: 0, y: 0, w: 0, h: 0, cx: 0, cy: 0, show: true });
+        rec.id = id;
+        rec.w = (lab.scale.x * k) / depth;
+        rec.h = (lab.scale.y * k) / depth;
+        rec.x = (labelProjV.x * 0.5 + 0.5) * W;
+        rec.y = (-labelProjV.y * 0.5 + 0.5) * H;
+        n++;
       }
-      if (!clear) { lab.visible = false; return; }
-      boxes.push({ cx, cy, w, h });
-      lab.center.set(0.5 - (cx - x) / w, 0.5 + (cy - y) / h);
-    });
+    }
+    apLayoutLabelBoxes(labelItems, n, W, H, labelPlaced);
+    for (let i = 0; i < n; i++) {
+      const rec = labelItems[i];
+      const lab = labels[rec.id];
+      if (!rec.show) { lab.visible = false; continue; }
+      lab.center.set(0.5 - (rec.cx - rec.x) / rec.w, 0.5 + (rec.cy - rec.y) / rec.h);
+    }
   }
 
   function introLabelAlpha(planetId, introP) {
@@ -7663,7 +7704,6 @@ const FinishShader = {
     if (sunPromGroup) sunPromGroup.visible = false;
     if (sunHomeGlareMesh) sunHomeGlareMesh.visible = false;
     if (instrumentFillLight) instrumentFillLight.intensity = 0;
-    instrumentFillGoal = 0;
 
     const marker = ensureBirthHourMarker();
     if (marker && meshes.earth) {
@@ -8981,7 +9021,10 @@ const FinishShader = {
     }
     if (instrumentMode && instrumentFillLight) {
       instrumentFillLight.position.copy(camera.position);
-      const goal = instrumentPortraitBodyId() ? 0 : instrumentFillGoal;
+      // Overview goal stays stored; portraits and the authored birth-hour still
+      // suppress it without overwriting it, so the fill returns when they end.
+      const fillOff = instrumentPortraitBodyId() || (birthHourMarker && birthHourMarker.visible);
+      const goal = fillOff ? 0 : instrumentFillGoal;
       const fillK = Math.min(1, (lastDt || 0.016) * 4.2);
       if (Math.abs(goal - instrumentFillLight.intensity) > 1e-4) instrumentFillLight.intensity += (goal - instrumentFillLight.intensity) * fillK;
     }
