@@ -15,6 +15,7 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync, lstatSync, rmSync,
 import { execFileSync } from 'node:child_process'
 import { join, extname, relative, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { selectReachable } from './build-reachable.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const SRC = join(ROOT, 'website')
@@ -110,6 +111,8 @@ const FORBIDDEN_CLOUDFLARE_PATHS = new Set([
 // --raw: same deployable file selection, but copy verbatim (no minify / no HTML
 // transform). Used for the "source" production deploy — byte-identical to website/.
 const RAW = process.argv.includes('--raw')
+// --all: ship every approved file, skipping the "only files in use" filter (escape hatch).
+const SHIP_ALL = process.argv.includes('--all')
 
 let jsBefore = 0, jsAfter = 0, cssBefore = 0, cssAfter = 0, htmlBefore = 0, htmlAfter = 0, copied = 0
 
@@ -177,7 +180,13 @@ async function minifyHtml(code) {
 
 async function run() {
   rmSync(OUT, { recursive: true, force: true })
-  const files = walk(SRC)
+  const approved = walk(SRC)
+  let files = approved, omitted = []
+  if (!SHIP_ALL) ({ keep: files, omitted } = selectReachable(approved))
+  mkdirSync(OUT, { recursive: true })
+  writeFileSync(join(ROOT, 'dist-omitted.txt'), omitted.length
+    ? '# Approved files no shipped page, script or style refers to. Left out of dist/, kept in website/.\n' + omitted.join('\n') + '\n'
+    : '# Nothing left out.\n')
   for (const { p, rel } of files) {
     const dest = join(OUT, rel)
     mkdirSync(dirname(dest), { recursive: true })
@@ -225,6 +234,7 @@ async function run() {
   console.log(`  CSS  ${kb(cssBefore)} -> ${kb(cssAfter)}  (-${pct(cssAfter, cssBefore)})`)
   console.log(`  HTML ${kb(htmlBefore)} -> ${kb(htmlAfter)}  (-${pct(htmlAfter, htmlBefore)})`)
   console.log(`  copied ${copied} other assets`)
+  if (!SHIP_ALL) console.log(`  left out ${omitted.length} unused files (listed in dist-omitted.txt)`)
 }
 
 run().catch(e => { console.error(e); process.exit(1) })

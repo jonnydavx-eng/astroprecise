@@ -274,6 +274,7 @@
       if (stage) {
         stage.classList.add('is-model-ready');
         stage.setAttribute('aria-busy', 'false');
+        stage.setAttribute('aria-label', 'Solar system as computed now');
       }
       markSurfaceCOwned();
       showScale('SYSTEM');

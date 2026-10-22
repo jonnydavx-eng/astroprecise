@@ -35,7 +35,7 @@ import {
   moonPhaseFromEphemeris,
   integrateDayOffset,
   keplerGuidePoints,
-} from './orbitlab-orbital-math.js?v=920';
+} from './orbitlab-orbital-math.js?v=921';
 
 const RadialBlurShader = {
   name: 'RadialBlurShader',
@@ -297,6 +297,7 @@ const FinishShader = {
   let showVelocityVectors = false;
   const labels = {};
   let starField = null;
+  let hygLoadStarted = false;
   let starFieldFar = null;   // v577: second, more distant Points shell — its smaller
                             // angular shift under the idle-breathe camera gives real
                             // depth parallax against the near starField shell.
@@ -463,10 +464,14 @@ const FinishShader = {
     const real = window.devicePixelRatio || 1;
     // Desktop instrument: never sit at 1× when the OS reports 100% scaling.
     // Do not delegate to RafCore.hdDPR — that helper still clamps 4-core hosts to 1.25.
+    var ratio;
     if (!IS_PHONE && !pre && perfTier !== 'low' && !dataSavingRequested()) {
-      return Math.min(Math.max(real, 1.5), cap);
+      ratio = Math.min(Math.max(real, 1.5), cap);
+    } else {
+      ratio = Math.min(real, cap);
     }
-    return Math.min(real, cap);
+    // Hard ceiling: phones stay at 1.5, larger screens at 2, even when the OS reports more.
+    return Math.min(ratio, IS_PHONE ? 1.5 : 2);
   }
 
   function sphereSegs(hero) {
@@ -721,7 +726,6 @@ const FinishShader = {
   // Galactic framing — oblique disk view (~34° above plane) toward the core, matching
   // Gaia Sky / NASA SVS flythroughs; ecliptic–galactic tilt ≈ 60.2° (Swinburne cosmos).
   const GALACTIC_TILT_X = 62.87 * D2R;
-  const GALACTIC_ECLIPTIC_TILT = 60.2 * D2R;
   const GALAXY_VIEW_AZ = 1.18;
   const GALAXY_VIEW_EL = 48 * D2R;
   const COSMOS_VIEW_EL = 38 * D2R;
@@ -742,7 +746,7 @@ const FinishShader = {
       honesty: 'Illustrative shell · not measured distances' },
     { id: 4, name: 'Stars', hud: 'Local stars',
       camRadius: 310, camMin: 200, camMax: 520, camEl: 24 * D2R, camAz: -0.5, targetEarth: false,
-      honesty: 'Directions schematic · not true 3D distances' },
+      honesty: 'HYG v4.0 directions · distances in the model are schematic' },
     { id: 5, name: 'Galaxy', hud: 'Milky Way',
       // Begin with a readable three-quarter spiral. A shallower view makes the
       // four arm populations collapse into bright, apparently concentric rails.
@@ -6229,94 +6233,102 @@ const FinishShader = {
     });
   }
 
+  const HYG_SPEC = {
+    O: [0.62, 0.78, 1.0], B: [0.70, 0.84, 1.0], A: [0.90, 0.93, 1.0],
+    F: [1.0, 0.97, 0.92], G: [1.0, 0.90, 0.68], K: [1.0, 0.74, 0.46], M: [1.0, 0.55, 0.38],
+  };
+  const HYG_LETTERS = 'OBAFGKM';
+  // J2000 mean obliquity of the ecliptic.
+  const HYG_COS_EPS = Math.cos(23.4392911 * D2R), HYG_SIN_EPS = Math.sin(23.4392911 * D2R);
+
+  function skyEntryOpen() {
+    const button = document.getElementById('ap-enter-sky');
+    if (!button) return true;
+    const stage = document.querySelector('.ap-model-stage');
+    return !!(stage && stage.classList.contains('is-sky-entered'));
+  }
+
+  function paintHygStars(buffer) {
+    if (destroyed || starField) return;
+    const view = new DataView(buffer);
+    const magic = String.fromCharCode(view.getUint8(0), view.getUint8(1), view.getUint8(2), view.getUint8(3));
+    if (magic !== 'HYG1') return;
+    const count = view.getUint16(4, true);
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const radius = 480;
+    for (let i = 0; i < count; i++) {
+      const offset = 6 + i * 7;
+      const ra = view.getUint16(offset, true) / 100 * Math.PI / 180;
+      const dec = view.getInt16(offset + 2, true) / 100 * Math.PI / 180;
+      const mag = view.getInt16(offset + 4, true) / 100;
+      const spec = HYG_SPEC[HYG_LETTERS[view.getUint8(offset + 6)] || 'G'] || HYG_SPEC.G;
+      // HYG gives equatorial RA/Dec. The scene is ecliptic (XZ plane, +Y to the ecliptic
+      // north pole, see scenePos), so rotate by the obliquity about the equinox axis.
+      const cosDec = Math.cos(dec);
+      const xq = cosDec * Math.cos(ra), yq = cosDec * Math.sin(ra), zq = Math.sin(dec);
+      const ye = yq * HYG_COS_EPS + zq * HYG_SIN_EPS;
+      const ze = -yq * HYG_SIN_EPS + zq * HYG_COS_EPS;
+      pos[i * 3] = radius * xq;
+      pos[i * 3 + 1] = radius * ze;
+      pos[i * 3 + 2] = -radius * ye;
+      const bright = Math.max(0, Math.min(1, (6.5 - mag) / 8));
+      const w = 0.55 + bright * 0.45;
+      col[i * 3] = spec[0] * w;
+      col[i * 3 + 1] = spec[1] * w;
+      col[i * 3 + 2] = spec[2] * w;
+      sizes[i] = Math.max(0.45, Math.min(6.5, 0.45 + Math.max(0, 6.8 - mag) * 0.62));
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    starField = new THREE.Points(geometry, makeStarPointsMaterial());
+    starField.name = 'hyg-stars';
+    starField.userData.catalogue = 'HYG v4.0';
+    starField.userData.licence = 'CC BY-SA 4.0';
+    starField.userData.count = count;
+    scene.add(starField);
+  }
+
+  function loadHygStarfield() {
+    if (hygLoadStarted || starField || destroyed) return;
+    hygLoadStarted = true;
+    const url = new URL('../data/hyg-bright.bin', import.meta.url);
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) throw new Error('HYG catalogue HTTP ' + response.status);
+        return response.arrayBuffer();
+      })
+      .then((buffer) => { if (!destroyed) paintHygStars(buffer); })
+      .catch((error) => {
+        console.warn('[orrery] HYG star catalogue did not load:', error);
+        // Allow a retry when the connection comes back, instead of leaving the sky empty for good.
+        hygLoadStarted = false;
+        window.addEventListener('online', () => loadHygStarfield(), { once: true });
+      });
+  }
+
   function buildStars() {
     if (onPreloaderStage() && usesPageStarfield()) return;
-    const instMul = instrumentMode ? 1.15 : 1;
-    const N = Math.round((PRM ? 800 : (perfTier === 'high' ? 4800 : perfTier === 'mid' ? 3400 : 2200)) * instMul);
-    const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), sizes = new Float32Array(N);
-    const starTemps = [[1.0, 0.95, 0.88], [0.88, 0.92, 1.0], [1.0, 0.82, 0.62], [0.95, 0.88, 1.0]];
-    const brightChance = instrumentMode ? 0.13 : 0.09;
-    for (let i = 0; i < N; i++) {
-      const r = 240 + Math.random() * 340;
-      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
-      pos[i * 3] = r * Math.sin(ph) * Math.cos(th);
-      pos[i * 3 + 1] = r * Math.cos(ph);
-      pos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
-      const warmBias = instrumentMode && Math.random() < 0.38;
-      const temp = warmBias ? starTemps[2] : starTemps[Math.floor(Math.random() * starTemps.length)];
-      const w = 0.72 + Math.random() * 0.28;
-      col[i * 3] = temp[0] * w; col[i * 3 + 1] = temp[1] * w; col[i * 3 + 2] = temp[2] * w;
-      sizes[i] = Math.random() < brightChance ? 2.8 + Math.random() * 2.0 : 0.7 + Math.random() * 1.1;
+    if (starField || hygLoadStarted) return;
+    if (!skyEntryOpen()) {
+      const start = () => {
+        document.removeEventListener('ap-sky-entered', start);
+        loadHygStarfield();
+      };
+      document.addEventListener('ap-sky-entered', start);
+      const button = document.getElementById('ap-enter-sky');
+      if (button) {
+        button.addEventListener('click', () => {
+          document.documentElement.dataset.apSkyEntered = '1';
+          document.dispatchEvent(new CustomEvent('ap-sky-entered'));
+        }, { once: true });
+      }
+      return;
     }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-    g.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    starField = new THREE.Points(g, makeStarPointsMaterial()); scene.add(starField);
-
-    // v577 — SECOND, MORE DISTANT SHELL for depth parallax. All the near stars sat on
-    // one r=240–580 shell, so the idle-breathe camera swing shifted them rigidly with
-    // zero relative motion → the hero read flat. A shell ~2× further out shifts by a
-    // smaller angle under the same camera translation, so the two layers slide past
-    // each other and the scene gains real depth. Fainter + smaller so it reads as
-    // background dust, never competing with the near field. Count is tier-gated (low
-    // mobile gets a cheap version) and PRM keeps it minimal.
-    const NF = PRM ? 300 : (perfTier === 'high' ? 2600 : perfTier === 'mid' ? 1700 : 980);
-    const fp = new Float32Array(NF * 3), fc = new Float32Array(NF * 3), fs = new Float32Array(NF);
-    for (let i = 0; i < NF; i++) {
-      const r = 620 + Math.random() * 520;   // 620–1140: well beyond the near shell
-      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
-      fp[i * 3] = r * Math.sin(ph) * Math.cos(th);
-      fp[i * 3 + 1] = r * Math.cos(ph);
-      fp[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
-      const temp = starTemps[Math.floor(Math.random() * starTemps.length)];
-      const w = 0.42 + Math.random() * 0.22; // dimmer than the near shell (0.72–1.0)
-      fc[i * 3] = temp[0] * w; fc[i * 3 + 1] = temp[1] * w; fc[i * 3 + 2] = temp[2] * w;
-      fs[i] = 0.5 + Math.random() * 0.7;     // uniformly small — distant pinpricks
-    }
-    const gf = new THREE.BufferGeometry();
-    gf.setAttribute('position', new THREE.BufferAttribute(fp, 3));
-    gf.setAttribute('color', new THREE.BufferAttribute(fc, 3));
-    gf.setAttribute('size', new THREE.BufferAttribute(fs, 1));
-    const mf = makeStarPointsMaterial();
-    mf.uniforms.uSizeMul.value = 0.72;       // extra small so the far shell recedes
-    starFieldFar = new THREE.Points(gf, mf); scene.add(starFieldFar);
-
-    // v577 — FAINT MILKY-WAY BAND: a denser great-circle scatter of small points on a
-    // shell between the two star fields, concentrated toward a tilted galactic plane so
-    // it reads as a soft diffuse band across the sky, not a uniform sprinkle. Whisper
-    // faint (well below the near stars) so it never competes with the orrery bodies.
-    const NB = Math.round((PRM ? 260 : (perfTier === 'high' ? 2200 : perfTier === 'mid' ? 1400 : 720)) * (instrumentMode ? 1.35 : 1));
-    const bp = new Float32Array(NB * 3), bc = new Float32Array(NB * 3), bs = new Float32Array(NB);
-    const bandTilt = GALACTIC_ECLIPTIC_TILT; // ecliptic vs galactic plane (~60.2°)
-    const ct = Math.cos(bandTilt), st = Math.sin(bandTilt);
-    for (let i = 0; i < NB; i++) {
-      const r = 560 + Math.random() * 120;   // between near (≤580) and far (≥620) shells
-      const lon = Math.random() * Math.PI * 2;
-      // Latitude clustered tightly around the band centre (gaussian-ish via averaged
-      // uniforms) so the ring has a soft thickness, not a razor line.
-      const lat = ((Math.random() + Math.random() + Math.random()) / 3 - 0.5) * 0.44;
-      let x = r * Math.cos(lat) * Math.cos(lon);
-      let y = r * Math.sin(lat);
-      let z = r * Math.cos(lat) * Math.sin(lon);
-      // tilt the band around the X axis
-      const y2 = y * ct - z * st, z2 = y * st + z * ct;
-      bp[i * 3] = x; bp[i * 3 + 1] = y2; bp[i * 3 + 2] = z2;
-      // Cool ivory dust with a faint warm core scatter.
-      const warm = Math.random() < 0.3;
-      const w = (instrumentMode ? 0.22 : 0.16) + Math.random() * 0.12;
-      bc[i * 3] = (warm ? 1.0 : 0.86) * w;
-      bc[i * 3 + 1] = (warm ? 0.94 : 0.9) * w;
-      bc[i * 3 + 2] = (warm ? 0.82 : 1.0) * w;
-      bs[i] = 0.5 + Math.random() * 0.5;
-    }
-    const gb = new THREE.BufferGeometry();
-    gb.setAttribute('position', new THREE.BufferAttribute(bp, 3));
-    gb.setAttribute('color', new THREE.BufferAttribute(bc, 3));
-    gb.setAttribute('size', new THREE.BufferAttribute(bs, 1));
-    const mb = makeStarPointsMaterial();
-    mb.uniforms.uSizeMul.value = 1.15;       // slightly bigger soft dust motes
-    milkyWayBand = new THREE.Points(gb, mb); scene.add(milkyWayBand);
+    loadHygStarfield();
   }
 
   function buildSunCoronaShell() {
