@@ -1,0 +1,969 @@
+{
+ "source": "NASA/JPL Horizons API, quantity 31 (geocentric apparent ecliptic-of-date longitude), airless",
+ "solution": "JPL#171",
+ "solution_date": "2026-Jun-05_06:09:00",
+ "fetched_utc": "2026-10-22T19:02Z",
+ "generator": "tools/accuracy/gen-chiron-horizons-fixtures.py",
+ "moments": [
+  {
+   "ut": [
+    1852,
+    6,
+    19,
+    9,
+    54
+   ],
+   "chiron": 270.913587,
+   "chironRetro": true,
+   "speed": -0.06614
+  },
+  {
+   "ut": [
+    1853,
+    1,
+    27,
+    7,
+    14
+   ],
+   "chiron": 278.739046,
+   "chironRetro": false,
+   "speed": 0.09398
+  },
+  {
+   "ut": [
+    1857,
+    1,
+    23,
+    17,
+    8
+   ],
+   "chiron": 305.887189,
+   "chironRetro": false,
+   "speed": 0.08189
+  },
+  {
+   "ut": [
+    1861,
+    4,
+    7,
+    9,
+    40
+   ],
+   "chiron": 330.681549,
+   "chironRetro": false,
+   "speed": 0.05237
+  },
+  {
+   "ut": [
+    1867,
+    11,
+    20,
+    3,
+    47
+   ],
+   "chiron": 352.095514,
+   "chironRetro": true,
+   "speed": -0.01265
+  },
+  {
+   "ut": [
+    1868,
+    3,
+    17,
+    3,
+    13
+   ],
+   "chiron": 356.158785,
+   "chironRetro": false,
+   "speed": 0.06125
+  },
+  {
+   "ut": [
+    1874,
+    8,
+    1,
+    18,
+    7
+   ],
+   "chiron": 22.542397,
+   "chironRetro": true,
+   "speed": -0.00562
+  },
+  {
+   "ut": [
+    1877,
+    3,
+    19,
+    11,
+    30
+   ],
+   "chiron": 27.998641,
+   "chironRetro": false,
+   "speed": 0.05713
+  },
+  {
+   "ut": [
+    1880,
+    1,
+    27,
+    4,
+    9
+   ],
+   "chiron": 38.237414,
+   "chironRetro": false,
+   "speed": 0.0099
+  },
+  {
+   "ut": [
+    1884,
+    2,
+    4,
+    18,
+    14
+   ],
+   "chiron": 58.31303,
+   "chironRetro": true,
+   "speed": -0.00064
+  },
+  {
+   "ut": [
+    1889,
+    9,
+    11,
+    3,
+    53
+   ],
+   "chiron": 110.232536,
+   "chironRetro": false,
+   "speed": 0.07288
+  },
+  {
+   "ut": [
+    1891,
+    7,
+    20,
+    13,
+    5
+   ],
+   "chiron": 126.701114,
+   "chironRetro": false,
+   "speed": 0.12359
+  },
+  {
+   "ut": [
+    1896,
+    8,
+    23,
+    1,
+    8
+   ],
+   "chiron": 204.376461,
+   "chironRetro": false,
+   "speed": 0.10591
+  },
+  {
+   "ut": [
+    1899,
+    9,
+    7,
+    1,
+    55
+   ],
+   "chiron": 247.513351,
+   "chironRetro": false,
+   "speed": 0.04589
+  },
+  {
+   "ut": [
+    1902,
+    6,
+    4,
+    9,
+    32
+   ],
+   "chiron": 283.514128,
+   "chironRetro": true,
+   "speed": -0.05015
+  },
+  {
+   "ut": [
+    1906,
+    1,
+    4,
+    2,
+    24
+   ],
+   "chiron": 305.161194,
+   "chironRetro": false,
+   "speed": 0.07658
+  },
+  {
+   "ut": [
+    1910,
+    10,
+    16,
+    15,
+    40
+   ],
+   "chiron": 328.120113,
+   "chironRetro": true,
+   "speed": -0.02245
+  },
+  {
+   "ut": [
+    1913,
+    12,
+    18,
+    1,
+    23
+   ],
+   "chiron": 340.780674,
+   "chironRetro": false,
+   "speed": 0.02476
+  },
+  {
+   "ut": [
+    1917,
+    10,
+    13,
+    0,
+    46
+   ],
+   "chiron": 356.679759,
+   "chironRetro": true,
+   "speed": -0.04109
+  },
+  {
+   "ut": [
+    1922,
+    1,
+    8,
+    0,
+    48
+   ],
+   "chiron": 9.603632,
+   "chironRetro": false,
+   "speed": 0.01608
+  },
+  {
+   "ut": [
+    1927,
+    3,
+    10,
+    16,
+    32
+   ],
+   "chiron": 29.20602,
+   "chironRetro": false,
+   "speed": 0.05022
+  },
+  {
+   "ut": [
+    1930,
+    9,
+    22,
+    11,
+    46
+   ],
+   "chiron": 48.499546,
+   "chironRetro": true,
+   "speed": -0.02771
+  },
+  {
+   "ut": [
+    1932,
+    5,
+    15,
+    0,
+    54
+   ],
+   "chiron": 53.564945,
+   "chironRetro": false,
+   "speed": 0.07064
+  },
+  {
+   "ut": [
+    1936,
+    1,
+    10,
+    18,
+    37
+   ],
+   "chiron": 71.68997,
+   "chironRetro": true,
+   "speed": -0.04317
+  },
+  {
+   "ut": [
+    1940,
+    1,
+    24,
+    16,
+    49
+   ],
+   "chiron": 105.937966,
+   "chironRetro": true,
+   "speed": -0.0656
+  },
+  {
+   "ut": [
+    1943,
+    7,
+    17,
+    8,
+    27
+   ],
+   "chiron": 148.807599,
+   "chironRetro": false,
+   "speed": 0.12095
+  },
+  {
+   "ut": [
+    1947,
+    8,
+    24,
+    10,
+    42
+   ],
+   "chiron": 214.793903,
+   "chironRetro": false,
+   "speed": 0.08824
+  },
+  {
+   "ut": [
+    1951,
+    12,
+    11,
+    20,
+    56
+   ],
+   "chiron": 273.185726,
+   "chironRetro": false,
+   "speed": 0.10336
+  },
+  {
+   "ut": [
+    1957,
+    9,
+    23,
+    21,
+    32
+   ],
+   "chiron": 312.678672,
+   "chironRetro": true,
+   "speed": -0.02937
+  },
+  {
+   "ut": [
+    1960,
+    9,
+    16,
+    8,
+    47
+   ],
+   "chiron": 328.655622,
+   "chironRetro": true,
+   "speed": -0.04345
+  },
+  {
+   "ut": [
+    1964,
+    5,
+    11,
+    16,
+    25
+   ],
+   "chiron": 348.058326,
+   "chironRetro": false,
+   "speed": 0.03508
+  },
+  {
+   "ut": [
+    1968,
+    10,
+    12,
+    22,
+    47
+   ],
+   "chiron": 0.245063,
+   "chironRetro": true,
+   "speed": -0.04202
+  },
+  {
+   "ut": [
+    1971,
+    3,
+    5,
+    16,
+    9
+   ],
+   "chiron": 8.321268,
+   "chironRetro": false,
+   "speed": 0.05473
+  },
+  {
+   "ut": [
+    1974,
+    9,
+    10,
+    14,
+    9
+   ],
+   "chiron": 23.690123,
+   "chironRetro": true,
+   "speed": -0.03468
+  },
+  {
+   "ut": [
+    1979,
+    1,
+    2,
+    20,
+    52
+   ],
+   "chiron": 35.118387,
+   "chironRetro": true,
+   "speed": -0.01218
+  },
+  {
+   "ut": [
+    1982,
+    12,
+    19,
+    8,
+    43
+   ],
+   "chiron": 53.635762,
+   "chironRetro": true,
+   "speed": -0.04187
+  },
+  {
+   "ut": [
+    1987,
+    9,
+    8,
+    22,
+    7
+   ],
+   "chiron": 88.301332,
+   "chironRetro": false,
+   "speed": 0.03588
+  },
+  {
+   "ut": [
+    1990,
+    8,
+    14,
+    21,
+    59
+   ],
+   "chiron": 112.408652,
+   "chironRetro": false,
+   "speed": 0.0992
+  },
+  {
+   "ut": [
+    1994,
+    3,
+    5,
+    15,
+    15
+   ],
+   "chiron": 155.461051,
+   "chironRetro": true,
+   "speed": -0.07713
+  },
+  {
+   "ut": [
+    1998,
+    12,
+    1,
+    19,
+    27
+   ],
+   "chiron": 235.588668,
+   "chironRetro": false,
+   "speed": 0.13096
+  },
+  {
+   "ut": [
+    2002,
+    10,
+    12,
+    2,
+    11
+   ],
+   "chiron": 274.055198,
+   "chironRetro": false,
+   "speed": 0.04732
+  },
+  {
+   "ut": [
+    2004,
+    6,
+    26,
+    1,
+    20
+   ],
+   "chiron": 294.418163,
+   "chironRetro": true,
+   "speed": -0.05529
+  },
+  {
+   "ut": [
+    2007,
+    10,
+    22,
+    6,
+    0
+   ],
+   "chiron": 310.464642,
+   "chironRetro": false,
+   "speed": 0.0027
+  },
+  {
+   "ut": [
+    2013,
+    5,
+    24,
+    11,
+    24
+   ],
+   "chiron": 343.589343,
+   "chironRetro": false,
+   "speed": 0.02116
+  },
+  {
+   "ut": [
+    2017,
+    9,
+    15,
+    2,
+    39
+   ],
+   "chiron": 356.74878,
+   "chironRetro": true,
+   "speed": -0.04547
+  },
+  {
+   "ut": [
+    2020,
+    1,
+    5,
+    7,
+    31
+   ],
+   "chiron": 1.678585,
+   "chironRetro": false,
+   "speed": 0.02095
+  },
+  {
+   "ut": [
+    2022,
+    7,
+    3,
+    3,
+    13
+   ],
+   "chiron": 16.31582,
+   "chironRetro": false,
+   "speed": 0.01416
+  },
+  {
+   "ut": [
+    2027,
+    4,
+    26,
+    4,
+    25
+   ],
+   "chiron": 30.704043,
+   "chironRetro": false,
+   "speed": 0.06085
+  },
+  {
+   "ut": [
+    2031,
+    6,
+    6,
+    23,
+    24
+   ],
+   "chiron": 48.586444,
+   "chironRetro": false,
+   "speed": 0.06078
+  },
+  {
+   "ut": [
+    2034,
+    10,
+    10,
+    1,
+    3
+   ],
+   "chiron": 66.161547,
+   "chironRetro": true,
+   "speed": -0.02975
+  },
+  {
+   "ut": [
+    2037,
+    11,
+    21,
+    14,
+    33
+   ],
+   "chiron": 84.587443,
+   "chironRetro": true,
+   "speed": -0.05335
+  },
+  {
+   "ut": [
+    2041,
+    8,
+    5,
+    1,
+    18
+   ],
+   "chiron": 117.53614,
+   "chironRetro": false,
+   "speed": 0.10996
+  },
+  {
+   "ut": [
+    2045,
+    12,
+    16,
+    15,
+    27
+   ],
+   "chiron": 185.460908,
+   "chironRetro": false,
+   "speed": 0.0661
+  },
+  {
+   "ut": [
+    2049,
+    7,
+    11,
+    1,
+    38
+   ],
+   "chiron": 231.350551,
+   "chironRetro": true,
+   "speed": -0.01698
+  },
+  {
+   "ut": [
+    2052,
+    9,
+    5,
+    17,
+    46
+   ],
+   "chiron": 269.150996,
+   "chironRetro": false,
+   "speed": 0.00572
+  },
+  {
+   "ut": [
+    2056,
+    7,
+    17,
+    17,
+    29
+   ],
+   "chiron": 305.283501,
+   "chironRetro": true,
+   "speed": -0.05585
+  },
+  {
+   "ut": [
+    2060,
+    7,
+    17,
+    23,
+    36
+   ],
+   "chiron": 328.516869,
+   "chironRetro": true,
+   "speed": -0.04043
+  },
+  {
+   "ut": [
+    2065,
+    2,
+    6,
+    2,
+    4
+   ],
+   "chiron": 344.465546,
+   "chironRetro": false,
+   "speed": 0.05762
+  },
+  {
+   "ut": [
+    2069,
+    10,
+    15,
+    1,
+    46
+   ],
+   "chiron": 1.901724,
+   "chironRetro": true,
+   "speed": -0.04169
+  },
+  {
+   "ut": [
+    2071,
+    9,
+    22,
+    17,
+    43
+   ],
+   "chiron": 10.254938,
+   "chironRetro": true,
+   "speed": -0.0443
+  },
+  {
+   "ut": [
+    2076,
+    3,
+    19,
+    10,
+    16
+   ],
+   "chiron": 24.139613,
+   "chironRetro": false,
+   "speed": 0.05555
+  },
+  {
+   "ut": [
+    2078,
+    9,
+    9,
+    20,
+    37
+   ],
+   "chiron": 37.085806,
+   "chironRetro": true,
+   "speed": -0.02659
+  },
+  {
+   "ut": [
+    2083,
+    1,
+    2,
+    17,
+    34
+   ],
+   "chiron": 50.072291,
+   "chironRetro": true,
+   "speed": -0.02615
+  },
+  {
+   "ut": [
+    2087,
+    4,
+    10,
+    4,
+    18
+   ],
+   "chiron": 72.915241,
+   "chironRetro": false,
+   "speed": 0.05762
+  },
+  {
+   "ut": [
+    2091,
+    6,
+    22,
+    2,
+    57
+   ],
+   "chiron": 109.000423,
+   "chironRetro": false,
+   "speed": 0.10396
+  },
+  {
+   "ut": [
+    2093,
+    12,
+    20,
+    4,
+    56
+   ],
+   "chiron": 146.292684,
+   "chironRetro": true,
+   "speed": -0.02056
+  },
+  {
+   "ut": [
+    2098,
+    10,
+    6,
+    9,
+    28
+   ],
+   "chiron": 216.76833,
+   "chironRetro": false,
+   "speed": 0.13428
+  },
+  {
+   "ut": [
+    2103,
+    6,
+    13,
+    6,
+    51
+   ],
+   "chiron": 279.914317,
+   "chironRetro": true,
+   "speed": -0.06035
+  },
+  {
+   "ut": [
+    2107,
+    4,
+    2,
+    6,
+    43
+   ],
+   "chiron": 311.136432,
+   "chironRetro": false,
+   "speed": 0.05086
+  },
+  {
+   "ut": [
+    2108,
+    10,
+    12,
+    12,
+    22
+   ],
+   "chiron": 313.073374,
+   "chironRetro": true,
+   "speed": -0.01063
+  },
+  {
+   "ut": [
+    2113,
+    6,
+    23,
+    4,
+    21
+   ],
+   "chiron": 342.407563,
+   "chironRetro": true,
+   "speed": -0.0074
+  },
+  {
+   "ut": [
+    2118,
+    4,
+    9,
+    15,
+    5
+   ],
+   "chiron": 359.01928,
+   "chironRetro": false,
+   "speed": 0.05795
+  },
+  {
+   "ut": [
+    2122,
+    10,
+    25,
+    11,
+    7
+   ],
+   "chiron": 13.256763,
+   "chironRetro": true,
+   "speed": -0.04298
+  },
+  {
+   "ut": [
+    2125,
+    10,
+    26,
+    20,
+    31
+   ],
+   "chiron": 24.581704,
+   "chironRetro": true,
+   "speed": -0.04614
+  },
+  {
+   "ut": [
+    2128,
+    1,
+    10,
+    9,
+    7
+   ],
+   "chiron": 30.266512,
+   "chironRetro": true,
+   "speed": -0.00035
+  },
+  {
+   "ut": [
+    2132,
+    9,
+    9,
+    0,
+    27
+   ],
+   "chiron": 56.757828,
+   "chironRetro": true,
+   "speed": -0.00851
+  },
+  {
+   "ut": [
+    2137,
+    12,
+    13,
+    8,
+    2
+   ],
+   "chiron": 84.374358,
+   "chironRetro": true,
+   "speed": -0.06218
+  },
+  {
+   "ut": [
+    2139,
+    2,
+    5,
+    16,
+    34
+   ],
+   "chiron": 89.695324,
+   "chironRetro": true,
+   "speed": -0.0371
+  },
+  {
+   "ut": [
+    2144,
+    10,
+    5,
+    4,
+    6
+   ],
+   "chiron": 163.827235,
+   "chironRetro": false,
+   "speed": 0.12963
+  },
+  {
+   "ut": [
+    2146,
+    6,
+    26,
+    8,
+    6
+   ],
+   "chiron": 182.669211,
+   "chironRetro": false,
+   "speed": 0.05057
+  }
+ ]
+}

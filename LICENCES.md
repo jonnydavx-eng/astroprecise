@@ -67,18 +67,17 @@ still come from `astro-glyphs.woff2` in section 1, inlined into the same print s
   `test-engine-swiss.mjs`, `test-chiron-swiss.mjs` and `tools/accuracy/gen-swiss-fixtures.py`
   use `pyswisseph` (Moshier mode) only to generate and compare reference positions in the test
   suite. Test fixtures do not ship with the site or the pack.
-- **LAUNCH BLOCKER TO CHECK — Chiron table**: `website/js/ephemeris.js` contains `CHIRON_TAB`, a
-  1850–2150 table of Chiron positions that its own comment says was "taken from Swiss Ephemeris
-  2.10 (seas_18.se1, regenerate with tools/accuracy/gen-chiron-table.py)". That is runtime data
-  derived from a Swiss Ephemeris data file, shipped in the web app and used by every chart that
-  shows Chiron (the print pack's wheel and ledger include Chiron). Swiss Ephemeris is dual-licensed
-  AGPL-3.0 or Astrodienst professional licence (see `docs/DECISION-LOG.md`, DEC-2026-08-06-02,
-  which rejected adopting Swiss Ephemeris code for exactly this reason but did not cover this
-  table). Whether a table of computed output positions is a derivative of the licensed data file
-  is a legal question, not a code question. Options: (a) confirm with Astrodienst / counsel that
-  computed output tables are unrestricted, (b) regenerate the table from a non-Swiss source
-  (e.g. JPL Horizons, whose output is free to use), or (c) drop Chiron from shipped products.
-  Decide before selling anything that shows Chiron.
+- **Chiron table (rebuilt 22 Oct 2026 from NASA/JPL Horizons)**: `website/js/ephemeris.js`
+  `CHIRON_TAB` (1850–2150, every 200 days) used to be taken from Swiss Ephemeris 2.10
+  (seas_18.se1). It is now built only from the NASA/JPL Horizons API (target 2060 Chiron,
+  solution JPL#171 dated 2026-06-05, fetched 2026-10-22) by
+  `tools/accuracy/gen-chiron-table-horizons.py`; provenance in
+  `tools/accuracy/chiron-horizons-source.json`. No Swiss Ephemeris data is in the shipped table.
+  `test-chiron-horizons.mjs` checks 80 moments against Horizons' own geocentric apparent
+  positions (worst 0.0066°). Credit line to carry: "Chiron positions: NASA/JPL Horizons."
+  This is option (b) from the earlier note. Jonny may still want to read the Horizons terms of
+  use before selling anything that shows Chiron; this file does not claim a licence for them.
+  The old Swiss-derived generator `tools/accuracy/gen-chiron-table.py` is kept, marked superseded.
 - **Star catalogue**: `website/js/starcatalog.js` is a hand-compiled table of 253 stars (name,
   constellation, J2000 coordinates, distance, spectral type, magnitude, one fact line). Its header
   credits RECONS / Gaia nearest-star lists, Hipparcos / Gaia parallaxes and SIMBAD coordinates.
