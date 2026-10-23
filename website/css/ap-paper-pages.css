@@ -745,6 +745,15 @@ html.ap-paper-legacy:not(#_):not(#__) .aq-option__dot {
   background-color: var(--dc, var(--pl-copper-ink)) !important;
   border: 1px solid rgba(14, 17, 22, 0.35) !important;
 }
+/* Step 11: quiz-page.css's fire (#FF8EA8) and air (#6FD0B3) were drawn for night and read at
+   1.96:1 and 1.67:1 on paper. Deeper inks of the same hues clear 3:1 on paper, card and the sage
+   hover; earth and water already do. */
+html.ap-paper-legacy:not(#_):not(#__) .aq-option[data-element='fire'] .aq-option__dot {
+  --dc: #b8405e;
+}
+html.ap-paper-legacy:not(#_):not(#__) .aq-option[data-element='air'] .aq-option__dot {
+  --dc: #24797f;
+}
 /* - Eclipse: the Sun, Moon and Earth labels float over the 3D canvas, which stays a night
      plate, so they keep a night chip with starlight type. */
 html.ap-paper-legacy:not(#_):not(#__) .ap-eclipse-live__body-label {

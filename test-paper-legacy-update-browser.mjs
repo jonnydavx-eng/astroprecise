@@ -7,7 +7,8 @@
 //     shown, and the jump targets land with their headings clear below the nav;
 //   - every bar that stays on screen while the page scrolls (sticky or fixed: jump nav, eclipse
 //     playback dock, privacy notice, toasts, skip links once focused) has an opaque ground;
-//   - the fills that carry meaning: quiz progress and element dots, the ephemeris resonance
+//   - the fills that carry meaning: quiz progress and element dots (each dot 3:1 on paper, card
+//     and the hover ground, step 11), the ephemeris resonance
 //     meter, the life-path mandala drawn from the visitor's number, the eclipse 3D labels;
 //   - the 12px floor for text the pages write later: every inline font size in a page's own
 //     markup and scripts, rendered in the page, comes out at 12px or more.
@@ -418,12 +419,18 @@ try {
           getComputedStyle(document.querySelector('.aq-progress__fill')).backgroundColor,
         )
         const paper = { r: 246, g: 243, b: 236, a: 1 }
+        const card = { r: 251, g: 249, b: 244, a: 1 }
+        const sage = { r: 237, g: 232, b: 221, a: 1 }
         const dots = [...document.querySelectorAll('.aq-option__dot')].map((d) => {
           const c = parse(getComputedStyle(d).backgroundColor)
           const border = parse(getComputedStyle(d).borderTopColor)
+          const solid = over(c, paper)
           return {
+            el: d.closest('.aq-option')?.dataset.element || '',
             a: c.a,
             bordered: parseFloat(getComputedStyle(d).borderTopWidth) > 0 && border.a > 0,
+            // Step 11: each element colour reads at 3:1 on paper, card and the sage hover.
+            vs: [paper, card, sage].map((g) => Number(ratio(solid, g).toFixed(2))),
           }
         })
         return {
@@ -444,6 +451,18 @@ try {
         q.dots.length >= 2 && q.dots.every((d) => d.a > 0.5 && d.bordered),
         `quiz ${width}px: element dots are painted`,
         q.dots,
+      )
+      for (const d of q.dots) {
+        ok(
+          Math.min(...d.vs) >= 3,
+          `quiz ${width}px: ${d.el || 'element'} dot is at least 3:1 on paper, card and hover`,
+          d,
+        )
+      }
+      ok(
+        ['fire', 'earth', 'air', 'water'].every((e) => q.dots.some((d) => d.el === e)),
+        `quiz ${width}px: all four element dots are on the question`,
+        q.dots.map((d) => d.el),
       )
       await page.close()
     }
