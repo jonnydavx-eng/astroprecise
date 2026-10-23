@@ -657,3 +657,22 @@ html.ap-paper-legacy:not(#_):not(#__)
 html.ap-paper-legacy:not(#_):not(#__) :is(.ap-eclipse-live__button, .ap-eclipse-live__lens-button, .ap-eclipse-live__live-badge span) {
   letter-spacing: 0.04em !important;
 }
+/* At the 12px floor the numerology dial caption needs a wider, tighter line to stay two lines
+   above the numerals. */
+html.ap-paper-legacy:not(#_):not(#__) .ap-number-dial__caption {
+  width: min(250px, 78%) !important;
+  top: 12% !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1.45 !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) .ap-number-dial__axis {
+  letter-spacing: 0.08em !important;
+}
+/* Ephemeris planetary-hour wheel: its centre labels were drawn for night (#EEF4FA, #A89E88) and
+   vanished on paper. CSS fill outranks the SVG fill attribute. */
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text[fill='#EEF4FA'] {
+  fill: var(--pl-ink) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text[fill='#A89E88'] {
+  fill: var(--pl-graphite) !important;
+}
