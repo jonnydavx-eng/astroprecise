@@ -152,7 +152,13 @@ try {
 
   // 2. Text size: nothing under 12px on the homepage, sky events and the footer.
   for (const width of [360, 390]) {
-    for (const file of ['index.html', 'sky-events.html', 'horoscope.html', 'observatory.html']) {
+    for (const file of [
+      'index.html',
+      'sky-events.html',
+      'horoscope.html',
+      'observatory.html',
+      'saturn-return.html',
+    ]) {
       const { ctx, page } = await openPage(file, { width })
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
       await page.waitForTimeout(400)

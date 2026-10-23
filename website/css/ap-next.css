@@ -56,3 +56,5 @@ html body.ap-observatory .ap-mobile-flight-deck{scroll-margin-bottom:calc(var(--
 /* Reserve the shared header's height before ap-next.js swaps it in, so pages do not jump (CLS). */
 [data-ap-next-nav]{display:block;min-height:87px}@media(max-width:800px){[data-ap-next-nav]{min-height:69px}.ap-home-next [data-ap-next-nav]{min-height:62px}}
 .ap-noscript-nav,.ap-noscript-footer{display:block;padding:20px;font:16px/1.6 system-ui,sans-serif}.ap-noscript-nav a,.ap-noscript-footer a{display:inline-block;min-height:44px;padding:10px 4px;color:inherit}
+/* Step 10e legibility floor: footer legal, guide and social links are never under 12px (legacy pages used 0.62rem = 9.9px). */
+.ap-next-footer .ap-legal-links,.ap-next-footer .ap-guide-links,.ap-next-footer .ap-family-links,.ap-next-footer .ap-social-row__when-live{font-size:12px}.ap-next-footer .ap-support-link{font-size:12px!important}
