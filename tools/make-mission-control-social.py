@@ -139,6 +139,32 @@ def make_banner(w: int, h: int, headline: str, sub: str, fname: str) -> None:
     save_jpg("".join(body), w, h, OUT / fname)
 
 
+# YouTube shows the whole 2560 x 1440 banner only on TVs; on desktop and phones it crops to the
+# centred 1546 x 423 "safe area". Every line of text (and the orrery) sits inside that box.
+YT_W, YT_H = 2560, 1440
+YT_SAFE = ((YT_W - 1546) / 2, (YT_H - 423) / 2, (YT_W + 1546) / 2, (YT_H + 423) / 2)  # 507, 508.5, 2053, 931.5
+
+
+def make_youtube_banner(headline: str, sub: str, fname: str) -> None:
+    w, h = YT_W, YT_H
+    x0, y0, x1, y1 = YT_SAFE
+    m = 58
+    body = [ground(w, h, m, 3)]
+    x = x0 + 48
+    col = 980  # text column width; the orrery takes the right of the safe area
+    body.append(eyebrow("AstroPrecise · the sky at your minute", x, y0 + 78, 24))
+    t, y = lines("instrument", headline, 80, x, y0 + 172, col, 82, C["ink"])
+    body.append(t)
+    s, y = lines("inter", sub, 32, x, y + 6, col, 42, C["graphite"])
+    body.append(s)
+    body.append(readout(["Ephemeris: VSOP87 / ELP2000 · nominal", "Privacy: local compute · nominal", "astroprecise.app"],
+                        x, y + 34, 22, 32))
+    r = 168
+    cx, cy = x1 - 48 - r, (y0 + y1) / 2
+    body.append(orrery(cx, cy, r))
+    save_jpg("".join(body), w, h, OUT / fname)
+
+
 def make_pin(headline: str, sub: str, fname: str, hi: int | None = None) -> None:
     w, h = 1000, 1500
     body = [ground(w, h, 32)]
@@ -199,7 +225,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
 
     make_banner(1500, 500, "Mission Control for your sky", "Real ephemeris · private · free birth chart", "banner-x-1500x500.jpg")
-    make_banner(2560, 1440, "Mission Control for your sky", "VSOP87 astronomy — every number is real", "banner-youtube-2560x1440.jpg")
+    make_youtube_banner("Mission Control for your sky", "VSOP87 astronomy — every number is real", "banner-youtube-2560x1440.jpg")
     make_banner(1584, 396, "AstroPrecise", "Genuinely accurate astrology — computed in your browser", "banner-linkedin-1584x396.jpg")
 
     make_avatar()

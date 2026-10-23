@@ -404,7 +404,7 @@
     var name = 'moment-' + (state.lastMoment && state.lastMoment.zenith.star.name || 'sky')
       .toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
     var shareOpts = {
-      title: (state.lastMoment && state.lastMoment.title) || 'My Astro Precise Moment',
+      title: (state.lastMoment && state.lastMoment.title) || 'My AstroPrecise Moment',
       text: 'The sky on a night that mattered — computed privately.',
       url: state.lastSkyLink || undefined
     };

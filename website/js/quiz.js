@@ -21,7 +21,7 @@
 const AstroQuiz = (() => {
 
   const STORAGE_KEY = 'ap_quiz_archetype';
-  const SHARE_NAME  = 'Astro Precise';
+  const SHARE_NAME  = 'AstroPrecise';
 
   // ── Archetypes ─────────────────────────────────────────────
   // Each is keyed by an element + modality blend, with a representative

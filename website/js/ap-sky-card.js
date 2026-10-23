@@ -1,5 +1,5 @@
 /**
- * Sky card — one keepable 1200 × 630 plate of a single birth minute.
+ * Sky card — one keepable 1080 × 1440 plate of a single birth minute.
  *
  * The honesty rules this file exists to enforce:
  *
@@ -54,9 +54,21 @@
 
   var SERIF = '"AP Serif", "Instrument Serif", "Times New Roman", serif';
   var SANS = '"AP Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
-  /* The card is 1200 × 630 and is mostly seen about 360 CSS px wide on a phone,
-     so 1 unit is 0.3 px there. Nothing on the plate is set under 16 units. */
-  var SKY_CARD_MIN_PX = 16;
+  /* The card is a 1080 × 1440 portrait plate (step 10c; it was 1200 × 630) and
+     is mostly seen about 360 CSS px wide on a phone, so 1 unit is a third of a
+     CSS px there. Nothing on the plate is set under 33 units, 11 px at 360. */
+  var CARD_W = 1080;
+  var CARD_H = 1440;
+  var SKY_CARD_MIN_PX = 33;
+  var FRAME = 32;
+  var LEFT = 84;
+  var RIGHT = 996;
+  var COL = RIGHT - LEFT;
+  var VALUE_X = 300;
+  var ROW = 60;
+  var FOOTER_RULE = 1200;
+  var WHEEL_MIN_R = 150;
+  var WHEEL_MAX_R = 214;
 
   var byId = function (id) { return document.getElementById(id); };
 
@@ -96,17 +108,18 @@
     panel.hidden = false;
   }
 
-  function paintSyncMark(match, dateText) {
-    if (!match || !ctx) return;
+  /* The folk clock pattern, as one copper line in the card's running layout.
+     Returns the next free baseline. */
+  function paintSyncMark(match, dateText, y) {
+    if (!match || !ctx) return y;
     var mark = window.APMirrorHour.cardLabel(match, dateText);
-    ctx.textAlign = 'right';
-    ctx.fillStyle = COPPER_INK;
-    ctx.font = '600 26px ' + SANS;
-    ctx.fillText(mark, 1124, 84);
-    ctx.fillStyle = MUTED;
-    ctx.font = '500 16px ' + SANS;
-    ctx.fillText('FOLK CLOCK PATTERN', 1124, 106);
     ctx.textAlign = 'left';
+    ctx.fillStyle = COPPER_INK;
+    font('600', 33, SANS);
+    spacing(1);
+    y = wrapLines(mark + '  \u00B7  FOLK CLOCK PATTERN', LEFT, y, COL, 44, 2);
+    spacing(0);
+    return y;
   }
 
   // ── zone + time ───────────────────────────────────────────────────────────
@@ -267,10 +280,11 @@
   function cardAssetsReady() {
     var fonts = document.fonts && document.fonts.load
       ? Promise.all([
-        document.fonts.load('400 72px ' + SERIF),
-        document.fonts.load('italic 400 30px ' + SERIF),
-        document.fonts.load('400 18px ' + SANS),
-        document.fonts.load('600 20px ' + SANS),
+        document.fonts.load('400 96px ' + SERIF),
+        document.fonts.load('italic 400 56px ' + SERIF),
+        document.fonts.load('400 34px ' + SANS),
+        document.fonts.load('500 33px ' + SANS),
+        document.fonts.load('600 33px ' + SANS),
       ]).catch(function () { return null; })
       : Promise.resolve(null);
     var glyphs = [];
@@ -283,24 +297,58 @@
     return Promise.race([all, new Promise(function (resolve) { setTimeout(resolve, 3000); })]);
   }
 
-  function tracked(text, x, y, spacing) {
-    var cursor = x;
-    for (var i = 0; i < text.length; i += 1) {
-      ctx.fillText(text[i], cursor, y);
-      cursor += ctx.measureText(text[i]).width + spacing;
-    }
+  /* Letter spacing where the canvas supports it (Chrome, Safari 17+); plain
+     spacing elsewhere, so measureText and wrapping always agree. */
+  function spacing(px) {
+    if ('letterSpacing' in ctx) ctx.letterSpacing = px + 'px';
+  }
+
+  /* Every face on the card goes through here, so nothing can be set under
+     the phone floor (SKY_CARD_MIN_PX). */
+  function font(weight, px, family) {
+    ctx.font = weight + ' ' + Math.max(SKY_CARD_MIN_PX, px) + 'px ' + family;
   }
 
   /* Set a line in the given weight, stepping the size down (never under the
      floor) until it fits the column. */
   function fitText(text, x, y, weight, px, family, maxWidth) {
-    var size = px;
-    ctx.font = weight + ' ' + size + 'px ' + family;
+    var size = Math.max(SKY_CARD_MIN_PX, px);
+    font(weight, size, family);
     while (ctx.measureText(text).width > maxWidth && size > SKY_CARD_MIN_PX) {
       size -= 1;
-      ctx.font = weight + ' ' + size + 'px ' + family;
+      font(weight, size, family);
     }
     ctx.fillText(text, x, y);
+    return size;
+  }
+
+  /* Split text into lines that fit maxWidth in the current font. A last line
+     that would run past maxLines is shortened with an ellipsis. */
+  function splitLines(text, maxWidth, maxLines) {
+    var words = String(text || '').split(/\s+/).filter(Boolean);
+    var lines = [];
+    var line = '';
+    for (var i = 0; i < words.length; i += 1) {
+      var next = line ? line + ' ' + words[i] : words[i];
+      if (ctx.measureText(next).width > maxWidth && line) {
+        lines.push(line);
+        line = words[i];
+      } else line = next;
+    }
+    if (line) lines.push(line);
+    if (maxLines && lines.length > maxLines) {
+      var rest = lines.slice(maxLines - 1).join(' ');
+      while (rest.length && ctx.measureText(rest + '\u2026').width > maxWidth) rest = rest.slice(0, -1);
+      lines = lines.slice(0, maxLines - 1).concat([rest.trim() + '\u2026']);
+    }
+    return lines;
+  }
+
+  /* Draw wrapped lines from baseline y; returns the next free baseline. */
+  function wrapLines(text, x, y, maxWidth, lineHeight, maxLines) {
+    var lines = splitLines(text, maxWidth, maxLines);
+    for (var i = 0; i < lines.length; i += 1) ctx.fillText(lines[i], x, y + i * lineHeight);
+    return y + lines.length * lineHeight;
   }
 
   function star4(cx, cy, r) {
@@ -330,48 +378,77 @@
   }
 
   function wordmark(x, baseline) {
-    mark(x + 16, baseline - 10, 40);
+    mark(x + 22, baseline - 14, 56);
     ctx.fillStyle = INK;
-    ctx.font = '400 32px ' + SERIF;
-    ctx.fillText('AstroPrecise', x + 44, baseline);
+    font('400', 48, SERIF);
+    ctx.fillText('AstroPrecise', x + 60, baseline);
   }
 
   function plate() {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
+    spacing(0);
     ctx.fillStyle = PAPER;
-    ctx.fillRect(0, 0, 1200, 630);
+    ctx.fillRect(0, 0, CARD_W, CARD_H);
     ctx.strokeStyle = RULE;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(28.5, 28.5, 1143, 573);
+    ctx.lineWidth = 2;
+    ctx.strokeRect(FRAME, FRAME, CARD_W - FRAME * 2, CARD_H - FRAME * 2);
+  }
+
+  function rule(y) {
+    ctx.strokeStyle = RULE;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(LEFT, y);
+    ctx.lineTo(RIGHT, y);
+    ctx.stroke();
   }
 
   function eyebrow(text, y) {
     ctx.fillStyle = COPPER_INK;
-    ctx.font = '600 18px ' + SANS;
-    tracked(text, 76, y, 3.2);
+    font('600', 34, SANS);
+    spacing(3);
+    ctx.fillText(text, LEFT, y);
+    spacing(0);
   }
 
-  function wheel(chart, cx, cy) {
+  /* Footer: rule, wordmark, then the honesty line in two short lines so it
+     stays at phone size. Returns the y of the rule (the content limit). */
+  function footer(honesty) {
+    rule(FOOTER_RULE);
+    wordmark(LEFT, FOOTER_RULE + 64);
+    if (!honesty) return FOOTER_RULE;
+    ctx.fillStyle = MUTED;
+    font('500', 33, SANS);
+    spacing(1);
+    honesty.forEach(function (line, index) {
+      ctx.fillText(line, LEFT, FOOTER_RULE + 122 + index * 44);
+    });
+    spacing(0);
+    return FOOTER_RULE;
+  }
+
+  function wheel(chart, cx, cy, radius) {
+    var k = radius / 198;
     var point = function (lon, r) {
       var a = (180 - lon) * RAD;
-      return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+      return [cx + r * k * Math.cos(a), cy - r * k * Math.sin(a)];
     };
     ctx.save();
     ctx.fillStyle = CARD;
     ctx.beginPath();
-    ctx.arc(cx, cy, 198, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 198 * k, 0, Math.PI * 2);
     ctx.fill();
-    [[198, GRAPHITE, 1.4], [168, RULE, 1], [100, RULE, 1]]
+    [[198, GRAPHITE, 1.6], [168, RULE, 1.2], [100, RULE, 1.2]]
       .forEach(function (ring) {
         ctx.strokeStyle = ring[1];
         ctx.lineWidth = ring[2];
         ctx.beginPath();
-        ctx.arc(cx, cy, ring[0], 0, Math.PI * 2);
+        ctx.arc(cx, cy, ring[0] * k, 0, Math.PI * 2);
         ctx.stroke();
       });
     ctx.strokeStyle = RULE;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1.2;
     for (var s = 0; s < 12; s += 1) {
       var inner = point(s * 30, 168);
       var outer = point(s * 30, 198);
@@ -380,7 +457,7 @@
       ctx.lineTo(outer[0], outer[1]);
       ctx.stroke();
       var at = point(s * 30 + 15, 183);
-      glyph(SIGN_KEYS[s], MUTED, at[0], at[1], 22);
+      glyph(SIGN_KEYS[s], MUTED, at[0], at[1], 22 * k);
     }
     var ordered = WHEEL_BODIES
       .filter(function (key) { return chart.positions[key]; })
@@ -392,175 +469,155 @@
       // A leader line from the degree tick to the glyph: on a keepsake it must
       // be unambiguous which body sits at which longitude.
       ctx.strokeStyle = RULE;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(tick[0], tick[1]);
       ctx.lineTo(seat[0], seat[1]);
       ctx.stroke();
       ctx.fillStyle = COPPER;
       ctx.beginPath();
-      ctx.arc(tick[0], tick[1], 3, 0, Math.PI * 2);
+      ctx.arc(tick[0], tick[1], 3.5, 0, Math.PI * 2);
       ctx.fill();
       var light = key === 'sun' || key === 'moon' || key === 'venus';
-      glyph(key, light ? INK : GRAPHITE, seat[0], seat[1], 26);
+      glyph(key, light ? INK : GRAPHITE, seat[0], seat[1], 26 * k);
     });
     ctx.restore();
   }
 
-  /* The empty plate is the first thing a phone sees, at roughly a third of its
-     drawn width, so its type is set to survive that reduction. */
+  /* The empty plate is the first thing a phone sees, so its type is set at
+     phone size like the rest of the card. */
   function placeholder(message, detail) {
     if (!ctx) return;
     plate();
-    ctx.fillStyle = COPPER_INK;
-    ctx.font = '600 24px ' + SANS;
-    tracked('SKY CARD', 76, 120, 5);
+    eyebrow('SKY CARD', 112);
     ctx.fillStyle = INK;
-    fitText(message, 76, 236, '400', 76, SERIF, 1048);
+    font('400', 104, SERIF);
+    var y = wrapLines(message, LEFT, 300, COL, 108, 3);
     ctx.fillStyle = GRAPHITE;
-    fitText(detail || 'Nothing is computed until you ask for it.', 76, 300, '400', 32, SANS, 1048);
-    ctx.strokeStyle = RULE;
-    ctx.beginPath();
-    ctx.moveTo(76, 528.5);
-    ctx.lineTo(1124, 528.5);
-    ctx.stroke();
-    wordmark(76, 580);
+    font('400', 40, SANS);
+    wrapLines(detail || 'Nothing is computed until you ask for it.', LEFT, y + 30, COL, 56, 3);
+    footer(null);
   }
 
   function drawCard(minute) {
     plate();
     var positions = minute.chart.positions;
+    var pattern = currentPattern(minute.clockText);
 
-    eyebrow('THE SKY AT THIS MINUTE', 92);
+    eyebrow('THE SKY AT THIS MINUTE', 112);
 
     ctx.fillStyle = INK;
-    fitText(minute.dateText, 76, 164, '400', 68, SERIF, 640);
+    fitText(minute.dateText, LEFT, 236, '400', 96, SERIF, COL);
 
+    var y = 300;
     ctx.fillStyle = GRAPHITE;
-    fitText(minute.place.name.toUpperCase() + '  \u00B7  ' + minute.clockText
-      + (minute.timeKnown ? '' : ' (ASSUMED)') + '  \u00B7  ' + minute.place.tz.toUpperCase(), 76, 202, '500', 18, SANS, 640);
+    font('500', 36, SANS);
+    spacing(1);
+    y = wrapLines(minute.place.name.toUpperCase(), LEFT, y, COL, 46, 2);
+    y = wrapLines(minute.clockText + (minute.timeKnown ? '' : ' (ASSUMED)') + '  \u00B7  '
+      + minute.place.tz.toUpperCase(), LEFT, y, COL, 46, 2);
     ctx.fillStyle = MUTED;
-    ctx.font = '400 16px ' + SANS;
-    ctx.fillText('COMPUTED FROM ' + minute.utText + ' UT', 76, 228);
+    font('500', 33, SANS);
+    y = wrapLines('COMPUTED FROM ' + minute.utText + ' UT', LEFT, y, COL, 44, 1);
+    y = paintSyncMark(pattern, minute.isoDate, y);
 
+    y += 12;
+    font('600', 33, SANS);
     if (minute.light) {
       ctx.fillStyle = minute.light.tone;
-      ctx.font = '600 17px ' + SANS;
-      tracked(minute.light.label.toUpperCase() + '  \u00B7  SUN '
+      y = wrapLines(minute.light.label.toUpperCase() + '  \u00B7  SUN '
         + Math.abs(minute.altitude).toFixed(1) + '\u00B0 '
-        + (minute.altitude >= 0 ? 'ABOVE' : 'BELOW') + ' THE HORIZON', 76, 268, 0.6);
+        + (minute.altitude >= 0 ? 'ABOVE' : 'BELOW') + ' THE HORIZON', LEFT, y, COL, 44, 2);
     } else {
       ctx.fillStyle = ALERT;
-      ctx.font = '600 17px ' + SANS;
-      tracked('BIRTH HOUR UNKNOWN  \u00B7  DAY OR NIGHT NOT STATED', 76, 268, 0.6);
+      y = wrapLines('BIRTH HOUR UNKNOWN', LEFT, y, COL, 44, 1);
+      y = wrapLines('DAY OR NIGHT NOT STATED', LEFT, y, COL, 44, 1);
     }
+    spacing(0);
 
+    // Lower block (rising, houses, the assumed-hour note) is measured first so
+    // the wheel takes whatever height is left above it.
+    var moonNote = minute.timeKnown ? [] : (function () {
+      font('500', 33, SANS);
+      spacing(1);
+      var lines = splitLines('MOON PLACED FROM ' + ASSUMED_HOUR + ' LOCAL', COL, 1)
+        .concat(splitLines('UP TO A SIGN OUT', COL, 1));
+      spacing(0);
+      return lines;
+    }());
+    // Last lower baseline sits 64 below the wheel plus this tail; keep it 36 above the rule.
+    var lowerHeight = moonNote.length ? 2 * ROW + (moonNote.length - 1) * 44 : ROW;
+    var top = y + 10;
+    var radius = Math.max(WHEEL_MIN_R, Math.min(WHEEL_MAX_R, (FOOTER_RULE - 36 - 64 - lowerHeight - top) / 2));
+    wheel(minute.chart, LEFT + radius, top + radius, radius);
+
+    // The three lights, beside the wheel.
+    var colX = LEFT + radius * 2 + 56;
+    var colW = RIGHT - colX;
+    // Each light is a label plus a value line, so rows never close up below 104.
+    var pitch = Math.max(104, Math.min(140, (radius * 2 - 40) / 3));
     LIGHTS.forEach(function (row, index) {
       var position = positions[row[0]];
       if (!position) return;
-      var y = 324 + index * 42;
-      glyph(row[0], COPPER_INK, 90, y - 7, 28);
+      var base = top + 46 + index * pitch;
+      glyph(row[0], COPPER_INK, colX + 18, base - 12, 38);
       ctx.fillStyle = MUTED;
-      ctx.font = '500 16px ' + SANS;
-      ctx.fillText(row[1].toUpperCase(), 118, y);
+      font('500', 33, SANS);
+      spacing(2);
+      ctx.fillText(row[1].toUpperCase(), colX + 50, base);
+      spacing(0);
       ctx.fillStyle = INK;
-      ctx.font = '500 22px ' + SANS;
-      ctx.fillText(formatPosition(position), 214, y);
+      fitText(formatPosition(position), colX, base + 54, '500', 44, SANS, colW);
     });
 
-    ctx.font = '500 16px ' + SANS;
-    ctx.fillStyle = MUTED;
-    ctx.fillText('RISING', 118, 450);
-    if (minute.timeKnown && positions.asc) {
-      ctx.fillStyle = INK;
-      ctx.font = '500 22px ' + SANS;
-      ctx.fillText(formatPosition(positions.asc), 214, 450);
-    } else {
-      ctx.fillStyle = ALERT;
-      ctx.font = '600 17px ' + SANS;
-      ctx.fillText('MISSING \u2014 NO BIRTH HOUR', 214, 450);
-    }
-
-    ctx.font = '500 16px ' + SANS;
-    ctx.fillStyle = MUTED;
-    ctx.fillText('HOUSES', 118, 488);
-    if (minute.timeKnown && positions.asc) {
-      ctx.fillStyle = INK;
-      ctx.font = '500 18px ' + SANS;
-      ctx.fillText('FROM THE HOUR AND THE TOWN', 214, 488);
-    } else {
-      ctx.fillStyle = ALERT;
-      ctx.font = '600 17px ' + SANS;
-      ctx.fillText('MISSING \u2014 NO BIRTH HOUR', 214, 488);
-    }
-
-    if (!minute.timeKnown) {
-      ctx.fillStyle = GRAPHITE;
-      ctx.font = '400 16px ' + SANS;
-      ctx.fillText('MOON PLACED FROM ' + ASSUMED_HOUR + ' LOCAL \u00B7 UP TO A SIGN OUT', 76, 522);
-    }
-
-    wheel(minute.chart, 928, 316);
-
-    ctx.strokeStyle = RULE;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(76, 540.5);
-    ctx.lineTo(1124, 540.5);
-    ctx.stroke();
-
-    wordmark(76, 584);
-    ctx.textAlign = 'right';
-    ctx.fillStyle = MUTED;
-    ctx.font = '500 16px ' + SANS;
-    ctx.fillText('COMPUTED ON THIS DEVICE \u00B7 NOT A CLAIM ABOUT YOUR LIFE', 1124, 580);
-    ctx.textAlign = 'left';
-    paintSyncMark(currentPattern(minute.clockText), minute.isoDate);
-  }
-
-  function wrapLines(text, x, y, maxWidth, lineHeight, maxLines) {
-    var words = String(text || '').split(' ');
-    var line = '';
-    var rows = 0;
-    for (var i = 0; i < words.length; i += 1) {
-      var next = line ? line + ' ' + words[i] : words[i];
-      if (ctx.measureText(next).width > maxWidth && line) {
-        ctx.fillText(line, x, y);
-        rows += 1;
-        y += lineHeight;
-        line = words[i];
-        if (rows >= maxLines - 1) {
-          line = words.slice(i).join(' ');
-          break;
+    y = Math.max(top + radius * 2, top + 46 + 2 * pitch + 54) + 64;
+    [['RISING', minute.timeKnown && positions.asc ? formatPosition(positions.asc) : null],
+      ['HOUSES', minute.timeKnown && positions.asc ? 'FROM THE HOUR AND THE TOWN' : null]]
+      .forEach(function (row, index) {
+        ctx.fillStyle = MUTED;
+        font('500', 33, SANS);
+        spacing(2);
+        ctx.fillText(row[0], LEFT, y);
+        spacing(0);
+        if (row[1]) {
+          ctx.fillStyle = INK;
+          if (index === 0) fitText(row[1], VALUE_X, y, '500', 44, SANS, RIGHT - VALUE_X);
+          else fitText(row[1], VALUE_X, y, '500', 33, SANS, RIGHT - VALUE_X);
+        } else {
+          ctx.fillStyle = ALERT;
+          fitText('MISSING \u2014 NO BIRTH HOUR', VALUE_X, y, '600', 33, SANS, RIGHT - VALUE_X);
         }
-      } else line = next;
+        y += ROW;
+      });
+
+    if (moonNote.length) {
+      ctx.fillStyle = GRAPHITE;
+      font('500', 33, SANS);
+      spacing(1);
+      moonNote.forEach(function (line, index) { ctx.fillText(line, LEFT, y + index * 44); });
+      spacing(0);
     }
-    if (line) ctx.fillText(line, x, y);
-    return y;
+
+    footer(['COMPUTED ON THIS DEVICE', 'NOT A CLAIM ABOUT YOUR LIFE']);
   }
 
   function drawClockPlate(match, dateValue) {
     plate();
-    eyebrow('SYNCHRONICITY CARD', 92);
+    eyebrow('SYNCHRONICITY CARD', 112);
     ctx.fillStyle = INK;
-    ctx.font = '400 88px ' + SERIF;
-    ctx.fillText(match.label, 76, 196);
+    fitText(match.label, LEFT, 300, '400', 176, SERIF, COL);
     ctx.fillStyle = GRAPHITE;
-    ctx.font = '500 20px ' + SANS;
-    ctx.fillText((dateValue || '') + '  \u00B7  DEVICE CLOCK  \u00B7  SCHEMATIC', 76, 240);
+    font('500', 36, SANS);
+    spacing(1);
+    var y = wrapLines((dateValue || '') + '  \u00B7  DEVICE CLOCK  \u00B7  SCHEMATIC', LEFT, 380, COL, 46, 2);
+    spacing(0);
     ctx.fillStyle = INK;
-    ctx.font = 'italic 400 32px ' + SERIF;
-    wrapLines(match.folk, 76, 312, 1048, 40, 4);
+    font('italic 400', 56, SERIF);
+    y = wrapLines(match.folk, LEFT, y + 80, COL, 66, 6);
     ctx.fillStyle = MUTED;
-    ctx.font = '400 16px ' + SANS;
-    wrapLines(window.APMirrorHour ? window.APMirrorHour.HONESTY : '', 76, 488, 1048, 22, 2);
-    ctx.strokeStyle = RULE;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(76, 540.5);
-    ctx.lineTo(1124, 540.5);
-    ctx.stroke();
-    wordmark(76, 584);
+    font('400', 34, SANS);
+    wrapLines(window.APMirrorHour ? window.APMirrorHour.HONESTY : '', LEFT, y + 40, COL, 46, 4);
+    footer(['DEVICE CLOCK \u00B7 FOLK PATTERN ONLY', 'NOT A NATAL CLAIM']);
     drawn = {
       isoDate: dateValue || '',
       place: { name: 'device clock' },

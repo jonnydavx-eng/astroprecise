@@ -243,7 +243,7 @@ window.APAIAssistant = (function () {
     var moon = signOf(chart, 'Moon') || chart.moonSign || '—';
     var rising = chart.risingSign || chart.rising || '—';
     return (chart.name || 'A birth chart') + ' — Sun in ' + sun + ', Moon in ' + moon + ', Rising ' + rising +
-      '. Cast with astronomical precision on Astro Precise; computed privately on device.';
+      '. Cast with astronomical precision on AstroPrecise; computed privately on device.';
   }
 
   // On-device only (the cloud/BYOK path is retired for now — this is the free,

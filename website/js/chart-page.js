@@ -1910,14 +1910,14 @@
         const blob = await canvasToBlob(paintShareImage(sharedChart, 'square'));
         const file = blob && new File([blob], 'astroprecise-natal-square.png', { type: 'image/png' });
         if (file && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
+          await navigator.share({ files: [file], title: 'My Birth Chart — AstroPrecise', text, url: shareUrl });
           return;
         }
       } catch (e) { if (e && e.name === 'AbortError') return; /* else fall through */ }
     }
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
+        await navigator.share({ title: 'My Birth Chart — AstroPrecise', text, url: shareUrl });
       } else {
         await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
         if (window.AstroApp) AstroApp.showToast('Link copied', 'Share link copied to clipboard.', 'success');
@@ -2865,7 +2865,7 @@
         if (navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
-            title: 'My Birth Chart — Astro Precise',
+            title: 'My Birth Chart — AstroPrecise',
             text: sharePlacementLine(chart),
           });
           return; // shared successfully

@@ -36,7 +36,7 @@ import {
   moonPhaseFromEphemeris,
   integrateDayOffset,
   keplerGuidePoints,
-} from './orbitlab-orbital-math.js?v=938';
+} from './orbitlab-orbital-math.js?v=939';
 
 // Screen-space layout for the 3D name tags (pure, unit-tested in
 // test-orrery-readability.mjs). items[0..n) carry the anchor (x, y) and size

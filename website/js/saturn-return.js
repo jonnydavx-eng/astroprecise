@@ -186,11 +186,11 @@
       '<link rel="stylesheet" href="css/fonts.css">' +
       '<style>' + css + '</style></head><body><div class="page">' +
       '<div class="seal"><span class="eng-star-mark" style="color:#A897FF;width:1.2em;height:1.2em;"></span></div>' +
-      '<p class="eyebrow">Astro Precise · The Saturn Return</p>' +
+      '<p class="eyebrow">AstroPrecise · The Saturn Return</p>' +
       '<h1>The Return of<br>Saturn</h1>' +
       '<div class="glyph">♄</div>' +
       body +
-      '<div class="foot"><span>Astro Precise</span><span>Computed from the real sky</span></div>' +
+      '<div class="foot"><span>AstroPrecise</span><span>Computed from the real sky</span></div>' +
       '</div></body></html>';
   }
 

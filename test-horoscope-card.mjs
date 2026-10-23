@@ -95,16 +95,24 @@ ok('the card waits for the disclaimer face', /fonts\.load\('400 ' \+ CARD_FOOTER
 const disclaimer = (card.match(/const CARD_DISCLAIMER = '([^']+)'/) || [])[1] || ''
 ok('disclaimer says reflection and entertainment', /reflection and entertainment/.test(disclaimer))
 ok('disclaimer names the 12:00 UT reference', /positions calculated at 12:00 UT/.test(disclaimer))
-// No other card text is smaller than the old disclaimer: labels and small print are >= 17 units.
+// Step 10c: no card text under 33 units (11 px at 360). Static sizes and every fallback set.
+const MIN = num('CARD_MIN_PX')
+ok('CARD_MIN_PX is 33 units (11 px at 360)', MIN === 33, String(MIN))
+ok('labels are at least CARD_MIN_PX', num('CARD_LABEL_PX') >= 33, String(num('CARD_LABEL_PX')))
 const sizes = [...card.matchAll(/(?:'\d00 )(\d+)px |(?:label|note|today): (\d+)/g)].map(
   (m) => +(m[1] || m[2]),
 )
 ok(
-  'no card text under 17 units (about 5.7 px at 360)',
-  sizes.every((v) => v >= 17),
+  'no literal card size under 33 units',
+  sizes.length > 0 && sizes.every((v) => v >= 33),
   sizes.join(','),
 )
-ok('labels are 24 units (8 px at 360)', num('CARD_LABEL_PX') === 24)
+ok(
+  'every fallback set keeps note and label at the floor',
+  [...card.matchAll(/note: (\w+), noteLine: \d+, label: (\w+)/g)].every((m) =>
+    [m[1], m[2]].every((v) => /^CARD_(MIN|LABEL)_PX$/.test(v) || +v >= 33),
+  ),
+)
 
 // Measure the wrap with the repo's Inter so the two-line footer fits the frame (1052).
 const { createCanvas, GlobalFonts } = await import('@napi-rs/canvas')
@@ -151,6 +159,62 @@ try {
 ok('js/ap-glyphs.js matches its generator', fresh)
 const glyphs = readFileSync('website/js/ap-glyphs.js', 'utf8')
 ok('APGlyphs.image is exported', /image: function \(name, color\)/.test(glyphs))
+
+// Every text draw, measured with the real painter (tools/share-canvas-probe.mjs): all twelve
+// signs with a long reading and a short one. Each line >= 11 px at 360 CSS px wide, inside the
+// hairline frame, the reading above the footer rule, and no two lines overlapping.
+const probe = await import('./tools/share-canvas-probe.mjs')
+const short = { todayLine: 'A quiet day.', useThis: 'One list.', leaveThis: 'The rush.' }
+let worst = Infinity
+const problems = []
+for (const sign of [
+  'aries',
+  'taurus',
+  'gemini',
+  'cancer',
+  'leo',
+  'virgo',
+  'libra',
+  'scorpio',
+  'sagittarius',
+  'capricorn',
+  'aquarius',
+  'pisces',
+]) {
+  for (const reading of [undefined, short]) {
+    const r = await probe.probeHoroscopeCard(sign, reading)
+    const tag = `${sign}/${reading ? 'short' : 'long'}`
+    if (!r.draws.length) problems.push(`${tag}: no text`)
+    const boxes = r.draws.map((d) => {
+      const [x0, x1] = probe.extent(d)
+      return { d, x0, x1, y0: d.y - d.px * 0.74, y1: d.y + d.px * 0.22 }
+    })
+    for (const b of boxes) {
+      const eff = probe.effectivePx(b.d.px, r.width)
+      worst = Math.min(worst, eff)
+      if (eff < probe.MIN_EFFECTIVE_PX - 1e-9) problems.push(`${tag}: ${b.d.px}u "${b.d.text}"`)
+      if (b.x0 < r.frame || b.x1 > r.width - r.frame || b.y0 < r.frame || b.y1 > r.height - r.frame)
+        problems.push(`${tag}: outside frame "${b.d.text}"`)
+    }
+    for (let i = 0; i < boxes.length; i++)
+      for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i],
+          b = boxes[j]
+        if (a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1)
+          problems.push(`${tag}: overlap "${a.d.text}" / "${b.d.text}"`)
+      }
+    const body = r.draws.filter((d) => d.y < 900 && d.text !== 'AstroPrecise')
+    if (!body.every((d) => d.y + d.px * 0.22 < ruleY))
+      problems.push(`${tag}: reading runs into the rule`)
+    if (r.draws.some((d) => /\.…$/.test(d.text)))
+      problems.push(`${tag}: ellipsis after a full stop`)
+  }
+}
+ok(
+  `every line on all 24 painted cards >= 11 px at ${PHONE_PX} wide, in frame, clear (min ${worst.toFixed(2)} px)`,
+  problems.length === 0,
+  problems.slice(0, 8).join(' | '),
+)
 
 console.log(fails ? `\n${fails} share card check(s) failed` : '\nall share card checks passed')
 process.exit(fails ? 1 : 0)
