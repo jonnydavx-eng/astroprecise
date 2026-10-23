@@ -34,7 +34,7 @@ const metaContent = (html, attr, key) => {
 }
 
 const manifest = JSON.parse(readFileSync(join(SITE, 'img/og/manifest.json'), 'utf8'))
-ok('42 cards in the manifest', manifest.length === 42, String(manifest.length))
+ok('45 cards in the manifest', manifest.length === 45, String(manifest.length))
 for (const e of manifest) {
   const name = e.page.replace(/\.html$/, '')
   const file = join(SITE, e.og)
@@ -91,6 +91,20 @@ for (const p of [
     `${p}: has an og:image now`,
     manifest.some((e) => e.page === `${p}.html`),
   )
+// Step 10: lifepath, links and numerology carry their own light card on og:image and
+// twitter:image (they pointed at the dark og-banner-silver.jpg with no twitter:image before v937).
+for (const p of ['lifepath', 'links', 'numerology']) {
+  ok(
+    `${p}: has a card now`,
+    manifest.some((e) => e.page === `${p}.html`),
+  )
+  const h = readFileSync(join(SITE, `${p}.html`), 'utf8')
+  ok(
+    `${p}: head has no og-banner-silver.jpg`,
+    !h.slice(0, h.indexOf('</head>')).includes('og-banner-silver'),
+  )
+  ok(`${p}: one twitter:image tag`, (h.match(/name="twitter:image"/g) || []).length === 1)
+}
 const index = readFileSync(join(SITE, 'index.html'), 'utf8')
 ok('index.html no longer points at og-banner-silver.jpg', !index.includes('og-banner-silver'))
 

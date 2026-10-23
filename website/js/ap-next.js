@@ -41,7 +41,7 @@
     if(!fresh)document.body.classList.add('ap-legacy');
     if(here==='observatory.html')document.body.classList.add('ap-observatory');
     document.documentElement.classList.add('ap-next-shell');
-    if(!document.querySelector('link[href*="ap-next.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href=url('css/ap-next.css?v=936');document.head.append(l);}
+    if(!document.querySelector('link[href*="ap-next.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href=url('css/ap-next.css?v=937');document.head.append(l);}
     const logo='<a class="ap-next-logo" href="'+url('index.html')+'" aria-label="AstroPrecise home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 11A21 21 0 0 1 32 53Z" fill="currentColor"/><circle cx="32" cy="32" r="21" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M41.45 18.92C42.11 24.25 43.32 25.46 48.65 26.12 43.32 26.78 42.11 27.99 41.45 33.32 40.79 27.99 39.58 26.78 34.25 26.12 39.58 25.46 40.79 24.25 41.45 18.92Z" fill="#B4693E"/><path d="M32 4.5V9" stroke="#B4693E" stroke-width="3" stroke-linecap="round"/></svg>AstroPrecise</a>';
     const header=document.createElement('header');header.id='ap-next-header';header.className='ap-next-header';header.innerHTML='<div class="nav-inner">'+logo+'<nav class="ap-next-desktop" aria-label="Primary">'+links(false)+'</nav><a class="ap-next-studio" href="'+url('shop.html')+'"'+(studioCurrent?' aria-current="page"':'')+'>The Studio ↗</a></div>';
     const navPlaceholder=document.querySelector('[data-ap-next-nav]');if(navPlaceholder)navPlaceholder.replaceWith(header);else document.body.prepend(header);

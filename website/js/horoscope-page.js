@@ -391,18 +391,106 @@
     if (line) context.fillText(line, x, y + row * lineHeight);
   }
 
-  function deterministicRandom(seed) {
-    let value = seed >>> 0;
-    return function () {
-      value += 0x6D2B79F5;
-      let mixed = value;
-      mixed = Math.imul(mixed ^ mixed >>> 15, mixed | 1);
-      mixed ^= mixed + Math.imul(mixed ^ mixed >>> 7, mixed | 61);
-      return ((mixed ^ mixed >>> 14) >>> 0) / 4294967296;
-    };
+  // Share card (2C step 10): the Paper & Night look of the light OG cards, square for posts.
+  // Paper ground, ink type in Instrument Serif and Inter (the repo's AP Serif / AP Sans faces),
+  // one copper accent, the hand-drawn brand glyph. No star field, no dark ground.
+  const CARD = {
+    paper: '#F6F3EC', card: '#FBF9F4', rule: '#D6D1C6', ink: '#0E1116', graphite: '#3A3F47',
+    muted: '#5C6168', copper: '#B4693E', copperInk: '#8A4A24', night: '#0E1116',
+  };
+  const CARD_SERIF = '"AP Serif", "Instrument Serif", Georgia, "Times New Roman", serif';
+  const CARD_SANS = '"AP Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+
+  function countLines(context, text, font, maxWidth, maxLines) {
+    context.font = font;
+    const words = String(text || '').split(/\s+/).filter(Boolean);
+    if (!words.length) return 0;
+    let line = '';
+    let rows = 1;
+    for (let index = 0; index < words.length; index += 1) {
+      const trial = line ? line + ' ' + words[index] : words[index];
+      if (context.measureText(trial).width <= maxWidth || !line) { line = trial; continue; }
+      rows += 1;
+      line = words[index];
+    }
+    return Math.min(rows, maxLines);
   }
 
-  function buildDailyCard(signKey) {
+  function cardFontsReady() {
+    if (!document.fonts || !document.fonts.load) return Promise.resolve();
+    const loads = Promise.all([
+      document.fonts.load('400 104px ' + CARD_SERIF),
+      document.fonts.load('600 18px ' + CARD_SANS),
+      document.fonts.load('400 24px ' + CARD_SANS),
+    ]).catch(function () {});
+    return Promise.race([loads, new Promise(function (resolve) { window.setTimeout(resolve, 2500); })]);
+  }
+
+  function tracked(context, px) {
+    if ('letterSpacing' in context) context.letterSpacing = px + 'px';
+  }
+
+  function cardGlyph(signKey) {
+    return new Promise(function (resolve) {
+      const markup = window.APGlyphs && window.APGlyphs.image ? window.APGlyphs.image(signKey, CARD.ink) : '';
+      if (!markup) { resolve(null); return; }
+      const image = new Image();
+      image.addEventListener('load', function () { resolve(image); }, { once: true });
+      image.addEventListener('error', function () { resolve(null); }, { once: true });
+      image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(markup);
+    });
+  }
+
+  function star4(context, cx, cy, r) {
+    const w = r * 0.22;
+    context.beginPath();
+    context.moveTo(cx, cy - r);
+    context.bezierCurveTo(cx + w * 0.35, cy - w, cx + w, cy - w * 0.35, cx + r, cy);
+    context.bezierCurveTo(cx + w, cy + w * 0.35, cx + w * 0.35, cy + w, cx, cy + r);
+    context.bezierCurveTo(cx - w * 0.35, cy + w, cx - w, cy + w * 0.35, cx - r, cy);
+    context.bezierCurveTo(cx - w, cy - w * 0.35, cx - w * 0.35, cy - w, cx, cy - r);
+    context.closePath();
+    context.fill();
+  }
+
+  // The AstroPrecise mark: half paper, half night disc with a copper four-point star.
+  function drawMark(context, cx, cy, size) {
+    const r = size * 0.4;
+    context.fillStyle = CARD.paper;
+    context.beginPath(); context.arc(cx, cy, r, Math.PI / 2, Math.PI * 1.5); context.fill();
+    context.fillStyle = CARD.night;
+    context.beginPath(); context.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2); context.fill();
+    context.strokeStyle = CARD.night;
+    context.lineWidth = size * 0.04;
+    context.beginPath(); context.arc(cx, cy, r, 0, Math.PI * 2); context.stroke();
+    context.fillStyle = CARD.copper;
+    star4(context, cx + r * 0.42, cy - r * 0.26, r * 0.3);
+  }
+
+  // The sign on its zodiac ring, as on the sign OG cards: the sign's own tick in copper.
+  function drawSignDisc(context, signKey, glyph, cx, cy, r) {
+    context.fillStyle = CARD.card;
+    context.strokeStyle = CARD.rule;
+    context.lineWidth = 2;
+    context.beginPath(); context.arc(cx, cy, r, 0, Math.PI * 2); context.fill(); context.stroke();
+    const index = SIGN_KEYS.indexOf(signKey);
+    context.lineCap = 'round';
+    for (let k = 0; k < 12; k += 1) {
+      const angle = (-90 - k * 30) * Math.PI / 180;
+      const on = k === index;
+      const r0 = on ? r - 18 : r - 10;
+      const r1 = on ? r : r - 2;
+      context.strokeStyle = on ? CARD.copper : CARD.graphite;
+      context.lineWidth = on ? 3 : 1.4;
+      context.beginPath();
+      context.moveTo(cx + r0 * Math.cos(angle), cy + r0 * Math.sin(angle));
+      context.lineTo(cx + r1 * Math.cos(angle), cy + r1 * Math.sin(angle));
+      context.stroke();
+    }
+    if (glyph) context.drawImage(glyph, cx - r * 0.5, cy - r * 0.5, r, r);
+  }
+
+  async function buildDailyCard(signKey) {
     const info = SIGNS[signKey];
     const data = Interpretations.getDailyHoroscope(info.name, new Date());
     const size = 1080;
@@ -411,85 +499,84 @@
     const context = window.RafCore && RafCore.prepExportCtx
       ? RafCore.prepExportCtx(canvas, exportSize, exportSize)
       : (canvas.width = exportSize, canvas.height = exportSize, canvas.getContext('2d'));
+    const [glyph] = await Promise.all([cardGlyph(signKey), cardFontsReady()]);
     context.scale(exportSize / size, exportSize / size);
 
-    context.fillStyle = '#040812';
+    context.fillStyle = CARD.paper;
     context.fillRect(0, 0, size, size);
-    context.strokeStyle = 'rgba(147,168,191,.11)';
-    context.lineWidth = 1;
-    for (let line = 72; line < size; line += 78) {
-      context.beginPath(); context.moveTo(line, 40); context.lineTo(line, 1040); context.stroke();
-      context.beginPath(); context.moveTo(40, line); context.lineTo(1040, line); context.stroke();
-    }
-    const random = deterministicRandom(Math.floor(Date.now() / 86400000) * 17 + SIGN_KEYS.indexOf(signKey));
-    for (let star = 0; star < 100; star += 1) {
-      context.fillStyle = 'rgba(201,214,227,' + (0.12 + random() * 0.45).toFixed(2) + ')';
-      context.beginPath();
-      context.arc(50 + random() * 980, 50 + random() * 980, 0.4 + random() * 1.2, 0, Math.PI * 2);
-      context.fill();
-    }
-    context.strokeStyle = '#8BA9FF';
+    context.strokeStyle = CARD.rule;
     context.lineWidth = 2;
-    context.strokeRect(40, 40, 1000, 1000);
-    context.strokeStyle = 'rgba(147,168,191,.4)';
-    context.lineWidth = 1;
-    context.strokeRect(54, 54, 972, 972);
-    context.fillStyle = '#8BA9FF';
-    context.fillRect(40, 40, 178, 5);
+    context.strokeRect(28, 28, size - 56, size - 56);
 
     const phase = moonPhaseAtNoon(new Date());
+    context.textBaseline = 'alphabetic';
+    context.textAlign = 'left';
+    context.fillStyle = CARD.copperInk;
+    context.font = '600 18px ' + CARD_SANS;
+    tracked(context, 3.2);
+    context.fillText('DAILY READING · ' + String(SIGN_KEYS.indexOf(signKey) + 1).padStart(2, '0') + ' / 12', 84, 108);
     context.textAlign = 'right';
-    context.fillStyle = '#8BA9FF';
-    context.font = '600 19px "IBM Plex Mono", monospace';
-    context.fillText(PHASE_NAMES[phase.index].toUpperCase(), 960, 104);
-    context.fillStyle = '#C9D6E3';
-    context.font = '16px "IBM Plex Mono", monospace';
-    context.fillText(phase.illumination + '% LIT · 12:00 UT', 960, 134);
+    context.fillStyle = CARD.ink;
+    context.fillText(PHASE_NAMES[phase.index].toUpperCase(), 996, 108);
+    tracked(context, 0);
+    context.fillStyle = CARD.muted;
+    context.font = '400 18px ' + CARD_SANS;
+    context.fillText(phase.illumination + '% lit at 12:00 UT', 996, 138);
+
+    drawSignDisc(context, signKey, glyph, 540, 262, 104);
 
     context.textAlign = 'center';
-    context.fillStyle = '#8BA9FF';
-    context.font = '600 18px "IBM Plex Mono", monospace';
-    context.fillText('DAILY / ' + String(SIGN_KEYS.indexOf(signKey) + 1).padStart(2, '0') + ' / 12', 540, 130);
+    context.fillStyle = CARD.ink;
+    context.font = '400 104px ' + CARD_SERIF;
+    tracked(context, -1.5);
+    context.fillText(info.name, 540, 476);
+    context.fillStyle = CARD.muted;
+    context.font = '500 18px ' + CARD_SANS;
+    tracked(context, 3.2);
+    context.fillText((new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ' · ' + info.dates).toUpperCase(), 540, 518);
+    tracked(context, 0);
 
-    return new Promise(function (resolve) {
-      const seal = new Image();
-      function finish(image) {
-        if (image) context.drawImage(image, 445, 154, 190, 222);
-        context.fillStyle = '#EEF4FA';
-        context.font = '500 82px "Cormorant Garamond", Georgia, serif';
-        context.fillText(info.name, 540, 458);
-        context.fillStyle = '#8BA9FF';
-        context.font = '600 18px "IBM Plex Mono", monospace';
-        context.fillText(new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase(), 540, 502);
-        context.fillStyle = '#C9D6E3';
-        context.font = '500 34px "Cormorant Garamond", Georgia, serif';
-        wrapText(context, data.todayLine || data.overview || '', 540, 568, 780, 42, 3);
-        context.fillStyle = '#8BA9FF';
-        context.font = '600 16px "IBM Plex Mono", monospace';
-        context.fillText('USE THIS', 540, 718);
-        context.fillStyle = '#C9D6E3';
-        context.font = '500 24px "Cormorant Garamond", Georgia, serif';
-        wrapText(context, data.useThis || '', 540, 754, 780, 34, 2);
-        context.fillStyle = '#8BA9FF';
-        context.font = '600 16px "IBM Plex Mono", monospace';
-        context.fillText('LEAVE THIS', 540, 838);
-        context.fillStyle = '#C9D6E3';
-        context.font = '500 24px "Cormorant Garamond", Georgia, serif';
-        wrapText(context, data.leaveThis || '', 540, 874, 780, 34, 2);
-        context.fillStyle = 'rgba(147,168,191,.44)';
-        context.fillRect(150, 948, 780, 1);
-        context.fillStyle = '#C9D6E3';
-        context.font = '16px "IBM Plex Mono", monospace';
-        context.fillText('ASTROLOGICAL INTERPRETATION · REFLECTION & ENTERTAINMENT', 540, 984);
-        context.fillStyle = '#8BA9FF';
-        context.font = '600 18px "IBM Plex Mono", monospace';
-        context.fillText('POSITIONS CALCULATED AT 12:00 UT · ASTROPRECISE.APP', 540, 1018);
-        resolve(canvas);
-      }
-      seal.addEventListener('load', function () { finish(seal); }, { once: true });
-      seal.addEventListener('error', function () { finish(null); }, { once: true });
-      seal.src = 'assets/images/seals/zodiac/' + signKey + '.svg';
+    // The reading block (today's line, Use this, Leave this) sits centred between the date and
+    // the footer rule, whatever the number of wrapped lines.
+    const todayText = data.todayLine || data.overview || '';
+    const todayFont = '400 40px ' + CARD_SERIF;
+    const noteFont = '400 24px ' + CARD_SANS;
+    const todayRows = countLines(context, todayText, todayFont, 820, 3);
+    const useRows = countLines(context, data.useThis || '', noteFont, 800, 2);
+    const leaveRows = countLines(context, data.leaveThis || '', noteFont, 800, 2);
+    const blockHeight = todayRows * 48 + 56 + (34 + useRows * 32) + 40 + (34 + leaveRows * 32);
+    let y = Math.round(548 + Math.max(0, (930 - 548 - blockHeight) / 2)) + 36;
+    context.fillStyle = CARD.ink;
+    context.font = todayFont;
+    wrapText(context, todayText, 540, y, 820, 48, 3);
+    y += (todayRows - 1) * 48 + 76;
+    [['USE THIS', data.useThis || '', useRows], ['LEAVE THIS', data.leaveThis || '', leaveRows]].forEach(function (note) {
+      context.fillStyle = CARD.copperInk;
+      context.font = '600 16px ' + CARD_SANS;
+      tracked(context, 3);
+      context.fillText(note[0], 540, y);
+      tracked(context, 0);
+      context.fillStyle = CARD.graphite;
+      context.font = noteFont;
+      wrapText(context, note[1], 540, y + 34, 800, 32, 2);
+      y += 34 + note[2] * 32 + 40;
     });
+
+    context.fillStyle = CARD.rule;
+    context.fillRect(84, 948, 912, 2);
+    drawMark(context, 104, 990, 40);
+    context.textAlign = 'left';
+    context.fillStyle = CARD.ink;
+    context.font = '400 30px ' + CARD_SERIF;
+    context.fillText('AstroPrecise', 134, 1000);
+    context.textAlign = 'right';
+    context.fillStyle = CARD.muted;
+    context.font = '400 18px ' + CARD_SANS;
+    context.fillText('astroprecise.app', 996, 998);
+    context.textAlign = 'center';
+    context.font = '400 15px ' + CARD_SANS;
+    context.fillText('Astrological interpretation for reflection and entertainment · positions calculated at 12:00 UT', 540, 1036);
+    return canvas;
   }
 
   function canvasToBlob(canvas) {

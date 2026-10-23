@@ -25,6 +25,16 @@
     var a11y = opts.label && !opts.hidden ? ' role="img" aria-label="' + esc(opts.label) + '"' : ' aria-hidden="true"';
     return '<svg class="ap-glyph-i ap-glyph-i--' + id + size + '" viewBox="0 0 24 24" focusable="false"' + a11y + '><use href="#g-' + id + '"></use></svg>';
   }
+  function standalone(id, color) {
+    var head = '<symbol id="g-' + id + '"';
+    var start = SPRITE.indexOf(head);
+    if (start < 0) return '';
+    var open = SPRITE.indexOf('>', start);
+    var end = SPRITE.indexOf('</symbol>', open);
+    var ink = /^#[0-9a-fA-F]{3,8}$/.test(String(color || '')) ? color : '#0E1116';
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" color="' + ink + '"' +
+      SPRITE.slice(start + head.length, open) + '>' + SPRITE.slice(open + 1, end) + '</svg>';
+  }
   function slug(name, list, fallback) {
     var k = String(name || '').trim().toLowerCase();
     return list.indexOf(k) >= 0 ? k : fallback;
@@ -37,6 +47,7 @@
       if (PLANETS.indexOf(v) >= 0 || SIGNS.indexOf(v) >= 0) return svg(v, opts);
       return svg(GLYPHS[glyph] || 'sun', opts);
     },
+    image: function (name, color) { return standalone(slug(name, PLANETS.concat(SIGNS), 'aries'), color); },
     brand: true
   };
   if (!window.AstroIcons) window.AstroIcons = api;

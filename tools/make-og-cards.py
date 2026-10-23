@@ -22,14 +22,16 @@ from og_brand import (C, ROOT, SANS, SANS_BOLD, SIGN_META, SIGNS, T, glyph, mark
                       still_uri, svg2png, tw, wordmark, wrap)
 
 W, H = 1200, 630
-EXCLUDE = re.compile(r'^(index-.*|auth-redirect|fulfil-redirect|outreach|links|profile|journey|catalogue|chart-view|mysky|moment|ephemeris|deep-time|cosmic-.*|synchronicity-card|quiz|angel-numbers|lifepath|name-numerology|numerology|saturn-return|solar-return|synastry|digital-product-terms)$')
+EXCLUDE = re.compile(r'^(index-.*|auth-redirect|fulfil-redirect|outreach|profile|journey|catalogue|chart-view|mysky|moment|ephemeris|deep-time|cosmic-.*|synchronicity-card|quiz|angel-numbers|name-numerology|saturn-return|solar-return|synastry|digital-product-terms)$')
 EYEBROW = {'index': 'Free birth chart', 'chart': 'Free birth chart', 'shop': 'The Studio', 'natal-plate': 'Archive',
            'sample-reading': 'Sample reading', 'deep-reading': 'Your story', 'horoscope': 'The sky this week', 'this-weeks-sky': 'The sky this week',
            'sky-events': 'Sky events', 'eclipse': 'Eclipses', 'moonphase': 'Moon phases', 'retrograde': 'Retrogrades', 'transits': 'Transits',
            'tonight': 'Tonight', 'observatory': 'The Observatory', 'guides': 'Guides', 'explore': 'Explore', 'compatibility': 'Two Skies',
            'what-is-my-rising-sign': 'Guide', 'why': 'How we calculate', 'accuracy': 'How we calculate', 'verify': 'Verify a plate',
            'privacy': 'Privacy', 'terms': 'Terms', 'refunds': 'Refunds', 'contact': 'Contact', 'offline': 'Offline', 'charts': 'Saved charts',
-           'sky-card': 'Sky card', '404': 'Not found'}
+           'sky-card': 'Sky card', '404': 'Not found', 'lifepath': 'Life Path', 'numerology': 'Numerology', 'links': 'Link hub'}
+# Card title when the page <title> does not read well on its own (it leads with the brand name).
+TITLE = {'links': 'Observatory, Chart, Events, Shop'}
 STILL = {'moonphase': 'moon', 'tonight': 'moon', 'eclipse': 'moon', 'retrograde': 'mercury', 'transits': 'saturn', 'sky-events': 'jupiter',
          'observatory': 'saturn', 'this-weeks-sky': 'venus', 'horoscope': 'venus'}
 PLATE = {'index', 'chart', 'shop', 'natal-plate', 'sample-reading', 'deep-reading', 'compatibility', 'verify', 'sky-card', 'charts'}
@@ -112,6 +114,7 @@ def main():
         if EXCLUDE.match(name) or (only and name not in only):
             continue
         title, desc = meta(p)
+        title = TITLE.get(name, title)
         if name == 'index' and not title:
             title = 'Your birth sky, to the minute'
         svg = card(name, title or name.replace('-', ' ').capitalize(), desc)
