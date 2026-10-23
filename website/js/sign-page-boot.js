@@ -37,7 +37,7 @@
         '</div>';
     }
     el.innerHTML =
-      '<div class="card" style="padding:var(--space-8);">' +
+      '<div class="card">' +
       '<p class="daily-reading__overview">' + esc(lead) + '</p>' +
       pair +
       '<div class="daily-reading__grid">' +

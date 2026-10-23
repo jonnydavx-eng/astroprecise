@@ -1,0 +1,152 @@
+/* AstroPrecise sign guides (aries … pisces) on the Paper & Night shell.
+   Loads after css/ap-next.css, which carries the tokens (--ap-*) and the
+   shell (header, footer, buttons). Paper, ink and copper; Instrument Serif
+   for headings, Inter for text. The one dark surface is the star-pattern
+   panel, which uses the shared night tokens. Nothing in <main> under 14px. */
+.ap-sign{--sg-line:var(--ap-rule,#D6D1C6);--sg-muted:var(--ap-muted,#5C6168);--sg-copper:var(--ap-copper,#B4693E);--sg-copper-ink:var(--ap-copper-ink,#8A4A24);--sg-card:var(--ap-card,#FBF9F4);--sg-band:var(--ap-paper-2,#EDE8DD);font-family:var(--ap-sans)}
+.ap-sign .sign-page{padding-bottom:24px}
+.ap-sign .sign-page p{max-width:var(--ap-measure,64ch)}
+
+/* Brand glyphs: hand-built stroke symbols drawn in currentColor. */
+.sign-glyph{display:inline-block;width:1.25em;height:1.25em;fill:none;stroke:currentColor;stroke-width:var(--ap-line,1.5px);vertical-align:-.2em;overflow:visible}
+.sign-glyph--inline{width:1.1em;height:1.1em;margin-left:.2em;color:var(--sg-copper-ink)}
+.eng-i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+
+/* Labels: the brand eyebrow, held at 14px. */
+.sign-label{display:block;font:600 var(--ap-step--1,.875rem)/1.4 var(--ap-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--sg-copper-ink);margin:0 0 10px}
+
+/* Breadcrumb */
+.sign-crumb{padding-top:22px}
+.sign-crumb ol{display:flex;flex-wrap:wrap;gap:0 10px;list-style:none;margin:0;padding:0;font-size:14px;color:var(--sg-muted)}
+.sign-crumb li+li::before{content:'/';margin-right:10px;color:var(--sg-line)}
+.sign-crumb a{display:inline-flex;align-items:center;min-height:44px;color:var(--ap-ink)}
+.sign-crumb [aria-current]{display:inline-flex;align-items:center;min-height:44px}
+
+/* Hero: copy on paper, the real star pattern on a night panel. */
+.sign-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:56px;align-items:center;padding:24px 0 56px;border-bottom:var(--ap-hairline,1px solid #D6D1C6)}
+.sign-hero__copy{min-width:0}
+.sign-hero__glyph{display:block;width:56px;height:56px;margin:4px 0 14px;color:var(--sg-copper)}
+.ap-next .sign-hero h1{margin:0 0 10px}
+.sign-hero__dates{font:500 var(--ap-step-1,1.25rem)/1.4 var(--ap-sans);font-feature-settings:var(--ap-num-features);margin:0 0 6px}
+.sign-hero__keyword{font:italic 400 var(--ap-step-2,1.625rem)/1.2 var(--ap-serif);color:var(--ap-graphite,#3A3F47);margin:0 0 26px}
+.sign-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 0 28px;border-top:var(--ap-hairline,1px solid #D6D1C6)}
+.sign-facts>div{padding:14px 12px 0 0}
+.sign-facts dt{font-size:14px;color:var(--sg-muted);margin-bottom:4px}
+.sign-facts dd{margin:0;font-size:16px;font-weight:500}
+.sign-hero__art{margin:0}
+.sign-hero__sky{position:relative;border-radius:160px 160px 8px 8px;background:var(--ap-night,#0E1116);color:var(--ap-starlight,#F1E7CF);padding:48px 28px 32px;overflow:hidden}
+.sign-hero__sky::before{content:'';position:absolute;inset:16px;border:1px solid color-mix(in srgb,var(--ap-starlight,#F1E7CF) 16%,transparent);border-radius:145px 145px 3px 3px;pointer-events:none}
+.sign-hero__constellation{position:relative;max-width:440px;margin:0 auto}
+.sign-hero__constellation svg{display:block;width:100%;height:auto}
+.sign-hero__art figcaption{font-size:14px;color:var(--sg-muted);margin-top:12px}
+
+/* Sections */
+.sign-section{padding-block:64px}
+.sign-section+.sign-section:not(.sign-section--band){border-top:var(--ap-hairline,1px solid #D6D1C6)}
+.sign-section--band{background:var(--sg-band);border-block:var(--ap-hairline,1px solid #D6D1C6)}
+.sign-section.sign-section--band+.sign-section:not(.sign-section--band){border-top:0}
+.ap-next .sign-section h2{margin-bottom:14px}
+.ap-next .sign-section h3{font-size:var(--ap-step-2,1.625rem);margin:0 0 8px}
+.sign-sub{font-size:var(--ap-step-0,1.0625rem);color:var(--ap-graphite,#3A3F47);margin-bottom:24px}
+.sign-note{font-size:14px;color:var(--sg-muted)}
+.sign-lede{font-size:18px;line-height:1.75}
+.ap-next .sign-h-small{font-size:var(--ap-step-3,2.25rem)}
+.sign-week{margin:18px 0 0}
+.sign-week .text-link{font-size:16px}
+
+/* Today's sky: the reading is written in by js/sign-page-boot.js. */
+.today-reading{margin-top:8px}
+.today-reading .card{background:var(--sg-card);border:var(--ap-hairline,1px solid #D6D1C6);border-radius:8px;padding:clamp(22px,4vw,36px)}
+.today-reading .card>p{margin:0}
+.today-reading.is-loading .card{color:var(--sg-muted)}
+.daily-reading__overview{font:400 var(--ap-step-2,1.625rem)/1.3 var(--ap-serif);margin:0 0 22px!important}
+.daily-reading__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px}
+.daily-reading__tile{padding:16px 0;border-top:var(--ap-hairline,1px solid #D6D1C6)}
+.daily-reading__tile-label{display:block;font:600 14px/1.4 var(--ap-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--sg-copper-ink);margin-bottom:6px}
+.daily-reading__tile-text{margin:0;font-size:16px;line-height:1.65}
+.daily-reading__note{margin:18px 0 0!important;font-size:14px;color:var(--sg-muted)}
+
+/* Folded detail */
+.ap-next .sign-more{border-top:var(--ap-hairline,1px solid #D6D1C6)}
+.ap-next .sign-more>summary{display:flex;align-items:center;min-height:44px;font-size:16px}
+.sign-more>summary::marker{color:var(--sg-copper)}
+
+/* Astronomy cards */
+.sign-astro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
+.sign-astro__card{display:grid;grid-template-columns:56px minmax(0,1fr);gap:18px;align-items:start;padding:22px;background:var(--sg-card);border:var(--ap-hairline,1px solid #D6D1C6);border-radius:8px}
+.sign-astro__card--ruler{grid-template-columns:96px minmax(0,1fr)}
+.sign-astro__mark{display:grid;place-items:center;width:48px;height:48px;border:1px solid var(--sg-line);border-radius:50%;color:var(--sg-copper-ink)}
+.sign-astro__mark .sign-glyph{width:26px;height:26px}
+.sign-astro__value{display:block;font:400 var(--ap-step-2,1.625rem)/1.15 var(--ap-serif);margin-bottom:8px}
+.ap-next .sign-astro__card p{margin:0 0 6px;font-size:16px}
+.sign-planet{margin:0}
+.sign-planet img{display:block;width:96px;height:96px;border-radius:50%;background:var(--ap-night,#0E1116)}
+.ap-next .sign-caption{font-size:14px;color:var(--sg-muted)}
+
+/* In your chart */
+.sign-inchart{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:8px}
+.sign-inchart__row{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding-top:20px;border-top:1px solid var(--ap-ink,#0E1116)}
+.sign-inchart__mark{color:var(--sg-copper)}
+.sign-inchart__mark .sign-glyph{width:32px;height:32px}
+.sign-inchart__row p{font-size:16px;margin:0}
+.sign-inchart__cta{margin:32px 0 0}
+
+/* Strengths and challenges */
+.sign-traits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
+.sign-list{list-style:none;margin:0;padding:0}
+.sign-list li{position:relative;padding:12px 0 12px 28px;border-top:var(--ap-hairline,1px solid #D6D1C6);font-size:16px}
+.sign-list li::before{position:absolute;left:2px;top:11px;font-weight:600;color:var(--sg-copper-ink)}
+.sign-list--plus li::before{content:'+'}
+.sign-list--minus li::before{content:'\2212'}
+
+/* In life */
+.sign-prose{max-width:68ch}
+.ap-next .sign-prose h3{margin-top:26px}
+.ap-next .sign-prose>h3:first-child{margin-top:0}
+.sign-prose p{font-size:17px;line-height:1.75}
+.ap-next .sign-compat{font-size:16px;padding:14px 18px;background:var(--sg-band);border-left:3px solid var(--sg-copper);border-radius:3px}
+
+/* Reference + FAQ */
+.ap-next .sign-reference__sub{font-size:var(--ap-step-2,1.625rem);margin:22px 0 10px}
+.sign-glance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 28px;margin:0}
+.sign-glance>div{padding:12px 0;border-bottom:var(--ap-hairline,1px solid #D6D1C6)}
+.sign-glance dt{font-size:14px;color:var(--sg-muted)}
+.sign-glance dd{margin:2px 0 0;font-size:16px}
+.ap-next .sign-faq details{padding:6px 0}
+.ap-next .sign-faq summary{display:flex;align-items:center;min-height:44px;font-size:16px}
+.ap-next .sign-faq details p{margin:6px 0 12px;font-size:16px}
+
+/* Events + Shop closer */
+.sign-bridge{padding-block:40px}
+
+/* Every sign: the Paper & Night tiles carry the name, so the text label is for screen readers. */
+.sign-thumb-grid{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.sign-thumb{display:block;border:var(--ap-hairline,1px solid #D6D1C6);border-radius:4px;overflow:hidden;background:var(--sg-card);text-decoration:none}
+.sign-thumb img{display:block;width:100%;height:auto;aspect-ratio:2/3}
+.sign-thumb span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.sign-thumb:hover{border-color:var(--sg-copper)}
+.sign-thumb--current{outline:2px solid var(--sg-copper);outline-offset:2px}
+
+@media (max-width:900px){
+  .sign-hero{grid-template-columns:1fr;gap:32px;padding-bottom:44px}
+  .sign-hero__sky{border-radius:120px 120px 8px 8px}
+  .sign-inchart{grid-template-columns:1fr;gap:20px}
+  .sign-thumb-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (max-width:600px){
+  .sign-section{padding-block:44px}
+  .sign-hero{padding-top:12px}
+  .sign-hero__glyph{width:44px;height:44px}
+  .sign-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sign-facts>div{padding-bottom:10px}
+  .sign-hero .actions .button,.sign-hero .actions .button-secondary{flex:1 1 100%}
+  .sign-hero__sky{border-radius:8px;padding:24px 16px}
+  .sign-hero__sky::before{border-radius:4px;inset:8px}
+  .sign-astro,.sign-traits,.daily-reading__grid{grid-template-columns:1fr}
+  .sign-traits{gap:20px}
+  .sign-astro__card,.sign-astro__card--ruler{grid-template-columns:1fr;gap:12px}
+  .sign-glance{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sign-thumb-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .daily-reading__overview{font-size:22px}
+}
+@media print{.sign-thumb-grid,.sign-bridge,.sign-hero__art{display:none}.sign-section--band{background:none}}

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free Taurus horoscope for today, calculated from real planetary positions. Plus the complete Taurus guide: element, ruling planet, love, career, and compatibility." />
-  <title>Taurus Horoscope Today – Daily Reading & Sign Guide | AstroPrecise</title>
+  <meta name="description" content="The Taurus sign guide: element, ruling planet, love, career and compatibility, plus today’s sky for Taurus, calculated from real planetary positions." />
+  <title>Taurus: Sign guide and this week's sky | AstroPrecise</title>
   <link rel="canonical" href="https://astroprecise.app/taurus.html" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -14,584 +14,298 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="Taurus Horoscope Today | AstroPrecise" />
-  <meta property="og:description" content="Free Taurus horoscope for today, calculated from real planetary positions. Plus the complete Taurus guide: element, ruling planet, love, career, and compatibility." />
+  <meta property="og:title" content="Taurus: Sign guide and this week's sky | AstroPrecise" />
+  <meta property="og:description" content="The Taurus sign guide: element, ruling planet, love, career and compatibility, plus today’s sky for Taurus, calculated from real planetary positions." />
   <meta property="og:url" content="https://astroprecise.app/taurus.html" />
   <meta property="og:image" content="https://astroprecise.app/img/og/sign-taurus.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Taurus – April 20 – May 20. Engine still of Venus from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Taurus Horoscope Today | AstroPrecise" />
-  <meta name="twitter:description" content="Free Taurus horoscope for today, calculated from real planetary positions. Plus the complete Taurus guide: element, ruling planet, love, career, and compatibility." />
+  <meta name="twitter:title" content="Taurus: Sign guide and this week's sky | AstroPrecise" />
+  <meta name="twitter:description" content="The Taurus sign guide: element, ruling planet, love, career and compatibility, plus today’s sky for Taurus, calculated from real planetary positions." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og/sign-taurus.jpg" />
-  <meta name="theme-color" content="#040812" />
-  <link rel="preload" href="img/engine/studio/venus.webp" as="image" type="image/webp" fetchpriority="high" />
-  <link rel="preload" href="css/main-lite.css" as="style" />
-  <!-- CLS: preload the hero display face (h1) so Cormorant paints from first paint (no late swap). -->
-  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/sign-page.css" id="ap-css-sign-page" />
-  <style>
-    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-    /* Constellation reserve — pre-CSS paint + CLS guard */
-    .sign-hero__constellation{max-width:280px;margin:0 auto 1rem;min-height:175px;contain:layout style}
-    .sign-hero__constellation svg{display:block;width:100%;height:auto;aspect-ratio:320/200}
-    /* LCP shell — system fonts paint before deferred webfonts (h1 + card are LCP candidates) */
-    .sign-hero h1 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: clamp(2.4rem, 6vw, 3.6rem);
-      font-weight: 700;
-      color: var(--ap-text-primary, #EEF4FA);
-      line-height: 1.1;
-      margin: 0 0 0.5rem;
-    }
-    .sign-hero__dates {
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      font-size: 0.875rem;
-      color: var(--ap-silver, #93A8BF);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-    /* Hero planet — the ruling-planet ENGINE STILL is the anchor (photoreal, our render).
-       Deep-void plate, soft radial glow behind the disc, generous reserve box (CLS guard). */
-    .sign-hero__inner {
-      display: flex; gap: clamp(1.5rem, 4vw, 3.5rem);
-      align-items: center; justify-content: center;
-      max-width: 900px; margin: 0 auto;
-    }
-    .sign-hero__planet {
-      position: relative; flex-shrink: 0;
-      width: clamp(200px, 34vw, 340px);
-      aspect-ratio: 1 / 1;
-      display: flex; align-items: center; justify-content: center;
-    }
-    /* Soft element-spectrum glow behind the physical planet render. */
-    .sign-hero__planet::before {
-      content: ''; position: absolute; inset: -6%;
-      border-radius: 50%; z-index: 0; pointer-events: none;
-      background: radial-gradient(circle at 50% 46%,
-        color-mix(in srgb, var(--sign-elem, #93A8BF) 26%, transparent) 0%,
-        rgba(12, 16, 22, 0) 62%);
-      filter: blur(6px);
-    }
-    .sign-hero__planet-img {
-      position: relative; z-index: 1;
-      width: 100%; height: 100%;
-      object-fit: contain;
-      display: block;
-      filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.62))
-              drop-shadow(0 0 30px color-mix(in srgb, var(--sign-elem, #93A8BF) 22%, transparent));
-    }
-    .sign-hero__planet-caption {
-      position: absolute; z-index: 2; left: 50%; bottom: -1.4rem;
-      transform: translateX(-50%);
-      width: max-content; max-width: min(92vw, 300px); text-align: center;
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      font-size: 0.62rem; line-height: 1.4; letter-spacing: 0.1em; text-transform: uppercase;
-      color: color-mix(in srgb, var(--ap-silver, #93A8BF) 78%, var(--ap-paper, #EEF4FA));
-      opacity: 0.8;
-    }
-    .sign-hero__figure, figure.sign-hero__planet { margin: 0; }
-    @media (max-width: 640px) {
-      .sign-hero__inner { flex-direction: column; gap: 1.75rem; }
-      .sign-hero__planet { width: clamp(190px, 62vw, 260px); }
-    }
-    /* Hero seal — celestial-seals.css audit-deferred.
-       CLS FIX (v582): reserve the glyph box at its FINAL rendered geometry so the
-       hero column does not drop when celestial-seals.css applies + the .ap-seal art
-       is injected. Must match celestial-seals.css .sign-hero__glyph{width/height/margin}
-       EXACTLY (clamp + space-4) and apply in ALL states — the previous
-       :not(:has(.ap-seal)) + 4.5rem reserve under-reserved by ~40px and dropped once
-       the seal mounted, shifting keyword/dates by ~32px (CLS ~0.059). */
-    .sign-hero__glyph.sign-hero__seal,
-    .sign-hero__glyph[data-celestial-seal] {
-      display: block;
-      width: clamp(3.5rem, 12vw, 5rem);
-      height: clamp(4rem, 14vw, 5.75rem);
-      margin: 0 auto var(--space-4);
-      contain: layout style;
-    }
-    /* Pre-seal placeholder must not inflate the reserved box (main.css sets 4.8rem). */
-    .sign-hero__glyph.sign-hero__seal:not(:has(.ap-seal)) {
-      font-size: clamp(3.5rem, 12vw, 5rem) !important;
-      line-height: 1;
-      overflow: hidden;
-    }
-    /* Today section — CLS reserve; boot paints full grid */
-    #today-date { min-height: 1.35rem; }
-    #today-reading {
-      min-height: 520px;
-      contain: layout style;
-    }
-    .today-reading.is-loading .card { min-height: 460px; }
-    /* FAQ accordion — CLS reserve */
-    .sign-faq__list {
-      min-height: 400px;
-      contain: layout style;
-    }
-    .sign-faq__item summary { min-height: 44px; }
-    /* Thumb grid — 12 cards, ~3 rows on mobile */
-    .sign-thumb-grid {
-      min-height: 480px;
-      contain: layout style;
-    }
-    .sign-thumb img {
-      display: block;
-      width: 100%;
-      max-width: 92px;
-      height: auto;
-      aspect-ratio: 2 / 3;
-      object-fit: cover;
-    }
-    /* Layer 2 — engraved astronomy fact grid; element-tinted per body[data-element] */
-    body[data-element="fire"]  { --sign-elem: var(--ap-element-fire, #FF8EA8); --sign-elem-glow: var(--ap-element-fire-glow, rgba(255, 142, 168, 0.10)); }
-    body[data-element="earth"] { --sign-elem: var(--ap-element-earth, #6FD0B3); --sign-elem-glow: var(--ap-element-earth-glow, rgba(111, 208, 179, 0.10)); }
-    body[data-element="air"]   { --sign-elem: var(--ap-element-air, #93A8BF); --sign-elem-glow: var(--ap-element-air-glow, rgba(147, 168, 191, 0.09)); }
-    body[data-element="water"] { --sign-elem: var(--ap-element-water, #79C7F2); --sign-elem-glow: var(--ap-element-water-glow, rgba(121, 199, 242, 0.10)); }
-    .sign-astro {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: var(--space-4); max-width: 820px; margin: 0 auto;
-      min-height: 300px; contain: layout style;
-    }
-    .sign-astro__card {
-      display: flex; gap: var(--space-4); align-items: flex-start;
-      padding: var(--space-5);
-      background: var(--ap-card-surface, rgba(16, 29, 48, 0.76));
-      border: 1px solid rgba(147, 168, 191, 0.18);
-      border-radius: var(--radius-lg);
-    }
-    .sign-astro__card--element {
-      border-color: color-mix(in srgb, var(--sign-elem, #93A8BF) 42%, transparent);
-      background: linear-gradient(180deg, var(--sign-elem-glow, transparent) 0%, var(--ap-card-surface, rgba(16, 29, 48, 0.76)) 70%);
-    }
-    .sign-astro__seal { flex-shrink: 0; width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center; justify-content: center; }
-    .sign-astro__seal .ap-seal { width: 2.4rem; height: 2.4rem; }
-    .sign-astro__seal--element { color: var(--sign-elem, #93A8BF); font-size: 1.8rem; }
-    .sign-astro__seal--modality { color: var(--ap-ion, #8BA9FF); font-size: 1.6rem; }
-    .sign-astro__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ap-silver, #93A8BF); display: block; margin-bottom: 4px; opacity: 0.72; }
-    .sign-astro__value { font-family: var(--font-display); color: var(--ap-paper, #EEF4FA); font-size: 1.15rem; display: block; }
-    .sign-astro__note { font-size: 0.82rem; color: var(--ap-silver, #93A8BF); line-height: 1.6; margin: var(--space-2) 0 0; }
-    /* Layer 3 — Sun / Moon / Rising placement rows */
-    .sign-inchart {
-      display: flex; flex-direction: column; gap: var(--space-4);
-      max-width: 760px; margin: 0 auto;
-      min-height: 320px; contain: layout style;
-    }
-    .sign-inchart__row {
-      display: flex; gap: var(--space-4); align-items: flex-start;
-      padding: var(--space-5);
-      background: rgba(147, 168, 191, 0.05);
-      border: 1px solid rgba(147, 168, 191, 0.16);
-      border-left: 3px solid color-mix(in srgb, var(--sign-elem, #93A8BF) 55%, transparent);
-      border-radius: var(--radius-lg);
-    }
-    .sign-inchart__seal { flex-shrink: 0; width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center; justify-content: center; }
-    .sign-inchart__seal .ap-seal { width: 2.4rem; height: 2.4rem; }
-    .sign-inchart__where { font-family: var(--font-display); color: var(--ap-paper, #EEF4FA); font-size: 1.1rem; display: block; margin-bottom: 4px; }
-    .sign-inchart__text { font-size: 0.9rem; color: var(--ap-silver, #93A8BF); line-height: 1.7; margin: 0; }
-    .sign-inlife { max-width: 760px; margin: 0 auto; }
-    .sign-inlife__block { margin: 0 0 var(--space-6); }
-    .sign-inlife__block:last-child { margin-bottom: 0; }
-    .sign-inlife h3 {
-      font-family: var(--font-display);
-      color: var(--ap-paper, #EEF4FA);
-      font-size: 1.15rem;
-      margin: 0 0 var(--space-3);
-    }
-    .sign-inlife .prose-block { margin: 0; }
-    .sign-inlife__compat {
-      margin: var(--space-3) 0 0;
-      font-size: 0.88rem;
-      color: var(--ap-silver, #93A8BF);
-      line-height: 1.6;
-    }
-    .sign-inlife__compat a { color: var(--ap-ion, #8BA9FF); text-decoration: none; }
-    .sign-inlife__compat a:hover { color: var(--ap-paper, #EEF4FA); text-decoration: underline; }
-    .sign-inlife__more { margin: var(--space-2) 0 0; }
-    .sign-inlife__more > summary {
-      cursor: pointer;
-      color: var(--ap-ion, #8BA9FF);
-      font-family: var(--font-ui, inherit);
-      font-size: 0.85rem;
-      letter-spacing: 0.04em;
-      list-style: none;
-    }
-    .sign-inlife__more > summary::-webkit-details-marker { display: none; }
-    .sign-inlife__more[open] > summary { margin-bottom: var(--space-4); }
-    .sign-astro-more { margin-top: var(--space-2); }
-    .sign-astro-more > summary {
-      cursor: pointer;
-      color: var(--ap-ion, #8BA9FF);
-      font-family: var(--font-ui, inherit);
-      font-size: 0.85rem;
-      letter-spacing: 0.04em;
-      list-style: none;
-    }
-    .sign-astro-more > summary::-webkit-details-marker { display: none; }
-    .sign-astro-more[open] > summary { margin-bottom: var(--space-4); }
-    .trait-cols__title {
-      font-family: var(--font-display);
-      color: var(--ap-paper, #EEF4FA);
-      margin-bottom: var(--space-4);
-    }
-    .sign-cta-row { margin-top: 0; }
-    /* Override leftover gold token names in sign-page.css (Midnight Meridian). */
-    .sign-breadcrumb a { color: var(--ap-ion, #8BA9FF); }
-    .sign-breadcrumb a:hover { color: var(--ap-paper, #EEF4FA); }
-    .sign-breadcrumb li[aria-current="page"] { color: var(--ap-paper, #EEF4FA); }
-    .sign-hero__dates { color: var(--ap-silver, #93A8BF); }
-    .sign-hero__actions .btn--outline {
-      color: var(--ap-paper, #EEF4FA);
-      border-color: rgba(147, 168, 191, .45);
-    }
-    .sign-hero__actions .btn--outline:hover {
-      color: var(--ap-ion, #8BA9FF);
-      border-color: var(--ap-ion, #8BA9FF);
-    }
-    .sign-fact__value { color: var(--ap-paper, #EEF4FA); }
-    .trait-list--plus li::before { background: var(--ap-ion, #8BA9FF); }
-    .sign-thumb:hover .sign-thumb__label { color: var(--ap-paper, #EEF4FA); }
-    .daily-reading__tile-label { color: var(--ap-ion, #8BA9FF); }
-    .daily-reading__meta strong { color: var(--ap-ion, #8BA9FF); }
-    .glance-cell__value { color: var(--ap-paper, #EEF4FA); }
-    .sign-reference { margin-top: var(--space-2); }
-    .sign-reference > summary {
-      cursor: pointer;
-      color: var(--ap-ion, #8BA9FF);
-      font-family: var(--font-ui, inherit);
-      font-size: 0.9rem;
-      letter-spacing: 0.04em;
-      list-style: none;
-    }
-    .sign-reference > summary::-webkit-details-marker { display: none; }
-    .sign-reference[open] > summary { margin-bottom: var(--space-5); }
-    .sign-reference__sub {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      color: var(--ap-paper, #EEF4FA);
-      margin: var(--space-6) 0 var(--space-4);
-    }
-    .sign-faq__item summary { color: var(--ap-paper, #EEF4FA); }
-    .sign-faq__item summary::after { color: var(--ap-ion, #8BA9FF); }
-    .prose-block { color: var(--ap-silver, #93A8BF); }
-    /* Footer — main.css grid audit-deferred */
-    .footer .footer-inner {
-      min-height: 540px;
-      contain: layout style;
-    }
-  </style>
-  <script src="js/defer-page-css.js?v=925" defer></script>
-  <script src="js/ap-sign-defer-boot.js?v=925" defer></script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Taurus Horoscope Today","description":"Free Taurus horoscope for today, calculated from real planetary positions. Plus the complete Taurus guide: element, ruling planet, love, career, and compatibility.","url":"https://astroprecise.app/taurus.html","inLanguage":"en","isAccessibleForFree":true,"keywords":"Taurus, Taurus horoscope, Taurus horoscope today, Taurus zodiac sign, Taurus dates, Taurus personality, Taurus traits, Taurus compatibility, Taurus love, Taurus career, Earth sign, Fixed sign","publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":{"@type":"Thing","name":"Taurus (astrology)"}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Taurus","item":"https://astroprecise.app/taurus.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are the Taurus zodiac dates?","acceptedAnswer":{"@type":"Answer","text":"Taurus season runs April 20 – May 20. People born in this window have their Sun in Taurus."}},{"@type":"Question","name":"What element and ruling planet is Taurus?","acceptedAnswer":{"@type":"Answer","text":"Taurus is a Earth sign of the Fixed modality, ruled by Venus. Its symbol is The Bull."}},{"@type":"Question","name":"Which signs are most compatible with Taurus?","acceptedAnswer":{"@type":"Answer","text":"Taurus is traditionally most compatible with Virgo, Capricorn, Cancer. Full synastry depends on the complete birth charts of both people, not Sun signs alone."}},{"@type":"Question","name":"What are the main Taurus personality traits?","acceptedAnswer":{"@type":"Answer","text":"Taurus is known for being unshakeable reliability, patience that outlasts any obstacle, a natural eye for beauty and quality. Its growth edges include stubbornness mistaken for principle and resistance to necessary change. As a Fixed Earth sign ruled by Venus, Taurus carries the keyword “I have”."}},{"@type":"Question","name":"Is Taurus rare?","acceptedAnswer":{"@type":"Answer","text":"No zodiac sign is truly rare — every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but Taurus is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind."}},{"@type":"Question","name":"What is the Taurus symbol and ruling body?","acceptedAnswer":{"@type":"Answer","text":"The symbol of Taurus is The Bull, and it is ruled by Venus. Its polarity is feminine / yin, it is traditionally associated with the neck and throat, and its corresponding tarot card is The Hierophant."}}]}</script>
-<link rel="stylesheet" href="css/ap-next.css?v=925"><script defer src="js/ap-next.js?v=925"></script></head>
-<body class="ap-editorial ap-no-nav-enter" data-element="earth" data-sign="Taurus">
-  <a class="skip-link" href="#main-content">Skip to content</a>
+  <meta name="theme-color" content="#F6F3EC" />
+  <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/ap-next.css?v=926" />
+  <link rel="stylesheet" href="css/sign-next.css?v=926" />
+  <script src="js/ap-next.js?v=926" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Taurus: Sign guide and this week's sky","description":"The Taurus sign guide: element, ruling planet, love, career and compatibility, plus today’s sky for Taurus, calculated from real planetary positions.","url":"https://astroprecise.app/taurus.html","inLanguage":"en","isAccessibleForFree":true,"keywords":"Taurus, Taurus horoscope, Taurus zodiac sign, Taurus dates, Taurus personality, Taurus traits, Taurus compatibility, Taurus love, Taurus career, Earth sign, Fixed sign","publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":{"@type":"Thing","name":"Taurus (astrology)"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Guides & signs","item":"https://astroprecise.app/guides.html"},{"@type":"ListItem","position":2,"name":"Taurus","item":"https://astroprecise.app/taurus.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are the Taurus zodiac dates?","acceptedAnswer":{"@type":"Answer","text":"Taurus season runs April 20 – May 20. People born in this window have their Sun in Taurus."}},{"@type":"Question","name":"What element and ruling planet is Taurus?","acceptedAnswer":{"@type":"Answer","text":"Taurus is a Earth sign of the Fixed modality, ruled by Venus. Its symbol is The Bull."}},{"@type":"Question","name":"Which signs are most compatible with Taurus?","acceptedAnswer":{"@type":"Answer","text":"Taurus is traditionally most compatible with Virgo, Capricorn, Cancer. Full synastry depends on the complete birth charts of both people, not Sun signs alone."}},{"@type":"Question","name":"What are the main Taurus personality traits?","acceptedAnswer":{"@type":"Answer","text":"Taurus is known for being unshakeable reliability, patience that outlasts any obstacle, a natural eye for beauty and quality. Its growth edges include stubbornness mistaken for principle and resistance to necessary change. As a Fixed Earth sign ruled by Venus, Taurus carries the keyword “I have”."}},{"@type":"Question","name":"Is Taurus rare?","acceptedAnswer":{"@type":"Answer","text":"No zodiac sign is truly rare: every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but Taurus is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind."}},{"@type":"Question","name":"What is the Taurus symbol and ruling body?","acceptedAnswer":{"@type":"Answer","text":"The symbol of Taurus is The Bull, and it is ruled by Venus. Its polarity is feminine / yin, it is traditionally associated with the neck and throat, and its corresponding tarot card is The Hierophant."}}]}</script>
+</head>
+<body class="ap-next ap-sign" data-element="earth" data-sign="Taurus">
+  <a class="ap-skip" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
-    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
-    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
-    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
     <symbol id="ei-fire" viewBox="0 0 24 24"><path d="M12 3.5 20 19H4L12 3.5Z"/></symbol>
     <symbol id="ei-earth" viewBox="0 0 24 24"><path d="M12 20.5 4 5h16L12 20.5ZM6.6 10.2h10.8"/></symbol>
     <symbol id="ei-air" viewBox="0 0 24 24"><path d="M12 3.5 20 19H4L12 3.5ZM6.6 13.8h10.8"/></symbol>
     <symbol id="ei-water" viewBox="0 0 24 24"><path d="M12 20.5 4 5h16L12 20.5Z"/></symbol>
     <symbol id="ei-modality" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></symbol>
+    <symbol id="g-taurus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="15.2" r="5.4"/><path d="M3.8 3.4C4.6 7.8 7.6 9.8 12 9.8S19.4 7.8 20.2 3.4"/></symbol>
+    <symbol id="g-venus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.4" r="5.4"/><path d="M12 13.8V22M8.4 18.2h7.2"/></symbol>
+    <symbol id="g-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="g-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 3.7A8.4 8.4 0 1 0 14.6 20.3A6.6 8.4 0 0 1 14.6 3.7Z"/></symbol>
   </svg>
-
   <div data-ap-next-nav><noscript><nav class="ap-noscript-nav" aria-label="Primary"><a href="index.html">AstroPrecise</a> · <a href="chart.html">Birth chart</a> · <a href="explore.html">Explore</a> · <a href="charts.html">Saved</a> · <a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a></nav></noscript></div>
 
-  <main id="main-content">
-    <nav class="sign-breadcrumb" aria-label="Breadcrumb">
+  <main id="main-content" class="sign-page">
+    <nav class="sign-crumb wrap" aria-label="Breadcrumb">
       <ol>
-        <li><a href="observatory.html">Observatory</a></li>
+        <li><a href="guides.html">Guides &amp; signs</a></li>
         <li aria-current="page">Taurus</li>
       </ol>
     </nav>
 
-    <section class="sign-hero" aria-labelledby="page-title">
-      <div class="sign-hero__inner">
-        <figure class="sign-hero__planet">
-          <img class="sign-hero__planet-img" src="img/engine/studio/venus.webp"
-            alt="Venus, ruler of Taurus – rendered from the AstroPrecise engine"
-            width="340" height="340" loading="eager" decoding="async" fetchpriority="high" />
-          <figcaption class="sign-hero__planet-caption">Venus · ruler of Taurus · our engine render</figcaption>
-        </figure>
-        <div class="sign-hero__content">
-          <span class="sign-hero__glyph sign-hero__seal" data-celestial-seal="zodiac:taurus" data-seal-lg aria-hidden="true"></span>
-          <div class="sign-hero__constellation"><svg viewBox="0 0 320 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-taurus d-taurus"><title id="t-taurus">The constellation of Taurus</title><desc id="d-taurus">The bull's V-shaped face with orange Aldebaran, two long horns, and the Pleiades cluster.</desc><defs><radialGradient id="g-taurus" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#122038" stop-opacity="0.18"/><stop offset="100%" stop-color="#122038" stop-opacity="0"/></radialGradient></defs><ellipse cx="160" cy="105" rx="115" ry="70" fill="url(#g-taurus)"/><g stroke="#8BA9FF" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round" fill="none"><polyline points="170,120 150,108 132,98 112,90 92,82"/><polyline points="170,120 178,100 188,80 196,58 202,40"/><polyline points="150,108 162,86 174,64 184,44"/></g><g fill="#C9D6E3"><circle cx="92" cy="82" r="1.8"/><circle cx="112" cy="90" r="1.5"/><circle cx="132" cy="98" r="1.6"/><circle cx="150" cy="108" r="1.9"/><circle cx="184" cy="44" r="2.0"/><circle cx="196" cy="58" r="1.5"/><circle cx="178" cy="100" r="1.4"/><circle cx="162" cy="86" r="1.5"/><circle cx="174" cy="64" r="1.6"/></g><circle cx="202" cy="40" r="6" fill="#93A8BF" opacity="0.18"/><circle cx="202" cy="40" r="2.9" fill="#ffffff"/><circle cx="170" cy="120" r="6" fill="#ff9e7a" opacity="0.22"/><circle cx="170" cy="120" r="3.2" fill="#ff9e7a"/><g fill="#C9D6E3"><circle cx="246" cy="50" r="1.2"/><circle cx="252" cy="56" r="1.4"/><circle cx="240" cy="58" r="1.0"/><circle cx="250" cy="46" r="1.0"/><circle cx="256" cy="50" r="0.9"/><circle cx="244" cy="52" r="0.8"/></g><g fill="#C9D6E3" opacity="0.4"><circle cx="60" cy="60" r="0.7"/><circle cx="48" cy="130" r="0.6"/><circle cx="280" cy="100" r="0.7"/><circle cx="120" cy="160" r="0.6"/><circle cx="220" cy="150" r="0.5"/><circle cx="290" cy="150" r="0.6"/><circle cx="40" cy="90" r="0.5"/></g></svg></div>
-          <h1 id="page-title">Taurus</h1>
-          <p class="sign-hero__dates">April 20 – May 20</p>
-          <p class="sign-hero__keyword" aria-label="Sign keyword">“I have”</p>
-          <div class="sign-facts">
-            <div class="sign-fact"><span class="sign-fact__label">Element</span><span class="sign-fact__value">Earth</span></div>
-            <div class="sign-fact"><span class="sign-fact__label">Modality</span><span class="sign-fact__value">Fixed</span></div>
-            <div class="sign-fact"><span class="sign-fact__label">Ruler</span><span class="sign-fact__value">Venus</span></div>
-            <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">The Bull</span></div>
-          </div>
-          <div class="sign-hero__actions">
-            <a href="horoscope.html?sign=taurus" class="btn btn--primary btn--sm">Today’s reading</a>
-            <a href="chart.html" class="btn btn--outline btn--sm">Cast your chart</a>
-          </div>
+    <section class="sign-hero wrap" aria-labelledby="page-title">
+      <div class="sign-hero__copy">
+        <p class="sign-label">Sign guide · Earth · Fixed</p>
+        <svg class="sign-glyph sign-hero__glyph" aria-hidden="true" focusable="false"><use href="#g-taurus"/></svg>
+        <h1 id="page-title">Taurus</h1>
+        <p class="sign-hero__dates">April 20 – May 20</p>
+        <p class="sign-hero__keyword" aria-label="Sign keyword">“I have”</p>
+        <dl class="sign-facts">
+          <div><dt>Element</dt><dd>Earth</dd></div>
+          <div><dt>Modality</dt><dd>Fixed</dd></div>
+          <div><dt>Ruler</dt><dd>Venus</dd></div>
+          <div><dt>Symbol</dt><dd>The Bull</dd></div>
+        </dl>
+        <div class="actions">
+          <a href="chart.html" class="button">Cast your chart</a>
+          <a href="#today-heading" class="button-secondary">Today’s sky for Taurus</a>
         </div>
       </div>
+      <figure class="sign-hero__art">
+        <div class="sign-hero__sky">
+          <div class="sign-hero__constellation"><svg viewBox="0 0 320 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-taurus d-taurus"><title id="t-taurus">The constellation of Taurus</title><desc id="d-taurus">The bull's V-shaped face with orange Aldebaran, two long horns, and the Pleiades cluster.</desc><defs><radialGradient id="cg-taurus" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#122038" stop-opacity="0.18"/><stop offset="100%" stop-color="#122038" stop-opacity="0"/></radialGradient></defs><ellipse cx="160" cy="105" rx="115" ry="70" fill="url(#cg-taurus)"/><g stroke="#8BA9FF" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round" fill="none"><polyline points="170,120 150,108 132,98 112,90 92,82"/><polyline points="170,120 178,100 188,80 196,58 202,40"/><polyline points="150,108 162,86 174,64 184,44"/></g><g fill="#C9D6E3"><circle cx="92" cy="82" r="1.8"/><circle cx="112" cy="90" r="1.5"/><circle cx="132" cy="98" r="1.6"/><circle cx="150" cy="108" r="1.9"/><circle cx="184" cy="44" r="2.0"/><circle cx="196" cy="58" r="1.5"/><circle cx="178" cy="100" r="1.4"/><circle cx="162" cy="86" r="1.5"/><circle cx="174" cy="64" r="1.6"/></g><circle cx="202" cy="40" r="6" fill="#93A8BF" opacity="0.18"/><circle cx="202" cy="40" r="2.9" fill="#ffffff"/><circle cx="170" cy="120" r="6" fill="#ff9e7a" opacity="0.22"/><circle cx="170" cy="120" r="3.2" fill="#ff9e7a"/><g fill="#C9D6E3"><circle cx="246" cy="50" r="1.2"/><circle cx="252" cy="56" r="1.4"/><circle cx="240" cy="58" r="1.0"/><circle cx="250" cy="46" r="1.0"/><circle cx="256" cy="50" r="0.9"/><circle cx="244" cy="52" r="0.8"/></g><g fill="#C9D6E3" opacity="0.4"><circle cx="60" cy="60" r="0.7"/><circle cx="48" cy="130" r="0.6"/><circle cx="280" cy="100" r="0.7"/><circle cx="120" cy="160" r="0.6"/><circle cx="220" cy="150" r="0.5"/><circle cx="290" cy="150" r="0.6"/><circle cx="40" cy="90" r="0.5"/></g></svg></div>
+        </div>
+        <figcaption>The Taurus star pattern, drawn from real star positions</figcaption>
+      </figure>
     </section>
 
-    <section class="section" aria-labelledby="today-heading">
-      <div class="container">
-        <h2 class="section__title" id="today-heading">Taurus Horoscope Today</h2>
-        <p class="section__subtitle" id="today-date" aria-live="polite"></p>
-        <p class="section__subtitle" style="font-size:0.78rem;opacity:0.75;margin-top:var(--space-2);">Computed from today’s sky – same VSOP87 engine as the orrery. Not a live feed.</p>
+    <section class="sign-section sign-section--band" aria-labelledby="today-heading">
+      <div class="wrap">
+        <h2 id="today-heading">Taurus in today’s sky</h2>
+        <p class="sign-sub" id="today-date" aria-live="polite"></p>
+        <p class="sign-note">Computed from today’s sky with the same VSOP87 engine as the orrery. Not a live feed.</p>
         <div class="today-reading is-loading" id="today-reading" aria-live="polite">
-          <div class="card" style="padding:var(--space-8);">
-            <p style="color:var(--ap-silver, #93A8BF);line-height:1.85;">
-              Today’s Taurus reading is calculated in your browser from real planetary positions.
-              If this text remains, enable JavaScript to see the computed reading for today –
-              or read the complete Taurus profile below.
-            </p>
+          <div class="card">
+            <p>Today’s Taurus reading is calculated in your browser from real planetary positions. If this text remains, turn on JavaScript to see it, or read the full Taurus guide below.</p>
           </div>
         </div>
+        <p class="sign-week"><a class="text-link" href="this-weeks-sky.html">This week’s sky →</a></p>
       </div>
     </section>
 
-    <section class="section section--alt" aria-labelledby="about-heading">
-      <div class="container">
-        <h2 class="section__title" id="about-heading">About Taurus</h2>
-        <p class="prose-block">Taurus is the zodiac's anchor — the sign that turns ideas into things you can touch. Ruled by Venus, Taurus moves slowly and deliberately, building comfort, beauty, and security that lasts. This is the most sensory sign of the twelve: food, music, touch, and the physical world are not distractions from life but its very substance.</p>
-      </div>
+    <section class="sign-section wrap" aria-labelledby="about-heading">
+      <h2 id="about-heading">About Taurus</h2>
+      <p class="sign-lede">Taurus is the zodiac's anchor — the sign that turns ideas into things you can touch. Ruled by Venus, Taurus moves slowly and deliberately, building comfort, beauty, and security that lasts. This is the most sensory sign of the twelve: food, music, touch, and the physical world are not distractions from life but its very substance.</p>
     </section>
 
     
-    <section class="section" aria-labelledby="astronomy-heading">
-      <div class="container">
-        <h2 class="section__title" id="astronomy-heading">The Astronomy of Taurus</h2>
-        <p class="section__subtitle" style="margin-bottom:var(--space-4);">The factual layer — where Taurus sits on the ecliptic.</p>
-        <details class="sign-astro-more">
-          <summary>Element, ruler, ecliptic band</summary>
+    <section class="sign-section wrap" aria-labelledby="astronomy-heading">
+      <h2 id="astronomy-heading">The astronomy of Taurus</h2>
+      <p class="sign-sub">The factual layer: where Taurus sits on the ecliptic.</p>
+      <details class="sign-more">
+        <summary>Element, ruler, ecliptic band</summary>
         <div class="sign-astro">
-          <div class="sign-astro__card sign-astro__card--element">
-            <span class="sign-astro__seal sign-astro__seal--element" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-earth"/></svg></span>
+          <div class="sign-astro__card">
+            <span class="sign-astro__mark" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-earth"/></svg></span>
             <div>
-              <span class="sign-astro__label">Element</span>
+              <span class="sign-label">Element</span>
               <span class="sign-astro__value">Earth</span>
-              <p class="sign-astro__note">the element of the tangible — earth signs are grounded, practical and built to last.</p>
+              <p>the element of the tangible — earth signs are grounded, practical and built to last.</p>
             </div>
           </div>
           <div class="sign-astro__card">
-            <span class="sign-astro__seal sign-astro__seal--modality" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-modality"/></svg></span>
+            <span class="sign-astro__mark" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-modality"/></svg></span>
             <div>
-              <span class="sign-astro__label">Modality</span>
+              <span class="sign-label">Modality</span>
               <span class="sign-astro__value">Fixed</span>
-              <p class="sign-astro__note">the sustaining mode — fixed signs hold steady, deepen and see things through.</p>
+              <p>the sustaining mode — fixed signs hold steady, deepen and see things through.</p>
+            </div>
+          </div>
+          <div class="sign-astro__card sign-astro__card--ruler">
+            <figure class="sign-planet">
+              <img src="img/engine/studio/venus.webp" alt="Venus, ruler of Taurus, rendered by the AstroPrecise engine" width="96" height="96" loading="lazy" decoding="async" />
+            </figure>
+            <div>
+              <span class="sign-label">Ruling planet <svg class="sign-glyph sign-glyph--inline" aria-hidden="true" focusable="false"><use href="#g-venus"/></svg></span>
+              <span class="sign-astro__value">Venus</span>
+              <p>Venus, the planet of beauty, pleasure and what we value.</p>
+              <p class="sign-caption">Venus · our engine render</p>
             </div>
           </div>
           <div class="sign-astro__card">
-            <span class="sign-astro__seal" data-celestial-seal="planet:venus" data-seal-sm aria-hidden="true"></span>
+            <span class="sign-astro__mark" aria-hidden="true"><svg class="sign-glyph" aria-hidden="true" focusable="false"><use href="#g-taurus"/></svg></span>
             <div>
-              <span class="sign-astro__label">Ruling Planet</span>
-              <span class="sign-astro__value">Venus</span>
-              <p class="sign-astro__note">Venus, the planet of beauty, pleasure and what we value.</p>
-            </div>
-          </div>
-          <div class="sign-astro__card sign-astro__card--band">
-            <span class="sign-astro__seal" data-celestial-seal="zodiac:taurus" data-seal-sm aria-hidden="true"></span>
-            <div>
-              <span class="sign-astro__label">Position on the Ecliptic</span>
+              <span class="sign-label">Position on the ecliptic</span>
               <span class="sign-astro__value">30°–60° longitude</span>
-              <p class="sign-astro__note">Taurus is the 30°–60° band of the zodiac circle. The Sun crosses it around 20 Apr – 20 May each year — the exact day shifts by about a day year to year, which is why the dates are approximate.</p>
+              <p>Taurus is the 30°–60° band of the zodiac circle. The Sun crosses it around 20 Apr – 20 May each year. The exact day shifts by about a day from year to year, which is why the dates are approximate.</p>
             </div>
           </div>
         </div>
-        </details>
-      </div>
+      </details>
     </section>
 
     
-    <section class="section section--alt" aria-labelledby="inchart-heading">
-      <div class="container">
-        <h2 class="section__title" id="inchart-heading">Taurus in Your Chart</h2>
-        <p class="section__subtitle" style="margin-bottom:var(--space-6);">Most people meet Taurus as a “star sign”. In a real birth chart it can appear in three very different places — and each one means something distinct.</p>
+    <section class="sign-section sign-section--band" aria-labelledby="inchart-heading">
+      <div class="wrap">
+        <h2 id="inchart-heading">Taurus in your chart</h2>
+        <p class="sign-sub">Most people meet Taurus as a “star sign”. In a real birth chart it can appear in three very different places, and each one means something distinct.</p>
         <div class="sign-inchart">
           <div class="sign-inchart__row">
-            <span class="sign-inchart__seal" data-celestial-seal="planet:sun" data-seal-sm aria-hidden="true"></span>
+            <span class="sign-inchart__mark"><svg class="sign-glyph" aria-hidden="true" focusable="false"><use href="#g-sun"/></svg></span>
             <div>
-              <span class="sign-inchart__where">Sun in Taurus</span>
-              <p class="sign-inchart__text">Your core self — the “Taurus side” people mean when they ask your sign. It shapes your basic character and what makes you feel most yourself.</p>
+              <h3>Sun in Taurus</h3>
+              <p>Your core self: the “Taurus side” people mean when they ask your sign. It shapes your basic character and what makes you feel most yourself.</p>
             </div>
           </div>
           <div class="sign-inchart__row">
-            <span class="sign-inchart__seal" data-celestial-seal="planet:moon" data-seal-sm aria-hidden="true"></span>
+            <span class="sign-inchart__mark"><svg class="sign-glyph" aria-hidden="true" focusable="false"><use href="#g-moon"/></svg></span>
             <div>
-              <span class="sign-inchart__where">Moon in Taurus</span>
-              <p class="sign-inchart__text">Your inner, emotional world — how you feel, comfort yourself and respond in private. Two people with a Taurus Moon share an emotional language, whatever their Sun sign.</p>
+              <h3>Moon in Taurus</h3>
+              <p>Your inner, emotional world: how you feel, comfort yourself and respond in private. Two people with a Taurus Moon share an emotional language, whatever their Sun sign.</p>
             </div>
           </div>
           <div class="sign-inchart__row">
-            <span class="sign-inchart__seal" data-celestial-seal="zodiac:taurus" data-seal-sm aria-hidden="true"></span>
+            <span class="sign-inchart__mark"><svg class="sign-glyph" aria-hidden="true" focusable="false"><use href="#g-taurus"/></svg></span>
             <div>
-              <span class="sign-inchart__where">Rising (Ascendant) in Taurus</span>
-              <p class="sign-inchart__text">How you meet the world — your outward style and first impression. Your Rising is set by the exact time and place you were born, so it needs your birth time to know.</p>
+              <h3>Rising (Ascendant) in Taurus</h3>
+              <p>How you meet the world: your outward style and first impression. Your Rising is set by the exact time and place you were born, so it needs your birth time to know.</p>
             </div>
           </div>
         </div>
+        <p class="sign-inchart__cta"><a class="button" href="chart.html">Cast your chart</a></p>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="traits-heading">
-      <div class="container">
-        <h2 class="section__title" id="traits-heading">Taurus Strengths &amp; Challenges</h2>
-        <div class="trait-cols">
-          <div>
-            <h3 class="trait-cols__title">Strengths</h3>
-            <ul class="trait-list trait-list--plus">
-              <li>Unshakeable reliability</li>
-              <li>Patience that outlasts any obstacle</li>
-              <li>A natural eye for beauty and quality</li>
-              <li>Calm under pressure</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="trait-cols__title">Challenges</h3>
-            <ul class="trait-list trait-list--minus">
-              <li>Stubbornness mistaken for principle</li>
-              <li>Resistance to necessary change</li>
-              <li>Possessiveness with people and things</li>
-              <li>Comfort that hardens into inertia</li>
-            </ul>
-          </div>
+    <section class="sign-section wrap" aria-labelledby="traits-heading">
+      <h2 id="traits-heading">Taurus strengths &amp; challenges</h2>
+      <div class="sign-traits">
+        <div>
+          <h3>Strengths</h3>
+          <ul class="sign-list sign-list--plus">
+            <li>Unshakeable reliability</li>
+            <li>Patience that outlasts any obstacle</li>
+            <li>A natural eye for beauty and quality</li>
+            <li>Calm under pressure</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Challenges</h3>
+          <ul class="sign-list sign-list--minus">
+            <li>Stubbornness mistaken for principle</li>
+            <li>Resistance to necessary change</li>
+            <li>Possessiveness with people and things</li>
+            <li>Comfort that hardens into inertia</li>
+          </ul>
         </div>
       </div>
     </section>
 
     
-    <section class="section section--alt" aria-labelledby="inlife-heading">
-      <div class="container">
-        <h2 class="section__title" id="inlife-heading">In life</h2>
-        <div class="sign-inlife">
-          <div class="sign-inlife__block">
-            <h3>Love</h3>
-            <p class="prose-block">Taurus loves the way it does everything: slowly, thoroughly, and for keeps. This sign needs physical affection and demonstrated loyalty, not grand speeches. Once secure, a Taurus partner is the most steadfast in the zodiac — but betray that trust and the door closes without drama, permanently.</p>
-            <p class="sign-inlife__compat">Traditionally a good match with Virgo, Capricorn and Cancer. See <a href="compatibility.html">two-chart compatibility</a> — Sun signs alone are not the whole story.</p>
-          </div>
-          <details class="sign-inlife__more">
-            <summary>Career, friendship, shadow, growth</summary>
-            <div class="sign-inlife__block">
-              <h3>Career</h3>
-              <p class="prose-block">Taurus excels where persistence compounds: finance, agriculture, architecture, culinary arts, craftsmanship of every kind. This sign builds wealth the slow way and keeps it. The ideal role offers tangible results, fair pay, and freedom from constant reorganisation.</p>
-            </div>
-            <div class="sign-inlife__block">
-              <h3>Friendship</h3>
-              <p class="prose-block">A Taurus friend is the dependable one — the person who remembers your birthday, hosts the good dinners, and is still there a decade later. This sign offers comfort in the most literal sense: a warm home, real food, and a presence that asks nothing of you but your company. Slow to let people in, a Taurus who calls you a friend means it for life, and will quietly carry you through the hard seasons without ever making it a performance.</p>
-            </div>
-            <div class="sign-inlife__block">
-              <h3>Shadow</h3>
-              <p class="prose-block">The Taurus shadow is the grip that will not loosen — clinging to possessions, routines, grudges, and people long after they have stopped serving. Comfort becomes a cage; stubbornness hardens into refusal; the love of security turns into a fear of any change at all. The growth edge is learning that not everything worth keeping can be held, and that some doors only open if you are willing to put something down.</p>
-            </div>
-            <div class="sign-inlife__block">
-              <h3>Growth</h3>
-              <p class="prose-block">The inner path for Taurus is from having to being — discovering that the security it craves was never in the bank balance or the possessions but in its own steadiness. This sign grows by loosening its grip, welcoming the change it instinctively resists, and trusting that abundance flows rather than accumulates. When Taurus learns that it can rebuild whatever it loses, the fear that drives the hoarding finally quiets.</p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="reference-heading">
-      <div class="container">
-        <h2 class="section__title" id="reference-heading">Taurus reference</h2>
-        <details class="sign-reference">
-          <summary>Dates, ruler, FAQ</summary>
-          <h3 class="sign-reference__sub" id="glance-heading">Taurus at a glance</h3>
-          <div class="glance-grid">
-            <div class="glance-cell"><span class="glance-cell__label">Symbol</span><span class="glance-cell__value"><span class="glance-cell__seal" data-celestial-seal="zodiac:taurus" data-seal-sm aria-hidden="true"></span>The Bull</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Dates</span><span class="glance-cell__value">April 20 – May 20</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Element</span><span class="glance-cell__value">Earth</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Modality</span><span class="glance-cell__value">Fixed</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Ruling Planet</span><span class="glance-cell__value">Venus</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Polarity</span><span class="glance-cell__value">Feminine / Yin</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Body Part</span><span class="glance-cell__value">The neck and throat</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Tarot</span><span class="glance-cell__value">The Hierophant</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Keyword</span><span class="glance-cell__value">“I have”</span></div>
-          </div>
-          
-        <h3 class="sign-reference__sub" id="faq-heading">Frequently asked</h3>
-        <div class="sign-faq">
-          <div class="sign-faq__list">
-            
-            <details class="sign-faq__item">
-              <summary>What are the Taurus zodiac dates?</summary>
-              <p>Taurus season runs April 20 – May 20. People born in this window have their Sun in Taurus.</p>
-            </details>
-            <details class="sign-faq__item">
-              <summary>What element and ruling planet is Taurus?</summary>
-              <p>Taurus is a Earth sign of the Fixed modality, ruled by Venus. Its symbol is The Bull.</p>
-            </details>
-            <details class="sign-faq__item">
-              <summary>Which signs are most compatible with Taurus?</summary>
-              <p>Taurus is traditionally most compatible with Virgo, Capricorn, Cancer. Full synastry depends on the complete birth charts of both people, not Sun signs alone.</p>
-            </details>
-            <details class="sign-faq__item">
-              <summary>What are the main Taurus personality traits?</summary>
-              <p>Taurus is known for being unshakeable reliability, patience that outlasts any obstacle, a natural eye for beauty and quality. Its growth edges include stubbornness mistaken for principle and resistance to necessary change. As a Fixed Earth sign ruled by Venus, Taurus carries the keyword “I have”.</p>
-            </details>
-            <details class="sign-faq__item">
-              <summary>Is Taurus rare?</summary>
-              <p>No zodiac sign is truly rare — every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but Taurus is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind.</p>
-            </details>
-            <details class="sign-faq__item">
-              <summary>What is the Taurus symbol and ruling body?</summary>
-              <p>The symbol of Taurus is The Bull, and it is ruled by Venus. Its polarity is feminine / yin, it is traditionally associated with the neck and throat, and its corresponding tarot card is The Hierophant.</p>
-            </details>
-          </div>
-        </div>
+    <section class="sign-section wrap" aria-labelledby="inlife-heading">
+      <h2 id="inlife-heading">In life</h2>
+      <div class="sign-prose">
+        <h3>Love</h3>
+        <p>Taurus loves the way it does everything: slowly, thoroughly, and for keeps. This sign needs physical affection and demonstrated loyalty, not grand speeches. Once secure, a Taurus partner is the most steadfast in the zodiac — but betray that trust and the door closes without drama, permanently.</p>
+        <p class="sign-compat">Traditionally a good match with Virgo, Capricorn and Cancer. See <a href="compatibility.html">two-chart compatibility</a>: Sun signs alone are not the whole story.</p>
+        <details class="sign-more">
+          <summary>Career, friendship, shadow, growth</summary>
+          <h3>Career</h3>
+          <p>Taurus excels where persistence compounds: finance, agriculture, architecture, culinary arts, craftsmanship of every kind. This sign builds wealth the slow way and keeps it. The ideal role offers tangible results, fair pay, and freedom from constant reorganisation.</p>
+          <h3>Friendship</h3>
+          <p>A Taurus friend is the dependable one — the person who remembers your birthday, hosts the good dinners, and is still there a decade later. This sign offers comfort in the most literal sense: a warm home, real food, and a presence that asks nothing of you but your company. Slow to let people in, a Taurus who calls you a friend means it for life, and will quietly carry you through the hard seasons without ever making it a performance.</p>
+          <h3>Shadow</h3>
+          <p>The Taurus shadow is the grip that will not loosen — clinging to possessions, routines, grudges, and people long after they have stopped serving. Comfort becomes a cage; stubbornness hardens into refusal; the love of security turns into a fear of any change at all. The growth edge is learning that not everything worth keeping can be held, and that some doors only open if you are willing to put something down.</p>
+          <h3>Growth</h3>
+          <p>The inner path for Taurus is from having to being — discovering that the security it craves was never in the bank balance or the possessions but in its own steadiness. This sign grows by loosening its grip, welcoming the change it instinctively resists, and trusting that abundance flows rather than accumulates. When Taurus learns that it can rebuild whatever it loses, the fear that drives the hoarding finally quiets.</p>
         </details>
       </div>
     </section>
 
-    
-    <section class="section" aria-label="Events and Shop">
-      <div class="container" style="text-align:center;">
-        <div class="sign-cta-row">
-          <a href="sky-events.html" class="btn btn--outline">What’s in the sky</a>
-          <a href="shop.html" class="btn btn--outline">Open the Shop</a>
+    <section class="sign-section wrap" aria-labelledby="reference-heading">
+      <h2 id="reference-heading">Taurus reference</h2>
+      <details class="sign-more">
+        <summary>Dates, ruler, FAQ</summary>
+        <h3 class="sign-reference__sub" id="glance-heading">Taurus at a glance</h3>
+        <dl class="sign-glance">
+          <div><dt>Symbol</dt><dd><svg class="sign-glyph sign-glyph--inline" aria-hidden="true" focusable="false"><use href="#g-taurus"/></svg> The Bull</dd></div>
+          <div><dt>Dates</dt><dd>April 20 – May 20</dd></div>
+          <div><dt>Element</dt><dd>Earth</dd></div>
+          <div><dt>Modality</dt><dd>Fixed</dd></div>
+          <div><dt>Ruling planet</dt><dd>Venus</dd></div>
+          <div><dt>Polarity</dt><dd>Feminine / Yin</dd></div>
+          <div><dt>Body part</dt><dd>The neck and throat</dd></div>
+          <div><dt>Tarot</dt><dd>The Hierophant</dd></div>
+          <div><dt>Keyword</dt><dd>“I have”</dd></div>
+        </dl>
+        
+        <h3 class="sign-reference__sub" id="faq-heading">Frequently asked</h3>
+        <div class="sign-faq">
+          
+          <details>
+            <summary>What are the Taurus zodiac dates?</summary>
+            <p>Taurus season runs April 20 – May 20. People born in this window have their Sun in Taurus.</p>
+          </details>
+          <details>
+            <summary>What element and ruling planet is Taurus?</summary>
+            <p>Taurus is a Earth sign of the Fixed modality, ruled by Venus. Its symbol is The Bull.</p>
+          </details>
+          <details>
+            <summary>Which signs are most compatible with Taurus?</summary>
+            <p>Taurus is traditionally most compatible with Virgo, Capricorn, Cancer. Full synastry depends on the complete birth charts of both people, not Sun signs alone.</p>
+          </details>
+          <details>
+            <summary>What are the main Taurus personality traits?</summary>
+            <p>Taurus is known for being unshakeable reliability, patience that outlasts any obstacle, a natural eye for beauty and quality. Its growth edges include stubbornness mistaken for principle and resistance to necessary change. As a Fixed Earth sign ruled by Venus, Taurus carries the keyword “I have”.</p>
+          </details>
+          <details>
+            <summary>Is Taurus rare?</summary>
+            <p>No zodiac sign is truly rare: every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but Taurus is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind.</p>
+          </details>
+          <details>
+            <summary>What is the Taurus symbol and ruling body?</summary>
+            <p>The symbol of Taurus is The Bull, and it is ruled by Venus. Its polarity is feminine / yin, it is traditionally associated with the neck and throat, and its corresponding tarot card is The Hierophant.</p>
+          </details>
         </div>
+      </details>
+    </section>
+
+    
+    <section class="sign-section wrap sign-bridge" aria-label="Events and Shop">
+      <div class="actions">
+        <a href="sky-events.html" class="button-secondary">What’s in the sky</a>
+        <a href="shop.html" class="button-secondary">Open the Shop</a>
       </div>
     </section>
 
-    <section class="section" aria-label="Other zodiac signs">
-      <div class="container">
-        <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
-        <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign’s daily reading and full profile</p>
-        <ul class="sign-thumb-grid" aria-label="All zodiac signs">
-          <li><a href="aries.html" class="sign-thumb"><img src="assets/images/zodiac-cards/aries.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aries</span></a></li>
-          <li><a href="taurus.html" class="sign-thumb sign-thumb--current" aria-current="page"><img src="assets/images/zodiac-cards/taurus.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Taurus</span></a></li>
-          <li><a href="gemini.html" class="sign-thumb"><img src="assets/images/zodiac-cards/gemini.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Gemini</span></a></li>
-          <li><a href="cancer.html" class="sign-thumb"><img src="assets/images/zodiac-cards/cancer.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Cancer</span></a></li>
-          <li><a href="leo.html" class="sign-thumb"><img src="assets/images/zodiac-cards/leo.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Leo</span></a></li>
-          <li><a href="virgo.html" class="sign-thumb"><img src="assets/images/zodiac-cards/virgo.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Virgo</span></a></li>
-          <li><a href="libra.html" class="sign-thumb"><img src="assets/images/zodiac-cards/libra.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Libra</span></a></li>
-          <li><a href="scorpio.html" class="sign-thumb"><img src="assets/images/zodiac-cards/scorpio.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Scorpio</span></a></li>
-          <li><a href="sagittarius.html" class="sign-thumb"><img src="assets/images/zodiac-cards/sagittarius.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Sagittarius</span></a></li>
-          <li><a href="capricorn.html" class="sign-thumb"><img src="assets/images/zodiac-cards/capricorn.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Capricorn</span></a></li>
-          <li><a href="aquarius.html" class="sign-thumb"><img src="assets/images/zodiac-cards/aquarius.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aquarius</span></a></li>
-          <li><a href="pisces.html" class="sign-thumb"><img src="assets/images/zodiac-cards/pisces.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Pisces</span></a></li>
-        </ul>
-      </div>
+    <section class="sign-section wrap" aria-labelledby="every-sign-heading">
+      <h2 id="every-sign-heading" class="sign-h-small">Every sign</h2>
+      <p class="sign-sub">Tap a tile to open that sign’s guide and today’s sky.</p>
+      <ul class="sign-thumb-grid" aria-label="All zodiac signs">
+        <li><a href="aries.html" class="sign-thumb"><img src="img/signs/aries.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Aries</span></a></li>
+        <li><a href="taurus.html" class="sign-thumb sign-thumb--current" aria-current="page"><img src="img/signs/taurus.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Taurus</span></a></li>
+        <li><a href="gemini.html" class="sign-thumb"><img src="img/signs/gemini.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Gemini</span></a></li>
+        <li><a href="cancer.html" class="sign-thumb"><img src="img/signs/cancer.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Cancer</span></a></li>
+        <li><a href="leo.html" class="sign-thumb"><img src="img/signs/leo.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Leo</span></a></li>
+        <li><a href="virgo.html" class="sign-thumb"><img src="img/signs/virgo.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Virgo</span></a></li>
+        <li><a href="libra.html" class="sign-thumb"><img src="img/signs/libra.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Libra</span></a></li>
+        <li><a href="scorpio.html" class="sign-thumb"><img src="img/signs/scorpio.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Scorpio</span></a></li>
+        <li><a href="sagittarius.html" class="sign-thumb"><img src="img/signs/sagittarius.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Sagittarius</span></a></li>
+        <li><a href="capricorn.html" class="sign-thumb"><img src="img/signs/capricorn.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Capricorn</span></a></li>
+        <li><a href="aquarius.html" class="sign-thumb"><img src="img/signs/aquarius.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Aquarius</span></a></li>
+        <li><a href="pisces.html" class="sign-thumb"><img src="img/signs/pisces.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>Pisces</span></a></li>
+      </ul>
     </section>
-
   </main>
 
-  <p class="ap-guide-links" hidden aria-hidden="true"></p>
   <div data-ap-next-footer><noscript><footer class="ap-noscript-footer"><a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refunds.html">Refunds</a> · <a href="contact.html">Contact</a></footer></noscript></div>
 
-  <script src="js/content-service.js?v=925"></script>
-  <script src="js/sign-daily.js?v=925"></script>
-  <script src="js/ap-zodiac-constants.js?v=925"></script>
-  <script src="js/sign-page-boot.js?v=925"></script>
-  <script src="js/ap-page-boot.js?v=925" defer></script>
-  <script src="js/ap-footer-inject.js?v=925" defer></script>
+  <script src="js/content-service.js?v=926"></script>
+  <script src="js/sign-daily.js?v=926"></script>
+  <script src="js/ap-zodiac-constants.js?v=926"></script>
+  <script src="js/sign-page-boot.js?v=926"></script>
 </body>
 </html>

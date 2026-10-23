@@ -2,7 +2,8 @@
 /**
  * Generates the 12 per-sign landing pages (aries.html … pisces.html).
  * Run from repo root:  node website/tools/generate-sign-pages.mjs
- * Output: website/<sign>.html
+ * Output: website/<sign>.html   (--out <dir> writes elsewhere, e.g. to diff)
+ * Paper & Night light shell: body.ap-next + css/ap-next.css + css/sign-next.css.
  */
 
 import { readFileSync, writeFileSync } from 'fs';
@@ -190,7 +191,6 @@ const SIGNS = [
   },
 ];
 
-const SIGN_LIST = SIGNS.map(s => ({ key: s.key, name: s.name, glyph: s.glyph }));
 
 /* ─────────────────────────────────────────────────────────────────────────
    Layered-sign astronomy data (factual). Ecliptic-longitude bands are exact
@@ -277,89 +277,103 @@ function approxDateBand(datesText) {
     .replace(/\s*–\s*/, ' – ');
 }
 
-/* LAYER 2 — Precise astronomy: engraved fact block, beginner-readable, using
-   element + ruling-planet seals (never glyphs) and the exact ecliptic band. */
+/* Brand glyphs (hand-built SVG, currentColor) from the Paper & Night pack.
+   Only the symbols a page uses are inlined, so there is no extra request. */
+const GLYPH_SPRITE = readFileSync(join(SITE_DIR, '..', 'tools', 'brand-src', 'ap-glyphs-sprite.svg'), 'utf8');
+function glyphSymbol(id) {
+  const m = GLYPH_SPRITE.match(new RegExp(`<symbol id="g-${id}"[\\s\\S]*?</symbol>`));
+  if (!m) throw new Error(`glyph g-${id} missing from tools/brand-src/ap-glyphs-sprite.svg`);
+  return m[0];
+}
+const glyph = (id, cls = 'sign-glyph') => `<svg class="${cls}" aria-hidden="true" focusable="false"><use href="#g-${id}"/></svg>`;
+
+/* LAYER 2 — Precise astronomy: fact cards, beginner-readable, using element
+   icons and brand planet glyphs, plus the exact ecliptic band. */
 function astronomySection(s) {
   const rulerSlug = RULER_SEAL[s.key];
   const band = LONGITUDE_BAND[s.key];
   const dateBand = approxDateBand(s.dates);
   const elementKey = s.element.toLowerCase();
+  const still = RULER_STILL[s.key];
   return `
-    <section class="section" aria-labelledby="astronomy-heading">
-      <div class="container">
-        <h2 class="section__title" id="astronomy-heading">The Astronomy of ${s.name}</h2>
-        <p class="section__subtitle" style="margin-bottom:var(--space-4);">The factual layer — where ${s.name} sits on the ecliptic.</p>
-        <details class="sign-astro-more">
-          <summary>Element, ruler, ecliptic band</summary>
+    <section class="sign-section wrap" aria-labelledby="astronomy-heading">
+      <h2 id="astronomy-heading">The astronomy of ${s.name}</h2>
+      <p class="sign-sub">The factual layer: where ${s.name} sits on the ecliptic.</p>
+      <details class="sign-more">
+        <summary>Element, ruler, ecliptic band</summary>
         <div class="sign-astro">
-          <div class="sign-astro__card sign-astro__card--element">
-            <span class="sign-astro__seal sign-astro__seal--element" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-${elementKey}"/></svg></span>
+          <div class="sign-astro__card">
+            <span class="sign-astro__mark" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-${elementKey}"/></svg></span>
             <div>
-              <span class="sign-astro__label">Element</span>
+              <span class="sign-label">Element</span>
               <span class="sign-astro__value">${s.element}</span>
-              <p class="sign-astro__note">${ELEMENT_DEF[s.element]}</p>
+              <p>${ELEMENT_DEF[s.element]}</p>
             </div>
           </div>
           <div class="sign-astro__card">
-            <span class="sign-astro__seal sign-astro__seal--modality" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-modality"/></svg></span>
+            <span class="sign-astro__mark" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-modality"/></svg></span>
             <div>
-              <span class="sign-astro__label">Modality</span>
+              <span class="sign-label">Modality</span>
               <span class="sign-astro__value">${s.modality}</span>
-              <p class="sign-astro__note">${MODALITY_DEF[s.modality]}</p>
+              <p>${MODALITY_DEF[s.modality]}</p>
+            </div>
+          </div>
+          <div class="sign-astro__card sign-astro__card--ruler">
+            <figure class="sign-planet">
+              <img src="img/engine/studio/${still.still}.webp" alt="${still.label}, ${still.rel}, rendered by the AstroPrecise engine" width="96" height="96" loading="lazy" decoding="async" />
+            </figure>
+            <div>
+              <span class="sign-label">Ruling planet ${glyph(rulerSlug, 'sign-glyph sign-glyph--inline')}</span>
+              <span class="sign-astro__value">${s.ruler}</span>
+              <p>${RULER_DEF[s.key]}</p>
+              <p class="sign-caption">${still.label} · our engine render</p>
             </div>
           </div>
           <div class="sign-astro__card">
-            <span class="sign-astro__seal" data-celestial-seal="planet:${rulerSlug}" data-seal-sm aria-hidden="true"></span>
+            <span class="sign-astro__mark" aria-hidden="true">${glyph(s.key)}</span>
             <div>
-              <span class="sign-astro__label">Ruling Planet</span>
-              <span class="sign-astro__value">${s.ruler}</span>
-              <p class="sign-astro__note">${RULER_DEF[s.key]}</p>
-            </div>
-          </div>
-          <div class="sign-astro__card sign-astro__card--band">
-            <span class="sign-astro__seal" data-celestial-seal="zodiac:${s.key}" data-seal-sm aria-hidden="true"></span>
-            <div>
-              <span class="sign-astro__label">Position on the Ecliptic</span>
+              <span class="sign-label">Position on the ecliptic</span>
               <span class="sign-astro__value">${band} longitude</span>
-              <p class="sign-astro__note">${s.name} is the ${band} band of the zodiac circle. The Sun crosses it around ${dateBand} each year — the exact day shifts by about a day year to year, which is why the dates are approximate.</p>
+              <p>${s.name} is the ${band} band of the zodiac circle. The Sun crosses it around ${dateBand} each year. The exact day shifts by about a day from year to year, which is why the dates are approximate.</p>
             </div>
           </div>
         </div>
-        </details>
-      </div>
+      </details>
     </section>`;
 }
 
 /* LAYER 3 — What this sign means in YOUR chart: Sun / Moon / Rising, plainly. */
 function inYourChartSection(s) {
+  const an = /^[AEIOU]/.test(s.name) ? 'an' : 'a';
   return `
-    <section class="section section--alt" aria-labelledby="inchart-heading">
-      <div class="container">
-        <h2 class="section__title" id="inchart-heading">${s.name} in Your Chart</h2>
-        <p class="section__subtitle" style="margin-bottom:var(--space-6);">Most people meet ${s.name} as a “star sign”. In a real birth chart it can appear in three very different places — and each one means something distinct.</p>
+    <section class="sign-section sign-section--band" aria-labelledby="inchart-heading">
+      <div class="wrap">
+        <h2 id="inchart-heading">${s.name} in your chart</h2>
+        <p class="sign-sub">Most people meet ${s.name} as a “star sign”. In a real birth chart it can appear in three very different places, and each one means something distinct.</p>
         <div class="sign-inchart">
           <div class="sign-inchart__row">
-            <span class="sign-inchart__seal" data-celestial-seal="planet:sun" data-seal-sm aria-hidden="true"></span>
+            <span class="sign-inchart__mark">${glyph('sun')}</span>
             <div>
-              <span class="sign-inchart__where">Sun in ${s.name}</span>
-              <p class="sign-inchart__text">Your core self — the “${s.name} side” people mean when they ask your sign. It shapes your basic character and what makes you feel most yourself.</p>
+              <h3>Sun in ${s.name}</h3>
+              <p>Your core self: the “${s.name} side” people mean when they ask your sign. It shapes your basic character and what makes you feel most yourself.</p>
             </div>
           </div>
           <div class="sign-inchart__row">
-            <span class="sign-inchart__seal" data-celestial-seal="planet:moon" data-seal-sm aria-hidden="true"></span>
+            <span class="sign-inchart__mark">${glyph('moon')}</span>
             <div>
-              <span class="sign-inchart__where">Moon in ${s.name}</span>
-              <p class="sign-inchart__text">Your inner, emotional world — how you feel, comfort yourself and respond in private. Two people with ${/^[AEIOU]/.test(s.name) ? 'an' : 'a'} ${s.name} Moon share an emotional language, whatever their Sun sign.</p>
+              <h3>Moon in ${s.name}</h3>
+              <p>Your inner, emotional world: how you feel, comfort yourself and respond in private. Two people with ${an} ${s.name} Moon share an emotional language, whatever their Sun sign.</p>
             </div>
           </div>
           <div class="sign-inchart__row">
-            <span class="sign-inchart__seal" data-celestial-seal="zodiac:${s.key}" data-seal-sm aria-hidden="true"></span>
+            <span class="sign-inchart__mark">${glyph(s.key)}</span>
             <div>
-              <span class="sign-inchart__where">Rising (Ascendant) in ${s.name}</span>
-              <p class="sign-inchart__text">How you meet the world — your outward style and first impression. Your Rising is set by the exact time and place you were born, so it needs your birth time to know.</p>
+              <h3>Rising (Ascendant) in ${s.name}</h3>
+              <p>How you meet the world: your outward style and first impression. Your Rising is set by the exact time and place you were born, so it needs your birth time to know.</p>
             </div>
           </div>
         </div>
+        <p class="sign-inchart__cta"><a class="button" href="chart.html">Cast your chart</a></p>
       </div>
     </section>`;
 }
@@ -373,35 +387,23 @@ function matchList(s) {
 /* Love / career / friendship / shadow / growth — one section, stacked copy. */
 function inLifeSection(s) {
   return `
-    <section class="section section--alt" aria-labelledby="inlife-heading">
-      <div class="container">
-        <h2 class="section__title" id="inlife-heading">In life</h2>
-        <div class="sign-inlife">
-          <div class="sign-inlife__block">
-            <h3>Love</h3>
-            <p class="prose-block">${s.love}</p>
-            <p class="sign-inlife__compat">Traditionally a good match with ${matchList(s)}. See <a href="compatibility.html">two-chart compatibility</a> — Sun signs alone are not the whole story.</p>
-          </div>
-          <details class="sign-inlife__more">
-            <summary>Career, friendship, shadow, growth</summary>
-            <div class="sign-inlife__block">
-              <h3>Career</h3>
-              <p class="prose-block">${s.career}</p>
-            </div>
-            <div class="sign-inlife__block">
-              <h3>Friendship</h3>
-              <p class="prose-block">${s.friendship}</p>
-            </div>
-            <div class="sign-inlife__block">
-              <h3>Shadow</h3>
-              <p class="prose-block">${s.shadow}</p>
-            </div>
-            <div class="sign-inlife__block">
-              <h3>Growth</h3>
-              <p class="prose-block">${s.growth}</p>
-            </div>
-          </details>
-        </div>
+    <section class="sign-section wrap" aria-labelledby="inlife-heading">
+      <h2 id="inlife-heading">In life</h2>
+      <div class="sign-prose">
+        <h3>Love</h3>
+        <p>${s.love}</p>
+        <p class="sign-compat">Traditionally a good match with ${matchList(s)}. See <a href="compatibility.html">two-chart compatibility</a>: Sun signs alone are not the whole story.</p>
+        <details class="sign-more">
+          <summary>Career, friendship, shadow, growth</summary>
+          <h3>Career</h3>
+          <p>${s.career}</p>
+          <h3>Friendship</h3>
+          <p>${s.friendship}</p>
+          <h3>Shadow</h3>
+          <p>${s.shadow}</p>
+          <h3>Growth</h3>
+          <p>${s.growth}</p>
+        </details>
       </div>
     </section>`;
 }
@@ -409,18 +411,16 @@ function inLifeSection(s) {
 /* One closer: Events + Shop. In-your-chart already covers Sun vs whole chart. */
 function eventsStudioBridge() {
   return `
-    <section class="section" aria-label="Events and Shop">
-      <div class="container" style="text-align:center;">
-        <div class="sign-cta-row">
-          <a href="sky-events.html" class="btn btn--outline">What’s in the sky</a>
-          <a href="shop.html" class="btn btn--outline">Open the Shop</a>
-        </div>
+    <section class="sign-section wrap sign-bridge" aria-label="Events and Shop">
+      <div class="actions">
+        <a href="sky-events.html" class="button-secondary">What’s in the sky</a>
+        <a href="shop.html" class="button-secondary">Open the Shop</a>
       </div>
     </section>`;
 }
 
-function faqSection(s) {
-  const items = [
+function faqItems(s) {
+  return [
     {
       q: `What are the ${s.name} zodiac dates?`,
       a: `${s.name} season runs ${s.dates}. People born in this window have their Sun in ${s.name}.`,
@@ -439,45 +439,62 @@ function faqSection(s) {
     },
     {
       q: `Is ${s.name} rare?`,
-      a: `No zodiac sign is truly rare — every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but ${s.name} is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind.`,
+      a: `No zodiac sign is truly rare: every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but ${s.name} is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind.`,
     },
     {
       q: `What is the ${s.name} symbol and ruling body?`,
       a: `The symbol of ${s.name} is ${s.symbol}, and it is ruled by ${s.ruler}. Its polarity is ${s.polarity.toLowerCase()}, it is traditionally associated with ${s.bodyPart.toLowerCase()}, and its corresponding tarot card is ${s.tarot}.`,
     },
   ];
+}
+
+function faqSection(s) {
   return `
         <h3 class="sign-reference__sub" id="faq-heading">Frequently asked</h3>
         <div class="sign-faq">
-          <div class="sign-faq__list">
-            ${items.map(item => `
-            <details class="sign-faq__item">
-              <summary>${item.q}</summary>
-              <p>${item.a}</p>
-            </details>`).join('')}
-          </div>
+          ${faqItems(s).map(item => `
+          <details>
+            <summary>${item.q}</summary>
+            <p>${item.a}</p>
+          </details>`).join('')}
         </div>`;
 }
 
+const ICON_SYMBOLS = `
+    <symbol id="ei-fire" viewBox="0 0 24 24"><path d="M12 3.5 20 19H4L12 3.5Z"/></symbol>
+    <symbol id="ei-earth" viewBox="0 0 24 24"><path d="M12 20.5 4 5h16L12 20.5ZM6.6 10.2h10.8"/></symbol>
+    <symbol id="ei-air" viewBox="0 0 24 24"><path d="M12 3.5 20 19H4L12 3.5ZM6.6 13.8h10.8"/></symbol>
+    <symbol id="ei-water" viewBox="0 0 24 24"><path d="M12 20.5 4 5h16L12 20.5Z"/></symbol>
+    <symbol id="ei-modality" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></symbol>`;
+
+/* Constellation art uses its own gradient id g-<sign>; rename it so it can never
+   collide with the brand glyph symbol #g-<sign> inlined on the same page. */
+function constellation(key) {
+  return (CONSTELLATIONS[key] || '').replace(new RegExp(`(id="|url\\(#)g-${key}`, 'g'), `$1cg-${key}`);
+}
+
+export const PAGE_TITLE = "Sign guide and this week's sky";
+
 function page(s) {
-  const others = SIGN_LIST.filter(o => o.key !== s.key);
-  const title = `${s.name} Horoscope Today – Daily Reading & Sign Guide | AstroPrecise`;
-  const desc = `Free ${s.name} horoscope for today, calculated from real planetary positions. Plus the complete ${s.name} guide: element, ruling planet, love, career, and compatibility.`;
+  const title = `${s.name}: ${PAGE_TITLE} | AstroPrecise`;
+  const shareTitle = `${s.name}: ${PAGE_TITLE}`;
+  const desc = `The ${s.name} sign guide: element, ruling planet, love, career and compatibility, plus today’s sky for ${s.name}, calculated from real planetary positions.`;
   const url = `${BASE_URL}/${s.key}.html`;
+  const elementKey = s.element.toLowerCase();
+  const symbols = [s.key, RULER_SEAL[s.key], 'sun', 'moon'].filter((v, i, a) => a.indexOf(v) === i).map(glyphSymbol).join('\n    ');
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: `${s.name} Horoscope Today`,
+    headline: shareTitle,
     description: desc,
     url,
     inLanguage: 'en',
     isAccessibleForFree: true,
     keywords: [
-      `${s.name}`, `${s.name} horoscope`, `${s.name} horoscope today`,
-      `${s.name} zodiac sign`, `${s.name} dates`, `${s.name} personality`,
-      `${s.name} traits`, `${s.name} compatibility`, `${s.name} love`, `${s.name} career`,
-      `${s.element} sign`, `${s.modality} sign`,
+      `${s.name}`, `${s.name} horoscope`, `${s.name} zodiac sign`, `${s.name} dates`,
+      `${s.name} personality`, `${s.name} traits`, `${s.name} compatibility`,
+      `${s.name} love`, `${s.name} career`, `${s.element} sign`, `${s.modality} sign`,
     ].join(', '),
     publisher: { '@type': 'Organization', name: 'AstroPrecise', url: BASE_URL },
     about: { '@type': 'Thing', name: `${s.name} (astrology)` },
@@ -487,7 +504,7 @@ function page(s) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${BASE_URL}/index.html` },
+      { '@type': 'ListItem', position: 1, name: 'Guides & signs', item: `${BASE_URL}/guides.html` },
       { '@type': 'ListItem', position: 2, name: `${s.name}`, item: url },
     ],
   };
@@ -495,38 +512,11 @@ function page(s) {
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `What are the ${s.name} zodiac dates?`,
-        acceptedAnswer: { '@type': 'Answer', text: `${s.name} season runs ${s.dates}. People born in this window have their Sun in ${s.name}.` },
-      },
-      {
-        '@type': 'Question',
-        name: `What element and ruling planet is ${s.name}?`,
-        acceptedAnswer: { '@type': 'Answer', text: `${s.name} is a ${s.element} sign of the ${s.modality} modality, ruled by ${s.ruler}. Its symbol is ${s.symbol}.` },
-      },
-      {
-        '@type': 'Question',
-        name: `Which signs are most compatible with ${s.name}?`,
-        acceptedAnswer: { '@type': 'Answer', text: `${s.name} is traditionally most compatible with ${s.matches.join(', ')}. Full synastry depends on the complete birth charts of both people, not Sun signs alone.` },
-      },
-      {
-        '@type': 'Question',
-        name: `What are the main ${s.name} personality traits?`,
-        acceptedAnswer: { '@type': 'Answer', text: `${s.name} is known for being ${s.strengths.slice(0, 3).map(t => t.toLowerCase()).join(', ')}. Its growth edges include ${s.challenges.slice(0, 2).map(t => t.toLowerCase()).join(' and ')}. As a ${s.modality} ${s.element} sign ruled by ${s.ruler}, ${s.name} carries the keyword “${s.keyword}”.` },
-      },
-      {
-        '@type': 'Question',
-        name: `Is ${s.name} rare?`,
-        acceptedAnswer: { '@type': 'Answer', text: `No zodiac sign is truly rare — every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but ${s.name} is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind.` },
-      },
-      {
-        '@type': 'Question',
-        name: `What is the ${s.name} symbol and ruling body?`,
-        acceptedAnswer: { '@type': 'Answer', text: `The symbol of ${s.name} is ${s.symbol}, and it is ruled by ${s.ruler}. Its polarity is ${s.polarity.toLowerCase()}, it is traditionally associated with ${s.bodyPart.toLowerCase()}, and its corresponding tarot card is ${s.tarot}.` },
-      },
-    ],
+    mainEntity: faqItems(s).map(item => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
   };
 
   return `<!DOCTYPE html>
@@ -545,7 +535,7 @@ function page(s) {
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="${s.name} Horoscope Today | AstroPrecise" />
+  <meta property="og:title" content="${shareTitle} | AstroPrecise" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
@@ -553,444 +543,172 @@ function page(s) {
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="${s.name} – ${s.dates}. Engine still of ${RULER_STILL[s.key].label} from the AstroPrecise model. Type only. Not a live feed." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${s.name} Horoscope Today | AstroPrecise" />
+  <meta name="twitter:title" content="${shareTitle} | AstroPrecise" />
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
-  <meta name="theme-color" content="#040812" />
-  <link rel="preload" href="img/engine/studio/${RULER_STILL[s.key].still}.webp" as="image" type="image/webp" fetchpriority="high" />
-  <link rel="preload" href="css/main-lite.css" as="style" />
-  <!-- CLS: preload the hero display face (h1) so Cormorant paints from first paint (no late swap). -->
-  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/sign-page.css" id="ap-css-sign-page" />
-  <style>
-    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-    /* Constellation reserve — pre-CSS paint + CLS guard */
-    .sign-hero__constellation{max-width:280px;margin:0 auto 1rem;min-height:175px;contain:layout style}
-    .sign-hero__constellation svg{display:block;width:100%;height:auto;aspect-ratio:320/200}
-    /* LCP shell — system fonts paint before deferred webfonts (h1 + card are LCP candidates) */
-    .sign-hero h1 {
-      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-      font-size: clamp(2.4rem, 6vw, 3.6rem);
-      font-weight: 700;
-      color: var(--ap-text-primary, #EEF4FA);
-      line-height: 1.1;
-      margin: 0 0 0.5rem;
-    }
-    .sign-hero__dates {
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      font-size: 0.875rem;
-      color: var(--ap-silver, #93A8BF);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-    /* Hero planet — the ruling-planet ENGINE STILL is the anchor (photoreal, our render).
-       Deep-void plate, soft radial glow behind the disc, generous reserve box (CLS guard). */
-    .sign-hero__inner {
-      display: flex; gap: clamp(1.5rem, 4vw, 3.5rem);
-      align-items: center; justify-content: center;
-      max-width: 900px; margin: 0 auto;
-    }
-    .sign-hero__planet {
-      position: relative; flex-shrink: 0;
-      width: clamp(200px, 34vw, 340px);
-      aspect-ratio: 1 / 1;
-      display: flex; align-items: center; justify-content: center;
-    }
-    /* Soft element-spectrum glow behind the physical planet render. */
-    .sign-hero__planet::before {
-      content: ''; position: absolute; inset: -6%;
-      border-radius: 50%; z-index: 0; pointer-events: none;
-      background: radial-gradient(circle at 50% 46%,
-        color-mix(in srgb, var(--sign-elem, #93A8BF) 26%, transparent) 0%,
-        rgba(12, 16, 22, 0) 62%);
-      filter: blur(6px);
-    }
-    .sign-hero__planet-img {
-      position: relative; z-index: 1;
-      width: 100%; height: 100%;
-      object-fit: contain;
-      display: block;
-      filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.62))
-              drop-shadow(0 0 30px color-mix(in srgb, var(--sign-elem, #93A8BF) 22%, transparent));
-    }
-    .sign-hero__planet-caption {
-      position: absolute; z-index: 2; left: 50%; bottom: -1.4rem;
-      transform: translateX(-50%);
-      width: max-content; max-width: min(92vw, 300px); text-align: center;
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      font-size: 0.62rem; line-height: 1.4; letter-spacing: 0.1em; text-transform: uppercase;
-      color: color-mix(in srgb, var(--ap-silver, #93A8BF) 78%, var(--ap-paper, #EEF4FA));
-      opacity: 0.8;
-    }
-    .sign-hero__figure, figure.sign-hero__planet { margin: 0; }
-    @media (max-width: 640px) {
-      .sign-hero__inner { flex-direction: column; gap: 1.75rem; }
-      .sign-hero__planet { width: clamp(190px, 62vw, 260px); }
-    }
-    /* Hero seal — celestial-seals.css audit-deferred.
-       CLS FIX (v582): reserve the glyph box at its FINAL rendered geometry so the
-       hero column does not drop when celestial-seals.css applies + the .ap-seal art
-       is injected. Must match celestial-seals.css .sign-hero__glyph{width/height/margin}
-       EXACTLY (clamp + space-4) and apply in ALL states — the previous
-       :not(:has(.ap-seal)) + 4.5rem reserve under-reserved by ~40px and dropped once
-       the seal mounted, shifting keyword/dates by ~32px (CLS ~0.059). */
-    .sign-hero__glyph.sign-hero__seal,
-    .sign-hero__glyph[data-celestial-seal] {
-      display: block;
-      width: clamp(3.5rem, 12vw, 5rem);
-      height: clamp(4rem, 14vw, 5.75rem);
-      margin: 0 auto var(--space-4);
-      contain: layout style;
-    }
-    /* Pre-seal placeholder must not inflate the reserved box (main.css sets 4.8rem). */
-    .sign-hero__glyph.sign-hero__seal:not(:has(.ap-seal)) {
-      font-size: clamp(3.5rem, 12vw, 5rem) !important;
-      line-height: 1;
-      overflow: hidden;
-    }
-    /* Today section — CLS reserve; boot paints full grid */
-    #today-date { min-height: 1.35rem; }
-    #today-reading {
-      min-height: 520px;
-      contain: layout style;
-    }
-    .today-reading.is-loading .card { min-height: 460px; }
-    /* FAQ accordion — CLS reserve */
-    .sign-faq__list {
-      min-height: 400px;
-      contain: layout style;
-    }
-    .sign-faq__item summary { min-height: 44px; }
-    /* Thumb grid — 12 cards, ~3 rows on mobile */
-    .sign-thumb-grid {
-      min-height: 480px;
-      contain: layout style;
-    }
-    .sign-thumb img {
-      display: block;
-      width: 100%;
-      max-width: 92px;
-      height: auto;
-      aspect-ratio: 2 / 3;
-      object-fit: cover;
-    }
-    /* Layer 2 — engraved astronomy fact grid; element-tinted per body[data-element] */
-    body[data-element="fire"]  { --sign-elem: var(--ap-element-fire, #FF8EA8); --sign-elem-glow: var(--ap-element-fire-glow, rgba(255, 142, 168, 0.10)); }
-    body[data-element="earth"] { --sign-elem: var(--ap-element-earth, #6FD0B3); --sign-elem-glow: var(--ap-element-earth-glow, rgba(111, 208, 179, 0.10)); }
-    body[data-element="air"]   { --sign-elem: var(--ap-element-air, #93A8BF); --sign-elem-glow: var(--ap-element-air-glow, rgba(147, 168, 191, 0.09)); }
-    body[data-element="water"] { --sign-elem: var(--ap-element-water, #79C7F2); --sign-elem-glow: var(--ap-element-water-glow, rgba(121, 199, 242, 0.10)); }
-    .sign-astro {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: var(--space-4); max-width: 820px; margin: 0 auto;
-      min-height: 300px; contain: layout style;
-    }
-    .sign-astro__card {
-      display: flex; gap: var(--space-4); align-items: flex-start;
-      padding: var(--space-5);
-      background: var(--ap-card-surface, rgba(16, 29, 48, 0.76));
-      border: 1px solid rgba(147, 168, 191, 0.18);
-      border-radius: var(--radius-lg);
-    }
-    .sign-astro__card--element {
-      border-color: color-mix(in srgb, var(--sign-elem, #93A8BF) 42%, transparent);
-      background: linear-gradient(180deg, var(--sign-elem-glow, transparent) 0%, var(--ap-card-surface, rgba(16, 29, 48, 0.76)) 70%);
-    }
-    .sign-astro__seal { flex-shrink: 0; width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center; justify-content: center; }
-    .sign-astro__seal .ap-seal { width: 2.4rem; height: 2.4rem; }
-    .sign-astro__seal--element { color: var(--sign-elem, #93A8BF); font-size: 1.8rem; }
-    .sign-astro__seal--modality { color: var(--ap-ion, #8BA9FF); font-size: 1.6rem; }
-    .sign-astro__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ap-silver, #93A8BF); display: block; margin-bottom: 4px; opacity: 0.72; }
-    .sign-astro__value { font-family: var(--font-display); color: var(--ap-paper, #EEF4FA); font-size: 1.15rem; display: block; }
-    .sign-astro__note { font-size: 0.82rem; color: var(--ap-silver, #93A8BF); line-height: 1.6; margin: var(--space-2) 0 0; }
-    /* Layer 3 — Sun / Moon / Rising placement rows */
-    .sign-inchart {
-      display: flex; flex-direction: column; gap: var(--space-4);
-      max-width: 760px; margin: 0 auto;
-      min-height: 320px; contain: layout style;
-    }
-    .sign-inchart__row {
-      display: flex; gap: var(--space-4); align-items: flex-start;
-      padding: var(--space-5);
-      background: rgba(147, 168, 191, 0.05);
-      border: 1px solid rgba(147, 168, 191, 0.16);
-      border-left: 3px solid color-mix(in srgb, var(--sign-elem, #93A8BF) 55%, transparent);
-      border-radius: var(--radius-lg);
-    }
-    .sign-inchart__seal { flex-shrink: 0; width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center; justify-content: center; }
-    .sign-inchart__seal .ap-seal { width: 2.4rem; height: 2.4rem; }
-    .sign-inchart__where { font-family: var(--font-display); color: var(--ap-paper, #EEF4FA); font-size: 1.1rem; display: block; margin-bottom: 4px; }
-    .sign-inchart__text { font-size: 0.9rem; color: var(--ap-silver, #93A8BF); line-height: 1.7; margin: 0; }
-    .sign-inlife { max-width: 760px; margin: 0 auto; }
-    .sign-inlife__block { margin: 0 0 var(--space-6); }
-    .sign-inlife__block:last-child { margin-bottom: 0; }
-    .sign-inlife h3 {
-      font-family: var(--font-display);
-      color: var(--ap-paper, #EEF4FA);
-      font-size: 1.15rem;
-      margin: 0 0 var(--space-3);
-    }
-    .sign-inlife .prose-block { margin: 0; }
-    .sign-inlife__compat {
-      margin: var(--space-3) 0 0;
-      font-size: 0.88rem;
-      color: var(--ap-silver, #93A8BF);
-      line-height: 1.6;
-    }
-    .sign-inlife__compat a { color: var(--ap-ion, #8BA9FF); text-decoration: none; }
-    .sign-inlife__compat a:hover { color: var(--ap-paper, #EEF4FA); text-decoration: underline; }
-    .sign-inlife__more { margin: var(--space-2) 0 0; }
-    .sign-inlife__more > summary {
-      cursor: pointer;
-      color: var(--ap-ion, #8BA9FF);
-      font-family: var(--font-ui, inherit);
-      font-size: 0.85rem;
-      letter-spacing: 0.04em;
-      list-style: none;
-    }
-    .sign-inlife__more > summary::-webkit-details-marker { display: none; }
-    .sign-inlife__more[open] > summary { margin-bottom: var(--space-4); }
-    .sign-astro-more { margin-top: var(--space-2); }
-    .sign-astro-more > summary {
-      cursor: pointer;
-      color: var(--ap-ion, #8BA9FF);
-      font-family: var(--font-ui, inherit);
-      font-size: 0.85rem;
-      letter-spacing: 0.04em;
-      list-style: none;
-    }
-    .sign-astro-more > summary::-webkit-details-marker { display: none; }
-    .sign-astro-more[open] > summary { margin-bottom: var(--space-4); }
-    .trait-cols__title {
-      font-family: var(--font-display);
-      color: var(--ap-paper, #EEF4FA);
-      margin-bottom: var(--space-4);
-    }
-    .sign-cta-row { margin-top: 0; }
-    /* Override leftover gold token names in sign-page.css (Midnight Meridian). */
-    .sign-breadcrumb a { color: var(--ap-ion, #8BA9FF); }
-    .sign-breadcrumb a:hover { color: var(--ap-paper, #EEF4FA); }
-    .sign-breadcrumb li[aria-current="page"] { color: var(--ap-paper, #EEF4FA); }
-    .sign-hero__dates { color: var(--ap-silver, #93A8BF); }
-    .sign-hero__actions .btn--outline {
-      color: var(--ap-paper, #EEF4FA);
-      border-color: rgba(147, 168, 191, .45);
-    }
-    .sign-hero__actions .btn--outline:hover {
-      color: var(--ap-ion, #8BA9FF);
-      border-color: var(--ap-ion, #8BA9FF);
-    }
-    .sign-fact__value { color: var(--ap-paper, #EEF4FA); }
-    .trait-list--plus li::before { background: var(--ap-ion, #8BA9FF); }
-    .sign-thumb:hover .sign-thumb__label { color: var(--ap-paper, #EEF4FA); }
-    .daily-reading__tile-label { color: var(--ap-ion, #8BA9FF); }
-    .daily-reading__meta strong { color: var(--ap-ion, #8BA9FF); }
-    .glance-cell__value { color: var(--ap-paper, #EEF4FA); }
-    .sign-reference { margin-top: var(--space-2); }
-    .sign-reference > summary {
-      cursor: pointer;
-      color: var(--ap-ion, #8BA9FF);
-      font-family: var(--font-ui, inherit);
-      font-size: 0.9rem;
-      letter-spacing: 0.04em;
-      list-style: none;
-    }
-    .sign-reference > summary::-webkit-details-marker { display: none; }
-    .sign-reference[open] > summary { margin-bottom: var(--space-5); }
-    .sign-reference__sub {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      color: var(--ap-paper, #EEF4FA);
-      margin: var(--space-6) 0 var(--space-4);
-    }
-    .sign-faq__item summary { color: var(--ap-paper, #EEF4FA); }
-    .sign-faq__item summary::after { color: var(--ap-ion, #8BA9FF); }
-    .prose-block { color: var(--ap-silver, #93A8BF); }
-    /* Footer — main.css grid audit-deferred */
-    .footer .footer-inner {
-      min-height: 540px;
-      contain: layout style;
-    }
-  </style>
-  <script src="js/defer-page-css.js?v=${ASSET_V}" defer></script>
-  <script src="js/ap-sign-defer-boot.js?v=${ASSET_V}" defer></script>
+  <meta name="theme-color" content="#F6F3EC" />
+  <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/ap-next.css?v=${ASSET_V}" />
+  <link rel="stylesheet" href="css/sign-next.css?v=${ASSET_V}" />
+  <script src="js/ap-next.js?v=${ASSET_V}" defer></script>
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script type="application/ld+json">${JSON.stringify(breadcrumbLd)}</script>
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
-<link rel="stylesheet" href="css/ap-next.css?v=${ASSET_V}"><script defer src="js/ap-next.js?v=${ASSET_V}"></script></head>
-<body class="ap-editorial ap-no-nav-enter" data-element="${s.element.toLowerCase()}" data-sign="${s.name}">
-  <a class="skip-link" href="#main-content">Skip to content</a>
-  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
-    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
-    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
-    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
-    <symbol id="ei-fire" viewBox="0 0 24 24"><path d="M12 3.5 20 19H4L12 3.5Z"/></symbol>
-    <symbol id="ei-earth" viewBox="0 0 24 24"><path d="M12 20.5 4 5h16L12 20.5ZM6.6 10.2h10.8"/></symbol>
-    <symbol id="ei-air" viewBox="0 0 24 24"><path d="M12 3.5 20 19H4L12 3.5ZM6.6 13.8h10.8"/></symbol>
-    <symbol id="ei-water" viewBox="0 0 24 24"><path d="M12 20.5 4 5h16L12 20.5Z"/></symbol>
-    <symbol id="ei-modality" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></symbol>
+</head>
+<body class="ap-next ap-sign" data-element="${elementKey}" data-sign="${s.name}">
+  <a class="ap-skip" href="#main-content">Skip to content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">${ICON_SYMBOLS}
+    ${symbols}
   </svg>
-
   <div data-ap-next-nav><noscript><nav class="ap-noscript-nav" aria-label="Primary"><a href="index.html">AstroPrecise</a> · <a href="chart.html">Birth chart</a> · <a href="explore.html">Explore</a> · <a href="charts.html">Saved</a> · <a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a></nav></noscript></div>
 
-  <main id="main-content">
-    <nav class="sign-breadcrumb" aria-label="Breadcrumb">
+  <main id="main-content" class="sign-page">
+    <nav class="sign-crumb wrap" aria-label="Breadcrumb">
       <ol>
-        <li><a href="observatory.html">Observatory</a></li>
+        <li><a href="guides.html">Guides &amp; signs</a></li>
         <li aria-current="page">${s.name}</li>
       </ol>
     </nav>
 
-    <section class="sign-hero" aria-labelledby="page-title">
-      <div class="sign-hero__inner">
-        <figure class="sign-hero__planet">
-          <img class="sign-hero__planet-img" src="img/engine/studio/${RULER_STILL[s.key].still}.webp"
-            alt="${RULER_STILL[s.key].label}, ${RULER_STILL[s.key].rel} – rendered from the AstroPrecise engine"
-            width="340" height="340" loading="eager" decoding="async" fetchpriority="high" />
-          <figcaption class="sign-hero__planet-caption">${RULER_STILL[s.key].label} · ${RULER_STILL[s.key].rel} · our engine render</figcaption>
-        </figure>
-        <div class="sign-hero__content">
-          <span class="sign-hero__glyph sign-hero__seal" data-celestial-seal="zodiac:${s.key}" data-seal-lg aria-hidden="true"></span>
-          <div class="sign-hero__constellation">${CONSTELLATIONS[s.key] || ''}</div>
-          <h1 id="page-title">${s.name}</h1>
-          <p class="sign-hero__dates">${s.dates}</p>
-          <p class="sign-hero__keyword" aria-label="Sign keyword">“${s.keyword}”</p>
-          <div class="sign-facts">
-            <div class="sign-fact"><span class="sign-fact__label">Element</span><span class="sign-fact__value">${s.element}</span></div>
-            <div class="sign-fact"><span class="sign-fact__label">Modality</span><span class="sign-fact__value">${s.modality}</span></div>
-            <div class="sign-fact"><span class="sign-fact__label">Ruler</span><span class="sign-fact__value">${s.ruler}</span></div>
-            <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">${s.symbol}</span></div>
-          </div>
-          <div class="sign-hero__actions">
-            <a href="horoscope.html?sign=${s.key}" class="btn btn--primary btn--sm">Today’s reading</a>
-            <a href="chart.html" class="btn btn--outline btn--sm">Cast your chart</a>
-          </div>
+    <section class="sign-hero wrap" aria-labelledby="page-title">
+      <div class="sign-hero__copy">
+        <p class="sign-label">Sign guide · ${s.element} · ${s.modality}</p>
+        ${glyph(s.key, 'sign-glyph sign-hero__glyph')}
+        <h1 id="page-title">${s.name}</h1>
+        <p class="sign-hero__dates">${s.dates}</p>
+        <p class="sign-hero__keyword" aria-label="Sign keyword">“${s.keyword}”</p>
+        <dl class="sign-facts">
+          <div><dt>Element</dt><dd>${s.element}</dd></div>
+          <div><dt>Modality</dt><dd>${s.modality}</dd></div>
+          <div><dt>Ruler</dt><dd>${s.ruler}</dd></div>
+          <div><dt>Symbol</dt><dd>${s.symbol}</dd></div>
+        </dl>
+        <div class="actions">
+          <a href="chart.html" class="button">Cast your chart</a>
+          <a href="#today-heading" class="button-secondary">Today’s sky for ${s.name}</a>
         </div>
       </div>
+      <figure class="sign-hero__art">
+        <div class="sign-hero__sky">
+          <div class="sign-hero__constellation">${constellation(s.key)}</div>
+        </div>
+        <figcaption>The ${s.name} star pattern, drawn from real star positions</figcaption>
+      </figure>
     </section>
 
-    <section class="section" aria-labelledby="today-heading">
-      <div class="container">
-        <h2 class="section__title" id="today-heading">${s.name} Horoscope Today</h2>
-        <p class="section__subtitle" id="today-date" aria-live="polite"></p>
-        <p class="section__subtitle" style="font-size:0.78rem;opacity:0.75;margin-top:var(--space-2);">Computed from today’s sky – same VSOP87 engine as the orrery. Not a live feed.</p>
+    <section class="sign-section sign-section--band" aria-labelledby="today-heading">
+      <div class="wrap">
+        <h2 id="today-heading">${s.name} in today’s sky</h2>
+        <p class="sign-sub" id="today-date" aria-live="polite"></p>
+        <p class="sign-note">Computed from today’s sky with the same VSOP87 engine as the orrery. Not a live feed.</p>
         <div class="today-reading is-loading" id="today-reading" aria-live="polite">
-          <div class="card" style="padding:var(--space-8);">
-            <p style="color:var(--ap-silver, #93A8BF);line-height:1.85;">
-              Today’s ${s.name} reading is calculated in your browser from real planetary positions.
-              If this text remains, enable JavaScript to see the computed reading for today –
-              or read the complete ${s.name} profile below.
-            </p>
+          <div class="card">
+            <p>Today’s ${s.name} reading is calculated in your browser from real planetary positions. If this text remains, turn on JavaScript to see it, or read the full ${s.name} guide below.</p>
           </div>
         </div>
+        <p class="sign-week"><a class="text-link" href="this-weeks-sky.html">This week’s sky →</a></p>
       </div>
     </section>
 
-    <section class="section section--alt" aria-labelledby="about-heading">
-      <div class="container">
-        <h2 class="section__title" id="about-heading">About ${s.name}</h2>
-        <p class="prose-block">${s.intro}</p>
-      </div>
+    <section class="sign-section wrap" aria-labelledby="about-heading">
+      <h2 id="about-heading">About ${s.name}</h2>
+      <p class="sign-lede">${s.intro}</p>
     </section>
 
     ${astronomySection(s)}
 
     ${inYourChartSection(s)}
 
-    <section class="section" aria-labelledby="traits-heading">
-      <div class="container">
-        <h2 class="section__title" id="traits-heading">${s.name} Strengths &amp; Challenges</h2>
-        <div class="trait-cols">
-          <div>
-            <h3 class="trait-cols__title">Strengths</h3>
-            <ul class="trait-list trait-list--plus">
-              ${s.strengths.map(t => `<li>${t}</li>`).join('\n              ')}
-            </ul>
-          </div>
-          <div>
-            <h3 class="trait-cols__title">Challenges</h3>
-            <ul class="trait-list trait-list--minus">
-              ${s.challenges.map(t => `<li>${t}</li>`).join('\n              ')}
-            </ul>
-          </div>
+    <section class="sign-section wrap" aria-labelledby="traits-heading">
+      <h2 id="traits-heading">${s.name} strengths &amp; challenges</h2>
+      <div class="sign-traits">
+        <div>
+          <h3>Strengths</h3>
+          <ul class="sign-list sign-list--plus">
+            ${s.strengths.map(t => `<li>${t}</li>`).join('\n            ')}
+          </ul>
+        </div>
+        <div>
+          <h3>Challenges</h3>
+          <ul class="sign-list sign-list--minus">
+            ${s.challenges.map(t => `<li>${t}</li>`).join('\n            ')}
+          </ul>
         </div>
       </div>
     </section>
 
     ${inLifeSection(s)}
 
-    <section class="section" aria-labelledby="reference-heading">
-      <div class="container">
-        <h2 class="section__title" id="reference-heading">${s.name} reference</h2>
-        <details class="sign-reference">
-          <summary>Dates, ruler, FAQ</summary>
-          <h3 class="sign-reference__sub" id="glance-heading">${s.name} at a glance</h3>
-          <div class="glance-grid">
-            <div class="glance-cell"><span class="glance-cell__label">Symbol</span><span class="glance-cell__value"><span class="glance-cell__seal" data-celestial-seal="zodiac:${s.key}" data-seal-sm aria-hidden="true"></span>${s.symbol}</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Dates</span><span class="glance-cell__value">${s.dates}</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Element</span><span class="glance-cell__value">${s.element}</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Modality</span><span class="glance-cell__value">${s.modality}</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Ruling Planet</span><span class="glance-cell__value">${s.ruler}</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Polarity</span><span class="glance-cell__value">${s.polarity}</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Body Part</span><span class="glance-cell__value">${s.bodyPart}</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Tarot</span><span class="glance-cell__value">${s.tarot}</span></div>
-            <div class="glance-cell"><span class="glance-cell__label">Keyword</span><span class="glance-cell__value">“${s.keyword}”</span></div>
-          </div>
-          ${faqSection(s)}
-        </details>
-      </div>
+    <section class="sign-section wrap" aria-labelledby="reference-heading">
+      <h2 id="reference-heading">${s.name} reference</h2>
+      <details class="sign-more">
+        <summary>Dates, ruler, FAQ</summary>
+        <h3 class="sign-reference__sub" id="glance-heading">${s.name} at a glance</h3>
+        <dl class="sign-glance">
+          <div><dt>Symbol</dt><dd>${glyph(s.key, 'sign-glyph sign-glyph--inline')} ${s.symbol}</dd></div>
+          <div><dt>Dates</dt><dd>${s.dates}</dd></div>
+          <div><dt>Element</dt><dd>${s.element}</dd></div>
+          <div><dt>Modality</dt><dd>${s.modality}</dd></div>
+          <div><dt>Ruling planet</dt><dd>${s.ruler}</dd></div>
+          <div><dt>Polarity</dt><dd>${s.polarity}</dd></div>
+          <div><dt>Body part</dt><dd>${s.bodyPart}</dd></div>
+          <div><dt>Tarot</dt><dd>${s.tarot}</dd></div>
+          <div><dt>Keyword</dt><dd>“${s.keyword}”</dd></div>
+        </dl>
+        ${faqSection(s)}
+      </details>
     </section>
 
     ${eventsStudioBridge()}
 
-    <section class="section" aria-label="Other zodiac signs">
-      <div class="container">
-        <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
-        <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign’s daily reading and full profile</p>
-        <ul class="sign-thumb-grid" aria-label="All zodiac signs">
-          ${SIGNS.map(o => `<li><a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}"${o.key === s.key ? ' aria-current="page"' : ''}><img src="assets/images/zodiac-cards/${o.key}.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.name}</span></a></li>`).join('\n          ')}
-        </ul>
-      </div>
+    <section class="sign-section wrap" aria-labelledby="every-sign-heading">
+      <h2 id="every-sign-heading" class="sign-h-small">Every sign</h2>
+      <p class="sign-sub">Tap a tile to open that sign’s guide and today’s sky.</p>
+      <ul class="sign-thumb-grid" aria-label="All zodiac signs">
+        ${SIGNS.map(o => `<li><a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}"${o.key === s.key ? ' aria-current="page"' : ''}><img src="img/signs/${o.key}.webp" alt="" width="92" height="138" loading="lazy" decoding="async" /><span>${o.name}</span></a></li>`).join('\n        ')}
+      </ul>
     </section>
-
   </main>
 
-  <p class="ap-guide-links" hidden aria-hidden="true"></p>
   <div data-ap-next-footer><noscript><footer class="ap-noscript-footer"><a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refunds.html">Refunds</a> · <a href="contact.html">Contact</a></footer></noscript></div>
 
   <script src="js/content-service.js?v=${ASSET_V}"></script>
   <script src="js/sign-daily.js?v=${ASSET_V}"></script>
   <script src="js/ap-zodiac-constants.js?v=${ASSET_V}"></script>
   <script src="js/sign-page-boot.js?v=${ASSET_V}"></script>
-  <script src="js/ap-page-boot.js?v=${ASSET_V}" defer></script>
-  <script src="js/ap-footer-inject.js?v=${ASSET_V}" defer></script>
 </body>
 </html>
 `;
 }
 
+// Things that must never reach a sign page (checked on every generated page).
+export const BANNED = [
+  ['\u00e2\u20ac', 'mojibake punctuation; keep this generator UTF-8'],
+  ['--color-gold', 'leftover gold token'],
+  ['--gold-vivid', 'leftover gold token'],
+  ['v=901', 'script cache still v=901'],
+  ['v=912', 'script cache still v=912'],
+  ['Best match:', 'match-chip CTA'],
+  ['#C2A05E', 'retired brass on sign page'],
+  ['040812', 'legacy dark theme colour'],
+  ['zodiac-cards', 'AI zodiac card art'],
+  ['data-celestial-seal', 'legacy engraved seal hook'],
+  ['main-lite.css', 'legacy dark stylesheet'],
+  ['sign-page.css', 'legacy dark stylesheet'],
+  ['celestial-seals.css', 'legacy dark stylesheet'],
+  ['<style', 'inline page styles (use css/sign-next.css)'],
+  ['lucky number', 'lucky numbers in HTML'],
+  ['My Sky', 'My Sky'],
+  ['coming soon', 'coming-soon copy'],
+  ['Your Sun sign is one placement of many', 'duplicate Sun-sign CTA'],
+  ['>Home</a>', 'Home breadcrumb'],
+  ['Daily Hub', 'Daily Hub CTA'],
+  ['precision instrument wearing', 'old instrument tagline'],
+  ['See the Studio', 'Studio CTA'],
+];
+
 function writeSignPage(name, html) {
-  if (html.includes('\u00e2\u20ac')) {
-    throw new Error(`${name}: mojibake punctuation in output; keep this generator UTF-8`);
-  }
-  const banned = [
-    ['--color-gold', 'leftover gold token'],
-    ['--gold-vivid', 'leftover gold token'],
-    ['v=901', 'script cache still v=901'],
-    ['Best match:', 'match-chip CTA'],
-    ['#C2A05E', 'retired brass on sign page'],
-    ['lucky number', 'lucky numbers in HTML'],
-    ['My Sky', 'My Sky'],
-    ['coming soon', 'coming-soon copy'],
-    ['Your Sun sign is one placement of many', 'duplicate Sun-sign CTA'],
-    ['>Home</a>', 'Home breadcrumb'],
-    ['Daily Hub', 'Daily Hub CTA'],
-    ['precision instrument wearing', 'old instrument tagline'],
-    ['See the Studio', 'Studio CTA'],
-  ];
-  for (const [needle, why] of banned) {
+  for (const [needle, why] of BANNED) {
     if (html.toLowerCase().includes(needle.toLowerCase())) {
       throw new Error(`${name}: ${why} (${needle})`);
     }
@@ -998,9 +716,13 @@ function writeSignPage(name, html) {
   writeFileSync(join(OUT_DIR, `${name}.html`), html, 'utf8');
 }
 
-for (const s of SIGNS) {
-  const html = page(s);
-  writeSignPage(s.key, html);
-  console.log(`wrote ${s.key}.html (${(html.length / 1024).toFixed(1)} KB)`);
+export const SIGN_KEYS = SIGNS.map(s => s.key);
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  for (const s of SIGNS) {
+    const html = page(s);
+    writeSignPage(s.key, html);
+    console.log(`wrote ${s.key}.html (${(html.length / 1024).toFixed(1)} KB)`);
+  }
+  console.log('done – 12 sign pages generated');
 }
-console.log('done – 12 sign pages generated');
