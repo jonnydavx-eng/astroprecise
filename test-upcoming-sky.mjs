@@ -282,6 +282,45 @@ for (const [body, sign, when] of INGRESSES) {
   )
 }
 
+// ── Footer honesty: the copy must cover the widest day range actually shown ──
+// Over the two-year span, count the UK calendar days each approximate event
+// is shown across. If any shows more than two days, the footer may not
+// promise "two days"; if any shows more than one, it must mention a range.
+{
+  const ukKey = (d) =>
+    new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(d)
+  const days = (ev) => {
+    const sp = U.ukDaySpan(ev)
+    if (sp.length < 2) return 1
+    return Math.round((Date.parse(ukKey(sp[1])) - Date.parse(ukKey(sp[0]))) / 86400000) + 1
+  }
+  let widest = 1,
+    widestEv = null
+  for (const e of evs.filter((x) => x.approx)) {
+    const n = days(e)
+    if (n > widest) ((widest = n), (widestEv = e))
+  }
+  const page = readFileSync(join(here, 'website/sky-events.html'), 'utf8')
+  const foot = (page.match(/<div class="upcoming-foot"><p>([^<]*)<\/p>/) || [])[1] || ''
+  ok('footer copy found', foot.length > 40, foot)
+  ok(
+    `footer does not promise "two days" when a ${widest}-day range is shown`,
+    widest <= 2 || !/\b(two|2) days\b/i.test(foot),
+    widestEv && U.formatUK(widestEv) + ' / ' + foot,
+  )
+  ok(
+    'footer mentions a range of days when any event spans more than one day',
+    widest <= 1 || /range of days/i.test(foot),
+    foot,
+  )
+  ok('widest shown range is the Pluto window (3 days)', widest === 3, widest)
+}
+
 // ── Provenance: every event comes from the engine, no static list ────────
 {
   const src = readFileSync(join(here, 'website/js/sky-upcoming.js'), 'utf8')
