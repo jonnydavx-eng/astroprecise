@@ -5,7 +5,7 @@
  *
  * Pages: home, chart → story (fictional 14 Jun 1990 03:42, Heywood; fails if those
  * details appear in any outside request), shop, observatory (3D must wait for
- * "Enter the sky", then load) and contact. Screenshots at 0, 5 and 10 seconds plus a
+ * "Enter the sky", then load), contact and one sign guide (aries). Screenshots at 0, 5 and 10 seconds plus a
  * reduced-motion shot go to the output folder (default phone-check-out/).
  *
  * Run: npm run build && npm run test:phone
@@ -32,6 +32,7 @@ const PAGES = [
   { name: 'shop', path: '/shop.html' },
   { name: 'observatory', path: '/observatory.html', flow: 'enter-sky' },
   { name: 'contact', path: '/contact.html' },
+  { name: 'aries', path: '/aries.html' },
 ]
 // Lighthouse-style mobile: 4× slower CPU, 150 ms round trip, 1.6 Mbps down / 750 kbps up.
 const NETWORK = { offline: false, latency: 150, downloadThroughput: 1.6 * 1024 * 1024 / 8, uploadThroughput: 750 * 1024 / 8 }
