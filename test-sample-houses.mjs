@@ -254,6 +254,44 @@ ok(
   ),
 )
 
+// 5b. Sign wording: a degree is never followed by its own sign again ("29°51′ Capricorn in
+// Capricorn", "3°21′ Gemini in Gemini" before v936), and a "considered through" pairing
+// never repeats a word from its own lead ("…exchange considered through curiosity and exchange").
+const SIGN_RE = SIGNS.join('|')
+const dupSign = (t) =>
+  [...t.matchAll(new RegExp(`\\d{1,2}°\\d{2} ?′ (${SIGN_RE}) in (${SIGN_RE})\\b`, 'g'))].filter(
+    (m) => m[1] === m[2],
+  )
+ok(
+  'no "<degree> X in X" sign duplication',
+  dupSign(page).length === 0,
+  dupSign(page)
+    .map((m) => m[0])
+    .join(' | '),
+)
+// HELD: Saturn in Capricorn ("structure, limits and responsibility considered through structure
+// and long-range effort") repeats "structure"; its new wording awaits an owner ruling.
+const PAIR_HELD = new Set(['Saturn in Capricorn'])
+const pairs = [...page.matchAll(/pairs (\w+) in (\w+) — ([^.]+?) considered through ([^.]+?)\./g)]
+ok('considered-through pairings found', pairs.length >= 10, String(pairs.length))
+for (const m of pairs) {
+  const lead = new Set(words(m[3]))
+  const shared = [...new Set(words(m[4]).filter((w) => lead.has(w)))]
+  if (PAIR_HELD.has(`${m[1]} in ${m[2]}`)) continue
+  ok(
+    `${m[1]} in ${m[2]}: pairing repeats no word`,
+    shared.length === 0,
+    `${shared.join(', ')}: ${m[0]}`,
+  )
+}
+const mercGem = [...page.matchAll(/Mercury in Gemini — [^.]+?\./g)].map((m) => m[0])
+ok(
+  'Mercury in Gemini ends "curiosity and versatility"',
+  mercGem.length >= 3 &&
+    mercGem.every((t) => t.endsWith('considered through curiosity and versatility.')),
+  mercGem.join(' | '),
+)
+
 // 6. The committed Keepsake PDF carries the same dossier houses
 const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
 const doc = await pdfjs.getDocument({
@@ -282,6 +320,18 @@ for (const [k, n] of Object.entries(NAME)) {
 ok(
   'keepsake PDF: Moon big-three heading',
   pdf.includes(`The Moon in Aquarius — ${ord(H.moon)} house (${themes[H.moon]})`),
+)
+ok(
+  'keepsake PDF: no "<degree> X in X" sign duplication',
+  dupSign(pdf).length === 0,
+  dupSign(pdf)
+    .map((m) => m[0])
+    .join(' | '),
+)
+ok(
+  'keepsake PDF: Mercury in Gemini ends "curiosity and versatility"',
+  !/exchange considered through curiosity and exchange/.test(pdf) &&
+    pdf.includes('curiosity and versatility'),
 )
 await doc.cleanup?.()
 

@@ -538,14 +538,14 @@ function page(s) {
   <meta property="og:title" content="${shareTitle} | AstroPrecise" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
+  <meta property="og:image" content="${BASE_URL}/img/og/og-${s.key}.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="${s.name} – ${s.dates}. Engine still of ${RULER_STILL[s.key].label} from the AstroPrecise model. Type only. Not a live feed." />
+  <meta property="og:image:alt" content="Sun sign guide: ${s.name}. AstroPrecise card, lettered in Instrument Serif and Inter on paper." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${shareTitle} | AstroPrecise" />
   <meta name="twitter:description" content="${desc}" />
-  <meta name="twitter:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
+  <meta name="twitter:image" content="${BASE_URL}/img/og/og-${s.key}.jpg" />
   <meta name="theme-color" content="#F6F3EC" />
   <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/ap-next.css?v=${ASSET_V}" />

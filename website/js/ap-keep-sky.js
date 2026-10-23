@@ -44,7 +44,7 @@
         (utc ? ' \u00b7 computed at ' + utc : '') + ' \u00b7 Earth marked as home.';
     }
     return 'Authored whole-system camera \u00b7 ' + date + ' \u00b7 ' + place +
-      ' \u00b7 birth time unknown. Positions use a 12:00 UTC date reference; no precise Earth-facing hemisphere is claimed. Earth is marked as home.';
+      ' \u00b7 birth time unknown. Positions use local noon (12:00 at the birth place) as the date reference; no precise Earth-facing hemisphere is claimed. Earth is marked as home.';
   }
 
   function wrapLines(ctx, text, maxWidth) {
