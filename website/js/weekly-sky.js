@@ -279,5 +279,7 @@
     _findStations: findStations,
     _findExactAspects: findExactAspects,
     _elongation: elongation,
+    // shared house-voice copy, reused by the Upcoming list (sky-upcoming.js)
+    describe: function (ev) { ev.title = title(ev); ev.note = oneLiner(ev); return ev; },
   };
 })();
