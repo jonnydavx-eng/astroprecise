@@ -1,5 +1,5 @@
 /**
- * Astro Precise — Moment share-card painter
+ * AstroPrecise — Moment share-card painter
  * Paper & Night tokens (css/ap-tokens.css): paper ground, ink type, one copper
  * accent, AP Serif (Instrument Serif) + AP Sans (Inter). The only dark area is
  * the night disc that holds the zenith star patch.
@@ -25,8 +25,8 @@
   var SERIF = '"AP Serif", "Instrument Serif", "Times New Roman", serif';
   var SANS = '"AP Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
   /* Seen about 360 CSS px wide on a phone: 1 unit is a third of a px there.
-     Nothing on the card is set under 20 units (about 6.7 px at 360). */
-  var MOMENT_MIN_PX = 20;
+     Nothing on the card is set under 33 units (11 px at 360). */
+  var MOMENT_MIN_PX = 33;
 
   function cardExportPx() {
     return (global.RafCore && global.RafCore.cardExportSize)
@@ -37,10 +37,11 @@
   function cardFontsReady() {
     if (typeof document === 'undefined' || !document.fonts || !document.fonts.load) return Promise.resolve();
     var loads = Promise.all([
-      document.fonts.load('400 84px ' + SERIF),
-      document.fonts.load('italic 400 34px ' + SERIF),
-      document.fonts.load('400 26px ' + SANS),
-      document.fonts.load('600 22px ' + SANS),
+      document.fonts.load('400 76px ' + SERIF),
+      document.fonts.load('italic 400 38px ' + SERIF),
+      document.fonts.load('400 33px ' + SANS),
+      document.fonts.load('500 33px ' + SANS),
+      document.fonts.load('600 33px ' + SANS),
     ]).catch(function () {});
     return Promise.race([loads, new Promise(function (resolve) { setTimeout(resolve, 2500); })]);
   }
@@ -69,12 +70,38 @@
     if ('letterSpacing' in x) x.letterSpacing = px + 'px';
   }
 
+  // Every text draw on the card goes through setFont, so nothing is set under the floor.
+  function setFont(x, weight, px, family) {
+    var size = Math.max(MOMENT_MIN_PX, Math.round(px));
+    x.font = weight + ' ' + size + 'px ' + family;
+    return size;
+  }
+
+  function ellipsize(x, text, maxW) {
+    var t = String(text);
+    if (x.measureText(t).width <= maxW) return t;
+    while (t.length > 1 && x.measureText(t + '\u2026').width > maxW) t = t.slice(0, -1);
+    return t.replace(/\s+$/, '') + '\u2026';
+  }
+
+  // One line: step the size down to `min` (never under the floor), then ellipsize.
+  function fitLine(x, text, cx, y, weight, px, family, maxW, min) {
+    var floor = Math.max(MOMENT_MIN_PX, min || MOMENT_MIN_PX);
+    var size = setFont(x, weight, px, family);
+    while (x.measureText(String(text)).width > maxW && size > floor) {
+      size = setFont(x, weight, size - 2, family);
+    }
+    x.fillText(ellipsize(x, text, maxW), cx, y);
+    return size;
+  }
+
   function honestyBadge(x, cx, y, label) {
-    x.font = '500 22px ' + SANS;
-    var padX = 26, dotGap = 16, dotR = 5;
+    setFont(x, '500', MOMENT_MIN_PX, SANS);
+    label = ellipsize(x, label, CARD_BASE - 260);
+    var padX = 26, dotGap = 16, dotR = 6;
     var tw = x.measureText(label).width;
     var w = tw + padX * 2 + dotGap + dotR * 2;
-    var h = 44, left = cx - w / 2;
+    var h = 56, left = cx - w / 2;
     x.beginPath();
     if (x.roundRect) x.roundRect(left, y - h / 2, w, h, h / 2);
     else x.rect(left, y - h / 2, w, h);
@@ -90,7 +117,7 @@
     x.fill();
     x.textAlign = 'left';
     x.fillStyle = INK;
-    x.fillText(label, dotX + dotGap, y + 8);
+    x.fillText(label, dotX + dotGap, y + 12);
     x.textAlign = 'center';
   }
 
@@ -109,8 +136,11 @@
     return lines;
   }
 
-  function wrapText(x, text, cx, y, maxW, lineH) {
+  function wrapText(x, text, cx, y, maxW, lineH, maxLines) {
     var lines = splitLines(x, text, maxW);
+    if (maxLines && lines.length > maxLines) {
+      lines = lines.slice(0, maxLines - 1).concat(ellipsize(x, lines.slice(maxLines - 1).join(' '), maxW));
+    }
     for (var i = 0; i < lines.length; i++) x.fillText(lines[i], cx, y + i * lineH);
     return y + lines.length * lineH;
   }
@@ -243,51 +273,38 @@
 
     x.textAlign = 'center';
     x.textBaseline = 'alphabetic';
+    var maxW = CARD_BASE - 180;
+
     x.fillStyle = COPPER_INK;
-    x.font = '600 26px ' + SANS;
-    tracked(x, 8);
+    setFont(x, '600', MOMENT_MIN_PX, SANS);
+    tracked(x, 6);
     x.fillText('MOMENT', cx, 118);
     tracked(x, 0);
 
     x.fillStyle = GRAPHITE;
-    x.font = 'italic 400 34px ' + SERIF;
-    x.fillText(moment.subtitle || 'The sky on the night it mattered', cx, 168);
+    fitLine(x, moment.subtitle || 'The sky on the night it mattered', cx, 170, 'italic 400', 38, SERIF, maxW);
 
     // Title / occasion
     x.fillStyle = INK;
-    var title = moment.title || s.name;
-    var nameSize = 84;
-    x.font = '400 ' + nameSize + 'px ' + SERIF;
-    while (x.measureText(title).width > CARD_BASE - 180 && nameSize > 44) {
-      nameSize -= 4;
-      x.font = '400 ' + nameSize + 'px ' + SERIF;
-    }
-    x.fillText(title, cx, 252);
+    fitLine(x, moment.title || s.name, cx, 246, '400', 76, SERIF, maxW, 44);
 
     // Date + place
     x.fillStyle = GRAPHITE;
-    x.font = '500 28px ' + SANS;
     var whenWhere = [moment.dateLabel, moment.placeLabel].filter(Boolean).join('  ·  ');
-    if (whenWhere) x.fillText(whenWhere, cx, 302);
+    if (whenWhere) fitLine(x, whenWhere, cx, 294, '500', MOMENT_MIN_PX, SANS, maxW);
 
     // Zenith star name
     x.fillStyle = COPPER_INK;
-    x.font = '600 22px ' + SANS;
+    setFont(x, '600', MOMENT_MIN_PX, SANS);
     tracked(x, 4);
-    x.fillText('ZENITH STAR', cx, 356);
+    x.fillText('ZENITH STAR', cx, 346);
     tracked(x, 0);
 
     x.fillStyle = INK;
-    var starSize = 64;
-    x.font = '400 ' + starSize + 'px ' + SERIF;
-    while (x.measureText(s.name).width > CARD_BASE - 200 && starSize > 36) {
-      starSize -= 4;
-      x.font = '400 ' + starSize + 'px ' + SERIF;
-    }
-    x.fillText(s.name, cx, 420);
+    fitLine(x, s.name, cx, 404, '400', 56, SERIF, maxW, 40);
 
     // Star patch on the night disc (engine still under catalogue stars)
-    var panelCy = 600, half = 148, span = 18;
+    var panelCy = 520, half = 92, span = 18;
     drawNightDisc(x, moment.plateImage || null, cx, panelCy, half);
 
     if (S && S.STARS) {
@@ -308,20 +325,20 @@
       x.strokeStyle = 'rgba(241, 231, 207, 0.4)';
       x.lineWidth = 1.5;
       x.beginPath();
-      x.moveTo(cx - 14, panelCy); x.lineTo(cx + 14, panelCy);
-      x.moveTo(cx, panelCy - 14); x.lineTo(cx, panelCy + 14);
+      x.moveTo(cx - 12, panelCy); x.lineTo(cx + 12, panelCy);
+      x.moveTo(cx, panelCy - 12); x.lineTo(cx, panelCy + 12);
       x.stroke();
       for (var pi = 0; pi < panelStars.length; pi++) {
         var p = panelStars[pi];
         var isHero = p.st === s;
-        var r = Math.max(1.4, 4.0 - p.st.mag * 0.7);
+        var r = Math.max(1.4, 3.6 - p.st.mag * 0.6);
         x.beginPath();
         x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
         x.fillStyle = isHero ? NIGHT_COPPER : STARLIGHT;
         x.fill();
         if (isHero) {
           x.beginPath();
-          x.arc(p.px, p.py, Math.max(r, 5) + 7, 0, Math.PI * 2);
+          x.arc(p.px, p.py, Math.max(r, 5) + 6, 0, Math.PI * 2);
           x.strokeStyle = NIGHT_COPPER;
           x.lineWidth = 1.5;
           x.stroke();
@@ -331,15 +348,14 @@
 
     // Meta line
     x.fillStyle = INK;
-    x.font = '500 26px ' + SANS;
     var parts = [];
     if (s.con) parts.push(s.con);
     if (s.spectral) parts.push('type ' + s.spectral);
     parts.push('mag ' + s.mag);
     parts.push(s.ly + ' ly');
-    x.fillText(parts.join('   ·   '), cx, 806);
+    fitLine(x, parts.join('  ·  '), cx, 660, '500', MOMENT_MIN_PX, SANS, maxW);
 
-    // Light-cone / age story: two lines at most, stepping the size down to fit.
+    // Light-cone / age story: three lines at most, at the floor size.
     x.fillStyle = GRAPHITE;
     var story = moment.storyLine;
     if (!story && moment.cone && isFinite(moment.cone.radiusLy)) {
@@ -353,25 +369,20 @@
       story = 'Nearest catalogue star to the zenith — ' +
         (isFinite(z.sepDeg) ? z.sepDeg.toFixed(1) + '° from exact overhead.' : 'computed from LST + latitude.');
     }
-    var storyPx = 26;
-    x.font = '400 ' + storyPx + 'px ' + SANS;
-    while (splitLines(x, story, CARD_BASE - 200).length > 2 && storyPx > MOMENT_MIN_PX) {
-      storyPx -= 1;
-      x.font = '400 ' + storyPx + 'px ' + SANS;
-    }
-    wrapText(x, story, cx, 852, CARD_BASE - 200, Math.round(storyPx * 1.36));
+    setFont(x, '400', MOMENT_MIN_PX, SANS);
+    wrapText(x, story, cx, 704, maxW, 44, 3);
 
-    honestyBadge(x, cx, 930, 'computed · J2000 catalogue + LST · VSOP87');
+    honestyBadge(x, cx, 846, 'computed · J2000 catalogue + LST · VSOP87');
     x.fillStyle = MUTED;
-    x.font = '400 20px ' + SANS;
-    x.fillText('stars = catalogue · plate = 3D orrery still · free PNG ≠ paid pack', cx, 980);
-    x.font = '400 28px ' + SERIF;
+    fitLine(x, 'Stars from the catalogue · plate from the 3D orrery', cx, 900, '400', MOMENT_MIN_PX, SANS, maxW);
+    fitLine(x, 'Free image · the full pack is separate', cx, 944, '400', MOMENT_MIN_PX, SANS, maxW);
+    setFont(x, '400', 38, SERIF);
     var wm = 'AstroPrecise · moment';
     var wmW = x.measureText(wm).width;
-    drawMark(x, cx - wmW / 2 - 6, 1001, 30);
+    drawMark(x, cx - wmW / 2 - 8, 984, 34);
     x.fillStyle = INK;
     x.textAlign = 'left';
-    x.fillText(wm, cx - wmW / 2 + 16, 1011);
+    x.fillText(wm, cx - wmW / 2 + 18, 996);
     x.textAlign = 'center';
 
     return base.cv;
@@ -404,7 +415,7 @@
           if (navigator.canShare({ files: [file] })) {
             await navigator.share({
               files: [file],
-              title: opts.title || 'My Astro Precise Moment',
+              title: opts.title || 'My AstroPrecise Moment',
               text: shareText
             });
             return true;

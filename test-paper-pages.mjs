@@ -131,6 +131,63 @@ check(
   `ap-paper-pages.css respects the 14px floor (${sizes.filter((n) => n < 14)})`,
 )
 
+// Step 10c (a): the 404 page's own rules are scoped to main.wrap, so they cannot reach the
+// injected footer (which has its own div.wrap) and turn its links into ink buttons.
+{
+  const src = readFileSync(join(site, '404.html'), 'utf8')
+  const style = [...src.matchAll(/<style>([\s\S]*?)<\/style>/g)]
+    .map((m) => m[1])
+    .join('\n')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+  const selectors = [...style.matchAll(/([^{}]+)\{/g)].map((m) => m[1].trim())
+  const wrapSel = selectors.filter((sel) => /\.wrap\b/.test(sel))
+  check(wrapSel.length >= 5, `404.html: page rules found (${wrapSel.length})`)
+  check(
+    wrapSel.every((sel) => sel.split(',').every((part) => /\bmain\.wrap\b/.test(part))),
+    `404.html: every .wrap rule is scoped to main.wrap (${wrapSel.filter((sel) => !/main\.wrap/.test(sel))})`,
+  )
+  check(/<main id="main-content" class="wrap">/.test(src), '404.html: main.wrap holds the page')
+}
+
+// Step 10c (b): the index-lite redirect keeps the Observatory #lead anchor. Run the inline
+// redirect against a stub location and check where it sends each kind of visit.
+{
+  const { runInNewContext } = await import('node:vm')
+  const src = readFileSync(join(site, 'index-lite.html'), 'utf8')
+  const script = (src.match(/<script>([\s\S]*?)<\/script>/) || [])[1] || ''
+  const go = (hash, search = '') => {
+    let sent = ''
+    const location = {
+      href: 'https://astroprecise.app/index-lite.html' + search + hash,
+      search,
+      hash,
+      replace: (u) => (sent = u),
+    }
+    runInNewContext(script, { location, URL, URLSearchParams, String })
+    return new URL(sent)
+  }
+  for (const [hash, want] of [
+    ['', '#lead'],
+    ['#lead', '#lead'],
+    ['#LEAD', '#lead'],
+    ['#name=Ada&dob=1990-01-01', '#lead'],
+    ['#focus=mars', '#focus=mars'],
+  ]) {
+    const u = go(hash)
+    check(
+      u.pathname === '/observatory.html' && u.hash === want,
+      `index-lite.html: '${hash || '(none)'}' redirects to observatory.html${want} (got ${u.pathname}${u.hash})`,
+    )
+    check(!/name|dob/.test(u.href), `index-lite.html: '${hash || '(none)'}' drops personal fields`)
+  }
+  check(go('', '?lite=1').search === '?lite=1', 'index-lite.html: keeps the lite=1 flag')
+  check(
+    /http-equiv="refresh" content="0;url=observatory\.html#lead"/.test(src),
+    'index-lite.html: meta refresh keeps #lead',
+  )
+  check(/<a href="observatory\.html#lead">/.test(src), 'index-lite.html: fallback link keeps #lead')
+}
+
 if (fails.length) {
   for (const m of fails) console.error('FAIL ' + m)
   assert.fail(`test-paper-pages: ${fails.length} failed`)

@@ -24,7 +24,9 @@
       var scale = fragment.get('scale');
       if (/^(earth|sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)$/.test(focus)) hash.set('focus', focus);
       if (scale != null && /^-?\d+$/.test(String(scale))) hash.set('scale', String(scale));
-      target.hash = hash.toString();
+      // No focus or scale to carry: land on the Observatory lead, like the
+      // meta refresh and the fallback link below (#lead is always kept).
+      target.hash = hash.toString() || 'lead';
     }
     location.replace(target.href);
   })();

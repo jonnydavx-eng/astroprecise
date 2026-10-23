@@ -8,7 +8,7 @@
 <style>html{background:#F6F3EC}</style>
 <meta name="theme-color" content="#F6F3EC">
 <title>Sky card — keep your chart minute | AstroPrecise</title>
-<meta name="description" content="Beat 3 after your chart: a keepable 1200 × 630 card of one birth minute. Engine still artwork, honest timezone rules, computed on your device.">
+<meta name="description" content="Beat 3 after your chart: a keepable 1080 × 1440 card of one birth minute. Engine still artwork, honest timezone rules, computed on your device.">
 <link rel="canonical" href="https://astroprecise.app/synchronicity-card.html">
 <meta property="og:title" content="Sky card — keep your chart minute">
 <meta property="og:description" content="A keepable card of one birth minute. Computed and downloaded on this device.">
@@ -18,9 +18,9 @@
 <meta property="og:image:alt" content="Engine still of Earth and Moon from the AstroPrecise model. Type only. Not a live feed.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-keep-og-v906.jpg">
-<link rel="stylesheet" href="./css/fonts.css?v=938">
-<link rel="stylesheet" href="css/ap-next.css?v=938">
-<link rel="stylesheet" href="css/ap-mirror-hour.css?v=938">
+<link rel="stylesheet" href="./css/fonts.css?v=939">
+<link rel="stylesheet" href="css/ap-next.css?v=939">
+<link rel="stylesheet" href="css/ap-mirror-hour.css?v=939">
 <script>
 (function () {
   function hasMinute() {
@@ -73,7 +73,7 @@ html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.a
 .page-sky-card #skySyncNote{color:var(--ap-muted);font:400 14px/1.5 var(--ap-sans);letter-spacing:0;text-transform:none}
 .page-sky-card .ap-sync-card-folk{color:var(--ap-ink);font:italic 400 18px/1.5 var(--ap-serif)}
 .page-sky-card .ap-card-canvas{margin:26px 0 0}
-.page-sky-card .ap-card-canvas canvas{display:block;width:100%;height:auto;border:1px solid var(--ap-rule);border-radius:var(--ap-radius);background:var(--ap-paper)}
+.page-sky-card .ap-card-canvas canvas{display:block;width:100%;max-width:560px;height:auto;border:1px solid var(--ap-rule);border-radius:var(--ap-radius);background:var(--ap-paper)}
 .page-sky-card .ap-card-plate-note{display:none;margin:10px 0 0;color:var(--ap-muted);font-size:16px;line-height:1.5}
 .page-sky-card .ap-card-ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 30px;margin:28px 0 0;padding-top:22px;border-top:1px solid var(--ap-rule)}
 .page-sky-card .ap-card-ledger div{padding:12px 0;border-bottom:1px solid var(--ap-rule)}
@@ -101,15 +101,15 @@ html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.a
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-<script>window.AP_ASSET_V='938';</script>
+<script>window.AP_ASSET_V='939';</script>
 
-<script src="js/ap-nav-model.js?v=938" defer></script>
-<script src="js/ephemeris.js?v=938" defer></script>
-<script src="js/ap-keep-library.js?v=938" defer></script>
-<script src="js/ap-mirror-hour.js?v=938" defer></script>
-<script src="js/ap-glyphs.js?v=938" defer></script>
-<script src="js/ap-sky-card.js?v=938" defer></script>
-<script defer src="js/ap-next.js?v=938"></script></head>
+<script src="js/ap-nav-model.js?v=939" defer></script>
+<script src="js/ephemeris.js?v=939" defer></script>
+<script src="js/ap-keep-library.js?v=939" defer></script>
+<script src="js/ap-mirror-hour.js?v=939" defer></script>
+<script src="js/ap-glyphs.js?v=939" defer></script>
+<script src="js/ap-sky-card.js?v=939" defer></script>
+<script defer src="js/ap-next.js?v=939"></script></head>
 <body class="ap-next ap-editorial page-sky-card ap-launch-article">
 <a class="ap-skip" href="#sky-card-main">Skip to the sky card</a>
 <div data-ap-next-nav><noscript><nav class="ap-noscript-nav" aria-label="Primary"><a href="index.html">AstroPrecise</a> · <a href="chart.html">Birth chart</a> · <a href="explore.html">Explore</a> · <a href="charts.html">Saved</a> · <a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a></nav></noscript></div>
@@ -126,7 +126,7 @@ html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.a
 <main class="ap-card-shell" id="sky-card-main">
   <p class="ap-card-kicker">Beat 3 · Keep · after your chart</p>
   <h1>Keep this minute as a card.</h1>
-  <p class="ap-card-lede">The optional keep step after a free chart: one birth minute drawn as a 1200 × 630 plate. Sun, Moon and Venus, the town’s real zone, and the rising sign when the hour is known. Play stays free — this is not checkout.</p>
+  <p class="ap-card-lede">The optional keep step after a free chart: one birth minute drawn as a 1080 × 1440 portrait plate. Sun, Moon and Venus, the town’s real zone, and the rising sign when the hour is known. Play stays free — this is not checkout.</p>
 
   <div class="ap-card-gate" id="skyCardColdGate">
     <p>This keep step expects a minute from your chart. Cast the free chart first; the minute travels in this tab when you choose Sky card.</p>
@@ -157,8 +157,8 @@ html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.a
   </form>
 
   <div class="ap-card-canvas">
-    <canvas id="skyCard" width="1200" height="630" role="img" aria-label="A sky card for one birth minute. The reading below the card repeats everything printed on it."></canvas>
-    <p class="ap-card-plate-note">The plate is a 1200 × 630 image, so its lines are small on a phone. Every one of them is repeated in the reading below, at reading size.</p>
+    <canvas id="skyCard" width="1080" height="1440" role="img" aria-label="A sky card for one birth minute. The reading below the card repeats everything printed on it."></canvas>
+    <p class="ap-card-plate-note">Every line on the card is repeated in the reading below.</p>
   </div>
 
   <div class="ap-card-ledger" id="skyCardLedger" aria-live="polite"></div>
@@ -170,7 +170,7 @@ html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.a
 </main>
 
 <div data-ap-next-footer><noscript><footer class="ap-noscript-footer"><a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refunds.html">Refunds</a> · <a href="contact.html">Contact</a></footer></noscript></div>
-<script src="js/ap-footer-inject.js?v=938" defer></script>
-<script src="js/ap-sky-time.js?v=938" defer></script>
+<script src="js/ap-footer-inject.js?v=939" defer></script>
+<script src="js/ap-sky-time.js?v=939" defer></script>
 </body>
 </html>

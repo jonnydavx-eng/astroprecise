@@ -16,7 +16,7 @@
 })(typeof window !== 'undefined' ? window : typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  var HONESTY = 'Folk clock pattern — entertainment and a pause. Not predictive science. Astro Precise does not invent or own angel numbers.';
+  var HONESTY = 'Folk clock pattern — entertainment and a pause. Not predictive science. AstroPrecise does not invent or own angel numbers.';
   var NATAL_KEY = 'ap-mirror-natal';
   var LIVE_KEY = 'ap-mirror-live';
   var DISMISS_KEY = 'ap-presence-dismissed';
