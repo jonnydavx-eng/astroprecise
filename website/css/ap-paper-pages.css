@@ -420,7 +420,7 @@ html.ap-paper-legacy:not(#_):not(#__) body {
   font-family: var(--pl-sans) !important;
 }
 /* Starfields and glow layers were the old dark page itself. */
-html.ap-paper-legacy:not(#_):not(#__) :is(#starfield-canvas, .starfield-canvas, #lp-mandala-canvas, .ap-living-sky-bg, .cosmic-bg, .nebula, .ap-starfield, .stars-layer, .aurora, .ap-aurora, .aurora-orb) {
+html.ap-paper-legacy:not(#_):not(#__) :is(#starfield-canvas, .starfield-canvas, .ap-living-sky-bg, .cosmic-bg, .nebula, .ap-starfield, .stars-layer, .aurora, .ap-aurora, .aurora-orb) {
   display: none !important;
 }
 html.ap-paper-legacy body::before,
@@ -706,4 +706,69 @@ html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-planet='moon'
 }
 html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-now] {
   fill: var(--pl-ink) !important;
+}
+/* ---- Step 10h: legacy pages update ----
+   The paper reset clears every background, so bars that stay on screen while the page scrolls
+   under them went see-through: Ephemeris's sticky jump nav let the "Advanced" eyebrow show
+   through "Tonight", and the same held for the eclipse playback dock (sticky on phones), the
+   privacy notice, the toasts ("Continue: …", errors) and the skip links. They get a solid paper
+   ground and a hairline. */
+html.ap-paper-legacy:not(#_):not(#__) :is(.sky-jump-nav, .ap-eclipse-live__dock) {
+  background-color: var(--pl-paper) !important;
+  border-bottom: 1px solid var(--pl-line) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) :is(.privacy-banner, .toast-container .toast) {
+  background-color: var(--pl-card) !important;
+  border: 1px solid var(--pl-line) !important;
+  box-shadow: 0 8px 24px rgba(14, 17, 22, 0.12) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) :is(.skip-link, .ap-skip, .skip) {
+  background-color: var(--pl-paper) !important;
+  color: var(--pl-ink) !important;
+  border: 1px solid var(--pl-ink) !important;
+}
+/* #119 review (Codex P2): the reset also erased paint that carries meaning.
+   - Life path: the computed mandala (drawn for the user's number once the form is sent) was
+     hidden with the starfields; it is line art on a clear ground, so it shows on paper.
+   - Quiz: the progress track and fill and the element dots; Ephemeris: the resonance meter. */
+html.ap-paper-legacy:not(#_):not(#__) main #lp-mandala-canvas {
+  background-color: transparent !important;
+  border-radius: 0;
+}
+html.ap-paper-legacy:not(#_):not(#__) :is(.aq-progress, .resonance-meter) {
+  background-color: var(--pl-line) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) :is(.aq-progress__fill, .resonance-meter span) {
+  background-color: var(--pl-copper-ink) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) .aq-option__dot {
+  background-color: var(--dc, var(--pl-copper-ink)) !important;
+  border: 1px solid rgba(14, 17, 22, 0.35) !important;
+}
+/* - Eclipse: the Sun, Moon and Earth labels float over the 3D canvas, which stays a night
+     plate, so they keep a night chip with starlight type. */
+html.ap-paper-legacy:not(#_):not(#__) .ap-eclipse-live__body-label {
+  background-color: rgba(14, 17, 22, 0.78) !important;
+  color: var(--pl-starlight) !important;
+  -webkit-text-fill-color: var(--pl-starlight) !important;
+  border-left: 1px solid rgba(241, 231, 207, 0.45) !important;
+}
+/* 12px floor for text the pages write later (results, scans, readouts): inline sizes of
+   0.5–0.74rem and 9–11px in their templates and scripts (ephemeris echo scan and provenance,
+   life path, name numerology and angel-number result notes, the accuracy chart labels). The px
+   forms match on "size:" so this sheet's own font-size declarations stay at 14px or more. */
+html.ap-paper-legacy:not(#_):not(#__) body :is(
+    [style*='font-size:0.5'], [style*='font-size: 0.5'],
+    [style*='font-size:0.6'], [style*='font-size: 0.6'],
+    [style*='font-size:0.7rem'], [style*='font-size: 0.7rem'],
+    [style*='font-size:0.70'], [style*='font-size: 0.70'],
+    [style*='font-size:0.71'], [style*='font-size: 0.71'],
+    [style*='font-size:0.72'], [style*='font-size: 0.72'],
+    [style*='font-size:0.73'], [style*='font-size: 0.73'],
+    [style*='font-size:0.74'], [style*='font-size: 0.74'],
+    [style*='size:9px'], [style*='size: 9px'],
+    [style*='size:10px'], [style*='size: 10px'],
+    [style*='size:11px'], [style*='size: 11px']
+  ):not(svg *) {
+  font-size: 0.75rem !important;
 }
