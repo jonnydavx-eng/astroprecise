@@ -104,7 +104,10 @@ function recording(ctx, draws, arcs, segments) {
       }
       if ((prop === 'fill' || prop === 'stroke') && (arcs || segments)) {
         return (...args) => {
-          for (const a of pathArcs) a.op = a.op ? `${a.op}+${prop}` : prop
+          for (const a of pathArcs) {
+            a.op = a.op ? `${a.op}+${prop}` : prop
+            if (prop === 'fill') a.fillStyle = String(target.fillStyle).toLowerCase()
+          }
           if (prop === 'stroke' && segments)
             for (const l of pathLines)
               segments.push({ ...l, width: target.lineWidth, alpha: target.globalAlpha })
@@ -939,6 +942,18 @@ export function checkEclipseWheel(r) {
       if (c !== s.own && segToPoint(s, c.x, c.y) < c.r)
         P.leaderUnder.push(`leader from ${s.lon.toFixed(1)}° runs under the disc at ${at(c)}`)
   }
+  // The eclipse line (the wide stroke out to just past the outer ring) may sit under the
+  // contact's disc only (filled in the palette's ember); every other disc must keep clear of it.
+  const ember = String(r.model?.palette?.ember || '').toLowerCase()
+  const eclipseLines = r.segments.filter(
+    (s) => s.width >= 6 && Math.abs(C(s.x1, s.y1) - (W.outerR + 18)) < 1.5,
+  )
+  for (const s of eclipseLines)
+    for (const c of discs)
+      if (!(ember && c.fillStyle === ember) && segToPoint(s, c.x, c.y) < c.r + s.width / 2)
+        P.leaderUnder.push(`the eclipse line runs under the disc at ${at(c)}`)
+  if (r.model && W.leaderStart && !eclipseLines.length)
+    P.leaderUnder.push('no eclipse line found to check')
   for (let i = 0; i < leaders.length; i++)
     for (let j = i + 1; j < leaders.length; j++)
       if (properCross(leaders[i], leaders[j]))
