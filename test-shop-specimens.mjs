@@ -25,15 +25,16 @@ for (const [name, html] of [['shop', shop], ['natal-plate', plate], ['sample-rea
   ok(`${name}: no v906 shop plate in <img>/<source>`, !media.includes('img/shop/v906/'))
 }
 ok('shop.html has no v906 reference at all', !shop.includes('v906'))
-const v929 = [...new Set([...shop.matchAll(/img\/shop\/v9(?:29|3[01])\/[a-z0-9-]+\.(?:jpg|avif|webp)/g), ...plate.matchAll(/img\/shop\/v9(?:29|3[01])\/[a-z0-9-]+\.(?:jpg|avif|webp)/g)].map((m) => m[0]))]
-ok('v929/v930/v931 specimens are referenced', v929.length >= 33)
+const v929 = [...new Set([...shop.matchAll(/img\/shop\/v9(?:29|3[0-2])\/[a-z0-9-]+\.(?:jpg|avif|webp)/g), ...plate.matchAll(/img\/shop\/v9(?:29|3[0-2])\/[a-z0-9-]+\.(?:jpg|avif|webp)/g)].map((m) => m[0]))]
+ok('v929/v930/v932 specimens are referenced', v929.length >= 33)
 for (const ref of v929) {
   ok(`exists: ${ref}`, existsSync(join(SITE, ref)))
   ok(`ships in Pages dist: ${ref}`, build.includes(`'${ref}'`))
 }
 // step 8: the Whole Sky specimen moved to v930 (same fictional person as its sample PDF)
 // degrees PR: the Keepsake specimen moved to v931 (rebuilt after Aurora's positions were refreshed)
-for (const name of ['v929/minute-plate', 'v931/keepsake-specimen', 'v930/whole-sky-specimen']) {
+// houses PR: moved again to v932 (the Big Three page now places the Moon in the 11th house)
+for (const name of ['v929/minute-plate', 'v932/keepsake-specimen', 'v930/whole-sky-specimen']) {
   const file = join(SITE, `img/shop/${name}.jpg`)
   const meta = await sharp(file).metadata()
   ok(`${name}.jpg is 1600×1600 like its width/height attributes`, meta.width === 1600 && meta.height === 1600)
@@ -43,7 +44,7 @@ for (const name of ['v929/minute-plate', 'v931/keepsake-specimen', 'v930/whole-s
   const corner = await sharp(await sharp(file).extract({ left: 0, top: 0, width: 120, height: 120 }).toBuffer()).stats()
   ok(`${name}.jpg sits on paper, not night`, corner.channels.slice(0, 3).every((c) => c.mean > 190))
 }
-for (const m of shop.matchAll(/<img src="img\/shop\/v9(?:29|3[01])\/[^"]+" width="(\d+)" height="(\d+)"/g)) ok('shop img is 1600×1600', m[1] === '1600' && m[2] === '1600')
+for (const m of shop.matchAll(/<img src="img\/shop\/v9(?:29|3[0-2])\/[^"]+" width="(\d+)" height="(\d+)"/g)) ok('shop img is 1600×1600', m[1] === '1600' && m[2] === '1600')
 
 // Locked shop copy stays exactly as it was
 ok('shop keeps every Fictional sample label', (shop.match(/<figcaption>[^<]*Fictional sample[^<]*<\/figcaption>/g) || []).length === 4)
@@ -51,7 +52,7 @@ ok('Whole Sky keeps its schematic caption', shop.includes('<figcaption>Fictional
 for (const locked of ['Coming soon', 'Not on sale yet', 'No prices are published']) ok(`shop keeps "${locked}"`, shop.includes(locked))
 ok('shop shows no £ price', !/£\s?\d/.test(shop))
 for (const pdf of ['natal-sky-print-pack-sample.pdf']) ok(`shop keeps sample PDF ${pdf}`, shop.includes(`downloads/studio/${pdf}`))
-ok('every shop alt still says Fictional sample', [...shop.matchAll(/<img src="img\/shop\/v9(?:29|3[01])\/[^"]+"[^>]*alt="([^"]+)"/g)].every((m) => m[1].startsWith('Fictional sample')))
+ok('every shop alt still says Fictional sample', [...shop.matchAll(/<img src="img\/shop\/v9(?:29|3[0-2])\/[^"]+"[^>]*alt="([^"]+)"/g)].every((m) => m[1].startsWith('Fictional sample')))
 ok('natal-plate alt names the fictional person', plate.includes('for the fictional Imogen Hale'))
 
 // Paid keepsake sample: visual restyle only
