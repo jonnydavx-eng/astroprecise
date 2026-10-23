@@ -58,3 +58,33 @@ html body.ap-observatory .ap-mobile-flight-deck{scroll-margin-bottom:calc(var(--
 .ap-noscript-nav,.ap-noscript-footer{display:block;padding:20px;font:16px/1.6 system-ui,sans-serif}.ap-noscript-nav a,.ap-noscript-footer a{display:inline-block;min-height:44px;padding:10px 4px;color:inherit}
 /* Step 10e legibility floor: footer legal, guide and social links are never under 12px (legacy pages used 0.62rem = 9.9px). */
 .ap-next-footer .ap-legal-links,.ap-next-footer .ap-guide-links,.ap-next-footer .ap-family-links,.ap-next-footer .ap-social-row__when-live{font-size:12px}.ap-next-footer .ap-support-link{font-size:12px!important}
+/* Upcoming sky events (sky-events.html + home strip). Every value is computed by js/sky-upcoming.js. */
+.ap-sky-events .eyebrow,.ap-sky-events .tag,.home-next-up .eyebrow{font-size:12px}
+.upcoming-next{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:28px;align-items:end;padding:32px;border:1px solid var(--ap-next-line);border-radius:8px;background:var(--ap-next-card);margin:0 0 56px}
+.upcoming-next h2{font-size:44px;line-height:1.05;margin:0 0 8px}
+.upcoming-next .next-sub{font-size:15px;color:var(--ap-next-muted);margin:0 0 14px}
+.upcoming-next .next-note{font-size:16px;margin:0}
+.upcoming-next .next-when{border-left:1px solid var(--ap-next-line);padding-left:28px}
+.upcoming-next .next-when time{display:block;font-size:15px;margin:0 0 6px}
+.upcoming-next .countdown{font:400 34px/1.1 var(--ap-next-serif);color:var(--ap-next-copper-ink);margin:0 0 6px}
+.upcoming-next .next-eclipse{grid-column:1/-1;margin:0;padding-top:18px;border-top:1px solid var(--ap-next-line);font-size:14px;color:var(--ap-next-muted)}
+.upcoming-next .next-eclipse strong{color:var(--ap-next-ink);font-weight:600}
+.upcoming-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;padding:0;list-style:none}
+.upcoming-chips button{min-height:44px;padding:8px 16px;border:1px solid var(--ap-next-line);border-radius:999px;background:transparent;color:var(--ap-next-ink);font:550 14px/1.2 var(--ap-next-sans);cursor:pointer}
+.upcoming-chips button[aria-pressed="true"]{background:var(--ap-next-ink);border-color:var(--ap-next-ink);color:var(--ap-next-paper)}
+.upcoming-chips button:focus-visible,.upcoming-more:focus-visible{outline:2px solid var(--ap-next-accent);outline-offset:2px}
+.upcoming-month{font:600 12px/1.5 var(--ap-next-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ap-next-copper-ink);padding:28px 0 4px;border:0}
+.upcoming-row{grid-template-columns:150px minmax(0,1fr) auto}
+.upcoming-row time{font-size:13px;color:var(--ap-next-ink)}
+.upcoming-row .row-sub{font-size:13px;color:var(--ap-next-muted);margin:0 0 6px}
+.upcoming-row .row-note{font-size:14px;color:var(--ap-next-graphite);margin:0}
+.upcoming-row .row-link{display:inline-flex;min-height:44px;align-items:center;font-size:14px;font-weight:600;color:var(--ap-next-copper-ink)}
+.upcoming-row[data-kind="eclipse"] h3{color:var(--ap-next-copper-ink)}
+.upcoming-row .tag{font-size:12px;white-space:nowrap}
+.upcoming-count{font-size:13px;color:var(--ap-next-muted);margin:0 0 8px}
+.upcoming-foot{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin-top:24px;font-size:13px;color:var(--ap-next-muted)}
+.upcoming-more{min-height:44px}
+.home-next-up{margin-top:40px;margin-bottom:40px}
+.home-next-up .upcoming-next{margin:0}
+@media(max-width:800px){.upcoming-next{grid-template-columns:1fr;padding:24px 20px;gap:18px}.upcoming-next h2{font-size:34px}.upcoming-next .next-when{border-left:0;padding-left:0;border-top:1px solid var(--ap-next-line);padding-top:16px}.upcoming-next .countdown{font-size:28px}}
+@media(max-width:600px){.upcoming-row{grid-template-columns:1fr;gap:6px;padding:18px 0}.upcoming-row h3{font-size:22px}.upcoming-row .tag{display:none}.upcoming-chips button{padding:8px 13px}}
