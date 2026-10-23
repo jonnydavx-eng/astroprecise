@@ -611,7 +611,24 @@ export async function probeInstrumentCard(kind = 'zenith', opts = {}) {
       height: 0,
       getContext() {
         last = createCanvas(this.width, this.height)
-        return recording(last.getContext('2d'), draws)
+        const ctx = recording(last.getContext('2d'), draws)
+        if (!opts.textScale) return ctx
+        // Stand in for wider or narrower fonts (another machine's Georgia): measureText widths
+        // are scaled, so the painters wrap as they would there. Drawing is unchanged.
+        return new Proxy(ctx, {
+          get(target, prop) {
+            if (prop === 'measureText')
+              return (t) => {
+                const m = target.measureText(t)
+                return { ...m, width: m.width * opts.textScale }
+              }
+            return target[prop]
+          },
+          set(target, prop, value) {
+            target[prop] = value
+            return true
+          },
+        })
       },
     }),
   }
