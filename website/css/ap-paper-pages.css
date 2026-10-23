@@ -583,3 +583,77 @@ html.ap-paper-legacy:not(#_):not(#__) .eng-star-mark {
 html.ap-paper-legacy:not(#_):not(#__) .privacy-banner__close {
   font-size: 0.8125rem !important;
 }
+/* Review round 1 (#119). The page ground: legacy page CSS paints <html> black under the paper
+   body, which shows as a band on iOS overscroll. */
+html.ap-paper-legacy:not(#_):not(#__) {
+  background-color: var(--pl-paper) !important;
+}
+/* Primary actions on ink carry paper text (copper-ink on ink was 2.78:1; the third :not() outranks the copy-link rule), as Moment's
+   "Freeze this sky" does. */
+html.ap-paper-legacy:not(#_):not(#__):not(#___) :is(.ap-number-action--primary, .ap-ev-tools__chip--primary),
+html.ap-paper-legacy:not(#_):not(#__):not(#___) :is(.ap-number-action--primary, .ap-ev-tools__chip--primary) * {
+  color: var(--pl-paper) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__):not(#___) .ap-ev-tools__chip--primary {
+  background: var(--pl-ink) !important;
+  border-color: var(--pl-ink) !important;
+}
+/* Outreach footer guide links were pale blue on sage (1.21:1). */
+html.ap-paper-legacy:not(#_):not(#__) .ap-guide-links a {
+  color: var(--pl-copper-ink) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) .ap-guide-links {
+  color: var(--pl-muted) !important;
+}
+/* "Works offline" pill (app.js; shown once the service worker controls the page). */
+html.ap-paper-legacy:not(#_):not(#__) .offline-ready-pill {
+  font-size: 0.75rem !important;
+  letter-spacing: 0.08em !important;
+  color: var(--pl-paper) !important;
+  background: var(--pl-ink) !important;
+  border-color: var(--pl-ink) !important;
+}
+/* 12px floor on the other eleven pages: labels, eyebrows, badges, chips, hints and instrument
+   controls that were 7–11.8px. 0.75rem is the floor itself. */
+html.ap-paper-legacy:not(#_):not(#__)
+  :is(
+    .acc-section__label, .ap-entertainment-note, .acc-hero__eyebrow, .acc-hero__seal,
+    .an-keyword, .an-method span, .an-number-card__root, .eyebrow, .instrument-teaser__badge,
+    .instrument-teaser__inner p, .sync-clock__hint, .sync-clock__hint strong, .sync-clock__label,
+    .sync-chip, .sync-chip strong, .ap-badge,
+    .ap-number-boundary__ledger span, .ap-number-dial__axis, .ap-number-dial__caption,
+    .ap-number-kicker, .ap-number-proof, .ap-number-route__copy :is(b, span),
+    .ap-number-route__index, .ap-number-return small,
+    .ap-ai-privacy, .ap-ai-panel__badge, .ap-ai-tone-row label, .form-hint,
+    .lp-number-card__tagline, .lp-number-card--master > div > span,
+    #nn-deep-reading p, .nn-form-hint, .nn-funnel__inner p, .nn-meaning__num span,
+    .aq-hero__eyebrow, .sr-hero__eyebrow, .sr-hero__eyebrow span, .sr-field label,
+    .sr-field__hint, .sr-field__hint em, .cstory-hero__eyebrow, .cstory__kicker,
+    .ap-gloss, .cw-tile__src, .field-row__src, .cw-info, .cw-tile__title, .field-row__label,
+    #ph-note, .glow-btn, .sky-jump-nav__link, .sky-panel__tag, .sky-tools-row__link,
+    .section-num, .sky-card__gloss, .sky-fold__hint, body.page-instrument th,
+    .ot-meta, .ap-ev__eyebrow, .ot-foot, .ot-foot :is(a, code), .ap-ev-tools__chip
+  ) {
+  font-size: 0.75rem !important;
+}
+/* Eclipse: the archive guide, mission panel and live-instrument HUD ran 7–10px. */
+html.ap-paper-legacy:not(#_):not(#__)
+  :is(
+    .ap-eclipse-kicker, .ap-eclipse-guide__download-cta, .ap-eclipse-guide__download-copy :is(em, small),
+    .ap-eclipse-guide__safety span, .ap-eclipse-guide__grid article span, .ap-eclipse-next__grid article span,
+    .ap-eclipse-contact__fields label span, .ap-eclipse-contact__note, .ap-eclipse-receipt small,
+    .ap-eclipse-geometry-plate figcaption span,
+    .ap-eclipse-mission__actions :is(a, button), .ap-eclipse-mission__clock p,
+    .ap-eclipse-mission__facts span, .ap-eclipse-mission__point, .ap-eclipse-mission__safety span,
+    .ap-eclipse-live__scale-note, .ap-eclipse-live__advanced > summary,
+    .ap-eclipse-live__instrument > summary, .ap-eclipse-live__button, .ap-eclipse-live__chapter span,
+    .ap-eclipse-live__datum dt, .ap-eclipse-live__body-label, .ap-eclipse-live__legend span,
+    .ap-eclipse-live__lens-button, .ap-eclipse-live__lens span, .ap-eclipse-live__live-badge span,
+    .ap-eclipse-live__mode, .ap-eclipse-live__time, .ap-eclipse-live__share button,
+    .ap-eclipse-live__control-label span
+  ) {
+  font-size: 0.75rem !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) :is(.ap-eclipse-live__button, .ap-eclipse-live__lens-button, .ap-eclipse-live__live-badge span) {
+  letter-spacing: 0.04em !important;
+}
