@@ -269,21 +269,28 @@ ok(
     .map((m) => m[0])
     .join(' | '),
 )
-// HELD: Saturn in Capricorn ("structure, limits and responsibility considered through structure
-// and long-range effort") repeats "structure"; its new wording awaits an owner ruling.
-const PAIR_HELD = new Set(['Saturn in Capricorn'])
+// Capricorn's pairing is "discipline and long-range effort" (owner ruling, v937), so no
+// Capricorn line repeats a word: before v937 Saturn read "structure, limits and responsibility
+// considered through structure and long-range effort". Every pairing is checked, none held.
 const pairs = [...page.matchAll(/pairs (\w+) in (\w+) — ([^.]+?) considered through ([^.]+?)\./g)]
 ok('considered-through pairings found', pairs.length >= 10, String(pairs.length))
 for (const m of pairs) {
   const lead = new Set(words(m[3]))
   const shared = [...new Set(words(m[4]).filter((w) => lead.has(w)))]
-  if (PAIR_HELD.has(`${m[1]} in ${m[2]}`)) continue
   ok(
     `${m[1]} in ${m[2]}: pairing repeats no word`,
     shared.length === 0,
     `${shared.join(', ')}: ${m[0]}`,
   )
 }
+const capPairs = pairs.filter((m) => m[2] === 'Capricorn')
+ok(
+  'Capricorn pairings (Saturn, Uranus, Neptune) end "discipline and long-range effort"',
+  ['Saturn', 'Uranus', 'Neptune'].every((p) => capPairs.some((m) => m[1] === p)) &&
+    capPairs.every((m) => m[4] === 'discipline and long-range effort'),
+  capPairs.map((m) => `${m[1]}: ${m[4]}`).join(' | '),
+)
+ok('no "structure and long-range effort" left', !/structure and long-range effort/.test(page))
 const mercGem = [...page.matchAll(/Mercury in Gemini — [^.]+?\./g)].map((m) => m[0])
 ok(
   'Mercury in Gemini ends "curiosity and versatility"',
@@ -332,6 +339,12 @@ ok(
   'keepsake PDF: Mercury in Gemini ends "curiosity and versatility"',
   !/exchange considered through curiosity and exchange/.test(pdf) &&
     pdf.includes('curiosity and versatility'),
+)
+ok(
+  'keepsake PDF: Capricorn pairs end "discipline and long-range effort"',
+  !/structure and long-range effort/.test(pdf) &&
+    (pdf.match(/considered through discipline and long-range effort/g) || []).length >= 5,
+  String((pdf.match(/considered through discipline and long-range effort/g) || []).length),
 )
 await doc.cleanup?.()
 

@@ -114,6 +114,18 @@
   "bytes": 34071
  },
  {
+  "page": "lifepath.html",
+  "title": "Life Path number — numerology, not the sky engine",
+  "og": "img/og/og-lifepath.jpg",
+  "bytes": 59442
+ },
+ {
+  "page": "links.html",
+  "title": "Observatory, Chart, Events, Shop",
+  "og": "img/og/og-links.jpg",
+  "bytes": 55324
+ },
+ {
   "page": "moonphase.html",
   "title": "Moon Phase on Your Birthday — Free & Shareable",
   "og": "img/og/og-moonphase.jpg",
@@ -124,6 +136,12 @@
   "title": "Archived Sky Plate study",
   "og": "img/og/og-natal-plate.jpg",
   "bytes": 50909
+ },
+ {
+  "page": "numerology.html",
+  "title": "Numerology — number tradition, clearly labelled",
+  "og": "img/og/og-numerology.jpg",
+  "bytes": 60112
  },
  {
   "page": "observatory.html",
