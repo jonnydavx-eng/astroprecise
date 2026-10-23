@@ -1,7 +1,7 @@
 // Every public sample that shows the fictional Aurora Vale must agree to the minute:
 // the Keepsake page (website/sample-reading.html), its printed PDF, and the Minute
 // Plate that tools/make-studio-samples.mjs renders for her (and embeds in the Whole Sky
-// PDF and the v930 Whole Sky shop image). All three are checked against one fresh
+// PDF and the v933 Whole Sky shop image). All three are checked against one fresh
 // engine call. Positions only; houses and copy are out of scope here.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'

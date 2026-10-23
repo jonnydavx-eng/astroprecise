@@ -187,6 +187,13 @@ for (const m of page.matchAll(
   (ctx[m[1]] ||= new Set()).add(m[2])
 for (const [h, s] of Object.entries(ctx))
   ok(`one context sentence for the ${ord(+h)} house`, s.size === 1, [...s].join(' | '))
+// The 11th-house paragraph used "aims" twice (collective aims ... shared aims); keep it once.
+for (const m of lens.filter((x) => x[1] === '11'))
+  ok(
+    '11th-house paragraph does not repeat "aims"',
+    (`${m[2]} ${m[4]}`.match(/\baims\b/g) || []).length === 1,
+    `${m[2]} | ${m[4]}`,
+  )
 const hd = [
   ...page.matchAll(
     new RegExp(`(${NAMES}) in \\w+ — (\\d+)(?:st|nd|rd|th) house \\(([^)]+)\\)`, 'g'),

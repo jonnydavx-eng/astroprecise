@@ -992,12 +992,17 @@
         var O = this._engine;
         if (!this._ready || !O) return null;
         opts = opts || {};
+        // A fixed width/height (fulfilment stills) is passed straight through, and a
+        // failure to honour it is rethrown rather than turned into a quiet null.
+        var fixed = opts.width != null || opts.height != null;
         try {
           if (opts.mode === 'birth-hour' && typeof O.captureBirthHourStill === 'function') {
-            return O.captureBirthHourStill({ jd: opts.jd, timeKnown: opts.timeKnown, scale: 2 });
+            return O.captureBirthHourStill({ jd: opts.jd, timeKnown: opts.timeKnown, scale: 2, width: opts.width, height: opts.height });
           }
-          if (typeof O.captureFrame === 'function') return O.captureFrame({ scale: 2 });
-        } catch (e) {}
+          if (typeof O.captureFrame === 'function') return O.captureFrame({ scale: 2, width: opts.width, height: opts.height });
+        } catch (e) {
+          if (fixed) throw e;
+        }
         return null;
       };
 

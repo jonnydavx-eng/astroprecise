@@ -25,16 +25,19 @@ for (const [name, html] of [['shop', shop], ['natal-plate', plate], ['sample-rea
   ok(`${name}: no v906 shop plate in <img>/<source>`, !media.includes('img/shop/v906/'))
 }
 ok('shop.html has no v906 reference at all', !shop.includes('v906'))
-const v929 = [...new Set([...shop.matchAll(/img\/shop\/v9(?:29|3[0-2])\/[a-z0-9-]+\.(?:jpg|avif|webp)/g), ...plate.matchAll(/img\/shop\/v9(?:29|3[0-2])\/[a-z0-9-]+\.(?:jpg|avif|webp)/g)].map((m) => m[0]))]
-ok('v929/v930/v932 specimens are referenced', v929.length >= 33)
-for (const ref of v929) {
+// Current light specimens, one versioned folder each. History: Minute Plate v929;
+// Keepsake v930 -> v931 (degrees PR) -> v932 (houses PR: Moon in the 11th);
+// Whole Sky v930 (step 8) -> v933 (4800 PR: the true 4800x3600 still, kept 4:3).
+const SPECIMENS = { 'v929/minute-plate': 'Minute Plate', 'v932/keepsake-specimen': 'Keepsake', 'v933/whole-sky-specimen': 'Whole Sky' }
+const SPECIMEN_REF = new RegExp(`img/shop/(?:${Object.keys(SPECIMENS).join('|')})(?:-\\d+)?\\.(?:jpg|avif|webp)`, 'g')
+const specimenRefs = [...new Set([...shop.matchAll(SPECIMEN_REF), ...plate.matchAll(SPECIMEN_REF)].map((m) => m[0]))]
+ok(`current specimens are referenced (${Object.entries(SPECIMENS).map(([k, v]) => `${v} ${k.split('/')[0]}`).join(', ')})`, specimenRefs.length >= 33, String(specimenRefs.length))
+for (const name of Object.keys(SPECIMENS)) ok(`${name} is referenced`, specimenRefs.some((ref) => ref.startsWith(`img/shop/${name}`)))
+for (const ref of specimenRefs) {
   ok(`exists: ${ref}`, existsSync(join(SITE, ref)))
   ok(`ships in Pages dist: ${ref}`, build.includes(`'${ref}'`))
 }
-// step 8: the Whole Sky specimen moved to v930 (same fictional person as its sample PDF)
-// degrees PR: the Keepsake specimen moved to v931 (rebuilt after Aurora's positions were refreshed)
-// houses PR: moved again to v932 (the Big Three page now places the Moon in the 11th house)
-for (const name of ['v929/minute-plate', 'v932/keepsake-specimen', 'v930/whole-sky-specimen']) {
+for (const name of Object.keys(SPECIMENS)) {
   const file = join(SITE, `img/shop/${name}.jpg`)
   const meta = await sharp(file).metadata()
   ok(`${name}.jpg is 1600×1600 like its width/height attributes`, meta.width === 1600 && meta.height === 1600)

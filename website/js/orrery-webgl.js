@@ -36,7 +36,7 @@ import {
   moonPhaseFromEphemeris,
   integrateDayOffset,
   keplerGuidePoints,
-} from './orbitlab-orbital-math.js?v=932';
+} from './orbitlab-orbital-math.js?v=933';
 
 // Screen-space layout for the 3D name tags (pure, unit-tested in
 // test-orrery-readability.mjs). items[0..n) carry the anchor (x, y) and size
@@ -11679,9 +11679,72 @@ const FinishShader = {
     window.__apOrreryIBL = false;
   }
 
+  // Fulfilment stills (Whole Sky 06-observatory PNG) need an exact pixel size
+  // that does not depend on the visitor's window: render once at width x height,
+  // pixel ratio 1 and the matching camera aspect, prove the drawing buffer really
+  // is that size (browsers silently clamp oversize buffers), then restore the live
+  // view. Any shortfall throws; a fulfilment file is never quietly smaller.
+  function captureFixedFrame(width, height) {
+    const gl = renderer.getContext();
+    const maxRb = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
+    const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    const maxVp = gl.getParameter(gl.MAX_VIEWPORT_DIMS);
+    if (width > maxRb || height > maxRb || width > maxTex || height > maxTex || width > maxVp[0] || height > maxVp[1]) {
+      throw new Error('Fixed still ' + width + 'x' + height + ' exceeds this GPU (renderbuffer ' + maxRb
+        + ', texture ' + maxTex + ', viewport ' + maxVp[0] + 'x' + maxVp[1] + ')');
+    }
+    const prevAspect = camera.aspect;
+    try {
+      renderer.setPixelRatio(1);
+      renderer.setSize(width, height, false);
+      if (gl.drawingBufferWidth !== width || gl.drawingBufferHeight !== height) {
+        throw new Error('Fixed still drawing buffer is ' + gl.drawingBufferWidth + 'x' + gl.drawingBufferHeight
+          + ', not ' + width + 'x' + height);
+      }
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      applyCamera();
+      if (bloomPass) bloomPass.resolution.set(width, height);
+      if (radialBlurPass) radialBlurPass.uniforms.uAspect.value = width / height;
+      if (composer && !portraitMode) {
+        composer.setPixelRatio(1);
+        composer.setSize(width, height);
+        composer.render();
+      } else {
+        renderer.render(scene, camera);
+      }
+      const off = document.createElement('canvas');
+      off.width = width;
+      off.height = height;
+      off.getContext('2d').drawImage(canvas, 0, 0, width, height);
+      if (off.width !== width || off.height !== height) {
+        throw new Error('Fixed still canvas is ' + off.width + 'x' + off.height + ', not ' + width + 'x' + height);
+      }
+      off.dataset.apFixedStill = width + 'x' + height;
+      off.dataset.apDrawingBuffer = gl.drawingBufferWidth + 'x' + gl.drawingBufferHeight;
+      return off;
+    } finally {
+      camera.aspect = prevAspect;
+      camera.updateProjectionMatrix();
+      resize();
+    }
+  }
+
+  function fixedStillSize(opts) {
+    if (opts.width == null && opts.height == null) return null;
+    const width = Number(opts.width);
+    const height = Number(opts.height);
+    if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1) {
+      throw new Error('Fixed still size must be two positive integers, got ' + opts.width + 'x' + opts.height);
+    }
+    return { width, height };
+  }
+
   function captureFrame(opts) {
     if (!renderer || !canvas) return null;
     opts = opts || {};
+    const fixed = fixedStillSize(opts);
+    if (fixed) return captureFixedFrame(fixed.width, fixed.height);
     const mult = opts.scale || 2;
     const box = (window.RafCore && window.RafCore.canvasCssSize)
       ? window.RafCore.canvasCssSize(canvas, 560)
@@ -11774,7 +11837,7 @@ const FinishShader = {
     try {
       if (domLabelLayer) domLabelLayer.style.visibility = 'hidden';
       if (!applyAuthoredBirthHourStill(jd)) return null;
-      return captureFrame({ scale: opts.scale || 2 });
+      return captureFrame({ scale: opts.scale || 2, width: opts.width, height: opts.height });
     } finally {
       dayOffset = previous.dayOffset;
       scrollBias = previous.scrollBias;

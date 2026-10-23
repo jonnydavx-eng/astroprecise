@@ -6,6 +6,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import JSZip from 'jszip';
+import sharp from 'sharp';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_SCRIPT = resolve(process.env.AP_PACKAGE_TEST_SCRIPT || join(ROOT, 'tools/package-studio-order.mjs'));
@@ -122,6 +123,82 @@ test('explicit output directory preserves invoking files and packages the exact 
       assert.equal(entry.sha256, sha256(bytes));
     }
     assert.match(readFileSync(join(output, 'THIRD-PARTY-CREDITS.txt'), 'utf8'), /THIRD-PARTY CREDITS/);
+  } finally {
+    data.cleanup();
+  }
+});
+
+// Whole Sky: the Observatory still is sold as exactly 4800 x 3600. The packager reads
+// the PNG's real IHDR size and refuses any other size before writing anything.
+const WHOLE_SKY = 'whole-sky-edition';
+const STILL = '06-observatory-birth-hour-schematic-4800x3600.png';
+const WHOLE_SKY_FILES = [...new Set([
+  'personal-sky-keepsake-screen.pdf', 'personal-sky-keepsake-print.pdf', ...PRODUCT_FILES,
+])];
+
+async function wholeSkyFixture(stillBytes) {
+  const root = mkdtempSync(join(ROOT, '.package-args-test-'));
+  const order = { orderId: 'FICTIONAL-WHOLE-SKY-TEST', product: WHOLE_SKY, purchaseIntent: 'self', sampleMode: 'fictional', name: 'Aurora Vale', email: 'buyer@example.test' };
+  const inputPath = join(root, 'fictional-order.json');
+  writeFileSync(inputPath, JSON.stringify(order));
+  const output = join(root, 'out');
+  mkdirSync(output);
+  for (const name of WHOLE_SKY_FILES) writeFileSync(join(output, name), `FICTIONAL PACKAGING TEST ONLY\n${name}\n`);
+  if (stillBytes) writeFileSync(join(output, STILL), stillBytes);
+  return {
+    root, output,
+    args: ['--in', inputPath, '--product', WHOLE_SKY, '--mode', 'proof', '--input-hash', sha256(JSON.stringify(order)), '--dir', output],
+    cleanup() {
+      assert.ok(root.startsWith(join(ROOT, '.package-args-test-')));
+      rmSync(root, { recursive: true, force: true });
+    },
+  };
+}
+
+const blankPng = (width, height) => sharp({ create: { width, height, channels: 3, background: '#07101e' } }).png({ compressionLevel: 1 }).toBuffer();
+
+for (const [name, make, message] of [
+  ['the old 2880 x 1164 window-sized still', () => blankPng(2880, 1164), /is 2880x1164, not exactly 4800x3600/],
+  ['a portrait 3600 x 4800 still', () => blankPng(3600, 4800), /is 3600x4800, not exactly 4800x3600/],
+  ['a still one pixel short', () => blankPng(4800, 3599), /is 4800x3599, not exactly 4800x3600/],
+  ['a JPEG named .png', () => sharp({ create: { width: 4800, height: 3600, channels: 3, background: '#000' } }).jpeg().toBuffer(), /is not a PNG/],
+]) {
+  test(`reject ${name} as the Whole Sky Observatory still before writing anything`, async () => {
+    const data = await wholeSkyFixture(await make());
+    try {
+      const before = snapshot(data.root);
+      const result = spawnSync(process.execPath, [PACKAGE_SCRIPT, ...data.args], { encoding: 'utf8', timeout: 30_000 });
+      assert.equal(result.error, undefined);
+      assert.notEqual(result.status, 0, 'wrong-size still must fail');
+      assert.match(`${result.stdout}${result.stderr}`, message);
+      assert.deepEqual(snapshot(data.root), before, 'a rejected still changed files');
+    } finally {
+      data.cleanup();
+    }
+  });
+}
+
+test('package a Whole Sky order whose Observatory still is exactly 4800 x 3600', async () => {
+  const data = await wholeSkyFixture(await blankPng(4800, 3600));
+  try {
+    const result = spawnSync(process.execPath, [PACKAGE_SCRIPT, ...data.args], { encoding: 'utf8', timeout: 30_000 });
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+    const manifest = JSON.parse(readFileSync(join(data.output, 'CUSTOMER-MANIFEST.json'), 'utf8'));
+    assert.ok(manifest.files.some((entry) => entry.file === STILL));
+    const zip = await JSZip.loadAsync(readFileSync(join(data.output, `astroprecise-${WHOLE_SKY}.zip`)), { checkCRC32: true });
+    const png = await zip.file(STILL).async('nodebuffer');
+    assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [4800, 3600]);
+  } finally {
+    data.cleanup();
+  }
+});
+
+test('a Whole Sky order with no Observatory still still fails as a missing file', async () => {
+  const data = await wholeSkyFixture(null);
+  try {
+    const result = spawnSync(process.execPath, [PACKAGE_SCRIPT, ...data.args], { encoding: 'utf8', timeout: 30_000 });
+    assert.notEqual(result.status, 0);
+    assert.match(`${result.stdout}${result.stderr}`, /Missing required customer file: 06-observatory-birth-hour-schematic-4800x3600\.png/);
   } finally {
     data.cleanup();
   }

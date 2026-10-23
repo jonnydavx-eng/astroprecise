@@ -176,6 +176,13 @@ export function ensureOut(dir) {
   return dir;
 }
 
+/** Width/height from a PNG's IHDR chunk; null if the bytes are not a PNG. */
+export function pngSize(bytes) {
+  const b = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes || []);
+  const SIG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+  if (b.length < 24 || !SIG.every((v, i) => b[i] === v) || b.toString('ascii', 12, 16) !== 'IHDR') return null;
+  return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
+}
 export const norm = (x) => ((x % 360) + 360) % 360;
 export const sd = (l) => { const s = norm(l); return { sign: SIGNS[Math.floor(s / 30)], idx: Math.floor(s / 30), d: Math.floor(s % 30), m: Math.floor((s % 1) * 60) }; };
 export const fmt = (l) => { const x = sd(l); return `${x.d}°${String(x.m).padStart(2, '0')}′ ${x.sign}`; };

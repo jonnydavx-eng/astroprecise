@@ -18,7 +18,7 @@
  * Every person here is fictional. No order input, no payment path, no network
  * beyond a loopback server of website/. Fonts come from tools/print-fonts (static
  * TrueType, embedded as CIDFontType2) so no PDF carries a Type3 font. Metadata is
- * set with pdf-lib: Author AstroPrecise, Creator/Producer "AstroPrecise Studio v932".
+ * set with pdf-lib: Author AstroPrecise, Creator/Producer "AstroPrecise Studio v933".
  *
  *   node tools/make-studio-samples.mjs [--out website/downloads/studio] [--check]
  *   --check renders to a temp folder and only reports (does not touch website/).
@@ -34,8 +34,11 @@ import { chromium } from 'playwright-core';
 import { ROOT, loadEngines, buildChart, fmt, esc, parseArgs, printFontCss, printSymbolCss, PRINT_FONTS_DIR } from './fulfil-shared.mjs';
 import { generateSamplePack, plateHtml, inspectPdf, SAMPLE_LABEL } from './sample-print-pack.mjs';
 import { helioLongitudes, loadStills, PAPER_NIGHT as C } from './minute-plate.mjs';
+import { launchStillBrowser, renderObservatoryStill, STILL_WIDTH, STILL_HEIGHT } from './observatory-still.mjs';
 
-export const STUDIO_RELEASE = 'v932';
+export const STUDIO_RELEASE = 'v933';
+/** Whole Sky PDF embeds the 4800 x 3600 still downscaled to this width, still 4:3. */
+export const STILL_PREVIEW_WIDTH = 1800;
 const FIXED_DATE = new Date('2026-10-23T00:00:00Z'); // stable metadata dates, no build-time churn
 
 // Fictional fixture used across the Studio previews (tools/generate-couples.mjs,
@@ -157,26 +160,21 @@ export async function renderAuroraPlate(browser, origin, E) {
   return { chart, png, jpg: await sharp(png).resize({ width: 1000 }).jpeg({ quality: 86 }).toBuffer() };
 }
 
-/** Real Observatory engine, birth-hour still, stamped SCHEMATIC by the site's own Keep code. */
+/**
+ * Real Observatory engine, birth-hour still, stamped SCHEMATIC by the site's own Keep code.
+ * Rendered at the product's fixed 4800 x 3600 (tools/observatory-still.mjs, the same
+ * renderer the Whole Sky order step uses) and size-checked; the PDF embeds a 4:3
+ * 1800 x 1350 downscale of that true render, so the preview keeps the product's shape.
+ */
 export async function captureObservatoryStill(origin) {
-  const browser = await chromium.launch({ channel: 'chrome', headless: true, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+  const browser = await launchStillBrowser();
   try {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
-    await page.goto(`${origin}/observatory.html?nosw=1`, { waitUntil: 'load' });
-    await page.click('#ap-enter-sky');
-    await page.waitForFunction(() => { const o = document.getElementById('orr'); return o?._ready === true && o.getAttribute('data-engine') === 'webgl' && window.APKeepSky; }, null, { timeout: 90_000 });
     // +1 s keeps the stamped minute at 02:42 after float rounding of the JD.
     const detail = { jd: Date.UTC(AURORA.y, AURORA.mo - 1, AURORA.d, AURORA.h, AURORA.mi, 1) / 86400000 + 2440587.5, birthDate: '1990-06-14', birthTime: '03:42', timeKnown: true, timeAccuracy: 'exact', place: AURORA.place, timezone: 'Europe/London' };
-    const res = await page.evaluate((d) => {
-      const o = document.getElementById('orr');
-      const still = o.captureStill({ mode: 'birth-hour', jd: d.jd, timeKnown: true, scale: 2 });
-      if (!still) return null;
-      window.APKeepSky.stampSurfaceA(still, d);
-      return { w: still.width, h: still.height, url: still.toDataURL('image/png') };
-    }, detail);
-    if (!res) throw new Error('Observatory capture returned nothing (WebGL unavailable?)');
-    const png = Buffer.from(res.url.split(',')[1], 'base64');
-    return { w: res.w, h: res.h, png, jpg: await sharp(png).resize({ width: 1800 }).jpeg({ quality: 86 }).toBuffer() };
+    const still = await renderObservatoryStill(browser, origin, detail, { width: STILL_WIDTH, height: STILL_HEIGHT });
+    if (still.width !== STILL_WIDTH || still.height !== STILL_HEIGHT) throw new Error(`Observatory still is ${still.width}x${still.height}, not ${STILL_WIDTH}x${STILL_HEIGHT}`);
+    const jpg = await sharp(still.png).resize({ width: STILL_PREVIEW_WIDTH, height: STILL_PREVIEW_WIDTH * STILL_HEIGHT / STILL_WIDTH, fit: 'fill' }).jpeg({ quality: 86 }).toBuffer();
+    return { w: still.width, h: still.height, renderMs: still.renderMs, png: still.png, jpg };
   } finally { await browser.close(); }
 }
 
@@ -225,6 +223,8 @@ h2{font-weight:600;font-size:8pt;letter-spacing:.22em;color:${C.copperInk};margi
 .ft{position:absolute;left:18mm;right:18mm;bottom:10mm;display:flex;justify-content:space-between;font-size:6.8pt;letter-spacing:.18em;color:${C.muted};border-top:1px solid ${C.rule};padding-top:3mm;font-variant-numeric:tabular-nums}
 .p1 .two .frame{height:98mm;display:flex;align-items:center;justify-content:center}
 .p1 .two .frame img{width:auto;height:100%;max-width:100%;object-fit:contain}
+.p1 .wide .frame{height:76mm;display:flex;align-items:center;justify-content:center}
+.p1 .wide .frame img{width:auto;height:100%;max-width:100%}
 .p2 .two .frame{height:120mm;display:flex;align-items:center;justify-content:center}
 .p2 .two .frame img{width:auto;height:100%;max-width:100%;object-fit:contain}
 </style></head><body>
@@ -268,7 +268,7 @@ export async function makeStudioSamples({ out = join(ROOT, 'website', 'downloads
     const plate = await renderAuroraPlate(browser, origin, E);
     log(`Aurora Vale (fictional) — Sun ${fmt(plate.chart.pos.sun.lon)} | Moon ${fmt(plate.chart.pos.moon.lon)} | ASC ${fmt(plate.chart.asc)}`);
     const still = await captureObservatoryStill(origin);
-    log(`Observatory birth-hour still ${still.w}x${still.h} (webgl, SCHEMATIC stamp)`);
+    log(`Observatory birth-hour still ${still.w}x${still.h} in ${still.renderMs} ms (webgl, SCHEMATIC stamp; PDF embeds ${STILL_PREVIEW_WIDTH}x${STILL_PREVIEW_WIDTH * STILL_HEIGHT / STILL_WIDTH})`);
     const html = wholeSkyHtml({ cover: uri(keep.cover), inner: uri(keep.inner), plate: uri(plate.jpg), still: uri(still.jpg) });
     const ctx = await browser.newContext({ viewport: { width: 794, height: 1123 } });
     const page = await ctx.newPage();
