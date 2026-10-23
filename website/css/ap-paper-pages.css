@@ -676,3 +676,34 @@ html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text[fill='#EEF4FA'] {
 html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text[fill='#A89E88'] {
   fill: var(--pl-graphite) !important;
 }
+/* Step 10g: the hour wheel's planet glyphs were drawn in night tones (1.5-3:1 on paper, Moon and
+   Mercury faintest on the grey night half). On paper each planet takes a deep tone of its own
+   colour, dark enough for 3.5:1 or more on the grey night sectors and 9:1 or more on the day
+   sectors and the centre; the glyph in the lit "now" sector is ink. Glows are cleared. */
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph {
+  filter: none !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-planet='saturn'] {
+  fill: #43381f !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-planet='jupiter'] {
+  fill: #4f360a !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-planet='mars'] {
+  fill: #682812 !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-planet='sun'] {
+  fill: #5e340c !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-planet='venus'] {
+  fill: #5e2533 !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-planet='mercury'] {
+  fill: #33383f !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-planet='moon'] {
+  fill: #262d3a !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) #ph-wheel text.ph-glyph[data-now] {
+  fill: var(--pl-ink) !important;
+}
