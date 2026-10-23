@@ -5,7 +5,10 @@
 //     from computed colours composited over the computed backgrounds behind them;
 //   - no text under 12px at 360, 390 and 1280 (SVG text included);
 //   - no Cinzel or Cormorant Garamond anywhere;
-//   - the <html> ground is paper, so iOS overscroll shows no dark band.
+//   - the <html> ground is paper, so iOS overscroll shows no dark band;
+//   - step 10g: every planet glyph on the ephemeris planetary-hour wheel reaches 3:1 against
+//     what it sits on (day sector, grey night sector, the lit "now" sector, the centre) at
+//     360, 390 and 1280, with "now" placed in a day hour and in a night hour.
 // The page is opened as a visitor sees it (several pages skip their scripts on the headless
 // audit path), scrolled to the end so late sections render, then measured.
 // Needs Chrome (CHROME_PATH or a system Chrome); skips locally without one, fails in CI.
@@ -221,6 +224,88 @@ const AUDIT = (exempt) => {
   }
 }
 
+// Step 10g: the planetary-hour wheel's planet glyphs (SVG <text> in AstroGlyph). Each glyph's
+// computed fill (CSS beats the SVG attribute) is composited, with its opacity, over its own
+// sector's computed fill, which is composited over the solid backdrop behind the <svg>.
+// Glyphs are non-text graphics (WCAG 1.4.11), so the floor is 3:1.
+const WHEEL = () => {
+  const parse = (s) => {
+    const m = String(s).match(/rgba?\(([^)]+)\)/)
+    if (!m) return null
+    const p = m[1]
+      .split(/[ ,/]+/)
+      .filter(Boolean)
+      .map(Number)
+    return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 }
+  }
+  const over = (top, under) => {
+    const a = top.a + under.a * (1 - top.a)
+    if (!a) return { r: 0, g: 0, b: 0, a: 0 }
+    const mix = (k) => (top[k] * top.a + under[k] * under.a * (1 - top.a)) / a
+    return { r: mix('r'), g: mix('g'), b: mix('b'), a }
+  }
+  const lum = (c) => {
+    const f = (v) => {
+      v /= 255
+      return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4
+    }
+    return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b)
+  }
+  const ratio = (a, b) => {
+    const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p)
+    return (x + 0.05) / (y + 0.05)
+  }
+  const svg = document.getElementById('ph-wheel')
+  if (!svg) return { glyphs: 0, low: ['no #ph-wheel'], unknown: [] }
+  const layers = []
+  let unknownBg = false
+  for (let e = svg; e; e = e.parentElement) {
+    const cs = getComputedStyle(e)
+    if (cs.backgroundImage && cs.backgroundImage !== 'none') unknownBg = true
+    const c = parse(cs.backgroundColor)
+    if (c && c.a > 0) {
+      layers.push(c)
+      if (c.a >= 1) break
+    }
+  }
+  let ground = { r: 255, g: 255, b: 255, a: 1 }
+  for (let i = layers.length - 1; i >= 0; i--) ground = over(layers[i], ground)
+  const opacityOf = (el) => {
+    let op = 1
+    for (let a = el; a; a = a.parentElement) {
+      const cs = getComputedStyle(a)
+      op *= Number(cs.opacity)
+      if (a === el) op *= Number(cs.fillOpacity)
+    }
+    return op
+  }
+  const low = []
+  const seen = []
+  const glyphs = [...svg.querySelectorAll('text')].filter((t) =>
+    /astroglyph/i.test(t.getAttribute('font-family') || getComputedStyle(t).fontFamily),
+  )
+  for (const t of glyphs) {
+    const sec = t.closest('g.ph-sec')
+    const path = sec && sec.querySelector('path')
+    let bg = ground
+    let where = 'centre'
+    if (path) {
+      const pc = parse(getComputedStyle(path).fill)
+      if (pc) bg = over({ ...pc, a: pc.a * opacityOf(path) }, ground)
+      const i = Number(sec.dataset.i)
+      const now = Number(path.getAttribute('stroke-width')) > 1
+      where = (now ? 'now ' : '') + (i < 12 ? 'day' : 'night') + ' ' + (i + 1)
+    }
+    const fc = parse(getComputedStyle(t).fill)
+    const fg = { ...fc, a: fc.a * opacityOf(t) }
+    const r = ratio(over(fg, bg), bg)
+    const line = `${where} ${t.textContent.trim()} ${r.toFixed(2)}:1 fill ${getComputedStyle(t).fill} on rgb(${[bg.r, bg.g, bg.b].map(Math.round)})`
+    seen.push(line)
+    if (r < 3 - 0.005) low.push(line)
+  }
+  return { glyphs: glyphs.length, low, seen, unknownBg }
+}
+
 const browser = await chromium.launch({
   executablePath: CHROME,
   headless: true,
@@ -288,6 +373,38 @@ try {
         `${file} ${width}px: <html> ground is paper (overscroll)`,
         r.htmlBg,
       )
+      if (file === 'ephemeris.html') {
+        // Default render (the wall-clock hour), then "now" aligned into a day hour (12:30)
+        // and a night hour (23:30) through the page's own "Align with the Observatory".
+        const states = {
+          'wall clock': null,
+          'now in a day hour': '2026-06-21T12:30:00',
+          'now in a night hour': '2026-06-21T23:30:00',
+        }
+        for (const [state, iso] of Object.entries(states)) {
+          if (iso)
+            await page.evaluate((t) => {
+              localStorage.setItem('astro_current_demo_time', new Date(t).toISOString())
+              document.getElementById('ph-align').click()
+            }, iso)
+          const wr = await page.evaluate(WHEEL)
+          results[`${file}@${width}:wheel:${state}`] = wr
+          ok(
+            wr.glyphs === 25,
+            `${file} ${width}px (${state}): hour wheel has 24 sector glyphs + the centre glyph`,
+            wr.glyphs,
+          )
+          ok(
+            !wr.unknownBg,
+            `${file} ${width}px (${state}): hour wheel backdrop is a known solid colour`,
+          )
+          ok(
+            wr.low.length === 0,
+            `${file} ${width}px (${state}): hour-wheel planet glyphs reach 3:1 on day, night and now sectors`,
+            wr.low,
+          )
+        }
+      }
       await page.close()
     }
     await ctx.close()
