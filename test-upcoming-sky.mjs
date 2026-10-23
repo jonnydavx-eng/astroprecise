@@ -7,20 +7,39 @@
  * these values only check what the engine computes.
  *
  * Sources and tolerances:
+ * Tolerances match the page copy (sky-events.html): "Moon phases and eclipses
+ * are timed to within a minute or two of published almanac values; equinoxes,
+ * solstices and sign changes to within a few minutes." Published values are
+ * rounded to the minute, so "a minute or two" is tested as ≤ 2 min and "a few
+ * minutes" as ≤ 3 min for the Sun and ≤ 5 min for planets' sign changes.
+ *
  *  - Moon phases: US Naval Observatory, Astronomical Applications API,
  *    https://aa.usno.navy.mil/api/moon/phases/year?year=2026 (and 2027), UT.
- *    Tolerance 5 minutes.
+ *    Tolerance 2 minutes.
  *  - Equinoxes and solstices: USNO API https://aa.usno.navy.mil/api/seasons?year=2026
- *    (and 2027), UT. Tolerance 15 minutes.
+ *    (and 2027), UT. Tolerance 3 minutes. Sep 2027 (06:02 UT) also agrees with
+ *    JPL Horizons (Sun, 500@399, ObsEcLon crossing 180°: 06:01:44 UT).
  *  - Eclipses: NASA GSFC eclipse catalogue (F. Espenak),
  *    https://eclipse.gsfc.nasa.gov/SEdecade/SEdecade2021.html and
  *    https://eclipse.gsfc.nasa.gov/LEdecade/LEdecade2021.html. Times are of
  *    greatest eclipse in TD (TD − UT ≈ 69 s in 2026–27). Date and type must
- *    match exactly; time within 30 minutes.
+ *    match exactly; time within 2 minutes.
+ *  - Sign changes: JPL Horizons (targets 299 Venus, 499 Mars; geocentric
+ *    500@399, ObsEcLon, 1-minute steps, linear crossing of the sign cusp),
+ *    https://ssd.jpl.nasa.gov/api/horizons.api. Venus re-enters Libra
+ *    2026-10-25 09:09:46 UT; Mars enters Virgo 2026-11-25 23:37:08 UT.
+ *    Tolerance 5 minutes. Venus is the hard case: it is retrograde a day after
+ *    inferior conjunction (0.27 AU away), so a ~6″ error from the truncated
+ *    VSOP87D series moves the crossing by ~4 min.
  *  - Mercury stations: JPL Horizons (target 199, geocentric 500@399, observer
  *    ecliptic-of-date longitude ObsEcLon, 1 h steps; turning point fitted by a
- *    parabola), https://ssd.jpl.nasa.gov/api/horizons.api. Tolerance 6 hours
- *    (a station is a slow turn; the page shows it as approximate).
+ *    parabola), https://ssd.jpl.nasa.gov/api/horizons.api. Tolerance 30 min,
+ *    the Mercury window the page uses for its day range.
+ *  - Outer-planet stations: JPL Horizons (targets 599, 699, 799, 899, 999;
+ *    500@399, ObsEcLon, 1 h steps over 23 Oct 2026 – 1 Nov 2027; station =
+ *    vertex of a least-squares parabola over ±3 days). Each JPL time must fall
+ *    inside the page's uncertainty window (UpcomingSky.APPROX_WINDOW_H), and the
+ *    UK day(s) the page shows must include JPL's UK day.
  */
 import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
@@ -78,9 +97,9 @@ for (const [name, when] of LUNATIONS) {
     when + ' UT',
     e && e.tDate.toISOString().slice(0, 16).replace('T', ' '),
     d.toFixed(1) + ' min',
-    '5 min',
+    '2 min',
   ])
-  ok(`${name} ${when} within 5 min of USNO`, d <= 5, d.toFixed(1) + ' min')
+  ok(`${name} ${when} within 2 min of USNO`, d <= 2, d.toFixed(1) + ' min')
 }
 
 // ── Seasons vs USNO ──────────────────────────────────────────────────────
@@ -89,6 +108,7 @@ const SEASONS = [
   ['December solstice', '2026-12-21 20:50'],
   ['March equinox', '2027-03-20 20:25'],
   ['June solstice', '2027-06-21 14:11'],
+  ['September equinox', '2027-09-23 06:02'],
 ]
 for (const [name, when] of SEASONS) {
   const ms = utc(when)
@@ -100,9 +120,9 @@ for (const [name, when] of SEASONS) {
     when + ' UT',
     e && e.tDate.toISOString().slice(0, 16).replace('T', ' '),
     d.toFixed(1) + ' min',
-    '15 min',
+    '3 min',
   ])
-  ok(`${name} ${when} within 15 min of USNO`, d <= 15, d.toFixed(1) + ' min')
+  ok(`${name} ${when} within 3 min of USNO`, d <= 3, d.toFixed(1) + ' min')
 }
 ok('exactly 8 seasons in two years', evs.filter((e) => e.kind === 'season').length === 8)
 
@@ -137,11 +157,11 @@ for (const [body, type, whenTD] of ECLIPSES) {
     whenTD + ' TD',
     e && `${e.tDate.toISOString().slice(0, 16).replace('T', ' ')} (${e.eclipseType})`,
     d.toFixed(1) + ' min',
-    'type exact, 30 min',
+    'type exact, 2 min',
   ])
   ok(`${whenTD} ${body} eclipse found on the same date`, sameDay, e && e.tDate.toISOString())
   ok(`${whenTD} ${body} eclipse type is ${type}`, e && e.eclipseType === type, e && e.eclipseType)
-  ok(`${whenTD} ${body} eclipse within 30 min of greatest eclipse`, d <= 30, d.toFixed(1) + ' min')
+  ok(`${whenTD} ${body} eclipse within 2 min of greatest eclipse`, d <= 2, d.toFixed(1) + ' min')
   ok(
     `${whenTD} eclipse title names its type`,
     e && e.title.toLowerCase() === `${type} ${body} eclipse`,
@@ -165,14 +185,101 @@ for (const [toRetro, when] of STATIONS) {
     when + ' UT',
     e && e.tDate.toISOString().slice(0, 16).replace('T', ' '),
     d.toFixed(1) + ' min',
-    '6 h',
+    '30 min',
   ])
   ok(
-    `Mercury ${toRetro ? 'SR' : 'SD'} ${when} within 6 h of Horizons`,
-    d <= 360,
+    `Mercury ${toRetro ? 'SR' : 'SD'} ${when} within 30 min of Horizons`,
+    d <= 30,
     d.toFixed(1) + ' min',
   )
   ok('station is labelled approximate', e && e.approx === true)
+}
+
+// ── Sign changes vs JPL Horizons ─────────────────────────────────────────
+const INGRESSES = [
+  ['venus', 'Libra', '2026-10-25 09:09:46'],
+  ['mars', 'Virgo', '2026-11-25 23:37:08'],
+]
+for (const [body, sign, when] of INGRESSES) {
+  const ms = utc(when)
+  const e = near('ingress', ms, (x) => x.body === body && x.sign === sign)
+  const d = e ? mins(+e.tDate, ms) : Infinity
+  rows.push([
+    `${e ? e.title : body + ' → ' + sign} ${when.slice(0, 10)}`,
+    'JPL Horizons',
+    when.slice(0, 16) + ' UT',
+    e && e.tDate.toISOString().slice(0, 16).replace('T', ' '),
+    d.toFixed(1) + ' min',
+    '5 min',
+  ])
+  ok(`${body} into ${sign} ${when} within 5 min of Horizons`, d <= 5, d.toFixed(1) + ' min')
+  ok(`${body} into ${sign} is timed, not approximate`, e && e.approx === false)
+}
+
+// ── Outer-planet stations vs JPL Horizons (day shown must be right) ──────
+{
+  const STATIONS_OUTER = [
+    ['saturn', false, '2026-12-10 23:30'],
+    ['neptune', false, '2026-12-12 22:20'],
+    ['jupiter', true, '2026-12-13 00:56'],
+    ['uranus', false, '2027-02-08 12:22'],
+    ['jupiter', false, '2027-04-13 02:20'],
+    ['pluto', true, '2027-05-08 13:02'],
+    ['neptune', true, '2027-07-09 23:01'],
+    ['saturn', true, '2027-08-09 18:08'],
+    ['uranus', true, '2027-09-15 09:17'],
+    ['pluto', false, '2027-10-18 04:17'],
+  ]
+  const ukKey = (d) =>
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      day: 'numeric',
+      month: 'short',
+    }).format(d)
+  for (const [body, toRetro, when] of STATIONS_OUTER) {
+    const ms = utc(when)
+    const e = near('station', ms, (x) => x.body === body && x.toRetro === toRetro)
+    const d = e ? mins(+e.tDate, ms) : Infinity
+    const winMin = (U.APPROX_WINDOW_H[body] || 0) * 60
+    const shown = e ? U.formatUK(e) : ''
+    const jplDay = ukKey(new Date(ms))
+    const [dd, mon] = jplDay.split(' ')
+    const span = e ? U.ukDaySpan(e).map(ukKey) : []
+    const name = `${body[0].toUpperCase() + body.slice(1)} stations ${toRetro ? 'retrograde' : 'direct'}`
+    rows.push([
+      `${name} ${when.slice(0, 10)}`,
+      'JPL Horizons',
+      when + ' UT',
+      e && `${e.tDate.toISOString().slice(0, 16).replace('T', ' ')} → ${shown}`,
+      (d / 60).toFixed(2) + ' h',
+      `±${winMin / 60} h, UK day`,
+    ])
+    ok(
+      `${name} ${when}: JPL time inside the ±${winMin / 60} h window`,
+      d <= winMin,
+      d.toFixed(0) + ' min',
+    )
+    ok(
+      `${name} ${when}: the UK day(s) shown include JPL's UK day (${jplDay})`,
+      span.includes(jplDay) && shown.includes(dd) && shown.includes(mon),
+      shown,
+    )
+  }
+  // Pluto (review round 1): it was shown a day early as a single day (Fri 7 May,
+  // Sun 17 Oct). The engine still runs 14–17 h early, so the page must show a
+  // range that includes JPL's day, never the early day alone.
+  const pr = near('station', utc('2027-05-08 13:02'), (x) => x.body === 'pluto')
+  const pd = near('station', utc('2027-10-18 04:17'), (x) => x.body === 'pluto')
+  ok(
+    'Pluto SR shows a range that includes 8 May',
+    pr && /–/.test(U.formatUK(pr)) && /\b8 May|–8 May/.test(U.formatUK(pr)),
+    pr && U.formatUK(pr),
+  )
+  ok(
+    'Pluto SD shows a range that includes 18 Oct',
+    pd && /–/.test(U.formatUK(pd)) && U.ukDaySpan(pd).length === 2,
+    pd && U.formatUK(pd),
+  )
 }
 
 // ── Provenance: every event comes from the engine, no static list ────────
@@ -327,8 +434,20 @@ for (const [toRetro, when] of STATIONS) {
   )
   ok(
     'UK day boundary uses Europe/London, not UTC',
-    U.formatUK({ tDate: new Date('2026-06-30T23:30:00Z'), approx: true }) ===
+    U.formatUK({ tDate: new Date('2026-06-30T23:40:00Z'), approx: true, body: 'mercury' }) ===
       'Around Wed 1 Jul (UK)',
+  )
+  ok(
+    'approximate event whose window spans UK midnight shows both days',
+    U.formatUK({ tDate: new Date('2027-07-09T23:30:00Z'), approx: true, body: 'neptune' }) ===
+      'Around 9–10 Jul (UK)',
+    U.formatUK({ tDate: new Date('2027-07-09T23:30:00Z'), approx: true, body: 'neptune' }),
+  )
+  ok(
+    'a range across a month end names both months',
+    U.formatUK({ tDate: new Date('2027-04-30T23:30:00Z'), approx: true, body: 'uranus' }) ===
+      'Around 30 Apr–1 May (UK)',
+    U.formatUK({ tDate: new Date('2027-04-30T23:30:00Z'), approx: true, body: 'uranus' }),
   )
   ok(
     'countdown days and hours',
@@ -343,6 +462,30 @@ for (const [toRetro, when] of STATIONS) {
     U.countdown(Date.UTC(2026, 0, 3, 5), Date.UTC(2026, 0, 1, 0), true) === 'about 2 days',
   )
   ok('countdown is null once passed', U.countdown(1, 2) === null)
+  // Singular/plural edges (review round 1: "In about 1 hours").
+  const T0 = Date.UTC(2026, 0, 1, 0)
+  const H = 3600000,
+    M = 60000
+  const cdA = (ms) => U.countdown(T0 + ms, T0, true)
+  const cdX = (ms) => U.countdown(T0 + ms, T0)
+  const EDGES = [
+    [cdA(10 * M), 'about 1 hour', 'approx, 10 min'],
+    [cdA(29 * M), 'about 1 hour', 'approx, 29 min'],
+    [cdA(31 * M), 'about 1 hour', 'approx, 31 min'],
+    [cdA(89 * M), 'about 1 hour', 'approx, 89 min'],
+    [cdA(91 * M), 'about 2 hours', 'approx, 91 min'],
+    [cdA(35 * H), 'about 35 hours', 'approx, 35 h'],
+    [cdA(36 * H), 'about 2 days', 'approx, 36 h'],
+    [cdX(30 * 1000), '1 minute', 'exact, 30 s'],
+    [cdX(2 * M), '2 minutes', 'exact, 2 min'],
+    [cdX(H + M), '1 hour, 1 minute', 'exact, 1 h 1 min'],
+    [cdX(2 * H), '2 hours, 0 minutes', 'exact, 2 h'],
+    [cdX(24 * H + H), '1 day, 1 hour', 'exact, 25 h'],
+    [cdX(48 * H), '2 days, 0 hours', 'exact, 48 h'],
+  ]
+  for (const [got, want, label] of EDGES) ok(`countdown ${label} → "${want}"`, got === want, got)
+  for (const [got] of EDGES)
+    ok(`no "1 hours"/"1 days"/"1 minutes" (${got})`, !/\b1 (hours|days|minutes)\b/.test(got))
 }
 
 console.log('\nAccuracy table (computed vs published):')
