@@ -333,10 +333,10 @@
             </defs>
             <circle cx="230" cy="230" r="215" fill="none" stroke="#A8B0BC" stroke-width="2.5" opacity="0.4"/>
           </svg>
-          <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#EEF4FA;min-height:2.8em;line-height:1.5;"></div>
+          <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','AP Serif','Instrument Serif',Georgia,serif;font-variant-emoji:text;font-size:1.0rem;color:#EEF4FA;min-height:2.8em;line-height:1.5;"></div>
           <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
-            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168, 176, 188,0.35);color:#A8B0BC;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with the Observatory</button>
-            <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
+            <button id="ph-align" type="button" style="font-size:0.75rem;letter-spacing:0.14em;text-transform:uppercase;font-family:'AP Sans','Inter',system-ui,sans-serif;background:none;border:1px solid rgba(168, 176, 188,0.35);color:#A8B0BC;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with the Observatory</button>
+            <button id="ph-now" type="button" style="font-size:0.75rem;letter-spacing:0.14em;text-transform:uppercase;font-family:'AP Sans','Inter',system-ui,sans-serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
           </div>
           <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore &middot; Sunrise-based unequal hours</div>
         </div>
@@ -399,7 +399,7 @@
           <button type="button" class="glow-btn" id="q-draw">Collapse the Draw</button>
           <div id="q-out" style="margin-top:2rem;" hidden>
             <div class="quantum-sigil" id="q-sigil"></div>
-            <h3 style="font-family:var(--font-display,'Cinzel',serif);color:var(--white);margin-top:1rem;letter-spacing:0.1em;" id="q-name"></h3>
+            <h3 style="font-family:var(--font-display,'Instrument Serif',Georgia,serif);color:var(--white);margin-top:1rem;letter-spacing:0.1em;" id="q-name"></h3>
             <p class="grimoire" style="max-width:480px;margin:0.75rem auto 0;" id="q-line"></p>
             <p class="provenance" id="q-prov"></p>
           </div>
@@ -613,9 +613,9 @@
       }
       const cp = current ? P[current.slot.rulerKey] : P.sun;
       s += `<text x="${CX}" y="${CY - 26}" text-anchor="middle" font-size="44" fill="${cp.c}" font-family="AstroGlyph, serif" filter="drop-shadow(0 0 10px rgba(168, 176, 188,.45))">${cp.g}︎</text>
-        <text x="${CX}" y="${CY + 8}" text-anchor="middle" font-size="13" letter-spacing="3" fill="#EEF4FA" font-family="Cinzel,serif">HOUR OF ${cp.n.replace('the ', '').toUpperCase()}</text>
-        <text x="${CX}" y="${CY + 28}" text-anchor="middle" font-size="10" fill="#A89E88" font-family="Cormorant Garamond,serif" font-style="italic">${current ? fmt(current.slot.start) + ' – ' + fmt(current.slot.end) : ''}</text>
-        <text x="${CX}" y="${CY + 46}" text-anchor="middle" font-size="9" letter-spacing="2" fill="#A89E88" font-family="Cinzel,serif">DAY OF ${P[CHALD[DAY_RULER[dow]]].n.replace('the ', '').toUpperCase()}</text>`;
+        <text x="${CX}" y="${CY + 8}" text-anchor="middle" font-size="13" letter-spacing="2" fill="#EEF4FA" font-family="AP Sans, Inter, system-ui, sans-serif">HOUR OF ${cp.n.replace('the ', '').toUpperCase()}</text>
+        <text x="${CX}" y="${CY + 28}" text-anchor="middle" font-size="12" fill="#A89E88" font-family="AP Serif, Instrument Serif, Georgia, serif" font-style="italic">${current ? fmt(current.slot.start) + ' – ' + fmt(current.slot.end) : ''}</text>
+        <text x="${CX}" y="${CY + 46}" text-anchor="middle" font-size="12" letter-spacing="1.5" fill="#A89E88" font-family="AP Sans, Inter, system-ui, sans-serif">DAY OF ${P[CHALD[DAY_RULER[dow]]].n.replace('the ', '').toUpperCase()}</text>`;
       svg.innerHTML = s;
       svg.querySelectorAll('.ph-sec').forEach(g => {
         g.addEventListener('click', () => {
