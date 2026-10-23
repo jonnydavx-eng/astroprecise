@@ -177,6 +177,54 @@ function lonToAngle(longitude) {
   return Math.PI - (normaliseLongitude(longitude) * Math.PI / 180);
 }
 
+// Place the wheel markers for the eclipse plate. Each disc is just big enough for its glyph's
+// ink box (at least `minR`). The contact is placed first at its exact degree; every other point
+// takes the nearest free spot: its exact degree on the outer track, then the inner track, then
+// steps of 1° either way. `x`/`y` are relative to the wheel centre; `longitude` stays exact.
+export function layoutWheelMarkers(ctx, model, { outerTrack = 470, innerTrack = 358, gap = 10 } = {}) {
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const rows = (model.placements || []).map((placement) => {
+    const isContact = Boolean(model.contactTarget && placement.key === model.contactTarget);
+    const glyph = GLYPHS[placement.key] || placement.key.slice(0, 2).toUpperCase();
+    const font = isContact
+      ? `700 ${PLATE_MIN_PX + 6}px "Schibsted Grotesk", Arial, sans-serif`
+      : `600 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
+    ctx.font = font;
+    const m = ctx.measureText(glyph);
+    const left = Number.isFinite(m.actualBoundingBoxLeft) ? m.actualBoundingBoxLeft : m.width / 2;
+    const right = Number.isFinite(m.actualBoundingBoxRight) ? m.actualBoundingBoxRight : m.width / 2;
+    const up = (Number.isFinite(m.actualBoundingBoxAscent) ? m.actualBoundingBoxAscent : PLATE_MIN_PX * 0.4) - 1;
+    const down = (Number.isFinite(m.actualBoundingBoxDescent) ? m.actualBoundingBoxDescent : PLATE_MIN_PX * 0.4) + 1;
+    const ink = Math.max(Math.hypot(left, up), Math.hypot(right, up), Math.hypot(left, down), Math.hypot(right, down));
+    const r = Math.ceil(Math.max(isContact ? 52 : 44, ink + 6));
+    return { key: placement.key, longitude: placement.longitude, isContact, glyph, font, r };
+  });
+  const order = rows.slice().sort((a, b) => (b.isContact - a.isContact) || (b.r - a.r) || (a.longitude - b.longitude));
+  const placed = [];
+  const free = (x, y, r) => placed.every((p) => Math.hypot(p.x - x, p.y - y) >= p.r + r + gap);
+  for (const row of order) {
+    let spot = null;
+    for (let step = 0; step <= 180 && !spot; step += 1) {
+      for (const delta of step ? [step, -step] : [0]) {
+        for (const track of row.isContact ? [outerTrack] : [outerTrack, innerTrack]) {
+          const angle = lonToAngle(row.longitude + delta);
+          const x = Math.cos(angle) * track;
+          const y = Math.sin(angle) * track;
+          if (free(x, y, row.r)) { spot = { x, y, track, delta }; break; }
+        }
+        if (spot) break;
+      }
+    }
+    if (!spot) {
+      const angle = lonToAngle(row.longitude);
+      spot = { x: Math.cos(angle) * outerTrack, y: Math.sin(angle) * outerTrack, track: outerTrack, delta: 0 };
+    }
+    placed.push({ ...row, ...spot });
+  }
+  return placed;
+}
+
 export function renderEclipseArtwork(model, canvas = document.createElement('canvas')) {
   if (!model) throw new Error('A direct eclipse-contact model is required.');
   canvas.width = model.width;
@@ -322,26 +370,41 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   ctx.arc(Math.cos(eclipseAngle) * planetR, Math.sin(eclipseAngle) * planetR, 11, 0, Math.PI * 2);
   ctx.fill();
 
-  model.placements.forEach((placement) => {
-    const angle = lonToAngle(placement.longitude);
-    const x = Math.cos(angle) * planetR;
-    const y = Math.sin(angle) * planetR;
-    const isContact = model.contactTarget && placement.key === model.contactTarget;
-    const glyph = GLYPHS[placement.key] || placement.key.slice(0, 2).toUpperCase();
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = isContact ? ember : ink;
+  // Markers: each glyph sits inside its own disc, sized to the glyph's ink box. Close points
+  // are moved apart (along the ring, or onto an inner ring) so no two discs touch; every point
+  // keeps an exact-degree tick on the inner circle, with a leader line when its disc moved.
+  const markers = layoutWheelMarkers(ctx, model, { outerTrack: planetR, innerTrack: planetR - 112 });
+  markers.forEach((m) => {
+    const ta = lonToAngle(m.longitude);
+    ctx.globalAlpha = 0.85;
+    ctx.strokeStyle = m.isContact ? ember : brass;
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(x, y, isContact ? 58 : 50, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = isContact ? brass : brass;
-    ctx.lineWidth = isContact ? 3 : 1.5;
-    ctx.globalAlpha = isContact ? 1 : 0.85;
+    ctx.moveTo(Math.cos(ta) * innerR, Math.sin(ta) * innerR);
+    ctx.lineTo(Math.cos(ta) * (innerR + 26), Math.sin(ta) * (innerR + 26));
     ctx.stroke();
-    ctx.fillStyle = isContact ? '#EEF4FA' : brass;
-    ctx.font = isContact
-      ? `700 ${PLATE_MIN_PX + 6}px "Schibsted Grotesk", Arial, sans-serif`
-      : `600 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
-    ctx.fillText(glyph, x, y + 1);
+    ctx.globalAlpha = 0.5;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(ta) * (innerR + 26), Math.sin(ta) * (innerR + 26));
+    const d = Math.hypot(m.x, m.y);
+    ctx.lineTo(m.x * (d - m.r) / d, m.y * (d - m.r) / d);
+    ctx.stroke();
+  });
+  markers.forEach((m) => {
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = m.isContact ? ember : ink;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = brass;
+    ctx.lineWidth = m.isContact ? 3 : 1.5;
+    ctx.globalAlpha = m.isContact ? 1 : 0.85;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = m.isContact ? '#EEF4FA' : brass;
+    ctx.font = m.font;
+    ctx.fillText(m.glyph, m.x, m.y + 1);
   });
   ctx.restore();
   ctx.globalAlpha = 1;

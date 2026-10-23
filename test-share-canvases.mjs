@@ -362,4 +362,176 @@ for (const [label, which] of [
   )
 }
 
+// Eclipse plate wheel: markers never collide. Disc and label boxes come from the real drawing
+// code (arc() and fillText ink boxes recorded by the probe). Checked on Grok's crowded chart, a
+// normal chart, stacked charts and seeded random charts.
+const WHEEL = { x: 1200, y: 1760, inner: 248, outer: 700 }
+function wheelMarkers(r) {
+  const fromCentre = (x, y) => Math.hypot(x - WHEEL.x, y - WHEEL.y)
+  const discs = r.arcs.filter(
+    (a) =>
+      a.full &&
+      a.r >= 20 &&
+      a.r <= 120 &&
+      fromCentre(a.x, a.y) > WHEEL.inner &&
+      fromCentre(a.x, a.y) < 640,
+  )
+  const labels = r.draws
+    .filter(
+      (d) =>
+        d.ink && fromCentre((d.ink.x0 + d.ink.x1) / 2, (d.ink.y0 + d.ink.y1) / 2) < WHEEL.outer,
+    )
+    .map((d) => {
+      const cx = (d.ink.x0 + d.ink.x1) / 2,
+        cy = (d.ink.y0 + d.ink.y1) / 2
+      const own = discs
+        .map((c) => ({ c, d: Math.hypot(c.x - cx, c.y - cy) }))
+        .filter((o) => o.d < o.c.r)
+        .sort((a, b) => a.d - b.d)[0]
+      return { text: d.text, box: d.ink, own: own ? own.c : null }
+    })
+  return { discs, labels }
+}
+const rectHitsCircle = (b, c) => {
+  const nx = Math.max(b.x0, Math.min(c.x, b.x1)),
+    ny = Math.max(b.y0, Math.min(c.y, b.y1))
+  return Math.hypot(nx - c.x, ny - c.y) < c.r
+}
+const rectsHit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1
+const boxInCircle = (b, c) =>
+  [
+    [b.x0, b.y0],
+    [b.x1, b.y0],
+    [b.x0, b.y1],
+    [b.x1, b.y1],
+  ].every(([x, y]) => Math.hypot(x - c.x, y - c.y) <= c.r)
+export function wheelClashes(r) {
+  const { discs, labels } = wheelMarkers(r)
+  const bad = []
+  for (let i = 0; i < discs.length; i++)
+    for (let j = i + 1; j < discs.length; j++) {
+      const a = discs[i],
+        b = discs[j]
+      if (Math.hypot(a.x - b.x, a.y - b.y) < a.r + b.r)
+        bad.push(`disc/disc at ${a.x | 0},${a.y | 0}`)
+    }
+  for (const l of labels) {
+    if (l.own && !boxInCircle(l.box, l.own)) bad.push(`"${l.text}" spills out of its disc`)
+    for (const c of discs)
+      if (c !== l.own && rectHitsCircle(l.box, c)) bad.push(`"${l.text}" over another disc`)
+  }
+  for (let i = 0; i < labels.length; i++)
+    for (let j = i + 1; j < labels.length; j++)
+      if (rectsHit(labels[i].box, labels[j].box))
+        bad.push(`"${labels[i].text}" / "${labels[j].text}"`)
+  const owners = new Set(labels.filter((l) => l.own).map((l) => l.own))
+  if (owners.size !== discs.length)
+    bad.push(`${discs.length - owners.size} disc(s) without their own label inside`)
+  return { bad, discs: discs.length, labels: labels.length }
+}
+const ECL = 140.133
+const seeded = (seed) => () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648
+const KEYS = [
+  'moon',
+  'mercury',
+  'venus',
+  'mars',
+  'jupiter',
+  'saturn',
+  'uranus',
+  'neptune',
+  'pluto',
+  'asc',
+  'mc',
+]
+const wheelCharts = [
+  [
+    'crowded (Asc 12, Moon 18, Uranus 28, Mercury 132, Sun on the eclipse)',
+    probe.ECLIPSE_CROWDED_NATAL,
+  ],
+  [
+    'normal',
+    {
+      sun: ECL,
+      moon: 200,
+      mercury: 162,
+      venus: 100,
+      mars: 60,
+      jupiter: 20,
+      saturn: 330,
+      uranus: 290,
+      neptune: 250,
+      pluto: 225,
+      asc: 175,
+      mc: 85,
+    },
+  ],
+  [
+    'four planets within 10°',
+    {
+      sun: ECL,
+      moon: 260,
+      mercury: 100,
+      venus: 103,
+      mars: 106,
+      jupiter: 109,
+      saturn: 330,
+      uranus: 20,
+      neptune: 50,
+      pluto: 210,
+      asc: 300,
+      mc: 190,
+    },
+  ],
+  [
+    'stacked on the eclipse point',
+    {
+      sun: ECL,
+      moon: 135,
+      mercury: 138,
+      venus: 143,
+      mars: 146,
+      jupiter: 20,
+      saturn: 330,
+      uranus: 60,
+      neptune: 250,
+      pluto: 200,
+      asc: 141,
+      mc: 52,
+    },
+  ],
+  [
+    'stellium (Sun to Pluto inside 30°)',
+    {
+      sun: ECL,
+      moon: 128,
+      mercury: 131,
+      venus: 134,
+      mars: 137,
+      jupiter: 144,
+      saturn: 147,
+      uranus: 150,
+      neptune: 153,
+      pluto: 156,
+      asc: 300,
+      mc: 210,
+    },
+  ],
+]
+for (const seed of [7, 42, 1999, 20261023]) {
+  const rnd = seeded(seed)
+  const base = rnd() * 360
+  const natal = { sun: ECL }
+  // Half the points fall in one 25° bunch, the rest anywhere.
+  KEYS.forEach((k, i) => (natal[k] = i % 2 ? (base + rnd() * 25) % 360 : rnd() * 360))
+  wheelCharts.push([`random seed ${seed}`, natal])
+}
+for (const [label, natal] of wheelCharts) {
+  const r = await probe.probeEclipsePlate('artwork', { natal })
+  const c = wheelClashes(r)
+  ok(c.discs >= 12, `eclipse wheel (${label}): ${c.discs} marker discs recorded`)
+  ok(c.bad.length === 0, `eclipse wheel (${label}): no disc or label overlaps ${c.bad.join('; ')}`)
+  checkFloor(`eclipse plate (${label})`, r)
+}
+
 console.log(`test-share-canvases: ${passed} passed, 0 failed`)
