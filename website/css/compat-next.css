@@ -1,0 +1,69 @@
+/* Compare two birth minutes on the Paper & Night light shell (2C step 7).
+   Loads last, after the legacy couples sheets that still lay out the JS-driven
+   receipt (angles list, town search, error line). Visual only: no copy, form
+   field, id or script changes. Paper and ink everywhere; the night sky stays
+   only inside the Earth still, which sits in its own dark .ap-sky-style pane.
+   Text inside <main> is 14px or larger. */
+html body.page-compat{--c-paper:#F6F3EC;--c-band:#EDE8DD;--c-card:#FBF9F4;--c-rule:#D6D1C6;--c-ink:#0E1116;--c-graphite:#3A3F47;--c-muted:#5C6168;--c-copper:#B4693E;--c-copper-ink:#8A4A24;--c-alert:#A64526;--c-night:#0E1116;--c-starlight:#F1E7CF;
+  --c-serif:'AP Serif','Instrument Serif',Georgia,serif;--c-sans:'AP Sans',Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:var(--c-paper);color:var(--c-ink);font-family:var(--c-sans);color-scheme:light}
+html body.page-compat main{background:var(--c-paper)}
+html body.page-compat main :focus-visible{outline:0;box-shadow:0 0 0 3px var(--c-paper),0 0 0 5px var(--c-copper)}
+
+/* Preface */
+html body.page-compat.ap-compat-static .ap-live-stage{background:var(--c-paper);color:var(--c-ink);border:0;grid-template-rows:auto auto;align-items:stretch}
+html body.page-compat.ap-compat-static .ap-live-intro{align-self:center;display:block}
+html body.page-compat.ap-compat-static .ap-live-intro{background:transparent;border-right:0;padding-top:clamp(32px,5vw,72px)}
+html body.page-compat .ap-live-eyebrow{font-family:var(--c-sans);font-size:14px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c-copper-ink)}
+html body.page-compat h1.ap-live-heading,html body.page-compat .ap-live-heading{font-family:var(--c-serif);font-style:normal;font-weight:400;letter-spacing:-.01em;line-height:1.02;color:var(--c-ink);text-shadow:none}
+html body.page-compat .ap-live-copy{font-family:var(--c-sans);font-size:17px;line-height:1.6;color:var(--c-graphite)}
+html body.page-compat .ap-live-proof{font-family:var(--c-sans);font-size:14px;letter-spacing:.02em;color:var(--c-muted);border-top:1px solid var(--c-rule)}
+html body.page-compat .ap-live-proof span{color:var(--c-copper-ink);font-weight:600}
+html body.page-compat .btn-primary,html body.page-compat .ap-couples-actions .btn-primary{background:var(--c-ink);border:1px solid var(--c-ink);color:var(--c-paper);border-radius:2px;font-family:var(--c-sans);font-weight:600;font-size:15px;letter-spacing:.01em;box-shadow:none;text-shadow:none}
+html body.page-compat .btn-primary:hover,html body.page-compat .ap-couples-actions .btn-primary:hover{background:var(--c-copper-ink);border-color:var(--c-copper-ink);color:var(--c-paper)}
+
+/* The Earth still: the one dark pane */
+html body.page-compat.ap-compat-static .ap-model-stage{position:relative;background:var(--c-paper)}
+html body.page-compat .ap-surface-a{position:absolute;inset:clamp(16px,2.4vw,32px);border-radius:4px;overflow:hidden;background:var(--c-night);color:var(--c-starlight);box-shadow:0 18px 40px -18px rgba(14,17,22,.35)}
+html body.page-compat .ap-surface-a img{object-position:50% 40%}
+html body.page-compat .ap-surface-a::after{background:linear-gradient(180deg,transparent 50%,rgba(14,17,22,.9) 88%)}
+html body.page-compat .ap-surface-a__receipt{top:auto;bottom:clamp(16px,2.4vw,28px);transform:none;max-width:none;right:clamp(16px,2.4vw,28px)}
+html body.page-compat .ap-surface-a__receipt span,html body.page-compat .ap-surface-a__receipt em{font-family:var(--c-sans);font-size:14px;font-style:normal;letter-spacing:.02em;text-transform:none;color:var(--c-starlight);opacity:.86}
+html body.page-compat .ap-surface-a__receipt strong{font-family:var(--c-serif);font-weight:400;color:var(--c-starlight)}
+
+/* Receipt band (status, angles) */
+html body.page-compat.ap-compat-static .ap-control-panel{background:var(--c-band);color:var(--c-ink);border-top:1px solid var(--c-rule);backdrop-filter:none;box-shadow:none}
+html body.page-compat .ap-model-status,html body.page-compat .ap-model-status span{font-family:var(--c-sans);font-size:14px;letter-spacing:.04em;text-transform:none;color:var(--c-graphite);background:transparent;border-color:var(--c-rule)}
+html body.page-compat .ap-ab-note,html body.page-compat .ap-angles-note{font-size:14px;color:var(--c-muted)}
+html body.page-compat .ap-panel-label{font-family:var(--c-sans);font-size:14px;font-weight:600;letter-spacing:.14em;color:var(--c-copper-ink)}
+html body.page-compat .ap-angles ol{font-family:var(--c-sans);font-size:15px;color:var(--c-ink);font-variant-numeric:tabular-nums}
+
+/* Entry */
+html body.page-compat .ap-couples-entry{background:var(--c-paper);border-top:0}
+html body.page-compat .ap-couples-entry h2{font-family:var(--c-serif);font-weight:400;letter-spacing:-.01em;line-height:1.02;color:var(--c-ink)}
+html body.page-compat .ap-couples-entry .standfirst{font-size:17px;line-height:1.6;color:var(--c-graphite)}
+html body.page-compat .ap-couples-card{background:var(--c-card);border:1px solid var(--c-rule);border-radius:4px;box-shadow:none}
+html body.page-compat .ap-couples-card--a{border-top:3px solid var(--c-ink)}
+html body.page-compat .ap-couples-card--b{border-top:3px solid var(--c-copper)}
+html body.page-compat .ap-couples-card h3{font-family:var(--c-serif);font-weight:400;font-size:26px;letter-spacing:0;text-transform:none;color:var(--c-ink)}
+html body.page-compat .ap-couples-card label,html body.page-compat label{font-family:var(--c-sans);font-size:14px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--c-ink)}
+html body.page-compat .ap-couples-card label .opt{font-weight:400;color:var(--c-muted);text-transform:none;font-size:14px}
+html body.page-compat .ap-couples-card input{background:var(--c-paper);border:1px solid var(--c-rule);border-radius:2px;color:var(--c-ink);font-family:var(--c-sans);font-size:16px;color-scheme:light}
+html body.page-compat .ap-couples-card input::placeholder{color:var(--c-muted)}
+html body.page-compat .ap-couples-card input:focus{border-color:var(--c-copper)}
+html body.page-compat .ap-zone-note,html body.page-compat .ap-couples-actions .action-note,html body.page-compat .action-note{font-size:14px;color:var(--c-muted)}
+html body.page-compat .ap-couples-actions .btn-invite{background:transparent;border:1px solid var(--c-ink);color:var(--c-ink);border-radius:2px;font-family:var(--c-sans);font-weight:600;font-size:15px}
+html body.page-compat .ap-couples-actions .btn-invite:disabled{opacity:.45}
+html body.page-compat #compatError{color:var(--c-alert);font-size:15px}
+html body.page-compat .ap-city-drop{background:var(--c-card);border:1px solid var(--c-rule);box-shadow:0 18px 40px -18px rgba(14,17,22,.35)}
+html body.page-compat .ap-city-item{color:var(--c-ink);font-family:var(--c-sans);font-size:15px}
+html body.page-compat .ap-city-item:hover,html body.page-compat .ap-city-item:focus,html body.page-compat .ap-city-item.is-selected{background:var(--c-band)}
+html body.page-compat .ap-city-note{font-size:14px;color:var(--c-muted)}
+html body.page-compat .skip{background:var(--c-ink);color:var(--c-paper)}
+
+@media (max-width:700px){
+  html body.page-compat.ap-compat-static .ap-model-stage{height:320px;min-height:320px}
+  html body.page-compat .ap-surface-a{inset:0 18px 18px}
+  html body.page-compat .ap-surface-a__receipt{left:16px}
+  html body.page-compat .ap-couples-entry{padding:40px 18px 64px}
+}

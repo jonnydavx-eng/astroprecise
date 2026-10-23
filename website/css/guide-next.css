@@ -336,7 +336,7 @@
 .ap-plate-state{margin:22px 0}
 .ap-plate-actions{display:flex;flex-wrap:wrap;gap:10px}
 .ap-plate-art{margin:0;padding:clamp(12px,2vw,20px);background:var(--g-card);border:var(--ap-hairline,1px solid #D6D1C6);border-radius:6px;box-shadow:var(--ap-shadow-print)}
-.ap-plate-art img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:2px;background:var(--ap-night,#0E1116)}
+.ap-plate-art img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:2px;background:var(--ap-paper-2,#EDE8DD)}
 .ap-plate-art figcaption{padding:12px 2px 0;color:var(--g-muted);font-size:14px}
 .ap-plate-spec{border-block:var(--ap-hairline,1px solid #D6D1C6);background:var(--g-band)}
 .ap-plate-spec__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}

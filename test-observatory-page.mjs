@@ -53,6 +53,8 @@ for (const probe of ['id="keep-sky"', 'data-keep-mode="birth-hour"', 'id="coupon
 // Licence credits survive the footer swap
 for (const credit of ['Solar System Scope', 'OPAL', 'NASA/JHUAPL/SwRI/USGS', 'HYG catalogue', 'creativecommons.org/licenses/by/4.0/', 'creativecommons.org/licenses/by-sa/4.0/'])
   ok(`credit: ${credit}`, html.includes(credit))
+const textureCredits = (html.match(/<section class="ap-texture-credits" id="texture-credits"[\s\S]*?<\/section>/) || [''])[0]
+ok('texture credits link the Hubble OPAL archive at STScI', /<a href="https:\/\/archive\.stsci\.edu\/hlsp\/opal"[^>]*>archived by STScI<\/a>/.test(textureCredits))
 
 // Local references resolve; ids are unique
 const refs = [...html.matchAll(/(?:href|src|srcset)="([^"#?:]+\.(?:css|js|woff2|webp|png|svg|jpg|html))(?:\?[^"]*)?"/g)].map((m) => m[1])

@@ -154,3 +154,8 @@
  .studio-free { padding:30px 24px; margin-bottom:40px; }.studio-free h2 { font-size:48px; }.discover-actions { gap:10px 16px; }.discover-actions .button,.discover-actions .button-secondary { min-height:48px; }
 }
 .discover-more{margin-top:28px;margin-bottom:56px;font-family:var(--ap-next-sans)}.discover-more a{display:inline-flex;align-items:center;min-height:44px}
+/* 2C step 7: Shop text inside <main> is 14px or larger (shop only, via .ap-studio). */
+.ap-studio main .eyebrow,.ap-studio .studio-availability,.ap-studio .studio-title .studio-entry-note,.ap-studio .studio-band p,.ap-studio .studio-band p>span,.ap-studio .studio-status>span,.ap-studio .studio-edition-bottom>a,.ap-studio .studio-pdf,.ap-studio .studio-small{font-size:14px!important}
+.ap-studio .studio-cover figcaption,.ap-studio .studio-edition figcaption{font-size:14px;letter-spacing:.06em}
+.ap-studio .studio-edition-copy li{font-size:15px}
+.ap-studio .studio-pdf{opacity:.85}
