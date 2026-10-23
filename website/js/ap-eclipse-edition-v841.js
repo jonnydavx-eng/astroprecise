@@ -1,5 +1,5 @@
-import { isEntitlementReady, verifyLicense } from './gumroad-unlock.js?v=939';
-import { fmtDeg, houseOrdinal } from './eclipse-reading.js?v=939';
+import { isEntitlementReady, verifyLicense } from './gumroad-unlock.js?v=940';
+import { fmtDeg, houseOrdinal } from './eclipse-reading.js?v=940';
 
 export const ARTWORK_WIDTH = 2400;
 export const ARTWORK_HEIGHT = 3000;
@@ -25,6 +25,10 @@ const GLYPHS = {
   asc: 'Asc', mc: 'MC',
 };
 
+// Smallest share text: 11 CSS px when the image is shown 360 px wide
+// (2400-wide plate: 74 units; 2000-wide disc: 62 units).
+const PLATE_MIN_PX = 74;
+const DISC_MIN_PX = 62;
 const SIGN_MARKS = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'];
 const SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
 const BODY_LABELS = {
@@ -266,7 +270,7 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   const wheelY = 1760;
   const outerR = 690;
   const innerR = 248;
-  const planetR = 520;
+  const planetR = 470;
   const tickInner = 640;
   const tickOuter = 678;
 
@@ -297,10 +301,11 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
     ctx.lineTo(Math.cos(cusp) * tickOuter, Math.sin(cusp) * tickOuter);
     ctx.stroke();
     const mid = lonToAngle(sign * 30 + 15);
-    const labelR = 708;
+    // Sign marks sit in the band between the planet ring and the ticks, at the share floor.
+    const labelR = 602;
     ctx.globalAlpha = 0.82;
     ctx.fillStyle = brass;
-    ctx.font = '600 22px ui-monospace, Consolas, monospace';
+    ctx.font = `600 ${PLATE_MIN_PX}px ui-monospace, Consolas, monospace`;
     ctx.fillText(SIGN_MARKS[sign], Math.cos(mid) * labelR, Math.sin(mid) * labelR);
   }
 
@@ -326,7 +331,7 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
     ctx.globalAlpha = 1;
     ctx.fillStyle = isContact ? ember : ink;
     ctx.beginPath();
-    ctx.arc(x, y, isContact ? 34 : 26, 0, Math.PI * 2);
+    ctx.arc(x, y, isContact ? 58 : 50, 0, Math.PI * 2);
     ctx.fill();
     ctx.strokeStyle = isContact ? brass : brass;
     ctx.lineWidth = isContact ? 3 : 1.5;
@@ -334,31 +339,31 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
     ctx.stroke();
     ctx.fillStyle = isContact ? '#EEF4FA' : brass;
     ctx.font = isContact
-      ? '700 26px "Schibsted Grotesk", Arial, sans-serif'
-      : '600 22px "Schibsted Grotesk", Arial, sans-serif';
+      ? `700 ${PLATE_MIN_PX + 6}px "Schibsted Grotesk", Arial, sans-serif`
+      : `600 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
     ctx.fillText(glyph, x, y + 1);
   });
   ctx.restore();
   ctx.globalAlpha = 1;
 
   ctx.fillStyle = brass;
-  ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.letterSpacing = '8px';
-  ctx.fillText('ASTROPRECISE  /  12 AUGUST 2026', 150, 168);
+  ctx.font = `600 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
+  ctx.letterSpacing = '4px';
+  ctx.fillText('ASTROPRECISE  /  12 AUGUST 2026', 150, 200);
   ctx.letterSpacing = '0px';
   ctx.fillStyle = '#EEF4FA';
-  ctx.font = '600 64px "Cormorant Garamond", Georgia, serif';
-  ctx.fillText('Your natal wheel at this eclipse.', 150, 248);
+  ctx.font = '600 112px "Cormorant Garamond", Georgia, serif';
+  drawWrapped(ctx, 'Your natal wheel at this eclipse.', 150, 330, 2100, 120, 2);
 
   ctx.fillStyle = 'rgba(165,188,255,.82)';
-  ctx.font = '600 26px ui-monospace, Consolas, monospace';
-  ctx.fillText(`${model.fingerprint}  /  ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 210);
+  ctx.font = `600 ${PLATE_MIN_PX}px ui-monospace, Consolas, monospace`;
+  ctx.fillText(`${model.fingerprint}  /  ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 440);
   ctx.fillStyle = '#C9D6E3';
-  ctx.font = '500 32px "Schibsted Grotesk", Arial, sans-serif';
-  drawWrapped(ctx, model.share, 150, model.height - 155, 2100, 42, 2);
+  ctx.font = `500 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
+  drawWrapped(ctx, model.share, 150, model.height - 350, 2100, 86, 2);
   ctx.fillStyle = 'rgba(147,168,191,.62)';
-  ctx.font = '400 20px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText('Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 72);
+  ctx.font = `400 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
+  drawWrapped(ctx, 'Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 170, 2100, 84, 2);
   return canvas;
 }
 
@@ -416,10 +421,10 @@ export function renderEclipseDisc(model, canvas = document.createElement('canvas
   }
   if (captions) {
     ctx.fillStyle = brass;
-    ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
-    ctx.fillText('12 AUGUST 2026  ·  GREATEST 17:45:51 UTC  ·  ' + (model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`), 64, 64);
+    ctx.font = `600 ${DISC_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
+    drawWrapped(ctx, '12 AUGUST 2026  ·  GREATEST 17:45:51 UTC  ·  ' + (model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`), 64, 96, canvas.width - 128, 72, 2);
     ctx.fillStyle = ember;
-    ctx.font = '600 22px ui-monospace, Consolas, monospace';
+    ctx.font = `600 ${DISC_MIN_PX}px ui-monospace, Consolas, monospace`;
     ctx.fillText(model.fingerprint, 64, canvas.height - 48);
   }
   return canvas;

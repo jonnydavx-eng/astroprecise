@@ -78,7 +78,7 @@
         b.src +
         '" width="256" height="256" alt="' +
         b.label +
-        ' from the Astro Precise 3D engine" loading="lazy" decoding="async" />' +
+        ' from the AstroPrecise 3D engine" loading="lazy" decoding="async" />' +
         '<figcaption>' +
         b.label +
         '</figcaption></a></li>'

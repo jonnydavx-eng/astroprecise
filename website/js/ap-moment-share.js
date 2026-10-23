@@ -97,7 +97,7 @@
 
   function honestyBadge(x, cx, y, label) {
     setFont(x, '500', MOMENT_MIN_PX, SANS);
-    label = ellipsize(x, label, CARD_BASE - 260);
+    label = ellipsize(x, label, CARD_BASE - 236);
     var padX = 26, dotGap = 16, dotR = 6;
     var tw = x.measureText(label).width;
     var w = tw + padX * 2 + dotGap + dotR * 2;
@@ -367,12 +367,12 @@
     }
     if (!story) {
       story = 'Nearest catalogue star to the zenith — ' +
-        (isFinite(z.sepDeg) ? z.sepDeg.toFixed(1) + '° from exact overhead.' : 'computed from LST + latitude.');
+        (isFinite(z.sepDeg) ? z.sepDeg.toFixed(1) + '° from exact overhead.' : 'calculated from local sidereal time and latitude.');
     }
     setFont(x, '400', MOMENT_MIN_PX, SANS);
     wrapText(x, story, cx, 704, maxW, 44, 3);
 
-    honestyBadge(x, cx, 846, 'computed · J2000 catalogue + LST · VSOP87');
+    honestyBadge(x, cx, 846, 'Calculated from star positions and local sidereal time');
     x.fillStyle = MUTED;
     fitLine(x, 'Stars from the catalogue · plate from the 3D orrery', cx, 900, '400', MOMENT_MIN_PX, SANS, maxW);
     fitLine(x, 'Free image · the full pack is separate', cx, 944, '400', MOMENT_MIN_PX, SANS, maxW);

@@ -362,7 +362,7 @@
     if (opts.fromHash) { /* hash already correct */ }
     else if (swapping || opts.inOverlay) syncGuideHash(id, true);
     else syncGuideHash(id, false);
-    document.title = guide.title + " — Astro Precise";
+    document.title = guide.title + " — AstroPrecise";
     const sheet = ov.querySelector(".sg-overlay-sheet");
     if (sheet) {
       sheet.classList.remove("sg-sheet-scrolled");
