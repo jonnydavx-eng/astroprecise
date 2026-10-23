@@ -12,6 +12,12 @@
   "bytes": 64369
  },
  {
+  "page": "angel-numbers.html",
+  "title": "Angel Numbers — repeating-digit tradition",
+  "og": "img/og/og-angel-numbers.jpg",
+  "bytes": 64396
+ },
+ {
   "page": "aquarius.html",
   "title": "Aquarius: Sign guide and this week's sky",
   "og": "img/og/og-aquarius.jpg",
@@ -60,6 +66,12 @@
   "bytes": 58686
  },
  {
+  "page": "cosmic-story.html",
+  "title": "Your Cosmic Story — A Personalised Narrative",
+  "og": "img/og/og-cosmic-story.jpg",
+  "bytes": 68410
+ },
+ {
   "page": "deep-reading.html",
   "title": "Your sky story",
   "og": "img/og/og-deep-reading.jpg",
@@ -70,6 +82,12 @@
   "title": "Replay the 12 August 2026 eclipse",
   "og": "img/og/og-eclipse.jpg",
   "bytes": 57120
+ },
+ {
+  "page": "ephemeris.html",
+  "title": "The sky, right now",
+  "og": "img/og/og-ephemeris.jpg",
+  "bytes": 46571
  },
  {
   "page": "explore.html",
@@ -126,10 +144,22 @@
   "bytes": 53427
  },
  {
+  "page": "moment.html",
+  "title": "Moment — Freeze any date’s sky",
+  "og": "img/og/og-moment.jpg",
+  "bytes": 55955
+ },
+ {
   "page": "moonphase.html",
   "title": "Moon Phase on Your Birthday — Free & Shareable",
   "og": "img/og/og-moonphase.jpg",
   "bytes": 56721
+ },
+ {
+  "page": "name-numerology.html",
+  "title": "Name numbers — letter numerology",
+  "og": "img/og/og-name-numerology.jpg",
+  "bytes": 60174
  },
  {
   "page": "natal-plate.html",
@@ -168,6 +198,18 @@
   "bytes": 43219
  },
  {
+  "page": "profile.html",
+  "title": "Your charts, on this device",
+  "og": "img/og/og-profile.jpg",
+  "bytes": 54497
+ },
+ {
+  "page": "quiz.html",
+  "title": "Discover Your Cosmic Archetype — Free Astrology Quiz",
+  "og": "img/og/og-quiz.jpg",
+  "bytes": 61394
+ },
+ {
   "page": "refunds.html",
   "title": "Refunds & your rights",
   "og": "img/og/og-refunds.jpg",
@@ -192,6 +234,12 @@
   "bytes": 64086
  },
  {
+  "page": "saturn-return.html",
+  "title": "Saturn Return Calculator: Your Exact Dates & Reading",
+  "og": "img/og/og-saturn-return.jpg",
+  "bytes": 62129
+ },
+ {
   "page": "scorpio.html",
   "title": "Scorpio: Sign guide and this week's sky",
   "og": "img/og/og-scorpio.jpg",
@@ -214,6 +262,18 @@
   "title": "What’s next in the sky",
   "og": "img/og/og-sky-events.jpg",
   "bytes": 42997
+ },
+ {
+  "page": "solar-return.html",
+  "title": "Solar Return Chart — the Sun’s yearly return",
+  "og": "img/og/og-solar-return.jpg",
+  "bytes": 59381
+ },
+ {
+  "page": "synchronicity-card.html",
+  "title": "Sky card — keep your chart minute",
+  "og": "img/og/og-synchronicity-card.jpg",
+  "bytes": 61464
  },
  {
   "page": "taurus.html",

@@ -22,19 +22,28 @@ from og_brand import (C, ROOT, SANS, SANS_BOLD, SIGN_META, SIGNS, T, glyph, mark
                       still_uri, svg2png, tw, wordmark, wrap)
 
 W, H = 1200, 630
-EXCLUDE = re.compile(r'^(index-.*|auth-redirect|fulfil-redirect|outreach|profile|journey|catalogue|chart-view|mysky|moment|ephemeris|deep-time|cosmic-.*|synchronicity-card|quiz|angel-numbers|name-numerology|saturn-return|solar-return|synastry|digital-product-terms)$')
+# Step 10f: ephemeris, moment, quiz, angel-numbers, name-numerology, saturn-return, solar-return,
+# cosmic-story, synchronicity-card and profile get their own light cards (they used the dark
+# og-banner-silver.jpg or the dark v906 sittings). fulfil-redirect stays out: it is a locked
+# checkout-return page. cosmic-calendar and journey keep their starfield and stay out.
+EXCLUDE = re.compile(r'^(index-.*|auth-redirect|fulfil-redirect|outreach|journey|catalogue|chart-view|mysky|deep-time|cosmic-(?!story$).*|synastry|digital-product-terms)$')
 EYEBROW = {'index': 'Free birth chart', 'chart': 'Free birth chart', 'shop': 'The Studio', 'natal-plate': 'Archive',
            'sample-reading': 'Sample reading', 'deep-reading': 'Your story', 'horoscope': 'The sky this week', 'this-weeks-sky': 'The sky this week',
            'sky-events': 'Sky events', 'eclipse': 'Eclipses', 'moonphase': 'Moon phases', 'retrograde': 'Retrogrades', 'transits': 'Transits',
            'tonight': 'Tonight', 'observatory': 'The Observatory', 'guides': 'Guides', 'explore': 'Explore', 'compatibility': 'Two Skies',
            'what-is-my-rising-sign': 'Guide', 'why': 'How we calculate', 'accuracy': 'How we calculate', 'verify': 'Verify a plate',
            'privacy': 'Privacy', 'terms': 'Terms', 'refunds': 'Refunds', 'contact': 'Contact', 'offline': 'Offline', 'charts': 'Saved charts',
-           'sky-card': 'Sky card', '404': 'Not found', 'lifepath': 'Life Path', 'numerology': 'Numerology', 'links': 'Link hub'}
+           'sky-card': 'Sky card', '404': 'Not found', 'lifepath': 'Life Path', 'numerology': 'Numerology', 'links': 'Link hub',
+           'ephemeris': 'The sky now', 'moment': 'Moment', 'quiz': 'Quiz', 'angel-numbers': 'Numerology', 'name-numerology': 'Numerology',
+           'saturn-return': 'Saturn return', 'solar-return': 'Solar return', 'cosmic-story': 'Your story', 'synchronicity-card': 'Sky card',
+           'profile': 'On this device'}
 # Card title when the page <title> does not read well on its own (it leads with the brand name).
-TITLE = {'links': 'Observatory, Chart, Events, Shop'}
+TITLE = {'links': 'Observatory, Chart, Events, Shop', 'ephemeris': 'The sky, right now', 'profile': 'Your charts, on this device'}
 STILL = {'moonphase': 'moon', 'tonight': 'moon', 'eclipse': 'moon', 'retrograde': 'mercury', 'transits': 'saturn', 'sky-events': 'jupiter',
-         'observatory': 'saturn', 'this-weeks-sky': 'venus', 'horoscope': 'venus'}
-PLATE = {'index', 'chart', 'shop', 'natal-plate', 'sample-reading', 'deep-reading', 'compatibility', 'verify', 'sky-card', 'charts'}
+         'observatory': 'saturn', 'this-weeks-sky': 'venus', 'horoscope': 'venus',
+         'ephemeris': 'moon', 'moment': 'moon', 'saturn-return': 'saturn', 'solar-return': 'sun'}
+PLATE = {'index', 'chart', 'shop', 'natal-plate', 'sample-reading', 'deep-reading', 'compatibility', 'verify', 'sky-card', 'charts',
+         'cosmic-story', 'synchronicity-card', 'profile'}
 
 
 def meta(path):

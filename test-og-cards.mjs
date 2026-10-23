@@ -1,7 +1,7 @@
 // OG cards (2C step 9): light Paper & Night cards from tools/make-og-cards.py, one per public
 // page, 1200x630 JPEG, wired into every page head. Checks the committed output; no Python needed.
-import { readFileSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
+import { join, extname } from 'node:path'
 import { ALWAYS_SHIP_FILES } from './tools/build-reachable.mjs'
 
 const SITE = 'website'
@@ -34,7 +34,7 @@ const metaContent = (html, attr, key) => {
 }
 
 const manifest = JSON.parse(readFileSync(join(SITE, 'img/og/manifest.json'), 'utf8'))
-ok('45 cards in the manifest', manifest.length === 45, String(manifest.length))
+ok('55 cards in the manifest', manifest.length === 55, String(manifest.length))
 for (const e of manifest) {
   const name = e.page.replace(/\.html$/, '')
   const file = join(SITE, e.og)
@@ -133,6 +133,54 @@ ok(
 
 const index = readFileSync(join(SITE, 'index.html'), 'utf8')
 ok('index.html no longer points at og-banner-silver.jpg', !index.includes('og-banner-silver'))
+
+// Step 10f: the last dark previews. Ten pages that used og-banner-silver.jpg, the v906 keep and
+// profile sittings or og/moment.jpg now carry their own light card, and no shipped text file
+// references a dark preview. fulfil-redirect is the one exception: it is a locked
+// checkout-return page (pin bumps only), so its head is left for Jonny's call.
+const DARK_PREVIEW = /og-banner-silver|sitting-(?:keep|profile)-og-v906|img\/og\/moment\.jpg/
+const DARK_OK = new Set(['fulfil-redirect.html'])
+for (const p of [
+  'angel-numbers',
+  'cosmic-story',
+  'ephemeris',
+  'moment',
+  'name-numerology',
+  'profile',
+  'quiz',
+  'saturn-return',
+  'solar-return',
+  'synchronicity-card',
+])
+  ok(
+    `${p}: has its own light card now`,
+    manifest.some((e) => e.page === `${p}.html` && e.og === `img/og/og-${p}.jpg`),
+  )
+const TEXT = new Set(['.html', '.js', '.mjs', '.css', '.json', '.xml', '.txt', '.webmanifest'])
+const walk = (dir, rel = '') =>
+  readdirSync(join(dir, rel), { withFileTypes: true }).flatMap((d) => {
+    const r = rel ? `${rel}/${d.name}` : d.name
+    if (d.isDirectory()) return d.name === 'node_modules' ? [] : walk(dir, r)
+    return TEXT.has(extname(d.name)) ? [r] : []
+  })
+const darkRefs = walk(SITE).filter(
+  (f) => !DARK_OK.has(f) && DARK_PREVIEW.test(readFileSync(join(SITE, f), 'utf8')),
+)
+ok(
+  'no shipped page, script or style references a dark preview',
+  darkRefs.length === 0,
+  darkRefs.join(', '),
+)
+ok(
+  'the dark-preview check catches og-banner-silver.jpg',
+  DARK_PREVIEW.test('img/og-banner-silver.jpg?v=943'),
+)
+for (const f of [
+  'img/editorial/sitting-keep-og-v906.jpg',
+  'img/editorial/sitting-profile-og-v906.jpg',
+  'img/og/moment.jpg',
+])
+  ok(`old ${f} still ships for links already posted`, ALWAYS_SHIP_FILES.has(f))
 
 // Old cards keep shipping for links already posted elsewhere.
 for (const k of ['aries', 'leo', 'pisces'])
