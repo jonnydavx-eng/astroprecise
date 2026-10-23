@@ -252,6 +252,21 @@ function inkOf(ctx, text, fallbackPx) {
 // How far a mark's drawn pixels reach from the centre of its ink box: rendered once on a
 // scratch canvas, then cached. Without a scratch canvas it falls back to the box's half diagonal.
 const INK_REACH = new Map();
+const pageFonts = () => (typeof document !== 'undefined' && document.fonts ? document.fonts : null);
+// A measurement is only kept once the face it was taken in has loaded; a later font load (for
+// example a face that arrived after a timed-out wait) clears every kept measurement.
+function fontLoaded(font, text) {
+  const fonts = pageFonts();
+  if (!fonts || typeof fonts.check !== 'function') return true;
+  try {
+    return fonts.check(font, text);
+  } catch {
+    return false;
+  }
+}
+if (pageFonts() && typeof pageFonts().addEventListener === 'function') {
+  pageFonts().addEventListener('loadingdone', () => INK_REACH.clear());
+}
 function scratchCanvas(ctx, width, height) {
   try {
     if (typeof OffscreenCanvas === 'function') return new OffscreenCanvas(width, height);
@@ -294,7 +309,7 @@ function inkReach(ctx, text, font, ink) {
     }
     if (far > 0) reach = far;
   }
-  INK_REACH.set(key, reach);
+  if (fontLoaded(font, text)) INK_REACH.set(key, reach);
   return reach;
 }
 
@@ -604,6 +619,52 @@ export function layoutWheelMarkers(ctx, model, geometry = PLATE_WHEEL) {
   placed.outerTrack = outerTrack;
   placed.work = work;
   return placed;
+}
+
+// Every face and character the plate and its print assets draw, as [font, text] pairs, so the
+// browser can be asked to load exactly those before anything is measured or drawn.
+export function plateFontRequests(model) {
+  const marks = Object.values(GLYPHS).join('') + Object.values(WHEEL_MARKS).join('');
+  const sans = `ASTROPRECISE / 12 AUGUST 2026 · GREATEST 17:45:51 UTC ${(model && model.eclipseDegree) || ''} ${(model && model.share) || ''} Computed on your device · reflective astrology, not prediction or advice 0123456789°′`;
+  const mono = `${SIGN_MARKS.join(' ')} ${Object.values(WHEEL_MARKS).join(' ')} ${(model && model.fingerprint) || ''} / 0123456789.°`;
+  return [
+    [`600 ${PLATE_MIN_PX}px ${PLATE_GLYPHS}`, marks],
+    [`700 ${PLATE_MIN_PX}px ${PLATE_GLYPHS}`, marks],
+    [`400 ${PLATE_MIN_PX}px ${PLATE_MONO}`, mono],
+    [`400 ${PLATE_MIN_PX}px ${PLATE_SANS}`, sans],
+    [`500 ${PLATE_MIN_PX}px ${PLATE_SANS}`, sans],
+    [`600 ${PLATE_MIN_PX}px ${PLATE_SANS}`, sans],
+    [`600 112px ${PLATE_SERIF}`, 'Your natal wheel at this eclipse.'],
+  ];
+}
+
+// Resolves once the plate's faces have loaded (true), or after timeoutMs if they cannot (false).
+// Outside a browser (no document.fonts) it resolves true at once. Kept ink measurements are
+// dropped, so nothing measured in a fallback face survives.
+export async function plateFontsReady(model, { timeoutMs = 8000 } = {}) {
+  const fonts = pageFonts();
+  if (!fonts || typeof fonts.load !== 'function') return true;
+  const requests = plateFontRequests(model);
+  let timer = null;
+  const loaded = Promise.all(requests.map(([font, text]) => fonts.load(font, text)))
+    .then(() => requests.every(([font, text]) => fontLoaded(font, text)))
+    .catch(() => false);
+  const timeout = new Promise((resolve) => {
+    timer = setTimeout(() => resolve(false), timeoutMs);
+  });
+  const ready = await Promise.race([loaded, timeout]);
+  clearTimeout(timer);
+  INK_REACH.clear();
+  return ready;
+}
+
+// Draw the plate only after its faces have loaded. Every on-page draw and every export goes
+// through here, so the first draw, a redraw and an export all lay out the same.
+export async function drawEclipsePlate(model, canvas = document.createElement('canvas')) {
+  const ready = await plateFontsReady(model);
+  renderEclipseArtwork(model, canvas);
+  canvas.dataset.fontsReady = ready ? 'yes' : 'timed-out';
+  return canvas;
 }
 
 export function renderEclipseArtwork(model, canvas = document.createElement('canvas')) {
@@ -1332,6 +1393,7 @@ async function loadGeometryDataUrl() {
 async function openPrintView(model) {
   const printWindow = window.open('', '_blank');
   if (!printWindow) return false;
+  await plateFontsReady(model);
   const images = renderEclipsePrintAssets(model);
   images.geometry = await loadGeometryDataUrl();
   const fontBase = document.baseURI;
@@ -1355,15 +1417,27 @@ function renderUnlocked(host, model) {
       <figure class="ap-eclipse-edition__art"><div data-edition-canvas></div><figcaption>Unique 2400 × 3000 natal-wheel plate from this computed chart contact. No birth details are printed into the file.</figcaption></figure>
     </div>`;
 
-  const canvas = renderEclipseArtwork(model);
-  canvas.setAttribute('aria-label', 'Personalised natal-wheel plate');
-  host.querySelector('[data-edition-canvas]').appendChild(canvas);
   const status = host.querySelector('[data-edition-status]');
+  status.textContent = 'Drawing your plate…';
+  // The plate is drawn only once its fonts have loaded (see drawEclipsePlate).
+  const canvas = document.createElement('canvas');
+  canvas.setAttribute('aria-label', 'Personalised natal-wheel plate');
+  host.plateDrawn = drawEclipsePlate(model, canvas).then((drawn) => {
+    host.querySelector('[data-edition-canvas]').appendChild(drawn);
+    status.textContent = 'Ready on this device.';
+    const fonts = pageFonts();
+    if (drawn.dataset.fontsReady !== 'yes' && fonts && fonts.addEventListener) {
+      // The wait timed out: draw again once the faces do arrive.
+      fonts.addEventListener('loadingdone', () => drawEclipsePlate(model, drawn), { once: true });
+    }
+    return drawn;
+  });
 
   host.querySelector('[data-edition-download]').addEventListener('click', async () => {
     try {
       status.textContent = 'Preparing the high-resolution PNG…';
-      const blob = await canvasBlob(canvas);
+      // A fresh draw for the file, after the fonts are ready, so it matches the plate on screen.
+      const blob = await canvasBlob(await drawEclipsePlate(model));
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
