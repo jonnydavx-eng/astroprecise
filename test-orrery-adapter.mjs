@@ -183,6 +183,39 @@ if (!A.includes("opts.mode === 'birth-hour'") || !A.includes('O.captureBirthHour
   ok('authored birth-hour capture hides couples clocks and marks Earth');
 }
 
+/* Whole Sky fixed-size still (06-observatory-birth-hour-schematic-4800x3600.png):
+   the adapter passes width/height through and rethrows a failed fixed-size capture;
+   the engine renders at pixel ratio 1 with the matching camera aspect, resizes the
+   post passes, proves the drawing buffer size and restores the live view. */
+{
+  const capStart = A.indexOf('C.prototype.captureStill = function');
+  const cap = capStart >= 0 ? A.slice(capStart, A.indexOf('return null;\n', A.indexOf('catch (e)', capStart))) : '';
+  const passes = (cap.match(/width: opts\.width, height: opts\.height/g) || []).length;
+  if (passes !== 2) fail('adapter captureStill must pass width/height to both captureBirthHourStill and captureFrame (found ' + passes + ')');
+  else if (!/catch \(e\) \{\s*if \(fixed\) throw e;/.test(cap)) fail('adapter must rethrow a failed fixed-size capture instead of returning null');
+  else ok('adapter passes the fixed still size through and rethrows its failures');
+  const fixStart = W.indexOf('function captureFixedFrame(width, height)');
+  const fix = fixStart >= 0 ? W.slice(fixStart, W.indexOf('function fixedStillSize(', fixStart)) : '';
+  const missing = [
+    'gl.MAX_RENDERBUFFER_SIZE',
+    'gl.MAX_VIEWPORT_DIMS',
+    'renderer.setPixelRatio(1);',
+    'renderer.setSize(width, height, false);',
+    'gl.drawingBufferWidth !== width || gl.drawingBufferHeight !== height',
+    'camera.aspect = width / height;',
+    'bloomPass.resolution.set(width, height)',
+    'radialBlurPass.uniforms.uAspect.value = width / height',
+    'composer.setPixelRatio(1);',
+    'composer.setSize(width, height);',
+    'camera.aspect = prevAspect;',
+    'resize();',
+  ].filter((probe) => !fix.includes(probe));
+  if (missing.length) fail('fixed-size still contract missing: ' + missing.join(' | '));
+  else if (!W.includes('return captureFrame({ scale: opts.scale || 2, width: opts.width, height: opts.height });')) fail('captureBirthHourStill must pass width/height to captureFrame');
+  else if (!W.includes('if (fixed) return captureFixedFrame(fixed.width, fixed.height);')) fail('captureFrame must route a width/height request to captureFixedFrame');
+  else ok('engine renders fixed-size stills at pixel ratio 1, checks the drawing buffer and restores the live view');
+}
+
 /* Observatory still capture remains separate from the lightweight chart →
  * story → keepsake journey. Both must carry personal context locally. */
 const keepSkyPath = join(root, 'js', 'ap-keep-sky.js');

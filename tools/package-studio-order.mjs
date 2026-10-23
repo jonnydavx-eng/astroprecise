@@ -3,7 +3,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { basename, join, resolve } from 'path';
 import JSZip from 'jszip';
-import { parseArgs, sha256 } from './fulfil-shared.mjs';
+import { parseArgs, pngSize, sha256 } from './fulfil-shared.mjs';
 
 const CREDITS_SOURCE = new URL('../website/data/third-party-credits.json', import.meta.url);
 
@@ -24,10 +24,14 @@ const PRINT_PACK = [
   '04-phone-wallpaper-1080x1920.png',
   '05-big-three-1080x1080.png',
 ];
+const OBSERVATORY_STILL = '06-observatory-birth-hour-schematic-4800x3600.png';
+// PNGs whose exact pixel size is part of what is sold: the packager reads each one's
+// real IHDR size and refuses anything else (tools/observatory-still.mjs renders it).
+const FIXED_PNG_SIZES = { [OBSERVATORY_STILL]: { width: 4800, height: 3600 } };
 const BY_SKU = {
   'natal-sky-print-pack': PRINT_PACK,
   'personal-sky-keepsake': READING,
-  'whole-sky-edition': [...new Set([...READING, ...PRINT_PACK, '06-observatory-birth-hour-schematic-4800x3600.png'])],
+  'whole-sky-edition': [...new Set([...READING, ...PRINT_PACK, OBSERVATORY_STILL])],
 };
 const GIFT_FILES = [
   'birthday-gift-jacket-a4.pdf',
@@ -123,6 +127,16 @@ async function main() {
   if (privateOrder.product !== product) throw new Error('Package SKU does not match the canonical private order');
   if (!['self', 'gift'].includes(privateOrder.purchaseIntent)) throw new Error('Canonical private order lacks an approved purchaseIntent');
   if (sha256(JSON.stringify(privateOrder)) !== String(args['input-hash']).toLowerCase()) throw new Error('Package input hash does not bind the canonical private order');
+  // Check fixed-size PNGs before anything is written to the delivery folder.
+  for (const file of BY_SKU[product]) {
+    const want = FIXED_PNG_SIZES[file];
+    if (!want || !existsSync(join(dir, file))) continue;
+    const size = pngSize(readFileSync(join(dir, file)));
+    if (!size) throw new Error(`${file} is not a PNG`);
+    if (size.width !== want.width || size.height !== want.height) {
+      throw new Error(`${file} is ${size.width}x${size.height}, not exactly ${want.width}x${want.height}`);
+    }
+  }
   const giftMode = privateOrder.purchaseIntent === 'gift';
   const giftLicence = privateOrder.recipientDisclosureActive === true
     ? GIFT_AUTHORISED_BUYER_COPY_LICENCE

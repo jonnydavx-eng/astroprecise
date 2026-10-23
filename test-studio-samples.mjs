@@ -59,5 +59,19 @@ for (const line of [
 ]) ok(`whole-sky keeps: ${line}`, html.includes(line));
 ok('whole-sky: every figure carries a FICTIONAL SAMPLE tag', (html.match(/<figure/g) || []).length === (html.match(/class="tag">FICTIONAL SAMPLE</g) || []).length);
 
+// The Whole Sky still is sold as 4800 x 3600; its preview embeds a downscale of that
+// true render, so the embedded still keeps the product's 4:3 shape (not the old wide crop).
+{
+  const { STILL_PREVIEW_WIDTH } = await import('./tools/make-studio-samples.mjs');
+  const raw = readFileSync(join(DIR, 'whole-sky-edition-sample.pdf')).toString('latin1');
+  const images = [...raw.matchAll(/\/Subtype\s*\/Image\b[^>]*?>>/g)].map((m) => {
+    const w = m[0].match(/\/Width\s+(\d+)/); const h = m[0].match(/\/Height\s+(\d+)/);
+    return w && h ? [+w[1], +h[1]] : null;
+  }).filter(Boolean);
+  ok(`whole-sky: embeds the still as a 4:3 ${STILL_PREVIEW_WIDTH}x${STILL_PREVIEW_WIDTH * 3 / 4} downscale of the 4800x3600 render (${images.map((d) => d.join('x')).join(', ')})`,
+    images.some(([w, h]) => w === STILL_PREVIEW_WIDTH && h === STILL_PREVIEW_WIDTH * 3 / 4));
+  ok('whole-sky: no wide (non-4:3) Observatory still left in the preview', !images.some(([w, h]) => w === STILL_PREVIEW_WIDTH && h !== STILL_PREVIEW_WIDTH * 3 / 4));
+}
+
 console.log(fails ? `\n${fails} check(s) failed` : '\nall studio sample checks passed');
 process.exit(fails ? 1 : 0);
