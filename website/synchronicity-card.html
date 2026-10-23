@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, follow">
-<meta name="theme-color" content="#040812">
+<meta name="color-scheme" content="light">
+<style>html{background:#F6F3EC}</style>
+<meta name="theme-color" content="#F6F3EC">
 <title>Sky card — keep your chart minute | AstroPrecise</title>
 <meta name="description" content="Beat 3 after your chart: a keepable 1200 × 630 card of one birth minute. Engine still artwork, honest timezone rules, computed on your device.">
 <link rel="canonical" href="https://astroprecise.app/synchronicity-card.html">
@@ -16,7 +18,9 @@
 <meta property="og:image:alt" content="Engine still of Earth and Moon from the AstroPrecise model. Type only. Not a live feed.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-keep-og-v906.jpg">
-<link rel="stylesheet" href="./css/fonts.css?v=937">
+<link rel="stylesheet" href="./css/fonts.css?v=938">
+<link rel="stylesheet" href="css/ap-next.css?v=938">
+<link rel="stylesheet" href="css/ap-mirror-hour.css?v=938">
 <script>
 (function () {
   function hasMinute() {
@@ -31,89 +35,86 @@
 })();
 </script>
 <style>
-.ap-card-engine{position:relative;height:min(22vh,200px);min-height:160px;overflow:hidden;border-bottom:1px solid var(--ap-line);background:var(--ap-void-deep)}
-.ap-card-engine img{width:100%;height:100%;display:block;object-fit:contain;object-position:88% 48%;opacity:.94;filter:none}
-.ap-card-engine::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,8,18,.94),rgba(4,8,18,.42) 55%,rgba(4,8,18,.12));pointer-events:none}
-.ap-card-engine__receipt{position:absolute;z-index:1;left:clamp(18px,4vw,48px);top:50%;display:grid;gap:4px;max-width:min(58vw,480px);transform:translateY(-50%)}
-.ap-card-engine__receipt span,.ap-card-engine__receipt em{font:500 10px/1.4 var(--ap-data);letter-spacing:.14em;text-transform:uppercase;color:var(--ap-brass)}
-.ap-card-engine__receipt strong{font:600 clamp(18px,2.8vw,28px)/1.05 var(--ap-display);color:var(--ap-paper)}
-.ap-card-engine__receipt em{color:var(--ap-paper-dim);font-style:normal;letter-spacing:.04em;text-transform:none}
-.ap-card-gate{display:none;margin:0 0 28px;padding:22px;border:1px solid var(--ap-line);border-radius:4px;background:rgba(16,23,34,.72)}
+/* Paper & Night (step 10b): tokens from css/ap-next.css (body.ap-next). The engine band is the one night area (.ap-sky). */
+.page-sky-card .ap-card-engine{position:relative;height:min(22vh,200px);min-height:160px;overflow:hidden;border-bottom:1px solid var(--ap-rule)}
+.page-sky-card .ap-card-engine img{width:100%;height:100%;display:block;object-fit:contain;object-position:88% 48%;opacity:.94;filter:none}
+.page-sky-card .ap-card-engine::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,17,22,.94),rgba(14,17,22,.42) 55%,rgba(14,17,22,.12));pointer-events:none}
+.page-sky-card .ap-card-engine__receipt{position:absolute;z-index:1;left:clamp(18px,4vw,48px);top:50%;display:grid;gap:4px;max-width:min(58vw,480px);transform:translateY(-50%)}
+.page-sky-card .ap-card-engine__receipt span,.page-sky-card .ap-card-engine__receipt em{font:600 14px/1.4 var(--ap-sans);letter-spacing:.12em;text-transform:uppercase;color:#E2A27A}
+.page-sky-card .ap-card-engine__receipt strong{font:400 clamp(24px,3.4vw,32px)/1.05 var(--ap-serif);color:var(--ap-starlight)}
+.page-sky-card .ap-card-engine__receipt em{color:var(--ap-starlight);font-weight:400;font-style:normal;letter-spacing:0;text-transform:none;opacity:.9}
+.page-sky-card .ap-card-gate{display:none;margin:0 0 28px;padding:22px;border:1px solid var(--ap-rule);border-radius:var(--ap-radius);background:var(--ap-card)}
 html.ap-sky-no-minute .ap-card-gate{display:block}
 html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.ap-sky-no-minute .ap-card-ledger{display:none}
-.ap-card-gate p{margin:0 0 14px;color:var(--ap-paper-dim);font-size:17px;line-height:1.62}
-.ap-card-gate a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ion);color:#07101E;font:700 12px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;text-decoration:none}
-.ap-card-shell{width:min(1000px,calc(100% - 40px));margin:0 auto;padding:clamp(44px,7vw,92px) 0 calc(84px + var(--bottom-nav-h,0px))}
-.ap-card-kicker{margin:0 0 13px;color:var(--ap-brass);font:9px/1.5 var(--ap-data);letter-spacing:.18em;text-transform:uppercase}
-.ap-card-shell h1{max-width:16ch;margin:0;color:var(--ap-paper);font:600 clamp(42px,7vw,76px)/.9 var(--ap-display);letter-spacing:-.03em}
-.ap-card-lede{max-width:58ch;margin:22px 0 0;color:var(--ap-paper-dim);font-size:17px;line-height:1.66}
-.ap-card-form{display:grid;gap:15px;margin:34px 0 0;padding:clamp(20px,3vw,26px);border:1px solid var(--ap-line);border-radius:4px;background:rgba(16,23,34,.72)}
-.ap-card-form__fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
-.ap-card-form label span{display:block;margin-bottom:6px;color:var(--ap-brass);font:9px/1.4 var(--ap-data);letter-spacing:.13em;text-transform:uppercase}
-.ap-card-form input{width:100%;min-height:48px;padding:10px;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep);color:inherit;font:16px var(--ap-data)}
-.ap-city-drop{display:flex;flex-direction:column;gap:2px;margin-top:6px;border:1px solid var(--ap-line);background:var(--ap-void-deep)}
-.ap-city-drop[hidden]{display:none}
-.ap-city-item{display:flex;align-items:center;min-height:44px;padding:9px 10px;border:0;background:transparent;color:inherit;font:15px/1.3 var(--ap-body);text-align:left;cursor:pointer}
-.ap-city-item:hover,.ap-city-item:focus{background:rgba(139,169,255,.16)}
-.ap-zone-note{margin:6px 0 0;color:var(--ap-paper-faint);font-size:12px;line-height:1.5}
-.ap-card-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
-.ap-card-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;padding:0 20px;border:0;border-radius:4px;background:var(--ap-ion);color:#07101E;font:700 12px/1 var(--ap-data);letter-spacing:.09em;text-transform:uppercase;cursor:pointer}
-.ap-card-btn--quiet{background:transparent;border:1px solid var(--ap-brass);color:var(--ap-brass-bright)}
-.ap-card-btn[disabled]{opacity:.45;cursor:not-allowed}
-.ap-card-status{margin:0;color:var(--ap-paper-dim);font-size:13px;line-height:1.6}
-.ap-card-status[data-state='refused']{color:var(--ap-danger)}
-.ap-card-canvas{margin:26px 0 0}
-.ap-card-canvas canvas{display:block;width:100%;height:auto;border:1px solid var(--ap-line);border-radius:4px;background:var(--ap-void-deep)}
-.ap-card-plate-note{display:none;margin:10px 0 0;color:var(--ap-paper-faint);font-size:16px;line-height:1.5}
-.ap-card-ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 30px;margin:28px 0 0;padding-top:22px;border-top:1px solid var(--ap-line)}
-.ap-card-ledger div{padding:12px 0;border-bottom:1px solid rgba(143,163,184,.12)}
-.ap-card-ledger span{display:block;margin-bottom:6px;color:var(--ap-proof);font:9px/1.5 var(--ap-data);letter-spacing:.13em;text-transform:uppercase}
-.ap-card-ledger div[data-withheld] span{color:var(--ap-danger)}
-.ap-card-ledger p{margin:0;color:var(--ap-paper-dim);font-size:15px;line-height:1.6}
-.ap-card-foot{margin:34px 0 0;color:var(--ap-paper-faint);font-size:13px;line-height:1.7}
-.ap-card-foot a{color:var(--ap-brass-bright)}
+.page-sky-card .ap-card-gate p{margin:0 0 14px;color:var(--ap-graphite);font-size:17px;line-height:1.62}
+.page-sky-card .ap-card-gate a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border:0;border-radius:var(--ap-radius);background:var(--ap-ink);color:var(--ap-paper);font:600 16px/1 var(--ap-sans);text-decoration:none}
+.page-sky-card .ap-card-shell{width:min(1000px,calc(100% - 40px));margin:0 auto;padding:clamp(44px,7vw,92px) 0 calc(84px + var(--bottom-nav-h,0px))}
+.page-sky-card .ap-card-kicker{margin:0 0 13px;color:var(--ap-copper-ink);font:600 14px/1.5 var(--ap-sans);letter-spacing:.16em;text-transform:uppercase}
+.page-sky-card .ap-card-shell h1{max-width:16ch;margin:0;color:var(--ap-ink);font:400 clamp(42px,7vw,76px)/.98 var(--ap-serif);letter-spacing:-.015em}
+.page-sky-card .ap-card-lede{max-width:58ch;margin:22px 0 0;color:var(--ap-graphite);font-size:17px;line-height:1.66}
+.page-sky-card .ap-card-form{display:grid;gap:15px;margin:34px 0 0;padding:clamp(20px,3vw,26px);border:1px solid var(--ap-rule);border-radius:var(--ap-radius);background:var(--ap-card)}
+.page-sky-card .ap-card-form__fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.page-sky-card .ap-card-form label span{display:block;margin-bottom:6px;color:var(--ap-copper-ink);font:600 14px/1.4 var(--ap-sans);letter-spacing:.1em;text-transform:uppercase}
+.page-sky-card .ap-card-form input{width:100%;min-height:48px;padding:10px;border:1px solid var(--ap-rule);border-radius:var(--ap-radius);background:var(--ap-paper);color:var(--ap-ink);font:16px var(--ap-sans)}
+.page-sky-card .ap-city-drop{display:flex;flex-direction:column;gap:2px;margin-top:6px;border:1px solid var(--ap-rule);background:var(--ap-card)}
+.page-sky-card .ap-city-drop[hidden]{display:none}
+.page-sky-card .ap-city-item{display:flex;align-items:center;min-height:44px;padding:9px 10px;border:0;background:transparent;color:var(--ap-ink);font:16px/1.3 var(--ap-sans);text-align:left;cursor:pointer}
+.page-sky-card .ap-city-item:hover,.page-sky-card .ap-city-item:focus{background:var(--ap-paper-2)}
+.page-sky-card .ap-zone-note{margin:6px 0 0;color:var(--ap-muted);font-size:14px;line-height:1.5}
+.page-sky-card .ap-card-actions{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
+.page-sky-card .ap-card-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;padding:0 22px;border:0;border-radius:var(--ap-radius);background:var(--ap-ink);color:var(--ap-paper);font:600 16px/1 var(--ap-sans);cursor:pointer}
+.page-sky-card .ap-card-btn--quiet{background:transparent;border:1px solid var(--ap-rule);color:var(--ap-ink)}
+.page-sky-card .ap-card-btn[disabled]{opacity:.45;cursor:not-allowed}
+.page-sky-card .ap-card-status{margin:0;color:var(--ap-graphite);font-size:15px;line-height:1.6}
+.page-sky-card .ap-card-status[data-state='refused']{color:var(--ap-alert)}
+.ap-sync-card-panel{display:grid;gap:6px;padding:12px 14px;border:1px solid var(--ap-rule);border-radius:var(--ap-radius);background:var(--ap-paper)}
+.ap-sync-card-panel[hidden]{display:none}
+.page-sky-card .ap-sync-card-note{color:var(--ap-copper-ink);font:600 14px/1.5 var(--ap-sans);letter-spacing:.06em}
+.page-sky-card #skySyncNote{color:var(--ap-muted);font:400 14px/1.5 var(--ap-sans);letter-spacing:0;text-transform:none}
+.page-sky-card .ap-sync-card-folk{color:var(--ap-ink);font:italic 400 18px/1.5 var(--ap-serif)}
+.page-sky-card .ap-card-canvas{margin:26px 0 0}
+.page-sky-card .ap-card-canvas canvas{display:block;width:100%;height:auto;border:1px solid var(--ap-rule);border-radius:var(--ap-radius);background:var(--ap-paper)}
+.page-sky-card .ap-card-plate-note{display:none;margin:10px 0 0;color:var(--ap-muted);font-size:16px;line-height:1.5}
+.page-sky-card .ap-card-ledger{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 30px;margin:28px 0 0;padding-top:22px;border-top:1px solid var(--ap-rule)}
+.page-sky-card .ap-card-ledger div{padding:12px 0;border-bottom:1px solid var(--ap-rule)}
+.page-sky-card .ap-card-ledger span{display:block;margin-bottom:6px;color:var(--ap-proof);font:600 14px/1.5 var(--ap-sans);letter-spacing:.1em;text-transform:uppercase}
+.page-sky-card .ap-card-ledger div[data-withheld] span{color:var(--ap-alert)}
+.page-sky-card .ap-card-ledger p{margin:0;color:var(--ap-graphite);font-size:16px;line-height:1.6}
+.page-sky-card .ap-card-foot{margin:34px 0 0;color:var(--ap-muted);font-size:15px;line-height:1.7}
+.page-sky-card .ap-card-foot a{color:var(--ap-copper-ink)}
 @media(max-width:700px){
-  .ap-card-shell{display:flex;flex-direction:column;width:min(100% - 32px,1000px);padding-top:26px}
-  .ap-card-kicker{order:1;margin-bottom:10px;font-size:11px}
-  .ap-card-shell h1{order:2;font-size:clamp(32px,9.2vw,38px);line-height:.98}
-  .ap-card-canvas{order:3;margin-top:20px}
-  .ap-card-plate-note{display:block}
-  .ap-card-lede{order:4;margin-top:24px;font-size:16px}
-  .ap-card-gate{order:5;margin-top:22px}
-  .ap-card-form{order:6;margin-top:22px}
-  .ap-card-ledger{order:7;grid-template-columns:1fr}
-  .ap-card-foot{order:8}
-  .ap-card-form__fields{grid-template-columns:1fr}
-  .ap-card-actions{flex-direction:column;align-items:stretch}
-  .ap-card-btn{width:100%}
-  .ap-card-status,.ap-zone-note,.ap-card-ledger p,.ap-card-foot,.ap-card-gate p{font-size:16px;line-height:1.55}
-  .ap-card-ledger span{font-size:11px}
-  .ap-card-foot a{display:inline-flex;align-items:center;min-height:44px}
-  .page-sky-card .navbar__logo,
-  .page-sky-card .ap-site-footer__wordmark,
-  .page-sky-card .ap-site-footer__routes a,
-  .page-sky-card .ap-site-footer__legal a,
-  .page-sky-card .ap-site-footer__colophon a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px}
-  .page-sky-card .ap-site-footer__legal a,
-  .page-sky-card .ap-site-footer__colophon a{font-size:13px}
+  .page-sky-card .ap-card-shell{display:flex;flex-direction:column;width:min(100% - 32px,1000px);padding-top:26px}
+  .page-sky-card .ap-card-kicker{order:1;margin-bottom:10px}
+  .page-sky-card .ap-card-shell h1{order:2;font-size:clamp(34px,10vw,42px);line-height:1}
+  .page-sky-card .ap-card-canvas{order:3;margin-top:20px}
+  .page-sky-card .ap-card-plate-note{display:block}
+  .page-sky-card .ap-card-lede{order:4;margin-top:24px;font-size:17px}
+  .page-sky-card .ap-card-gate{order:5;margin-top:22px}
+  .page-sky-card .ap-card-form{order:6;margin-top:22px}
+  .page-sky-card .ap-card-ledger{order:7;grid-template-columns:1fr}
+  .page-sky-card .ap-card-foot{order:8}
+  .page-sky-card .ap-card-form__fields{grid-template-columns:1fr}
+  .page-sky-card .ap-card-actions{flex-direction:column;align-items:stretch}
+  .page-sky-card .ap-card-btn{width:100%}
+  .page-sky-card .ap-card-status,.page-sky-card .ap-zone-note,.page-sky-card .ap-card-ledger p,.page-sky-card .ap-card-foot,.page-sky-card .ap-card-gate p{font-size:16px;line-height:1.55}
+  .page-sky-card .ap-card-foot a{display:inline-flex;align-items:center;min-height:44px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-<script>window.AP_ASSET_V='937';</script>
-<link rel="stylesheet" href="css/ap-living-sky-v834.css?v=937">
-<link rel="stylesheet" href="css/ap-phone-pass.css?v=937">
-<link rel="stylesheet" href="css/ap-mirror-hour.css?v=937">
-<script src="js/ap-nav-model.js?v=937" defer></script>
-<script src="js/ephemeris.js?v=937" defer></script>
-<script src="js/ap-keep-library.js?v=937" defer></script>
-<script src="js/ap-mirror-hour.js?v=937" defer></script>
-<script src="js/ap-sky-card.js?v=937" defer></script>
-<script defer src="js/ap-next.js?v=937"></script></head>
-<body class="ap-editorial page-sky-card ap-launch-article">
-<a class="skip-link" href="#sky-card-main">Skip to the sky card</a>
+<script>window.AP_ASSET_V='938';</script>
+
+<script src="js/ap-nav-model.js?v=938" defer></script>
+<script src="js/ephemeris.js?v=938" defer></script>
+<script src="js/ap-keep-library.js?v=938" defer></script>
+<script src="js/ap-mirror-hour.js?v=938" defer></script>
+<script src="js/ap-glyphs.js?v=938" defer></script>
+<script src="js/ap-sky-card.js?v=938" defer></script>
+<script defer src="js/ap-next.js?v=938"></script></head>
+<body class="ap-next ap-editorial page-sky-card ap-launch-article">
+<a class="ap-skip" href="#sky-card-main">Skip to the sky card</a>
 <div data-ap-next-nav><noscript><nav class="ap-noscript-nav" aria-label="Primary"><a href="index.html">AstroPrecise</a> · <a href="chart.html">Birth chart</a> · <a href="explore.html">Explore</a> · <a href="charts.html">Saved</a> · <a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a></nav></noscript></div>
 
-<section class="ap-card-engine" aria-label="Authored engine still">
+<section class="ap-card-engine ap-sky" aria-label="Authored engine still">
   <img src="img/engine/studio/earth.webp" width="1024" height="1024" decoding="async" fetchpriority="high" alt="Authored engine still of Earth from the AstroPrecise model; schematic presentation, not a live feed">
   <div class="ap-card-engine__receipt">
     <span>Engine still · schematic</span>
@@ -169,7 +170,7 @@ html.ap-sky-no-minute .ap-card-form,html.ap-sky-no-minute .ap-card-canvas,html.a
 </main>
 
 <div data-ap-next-footer><noscript><footer class="ap-noscript-footer"><a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refunds.html">Refunds</a> · <a href="contact.html">Contact</a></footer></noscript></div>
-<script src="js/ap-footer-inject.js?v=937" defer></script>
-<script src="js/ap-sky-time.js?v=937" defer></script>
+<script src="js/ap-footer-inject.js?v=938" defer></script>
+<script src="js/ap-sky-time.js?v=938" defer></script>
 </body>
 </html>

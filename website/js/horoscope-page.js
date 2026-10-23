@@ -400,6 +400,15 @@
   };
   const CARD_SERIF = '"AP Serif", "Instrument Serif", Georgia, "Times New Roman", serif';
   const CARD_SANS = '"AP Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+  // The card is drawn on a 1080-unit square and is mostly seen about 360 CSS px wide on a phone,
+  // so 1 unit is a third of a CSS px there. Small print is sized for that view (step 10b):
+  // the footer disclaimer is 34 units, about 11.3 px at 360 wide (it was 15 units, 5 px).
+  const CARD_SIZE = 1080;
+  const CARD_FOOTER_PX = 34;
+  const CARD_FOOTER_LINE = 42;
+  const CARD_FOOTER_WIDTH = 912;
+  const CARD_LABEL_PX = 24;
+  const CARD_DISCLAIMER = 'Astrological interpretation for reflection and entertainment · positions calculated at 12:00 UT';
 
   function countLines(context, text, font, maxWidth, maxLines) {
     context.font = font;
@@ -419,9 +428,10 @@
   function cardFontsReady() {
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
     const loads = Promise.all([
-      document.fonts.load('400 104px ' + CARD_SERIF),
+      document.fonts.load('400 96px ' + CARD_SERIF),
       document.fonts.load('600 18px ' + CARD_SANS),
       document.fonts.load('400 24px ' + CARD_SANS),
+      document.fonts.load('400 ' + CARD_FOOTER_PX + 'px ' + CARD_SANS),
     ]).catch(function () {});
     return Promise.race([loads, new Promise(function (resolve) { window.setTimeout(resolve, 2500); })]);
   }
@@ -493,7 +503,7 @@
   async function buildDailyCard(signKey) {
     const info = SIGNS[signKey];
     const data = Interpretations.getDailyHoroscope(info.name, new Date());
-    const size = 1080;
+    const size = CARD_SIZE;
     const exportSize = window.RafCore && RafCore.cardExportSize ? RafCore.cardExportSize() : size * 2;
     const canvas = document.createElement('canvas');
     const context = window.RafCore && RafCore.prepExportCtx
@@ -512,70 +522,86 @@
     context.textBaseline = 'alphabetic';
     context.textAlign = 'left';
     context.fillStyle = CARD.copperInk;
-    context.font = '600 18px ' + CARD_SANS;
+    context.font = '600 ' + CARD_LABEL_PX + 'px ' + CARD_SANS;
     tracked(context, 3.2);
-    context.fillText('DAILY READING · ' + String(SIGN_KEYS.indexOf(signKey) + 1).padStart(2, '0') + ' / 12', 84, 108);
+    context.fillText('DAILY READING · ' + String(SIGN_KEYS.indexOf(signKey) + 1).padStart(2, '0') + ' / 12', 84, 104);
     context.textAlign = 'right';
     context.fillStyle = CARD.ink;
-    context.fillText(PHASE_NAMES[phase.index].toUpperCase(), 996, 108);
+    context.fillText(PHASE_NAMES[phase.index].toUpperCase(), 996, 104);
     tracked(context, 0);
     context.fillStyle = CARD.muted;
-    context.font = '400 18px ' + CARD_SANS;
-    context.fillText(phase.illumination + '% lit at 12:00 UT', 996, 138);
+    context.font = '400 ' + CARD_LABEL_PX + 'px ' + CARD_SANS;
+    context.fillText(phase.illumination + '% lit at 12:00 UT', 996, 140);
 
-    drawSignDisc(context, signKey, glyph, 540, 262, 104);
+    drawSignDisc(context, signKey, glyph, 540, 232, 86);
 
     context.textAlign = 'center';
     context.fillStyle = CARD.ink;
-    context.font = '400 104px ' + CARD_SERIF;
-    tracked(context, -1.5);
-    context.fillText(info.name, 540, 476);
+    context.font = '400 96px ' + CARD_SERIF;
+    tracked(context, -1.4);
+    context.fillText(info.name, 540, 414);
     context.fillStyle = CARD.muted;
-    context.font = '500 18px ' + CARD_SANS;
-    tracked(context, 3.2);
-    context.fillText((new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ' · ' + info.dates).toUpperCase(), 540, 518);
+    context.font = '500 ' + CARD_LABEL_PX + 'px ' + CARD_SANS;
+    tracked(context, 3);
+    context.fillText((new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ' · ' + info.dates).toUpperCase(), 540, 456);
     tracked(context, 0);
 
     // The reading block (today's line, Use this, Leave this) sits centred between the date and
-    // the footer rule, whatever the number of wrapped lines.
+    // the footer rule, whatever the number of wrapped lines. A long day steps down to a compact
+    // set so the block never runs into the footer.
     const todayText = data.todayLine || data.overview || '';
-    const todayFont = '400 40px ' + CARD_SERIF;
-    const noteFont = '400 24px ' + CARD_SANS;
-    const todayRows = countLines(context, todayText, todayFont, 820, 3);
-    const useRows = countLines(context, data.useThis || '', noteFont, 800, 2);
-    const leaveRows = countLines(context, data.leaveThis || '', noteFont, 800, 2);
-    const blockHeight = todayRows * 48 + 56 + (34 + useRows * 32) + 40 + (34 + leaveRows * 32);
-    let y = Math.round(548 + Math.max(0, (930 - 548 - blockHeight) / 2)) + 36;
+    const top = 476;
+    const bottom = 852;
+    const sets = [
+      { today: 44, todayLine: 52, todayGap: 52, note: 32, noteLine: 40, label: 20, labelGap: 40, noteGap: 32 },
+      { today: 38, todayLine: 46, todayGap: 40, note: 28, noteLine: 34, label: 18, labelGap: 34, noteGap: 24 },
+      { today: 34, todayLine: 40, todayGap: 30, note: 24, noteLine: 29, label: 17, labelGap: 29, noteGap: 18 },
+    ];
+    let set = sets[0];
+    let todayRows = 0;
+    let useRows = 0;
+    let leaveRows = 0;
+    let blockHeight = 0;
+    for (let index = 0; index < sets.length; index += 1) {
+      set = sets[index];
+      todayRows = countLines(context, todayText, '400 ' + set.today + 'px ' + CARD_SERIF, 820, 3);
+      useRows = countLines(context, data.useThis || '', '400 ' + set.note + 'px ' + CARD_SANS, 800, 2);
+      leaveRows = countLines(context, data.leaveThis || '', '400 ' + set.note + 'px ' + CARD_SANS, 800, 2);
+      blockHeight = todayRows * set.todayLine + set.todayGap + (set.labelGap + useRows * set.noteLine) + set.noteGap + (set.labelGap + leaveRows * set.noteLine);
+      if (blockHeight <= bottom - top) break;
+    }
+    let y = Math.round(top + Math.max(0, (bottom - top - blockHeight) / 2)) + set.today - 4;
     context.fillStyle = CARD.ink;
-    context.font = todayFont;
-    wrapText(context, todayText, 540, y, 820, 48, 3);
-    y += (todayRows - 1) * 48 + 76;
+    context.font = '400 ' + set.today + 'px ' + CARD_SERIF;
+    wrapText(context, todayText, 540, y, 820, set.todayLine, 3);
+    y += (todayRows - 1) * set.todayLine + set.todayGap + set.label;
     [['USE THIS', data.useThis || '', useRows], ['LEAVE THIS', data.leaveThis || '', leaveRows]].forEach(function (note) {
       context.fillStyle = CARD.copperInk;
-      context.font = '600 16px ' + CARD_SANS;
+      context.font = '600 ' + set.label + 'px ' + CARD_SANS;
       tracked(context, 3);
       context.fillText(note[0], 540, y);
       tracked(context, 0);
       context.fillStyle = CARD.graphite;
-      context.font = noteFont;
-      wrapText(context, note[1], 540, y + 34, 800, 32, 2);
-      y += 34 + note[2] * 32 + 40;
+      context.font = '400 ' + set.note + 'px ' + CARD_SANS;
+      wrapText(context, note[1], 540, y + set.labelGap, 800, set.noteLine, 2);
+      y += set.labelGap + note[2] * set.noteLine + set.noteGap;
     });
 
+    // Footer: rule, mark and wordmark, then the disclaimer in two lines at phone-readable size.
     context.fillStyle = CARD.rule;
-    context.fillRect(84, 948, 912, 2);
-    drawMark(context, 104, 990, 40);
+    context.fillRect(84, 868, 912, 2);
+    drawMark(context, 104, 914, 40);
     context.textAlign = 'left';
     context.fillStyle = CARD.ink;
-    context.font = '400 30px ' + CARD_SERIF;
-    context.fillText('AstroPrecise', 134, 1000);
+    context.font = '400 32px ' + CARD_SERIF;
+    context.fillText('AstroPrecise', 134, 925);
     context.textAlign = 'right';
     context.fillStyle = CARD.muted;
-    context.font = '400 18px ' + CARD_SANS;
-    context.fillText('astroprecise.app', 996, 998);
+    context.font = '400 ' + CARD_LABEL_PX + 'px ' + CARD_SANS;
+    context.fillText('astroprecise.app', 996, 923);
     context.textAlign = 'center';
-    context.font = '400 15px ' + CARD_SANS;
-    context.fillText('Astrological interpretation for reflection and entertainment · positions calculated at 12:00 UT', 540, 1036);
+    context.font = '400 ' + CARD_FOOTER_PX + 'px ' + CARD_SANS;
+    wrapText(context, CARD_DISCLAIMER, 540, 984, CARD_FOOTER_WIDTH, CARD_FOOTER_LINE, 3);
     return canvas;
   }
 
