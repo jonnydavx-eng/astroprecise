@@ -293,7 +293,7 @@
           '<span class="mp-chip">Moon in ' + phase.moonSign + '</span>' +
         '</div>' +
         '<p class="mp-card__blurb">' + phase.blurb + '</p>' +
-        '<p class="mp-card__honesty">Computed from real Sun &amp; Moon positions (VSOP87 / ELP2000), evaluated at 12:00&nbsp;UT.</p>' +
+        '<p class="mp-card__honesty">Calculated from real Sun &amp; Moon positions at 12:00&nbsp;UT on this date.</p>' +
       '</article>' +
       '<div class="mp-actions">' +
         '<button type="button" class="btn btn--secondary" id="mp-copy-btn">Copy shareable text</button>' +

@@ -14,7 +14,7 @@ const lower = html.toLowerCase()
 const css = readFileSync(join(SITE, 'css/observatory-next.css'), 'utf8')
 
 // Shell
-ok('body is ap-next ap-obs and keeps the engine room classes', /<body class="ap-next ap-obs ap-live-home ap-reading-room">/.test(html))
+ok('body is ap-next ap-obs and keeps the engine room classes', /<body class="ap-next ap-obs ap-observatory ap-live-home ap-reading-room">/.test(html))
 const sheets = [...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map((m) => m[1])
 ok('exactly ap-next.css + observatory-next.css', sheets.join(',') === `css/ap-next.css?v=${V},css/observatory-next.css?v=${V}`)
 ok('loads ap-next.js', html.includes(`<script src="js/ap-next.js?v=${V}" defer></script>`))

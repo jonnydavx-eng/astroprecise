@@ -280,7 +280,7 @@
 
     const phase = moonPhaseAtNoon(new Date());
     drawMoonPhase(phase);
-    document.getElementById('srp-moon-label').textContent = PHASE_NAMES[phase.index] + ' · ' + phase.illumination + '% lit at 12:00 UT';
+    document.getElementById('srp-moon-label').textContent = PHASE_NAMES[phase.index] + ' · ' + phase.illumination + '% lit';
 
     currentOpenSign = signKey;
     panel.dataset.element = info.element;
@@ -306,7 +306,7 @@
     });
     const card = document.querySelector('.sign-card[data-sign="' + signKey + '"]');
     if (card) card.setAttribute('aria-busy', 'true');
-    setStatus('Calculating ' + SIGNS[signKey].name + ' at 12:00 UT…');
+    setStatus('Calculating ' + SIGNS[signKey].name + '…');
     ensureDailyEngine()
       .then(function () {
         if (token !== selectionToken) return;

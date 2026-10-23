@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="robots" content="noindex, follow">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Why AstroPrecise is different: real VSOP87/ELP2000 astronomy, numbers labelled measured or computed, and an honesty rule that never fakes data." />
+  <meta name="description" content="Why AstroPrecise is different: real planet-position astronomy, numbers labelled measured or computed, and an honesty rule that never fakes data." />
   <title>Why AstroPrecise — Astrology You Can Check | AstroPrecise</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -31,11 +31,11 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Why AstroPrecise","description":"Why AstroPrecise is different: every number is real, labelled measured or computed, and checkable. Real VSOP87/ELP2000 astronomy, a privacy-first in-browser engine, deterministic readings, and an honesty rule that never fakes data.","url":"https://astroprecise.app/why.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Why AstroPrecise","description":"Why AstroPrecise is different: every number is real, labelled measured or computed, and checkable. Real planet-position astronomy, a privacy-first in-browser engine, deterministic readings, and an honesty rule that never fakes data.","url":"https://astroprecise.app/why.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/ap-next.css?v=940" />
-  <link rel="stylesheet" href="css/guide-next.css?v=940" />
-  <script src="js/ap-next.js?v=940" defer></script>
+  <link rel="stylesheet" href="css/ap-next.css?v=941" />
+  <link rel="stylesheet" href="css/guide-next.css?v=941" />
+  <script src="js/ap-next.js?v=941" defer></script>
 </head>
 <body class="ap-next ap-guide ap-guide--why">
   <a class="ap-skip" href="#main-content">Skip to content</a>
@@ -94,9 +94,9 @@
         <tbody>
           <tr><td>Solar wind, Kp, Bz, flares, F10.7</td><td><span class="tag tag--measured">measured</span></td><td>NOAA SWPC · DSCOVR · GOES</td></tr>
           <tr><td>Aurora probability</td><td><span class="tag tag--measured">measured</span></td><td>NOAA OVATION model</td></tr>
-          <tr><td>Planet &amp; Moon positions</td><td><span class="tag tag--computed">computed</span></td><td>VSOP87 / ELP2000</td></tr>
+          <tr><td>Planet &amp; Moon positions</td><td><span class="tag tag--computed">computed</span></td><td>Published planet and Moon models, run on this device</td></tr>
           <tr><td>Ascendant, houses, transits</td><td><span class="tag tag--computed">computed</span></td><td>Local sidereal time + the above</td></tr>
-          <tr><td>Star positions &amp; distances</td><td><span class="tag tag--catalogued">catalogued</span></td><td>Real star catalogue (J2000)</td></tr>
+          <tr><td>Star positions &amp; distances</td><td><span class="tag tag--catalogued">catalogued</span></td><td>Real star catalogue (positions for the year 2000)</td></tr>
           <tr><td>Schumann resonance</td><td><span class="tag tag--unavailable">unavailable</span></td><td>No trustworthy public live feed — so we show nothing, rather than fake it</td></tr>
         </tbody>
       </table>
@@ -106,10 +106,10 @@
     <!-- ═══ ACCURACY ═══ -->
     <section class="why-section" id="accuracy">
       <h2>Positions You Can Actually Check</h2>
-      <p>The planetary engine is a real implementation of <strong>VSOP87</strong> for
-        the planets and <strong>ELP2000</strong> for the Moon — the analytical
-        theories that underpin modern almanacs — following Meeus' <em>Astronomical
-        Algorithms</em>. Positions are computed to within roughly a sixtieth of a
+      <p>The planetary engine runs the same published mathematical models of the
+        planets and the Moon that modern almanacs are built on, following Meeus'
+        <em>Astronomical Algorithms</em>. The accuracy page names each model and
+        shows how it was tested. Positions are computed to within roughly a sixtieth of a
         degree across the supported era (1800–2200 CE) — we do not round them to a
         sun-sign approximation. Your rising sign comes from true local sidereal time
         at your exact birthplace and minute, not a lookup table.</p>
@@ -204,6 +204,6 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS -->
-  <script src="js/ap-error-beacon.js?v=940" defer></script>
+  <script src="js/ap-error-beacon.js?v=941" defer></script>
 </body>
 </html>

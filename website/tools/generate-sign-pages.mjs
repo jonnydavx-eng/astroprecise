@@ -600,7 +600,7 @@ function page(s) {
       <div class="wrap">
         <h2 id="today-heading">${s.name} in today’s sky</h2>
         <p class="sign-sub" id="today-date" aria-live="polite"></p>
-        <p class="sign-note">Computed from today’s sky with the same VSOP87 engine as the orrery. Not a live feed.</p>
+        <p class="sign-note">Calculated from today’s sky with the same planet model as the 3D Observatory. Not a live feed.</p>
         <div class="today-reading is-loading" id="today-reading" aria-live="polite">
           <div class="card">
             <p>Today’s ${s.name} reading is calculated in your browser from real planetary positions. If this text remains, turn on JavaScript to see it, or read the full ${s.name} guide below.</p>
@@ -692,6 +692,9 @@ export const BANNED = [
   ['#C2A05E', 'retired brass on sign page'],
   ['040812', 'legacy dark theme colour'],
   ['zodiac-cards', 'AI zodiac card art'],
+  ['VSOP87', 'model shorthand on a reader page; say it in plain words'],
+  ['ELP2000', 'model shorthand on a reader page; say it in plain words'],
+  ['J2000', 'model shorthand on a reader page; say it in plain words'],
   ['data-celestial-seal', 'legacy engraved seal hook'],
   ['main-lite.css', 'legacy dark stylesheet'],
   ['sign-page.css', 'legacy dark stylesheet'],

@@ -59,29 +59,90 @@
     12: 'rest, reflection, and what works beneath the surface',
   };
 
-  var LOVE_BY_HOUSE = {
-    5: 'Romance and creative chemistry run high — express affection directly and make room for spontaneity.',
-    7: 'Partnership is in focus — clarity, fairness, and one honest conversation carry more weight than guessing.',
-    8: 'Emotional honesty deepens bonds — vulnerability offered carefully can transform a static connection.',
-    1: 'Your presence is the attraction — confidence without performance draws the right kind of attention.',
-    4: 'Nesting and emotional safety matter — tenderness at home strengthens every outward relationship.',
-    11: 'Friendship and shared ideals colour love — connection grows through community and aligned values.',
+  // PEOPLE / WORK / PACE. Every sentence is keyed by a solar house (a life area
+  // counted from the Sun sign). On any one day the Moon, Venus and Mars each sit
+  // in a different solar house for every one of the twelve signs, so no two signs
+  // can share a sentence. Gentle, plain UK English; tendencies, never promises.
+  var PEOPLE_BY_MOON_HOUSE = {
+    1: 'How you come across matters today — be warm, be yourself, and skip the performance.',
+    2: 'Notice who respects what matters to you; shared values make for easy company.',
+    3: 'A quick message to a sibling, neighbour or friend could mean more than you expect.',
+    4: 'Home and family take the lead — a quiet, kind word at home can steady everything else.',
+    5: 'Make room for play and affection, and say the warm thing out loud rather than hinting.',
+    6: 'Care can look practical today: offering to share a chore says a lot.',
+    7: 'One-to-one ties are in focus — a fair, honest conversation beats guessing what someone thinks.',
+    8: 'Closeness can grow when you open up gently, and only as far as feels safe.',
+    9: 'A conversation about ideas, travel or plans could bring you closer to someone.',
+    10: 'Be generous with credit — people notice how you treat those who helped you.',
+    11: 'Friends and groups are in the frame, so reach out to someone you have been meaning to see.',
+    12: 'It is fine to keep plans small and recharge before you give your time to others.',
   };
 
-  var CAREER_BY_HOUSE = {
-    10: 'Professional visibility is activated — deliver one polished piece of work and let competence speak.',
-    6: 'Systems and craft win — refine the process, finish the backlog, and improve one routine permanently.',
-    3: 'Messages and meetings matter — pitch, write, negotiate, and follow up while ideas are still warm.',
-    2: 'What you value is in the frame — notice which work feels worth your effort, and why.',
-    9: 'Teaching, publishing, or cross-border opportunities open — think bigger than this week\'s inbox.',
-    11: 'Collaboration and network intelligence advance goals — the right ally shortens the path.',
+  var VENUS_BY_HOUSE = {
+    1: 'so warmth you show openly is easy to read — keep it genuine.',
+    2: 'so a small, thoughtful gesture of your time can say more than anything grand.',
+    3: 'so friendly words travel well — a kind message is worth sending.',
+    4: 'so comfort at home is a good way to show you care.',
+    5: 'so fun and flirtation may come more easily — enjoy it without forcing it.',
+    6: 'so helping with something ordinary can feel quietly affectionate.',
+    7: 'so close partnerships gain from appreciation said plainly.',
+    8: 'so trust grows through honesty rather than grand gestures.',
+    9: 'so sharing a new idea or place with someone can bring you closer.',
+    10: 'so grace in public settings gets noticed — be kind as well as capable.',
+    11: 'so friendships are a good place to put your warmth today.',
+    12: 'so a private, unshowy kindness may mean the most.',
   };
 
-  var HEALTH_BY_PHASE = {
-    waxing: 'Build energy gradually — consistent movement and nourishment compound through the week.',
-    waning: 'Recovery and release are favoured — sleep, hydration, and fewer inputs restore clarity.',
-    full: 'Peak vitality can tip into overstimulation — pace intensity and cool down deliberately tonight.',
-    new: 'A quieter baseline suits the body — gentle movement and early rest reset the nervous system.',
+  var WORK_BY_MOON_HOUSE = {
+    1: 'Start with the task that shows what you can do, and let the work speak.',
+    2: 'Notice which work feels worth your effort, and why.',
+    3: 'Messages and meetings matter — write, ask, and follow up while ideas are fresh.',
+    4: 'Work from a calm base: tidy your space or plan quietly before tackling the list.',
+    5: 'Bring some creativity to the job; a playful idea may loosen a dull problem.',
+    6: 'Systems and craft help — refine one process and clear a little of the backlog.',
+    7: 'Work can go better in partnership today; check in with a colleague before deciding alone.',
+    8: 'Look at shared projects and who carries what — a clear split of jobs eases pressure.',
+    9: 'Think a little bigger than this week’s inbox — learning or teaching could open a door.',
+    10: 'Visible work is in focus — finish one polished piece and let it stand on its own.',
+    11: 'Lean on your network; the right ally can shorten the path.',
+    12: 'Quiet, behind-the-scenes work suits today — protect a block of time from interruptions.',
+  };
+
+  var MARS_BY_HOUSE = {
+    1: 'gives you drive — use it to start things, but pause before you push others.',
+    2: 'puts effort behind what you value — pace yourself so it lasts.',
+    3: 'speeds up talk and errands — keep messages short and kind.',
+    4: 'can stir restlessness at home — channel it into a practical job.',
+    5: 'adds energy to creative work — have a go, and let it be imperfect.',
+    6: 'favours steady graft — one task done well beats five rushed.',
+    7: 'may sharpen exchanges with others — disagree calmly, and listen back.',
+    8: 'brings intensity to shared matters — slow down before reacting.',
+    9: 'stirs a wish to explore — plan the next step rather than the whole journey.',
+    10: 'pushes ambition — aim high, but keep your pace sustainable.',
+    11: 'energises group efforts — offer help where it is genuinely wanted.',
+    12: 'works best quietly — rest counts as part of the effort today.',
+  };
+
+  var PACE_LEAD_BY_PHASE = {
+    waxing: 'With the Moon waxing,',
+    waning: 'With the Moon waning,',
+    full: 'With the Moon full,',
+    new: 'Under a new Moon,',
+  };
+
+  var PACE_BY_MOON_HOUSE = {
+    1: 'move in a way that feels like you, and stop before you are spent.',
+    2: 'simple comforts such as good food and enough sleep are worth protecting.',
+    3: 'a short walk between messages can clear your head.',
+    4: 'an early night or a slow evening at home may restore you.',
+    5: 'try something active purely for the fun of it.',
+    6: 'small routines — water, stretching, regular meals — do quiet good.',
+    7: 'match your pace to the people around you without overstretching.',
+    8: 'let go of one thing that drains you, and rest more deeply.',
+    9: 'fresh air and a change of scene may lift your energy.',
+    10: 'build breaks into a busy day so the effort stays sustainable.',
+    11: 'easy time with friends can be as restoring as rest.',
+    12: 'quiet, unscheduled time helps you recharge.',
   };
 
   var USE_BY_HOUSE = {
@@ -152,6 +213,8 @@
     else if (p < 0.78) name = 'Last Quarter';
     else name = 'Waning Crescent';
     var waxing = p < 0.5;
+    // Sentence case like the rest of the site ("Waxing gibbous"); New/Full Moon keep the capital M.
+    if (!/Moon$/.test(name)) name = name.charAt(0) + name.slice(1).toLowerCase();
     return { phase: p, name: name, waxing: waxing, bucket: p < 0.06 || p > 0.94 ? 'new' : p > 0.47 && p < 0.53 ? 'full' : waxing ? 'waxing' : 'waning' };
   }
 
@@ -339,7 +402,7 @@
     overviewParts.push(
       'The Moon in ' + pos.moon.sign + ' moves through your solar ' + ordinal(moonHouse) +
       ' house today, emphasising ' + HOUSE_THEME[moonHouse] + '. ' +
-      'We are in a ' + phase.name + ' phase — ' +
+      'We are in a ' + (/Moon$/.test(phase.name) ? phase.name : phase.name.toLowerCase()) + ' phase — ' +
       (phase.waxing
         ? 'energy builds toward expression and outward momentum.'
         : 'the sky favours editing, completion, and quieter integration.')
@@ -357,25 +420,22 @@
       overviewParts.push('Your ruler ' + ruler + ' is in ' + sign + ' today, concentrating the sign\'s native themes — act in character, not against it.');
     }
 
-    var loveHouse = [5, 7, 8, 1, 4, 11].indexOf(moonHouse) >= 0 ? moonHouse
-      : (pos.venus ? solarHouse(pos.venus.signIdx, sunIdx) : 7);
-    var love = LOVE_BY_HOUSE[loveHouse] || LOVE_BY_HOUSE[7];
+    var love = PEOPLE_BY_MOON_HOUSE[moonHouse];
     if (pos.venus) {
+      var venusHouse = solarHouse(pos.venus.signIdx, sunIdx);
       love += ' Venus in ' + pos.venus.sign + (pos.venus.retrograde ? ' (retrograde)' : '') +
-        ' colours affection and aesthetics — lead with sincerity over spectacle.';
+        ' sits in your solar ' + ordinal(venusHouse) + ' house, ' + VENUS_BY_HOUSE[venusHouse];
     }
 
-    var careerHouse = [10, 6, 3, 2, 9, 11].indexOf(moonHouse) >= 0 ? moonHouse
-      : (pos.saturn ? solarHouse(pos.saturn.signIdx, sunIdx) : 10);
-    var career = CAREER_BY_HOUSE[careerHouse] || CAREER_BY_HOUSE[10];
+    var career = WORK_BY_MOON_HOUSE[moonHouse];
     if (pos.mars) {
+      var marsHouse = solarHouse(pos.mars.signIdx, sunIdx);
       career += ' Mars in ' + pos.mars.sign + (pos.mars.retrograde ? ' (retrograde)' : '') +
-        ' sets the pace of effort — direct drive wisely, not impatiently.';
+        ', in your solar ' + ordinal(marsHouse) + ' house, ' + MARS_BY_HOUSE[marsHouse];
     }
 
-    var health = HEALTH_BY_PHASE[phase.bucket] || HEALTH_BY_PHASE.waxing;
-    health += ' The Moon\'s passage through your ' + ordinal(moonHouse) +
-      ' house suggests tending ' + HOUSE_THEME[moonHouse] + ' supports body-mind balance.';
+    var health = (PACE_LEAD_BY_PHASE[phase.bucket] || PACE_LEAD_BY_PHASE.waxing) + ' ' +
+      PACE_BY_MOON_HOUSE[moonHouse];
 
     var weekly = buildWeekly(sign, sunIdx, day);
     var seed = localEpochDay(day) + sunIdx * 31;
@@ -403,7 +463,7 @@
       // Honesty: calendar date at 12:00 UT, solar chart, reflection not fact.
       // A solar house is a life area counted from the Sun sign, not a room.
       // Birth-chart door is chart.html — not transits.html.
-      methodNote: 'Positions calculated at 12:00 UT and read through a solar chart. A solar house is a life area counted from the Sun sign, not a room. Meaning is offered for reflection, not as fact. Planet positions from the VSOP87 model. For your full birth chart, see chart.html.',
+      methodNote: 'Read through a solar chart. Meaning is offered for reflection, not as fact. Planet positions come from published planetary models, calculated on this device. For your full birth chart, see chart.html.',
       transits: hits.slice(0, 3).map(function (h) {
         return {
           planet: h.planet,

@@ -341,6 +341,15 @@ for (const [label, kind, opts] of [
     r.draws.every((d) => !/J2000|LST|VSOP87/.test(d.text)),
     `${label}: no J2000 / LST / VSOP87 shorthand`,
   )
+  if (label.includes('feed down')) {
+    const badge = r.draws.map((d) => d.text).join(' ')
+    ok(
+      /Live space-weather feed unavailable, showing calculated values/.test(
+        badge.replace(/\s+/g, ' '),
+      ) && !/feed down|computed only/.test(badge),
+      `${label}: feed-down badge is plain words`,
+    )
+  }
   if (kind === 'zenith')
     ok(
       r.draws.some((d) => d.text.startsWith('Calculated from star positions')),
