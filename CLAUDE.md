@@ -166,15 +166,12 @@ attached to `window`, one stylesheet, hand-written HTML pages.
   Open-Meteo place-search query (typed place text only — never the birth moment).
 - **Time zones**: convert local→UT via `Intl.DateTimeFormat` two-iteration refinement
   (see `localToUT` in `chart-page.js`) — never hardcode offsets.
-- **Palette (COOL VOID + ENGRAVED BRASS — the live tokens, verified 2026-07-02)**:
-  token source of truth is `css/ap-palette-2026.css`; `css/main.css` `:root` maps all
-  legacy vars onto it. Voids `#0C1016` (deep/base) / `#121826` (mid) / `#1A2230` (raised);
-  brass core `#C2A05E`, bright `#CDAE6A`, vivid `#D8B978`, parchment `#ECE6D8`;
-  theme-color `#0C1016` on all indexed pages + manifest. Both earlier palettes are
-  RETIRED from the token system: the original COOL set (lapis `#2a4a94`, violet, cyan,
-  `#D4AF37`) and the 2026-06-14 WARM set (`#C9A227` on `#050406`). Caveat (verified
-  2026-07-02): warm hexes still survive as hardcoded canvas/WebGL/SVG paint colors
-  outside CSS — e.g. `chart-render.js`, `instrument.js`, `orrery-webgl.js`,
-  `tool-cards.js` — so grep before assuming a page is token-pure. Never hardcode hex
-  in new code — use the `--ap-*` tokens; see DESIGN.md.
+- **Palette (Paper & Night — the live tokens since 22 Oct 2026)**: see `DESIGN.md`. The
+  token source of truth is `website/css/ap-tokens.css` (paper `#F6F3EC`, card `#FBF9F4`,
+  ink `#0E1116`, one copper accent `#B4693E`, copper as text `#8A4A24`; Instrument Serif +
+  Inter). `css/ap-next.css` carries a synced copy (`tools/sync-brand-tokens.mjs`), and
+  legacy pages get the paper skin from `css/ap-paper-pages.css`. Dark appears only inside
+  `.ap-sky`. The dark void-and-brass palette (`css/ap-palette-2026.css`) is RETIRED; some
+  old hexes still survive as hardcoded canvas/WebGL/SVG paint colors, so grep before
+  assuming a page is token-pure. Never hardcode hex in new code — use the `--ap-*` tokens.
 - Service worker `sw.js` precaches the shell; bump cache version `V` when changing cached assets.

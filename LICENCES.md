@@ -116,7 +116,7 @@ the website. They are listed so the credits file that ships with every pack stay
 
 ## 4. Adobe Firefly / stock imagery
 
-Not used in the print pack and not used as live planet skins (`ART-LIST-2026-08-21.md` and
+Not used in the print pack and not used as live planet skins (`docs/archive/ART-LIST-2026-08-21.md` and
 `DESIGN.md` forbid Firefly or stock art for the planet maps). Some marketing plates were made in
 Adobe tools (`tools/adobe/`); their generative-content terms are **UNVERIFIED** here and would
 need checking before any such plate is sold or printed.
