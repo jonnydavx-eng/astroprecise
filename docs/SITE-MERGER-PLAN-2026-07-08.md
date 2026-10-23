@@ -127,7 +127,7 @@ Moment as sub-brand · 7th nav · AI fake charts · two golds · stale docs · d
 
 ## Related docs
 
-- `ART-DIRECTION-2026.md` — hard rules + engine art backlog  
+- `docs/archive/ART-DIRECTION-2026.md` — hard rules + engine art backlog  
 - `docs/MOMENT-ART-OVERHAUL-2026-07-08.md` — Moment section phases  
 - Shipped Moment art: `img/moment/*`, `img/shop/product-moment-*`, `img/og/moment.*`  
 

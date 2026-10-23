@@ -2,7 +2,11 @@
 //   - it names website/css/ap-tokens.css as the token source of truth;
 //   - every token it lists in the palette table has the same value as ap-tokens.css :root;
 //   - the dark-era palette and fonts appear only as retired;
-//   - the dark-era art docs live in docs/archive/ with an "Archived" banner, not at the repo root.
+//   - the dark-era art docs live in docs/archive/ with an "Archived" banner, not at the repo root;
+//   - step 11b: CLAUDE.md's palette note points to DESIGN.md and ap-tokens.css and no longer
+//     presents the void/brass codes as live, and the docs that name the archived art docs
+//     (AGENT-HANDOFF-ARCHIVE.md, LICENCES.md, docs/SITE-MERGER-PLAN-2026-07-08.md) use paths
+//     that resolve.
 // Static checks only; run: node test-design-doc.mjs
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -98,6 +102,55 @@ for (const f of ['ART-DIRECTION-2026.md', 'ART-LIST-2026-08-21.md']) {
       `docs/archive/${f} opens with the archive banner`,
       first,
     )
+  }
+}
+
+// 5. CLAUDE.md palette note (step 11b).
+const claude = readFileSync(join(root, 'CLAUDE.md'), 'utf8').split('\n')
+const start = claude.findIndex((l) => /^- \*\*Palette/.test(l))
+ok(start >= 0, 'CLAUDE.md has a palette note')
+let end = start + 1
+while (end < claude.length && /^\s{2}\S/.test(claude[end])) end++
+const note = claude.slice(start, end).join('\n')
+ok(/DESIGN\.md/.test(note), 'CLAUDE.md palette note points to DESIGN.md', note)
+ok(/Paper & Night/.test(note), 'CLAUDE.md palette note says Paper & Night', note)
+ok(
+  /website\/css\/ap-tokens\.css/.test(note),
+  'CLAUDE.md palette note names website/css/ap-tokens.css',
+)
+ok(
+  !/VOID|BRASS/.test(note),
+  'CLAUDE.md palette note does not call void/brass the live tokens',
+  note,
+)
+for (const old of ['#0C1016', '#121826', '#1A2230', '#C2A05E', '#CDAE6A', '#D8B978', '#ECE6D8']) {
+  const lines = claude.filter((l) => l.toUpperCase().includes(old))
+  ok(lines.length === 0, `CLAUDE.md no longer lists ${old} as a token`, lines)
+}
+ok(
+  !claude.some((l) => /ap-palette-2026\.css/.test(l) && /source of truth/i.test(l)),
+  'CLAUDE.md does not name ap-palette-2026.css as the token source of truth',
+)
+
+// 6. References to the archived art docs resolve (step 11b).
+for (const f of [
+  'AGENT-HANDOFF-ARCHIVE.md',
+  'LICENCES.md',
+  'docs/SITE-MERGER-PLAN-2026-07-08.md',
+]) {
+  const text = readFileSync(join(root, f), 'utf8')
+  const refs = [...text.matchAll(/([\w./-]*)(ART-DIRECTION-2026\.md|ART-LIST-2026-08-21\.md)/g)]
+  ok(refs.length > 0, `${f} names an archived art doc`)
+  for (const [ref] of refs) {
+    const resolves = existsSync(join(root, ref)) || existsSync(join(root, dirname(f), ref))
+    ok(resolves, `${f}: ${ref} resolves`)
+  }
+}
+for (const f of ['ART-DIRECTION-2026.md', 'ART-LIST-2026-08-21.md']) {
+  const a = join(root, 'docs/archive', f)
+  if (!existsSync(a)) continue
+  for (const [, href] of readFileSync(a, 'utf8').matchAll(/\]\(([^)]+)\)/g)) {
+    ok(existsSync(join(root, 'docs/archive', href)), `docs/archive/${f}: link ${href} resolves`)
   }
 }
 
