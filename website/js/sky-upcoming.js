@@ -9,9 +9,11 @@
  * from the engine's Sun and Moon (longitude, latitude, distance) at each
  * New/Full Moon with standard shadow geometry.
  *
- * Accuracy (see test-upcoming-sky.mjs): lunations within minutes of USNO,
- * seasons within minutes of USNO, eclipse dates/types match NASA (Espenak),
- * stations are flat turning points and are shown as approximate.
+ * Accuracy (see test-upcoming-sky.mjs): Moon phases and eclipses within a
+ * minute or two of USNO / NASA (Espenak), equinoxes, solstices and fast-planet
+ * sign changes within a couple of minutes of USNO / JPL Horizons. Stations
+ * (and slow outer-planet sign changes) are flat turning points: they are shown
+ * by day, as a two-day range when the uncertainty spans UK midnight.
  */
 ;(function () {
   'use strict'
@@ -341,11 +343,63 @@
     var name = z ? z.value : 'GMT'
     return /^GMT\+1$|^BST$/.test(name) ? 'BST' : 'GMT'
   }
-  /** "Sat 24 Oct, 08:13 BST" — or "Around Sat 24 Oct" for approximate timings. */
+  // How far an approximate (flat) turning point may sit from the engine's time,
+  // in hours, set from gaps measured against JPL Horizons for 2026–27
+  // (test-upcoming-sky.mjs). Measured: Mercury ≤ 4 min, Venus 18 min, Mars
+  // 10 min, Jupiter 9 min, Saturn 15 min, Uranus 43 min, Neptune 68 min. Pluto
+  // runs 14–17 h early: its Meeus Ch. 37 position is combined with the
+  // of-date Sun without precessing the Sun to J2000, which tilts its apparent
+  // speed. Until the engine is corrected Pluto gets ±20 h, so its stations show
+  // as a range of days. When a window spans UK midnight the page shows the days.
+  var APPROX_WINDOW_H = {
+    mercury: 0.5,
+    venus: 1,
+    mars: 1,
+    jupiter: 1,
+    saturn: 1,
+    uranus: 1.5,
+    neptune: 2,
+    pluto: 20,
+  }
+  function ukDayKey(date) {
+    return ukParts(date, { year: 'numeric', month: '2-digit', day: '2-digit' })
+  }
+  /**
+   * For an approximate event, the UK calendar days its uncertainty window
+   * covers: one day normally, two when the window spans UK midnight.
+   */
+  function ukDaySpan(ev) {
+    var t = +new Date(ev.tDate)
+    var w = (APPROX_WINDOW_H[ev.body] || 4) * 3600000
+    var a = new Date(t - w),
+      b = new Date(t + w)
+    return ukDayKey(a) === ukDayKey(b) ? [new Date(t)] : [a, b]
+  }
+  /**
+   * "Sat 24 Oct, 08:13 BST"; approximate timings read "Around Sat 24 Oct (UK)",
+   * or "Around 7–8 May (UK)" when the uncertainty spans UK midnight.
+   */
   function formatUK(ev) {
     var d = new Date(ev.tDate)
     var day = ukParts(d, { weekday: 'short', day: 'numeric', month: 'short' })
-    if (ev.approx) return 'Around ' + day + ' (UK)'
+    if (ev.approx) {
+      var span = ukDaySpan(ev)
+      if (span.length === 1)
+        return (
+          'Around ' +
+          ukParts(span[0], { weekday: 'short', day: 'numeric', month: 'short' }) +
+          ' (UK)'
+        )
+      var m0 = ukParts(span[0], { month: 'short' }),
+        m1 = ukParts(span[1], { month: 'short' })
+      var d0 = ukParts(span[0], { day: 'numeric' }),
+        d1 = ukParts(span[1], { day: 'numeric' })
+      return (
+        'Around ' +
+        (m0 === m1 ? d0 + '–' + d1 + ' ' + m1 : d0 + ' ' + m0 + '–' + d1 + ' ' + m1) +
+        ' (UK)'
+      )
+    }
     return (
       day +
       ', ' +
@@ -365,7 +419,9 @@
       // Slow turning points are dated to the day, so the countdown is rounded too.
       var hrs = Math.round(ms / 3600000),
         days = Math.round(ms / DAY_MS)
-      if (hrs < 36) return 'about ' + Math.max(1, hrs) + ' hour' + (hrs === 1 ? '' : 's')
+      // Clamp first, then choose the noun, so under 30 min reads "about 1 hour".
+      var h1 = Math.max(1, hrs)
+      if (hrs < 36) return 'about ' + h1 + ' hour' + (h1 === 1 ? '' : 's')
       return 'about ' + days + ' days'
     }
     var mins = Math.floor(ms / 60000),
@@ -385,6 +441,8 @@
     nextEclipse: nextEclipse,
     classifyEclipse: classifyEclipse,
     formatUK: formatUK,
+    ukDaySpan: ukDaySpan,
+    APPROX_WINDOW_H: APPROX_WINDOW_H,
     monthKeyUK: monthKeyUK,
     ukZone: ukZone,
     countdown: countdown,
