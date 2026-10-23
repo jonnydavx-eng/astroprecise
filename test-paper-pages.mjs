@@ -3,7 +3,8 @@
  * Fails if any shipped website/*.html page uses the legacy #040812 void, unless it is
  * on the explicit allowlist below with a reason. Allowlisted pages must still need the
  * entry (a stale entry fails), so the list only shrinks.
- * Moved pages must stay on the paper tokens.
+ * Moved pages must stay on the paper tokens. Step 10f moved the 13 legacy page stacks
+ * (LEGACY); journey and cosmic-calendar stay out because their starfield is the page.
  */
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
@@ -21,22 +22,11 @@ const ALLOW = {
   'profile.html': 'large app page (~82 KB) with its own dark stack; needs a dedicated rewrite',
   'sample-reading.html':
     'print / PDF reading template with SVG night gradient; moves with the PDF pipeline',
-  'journey.html': 'full-page starfield warp canvas is the content; needs a design call on .ap-sky',
+  // Step 10f kept these two out of the legacy sweep: the night starfield is the page itself.
+  'journey.html':
+    'full-page starfield warp canvas is the content; kept out of step 10f, needs a design call on .ap-sky',
   'cosmic-calendar.html':
-    'full-page starfield canvas is the content; needs a design call on .ap-sky',
-  'moment.html': 'legacy page CSS stack (canvas already on paper); step-5 style rewrite pending',
-  'accuracy.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'angel-numbers.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'lifepath.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'name-numerology.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'numerology.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'quiz.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'saturn-return.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'solar-return.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'cosmic-story.html': 'legacy dark page stack; step-5 style rewrite pending',
-  'eclipse.html': 'legacy dark page stack (archived edition page); step-5 style rewrite pending',
-  'ephemeris.html': 'legacy dark page stack (data tables); step-5 style rewrite pending',
-  'outreach.html': 'legacy dark page stack; step-5 style rewrite pending',
+    'full-page starfield canvas is the content; kept out of step 10f, needs a design call on .ap-sky',
 }
 
 /** Moved in step 10b. Shell pages sit on body.ap-next; stubs are light redirect stubs. */
@@ -65,6 +55,23 @@ const LEGACY_DARK_CSS = [
   'ap-verify-v835',
   'ap-cinematic-2026',
   'ap-page-boot.js',
+]
+
+/** Moved in step 10f: legacy page stacks re-skinned by css/ap-paper-pages.css. */
+const LEGACY = [
+  'accuracy.html',
+  'angel-numbers.html',
+  'numerology.html',
+  'lifepath.html',
+  'name-numerology.html',
+  'quiz.html',
+  'saturn-return.html',
+  'solar-return.html',
+  'cosmic-story.html',
+  'eclipse.html',
+  'ephemeris.html',
+  'outreach.html',
+  'moment.html',
 ]
 
 function htmlFiles(dir, rel = '') {
@@ -117,6 +124,16 @@ for (const f of SHELL) {
     !/class="skip-link"/.test(src),
     `${f}: uses the ap-skip link (legacy skip-link is unstyled on paper)`,
   )
+}
+for (const f of LEGACY) {
+  const src = readFileSync(join(site, f), 'utf8')
+  check(!ALLOW[f], `${f}: moved in step 10f, so not allowlisted`)
+  check(/<html[^>]*\bclass="[^"]*\bap-paper-legacy\b/.test(src), `${f}: html.ap-paper-legacy`)
+  check(/<meta name="theme-color" content="#F6F3EC"/i.test(src), `${f}: theme-color #F6F3EC`)
+  check(/<meta name="color-scheme" content="light">/.test(src), `${f}: color-scheme light`)
+  check(/html\{background:#F6F3EC/i.test(src), `${f}: paper ground before CSS loads`)
+  check(/href="css\/ap-paper-pages\.css\?v=\d+"/.test(src), `${f}: links ap-paper-pages.css`)
+  check(!/color-scheme" content="dark/.test(src), `${f}: no dark color-scheme`)
 }
 for (const f of STUBS) {
   const src = readFileSync(join(site, f), 'utf8')

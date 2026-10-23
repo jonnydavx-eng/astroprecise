@@ -386,3 +386,192 @@ body.ap-next.page-verify {
     transition: none;
   }
 }
+
+/* ---- step 10f: the legacy tool and guide pages on Paper & Night ----
+   accuracy, angel-numbers, lifepath, name-numerology, numerology, quiz, saturn-return,
+   solar-return, cosmic-story, eclipse, ephemeris, outreach and moment keep their own layout
+   CSS, but <html class="ap-paper-legacy"> puts every surface on paper/ink/copper in AP Serif
+   (headings) and AP Sans (everything else). Night is kept only where the sky itself is drawn:
+   canvases and anything marked .ap-sky. The shared header, tabs and footer are already paper
+   and are left alone. Loaded after ap-next.css. */
+html.ap-paper-legacy {
+  --pl-paper: var(--ap-next-paper, #f6f3ec);
+  --pl-card: var(--ap-next-card, #fbf9f4);
+  --pl-sage: var(--ap-next-sage, #ede8dd);
+  --pl-ink: var(--ap-next-ink, #0e1116);
+  --pl-graphite: var(--ap-next-graphite, #3a3f47);
+  --pl-muted: var(--ap-next-muted, #5c6168);
+  --pl-line: var(--ap-next-line, #d6d1c6);
+  --pl-copper: var(--ap-next-accent, #b4693e);
+  --pl-copper-ink: var(--ap-next-copper-ink, #8a4a24);
+  --pl-night: var(--ap-next-night, #0e1116);
+  --pl-starlight: var(--ap-next-starlight, #f1e7cf);
+  --pl-serif: 'AP Serif', 'Instrument Serif', Georgia, serif;
+  /* AstroGlyph only steps in for the astrological symbols Inter does not have. */
+  --pl-sans: 'AP Sans', AstroGlyph, Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--pl-paper) !important;
+  color: var(--pl-ink);
+  color-scheme: light;
+}
+html.ap-paper-legacy:not(#_):not(#__) body {
+  background: var(--pl-paper) !important;
+  background-image: none !important;
+  color: var(--pl-ink) !important;
+  font-family: var(--pl-sans) !important;
+}
+/* Starfields and glow layers were the old dark page itself. */
+html.ap-paper-legacy:not(#_):not(#__) :is(#starfield-canvas, .starfield-canvas, #lp-mandala-canvas, .ap-living-sky-bg, .cosmic-bg, .nebula, .ap-starfield, .stars-layer, .aurora, .ap-aurora, .aurora-orb) {
+  display: none !important;
+}
+html.ap-paper-legacy body::before,
+html.ap-paper-legacy body::after,
+html.ap-paper-legacy main::before,
+html.ap-paper-legacy main::after {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Every content surface: paper ground, ink text, hairline rules, the two families. */
+html.ap-paper-legacy:not(#_) body
+  :not(:is(.ap-next-header, .ap-next-tabs, .ap-next-footer, .ap-sky, svg) *):not(
+    .ap-next-header,
+    .ap-next-tabs,
+    .ap-next-footer,
+    .ap-sky,
+    svg,
+    canvas,
+    img,
+    video,
+    picture,
+    iframe,
+    script,
+    style
+  ) {
+  background-color: transparent !important;
+  background-image: none !important;
+  color: var(--pl-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+  border-color: var(--pl-line) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  font-family: var(--pl-sans) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) body :not(:is(.ap-next-header, .ap-next-tabs, .ap-next-footer, .ap-sky) *):is(h1, h2, h3, h4, blockquote) {
+  font-family: var(--pl-serif) !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) body :not(:is(.ap-next-header, .ap-next-tabs, .ap-next-footer, .ap-sky) *):is(h1, h2, h3, h4) :is(em, i, span) {
+  font-family: inherit !important;
+}
+/* Eyebrows and small labels: copper ink. Secondary copy: muted. */
+html.ap-paper-legacy:not(#_):not(#__) main :is([class*='eyebrow'], [class*='kicker'], [class*='overline'], [class*='tag-line'], [class*='section-label']) {
+  color: var(--pl-copper-ink) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(small, figcaption, .muted, [class*='hint'], [class*='caption'], [class*='disclaimer'], [class*='footnote'], [class*='-note'], [class*='subtitle'], [class*='-sub']) {
+  color: var(--pl-muted) !important;
+}
+/* Links in copy. */
+html.ap-paper-legacy:not(#_):not(#__) main a:not([class*='btn']):not([class*='button']):not([class*='cta']) {
+  color: var(--pl-copper-ink) !important;
+  text-decoration-color: currentColor;
+}
+/* Cards and panels: the card tone on a hairline. */
+html.ap-paper-legacy:not(#_):not(#__) main :is(div, section, article, aside, form, fieldset, li, details, label):is([class*='card'], [class*='panel'], [class*='tile'], [class*='-box'], [class*='result'], [class*='glass'], [class*='module']):not([class*='card-'], [class*='panel-'], [class*='tile-'], [class*='result-'], [class*='__']) {
+  background-color: var(--pl-card) !important;
+  border: 1px solid var(--pl-line) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(table) {
+  background-color: var(--pl-card) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(th) {
+  background-color: var(--pl-sage) !important;
+}
+/* Fields. */
+html.ap-paper-legacy:not(#_):not(#__) main :is(input:not([type='checkbox'], [type='radio'], [type='range'], [type='submit'], [type='button']), select, textarea) {
+  background-color: var(--pl-card) !important;
+  color: var(--pl-ink) !important;
+  border: 1px solid var(--pl-line) !important;
+  border-radius: 4px !important;
+  color-scheme: light;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(input, select, textarea):focus-visible {
+  outline: 3px solid var(--pl-copper) !important;
+  outline-offset: 2px;
+}
+html.ap-paper-legacy:not(#_):not(#__) main ::placeholder {
+  color: var(--pl-muted) !important;
+  -webkit-text-fill-color: var(--pl-muted) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(input[type='checkbox'], input[type='radio'], input[type='range']) {
+  accent-color: var(--pl-ink);
+}
+/* Buttons: quiet by default (hairline), solid ink for the main action and the chosen option. */
+html.ap-paper-legacy:not(#_):not(#__) main :is(button, [role='button'], input[type='submit'], input[type='button'], a[class*='btn'], a[class*='button'], a[class*='cta']) {
+  background-color: transparent !important;
+  color: var(--pl-ink) !important;
+  border: 1px solid var(--pl-ink) !important;
+  border-radius: 4px !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(button, [role='button'], input[type='submit'], a):is([type='submit'], [class*='primary'], [class*='cta'], [class*='submit'], [class*='btn-main'], [aria-pressed='true'], [aria-selected='true'], [aria-current='true'], .active, .is-active, .selected, .is-selected) {
+  background-color: var(--pl-ink) !important;
+  color: var(--pl-paper) !important;
+  border-color: var(--pl-ink) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(button, [role='button'], input[type='submit'], a):is([type='submit'], [class*='primary'], [class*='cta'], [class*='submit'], [class*='btn-main'], [aria-pressed='true'], [aria-selected='true'], [aria-current='true'], .active, .is-active, .selected, .is-selected) * {
+  color: var(--pl-paper) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(button, [role='button'], input[type='submit'], input[type='button'], a[class*='btn'], a[class*='button'], a[class*='cta']):hover {
+  background-color: var(--pl-sage) !important;
+  color: var(--pl-ink) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :is(button, [role='button'], a):focus-visible {
+  outline: 3px solid var(--pl-copper) !important;
+  outline-offset: 3px;
+}
+/* Night stays where the sky is drawn: canvases sit on a night plate. */
+html.ap-paper-legacy:not(#_):not(#__) main canvas {
+  background-color: var(--pl-night);
+  border-radius: 4px;
+}
+html.ap-paper-legacy:not(#_):not(#__) .ap-sky {
+  background: var(--pl-night) !important;
+  color: var(--pl-starlight) !important;
+  border-radius: 6px;
+}
+html.ap-paper-legacy:not(#_):not(#__) main hr {
+  border: 0 !important;
+  border-top: 1px solid var(--pl-line) !important;
+}
+/* Night glows, rims and hero vignettes were drawn on pseudo-elements and filters. On paper
+   they read as grey smudges (the Saturn return hero darkened its own heading), so they go.
+   Shapes and colours on pseudo-elements stay; only gradients, shadows and filters are cleared. */
+html.ap-paper-legacy:not(#_):not(#__) body :not(:is(.ap-next-header, .ap-next-tabs, .ap-next-footer, .ap-sky, svg) *):not(.ap-sky, svg, canvas, img, video, picture)::before,
+html.ap-paper-legacy:not(#_):not(#__) body :not(:is(.ap-next-header, .ap-next-tabs, .ap-next-footer, .ap-sky, svg) *):not(.ap-sky, svg, canvas, img, video, picture)::after {
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) main :not(:is(.ap-sky, svg) *):not(.ap-sky, svg, canvas, img, video, picture, :has(img, canvas, video, picture)) {
+  filter: none !important;
+}
+/* The shared footer: legacy page CSS paints it night and adds pale legal and social links. */
+html.ap-paper-legacy:not(#_):not(#__) footer.ap-next-footer {
+  background: var(--pl-sage) !important;
+  color: var(--pl-ink) !important;
+  border-top: 1px solid var(--pl-line) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) footer.ap-next-footer :is(.ap-legal-links, .ap-social-row, .ap-footer-sep, .ap-social-row__when-live) {
+  color: var(--pl-muted) !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) footer.ap-next-footer :is(.ap-legal-links, .ap-social-row) a {
+  color: var(--pl-ink) !important;
+}
+/* Small star marks are drawn as a clipped fill of currentColor; keep the fill on paper. */
+html.ap-paper-legacy:not(#_):not(#__) .eng-star-mark {
+  color: var(--pl-copper-ink) !important;
+  background: currentColor !important;
+}
