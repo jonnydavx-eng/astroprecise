@@ -150,7 +150,7 @@ try {
     }
   }
 
-  // 2. Text size: nothing under 12px on the homepage, sky events and the footer.
+  // 2. Text size: nothing under 12px on the homepage, sky events, Saturn return, Moment and the footer.
   for (const width of [360, 390]) {
     for (const file of [
       'index.html',
@@ -158,11 +158,13 @@ try {
       'horoscope.html',
       'observatory.html',
       'saturn-return.html',
+      'moment.html',
     ]) {
       const { ctx, page } = await openPage(file, { width })
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
       await page.waitForTimeout(400)
-      if (file === 'index.html' || file === 'sky-events.html') {
+      // Step 10f added Saturn return and Moment to the whole-page check.
+      if (['index.html', 'sky-events.html', 'saturn-return.html', 'moment.html'].includes(file)) {
         const r = await page.evaluate(SMALL_TEXT, null)
         ok(
           r.total > 20 && r.small.length === 0,
@@ -186,6 +188,44 @@ try {
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       )
       ok(over <= 0, `${file} ${width}px: no horizontal overflow`, over)
+      await ctx.close()
+    }
+  }
+
+  // 2b. Step 10f: Saturn return and Moment stay at 12px or larger once a result is shown.
+  for (const width of [360, 390]) {
+    {
+      const { ctx, page } = await openPage('saturn-return.html', { width })
+      await page.fill('#sat-date', '1990-03-14')
+      await page.click('#sat-submit')
+      await page.waitForTimeout(2000)
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+      await page.waitForTimeout(300)
+      const r = await page.evaluate(SMALL_TEXT, null)
+      const shown = await page.evaluate(() => !!document.querySelector('.sat-card__n'))
+      ok(
+        shown && r.small.length === 0,
+        `saturn-return.html ${width}px (result shown): no text under 12px (${r.total} text nodes)`,
+        r.small,
+      )
+      await ctx.close()
+    }
+    {
+      const { ctx, page } = await openPage('moment.html', { width })
+      await page.fill('#mom-date', '1990-03-14')
+      await page.fill('#mom-place', 'London')
+      await page.waitForTimeout(1200)
+      const opt = await page.$('#mom-place-list [role=option], #mom-place-list li')
+      if (opt) await opt.click()
+      await page.click('#mom-freeze')
+      await page.waitForTimeout(2500)
+      const r = await page.evaluate(SMALL_TEXT, null)
+      const shown = await page.evaluate(() => !!document.querySelector('.mom-fact__k'))
+      ok(
+        !!opt && shown && r.small.length === 0,
+        `moment.html ${width}px (moment frozen): no text under 12px (${r.total} text nodes)`,
+        r.small,
+      )
       await ctx.close()
     }
   }
