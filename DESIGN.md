@@ -1,60 +1,101 @@
-# Astro Precise — Design System Reference
+# AstroPrecise — Design System Reference (Paper & Night)
 
-*Created 2026-07-02 (Claude) so agents stop rediscovering the palette by grep. The CSS is the source of truth; this documents where that truth lives and the rules around it.*
+_Rewritten 23 Oct 2026 (2C step 11) from the Paper & Night brand guide (`guide/brand-guide.html` in the brand pack, Direction A, 22 Oct 2026). The dark "Observatory Palette 2026" this file used to describe is retired. The CSS is the source of truth; this file says where that truth lives and the rules around it. The dark-era art docs are archived in `docs/archive/` (`ART-DIRECTION-2026.md`, `ART-LIST-2026-08-21.md`)._
+
+**In one line:** your sky, to the minute. Light paper, ink and one copper accent. Dark only inside the sky.
 
 ## Token source of truth
 
-**`website/css/ap-palette-2026.css`** is the canonical color layer ("Observatory Palette 2026" — the COOL Ephemeris rebrand, ap-v504–v508). It is imported first by `main-lite.css`; `main.css` `:root` re-declares the same values for the classic path. **Edit tokens there, never hardcode hexes in page CSS.** Legacy names (`--gold`, `--void`, `--silver`, `--lapis`, `--amethyst`…) are aliases into the new tokens — they exist for old selectors, don't add new usages.
+- **`website/css/ap-tokens.css`** is the canonical token file (palette, type, space, shape, the `.ap-sky` night context). Edit tokens there, never hardcode hexes in page CSS.
+- **`website/css/ap-next.css`** is the shell (header, tabs, footer, buttons). It carries a copy of the token layer between the `AP-TOKENS` markers, written by `node tools/sync-brand-tokens.mjs` (`--check` fails when it is stale). The copy saves a render-blocking request; do not hand-edit it.
+- Legacy names (`--ap-next-*`) are aliases into the tokens so older selectors keep working. Do not add new uses.
+- Pages still on a legacy layout stack get the paper skin from `website/css/ap-paper-pages.css`: `<html class="ap-paper-legacy">` puts every surface on paper, ink and copper, with `--pl-*` names that read the same tokens.
+- Target page head: `ap-next.css` (tokens + shell), then **at most one** page file (`sign-next.css`, `guide-next.css`, `observatory-next.css`, …).
 
-## Palette (lunar night + instrument silver + copper)
+## Palette (one palette, one accent)
 
-Locked in `website/css/ap-palette-2026.css`. `--ap-brass*` names are **aliases for instrument silver**, not yellow metal.
+| Role                          | Token                         | Value                 | Notes                                                                         |
+| ----------------------------- | ----------------------------- | --------------------- | ----------------------------------------------------------------------------- |
+| Page                          | `--ap-paper`                  | `#F6F3EC`             | also the `theme-color` value                                                  |
+| Bands, wells                  | `--ap-paper-2`                | `#EDE8DD`             |                                                                               |
+| Cards, sheets                 | `--ap-card`                   | `#FBF9F4`             |                                                                               |
+| Hairlines, borders            | `--ap-rule`                   | `#D6D1C6`             |                                                                               |
+| Disabled, placeholders        | `--ap-fog`                    | `#D9D6CE`             |                                                                               |
+| Headings, body                | `--ap-ink`                    | `#0E1116`             | 17.1:1 on paper                                                               |
+| Secondary text                | `--ap-graphite`               | `#3A3F47`             | 9.6:1                                                                         |
+| Captions, meta                | `--ap-muted`                  | `#5C6168`             | 5.6:1                                                                         |
+| The accent                    | `--ap-copper`                 | `#B4693E`             | 3.8:1: marks, ticks, rules, focus ring, numerals 24px and up. Never body text |
+| Copper as text                | `--ap-copper-ink`             | `#8A4A24`             | 6.1:1: eyebrows, links                                                        |
+| Night (inside `.ap-sky` only) | `--ap-night` / `--ap-night-2` | `#0E1116` / `#181C24` |                                                                               |
+| Type on night                 | `--ap-starlight`              | `#F1E7CF`             | links on night use `#E2A27A`                                                  |
+| Checked states                | `--ap-proof`                  | `#3D6B55`             |                                                                               |
+| Errors                        | `--ap-alert`                  | `#A64526`             |                                                                               |
 
-| Role | Token | Value |
-|---|---|---|
-| Page canvas | `--ap-void` / `--ap-void-deep` | `#05080F` |
-| Section bands | `--ap-void-mid` | `#0C1422` |
-| Raised plates | `--ap-void-raised` | `#141E2E` |
-| Instrument silver | `--ap-silver` / `--ap-brass` | `#8FA3B8` |
-| Bright metal | `--ap-brass-bright` / `--ap-silver-bright` | `#C5D4E0` |
-| Paper | `--ap-paper` | `#E6ECF2` |
-| Copper action | `--ap-ember` | `#B86B4A` |
-| Proof teal | `--ap-proof` | `#7EB8A8` |
-| Element accents (semantic — do NOT flatten) | `--ap-element-fire/earth/air/water` | keep distinct; fire may sit near copper |
+- Copper appears once per view: one star, one tick, one eyebrow or one highlighted body.
+- Element accents (fire, earth, air, water) stay semantic and distinct; do not flatten them to copper. Any element colour used as a mark on paper must reach 3:1 against paper, card and the hover ground (the quiz dots are tested for this).
+- **Night** is used only inside `.ap-sky`: the Observatory canvas and the sky disc on a plate. Pages still allowed a dark stack are listed, with a reason each, in `test-paper-pages.mjs` (`ALLOW`), and that list only shrinks.
+- **Retired, never reintroduce:** the `#040812` void and the dark Observatory Palette 2026 (`ap-palette-2026.css`: `#05080F` voids, instrument silver `#8FA3B8`, `#B86B4A` ember), the old gold `#d8a461` accent and every earlier brass, warm gold and acid orange set. `test-paper-pages.mjs` fails on `#040812` outside the allowlist.
 
-**Retired — never reintroduce:** engraved brass `#C2A05E`/`#CDAE6A`/`#D8B978`, warm gold `#C9A227`/`#D4AF37`, acid orange `#ff5a1f`, warm voids `#050406`/`#0D0A07`. `theme-color` is `#05080F`. Adobe share plates are type-on-engine-stills only — never Firefly planets as the live sky.
+## Typography (two families, both SIL OFL 1.1)
 
-## Typography
+- **Instrument Serif** (`--ap-serif`, face name `AP Serif`): display and headings only, 28px and up. Regular and Italic. By Rodrigo Fuenzalida & Jordan Egstad. Self-hosted: `fonts/instrument-serif-regular.woff2`, `instrument-serif-italic.woff2`.
+- **Inter** (`--ap-sans`, face name `AP Sans`): body, interface, eyebrows and every number. By Rasmus Andersson. Self-hosted as one variable file (`fonts/inter-normal-400.woff2`).
+- Degrees and numbers use Inter tabular figures (`.ap-num`, `.ap-deg`, `--ap-num-features`), because Instrument Serif has no prime (′).
+- Scale: `--ap-step--1` 14px (the floor), `--ap-step-0` 17px body, up to `--ap-step-4` serif display. Eyebrows: 600 weight, `0.18em` tracking, upper case, copper ink.
+- **No text under 14px** on the new pages. Pages on the legacy paper skin have a 12px floor for text their scripts write later, until they move to the shell.
+- Cormorant Garamond, Cinzel, Schibsted Grotesk and IBM Plex Mono are retired. Their files go in the step 12 deletes once nothing references them.
 
-- **Display/headings:** Cormorant Garamond (sitewide since ap-v500).
-- **Labels/eyebrows/small caps:** Cinzel, letter-spaced uppercase.
-- Fonts self-hosted via `css/fonts.css` (async preload pattern); LCP-critical subsets in `chart-hero-lcp-fonts.css`.
+## Space and shape
 
-## Iconography
+- Spacing steps `--ap-s1`…`--ap-s9` (4, 8, 12, 16, 24, 32, 48, 72, 112px); reading measure `--ap-measure` 64ch.
+- Print-like corners: `--ap-radius` 2px; pills only for chips.
+- Hairlines (`--ap-hairline`, 1px `--ap-rule`) rather than glows. The one shadow, `--ap-shadow-print`, is for framed plates only.
+- Focus ring: `--ap-focus` (paper gap, copper ring).
+- Components in the token layer: `.ap-eyebrow`, `.ap-btn` / `.ap-btn--quiet`, `.ap-card`, `.ap-specimen`, `.ap-glyph`, `.ap-num`.
 
-Bespoke engraved-SVG system, NOT a stock icon library: `js/celestial-seals.js` + `js/icons.js` + `css/celestial-seals.css`, generated by `website/tools/generate-celestial-seals.mjs`. Planet/zodiac symbols should be seals, not raw Unicode glyphs, wherever they are UI (a few legacy glyph spots remain — see AUDIT-2026-07-02.md). The logomark is the star-in-degree-ring SVG in each masthead.
+## Logo
 
-## Depth & motion conventions
+A half-lit disc, a copper star and sixty minute ticks; the wordmark is outlined Instrument Serif. Keep clear space of one mark-radius on all sides. Minimum size is 20px for the mark and 96px for the lockup. Drop the tick ring below 32px (favicon). Use the dark lockup only on night. Icons are drawn by `tools/make-brand-icons.mjs`.
 
-- Depth-by-light, not depth-by-outline: translucent plates over one continuous sky, faint rim highlights (`--ap-rim-shadow`, `--hairline`), soft shadows.
-- Micro-interactions live in `ap-micro-2026.css` / `ap-motion.css`; scroll reveals via `.ap-reveal` (audits reveal them before scanning). Respect `prefers-reduced-motion` everywhere (established pattern in orrery/cosmic-flight).
-- CLS budget ≤0.05 per page — heroes reserve space; glow effects are text-shadow/CLS-safe.
+## Graphic language
+
+- **Line:** glyphs sit on a 24-unit grid with a 1.5 stroke and round caps (1.8 at 16px and below), as `.ap-glyph` (`--ap-line`). Orbits are 1px hairlines; dotted orbit rings use a `1 5` dash (`--ap-orbit-dash`).
+- **Stars and orbits:** the four-point copper star marks the one thing that matters. The 60-tick minute ring is the "to the minute" proof. Positions are always computed by the engine, never drawn by eye.
+- **Glyphs:** every glyph is drawn SVG. No unicode glyphs or emoji as artwork.
+- **Imagery:** planet discs are engine stills from the licensed NASA/USGS-based maps. Never replace the live planet maps (`website/assets/textures/`, `website/img/orrery/`) with Firefly, Adobe Stock or other generated art. No AI zodiac art and no lettering inside AI images. Paper grain is procedural or comes from a credited texture.
+- **Sign tiles:** `img/signs/*.webp` (they replace `assets/images/zodiac-cards`).
+- **Samples:** a small SPECIMEN corner mark (`.ap-specimen`), never a diagonal watermark. The sample person is fictional (Imogen Hale, 14 March 1990, 06:30 GMT, London); never a founder name, real birth data or a real person's chart.
+- **Share cards:** light Paper & Night cards, one per public page, from `tools/make-og-cards.py` into `website/img/og/` (1200×630; `test-og-cards.mjs`).
+
+## Voice
+
+Faceless, calm, checkable. Plain UK English: "your sky", "to the minute", "calculated".
+
+- Describe the sky, then what tradition says. Leave meaning to the reader.
+- Say where numbers come from: "from our own engine, to about an arcminute".
+- Weekly and monthly sky pages; real events with times in UK time.
+- Never: promises of luck, health, love or money; daily sun-sign predictions.
+
+## Do not
+
+- Dark pages outside the Observatory, star fields behind body text, or text under 14px.
+- A third typeface, a second accent, gradients or glows.
+- Hardcoded hexes in new code: use the `--ap-*` tokens.
+
+## Motion
+
+- Respect `prefers-reduced-motion` everywhere (the token layer turns off animations and transitions under it).
+- CLS budget ≤ 0.05 per page. Heroes reserve their space.
 
 ## Hard rules
 
-1. **Honesty rule:** no fabricated data, no unlabelled sources, no unqualified accuracy claims ("roughly an arcminute, 1800–2200 CE" is the approved phrasing).
-2. Same inputs → same reading (FNV-1a/mulberry32 seeding).
-3. Everything computes in-browser; only labelled public feeds go over the network.
-4. Bump `sw.js` `V` (`ap-vNNN`) whenever cached assets change.
-5. Nav/footer are injected single-source (`app.js` `renderNav()`, `ap-footer-inject.js`) — never hand-edit per-page nav.
-6. Before any deploy: `npm test` + the `tools/visual-check/` suite (expert-audit, user-journey, audit-a11y, homepage-contract) must be green.
+1. **Honesty:** no fabricated data, no unlabelled sources, no unqualified accuracy claims ("to about an arcminute" is the approved phrasing).
+2. Same inputs give the same reading.
+3. Everything computes in the browser; only labelled public feeds go over the network.
+4. When cached assets change, bump the asset pin (`?v=NNN`, `AP_ASSET_V`) and the `sw.js` cache (`ap-vNNN`) with `website/tools/generate-sw-precache.mjs` (`--check` and `test-sw-precache` catch a stale list).
+5. Nav and footer are injected from one source (`data-ap-next-nav`, `data-ap-next-footer`). Never hand-edit nav per page.
+6. Before any deploy: `npm test` must be green; run the `tools/visual-check/` scripts that cover the pages you changed.
 
+## Checks that guard this file
 
-## Homepage hero & tile system (ap-v570–v574, 2026-07-03 redesign)
-
-- **Hero:** the orrery is the homepage. `#heroChapter` is a full-viewport flex stage (`min-height clamp(620px, 100svh - 200px, 950px)`, border-box, bottom 96px reserved for the HUD). `.hero-solar-stage` is an absolute full-bleed backdrop (z1) with the readability scrim as its `::after` (z2); the copy `.page-wrap` sits at z2 on the section (above the stage subtree); the HUD deck `#orrery-lite-deck` is a stage child at z3, pinned bottom. CSS layers `v570*` at the end of `ap-horizon-2026.css`. Mobile (≤1023px): flow order eyebrow → H1 → standfirst → model+HUD → form → trust via `display:contents` + `order`.
-- **Hero operation:** wheel-zoom needs ctrl/cmd (or pinch) so the page always scrolls — hero-scoped in both engines; `touch-action: pan-y`; no scroll-triggered WebGL load (IO + pointer + 8s idle only); the engraved-wheel fallback cross-fades only after `lite-poster-ready` (force-hidden on `ap-orrery-ready`); the 2D fallback engine (orrery3d) caps at 640/760/960 by RafCore tier.
-- **Masthead is critical-path:** the logomark SVG carries `width="46" height="46"` attributes and the masthead structural rules are duplicated in the inline critical `<style>` in index.html (ephemeris.css lazy-loads — never rely on it above the fold). Keep both in sync with ephemeris.css.
-- **Tile system (v571 layer):** one recipe — radius 16px, surface `--night-raised`, border `rgba(194,160,94,.22)` → hover `.45` + `translateY(-2px)` + `0 14px 36px rgba(0,0,0,.4)`. Card innards: Cinzel eyebrow 0.72rem/0.16em → 1.25rem/600 title → 0.9rem dek. `.ap-chapter-title` = `clamp(2rem, 3.4vw, 2.75rem)`; major chapters `padding-block: 5.5rem` (4.5rem <768px).
-- **Guides:** homepage `#skyGuidesWrap` runs `data-sg-mode="teaser"` (hero + 3 cards + browse-all); the full catalogue + sticky filter live on `guides.html` (`body.sg-library`). Contract: teaser ≥3 on home, ≥8 on guides.html.
-- **Rail padding:** content `.page-wrap`s reserve `max(108px, gutter + --ap-rail-w)` for the float nav at ≥761px; `#apMasthead .page-wrap` is exempt (nav never overlaps the header).
+`test-brand-tokens.mjs` (tokens, fonts, shell palette, logo), `test-brand-computed.mjs` (computed styles in a browser), `test-paper-pages.mjs` (no retired `#040812` outside the allowlist, 14px floor in the paper sheet), `test-paper-legacy-browser.mjs` and `test-paper-legacy-update-browser.mjs` (legacy pages on the paper skin), `test-og-cards.mjs`, and `test-design-doc.mjs` (this file matches `ap-tokens.css`).

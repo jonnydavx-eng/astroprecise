@@ -1,3 +1,5 @@
+> **Archived 23 Oct 2026 (2C step 11).** This doc describes the retired dark era (void, silver and brass). It is kept for history only and is not current guidance. The current design rules are in [`DESIGN.md`](../../DESIGN.md) (Paper & Night).
+
 # Art Direction 2026 — "Base the site around the orbit"
 
 *Specialist-panel plan, 2026-07-03 (Claude session: photoreal-engine integration). The hero now rests on the photoreal Earth (orrery-webgl, import map restored). This doc holds the APPROVED remaining roadmap so any agent can pick items up. Tokens/rules: DESIGN.md governs; hard rules at the bottom are binding.*
