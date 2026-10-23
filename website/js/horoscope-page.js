@@ -204,14 +204,18 @@
     const methodEl = document.getElementById('srp-method-note');
     if (!methodEl) return;
     methodEl.textContent = '';
+    // The note ends by pointing to the birth chart; that phrase becomes a real link.
     const note = String(methodNote || '')
       .replace(/\s*For your full birth chart, see (?:chart\.html|transits\.html|mysky\.html|ephemeris\.html)\.?\s*$/i, '')
+      .replace(/\s*For more, see your full birth chart\.?\s*$/i, '')
       .trim();
     if (note) methodEl.appendChild(document.createTextNode(note + ' '));
+    methodEl.appendChild(document.createTextNode('For more, '));
     const methodLink = document.createElement('a');
     methodLink.href = 'chart.html';
-    methodLink.textContent = 'Open your birth chart.';
+    methodLink.textContent = 'see your full birth chart';
     methodEl.appendChild(methodLink);
+    methodEl.appendChild(document.createTextNode('.'));
   }
 
   function paintSkyLecture(el, text, summary) {

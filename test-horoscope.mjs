@@ -40,6 +40,11 @@ ok('method note present', typeof aries.methodNote === 'string' && aries.methodNo
 // and reader copy uses plain words, not model shorthand.
 ok('method note does not repeat 12:00 UT', !/12:00\s*UT/i.test(aries.methodNote), aries.methodNote);
 ok('method note has no model shorthand', !/VSOP87|ELP2000|J2000/.test(aries.methodNote), aries.methodNote);
+ok('method note ends by pointing to the birth chart in words, not a file name', /For more, see your full birth chart\.$/.test(aries.methodNote) && !/\.html/.test(aries.methodNote), aries.methodNote);
+{
+  const page = readFileSync(new URL('./website/js/horoscope-page.js', import.meta.url), 'utf8');
+  ok('horoscope page links "see your full birth chart" to chart.html', /methodLink\.href = 'chart\.html';\s*methodLink\.textContent = 'see your full birth chart';/.test(page));
+}
 ok('lunar phase is sentence case', !/Waxing Gibbous|Waning Gibbous|Waxing Crescent|Waning Crescent|First Quarter|Last Quarter/.test(aries.overview + (aries.skyFacts || []).join(' ')));
 
 // Step 10e: PEOPLE / WORK / PACE (and the today line and "use this") never repeat a
