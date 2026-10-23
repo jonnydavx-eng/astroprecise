@@ -193,13 +193,24 @@ try {
   }
 
   // 2b. Step 10f: Saturn return and Moment stay at 12px or larger once a result is shown.
-  for (const width of [360, 390]) {
+  //     Review round 1: at 360, 390 and 1280, with the "Works offline" pill mounted as
+  //     js/app.js mounts it once a service worker controls the page (blocked here).
+  const mountOfflinePill = () => {
+    if (document.querySelector('.offline-ready-pill')) return
+    const pill = document.createElement('div')
+    pill.className = 'offline-ready-pill is-visible'
+    pill.setAttribute('role', 'status')
+    pill.textContent = 'Works offline'
+    document.body.appendChild(pill)
+  }
+  for (const width of [360, 390, 1280]) {
     {
       const { ctx, page } = await openPage('saturn-return.html', { width })
       await page.fill('#sat-date', '1990-03-14')
       await page.click('#sat-submit')
       await page.waitForTimeout(2000)
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+      await page.evaluate(mountOfflinePill)
       await page.waitForTimeout(300)
       const r = await page.evaluate(SMALL_TEXT, null)
       const shown = await page.evaluate(() => !!document.querySelector('.sat-card__n'))
@@ -219,6 +230,8 @@ try {
       if (opt) await opt.click()
       await page.click('#mom-freeze')
       await page.waitForTimeout(2500)
+      await page.evaluate(mountOfflinePill)
+      await page.waitForTimeout(300)
       const r = await page.evaluate(SMALL_TEXT, null)
       const shown = await page.evaluate(() => !!document.querySelector('.mom-fact__k'))
       ok(
