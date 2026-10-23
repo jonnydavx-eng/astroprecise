@@ -443,6 +443,15 @@
       if (line && x.measureText(test).width > maxTw) { lines.push(line); line = word; } else line = test;
     }
     if (line) lines.push(line);
+    // No word left alone on the last line: pull words down from the line above while it fits.
+    while (lines.length > 1 && !/\s/.test(lines[lines.length - 1])) {
+      const prev = lines[lines.length - 2].split(' ');
+      if (prev.length < 2) break;
+      const moved = prev.pop() + ' ' + lines[lines.length - 1];
+      if (x.measureText(moved).width > maxTw) break;
+      lines[lines.length - 2] = prev.join(' ');
+      lines[lines.length - 1] = moved;
+    }
     const tw = Math.max(...lines.map((l) => x.measureText(l).width));
     const w = tw + padX * 2 + dotGap + dotR * 2;
     const h = 52 + (lines.length - 1) * lineH, left = cx - w / 2;
@@ -623,8 +632,9 @@
     x.fillStyle = '#9AA8B6';
     x.font = 'italic ' + CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
     x.textAlign = 'center';
-    x.fillText(today.toLocaleDateString(undefined,
-      { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), CARD_BASE / 2, 180);
+    // UK long form, e.g. 23 September 2026, whatever the browser's own locale.
+    x.fillText(today.toLocaleDateString('en-GB',
+      { day: 'numeric', month: 'long', year: 'numeric' }), CARD_BASE / 2, 180);
 
     // Moon disc (correct terminator for the phase)
     moonDisc(x, CARD_BASE / 2, 345, 115, lunar.illumination, lunar.waxing);
@@ -652,12 +662,15 @@
       swLine = `Geomagnetic Kp ${kp.kp.toFixed(1)} — ${kp.band ? kp.band.label : ''}`.trim();
       measured = true;
     } else {
-      swLine = 'Live space-weather feed unreachable — not faked';
+      // No reading line: the badge below already says the feed is unavailable.
+      swLine = '';
       measured = false;
     }
-    x.fillStyle = measured ? '#E6ECF2' : '#9AA8B6';
-    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
-    wrapText(x, swLine, CARD_BASE / 2, 810, CARD_BASE - 200, 42, 1);
+    if (swLine) {
+      x.fillStyle = '#E6ECF2';
+      x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+      wrapText(x, swLine, CARD_BASE / 2, 810, CARD_BASE - 200, 42, 1);
+    }
 
     honestyBadge(x, CARD_BASE / 2, 890, measured ? 'measured · NOAA SWPC' : 'Live space-weather feed unavailable, showing calculated values', measured);
     cardFooter(x);

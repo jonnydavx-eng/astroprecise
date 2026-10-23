@@ -350,11 +350,44 @@ for (const [label, kind, opts] of [
       `${label}: feed-down badge is plain words`,
     )
   }
+  if (kind === 'daily') {
+    ok(
+      r.draws.some((d) => d.text === '23 September 2026'),
+      `${label}: date in UK long form (23 September 2026)`,
+    )
+    const all = r.draws.map((d) => d.text).join(' ')
+    ok(
+      !/unreachable|not faked/.test(all) && (all.match(/space-weather feed/g) || []).length <= 1,
+      `${label}: says the feed is down once, in the badge only`,
+    )
+  }
   if (kind === 'zenith')
     ok(
       r.draws.some((d) => d.text.startsWith('Calculated from star positions')),
       `${label}: badge says Calculated from star positions and local sidereal time`,
     )
+}
+// The feed-down badge never leaves one word alone on its last line, whatever the font's width
+// (textScale stands in for another machine's Georgia).
+{
+  const BADGE = 'Live space-weather feed unavailable, showing calculated values'
+  const orphans = []
+  for (let k = 0; k <= 12; k++) {
+    const textScale = 0.8 + k * 0.05
+    const r = await probe.probeInstrumentCard('daily', { measured: false, textScale })
+    const texts = r.draws.map((d) => d.text)
+    let lines = null
+    for (let i = 0; i < texts.length && !lines; i++)
+      for (let j = i + 1; j <= texts.length; j++) {
+        const joined = texts.slice(i, j).join(' ')
+        if (joined === BADGE) lines = texts.slice(i, j)
+        if (!BADGE.startsWith(joined)) break
+      }
+    if (!lines) orphans.push(`x${textScale.toFixed(2)}: badge not found`)
+    else if (lines.length > 1 && !/\s/.test(lines[lines.length - 1]))
+      orphans.push(`x${textScale.toFixed(2)}: "${lines[lines.length - 1]}" alone`)
+  }
+  ok(orphans.length === 0, `instrument daily card (feed down): no word alone on the badge's last line ${orphans.join('; ')}`)
 }
 // Step 10d-eclipse: the eclipse edition plate (2400 × 3000) and its disc (2000 × 2000), drawn by
 // the real painters. Every line >= 11 px at 360 wide, the plate's header and footer fit and clear
