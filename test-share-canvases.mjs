@@ -328,6 +328,35 @@ for (const [label, scenario, opts] of [
     `${label}: wordmark is ASTROPRECISE`,
   )
 }
+// Step 10f: the sky-card poster is on Paper & Night (paper ground, ink type), not the old dark green.
+{
+  const lum = (hex) => {
+    const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    const [r, g, b] = c.map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+  }
+  const contrast = (a, b) => {
+    const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p)
+    return (x + 0.05) / (y + 0.05)
+  }
+  for (const scenario of ['known', 'unknown']) {
+    const { svg } = await probe.probeKeepsakePoster(scenario, {})
+    const ground = (svg.match(/<rect width="1200" height="1600" fill="(#[0-9a-fA-F]{6})"/) || [])[1]
+    ok(
+      ground?.toLowerCase() === '#f6f3ec',
+      `poster (${scenario}): paper ground #f6f3ec (got ${ground})`,
+    )
+    ok(!/#142e2e/i.test(svg), `poster (${scenario}): no dark green ground`)
+    const fills = [
+      ...new Set([...svg.matchAll(/<text\b[^>]*fill="(#[0-9a-fA-F]{6})"/g)].map((m) => m[1])),
+    ]
+    const low = fills.filter((c) => contrast(c, '#f6f3ec') < 4.5)
+    ok(
+      fills.length > 0 && low.length === 0,
+      `poster (${scenario}): every text colour >= 4.5:1 on paper` + (low.length ? ` [${low}]` : ''),
+    )
+  }
+}
 for (const [label, kind, opts] of [
   ['instrument light-cone card', 'lightcone', {}],
   ['instrument zenith card', 'zenith', {}],
