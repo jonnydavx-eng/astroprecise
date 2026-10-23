@@ -227,8 +227,8 @@
             '<stop offset="100%" stop-color="#cdbf9a"/>' +
           '</radialGradient>' +
           '<radialGradient id="' + uid + '-dark" cx="50%" cy="50%" r="65%">' +
-            '<stop offset="0%" stop-color="#1a1f38"/>' +
-            '<stop offset="100%" stop-color="#0b0e1e"/>' +
+            '<stop offset="0%" stop-color="#181C24"/>' +
+            '<stop offset="100%" stop-color="#0E1116"/>' +
           '</radialGradient>' +
           '<filter id="' + uid + '-glow" x="-40%" y="-40%" width="180%" height="180%">' +
             '<feGaussianBlur stdDeviation="6" result="b"/>' +
@@ -281,7 +281,7 @@
     out.innerHTML =
       '<article class="mp-card" id="mp-share-card">' +
         '<div class="mp-card__brand">' +
-          '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold-text,#D9BC5C);"></span>' +
+          '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true"></span>' +
           '<span class="mp-card__brand-name">Astro Precise</span>' +
         '</div>' +
         '<div class="mp-card__moon">' + moonSVG(phase, 120) + '</div>' +
@@ -295,7 +295,7 @@
         '<p class="mp-card__blurb">' + phase.blurb + '</p>' +
         '<p class="mp-card__honesty">Computed from real Sun &amp; Moon positions (VSOP87 / ELP2000), evaluated at 12:00&nbsp;UT.</p>' +
       '</article>' +
-      '<div class="mp-actions" style="gap:0.6rem;flex-wrap:wrap;">' +
+      '<div class="mp-actions">' +
         '<button type="button" class="btn btn--secondary" id="mp-copy-btn">Copy shareable text</button>' +
         // Birthday dates are personal. Stash the noon instant for this tab and
         // keep the visible/copyable address free of the date.
@@ -437,7 +437,7 @@
     out.innerHTML =
       '<article class="mp-card mp-card--compat" id="mp-compat-share-card">' +
         '<div class="mp-card__brand">' +
-          '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold-text,#D9BC5C);"></span>' +
+          '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true"></span>' +
           '<span class="mp-card__brand-name">Astro Precise</span>' +
         '</div>' +
         '<div class="mp-compat-grid">' +
