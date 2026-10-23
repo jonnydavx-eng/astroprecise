@@ -736,7 +736,14 @@ export async function probeEclipsePlate(which = 'artwork', { natal: natalIn } = 
   return {
     natal,
     // Older plates (main before 10d-eclipse) do not export their wheel geometry.
-    wheel: mod.PLATE_WHEEL || { x: 1200, y: 1760, innerR: 248, outerR: 690, tickInner: 640, leaderStart: 274 },
+    wheel: mod.PLATE_WHEEL || {
+      x: 1200,
+      y: 1760,
+      innerR: 248,
+      outerR: 690,
+      tickInner: 640,
+      leaderStart: 274,
+    },
     width: canvas.width,
     height: canvas.height,
     frame: 0,
@@ -748,7 +755,20 @@ export async function probeEclipsePlate(which = 'artwork', { natal: natalIn } = 
   }
 }
 
-const SIGN_MARK_TEXT = new Set(['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'])
+const SIGN_MARK_TEXT = new Set([
+  'AR',
+  'TA',
+  'GE',
+  'CN',
+  'LE',
+  'VI',
+  'LI',
+  'SC',
+  'SG',
+  'CP',
+  'AQ',
+  'PI',
+])
 const lonAt = (wheel, x, y) =>
   (((180 - (Math.atan2(y - wheel.y, x - wheel.x) * 180) / Math.PI) % 360) + 360) % 360
 const angDiff = (a, b) => ((((a - b) % 360) + 540) % 360) - 180
@@ -904,7 +924,8 @@ export function checkEclipseWheel(r) {
   }
   for (const m of signMarks) {
     for (const c of discs)
-      if (rectHitsCircle(m.box, c)) P.signBand.push(`sign mark ${m.text} under the disc at ${at(c)}`)
+      if (rectHitsCircle(m.box, c))
+        P.signBand.push(`sign mark ${m.text} under the disc at ${at(c)}`)
     for (const l of labels)
       if (rectsHit(m.box, l.box)) P.signBand.push(`sign mark ${m.text} under "${l.text}"`)
   }
@@ -978,30 +999,111 @@ function loadEphemeris() {
 export async function eclipseWheelCharts() {
   const E = ECLIPSE_LONGITUDE
   const charts = [
-    ['crowded (Asc 12, Moon 18, Uranus 28, Mercury 132, Sun on the eclipse)', ECLIPSE_CROWDED_NATAL],
+    [
+      'crowded (Asc 12, Moon 18, Uranus 28, Mercury 132, Sun on the eclipse)',
+      ECLIPSE_CROWDED_NATAL,
+    ],
     [
       'normal',
-      { sun: E, moon: 200, mercury: 162, venus: 100, mars: 60, jupiter: 20, saturn: 330, uranus: 290, neptune: 250, pluto: 225, asc: 175, mc: 85 },
+      {
+        sun: E,
+        moon: 200,
+        mercury: 162,
+        venus: 100,
+        mars: 60,
+        jupiter: 20,
+        saturn: 330,
+        uranus: 290,
+        neptune: 250,
+        pluto: 225,
+        asc: 175,
+        mc: 85,
+      },
     ],
     [
       'five bodies within 9° (61–70°)',
-      { sun: E, moon: 61, venus: 63, mars: 65.5, jupiter: 68, saturn: 70, mercury: 150.5, uranus: 20, neptune: 330, pluto: 250, asc: 200, mc: 105 },
+      {
+        sun: E,
+        moon: 61,
+        venus: 63,
+        mars: 65.5,
+        jupiter: 68,
+        saturn: 70,
+        mercury: 150.5,
+        uranus: 20,
+        neptune: 330,
+        pluto: 250,
+        asc: 200,
+        mc: 105,
+      },
     ],
     [
       'four planets within 10°',
-      { sun: E, moon: 260, mercury: 100, venus: 103, mars: 106, jupiter: 109, saturn: 330, uranus: 20, neptune: 50, pluto: 210, asc: 300, mc: 190 },
+      {
+        sun: E,
+        moon: 260,
+        mercury: 100,
+        venus: 103,
+        mars: 106,
+        jupiter: 109,
+        saturn: 330,
+        uranus: 20,
+        neptune: 50,
+        pluto: 210,
+        asc: 300,
+        mc: 190,
+      },
     ],
     [
       'stacked on the eclipse point',
-      { sun: E, moon: 139.5, mercury: 140.6, venus: 141.2, mars: 138.8, jupiter: 20, saturn: 330, uranus: 60, neptune: 250, pluto: 200, asc: 140.9, mc: 52 },
+      {
+        sun: E,
+        moon: 139.5,
+        mercury: 140.6,
+        venus: 141.2,
+        mars: 138.8,
+        jupiter: 20,
+        saturn: 330,
+        uranus: 60,
+        neptune: 250,
+        pluto: 200,
+        asc: 140.9,
+        mc: 52,
+      },
     ],
     [
       'stellium (Sun to Pluto inside 30°)',
-      { sun: E, moon: 128, mercury: 131, venus: 134, mars: 137, jupiter: 144, saturn: 147, uranus: 150, neptune: 153, pluto: 156, asc: 300, mc: 210 },
+      {
+        sun: E,
+        moon: 128,
+        mercury: 131,
+        venus: 134,
+        mars: 137,
+        jupiter: 144,
+        saturn: 147,
+        uranus: 150,
+        neptune: 153,
+        pluto: 156,
+        asc: 300,
+        mc: 210,
+      },
     ],
     [
       'cluster straddling a sign boundary (27°–33°)',
-      { sun: E, moon: 27, mercury: 28.5, venus: 30, mars: 31.2, jupiter: 33, saturn: 330, uranus: 270, neptune: 250, pluto: 200, asc: 89, mc: 182 },
+      {
+        sun: E,
+        moon: 27,
+        mercury: 28.5,
+        venus: 30,
+        mars: 31.2,
+        jupiter: 33,
+        saturn: 330,
+        uranus: 270,
+        neptune: 250,
+        pluto: 200,
+        asc: 89,
+        mc: 182,
+      },
     ],
   ]
   // Seeded real charts: random birth moments (1940–2009, any time of day, latitudes 40°S–60°N)
@@ -1010,7 +1112,9 @@ export async function eclipseWheelCharts() {
   // often than real skies do, so real positions are used instead.)
   const ephemeris = loadEphemeris()
   const templates = JSON.parse(read('js/reading-templates.json'))
-  const { buildEclipseReading5 } = await import(new URL('../website/js/eclipse-reading.js', import.meta.url))
+  const { buildEclipseReading5 } = await import(
+    new URL('../website/js/eclipse-reading.js', import.meta.url)
+  )
   const mod = await import(new URL('../website/js/ap-eclipse-edition-v841.js', import.meta.url))
   // Only charts the edition would actually draw: the eclipse must make a direct contact.
   const drawable = (natal) =>
@@ -1021,19 +1125,42 @@ export async function eclipseWheelCharts() {
     })
   let seed = 20261023
   const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648
-  const keys = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'asc', 'mc']
+  const keys = [
+    'sun',
+    'moon',
+    'mercury',
+    'venus',
+    'mars',
+    'jupiter',
+    'saturn',
+    'uranus',
+    'neptune',
+    'pluto',
+    'asc',
+    'mc',
+  ]
   for (let i = 1; i <= SEEDED_CHARTS; ) {
-    const when = [1940 + Math.floor(rnd() * 70), 1 + Math.floor(rnd() * 12), 1 + Math.floor(rnd() * 28), Math.floor(rnd() * 24), Math.floor(rnd() * 60)]
+    const when = [
+      1940 + Math.floor(rnd() * 70),
+      1 + Math.floor(rnd() * 12),
+      1 + Math.floor(rnd() * 28),
+      Math.floor(rnd() * 24),
+      Math.floor(rnd() * 60),
+    ]
     const lat = -40 + rnd() * 100
     const lon = -120 + rnd() * 240
     const chart = ephemeris.calculateNatalChart(...when, lat, lon, 'placidus')
     const natal = Object.fromEntries(keys.map((k) => [k, chart.positions[k].longitude]))
     const perSign = {}
-    for (const k of keys) perSign[Math.floor(natal[k] / 30)] = (perSign[Math.floor(natal[k] / 30)] || 0) + 1
+    for (const k of keys)
+      perSign[Math.floor(natal[k] / 30)] = (perSign[Math.floor(natal[k] / 30)] || 0) + 1
     const busiest = Math.max(...Object.values(perSign))
     if (busiest < 5 || !drawable(natal)) continue
     const [y, mo, d, h, mi] = when
-    charts.push([`seeded bunched chart #${i} (${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')} ${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}, ${busiest} points in one sign)`, natal])
+    charts.push([
+      `seeded bunched chart #${i} (${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')} ${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}, ${busiest} points in one sign)`,
+      natal,
+    ])
     i += 1
   }
   return charts
