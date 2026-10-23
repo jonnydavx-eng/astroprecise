@@ -900,7 +900,7 @@ assert.equal(
 const homeKeepPage = read('./website/observatory.html')
 assert.ok(
   homeKeepPage.includes(`ap-keep-sky.js?v=${releaseTip}`) &&
-    homeKeepPage.includes(`ap-keep-sky.css?v=${releaseTip}`),
+    homeKeepPage.includes(`observatory-next.css?v=${releaseTip}`),
   'Observatory must load Keep script and release-pinned styles',
 )
 assert.ok(

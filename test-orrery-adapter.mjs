@@ -215,8 +215,9 @@ else {
   if (!indexKeepHtml.includes('id="keep-sky"') || !indexKeepHtml.includes('data-keep-mode="birth-hour"')) {
     fail('Observatory must retain the birth-hour still capture control');
   }
-  if (!indexKeepHtml.includes('ap-keep-sky.js?v=' + tipNum) || !indexKeepHtml.includes('ap-keep-sky.css?v=' + tipNum)) {
-    fail('Observatory must load ap-keep-sky.js + ap-keep-sky.css on the release tip');
+  // 2C step 6: the Keep row is styled by the one page file on the light shell.
+  if (!indexKeepHtml.includes('ap-keep-sky.js?v=' + tipNum) || !indexKeepHtml.includes('observatory-next.css?v=' + tipNum)) {
+    fail('Observatory must load ap-keep-sky.js + observatory-next.css on the release tip');
   }
   if (!indexKeepHtml.includes('ap-home-keep.js?v=' + tipNum)) {
     fail('Observatory must load ap-home-keep.js to publish birth-hour context');
@@ -430,7 +431,7 @@ if (!/ap-model-status/.test(homePanelSegment) || !/ap-model-hint/.test(homePanel
   fail('Home panel does not own status and interaction hint');
 }
 ok('Observatory owns one strict model with unobstructed canvas and adjacent controls');
-const homeCss = readFileSync(join(root, 'css', 'ap-home-v835.css'), 'utf8');
+const homeCss = readFileSync(join(root, 'css', 'observatory-next.css'), 'utf8');
 for (const probe of ['class="ap-mobile-flight-deck"', 'id="mobileWorld"', 'id="mobileScale"', 'class="ap-model-boot"']) {
   if (!indexHtml.includes(probe)) fail('Home phone flight deck missing: ' + probe);
 }
@@ -456,9 +457,10 @@ ok('opening beat is subtle, reduced-motion safe and yields to user input; full j
  * offline shell, and Explore is a useful directory rather than a redirect. */
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 for (const ref of [
-  'css/ap-living-sky-v834.css?v=' + tipNum,
+  'css/ap-next.css?v=' + tipNum,
+    'css/observatory-next.css?v=' + tipNum,
     'js/ap-observatory-v834.js?v=' + tipNum,
-    'js/ap-nav-model.js?v=' + tipNum,
+    'js/ap-next.js?v=' + tipNum,
 ]) {
   if (!indexHtml.includes(ref)) fail('Home release query missing: ' + ref);
   const bare = './' + ref.split('?')[0];
