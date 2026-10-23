@@ -21,7 +21,7 @@ import { tmpdir } from 'os';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { paidMetaBlock, resolveFinal } from './fulfil-shared.mjs';
+import { paidMetaBlock, resolveFinal, normalizeBirthInstant } from './fulfil-shared.mjs';
 // One source of truth for what an angle is CALLED in front of a customer.
 import { plainAspect } from './reading-narrative.mjs';
 
@@ -60,8 +60,9 @@ const SAMPLE = {
   p1: { name: 'Aurora Vale', date: '14 June 1990', time: '03:42 BST', place: 'Whitby, England', y: 1990, mo: 6, d: 14, h: 2, mi: 42, lat: 54.486, lon: -0.613 },
   p2: { name: 'Orion Brooke', date: '2 March 1988', time: '17:10 GMT', place: 'Bath, England', y: 1988, mo: 3, d: 2, h: 17, mi: 10, lat: 51.381, lon: -2.359 },
 };
-const P1 = order.p1 || SAMPLE.p1;
-const P2 = order.p2 || SAMPLE.p2;
+// Supplied legs carry the typed LOCAL time: convert each to UT once with its zone.
+const P1 = order.p1 ? normalizeBirthInstant(order.p1, E) : SAMPLE.p1;
+const P2 = order.p2 ? normalizeBirthInstant(order.p2, E) : SAMPLE.p2;
 
 const OUT = A_.out || join(tmpdir(), 'ap-out').replace(/\\/g, '/');
 mkdirSync(OUT, { recursive: true });

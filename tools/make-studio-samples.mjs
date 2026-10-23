@@ -18,7 +18,7 @@
  * Every person here is fictional. No order input, no payment path, no network
  * beyond a loopback server of website/. Fonts come from tools/print-fonts (static
  * TrueType, embedded as CIDFontType2) so no PDF carries a Type3 font. Metadata is
- * set with pdf-lib: Author AstroPrecise, Creator/Producer "AstroPrecise Studio v933".
+ * set with pdf-lib: Author AstroPrecise, Creator/Producer "AstroPrecise Studio v934".
  *
  *   node tools/make-studio-samples.mjs [--out website/downloads/studio] [--check]
  *   --check renders to a temp folder and only reports (does not touch website/).
@@ -36,7 +36,7 @@ import { generateSamplePack, plateHtml, inspectPdf, SAMPLE_LABEL } from './sampl
 import { helioLongitudes, loadStills, PAPER_NIGHT as C } from './minute-plate.mjs';
 import { launchStillBrowser, renderObservatoryStill, STILL_WIDTH, STILL_HEIGHT } from './observatory-still.mjs';
 
-export const STUDIO_RELEASE = 'v933';
+export const STUDIO_RELEASE = 'v934';
 /** Whole Sky PDF embeds the 4800 x 3600 still downscaled to this width, still 4:3. */
 export const STILL_PREVIEW_WIDTH = 1800;
 const FIXED_DATE = new Date('2026-10-23T00:00:00Z'); // stable metadata dates, no build-time churn
@@ -46,6 +46,10 @@ const FIXED_DATE = new Date('2026-10-23T00:00:00Z'); // stable metadata dates, n
 export const AURORA = Object.freeze({
   name: 'Aurora Vale', date: '14 June 1990', time: '03:42 BST', place: 'Whitby, England',
   y: 1990, mo: 6, d: 14, h: 2, mi: 42, lat: 54.486, lon: -0.613, house: 'placidus', fictional: true,
+  // Stated in UT: 03:42 BST in Whitby is 02:42 UT. An order typed as 03:42 local with
+  // zone Europe/London converts to exactly this (test-order-birth-ut.mjs).
+  timeBasis: 'ut', tz: 'Europe/London', utc: '1990-06-14T02:42Z',
+  local: Object.freeze({ date: '1990-06-14', time: '03:42', tz: 'Europe/London', offsetMinutes: 60 }),
 });
 
 export const STUDIO_SAMPLES = Object.freeze([

@@ -5,7 +5,7 @@
  *   node tools/typeform-to-order.mjs --in response.json --out order.json
  */
 import { readFileSync, writeFileSync } from 'fs';
-import { parseArgs, parseDob, parseBirthTime, geocodePlace, loadEngines } from './fulfil-shared.mjs';
+import { parseArgs, parseDob, parseBirthTime, geocodePlace, loadEngines, normalizeBirthInstant } from './fulfil-shared.mjs';
 
 function answerMap(answers = []) {
   const m = {};
@@ -111,14 +111,26 @@ export function typeformToOrder(payload) {
   return order;
 }
 
-/** Resolve lat/lon on natal orders (and couples legs). */
+/**
+ * Resolve lat/lon and the zone on natal orders (and couples legs), then convert the
+ * typed LOCAL birth time to UT once (fulfil-shared normalizeBirthInstant), so every
+ * generator downstream gets UT y/mo/d/h/mi plus local and utc on the order.
+ * A leg with no birth date yet (gift purchase, voucher) is left alone.
+ */
 export function resolveCoordinates(order) {
   const { E } = loadEngines();
   const fix = (o) => {
-    if (!o || (o.lat != null && o.lon != null)) return o;
-    const geo = geocodePlace(o.place, E.CITIES);
-    if (geo) return { ...o, lat: geo.lat, lon: geo.lon, tz: geo.tz };
-    return o;
+    if (!o) return o;
+    let r = o;
+    if (r.lat == null || r.lon == null || (!r.tz && !r.timezone)) {
+      const geo = geocodePlace(r.place, E.CITIES);
+      if (geo) r = r.lat != null && r.lon != null ? { ...r, tz: r.tz || r.timezone || geo.tz } : { ...r, lat: geo.lat, lon: geo.lon, tz: r.tz || r.timezone || geo.tz };
+    }
+    const hasDate = Number.isFinite(r.y) || r.dob || r.birthDate;
+    // No zone yet (place not geocoded): leave it unconverted; validateBirthData then
+    // refuses it as missing tz rather than treating the local time as UT.
+    if (!hasDate || (!r.tz && !r.timezone && r.timeBasis !== 'ut')) return r;
+    return normalizeBirthInstant(r, E);
   };
   if (order.p1) return { ...order, p1: fix(order.p1), p2: fix(order.p2) };
   return fix(order);

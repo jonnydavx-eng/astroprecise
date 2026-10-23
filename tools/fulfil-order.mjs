@@ -49,6 +49,9 @@ function orderToNatalJson(order) {
     place: order.place,
     y: order.y, mo: order.mo, d: order.d,
     h: order.h, mi: order.mi,
+    // h/mi above are UT (resolveCoordinates converted the typed local time once).
+    timeBasis: order.timeBasis, timeUnknown: order.timeUnknown, fold: order.fold,
+    tz: order.tz, local: order.local, utc: order.utc,
     lat: order.lat, lon: order.lon,
     house: order.house || 'placidus',
     orderId: order.orderId,

@@ -115,7 +115,8 @@ try {
     y: 1990,
     mo: 6,
     d: 14,
-    h: 2,
+    // As a paid order arrives: the typed LOCAL clock time (03:42 BST = 02:42 UT).
+    h: 3,
     mi: 42,
     lat: AURORA.lat,
     lon: AURORA.lon,
@@ -135,6 +136,25 @@ try {
     'CLI writes 06-observatory-birth-hour-schematic-4800x3600.png at 4800x3600',
     size && size.width === 4800 && size.height === 3600,
     `${run.stdout}${run.stderr}`,
+  )
+  const lastLine = run.stdout.trim().split('\n').pop() || ''
+  const report = lastLine.startsWith('{') ? JSON.parse(lastLine) : null
+  ok(
+    'CLI places the still at the UT instant (03:42 BST typed -> 02:42 UT)',
+    report && report.utc === '1990-06-14T02:42Z',
+    run.stdout,
+  )
+  ok(
+    'still stamp shows the typed local time and zone',
+    report &&
+      / 1990-06-14 /.test(report.stamp) &&
+      /03:42 local \(Europe\/London\)/.test(report.stamp),
+    report && report.stamp,
+  )
+  ok(
+    'still stamp shows the correct UTC',
+    report && /computed at 1990-06-14 02:42 UTC/.test(report.stamp),
+    report && report.stamp,
   )
   writeFileSync(
     join(tmp, 'pack.json'),

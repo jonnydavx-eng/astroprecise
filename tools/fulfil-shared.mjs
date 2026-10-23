@@ -241,6 +241,140 @@ export function parseBirthTime(raw) {
   return { h: 12, mi: 0, unknown: true, label: t };
 }
 
+// ── Birth time: local clock + the birth place's zone → UT, once, in the order path ──
+//
+// Customers type the LOCAL clock time on the birth record. The engines (buildChart,
+// generate-reading, the Observatory still) all take y/mo/d/h/mi as UT, so every order
+// converts here, with the place's IANA zone and its historical DST rules, using the
+// same algorithm as the free chart page (website/js/ap-chart-next.js civilCandidates:
+// probe every offset in use around the date and keep each one that round-trips to the
+// typed wall-clock minute). test-order-birth-ut.mjs checks both agree.
+//
+// Clock-change hours, handled the same way as the chart page:
+// - Skipped time (clocks went forward, e.g. 01:30 on 31 Mar 2024 in London): that
+//   local minute never happened. The order is refused with code 'skipped' so the
+//   birth record can be checked; nothing is guessed.
+// - Repeated time (clocks went back, e.g. 01:30 on 27 Oct 2024 in London): it
+//   happened twice. The order is refused with code 'repeated' unless it carries
+//   fold: 'earlier' (first occurrence, summer time) or fold: 'later' (second, winter time).
+// - Unknown birth time: local 12:00 (or the nearest minute that existed that day).
+//
+// After conversion the order says timeBasis: 'ut', and carries both instants:
+//   local: { date, time, tz, offsetMinutes, fold? }  utc: 'YYYY-MM-DDTHH:MMZ'
+// with y/mo/d/h/mi now UT. An order already marked timeBasis: 'ut' is never converted
+// again (the internal samples are stated in UT this way).
+
+export class BirthTimeError extends Error {
+  constructor(code, message) { super(message); this.name = 'BirthTimeError'; this.code = code; }
+}
+
+export function validZone(zone) {
+  try { return !!zone && !!new Intl.DateTimeFormat('en-GB', { timeZone: zone }).format(); } catch { return false; }
+}
+
+function civilParts(ms, zone) {
+  const p = {};
+  new Intl.DateTimeFormat('en-GB', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' })
+    .formatToParts(new Date(ms)).forEach((part) => { if (part.type !== 'literal') p[part.type] = Number(part.value); });
+  return p;
+}
+
+/** Every UTC instant (ms) whose wall clock in `zone` reads date 'YYYY-MM-DD' time 'HH:MM'. Same as ap-chart-next.js. */
+export function civilCandidates(date, time, zone) {
+  const [y, m, d] = date.split('-').map(Number);
+  const [hh, mm] = time.split(':').map(Number);
+  const naive = Date.UTC(y, m - 1, d, hh, mm);
+  const offsets = new Set();
+  for (let hours = -48; hours <= 48; hours += 6) {
+    const probe = naive + hours * 3600000, p = civilParts(probe, zone);
+    offsets.add(Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second) - probe);
+  }
+  const candidates = [];
+  for (const offset of offsets) {
+    const ms = naive - offset, p = civilParts(ms, zone);
+    if (p.year === y && p.month === m && p.day === d && p.hour === hh && p.minute === mm) candidates.push(ms);
+  }
+  return [...new Set(candidates)].sort((a, b) => a - b);
+}
+
+const pad2 = (n) => String(n).padStart(2, '0');
+
+/**
+ * Local birth date/time in an IANA zone → UT. Throws BirthTimeError on an invalid zone,
+ * a skipped local time, or a repeated one without fold. timeKnown false uses local noon.
+ */
+export function localBirthToUT({ y, mo, d, h, mi, tz, timeKnown = true, fold } = {}) {
+  if (!validZone(tz)) throw new BirthTimeError('zone', `No valid time zone for the birth place (got ${tz || 'none'}); cannot convert the local birth time to UT`);
+  if (![y, mo, d].every(Number.isFinite)) throw new BirthTimeError('date', 'Order missing birth date (y/mo/d)');
+  const date = `${y}-${pad2(mo)}-${pad2(d)}`;
+  let time = timeKnown ? `${pad2(h)}:${pad2(mi)}` : '12:00';
+  if (timeKnown && !(Number.isInteger(h) && Number.isInteger(mi) && h >= 0 && h <= 23 && mi >= 0 && mi <= 59)) {
+    throw new BirthTimeError('time', `Birth time ${h}:${mi} is not a valid 24-hour clock time`);
+  }
+  let candidates = civilCandidates(date, time, tz);
+  if (!timeKnown && !candidates.length) {
+    for (let step = 1; step <= 720 && !candidates.length; step++) {
+      for (const m of [720 - step, 720 + step]) {
+        if (m < 0 || m > 1439 || candidates.length) continue;
+        time = `${pad2(Math.floor(m / 60))}:${pad2(m % 60)}`;
+        candidates = civilCandidates(date, time, tz);
+      }
+    }
+  }
+  if (!candidates.length) {
+    throw new BirthTimeError('skipped', `${date} ${time} never happened in ${tz}: the clocks went forward over it. Check the birth record before fulfilling.`);
+  }
+  if (timeKnown && candidates.length > 1 && fold !== 'earlier' && fold !== 'later') {
+    throw new BirthTimeError('repeated', `${date} ${time} happened twice in ${tz} (the clocks went back). Confirm which with the customer and set fold: 'earlier' or 'later' on the order.`);
+  }
+  const ms = candidates[fold === 'later' ? candidates.length - 1 : 0];
+  const u = new Date(ms);
+  const ut = { y: u.getUTCFullYear(), mo: u.getUTCMonth() + 1, d: u.getUTCDate(), h: u.getUTCHours(), mi: u.getUTCMinutes() };
+  return {
+    ...ut,
+    ms,
+    utc: `${ut.y}-${pad2(ut.mo)}-${pad2(ut.d)}T${pad2(ut.h)}:${pad2(ut.mi)}Z`,
+    local: { date, time, tz, offsetMinutes: Math.round((Date.UTC(y, mo - 1, d, +time.slice(0, 2), +time.slice(3)) - ms) / 60000), ...(candidates.length > 1 ? { fold: fold === 'later' ? 'later' : 'earlier' } : {}) },
+  };
+}
+
+/**
+ * Put one natal order (or couples leg) on UT. Idempotent: an order already marked
+ * timeBasis 'ut' is returned unchanged. Local clock comes from the typed time string
+ * (time/birth_time/birthTime), or h/mi when there is no string; both present and
+ * different is refused. The zone is order.tz / order.timezone, else the geocoded place.
+ */
+export function normalizeBirthInstant(order, E) {
+  if (!order || order.timeBasis === 'ut') return order;
+  const out = { ...order };
+  const dob = parseDob(order.dob || order.birthDate);
+  const y = Number.isFinite(out.y) ? out.y : dob?.y;
+  const mo = Number.isFinite(out.mo) ? out.mo : dob?.mo;
+  const d = Number.isFinite(out.d) ? out.d : dob?.d;
+  // The raw typed answer wins over the display label (typeform-to-order's label for an
+  // unknown time is '12:00 (solar chart — time unknown)', which must not read as 12:00).
+  const typed = order.birth_time || order.birthTime || order.time;
+  const bt = /unknown/i.test(String(typed || '')) ? { unknown: true } : parseBirthTime(typed);
+  const hasHM = Number.isFinite(order.h) && Number.isFinite(order.mi);
+  let timeKnown, h, mi;
+  if (typed && !bt.unknown) {
+    if (hasHM && (order.h !== bt.h || order.mi !== bt.mi)) {
+      throw new BirthTimeError('conflict', `Order time "${typed}" and h/mi ${pad2(order.h)}:${pad2(order.mi)} disagree; refusing to guess which is the local birth time`);
+    }
+    timeKnown = true; h = bt.h; mi = bt.mi;
+  } else if (!typed && hasHM) {
+    timeKnown = true; h = order.h; mi = order.mi;
+  } else {
+    timeKnown = false;
+  }
+  let tz = out.tz || order.timezone;
+  if (!tz && out.place && E && E.CITIES) tz = geocodePlace(out.place, E.CITIES)?.tz;
+  const r = localBirthToUT({ y, mo, d, h, mi, tz, timeKnown, fold: order.fold });
+  Object.assign(out, { y: r.y, mo: r.mo, d: r.d, h: r.h, mi: r.mi, tz, utc: r.utc, local: r.local, timeBasis: 'ut', timeUnknown: !timeKnown });
+  if (!timeKnown) out.time = out.time || 'unknown';
+  return out;
+}
+
 export function geocodePlace(place, cities) {
   const q = String(place || '').toLowerCase().replace(/[,]/g, ' ');
   if (!q) return null;
@@ -266,24 +400,32 @@ export function enrichOrder(order, E) {
     out.d = out.d ?? dob.d;
     out.date = out.date || dob.date;
   }
-  const bt = parseBirthTime(order.time || order.birth_time || order.birthTime);
-  out.h = out.h ?? bt.h;
-  out.mi = out.mi ?? bt.mi;
-  out.time = out.time || bt.label;
-  out.timeUnknown = bt.unknown;
   out.name = out.name || order.chart_name || order.chartName || 'Chart';
   out.place = out.place || order.birth_place || order.birthPlace || '';
-  if ((out.lat == null || out.lon == null) && out.place) {
+  if ((out.lat == null || out.lon == null || (!out.tz && !out.timezone)) && out.place) {
     const geo = geocodePlace(out.place, E.CITIES);
     if (geo) {
-      out.lat = geo.lat;
-      out.lon = geo.lon;
-      out.tz = geo.tz;
-      if (!out.place.includes(geo.city)) out.place = `${geo.city}, ${geo.country}`;
+      if (out.lat == null || out.lon == null) {
+        out.lat = geo.lat;
+        out.lon = geo.lon;
+        if (!out.place.includes(geo.city)) out.place = `${geo.city}, ${geo.country}`;
+      }
+      out.tz = out.tz || out.timezone || geo.tz;
     }
   }
   out.house = out.house || 'placidus';
-  return out;
+  if (out.timeBasis === 'ut') {
+    // Already UT (a normalised order, or an internal sample stated in UT).
+    const bt = parseBirthTime(order.time || order.birth_time || order.birthTime);
+    out.h = out.h ?? bt.h;
+    out.mi = out.mi ?? bt.mi;
+    out.time = out.time || bt.label;
+    out.timeUnknown = order.timeUnknown ?? bt.unknown;
+    return out;
+  }
+  const n = normalizeBirthInstant(out, E);
+  n.time = n.time || `${n.local.time}`;
+  return n;
 }
 
 export function buildChart(order, E) {
