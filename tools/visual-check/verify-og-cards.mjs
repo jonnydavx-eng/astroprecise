@@ -2,7 +2,7 @@
 /**
  * verify-og-cards.mjs — verify the new per-sign OG share cards are wired live.
  * For 2 sign pages (aries, leo):
- *   1. og:image + twitter:image point at /img/og/sign-<slug>.jpg
+ *   1. og:image + twitter:image point at /img/og/og-<slug>.jpg
  *   2. that URL resolves HTTP 200 (fetched from the running preview)
  *   3. no page console errors
  *   4. the hero still shows the engine still (img[src*="img/engine/"] visible)
@@ -37,7 +37,7 @@ for (const slug of SIGNS) {
   const h = await page.getAttribute('meta[property="og:image:height"]', 'content');
   const alt = await page.getAttribute('meta[property="og:image:alt"]', 'content');
 
-  const expected = `/img/og/sign-${slug}.jpg`;
+  const expected = `/img/og/og-${slug}.jpg`;
   const ogOk = og && og.endsWith(expected);
   const twOk = tw && tw.endsWith(expected);
   const dimOk = w === '1200' && h === '630';

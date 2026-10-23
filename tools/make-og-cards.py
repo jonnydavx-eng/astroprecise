@@ -1,320 +1,130 @@
 #!/usr/bin/env python3
+"""Light OG cards (1200x630) for every public page, in the Paper & Night brand (2C step 9).
+
+  python3 tools/make-og-cards.py [--only aries,shop] [--out website/img/og]
+
+Replaces the dark navy sign cards (the old make-og-cards.py) and the WebGL banner capture
+(make-og-banner.mjs). For each website/*.html page that is not excluded below it reads the
+<title> and meta description (read-only), draws a card and writes website/img/og/og-<page>.jpg
+plus website/img/og/manifest.json. The right-hand art is the drawn sign glyph on a zodiac ring
+for sign pages, an engine still for sky pages, the Minute Plate orrery of the fictional sample
+chart for product pages, and the mark otherwise. All lettering is outlined from Instrument
+Serif and Inter (tools/print-fonts), so output does not depend on installed fonts. No AI imagery.
+
+Needs: pip install uharfbuzz fonttools cairosvg pillow. Run from anywhere; paths are repo-relative.
+test-og-cards.mjs checks the committed output (size, bytes, manifest, page heads) without Python.
 """
-make-og-cards.py — premium per-sign social share cards for AstroPrecise.
+import argparse, glob, html, json, math, os, re, sys
 
-One 1200x630 OG/Twitter card per zodiac sign, built from the SAME proven
-engine-still pipeline the shop art uses (tools/_asset_lib.py):
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'og'))
+from PIL import Image  # noqa: E402
+from og_brand import (C, ROOT, SANS, SANS_BOLD, SIGN_META, SIGNS, T, glyph, mark, orrery,  # noqa: E402
+                      still_uri, svg2png, tw, wordmark, wrap)
 
-  * deep cool-void plate (#0C1016) with a faint tonal wash — never a painted sky
-  * the sign's RULING-PLANET engine still (website/img/engine/<ruler>.webp — our
-    own photoreal 3D render) composited on the right, feathered + soft-glowed so
-    the transparent disc dissolves into the void (mirrors og-banner-v576.jpg)
-  * copy block on the left: Cinzel eyebrow (dates · element), the sign NAME in
-    Cormorant Garamond, a brass rule, and an honest one-line descriptor
-  * the engraved brass zodiac seal for the sign (rasterized SVG, never a glyph)
-  * the "ASTRO PRECISE" compass lockup bottom-left (the v576 brand mark)
-
-Ruler-still map mirrors RULER_STILL in website/tools/generate-sign-pages.mjs
-(Scorpio anchors on MARS — the engine's Pluto is a bare generated disc — so the
-card matches the hero render exactly). Honesty rule: the still is our real
-render, the copy states only facts (dates, element, ruling body). No accuracy
-claims. Terracotta appears only as a hairline element accent, if at all.
-
-Output: website/img/og/sign-<slug>.jpg  (JPEG q86, target <200KB each)
-Run:    python tools/make-og-cards.py        (no server needed)
-"""
-from __future__ import annotations
-
-import math
-from pathlib import Path
-
-from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
-
-import _asset_lib as A
-from _asset_lib import (
-    BRASS, BRASS_BRIGHT, BRASS_VIVID, MID, MUTED, PARCHMENT, VOID,
-    engine_still, seal,
-)
-
-ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "website" / "img" / "og"
-FONTS = ROOT / "website" / "fonts"
-FONT_CACHE = ROOT / "tools" / "_asset-cache" / "fonts-ttf"
-
-CARD_W, CARD_H = 1200, 630
-JPEG_QUALITY = 86
-SIZE_BUDGET_KB = 200
-
-# Element accent (semantic — matches --ap-element-* tokens / sign-page hero glow).
-ELEMENT_ACCENT = {
-    "Fire":  (184, 90, 66),    # #B85A42
-    "Earth": (90, 122, 72),    # #5A7A48
-    "Air":   (138, 122, 106),  # #8A7A6A
-    "Water": (74, 117, 128),   # #4A7580
-}
-
-# ── Signs — the fields the card needs. Ruler-still MIRRORS RULER_STILL in
-#    website/tools/generate-sign-pages.mjs (Scorpio → mars, not pluto). Keep in sync.
-SIGNS = [
-    {"key": "aries",       "name": "Aries",       "dates": "Mar 21 – Apr 19", "element": "Fire",  "still": "mars",    "ruler_label": "Mars"},
-    {"key": "taurus",      "name": "Taurus",      "dates": "Apr 20 – May 20", "element": "Earth", "still": "venus",   "ruler_label": "Venus"},
-    {"key": "gemini",      "name": "Gemini",      "dates": "May 21 – Jun 20", "element": "Air",   "still": "mercury", "ruler_label": "Mercury"},
-    {"key": "cancer",      "name": "Cancer",      "dates": "Jun 21 – Jul 22", "element": "Water", "still": "moon",    "ruler_label": "the Moon"},
-    {"key": "leo",         "name": "Leo",         "dates": "Jul 23 – Aug 22", "element": "Fire",  "still": "sun",     "ruler_label": "the Sun"},
-    {"key": "virgo",       "name": "Virgo",       "dates": "Aug 23 – Sep 22", "element": "Earth", "still": "mercury", "ruler_label": "Mercury"},
-    {"key": "libra",       "name": "Libra",       "dates": "Sep 23 – Oct 22", "element": "Air",   "still": "venus",   "ruler_label": "Venus"},
-    {"key": "scorpio",     "name": "Scorpio",     "dates": "Oct 23 – Nov 21", "element": "Water", "still": "mars",    "ruler_label": "Mars"},
-    {"key": "sagittarius", "name": "Sagittarius", "dates": "Nov 22 – Dec 21", "element": "Fire",  "still": "jupiter", "ruler_label": "Jupiter"},
-    {"key": "capricorn",   "name": "Capricorn",   "dates": "Dec 22 – Jan 19", "element": "Earth", "still": "saturn",  "ruler_label": "Saturn"},
-    {"key": "aquarius",    "name": "Aquarius",    "dates": "Jan 20 – Feb 18", "element": "Air",   "still": "uranus",  "ruler_label": "Uranus"},
-    {"key": "pisces",      "name": "Pisces",      "dates": "Feb 19 – Mar 20", "element": "Water", "still": "neptune", "ruler_label": "Neptune"},
-]
+W, H = 1200, 630
+EXCLUDE = re.compile(r'^(index-.*|auth-redirect|fulfil-redirect|outreach|links|profile|journey|catalogue|chart-view|mysky|moment|ephemeris|deep-time|cosmic-.*|synchronicity-card|quiz|angel-numbers|lifepath|name-numerology|numerology|saturn-return|solar-return|synastry|digital-product-terms)$')
+EYEBROW = {'index': 'Free birth chart', 'chart': 'Free birth chart', 'shop': 'The Studio', 'natal-plate': 'Archive',
+           'sample-reading': 'Sample reading', 'deep-reading': 'Your story', 'horoscope': 'The sky this week', 'this-weeks-sky': 'The sky this week',
+           'sky-events': 'Sky events', 'eclipse': 'Eclipses', 'moonphase': 'Moon phases', 'retrograde': 'Retrogrades', 'transits': 'Transits',
+           'tonight': 'Tonight', 'observatory': 'The Observatory', 'guides': 'Guides', 'explore': 'Explore', 'compatibility': 'Two Skies',
+           'what-is-my-rising-sign': 'Guide', 'why': 'How we calculate', 'accuracy': 'How we calculate', 'verify': 'Verify a plate',
+           'privacy': 'Privacy', 'terms': 'Terms', 'refunds': 'Refunds', 'contact': 'Contact', 'offline': 'Offline', 'charts': 'Saved charts',
+           'sky-card': 'Sky card', '404': 'Not found'}
+STILL = {'moonphase': 'moon', 'tonight': 'moon', 'eclipse': 'moon', 'retrograde': 'mercury', 'transits': 'saturn', 'sky-events': 'jupiter',
+         'observatory': 'saturn', 'this-weeks-sky': 'venus', 'horoscope': 'venus'}
+PLATE = {'index', 'chart', 'shop', 'natal-plate', 'sample-reading', 'deep-reading', 'compatibility', 'verify', 'sky-card', 'charts'}
 
 
-# ── Brand fonts (Cormorant Garamond + Cinzel) — convert woff2→ttf once, cache. ──
-_FONT_TTF: dict[str, Path | None] = {}
+def meta(path):
+    t = open(path, encoding='utf-8', errors='ignore').read()
+    title = re.search(r'<title>(.*?)</title>', t, re.S)
+    desc = re.search(r'<meta\s+name=["\']description["\']\s+content=(["\'])(.*?)\1', t, re.S | re.I)
+    clean = lambda s: html.unescape(re.sub(r'\s+', ' ', s or '')).strip()
+    title = clean(title.group(1) if title else '')
+    title = re.split(r'\s+[|·—–-]\s+(?:Astro ?Precise).*$', title, flags=re.I)[0] or title
+    return title, clean(desc.group(2) if desc else '')
 
 
-def _woff2_to_ttf(woff2: Path) -> Path | None:
-    """Convert a self-hosted woff2 to a cached TTF so PIL/FreeType can load it."""
-    if not woff2.exists():
-        return None
-    FONT_CACHE.mkdir(parents=True, exist_ok=True)
-    ttf = FONT_CACHE / (woff2.stem + ".ttf")
-    if ttf.exists():
-        return ttf
-    try:
-        from fontTools.ttLib import TTFont
-        f = TTFont(str(woff2))
-        f.flavor = None  # strip woff2 wrapper → plain TTF/OTF
-        f.save(str(ttf))
-        return ttf
-    except Exception:
-        return None
+def art(page, x, y, size):
+    if page in SIGNS:
+        r = size / 2; cx, cy = x + r, y + r; i = SIGNS.index(page)
+        o = [f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{C["card"]}" stroke="{C["rule"]}" stroke-width="2"/>']
+        for k in range(12):
+            a = math.radians(-90 - k * 30); on = k == i
+            r0, r1 = (r - 22, r) if on else (r - 12, r - 2)
+            o.append(f'<line x1="{cx+r0*math.cos(a):.1f}" y1="{cy+r0*math.sin(a):.1f}" x2="{cx+r1*math.cos(a):.1f}" y2="{cy+r1*math.sin(a):.1f}" stroke="{C["gold"] if on else C["graphite"]}" stroke-width="{3 if on else 1.4}" stroke-linecap="round"/>')
+        o.append(glyph(page, cx - r * 0.5, cy - r * 0.5, r, C['ink'], 1.3))
+        return ''.join(o)
+    if page in PLATE:
+        return f'<g transform="translate({x+size/2},{y+size/2}) scale({size/1000})">{orrery(0, 0, 500)}</g>'
+    if page in STILL:
+        return (f'<circle cx="{x+size/2}" cy="{y+size/2}" r="{size/2}" fill="{C["paper2"]}"/>'
+                f'<image href="{still_uri(STILL[page], 512)}" x="{x+size*0.12}" y="{y+size*0.12}" width="{size*0.76}" height="{size*0.76}"/>')
+    return mark(x + size / 2, y + size / 2, size * 0.9)
 
 
-def _brand_ttf(stem: str) -> Path | None:
-    if stem in _FONT_TTF:
-        return _FONT_TTF[stem]
-    ttf = _woff2_to_ttf(FONTS / f"{stem}.woff2")
-    _FONT_TTF[stem] = ttf
-    return ttf
+def card(page, title, desc):
+    o = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="{C["paper"]}"/>',
+         f'<rect x="28" y="28" width="{W-56}" height="{H-56}" fill="none" stroke="{C["rule"]}" stroke-width="2"/>']
+    eb = EYEBROW.get(page, 'AstroPrecise')
+    if page in SIGNS:
+        eb = 'Sun sign guide'; title = page.capitalize(); el, mo, ru = SIGN_META[page]
+        desc = f'{el} · {mo} · ruled by {ru}. What the sign means in your chart, and how to find your Sun, Moon and rising.'
+    o.append(T('inter', eb.upper(), 17, 84, 118, C['goldink'], tracking=0.2, weight=SANS_BOLD))
+    size = 76
+    lines = wrap('instrument', title, size, 640)
+    while len(lines) > 3 and size > 50:
+        size -= 6; lines = wrap('instrument', title, size, 640)
+    y = 118 + size * 1.05
+    for ln in lines[:3]:
+        o.append(T('instrument', ln, size, 82, y, C['ink'], tracking=-0.015)); y += size
+    if desc:
+        y += 14
+        room = max(0, min(3, int((H - 140 - y) // 32) + 1))
+        allp = wrap('inter', desc, 22, 620); dl = allp[:room]
+        if len(allp) > room and dl:
+            words = dl[-1].split()
+            while words and tw('inter', ' '.join(words) + '…', 22) > 600:
+                words.pop()
+            dl[-1] = ' '.join(words).rstrip(',;:—–') + '…'
+        for ln in dl:
+            o.append(T('inter', ln, 22, 84, y, C['graphite'], weight=SANS)); y += 32
+    o.append(art(page, 790, 125, 330))
+    o.append(f'<line x1="84" y1="{H-110}" x2="{W-84}" y2="{H-110}" stroke="{C["rule"]}" stroke-width="2"/>')
+    o.append(mark(106, H - 66, 40, ticks=False))
+    o.append(wordmark(138, H - 56, 30, C['ink']))
+    o.append(T('inter', 'astroprecise.app', 18, W - 84, H - 60, C['muted'], 'end'))
+    o.append('</svg>')
+    return ''.join(o)
 
 
-def _load(candidates: list[Path | None], sz: int) -> ImageFont.FreeTypeFont:
-    for p in candidates:
-        if p and p.exists():
-            try:
-                return ImageFont.truetype(str(p), sz)
-            except Exception:
-                continue
-    return A.font(sz)  # Georgia/Times fallback from the shared lib
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--out', default=os.path.join(ROOT, 'website', 'img', 'og'))
+    ap.add_argument('--only', default='')
+    a = ap.parse_args()
+    os.makedirs(a.out, exist_ok=True)
+    only = set(filter(None, a.only.split(',')))
+    man_path = os.path.join(a.out, 'manifest.json')
+    pages = {p['page']: p for p in json.load(open(man_path, encoding='utf-8'))} if only and os.path.exists(man_path) else {}
+    for p in sorted(glob.glob(os.path.join(ROOT, 'website', '*.html'))):
+        name = os.path.basename(p)[:-5]
+        if EXCLUDE.match(name) or (only and name not in only):
+            continue
+        title, desc = meta(p)
+        if name == 'index' and not title:
+            title = 'Your birth sky, to the minute'
+        svg = card(name, title or name.replace('-', ' ').capitalize(), desc)
+        png = os.path.join(a.out, f'og-{name}.png'); jpg = png[:-4] + '.jpg'
+        svg2png(svg, png, w=W)
+        Image.open(png).convert('RGB').save(jpg, 'JPEG', quality=86, optimize=True, progressive=True)
+        os.remove(png)
+        pages[name + '.html'] = dict(page=name + '.html', title=title, og=f'img/og/og-{name}.jpg', bytes=os.path.getsize(jpg))
+    out = sorted(pages.values(), key=lambda d: d['page'])
+    with open(man_path, 'w', encoding='utf-8') as f:
+        json.dump(out, f, indent=1, ensure_ascii=False); f.write('\n')
+    print(f'{len(out)} cards ->', os.path.relpath(a.out, ROOT))
 
 
-def cormorant(sz: int, weight: int = 600) -> ImageFont.FreeTypeFont:
-    return _load([_brand_ttf(f"cormorant-garamond-normal-{weight}"),
-                  _brand_ttf("cormorant-garamond-normal-600"),
-                  Path(r"C:\Windows\Fonts\georgiab.ttf")], sz)
-
-
-def cormorant_italic(sz: int, weight: int = 400) -> ImageFont.FreeTypeFont:
-    return _load([_brand_ttf(f"cormorant-garamond-italic-{weight}"),
-                  Path(r"C:\Windows\Fonts\georgiai.ttf")], sz)
-
-
-def cinzel(sz: int, weight: int = 400) -> ImageFont.FreeTypeFont:
-    return _load([_brand_ttf(f"cinzel-normal-{weight}"),
-                  Path(r"C:\Windows\Fonts\georgia.ttf")], sz)
-
-
-# ── Text helpers ────────────────────────────────────────────────────────────────
-def _tracked(draw: ImageDraw.ImageDraw, xy, text: str, font, fill, tracking: float):
-    """Draw letter-spaced (tracked) text — Cinzel eyebrows read as small caps."""
-    x, y = xy
-    for ch in text:
-        draw.text((x, y), ch, font=font, fill=fill)
-        w = draw.textbbox((0, 0), ch, font=font)[2]
-        x += w + tracking
-    return x
-
-
-def _tracked_width(draw: ImageDraw.ImageDraw, text: str, font, tracking: float) -> float:
-    w = 0.0
-    for ch in text:
-        w += draw.textbbox((0, 0), ch, font=font)[2] + tracking
-    return w - tracking if text else 0.0
-
-
-# ── Engine-still body, feathered + glowed into the void (right side) ─────────────
-def _planet_layer(still_id: str, accent: tuple[int, int, int]) -> Image.Image:
-    """
-    Full-card layer with the ruling-planet engine still anchored right, feathered
-    with a soft alpha falloff + an element-tinted glow well behind it. Mirrors the
-    og-banner-v576 treatment (Earth right, dissolving into the void on the left).
-    """
-    layer = Image.new("RGBA", (CARD_W, CARD_H), (0, 0, 0, 0))
-
-    # Crop each still to its actual content so padding differences between engine
-    # frames (sun ~0.58 fill, mars ~0.77, saturn's rings span full-width) don't
-    # make the disc read big or small — every body is normalised to one on-card
-    # diameter. Saturn (rings wider than tall) is fit by its LARGER edge so the
-    # rings never clip; round bodies fit by diameter.
-    body = engine_still(still_id)
-    bb = body.split()[3].getbbox() or (0, 0, body.width, body.height)
-    body = body.crop(bb)
-    bw, bh = body.size
-
-    diameter = 720  # on-card visual size of a round body
-    long_edge = max(bw, bh)
-    scale = diameter / long_edge
-    tw, th = max(1, round(bw * scale)), max(1, round(bh * scale))
-    body = body.resize((tw, th), Image.Resampling.LANCZOS)
-
-    # anchor: centre-right, the disc bleeds a little off the right edge
-    cx = int(CARD_W * 0.735)
-    cy = int(CARD_H * 0.50)
-    ox = cx - tw // 2
-    oy = cy - th // 2
-
-    # element glow well sized to the disc (paints depth without a painted sky)
-    glow = Image.new("RGBA", (CARD_W, CARD_H), (0, 0, 0, 0))
-    gd = ImageDraw.Draw(glow)
-    gr = int(max(tw, th) * 0.56)
-    gd.ellipse((cx - gr, cy - gr, cx + gr, cy + gr), fill=(*accent, 55))
-    glow = glow.filter(ImageFilter.GaussianBlur(96))
-    layer.alpha_composite(glow)
-
-    # feather the still's own alpha so the cropped bounding box never reads as a
-    # hard edge; the left-side linear fade below dissolves it toward the copy.
-    r, g, b, a = body.split()
-    feather = a.filter(ImageFilter.GaussianBlur(max(2, int(max(tw, th) * 0.012))))
-    body = Image.merge("RGBA", (r, g, b, feather))
-
-    layer.alpha_composite(body, (ox, oy))
-
-    # left-edge dissolve: fade the whole planet layer into the void from ~x=0.40
-    fade = Image.new("L", (CARD_W, CARD_H), 255)
-    fd = ImageDraw.Draw(fade)
-    x0, x1 = int(CARD_W * 0.34), int(CARD_W * 0.56)
-    for x in range(CARD_W):
-        if x <= x0:
-            v = 0
-        elif x >= x1:
-            v = 255
-        else:
-            v = int(255 * (x - x0) / (x1 - x0))
-        fd.line((x, 0, x, CARD_H), fill=v)
-    la = ImageChops.multiply(layer.split()[3], fade)
-    layer.putalpha(la)
-    return layer
-
-
-# ── Brand lockup (compass mark + ASTRO PRECISE) ─────────────────────────────────
-def _brand_mark(px: int) -> Image.Image:
-    """Rasterize the v576 compass logo-mark SVG to a transparent PNG (cached)."""
-    svg = ROOT / "website" / "img" / "logo-mark.svg"
-    out = FONT_CACHE.parent / f"logo-mark-{px}.png"
-    if not out.exists():
-        try:
-            A._rasterize_svg(svg, px, out)  # retokens warm→cool then rasterizes
-        except Exception:
-            return Image.new("RGBA", (px, px), (0, 0, 0, 0))
-    return Image.open(out).convert("RGBA")
-
-
-def _lockup(img: Image.Image, x: int, y: int) -> None:
-    d = ImageDraw.Draw(img)
-    mark_px = 52
-    mark = _brand_mark(mark_px)
-    img.alpha_composite(mark, (x, y - mark.height // 2))
-    tx = x + mark_px + 16
-    f = cinzel(27, 600)
-    baseline = y - 15
-    end = _tracked(d, (tx, baseline), "ASTRO", f, PARCHMENT, 3.2)
-    _tracked(d, (end + 12, baseline), "PRECISE", f, (*BRASS_BRIGHT, 255), 3.2)
-
-
-# ── Card ────────────────────────────────────────────────────────────────────────
-def build_card(s: dict) -> Image.Image:
-    accent = ELEMENT_ACCENT[s["element"]]
-
-    # 1) deep cool-void plate + faint tonal wash (same recipe as engine_backdrop)
-    img = Image.new("RGBA", (CARD_W, CARD_H), (*VOID, 255))
-    wash = Image.new("RGBA", (CARD_W, CARD_H), (0, 0, 0, 0))
-    wd = ImageDraw.Draw(wash)
-    wd.ellipse((int(CARD_W * 0.34), int(-CARD_H * 0.30), int(CARD_W * 1.2), int(CARD_H * 1.0)),
-               fill=(*MID, 110))
-    wash = wash.filter(ImageFilter.GaussianBlur(130))
-    img.alpha_composite(wash)
-
-    # 2) ruling-planet engine still, feathered + glowed on the right
-    img.alpha_composite(_planet_layer(s["still"], accent))
-
-    # 3) left readability scrim so the copy always holds on the void
-    scrim = Image.new("RGBA", (CARD_W, CARD_H), (0, 0, 0, 0))
-    ImageDraw.Draw(scrim).rectangle((0, 0, int(CARD_W * 0.52), CARD_H), fill=(*VOID, 150))
-    img.alpha_composite(scrim.filter(ImageFilter.GaussianBlur(70)))
-
-    d = ImageDraw.Draw(img)
-    left = 72
-
-    # 4) engraved zodiac seal (brass hex plate) above the name
-    sl = seal(s["key"], 96)
-    seal_y = 150
-    img.alpha_composite(sl, (left, seal_y - sl.height // 2))
-
-    # 5) Cinzel eyebrow — dates · element (tracked small caps, brass)
-    eyebrow = f"{s['dates'].upper()}   ·   {s['element'].upper()} SIGN"
-    ef = cinzel(20, 600)
-    _tracked(d, (left, 218), eyebrow, ef, (*BRASS_BRIGHT, 255), 2.6)
-
-    # 6) sign NAME — Cormorant Garamond, parchment
-    nf = cormorant(96, 600)
-    d.text((left - 3, 250), s["name"], font=nf, fill=PARCHMENT)
-
-    # 7) brass rule
-    name_bottom = 250 + d.textbbox((0, 0), s["name"], font=nf)[3]
-    ry = name_bottom + 22
-    d.line((left, ry, left + 120, ry), fill=(*BRASS, 200), width=2)
-
-    # 8) honest one-line descriptor (italic Cormorant) — states only facts
-    sub = f"Ruled by {s['ruler_label']}"
-    sf = cormorant_italic(31, 400)
-    d.text((left, ry + 20), sub, font=sf, fill=(*MUTED, 255))
-
-    # 9) brand lockup bottom-left
-    _lockup(img, left, CARD_H - 52)
-
-    # 10) subtle vignette finish (soften corners, unify plate)
-    return A.vignette(img, 0.30)
-
-
-def save(img: Image.Image, slug: str) -> int:
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    path = OUT_DIR / f"sign-{slug}.jpg"
-    # UnsharpMask for a crisp, printed-plate feel; q86 keeps each card <200KB
-    out = img.convert("RGB").filter(ImageFilter.UnsharpMask(1.0, 90, 2))
-    out.save(path, "JPEG", quality=JPEG_QUALITY, subsampling=1, optimize=True, progressive=True)
-    kb = path.stat().st_size / 1024
-    flag = "  OVER BUDGET" if kb > SIZE_BUDGET_KB else ""
-    print(f"  {path.name:24s} {kb:6.1f} KB{flag}")
-    return path.stat().st_size
-
-
-def main() -> None:
-    print(f"Building {len(SIGNS)} OG cards → {OUT_DIR.relative_to(ROOT)}")
-    total = 0
-    over = []
-    for s in SIGNS:
-        img = build_card(s)
-        size = save(img, s["key"])
-        total += size
-        if size / 1024 > SIZE_BUDGET_KB:
-            over.append(s["key"])
-    print(f"Total {total/1024:.1f} KB across {len(SIGNS)} cards")
-    if over:
-        print(f"OVER BUDGET: {', '.join(over)} — lower JPEG_QUALITY and re-run")
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

@@ -1,0 +1,469 @@
+{
+ "source": "AstroPrecise engine (website/js/ephemeris.js via tools/fulfil-shared.mjs buildChart), main 63a0dba9",
+ "sample": {
+  "label": "Sample Chart",
+  "date": "14 March 1990",
+  "time": "06:30 GMT",
+  "place": "London, UK",
+  "fictional": true
+ },
+ "asc": 357.57857143736305,
+ "mc": 269.0727618704224,
+ "houses": [
+  357.57857143736305,
+  46.225167497231496,
+  70.78966539434856,
+  89.07276187042243,
+  107.17666434250657,
+  130.98740336718004,
+  177.57857143736305,
+  226.2251674972315,
+  250.7896653943485,
+  269.0727618704224,
+  287.17666434250657,
+  310.98740336718004
+ ],
+ "pos": {
+  "sun": {
+   "lon": 353.4208605518746,
+   "sign": "Pisces",
+   "idx": 11,
+   "d": 23,
+   "m": 25,
+   "house": 12,
+   "retro": false
+  },
+  "moon": {
+   "lon": 205.0368869714838,
+   "sign": "Libra",
+   "idx": 6,
+   "d": 25,
+   "m": 2,
+   "house": 7,
+   "retro": false
+  },
+  "mercury": {
+   "lon": 348.8826429101956,
+   "sign": "Pisces",
+   "idx": 11,
+   "d": 18,
+   "m": 52,
+   "house": 12,
+   "retro": false
+  },
+  "venus": {
+   "lon": 308.09557806013555,
+   "sign": "Aquarius",
+   "idx": 10,
+   "d": 8,
+   "m": 5,
+   "house": 11,
+   "retro": false
+  },
+  "mars": {
+   "lon": 301.9314195685325,
+   "sign": "Aquarius",
+   "idx": 10,
+   "d": 1,
+   "m": 55,
+   "house": 11,
+   "retro": false
+  },
+  "jupiter": {
+   "lon": 91.3075888861361,
+   "sign": "Cancer",
+   "idx": 3,
+   "d": 1,
+   "m": 18,
+   "house": 4,
+   "retro": false
+  },
+  "saturn": {
+   "lon": 293.2413498908642,
+   "sign": "Capricorn",
+   "idx": 9,
+   "d": 23,
+   "m": 14,
+   "house": 11,
+   "retro": false
+  },
+  "uranus": {
+   "lon": 279.18812594687245,
+   "sign": "Capricorn",
+   "idx": 9,
+   "d": 9,
+   "m": 11,
+   "house": 10,
+   "retro": false
+  },
+  "neptune": {
+   "lon": 284.27232828374116,
+   "sign": "Capricorn",
+   "idx": 9,
+   "d": 14,
+   "m": 16,
+   "house": 10,
+   "retro": false
+  },
+  "pluto": {
+   "lon": 227.63115801486535,
+   "sign": "Scorpio",
+   "idx": 7,
+   "d": 17,
+   "m": 37,
+   "house": 8,
+   "retro": true
+  },
+  "chiron": {
+   "lon": 100.56643229951771,
+   "sign": "Cancer",
+   "idx": 3,
+   "d": 10,
+   "m": 33,
+   "house": 4,
+   "retro": true
+  },
+  "northNode": {
+   "lon": 314.6311532809639,
+   "sign": "Aquarius",
+   "idx": 10,
+   "d": 14,
+   "m": 37,
+   "house": 12,
+   "retro": false
+  }
+ },
+ "fmt": {
+  "sun": "23°25′ Pisces",
+  "moon": "25°02′ Libra",
+  "mercury": "18°52′ Pisces",
+  "venus": "8°05′ Aquarius",
+  "mars": "1°55′ Aquarius",
+  "jupiter": "1°18′ Cancer",
+  "saturn": "23°14′ Capricorn",
+  "uranus": "9°11′ Capricorn",
+  "neptune": "14°16′ Capricorn",
+  "pluto": "17°37′ Scorpio",
+  "chiron": "10°33′ Cancer",
+  "northNode": "14°37′ Aquarius"
+ },
+ "ascFmt": "27°34′ Pisces",
+ "mcFmt": "29°04′ Sagittarius",
+ "aspects": [
+  {
+   "planet1": "mercury",
+   "planet2": "mars",
+   "aspect": "semisquare",
+   "orb": 1.9512,
+   "applying": false
+  },
+  {
+   "planet1": "mercury",
+   "planet2": "saturn",
+   "aspect": "sextile",
+   "orb": 4.3587,
+   "applying": false
+  },
+  {
+   "planet1": "mercury",
+   "planet2": "neptune",
+   "aspect": "sextile",
+   "orb": 4.6103,
+   "applying": false
+  },
+  {
+   "planet1": "mercury",
+   "planet2": "pluto",
+   "aspect": "trine",
+   "orb": 1.2515,
+   "applying": false
+  },
+  {
+   "planet1": "mercury",
+   "planet2": "sun",
+   "aspect": "conjunction",
+   "orb": 4.5382,
+   "applying": true
+  },
+  {
+   "planet1": "mercury",
+   "planet2": "lilith",
+   "aspect": "trine",
+   "orb": 4.3798,
+   "applying": false
+  },
+  {
+   "planet1": "venus",
+   "planet2": "mars",
+   "aspect": "conjunction",
+   "orb": 6.1642,
+   "applying": false
+  },
+  {
+   "planet1": "venus",
+   "planet2": "uranus",
+   "aspect": "semisextile",
+   "orb": 1.0925,
+   "applying": false
+  },
+  {
+   "planet1": "venus",
+   "planet2": "sun",
+   "aspect": "semisquare",
+   "orb": 0.3253,
+   "applying": true
+  },
+  {
+   "planet1": "venus",
+   "planet2": "chiron",
+   "aspect": "quincunx",
+   "orb": 2.4709,
+   "applying": true
+  },
+  {
+   "planet1": "venus",
+   "planet2": "lilith",
+   "aspect": "square",
+   "orb": 6.4072,
+   "applying": false
+  },
+  {
+   "planet1": "venus",
+   "planet2": "northNode",
+   "aspect": "conjunction",
+   "orb": 6.5356,
+   "applying": true
+  },
+  {
+   "planet1": "venus",
+   "planet2": "southNode",
+   "aspect": "opposition",
+   "orb": 6.5356,
+   "applying": false
+  },
+  {
+   "planet1": "mars",
+   "planet2": "jupiter",
+   "aspect": "quincunx",
+   "orb": 0.6238,
+   "applying": true
+  },
+  {
+   "planet1": "mars",
+   "planet2": "moon",
+   "aspect": "square",
+   "orb": 6.8945,
+   "applying": true
+  },
+  {
+   "planet1": "mars",
+   "planet2": "asc",
+   "aspect": "sextile",
+   "orb": 4.3528,
+   "applying": true
+  },
+  {
+   "planet1": "jupiter",
+   "planet2": "uranus",
+   "aspect": "opposition",
+   "orb": 7.8805,
+   "applying": false
+  },
+  {
+   "planet1": "jupiter",
+   "planet2": "pluto",
+   "aspect": "sesquiquadrate",
+   "orb": 1.3236,
+   "applying": true
+  },
+  {
+   "planet1": "jupiter",
+   "planet2": "moon",
+   "aspect": "trine",
+   "orb": 6.2707,
+   "applying": false
+  },
+  {
+   "planet1": "jupiter",
+   "planet2": "lilith",
+   "aspect": "sesquiquadrate",
+   "orb": 1.8048,
+   "applying": false
+  },
+  {
+   "planet1": "jupiter",
+   "planet2": "northNode",
+   "aspect": "sesquiquadrate",
+   "orb": 1.6764,
+   "applying": false
+  },
+  {
+   "planet1": "jupiter",
+   "planet2": "southNode",
+   "aspect": "semisquare",
+   "orb": 1.6764,
+   "applying": true
+  },
+  {
+   "planet1": "jupiter",
+   "planet2": "asc",
+   "aspect": "square",
+   "orb": 3.729,
+   "applying": false
+  },
+  {
+   "planet1": "jupiter",
+   "planet2": "mc",
+   "aspect": "opposition",
+   "orb": 2.2348,
+   "applying": true
+  },
+  {
+   "planet1": "saturn",
+   "planet2": "sun",
+   "aspect": "sextile",
+   "orb": 0.1795,
+   "applying": false
+  },
+  {
+   "planet1": "saturn",
+   "planet2": "moon",
+   "aspect": "square",
+   "orb": 1.7955,
+   "applying": true
+  },
+  {
+   "planet1": "saturn",
+   "planet2": "asc",
+   "aspect": "sextile",
+   "orb": 4.3372,
+   "applying": true
+  },
+  {
+   "planet1": "uranus",
+   "planet2": "neptune",
+   "aspect": "conjunction",
+   "orb": 5.0842,
+   "applying": true
+  },
+  {
+   "planet1": "uranus",
+   "planet2": "chiron",
+   "aspect": "opposition",
+   "orb": 1.3783,
+   "applying": true
+  },
+  {
+   "planet1": "neptune",
+   "planet2": "pluto",
+   "aspect": "sextile",
+   "orb": 3.3588,
+   "applying": false
+  },
+  {
+   "planet1": "neptune",
+   "planet2": "chiron",
+   "aspect": "opposition",
+   "orb": 3.7059,
+   "applying": false
+  },
+  {
+   "planet1": "neptune",
+   "planet2": "lilith",
+   "aspect": "sextile",
+   "orb": 0.2305,
+   "applying": true
+  },
+  {
+   "planet1": "neptune",
+   "planet2": "northNode",
+   "aspect": "semisextile",
+   "orb": 0.3588,
+   "applying": true
+  },
+  {
+   "planet1": "neptune",
+   "planet2": "southNode",
+   "aspect": "quincunx",
+   "orb": 0.3588,
+   "applying": true
+  },
+  {
+   "planet1": "pluto",
+   "planet2": "sun",
+   "aspect": "trine",
+   "orb": 5.7897,
+   "applying": false
+  },
+  {
+   "planet1": "pluto",
+   "planet2": "lilith",
+   "aspect": "conjunction",
+   "orb": 3.1284,
+   "applying": true
+  },
+  {
+   "planet1": "pluto",
+   "planet2": "northNode",
+   "aspect": "square",
+   "orb": 3,
+   "applying": true
+  },
+  {
+   "planet1": "pluto",
+   "planet2": "southNode",
+   "aspect": "square",
+   "orb": 3,
+   "applying": true
+  },
+  {
+   "planet1": "sun",
+   "planet2": "moon",
+   "aspect": "quincunx",
+   "orb": 1.616,
+   "applying": true
+  },
+  {
+   "planet1": "sun",
+   "planet2": "asc",
+   "aspect": "conjunction",
+   "orb": 4.1577,
+   "applying": true
+  }
+ ],
+ "helio": {
+  "earth": {
+   "lonDeg": 173.41720609417644,
+   "R": 0.994201889382253
+  },
+  "mercury": {
+   "lonDeg": 337.05825932320477,
+   "R": 0.3849822709758568
+  },
+  "venus": {
+   "lonDeg": 206.64506768957654,
+   "R": 0.7220551359796611
+  },
+  "mars": {
+   "lonDeg": 269.620988803046,
+   "R": 1.4554743320486303
+  },
+  "jupiter": {
+   "lonDeg": 102.27189669181035,
+   "R": 5.176913122192453
+  },
+  "saturn": {
+   "lonDeg": 288.30506499791653,
+   "R": 10.021576363624096
+  },
+  "uranus": {
+   "lonDeg": 276.3595386762795,
+   "R": 19.39297431549659
+  },
+  "neptune": {
+   "lonDeg": 282.5093252791421,
+   "R": 30.208706083972828
+  }
+ },
+ "jd": 2447964.7708333335
+}

@@ -523,10 +523,9 @@
 
   function publishKeepSkyContext(chart) {
     if (!chart || !Number.isFinite(Number(chart.jd)) || !chart.birthDate) return;
-    const dateParts = String(chart.birthDate).split('-').map(Number);
-    const referenceJd = chart.timeKnown === true
-      ? Number(chart.jd)
-      : Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2], 12, 0, 0) / 86400000 + 2440587.5;
+    // Unknown time: chart.jd is already local noon at the birth place (readForm uses 12:00
+    // local, converted with the place's zone), so the caption's local-noon wording holds.
+    const referenceJd = Number(chart.jd);
     document.dispatchEvent(new CustomEvent('ap-keep-sky-context', {
       detail: {
         jd: referenceJd,
