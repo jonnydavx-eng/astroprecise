@@ -18,7 +18,8 @@ const TEXT_EXT = new Set(['.html', '.js', '.css', '.json', '.svg', '.xml', '.txt
 export const ALWAYS_SHIP_PREFIXES = ['data/content-bank/', 'assets/', '.well-known/', 'js/vendor/']
 // Images that old social shares (og:image / twitter:image in earlier releases) still point at.
 // No current page references them, but links already posted elsewhere must keep loading.
-// The pre-step-9 cards (sign-*.jpg, og-banner-silver, the v906/v907 sittings) joined on 23 Oct 2026.
+// The pre-step-9 cards (sign-*.jpg, og-banner-silver, the v906/v907 sittings) joined on 23 Oct 2026;
+// the keep and profile sittings and og/moment.jpg joined when step 10f gave those pages light cards.
 export const ALWAYS_SHIP_FILES = new Set([
   'img/editorial/eclipse-field-guide-cover-final-v836.png',
   'img/editorial/eclipse-launch-2026-v835.jpg',
@@ -34,11 +35,14 @@ export const ALWAYS_SHIP_FILES = new Set([
   'img/editorial/sitting-home-og-v906.jpg',
   'img/editorial/sitting-horoscope-og-v906.jpg',
   'img/editorial/sitting-keep-og-v893.jpg',
+  'img/editorial/sitting-keep-og-v906.jpg',
+  'img/editorial/sitting-profile-og-v906.jpg',
   'img/editorial/sitting-shop-og-v906.jpg',
   'img/editorial/sitting-transits-og-v906.jpg',
   'img/og-banner-improved.jpg',
   'img/og-banner-silver.jpg',
   'img/og-banner-v576.jpg',
+  'img/og/moment.jpg',
   'img/og/sign-aquarius.jpg',
   'img/og/sign-aries.jpg',
   'img/og/sign-cancer.jpg',
