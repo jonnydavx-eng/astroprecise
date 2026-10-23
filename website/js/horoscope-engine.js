@@ -463,7 +463,7 @@
       // Honesty: calendar date at 12:00 UT, solar chart, reflection not fact.
       // A solar house is a life area counted from the Sun sign, not a room.
       // Birth-chart door is chart.html — not transits.html.
-      methodNote: 'Read through a solar chart. Meaning is offered for reflection, not as fact. Planet positions come from published planetary models, calculated on this device. For your full birth chart, see chart.html.',
+      methodNote: 'Read through a solar chart. Meaning is offered for reflection, not as fact. Planet positions come from published planetary models, calculated on this device. For more, see your full birth chart.',
       transits: hits.slice(0, 3).map(function (h) {
         return {
           planet: h.planet,
