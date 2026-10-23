@@ -51,8 +51,8 @@ const TYPES = {
 const HARNESS = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <link rel="stylesheet" href="/css/fonts.css"></head><body><div id="host"></div>
 <script type="module">
-import { buildEclipseReading5 } from '/js/eclipse-reading.js?v=944';
-import { buildEclipsePlateModel, mountEclipseEdition } from '/js/ap-eclipse-edition-v841.js?v=944';
+import { buildEclipseReading5 } from '/js/eclipse-reading.js?v=945';
+import { buildEclipsePlateModel, mountEclipseEdition } from '/js/ap-eclipse-edition-v841.js?v=945';
 const natal = ${JSON.stringify(NATAL)};
 const templates = await (await fetch('/js/reading-templates.json')).json();
 const reading = buildEclipseReading5(${E}, natal, templates, { quietGateDeg: 5 });
