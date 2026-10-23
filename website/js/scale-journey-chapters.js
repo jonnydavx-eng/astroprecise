@@ -57,6 +57,6 @@ window.ScaleJourneyChapters = [
     tagline: 'Finale · Cosmic horizon',
     narrative: 'Galaxies as ancient light. Every photon began its journey before humans existed. Now we descend — all the way home to the blue marble where your chart begins.',
     fact: 'The observable universe: ~93 billion light-years across.',
-    pitch: 'Astro Precise — precision astronomy from Earth to the edge of everything.',
+    pitch: 'AstroPrecise — precision astronomy from Earth to the edge of everything.',
   },
 ];

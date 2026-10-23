@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '939');
+const AP_ASSET_V = String(window.AP_ASSET_V || '940');
 
 const AstroApp = (() => {
 
@@ -1336,7 +1336,7 @@ window.AstroUI = (() => {
     if (famLinks.length) {
       var fp = document.createElement('p');
       fp.className = 'ap-family-links';
-      fp.innerHTML = 'A small family of sites — <strong>Astro Precise</strong> <span class="ap-footer-sep" aria-hidden="true">&middot;</span> '
+      fp.innerHTML = 'A small family of sites — <strong>AstroPrecise</strong> <span class="ap-footer-sep" aria-hidden="true">&middot;</span> '
         + famLinks.join(' <span class="ap-footer-sep" aria-hidden="true">&middot;</span> ');
       host.appendChild(fp);
     }
@@ -1409,7 +1409,7 @@ window.AP_MON = Object.assign({
       {
         id: 'moonology-oracle',
         title: 'Moonology Oracle Cards',
-        blurb: '44-card lunar oracle — elegant companion to Astro Precise moon phase data.',
+        blurb: '44-card lunar oracle — elegant companion to AstroPrecise moon phase data.',
         url: 'https://www.amazon.co.uk/s?k=Moonology+Oracle+Cards+Yasmin+Boland',
         source: 'Amazon',
         price: '~£16',

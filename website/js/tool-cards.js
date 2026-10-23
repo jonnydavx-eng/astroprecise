@@ -73,7 +73,7 @@ window.AstroToolCards = (() => {
       href: 'ephemeris.html',
       label: 'Signature Feature',
       title: 'Sky',
-      desc: 'The Instrument — your birth as an event in spacetime. VSOP87 light-cone wavefront, zenith stars, echo dates, field weather, and a precession engine. Unique to Astro Precise.',
+      desc: 'The Instrument — your birth as an event in spacetime. VSOP87 light-cone wavefront, zenith stars, echo dates, field weather, and a precession engine. Unique to AstroPrecise.',
       cta: 'Open Sky',
       icon: 'orb',
       glyph: '⬡',

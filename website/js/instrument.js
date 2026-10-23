@@ -295,7 +295,7 @@
     x.strokeRect(58, 58, BASE - 116, BASE - 116);
 
     // ── wavefront map (same log-radial mapping as the live canvas) ──
-    const cx = BASE / 2, cy = 430, maxR = 330;
+    const cx = BASE / 2, cy = 420, maxR = 290;
     const rOf = ly => 12 + (Math.log10(Math.max(ly, 0.1) / 0.1) / 4) * (maxR - 12);
     const waveR = rOf(m.radiusLy);
 
@@ -347,30 +347,30 @@
     // ── text ──
     x.textAlign = 'center';
     x.fillStyle = '#8FA3B8';
-    x.font = '26px "AstroGlyph", Georgia, serif';
-    x.fillText('T H E   L I G H T - C O N E', BASE / 2, 130);
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    x.fillText('T H E   L I G H T - C O N E', BASE / 2, 110);
 
     x.fillStyle = '#9AA8B6';
-    x.font = '30px "AstroGlyph", Georgia, serif';
-    x.fillText('The light of my first breath has reached', BASE / 2, 830);
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    x.fillText('The light of my first breath has reached', BASE / 2, 776);
 
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 76px "AstroGlyph", Georgia, serif';
-    x.fillText(`${m.reached.length} star systems`, BASE / 2, 920);
+    x.fillText(`${m.reached.length} star systems`, BASE / 2, 856);
 
     x.fillStyle = '#9AA8B6';
-    x.font = '28px "AstroGlyph", Georgia, serif';
-    x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, BASE / 2, 975);
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    wrapText(x, `and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, BASE / 2, 906, BASE - 200, 42, 2);
 
-    x.fillStyle = '#8FA3B8';
-    x.font = '22px "AstroGlyph", Georgia, serif';
-    x.fillText('astroprecise · the instrument', BASE / 2, 1010);
+    cardFooter(x);
 
     return cv;
   }
 
   // ── Shared share-card scaffolding (HD export, 1080 design-space) ─────────
   const CARD_BASE = 1080;
+  // Smallest card text: 33 of 1080 units is 11 CSS px when a card is shown 360 px wide.
+  const CARD_MIN_PX = 33;
   function cardExportPx() {
     return (window.RafCore && window.RafCore.cardExportSize) ? window.RafCore.cardExportSize() : CARD_BASE * 2;
   }
@@ -419,27 +419,37 @@
   function cardHeader(x, text, y) {
     x.textAlign = 'center';
     x.fillStyle = '#8FA3B8';
-    x.font = '26px "AstroGlyph", Georgia, serif';
-    x.fillText(text, CARD_BASE / 2, y == null ? 130 : y);
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    x.fillText(text, CARD_BASE / 2, y == null ? 120 : y);
   }
 
   function cardFooter(x, y) {
     x.textAlign = 'center';
     x.fillStyle = '#8FA3B8';
-    x.font = '22px "AstroGlyph", Georgia, serif';
-    x.fillText('astroprecise · the instrument', CARD_BASE / 2, y == null ? 1010 : y);
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    x.fillText('AstroPrecise · the instrument', CARD_BASE / 2, y == null ? 1000 : y);
   }
 
-  // Honesty/provenance pill: a dot + label. measured -> gold dot, else silver-blue.
+  // Honesty/provenance pill: a dot + label (wraps to a second line when long).
+  // measured -> gold dot, else silver-blue. `y` is the centre of the first line.
   function honestyBadge(x, cx, y, label, measured) {
-    x.font = '20px "AstroGlyph", Georgia, serif';
-    const padX = 26, dotGap = 16, dotR = 5;
-    const tw = x.measureText(label).width;
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    const padX = 26, dotGap = 16, dotR = 5, lineH = 42;
+    const maxTw = CARD_BASE - 260;
+    const lines = [];
+    let line = '';
+    for (const word of String(label).split(/\s+/)) {
+      const test = line ? line + ' ' + word : word;
+      if (line && x.measureText(test).width > maxTw) { lines.push(line); line = word; } else line = test;
+    }
+    if (line) lines.push(line);
+    const tw = Math.max(...lines.map((l) => x.measureText(l).width));
     const w = tw + padX * 2 + dotGap + dotR * 2;
-    const h = 42, left = cx - w / 2;
+    const h = 52 + (lines.length - 1) * lineH, left = cx - w / 2;
+    const top = y - 26;
     x.beginPath();
-    if (x.roundRect) x.roundRect(left, y - h / 2, w, h, h / 2);
-    else x.rect(left, y - h / 2, w, h);
+    if (x.roundRect) x.roundRect(left, top, w, h, 26);
+    else x.rect(left, top, w, h);
     x.fillStyle = 'rgba(20, 16, 10,0.55)';
     x.fill();
     x.lineWidth = 1;
@@ -452,20 +462,29 @@
     x.fill();
     x.textAlign = 'left';
     x.fillStyle = measured ? '#E6ECF2' : '#9AA8B6';
-    x.fillText(label, dotX + dotGap, y + 7);
+    lines.forEach((l, i) => x.fillText(l, dotX + dotGap, y + 11 + i * lineH));
     x.textAlign = 'center';
+    return top + h;
   }
 
-  function wrapText(x, text, cx, y, maxW, lineH) {
-    const words = String(text).split(/\s+/);
-    let line = '', yy = y;
+  // Word-wrap centred text. With maxLines, the last line ends in '…' if text is left over.
+  function wrapText(x, text, cx, y, maxW, lineH, maxLines) {
+    const words = String(text).split(/\s+/).filter(Boolean);
+    const lines = [];
+    let line = '';
     for (const w of words) {
       const test = line ? line + ' ' + w : w;
-      if (x.measureText(test).width > maxW && line) {
-        x.fillText(line, cx, yy); line = w; yy += lineH;
-      } else line = test;
+      if (x.measureText(test).width > maxW && line) { lines.push(line); line = w; } else line = test;
     }
-    if (line) { x.fillText(line, cx, yy); yy += lineH; }
+    if (line) lines.push(line);
+    if (maxLines && lines.length > maxLines) {
+      lines.length = maxLines;
+      let last = lines[maxLines - 1];
+      while (last && x.measureText(last + '…').width > maxW) last = last.replace(/\s*\S+$/, '');
+      lines[maxLines - 1] = last + '…';
+    }
+    let yy = y;
+    for (const l of lines) { x.fillText(l, cx, yy); yy += lineH; }
     return yy;
   }
 
@@ -506,8 +525,8 @@
     cardHeader(x, 'Z E N I T H   S T A R');
 
     x.fillStyle = '#9AA8B6';
-    x.font = 'italic 30px "AstroGlyph", Georgia, serif';
-    x.fillText('The star over my first breath', CARD_BASE / 2, 196);
+    x.font = 'italic ' + CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    x.fillText('The star over my first breath', CARD_BASE / 2, 190);
 
     x.fillStyle = '#f0e8d8';
     let nameSize = 96;
@@ -522,7 +541,7 @@
     x.shadowBlur = 0;
 
     // local star patch: real stars within ±18° of the zenith point
-    const panelCy = 540, half = 200, span = 18;
+    const panelCy = 520, half = 170, span = 18;
     const wrapDeg = d => ((d + 540) % 360) - 180;
     const panelStars = [];
     for (const st of S.STARS) {
@@ -552,24 +571,28 @@
     }
 
     x.fillStyle = '#E6ECF2';
-    x.font = '30px "AstroGlyph", Georgia, serif';
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
     const parts = [];
     if (s.con) parts.push(s.con);
     if (s.spectral) parts.push('type ' + s.spectral);
     parts.push('mag ' + s.mag);
     parts.push(s.ly + ' ly');
-    x.fillText(parts.join('   ·   '), CARD_BASE / 2, 812);
+    wrapText(x, parts.join('   ·   '), CARD_BASE / 2, 752, CARD_BASE - 200, 42, 1);
 
     x.fillStyle = '#9AA8B6';
-    x.font = '26px "AstroGlyph", Georgia, serif';
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
     wrapText(x,
       `Nearest catalogued star to the point directly overhead at my birth — ${z.sepDeg.toFixed(1)}° from the exact zenith.`,
-      CARD_BASE / 2, 862, CARD_BASE - 220, 38);
+      CARD_BASE / 2, 800, CARD_BASE - 200, 42, 2);
 
-    honestyBadge(x, CARD_BASE / 2, 952, 'computed · J2000 catalogue + LST', false);
+    // Plain words for the method: J2000 catalogue star positions, and the point overhead
+    // found from local sidereal time and latitude.
+    honestyBadge(x, CARD_BASE / 2, 906, ZENITH_METHOD, false);
     cardFooter(x);
     return cv;
   }
+
+  const ZENITH_METHOD = 'Calculated from star positions and local sidereal time';
 
   // One-line transit highlight. Prefers the day's strongest oracle aspect.
   function transitHighlightLine(report) {
@@ -598,26 +621,26 @@
 
     const today = new Date(report.generatedAt);
     x.fillStyle = '#9AA8B6';
-    x.font = 'italic 28px "AstroGlyph", Georgia, serif';
+    x.font = 'italic ' + CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
     x.textAlign = 'center';
     x.fillText(today.toLocaleDateString(undefined,
-      { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), CARD_BASE / 2, 190);
+      { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), CARD_BASE / 2, 180);
 
     // Moon disc (correct terminator for the phase)
-    moonDisc(x, CARD_BASE / 2, 400, 130, lunar.illumination, lunar.waxing);
+    moonDisc(x, CARD_BASE / 2, 345, 115, lunar.illumination, lunar.waxing);
 
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 54px "AstroGlyph", Georgia, serif';
-    x.fillText(lunar.phaseName, CARD_BASE / 2, 622);
+    x.fillText(lunar.phaseName, CARD_BASE / 2, 530);
     x.fillStyle = '#E6ECF2';
-    x.font = '30px "AstroGlyph", Georgia, serif';
-    x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_BASE / 2, 668);
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_BASE / 2, 578);
 
     const tHi = transitHighlightLine(report);
     if (tHi) {
       x.fillStyle = '#9AA8B6';
-      x.font = '27px "AstroGlyph", Georgia, serif';
-      wrapText(x, tHi, CARD_BASE / 2, 742, CARD_BASE - 240, 38);
+      x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+      wrapText(x, tHi, CARD_BASE / 2, 636, CARD_BASE - 200, 42, 4);
     }
 
     let swLine, measured;
@@ -633,10 +656,10 @@
       measured = false;
     }
     x.fillStyle = measured ? '#E6ECF2' : '#9AA8B6';
-    x.font = '30px "AstroGlyph", Georgia, serif';
-    x.fillText(swLine, CARD_BASE / 2, 858);
+    x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
+    wrapText(x, swLine, CARD_BASE / 2, 810, CARD_BASE - 200, 42, 1);
 
-    honestyBadge(x, CARD_BASE / 2, 942, measured ? 'measured · NOAA SWPC' : 'computed only · feed down', measured);
+    honestyBadge(x, CARD_BASE / 2, 890, measured ? 'measured · NOAA SWPC' : 'computed only · feed down', measured);
     cardFooter(x);
     return cv;
   }

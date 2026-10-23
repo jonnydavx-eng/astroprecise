@@ -216,4 +216,150 @@ for (const f of [
   ok(!/Astro Precise/.test(code), `${f}: share/brand copy says AstroPrecise (one word)`)
 }
 
+// ── Step 10d ─────────────────────────────────────────────────────────────────────────────
+// Every shipped file says AstroPrecise (one word). Comments may still say it. Three files
+// are allowed to keep it for now, because their checkout/fulfilment copy waits for Jonny.
+const { readdirSync, statSync } = await import('node:fs')
+const { join, relative, extname } = await import('node:path')
+const WEB = new URL('./website/', import.meta.url).pathname
+const BRAND_ALLOW = new Map([
+  ['fulfil-redirect.html', 'checkout/fulfilment copy waits for Jonny'],
+  ['js/shop-commerce.js', 'checkout/fulfilment copy waits for Jonny'],
+  ['js/ap-checkout-honest.js', 'checkout/fulfilment copy waits for Jonny'],
+])
+const BRAND_EXT = new Set(['.html', '.js', '.mjs', '.json', '.svg', '.txt', '.xml', '.webmanifest'])
+const shipped = []
+;(function walk(dir) {
+  for (const n of readdirSync(dir)) {
+    if (
+      n.startsWith('.') ||
+      n === 'node_modules' ||
+      /\.(pre-[\w-]+|bak)$/.test(n) ||
+      /\.pre-/.test(n)
+    )
+      continue
+    const f = join(dir, n)
+    if (statSync(f).isDirectory()) walk(f)
+    else if (BRAND_EXT.has(extname(n))) shipped.push(relative(WEB, f).split('\\').join('/'))
+  }
+})(WEB)
+ok(shipped.length > 300, `brand check walks the shipped site (${shipped.length} files)`)
+for (const f of BRAND_ALLOW.keys())
+  ok(shipped.includes(f), `brand allowlist entry exists: ${f} (${BRAND_ALLOW.get(f)})`)
+const spaced = []
+for (const f of shipped) {
+  if (BRAND_ALLOW.has(f)) continue
+  let code = readFileSync(join(WEB, f), 'utf8')
+  if (/\.(js|mjs)$/.test(f))
+    code = code.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
+  else code = code.replace(/<!--[\s\S]*?-->/g, '').replace(/\/\*[\s\S]*?\*\//g, '')
+  if (/astro precise/i.test(code)) spaced.push(f)
+}
+ok(spaced.length === 0, `every shipped file says AstroPrecise (one word): ${spaced.join(', ')}`)
+
+// Plain words for the method, not shorthand, on the Moment and Instrument cards.
+const instrument = read('./website/js/instrument.js')
+for (const [name, src] of [
+  ['ap-moment-share.js', moment],
+  ['instrument.js', instrument],
+]) {
+  for (const old of ['J2000 catalogue + LST', 'computed · J2000', 'LST + latitude', '· VSOP87'])
+    ok(!src.includes(old), `${name}: no "${old}" shorthand`)
+}
+ok(
+  m.draws.some((d) => d.text === 'Calculated from star positions and local sidereal time'),
+  'moment card badge: Calculated from star positions and local sidereal time',
+)
+ok(
+  moment.includes("'calculated from local sidereal time and latitude.'"),
+  'moment card fallback says: calculated from local sidereal time and latitude',
+)
+
+// Share images on the sky-card.html poster, the Instrument cards (ephemeris.html) and the
+// eclipse edition plate: every text draw >= 11 px when the image is shown 360 px wide.
+function checkFloor(label, r) {
+  ok(r.draws.length > 0, `${label}: draws text`)
+  const small = r.draws.filter((d) => effectivePx(d.px, r.width) < MIN_EFFECTIVE_PX - 1e-9)
+  ok(
+    small.length === 0,
+    `${label}: every line >= ${MIN_EFFECTIVE_PX} px at ${PHONE_CSS_PX} wide (min ` +
+      `${Math.min(...r.draws.map((d) => effectivePx(d.px, r.width))).toFixed(2)} px)` +
+      small.map((d) => ` [${d.px}u ${d.text}]`).join(''),
+  )
+}
+function checkLayout(label, r, draws) {
+  const out = draws.filter((d) => {
+    const b = box(d)
+    return b.x0 < r.frame || b.x1 > r.width - r.frame || b.y0 < r.frame || b.y1 > r.height - r.frame
+  })
+  ok(
+    out.length === 0,
+    `${label}: every line inside the frame` + out.map((d) => ` [${d.text}]`).join(''),
+  )
+  const clashes = []
+  for (let i = 0; i < draws.length; i++)
+    for (let j = i + 1; j < draws.length; j++) {
+      const a = box(draws[i]),
+        b = box(draws[j])
+      if (a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1)
+        clashes.push(`${draws[i].text} / ${draws[j].text}`)
+    }
+  ok(clashes.length === 0, `${label}: no two lines overlap ${clashes.join('; ')}`)
+}
+for (const [label, scenario, opts] of [
+  ['poster (known birth)', 'known', {}],
+  ['poster (unknown birth time)', 'unknown', {}],
+  [
+    'poster (birth hidden, long title)',
+    'known',
+    { includeBirth: false, name: 'A very long title for my sky card' },
+  ],
+]) {
+  const r = await probe.probeKeepsakePoster(scenario, opts)
+  checkFloor(label, r)
+  // Sign names are set on a circle (rotated); the straight lines are checked for fit and overlap.
+  checkLayout(
+    label,
+    r,
+    r.draws.filter((d) => !d.rotate),
+  )
+  ok(
+    r.draws.some((d) => d.text === 'ASTROPRECISE'),
+    `${label}: wordmark is ASTROPRECISE`,
+  )
+}
+for (const [label, kind, opts] of [
+  ['instrument light-cone card', 'lightcone', {}],
+  ['instrument zenith card', 'zenith', {}],
+  ['instrument daily card', 'daily', {}],
+  ['instrument daily card (feed down)', 'daily', { measured: false }],
+]) {
+  const r = await probe.probeInstrumentCard(kind, opts)
+  checkFloor(label, r)
+  checkLayout(label, r, r.draws)
+  ok(
+    r.draws.every((d) => !/J2000|LST|VSOP87/.test(d.text)),
+    `${label}: no J2000 / LST / VSOP87 shorthand`,
+  )
+  if (kind === 'zenith')
+    ok(
+      r.draws.some((d) => d.text.startsWith('Calculated from star positions')),
+      `${label}: badge says Calculated from star positions and local sidereal time`,
+    )
+}
+// The eclipse edition (closed to new purchases; the plate is the paid PNG) — only its text sizes
+// changed. Wheel labels are drawn around the wheel centre, so only the floor is checked there.
+for (const [label, which] of [
+  ['eclipse edition plate', 'artwork'],
+  ['eclipse disc (captions)', 'disc'],
+]) {
+  const r = await probe.probeEclipsePlate(which)
+  checkFloor(label, r)
+  const flat = r.draws.filter((d) => d.x >= 0 && d.w > 60)
+  ok(
+    flat.every((d) => box(d).x1 <= r.width - 64),
+    `${label}: header and footer lines fit the width`,
+  )
+}
+
 console.log(`test-share-canvases: ${passed} passed, 0 failed`)
