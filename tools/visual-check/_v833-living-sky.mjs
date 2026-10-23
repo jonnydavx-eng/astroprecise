@@ -37,7 +37,9 @@ const NAV_ROUTES = [
   ['charts.html', 'Saved'],
   ['observatory.html', 'Explore'],
   ['sky-events.html', 'Explore'],
-  ['shop.html', 'Explore'],
+  // The shop is The Studio (header link marked current), not one of the four tabs:
+  // ap-next.js STUDIO_PAGES leaves every tab unmarked there.
+  ['shop.html', null],
 ];
 
 // Reads the shared phone tab bar: labels, hrefs, current tab, target sizes.
@@ -88,6 +90,9 @@ function watch(page) {
 }
 
 async function waitForModel(page) {
+  // The Observatory loads the 3D engine only after "Enter the sky" is pressed.
+  const enter = page.locator('#ap-enter-sky');
+  if (await enter.count() && await enter.isEnabled()) await enter.click();
   await page.waitForSelector('#orr canvas', { state: 'visible', timeout: T(35_000) });
   await page.waitForFunction(() => {
     const orrery = document.getElementById('orr');
@@ -160,7 +165,9 @@ async function homeGate(browser, viewport, label, mobile) {
       scales,
       worldSelect: { disabled: worldSelect?.disabled, box: box(worldSelect) },
       scaleSelect: { disabled: scaleSelect?.disabled, box: box(scaleSelect) },
-      cssLoaded: Array.from(document.styleSheets).some(sheet => String(sheet.href || '').includes('ap-living-sky-v834.css')),
+      // v928 (2C step 6) moved the Observatory onto the Paper & Night shell: its sky
+      // styles are observatory-next.css now, not ap-living-sky-v834.css.
+      cssLoaded: Array.from(document.styleSheets).some(sheet => String(sheet.href || '').includes('observatory-next.css')),
       heading: document.querySelector('.ap-live-heading')?.textContent.trim(),
       viewportHeight: innerHeight,
     };
@@ -169,7 +176,7 @@ async function homeGate(browser, viewport, label, mobile) {
   gate(`${label} WebGL is the only model`, state.engine === 'webgl' && state.modelCount === 1 && state.visibleCanvasCount === 1, JSON.stringify({ engine: state.engine, modelCount: state.modelCount, visibleCanvasCount: state.visibleCanvasCount }));
   gate(`${label} opens directly at System frame`, state.scale === 2 && Number(state.radius) >= 32 && Number(state.radius) <= 160, JSON.stringify({ scale: state.scale, radius: state.radius }));
   gate(`${label} retired doorway absent`, !state.oldThreshold && !state.oldDeck);
-  gate(`${label} living-sky stylesheet loaded`, state.cssLoaded);
+  gate(`${label} Observatory stylesheet loaded`, state.cssLoaded);
   // observatory.html's heading is set by ap-home-reading.js ("Sit with the sky first" before a chart is chosen).
   gate(`${label} launch heading`, state.heading === 'Sit with the sky first', state.heading || 'missing');
   gate(`${label} no horizontal overflow`, state.overflowX <= 1, `${state.overflowX}px`);
@@ -343,7 +350,8 @@ async function mobileNavGate(browser) {
     gate(`${route} phone tab bar exposes the four-route spine`, state.visible && state.fixedBottom && JSON.stringify(state.labels) === JSON.stringify(PRIMARY_TABS.map(item => item[1])) && JSON.stringify(state.hrefs) === JSON.stringify(PRIMARY_TABS.map(item => item[0])) && state.active === expectedActive, JSON.stringify(state));
     gate(`${route} phone tab targets are touch-sized`, state.minTarget >= 44, `${state.minTarget}px`);
     // The fixed bar must not hide the end of the page.
-    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+    // ap-next.css sets html{scroll-behavior:smooth}; jump instantly so the read is at the end.
+    await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
     await page.waitForTimeout(250);
     const end = await page.evaluate(() => {
       const items = Array.from(document.querySelectorAll('.ap-next-footer .footer-bottom span'));

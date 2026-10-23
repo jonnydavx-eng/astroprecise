@@ -23,16 +23,17 @@ import { PNG } from './visual-check/node_modules/pngjs/lib/png.js';
 
 const BASE = process.argv[2] || 'http://localhost:8790';
 
+// The 3D <void-orrery> now lives only on observatory.html, and it loads the engine
+// only after "Enter the sky" (#ap-enter-sky) is pressed, so `enter` clicks it first.
+// Home, chart, tonight and couples no longer host a 3D stage (2D living sky / no
+// orrery), so they are not 3D surfaces to prove here.
 const PAGES = [
-  { path: '/', canvas: 'void-orrery canvas', label: 'home (living sky)' },
-  { path: '/chart.html', canvas: 'void-orrery canvas', label: 'chart (room sky)' },
-  { path: '/tonight.html', canvas: 'void-orrery canvas', label: 'tonight (room sky)' },
-  { path: '/compatibility.html', canvas: 'void-orrery canvas', label: 'couples (two natal clocks)' },
+  { path: '/observatory.html', canvas: 'void-orrery canvas', label: 'observatory (live sky)', enter: true },
   { path: '/eclipse.html', canvas: '.ap-eclipse-live__canvas', label: 'eclipse (own renderer)' },
   // The opt-in HalfFloat + MSAA + bloom target. No shipping page asks for it, so
   // drive it here to keep the branch alive and to prove the post-resize frame
   // guard does not fire against a composer that is working.
-  { path: '/', canvas: 'void-orrery canvas', label: 'home (cinematic composer opt-in)', cinematic: true },
+  { path: '/observatory.html', canvas: 'void-orrery canvas', label: 'observatory (cinematic composer opt-in)', cinematic: true, enter: true },
 ];
 
 const SIZES = [
@@ -99,6 +100,21 @@ async function main() {
         Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 16, configurable: true });
         Object.defineProperty(navigator, 'deviceMemory', { get: () => 8, configurable: true });
       } catch (e) { /* engine falls back to its own probe */ }
+      // orrery-webgl.js also drops software WebGL (SwiftShader, which headless
+      // Chromium uses here) to the low tier, which has no composer. Report a
+      // hardware renderer label so the composer this proof exists to test is built;
+      // the pixels are still rendered by SwiftShader.
+      try {
+        const UNMASKED_RENDERER = 0x9246;
+        for (const Ctx of [window.WebGLRenderingContext, window.WebGL2RenderingContext]) {
+          if (!Ctx) continue;
+          const orig = Ctx.prototype.getParameter;
+          Ctx.prototype.getParameter = function (p) {
+            if (p === UNMASKED_RENDERER) return 'ANGLE (Proof GPU, hardware-class label for the resize proof)';
+            return orig.call(this, p);
+          };
+        }
+      } catch (e) { /* leave the real label */ }
     });
     if (spec.cinematic) {
       await page.addInitScript(() => {
@@ -112,6 +128,7 @@ async function main() {
     }
     try {
       await page.goto(BASE + spec.path, { waitUntil: 'domcontentloaded', timeout: 45000 });
+      if (spec.enter) await page.click('#ap-enter-sky', { timeout: 45000 });
       await page.waitForSelector(spec.canvas, { timeout: 45000 });
       await settle(page, 9000);
 

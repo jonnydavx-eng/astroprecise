@@ -45,6 +45,8 @@ try {
     waitUntil: 'domcontentloaded',
     timeout: 60_000,
   });
+  // The Observatory loads the 3D engine only after "Enter the sky" is pressed.
+  await page.click('#ap-enter-sky');
   await page.waitForSelector('#orr canvas', { timeout: 30_000 });
   await page.waitForFunction(() => {
     const orrery = document.getElementById('orr');
