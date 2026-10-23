@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="robots" content="noindex, follow">
-  <meta name="color-scheme" content="dark">
-  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="referrer" content="no-referrer" />
   <script>
@@ -40,31 +38,8 @@
   <meta name="twitter:title" content="Moon Phase on Your Birthday | AstroPrecise" />
   <meta name="twitter:description" content="See the exact phase of the Moon on the day you were born — real astronomy, beautifully drawn, free to share." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#040812" />
-  <link rel="preload" href="css/main-lite.css" as="style" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /><link rel="stylesheet" href="css/moonphase-page.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=926" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=926" id="ap-css-atlas-tokens" />
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=926" />
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/moonphase-page.css" />
-  <style>
-    body:has(.mp-hero){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
-    body:has(.mp-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
-    body:has(.mp-hero) .mp-hero h1{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;min-height:1.15em;contain:layout style;}
-    body:has(.mp-hero) .navbar__nav{min-height:44px;contain:layout style;}
-    body:has(.mp-hero) .mp-hero__sub{min-height:3.8em;}
-    body:has(.mp-hero) .mp-section__subtitle{min-height:2.4em;}
-    body:has(.mp-hero) .mp-hero__honest{min-height:1.2em;}
-    body:has(.mp-hero) .mp-tabs{min-height:44px;}
-    body:has(.mp-hero) .mp-form-wrap{min-height:220px;contain:layout style;}
-    body:has(.mp-hero) .footer-zodiac-strip{min-height:2.75rem;contain:layout style;}
-    body:has(.mp-hero) #moonphase-result:not(:empty),body:has(.mp-hero) #moonphase-compat-result:not(:empty){min-height:420px;}
-  </style>
-  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
-  <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferMpFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferMpFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
+  <meta name="theme-color" content="#F6F3EC" />
+  <noscript></noscript>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -115,10 +90,13 @@
     ]
   }
   </script>
-
-  <link rel="stylesheet" href="css/ap-next.css?v=926"><script defer src="js/ap-next.js?v=926"></script></head>
-<body class="ap-no-nav-enter ap-editorial">
-  <a class="skip-link" href="#main-content">Skip to content</a>
+  <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/ap-next.css?v=927" />
+  <link rel="stylesheet" href="css/guide-next.css?v=927" />
+  <script src="js/ap-next.js?v=927" defer></script>
+</head>
+<body class="ap-next ap-guide ap-guide--moonphase">
+  <a class="ap-skip" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
     <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
@@ -134,12 +112,6 @@
     <symbol id="ei-moon6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
     <symbol id="ei-moon7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
   </svg>
-
-  <!-- Cosmic background -->
-  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
-  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
-  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
   <!-- ============================================================
        NAVIGATION
@@ -215,7 +187,7 @@
                 <input type="date" id="mp-compat-date-a" class="form-input" required aria-required="true" />
               </div>
             </div>
-            <div class="mp-form-row" style="margin-top:1.25rem;">
+            <div class="mp-form-row">
               <div class="form-group">
                 <label for="mp-compat-name-b" class="form-label">Second Name (optional)</label>
                 <input type="text" id="mp-compat-name-b" class="form-input" placeholder="Person B" autocomplete="off" />
@@ -272,9 +244,9 @@
         </div>
 
         <!-- How it works — honesty -->
-        <div style="max-width:720px;margin:2.5rem auto 0;background:var(--surface);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.75rem 1.9rem;">
-          <p class="mp-edu-card__title" style="margin-bottom:0.75rem;">How this tool computes your Moon</p>
-          <p style="color:var(--silver);line-height:1.8;font-size:0.9rem;margin:0 0 0.9rem;">
+        <div class="mp-note">
+          <p class="mp-edu-card__title">How this tool computes your Moon</p>
+          <p>
             We take the real geocentric longitudes of the Sun and Moon for your date (VSOP87 for the Sun, a
             truncated ELP2000 series for the Moon). This date-only tool uses 12:00&nbsp;UT that civil day as a
             <strong>reference instant</strong> — not a stand-in for a known birth time. The angle between them — the
@@ -282,20 +254,20 @@
             <strong>(1&nbsp;&minus;&nbsp;cos&nbsp;elongation)&nbsp;/&nbsp;2</strong>, and the phase name follows the
             standard windows around 0&deg;, 90&deg;, 180&deg;, and 270&deg;.
           </p>
-          <p style="color:var(--silver);line-height:1.8;font-size:0.9rem;margin:0;">
+          <p>
             That is genuine astronomy. The same date always gives the same Moon, and for the compatibility mode we
             never invent a score — we show both real Moons and describe their true angular relationship.
           </p>
         </div>
 
         <div class="cta-divider"><span>Go deeper</span></div>
-        <div style="text-align:center;">
+        <div class="g-center">
           <a href="chart.html" class="btn btn--primary btn--lg">Cast your chart</a>
         </div>
       </div>
     </section>
 
-    <div class="container" style="max-width:920px;margin:var(--space-8) auto;">
+    <div class="mp-ai-wrap">
       <div id="moonphase-ai-panel" hidden aria-label="Optional moon insight"></div>
     </div>
 
@@ -313,9 +285,6 @@
   <script src="js/profile.js" defer></script>
   <script>
   (function () {
-    function audit() {
-      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
-    }
     function inject(src) {
       var s = document.createElement('script');
       s.src = src;
@@ -323,30 +292,16 @@
       document.body.appendChild(s);
     }
     // Always load the Moon tool — form + result cards (incl. model deep-link).
-    // Decorative starfield stays audit-skipped.
-    inject('js/ap-deep-link.js?v=926');
-    inject('js/raf-core.js');
-    inject('js/icons.js');
-    inject('js/moonphase.js?v=926');
-    function idleCosmos() {
-      if (audit()) return;
-      inject('js/cosmos.js');
-      inject('js/effects.js');
-    }
-    window.addEventListener('load', function () {
-      if (window.requestIdleCallback) requestIdleCallback(idleCosmos, { timeout: 4000 });
-      else setTimeout(idleCosmos, 1200);
-    }, { once: true });
+    inject('js/ap-deep-link.js?v=927');
+    inject('js/ap-glyphs.js?v=927');
+    inject('js/moonphase.js?v=927');
   })();
   </script>
 
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=926" />
   <script src="js/ephemeris.js" defer></script>
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/ap-daily-bridge.js" defer></script>
   <script src="js/ap-ai-assistant.js" defer></script>
-  <script src="js/ap-page-boot.js?v=926" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
-  <script src="js/ap-footer-inject.js?v=926" defer></script>
+  <script src="js/ap-error-beacon.js?v=927" defer></script>
 </body>
 </html>

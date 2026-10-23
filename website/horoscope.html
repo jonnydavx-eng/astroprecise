@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="robots" content="index, follow">
-  <meta name="color-scheme" content="dark" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="referrer" content="no-referrer" />
   <script>
@@ -21,12 +20,7 @@
   </script>
   <meta name="description" content="Daily horoscope for all 12 signs. Positions are calculated for today at 12:00 UT and interpreted through a solar chart; astrological meaning is offered for reflection and entertainment." />
   <title>Daily Horoscope — calculated from today’s sky | AstroPrecise</title>
-  <script>window.AP_ASSET_V='926';</script>
-  <link rel="preload" href="fonts/cormorant-garamond-normal-500.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="fonts/ibm-plex-mono-normal-400.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="fonts/schibsted-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/fonts.css?v=926" />
+  <script>window.AP_ASSET_V='927';</script>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -47,12 +41,7 @@
   <meta name="twitter:title" content="Daily Horoscope — calculated from today’s sky" />
   <meta name="twitter:description" content="Positions calculated for today at 12:00 UT, then interpreted through a solar chart for all twelve signs." />
   <meta name="twitter:image" content="https://astroprecise.app/img/editorial/sitting-horoscope-og-v906.jpg" />
-  <meta name="theme-color" content="#040812" />
-  <link rel="preload" href="css/ap-palette-2026.css?v=926" as="style" />
-  <link rel="preload" href="css/ap-logo-aurora.css?v=926" as="style" />
-  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=926" id="ap-css-visual-clarity" />
-  <link rel="preload" href="css/ap-page-structure.css?v=926" as="style" />
-  <link rel="preload" href="css/ap-model-stage.css?v=926" as="style" />
+  <meta name="theme-color" content="#F6F3EC" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -72,25 +61,19 @@
     "isPartOf": { "@type": "WebSite", "name": "AstroPrecise", "url": "https://astroprecise.app/" }
   }
   </script>
-  <link rel="stylesheet" href="css/celestial-seals.css?v=926" />
-  <link rel="stylesheet" href="css/ap-living-sky-v834.css?v=926" />
-  <link rel="stylesheet" href="css/ap-daily-v835.css?v=926" />
-  <style>
-    /* One-screen daily: People / Work / Pace. No Guides & tools / engine-visuals strip. */
-    .page-horoscope .ap-guide-links,
-    .page-horoscope #ap-engine-visuals,
-    .page-horoscope .ap-ev { display: none !important; }
-    .page-horoscope .sign-reading-panel__method a { color: var(--daily-brass, #93A8BF); }
-  </style>
-<link rel="stylesheet" href="css/ap-next.css?v=926"><script defer src="js/ap-next.js?v=926"></script></head>
-<body class="page-horoscope ap-daily-ledger ap-no-nav-enter ap-editorial">
+  <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/ap-next.css?v=927" />
+  <link rel="stylesheet" href="css/guide-next.css?v=927" />
+  <script src="js/ap-next.js?v=927" defer></script>
+</head>
+<body class="ap-next ap-guide ap-guide--horoscope page-horoscope">
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="ap-symbols">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
     <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
   </svg>
 
-  <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
+  <a id="skip-to-content" class="ap-skip" href="#main-content">Skip to content</a>
 
   <div data-ap-next-nav><noscript><nav class="ap-noscript-nav" aria-label="Primary"><a href="index.html">AstroPrecise</a> · <a href="chart.html">Birth chart</a> · <a href="explore.html">Explore</a> · <a href="charts.html">Saved</a> · <a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a></nav></noscript></div>
 
@@ -144,7 +127,7 @@
           <div class="sign-reading-panel__inner">
             <header class="sign-reading-panel__header">
               <div class="sign-reading-panel__title-group">
-                <img class="srp-sign-seal" id="srp-sign-seal" src="assets/images/seals/zodiac/aries.svg" alt="Aries engraved zodiac seal" width="76" height="89" decoding="async" />
+                <span class="srp-sign-seal" id="srp-sign-seal" role="img" aria-label="Aries"></span>
                 <div>
                   <p class="sign-reading-panel__sign-name" id="srp-sign-name">Daily reading</p>
                   <p class="sign-reading-panel__date" id="srp-date"></p>
@@ -233,10 +216,8 @@
   <script src="js/raf-core.js" defer></script>
   <script src="js/ap-zodiac-constants.js" defer></script>
   <script src="js/ephemeris.js" defer></script>
-  <script src="js/celestial-seals.js" defer></script>
-  <script src="js/ap-nav-model.js?v=926" defer></script>
-  <script src="js/ap-footer-inject.js?v=926" defer></script>
-  <script src="js/app.js?v=926" defer></script>
-  <script src="js/horoscope-page.js?v=926" defer></script>
+  <script src="js/app.js?v=927" defer></script>
+  <script src="js/ap-glyphs.js?v=927" defer></script>
+  <script src="js/horoscope-page.js?v=927" defer></script>
 </body>
 </html>

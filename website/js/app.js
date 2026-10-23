@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '926');
+const AP_ASSET_V = String(window.AP_ASSET_V || '927');
 
 const AstroApp = (() => {
 
@@ -18,7 +18,7 @@ const AstroApp = (() => {
   // ── Init ──────────────────────────────────────────────────────────────────
 
   function injectSkipLink() {
-    if (document.getElementById('skip-to-content') || document.querySelector('.skip, .skip-link') || !document.getElementById('main-content')) return;
+    if (document.getElementById('skip-to-content') || document.querySelector('.skip, .skip-link, .ap-skip, a[href="#main-content"]') || !document.getElementById('main-content')) return;
     var a = document.createElement('a');
     a.id = 'skip-to-content';
     a.className = 'skip-link';
@@ -69,6 +69,9 @@ const AstroApp = (() => {
 
   /** Load engine stills module once (shared 3D brand art, no WebGL). */
   function isLaunchCorePage() {
+    // Pages on the Paper & Night shell (body.ap-next) own their header, footer
+    // and stylesheets: no legacy nav, profile chip or injected dark CSS.
+    if (document.body && document.body.classList.contains('ap-next')) return true;
     var key = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
     return /^(index|chart|sky-events|shop|eclipse|tonight|compatibility|deep-reading)\.html$/.test(key);
   }
@@ -1493,7 +1496,11 @@ window.AP_MON = Object.assign({
     // Footer support line — appears the moment a tip URL is configured.
     const routeKey = ((location.pathname || '').split('/').pop() || 'index.html').toLowerCase();
     const isLaunchCore = /^(index|chart|sky-events|shop|eclipse)\.html$/.test(routeKey);
-    if (!isLaunchCore && isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
+    // Paper & Night shell pages (body.ap-next) render their own footer and carry no
+    // legacy support line, matching the sign guides; without this guard the line
+    // would land in the first <footer> inside <main>.
+    const onShell = document.body && document.body.classList.contains('ap-next');
+    if (!isLaunchCore && !onShell && isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
       const host = document.querySelector('.ap-legal-links') || document.querySelector('.footer-legal')
         || document.querySelector('footer .container') || document.querySelector('footer');
       if (host) {

@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="robots" content="noindex, follow">
-  <meta name="color-scheme" content="dark">
-  <style>html{background:#040812}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Why AstroPrecise is different: real VSOP87/ELP2000 astronomy, numbers labelled measured or computed, and an honesty rule that never fakes data." />
   <title>Why AstroPrecise — Astrology You Can Check | AstroPrecise</title>
@@ -28,29 +26,19 @@
   <meta name="twitter:title" content="Why AstroPrecise — Astrology You Can Check" />
   <meta name="twitter:description" content="Every number is real, labelled measured or computed, and checkable. Real astronomy, private by design, never faked." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#040812" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=926" />
-  <link rel="stylesheet" href="css/ap-atlas-tokens.css?v=926" id="ap-css-atlas-tokens" />
-  <link rel="preload" href="css/main-lite.css" as="style" />
-  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=926" />
-  <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/ap-page-bridge.css" />
-  <link rel="stylesheet" href="css/why-page.css" />
-  <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferMainCss();});</script>
+  <meta name="theme-color" content="#F6F3EC" />
+  <noscript></noscript>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Why AstroPrecise","description":"Why AstroPrecise is different: every number is real, labelled measured or computed, and checkable. Real VSOP87/ELP2000 astronomy, a privacy-first in-browser engine, deterministic readings, and an honesty rule that never fakes data.","url":"https://astroprecise.app/why.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
-  <link rel="stylesheet" href="css/ap-next.css?v=926"><script defer src="js/ap-next.js?v=926"></script></head>
-<body class="ap-editorial">
-  <a class="skip-link" href="#main-content">Skip to content</a>
-
-  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
-  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+  <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/ap-next.css?v=927" />
+  <link rel="stylesheet" href="css/guide-next.css?v=927" />
+  <script src="js/ap-next.js?v=927" defer></script>
+</head>
+<body class="ap-next ap-guide ap-guide--why">
+  <a class="ap-skip" href="#main-content">Skip to content</a>
 
   <!-- ============================================================
        NAVIGATION
@@ -112,7 +100,7 @@
           <tr><td>Schumann resonance</td><td><span class="tag tag--unavailable">unavailable</span></td><td>No trustworthy public live feed — so we show nothing, rather than fake it</td></tr>
         </tbody>
       </table>
-      <p style="margin-top:1rem;font-size:1rem;color:var(--silver-dim,#8891AA);">That last row is the rule in miniature.</p>
+      <p class="why-note">That last row is the rule in miniature.</p>
     </section>
 
     <!-- ═══ ACCURACY ═══ -->
@@ -194,7 +182,7 @@
         data you enter</strong>. It is deterministic software, not a manual consultation, and
         no birth data is uploaded for a human review. Questions, a correction, or a chart that
         looks wrong? Write to
-        <a href="mailto:contact@astroprecise.app" style="color:var(--gold-light,#C5D4E0);">contact@astroprecise.app</a>
+        <a href="mailto:contact@astroprecise.app">contact@astroprecise.app</a>
         — a real person reads it.</p>
     </section>
 
@@ -216,12 +204,6 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS -->
-  <script src="js/raf-core.js"></script>
-
-  <script src="js/cosmos.js"></script>
-<script src="js/effects.js"></script>
-  <script src="js/ap-page-boot.js?v=926" defer></script>
-  <script src="js/ap-footer-inject.js?v=926" defer></script>
-<script src="js/ap-sky-time.js" defer></script>
+  <script src="js/ap-error-beacon.js?v=927" defer></script>
 </body>
 </html>

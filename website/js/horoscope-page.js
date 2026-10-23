@@ -151,7 +151,7 @@
     const cy = height / 2;
     const radius = Math.min(width, height) * 0.35;
     context.clearRect(0, 0, width, height);
-    context.fillStyle = '#101D30';
+    context.fillStyle = '#181C24';
     context.beginPath();
     context.arc(cx, cy, radius + 6, 0, Math.PI * 2);
     context.fill();
@@ -159,9 +159,9 @@
     context.beginPath();
     context.arc(cx, cy, radius, 0, Math.PI * 2);
     context.clip();
-    context.fillStyle = '#040812';
+    context.fillStyle = '#0E1116';
     context.fillRect(0, 0, width, height);
-    context.fillStyle = '#EEF4FA';
+    context.fillStyle = '#F1E7CF';
     context.beginPath();
     if (phase.fraction < 0.5) {
       context.arc(cx, cy, radius, -Math.PI / 2, Math.PI / 2);
@@ -175,7 +175,7 @@
     context.closePath();
     context.fill();
     context.restore();
-    context.strokeStyle = 'rgba(139,169,255,.72)';
+    context.strokeStyle = 'rgba(180,105,62,.72)';
     context.lineWidth = 1.5;
     context.beginPath();
     context.arc(cx, cy, radius + 2, 0, Math.PI * 2);
@@ -239,9 +239,13 @@
 
     const seal = document.getElementById('srp-sign-seal');
     const ruler = RULERS[signKey] || '';
-    if (seal) {
+    if (seal && seal.tagName === 'IMG') {
       seal.src = 'assets/images/seals/zodiac/' + signKey + '.svg';
       seal.alt = info.name + ' engraved zodiac seal';
+    } else if (seal && window.APGlyphs) {
+      // Paper & Night: the brand stroke glyph, not the retired seal art.
+      seal.innerHTML = window.APGlyphs.sign(signKey, { lg: true });
+      seal.setAttribute('aria-label', info.name);
     }
     document.getElementById('srp-sign-name').textContent = info.name;
     document.getElementById('srp-date').textContent = info.dates + ' · ' + new Date().toLocaleDateString('en-GB', {

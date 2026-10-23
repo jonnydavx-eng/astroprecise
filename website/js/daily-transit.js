@@ -361,6 +361,8 @@
 
   function injectStyle() {
     if (document.getElementById(STYLE_ID)) return;
+    // Guide pages on the Paper & Night shell style the card in css/guide-next.css.
+    if (document.body && document.body.classList.contains('ap-guide')) return;
     var css =
       '.dt-card{position:relative;overflow:hidden;background:var(--ap-raised,rgba(16,29,48,0.78));' +
       '-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);' +
