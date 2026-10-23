@@ -16,7 +16,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import {
   ROOT, JS, norm, sd, fmt, slug, sents, ord, FONTS,
-  natalWheelSvg, deliverablesForProduct, paidMetaBlock, resolveFinal,
+  natalWheelSvg, deliverablesForProduct, paidMetaBlock, resolveFinal, normalizeBirthInstant,
 } from './fulfil-shared.mjs';
 import {
   productLabel, modalityBars, chartRulerNarrative, mcCareerBlock, loveValuesBlock,
@@ -55,6 +55,10 @@ if (A_.in) { try { order = JSON.parse(readFileSync(A_.in,'utf8')); } catch(e){ c
 // flag overrides JSON
 ['name','date','time','place','house'].forEach(k=>{ if(A_[k]!==undefined) order[k]=A_[k]; });
 ['y','mo','d','h','mi','lat','lon'].forEach(k=>{ if(A_[k]!==undefined) order[k]=Number(A_[k]); });
+['tz','fold','timeBasis'].forEach(k=>{ if(A_[k]!==undefined) order[k]=A_[k]; });
+// A supplied order's typed time is LOCAL: convert it to UT with the place's zone
+// (once; an order already marked timeBasis 'ut' by the order path is left alone).
+if (order.y !== undefined || order.dob || order.birthDate) order = normalizeBirthInstant(order, E);
 
 const usingSample = order.y === undefined;
 const PRODUCT = order.product || A_.product || 'reading-poster-bundle';

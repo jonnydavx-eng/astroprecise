@@ -47,6 +47,8 @@ export function validateBirthData(order = {}) {
   }
   if (!order.name && !order.chart_name) missing.push('name');
   if (!order.place && !order.birth_place) missing.push('place');
+  // h/mi must be UT: the typed local time is converted with the place's zone first.
+  if (order.timeBasis !== 'ut') missing.push('tz (birth time not yet converted from local to UT)');
   return { ok: missing.length === 0, missing };
 }
 

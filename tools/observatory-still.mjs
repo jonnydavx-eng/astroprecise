@@ -14,8 +14,10 @@
  * SCHEMATIC by the site's own Keep code (APKeepSky.stampSurfaceA).
  *
  * Fulfilment tooling only: no checkout, payment, price or email is touched.
- * The birth instant is taken from the same y/mo/d/h/mi fields buildChart() uses
- * (fulfil-shared enrichOrder), so the still and the chart share one instant.
+ * The birth instant is the order's UT instant from fulfil-shared enrichOrder (the typed
+ * local time converted with the place's zone, DST included), the same one buildChart()
+ * uses, so the still and the chart share one instant. The stamp shows the typed local
+ * date/time and zone, and "computed at <UT> UTC" from that instant.
  * Default rendering is headless SwiftShader (deterministic, no GPU needed);
  * --gpu drops the SwiftShader flags so a real GPU renders (pair with --headful).
  */
@@ -35,16 +37,19 @@ export function stillContext(order, E) {
   const o = enrichOrder(order, E);
   if (o.timeUnknown) throw new Error('Whole Sky still needs a recorded birth time; this order has none');
   if (![o.y, o.mo, o.d, o.h, o.mi].every(Number.isFinite)) throw new Error('Order missing birth date/time (y/mo/d/h/mi)');
+  if (o.timeBasis !== 'ut') throw new Error('Order birth time is not on UT; cannot place the still');
   const pad = (n) => String(n).padStart(2, '0');
+  const local = o.local || null;
   // +1 s keeps the stamped minute on the birth minute after float rounding of the JD.
   return {
     jd: Date.UTC(o.y, o.mo - 1, o.d, o.h, o.mi, 1) / 86400000 + 2440587.5,
-    birthDate: `${o.y}-${pad(o.mo)}-${pad(o.d)}`,
-    birthTime: String(order.localTime || order.time || `${pad(o.h)}:${pad(o.mi)}`).replace(/\s*\(.*$/, ''),
+    utc: `${o.y}-${pad(o.mo)}-${pad(o.d)}T${pad(o.h)}:${pad(o.mi)}Z`,
+    birthDate: local ? local.date : `${o.y}-${pad(o.mo)}-${pad(o.d)}`,
+    birthTime: local ? local.time : `${pad(o.h)}:${pad(o.mi)}`,
     timeKnown: true,
     timeAccuracy: order.timeAccuracy === 'approximate' ? 'approximate' : 'exact',
     place: o.place || '',
-    timezone: o.tz || order.timezone || '',
+    timezone: (local && local.tz) || o.tz || order.timezone || '',
   };
 }
 
@@ -77,8 +82,9 @@ export async function renderObservatoryStill(browserInstance, origin, context, {
       const renderMs = performance.now() - t0;
       if (!still) return { error: 'captureStill returned nothing (WebGL unavailable?)', gl: glInfo };
       window.APKeepSky.stampSurfaceA(still, d);
+      const caption = window.APKeepSky.caption(d);
       const after = { w: o.querySelector('canvas')?.width, h: o.querySelector('canvas')?.height };
-      return { width: still.width, height: still.height, drawingBuffer: still.dataset.apDrawingBuffer || null, renderMs, gl: glInfo, live, after, url: still.toDataURL('image/png') };
+      return { width: still.width, height: still.height, drawingBuffer: still.dataset.apDrawingBuffer || null, renderMs, gl: glInfo, live, after, caption, url: still.toDataURL('image/png') };
     }, { d: context, w: width, h: height });
     if (res.error) throw new Error(`Observatory still failed: ${res.error}${res.gl ? ` [${res.gl.renderer}]` : ''}`);
     const png = Buffer.from(res.url.split(',')[1], 'base64');
@@ -87,7 +93,7 @@ export async function renderObservatoryStill(browserInstance, origin, context, {
       throw new Error(`Observatory still is ${size ? `${size.width}x${size.height}` : 'not a PNG'} (canvas ${res.width}x${res.height}, drawing buffer ${res.drawingBuffer}), not ${width}x${height}`);
     }
     if (res.live.w !== res.after.w || res.live.h !== res.after.h) throw new Error(`live view not restored (${res.live.w}x${res.live.h} -> ${res.after.w}x${res.after.h})`);
-    return { png, width: size.width, height: size.height, drawingBuffer: res.drawingBuffer, renderMs: Math.round(res.renderMs), gl: res.gl, liveCanvas: res.live, pageErrors: errors };
+    return { png, width: size.width, height: size.height, drawingBuffer: res.drawingBuffer, renderMs: Math.round(res.renderMs), gl: res.gl, liveCanvas: res.live, caption: res.caption, pageErrors: errors };
   } finally {
     await page.close();
   }
@@ -112,7 +118,7 @@ async function main() {
     const still = await renderObservatoryStill(browser, origin, context);
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, STILL_FILE), still.png);
-    console.log(JSON.stringify({ file: STILL_FILE, width: still.width, height: still.height, drawingBuffer: still.drawingBuffer, bytes: still.png.length, renderMs: still.renderMs, totalMs: Date.now() - t0, gpu: still.gl && still.gl.renderer }));
+    console.log(JSON.stringify({ file: STILL_FILE, width: still.width, height: still.height, drawingBuffer: still.drawingBuffer, bytes: still.png.length, renderMs: still.renderMs, totalMs: Date.now() - t0, gpu: still.gl && still.gl.renderer, utc: context.utc, stamp: still.caption }));
   } finally {
     await browser.close();
     server.close();
