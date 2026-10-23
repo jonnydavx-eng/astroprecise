@@ -187,12 +187,43 @@ for (const m of page.matchAll(
   (ctx[m[1]] ||= new Set()).add(m[2])
 for (const [h, s] of Object.entries(ctx))
   ok(`one context sentence for the ${ord(+h)} house`, s.size === 1, [...s].join(' | '))
-// The 11th-house paragraph used "aims" twice (collective aims ... shared aims); keep it once.
-for (const m of lens.filter((x) => x[1] === '11'))
+// No house paragraph repeats a word between its lens and its context sentence. The 11th
+// once said "aims" twice (collective aims ... shared aims); the 6th "daily", 8th
+// "shared/resources/change", 10th "public" and 12th "rest" did the same before v935.
+const WORD_SKIP = new Set(['and', 'the', 'what', 'with', 'for', 'that', 'this', 'from'])
+const words = (t) =>
+  (t.toLowerCase().match(/[a-z]+(?:-[a-z]+)*/g) || []).filter(
+    (w) => w.length > 2 && !WORD_SKIP.has(w),
+  )
+const repeatSeen = new Set()
+for (const m of lens) {
+  if (repeatSeen.has(m[1])) continue
+  repeatSeen.add(m[1])
+  const lensWords = new Set(words(m[2]))
+  const shared = [...new Set(words(m[4]).filter((w) => lensWords.has(w)))]
   ok(
-    '11th-house paragraph does not repeat "aims"',
-    (`${m[2]} ${m[4]}`.match(/\baims\b/g) || []).length === 1,
-    `${m[2]} | ${m[4]}`,
+    `${ord(+m[1])}-house paragraph repeats no word between lens and context`,
+    shared.length === 0,
+    `${shared.join(', ')}: ${m[2]} | ${m[4]}`,
+  )
+}
+ok(
+  '11th-house paragraph still has one "aims"',
+  lens
+    .filter((x) => x[1] === '11')
+    .every((m) => (`${m[2]} ${m[4]}`.match(/\baims\b/g) || []).length === 1),
+)
+for (const [h, want] of [
+  ['6', 'regular practice, service, maintenance, and useful skill'],
+  ['8', 'what is held in common, trust, boundaries, and transition'],
+  ['10', 'contribution to the wider world, reputation, and long-term direction'],
+  ['11', 'friendship, networks, shared ideals, and hopes for the future'],
+  ['12', 'quiet recovery, retreat, reflection, and what is processed privately'],
+])
+  ok(
+    `${ord(+h)}-house context sentence wording`,
+    ctx[h] && ctx[h].size === 1 && ctx[h].has(want),
+    ctx[h] ? [...ctx[h]].join(' | ') : 'missing',
   )
 const hd = [
   ...page.matchAll(

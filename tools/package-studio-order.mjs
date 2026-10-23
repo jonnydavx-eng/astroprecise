@@ -26,7 +26,8 @@ const PRINT_PACK = [
 ];
 const OBSERVATORY_STILL = '06-observatory-birth-hour-schematic-4800x3600.png';
 // PNGs whose exact pixel size is part of what is sold: the packager reads each one's
-// real IHDR size and refuses anything else (tools/observatory-still.mjs renders it).
+// real IHDR size and refuses anything else (tools/observatory-still.mjs renders it with
+// its default software renderer; its --gpu flag is for local testing only, never orders).
 const FIXED_PNG_SIZES = { [OBSERVATORY_STILL]: { width: 4800, height: 3600 } };
 const BY_SKU = {
   'natal-sky-print-pack': PRINT_PACK,

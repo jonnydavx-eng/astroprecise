@@ -2,7 +2,8 @@
 // Renders the real engine in headless Chrome (SwiftShader) through the same tool the
 // order step uses (tools/observatory-still.mjs) and checks the PNG's IHDR, the engine's
 // drawing buffer, that the live view is restored, and that an impossible size fails
-// loudly. Skips (exit 0) only when no Chrome/Edge can be launched here.
+// loudly. The default-renderer checks always run; the render checks skip (exit 0)
+// only when no Chrome/Edge can be launched here.
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
@@ -12,6 +13,9 @@ import { startServer, AURORA } from './tools/make-studio-samples.mjs'
 import {
   launchStillBrowser,
   renderObservatoryStill,
+  stillLaunchOptions,
+  SWIFTSHADER_ARGS,
+  USAGE,
   STILL_FILE,
   STILL_WIDTH,
   STILL_HEIGHT,
@@ -21,6 +25,50 @@ let bad = 0
 const ok = (label, cond, detail = '') => {
   console.log(`${cond ? 'PASS' : 'FAIL'}  ${label}${cond || !detail ? '' : `  (${detail})`}`)
   if (!cond) bad++
+}
+
+// Real orders use the default renderer: headless SwiftShader, the same as the samples.
+// --gpu is for local testing only. These checks need no browser, so they never skip.
+{
+  const def = stillLaunchOptions()
+  ok(
+    'default still renderer is headless SwiftShader, not GPU',
+    def.headless === true &&
+      SWIFTSHADER_ARGS.every((a) => def.args.includes(a)) &&
+      def.args.includes('--use-angle=swiftshader'),
+    JSON.stringify(def),
+  )
+  const cliDefault = stillLaunchOptions({ browser: 'chrome', headful: false, gpu: false })
+  ok(
+    'CLI with no flags launches the same software renderer',
+    JSON.stringify(cliDefault) === JSON.stringify(def),
+    JSON.stringify(cliDefault),
+  )
+  const gpu = stillLaunchOptions({ gpu: true })
+  ok(
+    '--gpu (local testing) is the only way to drop SwiftShader',
+    !gpu.args.some((a) => /swiftshader/i.test(a)),
+    JSON.stringify(gpu),
+  )
+  ok(
+    'help documents the default renderer for orders and --gpu as local testing only',
+    /real orders use the default/i.test(USAGE) && /--gpu\s+LOCAL TESTING ONLY/.test(USAGE),
+    USAGE,
+  )
+  const samples = readFileSync('tools/make-studio-samples.mjs', 'utf8')
+  ok(
+    'samples render the still with the default launcher (no GPU)',
+    /launchStillBrowser\(\)/.test(samples) && !/gpu:\s*true/.test(samples),
+  )
+  const help = spawnSync(process.execPath, ['tools/observatory-still.mjs', '--help'], {
+    encoding: 'utf8',
+    timeout: 60_000,
+  })
+  ok(
+    'observatory-still.mjs --help prints the renderer note',
+    help.status === 0 && /LOCAL TESTING ONLY/.test(help.stdout),
+    `${help.stdout}${help.stderr}`,
+  )
 }
 
 let browser
@@ -72,6 +120,11 @@ try {
       `${viewport.width}x${viewport.height} window: no page errors`,
       still.pageErrors.length === 0,
       still.pageErrors.join(' | '),
+    )
+    ok(
+      `${viewport.width}x${viewport.height} window: default launch rendered on SwiftShader`,
+      /SwiftShader/i.test(String(still.gl && still.gl.renderer)),
+      String(still.gl && still.gl.renderer),
     )
     console.log(
       `      render ${still.renderMs} ms, ${still.png.length} bytes, ${still.gl && still.gl.renderer}`,
@@ -155,6 +208,14 @@ try {
     'still stamp shows the correct UTC',
     report && /computed at 1990-06-14 02:42 UTC/.test(report.stamp),
     report && report.stamp,
+  )
+  ok(
+    'CLI default reports the software renderer, not GPU',
+    run.status === 0 &&
+      /"renderer":"swiftshader \(order default\)"/.test(run.stdout) &&
+      /SwiftShader/i.test(run.stdout) &&
+      !/local testing/.test(run.stderr),
+    `${run.stdout}${run.stderr}`,
   )
   writeFileSync(
     join(tmp, 'pack.json'),
