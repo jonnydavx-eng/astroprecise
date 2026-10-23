@@ -44,31 +44,15 @@ function registerFonts() {
 
 const sizeOf = (font) => Number((String(font).match(/(\d+(?:\.\d+)?)px/) || [])[1])
 
-/**
- * Wrap a 2D context so fillText calls are recorded (in user units, before scale).
- * Each draw also carries its ink box in canvas space (`ink`: x0,y0,x1,y1, after the current
- * transform's translation). With `arcs`, every arc() is recorded too ({ x, y, r } in canvas space).
- */
-function recording(ctx, draws, arcs) {
-  const toCanvas = (target, x, y) => {
-    const m = target.getTransform ? target.getTransform() : { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }
-    return [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]
-  }
+/** Wrap a 2D context so fillText calls are recorded (in user units, before scale). */
+function recording(ctx, draws) {
   return new Proxy(ctx, {
     get(target, prop) {
-      if (prop === 'arc' && arcs) {
-        return (x, y, r, a0, a1, ccw) => {
-          const [gx, gy] = toCanvas(target, x, y)
-          arcs.push({ x: gx, y: gy, r, full: Math.abs(a1 - a0) >= Math.PI * 2 - 1e-6 })
-          return target.arc(x, y, r, a0, a1, ccw)
-        }
-      }
       if (prop === 'fillText') {
         return (text, x, y, maxWidth) => {
           const s = String(text)
           if (s.trim()) {
             const mt = target.measureText(s)
-            const [gx, gy] = toCanvas(target, x, y)
             draws.push({
               text: s,
               px: sizeOf(target.font),
@@ -77,12 +61,6 @@ function recording(ctx, draws, arcs) {
               y,
               w: mt.width,
               align: target.textAlign,
-              ink: {
-                x0: gx - mt.actualBoundingBoxLeft,
-                x1: gx + mt.actualBoundingBoxRight,
-                y0: gy - mt.actualBoundingBoxAscent,
-                y1: gy + mt.actualBoundingBoxDescent,
-              },
             })
           }
           return maxWidth === undefined
@@ -384,7 +362,7 @@ export function extent(d) {
 /** Effective CSS px of a draw when a card `width` units wide is shown 360 CSS px wide. */
 export const effectivePx = (px, width) => (px * PHONE_CSS_PX) / width
 
-// ── Step 10d: the sky-card.html poster, the Instrument cards and the eclipse plate ──
+// ── Step 10d: the sky-card.html poster, and the Instrument cards ──
 
 /** Fictional sample charts for the sky-card.html poster (ap-keepsake-next.js). */
 const POSTER_SAMPLE = {
@@ -594,69 +572,4 @@ export async function probeInstrumentCard(kind = 'zenith', opts = {}) {
     })
   }
   return { width: 1080, height: 1080, frame: 58, draws: draws.slice(), canvas: last }
-}
-
-/** Paint the eclipse edition plate (js/ap-eclipse-edition-v841.js renderEclipseArtwork). */
-/** Grok's crowded test chart (step 10d review): Asc 12°, Moon 18°, Uranus 28°, Mercury 132°, Sun on the eclipse. */
-export const ECLIPSE_CROWDED_NATAL = {
-  sun: 140.133,
-  moon: 18,
-  mercury: 132,
-  venus: 95,
-  mars: 48,
-  jupiter: 210,
-  saturn: 320,
-  uranus: 28,
-  neptune: 355,
-  pluto: 250,
-  asc: 12,
-  mc: 280,
-}
-
-export async function probeEclipsePlate(which = 'artwork', { natal: natalIn } = {}) {
-  registerFonts()
-  const templates = JSON.parse(read('js/reading-templates.json'))
-  const { buildEclipseReading5 } = await import(
-    new URL('../website/js/eclipse-reading.js', import.meta.url)
-  )
-  const mod = await import(new URL('../website/js/ap-eclipse-edition-v841.js', import.meta.url))
-  const eclipseLongitude = 140.133
-  const natal = natalIn || ECLIPSE_CROWDED_NATAL
-  const reading = buildEclipseReading5(eclipseLongitude, natal, templates, { quietGateDeg: 5 })
-  const model = mod.buildEclipsePlateModel({ reading, natal, eclipseLongitude })
-  const draws = []
-  const arcs = []
-  let real = null
-  const canvas = {
-    dataset: {},
-    _w: 0,
-    _h: 0,
-    set width(v) {
-      this._w = v
-    },
-    get width() {
-      return this._w
-    },
-    set height(v) {
-      this._h = v
-    },
-    get height() {
-      return this._h
-    },
-    getContext() {
-      real = createCanvas(this._w, this._h)
-      return recording(real.getContext('2d'), draws, arcs)
-    },
-  }
-  if (which === 'disc') mod.renderEclipseDisc(model, canvas, { captions: true })
-  else mod.renderEclipseArtwork(model, canvas)
-  return {
-    width: canvas.width,
-    height: canvas.height,
-    frame: 0,
-    draws: draws.slice(),
-    arcs: arcs.slice(),
-    canvas: real,
-    model,
-  }
 }

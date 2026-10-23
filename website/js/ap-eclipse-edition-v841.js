@@ -25,10 +25,6 @@ const GLYPHS = {
   asc: 'Asc', mc: 'MC',
 };
 
-// Smallest share text: 11 CSS px when the image is shown 360 px wide
-// (2400-wide plate: 74 units; 2000-wide disc: 62 units).
-const PLATE_MIN_PX = 74;
-const DISC_MIN_PX = 62;
 const SIGN_MARKS = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'];
 const SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
 const BODY_LABELS = {
@@ -177,54 +173,6 @@ function lonToAngle(longitude) {
   return Math.PI - (normaliseLongitude(longitude) * Math.PI / 180);
 }
 
-// Place the wheel markers for the eclipse plate. Each disc is just big enough for its glyph's
-// ink box (at least `minR`). The contact is placed first at its exact degree; every other point
-// takes the nearest free spot: its exact degree on the outer track, then the inner track, then
-// steps of 1° either way. `x`/`y` are relative to the wheel centre; `longitude` stays exact.
-export function layoutWheelMarkers(ctx, model, { outerTrack = 470, innerTrack = 358, gap = 10 } = {}) {
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  const rows = (model.placements || []).map((placement) => {
-    const isContact = Boolean(model.contactTarget && placement.key === model.contactTarget);
-    const glyph = GLYPHS[placement.key] || placement.key.slice(0, 2).toUpperCase();
-    const font = isContact
-      ? `700 ${PLATE_MIN_PX + 6}px "Schibsted Grotesk", Arial, sans-serif`
-      : `600 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
-    ctx.font = font;
-    const m = ctx.measureText(glyph);
-    const left = Number.isFinite(m.actualBoundingBoxLeft) ? m.actualBoundingBoxLeft : m.width / 2;
-    const right = Number.isFinite(m.actualBoundingBoxRight) ? m.actualBoundingBoxRight : m.width / 2;
-    const up = (Number.isFinite(m.actualBoundingBoxAscent) ? m.actualBoundingBoxAscent : PLATE_MIN_PX * 0.4) - 1;
-    const down = (Number.isFinite(m.actualBoundingBoxDescent) ? m.actualBoundingBoxDescent : PLATE_MIN_PX * 0.4) + 1;
-    const ink = Math.max(Math.hypot(left, up), Math.hypot(right, up), Math.hypot(left, down), Math.hypot(right, down));
-    const r = Math.ceil(Math.max(isContact ? 52 : 44, ink + 6));
-    return { key: placement.key, longitude: placement.longitude, isContact, glyph, font, r };
-  });
-  const order = rows.slice().sort((a, b) => (b.isContact - a.isContact) || (b.r - a.r) || (a.longitude - b.longitude));
-  const placed = [];
-  const free = (x, y, r) => placed.every((p) => Math.hypot(p.x - x, p.y - y) >= p.r + r + gap);
-  for (const row of order) {
-    let spot = null;
-    for (let step = 0; step <= 180 && !spot; step += 1) {
-      for (const delta of step ? [step, -step] : [0]) {
-        for (const track of row.isContact ? [outerTrack] : [outerTrack, innerTrack]) {
-          const angle = lonToAngle(row.longitude + delta);
-          const x = Math.cos(angle) * track;
-          const y = Math.sin(angle) * track;
-          if (free(x, y, row.r)) { spot = { x, y, track, delta }; break; }
-        }
-        if (spot) break;
-      }
-    }
-    if (!spot) {
-      const angle = lonToAngle(row.longitude);
-      spot = { x: Math.cos(angle) * outerTrack, y: Math.sin(angle) * outerTrack, track: outerTrack, delta: 0 };
-    }
-    placed.push({ ...row, ...spot });
-  }
-  return placed;
-}
-
 export function renderEclipseArtwork(model, canvas = document.createElement('canvas')) {
   if (!model) throw new Error('A direct eclipse-contact model is required.');
   canvas.width = model.width;
@@ -318,7 +266,7 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   const wheelY = 1760;
   const outerR = 690;
   const innerR = 248;
-  const planetR = 470;
+  const planetR = 520;
   const tickInner = 640;
   const tickOuter = 678;
 
@@ -349,11 +297,10 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
     ctx.lineTo(Math.cos(cusp) * tickOuter, Math.sin(cusp) * tickOuter);
     ctx.stroke();
     const mid = lonToAngle(sign * 30 + 15);
-    // Sign marks sit in the band between the planet ring and the ticks, at the share floor.
-    const labelR = 602;
+    const labelR = 708;
     ctx.globalAlpha = 0.82;
     ctx.fillStyle = brass;
-    ctx.font = `600 ${PLATE_MIN_PX}px ui-monospace, Consolas, monospace`;
+    ctx.font = '600 22px ui-monospace, Consolas, monospace';
     ctx.fillText(SIGN_MARKS[sign], Math.cos(mid) * labelR, Math.sin(mid) * labelR);
   }
 
@@ -370,63 +317,48 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   ctx.arc(Math.cos(eclipseAngle) * planetR, Math.sin(eclipseAngle) * planetR, 11, 0, Math.PI * 2);
   ctx.fill();
 
-  // Markers: each glyph sits inside its own disc, sized to the glyph's ink box. Close points
-  // are moved apart (along the ring, or onto an inner ring) so no two discs touch; every point
-  // keeps an exact-degree tick on the inner circle, with a leader line when its disc moved.
-  const markers = layoutWheelMarkers(ctx, model, { outerTrack: planetR, innerTrack: planetR - 112 });
-  markers.forEach((m) => {
-    const ta = lonToAngle(m.longitude);
-    ctx.globalAlpha = 0.85;
-    ctx.strokeStyle = m.isContact ? ember : brass;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(Math.cos(ta) * innerR, Math.sin(ta) * innerR);
-    ctx.lineTo(Math.cos(ta) * (innerR + 26), Math.sin(ta) * (innerR + 26));
-    ctx.stroke();
-    ctx.globalAlpha = 0.5;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(Math.cos(ta) * (innerR + 26), Math.sin(ta) * (innerR + 26));
-    const d = Math.hypot(m.x, m.y);
-    ctx.lineTo(m.x * (d - m.r) / d, m.y * (d - m.r) / d);
-    ctx.stroke();
-  });
-  markers.forEach((m) => {
+  model.placements.forEach((placement) => {
+    const angle = lonToAngle(placement.longitude);
+    const x = Math.cos(angle) * planetR;
+    const y = Math.sin(angle) * planetR;
+    const isContact = model.contactTarget && placement.key === model.contactTarget;
+    const glyph = GLYPHS[placement.key] || placement.key.slice(0, 2).toUpperCase();
     ctx.globalAlpha = 1;
-    ctx.fillStyle = m.isContact ? ember : ink;
+    ctx.fillStyle = isContact ? ember : ink;
     ctx.beginPath();
-    ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+    ctx.arc(x, y, isContact ? 34 : 26, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = brass;
-    ctx.lineWidth = m.isContact ? 3 : 1.5;
-    ctx.globalAlpha = m.isContact ? 1 : 0.85;
+    ctx.strokeStyle = isContact ? brass : brass;
+    ctx.lineWidth = isContact ? 3 : 1.5;
+    ctx.globalAlpha = isContact ? 1 : 0.85;
     ctx.stroke();
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = m.isContact ? '#EEF4FA' : brass;
-    ctx.font = m.font;
-    ctx.fillText(m.glyph, m.x, m.y + 1);
+    ctx.fillStyle = isContact ? '#EEF4FA' : brass;
+    ctx.font = isContact
+      ? '700 26px "Schibsted Grotesk", Arial, sans-serif'
+      : '600 22px "Schibsted Grotesk", Arial, sans-serif';
+    ctx.fillText(glyph, x, y + 1);
   });
   ctx.restore();
   ctx.globalAlpha = 1;
 
   ctx.fillStyle = brass;
-  ctx.font = `600 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
-  ctx.letterSpacing = '4px';
-  ctx.fillText('ASTROPRECISE  /  12 AUGUST 2026', 150, 200);
+  ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
+  ctx.letterSpacing = '8px';
+  ctx.fillText('ASTROPRECISE  /  12 AUGUST 2026', 150, 168);
   ctx.letterSpacing = '0px';
   ctx.fillStyle = '#EEF4FA';
-  ctx.font = '600 112px "Cormorant Garamond", Georgia, serif';
-  drawWrapped(ctx, 'Your natal wheel at this eclipse.', 150, 330, 2100, 120, 2);
+  ctx.font = '600 64px "Cormorant Garamond", Georgia, serif';
+  ctx.fillText('Your natal wheel at this eclipse.', 150, 248);
 
   ctx.fillStyle = 'rgba(165,188,255,.82)';
-  ctx.font = `600 ${PLATE_MIN_PX}px ui-monospace, Consolas, monospace`;
-  ctx.fillText(`${model.fingerprint}  /  ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 440);
+  ctx.font = '600 26px ui-monospace, Consolas, monospace';
+  ctx.fillText(`${model.fingerprint}  /  ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 210);
   ctx.fillStyle = '#C9D6E3';
-  ctx.font = `500 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
-  drawWrapped(ctx, model.share, 150, model.height - 350, 2100, 86, 2);
+  ctx.font = '500 32px "Schibsted Grotesk", Arial, sans-serif';
+  drawWrapped(ctx, model.share, 150, model.height - 155, 2100, 42, 2);
   ctx.fillStyle = 'rgba(147,168,191,.62)';
-  ctx.font = `400 ${PLATE_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
-  drawWrapped(ctx, 'Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 170, 2100, 84, 2);
+  ctx.font = '400 20px "Schibsted Grotesk", Arial, sans-serif';
+  ctx.fillText('Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 72);
   return canvas;
 }
 
@@ -484,10 +416,10 @@ export function renderEclipseDisc(model, canvas = document.createElement('canvas
   }
   if (captions) {
     ctx.fillStyle = brass;
-    ctx.font = `600 ${DISC_MIN_PX}px "Schibsted Grotesk", Arial, sans-serif`;
-    drawWrapped(ctx, '12 AUGUST 2026  ·  GREATEST 17:45:51 UTC  ·  ' + (model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`), 64, 96, canvas.width - 128, 72, 2);
+    ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
+    ctx.fillText('12 AUGUST 2026  ·  GREATEST 17:45:51 UTC  ·  ' + (model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`), 64, 64);
     ctx.fillStyle = ember;
-    ctx.font = `600 ${DISC_MIN_PX}px ui-monospace, Consolas, monospace`;
+    ctx.font = '600 22px ui-monospace, Consolas, monospace';
     ctx.fillText(model.fingerprint, 64, canvas.height - 48);
   }
   return canvas;
