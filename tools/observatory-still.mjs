@@ -18,8 +18,15 @@
  * local time converted with the place's zone, DST included), the same one buildChart()
  * uses, so the still and the chart share one instant. The stamp shows the typed local
  * date/time and zone, and "computed at <UT> UTC" from that instant.
- * Default rendering is headless SwiftShader (deterministic, no GPU needed);
- * --gpu drops the SwiftShader flags so a real GPU renders (pair with --headful).
+ *
+ * Renderer: REAL ORDERS USE THE DEFAULT, headless SwiftShader software rendering
+ * (deterministic, no GPU needed). It is the same renderer that makes the Whole Sky
+ * sample PDF and shop image, so a buyer gets what the samples show. Run order stills
+ * with no renderer flags.
+ * --gpu (usually with --headful) is for LOCAL TESTING ONLY: it drops the SwiftShader
+ * flags so a real GPU renders, which can look different (on the AMD Mini the
+ * background renders bluer). Never use it for a customer file; the CLI warns and
+ * records "renderer" in its output line.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -53,9 +60,25 @@ export function stillContext(order, E) {
   };
 }
 
-export async function launchStillBrowser({ browser = 'chrome', headful = false, gpu = false } = {}) {
-  const opts = { headless: !headful, args: gpu ? ['--ignore-gpu-blocklist'] : SWIFTSHADER_ARGS };
-  return chromium.launch(browser === 'chromium' ? opts : { ...opts, channel: browser });
+export const USAGE = `Usage: node tools/observatory-still.mjs --in <canonical order.json> --dir <private dir>
+       [--browser chrome|msedge|chromium] [--headful] [--gpu]
+
+Writes ${STILL_FILE} (exactly ${STILL_WIDTH} x ${STILL_HEIGHT}) for a whole-sky-edition order.
+
+Renderer: real orders use the default, headless SwiftShader software rendering,
+the same renderer as the Whole Sky samples, so buyers get what the samples show.
+  --gpu       LOCAL TESTING ONLY: render on this machine's GPU instead. Output can
+              look different from the samples; never use it for a customer file.
+  --headful   show the browser window (local testing; pair with --gpu).`;
+
+/** Chromium launch options for the still. The default ({}) is the order renderer: headless SwiftShader. */
+export function stillLaunchOptions({ browser = 'chrome', headful = false, gpu = false } = {}) {
+  const opts = { headless: !headful, args: gpu ? ['--ignore-gpu-blocklist'] : [...SWIFTSHADER_ARGS] };
+  return browser === 'chromium' ? opts : { ...opts, channel: browser };
+}
+
+export async function launchStillBrowser(options = {}) {
+  return chromium.launch(stillLaunchOptions(options));
 }
 
 /**
@@ -101,8 +124,9 @@ export async function renderObservatoryStill(browserInstance, origin, context, {
 
 async function main() {
   const A = parseArgs(process.argv.slice(2));
+  if (A.help) { console.log(USAGE); return; }
   if (typeof A.dir !== 'string' || !A.dir.trim() || typeof A.in !== 'string' || !existsSync(resolve(A.in))) {
-    throw new Error('Usage: observatory-still.mjs --in <canonical order.json> --dir <private dir> [--browser chrome|msedge|chromium] [--headful] [--gpu]');
+    throw new Error(USAGE);
   }
   const order = JSON.parse(readFileSync(resolve(A.in), 'utf8'));
   if (order.product !== 'whole-sky-edition') throw new Error(`The Observatory still belongs to whole-sky-edition orders only (got ${order.product || 'no product'})`);
@@ -112,13 +136,15 @@ async function main() {
   const { startServer } = await import('./make-studio-samples.mjs');
   const server = await startServer();
   const origin = `http://127.0.0.1:${server.address().port}`;
-  const browser = await launchStillBrowser({ browser: typeof A.browser === 'string' ? A.browser : 'chrome', headful: !!A.headful, gpu: !!A.gpu });
+  const gpu = !!A.gpu;
+  if (gpu) console.error('observatory-still: --gpu is for local testing only; real orders use the default software renderer (no --gpu).');
+  const browser = await launchStillBrowser({ browser: typeof A.browser === 'string' ? A.browser : 'chrome', headful: !!A.headful, gpu });
   try {
     const t0 = Date.now();
     const still = await renderObservatoryStill(browser, origin, context);
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, STILL_FILE), still.png);
-    console.log(JSON.stringify({ file: STILL_FILE, width: still.width, height: still.height, drawingBuffer: still.drawingBuffer, bytes: still.png.length, renderMs: still.renderMs, totalMs: Date.now() - t0, gpu: still.gl && still.gl.renderer, utc: context.utc, stamp: still.caption }));
+    console.log(JSON.stringify({ file: STILL_FILE, width: still.width, height: still.height, drawingBuffer: still.drawingBuffer, bytes: still.png.length, renderMs: still.renderMs, totalMs: Date.now() - t0, renderer: gpu ? 'gpu (local testing only)' : 'swiftshader (order default)', gl: still.gl && still.gl.renderer, utc: context.utc, stamp: still.caption }));
   } finally {
     await browser.close();
     server.close();
