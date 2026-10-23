@@ -387,7 +387,10 @@ for (const [label, kind, opts] of [
     else if (lines.length > 1 && !/\s/.test(lines[lines.length - 1]))
       orphans.push(`x${textScale.toFixed(2)}: "${lines[lines.length - 1]}" alone`)
   }
-  ok(orphans.length === 0, `instrument daily card (feed down): no word alone on the badge's last line ${orphans.join('; ')}`)
+  ok(
+    orphans.length === 0,
+    `instrument daily card (feed down): no word alone on the badge's last line ${orphans.join('; ')}`,
+  )
 }
 // Step 10d-eclipse: the eclipse edition plate (2400 × 3000) and its disc (2000 × 2000), drawn by
 // the real painters. Every line >= 11 px at 360 wide, the plate's header and footer fit and clear
@@ -441,7 +444,10 @@ for (const which of ['artwork', 'disc']) {
   const outside = offWheel.filter(
     (d) => d.ink.x0 < 0 || d.ink.y0 < 0 || d.ink.x1 > r.width || d.ink.y1 > r.height,
   )
-  ok(outside.length === 0, `eclipse plate: header and footer fit the plate` + outside.map((d) => ` [${d.text}]`).join(''))
+  ok(
+    outside.length === 0,
+    `eclipse plate: header and footer fit the plate` + outside.map((d) => ` [${d.text}]`).join(''),
+  )
   const hits = []
   for (let i = 0; i < offWheel.length; i++)
     for (let j = i + 1; j < offWheel.length; j++) {
@@ -453,7 +459,10 @@ for (const which of ['artwork', 'disc']) {
   ok(hits.length === 0, `eclipse plate: header and footer lines do not overlap ${hits.join('; ')}`)
   const footTop = Math.min(...offWheel.filter((d) => d.ink.y0 > W.y).map((d) => d.ink.y0))
   // The wheel reaches outerR + 29 (the eclipse line and its dot).
-  ok(footTop > W.y + W.outerR + 29, `eclipse plate: footer starts below the wheel (${footTop.toFixed(0)})`)
+  ok(
+    footTop > W.y + W.outerR + 29,
+    `eclipse plate: footer starts below the wheel (${footTop.toFixed(0)})`,
+  )
 }
 ok(/export const PLATE_WHEEL/.test(eclipseSrc), 'eclipse plate exports its wheel geometry')
 ok(!/globalThis\.__/.test(eclipseSrc), 'eclipse plate has no debug hooks')
@@ -465,12 +474,21 @@ for (const [name, natal] of await probe.eclipseWheelCharts()) {
   const c = probe.checkEclipseWheel(r)
   for (const [rule, list] of Object.entries(c.problems))
     ok(list.length === 0, `${label}: ${rule} — ${list.length ? list.join('; ') : 'clean'}`)
-  ok(c.discs.length === Object.keys(natal).length, `${label}: one disc per point (${c.discs.length})`)
+  ok(
+    c.discs.length === Object.keys(natal).length,
+    `${label}: one disc per point (${c.discs.length})`,
+  )
   const W = r.wheel
   const E = probe.ECLIPSE_LONGITUDE
   // The eclipse marker: an ember line out along the eclipse degree, ending in the dot.
-  const dotAt = [W.x + Math.cos(lonAngle(E)) * (W.outerR + 18), W.y + Math.sin(lonAngle(E)) * (W.outerR + 18)]
-  const lineFrom = [W.x + Math.cos(lonAngle(E)) * (W.innerR + 18), W.y + Math.sin(lonAngle(E)) * (W.innerR + 18)]
+  const dotAt = [
+    W.x + Math.cos(lonAngle(E)) * (W.outerR + 18),
+    W.y + Math.sin(lonAngle(E)) * (W.outerR + 18),
+  ]
+  const lineFrom = [
+    W.x + Math.cos(lonAngle(E)) * (W.innerR + 18),
+    W.y + Math.sin(lonAngle(E)) * (W.innerR + 18),
+  ]
   ok(
     r.segments.some(
       (s) =>
@@ -490,11 +508,18 @@ for (const [name, natal] of await probe.eclipseWheelCharts()) {
     return !r.segments.some(
       (s) =>
         s.width === 3 &&
-        Math.hypot(s.x0 - (W.x + Math.cos(a) * W.innerR), s.y0 - (W.y + Math.sin(a) * W.innerR)) < 1e-6 &&
-        Math.hypot(s.x1 - (W.x + Math.cos(a) * (W.innerR + W.degreeTick)), s.y1 - (W.y + Math.sin(a) * (W.innerR + W.degreeTick))) < 1e-6,
+        Math.hypot(s.x0 - (W.x + Math.cos(a) * W.innerR), s.y0 - (W.y + Math.sin(a) * W.innerR)) <
+          1e-6 &&
+        Math.hypot(
+          s.x1 - (W.x + Math.cos(a) * (W.innerR + W.degreeTick)),
+          s.y1 - (W.y + Math.sin(a) * (W.innerR + W.degreeTick)),
+        ) < 1e-6,
     )
   })
-  ok(missing.length === 0, `${label}: exact-degree tick for every point ${missing.map(([k]) => k).join(', ')}`)
+  ok(
+    missing.length === 0,
+    `${label}: exact-degree tick for every point ${missing.map(([k]) => k).join(', ')}`,
+  )
 }
 
 console.log(`test-share-canvases: ${passed} passed, 0 failed`)
