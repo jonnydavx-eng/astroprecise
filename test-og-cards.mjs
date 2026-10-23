@@ -105,6 +105,32 @@ for (const p of ['lifepath', 'links', 'numerology']) {
   )
   ok(`${p}: one twitter:image tag`, (h.match(/name="twitter:image"/g) || []).length === 1)
 }
+// Step 10b: a share card or share description never advertises checkout status. The card
+// letters the page's meta description, so checking the head descriptions covers the card text.
+const CHECKOUT_STATUS = /checkout[\s-]*(?:is\s+)?closed/i
+for (const e of manifest) {
+  const h = readFileSync(join(SITE, e.page), 'utf8')
+  const head = h.slice(0, h.indexOf('</head>'))
+  const descs = [
+    metaContent(head, 'name', 'description'),
+    metaContent(head, 'property', 'og:description'),
+    metaContent(head, 'name', 'twitter:description'),
+    metaContent(head, 'property', 'og:image:alt'),
+    e.title,
+  ].filter(Boolean)
+  for (const ld of head.matchAll(/"description":"([^"]*)"/g)) descs.push(ld[1])
+  ok(
+    `${e.page.replace(/\.html$/, '')}: share text does not say checkout is closed`,
+    descs.every((d) => !CHECKOUT_STATUS.test(d)),
+    descs.find((d) => CHECKOUT_STATUS.test(d)),
+  )
+}
+ok('the checkout-status check catches "Checkout closed."', CHECKOUT_STATUS.test('Checkout closed.'))
+ok(
+  'the checkout-status check catches "checkout-closed"',
+  CHECKOUT_STATUS.test('the checkout-closed preview'),
+)
+
 const index = readFileSync(join(SITE, 'index.html'), 'utf8')
 ok('index.html no longer points at og-banner-silver.jpg', !index.includes('og-banner-silver'))
 

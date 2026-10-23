@@ -1,6 +1,8 @@
 /**
  * Astro Precise — Moment share-card painter
- * Midnight Meridian 2026 tokens only (lunar void + instrument silver + ion blue).
+ * Paper & Night tokens (css/ap-tokens.css): paper ground, ink type, one copper
+ * accent, AP Serif (Instrument Serif) + AP Sans (Inter). The only dark area is
+ * the night disc that holds the zenith star patch.
  * Builds square PNG keepsakes: zenith + light-cone story for any civil date.
  * Requires: LightCone, StarCatalog, AstroEphemeris (for JD helpers via caller).
  */
@@ -8,15 +10,23 @@
   'use strict';
 
   var CARD_BASE = 1080;
-  var SILVER = '#93A8BF';
-  var SILVER_A55 = 'rgba(147, 168, 191, 0.55)';
-  var SILVER_A22 = 'rgba(147, 168, 191, 0.22)';
-  var SILVER_A30 = 'rgba(147, 168, 191, 0.30)';
-  var PAPER = '#EEF4FA';
-  var PAPER_DIM = '#C9D6E3';
-  var PAPER_MUTED = '#93A8BF';
-  var VOID = '#040812';
-  var ION_GLOW = 'rgba(139, 169, 255, 0.55)';
+  /* Canvas cannot read CSS custom properties: the tokens are repeated here. */
+  var PAPER = '#F6F3EC';
+  var CARD = '#FBF9F4';
+  var RULE = '#D6D1C6';
+  var INK = '#0E1116';
+  var GRAPHITE = '#3A3F47';
+  var MUTED = '#5C6168';
+  var COPPER = '#B4693E';
+  var COPPER_INK = '#8A4A24';
+  var NIGHT = '#0E1116';
+  var STARLIGHT = '#F1E7CF';
+  var NIGHT_COPPER = '#E2A27A';
+  var SERIF = '"AP Serif", "Instrument Serif", "Times New Roman", serif';
+  var SANS = '"AP Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+  /* Seen about 360 CSS px wide on a phone: 1 unit is a third of a px there.
+     Nothing on the card is set under 20 units (about 6.7 px at 360). */
+  var MOMENT_MIN_PX = 20;
 
   function cardExportPx() {
     return (global.RafCore && global.RafCore.cardExportSize)
@@ -24,92 +34,111 @@
       : CARD_BASE * 2;
   }
 
-  function cardBase(opts) {
-    opts = opts || {};
+  function cardFontsReady() {
+    if (typeof document === 'undefined' || !document.fonts || !document.fonts.load) return Promise.resolve();
+    var loads = Promise.all([
+      document.fonts.load('400 84px ' + SERIF),
+      document.fonts.load('italic 400 34px ' + SERIF),
+      document.fonts.load('400 26px ' + SANS),
+      document.fonts.load('600 22px ' + SANS),
+    ]).catch(function () {});
+    return Promise.race([loads, new Promise(function (resolve) { setTimeout(resolve, 2500); })]);
+  }
+
+  function cardBase() {
     var CARD_W = cardExportPx();
     var CARD_H = CARD_W;
     var S = CARD_W / CARD_BASE;
-    var nebX = opts.nebX == null ? CARD_BASE / 2 : opts.nebX;
-    var nebY = opts.nebY == null ? 430 : opts.nebY;
-    var nebR = opts.nebR == null ? 520 : opts.nebR;
-    var stars = opts.stars == null ? 160 : opts.stars;
-    var seed = opts.seed0 == null ? 137 : opts.seed0;
     var cv = document.createElement('canvas');
     var x = (global.RafCore && global.RafCore.prepExportCtx)
       ? global.RafCore.prepExportCtx(cv, CARD_W, CARD_H)
       : (cv.width = CARD_W, cv.height = CARD_H, cv.getContext('2d'));
     x.scale(S, S);
 
-    x.fillStyle = VOID;
+    x.fillStyle = PAPER;
     x.fillRect(0, 0, CARD_BASE, CARD_BASE);
-    var neb = x.createRadialGradient(nebX, nebY, 0, nebX, nebY, nebR);
-    neb.addColorStop(0, 'rgba(139, 169, 255, 0.12)');
-    neb.addColorStop(0.45, 'rgba(168, 151, 255, 0.08)');
-    neb.addColorStop(1, 'transparent');
-    x.fillStyle = neb;
-    x.fillRect(0, 0, CARD_BASE, CARD_BASE);
-
-    var rnd = function () {
-      seed = (seed * 16807) % 2147483647;
-      return seed / 2147483647;
-    };
-    for (var i = 0; i < stars; i++) {
-      x.fillStyle = 'rgba(238, 244, 250,' + (0.1 + rnd() * 0.5) + ')';
-      x.beginPath();
-      x.arc(rnd() * CARD_BASE, rnd() * CARD_BASE, rnd() * 1.6 + 0.3, 0, Math.PI * 2);
-      x.fill();
-    }
-
-    x.strokeStyle = SILVER_A55;
+    x.strokeStyle = RULE;
     x.lineWidth = 2;
     x.strokeRect(46, 46, CARD_BASE - 92, CARD_BASE - 92);
-    x.strokeStyle = SILVER_A22;
-    x.strokeRect(58, 58, CARD_BASE - 116, CARD_BASE - 116);
+    x.lineWidth = 1;
+    x.strokeRect(58.5, 58.5, CARD_BASE - 117, CARD_BASE - 117);
     return { cv: cv, x: x, S: S, CARD_W: CARD_W };
   }
 
+  function tracked(x, px) {
+    if ('letterSpacing' in x) x.letterSpacing = px + 'px';
+  }
+
   function honestyBadge(x, cx, y, label) {
-    x.font = '20px Georgia, "Times New Roman", serif';
+    x.font = '500 22px ' + SANS;
     var padX = 26, dotGap = 16, dotR = 5;
     var tw = x.measureText(label).width;
     var w = tw + padX * 2 + dotGap + dotR * 2;
-    var h = 42, left = cx - w / 2;
+    var h = 44, left = cx - w / 2;
     x.beginPath();
     if (x.roundRect) x.roundRect(left, y - h / 2, w, h, h / 2);
     else x.rect(left, y - h / 2, w, h);
-    x.fillStyle = 'rgba(7, 16, 30, 0.78)';
+    x.fillStyle = CARD;
     x.fill();
-    x.lineWidth = 1;
-    x.strokeStyle = SILVER_A55;
+    x.lineWidth = 1.5;
+    x.strokeStyle = RULE;
     x.stroke();
     var dotX = left + padX;
     x.beginPath();
     x.arc(dotX, y, dotR, 0, Math.PI * 2);
-    x.fillStyle = SILVER;
+    x.fillStyle = COPPER;
     x.fill();
     x.textAlign = 'left';
-    x.fillStyle = PAPER;
-    x.fillText(label, dotX + dotGap, y + 7);
+    x.fillStyle = INK;
+    x.fillText(label, dotX + dotGap, y + 8);
     x.textAlign = 'center';
   }
 
-  function wrapText(x, text, cx, y, maxW, lineH) {
-    var words = String(text).split(/\s+/);
-    var line = '', yy = y;
+  function splitLines(x, text, maxW) {
+    var words = String(text).split(/\s+/).filter(Boolean);
+    var lines = [];
+    var line = '';
     for (var wi = 0; wi < words.length; wi++) {
-      var w = words[wi];
-      var test = line ? line + ' ' + w : w;
+      var test = line ? line + ' ' + words[wi] : words[wi];
       if (x.measureText(test).width > maxW && line) {
-        x.fillText(line, cx, yy);
-        line = w;
-        yy += lineH;
+        lines.push(line);
+        line = words[wi];
       } else line = test;
     }
-    if (line) {
-      x.fillText(line, cx, yy);
-      yy += lineH;
-    }
-    return yy;
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function wrapText(x, text, cx, y, maxW, lineH) {
+    var lines = splitLines(x, text, maxW);
+    for (var i = 0; i < lines.length; i++) x.fillText(lines[i], cx, y + i * lineH);
+    return y + lines.length * lineH;
+  }
+
+  function star4(x, cx, cy, r) {
+    var w = r * 0.22;
+    x.beginPath();
+    x.moveTo(cx, cy - r);
+    x.bezierCurveTo(cx + w * 0.35, cy - w, cx + w, cy - w * 0.35, cx + r, cy);
+    x.bezierCurveTo(cx + w, cy + w * 0.35, cx + w * 0.35, cy + w, cx, cy + r);
+    x.bezierCurveTo(cx - w * 0.35, cy + w, cx - w, cy + w * 0.35, cx - r, cy);
+    x.bezierCurveTo(cx - w, cy - w * 0.35, cx - w * 0.35, cy - w, cx, cy - r);
+    x.closePath();
+    x.fill();
+  }
+
+  // The AstroPrecise mark: half paper, half night disc with a copper four-point star.
+  function drawMark(x, cx, cy, size) {
+    var r = size * 0.4;
+    x.fillStyle = PAPER;
+    x.beginPath(); x.arc(cx, cy, r, Math.PI / 2, Math.PI * 1.5); x.fill();
+    x.fillStyle = NIGHT;
+    x.beginPath(); x.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2); x.fill();
+    x.strokeStyle = NIGHT;
+    x.lineWidth = size * 0.04;
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
+    x.fillStyle = COPPER;
+    star4(x, cx + r * 0.42, cy - r * 0.26, r * 0.3);
   }
 
   /** Cache engine stills (3D capture library) for card plates — no live WebGL. */
@@ -138,61 +167,50 @@
     });
   }
 
-  /** Masterpiece porthole: circular engine still + engraved double rings + hairline. */
-  function drawEngineWindow(x, img, cx, cy, r) {
-    if (!img || !img.naturalWidth) return;
+  /** Night disc: the engine still under the star patch, framed in hairlines.
+      The disc is the one dark area on the card (Paper & Night rule). */
+  function drawNightDisc(x, img, cx, cy, r) {
     x.save();
     x.beginPath();
     x.arc(cx, cy, r, 0, Math.PI * 2);
     x.closePath();
+    x.fillStyle = NIGHT;
+    x.fill();
     x.clip();
-    // Cover-fit circle
-    var iw = img.naturalWidth, ih = img.naturalHeight;
-    var scale = Math.max((r * 2) / iw, (r * 2) / ih);
-    var dw = iw * scale, dh = ih * scale;
-    x.globalAlpha = 0.48;
-    x.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
-    x.globalAlpha = 1;
-    // Soft void vignette so stars stay readable
-    var vg = x.createRadialGradient(cx, cy, r * 0.35, cx, cy, r);
-    vg.addColorStop(0, 'rgba(4,8,18,0)');
-    vg.addColorStop(1, 'rgba(4,8,18,0.58)');
-    x.fillStyle = vg;
-    x.fillRect(cx - r, cy - r, r * 2, r * 2);
+    if (img && img.naturalWidth) {
+      var iw = img.naturalWidth, ih = img.naturalHeight;
+      var scale = Math.max((r * 2) / iw, (r * 2) / ih);
+      var dw = iw * scale, dh = ih * scale;
+      x.globalAlpha = 0.5;
+      x.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
+      x.globalAlpha = 1;
+      var vg = x.createRadialGradient(cx, cy, r * 0.35, cx, cy, r);
+      vg.addColorStop(0, 'rgba(14,17,22,0)');
+      vg.addColorStop(1, 'rgba(14,17,22,0.6)');
+      x.fillStyle = vg;
+      x.fillRect(cx - r, cy - r, r * 2, r * 2);
+    }
     x.restore();
 
-    // Engraved porthole rings (matches chart export + marketing masterpiece plate)
     x.beginPath();
     x.arc(cx, cy, r, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(201, 214, 227, 0.5)';
-    x.lineWidth = 2.2;
+    x.strokeStyle = GRAPHITE;
+    x.lineWidth = 2;
     x.stroke();
     x.beginPath();
-    x.arc(cx, cy, r + 6, 0, Math.PI * 2);
-    x.strokeStyle = SILVER_A22;
-    x.lineWidth = 1.4;
+    x.arc(cx, cy, r + 10, 0, Math.PI * 2);
+    x.strokeStyle = RULE;
+    x.lineWidth = 1.5;
     x.stroke();
-    // Aurora limb whisper (outer hairline)
-    x.beginPath();
-    x.arc(cx, cy, r + 11, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(139, 169, 255, 0.2)';
-    x.lineWidth = 1;
-    x.stroke();
-    // Corner registration ticks (4) on the outer ring — museum plate language
-    var tickR = r + 11;
-    var tickLen = 10;
+    // Copper registration ticks at the four diagonals of the outer ring.
+    x.strokeStyle = COPPER;
+    x.lineWidth = 2;
     [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (dir) {
       var ang = Math.atan2(dir[1], dir[0]);
-      var cos = Math.cos(ang), sin = Math.sin(ang);
-      var x0 = cx + cos * (tickR - 2);
-      var y0 = cy + sin * (tickR - 2);
+      var c = Math.cos(ang), sn = Math.sin(ang);
       x.beginPath();
-      x.moveTo(x0, y0);
-      x.lineTo(x0 + cos * tickLen * 0.15 - sin * tickLen, y0 + sin * tickLen * 0.15 + cos * tickLen);
-      x.moveTo(x0, y0);
-      x.lineTo(x0 + cos * tickLen * 0.15 + sin * tickLen, y0 + sin * tickLen * 0.15 - cos * tickLen);
-      x.strokeStyle = 'rgba(201, 214, 227, 0.46)';
-      x.lineWidth = 1.2;
+      x.moveTo(cx + c * (r + 4), cy + sn * (r + 4));
+      x.lineTo(cx + c * (r + 18), cy + sn * (r + 18));
       x.stroke();
     });
   }
@@ -218,60 +236,59 @@
       seed0 = (seed0 % 200000) + 50;
     }
 
-    var base = cardBase({ nebY: 460, nebR: 480, seed0: seed0 });
+    var base = cardBase();
     var x = base.x;
     var cx = CARD_BASE / 2;
+    void seed0; // kept for callers; the paper ground has no seeded starfield
 
     x.textAlign = 'center';
-    x.fillStyle = SILVER;
-    x.font = '26px Georgia, "Times New Roman", serif';
-    x.fillText('M O M E N T', cx, 118);
+    x.textBaseline = 'alphabetic';
+    x.fillStyle = COPPER_INK;
+    x.font = '600 26px ' + SANS;
+    tracked(x, 8);
+    x.fillText('MOMENT', cx, 118);
+    tracked(x, 0);
 
-    x.fillStyle = PAPER_MUTED;
-    x.font = 'italic 28px Georgia, "Times New Roman", serif';
+    x.fillStyle = GRAPHITE;
+    x.font = 'italic 400 34px ' + SERIF;
     x.fillText(moment.subtitle || 'The sky on the night it mattered', cx, 168);
 
     // Title / occasion
-    x.fillStyle = PAPER;
-    var title = (moment.title || s.name).toUpperCase();
-    var nameSize = 72;
-    x.font = 'bold ' + nameSize + 'px Georgia, "Times New Roman", serif';
-    while (x.measureText(title).width > CARD_BASE - 180 && nameSize > 40) {
+    x.fillStyle = INK;
+    var title = moment.title || s.name;
+    var nameSize = 84;
+    x.font = '400 ' + nameSize + 'px ' + SERIF;
+    while (x.measureText(title).width > CARD_BASE - 180 && nameSize > 44) {
       nameSize -= 4;
-      x.font = 'bold ' + nameSize + 'px Georgia, "Times New Roman", serif';
+      x.font = '400 ' + nameSize + 'px ' + SERIF;
     }
-    x.shadowColor = ION_GLOW;
-    x.shadowBlur = 20;
-    x.fillText(title, cx, 250);
-    x.shadowBlur = 0;
+    x.fillText(title, cx, 252);
 
     // Date + place
-    x.fillStyle = PAPER_DIM;
-    x.font = '28px Georgia, "Times New Roman", serif';
+    x.fillStyle = GRAPHITE;
+    x.font = '500 28px ' + SANS;
     var whenWhere = [moment.dateLabel, moment.placeLabel].filter(Boolean).join('  ·  ');
     if (whenWhere) x.fillText(whenWhere, cx, 302);
 
     // Zenith star name
-    x.fillStyle = SILVER;
-    x.font = '22px Georgia, "Times New Roman", serif';
-    x.fillText('ZENITH STAR', cx, 360);
+    x.fillStyle = COPPER_INK;
+    x.font = '600 22px ' + SANS;
+    tracked(x, 4);
+    x.fillText('ZENITH STAR', cx, 356);
+    tracked(x, 0);
 
-    x.fillStyle = PAPER;
+    x.fillStyle = INK;
     var starSize = 64;
-    x.font = 'bold ' + starSize + 'px Georgia, "Times New Roman", serif';
-    while (x.measureText(s.name.toUpperCase()).width > CARD_BASE - 200 && starSize > 36) {
+    x.font = '400 ' + starSize + 'px ' + SERIF;
+    while (x.measureText(s.name).width > CARD_BASE - 200 && starSize > 36) {
       starSize -= 4;
-      x.font = 'bold ' + starSize + 'px Georgia, "Times New Roman", serif';
+      x.font = '400 ' + starSize + 'px ' + SERIF;
     }
-    x.shadowColor = ION_GLOW;
-    x.shadowBlur = 18;
-    x.fillText(s.name.toUpperCase(), cx, 430);
-    x.shadowBlur = 0;
+    x.fillText(s.name, cx, 420);
 
-    // Star patch — engine photoreal window under catalogue stars (3D still library)
-    var panelCy = 580, half = 160, span = 18;
-    var plate = moment.plateImage || null;
-    if (plate) drawEngineWindow(x, plate, cx, panelCy, half);
+    // Star patch on the night disc (engine still under catalogue stars)
+    var panelCy = 600, half = 148, span = 18;
+    drawNightDisc(x, moment.plateImage || null, cx, panelCy, half);
 
     if (S && S.STARS) {
       var wrapDeg = function (d) { return ((d + 540) % 360) - 180; };
@@ -288,12 +305,8 @@
           });
         }
       }
-      x.beginPath();
-      x.arc(cx, panelCy, half, 0, Math.PI * 2);
-      x.strokeStyle = 'rgba(139, 169, 255, 0.32)';
-      x.lineWidth = 2;
-      x.stroke();
-      x.strokeStyle = SILVER_A30;
+      x.strokeStyle = 'rgba(241, 231, 207, 0.4)';
+      x.lineWidth = 1.5;
       x.beginPath();
       x.moveTo(cx - 14, panelCy); x.lineTo(cx + 14, panelCy);
       x.moveTo(cx, panelCy - 14); x.lineTo(cx, panelCy + 14);
@@ -304,32 +317,30 @@
         var r = Math.max(1.4, 4.0 - p.st.mag * 0.7);
         x.beginPath();
         x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
-        if (isHero) {
-          x.fillStyle = 'rgba(165, 188, 255, 0.98)';
-          x.shadowColor = ION_GLOW;
-          x.shadowBlur = 14;
-        } else {
-          x.fillStyle = 'rgba(201, 214, 227, 0.72)';
-          x.shadowBlur = 0;
-        }
+        x.fillStyle = isHero ? NIGHT_COPPER : STARLIGHT;
         x.fill();
-        x.shadowBlur = 0;
+        if (isHero) {
+          x.beginPath();
+          x.arc(p.px, p.py, Math.max(r, 5) + 7, 0, Math.PI * 2);
+          x.strokeStyle = NIGHT_COPPER;
+          x.lineWidth = 1.5;
+          x.stroke();
+        }
       }
     }
 
     // Meta line
-    x.fillStyle = PAPER;
-    x.font = '26px Georgia, "Times New Roman", serif';
+    x.fillStyle = INK;
+    x.font = '500 26px ' + SANS;
     var parts = [];
     if (s.con) parts.push(s.con);
     if (s.spectral) parts.push('type ' + s.spectral);
     parts.push('mag ' + s.mag);
     parts.push(s.ly + ' ly');
-    x.fillText(parts.join('   ·   '), cx, 790);
+    x.fillText(parts.join('   ·   '), cx, 806);
 
-    // Light-cone / age story
-    x.fillStyle = PAPER_MUTED;
-    x.font = '24px Georgia, "Times New Roman", serif';
+    // Light-cone / age story: two lines at most, stepping the size down to fit.
+    x.fillStyle = GRAPHITE;
     var story = moment.storyLine;
     if (!story && moment.cone && isFinite(moment.cone.radiusLy)) {
       var ly = moment.cone.radiusLy;
@@ -342,15 +353,26 @@
       story = 'Nearest catalogue star to the zenith — ' +
         (isFinite(z.sepDeg) ? z.sepDeg.toFixed(1) + '° from exact overhead.' : 'computed from LST + latitude.');
     }
-    wrapText(x, story, cx, 840, CARD_BASE - 200, 34);
+    var storyPx = 26;
+    x.font = '400 ' + storyPx + 'px ' + SANS;
+    while (splitLines(x, story, CARD_BASE - 200).length > 2 && storyPx > MOMENT_MIN_PX) {
+      storyPx -= 1;
+      x.font = '400 ' + storyPx + 'px ' + SANS;
+    }
+    wrapText(x, story, cx, 852, CARD_BASE - 200, Math.round(storyPx * 1.36));
 
-    honestyBadge(x, cx, 948, 'computed · J2000 catalogue + LST · VSOP87');
-    x.fillStyle = PAPER_MUTED;
-    x.font = '18px "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace';
-    x.fillText('stars = catalogue · plate = 3D orrery still · free PNG ≠ paid pack', cx, 992);
-    x.fillStyle = SILVER;
-    x.font = '20px Georgia, "Times New Roman", serif';
-    x.fillText('astroprecise · moment', cx, 1024);
+    honestyBadge(x, cx, 930, 'computed · J2000 catalogue + LST · VSOP87');
+    x.fillStyle = MUTED;
+    x.font = '400 20px ' + SANS;
+    x.fillText('stars = catalogue · plate = 3D orrery still · free PNG ≠ paid pack', cx, 980);
+    x.font = '400 28px ' + SERIF;
+    var wm = 'AstroPrecise · moment';
+    var wmW = x.measureText(wm).width;
+    drawMark(x, cx - wmW / 2 - 6, 1001, 30);
+    x.fillStyle = INK;
+    x.textAlign = 'left';
+    x.fillText(wm, cx - wmW / 2 + 16, 1011);
+    x.textAlign = 'center';
 
     return base.cv;
   }
@@ -396,7 +418,8 @@
   /** Async paint: preloads engine plate for kind, then paints. */
   function paintMomentCardAsync(moment) {
     var src = plateSrcForKind(moment && moment.kind);
-    return loadPlate(src).then(function (img) {
+    return Promise.all([loadPlate(src), cardFontsReady()]).then(function (loaded) {
+      var img = loaded[0];
       var m = Object.assign({}, moment || {}, { plateImage: img || moment.plateImage || null });
       return paintMomentCard(m);
     });
@@ -409,6 +432,7 @@
     plateSrcForKind: plateSrcForKind,
     downloadCanvas: downloadCanvas,
     shareOrDownload: shareOrDownload,
-    CARD_BASE: CARD_BASE
+    CARD_BASE: CARD_BASE,
+    MOMENT_MIN_PX: MOMENT_MIN_PX
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -31,33 +31,32 @@
   var GEOCODER = 'https://geocoding-api.open-meteo.com/v1/search';
   var ASSUMED_HOUR = '12:00';
 
-  /* U+FE0E after every glyph. The zodiac code points default to emoji
-     presentation, so without the text selector Chrome paints ♈–♓ as round
-     colour badges from the system emoji font and the plate stops being an
-     engraving. Same reason the orrery's own sign table carries it. */
-  var TEXT = '\uFE0E';
-  var GLYPH = {
-    sun: '\u2609', moon: '\u263D', mercury: '\u263F', venus: '\u2640', mars: '\u2642',
-    jupiter: '\u2643', saturn: '\u2644', uranus: '\u2645', neptune: '\u2646', pluto: '\u2647',
-  };
-  var SIGN_GLYPHS = ['\u2648', '\u2649', '\u264A', '\u264B', '\u264C', '\u264D',
-    '\u264E', '\u264F', '\u2650', '\u2651', '\u2652', '\u2653'];
+  /* Glyphs are drawn from code: APGlyphs.image() returns the house SVG for each
+     planet and sign, and the card paints those images. No Unicode astrology
+     code points, so no emoji badges and no font fallback squares (step 10b). */
+  var SIGN_KEYS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+    'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
   var WHEEL_BODIES = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
   var LIGHTS = [['sun', 'Sun'], ['moon', 'Moon'], ['venus', 'Venus']];
 
-  /* Canvas cannot read CSS custom properties, so the house tokens are repeated
-     here as literals. Keep them in step with css/ap-living-sky-v834.css. */
-  var VOID = '#040812';
-  var PAPER = '#E6ECF2';
-  var MUTE = '#9AA8B6';
-  var ION = '#8BA9FF';
-  var BRASS = '#93A8BF';
-  var DANGER = '#B04A52';
-  var SILVER = '#C5D0DC';
+  /* Canvas cannot read CSS custom properties, so the Paper & Night tokens are
+     repeated here as literals. Keep them in step with css/ap-tokens.css. */
+  var PAPER = '#F6F3EC';
+  var CARD = '#FBF9F4';
+  var RULE = '#D6D1C6';
+  var INK = '#0E1116';
+  var GRAPHITE = '#3A3F47';
+  var MUTED = '#5C6168';
+  var COPPER = '#B4693E';
+  var COPPER_INK = '#8A4A24';
+  var NIGHT = '#0E1116';
+  var ALERT = '#A64526';
 
-  var DISPLAY = "'Cormorant Garamond', Georgia, serif";
-  var DATA = "'IBM Plex Mono', ui-monospace, monospace";
-  var GLYPHS = "'n', 'AstroGlyph', 'Noto Sans Symbols 2', serif";
+  var SERIF = '"AP Serif", "Instrument Serif", "Times New Roman", serif';
+  var SANS = '"AP Sans", Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+  /* The card is 1200 × 630 and is mostly seen about 360 CSS px wide on a phone,
+     so 1 unit is 0.3 px there. Nothing on the plate is set under 16 units. */
+  var SKY_CARD_MIN_PX = 16;
 
   var byId = function (id) { return document.getElementById(id); };
 
@@ -101,12 +100,12 @@
     if (!match || !ctx) return;
     var mark = window.APMirrorHour.cardLabel(match, dateText);
     ctx.textAlign = 'right';
-    ctx.fillStyle = ION;
-    ctx.font = '600 22px ' + DATA;
-    ctx.fillText(mark, 1124, 118);
-    ctx.fillStyle = MUTE;
-    ctx.font = '400 13px ' + DATA;
-    ctx.fillText('FOLK CLOCK PATTERN', 1124, 142);
+    ctx.fillStyle = COPPER_INK;
+    ctx.font = '600 26px ' + SANS;
+    ctx.fillText(mark, 1124, 84);
+    ctx.fillStyle = MUTED;
+    ctx.font = '500 16px ' + SANS;
+    ctx.fillText('FOLK CLOCK PATTERN', 1124, 106);
     ctx.textAlign = 'left';
   }
 
@@ -166,11 +165,11 @@
   }
 
   function lightState(altitude) {
-    if (altitude >= -0.833) return { label: 'Daylight', tone: ION, night: false };
-    if (altitude >= -6) return { label: 'Civil twilight', tone: BRASS, night: false };
-    if (altitude >= -12) return { label: 'Nautical twilight', tone: SILVER, night: true };
-    if (altitude >= -18) return { label: 'Astronomical twilight', tone: SILVER, night: true };
-    return { label: 'Night', tone: SILVER, night: true };
+    if (altitude >= -0.833) return { label: 'Daylight', tone: COPPER_INK, night: false };
+    if (altitude >= -6) return { label: 'Civil twilight', tone: COPPER_INK, night: false };
+    if (altitude >= -12) return { label: 'Nautical twilight', tone: GRAPHITE, night: true };
+    if (altitude >= -18) return { label: 'Astronomical twilight', tone: GRAPHITE, night: true };
+    return { label: 'Night', tone: INK, night: true };
   }
 
   function lightSentence(light, altitude) {
@@ -237,31 +236,51 @@
 
   // ── the card ──────────────────────────────────────────────────────────────
 
-  function starfield() {
-    var seed = 630630;
-    var rand = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
-    for (var i = 0; i < 170; i += 1) {
-      ctx.globalAlpha = 0.12 + rand() * 0.5;
-      ctx.fillStyle = i % 7 === 0 ? BRASS : PAPER;
-      ctx.beginPath();
-      ctx.arc(rand() * 1200, rand() * 630, 0.4 + rand() * 1.4, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
+  /* ── glyph images ── APGlyphs.image() markup, painted as images. */
+  var glyphCache = {};
+  function glyphKey(name, color) { return name + '|' + color; }
+  function loadGlyph(name, color) {
+    var key = glyphKey(name, color);
+    if (glyphCache[key]) return Promise.resolve(glyphCache[key]);
+    return new Promise(function (resolve) {
+      var markup = window.APGlyphs && window.APGlyphs.image ? window.APGlyphs.image(name, color) : '';
+      if (!markup) { resolve(null); return; }
+      var image = new Image();
+      image.onload = function () { glyphCache[key] = image; resolve(image); };
+      image.onerror = function () { resolve(null); };
+      image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(markup);
+    });
   }
-
-  function plate() {
-    ctx.fillStyle = VOID;
-    ctx.fillRect(0, 0, 1200, 630);
-    var glow = ctx.createRadialGradient(600, -80, 40, 600, -80, 720);
-    glow.addColorStop(0, 'rgba(139,169,255,.12)');
-    glow.addColorStop(1, 'rgba(4,8,18,0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, 1200, 630);
-    starfield();
-    ctx.strokeStyle = 'rgba(147,168,191,0.28)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(28.5, 28.5, 1143, 573);
+  function glyph(name, color, cx, cy, size) {
+    var image = glyphCache[glyphKey(name, color)];
+    if (image) {
+      ctx.drawImage(image, cx - size / 2, cy - size / 2, size, size);
+      return;
+    }
+    // Not loaded (APGlyphs missing): a small ring, never a fallback square.
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, size * 0.22, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  function cardAssetsReady() {
+    var fonts = document.fonts && document.fonts.load
+      ? Promise.all([
+        document.fonts.load('400 72px ' + SERIF),
+        document.fonts.load('italic 400 30px ' + SERIF),
+        document.fonts.load('400 18px ' + SANS),
+        document.fonts.load('600 20px ' + SANS),
+      ]).catch(function () { return null; })
+      : Promise.resolve(null);
+    var glyphs = [];
+    WHEEL_BODIES.forEach(function (name) {
+      glyphs.push(loadGlyph(name, INK), loadGlyph(name, GRAPHITE));
+    });
+    LIGHTS.forEach(function (row) { glyphs.push(loadGlyph(row[0], COPPER_INK)); });
+    SIGN_KEYS.forEach(function (name) { glyphs.push(loadGlyph(name, MUTED)); });
+    var all = Promise.all([fonts, Promise.all(glyphs)]);
+    return Promise.race([all, new Promise(function (resolve) { setTimeout(resolve, 3000); })]);
   }
 
   function tracked(text, x, y, spacing) {
@@ -272,15 +291,78 @@
     }
   }
 
+  /* Set a line in the given weight, stepping the size down (never under the
+     floor) until it fits the column. */
+  function fitText(text, x, y, weight, px, family, maxWidth) {
+    var size = px;
+    ctx.font = weight + ' ' + size + 'px ' + family;
+    while (ctx.measureText(text).width > maxWidth && size > SKY_CARD_MIN_PX) {
+      size -= 1;
+      ctx.font = weight + ' ' + size + 'px ' + family;
+    }
+    ctx.fillText(text, x, y);
+  }
+
+  function star4(cx, cy, r) {
+    var w = r * 0.22;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r);
+    ctx.bezierCurveTo(cx + w * 0.35, cy - w, cx + w, cy - w * 0.35, cx + r, cy);
+    ctx.bezierCurveTo(cx + w, cy + w * 0.35, cx + w * 0.35, cy + w, cx, cy + r);
+    ctx.bezierCurveTo(cx - w * 0.35, cy + w, cx - w, cy + w * 0.35, cx - r, cy);
+    ctx.bezierCurveTo(cx - w, cy - w * 0.35, cx - w * 0.35, cy - w, cx, cy - r);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // The AstroPrecise mark: half paper, half night disc with a copper four-point star.
+  function mark(cx, cy, size) {
+    var r = size * 0.4;
+    ctx.fillStyle = PAPER;
+    ctx.beginPath(); ctx.arc(cx, cy, r, Math.PI / 2, Math.PI * 1.5); ctx.fill();
+    ctx.fillStyle = NIGHT;
+    ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2); ctx.fill();
+    ctx.strokeStyle = NIGHT;
+    ctx.lineWidth = size * 0.04;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = COPPER;
+    star4(cx + r * 0.42, cy - r * 0.26, r * 0.3);
+  }
+
+  function wordmark(x, baseline) {
+    mark(x + 16, baseline - 10, 40);
+    ctx.fillStyle = INK;
+    ctx.font = '400 32px ' + SERIF;
+    ctx.fillText('AstroPrecise', x + 44, baseline);
+  }
+
+  function plate() {
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = PAPER;
+    ctx.fillRect(0, 0, 1200, 630);
+    ctx.strokeStyle = RULE;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(28.5, 28.5, 1143, 573);
+  }
+
+  function eyebrow(text, y) {
+    ctx.fillStyle = COPPER_INK;
+    ctx.font = '600 18px ' + SANS;
+    tracked(text, 76, y, 3.2);
+  }
+
   function wheel(chart, cx, cy) {
     var point = function (lon, r) {
       var a = (180 - lon) * RAD;
       return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
     };
     ctx.save();
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    [[198, 'rgba(143,163,184),.55)', 1.2], [176, 'rgba(143,163,184),.28)', 1], [104, 'rgba(143,163,184),.16)', 1]]
+    ctx.fillStyle = CARD;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 198, 0, Math.PI * 2);
+    ctx.fill();
+    [[198, GRAPHITE, 1.4], [168, RULE, 1], [100, RULE, 1]]
       .forEach(function (ring) {
         ctx.strokeStyle = ring[1];
         ctx.lineWidth = ring[2];
@@ -288,192 +370,197 @@
         ctx.arc(cx, cy, ring[0], 0, Math.PI * 2);
         ctx.stroke();
       });
-    ctx.strokeStyle = 'rgba(143,163,184),.16)';
+    ctx.strokeStyle = RULE;
+    ctx.lineWidth = 1;
     for (var s = 0; s < 12; s += 1) {
-      var inner = point(s * 30, 176);
+      var inner = point(s * 30, 168);
       var outer = point(s * 30, 198);
       ctx.beginPath();
       ctx.moveTo(inner[0], inner[1]);
       ctx.lineTo(outer[0], outer[1]);
       ctx.stroke();
-      var mark = point(s * 30 + 15, 187);
-      ctx.fillStyle = 'rgba(143,163,184),.8)';
-      ctx.font = '400 16px ' + GLYPHS;
-      ctx.fillText(SIGN_GLYPHS[s] + TEXT, mark[0], mark[1]);
+      var at = point(s * 30 + 15, 183);
+      glyph(SIGN_KEYS[s], MUTED, at[0], at[1], 22);
     }
     var ordered = WHEEL_BODIES
       .filter(function (key) { return chart.positions[key]; })
       .sort(function (a, b) { return chart.positions[a].longitude - chart.positions[b].longitude; });
     ordered.forEach(function (key, index) {
       var lon = chart.positions[key].longitude;
-      var tick = point(lon, 176);
-      var seat = point(lon, index % 2 ? 130 : 154);
+      var tick = point(lon, 168);
+      var seat = point(lon, index % 2 ? 122 : 146);
       // A leader line from the degree tick to the glyph: on a keepsake it must
       // be unambiguous which body sits at which longitude.
-      ctx.strokeStyle = 'rgba(143,163,184),.3)';
+      ctx.strokeStyle = RULE;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(tick[0], tick[1]);
       ctx.lineTo(seat[0], seat[1]);
       ctx.stroke();
-      ctx.fillStyle = BRASS;
+      ctx.fillStyle = COPPER;
       ctx.beginPath();
-      ctx.arc(tick[0], tick[1], 2.4, 0, Math.PI * 2);
+      ctx.arc(tick[0], tick[1], 3, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = key === 'sun' || key === 'moon' || key === 'venus' ? PAPER : MUTE;
-      ctx.font = '400 22px ' + GLYPHS;
-      ctx.fillText((GLYPH[key] || '') + TEXT, seat[0], seat[1]);
+      var light = key === 'sun' || key === 'moon' || key === 'venus';
+      glyph(key, light ? INK : GRAPHITE, seat[0], seat[1], 26);
     });
     ctx.restore();
   }
 
   /* The empty plate is the first thing a phone sees, at roughly a third of its
-     drawn width, so its type is set to survive that reduction. The keepsake
-     itself keeps the smaller engraved scale. */
+     drawn width, so its type is set to survive that reduction. */
   function placeholder(message, detail) {
     if (!ctx) return;
     plate();
-    ctx.fillStyle = BRASS;
-    ctx.font = '500 22px ' + DATA;
+    ctx.fillStyle = COPPER_INK;
+    ctx.font = '600 24px ' + SANS;
     tracked('SKY CARD', 76, 120, 5);
-    ctx.fillStyle = PAPER;
-    ctx.font = '600 62px ' + DISPLAY;
-    ctx.fillText(message, 76, 230);
-    ctx.fillStyle = MUTE;
-    ctx.font = '400 30px ' + DATA;
-    ctx.fillText(detail || 'Nothing is computed until you ask for it.', 76, 300);
+    ctx.fillStyle = INK;
+    fitText(message, 76, 236, '400', 76, SERIF, 1048);
+    ctx.fillStyle = GRAPHITE;
+    fitText(detail || 'Nothing is computed until you ask for it.', 76, 300, '400', 32, SANS, 1048);
+    ctx.strokeStyle = RULE;
+    ctx.beginPath();
+    ctx.moveTo(76, 528.5);
+    ctx.lineTo(1124, 528.5);
+    ctx.stroke();
+    wordmark(76, 580);
   }
 
   function drawCard(minute) {
     plate();
     var positions = minute.chart.positions;
 
-    ctx.fillStyle = BRASS;
-    ctx.font = '500 13px ' + DATA;
-    tracked('THE SKY AT THIS MINUTE', 76, 96, 3.4);
+    eyebrow('THE SKY AT THIS MINUTE', 92);
 
-    ctx.fillStyle = PAPER;
-    ctx.font = '600 54px ' + DISPLAY;
-    ctx.fillText(minute.dateText, 76, 168);
+    ctx.fillStyle = INK;
+    fitText(minute.dateText, 76, 164, '400', 68, SERIF, 640);
 
-    ctx.fillStyle = MUTE;
-    ctx.font = '400 15px ' + DATA;
-    ctx.fillText(minute.place.name.toUpperCase() + '  \u00B7  ' + minute.clockText
-      + (minute.timeKnown ? '' : ' (ASSUMED)') + '  \u00B7  ' + minute.place.tz.toUpperCase(), 76, 205);
-    ctx.font = '400 12px ' + DATA;
-    ctx.fillStyle = 'rgba(154,168,182,.8)';
-    ctx.fillText('COMPUTED FROM ' + minute.utText + ' UT', 76, 231);
+    ctx.fillStyle = GRAPHITE;
+    fitText(minute.place.name.toUpperCase() + '  \u00B7  ' + minute.clockText
+      + (minute.timeKnown ? '' : ' (ASSUMED)') + '  \u00B7  ' + minute.place.tz.toUpperCase(), 76, 202, '500', 18, SANS, 640);
+    ctx.fillStyle = MUTED;
+    ctx.font = '400 16px ' + SANS;
+    ctx.fillText('COMPUTED FROM ' + minute.utText + ' UT', 76, 228);
 
     if (minute.light) {
       ctx.fillStyle = minute.light.tone;
-      ctx.font = '400 13px ' + DATA;
+      ctx.font = '600 17px ' + SANS;
       tracked(minute.light.label.toUpperCase() + '  \u00B7  SUN '
         + Math.abs(minute.altitude).toFixed(1) + '\u00B0 '
-        + (minute.altitude >= 0 ? 'ABOVE' : 'BELOW') + ' THE HORIZON', 76, 272, 0.7);
+        + (minute.altitude >= 0 ? 'ABOVE' : 'BELOW') + ' THE HORIZON', 76, 268, 0.6);
     } else {
-      ctx.fillStyle = DANGER;
-      ctx.font = '400 13px ' + DATA;
-      tracked('BIRTH HOUR UNKNOWN  \u00B7  DAY OR NIGHT NOT STATED', 76, 272, 0.7);
+      ctx.fillStyle = ALERT;
+      ctx.font = '600 17px ' + SANS;
+      tracked('BIRTH HOUR UNKNOWN  \u00B7  DAY OR NIGHT NOT STATED', 76, 268, 0.6);
     }
 
     LIGHTS.forEach(function (row, index) {
       var position = positions[row[0]];
       if (!position) return;
-      var y = 330 + index * 42;
-      ctx.fillStyle = BRASS;
-      ctx.font = '400 24px ' + GLYPHS;
-      ctx.fillText(GLYPH[row[0]] + TEXT, 76, y);
-      ctx.fillStyle = MUTE;
-      ctx.font = '400 14px ' + DATA;
+      var y = 324 + index * 42;
+      glyph(row[0], COPPER_INK, 90, y - 7, 28);
+      ctx.fillStyle = MUTED;
+      ctx.font = '500 16px ' + SANS;
       ctx.fillText(row[1].toUpperCase(), 118, y);
-      ctx.fillStyle = PAPER;
-      ctx.font = '400 18px ' + DATA;
-      ctx.fillText(formatPosition(position), 208, y);
+      ctx.fillStyle = INK;
+      ctx.font = '500 22px ' + SANS;
+      ctx.fillText(formatPosition(position), 214, y);
     });
 
-    ctx.font = '400 14px ' + DATA;
-    ctx.fillStyle = MUTE;
-    ctx.fillText('RISING', 118, 456);
+    ctx.font = '500 16px ' + SANS;
+    ctx.fillStyle = MUTED;
+    ctx.fillText('RISING', 118, 450);
     if (minute.timeKnown && positions.asc) {
-      ctx.fillStyle = PAPER;
-      ctx.font = '400 18px ' + DATA;
-      ctx.fillText(formatPosition(positions.asc), 208, 456);
+      ctx.fillStyle = INK;
+      ctx.font = '500 22px ' + SANS;
+      ctx.fillText(formatPosition(positions.asc), 214, 450);
     } else {
-      ctx.fillStyle = DANGER;
-      ctx.font = '400 15px ' + DATA;
-      ctx.fillText('MISSING \u2014 NO BIRTH HOUR', 208, 456);
+      ctx.fillStyle = ALERT;
+      ctx.font = '600 17px ' + SANS;
+      ctx.fillText('MISSING \u2014 NO BIRTH HOUR', 214, 450);
     }
 
-    ctx.font = '400 14px ' + DATA;
-    ctx.fillStyle = MUTE;
-    ctx.fillText('HOUSES', 118, 492);
+    ctx.font = '500 16px ' + SANS;
+    ctx.fillStyle = MUTED;
+    ctx.fillText('HOUSES', 118, 488);
     if (minute.timeKnown && positions.asc) {
-      ctx.fillStyle = PAPER;
-      ctx.font = '400 15px ' + DATA;
-      ctx.fillText('FROM THE HOUR AND THE TOWN', 208, 492);
+      ctx.fillStyle = INK;
+      ctx.font = '500 18px ' + SANS;
+      ctx.fillText('FROM THE HOUR AND THE TOWN', 214, 488);
     } else {
-      ctx.fillStyle = DANGER;
-      ctx.font = '400 15px ' + DATA;
-      ctx.fillText('MISSING \u2014 NO BIRTH HOUR', 208, 492);
+      ctx.fillStyle = ALERT;
+      ctx.font = '600 17px ' + SANS;
+      ctx.fillText('MISSING \u2014 NO BIRTH HOUR', 214, 488);
     }
 
     if (!minute.timeKnown) {
-      ctx.fillStyle = 'rgba(154,168,182,.85)';
-      ctx.font = '400 12px ' + DATA;
-      ctx.fillText('MOON PLACED FROM ' + ASSUMED_HOUR + ' LOCAL \u00B7 UP TO A SIGN OUT', 76, 528);
+      ctx.fillStyle = GRAPHITE;
+      ctx.font = '400 16px ' + SANS;
+      ctx.fillText('MOON PLACED FROM ' + ASSUMED_HOUR + ' LOCAL \u00B7 UP TO A SIGN OUT', 76, 522);
     }
 
-    wheel(minute.chart, 928, 300);
+    wheel(minute.chart, 928, 316);
 
-    ctx.strokeStyle = 'rgba(143,163,184),.28)';
+    ctx.strokeStyle = RULE;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(76, 548.5);
-    ctx.lineTo(1124, 548.5);
+    ctx.moveTo(76, 540.5);
+    ctx.lineTo(1124, 540.5);
     ctx.stroke();
 
-    ctx.fillStyle = PAPER;
-    ctx.font = '600 26px ' + DISPLAY;
-    ctx.fillText('AstroPrecise', 76, 586);
+    wordmark(76, 584);
     ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(154,168,182,.9)';
-    ctx.font = '400 11px ' + DATA;
-    ctx.fillText('COMPUTED ON THIS DEVICE \u00B7 NOT A CLAIM ABOUT YOUR LIFE', 1124, 583);
+    ctx.fillStyle = MUTED;
+    ctx.font = '500 16px ' + SANS;
+    ctx.fillText('COMPUTED ON THIS DEVICE \u00B7 NOT A CLAIM ABOUT YOUR LIFE', 1124, 580);
     ctx.textAlign = 'left';
     paintSyncMark(currentPattern(minute.clockText), minute.isoDate);
   }
 
+  function wrapLines(text, x, y, maxWidth, lineHeight, maxLines) {
+    var words = String(text || '').split(' ');
+    var line = '';
+    var rows = 0;
+    for (var i = 0; i < words.length; i += 1) {
+      var next = line ? line + ' ' + words[i] : words[i];
+      if (ctx.measureText(next).width > maxWidth && line) {
+        ctx.fillText(line, x, y);
+        rows += 1;
+        y += lineHeight;
+        line = words[i];
+        if (rows >= maxLines - 1) {
+          line = words.slice(i).join(' ');
+          break;
+        }
+      } else line = next;
+    }
+    if (line) ctx.fillText(line, x, y);
+    return y;
+  }
+
   function drawClockPlate(match, dateValue) {
     plate();
-    ctx.fillStyle = BRASS;
-    ctx.font = '500 13px ' + DATA;
-    tracked('SYNCHRONICITY CARD', 76, 96, 3.4);
-    ctx.fillStyle = PAPER;
-    ctx.font = '600 72px ' + DISPLAY;
-    ctx.fillText(match.label, 76, 200);
-    ctx.fillStyle = MUTE;
-    ctx.font = '400 20px ' + DATA;
-    ctx.fillText((dateValue || '') + '  \u00B7  DEVICE CLOCK  \u00B7  SCHEMATIC', 76, 250);
-    ctx.fillStyle = PAPER;
-    ctx.font = 'italic 26px ' + DISPLAY;
-    var words = match.folk.split(' ');
-    var line = '';
-    var y = 330;
-    words.forEach(function (word) {
-      var next = line ? line + ' ' + word : word;
-      if (ctx.measureText(next).width > 1040 && line) {
-        ctx.fillText(line, 76, y);
-        y += 36;
-        line = word;
-      } else line = next;
-    });
-    if (line) ctx.fillText(line, 76, y);
-    ctx.fillStyle = MUTE;
-    ctx.font = '400 13px ' + DATA;
-    ctx.fillText(window.APMirrorHour ? window.APMirrorHour.HONESTY : '', 76, 560);
-    ctx.fillStyle = PAPER;
-    ctx.font = '600 26px ' + DISPLAY;
-    ctx.fillText('AstroPrecise', 76, 600);
+    eyebrow('SYNCHRONICITY CARD', 92);
+    ctx.fillStyle = INK;
+    ctx.font = '400 88px ' + SERIF;
+    ctx.fillText(match.label, 76, 196);
+    ctx.fillStyle = GRAPHITE;
+    ctx.font = '500 20px ' + SANS;
+    ctx.fillText((dateValue || '') + '  \u00B7  DEVICE CLOCK  \u00B7  SCHEMATIC', 76, 240);
+    ctx.fillStyle = INK;
+    ctx.font = 'italic 400 32px ' + SERIF;
+    wrapLines(match.folk, 76, 312, 1048, 40, 4);
+    ctx.fillStyle = MUTED;
+    ctx.font = '400 16px ' + SANS;
+    wrapLines(window.APMirrorHour ? window.APMirrorHour.HONESTY : '', 76, 488, 1048, 22, 2);
+    ctx.strokeStyle = RULE;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(76, 540.5);
+    ctx.lineTo(1124, 540.5);
+    ctx.stroke();
+    wordmark(76, 584);
     drawn = {
       isoDate: dateValue || '',
       place: { name: 'device clock' },
@@ -745,11 +832,15 @@
   function boot() {
     if (!canvas || !ctx || !form) return;
     bindCitySearch();
+    var assetsReady = cardAssetsReady();
     placeholder('Your minute goes here.', 'Enter a date and a town, then draw the card.');
+    assetsReady.then(function () {
+      if (!drawn) placeholder('Your minute goes here.', 'Enter a date and a town, then draw the card.');
+    });
 
     form.addEventListener('submit', function (event) {
       event.preventDefault();
-      draw();
+      assetsReady.then(draw);
     });
     if (downloadBtn) {
       downloadBtn.addEventListener('click', function () {
@@ -786,12 +877,9 @@
 
     var ready = seed();
     waitForEngine(0).then(function () {
-      // The glyph face is a blocking webfont; drawing before it lands would
-      // bake fallback squares into a card people intend to keep.
-      var fonts = document.fonts
-        ? document.fonts.load("400 24px 'n'").catch(function () { return null; })
-        : Promise.resolve(null);
-      return fonts.then(function () {
+      // Wait for AP Serif, AP Sans and the drawn glyph images: drawing before
+      // they land would bake fallback type into a card people intend to keep.
+      return assetsReady.then(function () {
         if (ready || (liveCarry && currentPattern())) draw();
         else placeholder('Your minute goes here.', 'Enter a date and a town, then draw the card.');
       });
