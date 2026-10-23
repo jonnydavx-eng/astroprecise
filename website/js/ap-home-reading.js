@@ -7,7 +7,7 @@
 
   if (!document.body || !document.body.classList.contains('ap-reading-room')) return;
 
-  var oracleSrc = 'js/oracle.js?v=940';
+  var oracleSrc = 'js/oracle.js?v=941';
 
   function $(id) { return document.getElementById(id); }
 

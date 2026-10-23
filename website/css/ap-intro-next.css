@@ -7,3 +7,7 @@
 
 .showcase-top{font-size:11px}.showcase-caption>p:last-child{font-size:12px}.showcase-caption>p:first-child{font-size:10px}.showcase-model{font-size:10px}@media(max-width:600px){.intro-showcase{min-height:358px;grid-template-rows:32px 205px 121px}.showcase-caption{padding-bottom:27px}.showcase-caption>p:last-child{font-size:13px}.showcase-model{font-size:12px}.intro-copy>.eyebrow{font-size:12px}.showcase-top{font-size:12px}.intro-proof p{font-size:12px;max-width:none}.intro-proof span{font-size:10px}}
 .story-art picture{display:contents}
+#demo-pause[data-glyph]::after{content:" " attr(data-glyph);content:" " attr(data-glyph)/""}
+/* Step 10e legibility floor: homepage reader text is never under 12px (360px to desktop). */
+.intro-cta>p,.showcase-top,.showcase-caption>p:first-child,.showcase-caption>p:last-child,.showcase-model,.intro-proof span,.intro-proof p,.story-label,.big-three-demo p,.story-art>span,.story-copy .eyebrow{font-size:12px}.small-note{font-size:12px!important}
+@media(max-width:600px){.showcase-caption>p:last-child{font-size:13px}.intro-proof p{max-width:11ch}}

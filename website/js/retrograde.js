@@ -293,8 +293,8 @@
         'Old conversations and contacts may resurface for completion.',
       'A good stretch for finishing, editing and reconnecting rather than starting fresh. ' +
         'Build in buffer time for travel and messaging mix-ups.',
-      'Slow down around communication, commerce and scheduling. Patience and review pay off; ' +
-        'avoid rushing big purchases or signatures.'
+      'Tradition reads this as a time to slow down around messages, plans and scheduling. ' +
+        'If a big decision is due, giving it a second read can help.'
     ];
     return notes[idx % notes.length];
   }

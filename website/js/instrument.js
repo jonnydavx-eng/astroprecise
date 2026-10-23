@@ -659,7 +659,7 @@
     x.font = CARD_MIN_PX + 'px "AstroGlyph", Georgia, serif';
     wrapText(x, swLine, CARD_BASE / 2, 810, CARD_BASE - 200, 42, 1);
 
-    honestyBadge(x, CARD_BASE / 2, 890, measured ? 'measured · NOAA SWPC' : 'computed only · feed down', measured);
+    honestyBadge(x, CARD_BASE / 2, 890, measured ? 'measured · NOAA SWPC' : 'Live space-weather feed unavailable, showing calculated values', measured);
     cardFooter(x);
     return cv;
   }

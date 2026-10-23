@@ -54,7 +54,7 @@
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
-    "description": "Compute the exact lunar phase for any birthday from real Sun and Moon positions (VSOP87 / ELP2000). Shows illumination, waxing/waning side, the Moon's zodiac sign, and a shareable card. Everything is calculated privately in your browser.",
+    "description": "Compute the exact lunar phase for any birthday from real Sun and Moon positions, calculated in your browser. Shows illumination, waxing/waning side, the Moon's zodiac sign, and a shareable card. Everything is calculated privately in your browser.",
     "publisher": { "@type": "Organization", "name": "AstroPrecise" }
   }
   </script>
@@ -68,7 +68,7 @@
         "name": "How is the moon phase on my birthday calculated?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We compute the real geocentric positions of the Sun and Moon for your date using VSOP87 and a truncated ELP2000 lunar series, then take the elongation between them. Illumination = (1 - cos(elongation)) / 2. The phase name follows the standard angle windows (New, Waxing Crescent, First Quarter, Waxing Gibbous, Full, Waning Gibbous, Last Quarter, Waning Crescent). It is genuine astronomy, not a generic chart."
+          "text": "We compute the real geocentric positions of the Sun and Moon for your date using published models of the Sun and Moon, then take the elongation between them. Illumination = (1 - cos(elongation)) / 2. The phase name follows the standard angle windows (New, Waxing Crescent, First Quarter, Waxing Gibbous, Full, Waning Gibbous, Last Quarter, Waning Crescent). It is genuine astronomy, not a generic chart."
         }
       },
       {
@@ -91,9 +91,9 @@
   }
   </script>
   <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="css/ap-next.css?v=940" />
-  <link rel="stylesheet" href="css/guide-next.css?v=940" />
-  <script src="js/ap-next.js?v=940" defer></script>
+  <link rel="stylesheet" href="css/ap-next.css?v=941" />
+  <link rel="stylesheet" href="css/guide-next.css?v=941" />
+  <script src="js/ap-next.js?v=941" defer></script>
 </head>
 <body class="ap-next ap-guide ap-guide--moonphase">
   <a class="ap-skip" href="#main-content">Skip to content</a>
@@ -247,8 +247,8 @@
         <div class="mp-note">
           <p class="mp-edu-card__title">How this tool computes your Moon</p>
           <p>
-            We take the real geocentric longitudes of the Sun and Moon for your date (VSOP87 for the Sun, a
-            truncated ELP2000 series for the Moon). This date-only tool uses 12:00&nbsp;UT that civil day as a
+            We take the real positions of the Sun and Moon along the sky, as seen from Earth, for your date,
+            from published models of each (the <a href="accuracy.html">accuracy page</a> names them). This date-only tool uses 12:00&nbsp;UT that civil day as a
             <strong>reference instant</strong> — not a stand-in for a known birth time. The angle between them — the
             <em>elongation</em> — determines everything: the illuminated fraction is
             <strong>(1&nbsp;&minus;&nbsp;cos&nbsp;elongation)&nbsp;/&nbsp;2</strong>, and the phase name follows the
@@ -292,9 +292,9 @@
       document.body.appendChild(s);
     }
     // Always load the Moon tool — form + result cards (incl. model deep-link).
-    inject('js/ap-deep-link.js?v=940');
-    inject('js/ap-glyphs.js?v=940');
-    inject('js/moonphase.js?v=940');
+    inject('js/ap-deep-link.js?v=941');
+    inject('js/ap-glyphs.js?v=941');
+    inject('js/moonphase.js?v=941');
   })();
   </script>
 
@@ -302,6 +302,6 @@
   <script src="js/ap-personal-memory.js" defer></script>
   <script src="js/ap-daily-bridge.js" defer></script>
   <script src="js/ap-ai-assistant.js" defer></script>
-  <script src="js/ap-error-beacon.js?v=940" defer></script>
+  <script src="js/ap-error-beacon.js?v=941" defer></script>
 </body>
 </html>
