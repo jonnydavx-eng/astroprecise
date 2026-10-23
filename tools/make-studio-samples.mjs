@@ -18,7 +18,7 @@
  * Every person here is fictional. No order input, no payment path, no network
  * beyond a loopback server of website/. Fonts come from tools/print-fonts (static
  * TrueType, embedded as CIDFontType2) so no PDF carries a Type3 font. Metadata is
- * set with pdf-lib: Author AstroPrecise, Creator/Producer "AstroPrecise Studio v930".
+ * set with pdf-lib: Author AstroPrecise, Creator/Producer "AstroPrecise Studio v931".
  *
  *   node tools/make-studio-samples.mjs [--out website/downloads/studio] [--check]
  *   --check renders to a temp folder and only reports (does not touch website/).
@@ -35,7 +35,7 @@ import { ROOT, loadEngines, buildChart, fmt, esc, parseArgs, printFontCss, print
 import { generateSamplePack, plateHtml, inspectPdf, SAMPLE_LABEL } from './sample-print-pack.mjs';
 import { helioLongitudes, loadStills, PAPER_NIGHT as C } from './minute-plate.mjs';
 
-export const STUDIO_RELEASE = 'v930';
+export const STUDIO_RELEASE = 'v931';
 const FIXED_DATE = new Date('2026-10-23T00:00:00Z'); // stable metadata dates, no build-time churn
 
 // Fictional fixture used across the Studio previews (tools/generate-couples.mjs,
