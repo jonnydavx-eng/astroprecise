@@ -570,8 +570,16 @@ html.ap-paper-legacy:not(#_):not(#__) footer.ap-next-footer :is(.ap-legal-links,
 html.ap-paper-legacy:not(#_):not(#__) footer.ap-next-footer :is(.ap-legal-links, .ap-social-row) a {
   color: var(--pl-ink) !important;
 }
+/* 12px floor on Saturn return and Moment: their labels, hints and eyebrows were 10.5–11.5px.
+   0.8125rem keeps them a step under body copy and clear of the floor. */
+html.ap-paper-legacy:not(#_):not(#__) body:is(.ap-moment-page, :has(.sat-hero)) main :is(label, label *, [class*='eyebrow'], [class*='hint'], [class*='label'], [class*='badge'], [class*='kicker'], [class*='caption'], small, .sat-card__n, .sat-card__tag, .sat-orn span, .mom-fact__k) {
+  font-size: 0.8125rem !important;
+}
 /* Small star marks are drawn as a clipped fill of currentColor; keep the fill on paper. */
 html.ap-paper-legacy:not(#_):not(#__) .eng-star-mark {
   color: var(--pl-copper-ink) !important;
   background: currentColor !important;
+}
+html.ap-paper-legacy:not(#_):not(#__) .privacy-banner__close {
+  font-size: 0.8125rem !important;
 }
