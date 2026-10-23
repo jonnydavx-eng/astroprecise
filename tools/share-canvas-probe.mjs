@@ -26,6 +26,21 @@ export const PHONE_CSS_PX = 360
 export const MIN_EFFECTIVE_PX = 11
 
 let fontsReady = false
+/**
+ * The website's own font files, registered under the families the pages and canvas painters
+ * ask for. The eclipse plate letters only in these, so its measured boxes are the same on any
+ * machine: this box, CI (ubuntu, no extra fonts) or a sandbox with every system font hidden.
+ */
+export const SITE_FONTS = [
+  ['schibsted-grotesk-latin-var.woff2', 'Schibsted Grotesk'],
+  ['astro-glyphs.woff2', 'AstroGlyph'],
+  ['ibm-plex-mono-normal-400.woff2', 'IBM Plex Mono'],
+  ['cormorant-garamond-normal-400.woff2', 'Cormorant Garamond'],
+  ['cormorant-garamond-normal-500.woff2', 'Cormorant Garamond'],
+  ['cormorant-garamond-normal-600.woff2', 'Cormorant Garamond'],
+  ['cormorant-garamond-italic-400.woff2', 'Cormorant Garamond'],
+  ['cormorant-garamond-italic-500.woff2', 'Cormorant Garamond'],
+]
 function registerFonts() {
   if (fontsReady) return
   const f = (n) => join(ROOT, 'tools', 'print-fonts', n)
@@ -33,6 +48,10 @@ function registerFonts() {
   GlobalFonts.registerFromPath(f('instrument-serif-static-italic.ttf'), 'AP Serif')
   for (const w of [400, 500, 600])
     GlobalFonts.registerFromPath(f(`inter-static-${w}.ttf`), 'AP Sans')
+  for (const [file, family] of SITE_FONTS) {
+    const ok = GlobalFonts.registerFromPath(join(WEB, 'fonts', file), family)
+    if (!ok) throw new Error(`share-canvas-probe: could not load website/fonts/${file}`)
+  }
   // The instrument cards ask for Georgia. Gelasio is metric-compatible with it, so use it
   // when this machine has it; otherwise the canvas default font stands in.
   for (const g of ['Gelasio-VariableFont_wght.ttf', 'Gelasio-Italic-VariableFont_wght.ttf']) {
@@ -44,15 +63,70 @@ function registerFonts() {
 
 const sizeOf = (font) => Number((String(font).match(/(\d+(?:\.\d+)?)px/) || [])[1])
 
-/** Wrap a 2D context so fillText calls are recorded (in user units, before scale). */
-function recording(ctx, draws) {
+/**
+ * Wrap a 2D context so fillText calls are recorded (in user units, before scale).
+ * Each draw also carries its ink box in canvas space (`ink`: x0,y0,x1,y1, after the current
+ * transform's translation). With `arcs`, every arc() is recorded too ({ x, y, r, full, op } in
+ * canvas space; `op` becomes 'fill' and/or 'stroke' when the path is painted). With `segments`,
+ * every straight moveTo/lineTo piece that gets stroked is recorded ({ x0, y0, x1, y1, width }).
+ */
+function recording(ctx, draws, arcs, segments) {
+  const toCanvas = (target, x, y) => {
+    const m = target.getTransform ? target.getTransform() : { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }
+    return [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]
+  }
+  let pathArcs = []
+  let pathLines = []
+  let pen = null
   return new Proxy(ctx, {
     get(target, prop) {
+      if (prop === 'beginPath' && (arcs || segments)) {
+        return () => {
+          pathArcs = []
+          pathLines = []
+          pen = null
+          return target.beginPath()
+        }
+      }
+      if (prop === 'moveTo' && segments) {
+        return (x, y) => {
+          pen = toCanvas(target, x, y)
+          return target.moveTo(x, y)
+        }
+      }
+      if (prop === 'lineTo' && segments) {
+        return (x, y) => {
+          const p = toCanvas(target, x, y)
+          if (pen) pathLines.push({ x0: pen[0], y0: pen[1], x1: p[0], y1: p[1] })
+          pen = p
+          return target.lineTo(x, y)
+        }
+      }
+      if ((prop === 'fill' || prop === 'stroke') && (arcs || segments)) {
+        return (...args) => {
+          for (const a of pathArcs) a.op = a.op ? `${a.op}+${prop}` : prop
+          if (prop === 'stroke' && segments)
+            for (const l of pathLines)
+              segments.push({ ...l, width: target.lineWidth, alpha: target.globalAlpha })
+          return target[prop](...args)
+        }
+      }
+      if (prop === 'arc' && arcs) {
+        return (x, y, r, a0, a1, ccw) => {
+          const [gx, gy] = toCanvas(target, x, y)
+          const a = { x: gx, y: gy, r, full: Math.abs(a1 - a0) >= Math.PI * 2 - 1e-6, op: '' }
+          arcs.push(a)
+          pathArcs.push(a)
+          pen = null
+          return target.arc(x, y, r, a0, a1, ccw)
+        }
+      }
       if (prop === 'fillText') {
         return (text, x, y, maxWidth) => {
           const s = String(text)
           if (s.trim()) {
             const mt = target.measureText(s)
+            const [gx, gy] = toCanvas(target, x, y)
             draws.push({
               text: s,
               px: sizeOf(target.font),
@@ -61,6 +135,15 @@ function recording(ctx, draws) {
               y,
               w: mt.width,
               align: target.textAlign,
+              baseline: target.textBaseline,
+              gx,
+              gy,
+              ink: {
+                x0: gx - mt.actualBoundingBoxLeft,
+                x1: gx + mt.actualBoundingBoxRight,
+                y0: gy - mt.actualBoundingBoxAscent,
+                y1: gy + mt.actualBoundingBoxDescent,
+              },
             })
           }
           return maxWidth === undefined
@@ -362,7 +445,7 @@ export function extent(d) {
 /** Effective CSS px of a draw when a card `width` units wide is shown 360 CSS px wide. */
 export const effectivePx = (px, width) => (px * PHONE_CSS_PX) / width
 
-// ── Step 10d: the sky-card.html poster, and the Instrument cards ──
+// ── Step 10d: the sky-card.html poster, the Instrument cards and the eclipse plate ──
 
 /** Fictional sample charts for the sky-card.html poster (ap-keepsake-next.js). */
 const POSTER_SAMPLE = {
@@ -572,4 +655,369 @@ export async function probeInstrumentCard(kind = 'zenith', opts = {}) {
     })
   }
   return { width: 1080, height: 1080, frame: 58, draws: draws.slice(), canvas: last }
+}
+
+/** Grok's crowded test chart (step 10d review): Asc 12°, Moon 18°, Uranus 28°, Mercury 132°, Sun on the eclipse. */
+export const ECLIPSE_CROWDED_NATAL = {
+  sun: 140.133,
+  moon: 18,
+  mercury: 132,
+  venus: 95,
+  mars: 48,
+  jupiter: 210,
+  saturn: 320,
+  uranus: 28,
+  neptune: 355,
+  pluto: 250,
+  asc: 12,
+  mc: 280,
+}
+
+/**
+ * Paint the eclipse edition plate (js/ap-eclipse-edition-v841.js renderEclipseArtwork) or the
+ * captioned disc for a natal chart (longitudes in degrees; the Sun on the eclipse by default).
+ * Returns the recorded text draws, arcs and stroked line segments in canvas space.
+ */
+export async function probeEclipsePlate(which = 'artwork', { natal: natalIn } = {}) {
+  registerFonts()
+  const templates = JSON.parse(read('js/reading-templates.json'))
+  const { buildEclipseReading5 } = await import(
+    new URL('../website/js/eclipse-reading.js', import.meta.url)
+  )
+  const mod = await import(new URL('../website/js/ap-eclipse-edition-v841.js', import.meta.url))
+  const eclipseLongitude = 140.133
+  const natal = natalIn || ECLIPSE_CROWDED_NATAL
+  const reading = buildEclipseReading5(eclipseLongitude, natal, templates, { quietGateDeg: 5 })
+  const model = mod.buildEclipsePlateModel({ reading, natal, eclipseLongitude })
+  const draws = []
+  const arcs = []
+  const segments = []
+  let real = null
+  const canvas = {
+    dataset: {},
+    _w: 0,
+    _h: 0,
+    set width(v) {
+      this._w = v
+    },
+    get width() {
+      return this._w
+    },
+    set height(v) {
+      this._h = v
+    },
+    get height() {
+      return this._h
+    },
+    getContext() {
+      real = createCanvas(this._w, this._h)
+      return recording(real.getContext('2d'), draws, arcs, segments)
+    },
+  }
+  if (which === 'disc') mod.renderEclipseDisc(model, canvas, { captions: true })
+  else mod.renderEclipseArtwork(model, canvas)
+  return {
+    natal,
+    // Older plates (main before 10d-eclipse) do not export their wheel geometry.
+    wheel: mod.PLATE_WHEEL || { x: 1200, y: 1760, innerR: 248, outerR: 690, tickInner: 640, leaderStart: 274 },
+    width: canvas.width,
+    height: canvas.height,
+    frame: 0,
+    draws: draws.slice(),
+    arcs: arcs.slice(),
+    segments: segments.slice(),
+    canvas: real,
+    model,
+  }
+}
+
+const SIGN_MARK_TEXT = new Set(['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'])
+const lonAt = (wheel, x, y) =>
+  (((180 - (Math.atan2(y - wheel.y, x - wheel.x) * 180) / Math.PI) % 360) + 360) % 360
+const angDiff = (a, b) => ((((a - b) % 360) + 540) % 360) - 180
+const rectHitsCircle = (b, c, pad = 0) => {
+  const nx = Math.max(b.x0, Math.min(c.x, b.x1)),
+    ny = Math.max(b.y0, Math.min(c.y, b.y1))
+  return Math.hypot(nx - c.x, ny - c.y) < c.r + pad
+}
+const rectsHit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1
+/**
+ * The inked pixels of a recorded fillText, in canvas coordinates (pixel centres), found by
+ * drawing the same text with the same font, alignment and baseline on a scratch canvas.
+ */
+const INK_POINTS = new Map()
+function inkPoints(d) {
+  const fx = d.gx - Math.floor(d.gx)
+  const fy = d.gy - Math.floor(d.gy)
+  const key = [d.text, d.font, d.align, d.baseline, fx.toFixed(3), fy.toFixed(3)].join('|')
+  let rel = INK_POINTS.get(key)
+  if (!rel) {
+    const pad = 8
+    const left = Math.ceil(d.gx - d.ink.x0) + pad
+    const top = Math.ceil(d.gy - d.ink.y0) + pad
+    const w = Math.ceil(d.ink.x1 - d.ink.x0) + 2 * pad + 2
+    const h = Math.ceil(d.ink.y1 - d.ink.y0) + 2 * pad + 2
+    const c = createCanvas(w, h)
+    const x = c.getContext('2d')
+    x.font = d.font
+    x.textAlign = d.align || 'start'
+    x.textBaseline = d.baseline || 'alphabetic'
+    x.fillStyle = '#000'
+    x.fillText(d.text, left + fx, top + fy)
+    const px = x.getImageData(0, 0, w, h).data
+    rel = []
+    for (let j = 0; j < h; j++)
+      for (let i = 0; i < w; i++)
+        if (px[(j * w + i) * 4 + 3] > 0) rel.push([i + 0.5 - left - fx, j + 0.5 - top - fy])
+    INK_POINTS.set(key, rel)
+  }
+  return rel.map(([x, y]) => [d.gx + x, d.gy + y])
+}
+
+const segToPoint = (s, x, y) => {
+  const dx = s.x1 - s.x0,
+    dy = s.y1 - s.y0
+  const len2 = dx * dx + dy * dy
+  const t = len2 ? Math.max(0, Math.min(1, ((x - s.x0) * dx + (y - s.y0) * dy) / len2)) : 0
+  return Math.hypot(s.x0 + t * dx - x, s.y0 + t * dy - y)
+}
+const properCross = (a, b) => {
+  const cr = (ox, oy, px, py, qx, qy) => (px - ox) * (qy - oy) - (py - oy) * (qx - ox)
+  const d1 = cr(a.x0, a.y0, a.x1, a.y1, b.x0, b.y0)
+  const d2 = cr(a.x0, a.y0, a.x1, a.y1, b.x1, b.y1)
+  const d3 = cr(b.x0, b.y0, b.x1, b.y1, a.x0, a.y0)
+  const d4 = cr(b.x0, b.y0, b.x1, b.y1, a.x1, a.y1)
+  return d1 * d2 < 0 && d3 * d4 < 0
+}
+
+/**
+ * Check the eclipse plate's natal wheel from what the real drawing code painted (probeEclipsePlate
+ * result). Marker discs are the filled full circles between the inner circle and the tick ring;
+ * marker labels are the text ink boxes (and the drawn Sun mark) inside the wheel; sign marks are
+ * the AR…PI text boxes; leaders are the thin stroked lines that start at the tip of an
+ * exact-degree tick. Returns { problems: { overlap, signBand, leaderUnder, leaderCross,
+ * sector, leaders }, discs, labels, leaders, maxShift, shifts }.
+ */
+export function checkEclipseWheel(r) {
+  const W = r.wheel
+  const C = (x, y) => Math.hypot(x - W.x, y - W.y)
+  const discs = r.arcs.filter(
+    (a) =>
+      a.full &&
+      /fill/.test(a.op) &&
+      a.r >= 20 &&
+      a.r <= 120 &&
+      C(a.x, a.y) > W.innerR &&
+      C(a.x, a.y) < W.tickInner,
+  )
+  const signMarks = r.draws
+    .filter((d) => d.ink && SIGN_MARK_TEXT.has(d.text))
+    .map((d) => ({ text: d.text, box: d.ink, points: inkPoints(d) }))
+  const labels = r.draws
+    .filter((d) => d.ink && !SIGN_MARK_TEXT.has(d.text))
+    .filter((d) => C((d.ink.x0 + d.ink.x1) / 2, (d.ink.y0 + d.ink.y1) / 2) < W.tickInner)
+    .map((d) => ({ text: d.text, box: d.ink, points: inkPoints(d) }))
+  // A drawn Sun mark: a stroked (not filled) ring smaller than any disc.
+  for (const a of r.arcs)
+    if (a.full && a.op === 'stroke' && a.r >= 12 && a.r < 20 + 1e-9 && C(a.x, a.y) < W.tickInner)
+      labels.push({
+        text: '☉ (drawn)',
+        box: { x0: a.x - a.r - 3, x1: a.x + a.r + 3, y0: a.y - a.r - 3, y1: a.y + a.r + 3 },
+        // The ring is stroked 6 wide: its outer edge, sampled every 2°.
+        points: Array.from({ length: 180 }, (_, k) => [
+          a.x + Math.cos((k * Math.PI) / 90) * (a.r + 3),
+          a.y + Math.sin((k * Math.PI) / 90) * (a.r + 3),
+        ]),
+      })
+  for (const l of labels) {
+    const cx = (l.box.x0 + l.box.x1) / 2,
+      cy = (l.box.y0 + l.box.y1) / 2
+    l.own =
+      discs
+        .map((c) => ({ c, d: Math.hypot(c.x - cx, c.y - cy) }))
+        .filter((o) => o.d < o.c.r)
+        .sort((a, b) => a.d - b.d)[0]?.c || null
+  }
+  const leaderStart = W.leaderStart
+  const leaders = r.segments
+    .filter((s) => s.width <= 2 && Math.abs(C(s.x0, s.y0) - leaderStart) < 1.5)
+    .map((s) => {
+      const own = discs
+        .map((c) => ({ c, d: Math.abs(Math.hypot(s.x1 - c.x, s.y1 - c.y) - c.r) }))
+        .sort((a, b) => a.d - b.d)[0]
+      return { ...s, own: own && own.d < 1.5 ? own.c : null, lon: lonAt(W, s.x0, s.y0) }
+    })
+  const P = {
+    overlap: [],
+    signBand: [],
+    leaderUnder: [],
+    leaderCross: [],
+    sector: [],
+    leaders: [],
+  }
+  const at = (c) => `${Math.round(lonAt(W, c.x, c.y))}°`
+  for (let i = 0; i < discs.length; i++)
+    for (let j = i + 1; j < discs.length; j++) {
+      const a = discs[i],
+        b = discs[j]
+      if (Math.hypot(a.x - b.x, a.y - b.y) < a.r + b.r)
+        P.overlap.push(`discs at ${at(a)} and ${at(b)} overlap`)
+    }
+  for (const l of labels) {
+    if (!l.own) P.overlap.push(`"${l.text}" is not inside a disc`)
+    else if (!l.points.every(([x, y]) => Math.hypot(x - l.own.x, y - l.own.y) <= l.own.r))
+      P.overlap.push(`"${l.text}" spills out of its disc`)
+    for (const c of discs)
+      if (c !== l.own && l.points.some(([x, y]) => Math.hypot(x - c.x, y - c.y) < c.r))
+        P.overlap.push(`"${l.text}" over the disc at ${at(c)}`)
+  }
+  for (let i = 0; i < labels.length; i++)
+    for (let j = i + 1; j < labels.length; j++)
+      if (
+        rectsHit(labels[i].box, labels[j].box) &&
+        labels[i].points.some(([x, y]) =>
+          labels[j].points.some(([u, v]) => Math.abs(x - u) < 1 && Math.abs(y - v) < 1),
+        )
+      )
+        P.overlap.push(`"${labels[i].text}" / "${labels[j].text}"`)
+  const owners = labels.filter((l) => l.own).map((l) => l.own)
+  for (const c of discs) {
+    const n = owners.filter((o) => o === c).length
+    if (n !== 1) P.overlap.push(`disc at ${at(c)} holds ${n} labels`)
+  }
+  for (const m of signMarks) {
+    for (const c of discs)
+      if (rectHitsCircle(m.box, c)) P.signBand.push(`sign mark ${m.text} under the disc at ${at(c)}`)
+    for (const l of labels)
+      if (rectsHit(m.box, l.box)) P.signBand.push(`sign mark ${m.text} under "${l.text}"`)
+  }
+  for (const c of discs) {
+    const mine = leaders.filter((s) => s.own === c)
+    if (mine.length !== 1) P.leaders.push(`disc at ${at(c)} has ${mine.length} leaders`)
+  }
+  for (const s of leaders) {
+    if (!s.own) P.leaders.push(`leader from ${s.lon.toFixed(1)}° ends at no disc`)
+    for (const c of discs)
+      if (c !== s.own && segToPoint(s, c.x, c.y) < c.r)
+        P.leaderUnder.push(`leader from ${s.lon.toFixed(1)}° runs under the disc at ${at(c)}`)
+  }
+  for (let i = 0; i < leaders.length; i++)
+    for (let j = i + 1; j < leaders.length; j++)
+      if (properCross(leaders[i], leaders[j]))
+        P.leaderCross.push(
+          `leaders from ${leaders[i].lon.toFixed(1)}° and ${leaders[j].lon.toFixed(1)}° cross`,
+        )
+  // Sector: each disc's true longitude is its leader's start (or, with no leaders, the
+  // nearest natal longitude to the disc). Its centre must stay in that sign's 30° sector.
+  const natal = Object.values(r.natal || {}).map(Number)
+  const shifts = []
+  for (const c of discs) {
+    const shown = lonAt(W, c.x, c.y)
+    const leader = leaders.find((s) => s.own === c)
+    let truth = leader ? leader.lon : shown
+    const exact = natal.sort((a, b) => Math.abs(angDiff(a, truth)) - Math.abs(angDiff(b, truth)))[0]
+    if (exact != null && Math.abs(angDiff(exact, truth)) < 0.05) truth = ((exact % 360) + 360) % 360
+    const shift = angDiff(shown, truth)
+    shifts.push({ truth, shown, shift })
+    const sign = Math.floor(truth / 30)
+    const lo = sign * 30
+    const into = truth - lo + shift
+    if (into < 0 || into >= 30)
+      P.sector.push(
+        `disc for ${truth.toFixed(1)}° (${SIGN_NAMES[sign]}) drawn at ${shown.toFixed(1)}° (${SIGN_NAMES[Math.floor(shown / 30) % 12]})`,
+      )
+  }
+  const maxShift = shifts.reduce((m, s) => Math.max(m, Math.abs(s.shift)), 0)
+  return { problems: P, discs, labels, leaders, signMarks, maxShift, shifts }
+}
+const SIGN_NAMES = [
+  'Aries',
+  'Taurus',
+  'Gemini',
+  'Cancer',
+  'Leo',
+  'Virgo',
+  'Libra',
+  'Scorpio',
+  'Sagittarius',
+  'Capricorn',
+  'Aquarius',
+  'Pisces',
+]
+
+/** Wheel test charts (longitudes in degrees; the Sun sits on the eclipse point, 140.133°). */
+export const ECLIPSE_LONGITUDE = 140.133
+const SEEDED_CHARTS = 24
+let ephemerisCache = null
+/** The site's ephemeris (website/js/ephemeris.js), loaded the way the fulfilment tools load it. */
+function loadEphemeris() {
+  if (ephemerisCache) return ephemerisCache
+  const win = {}
+  new Function('window', 'console', 'document', read('js/ephemeris.js'))(win, console, undefined)
+  ephemerisCache = win.AstroEphemeris
+  return ephemerisCache
+}
+
+export async function eclipseWheelCharts() {
+  const E = ECLIPSE_LONGITUDE
+  const charts = [
+    ['crowded (Asc 12, Moon 18, Uranus 28, Mercury 132, Sun on the eclipse)', ECLIPSE_CROWDED_NATAL],
+    [
+      'normal',
+      { sun: E, moon: 200, mercury: 162, venus: 100, mars: 60, jupiter: 20, saturn: 330, uranus: 290, neptune: 250, pluto: 225, asc: 175, mc: 85 },
+    ],
+    [
+      'five bodies within 9° (61–70°)',
+      { sun: E, moon: 61, venus: 63, mars: 65.5, jupiter: 68, saturn: 70, mercury: 150.5, uranus: 20, neptune: 330, pluto: 250, asc: 200, mc: 105 },
+    ],
+    [
+      'four planets within 10°',
+      { sun: E, moon: 260, mercury: 100, venus: 103, mars: 106, jupiter: 109, saturn: 330, uranus: 20, neptune: 50, pluto: 210, asc: 300, mc: 190 },
+    ],
+    [
+      'stacked on the eclipse point',
+      { sun: E, moon: 139.5, mercury: 140.6, venus: 141.2, mars: 138.8, jupiter: 20, saturn: 330, uranus: 60, neptune: 250, pluto: 200, asc: 140.9, mc: 52 },
+    ],
+    [
+      'stellium (Sun to Pluto inside 30°)',
+      { sun: E, moon: 128, mercury: 131, venus: 134, mars: 137, jupiter: 144, saturn: 147, uranus: 150, neptune: 153, pluto: 156, asc: 300, mc: 210 },
+    ],
+    [
+      'cluster straddling a sign boundary (27°–33°)',
+      { sun: E, moon: 27, mercury: 28.5, venus: 30, mars: 31.2, jupiter: 33, saturn: 330, uranus: 270, neptune: 250, pluto: 200, asc: 89, mc: 182 },
+    ],
+  ]
+  // Seeded real charts: random birth moments (1940–2009, any time of day, latitudes 40°S–60°N)
+  // run through the site's own ephemeris, keeping only bunched ones, where some sign holds five
+  // or more of the twelve points, and the eclipse touches one of them. (Uniform random bunches put 7–9 points in one sign far more
+  // often than real skies do, so real positions are used instead.)
+  const ephemeris = loadEphemeris()
+  const templates = JSON.parse(read('js/reading-templates.json'))
+  const { buildEclipseReading5 } = await import(new URL('../website/js/eclipse-reading.js', import.meta.url))
+  const mod = await import(new URL('../website/js/ap-eclipse-edition-v841.js', import.meta.url))
+  // Only charts the edition would actually draw: the eclipse must make a direct contact.
+  const drawable = (natal) =>
+    mod.buildEclipsePlateModel({
+      reading: buildEclipseReading5(E, natal, templates, { quietGateDeg: 5 }),
+      natal,
+      eclipseLongitude: E,
+    })
+  let seed = 20261023
+  const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648
+  const keys = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'asc', 'mc']
+  for (let i = 1; i <= SEEDED_CHARTS; ) {
+    const when = [1940 + Math.floor(rnd() * 70), 1 + Math.floor(rnd() * 12), 1 + Math.floor(rnd() * 28), Math.floor(rnd() * 24), Math.floor(rnd() * 60)]
+    const lat = -40 + rnd() * 100
+    const lon = -120 + rnd() * 240
+    const chart = ephemeris.calculateNatalChart(...when, lat, lon, 'placidus')
+    const natal = Object.fromEntries(keys.map((k) => [k, chart.positions[k].longitude]))
+    const perSign = {}
+    for (const k of keys) perSign[Math.floor(natal[k] / 30)] = (perSign[Math.floor(natal[k] / 30)] || 0) + 1
+    const busiest = Math.max(...Object.values(perSign))
+    if (busiest < 5 || !drawable(natal)) continue
+    const [y, mo, d, h, mi] = when
+    charts.push([`seeded bunched chart #${i} (${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')} ${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}, ${busiest} points in one sign)`, natal])
+    i += 1
+  }
+  return charts
 }

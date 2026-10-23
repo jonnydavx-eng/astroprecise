@@ -356,6 +356,112 @@ for (const [label, kind, opts] of [
       `${label}: badge says Calculated from star positions and local sidereal time`,
     )
 }
-// The eclipse edition plate is split out to its own PR (10d-eclipse); it keeps its old text sizes.
+// Step 10d-eclipse: the eclipse edition plate (2400 × 3000) and its disc (2000 × 2000), drawn by
+// the real painters. Every line >= 11 px at 360 wide, the plate's header and footer fit and clear
+// each other, and the natal wheel holds its rules on every test chart (checkEclipseWheel): no
+// disc/disc, label/disc or label/label overlap, each label inside its own disc, nothing over the
+// sign marks, no leader under another disc, no two leaders crossing, every disc centre inside its
+// true sign, the eclipse line and dot at the eclipse degree, and a tick at every exact degree.
+const eclipseSrc = read('./website/js/ap-eclipse-edition-v841.js')
+const plateFamilies = new Set(probe.SITE_FONTS.map(([, family]) => family))
+const firstFamily = (font) => (String(font).match(/px\s+"([^"]+)"/) || [])[1]
+// Weights the site ships per family (from the file names; a variable or single-face file takes any
+// weight). A weight not shipped would be faked in browsers and on CI but could pick up a locally
+// installed face on a machine that has one, so the plate would measure differently there.
+const shippedWeights = new Map()
+for (const [file, family] of probe.SITE_FONTS) {
+  const w = (file.match(/-normal-(\d{3})\.woff2$/) || [])[1]
+  if (/-italic-/.test(file)) continue
+  if (!w) shippedWeights.set(family, null)
+  else if (shippedWeights.get(family) !== null)
+    shippedWeights.set(family, [...(shippedWeights.get(family) || []), w])
+}
+const weightOf = (font) => (String(font).match(/^\s*(?:italic\s+)?(\d{3})\s/) || [null, '400'])[1]
+for (const which of ['artwork', 'disc']) {
+  const r = await probe.probeEclipsePlate(which)
+  checkFloor(`eclipse ${which}`, r)
+  const foreign = r.draws.filter((d) => !plateFamilies.has(firstFamily(d.font)))
+  ok(
+    foreign.length === 0,
+    `eclipse ${which}: every line asks first for a site font from website/fonts` +
+      foreign.map((d) => ` [${d.font} ${d.text}]`).join(''),
+  )
+  const unshipped = r.draws.filter((d) => {
+    const weights = shippedWeights.get(firstFamily(d.font))
+    return weights && !weights.includes(weightOf(d.font))
+  })
+  ok(
+    unshipped.length === 0,
+    `eclipse ${which}: every line uses a weight the site ships` +
+      unshipped.map((d) => ` [${d.font} ${d.text}]`).join(''),
+  )
+}
+{
+  const r = await probe.probeEclipsePlate('artwork')
+  const W = r.wheel
+  const offWheel = r.draws.filter((d) => {
+    const cx = (d.ink.x0 + d.ink.x1) / 2,
+      cy = (d.ink.y0 + d.ink.y1) / 2
+    return Math.hypot(cx - W.x, cy - W.y) > W.outerR + 48
+  })
+  ok(offWheel.length >= 4, `eclipse plate: header and footer lines found (${offWheel.length})`)
+  const outside = offWheel.filter(
+    (d) => d.ink.x0 < 0 || d.ink.y0 < 0 || d.ink.x1 > r.width || d.ink.y1 > r.height,
+  )
+  ok(outside.length === 0, `eclipse plate: header and footer fit the plate` + outside.map((d) => ` [${d.text}]`).join(''))
+  const hits = []
+  for (let i = 0; i < offWheel.length; i++)
+    for (let j = i + 1; j < offWheel.length; j++) {
+      const a = offWheel[i].ink,
+        b = offWheel[j].ink
+      if (a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1)
+        hits.push(`${offWheel[i].text} / ${offWheel[j].text}`)
+    }
+  ok(hits.length === 0, `eclipse plate: header and footer lines do not overlap ${hits.join('; ')}`)
+  const footTop = Math.min(...offWheel.filter((d) => d.ink.y0 > W.y).map((d) => d.ink.y0))
+  // The wheel reaches outerR + 29 (the eclipse line and its dot).
+  ok(footTop > W.y + W.outerR + 29, `eclipse plate: footer starts below the wheel (${footTop.toFixed(0)})`)
+}
+ok(/export const PLATE_WHEEL/.test(eclipseSrc), 'eclipse plate exports its wheel geometry')
+ok(!/globalThis\.__/.test(eclipseSrc), 'eclipse plate has no debug hooks')
+const lonAngle = (lon) => Math.PI - (lon * Math.PI) / 180
+for (const [name, natal] of await probe.eclipseWheelCharts()) {
+  const r = await probe.probeEclipsePlate('artwork', { natal })
+  const label = `eclipse wheel, ${name}`
+  checkFloor(label, r)
+  const c = probe.checkEclipseWheel(r)
+  for (const [rule, list] of Object.entries(c.problems))
+    ok(list.length === 0, `${label}: ${rule} — ${list.length ? list.join('; ') : 'clean'}`)
+  ok(c.discs.length === Object.keys(natal).length, `${label}: one disc per point (${c.discs.length})`)
+  const W = r.wheel
+  const E = probe.ECLIPSE_LONGITUDE
+  // The eclipse marker: an ember line out along the eclipse degree, ending in the dot.
+  const dotAt = [W.x + Math.cos(lonAngle(E)) * (W.outerR + 18), W.y + Math.sin(lonAngle(E)) * (W.outerR + 18)]
+  const lineFrom = [W.x + Math.cos(lonAngle(E)) * (W.innerR + 18), W.y + Math.sin(lonAngle(E)) * (W.innerR + 18)]
+  ok(
+    r.segments.some(
+      (s) =>
+        s.width === 7 &&
+        Math.hypot(s.x0 - lineFrom[0], s.y0 - lineFrom[1]) < 1e-6 &&
+        Math.hypot(s.x1 - dotAt[0], s.y1 - dotAt[1]) < 1e-6,
+    ),
+    `${label}: eclipse line at ${E}°`,
+  )
+  ok(
+    r.arcs.some((a) => a.full && a.r === 11 && Math.hypot(a.x - dotAt[0], a.y - dotAt[1]) < 1e-6),
+    `${label}: eclipse dot fixed at the end of the eclipse line`,
+  )
+  // A tick at every exact degree, out from the inner circle.
+  const missing = Object.entries(natal).filter(([, lon]) => {
+    const a = lonAngle(lon)
+    return !r.segments.some(
+      (s) =>
+        s.width === 3 &&
+        Math.hypot(s.x0 - (W.x + Math.cos(a) * W.innerR), s.y0 - (W.y + Math.sin(a) * W.innerR)) < 1e-6 &&
+        Math.hypot(s.x1 - (W.x + Math.cos(a) * (W.innerR + W.degreeTick)), s.y1 - (W.y + Math.sin(a) * (W.innerR + W.degreeTick))) < 1e-6,
+    )
+  })
+  ok(missing.length === 0, `${label}: exact-degree tick for every point ${missing.map(([k]) => k).join(', ')}`)
+}
 
 console.log(`test-share-canvases: ${passed} passed, 0 failed`)

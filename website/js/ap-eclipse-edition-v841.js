@@ -173,6 +173,408 @@ function lonToAngle(longitude) {
   return Math.PI - (normaliseLongitude(longitude) * Math.PI / 180);
 }
 
+// Smallest share text: 11 CSS px when the image is shown 360 px wide
+// (2400-wide plate: 74 units; 2000-wide disc: 62 units).
+const PLATE_MIN_PX = 74;
+const DISC_MIN_PX = 62;
+
+// The plate letters only in the site's own faces (website/fonts, declared in css/fonts.css),
+// so its text measures the same wherever it is drawn. The Sun is drawn, not typed: none of the
+// site's fonts has U+2609. IBM Plex Mono ships at weight 400 only, so mono text is drawn at 400:
+// a heavier weight would be faked in browsers and could pick up a locally installed face elsewhere.
+const PLATE_SANS = '"Schibsted Grotesk", Arial, sans-serif';
+const PLATE_GLYPHS = '"AstroGlyph", "Schibsted Grotesk", Arial, sans-serif';
+const PLATE_MONO = '"IBM Plex Mono", ui-monospace, Consolas, monospace';
+const PLATE_SERIF = '"Cormorant Garamond", Georgia, serif';
+// Short angle marks on the wheel, so their discs stay close to planet size.
+const WHEEL_MARKS = { asc: 'AC', mc: 'MC' };
+
+// Wheel geometry of the 2400 × 3000 plate (canvas units, centre at x/y).
+// A leader keeps this far from every disc but its own.
+const LEADER_CLEAR = 2;
+// Points closer than this (degrees) are laid out together as one cluster.
+const CLUSTER_GAP = 12;
+// Radial step between the rings a disc may sit on.
+const TRACK_STEP = 13;
+const ECLIPSE_DOT_R = 11;
+const SUN_RING_R = 20;
+const SUN_RING_W = 6;
+// Beam search over one cluster: partial layouts kept per step, and spots tried per layout.
+const BEAM_WIDTH = 60;
+const BEAM_BRANCH = 40;
+// The layout gives up (and falls back to exact degrees) after this many disc checks, a few
+// seconds at most; no real chart tried comes near it.
+const WHEEL_WORK_BUDGET = 15e6;
+const OUT_OF_BUDGET = new Error('wheel layout budget');
+// Disc sizing, tightest last: mark size, ink-to-rim padding, disc-to-disc gap and leader
+// clearance. A cluster that will not fit first gets tighter discs at the 74-unit floor; only if
+// that fails too (seven or more points packed into one sign) do its marks shrink below the floor
+// (68, then 62 units) rather than leave their sign. No real chart tried has needed that.
+const WHEEL_TIERS = Object.freeze([
+  { px: PLATE_MIN_PX, pad: 3, gap: 6, clear: LEADER_CLEAR },
+  { px: PLATE_MIN_PX, pad: 1, gap: 3, clear: 1 },
+  { px: 68, pad: 1, gap: 3, clear: 1 },
+  { px: 62, pad: 1, gap: 3, clear: 1 },
+]);
+
+export const PLATE_WHEEL = Object.freeze({
+  x: ARTWORK_WIDTH / 2,
+  y: 1760,
+  outerR: 704,
+  tickInner: 598,
+  tickOuter: 692,
+  // Sign marks sit in the zodiac ring, clear of every marker.
+  signLabelR: 652,
+  innerR: 130,
+  // Exact-degree tick on the inner circle, then a leader from its tip to the marker's disc.
+  degreeTick: 24,
+  leaderStart: 156,
+  gap: 6,
+});
+
+const sectorOf = (longitude) => Math.floor(normaliseLongitude(longitude) / 30);
+
+function inkOf(ctx, text, fallbackPx) {
+  const m = ctx.measureText(text);
+  const fin = (v, d) => (Number.isFinite(v) ? v : d);
+  return {
+    left: fin(m.actualBoundingBoxLeft, m.width / 2),
+    right: fin(m.actualBoundingBoxRight, m.width / 2),
+    up: fin(m.actualBoundingBoxAscent, fallbackPx * 0.4),
+    down: fin(m.actualBoundingBoxDescent, fallbackPx * 0.4),
+  };
+}
+
+// How far a mark's drawn pixels reach from the centre of its ink box: rendered once on a
+// scratch canvas, then cached. Without a scratch canvas it falls back to the box's half diagonal.
+const INK_REACH = new Map();
+function scratchCanvas(ctx, width, height) {
+  try {
+    if (typeof OffscreenCanvas === 'function') return new OffscreenCanvas(width, height);
+    if (typeof document !== 'undefined' && document.createElement) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      return canvas;
+    }
+    const Canvas = ctx.canvas && ctx.canvas.constructor;
+    return Canvas ? new Canvas(width, height) : null;
+  } catch {
+    return null;
+  }
+}
+function inkReach(ctx, text, font, ink) {
+  const key = `${font}|${text}`;
+  if (INK_REACH.has(key)) return INK_REACH.get(key);
+  const pad = 6;
+  const width = Math.ceil(ink.left + ink.right) + pad * 2;
+  const height = Math.ceil(ink.up + ink.down) + pad * 2;
+  let reach = Math.hypot((ink.left + ink.right) / 2, (ink.up + ink.down) / 2);
+  const scratch = scratchCanvas(ctx, width, height);
+  const sctx = scratch && scratch.getContext('2d');
+  if (sctx && sctx.getImageData) {
+    sctx.font = font;
+    sctx.textAlign = 'center';
+    sctx.textBaseline = 'middle';
+    sctx.fillStyle = '#000';
+    sctx.fillText(text, pad + ink.left, pad + ink.up);
+    const cx = pad + (ink.left + ink.right) / 2;
+    const cy = pad + (ink.up + ink.down) / 2;
+    const data = sctx.getImageData(0, 0, width, height).data;
+    let far = 0;
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        if (data[(y * width + x) * 4 + 3] === 0) continue;
+        far = Math.max(far, Math.hypot(x + 0.5 - cx, y + 0.5 - cy) + 0.71);
+      }
+    }
+    if (far > 0) reach = far;
+  }
+  INK_REACH.set(key, reach);
+  return reach;
+}
+
+// Ink boxes of the twelve sign marks (relative to the wheel centre), measured with the font
+// they are drawn in. No marker disc may touch them.
+export function signLabelBoxes(ctx, geometry = PLATE_WHEEL) {
+  ctx.font = `400 ${PLATE_MIN_PX}px ${PLATE_MONO}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  return SIGN_MARKS.map((text, sign) => {
+    const mid = lonToAngle(sign * 30 + 15);
+    const x = Math.cos(mid) * geometry.signLabelR;
+    const y = Math.sin(mid) * geometry.signLabelR;
+    const ink = inkOf(ctx, text, PLATE_MIN_PX);
+    return { text, x, y, x0: x - ink.left, x1: x + ink.right, y0: y - ink.up, y1: y + ink.down };
+  });
+}
+
+function segmentCircleDistance(ax, ay, bx, by, cx, cy) {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const len2 = dx * dx + dy * dy;
+  const t = len2 ? Math.max(0, Math.min(1, ((cx - ax) * dx + (cy - ay) * dy) / len2)) : 0;
+  return Math.hypot(ax + t * dx - cx, ay + t * dy - cy);
+}
+
+function segmentsCross(a, b) {
+  const cross = (ox, oy, px, py, qx, qy) => (px - ox) * (qy - oy) - (py - oy) * (qx - ox);
+  const d1 = cross(a.x0, a.y0, a.x1, a.y1, b.x0, b.y0);
+  const d2 = cross(a.x0, a.y0, a.x1, a.y1, b.x1, b.y1);
+  const d3 = cross(b.x0, b.y0, b.x1, b.y1, a.x0, a.y0);
+  const d4 = cross(b.x0, b.y0, b.x1, b.y1, a.x1, a.y1);
+  return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
+}
+
+function rectCircleDistance(box, x, y) {
+  const nx = Math.max(box.x0, Math.min(x, box.x1));
+  const ny = Math.max(box.y0, Math.min(y, box.y1));
+  return Math.hypot(nx - x, ny - y);
+}
+
+// Place the eclipse plate's wheel markers. Every disc is just big enough for its mark's drawn
+// ink at the 74-unit floor. Each point is tried at its exact degree on every ring from the outer
+// to the inner one first; only then is it fanned along the ring, half a degree at a time, and its
+// disc centre never leaves its own sign. A spot is taken only if its disc clears every other disc
+// and every sign mark, its leader (exact-degree tick → disc) passes under no other disc, and no
+// two leaders cross, so crowded points fan out in degree order. Points are laid out cluster by
+// cluster round the wheel (see solve below). `x`/`y` are relative to the wheel centre;
+// `longitude` stays exact and `delta` is the fan-out in degrees.
+export function layoutWheelMarkers(ctx, model, geometry = PLATE_WHEEL) {
+  const g = { ...PLATE_WHEEL, ...geometry };
+  const obstacles = signLabelBoxes(ctx, g);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.letterSpacing = '0px';
+  // A mark's font, ink offset and disc radius at one text size. The disc is sized to the mark's
+  // real ink (not its box) plus `pad`, so crowded wheels still fit.
+  const sized = (row, px, pad) => {
+    const font = WHEEL_MARKS[row.key] ? `400 ${px}px ${PLATE_MONO}` : `${row.isContact ? 700 : 600} ${px}px ${PLATE_GLYPHS}`;
+    // The drawn Sun is a ring of radius SUN_RING_R stroked SUN_RING_W wide.
+    let reach = SUN_RING_R + SUN_RING_W / 2;
+    let dx = 0;
+    let dy = 0;
+    if (!row.isSun) {
+      ctx.font = font;
+      const ink = inkOf(ctx, row.text, px);
+      dx = -(ink.right - ink.left) / 2;
+      dy = -(ink.down - ink.up) / 2;
+      reach = inkReach(ctx, row.text, font, ink);
+    }
+    const r = Math.ceil(Math.max(row.isContact ? 30 : 26, reach + pad + (row.isContact ? 2 : 0)));
+    const { spots, ...rest } = row;
+    return { ...rest, px, font, dx, dy, r };
+  };
+  const rows = (model.placements || []).map((placement) => {
+    const isContact = Boolean(model.contactTarget && placement.key === model.contactTarget);
+    const isSun = placement.key === 'sun';
+    const text = isSun ? '' : WHEEL_MARKS[placement.key] || GLYPHS[placement.key] || placement.key.slice(0, 2).toUpperCase();
+    return sized(
+      {
+        key: placement.key,
+        longitude: normaliseLongitude(placement.longitude),
+        sign: sectorOf(placement.longitude),
+        isContact,
+        isSun,
+        text,
+      },
+      WHEEL_TIERS[0].px,
+      WHEEL_TIERS[0].pad,
+    );
+  });
+  if (!rows.length) return [];
+  // Every disc may sit anywhere from just inside the sign ring down to just above the degree
+  // ticks, in TRACK_STEP rings; the outermost planet ring is drawn as a hairline.
+  const clear = Math.min(...obstacles.map((b) => rectCircleDistance(b, 0, 0)));
+  const rPlanet = Math.max(...rows.filter((row) => !WHEEL_MARKS[row.key]).map((row) => row.r), 26);
+  const outerTrack = Math.floor(clear - g.gap - rPlanet);
+  const radiiOf = (row) => {
+    const list = [];
+    for (let t = Math.floor(clear - g.gap - row.r); t - row.r >= g.leaderStart + g.gap; t -= TRACK_STEP) list.push(t);
+    return list;
+  };
+  const leaderOf = (row, spot) => {
+    const ta = lonToAngle(row.longitude);
+    const x0 = Math.cos(ta) * g.leaderStart;
+    const y0 = Math.sin(ta) * g.leaderStart;
+    const vx = spot.x - x0;
+    const vy = spot.y - y0;
+    const len = Math.hypot(vx, vy) || 1;
+    return { x0, y0, x1: spot.x - (vx / len) * row.r, y1: spot.y - (vy / len) * row.r };
+  };
+  // Spots for one point, nearest first: its exact degree on each track (outer to inner), then
+  // half a degree either way on each track, and so on, never past its own sign's edges.
+  const candidates = (row) => {
+    if (row.spots) return row.spots;
+    // (Each sized copy of a row gets its own list, since the radii depend on the disc size.)
+    const radii = radiiOf(row);
+    const list = [];
+    const lo = row.sign * 30;
+    const hi = lo + 30;
+    for (let s = 0; s <= 60; s += 1) {
+      for (const delta of s ? [s / 2, -s / 2] : [0]) {
+        const lon = row.longitude + delta;
+        if (s && (lon < lo || lon >= hi)) continue;
+        const a = lonToAngle(lon);
+        for (const track of radii) list.push({ x: Math.cos(a) * track, y: Math.sin(a) * track, track, delta });
+      }
+    }
+    row.spots = list;
+    return list;
+  };
+  let work = 0;
+  const fits = (row, spot, placed) => {
+    work += 1 + placed.length;
+    if (work > WHEEL_WORK_BUDGET) throw OUT_OF_BUDGET;
+    if (obstacles.some((b) => rectCircleDistance(b, spot.x, spot.y) < row.r + g.gap)) return false;
+    const leader = leaderOf(row, spot);
+    for (const p of placed) {
+      const gap = Math.min(p.gap ?? g.gap, row.gap ?? g.gap);
+      const clearance = Math.min(p.clear ?? LEADER_CLEAR, row.clear ?? LEADER_CLEAR);
+      if (Math.hypot(p.x - spot.x, p.y - spot.y) < p.r + row.r + gap) return false;
+      if (segmentCircleDistance(leader.x0, leader.y0, leader.x1, leader.y1, p.x, p.y) < p.r + clearance) return false;
+      if (segmentCircleDistance(p.leader.x0, p.leader.y0, p.leader.x1, p.leader.y1, spot.x, spot.y) < row.r + clearance) return false;
+      if (segmentsCross(leader, p.leader)) return false;
+    }
+    return true;
+  };
+
+  // Walk round the wheel in degree order, starting after the widest empty gap, and split the
+  // points into clusters (runs closer than CLUSTER_GAP degrees). Each cluster fans out from one
+  // anchor point: points after it may not sit before the previous disc, points before it may not
+  // sit after the next one, so the discs keep the points' degree order and no leaders cross.
+  const byDegree = rows.slice().sort((a, b) => a.longitude - b.longitude);
+  let start = 0;
+  let widest = -1;
+  byDegree.forEach((row, i) => {
+    const prev = byDegree[(i - 1 + byDegree.length) % byDegree.length];
+    const gapDeg = (row.longitude - prev.longitude + 360) % 360 || 360;
+    if (gapDeg > widest) {
+      widest = gapDeg;
+      start = i;
+    }
+  });
+  const order = byDegree.slice(start).concat(byDegree.slice(0, start));
+  const origin = order[0].longitude;
+  const clusters = [];
+  order.forEach((row) => {
+    row.along = (row.longitude - origin + 360) % 360;
+    const last = clusters.length ? clusters[clusters.length - 1] : null;
+    if (last && row.along - last[last.length - 1].along < CLUSTER_GAP) last.push(row);
+    else clusters.push([row]);
+  });
+
+  const placed = [];
+  // Anchors to try: the contact first if the cluster holds it, otherwise middle-out.
+  const anchorsOf = (cluster) => {
+    const contact = cluster.findIndex((row) => row.isContact);
+    const mid = contact >= 0 ? contact : Math.floor((cluster.length - 1) / 2);
+    const list = [mid];
+    for (let k = 1; list.length < cluster.length; k += 1) {
+      if (mid + k < cluster.length) list.push(mid + k);
+      if (mid - k >= 0) list.push(mid - k);
+    }
+    return list;
+  };
+  // Beam search over one cluster: place its points one at a time (anchor, then outwards), keep
+  // the best few partial layouts at each step, scored by how far the fan has spread so far.
+  const layoutCluster = (cluster) => {
+    const solutions = [];
+    for (const anchor of anchorsOf(cluster)) {
+      const sequence = [anchor];
+      for (let i = anchor + 1; i < cluster.length; i += 1) sequence.push(i);
+      for (let i = anchor - 1; i >= 0; i -= 1) sequence.push(i);
+      let beam = [{ items: [], after: -Infinity, before: Infinity, cost: 0 }];
+      for (const index of sequence) {
+        const row = cluster[index];
+        const next = [];
+        for (const state of beam) {
+          const around = placed.concat(state.items);
+          let taken = 0;
+          // At most two radii per angle, so the beam keeps a spread of angles.
+          const perDelta = new Map();
+          for (const spot of candidates(row)) {
+            if ((perDelta.get(spot.delta) || 0) >= 2) continue;
+            const along = row.along + spot.delta;
+            if (index > anchor && along < state.after - 1e-9) continue;
+            if (index < anchor && along > state.before + 1e-9) continue;
+            if (!fits(row, spot, around)) continue;
+            const after = index >= anchor ? along : state.after;
+            const before = index <= anchor ? along : state.before;
+            const spread = (index === anchor ? 0 : Math.abs(along - row.along)) + Math.abs(spot.delta);
+            next.push({
+              items: state.items.concat({ ...row, ...spot, leader: leaderOf(row, spot) }),
+              after,
+              before,
+              cost: state.cost + spread,
+            });
+            taken += 1;
+            if (taken >= BEAM_BRANCH) break;
+            perDelta.set(spot.delta, (perDelta.get(spot.delta) || 0) + 1);
+          }
+        }
+        next.sort((p, q) => p.cost - q.cost);
+        beam = next.slice(0, BEAM_WIDTH);
+        if (!beam.length) break;
+      }
+      for (const state of beam) if (state.items.length === cluster.length) solutions.push(state);
+      if (solutions.length) break;
+    }
+    return solutions.sort((p, q) => p.cost - q.cost);
+  };
+  // A cluster that will not fit is tried again with tighter discs, then smaller marks
+  // (WHEEL_TIERS), before it is merged with the cluster before it and the pair is laid out afresh.
+  const tierCache = new Map();
+  const atTier = (row, t) => {
+    if (t === 0) return row;
+    const key = `${row.key}|${t}`;
+    if (!tierCache.has(key)) {
+      const tier = WHEEL_TIERS[t];
+      tierCache.set(key, { ...sized(row, tier.px, tier.pad), gap: tier.gap, clear: tier.clear, tier: t });
+    }
+    return tierCache.get(key);
+  };
+  const solve = () => {
+    const done = [];
+    for (let c = 0; c < clusters.length; c += 1) {
+      let cluster = clusters[c];
+      for (;;) {
+        let best = null;
+        for (let t = 0; t < WHEEL_TIERS.length && !best; t += 1) [best] = layoutCluster(cluster.map((row) => atTier(row, t)));
+        if (best) {
+          placed.push(...best.items);
+          done.push({ cluster, count: best.items.length });
+          break;
+        }
+        if (!done.length) return false;
+        const prev = done.pop();
+        placed.length -= prev.count;
+        cluster = prev.cluster.concat(cluster);
+      }
+    }
+    return true;
+  };
+  let solved = false;
+  try {
+    solved = solve();
+  } catch (error) {
+    if (error !== OUT_OF_BUDGET) throw error;
+  }
+  if (!solved) {
+    // No layout within the search budget: exact degrees on the outer track. Only synthetic charts
+    // with nine points in one sign have needed this; no real chart tried has.
+    placed.length = 0;
+    for (const row of order) {
+      const a = lonToAngle(row.longitude);
+      const spot = { x: Math.cos(a) * outerTrack, y: Math.sin(a) * outerTrack, track: outerTrack, delta: 0 };
+      placed.push({ ...row, ...spot, leader: leaderOf(row, spot), fallback: true });
+    }
+  }
+  placed.outerTrack = outerTrack;
+  placed.work = work;
+  return placed;
+}
+
 export function renderEclipseArtwork(model, canvas = document.createElement('canvas')) {
   if (!model) throw new Error('A direct eclipse-contact model is required.');
   canvas.width = model.width;
@@ -262,13 +664,10 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   ctx.fill();
   drawHairlineCircle(ctx, ringX, ringY, eclipseRadius + 8, brass, 0.88, 3);
 
-  const wheelX = model.width * 0.5;
-  const wheelY = 1760;
-  const outerR = 690;
-  const innerR = 248;
-  const planetR = 520;
-  const tickInner = 640;
-  const tickOuter = 678;
+  const g = PLATE_WHEEL;
+  const wheelX = g.x;
+  const wheelY = g.y;
+  const { outerR, innerR, tickInner, tickOuter } = g;
 
   const wheelWash = ctx.createRadialGradient(wheelX, wheelY, innerR, wheelX, wheelY, outerR + 40);
   wheelWash.addColorStop(0, 'rgba(7,16,30,.55)');
@@ -278,6 +677,13 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   ctx.arc(wheelX, wheelY, outerR + 48, 0, Math.PI * 2);
   ctx.fill();
 
+  ctx.save();
+  ctx.translate(wheelX, wheelY);
+  // Markers first (layout only): the planet ring is drawn at the outer track.
+  const markers = layoutWheelMarkers(ctx, model, g);
+  const planetR = markers.outerTrack || 470;
+  ctx.restore();
+
   drawHairlineCircle(ctx, wheelX, wheelY, outerR, brass, 0.78, 3);
   drawHairlineCircle(ctx, wheelX, wheelY, tickInner, blue, 0.42, 2);
   drawHairlineCircle(ctx, wheelX, wheelY, planetR, brass, 0.28, 1.5);
@@ -285,8 +691,6 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
 
   ctx.save();
   ctx.translate(wheelX, wheelY);
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
   for (let sign = 0; sign < 12; sign += 1) {
     const cusp = lonToAngle(sign * 30);
     ctx.strokeStyle = brass;
@@ -296,13 +700,11 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
     ctx.moveTo(Math.cos(cusp) * tickInner, Math.sin(cusp) * tickInner);
     ctx.lineTo(Math.cos(cusp) * tickOuter, Math.sin(cusp) * tickOuter);
     ctx.stroke();
-    const mid = lonToAngle(sign * 30 + 15);
-    const labelR = 708;
-    ctx.globalAlpha = 0.82;
-    ctx.fillStyle = brass;
-    ctx.font = '600 22px ui-monospace, Consolas, monospace';
-    ctx.fillText(SIGN_MARKS[sign], Math.cos(mid) * labelR, Math.sin(mid) * labelR);
   }
+  // Sign marks sit in the zodiac ring, between the cusp ticks, at the share floor.
+  ctx.globalAlpha = 0.82;
+  ctx.fillStyle = brass;
+  signLabelBoxes(ctx, g).forEach((label) => ctx.fillText(label.text, label.x, label.y));
 
   const eclipseAngle = lonToAngle(model.eclipseLongitude);
   ctx.strokeStyle = ember;
@@ -314,51 +716,79 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   ctx.stroke();
   ctx.fillStyle = ember;
   ctx.beginPath();
-  ctx.arc(Math.cos(eclipseAngle) * planetR, Math.sin(eclipseAngle) * planetR, 11, 0, Math.PI * 2);
+  ctx.arc(Math.cos(eclipseAngle) * (outerR + 18), Math.sin(eclipseAngle) * (outerR + 18), ECLIPSE_DOT_R, 0, Math.PI * 2);
   ctx.fill();
 
-  model.placements.forEach((placement) => {
-    const angle = lonToAngle(placement.longitude);
-    const x = Math.cos(angle) * planetR;
-    const y = Math.sin(angle) * planetR;
-    const isContact = model.contactTarget && placement.key === model.contactTarget;
-    const glyph = GLYPHS[placement.key] || placement.key.slice(0, 2).toUpperCase();
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = isContact ? ember : ink;
+  // Every point keeps a tick at its exact degree on the inner circle, and a leader from the tip
+  // of that tick to its disc (straight out when the disc sits at the exact degree).
+  markers.forEach((m) => {
+    const ta = lonToAngle(m.longitude);
+    ctx.globalAlpha = 0.85;
+    ctx.strokeStyle = m.isContact ? ember : brass;
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(x, y, isContact ? 34 : 26, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = isContact ? brass : brass;
-    ctx.lineWidth = isContact ? 3 : 1.5;
-    ctx.globalAlpha = isContact ? 1 : 0.85;
+    ctx.moveTo(Math.cos(ta) * innerR, Math.sin(ta) * innerR);
+    ctx.lineTo(Math.cos(ta) * (innerR + g.degreeTick), Math.sin(ta) * (innerR + g.degreeTick));
     ctx.stroke();
-    ctx.fillStyle = isContact ? '#EEF4FA' : brass;
-    ctx.font = isContact
-      ? '700 26px "Schibsted Grotesk", Arial, sans-serif'
-      : '600 22px "Schibsted Grotesk", Arial, sans-serif';
-    ctx.fillText(glyph, x, y + 1);
+    ctx.globalAlpha = 0.5;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(m.leader.x0, m.leader.y0);
+    ctx.lineTo(m.leader.x1, m.leader.y1);
+    ctx.stroke();
+  });
+  markers.forEach((m) => {
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = m.isContact ? ember : ink;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = brass;
+    ctx.lineWidth = m.isContact ? 3 : 1.5;
+    ctx.globalAlpha = m.isContact ? 1 : 0.85;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    const markColour = m.isContact ? '#EEF4FA' : brass;
+    if (m.isSun) {
+      // The Sun's mark (a ring with a centre dot), drawn so it looks the same everywhere.
+      ctx.strokeStyle = markColour;
+      ctx.lineWidth = SUN_RING_W;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, SUN_RING_R, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = markColour;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = markColour;
+      ctx.font = m.font;
+      ctx.fillText(m.text, m.x + m.dx, m.y + m.dy);
+    }
   });
   ctx.restore();
   ctx.globalAlpha = 1;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
 
   ctx.fillStyle = brass;
-  ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.letterSpacing = '8px';
-  ctx.fillText('ASTROPRECISE  /  12 AUGUST 2026', 150, 168);
+  ctx.font = `600 ${PLATE_MIN_PX}px ${PLATE_SANS}`;
+  ctx.letterSpacing = '4px';
+  ctx.fillText('ASTROPRECISE  /  12 AUGUST 2026', 150, 200);
   ctx.letterSpacing = '0px';
   ctx.fillStyle = '#EEF4FA';
-  ctx.font = '600 64px "Cormorant Garamond", Georgia, serif';
-  ctx.fillText('Your natal wheel at this eclipse.', 150, 248);
+  ctx.font = `600 112px ${PLATE_SERIF}`;
+  drawWrapped(ctx, 'Your natal wheel at this eclipse.', 150, 330, 2100, 120, 2);
 
   ctx.fillStyle = 'rgba(165,188,255,.82)';
-  ctx.font = '600 26px ui-monospace, Consolas, monospace';
-  ctx.fillText(`${model.fingerprint}  /  ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 210);
+  ctx.font = `400 ${PLATE_MIN_PX}px ${PLATE_MONO}`;
+  ctx.fillText(`${model.fingerprint}  /  ${model.eclipseLongitude.toFixed(3)}°`, 150, model.height - 440);
   ctx.fillStyle = '#C9D6E3';
-  ctx.font = '500 32px "Schibsted Grotesk", Arial, sans-serif';
-  drawWrapped(ctx, model.share, 150, model.height - 155, 2100, 42, 2);
+  ctx.font = `500 ${PLATE_MIN_PX}px ${PLATE_SANS}`;
+  drawWrapped(ctx, model.share, 150, model.height - 350, 2100, 86, 2);
   ctx.fillStyle = 'rgba(147,168,191,.62)';
-  ctx.font = '400 20px "Schibsted Grotesk", Arial, sans-serif';
-  ctx.fillText('Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 72);
+  ctx.font = `400 ${PLATE_MIN_PX}px ${PLATE_SANS}`;
+  drawWrapped(ctx, 'Computed on your device · reflective astrology, not prediction or advice', 150, model.height - 170, 2100, 84, 2);
   return canvas;
 }
 
@@ -416,10 +846,10 @@ export function renderEclipseDisc(model, canvas = document.createElement('canvas
   }
   if (captions) {
     ctx.fillStyle = brass;
-    ctx.font = '600 28px "Schibsted Grotesk", Arial, sans-serif';
-    ctx.fillText('12 AUGUST 2026  ·  GREATEST 17:45:51 UTC  ·  ' + (model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`), 64, 64);
+    ctx.font = `600 ${DISC_MIN_PX}px ${PLATE_SANS}`;
+    drawWrapped(ctx, '12 AUGUST 2026  ·  GREATEST 17:45:51 UTC  ·  ' + (model.eclipseDegree || `${model.eclipseLongitude.toFixed(3)}°`), 64, 96, canvas.width - 128, 72, 2);
     ctx.fillStyle = ember;
-    ctx.font = '600 22px ui-monospace, Consolas, monospace';
+    ctx.font = `400 ${DISC_MIN_PX}px ${PLATE_MONO}`;
     ctx.fillText(model.fingerprint, 64, canvas.height - 48);
   }
   return canvas;
