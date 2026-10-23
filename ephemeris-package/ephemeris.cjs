@@ -86,29 +86,19 @@ function localSiderealTime(jd, longitude) {
 // ---------------------------------------------------------------------------
 
 function sunPosition(jd) {
-  // Meeus Ch. 25 is a TT series. Callers pass Universal Time.
-  jd = dynamicalJd(jd);
-  const T = (jd - 2451545.0) / 36525;
-
-  // Geometric mean longitude & mean anomaly
-  const L0 = mod360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
-  const M  = mod360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
-  const Mr = toRad(M);
-  const e  = 0.016708634 - 0.000042037 * T - 0.0000001267 * T * T;
-
-  // Equation of centre
-  const C = (1.914602 - 0.004817*T - 0.000014*T*T) * Math.sin(Mr)
-          + (0.019993 - 0.000101*T) * Math.sin(2*Mr)
-          +  0.000289 * Math.sin(3*Mr);
-
-  const sunLon = mod360(L0 + C);
-  const v      = mod360(M + C);
-  const R      = 1.000001018 * (1 - e*e) / (1 + e * Math.cos(toRad(v)));
-
-  // Apparent longitude (nutation + aberration)
-  const Om = mod360(125.04 - 1934.136 * T);
-  const lam = mod360(sunLon - 0.00569 - 0.00478 * Math.sin(toRad(Om)));
-
+  // Apparent geocentric Sun from the same VSOP87D Earth series the planets
+  // use (Meeus Ch. 32 / Ch. 25 "higher accuracy"): geometric longitude is the
+  // heliocentric Earth longitude + 180°, then the FK5 correction (−0.09033″),
+  // annual aberration (−20.4898″ / R) and nutation in longitude. The earlier
+  // Meeus low-accuracy series (L0 + equation of centre) ran 5–16″ off JPL
+  // Horizons in 2026–27, which moved equinox and solstice times by several
+  // minutes; this is within ~2″ (under a minute of Sun motion).
+  // Callers pass Universal Time; VSOP87 is a TT theory.
+  const jdTT = dynamicalJd(jd);
+  const earth = vsopSpherical('earth', jdTT);
+  const R = earth.R;
+  const geo = toDeg(earth.L) + 180 - 0.09033 / 3600;
+  const lam = mod360(geo - 20.4898 / 3600 / R + nutationInLongitude(jdTT));
   return { lon: lam, lat: 0, distance: R }; // R in AU
 }
 
