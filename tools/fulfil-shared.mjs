@@ -50,18 +50,57 @@ export const PRINT_FONT_FACES = Object.freeze([
   { family: 'Cormorant Garamond', style: 'normal', weight: 600, file: 'cormorant-garamond-static-600.ttf' },
   { family: 'Cormorant Garamond', style: 'italic', weight: 400, file: 'cormorant-garamond-static-italic-400.ttf' },
   { family: 'Cormorant Garamond', style: 'italic', weight: 500, file: 'cormorant-garamond-static-italic-500.ttf' },
+  // Paper & Night (2C step 8): the site's 'AP Serif' (Instrument Serif) and
+  // 'AP Sans' (Inter, a variable font on the web) as static print instances. Extra
+  // '500 900' / '700 900' faces reuse the heaviest file (bold <strong> prints at
+  // SemiBold), so no weight falls through to a system font or a synthesised (Type3)
+  // bold. Exact faces are kept too: Chromium prefers them over a range at 400/600.
+  { family: 'AP Serif', style: 'normal', weight: 400, file: 'instrument-serif-static-regular.ttf' },
+  { family: 'AP Serif', style: 'italic', weight: 400, file: 'instrument-serif-static-italic.ttf' },
+  { family: 'AP Serif', style: 'normal', weight: '500 900', file: 'instrument-serif-static-regular.ttf' },
+  { family: 'AP Serif', style: 'italic', weight: '500 900', file: 'instrument-serif-static-italic.ttf' },
+  { family: 'AP Sans', style: 'normal', weight: 400, file: 'inter-static-400.ttf' },
+  { family: 'AP Sans', style: 'normal', weight: 500, file: 'inter-static-500.ttf' },
+  { family: 'AP Sans', style: 'normal', weight: 600, file: 'inter-static-600.ttf' },
+  { family: 'AP Sans', style: 'normal', weight: '700 900', file: 'inter-static-600.ttf' },
 ]);
+/**
+ * Static symbol subsets (Noto Sans Symbols / Noto Sans Symbols 2 / Noto Sans, OFL)
+ * for the characters Instrument Serif and the latin Inter subset do not carry
+ * (☉ ✦ △ □ ℞, the planet and sign symbols, ′ and ↑ in the serif). Declared as
+ * extra unicode-range faces of the AP families, so text that uses them never
+ * falls back to a system font (which Chromium may write into a PDF as Type3).
+ */
+export const PRINT_SYMBOL_FACES = Object.freeze([
+  { file: 'ap-symbols-print-astro.ttf', range: 'U+2190-2193,U+260A-260D,U+263D,U+263F-2653,U+26B3-26B7,U+26B9-26BC' },
+  { file: 'ap-symbols-print-shapes.ttf', range: 'U+25A1,U+25B3,U+25BD,U+25C6,U+25C7,U+25CB,U+25CF,U+2605,U+2606,U+2609,U+2726,U+2727' },
+  { file: 'ap-symbols-print-marks.ttf', range: 'U+2032,U+2033,U+211E' },
+]);
+// Inter's own ′ ″ and arrows stay in AP Sans; the serif takes them from the subsets.
+const SANS_SKIP = /^U\+(2190-2193|2032|2033)$/;
+const fontFace = (family, style, weight, path, format, range = '') =>
+  `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:block;src:url(data:font/${format};base64,${readFileSync(path).toString('base64')}) format('${format}');${range ? `unicode-range:${range};` : ''}}`;
+/** Symbol faces for the given family/style/weight slots (used by printFontCss for AP Serif / AP Sans). */
+export function printSymbolCss(slots) {
+  const rules = [];
+  for (const { family, style = 'normal', weight = 400 } of slots) {
+    for (const s of PRINT_SYMBOL_FACES) {
+      const range = family === 'AP Sans' ? s.range.split(',').filter((r) => !SANS_SKIP.test(r)).join(',') : s.range;
+      if (range) rules.push(fontFace(family, style, weight, join(PRINT_FONTS_DIR, s.file), 'truetype', range));
+    }
+  }
+  return rules.join('\n');
+}
 let _printFontCss = null;
 export function printFontCss() {
   if (_printFontCss) return _printFontCss;
-  const face = (family, style, weight, path, format) =>
-    `@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:block;src:url(data:font/${format};base64,${readFileSync(path).toString('base64')}) format('${format}');}`;
-  const rules = [face('AstroGlyph', 'normal', 400, join(ROOT, 'website', 'fonts', 'astro-glyphs.woff2'), 'woff2')];
-  for (const f of PRINT_FONT_FACES) rules.push(face(f.family, f.style, f.weight, join(PRINT_FONTS_DIR, f.file), 'truetype'));
+  const rules = [fontFace('AstroGlyph', 'normal', 400, join(ROOT, 'website', 'fonts', 'astro-glyphs.woff2'), 'woff2')];
+  for (const f of PRINT_FONT_FACES) rules.push(fontFace(f.family, f.style, f.weight, join(PRINT_FONTS_DIR, f.file), 'truetype'));
+  rules.push(printSymbolCss(PRINT_FONT_FACES.filter((f) => f.family.startsWith('AP '))));
   _printFontCss = rules.join('\n');
   return _printFontCss;
 }
-/** `<style>` block for print HTML: static TrueType Cinzel / Cormorant Garamond + AstroGlyph, all inline. */
+/** `<style>` block for print HTML: static TrueType Cinzel / Cormorant Garamond / AP Serif / AP Sans + AstroGlyph, all inline. */
 export const printFontsHtml = () => `<style>${printFontCss()}</style>`;
 
 /** Astrological-symbol font stack for SVG glyph <text> — 'AstroGlyph' (self-hosted

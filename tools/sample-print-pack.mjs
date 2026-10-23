@@ -11,12 +11,14 @@
  * can never stand in for the paid path (tools/fulfil-order.mjs, which stays
  * fail-closed behind payment evidence).
  *
- * Path: fulfil-shared buildChart (VSOP87/ELP2000 engine) → natalWheelSvg →
- * HTML plates → headless Chromium (playwright-core, system Chrome/Edge) →
+ * Path: fulfil-shared buildChart (VSOP87/ELP2000 engine) → the Paper & Night
+ * Minute Plate (tools/minute-plate.mjs: VSOP orrery, big three, proof wheel,
+ * SPECIMEN corner mark) → HTML plates → headless Chromium (playwright-core, system Chrome/Edge) →
  * page.pdf for A3/A4 and page.screenshot for the PNGs. Fonts are inlined as
  * data: URLs by fulfil-shared printFontsHtml(): the static TrueType print
- * instances in tools/print-fonts (so the PDFs embed real TrueType/CID fonts,
- * not Type3 outlines) plus the AstroGlyph symbol font from website/fonts. The
+ * instances in tools/print-fonts (AP Serif = Instrument Serif, AP Sans = Inter,
+ * so the PDFs embed real TrueType/CID fonts, not Type3 outlines). Glyphs are
+ * drawn SVG paths, not a font. The
  * plate is served from a loopback-only origin; nothing leaves the machine.
  *
  * Default --out: C:\house\astro-samples\print-pack on Windows, else
@@ -30,15 +32,17 @@ import { PDFDocument, PDFName, PDFDict } from 'pdf-lib';
 import sharp from 'sharp';
 import { chromium } from 'playwright-core';
 import {
-  ROOT, loadEngines, buildChart, natalWheelSvg, fmt, esc, PGL, SGL, PNAME, GLYPH_FONT, parseArgs, printFontsHtml,
+  ROOT, loadEngines, buildChart, fmt, esc, parseArgs, printFontsHtml,
 } from './fulfil-shared.mjs';
+import { minutePlateSvg, helioLongitudes, loadStills } from './minute-plate.mjs';
 
 const ALLOWED_FLAGS = new Set(['out', 'browser', 'quiet']);
 
-// Fictional adult sample. 14 March 1990 06:30 in London was GMT (BST began
+// Fictional adult sample, "Imogen Hale" (the brand pack's Minute Plate specimen
+// uses the same person and moment). 14 March 1990 06:30 in London was GMT (BST began
 // 25 March 1990), so clock time equals Universal Time; no conversion needed.
 export const SAMPLE = Object.freeze({
-  name: 'Sample Chart',
+  name: 'Imogen Hale',
   date: '14 March 1990',
   time: '06:30 GMT',
   place: 'London, UK',
@@ -88,78 +92,28 @@ export function computeAspects(pos) {
 }
 
 // ── plate HTML ────────────────────────────────────────────────────────────────
-// One template, five layouts. All sizes scale from S = W / 1000 so the same
-// design holds from a 1080 px phone plate to the 4960 px print plate.
-function plateHtml({ W, H, layout, light = false, chart, pageMm = null }) {
-  const { order: O, pos, asc, mc, houses } = chart;
-  const S = W / 1000;
-  const px = (n) => `${(n * S).toFixed(2)}px`;
-  const aspects = computeAspects(pos);
-  const wheelPx = Math.round(W * ({ print: 0.74, square: 0.58, story: 0.82, wallpaper: 0.84, bigthree: 0.40 }[layout]));
-  const wheel = natalWheelSvg({ size: wheelPx, asc, houses, pos, aspects, mc, bodies: BODIES, idPrefix: `sp-${layout}` });
-
-  const ink = light
-    ? { bg: '#ECE6D8', bg2: '#E2DAC8', text: '#2A2418', soft: '#5E5748', gold: '#8A6D1F', hi: '#6B5416', rule: 'rgba(138,109,31,.3)', wm: 'rgba(138,109,31,.09)' }
-    : { bg: '#070608', bg2: '#0F0B07', text: '#EFE3C0', soft: '#A89E88', gold: '#C9A227', hi: '#E8C872', rule: 'rgba(201,162,39,.2)', wm: 'rgba(201,162,39,.07)' };
-
-  const big3 = `<div class="big3">
-    <div class="b"><div class="g">${PGL.sun}</div><div class="lbl">Sun</div><div class="v">${esc(fmt(pos.sun.lon))}</div></div>
-    <div class="b"><div class="g">${PGL.moon}</div><div class="lbl">Moon</div><div class="v">${esc(fmt(pos.moon.lon))}</div></div>
-    <div class="b"><div class="g">↑</div><div class="lbl">Rising</div><div class="v">${esc(fmt(asc))}</div></div>
-  </div>`;
-  const placements = `<div class="placements">
-    ${BODIES.map((k) => `<div class="pl"><span class="g">${PGL[k]}</span><span class="n">${PNAME[k]}</span><span class="v">${esc(fmt(pos[k].lon))}${pos[k].retro ? ' <span class="r">℞</span>' : ''}</span></div>`).join('')}
-    <div class="pl"><span class="g">↑</span><span class="n">Ascendant</span><span class="v">${esc(fmt(asc))}</span></div>
-    <div class="pl"><span class="g">MC</span><span class="n">Midheaven</span><span class="v">${esc(fmt(mc))}</span></div>
-  </div>`;
-  const banner = `<div class="banner">${esc(SAMPLE_LABEL)}</div>`;
-  const meta = `<p class="meta">${esc(O.date)} &nbsp;·&nbsp; ${esc(O.time)} &nbsp;·&nbsp; ${esc(O.place)}</p>`;
-  const title = (size) => `<p class="eyebrow">The natal sky of</p><h1 style="font-size:${px(size)}">${esc(O.name)}</h1>`;
-  const foot = `<p class="foot">Fictional sample — not a real person. Positions computed with the VSOP87 / ELP2000 series, Placidus houses. Astrology is offered for reflection and entertainment, not as prediction or diagnosis. AstroPrecise</p>`;
-
-  const body = {
-    print: `${banner}${title(54)}${meta}<div class="wheel">${wheel}</div>${big3}${placements}${foot}`,
-    square: `${banner}${title(40)}<div class="wheel">${wheel}</div>${big3}${foot}`,
-    story: `${banner}${title(46)}${meta}<div class="wheel">${wheel}</div>${big3}${foot}`,
-    wallpaper: `${banner}<div class="spacer"></div><div class="wheel">${wheel}</div>${title(36)}${big3}${foot}`,
-    bigthree: `${banner}${title(40)}${meta}<div class="wheel">${wheel}</div>${big3}${foot}`,
-  }[layout];
-
+// One Minute Plate design, five layouts (tools/minute-plate.mjs). The SVG has a
+// 1200-unit logical width, so the same design holds from a 1080 px phone plate
+// to the 4960 px print plate. light = the A4 ink-light variant: the orrery sky
+// is printed as a pale paper field instead of a night disc.
+export const SAMPLE_DISCLAIMER = 'Astrology is offered for reflection and entertainment, not as prediction or diagnosis.';
+export function plateHtml({ W, H, layout, light = false, chart, extra, pageMm = null }) {
+  const { order: O } = chart;
+  const svg = minutePlateSvg({
+    W, H, layout, light, person: O.name, date: O.date, time: O.time, place: O.place,
+    chart, helio: extra.helio, stills: extra.stills, specimen: true, sampleLabel: SAMPLE_LABEL, disclaimer: SAMPLE_DISCLAIMER,
+  });
   const pageCss = pageMm
-    ? `@page{size:${pageMm[0]}mm ${pageMm[1]}mm;margin:0;} html,body{width:${pageMm[0]}mm;height:${pageMm[1]}mm;}`
-    : `html,body{width:${W}px;height:${H}px;}`;
-  const pad = { print: 60, square: 36, story: 60, wallpaper: 40, bigthree: 36 }[layout];
-
+    ? `@page{size:${pageMm[0]}mm ${pageMm[1]}mm;margin:0;} html,body{width:${pageMm[0]}mm;height:${pageMm[1]}mm;} svg{width:${pageMm[0]}mm;height:${pageMm[1]}mm;}`
+    : `html,body{width:${W}px;height:${H}px;} svg{width:${W}px;height:${H}px;}`;
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(SAMPLE_LABEL)}</title>
 ${printFontsHtml()}
 <style>
 ${pageCss}
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{overflow:hidden;background:${ink.bg};-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-body{font-family:'Cormorant Garamond',Georgia,serif;color:${ink.text};position:relative;text-align:center;
-  padding:${px(pad)} ${px(pad)};display:flex;flex-direction:column;align-items:center;justify-content:${layout === 'print' ? 'space-between' : 'center'};
-  background:radial-gradient(ellipse 120% 80% at 50% 0%,${ink.bg2} 0%,${ink.bg} 60%,${ink.bg} 100%);}
-.banner{font-family:'Cinzel',serif;font-size:${px(13)};letter-spacing:.3em;color:${light ? '#7A2E2E' : '#F0A878'};border:1px solid currentColor;padding:${px(6)} ${px(14)};margin-bottom:${px(14)};}
-.eyebrow{font-family:'Cinzel',serif;font-size:${px(12)};letter-spacing:.34em;text-transform:uppercase;color:${ink.gold};opacity:.9;}
-h1{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.1em;color:${ink.text};line-height:1.15;margin:${px(4)} 0;}
-.meta{font-family:'Cinzel',serif;font-size:${px(13)};letter-spacing:.2em;color:${ink.soft};margin-top:${px(6)};line-height:2;}
-.wheel{display:flex;justify-content:center;margin:${px(10)} 0;}
-.wheel svg{width:${wheelPx}px;height:${wheelPx}px;display:block;}
-.spacer{flex:0 0 ${px(120)};}
-.big3{display:flex;gap:${px(14)};margin:${px(10)} 0;width:100%;max-width:${px(760)};}
-.big3 .b{flex:1;border:1px solid ${ink.rule};border-radius:${px(10)};padding:${px(14)};background:linear-gradient(160deg,${light ? 'rgba(138,109,31,.08)' : 'rgba(201,162,39,.06)'},transparent);}
-.big3 .g{font-size:${px(34)};color:${ink.hi};font-family:'AstroGlyph','Noto Sans Symbols 2',serif;line-height:1.1;}
-.big3 .lbl{font-family:'Cinzel',serif;font-size:${px(10)};letter-spacing:.18em;text-transform:uppercase;color:${ink.soft};margin-top:${px(4)};}
-.big3 .v{font-size:${px(17)};color:${ink.text};margin-top:${px(3)};font-variant-numeric:tabular-nums;}
-.placements{display:grid;grid-template-columns:repeat(3,1fr);gap:${px(4)} ${px(18)};width:100%;max-width:${px(860)};margin-top:${px(8)};}
-.pl{display:flex;align-items:baseline;gap:${px(8)};font-size:${px(16)};border-bottom:1px solid ${ink.rule};padding:${px(4)} 0;text-align:left;}
-.pl .g{font-size:${px(19)};color:${ink.hi};font-family:'AstroGlyph','Noto Sans Symbols 2',serif;width:${px(26)};}
-.pl .n{font-family:'Cinzel',serif;font-size:${px(10.5)};letter-spacing:.06em;text-transform:uppercase;color:${ink.soft};width:${px(92)};}
-.pl .v{color:${ink.text};font-variant-numeric:tabular-nums;}
-.pl .r{color:#b06a6a;font-size:${px(11)};}
-.foot{font-size:${px(11.5)};line-height:1.5;color:${ink.soft};max-width:${px(820)};margin-top:${px(12)};font-style:italic;}
-.wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-family:'Cinzel',serif;font-size:${px(150)};letter-spacing:.2em;color:${ink.wm};white-space:nowrap;pointer-events:none;z-index:2;}
-</style></head><body>${body}<div class="wm">SAMPLE</div></body></html>`;
+html,body{overflow:hidden;background:#F6F3EC;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+svg{display:block;}
+</style></head><body>${svg}</body></html>`;
 }
 
 // ── loopback origin (serves website/ read-only on 127.0.0.1) ─────────────────
@@ -178,7 +132,7 @@ function startServer() {
   return new Promise((ok) => server.listen(0, '127.0.0.1', () => ok(server)));
 }
 
-async function launchBrowser(pref) {
+export async function launchBrowser(pref) {
   const tries = pref ? [pref] : ['chrome', 'msedge', 'chromium'];
   const errors = [];
   for (const channel of tries) {
@@ -190,12 +144,11 @@ async function launchBrowser(pref) {
 }
 
 // ── checks ────────────────────────────────────────────────────────────────────
-/** Every non-Latin character the plates print, with the font stack it is set in. */
+/** Every non-ASCII character the plates set in a font (zodiac and planet glyphs are drawn paths). */
 export const PLATE_GLYPHS = Object.freeze([
-  ...[...Object.values(PGL), ...SGL, '↑'].map((ch) => [ch, GLYPH_FONT]),
-  ['℞', "'Cormorant Garamond',Georgia,serif"],
-  ['—', "'Cormorant Garamond',Georgia,serif"],
-  ['·', "'Cinzel',serif"],
+  ...['°', '′', '·', '—'].map((ch) => [ch, "'AP Sans'"]),
+  ...['°', '′', '·'].map((ch) => [ch, "'AP Serif','AP Sans'"]),
+  ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((ch) => [ch, "'AP Serif'"]),
 ]);
 
 /**
@@ -283,6 +236,7 @@ export async function generateSamplePack({ out = defaultSampleOut(), browser: pr
 
   const { E } = loadEngines();
   const chart = buildChart({ ...SAMPLE }, E);
+  const extra = { helio: helioLongitudes(E, SAMPLE), stills: await loadStills(384) };
   const { pos, asc, mc } = chart;
   log(`${SAMPLE.name} (fictional) — Sun ${fmt(pos.sun.lon)} | Moon ${fmt(pos.moon.lon)} | ASC ${fmt(asc)} | MC ${fmt(mc)}`);
 
@@ -296,17 +250,17 @@ export async function generateSamplePack({ out = defaultSampleOut(), browser: pr
       const isPdf = spec.kind === 'pdf';
       const W = isPdf ? spec.mm[0] / 25.4 * 96 : spec.px[0];
       const H = isPdf ? spec.mm[1] / 25.4 * 96 : spec.px[1];
-      const html = plateHtml({ W, H, layout: spec.layout, light: !!spec.light, chart, pageMm: isPdf ? spec.mm : null });
+      const html = plateHtml({ W, H, layout: spec.layout, light: !!spec.light, chart, extra, pageMm: isPdf ? spec.mm : null });
       const context = await browserInst.newContext({ viewport: { width: Math.round(W), height: Math.round(H) }, deviceScaleFactor: 1 });
       const page = await context.newPage();
       await page.route(`${origin}/plate/*`, (route) => route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html }));
       await page.goto(`${origin}/plate/${spec.layout}.html`, { waitUntil: 'load' });
       await page.evaluate(async () => {
-        await Promise.all(["20px 'AstroGlyph'", "600 20px 'Cinzel'", "400 20px 'Cormorant Garamond'"].map((f) => document.fonts.load(f)));
+        await Promise.all(["400 20px 'AP Serif'", "400 20px 'AP Sans'", "500 20px 'AP Sans'", "600 20px 'AP Sans'"].map((f) => document.fonts.load(f)));
         await document.fonts.ready;
       });
       const loaded = await page.evaluate(() => [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family));
-      for (const fam of ['AstroGlyph', 'Cinzel', 'Cormorant Garamond']) {
+      for (const fam of ['AP Serif', 'AP Sans']) {
         if (!loaded.includes(fam)) throw new Error(`${spec.file}: font ${fam} did not load (glyphs would render as tofu)`);
       }
       const tofu = await page.evaluate(tofuGlyphsInPage, PLATE_GLYPHS);
@@ -330,7 +284,7 @@ export async function generateSamplePack({ out = defaultSampleOut(), browser: pr
         if (info.type3Fonts > 0) throw new Error(`${spec.file}: ${info.type3Fonts} Type3 font(s) in the PDF; a variable font slipped into the print path (expected only the static instances in tools/print-fonts)`);
         // Preview: rasterise page 1 by re-screenshotting the same plate small.
         const pv = await browserInst.newPage({ viewport: { width: 420, height: Math.round(420 * spec.mm[1] / spec.mm[0]) } });
-        await pv.route(`${origin}/plate/*`, (route) => route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: plateHtml({ W: 420, H: 420 * spec.mm[1] / spec.mm[0], layout: spec.layout, light: !!spec.light, chart }) }));
+        await pv.route(`${origin}/plate/*`, (route) => route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: plateHtml({ W: 420, H: 420 * spec.mm[1] / spec.mm[0], layout: spec.layout, light: !!spec.light, chart, extra }) }));
         await pv.goto(`${origin}/plate/${spec.layout}-pv.html`, { waitUntil: 'load' });
         await pv.evaluate(() => document.fonts.ready);
         await pv.screenshot({ path: join(outDir, 'preview', spec.file.replace(/\.pdf$/, '-preview.png')), type: 'png' });
@@ -352,7 +306,8 @@ export async function generateSamplePack({ out = defaultSampleOut(), browser: pr
 
   const positions = Object.fromEntries(BODIES.map((k) => [k, { lon: Number(pos[k].lon.toFixed(4)), sign: pos[k].sign, label: fmt(pos[k].lon), house: pos[k].house, retro: !!pos[k].retro }]));
   const manifest = {
-    schema: 'astroprecise-sample-print-pack-v1',
+    schema: 'astroprecise-sample-print-pack-v2',
+    design: 'Paper & Night Minute Plate (tools/minute-plate.mjs)',
     sample: true,
     notForSale: true,
     label: SAMPLE_LABEL,
@@ -374,10 +329,10 @@ const PRINT_GUIDE = `ASTROPRECISE · NATAL SKY PRINT PACK · HOME-PRINT GUIDE (S
 
 This folder is a SAMPLE on a fictional chart. It is not for sale and not a real person's sky.
 
-1. A3 PDF (297 x 420 mm): RGB home-print plate, dark on dark. No bleed and no commercial CMYK profile is claimed.
-2. A4 PDF (210 x 297 mm): ink-light version on a parchment ground for everyday home printers.
+1. A3 PDF (297 x 420 mm): RGB home-print Minute Plate on a paper ground, with the orrery printed as a night disc. No bleed and no commercial CMYK profile is claimed.
+2. A4 PDF (210 x 297 mm): ink-light version for everyday home printers; the orrery sky is a pale paper field instead of a night disc.
 3. Print at actual size only if your printer can image the full page; otherwise choose "fit to printable area".
-4. For the dark A3 plate use heavyweight matte paper and the printer's high-quality setting.
+4. For the A3 plate use heavyweight matte paper and the printer's high-quality setting; the night disc carries most of the ink.
 5. 01-natal-print-4960x7016.png is the high-resolution plate for a print shop (A4 proportion, 600 dpi at A4, 420 dpi at A3).
 6. 02 square, 03 story and 04 wallpaper are screen plates; 05 is the Big Three card.
 7. Positions are computed from the recorded birth moment with the VSOP87 / ELP2000 series and Placidus houses. Astrology here is symbolic, for reflection and entertainment; it does not predict events or diagnose anyone.
@@ -387,8 +342,8 @@ Fonts, engine, star data and texture licences are listed in LICENCES.md at the r
 
 const SAMPLE_README = `ASTROPRECISE · NATAL SKY PRINT PACK · SAMPLE
 
-Generated locally by tools/sample-print-pack.mjs on a FICTIONAL chart ("Sample Chart", 14 March 1990, 06:30 GMT, London).
-Every plate carries the label "${SAMPLE_LABEL}". Nothing in this folder was ordered, paid for or sent to anyone.
+Generated locally by tools/sample-print-pack.mjs on a FICTIONAL chart ("Imogen Hale", 14 March 1990, 06:30 GMT, London; not a real person).
+Every plate carries the label "${SAMPLE_LABEL}" and a small SPECIMEN corner mark. Nothing in this folder was ordered, paid for or sent to anyone.
 
 The generator has no order input and no --final mode, so it cannot be used to fulfil a real order.
 Real orders stay behind tools/fulfil-order.mjs, which refuses to produce final output without payment evidence.

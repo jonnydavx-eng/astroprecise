@@ -96,6 +96,18 @@ const PUBLIC_SHOP_ASSETS = new Set([
   'img/shop/v929/whole-sky-specimen-1200.webp',
   'img/shop/v929/whole-sky-specimen-1600.avif',
   'img/shop/v929/whole-sky-specimen-1600.webp',
+  // 2C step 8: Whole Sky specimen for the same fictional person as its sample PDF (Aurora Vale).
+  'img/shop/v930/whole-sky-specimen.jpg',
+  'img/shop/v930/whole-sky-specimen-400.avif',
+  'img/shop/v930/whole-sky-specimen-400.webp',
+  'img/shop/v930/whole-sky-specimen-600.avif',
+  'img/shop/v930/whole-sky-specimen-600.webp',
+  'img/shop/v930/whole-sky-specimen-800.avif',
+  'img/shop/v930/whole-sky-specimen-800.webp',
+  'img/shop/v930/whole-sky-specimen-1200.avif',
+  'img/shop/v930/whole-sky-specimen-1200.webp',
+  'img/shop/v930/whole-sky-specimen-1600.avif',
+  'img/shop/v930/whole-sky-specimen-1600.webp',
   'img/shop/v906/natal-plate.jpg',
   // Responsive home-page variants of natal-plate.jpg (tools/make-responsive-image.mjs).
   'img/shop/v906/natal-plate-400.avif',
