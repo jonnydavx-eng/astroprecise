@@ -22,7 +22,8 @@ that do carry it. The common licence text and copyright notices are in
 | Noto Sans Symbols (`astro-glyphs.woff2`, CSS alias `AstroGlyph`) | Copyright 2022 The Noto Project Authors | SIL OFL 1.1 — verified (embedded URL) | Yes: zodiac and planet glyphs |
 | Cinzel (`cinzel-normal-400/600/700`, `cinzel-hero-700`) | Copyright 2020 The Cinzel Project Authors | SIL OFL 1.1 — verified (embedded URL in the three normal files; hero subset: copyright only) | Website only since 2026-10-20; the PDFs embed the static instances in section 1a |
 | Cormorant Garamond (`cormorant-garamond-normal-400/500/600`, `italic-400/500`) | Copyright 2015 The Cormorant Project Authors | SIL OFL 1.1 — verified (embedded URL) | Website only since 2026-10-20; the PDFs embed the static instances in section 1a |
-| Inter (`inter-normal-300/400/500/600`) | Copyright 2016 The Inter Project Authors | SIL OFL 1.1 — verified (embedded URL) | No (website only) |
+| Inter (`inter-normal-300/400/500/600`) | Copyright 2016 The Inter Project Authors | SIL OFL 1.1 — verified (embedded URL) | Website; since 2026-10-23 (2C step 8) the sample PDFs embed the static "Inter Print" instances in section 1a |
+| Instrument Serif (`instrument-serif-regular`, `instrument-serif-italic`) | Copyright 2022 The Instrument Serif Project Authors | SIL OFL 1.1 — verified (`tools/print-fonts/OFL-InstrumentSerif.txt`) | Website; since 2026-10-23 the sample PDFs embed the renamed "Instrument Serif Print" copies in section 1a |
 | IBM Plex Mono (`ibm-plex-mono-normal-400`) | Copyright 2017 IBM Corp., Reserved Font Name "Plex" | SIL OFL 1.1 — verified (embedded URL) | No (website only) |
 | Schibsted Grotesk (`schibsted-grotesk-latin-var`) | Copyright 2023 The Schibsted-Grotesk Project Authors | SIL OFL 1.1 — verified (embedded URL) | No (website only) |
 
@@ -50,9 +51,18 @@ website. Detail, derivation and SHA-256 list: `tools/print-fonts/README.md`.
 | `cinzel-static-400/600/700.ttf` | github.com/google/fonts `ofl/cinzel`, variable TTF instanced with fontTools `varLib.instancer` at 400/600/700 and subset to Latin + punctuation + arrows, 2026-10-20 | "Cinzel Print" (renamed instance; `fsType` 0) | SIL OFL 1.1 — verified (`OFL-Cinzel.txt`, Copyright 2020 The Cinzel Project Authors, no Reserved Font Name declared) |
 | `cormorant-garamond-static-400/500/600.ttf`, `cormorant-garamond-static-italic-400/500.ttf` | github.com/google/fonts `ofl/cormorantgaramond`, variable roman and italic TTFs instanced and subset the same way, 2026-10-20 | "Cormorant Garamond Print" (renamed instance; `fsType` 0) | SIL OFL 1.1 — verified (`OFL-CormorantGaramond.txt`, Copyright 2015 the Cormorant Project Authors, no Reserved Font Name declared) |
 
+| `inter-static-400/500/600.ttf` | `website/fonts/inter-normal-*.woff2` (Inter 4.001 variable `wght`, same 518-glyph subset), instanced with fontTools `varLib.instancer` at 400/500/600, 2026-10-23 | "Inter Print" (renamed instance; `fsType` 0; no `fvar`) | SIL OFL 1.1 — verified (`OFL-Inter.txt`, Copyright 2016 The Inter Project Authors, no Reserved Font Name declared) |
+| `instrument-serif-static-regular.ttf`, `instrument-serif-static-italic.ttf` | `website/fonts/instrument-serif-regular/italic.woff2` (already static, Instrument Serif 1.000), decompressed to TTF and renamed, 2026-10-23 | "Instrument Serif Print" (`fsType` 0) | SIL OFL 1.1 — verified (`OFL-InstrumentSerif.txt`, Copyright 2022 The Instrument Serif Project Authors, no Reserved Font Name declared) |
+| `ap-symbols-print-astro.ttf` | github.com/google/fonts `ofl/notosanssymbols/NotoSansSymbols[wght].ttf`, instanced at wght 400 and subset to arrows, nodes/aspects, planets, zodiac and asteroid glyphs, 2026-10-23 | "AP Symbols Print Astro" (`fsType` 0) | SIL OFL 1.1 — verified (`OFL-NotoSansSymbols.txt`, Copyright 2022 The Noto Project Authors, no Reserved Font Name declared) |
+| `ap-symbols-print-shapes.ttf` | github.com/google/fonts `ofl/notosanssymbols2/NotoSansSymbols2-Regular.ttf` (static), subset to 12 geometric marks (□△▽◆◇○●★☆☉✦✧), 2026-10-23 | "AP Symbols Print Shapes" (`fsType` 0) | SIL OFL 1.1 — verified (`OFL-NotoSansSymbols.txt`) |
+| `ap-symbols-print-marks.ttf` | github.com/google/fonts `ofl/notosans/NotoSans[wdth,wght].ttf`, instanced at wght 400 / wdth 100 and subset to ′ ″ ℞, 2026-10-23 | "AP Symbols Print Marks" (`fsType` 0) | SIL OFL 1.1 — verified (embedded copyright: Copyright 2022 The Noto Project Authors, github.com/notofonts/latin-greek-cyrillic; same OFL text as `OFL-NotoSansSymbols.txt`) |
+
 The renamed family names keep OFL section 3 satisfied even though no Reserved Font Name is
-declared. The two OFL texts travel with the binaries in the same folder. Glyphs (zodiac, planets)
-still come from `astro-glyphs.woff2` in section 1, inlined into the same print stylesheet.
+declared. The OFL texts travel with the binaries in the same folder. Since 2C step 8 the light
+sample PDFs (Minute Plate, Personal Sky keepsake, Whole Sky) embed only the Inter Print,
+Instrument Serif Print and AP Symbols Print faces. The paid fulfilment templates are unchanged
+and still use Cinzel Print / Cormorant Garamond Print with glyphs from `astro-glyphs.woff2` in
+section 1, inlined into the same print stylesheet.
 
 ## 2. Ephemeris engine and astronomical data
 

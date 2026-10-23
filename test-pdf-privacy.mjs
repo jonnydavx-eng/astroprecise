@@ -4,6 +4,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { inflateSync } from 'node:zlib';
+import { PDFDocument, PDFRawStream, decodePDFRawStream } from 'pdf-lib';
 
 const BAD = [/file:\/\//i, /[A-Z]:[\\/]+Users[\\/]/i, /\/Users\/[^/\s)]+\//, /\/home\/[^/\s)]+\//, /\\Users\\/i, /AppData/i, /OneDrive/i,
   // Same personal-detail guard as test-seller-details.mjs, applied to PDF
@@ -38,7 +39,20 @@ for (const f of pdfs) {
     try { check(f, `stream@${start}`, inflateSync(buf.subarray(start, end)).toString('latin1')); n++; } catch { /* not Flate */ }
     re.lastIndex = end;
   }
-  console.log(`  ok scanned ${f} (${n} streams)`);
+  // 2C step 8: the byte-range scan above inflates few streams in Chromium PDFs, so
+  // also decode EVERY stream object through pdf-lib (Flate, LZW, ASCII85, ...).
+  // Image streams (DCT) cannot be decoded to text and are skipped.
+  let all = 0, dec = 0;
+  const doc = await PDFDocument.load(buf, { updateMetadata: false });
+  for (const [ref, obj] of doc.context.enumerateIndirectObjects()) {
+    if (!(obj instanceof PDFRawStream)) continue;
+    all++;
+    let text = null;
+    try { text = Buffer.from(decodePDFRawStream(obj).decode()).toString('latin1'); dec++; } catch { /* image / unsupported filter */ }
+    if (text != null) check(f, `object ${ref}`, text);
+  }
+  if (f.replace(/\\/g, '/').includes('/downloads/studio/') && doc.getAuthor() !== 'AstroPrecise') { fail++; console.log(`  FAIL ${f} Author is ${doc.getAuthor()}, expected AstroPrecise`); }
+  console.log(`  ok scanned ${f} (${n} byte-range streams, ${dec}/${all} stream objects decoded)`);
 }
 if (pdfs.length < 4) { fail++; console.log(`  FAIL expected at least 4 PDFs, found ${pdfs.length}`); }
 console.log(fail ? `\n${fail} PDF privacy check(s) failed` : `pdf-privacy: ${pdfs.length} PDFs clean`);

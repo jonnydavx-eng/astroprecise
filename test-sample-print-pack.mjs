@@ -48,9 +48,11 @@ try {
       // Type3 font dictionary means a variable WOFF2 got into the print path.
       assert.equal(info.type3Fonts, 0, `Type3 font dictionaries present: ${info.type3Fonts}`);
       for (const st of info.fontSubtypes) assert.ok(['TrueType', 'Type0', 'CIDFontType2'].includes(st), `unexpected font subtype ${st}`);
-      assert.ok(info.fontNames.some((n) => /CinzelPrint/.test(n)), `Cinzel Print not embedded: ${info.fontNames.join(', ')}`);
-      assert.ok(info.fontNames.some((n) => /CormorantGaramondPrint/.test(n)), `Cormorant Garamond Print not embedded: ${info.fontNames.join(', ')}`);
-      assert.ok(info.fontNames.some((n) => /NotoSansSymbols/.test(n)), `glyph font not embedded: ${info.fontNames.join(', ')}`);
+      // 2C step 8: the light Minute Plate sets text in the static AP faces; zodiac and
+      // planet glyphs are drawn paths, so no symbol font is needed in the plate.
+      assert.ok(info.fontNames.some((n) => /InterPrint/.test(n)), `Inter Print (AP Sans) not embedded: ${info.fontNames.join(', ')}`);
+      assert.ok(info.fontNames.some((n) => /InstrumentSerifPrint/.test(n)), `Instrument Serif Print (AP Serif) not embedded: ${info.fontNames.join(', ')}`);
+      assert.ok(info.fontNames.every((n) => /^([A-Z]{6}\+)?(InterPrint|InstrumentSerifPrint|APSymbolsPrint[A-Za-z]*)-/.test(n)), `font outside tools/print-fonts: ${info.fontNames.join(', ')}`);
     });
   }
 
@@ -84,7 +86,8 @@ try {
     const data = new Uint8Array(readFileSync(join(dir, 'natal-sky-home-print-a3.pdf')));
     const doc = await pdfjs.getDocument({ data, useSystemFonts: false, disableFontFace: true }).promise;
     const text = (await (await doc.getPage(1)).getTextContent()).items.map((i) => i.str).join(' ');
-    assert.ok(text.includes(manifest.chart.positions.sun.label), 'sun label');
+    // The plate sets degree and sign as separate lines, so compare with whitespace collapsed.
+    assert.ok(text.replace(/\s+/g, ' ').includes(manifest.chart.positions.sun.label), 'sun label');
     assert.match(text, /S\s*A\s*M\s*P\s*L\s*E/);
     assert.ok(text.includes('reflection and entertainment'), 'disclaimer');
     await doc.cleanup?.();
