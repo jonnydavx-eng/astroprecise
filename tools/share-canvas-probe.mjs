@@ -44,23 +44,47 @@ function registerFonts() {
 
 const sizeOf = (font) => Number((String(font).match(/(\d+(?:\.\d+)?)px/) || [])[1])
 
-/** Wrap a 2D context so fillText calls are recorded (in user units, before scale). */
-function recording(ctx, draws) {
+/**
+ * Wrap a 2D context so fillText calls are recorded (in user units, before scale).
+ * Each draw also carries its ink box in canvas space (`ink`: x0,y0,x1,y1, after the current
+ * transform's translation). With `arcs`, every arc() is recorded too ({ x, y, r } in canvas space).
+ */
+function recording(ctx, draws, arcs) {
+  const toCanvas = (target, x, y) => {
+    const m = target.getTransform ? target.getTransform() : { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }
+    return [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]
+  }
   return new Proxy(ctx, {
     get(target, prop) {
+      if (prop === 'arc' && arcs) {
+        return (x, y, r, a0, a1, ccw) => {
+          const [gx, gy] = toCanvas(target, x, y)
+          arcs.push({ x: gx, y: gy, r, full: Math.abs(a1 - a0) >= Math.PI * 2 - 1e-6 })
+          return target.arc(x, y, r, a0, a1, ccw)
+        }
+      }
       if (prop === 'fillText') {
         return (text, x, y, maxWidth) => {
           const s = String(text)
-          if (s.trim())
+          if (s.trim()) {
+            const mt = target.measureText(s)
+            const [gx, gy] = toCanvas(target, x, y)
             draws.push({
               text: s,
               px: sizeOf(target.font),
               font: target.font,
               x,
               y,
-              w: target.measureText(s).width,
+              w: mt.width,
               align: target.textAlign,
+              ink: {
+                x0: gx - mt.actualBoundingBoxLeft,
+                x1: gx + mt.actualBoundingBoxRight,
+                y0: gy - mt.actualBoundingBoxAscent,
+                y1: gy + mt.actualBoundingBoxDescent,
+              },
             })
+          }
           return maxWidth === undefined
             ? target.fillText(text, x, y)
             : target.fillText(text, x, y, maxWidth)
@@ -86,11 +110,15 @@ function ImageShim() {
   const desc = Object.getOwnPropertyDescriptor(proto, 'src')
   let handlers = { load: null, error: null }
   Object.defineProperty(img, 'onload', {
-    set: (fn) => { handlers.load = fn },
+    set: (fn) => {
+      handlers.load = fn
+    },
     get: () => handlers.load,
   })
   Object.defineProperty(img, 'onerror', {
-    set: (fn) => { handlers.error = fn },
+    set: (fn) => {
+      handlers.error = fn
+    },
     get: () => handlers.error,
   })
   img.addEventListener = (type, fn) => (handlers[type] = fn)
@@ -425,7 +453,10 @@ const unesc = (s) =>
  * SVG and every <text>: { text, px, x, y, w, align, rotate }. Widths are measured with
  * Inter (AP Sans), which is wider than the Arial the poster asks for, so they err large.
  */
-export async function probeKeepsakePoster(scenario = 'known', { name = '', includeBirth = true } = {}) {
+export async function probeKeepsakePoster(
+  scenario = 'known',
+  { name = '', includeBirth = true } = {},
+) {
   registerFonts()
   const win = baseWindow()
   const els = {}
@@ -459,7 +490,8 @@ export async function probeKeepsakePoster(scenario = 'known', { name = '', inclu
     const text = unesc(m[2].replace(/<[^>]+>/g, ''))
     const px = Number(attr(tag, 'font-size'))
     const ls = Number(attr(tag, 'letter-spacing') || 0)
-    const serif = /serif/i.test(attr(tag, 'font-family') || '') && !/sans/i.test(attr(tag, 'font-family') || '')
+    const serif =
+      /serif/i.test(attr(tag, 'font-family') || '') && !/sans/i.test(attr(tag, 'font-family') || '')
     measure.font = `${px}px ${serif ? '"AP Serif"' : '"AP Sans"'}`
     const w = measure.measureText(text).width + ls * Math.max(0, [...text].length - 1)
     const anchor = attr(tag, 'text-anchor') || 'start'
@@ -533,7 +565,13 @@ export async function probeInstrumentCard(kind = 'zenith', opts = {}) {
     src.slice(end)
   runInNewContext(src, win, { filename: 'js/instrument.js' })
   const api = win.__apInstrumentCards
-  const ev = opts.event || { dt: '1991-03-14T07:42', lat: 53.48, lon: -2.24, tz: 'Europe/London', city: 'Manchester' }
+  const ev = opts.event || {
+    dt: '1991-03-14T07:42',
+    lat: 53.48,
+    lon: -2.24,
+    tz: 'Europe/London',
+    city: 'Manchester',
+  }
   api.setEvent(ev)
   if (kind === 'lightcone') api.drawLightConeCard(new Date(Date.UTC(1991, 2, 14, 7, 42)))
   else if (kind === 'zenith') api.drawZenithCard()
@@ -559,29 +597,35 @@ export async function probeInstrumentCard(kind = 'zenith', opts = {}) {
 }
 
 /** Paint the eclipse edition plate (js/ap-eclipse-edition-v841.js renderEclipseArtwork). */
-export async function probeEclipsePlate(which = 'artwork') {
+/** Grok's crowded test chart (step 10d review): Asc 12°, Moon 18°, Uranus 28°, Mercury 132°, Sun on the eclipse. */
+export const ECLIPSE_CROWDED_NATAL = {
+  sun: 140.133,
+  moon: 18,
+  mercury: 132,
+  venus: 95,
+  mars: 48,
+  jupiter: 210,
+  saturn: 320,
+  uranus: 28,
+  neptune: 355,
+  pluto: 250,
+  asc: 12,
+  mc: 280,
+}
+
+export async function probeEclipsePlate(which = 'artwork', { natal: natalIn } = {}) {
   registerFonts()
   const templates = JSON.parse(read('js/reading-templates.json'))
-  const { buildEclipseReading5 } = await import(new URL('../website/js/eclipse-reading.js', import.meta.url))
+  const { buildEclipseReading5 } = await import(
+    new URL('../website/js/eclipse-reading.js', import.meta.url)
+  )
   const mod = await import(new URL('../website/js/ap-eclipse-edition-v841.js', import.meta.url))
   const eclipseLongitude = 140.133
-  const natal = {
-    sun: eclipseLongitude,
-    moon: 18,
-    mercury: 132,
-    venus: 95,
-    mars: 48,
-    jupiter: 210,
-    saturn: 320,
-    uranus: 28,
-    neptune: 355,
-    pluto: 250,
-    asc: 12,
-    mc: 280,
-  }
+  const natal = natalIn || ECLIPSE_CROWDED_NATAL
   const reading = buildEclipseReading5(eclipseLongitude, natal, templates, { quietGateDeg: 5 })
   const model = mod.buildEclipsePlateModel({ reading, natal, eclipseLongitude })
   const draws = []
+  const arcs = []
   let real = null
   const canvas = {
     dataset: {},
@@ -601,10 +645,18 @@ export async function probeEclipsePlate(which = 'artwork') {
     },
     getContext() {
       real = createCanvas(this._w, this._h)
-      return recording(real.getContext('2d'), draws)
+      return recording(real.getContext('2d'), draws, arcs)
     },
   }
   if (which === 'disc') mod.renderEclipseDisc(model, canvas, { captions: true })
   else mod.renderEclipseArtwork(model, canvas)
-  return { width: canvas.width, height: canvas.height, frame: 0, draws: draws.slice(), canvas: real, model }
+  return {
+    width: canvas.width,
+    height: canvas.height,
+    frame: 0,
+    draws: draws.slice(),
+    arcs: arcs.slice(),
+    canvas: real,
+    model,
+  }
 }
