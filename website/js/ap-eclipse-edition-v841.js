@@ -197,6 +197,10 @@ const CLUSTER_GAP = 12;
 // Radial step between the rings a disc may sit on.
 const TRACK_STEP = 13;
 const ECLIPSE_DOT_R = 11;
+// The eclipse line: drawn this wide from level with the contact's disc to just past the outer ring.
+// Only the contact's disc may sit on it; every other disc keeps clear of it.
+const ECLIPSE_LINE_W = 7;
+const ECLIPSE_LINE_FROM = 18;
 const SUN_RING_R = 20;
 const SUN_RING_W = 6;
 // Beam search over one cluster: partial layouts kept per step, and spots tried per layout.
@@ -340,6 +344,13 @@ function rectCircleDistance(box, x, y) {
 // two leaders cross, so crowded points fan out in degree order. Points are laid out cluster by
 // cluster round the wheel (see solve below). `x`/`y` are relative to the wheel centre;
 // `longitude` stays exact and `delta` is the fan-out in degrees.
+// Where the drawn eclipse line starts (radius from the wheel centre): level with the contact's
+// disc centre once that is placed, otherwise just outside the hub.
+function eclipseLineStart(g, contact) {
+  const hub = g.innerR + ECLIPSE_LINE_FROM;
+  return contact ? Math.max(hub, Math.hypot(contact.x, contact.y)) : hub;
+}
+
 export function layoutWheelMarkers(ctx, model, geometry = PLATE_WHEEL) {
   const g = { ...PLATE_WHEEL, ...geometry };
   const obstacles = signLabelBoxes(ctx, g);
@@ -393,6 +404,21 @@ export function layoutWheelMarkers(ctx, model, geometry = PLATE_WHEEL) {
     for (let t = Math.floor(clear - g.gap - row.r); t - row.r >= g.leaderStart + g.gap; t -= TRACK_STEP) list.push(t);
     return list;
   };
+  // The eclipse line runs out along the eclipse degree from level with the contact's disc (or
+  // from the hub while the contact is not yet placed) to just past the outer ring. Only the
+  // contact's own disc may sit on it; every other disc keeps clear of it.
+  const eclipseAngle = Number.isFinite(model.eclipseLongitude) ? lonToAngle(model.eclipseLongitude) : null;
+  const eclipseLineFor = (around) => {
+    if (eclipseAngle === null) return null;
+    const contact = around.find((p) => p.isContact);
+    const from = eclipseLineStart(g, contact);
+    return {
+      x0: Math.cos(eclipseAngle) * from,
+      y0: Math.sin(eclipseAngle) * from,
+      x1: Math.cos(eclipseAngle) * (g.outerR + ECLIPSE_LINE_FROM),
+      y1: Math.sin(eclipseAngle) * (g.outerR + ECLIPSE_LINE_FROM),
+    };
+  };
   const leaderOf = (row, spot) => {
     const ta = lonToAngle(row.longitude);
     const x0 = Math.cos(ta) * g.leaderStart;
@@ -423,10 +449,14 @@ export function layoutWheelMarkers(ctx, model, geometry = PLATE_WHEEL) {
     return list;
   };
   let work = 0;
-  const fits = (row, spot, placed) => {
+  const fits = (row, spot, placed, eclipseLine) => {
     work += 1 + placed.length;
     if (work > WHEEL_WORK_BUDGET) throw OUT_OF_BUDGET;
     if (obstacles.some((b) => rectCircleDistance(b, spot.x, spot.y) < row.r + g.gap)) return false;
+    if (eclipseLine && !row.isContact) {
+      const clearance = (row.clear ?? LEADER_CLEAR) + ECLIPSE_LINE_W / 2;
+      if (segmentCircleDistance(eclipseLine.x0, eclipseLine.y0, eclipseLine.x1, eclipseLine.y1, spot.x, spot.y) < row.r + clearance) return false;
+    }
     const leader = leaderOf(row, spot);
     for (const p of placed) {
       const gap = Math.min(p.gap ?? g.gap, row.gap ?? g.gap);
@@ -490,6 +520,7 @@ export function layoutWheelMarkers(ctx, model, geometry = PLATE_WHEEL) {
         const next = [];
         for (const state of beam) {
           const around = placed.concat(state.items);
+          const eclipseLine = eclipseLineFor(around);
           let taken = 0;
           // At most two radii per angle, so the beam keeps a spread of angles.
           const perDelta = new Map();
@@ -498,7 +529,7 @@ export function layoutWheelMarkers(ctx, model, geometry = PLATE_WHEEL) {
             const along = row.along + spot.delta;
             if (index > anchor && along < state.after - 1e-9) continue;
             if (index < anchor && along > state.before + 1e-9) continue;
-            if (!fits(row, spot, around)) continue;
+            if (!fits(row, spot, around, eclipseLine)) continue;
             const after = index >= anchor ? along : state.after;
             const before = index <= anchor ? along : state.before;
             const spread = (index === anchor ? 0 : Math.abs(along - row.along)) + Math.abs(spot.delta);
@@ -709,14 +740,17 @@ export function renderEclipseArtwork(model, canvas = document.createElement('can
   const eclipseAngle = lonToAngle(model.eclipseLongitude);
   ctx.strokeStyle = ember;
   ctx.globalAlpha = 0.95;
-  ctx.lineWidth = 7;
+  ctx.lineWidth = ECLIPSE_LINE_W;
   ctx.beginPath();
-  ctx.moveTo(Math.cos(eclipseAngle) * (innerR + 18), Math.sin(eclipseAngle) * (innerR + 18));
-  ctx.lineTo(Math.cos(eclipseAngle) * (outerR + 18), Math.sin(eclipseAngle) * (outerR + 18));
+  // Drawn beneath the discs, from level with the contact's disc out past the ring; the layout
+  // keeps every other disc clear of it.
+  const lineFrom = eclipseLineStart(g, markers.find((m) => m.isContact));
+  ctx.moveTo(Math.cos(eclipseAngle) * lineFrom, Math.sin(eclipseAngle) * lineFrom);
+  ctx.lineTo(Math.cos(eclipseAngle) * (outerR + ECLIPSE_LINE_FROM), Math.sin(eclipseAngle) * (outerR + ECLIPSE_LINE_FROM));
   ctx.stroke();
   ctx.fillStyle = ember;
   ctx.beginPath();
-  ctx.arc(Math.cos(eclipseAngle) * (outerR + 18), Math.sin(eclipseAngle) * (outerR + 18), ECLIPSE_DOT_R, 0, Math.PI * 2);
+  ctx.arc(Math.cos(eclipseAngle) * (outerR + ECLIPSE_LINE_FROM), Math.sin(eclipseAngle) * (outerR + ECLIPSE_LINE_FROM), ECLIPSE_DOT_R, 0, Math.PI * 2);
   ctx.fill();
 
   // Every point keeps a tick at its exact degree on the inner circle, and a leader from the tip

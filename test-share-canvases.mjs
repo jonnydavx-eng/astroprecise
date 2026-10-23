@@ -485,10 +485,14 @@ for (const [name, natal] of await probe.eclipseWheelCharts()) {
     W.x + Math.cos(lonAngle(E)) * (W.outerR + 18),
     W.y + Math.sin(lonAngle(E)) * (W.outerR + 18),
   ]
-  const lineFrom = [
-    W.x + Math.cos(lonAngle(E)) * (W.innerR + 18),
-    W.y + Math.sin(lonAngle(E)) * (W.innerR + 18),
-  ]
+  // It starts level with the contact's disc (the ember-filled one), or just outside the hub.
+  const ember = r.model.palette.ember.toLowerCase()
+  const contactDisc = c.discs.find((d) => d.fillStyle === ember)
+  const fromR = contactDisc
+    ? Math.max(W.innerR + 18, Math.hypot(contactDisc.x - W.x, contactDisc.y - W.y))
+    : W.innerR + 18
+  const lineFrom = [W.x + Math.cos(lonAngle(E)) * fromR, W.y + Math.sin(lonAngle(E)) * fromR]
+  ok(contactDisc, `${label}: the contact's disc is drawn in ember`)
   ok(
     r.segments.some(
       (s) =>
