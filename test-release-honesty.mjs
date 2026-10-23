@@ -978,14 +978,19 @@ for (const path of publicTruthSources) {
 
 const shopBuild = read('./tools/build.mjs')
 assert.ok(
-  shopBuild.includes("'img/shop/v906/natal-plate.jpg'") &&
-    shopBuild.includes("'img/shop/v906/keepsake-plate.jpg'") &&
-    shopBuild.includes("'img/shop/v906/earth-plate.jpg'"),
-  'Pages dist must ship the v906 shop plates the Studio HTML references',
+  shopBuild.includes("'img/shop/v929/minute-plate.jpg'") &&
+    shopBuild.includes("'img/shop/v929/keepsake-specimen.jpg'") &&
+    shopBuild.includes("'img/shop/v929/whole-sky-specimen.jpg'"),
+  'Pages dist must ship the v929 Studio specimens the Studio HTML references',
 )
 assert.ok(
-  read('./website/shop.html').includes('img/shop/v906/natal-plate.jpg'),
-  'shop.html must point at the v906 Studio plates',
+  read('./website/shop.html').includes('img/shop/v929/minute-plate.jpg') &&
+    !read('./website/shop.html').includes('img/shop/v906/'),
+  'shop.html must point at the v929 light Studio specimens',
+)
+assert.ok(
+  shopBuild.includes("'img/shop/v906/natal-plate.jpg'"),
+  'Pages dist keeps the v906 natal plate while index.html and OG tags still reference it',
 )
 
 const moonphase = read('./website/js/moonphase.js')

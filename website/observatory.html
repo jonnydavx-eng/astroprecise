@@ -85,13 +85,13 @@
   <link rel="preload" href="fonts/instrument-serif-regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" as="image" href="img/engine/studio/observatory-poster-280.webp" media="(max-width: 700px)" fetchpriority="high">
   <link rel="preload" as="image" href="img/engine/studio/observatory-poster.webp" media="(min-width: 701px)" fetchpriority="high">
-  <script>window.AP_ASSET_V='928';</script>
+  <script>window.AP_ASSET_V='929';</script>
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <link rel="stylesheet" href="css/ap-next.css?v=928">
-  <link rel="stylesheet" href="css/observatory-next.css?v=928">
-  <script src="js/ap-next.js?v=928" defer></script>
+  <link rel="stylesheet" href="css/ap-next.css?v=929">
+  <link rel="stylesheet" href="css/observatory-next.css?v=929">
+  <script src="js/ap-next.js?v=929" defer></script>
 </head>
 <body class="ap-next ap-obs ap-live-home ap-reading-room">
   <a class="ap-skip" href="#main-content">Skip to content</a>
@@ -188,7 +188,7 @@
 
     <section class="ap-texture-credits" id="texture-credits" aria-labelledby="texture-credits-title">
       <h2 id="texture-credits-title">Planet map credits</h2>
-      <p>Mercury, Venus, Earth, the Moon and Mars use NASA/USGS public-domain maps. Jupiter, Saturn, Uranus and Neptune use NASA/ESA Hubble OPAL maps archived by STScI, <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>. The Uranus south is unobserved in that source. Pluto uses the NASA/JHUAPL/SwRI/USGS New Horizons mosaic, public domain; south of about 30°S is unobserved. Earth clouds, city lights and the Saturn ring use <a href="https://www.solarsystemscope.com/textures/" rel="noopener">Solar System Scope</a>, CC BY 4.0. <a href="privacy.html#image-credits">Full credits</a>.</p>
+      <p>Mercury, Venus, Earth, the Moon and Mars use NASA/USGS public-domain maps. Jupiter, Saturn, Uranus and Neptune use NASA/ESA Hubble OPAL maps <a href="https://archive.stsci.edu/hlsp/opal" rel="noopener">archived by STScI</a>, <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>. The Uranus south is unobserved in that source. Pluto uses the NASA/JHUAPL/SwRI/USGS New Horizons mosaic, public domain; south of about 30°S is unobserved. Earth clouds, city lights and the Saturn ring use <a href="https://www.solarsystemscope.com/textures/" rel="noopener">Solar System Scope</a>, CC BY 4.0. <a href="privacy.html#image-credits">Full credits</a>.</p>
       <p class="ap-hyg-credit" id="hyg-credit">Background stars are the brightest 8,000 from the HYG catalogue v4.0 by astronexus, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a>. Positions are real. Distances in the model are schematic.</p>
     </section>
 
@@ -231,16 +231,16 @@
 
   <div data-ap-next-footer><noscript><footer class="ap-noscript-footer"><a href="observatory.html">Observatory</a> · <a href="sky-events.html">Events</a> · <a href="shop.html">Shop</a> · <a href="verify.html">Verify</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refunds.html">Refunds</a> · <a href="contact.html">Contact</a></footer></noscript></div>
 
-  <script src="js/ap-observatory-controls-v835.js?v=928" defer></script>
-  <script src="js/ap-observatory-v834.js?v=928" defer></script>
-  <script src="js/ap-home-reading.js?v=928" defer></script>
-  <script src="js/ap-home-personal-sky.js?v=928" defer></script>
-  <script src="js/ap-keep-library.js?v=928" defer></script>
-  <script src="js/ap-keep-sky.js?v=928" defer></script>
-  <script src="js/ap-home-keep.js?v=928" defer></script>
-  <script src="js/ap-mirror-hour.js?v=928" defer></script>
-  <script src="js/ap-mirror-presence.js?v=928" defer></script>
-  <script src="js/ap-nav-prefetch.js?v=928" defer data-ap-nav-prefetch="1"></script>
+  <script src="js/ap-observatory-controls-v835.js?v=929" defer></script>
+  <script src="js/ap-observatory-v834.js?v=929" defer></script>
+  <script src="js/ap-home-reading.js?v=929" defer></script>
+  <script src="js/ap-home-personal-sky.js?v=929" defer></script>
+  <script src="js/ap-keep-library.js?v=929" defer></script>
+  <script src="js/ap-keep-sky.js?v=929" defer></script>
+  <script src="js/ap-home-keep.js?v=929" defer></script>
+  <script src="js/ap-mirror-hour.js?v=929" defer></script>
+  <script src="js/ap-mirror-presence.js?v=929" defer></script>
+  <script src="js/ap-nav-prefetch.js?v=929" defer data-ap-nav-prefetch="1"></script>
   <script>
     (function () {
       var button = document.getElementById('ap-enter-sky');
@@ -256,7 +256,7 @@
         button.disabled = true;
         button.textContent = 'Opening the sky…';
         var script = document.createElement('script');
-        script.src = 'js/void-orrery-adapter.js?v=928';
+        script.src = 'js/void-orrery-adapter.js?v=929';
         script.defer = true;
         document.body.appendChild(script);
       });

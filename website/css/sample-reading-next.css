@@ -1,0 +1,48 @@
+/* Personal Sky Keepsake sample on the Paper & Night light shell (2C step 7).
+   Visual only: every word, figure and page of the sample is unchanged.
+   Paper pages with ink type; the night sky stays only inside the chart wheel.
+   The diagonal "FICTIONAL SAMPLE" watermark becomes a small corner mark with
+   the same words, so every page is still labelled as a fictional sample. */
+body[data-ap-product]{--rd-paper:#F6F3EC;--rd-card:#FBF9F4;--rd-rule:#D6D1C6;--rd-ink:#0E1116;--rd-graphite:#3A3F47;--rd-muted:#5C6168;--rd-copper:#B4693E;--rd-copper-ink:#8A4A24;--rd-serif:'AP Serif','Instrument Serif',Georgia,serif;--rd-sans:'AP Sans',Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:var(--rd-paper);color:var(--rd-ink);font-family:var(--rd-sans);color-scheme:light}
+body[data-ap-product] .page{background:var(--rd-card);color:var(--rd-ink);box-shadow:0 18px 40px -18px rgba(14,17,22,.35)}
+body[data-ap-product] .page::before{border-color:var(--rd-rule)}
+body[data-ap-product] .page::after{border-color:transparent}
+body[data-ap-product] p,body[data-ap-product] ul.questions,body[data-ap-product] .big3 .v,body[data-ap-product] .balance .n,body[data-ap-product] .cover-recipient{color:var(--rd-ink)}
+body[data-ap-product] h1{font-family:var(--rd-serif);font-weight:400;letter-spacing:-.01em;color:var(--rd-ink)}
+body[data-ap-product] h2,body[data-ap-product] .eyebrow,body[data-ap-product] th{font-family:var(--rd-sans);font-weight:600;color:var(--rd-copper-ink);opacity:1}
+body[data-ap-product] h2::before{background:var(--rd-copper);opacity:1}
+body[data-ap-product] h3,body[data-ap-product] h2.reading-subhead{font-family:var(--rd-serif);font-weight:400;font-size:14pt;line-height:1.25;letter-spacing:0;color:var(--rd-ink)}
+body[data-ap-product] .lede{font-family:var(--rd-serif);font-size:13pt;color:var(--rd-ink);border-left-color:var(--rd-copper)}
+body[data-ap-product] .cover .seal,body[data-ap-product] .orn{color:var(--rd-copper)}
+body[data-ap-product] .orn::before,body[data-ap-product] .orn::after{background:var(--rd-rule)}
+body[data-ap-product] .meta,body[data-ap-product] .cover-method,body[data-ap-product] .cover-provenance{font-family:var(--rd-sans);letter-spacing:.06em;font-variant-numeric:tabular-nums;color:var(--rd-graphite)}
+body[data-ap-product] .big3 .b{border-color:var(--rd-rule);background:var(--rd-paper)}
+body[data-ap-product] .big3 .g,body[data-ap-product] .glyph,body[data-ap-product] .dropcap::first-letter{color:var(--rd-graphite)}
+body[data-ap-product] .big3 .lbl,body[data-ap-product] .balance .el{font-family:var(--rd-sans);color:var(--rd-muted)}
+body[data-ap-product] .dropcap::first-letter{font-family:var(--rd-serif)}
+body[data-ap-product] td,body[data-ap-product] th{border-bottom-color:var(--rd-rule)}
+body[data-ap-product] td{color:var(--rd-ink)}
+body[data-ap-product] .balance .track{background:var(--rd-paper-2,#EDE8DD)}
+body[data-ap-product] .balance .fill{background:var(--rd-copper)}
+body[data-ap-product] .r{color:#A64526}
+body[data-ap-product] p.note,body[data-ap-product] .reading-disclaimer,body[data-ap-product] .reading-support,body[data-ap-product] .modality-intro{color:var(--rd-graphite)}
+body[data-ap-product] p.note{border-left-color:var(--rd-copper)}
+body[data-ap-product] .symbolic-note{background:var(--rd-paper);border-color:var(--rd-rule);color:var(--rd-graphite)}
+body[data-ap-product] .foot{font-family:var(--rd-sans);font-variant-numeric:tabular-nums;letter-spacing:.08em;color:var(--rd-muted);border-top-color:var(--rd-rule)}
+body[data-ap-product] .watermark{top:12mm;right:12mm;left:auto;transform:none;z-index:1;font-family:var(--rd-sans);font-weight:600;font-size:6.6pt;letter-spacing:.2em;color:var(--rd-copper-ink);border:1px solid var(--rd-copper);padding:2.5pt 6pt;background:var(--rd-card)}
+@media screen and (max-width:820px){
+  /* On phones the pages flow (height:auto), so screen text can grow to 14px+ without clipping. */
+  body[data-ap-product]{padding:12px}
+  body[data-ap-product] .page p,body[data-ap-product] .page li,body[data-ap-product] .page td,body[data-ap-product] .page .r,body[data-ap-product] .page .glyph,body[data-ap-product] .balance .n,body[data-ap-product] .big3 .v{font-size:15px!important;line-height:1.55}
+  body[data-ap-product] .watermark{top:14px;right:14px;font-size:14px!important;letter-spacing:.12em;max-width:none}
+  body[data-ap-product] .page th,body[data-ap-product] .page h2:not(.reading-subhead),body[data-ap-product] .foot,body[data-ap-product] .foot span,body[data-ap-product] .big3 .lbl,body[data-ap-product] .balance .el,body[data-ap-product] .eyebrow,body[data-ap-product] .meta,body[data-ap-product] .orn span{font-size:14px!important}
+  body[data-ap-product] .balance .el{width:84px}
+  body[data-ap-product] .cover .cover-method{position:static!important;bottom:auto!important;margin-top:18px;font-size:14px!important;line-height:1.6}
+}
+@media print{body[data-ap-product] .page{box-shadow:none}}
+@media screen and (min-width:821px){
+  html:has(body[data-ap-product]),body[data-ap-product]{width:auto}
+  body[data-ap-product] main{width:210mm;margin:32px auto 48px}
+  body[data-ap-product] .page{margin:0 auto 32px}
+}
